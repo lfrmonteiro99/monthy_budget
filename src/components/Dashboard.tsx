@@ -8,7 +8,7 @@ import {
   ArrowUpCircle,
   CircleDollarSign,
 } from "lucide-react";
-import type { AppSettings, BudgetSummary } from "../types";
+import type { AppSettings, BudgetSummary, SalaryCalculation } from "../types";
 import { EXPENSE_CATEGORY_LABELS, type ExpenseCategory } from "../types";
 import { formatCurrency, formatPercentage } from "../utils/calculations";
 import Charts from "./Charts";
@@ -114,7 +114,8 @@ export default function Dashboard({ settings, summary, onOpenSettings }: Dashboa
               <SummaryCard
                 icon={<ArrowUpCircle size={18} />}
                 label="Rendimento Liquido"
-                value={formatCurrency(summary.totalNet)}
+                value={formatCurrency(summary.totalNetWithMeal)}
+                sublabel={summary.totalMealAllowance > 0 ? `Incl. sub. alim.: ${formatCurrency(summary.totalMealAllowance)}` : undefined}
                 color="emerald"
               />
               <SummaryCard
@@ -262,21 +263,14 @@ function SummaryCard({
   );
 }
 
-interface SalaryCalcDisplay {
-  grossAmount: number;
-  irsRetention: number;
-  irsRate: number;
-  socialSecurity: number;
-  netAmount: number;
-}
-
-function SalaryRow({ label, calc }: { label: string; calc: SalaryCalcDisplay }) {
+function SalaryRow({ label, calc }: { label: string; calc: SalaryCalculation }) {
+  const hasMeal = calc.mealAllowance.totalMonthly > 0;
   return (
     <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
       <div className="flex items-center justify-between mb-3">
         <span className="text-sm font-semibold text-slate-700">{label}</span>
         <span className="text-sm font-bold text-emerald-500">
-          {formatCurrency(calc.netAmount)}
+          {formatCurrency(calc.totalNetWithMeal)}
         </span>
       </div>
       <div className="grid grid-cols-3 gap-3 text-xs">
@@ -301,6 +295,14 @@ function SalaryRow({ label, calc }: { label: string; calc: SalaryCalcDisplay }) 
           </p>
         </div>
       </div>
+      {hasMeal && (
+        <div className="mt-3 pt-3 border-t border-slate-200 flex items-center justify-between text-xs">
+          <span className="text-slate-400 font-medium">Sub. Alimentacao</span>
+          <span className="text-emerald-500 font-semibold">
+            +{formatCurrency(calc.mealAllowance.netMealAllowance)}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

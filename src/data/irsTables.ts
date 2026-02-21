@@ -104,6 +104,12 @@ export const IRS_TABLES = {
 /** Taxa de Segurança Social para trabalhadores por conta de outrem */
 export const SOCIAL_SECURITY_RATE = 0.11;
 
+/** Limite diario isento do subsidio de alimentacao em cartao (EUR) */
+export const MEAL_CARD_EXEMPT_LIMIT = 10.2;
+
+/** Limite diario isento do subsidio de alimentacao em dinheiro (EUR) */
+export const MEAL_CASH_EXEMPT_LIMIT = 6.0;
+
 /** Mínimo de existência mensal 2026 */
 export const MINIMUM_EXISTENCE_MONTHLY = 920.0;
 

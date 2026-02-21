@@ -5,8 +5,15 @@ import {
   type ExpenseItem,
   type SalaryInfo,
   type TitularCount,
+  type MealAllowanceCalculation,
+  type MealAllowanceType,
 } from "../types";
-import { getApplicableTable, SOCIAL_SECURITY_RATE } from "../data/irsTables";
+import {
+  getApplicableTable,
+  SOCIAL_SECURITY_RATE,
+  MEAL_CARD_EXEMPT_LIMIT,
+  MEAL_CASH_EXEMPT_LIMIT,
+} from "../data/irsTables";
 
 /**
  * Calcula a retenção de IRS para um dado salário bruto
@@ -56,14 +63,65 @@ export function calculateSocialSecurity(grossSalary: number): number {
 }
 
 /**
+ * Calcula o subsidio de alimentacao mensal
+ *
+ * - Cartao: isento ate 10,20 EUR/dia; excedente sujeito a IRS + SS
+ * - Dinheiro (junto com base): isento ate 6,00 EUR/dia; excedente sujeito a IRS + SS
+ */
+export function calculateMealAllowance(
+  type: MealAllowanceType,
+  perDay: number,
+  workingDays: number,
+  irsRate: number,
+): MealAllowanceCalculation {
+  const empty: MealAllowanceCalculation = {
+    totalMonthly: 0,
+    exemptPortion: 0,
+    taxablePortion: 0,
+    irsTaxOnMeal: 0,
+    ssTaxOnMeal: 0,
+    netMealAllowance: 0,
+  };
+
+  if (type === "none" || perDay <= 0 || workingDays <= 0) return empty;
+
+  const exemptLimit = type === "card" ? MEAL_CARD_EXEMPT_LIMIT : MEAL_CASH_EXEMPT_LIMIT;
+  const totalMonthly = round2(perDay * workingDays);
+  const exemptPerDay = Math.min(perDay, exemptLimit);
+  const taxablePerDay = Math.max(0, perDay - exemptLimit);
+
+  const exemptPortion = round2(exemptPerDay * workingDays);
+  const taxablePortion = round2(taxablePerDay * workingDays);
+
+  const irsTaxOnMeal = round2(taxablePortion * irsRate);
+  const ssTaxOnMeal = round2(taxablePortion * SOCIAL_SECURITY_RATE);
+  const netMealAllowance = round2(totalMonthly - irsTaxOnMeal - ssTaxOnMeal);
+
+  return {
+    totalMonthly,
+    exemptPortion,
+    taxablePortion,
+    irsTaxOnMeal,
+    ssTaxOnMeal,
+    netMealAllowance,
+  };
+}
+
+function round2(v: number): number {
+  return Math.round(v * 100) / 100;
+}
+
+/**
  * Calcula o salário líquido completo
  */
 export function calculateNetSalary(
-  grossSalary: number,
+  salary: SalaryInfo,
   personalInfo: PersonalInfo,
-  titulares: TitularCount,
 ): SalaryCalculation {
+  const grossSalary = salary.grossAmount;
+
   if (grossSalary <= 0) {
+    const meal = calculateMealAllowance(salary.mealAllowanceType, salary.mealAllowancePerDay, salary.workingDaysPerMonth, 0);
     return {
       grossAmount: 0,
       irsRetention: 0,
@@ -71,12 +129,17 @@ export function calculateNetSalary(
       socialSecurity: 0,
       socialSecurityRate: SOCIAL_SECURITY_RATE,
       netAmount: 0,
+      mealAllowance: meal,
+      totalNetWithMeal: meal.netMealAllowance,
     };
   }
 
-  const { retention, rate } = calculateIRSRetention(grossSalary, personalInfo, titulares);
+  const { retention, rate } = calculateIRSRetention(grossSalary, personalInfo, salary.titulares);
   const ss = calculateSocialSecurity(grossSalary);
-  const net = Math.round((grossSalary - retention - ss) * 100) / 100;
+  const net = round2(grossSalary - retention - ss);
+  const netAmount = Math.max(0, net);
+
+  const meal = calculateMealAllowance(salary.mealAllowanceType, salary.mealAllowancePerDay, salary.workingDaysPerMonth, rate);
 
   return {
     grossAmount: grossSalary,
@@ -84,7 +147,9 @@ export function calculateNetSalary(
     irsRate: rate,
     socialSecurity: ss,
     socialSecurityRate: SOCIAL_SECURITY_RATE,
-    netAmount: Math.max(0, net),
+    netAmount,
+    mealAllowance: meal,
+    totalNetWithMeal: round2(netAmount + meal.netMealAllowance),
   };
 }
 
@@ -96,32 +161,42 @@ export function calculateBudgetSummary(
   personalInfo: PersonalInfo,
   expenses: ExpenseItem[],
 ): BudgetSummary {
-  const salary1 = salaries[0].enabled
-    ? calculateNetSalary(salaries[0].grossAmount, personalInfo, salaries[0].titulares)
-    : calculateNetSalary(0, personalInfo, salaries[0].titulares);
+  const disabledSalary = (s: SalaryInfo): SalaryInfo => ({
+    ...s,
+    grossAmount: 0,
+  });
 
-  const salary2 = salaries[1].enabled
-    ? calculateNetSalary(salaries[1].grossAmount, personalInfo, salaries[1].titulares)
-    : calculateNetSalary(0, personalInfo, salaries[1].titulares);
+  const salary1 = calculateNetSalary(
+    salaries[0].enabled ? salaries[0] : disabledSalary(salaries[0]),
+    personalInfo,
+  );
+  const salary2 = calculateNetSalary(
+    salaries[1].enabled ? salaries[1] : disabledSalary(salaries[1]),
+    personalInfo,
+  );
 
   const totalGross = salary1.grossAmount + salary2.grossAmount;
   const totalNet = salary1.netAmount + salary2.netAmount;
-  const totalIRS = salary1.irsRetention + salary2.irsRetention;
-  const totalSS = salary1.socialSecurity + salary2.socialSecurity;
+  const totalMealAllowance = salary1.mealAllowance.netMealAllowance + salary2.mealAllowance.netMealAllowance;
+  const totalNetWithMeal = salary1.totalNetWithMeal + salary2.totalNetWithMeal;
+  const totalIRS = salary1.irsRetention + salary2.irsRetention + salary1.mealAllowance.irsTaxOnMeal + salary2.mealAllowance.irsTaxOnMeal;
+  const totalSS = salary1.socialSecurity + salary2.socialSecurity + salary1.mealAllowance.ssTaxOnMeal + salary2.mealAllowance.ssTaxOnMeal;
   const totalDeductions = totalIRS + totalSS;
 
   const totalExpenses = expenses
     .filter((e) => e.enabled)
     .reduce((sum, e) => sum + e.amount, 0);
 
-  const netLiquidity = Math.round((totalNet - totalExpenses) * 100) / 100;
-  const savingsRate = totalNet > 0 ? netLiquidity / totalNet : 0;
+  const netLiquidity = round2(totalNetWithMeal - totalExpenses);
+  const savingsRate = totalNetWithMeal > 0 ? netLiquidity / totalNetWithMeal : 0;
 
   return {
     salary1,
     salary2,
     totalGross,
     totalNet,
+    totalNetWithMeal,
+    totalMealAllowance,
     totalIRS,
     totalSS,
     totalDeductions,

@@ -147,7 +147,7 @@ function IncomeVsExpensesChart({ summary }: { summary: BudgetSummary }) {
     labels: ["Rend. Liquido", "Despesas", "Liquidez"],
     datasets: [
       {
-        data: [summary.totalNet, summary.totalExpenses, Math.max(0, summary.netLiquidity)],
+        data: [summary.totalNetWithMeal, summary.totalExpenses, Math.max(0, summary.netLiquidity)],
         backgroundColor: ["#34d399", "#f87171", "#818cf8"],
         borderWidth: 0,
         borderRadius: 10,
@@ -268,12 +268,12 @@ function NetIncomeChart({ summary }: { summary: BudgetSummary }) {
   if (summary.salary1.grossAmount > 0) {
     labels.push("Vencimento 1");
     grossValues.push(summary.salary1.grossAmount);
-    netValues.push(summary.salary1.netAmount);
+    netValues.push(summary.salary1.totalNetWithMeal);
   }
   if (summary.salary2.grossAmount > 0) {
     labels.push("Vencimento 2");
     grossValues.push(summary.salary2.grossAmount);
-    netValues.push(summary.salary2.netAmount);
+    netValues.push(summary.salary2.totalNetWithMeal);
   }
 
   if (labels.length === 0) return null;
@@ -354,7 +354,7 @@ function NetIncomeChart({ summary }: { summary: BudgetSummary }) {
 }
 
 function SavingsRateChart({ summary }: { summary: BudgetSummary }) {
-  if (summary.totalNet === 0) return null;
+  if (summary.totalNetWithMeal === 0) return null;
 
   const savingsRate = Math.max(0, summary.savingsRate);
   const expenseRate = 1 - savingsRate;

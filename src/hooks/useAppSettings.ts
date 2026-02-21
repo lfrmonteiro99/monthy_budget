@@ -9,8 +9,8 @@ const DEFAULT_SETTINGS: AppSettings = {
     deficiente: false,
   },
   salaries: [
-    { label: "Vencimento 1", grossAmount: 0, enabled: true, titulares: 1 },
-    { label: "Vencimento 2", grossAmount: 0, enabled: false, titulares: 1 },
+    { label: "Vencimento 1", grossAmount: 0, enabled: true, titulares: 1, mealAllowanceType: "none", mealAllowancePerDay: 0, workingDaysPerMonth: 22 },
+    { label: "Vencimento 2", grossAmount: 0, enabled: false, titulares: 1, mealAllowanceType: "none", mealAllowancePerDay: 0, workingDaysPerMonth: 22 },
   ],
   expenses: [
     { id: "vodafone", label: "Vodafone", amount: 0, category: "telecomunicacoes", enabled: true },
@@ -54,6 +54,12 @@ export function useAppSettings() {
               for (const s of parsed.salaries ?? []) {
                 if (s.titulares === undefined) s.titulares = 1;
               }
+            }
+            // Migrate: add meal allowance defaults if missing
+            for (const s of parsed.salaries ?? []) {
+              if (s.mealAllowanceType === undefined) s.mealAllowanceType = "none";
+              if (s.mealAllowancePerDay === undefined) s.mealAllowancePerDay = 0;
+              if (s.workingDaysPerMonth === undefined) s.workingDaysPerMonth = 22;
             }
             setSettingsState(parsed as AppSettings);
           } catch {

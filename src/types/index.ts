@@ -8,11 +8,16 @@ export interface PersonalInfo {
   deficiente: boolean;
 }
 
+export type MealAllowanceType = "none" | "card" | "cash";
+
 export interface SalaryInfo {
   label: string;
   grossAmount: number;
   enabled: boolean;
   titulares: TitularCount;
+  mealAllowanceType: MealAllowanceType;
+  mealAllowancePerDay: number;
+  workingDaysPerMonth: number;
 }
 
 export interface ExpenseItem {
@@ -75,6 +80,15 @@ export interface AppSettings {
   dashboardConfig: DashboardConfig;
 }
 
+export interface MealAllowanceCalculation {
+  totalMonthly: number;
+  exemptPortion: number;
+  taxablePortion: number;
+  irsTaxOnMeal: number;
+  ssTaxOnMeal: number;
+  netMealAllowance: number;
+}
+
 export interface SalaryCalculation {
   grossAmount: number;
   irsRetention: number;
@@ -82,6 +96,8 @@ export interface SalaryCalculation {
   socialSecurity: number;
   socialSecurityRate: number;
   netAmount: number;
+  mealAllowance: MealAllowanceCalculation;
+  totalNetWithMeal: number;
 }
 
 export interface BudgetSummary {
@@ -89,6 +105,8 @@ export interface BudgetSummary {
   salary2: SalaryCalculation;
   totalGross: number;
   totalNet: number;
+  totalNetWithMeal: number;
+  totalMealAllowance: number;
   totalIRS: number;
   totalSS: number;
   totalDeductions: number;

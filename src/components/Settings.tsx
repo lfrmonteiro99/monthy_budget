@@ -18,6 +18,7 @@ import type {
   ChartType,
   MaritalStatus,
   TitularCount,
+  MealAllowanceType,
 } from "../types";
 import { EXPENSE_CATEGORY_LABELS, CHART_LABELS } from "../types";
 import { getApplicableTable } from "../data/irsTables";
@@ -274,6 +275,88 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                     </span>
                   </div>
                 </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-slate-400 mb-1.5">
+                    Subsidio de Alimentacao
+                  </label>
+                  <div className="flex gap-1.5">
+                    {([
+                      { value: "none", label: "Sem" },
+                      { value: "card", label: "Cartao" },
+                      { value: "cash", label: "Com base" },
+                    ] as { value: MealAllowanceType; label: string }[]).map((opt) => (
+                      <button
+                        key={opt.value}
+                        onClick={() => {
+                          const newSalaries = [...draft.salaries] as [typeof salary, typeof salary];
+                          newSalaries[idx] = { ...salary, mealAllowanceType: opt.value };
+                          setDraft({ ...draft, salaries: newSalaries });
+                        }}
+                        className={`flex-1 py-2 rounded-lg text-xs font-semibold border-2 transition-all ${
+                          salary.mealAllowanceType === opt.value
+                            ? "bg-blue-500 text-white border-blue-500"
+                            : "bg-white text-slate-500 border-slate-200 hover:border-slate-300"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {salary.mealAllowanceType !== "none" && (
+                  <div className="flex gap-3">
+                    <div className="flex-1">
+                      <label className="block text-xs font-medium text-slate-400 mb-1.5">
+                        Valor/dia
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="number"
+                          value={salary.mealAllowancePerDay || ""}
+                          onChange={(e) => {
+                            const newSalaries = [...draft.salaries] as [typeof salary, typeof salary];
+                            newSalaries[idx] = {
+                              ...salary,
+                              mealAllowancePerDay: parseFloat(e.target.value) || 0,
+                            };
+                            setDraft({ ...draft, salaries: newSalaries });
+                          }}
+                          placeholder="0.00"
+                          className="w-full border border-slate-200 rounded-xl px-3 py-2.5 pr-8 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-blue-500 transition-shadow placeholder-slate-300"
+                          min="0"
+                          step="0.10"
+                        />
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-semibold">
+                          EUR
+                        </span>
+                      </div>
+                    </div>
+                    <div className="w-24">
+                      <label className="block text-xs font-medium text-slate-400 mb-1.5">
+                        Dias/mes
+                      </label>
+                      <input
+                        type="number"
+                        value={salary.workingDaysPerMonth || ""}
+                        onChange={(e) => {
+                          const newSalaries = [...draft.salaries] as [typeof salary, typeof salary];
+                          newSalaries[idx] = {
+                            ...salary,
+                            workingDaysPerMonth: parseInt(e.target.value) || 0,
+                          };
+                          setDraft({ ...draft, salaries: newSalaries });
+                        }}
+                        placeholder="22"
+                        className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-blue-500 transition-shadow placeholder-slate-300"
+                        min="0"
+                        max="31"
+                        step="1"
+                      />
+                    </div>
+                  </div>
+                )}
 
                 {isCasado && (
                   <div>
