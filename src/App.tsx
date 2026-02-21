@@ -7,7 +7,7 @@ import { calculateBudgetSummary } from "./utils/calculations";
 type View = "dashboard" | "settings";
 
 function App() {
-  const { settings, setSettings } = useAppSettings();
+  const { settings, setSettings, loaded } = useAppSettings();
   const [view, setView] = useState<View>("dashboard");
 
   const summary = useMemo(
@@ -15,6 +15,14 @@ function App() {
       calculateBudgetSummary(settings.salaries, settings.personalInfo, settings.expenses),
     [settings],
   );
+
+  if (!loaded) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-gray-500">A carregar...</p>
+      </div>
+    );
+  }
 
   if (view === "settings") {
     return (

@@ -1,4 +1,5 @@
-import { useLocalStorage } from "./useLocalStorage";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { invoke } from "@tauri-apps/api/core";
 import type { AppSettings } from "../types";
 
 const DEFAULT_SETTINGS: AppSettings = {
@@ -31,10 +32,46 @@ const DEFAULT_SETTINGS: AppSettings = {
 };
 
 export function useAppSettings() {
-  const [settings, setSettings] = useLocalStorage<AppSettings>(
-    "orcamento_mensal_settings",
-    DEFAULT_SETTINGS,
-  );
+  const [settings, setSettingsState] = useState<AppSettings>(DEFAULT_SETTINGS);
+  const [loaded, setLoaded] = useState(false);
+  const saving = useRef(false);
 
-  return { settings, setSettings, DEFAULT_SETTINGS };
+  // Load settings from JSON file on mount
+  useEffect(() => {
+    invoke<string | null>("get_settings")
+      .then((data) => {
+        if (data) {
+          try {
+            const parsed = JSON.parse(data) as AppSettings;
+            setSettingsState(parsed);
+          } catch {
+            // corrupted file — keep defaults
+          }
+        }
+      })
+      .catch(() => {
+        // Tauri command failed — keep defaults
+      })
+      .finally(() => setLoaded(true));
+  }, []);
+
+  // Persist settings to JSON file whenever they change (after initial load)
+  useEffect(() => {
+    if (!loaded) return;
+    if (saving.current) return;
+    saving.current = true;
+    invoke("save_settings", { data: JSON.stringify(settings, null, 2) })
+      .catch(() => {
+        // silently ignore write errors
+      })
+      .finally(() => {
+        saving.current = false;
+      });
+  }, [settings, loaded]);
+
+  const setSettings = useCallback((value: AppSettings | ((prev: AppSettings) => AppSettings)) => {
+    setSettingsState(value);
+  }, []);
+
+  return { settings, setSettings, loaded, DEFAULT_SETTINGS };
 }
