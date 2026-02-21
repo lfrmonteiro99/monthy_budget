@@ -4,7 +4,6 @@ export type TitularCount = 1 | 2;
 
 export interface PersonalInfo {
   maritalStatus: MaritalStatus;
-  titulares: TitularCount;
   dependentes: number;
   deficiente: boolean;
 }
@@ -13,6 +12,7 @@ export interface SalaryInfo {
   label: string;
   grossAmount: number;
   enabled: boolean;
+  titulares: TitularCount;
 }
 
 export interface ExpenseItem {

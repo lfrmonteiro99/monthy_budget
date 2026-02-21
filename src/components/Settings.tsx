@@ -52,12 +52,6 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
     setOpenSection(openSection === section ? null : section);
   };
 
-  const applicableTable = getApplicableTable(
-    draft.personalInfo.maritalStatus,
-    draft.personalInfo.titulares,
-    draft.personalInfo.dependentes,
-  );
-
   const isCasado =
     draft.personalInfo.maritalStatus === "casado" ||
     draft.personalInfo.maritalStatus === "uniao_facto";
@@ -151,10 +145,6 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                     personalInfo: {
                       ...draft.personalInfo,
                       maritalStatus: e.target.value as MaritalStatus,
-                      titulares:
-                        e.target.value !== "casado" && e.target.value !== "uniao_facto"
-                          ? 1
-                          : draft.personalInfo.titulares,
                     },
                   })
                 }
@@ -167,34 +157,6 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                 ))}
               </select>
             </div>
-
-            {isCasado && (
-              <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-2 tracking-wide uppercase">
-                  Numero de Titulares
-                </label>
-                <div className="flex gap-3">
-                  {([1, 2] as TitularCount[]).map((n) => (
-                    <button
-                      key={n}
-                      onClick={() =>
-                        setDraft({
-                          ...draft,
-                          personalInfo: { ...draft.personalInfo, titulares: n },
-                        })
-                      }
-                      className={`flex-1 py-3 rounded-xl text-sm font-semibold border-2 transition-all ${
-                        draft.personalInfo.titulares === n
-                          ? "bg-blue-500 text-white border-blue-500 shadow-sm"
-                          : "bg-white text-slate-600 border-slate-200 hover:border-slate-300"
-                      }`}
-                    >
-                      {n} Titular{n > 1 ? "es" : ""}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
 
             <div>
               <label className="block text-xs font-semibold text-slate-500 mb-2 tracking-wide uppercase">
@@ -235,13 +197,8 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
               </div>
             </div>
 
-            {/* Info about applicable table */}
             <div className="bg-blue-50 rounded-xl p-4 text-sm border border-blue-100">
-              <p className="font-semibold text-blue-700 mb-1">Tabela IRS aplicavel:</p>
               <p className="text-blue-600 text-xs leading-relaxed">
-                {applicableTable.label} — {applicableTable.description}
-              </p>
-              <p className="mt-2 text-xs text-blue-500 font-medium">
                 Seguranca Social: {formatPercentage(SOCIAL_SECURITY_RATE)}
               </p>
             </div>
@@ -317,6 +274,46 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                     </span>
                   </div>
                 </div>
+
+                {isCasado && (
+                  <div>
+                    <label className="block text-xs font-medium text-slate-400 mb-1.5">
+                      N. Titulares
+                    </label>
+                    <div className="flex gap-2">
+                      {([1, 2] as TitularCount[]).map((n) => (
+                        <button
+                          key={n}
+                          onClick={() => {
+                            const newSalaries = [...draft.salaries] as [typeof salary, typeof salary];
+                            newSalaries[idx] = { ...salary, titulares: n };
+                            setDraft({ ...draft, salaries: newSalaries });
+                          }}
+                          className={`flex-1 py-2 rounded-lg text-xs font-semibold border-2 transition-all ${
+                            salary.titulares === n
+                              ? "bg-blue-500 text-white border-blue-500"
+                              : "bg-white text-slate-500 border-slate-200 hover:border-slate-300"
+                          }`}
+                        >
+                          {n} Titular{n > 1 ? "es" : ""}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {(() => {
+                  const table = getApplicableTable(
+                    draft.personalInfo.maritalStatus,
+                    salary.titulares,
+                    draft.personalInfo.dependentes,
+                  );
+                  return (
+                    <div className="bg-slate-50 rounded-lg px-3 py-2 text-xs text-slate-500">
+                      {table.label} — {table.description}
+                    </div>
+                  );
+                })()}
               </div>
             ))}
           </div>

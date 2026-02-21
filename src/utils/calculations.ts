@@ -4,6 +4,7 @@ import {
   type BudgetSummary,
   type ExpenseItem,
   type SalaryInfo,
+  type TitularCount,
 } from "../types";
 import { getApplicableTable, SOCIAL_SECURITY_RATE } from "../data/irsTables";
 
@@ -15,12 +16,13 @@ import { getApplicableTable, SOCIAL_SECURITY_RATE } from "../data/irsTables";
 export function calculateIRSRetention(
   grossSalary: number,
   personalInfo: PersonalInfo,
+  titulares: TitularCount,
 ): { retention: number; rate: number } {
   if (grossSalary <= 0) return { retention: 0, rate: 0 };
 
   const table = getApplicableTable(
     personalInfo.maritalStatus,
-    personalInfo.titulares,
+    titulares,
     personalInfo.dependentes,
   );
 
@@ -59,6 +61,7 @@ export function calculateSocialSecurity(grossSalary: number): number {
 export function calculateNetSalary(
   grossSalary: number,
   personalInfo: PersonalInfo,
+  titulares: TitularCount,
 ): SalaryCalculation {
   if (grossSalary <= 0) {
     return {
@@ -71,7 +74,7 @@ export function calculateNetSalary(
     };
   }
 
-  const { retention, rate } = calculateIRSRetention(grossSalary, personalInfo);
+  const { retention, rate } = calculateIRSRetention(grossSalary, personalInfo, titulares);
   const ss = calculateSocialSecurity(grossSalary);
   const net = Math.round((grossSalary - retention - ss) * 100) / 100;
 
@@ -94,12 +97,12 @@ export function calculateBudgetSummary(
   expenses: ExpenseItem[],
 ): BudgetSummary {
   const salary1 = salaries[0].enabled
-    ? calculateNetSalary(salaries[0].grossAmount, personalInfo)
-    : calculateNetSalary(0, personalInfo);
+    ? calculateNetSalary(salaries[0].grossAmount, personalInfo, salaries[0].titulares)
+    : calculateNetSalary(0, personalInfo, salaries[0].titulares);
 
   const salary2 = salaries[1].enabled
-    ? calculateNetSalary(salaries[1].grossAmount, personalInfo)
-    : calculateNetSalary(0, personalInfo);
+    ? calculateNetSalary(salaries[1].grossAmount, personalInfo, salaries[1].titulares)
+    : calculateNetSalary(0, personalInfo, salaries[1].titulares);
 
   const totalGross = salary1.grossAmount + salary2.grossAmount;
   const totalNet = salary1.netAmount + salary2.netAmount;

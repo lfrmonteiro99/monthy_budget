@@ -5,13 +5,12 @@ import type { AppSettings } from "../types";
 const DEFAULT_SETTINGS: AppSettings = {
   personalInfo: {
     maritalStatus: "solteiro",
-    titulares: 1,
     dependentes: 0,
     deficiente: false,
   },
   salaries: [
-    { label: "Vencimento 1", grossAmount: 0, enabled: true },
-    { label: "Vencimento 2", grossAmount: 0, enabled: false },
+    { label: "Vencimento 1", grossAmount: 0, enabled: true, titulares: 1 },
+    { label: "Vencimento 2", grossAmount: 0, enabled: false, titulares: 1 },
   ],
   expenses: [
     { id: "vodafone", label: "Vodafone", amount: 0, category: "telecomunicacoes", enabled: true },
@@ -42,8 +41,21 @@ export function useAppSettings() {
       .then((data) => {
         if (data) {
           try {
-            const parsed = JSON.parse(data) as AppSettings;
-            setSettingsState(parsed);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const parsed = JSON.parse(data) as any;
+            // Migrate: move titulares from personalInfo to each salary if needed
+            if (parsed.personalInfo?.titulares !== undefined) {
+              const oldTitulares = parsed.personalInfo.titulares;
+              delete parsed.personalInfo.titulares;
+              for (const s of parsed.salaries ?? []) {
+                if (s.titulares === undefined) s.titulares = oldTitulares;
+              }
+            } else {
+              for (const s of parsed.salaries ?? []) {
+                if (s.titulares === undefined) s.titulares = 1;
+              }
+            }
+            setSettingsState(parsed as AppSettings);
           } catch {
             // corrupted file — keep defaults
           }
