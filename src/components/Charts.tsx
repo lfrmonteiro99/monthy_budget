@@ -15,18 +15,22 @@ import { formatCurrency, formatPercentage } from "../utils/calculations";
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title);
 
+// Softer, pastel-leaning palette
 const CATEGORY_COLORS: Record<ExpenseCategory, string> = {
-  telecomunicacoes: "#6366f1",
-  energia: "#f59e0b",
-  agua: "#3b82f6",
-  alimentacao: "#10b981",
-  educacao: "#8b5cf6",
-  habitacao: "#ef4444",
-  transportes: "#f97316",
-  saude: "#ec4899",
-  lazer: "#14b8a6",
-  outros: "#6b7280",
+  telecomunicacoes: "#818cf8",
+  energia: "#fbbf24",
+  agua: "#60a5fa",
+  alimentacao: "#34d399",
+  educacao: "#a78bfa",
+  habitacao: "#f87171",
+  transportes: "#fb923c",
+  saude: "#f472b6",
+  lazer: "#2dd4bf",
+  outros: "#94a3b8",
 };
+
+// Shared chart defaults
+const SHARED_FONT = { family: "Inter, system-ui, sans-serif" };
 
 interface ChartsProps {
   summary: BudgetSummary;
@@ -56,15 +60,16 @@ export default function Charts({ summary, expenses, enabledCharts }: ChartsProps
 
 function ChartCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-      <h3 className="text-sm font-semibold text-gray-700 mb-3">{title}</h3>
+    <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+      <h3 className="text-xs font-semibold text-slate-400 mb-4 tracking-wide uppercase">
+        {title}
+      </h3>
       {children}
     </div>
   );
 }
 
 function ExpensesPieChart({ expenses }: { expenses: ExpenseItem[] }) {
-  // Group expenses by category
   const grouped: Record<string, number> = {};
   for (const exp of expenses) {
     const cat = EXPENSE_CATEGORY_LABELS[exp.category];
@@ -73,23 +78,13 @@ function ExpensesPieChart({ expenses }: { expenses: ExpenseItem[] }) {
 
   const labels = Object.keys(grouped);
   const values = Object.values(grouped);
-  const colors = expenses.reduce<string[]>((acc, exp) => {
-    const cat = EXPENSE_CATEGORY_LABELS[exp.category];
-    if (!acc.some((_, i) => labels[i] === cat)) {
-      // do nothing
-    }
-    return acc;
-  }, []);
 
-  // Build color array from category
   const bgColors = labels.map((label) => {
     const catKey = Object.entries(EXPENSE_CATEGORY_LABELS).find(
       ([, v]) => v === label,
     )?.[0] as ExpenseCategory | undefined;
-    return catKey ? CATEGORY_COLORS[catKey] : "#6b7280";
+    return catKey ? CATEGORY_COLORS[catKey] : "#94a3b8";
   });
-
-  void colors;
 
   const data = {
     labels,
@@ -97,8 +92,9 @@ function ExpensesPieChart({ expenses }: { expenses: ExpenseItem[] }) {
       {
         data: values,
         backgroundColor: bgColors,
-        borderWidth: 2,
+        borderWidth: 3,
         borderColor: "#ffffff",
+        hoverOffset: 6,
       },
     ],
   };
@@ -114,9 +110,21 @@ function ExpensesPieChart({ expenses }: { expenses: ExpenseItem[] }) {
             plugins: {
               legend: {
                 position: "bottom",
-                labels: { boxWidth: 12, padding: 8, font: { size: 11 } },
+                labels: {
+                  boxWidth: 10,
+                  padding: 12,
+                  font: { size: 11, ...SHARED_FONT },
+                  color: "#64748b",
+                  usePointStyle: true,
+                  pointStyle: "circle",
+                },
               },
               tooltip: {
+                backgroundColor: "#1e293b",
+                titleFont: { ...SHARED_FONT, size: 12 },
+                bodyFont: { ...SHARED_FONT, size: 12 },
+                cornerRadius: 10,
+                padding: 10,
                 callbacks: {
                   label: (ctx) => {
                     const value = ctx.parsed;
@@ -136,13 +144,14 @@ function ExpensesPieChart({ expenses }: { expenses: ExpenseItem[] }) {
 
 function IncomeVsExpensesChart({ summary }: { summary: BudgetSummary }) {
   const data = {
-    labels: ["Rendimento Líquido", "Despesas", "Liquidez"],
+    labels: ["Rend. Liquido", "Despesas", "Liquidez"],
     datasets: [
       {
         data: [summary.totalNet, summary.totalExpenses, Math.max(0, summary.netLiquidity)],
-        backgroundColor: ["#10b981", "#ef4444", "#6366f1"],
+        backgroundColor: ["#34d399", "#f87171", "#818cf8"],
         borderWidth: 0,
-        borderRadius: 8,
+        borderRadius: 10,
+        borderSkipped: false,
       },
     ],
   };
@@ -158,6 +167,11 @@ function IncomeVsExpensesChart({ summary }: { summary: BudgetSummary }) {
             plugins: {
               legend: { display: false },
               tooltip: {
+                backgroundColor: "#1e293b",
+                titleFont: { ...SHARED_FONT, size: 12 },
+                bodyFont: { ...SHARED_FONT, size: 12 },
+                cornerRadius: 10,
+                padding: 10,
                 callbacks: {
                   label: (ctx) => ` ${formatCurrency(ctx.parsed.y ?? 0)}`,
                 },
@@ -168,13 +182,16 @@ function IncomeVsExpensesChart({ summary }: { summary: BudgetSummary }) {
                 beginAtZero: true,
                 ticks: {
                   callback: (v) => formatCurrency(v as number),
-                  font: { size: 10 },
+                  font: { size: 10, ...SHARED_FONT },
+                  color: "#94a3b8",
                 },
-                grid: { color: "#f3f4f6" },
+                grid: { color: "#f1f5f9" },
+                border: { display: false },
               },
               x: {
-                ticks: { font: { size: 11 } },
+                ticks: { font: { size: 11, ...SHARED_FONT }, color: "#64748b" },
                 grid: { display: false },
+                border: { display: false },
               },
             },
           }}
@@ -188,32 +205,45 @@ function DeductionsChart({ summary }: { summary: BudgetSummary }) {
   if (summary.totalGross === 0) return null;
 
   const data = {
-    labels: ["Salário Líquido", "IRS", "Segurança Social"],
+    labels: ["Salario Liquido", "IRS", "Seguranca Social"],
     datasets: [
       {
         data: [summary.totalNet, summary.totalIRS, summary.totalSS],
-        backgroundColor: ["#10b981", "#ef4444", "#f59e0b"],
-        borderWidth: 3,
+        backgroundColor: ["#34d399", "#f87171", "#fbbf24"],
+        borderWidth: 4,
         borderColor: "#ffffff",
+        hoverOffset: 6,
       },
     ],
   };
 
   return (
-    <ChartCard title="Descontos (IRS + Segurança Social)">
+    <ChartCard title="Descontos (IRS + Seguranca Social)">
       <div className="h-64 flex items-center justify-center">
         <Doughnut
           data={data}
           options={{
             responsive: true,
             maintainAspectRatio: false,
-            cutout: "60%",
+            cutout: "65%",
             plugins: {
               legend: {
                 position: "bottom",
-                labels: { boxWidth: 12, padding: 8, font: { size: 11 } },
+                labels: {
+                  boxWidth: 10,
+                  padding: 12,
+                  font: { size: 11, ...SHARED_FONT },
+                  color: "#64748b",
+                  usePointStyle: true,
+                  pointStyle: "circle",
+                },
               },
               tooltip: {
+                backgroundColor: "#1e293b",
+                titleFont: { ...SHARED_FONT, size: 12 },
+                bodyFont: { ...SHARED_FONT, size: 12 },
+                cornerRadius: 10,
+                padding: 10,
                 callbacks: {
                   label: (ctx) => {
                     const value = ctx.parsed;
@@ -255,19 +285,21 @@ function NetIncomeChart({ summary }: { summary: BudgetSummary }) {
         label: "Bruto",
         data: grossValues,
         backgroundColor: "#c7d2fe",
-        borderRadius: 8,
+        borderRadius: 10,
+        borderSkipped: false,
       },
       {
-        label: "Líquido",
+        label: "Liquido",
         data: netValues,
-        backgroundColor: "#6366f1",
-        borderRadius: 8,
+        backgroundColor: "#818cf8",
+        borderRadius: 10,
+        borderSkipped: false,
       },
     ],
   };
 
   return (
-    <ChartCard title="Rendimento Bruto vs Líquido">
+    <ChartCard title="Rendimento Bruto vs Liquido">
       <div className="h-56">
         <Bar
           data={data}
@@ -277,9 +309,21 @@ function NetIncomeChart({ summary }: { summary: BudgetSummary }) {
             plugins: {
               legend: {
                 position: "bottom",
-                labels: { boxWidth: 12, padding: 8, font: { size: 11 } },
+                labels: {
+                  boxWidth: 10,
+                  padding: 12,
+                  font: { size: 11, ...SHARED_FONT },
+                  color: "#64748b",
+                  usePointStyle: true,
+                  pointStyle: "circle",
+                },
               },
               tooltip: {
+                backgroundColor: "#1e293b",
+                titleFont: { ...SHARED_FONT, size: 12 },
+                bodyFont: { ...SHARED_FONT, size: 12 },
+                cornerRadius: 10,
+                padding: 10,
                 callbacks: {
                   label: (ctx) => ` ${ctx.dataset.label}: ${formatCurrency(ctx.parsed.y ?? 0)}`,
                 },
@@ -290,13 +334,16 @@ function NetIncomeChart({ summary }: { summary: BudgetSummary }) {
                 beginAtZero: true,
                 ticks: {
                   callback: (v) => formatCurrency(v as number),
-                  font: { size: 10 },
+                  font: { size: 10, ...SHARED_FONT },
+                  color: "#94a3b8",
                 },
-                grid: { color: "#f3f4f6" },
+                grid: { color: "#f1f5f9" },
+                border: { display: false },
               },
               x: {
-                ticks: { font: { size: 11 } },
+                ticks: { font: { size: 11, ...SHARED_FONT }, color: "#64748b" },
                 grid: { display: false },
+                border: { display: false },
               },
             },
           }}
@@ -313,28 +360,34 @@ function SavingsRateChart({ summary }: { summary: BudgetSummary }) {
   const expenseRate = 1 - savingsRate;
 
   const data = {
-    labels: ["Poupança", "Despesas"],
+    labels: ["Poupanca", "Despesas"],
     datasets: [
       {
         data: [savingsRate * 100, expenseRate * 100],
-        backgroundColor: ["#10b981", "#f3f4f6"],
+        backgroundColor: ["#34d399", "#f1f5f9"],
         borderWidth: 0,
+        hoverOffset: 4,
       },
     ],
   };
 
   return (
-    <ChartCard title="Taxa de Poupança">
+    <ChartCard title="Taxa de Poupanca">
       <div className="h-48 flex items-center justify-center relative">
         <Doughnut
           data={data}
           options={{
             responsive: true,
             maintainAspectRatio: false,
-            cutout: "75%",
+            cutout: "78%",
             plugins: {
               legend: { display: false },
               tooltip: {
+                backgroundColor: "#1e293b",
+                titleFont: { ...SHARED_FONT, size: 12 },
+                bodyFont: { ...SHARED_FONT, size: 12 },
+                cornerRadius: 10,
+                padding: 10,
                 callbacks: {
                   label: (ctx) => ` ${ctx.label}: ${ctx.parsed.toFixed(1)}%`,
                 },
@@ -343,10 +396,10 @@ function SavingsRateChart({ summary }: { summary: BudgetSummary }) {
           }}
         />
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-2xl font-bold text-emerald-600">
+          <span className="text-3xl font-extrabold text-emerald-500 tracking-tight">
             {formatPercentage(savingsRate)}
           </span>
-          <span className="text-xs text-gray-500">poupança</span>
+          <span className="text-xs font-medium text-slate-400 mt-0.5">poupanca</span>
         </div>
       </div>
     </ChartCard>

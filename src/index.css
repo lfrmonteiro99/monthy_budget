@@ -2,7 +2,7 @@
 
 :root {
   font-family:
-    Inter,
+    "Inter",
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
@@ -28,8 +28,8 @@ body,
 }
 
 body {
-  background-color: #f9fafb;
-  color: #111827;
+  background-color: #f8fafc;
+  color: #1e293b;
 }
 
 /* Mobile safe areas */
@@ -73,6 +73,73 @@ input[type="number"] {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: #cbd5e1;
   border-radius: 4px;
+}
+
+/* Smooth transitions for interactive elements */
+input, select, button {
+  transition: all 0.2s ease;
+}
+
+input:focus, select:focus {
+  outline: none;
+}
+
+/* Checkbox styling */
+input[type="checkbox"] {
+  accent-color: #3b82f6;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Select styling */
+select {
+  cursor: pointer;
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.animate-spin-slow {
+  animation: spin 1.2s linear infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* Slide-down animation for sections */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-down {
+  animation: slideDown 0.25s ease-out;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
 }
