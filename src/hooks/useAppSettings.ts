@@ -29,6 +29,11 @@ const DEFAULT_SETTINGS: AppSettings = {
       "savings_rate",
     ],
   },
+  mealPlanConfig: {
+    availableFoods: [],
+    mealPlan: [],
+    shoppingList: [],
+  },
 };
 
 /** Detect if running inside Tauri */
@@ -56,6 +61,10 @@ function migrateSettings(parsed: any): AppSettings {
     if (s.mealAllowanceType === undefined) s.mealAllowanceType = "none";
     if (s.mealAllowancePerDay === undefined) s.mealAllowancePerDay = 0;
     if (s.workingDaysPerMonth === undefined) s.workingDaysPerMonth = 22;
+  }
+  // Migrate: add meal plan config if missing
+  if (!parsed.mealPlanConfig) {
+    parsed.mealPlanConfig = { availableFoods: [], mealPlan: [], shoppingList: [] };
   }
   return parsed as AppSettings;
 }

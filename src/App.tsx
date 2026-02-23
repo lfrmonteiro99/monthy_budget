@@ -1,10 +1,11 @@
 import { useState, useMemo } from "react";
 import Dashboard from "./components/Dashboard";
 import Settings from "./components/Settings";
+import MealPlanning from "./components/MealPlanning";
 import { useAppSettings } from "./hooks/useAppSettings";
 import { calculateBudgetSummary } from "./utils/calculations";
 
-type View = "dashboard" | "settings";
+type View = "dashboard" | "settings" | "mealPlanning";
 
 function App() {
   const { settings, setSettings, loaded } = useAppSettings();
@@ -35,11 +36,23 @@ function App() {
     );
   }
 
+  if (view === "mealPlanning") {
+    return (
+      <MealPlanning
+        settings={settings}
+        summary={summary}
+        onSave={setSettings}
+        onBack={() => setView("dashboard")}
+      />
+    );
+  }
+
   return (
     <Dashboard
       settings={settings}
       summary={summary}
       onOpenSettings={() => setView("settings")}
+      onOpenMealPlanning={() => setView("mealPlanning")}
     />
   );
 }

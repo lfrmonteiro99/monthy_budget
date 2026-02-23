@@ -10,6 +10,7 @@ import {
   ChevronDown,
   ChevronUp,
   Check,
+  UtensilsCrossed,
 } from "lucide-react";
 import type {
   AppSettings,
@@ -19,8 +20,10 @@ import type {
   MaritalStatus,
   TitularCount,
   MealAllowanceType,
+  FoodItem,
+  FoodCategory,
 } from "../types";
-import { EXPENSE_CATEGORY_LABELS, CHART_LABELS } from "../types";
+import { EXPENSE_CATEGORY_LABELS, CHART_LABELS, FOOD_CATEGORY_LABELS } from "../types";
 import { getApplicableTable } from "../data/irsTables";
 import { SOCIAL_SECURITY_RATE } from "../data/irsTables";
 import { formatPercentage } from "../utils/calculations";
@@ -43,7 +46,11 @@ const CATEGORY_OPTIONS: { value: ExpenseCategory; label: string }[] = Object.ent
   EXPENSE_CATEGORY_LABELS,
 ).map(([value, label]) => ({ value: value as ExpenseCategory, label }));
 
-type SettingsSection = "personal" | "salaries" | "expenses" | "dashboard";
+const FOOD_CATEGORY_OPTIONS: { value: FoodCategory; label: string }[] = Object.entries(
+  FOOD_CATEGORY_LABELS,
+).map(([value, label]) => ({ value: value as FoodCategory, label }));
+
+type SettingsSection = "personal" | "salaries" | "expenses" | "dashboard" | "foods";
 
 export default function Settings({ settings, onSave, onBack }: SettingsProps) {
   const [draft, setDraft] = useState<AppSettings>(structuredClone(settings));
@@ -99,6 +106,44 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
     setDraft({
       ...draft,
       dashboardConfig: { ...draft.dashboardConfig, enabledCharts: newEnabled },
+    });
+  };
+
+  const addFood = () => {
+    const id = `food_${Date.now()}`;
+    const newFood: FoodItem = {
+      id,
+      name: "",
+      category: "outros",
+    };
+    setDraft({
+      ...draft,
+      mealPlanConfig: {
+        ...draft.mealPlanConfig,
+        availableFoods: [...draft.mealPlanConfig.availableFoods, newFood],
+      },
+    });
+  };
+
+  const removeFood = (id: string) => {
+    setDraft({
+      ...draft,
+      mealPlanConfig: {
+        ...draft.mealPlanConfig,
+        availableFoods: draft.mealPlanConfig.availableFoods.filter((f) => f.id !== id),
+      },
+    });
+  };
+
+  const updateFood = (id: string, updates: Partial<FoodItem>) => {
+    setDraft({
+      ...draft,
+      mealPlanConfig: {
+        ...draft.mealPlanConfig,
+        availableFoods: draft.mealPlanConfig.availableFoods.map((f) =>
+          f.id === id ? { ...f, ...updates } : f,
+        ),
+      },
     });
   };
 
@@ -486,6 +531,70 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
               <Plus size={18} />
               Adicionar Despesa
             </button>
+          </div>
+        )}
+
+        {/* Alimentos para Refeicoes */}
+        <SectionHeader
+          icon={<UtensilsCrossed size={20} />}
+          title="Alimentos Disponíveis"
+          open={openSection === "foods"}
+          onClick={() => toggleSection("foods")}
+        />
+        {openSection === "foods" && (
+          <div className="bg-white px-5 py-5 space-y-3 animate-slide-down border-b border-slate-100">
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Configure os alimentos disponíveis para gerar o plano de refeições mensal. Adicione proteínas, legumes, cereais e outros ingredientes que costuma utilizar.
+            </p>
+            {draft.mealPlanConfig.availableFoods.map((food) => (
+              <div
+                key={food.id}
+                className="border-2 border-slate-200 rounded-2xl p-4 space-y-3 bg-white"
+              >
+                <div className="flex items-center gap-3">
+                  <input
+                    type="text"
+                    value={food.name}
+                    onChange={(e) => updateFood(food.id, { name: e.target.value })}
+                    placeholder="Nome do alimento"
+                    className="flex-1 text-sm font-semibold border-none p-0 focus:ring-0 bg-transparent placeholder-slate-300 text-slate-700"
+                  />
+                  <button
+                    onClick={() => removeFood(food.id)}
+                    className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+                <select
+                  value={food.category}
+                  onChange={(e) =>
+                    updateFood(food.id, { category: e.target.value as FoodCategory })
+                  }
+                  className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-white text-slate-600 font-medium focus:ring-2 focus:ring-blue-500 transition-shadow"
+                >
+                  {FOOD_CATEGORY_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ))}
+            <button
+              onClick={addFood}
+              className="w-full border-2 border-dashed border-slate-200 rounded-2xl py-4 flex items-center justify-center gap-2 text-sm font-semibold text-slate-400 hover:border-blue-400 hover:text-blue-500 hover:bg-blue-50 transition-all"
+            >
+              <Plus size={18} />
+              Adicionar Alimento
+            </button>
+            {draft.mealPlanConfig.availableFoods.length > 0 && (
+              <div className="bg-emerald-50 rounded-xl p-3 border border-emerald-100">
+                <p className="text-emerald-700 text-xs font-medium">
+                  {draft.mealPlanConfig.availableFoods.filter((f) => f.name.trim()).length} alimento(s) configurado(s)
+                </p>
+              </div>
+            )}
           </div>
         )}
 

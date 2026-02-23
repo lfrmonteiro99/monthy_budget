@@ -73,11 +73,66 @@ export interface DashboardConfig {
   enabledCharts: ChartType[];
 }
 
+// Meal Planning Types
+
+export type FoodCategory =
+  | "proteinas"
+  | "legumes"
+  | "frutas"
+  | "cereais"
+  | "laticinios"
+  | "temperos"
+  | "outros";
+
+export const FOOD_CATEGORY_LABELS: Record<FoodCategory, string> = {
+  proteinas: "Proteínas",
+  legumes: "Legumes/Verduras",
+  frutas: "Frutas",
+  cereais: "Cereais/Massas/Arroz",
+  laticinios: "Laticínios",
+  temperos: "Temperos/Condimentos",
+  outros: "Outros",
+};
+
+export interface FoodItem {
+  id: string;
+  name: string;
+  category: FoodCategory;
+}
+
+export interface MealIngredient {
+  foodName: string;
+  quantity: number;
+  unit: string;
+}
+
+export interface MealPlanDay {
+  day: number;
+  name: string;
+  description: string;
+  ingredients: MealIngredient[];
+}
+
+export interface ShoppingListItem {
+  id: string;
+  name: string;
+  quantity: number;
+  unit: string;
+  checked: boolean;
+}
+
+export interface MealPlanConfig {
+  availableFoods: FoodItem[];
+  mealPlan: MealPlanDay[];
+  shoppingList: ShoppingListItem[];
+}
+
 export interface AppSettings {
   personalInfo: PersonalInfo;
   salaries: [SalaryInfo, SalaryInfo];
   expenses: ExpenseItem[];
   dashboardConfig: DashboardConfig;
+  mealPlanConfig: MealPlanConfig;
 }
 
 export interface MealAllowanceCalculation {

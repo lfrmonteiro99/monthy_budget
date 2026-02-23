@@ -7,6 +7,7 @@ import {
   ArrowDownCircle,
   ArrowUpCircle,
   CircleDollarSign,
+  UtensilsCrossed,
 } from "lucide-react";
 import type { AppSettings, BudgetSummary, SalaryCalculation } from "../types";
 import { EXPENSE_CATEGORY_LABELS, type ExpenseCategory } from "../types";
@@ -17,6 +18,7 @@ interface DashboardProps {
   settings: AppSettings;
   summary: BudgetSummary;
   onOpenSettings: () => void;
+  onOpenMealPlanning: () => void;
 }
 
 const CATEGORY_DOT_COLORS: Record<ExpenseCategory, string> = {
@@ -32,7 +34,7 @@ const CATEGORY_DOT_COLORS: Record<ExpenseCategory, string> = {
   outros: "bg-gray-400",
 };
 
-export default function Dashboard({ settings, summary, onOpenSettings }: DashboardProps) {
+export default function Dashboard({ settings, summary, onOpenSettings, onOpenMealPlanning }: DashboardProps) {
   const hasData = summary.totalGross > 0;
   const isPositive = summary.netLiquidity >= 0;
 
@@ -49,12 +51,20 @@ export default function Dashboard({ settings, summary, onOpenSettings }: Dashboa
               Resumo financeiro
             </p>
           </div>
-          <button
-            onClick={onOpenSettings}
-            className="p-2.5 bg-slate-50 hover:bg-slate-100 rounded-xl transition-colors border border-slate-200"
-          >
-            <SettingsIcon size={20} className="text-slate-500" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onOpenMealPlanning}
+              className="p-2.5 bg-orange-50 hover:bg-orange-100 rounded-xl transition-colors border border-orange-200"
+            >
+              <UtensilsCrossed size={20} className="text-orange-500" />
+            </button>
+            <button
+              onClick={onOpenSettings}
+              className="p-2.5 bg-slate-50 hover:bg-slate-100 rounded-xl transition-colors border border-slate-200"
+            >
+              <SettingsIcon size={20} className="text-slate-500" />
+            </button>
+          </div>
         </div>
 
         {hasData ? (
