@@ -4,6 +4,7 @@ import 'models/grocery_data.dart';
 import 'utils/calculations.dart';
 import 'services/settings_service.dart';
 import 'services/grocery_service.dart';
+import 'services/favorites_service.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/grocery_screen.dart';
@@ -39,8 +40,10 @@ class AppHome extends StatefulWidget {
 class _AppHomeState extends State<AppHome> {
   final _settingsService = SettingsService();
   final _groceryService = GroceryService();
+  final _favoritesService = FavoritesService();
   AppSettings _settings = const AppSettings();
   GroceryData _groceryData = const GroceryData();
+  List<String> _favorites = [];
   bool _loaded = false;
   int _currentIndex = 0;
 
@@ -54,10 +57,12 @@ class _AppHomeState extends State<AppHome> {
     final results = await Future.wait([
       _settingsService.load(),
       _groceryService.load(),
+      _favoritesService.load(),
     ]);
     setState(() {
       _settings = results[0] as AppSettings;
       _groceryData = results[1] as GroceryData;
+      _favorites = results[2] as List<String>;
       _loaded = true;
     });
   }
@@ -67,6 +72,13 @@ class _AppHomeState extends State<AppHome> {
       _settings = settings;
     });
     _settingsService.save(settings);
+  }
+
+  void _saveFavorites(List<String> favorites) {
+    setState(() {
+      _favorites = favorites;
+    });
+    _favoritesService.save(favorites);
   }
 
   @override
@@ -106,12 +118,18 @@ class _AppHomeState extends State<AppHome> {
               builder: (_) => SettingsScreen(
                 settings: _settings,
                 onSave: _saveSettings,
+                favorites: _favorites,
+                onSaveFavorites: _saveFavorites,
               ),
             ),
           );
         },
       ),
-      GroceryScreen(groceryData: _groceryData),
+      GroceryScreen(
+        groceryData: _groceryData,
+        favorites: _favorites,
+        onFavoritesChanged: _saveFavorites,
+      ),
     ];
 
     return Scaffold(

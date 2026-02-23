@@ -6,8 +6,16 @@ import '../utils/formatters.dart';
 class SettingsScreen extends StatefulWidget {
   final AppSettings settings;
   final ValueChanged<AppSettings> onSave;
+  final List<String> favorites;
+  final ValueChanged<List<String>> onSaveFavorites;
 
-  const SettingsScreen({super.key, required this.settings, required this.onSave});
+  const SettingsScreen({
+    super.key,
+    required this.settings,
+    required this.onSave,
+    required this.favorites,
+    required this.onSaveFavorites,
+  });
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -15,12 +23,30 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   late AppSettings _draft;
+  late List<String> _favorites;
   String? _openSection = 'personal';
+  final _customProductController = TextEditingController();
+
+  static const _suggestions = [
+    'Leite', 'Pao', 'Ovos', 'Arroz', 'Massa', 'Manteiga',
+    'Iogurte', 'Queijo', 'Frango', 'Carne', 'Peixe', 'Atum',
+    'Tomate', 'Batata', 'Cebola', 'Alho', 'Cenoura',
+    'Macas', 'Bananas', 'Laranjas', 'Uvas',
+    'Azeite', 'Cafe', 'Acucar', 'Agua', 'Sumo', 'Cerveja',
+    'Detergente', 'Papel Higienico', 'Champô',
+  ];
 
   @override
   void initState() {
     super.initState();
     _draft = widget.settings;
+    _favorites = List<String>.from(widget.favorites);
+  }
+
+  @override
+  void dispose() {
+    _customProductController.dispose();
+    super.dispose();
   }
 
   bool get _isCasado =>
@@ -35,7 +61,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void _handleSave() {
     widget.onSave(_draft);
+    widget.onSaveFavorites(_favorites);
     Navigator.of(context).pop();
+  }
+
+  void _toggleFavorite(String product) {
+    setState(() {
+      final lower = product.toLowerCase();
+      final idx = _favorites.indexWhere((f) => f.toLowerCase() == lower);
+      if (idx >= 0) {
+        _favorites.removeAt(idx);
+      } else {
+        _favorites.add(product);
+      }
+    });
+  }
+
+  void _addCustomProduct() {
+    final text = _customProductController.text.trim();
+    if (text.isEmpty) return;
+    final lower = text.toLowerCase();
+    if (_favorites.any((f) => f.toLowerCase() == lower)) return;
+    setState(() {
+      _favorites.add(text);
+      _customProductController.clear();
+    });
   }
 
   void _addExpense() {
@@ -159,6 +209,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       onTap: () => _toggleSection('dashboard'),
                     ),
                     if (_openSection == 'dashboard') _buildDashboardSection(),
+                    _SectionHeader(
+                      icon: Icons.favorite,
+                      title: 'Produtos Favoritos',
+                      isOpen: _openSection == 'favorites',
+                      onTap: () => _toggleSection('favorites'),
+                    ),
+                    if (_openSection == 'favorites') _buildFavoritesSection(),
                     const SizedBox(height: 32),
                   ],
                 ),
@@ -573,6 +630,132 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onChanged: (_) => _toggleChart(chart),
               )),
         ],
+      ),
+    );
+  }
+
+  Widget _buildFavoritesSection() {
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Info box
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF7ED),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFFFED7AA)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.tips_and_updates, size: 18, color: Color(0xFFF97316)),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'Os produtos favoritos aparecem em destaque no topo das comparacoes.',
+                    style: TextStyle(fontSize: 12, color: Colors.orange.shade800, height: 1.4),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          // Current favorites
+          if (_favorites.isNotEmpty) ...[
+            _label('OS MEUS FAVORITOS'),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: _favorites.map((f) => _buildFavoriteChip(f, isSelected: true)).toList(),
+            ),
+            const SizedBox(height: 20),
+          ],
+          // Add custom
+          _label('ADICIONAR PRODUTO'),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _customProductController,
+                  onSubmitted: (_) => _addCustomProduct(),
+                  decoration: _inputDecoration('ex: Cereais, Salmao...').copyWith(
+                    prefixIcon: const Icon(Icons.add, size: 18, color: Color(0xFF94A3B8)),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              SizedBox(
+                height: 46,
+                child: ElevatedButton(
+                  onPressed: _addCustomProduct,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF3B82F6),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                  ),
+                  child: const Icon(Icons.add, size: 20),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          // Suggestions
+          _label('SUGESTOES'),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: _suggestions.map((s) {
+              final isSelected = _favorites.any((f) => f.toLowerCase() == s.toLowerCase());
+              return _buildFavoriteChip(s, isSelected: isSelected);
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFavoriteChip(String label, {required bool isSelected}) {
+    return GestureDetector(
+      onTap: () => _toggleFavorite(label),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFFEF4444).withValues(alpha: 0.08) : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? const Color(0xFFEF4444).withValues(alpha: 0.4) : const Color(0xFFE2E8F0),
+            width: isSelected ? 1.5 : 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              isSelected ? Icons.favorite : Icons.favorite_border,
+              size: 14,
+              color: isSelected ? const Color(0xFFEF4444) : const Color(0xFFCBD5E1),
+            ),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                color: isSelected ? const Color(0xFFEF4444) : const Color(0xFF64748B),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

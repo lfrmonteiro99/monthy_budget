@@ -4,8 +4,15 @@ import '../utils/formatters.dart';
 
 class GroceryScreen extends StatefulWidget {
   final GroceryData groceryData;
+  final List<String> favorites;
+  final ValueChanged<List<String>> onFavoritesChanged;
 
-  const GroceryScreen({super.key, required this.groceryData});
+  const GroceryScreen({
+    super.key,
+    required this.groceryData,
+    required this.favorites,
+    required this.onFavoritesChanged,
+  });
 
   @override
   State<GroceryScreen> createState() => _GroceryScreenState();
@@ -15,6 +22,7 @@ class _GroceryScreenState extends State<GroceryScreen> with SingleTickerProvider
   late TabController _tabController;
   String _searchQuery = '';
   String? _selectedCategory;
+  bool _showFavoritesOnly = false;
 
   @override
   void initState() {
@@ -26,6 +34,29 @@ class _GroceryScreenState extends State<GroceryScreen> with SingleTickerProvider
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  bool _isFavorite(String productName) {
+    final lower = productName.toLowerCase();
+    return widget.favorites.any((fav) => lower.contains(fav.toLowerCase()));
+  }
+
+  void _toggleFavoriteFromProduct(String productName) {
+    // Find which favorite keyword matched, or add the product name as a new favorite
+    final lower = productName.toLowerCase();
+    final matchIdx = widget.favorites.indexWhere((f) => lower.contains(f.toLowerCase()));
+    final updated = List<String>.from(widget.favorites);
+    if (matchIdx >= 0) {
+      updated.removeAt(matchIdx);
+    } else {
+      // Extract a short keyword: first 2-3 meaningful words
+      final words = productName.split(RegExp(r'\s+'))
+          .where((w) => w.length > 2)
+          .take(3)
+          .join(' ');
+      if (words.isNotEmpty) updated.add(words);
+    }
+    widget.onFavoritesChanged(updated);
   }
 
   @override
@@ -177,9 +208,18 @@ class _GroceryScreenState extends State<GroceryScreen> with SingleTickerProvider
       );
     }
 
-    final filtered = _searchQuery.isEmpty
+    // Filter by search
+    var filtered = _searchQuery.isEmpty
         ? comparisons
         : comparisons.where((c) => c.productName.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
+
+    // Separate favorites from rest
+    final favItems = filtered.where((c) => _isFavorite(c.productName)).toList();
+    final otherItems = filtered.where((c) => !_isFavorite(c.productName)).toList();
+
+    // When toggle is on, show only favorites
+    final displayItems = _showFavoritesOnly ? favItems : [...favItems, ...otherItems];
+    final hasFavorites = widget.favorites.isNotEmpty;
 
     return Column(
       children: [
@@ -211,10 +251,49 @@ class _GroceryScreenState extends State<GroceryScreen> with SingleTickerProvider
             children: [
               Icon(Icons.savings, size: 14, color: Colors.green.shade400),
               const SizedBox(width: 6),
-              Text(
-                '${filtered.length} produtos comparáveis',
-                style: const TextStyle(fontSize: 12, color: Color(0xFF64748B), fontWeight: FontWeight.w500),
+              Expanded(
+                child: Text(
+                  '${filtered.length} produtos comparáveis',
+                  style: const TextStyle(fontSize: 12, color: Color(0xFF64748B), fontWeight: FontWeight.w500),
+                ),
               ),
+              if (hasFavorites)
+                GestureDetector(
+                  onTap: () => setState(() => _showFavoritesOnly = !_showFavoritesOnly),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: _showFavoritesOnly
+                          ? const Color(0xFFEF4444).withValues(alpha: 0.08)
+                          : Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: _showFavoritesOnly
+                            ? const Color(0xFFEF4444).withValues(alpha: 0.4)
+                            : const Color(0xFFE2E8F0),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          _showFavoritesOnly ? Icons.favorite : Icons.favorite_border,
+                          size: 13,
+                          color: _showFavoritesOnly ? const Color(0xFFEF4444) : const Color(0xFF94A3B8),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Favoritos',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: _showFavoritesOnly ? const Color(0xFFEF4444) : const Color(0xFF94A3B8),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
@@ -222,8 +301,38 @@ class _GroceryScreenState extends State<GroceryScreen> with SingleTickerProvider
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: filtered.length,
-            itemBuilder: (_, i) => _buildComparisonCard(filtered[i]),
+            itemCount: displayItems.length + (hasFavorites && !_showFavoritesOnly && favItems.isNotEmpty && otherItems.isNotEmpty ? 1 : 0),
+            itemBuilder: (_, i) {
+              // Insert a separator between favorites and the rest
+              final separatorIndex = favItems.length;
+              if (hasFavorites && !_showFavoritesOnly && favItems.isNotEmpty && otherItems.isNotEmpty && i == separatorIndex) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Row(
+                    children: [
+                      Expanded(child: Container(height: 1, color: const Color(0xFFE2E8F0))),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text(
+                          'OUTROS PRODUTOS',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey.shade400,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                      ),
+                      Expanded(child: Container(height: 1, color: const Color(0xFFE2E8F0))),
+                    ],
+                  ),
+                );
+              }
+              final idx = (hasFavorites && !_showFavoritesOnly && favItems.isNotEmpty && otherItems.isNotEmpty && i > separatorIndex)
+                  ? i - 1
+                  : i;
+              return _buildComparisonCard(displayItems[idx]);
+            },
           ),
         ),
       ],
@@ -231,18 +340,23 @@ class _GroceryScreenState extends State<GroceryScreen> with SingleTickerProvider
   }
 
   Widget _buildComparisonCard(ProductComparison comparison) {
+    final isFav = _isFavorite(comparison.productName);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isFav ? const Color(0xFFFFF5F5) : Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFF1F5F9)),
+        border: Border.all(
+          color: isFav ? const Color(0xFFEF4444).withValues(alpha: 0.2) : const Color(0xFFF1F5F9),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: Text(
@@ -252,6 +366,7 @@ class _GroceryScreenState extends State<GroceryScreen> with SingleTickerProvider
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
+              const SizedBox(width: 8),
               if (comparison.potentialSavings > 0)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -264,6 +379,18 @@ class _GroceryScreenState extends State<GroceryScreen> with SingleTickerProvider
                     style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF059669)),
                   ),
                 ),
+              const SizedBox(width: 6),
+              GestureDetector(
+                onTap: () => _toggleFavoriteFromProduct(comparison.productName),
+                child: Padding(
+                  padding: const EdgeInsets.all(2),
+                  child: Icon(
+                    isFav ? Icons.favorite : Icons.favorite_border,
+                    size: 20,
+                    color: isFav ? const Color(0xFFEF4444) : const Color(0xFFCBD5E1),
+                  ),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 10),
