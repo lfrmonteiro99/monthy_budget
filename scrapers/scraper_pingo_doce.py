@@ -1,121 +1,89 @@
-"""Scraper for Pingo Doce (via mercadao.pt) — extracts product names, prices, and categories."""
+"""Scraper for Pingo Doce (pingodoce.pt) — extracts product names, prices, and categories."""
 
 import time
 import logging
 import requests
+from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
 
-# Pingo Doce's online store (Mercadão) exposes a JSON API for product listings
-BASE_URL = "https://mercadao.pt"
-API_URL = f"{BASE_URL}/api/catalogues/6107d29d164f510d1189cbc0/products/search"
+# Pingo Doce migrated from mercadao.pt to pingodoce.pt (Salesforce Commerce Cloud)
+BASE_URL = "https://www.pingodoce.pt"
+SFCC_URL = f"{BASE_URL}/on/demandware.store/Sites-pingo-doce-Site/pt_PT/Search-Show"
 
+# cgid values discovered from the pingodoce.pt SFCC navigation
 CATEGORIES = [
-    {"id": "lacticinios-e-ovos", "name": "Lacticínios e Ovos"},
-    {"id": "carne", "name": "Carne"},
-    {"id": "peixe-e-marisco", "name": "Peixe e Marisco"},
-    {"id": "frutas-e-legumes", "name": "Frutas e Legumes"},
-    {"id": "padaria-e-pastelaria", "name": "Padaria e Pastelaria"},
-    {"id": "mercearia", "name": "Mercearia"},
-    {"id": "bebidas", "name": "Bebidas"},
-    {"id": "congelados", "name": "Congelados"},
-    {"id": "higiene-e-beleza", "name": "Higiene e Beleza"},
-    {"id": "limpeza", "name": "Limpeza"},
+    {"id": "ec_leitebebidasvegetais_900", "name": "Lacticínios e Ovos"},
+    {"id": "ec_talho_200", "name": "Carne"},
+    {"id": "ec_peixe_300_100", "name": "Peixe e Marisco"},
+    {"id": "ec_frutasvegetais_1000_300", "name": "Frutas e Legumes"},
+    {"id": "ec_paonossapadaria_400_100", "name": "Padaria e Pastelaria"},
+    {"id": "ec_mercearia_1300", "name": "Mercearia"},
+    {"id": "ec_aguassumosrefrigerantes_1400", "name": "Bebidas"},
+    {"id": "ec_congelados_1000", "name": "Congelados"},
+    {"id": "ec_higienepessoalbeleza_2100", "name": "Higiene e Beleza"},
+    {"id": "ec_limpeza_1800", "name": "Limpeza"},
 ]
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
                   "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Accept": "application/json, text/plain, */*",
-    "Accept-Language": "pt-PT,pt;q=0.9",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "pt-PT,pt;q=0.9,en;q=0.5",
+    "Referer": BASE_URL,
 }
 
 
-def _fetch_category_api(session: requests.Session, category: dict, max_products: int = 50) -> list[dict]:
-    """Attempt to fetch products from Mercadão/Pingo Doce JSON API."""
+def _fetch_category_products(session: requests.Session, category: dict, max_products: int = 50) -> list[dict]:
+    """Fetch products from a single Pingo Doce category via SFCC Search-Show."""
     products = []
-
-    # Try the known Mercadão API endpoint
     params = {
-        "query": category["id"],
-        "from": 0,
-        "size": max_products,
-        "espirito-santo": "false",
+        "cgid": category["id"],
+        "sz": max_products,
+        "start": 0,
     }
 
     try:
-        resp = session.get(API_URL, params=params, headers=HEADERS, timeout=20)
-        if resp.status_code == 200:
-            data = resp.json()
-            sections = data.get("sections", [])
-            for section in sections:
-                for product in section.get("products", []):
-                    try:
-                        name = product.get("name", "")
-                        price_info = product.get("price", {})
-                        price = price_info.get("value") or price_info.get("current")
-
-                        if not name or price is None:
-                            continue
-
-                        products.append({
-                            "name": name,
-                            "price": float(price),
-                            "unit_price": product.get("unitPrice"),
-                            "category": category["name"],
-                            "product_id": product.get("sku", product.get("id", "")),
-                            "store": "Pingo Doce",
-                            "brand": product.get("brand", ""),
-                        })
-                    except (ValueError, TypeError):
-                        continue
-            return products
-    except (requests.RequestException, ValueError) as e:
-        logger.debug(f"Mercadão API failed for {category['id']}: {e}")
-
-    # Fallback: scrape the HTML category page
-    return _fetch_category_html(session, category, max_products)
-
-
-def _fetch_category_html(session: requests.Session, category: dict, max_products: int = 50) -> list[dict]:
-    """Fallback HTML scraper for Pingo Doce."""
-    from bs4 import BeautifulSoup
-
-    products = []
-    url = f"{BASE_URL}/store/pingo-doce/{category['id']}"
-
-    try:
-        resp = session.get(url, headers=HEADERS, timeout=20)
+        resp = session.get(SFCC_URL, params=params, headers=HEADERS, timeout=20)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "lxml")
 
-        product_cards = soup.select(
-            "[class*='product-card'], [class*='ProductCard'], "
-            "[class*='product-tile'], [data-product-id]"
-        )
+        # SFCC standard product tile selectors
+        product_tiles = soup.select("[data-pid]")
+        if not product_tiles:
+            product_tiles = soup.select(".product-tile, .pd-tile, [class*='product-card']")
 
-        for card in product_cards[:max_products]:
+        for tile in product_tiles[:max_products]:
             try:
-                name_el = card.select_one(
-                    "[class*='product-name'], [class*='ProductName'], h3, h2, [class*='title']"
+                name_el = tile.select_one(
+                    ".pdp-link a, .product-name, .pd-tile__name, "
+                    "[class*='product-name'], [class*='tile-name'], h3, h2"
                 )
-                price_el = card.select_one(
-                    "[class*='product-price'], [class*='Price'], [class*='price'], [data-price]"
+                price_el = tile.select_one(
+                    ".sales .value, .price .value, .pd-tile__price, "
+                    "[class*='sales-price'], [class*='price-value'], [data-price]"
                 )
 
                 if not name_el or not price_el:
                     continue
 
                 name = name_el.get_text(strip=True)
-                price_text = price_el.get_text(strip=True).replace("€", "").replace(",", ".").strip()
-                price = float(price_text)
+                price_val = price_el.get("content") or price_el.get("data-price")
+                if price_val:
+                    price = float(price_val)
+                else:
+                    price_text = price_el.get_text(strip=True).replace("€", "").replace(",", ".").strip()
+                    price = float(price_text)
+
+                unit_price_el = tile.select_one("[class*='unit-price'], [class*='price-per']")
+                unit_price = unit_price_el.get_text(strip=True) if unit_price_el else None
 
                 products.append({
                     "name": name,
                     "price": price,
-                    "unit_price": None,
+                    "unit_price": unit_price,
                     "category": category["name"],
-                    "product_id": card.get("data-product-id", ""),
+                    "product_id": tile.get("data-pid", ""),
                     "store": "Pingo Doce",
                 })
             except (ValueError, AttributeError):
@@ -134,7 +102,7 @@ def scrape() -> list[dict]:
 
     for cat in CATEGORIES:
         logger.info(f"Scraping Pingo Doce: {cat['name']}...")
-        products = _fetch_category_api(session, cat)
+        products = _fetch_category_products(session, cat)
         all_products.extend(products)
         logger.info(f"  Found {len(products)} products")
         time.sleep(2)

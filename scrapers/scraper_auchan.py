@@ -10,16 +10,17 @@ logger = logging.getLogger(__name__)
 BASE_URL = "https://www.auchan.pt"
 
 CATEGORIES = [
-    {"slug": "lacticinios-e-ovos", "name": "Lacticínios e Ovos"},
-    {"slug": "talho", "name": "Carne"},
-    {"slug": "peixaria", "name": "Peixe"},
-    {"slug": "frutas-legumes-e-flores", "name": "Frutas e Legumes"},
-    {"slug": "padaria-e-pastelaria", "name": "Padaria e Pastelaria"},
-    {"slug": "mercearia", "name": "Mercearia"},
-    {"slug": "bebidas", "name": "Bebidas"},
-    {"slug": "congelados", "name": "Congelados"},
-    {"slug": "higiene-e-beleza", "name": "Higiene e Beleza"},
-    {"slug": "limpeza-e-arrumacao", "name": "Limpeza e Arrumação"},
+    {"slug": "pt/alimentacao/produtos-lacteos", "name": "Lacticínios e Ovos"},
+    {"slug": "pt/produtos-frescos/talho", "name": "Carne"},
+    {"slug": "pt/produtos-frescos/peixaria", "name": "Peixe"},
+    {"slug": "pt/produtos-frescos/fruta", "name": "Frutas"},
+    {"slug": "pt/produtos-frescos/legumes", "name": "Legumes"},
+    {"slug": "pt/produtos-frescos/padaria", "name": "Padaria e Pastelaria"},
+    {"slug": "pt/alimentacao/mercearia", "name": "Mercearia"},
+    {"slug": "pt/alimentacao/bebidas", "name": "Bebidas"},
+    {"slug": "pt/alimentacao/congelados", "name": "Congelados"},
+    {"slug": "pt/beleza-e-higiene", "name": "Higiene e Beleza"},
+    {"slug": "pt/casa-e-jardim/limpeza", "name": "Limpeza"},
 ]
 
 HEADERS = {

@@ -11,16 +11,17 @@ BASE_URL = "https://www.continente.pt"
 SEARCH_URL = f"{BASE_URL}/pesquisa"
 
 CATEGORIES = [
-    {"slug": "lacticinios-e-ovos", "name": "Lacticínios e Ovos"},
-    {"slug": "carne", "name": "Carne"},
-    {"slug": "peixe", "name": "Peixe"},
-    {"slug": "frutas-e-legumes", "name": "Frutas e Legumes"},
-    {"slug": "padaria-e-pastelaria", "name": "Padaria e Pastelaria"},
+    {"slug": "laticinios-e-ovos", "name": "Lacticínios e Ovos"},
+    {"slug": "frescos/talho", "name": "Carne"},
+    {"slug": "frescos/peixaria", "name": "Peixe"},
+    {"slug": "frescos/frutas", "name": "Frutas"},
+    {"slug": "frescos/legumes", "name": "Legumes"},
+    {"slug": "frescos/padaria-e-pastelaria", "name": "Padaria e Pastelaria"},
     {"slug": "mercearia", "name": "Mercearia"},
-    {"slug": "bebidas", "name": "Bebidas"},
+    {"slug": "bebidas-e-garrafeira", "name": "Bebidas"},
     {"slug": "congelados", "name": "Congelados"},
     {"slug": "higiene-e-beleza", "name": "Higiene e Beleza"},
-    {"slug": "limpeza-e-arrumacao", "name": "Limpeza e Arrumação"},
+    {"slug": "limpeza", "name": "Limpeza"},
 ]
 
 HEADERS = {
