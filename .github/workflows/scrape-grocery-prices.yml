@@ -9,6 +9,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   scrape:
@@ -64,3 +66,12 @@ jobs:
             git commit -m "chore: update grocery prices $(date -u +%Y-%m-%d)"
             git push
           fi
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./monthy_budget_flutter/assets
+          keep_files: false
+          commit_message: "chore: update grocery prices for GitHub Pages"
