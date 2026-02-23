@@ -1,5 +1,6 @@
 """Scraper for Pingo Doce (pingodoce.pt) — extracts product names, prices, and categories."""
 
+import json
 import time
 import logging
 import requests
@@ -7,11 +8,10 @@ from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
 
-# Pingo Doce migrated from mercadao.pt to pingodoce.pt (Salesforce Commerce Cloud)
 BASE_URL = "https://www.pingodoce.pt"
-SFCC_URL = f"{BASE_URL}/on/demandware.store/Sites-pingo-doce-Site/pt_PT/Search-Show"
+# Search-UpdateGrid returns a server-side rendered product grid (no JS required)
+SFCC_URL = f"{BASE_URL}/on/demandware.store/Sites-pingo-doce-Site/pt_PT/Search-UpdateGrid"
 
-# cgid values discovered from the pingodoce.pt SFCC navigation
 CATEGORIES = [
     {"id": "ec_leitebebidasvegetais_900", "name": "Lacticínios e Ovos"},
     {"id": "ec_talho_200", "name": "Carne"},
@@ -35,58 +35,66 @@ HEADERS = {
 
 
 def _fetch_category_products(session: requests.Session, category: dict, max_products: int = 50) -> list[dict]:
-    """Fetch products from a single Pingo Doce category via SFCC Search-Show."""
+    """Fetch products from a single Pingo Doce category via SFCC Search-UpdateGrid."""
     products = []
-    params = {
-        "cgid": category["id"],
-        "sz": max_products,
-        "start": 0,
-    }
+    params = {"cgid": category["id"], "sz": max_products, "start": 0}
 
     try:
         resp = session.get(SFCC_URL, params=params, headers=HEADERS, timeout=20)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "lxml")
 
-        # SFCC standard product tile selectors
-        product_tiles = soup.select("[data-pid]")
+        # Containers: <div class="product" data-pid="..."> wrapping <div class="product-tile-pd" data-gtm-info="...">
+        product_tiles = soup.select("div.product-tile-pd[data-gtm-info]")
         if not product_tiles:
-            product_tiles = soup.select(".product-tile, .pd-tile, [class*='product-card']")
+            product_tiles = soup.select("div.product[data-pid]")
 
         for tile in product_tiles[:max_products]:
             try:
-                name_el = tile.select_one(
-                    ".pdp-link a, .product-name, .pd-tile__name, "
-                    "[class*='product-name'], [class*='tile-name'], h3, h2"
-                )
-                price_el = tile.select_one(
-                    ".sales .value, .price .value, .pd-tile__price, "
-                    "[class*='sales-price'], [class*='price-value'], [data-price]"
-                )
+                # Primary: parse data-gtm-info JSON — has clean name and numeric price
+                gtm_raw = tile.get("data-gtm-info", "")
+                if gtm_raw:
+                    gtm = json.loads(gtm_raw)
+                    items = gtm.get("items", [])
+                    name = items[0].get("item_name", "") if items else ""
+                    price = gtm.get("value")
+                else:
+                    # Fallback: parse from HTML elements
+                    name_el = tile.select_one(".product-name-link a")
+                    price_el = tile.select_one(".product-price .sales .value")
+                    if not name_el or not price_el:
+                        continue
+                    name = name_el.get_text(strip=True)
+                    price_val = price_el.get("content")
+                    price = float(price_val) if price_val else float(
+                        price_el.get_text(strip=True)
+                        .replace("€", "").replace(",", ".").split("/")[0].strip()
+                    )
 
-                if not name_el or not price_el:
+                if not name or price is None:
                     continue
 
-                name = name_el.get_text(strip=True)
-                price_val = price_el.get("content") or price_el.get("data-price")
-                if price_val:
-                    price = float(price_val)
-                else:
-                    price_text = price_el.get_text(strip=True).replace("€", "").replace(",", ".").strip()
-                    price = float(price_text)
+                # Unit price displayed as "6,49 €/Kg"
+                price_el = tile.select_one(".product-price .sales .value")
+                unit_price = price_el.get_text(strip=True) if price_el else None
 
-                unit_price_el = tile.select_one("[class*='unit-price'], [class*='price-per']")
-                unit_price = unit_price_el.get_text(strip=True) if unit_price_el else None
+                brand_el = tile.select_one(".product-brand-name")
+                brand = brand_el.get_text(strip=True) if brand_el else ""
+
+                pid = tile.get("data-pid", "") or tile.find_parent("[data-pid]", {"data-pid": True})
+                if hasattr(pid, "get"):
+                    pid = pid.get("data-pid", "")
 
                 products.append({
                     "name": name,
-                    "price": price,
+                    "price": float(price),
                     "unit_price": unit_price,
                     "category": category["name"],
-                    "product_id": tile.get("data-pid", ""),
+                    "product_id": str(pid),
                     "store": "Pingo Doce",
+                    "brand": brand,
                 })
-            except (ValueError, AttributeError):
+            except (ValueError, AttributeError, KeyError, json.JSONDecodeError):
                 continue
 
     except requests.RequestException as e:

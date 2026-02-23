@@ -44,49 +44,33 @@ def _fetch_category_products(session: requests.Session, category: dict, max_prod
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "lxml")
 
-        product_tiles = soup.select(
-            ".product-tile, [data-pid], [class*='product-card'], "
-            "[class*='auc-product'], .product"
-        )
+        # Auchan uses .auc-product containers with .auc-product-tile__root inside
+        product_tiles = soup.select(".auc-product")
+        if not product_tiles:
+            product_tiles = soup.select("[data-pid]")
 
         for tile in product_tiles[:max_products]:
             try:
-                name_el = tile.select_one(
-                    ".product-tile-name, [class*='product-name'], "
-                    "[class*='tile-name'], .auc-product__title, h3, h2"
-                )
-                price_el = tile.select_one(
-                    ".product-price .value, [class*='sales-price'], "
-                    "[class*='price-value'], [data-price], .auc-product__price"
-                )
-                unit_price_el = tile.select_one(
-                    "[class*='unit-price'], [class*='price-per-unit'], "
-                    ".auc-product__unit-price"
-                )
-                promo_el = tile.select_one(
-                    "[class*='promotion'], [class*='discount'], [class*='promo']"
-                )
+                # Name: <div class="auc-product-tile__name"><div class="pdp-link"><h3><a class="link">
+                name_el = tile.select_one(".auc-product-tile__name .link, .pdp-link h3 a.link, .pdp-link a")
+                # Price: <div class="price"><span class="sales"><span class="value" content="0.99">
+                price_el = tile.select_one(".price .sales .value")
 
                 if not name_el or not price_el:
                     continue
 
                 name = name_el.get_text(strip=True)
 
-                # Try data attribute first
-                price_val = tile.get("data-price") or price_el.get("data-price")
+                # Use content attribute for clean numeric value
+                price_val = price_el.get("content")
                 if price_val:
                     price = float(price_val)
                 else:
                     price_text = price_el.get_text(strip=True).replace("€", "").replace(",", ".").strip()
                     price = float(price_text)
 
-                unit_price = None
-                if unit_price_el:
-                    unit_price = unit_price_el.get_text(strip=True)
-
-                promo = None
-                if promo_el:
-                    promo = promo_el.get_text(strip=True)
+                unit_price_el = tile.select_one(".auc-measures--price-per-unit")
+                unit_price = unit_price_el.get_text(strip=True) if unit_price_el else None
 
                 products.append({
                     "name": name,
@@ -95,7 +79,6 @@ def _fetch_category_products(session: requests.Session, category: dict, max_prod
                     "category": category["name"],
                     "product_id": tile.get("data-pid", ""),
                     "store": "Auchan",
-                    "promotion": promo,
                 })
             except (ValueError, AttributeError):
                 continue
