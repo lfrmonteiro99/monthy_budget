@@ -5,6 +5,11 @@ on:
     # Runs every day at 06:00 Lisbon time (UTC+0 in winter, UTC+1 in summer)
     # Using 06:00 UTC covers both — 06:00 in winter, 07:00 in summer
     - cron: '0 6 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'scrapers/**'
+      - 'monthy_budget_flutter/assets/grocery_prices.json'
   workflow_dispatch: # Allow manual trigger from GitHub UI
 
 permissions:
