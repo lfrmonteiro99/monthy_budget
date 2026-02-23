@@ -10,6 +10,7 @@ import 'services/shopping_list_service.dart';
 import 'services/ai_coach_service.dart';
 import 'screens/shopping_list_screen.dart';
 import 'screens/coach_screen.dart';
+import 'screens/meal_planner_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/grocery_screen.dart';
@@ -217,6 +218,11 @@ class _AppHomeState extends State<AppHome> {
           );
         },
       ),
+      MealPlannerScreen(
+        settings: _settings,
+        apiKey: _openAiApiKey,
+        onAddToShoppingList: _addToShoppingList,
+      ),
     ];
 
     return Scaffold(
@@ -261,6 +267,11 @@ class _AppHomeState extends State<AppHome> {
             icon: Icon(Icons.psychology_outlined),
             selectedIcon: Icon(Icons.psychology, color: Color(0xFF3B82F6)),
             label: 'Coach',
+          ),
+          const NavigationDestination(
+            icon: Icon(Icons.restaurant_outlined),
+            selectedIcon: Icon(Icons.restaurant, color: Color(0xFF3B82F6)),
+            label: 'Refeições',
           ),
         ],
       ),
