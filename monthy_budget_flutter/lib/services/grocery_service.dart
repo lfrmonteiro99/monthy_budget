@@ -6,43 +6,47 @@ import '../models/grocery_data.dart';
 
 /// Service that loads grocery price data.
 ///
-/// Fetch order:
-///   1. Remote (GitHub Pages) — if TTL has expired
-///   2. SharedPreferences cache — if remote fails or TTL hasn't expired
-///   3. Bundled asset — first-launch fallback
+/// Strategy: always load the bundled asset as the baseline, then layer a
+/// remote/cached version on top — but ONLY if it contains strictly more
+/// products.  This prevents a stale or empty remote from wiping out data
+/// that is already baked into the app bundle.
 class GroceryService {
-  static const _cacheKey = 'grocery_prices_cache';
-  static const _lastFetchKey = 'grocery_prices_last_fetch';
+  // v2 suffix intentionally evicts any cached empty JSON from earlier builds.
+  static const _cacheKey = 'grocery_prices_cache_v2';
+  static const _lastFetchKey = 'grocery_prices_last_fetch_v2';
   static const _assetPath = 'assets/grocery_prices.json';
 
   /// GitHub Pages URL where the daily-scraped JSON is published.
-  /// Repo: lfrmonteiro99/monthy_budget  →  gh-pages branch
   static const _remoteUrl =
       'https://lfrmonteiro99.github.io/monthy_budget/grocery_prices.json';
 
   /// How often the app should try fetching fresh data (12 hours).
   static const _fetchTtl = Duration(hours: 12);
 
-  /// Load grocery data.
-  /// Tries remote first (if stale), then cache, then bundled asset.
   Future<GroceryData> load() async {
     final prefs = await SharedPreferences.getInstance();
 
-    // Check if we should attempt a remote fetch
+    // 1. Always load bundled asset — it is the guaranteed baseline.
+    final bundled = await _loadBundledAsset();
+
+    // 2. Try to get fresher data from remote or cache.
+    GroceryData? external;
     if (_shouldFetchRemote(prefs)) {
-      final remoteData = await _fetchRemote(prefs);
-      if (remoteData != null) return remoteData;
+      external = await _fetchRemote(prefs);
+    }
+    external ??= _loadFromPrefs(prefs);
+
+    // 3. Only replace bundled data if external has strictly more products.
+    //    This means a stale/empty remote (0 products) can never win.
+    if (external != null &&
+        external.products.length > bundled.products.length) {
+      return external;
     }
 
-    // Try cached data
-    final cached = _loadFromPrefs(prefs);
-    if (cached != null) return cached;
-
-    // First launch fallback: load from bundled asset
-    return _loadFromAsset(prefs);
+    // 4. Bundled is our best source — persist it so the cache is warm.
+    return bundled;
   }
 
-  /// Returns true when the cache is older than [_fetchTtl] or doesn't exist.
   bool _shouldFetchRemote(SharedPreferences prefs) {
     final lastFetch = prefs.getInt(_lastFetchKey);
     if (lastFetch == null) return true;
@@ -50,7 +54,6 @@ class GroceryService {
     return elapsed >= _fetchTtl.inMilliseconds;
   }
 
-  /// Fetch JSON from GitHub Pages, parse it, cache it. Returns null on failure.
   Future<GroceryData?> _fetchRemote(SharedPreferences prefs) async {
     try {
       final response = await http
@@ -63,10 +66,8 @@ class GroceryService {
       final json = jsonDecode(raw) as Map<String, dynamic>;
       final data = GroceryData.fromJson(json);
 
-      // Persist to cache
       await prefs.setString(_cacheKey, raw);
-      await prefs.setInt(
-          _lastFetchKey, DateTime.now().millisecondsSinceEpoch);
+      await prefs.setInt(_lastFetchKey, DateTime.now().millisecondsSinceEpoch);
 
       return data;
     } catch (_) {
@@ -74,7 +75,6 @@ class GroceryService {
     }
   }
 
-  /// Load from SharedPreferences cache. Returns null if empty.
   GroceryData? _loadFromPrefs(SharedPreferences prefs) {
     try {
       final raw = prefs.getString(_cacheKey);
@@ -86,17 +86,11 @@ class GroceryService {
     }
   }
 
-  /// Load from the bundled asset and seed the cache.
-  Future<GroceryData> _loadFromAsset(SharedPreferences prefs) async {
+  Future<GroceryData> _loadBundledAsset() async {
     try {
       final raw = await rootBundle.loadString(_assetPath);
       final json = jsonDecode(raw) as Map<String, dynamic>;
-      final data = GroceryData.fromJson(json);
-
-      // Seed the cache so subsequent loads don't need the asset
-      await prefs.setString(_cacheKey, raw);
-
-      return data;
+      return GroceryData.fromJson(json);
     } catch (_) {
       return const GroceryData();
     }
