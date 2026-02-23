@@ -1,0 +1,29 @@
+{
+  "metadata": {
+    "scraped_at": "2026-02-23T06:00:00+00:00",
+    "scraper_version": "1.0.0",
+    "scraper_results": {},
+    "total_products": 0,
+    "total_comparisons": 0
+  },
+  "deco_index": {
+    "period": "2025-annual",
+    "source": "DECO PROteste (seed data)",
+    "basket_size": 250,
+    "rankings": [
+      {"store": "Continente", "index": 100, "rank": 1},
+      {"store": "Pingo Doce", "index": 101, "rank": 2},
+      {"store": "Froiz", "index": 101, "rank": 2},
+      {"store": "Auchan", "index": 102, "rank": 4},
+      {"store": "360Hyper", "index": 102, "rank": 4},
+      {"store": "Intermarché", "index": 103, "rank": 6},
+      {"store": "Minipreço", "index": 104, "rank": 7},
+      {"store": "El Corte Inglés", "index": 110, "rank": 9}
+    ]
+  },
+  "products": [],
+  "comparisons": [],
+  "category_summary": [],
+  "open_prices": [],
+  "nutrition": {}
+}
