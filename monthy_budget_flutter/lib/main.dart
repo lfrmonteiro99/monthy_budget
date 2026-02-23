@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'models/app_settings.dart';
+import 'models/grocery_data.dart';
 import 'utils/calculations.dart';
 import 'services/settings_service.dart';
+import 'services/grocery_service.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/settings_screen.dart';
+import 'screens/grocery_screen.dart';
 
 void main() {
   runApp(const OrcamentoMensalApp());
@@ -35,19 +38,26 @@ class AppHome extends StatefulWidget {
 
 class _AppHomeState extends State<AppHome> {
   final _settingsService = SettingsService();
+  final _groceryService = GroceryService();
   AppSettings _settings = const AppSettings();
+  GroceryData _groceryData = const GroceryData();
   bool _loaded = false;
+  int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _loadSettings();
+    _loadAll();
   }
 
-  Future<void> _loadSettings() async {
-    final settings = await _settingsService.load();
+  Future<void> _loadAll() async {
+    final results = await Future.wait([
+      _settingsService.load(),
+      _groceryService.load(),
+    ]);
     setState(() {
-      _settings = settings;
+      _settings = results[0] as AppSettings;
+      _groceryData = results[1] as GroceryData;
       _loaded = true;
     });
   }
@@ -86,19 +96,45 @@ class _AppHomeState extends State<AppHome> {
       _settings.expenses,
     );
 
-    return DashboardScreen(
-      settings: _settings,
-      summary: summary,
-      onOpenSettings: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => SettingsScreen(
-              settings: _settings,
-              onSave: _saveSettings,
+    final screens = [
+      DashboardScreen(
+        settings: _settings,
+        summary: summary,
+        onOpenSettings: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => SettingsScreen(
+                settings: _settings,
+                onSave: _saveSettings,
+              ),
             ),
+          );
+        },
+      ),
+      GroceryScreen(groceryData: _groceryData),
+    ];
+
+    return Scaffold(
+      body: screens[_currentIndex],
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _currentIndex,
+        onDestinationSelected: (i) => setState(() => _currentIndex = i),
+        backgroundColor: Colors.white,
+        indicatorColor: const Color(0xFFDBEAFE),
+        height: 64,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.dashboard_outlined),
+            selectedIcon: Icon(Icons.dashboard, color: Color(0xFF3B82F6)),
+            label: 'Orcamento',
           ),
-        );
-      },
+          NavigationDestination(
+            icon: Icon(Icons.shopping_cart_outlined),
+            selectedIcon: Icon(Icons.shopping_cart, color: Color(0xFF3B82F6)),
+            label: 'Supermercados',
+          ),
+        ],
+      ),
     );
   }
 }

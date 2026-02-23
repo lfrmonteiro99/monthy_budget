@@ -1,0 +1,66 @@
+name: Scrape Grocery Prices
+
+on:
+  schedule:
+    # Runs every day at 06:00 Lisbon time (UTC+0 in winter, UTC+1 in summer)
+    # Using 06:00 UTC covers both — 06:00 in winter, 07:00 in summer
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Allow manual trigger from GitHub UI
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: scrapers/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r scrapers/requirements.txt
+
+      - name: Create assets directory
+        run: mkdir -p monthy_budget_flutter/assets
+
+      - name: Run grocery scrapers
+        working-directory: scrapers
+        run: python run_scrapers.py -o ../monthy_budget_flutter/assets/grocery_prices.json
+
+      - name: Check output
+        run: |
+          echo "--- File size ---"
+          ls -lh monthy_budget_flutter/assets/grocery_prices.json
+          echo "--- Metadata ---"
+          python3 -c "
+          import json
+          with open('monthy_budget_flutter/assets/grocery_prices.json') as f:
+              data = json.load(f)
+          m = data['metadata']
+          print(f'Scraped at: {m[\"scraped_at\"]}')
+          print(f'Total products: {m[\"total_products\"]}')
+          print(f'Total comparisons: {m[\"total_comparisons\"]}')
+          for name, result in m['scraper_results'].items():
+              print(f'  {name}: {result[\"status\"]}')
+          "
+
+      - name: Commit and push updated prices
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add monthy_budget_flutter/assets/grocery_prices.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update grocery prices $(date -u +%Y-%m-%d)"
+            git push
+          fi
