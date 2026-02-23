@@ -13,7 +13,11 @@ import '../models/grocery_data.dart';
 class GroceryService {
   static const _cacheKey = 'grocery_prices_cache';
   static const _lastFetchKey = 'grocery_prices_last_fetch';
+  static const _cacheVersionKey = 'grocery_prices_cache_version';
   static const _assetPath = 'assets/grocery_prices.json';
+
+  // Bump this constant to force-invalidate stale caches on all devices.
+  static const _cacheVersion = 2;
 
   /// GitHub Pages URL where the daily-scraped JSON is published.
   /// Repo: lfrmonteiro99/monthy_budget  →  gh-pages branch
@@ -65,8 +69,8 @@ class GroceryService {
 
       // Persist to cache
       await prefs.setString(_cacheKey, raw);
-      await prefs.setInt(
-          _lastFetchKey, DateTime.now().millisecondsSinceEpoch);
+      await prefs.setInt(_lastFetchKey, DateTime.now().millisecondsSinceEpoch);
+      await prefs.setInt(_cacheVersionKey, _cacheVersion);
 
       return data;
     } catch (_) {
@@ -74,9 +78,17 @@ class GroceryService {
     }
   }
 
-  /// Load from SharedPreferences cache. Returns null if empty.
+  /// Load from SharedPreferences cache. Returns null if empty or version mismatch.
   GroceryData? _loadFromPrefs(SharedPreferences prefs) {
     try {
+      // If cache version doesn't match, clear stale data so the asset is used.
+      final storedVersion = prefs.getInt(_cacheVersionKey) ?? 1;
+      if (storedVersion != _cacheVersion) {
+        prefs.remove(_cacheKey);
+        prefs.remove(_lastFetchKey);
+        prefs.remove(_cacheVersionKey);
+        return null;
+      }
       final raw = prefs.getString(_cacheKey);
       if (raw == null) return null;
       final json = jsonDecode(raw) as Map<String, dynamic>;
@@ -95,6 +107,7 @@ class GroceryService {
 
       // Seed the cache so subsequent loads don't need the asset
       await prefs.setString(_cacheKey, raw);
+      await prefs.setInt(_cacheVersionKey, _cacheVersion);
 
       return data;
     } catch (_) {
