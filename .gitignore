@@ -34,3 +34,5 @@ monthy_budget_flutter/ios/Pods/
 monthy_budget_flutter/ios/.symlinks/
 monthy_budget_flutter/.pub-cache/
 monthy_budget_flutter/.packages
+__pycache__/
+*.pyc
