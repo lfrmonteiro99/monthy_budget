@@ -73,11 +73,21 @@ export interface DashboardConfig {
   enabledCharts: ChartType[];
 }
 
+export interface MealPlannerPreferences {
+  /** Override number of people (null = auto from salaries + dependents) */
+  numberOfPeopleOverride: number | null;
+  varietyLevel: "baixa" | "media" | "alta";
+  excludedProteins: string[];
+  weeksToGenerate: number;
+  mealsPerDay: ("almoco" | "jantar")[];
+}
+
 export interface AppSettings {
   personalInfo: PersonalInfo;
   salaries: [SalaryInfo, SalaryInfo];
   expenses: ExpenseItem[];
   dashboardConfig: DashboardConfig;
+  mealPlannerPreferences?: MealPlannerPreferences;
 }
 
 export interface MealAllowanceCalculation {

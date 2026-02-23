@@ -29,11 +29,18 @@ const DEFAULT_SETTINGS: AppSettings = {
       "savings_rate",
     ],
   },
+  mealPlannerPreferences: {
+    numberOfPeopleOverride: null,
+    varietyLevel: "media",
+    excludedProteins: [],
+    weeksToGenerate: 4,
+    mealsPerDay: ["almoco", "jantar"],
+  },
 };
 
 /** Detect if running inside Tauri */
 function isTauri(): boolean {
-  return !!(window as Record<string, unknown>).__TAURI_INTERNALS__;
+  return !!(window as unknown as Record<string, unknown>).__TAURI_INTERNALS__;
 }
 
 /** Apply migrations to parsed settings (handles old formats) */
@@ -56,6 +63,10 @@ function migrateSettings(parsed: any): AppSettings {
     if (s.mealAllowanceType === undefined) s.mealAllowanceType = "none";
     if (s.mealAllowancePerDay === undefined) s.mealAllowancePerDay = 0;
     if (s.workingDaysPerMonth === undefined) s.workingDaysPerMonth = 22;
+  }
+  // Migrate: add meal planner preferences if missing
+  if (!parsed.mealPlannerPreferences) {
+    parsed.mealPlannerPreferences = DEFAULT_SETTINGS.mealPlannerPreferences;
   }
   return parsed as AppSettings;
 }
