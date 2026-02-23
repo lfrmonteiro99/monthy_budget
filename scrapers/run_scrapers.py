@@ -53,38 +53,67 @@ def _build_comparison_index(products: list[dict]) -> list[dict]:
     from collections import defaultdict
     import re
 
-    def normalize_name(name: str) -> str:
-        name = name.lower().strip()
-        name = re.sub(r'\s+', ' ', name)
-        # Remove common weight/volume suffixes for matching
-        name = re.sub(r'\b(\d+)\s*(ml|l|g|kg|cl|un)\b', r'\1\2', name)
-        return name
+    # Brand names and filler words to strip before comparing
+    _REMOVE = re.compile(
+        r'\b(mimosa|continente|pingo\s*doce|auchan|alpro|parmalat'
+        r'|nestl[eé]|danone|pr[eé]sident|nosso\s*talho|nossa\s*peixaria'
+        r'|embalad[oa]s?|slim|bio|magro|gordo|meio)\b',
+        re.IGNORECASE,
+    )
+    _UNITS = re.compile(r'\b\d+\s*(ml|l|lt|g|gr|kg|cl|un|emb|pack|cj|doz|dos)\b', re.IGNORECASE)
+    _NUMS = re.compile(r'\b\d+\b')
+    _PUNCT = re.compile(r'[^\w\s]')
+    _SPACE = re.compile(r'\s+')
 
-    # Group by normalized name
-    groups = defaultdict(list)
+    def normalize_name(name: str) -> tuple:
+        name = name.lower()
+        name = _REMOVE.sub(' ', name)
+        name = _UNITS.sub(' ', name)
+        name = _NUMS.sub(' ', name)
+        name = _PUNCT.sub(' ', name)
+        name = _SPACE.sub(' ', name).strip()
+        # Sort words so "leite uht meio gordo" == "gordo leite meio uht"
+        words = tuple(sorted(w for w in name.split() if len(w) > 2))
+        return words
+
+    # Group by normalized name key, keeping only the cheapest price per store
+    groups: dict[tuple, dict[str, dict]] = defaultdict(dict)
     for p in products:
         key = normalize_name(p["name"])
-        groups[key].append({
-            "store": p["store"],
+        if len(key) < 2:  # skip if too little info after stripping
+            continue
+        store = p["store"]
+        entry = {
+            "store": store,
             "price": p["price"],
             "unit_price": p.get("unit_price"),
             "product_id": p.get("product_id", ""),
-        })
+            "original_name": p["name"],
+        }
+        if store not in groups[key] or p["price"] < groups[key][store]["price"]:
+            groups[key][store] = entry
 
     # Only keep groups with 2+ stores (actual comparison possible)
     comparisons = []
-    for name, entries in groups.items():
-        stores = set(e["store"] for e in entries)
-        if len(stores) >= 2:
-            entries.sort(key=lambda x: x["price"])
-            cheapest = entries[0]
-            most_expensive = entries[-1]
+    for _key, store_map in groups.items():
+        if len(store_map) >= 2:
+            entries = list(store_map.values())
+            # Use the longest original name as display name (most descriptive)
+            display_name = max((e["original_name"] for e in entries), key=len)
+            # Strip original_name from price entries before exposing
+            price_entries = [
+                {k: v for k, v in e.items() if k != "original_name"}
+                for e in entries
+            ]
+            price_entries.sort(key=lambda x: x["price"])
+            cheapest = price_entries[0]
+            most_expensive = price_entries[-1]
             savings = round(most_expensive["price"] - cheapest["price"], 2)
             savings_pct = round((savings / most_expensive["price"]) * 100, 1) if most_expensive["price"] > 0 else 0
 
             comparisons.append({
-                "product_name": name,
-                "prices": entries,
+                "product_name": display_name,
+                "prices": price_entries,
                 "cheapest_store": cheapest["store"],
                 "cheapest_price": cheapest["price"],
                 "potential_savings": savings,
@@ -153,6 +182,15 @@ def run(output_path: Path, enrich_nutrition: bool = False) -> None:
     # Normalize and deduplicate
     all_products = _normalize_products(all_products)
     logger.info(f"Total unique products after dedup: {len(all_products)}")
+
+    # Canonicalise category names across stores so comparisons and summaries align
+    _CATEGORY_MAP = {
+        "Frutas": "Frutas e Legumes",
+        "Legumes": "Frutas e Legumes",
+        "Peixe": "Peixe e Marisco",
+    }
+    for p in all_products:
+        p["category"] = _CATEGORY_MAP.get(p.get("category", ""), p.get("category", ""))
 
     # Run DECO PROteste scraper
     try:
