@@ -7,7 +7,9 @@ import 'services/grocery_service.dart';
 import 'services/favorites_service.dart';
 import 'models/shopping_item.dart';
 import 'services/shopping_list_service.dart';
+import 'services/ai_coach_service.dart';
 import 'screens/shopping_list_screen.dart';
+import 'screens/coach_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/grocery_screen.dart';
@@ -45,10 +47,12 @@ class _AppHomeState extends State<AppHome> {
   final _groceryService = GroceryService();
   final _favoritesService = FavoritesService();
   final _shoppingListService = ShoppingListService();
+  final _aiCoachService = AiCoachService();
   AppSettings _settings = const AppSettings();
   GroceryData _groceryData = const GroceryData();
   List<String> _favorites = [];
   List<ShoppingItem> _shoppingList = [];
+  String _openAiApiKey = '';
   bool _loaded = false;
   int _currentIndex = 0;
 
@@ -64,12 +68,14 @@ class _AppHomeState extends State<AppHome> {
       _groceryService.load(),
       _favoritesService.load(),
       _shoppingListService.load(),
+      _aiCoachService.loadApiKey(),
     ]);
     setState(() {
       _settings = results[0] as AppSettings;
       _groceryData = results[1] as GroceryData;
       _favorites = results[2] as List<String>;
       _shoppingList = results[3] as List<ShoppingItem>;
+      _openAiApiKey = results[4] as String;
       _loaded = true;
     });
   }
@@ -86,6 +92,11 @@ class _AppHomeState extends State<AppHome> {
       _favorites = favorites;
     });
     _favoritesService.save(favorites);
+  }
+
+  void _saveApiKey(String key) {
+    setState(() => _openAiApiKey = key);
+    _aiCoachService.saveApiKey(key);
   }
 
   void _addToShoppingList(ShoppingItem item) {
@@ -168,6 +179,8 @@ class _AppHomeState extends State<AppHome> {
                 onSave: _saveSettings,
                 favorites: _favorites,
                 onSaveFavorites: _saveFavorites,
+                apiKey: _openAiApiKey,
+                onSaveApiKey: _saveApiKey,
               ),
             ),
           );
@@ -184,6 +197,25 @@ class _AppHomeState extends State<AppHome> {
         onToggleChecked: _toggleShoppingItem,
         onRemove: _removeShoppingItem,
         onClearChecked: _clearCheckedItems,
+      ),
+      CoachScreen(
+        settings: _settings,
+        groceryData: _groceryData,
+        apiKey: _openAiApiKey,
+        onOpenSettings: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => SettingsScreen(
+                settings: _settings,
+                onSave: _saveSettings,
+                favorites: _favorites,
+                onSaveFavorites: _saveFavorites,
+                apiKey: _openAiApiKey,
+                onSaveApiKey: _saveApiKey,
+              ),
+            ),
+          );
+        },
       ),
     ];
 
@@ -224,6 +256,11 @@ class _AppHomeState extends State<AppHome> {
               child: const Icon(Icons.shopping_basket, color: Color(0xFF3B82F6)),
             ),
             label: 'Lista',
+          ),
+          const NavigationDestination(
+            icon: Icon(Icons.psychology_outlined),
+            selectedIcon: Icon(Icons.psychology, color: Color(0xFF3B82F6)),
+            label: 'Coach',
           ),
         ],
       ),

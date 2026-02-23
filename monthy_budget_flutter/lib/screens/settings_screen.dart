@@ -8,6 +8,8 @@ class SettingsScreen extends StatefulWidget {
   final ValueChanged<AppSettings> onSave;
   final List<String> favorites;
   final ValueChanged<List<String>> onSaveFavorites;
+  final String apiKey;
+  final ValueChanged<String> onSaveApiKey;
 
   const SettingsScreen({
     super.key,
@@ -15,6 +17,8 @@ class SettingsScreen extends StatefulWidget {
     required this.onSave,
     required this.favorites,
     required this.onSaveFavorites,
+    required this.apiKey,
+    required this.onSaveApiKey,
   });
 
   @override
@@ -24,6 +28,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   late AppSettings _draft;
   late List<String> _favorites;
+  late TextEditingController _apiKeyController;
   String? _openSection = 'personal';
   final _customProductController = TextEditingController();
 
@@ -41,11 +46,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     _draft = widget.settings;
     _favorites = List<String>.from(widget.favorites);
+    _apiKeyController = TextEditingController(text: widget.apiKey);
   }
 
   @override
   void dispose() {
     _customProductController.dispose();
+    _apiKeyController.dispose();
     super.dispose();
   }
 
@@ -62,6 +69,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _handleSave() {
     widget.onSave(_draft);
     widget.onSaveFavorites(_favorites);
+    widget.onSaveApiKey(_apiKeyController.text.trim());
     Navigator.of(context).pop();
   }
 
@@ -216,6 +224,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       onTap: () => _toggleSection('favorites'),
                     ),
                     if (_openSection == 'favorites') _buildFavoritesSection(),
+                    _SectionHeader(
+                      icon: Icons.psychology_outlined,
+                      title: 'Coach IA (OpenAI)',
+                      isOpen: _openSection == 'coach',
+                      onTap: () => _toggleSection('coach'),
+                    ),
+                    if (_openSection == 'coach') _buildCoachSection(),
                     const SizedBox(height: 32),
                   ],
                 ),
@@ -713,6 +728,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
               final isSelected = _favorites.any((f) => f.toLowerCase() == s.toLowerCase());
               return _buildFavoriteChip(s, isSelected: isSelected);
             }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCoachSection() {
+    final hasKey = _apiKeyController.text.trim().isNotEmpty;
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _label('OPENAI API KEY'),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _apiKeyController,
+            obscureText: true,
+            onChanged: (_) => setState(() {}),
+            decoration: _inputDecoration('sk-...').copyWith(
+              hintText: 'sk-...',
+              suffixIcon: hasKey
+                  ? const Icon(Icons.check_circle, color: Color(0xFF10B981), size: 20)
+                  : const Icon(Icons.key_outlined, color: Color(0xFFCBD5E1), size: 20),
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'A key é guardada localmente no dispositivo e nunca é partilhada. Usa o modelo GPT-4o mini (~€0,00008 por análise).',
+            style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8), height: 1.5),
           ),
         ],
       ),
