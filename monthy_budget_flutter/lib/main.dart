@@ -5,6 +5,9 @@ import 'utils/calculations.dart';
 import 'services/settings_service.dart';
 import 'services/grocery_service.dart';
 import 'services/favorites_service.dart';
+import 'models/shopping_item.dart';
+import 'services/shopping_list_service.dart';
+import 'screens/shopping_list_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/grocery_screen.dart';
@@ -41,9 +44,11 @@ class _AppHomeState extends State<AppHome> {
   final _settingsService = SettingsService();
   final _groceryService = GroceryService();
   final _favoritesService = FavoritesService();
+  final _shoppingListService = ShoppingListService();
   AppSettings _settings = const AppSettings();
   GroceryData _groceryData = const GroceryData();
   List<String> _favorites = [];
+  List<ShoppingItem> _shoppingList = [];
   bool _loaded = false;
   int _currentIndex = 0;
 
@@ -58,11 +63,13 @@ class _AppHomeState extends State<AppHome> {
       _settingsService.load(),
       _groceryService.load(),
       _favoritesService.load(),
+      _shoppingListService.load(),
     ]);
     setState(() {
       _settings = results[0] as AppSettings;
       _groceryData = results[1] as GroceryData;
       _favorites = results[2] as List<String>;
+      _shoppingList = results[3] as List<ShoppingItem>;
       _loaded = true;
     });
   }
@@ -79,6 +86,47 @@ class _AppHomeState extends State<AppHome> {
       _favorites = favorites;
     });
     _favoritesService.save(favorites);
+  }
+
+  void _addToShoppingList(ShoppingItem item) {
+    final exists = _shoppingList.any(
+      (e) => e.productName == item.productName && e.store == item.store,
+    );
+    if (exists) return;
+    final updated = [..._shoppingList, item];
+    setState(() => _shoppingList = updated);
+    _shoppingListService.save(updated);
+  }
+
+  void _toggleShoppingItem(ShoppingItem item) {
+    final updated = _shoppingList.map((e) {
+      if (e.productName == item.productName && e.store == item.store) {
+        return ShoppingItem(
+          productName: e.productName,
+          store: e.store,
+          price: e.price,
+          unitPrice: e.unitPrice,
+          checked: !e.checked,
+        );
+      }
+      return e;
+    }).toList();
+    setState(() => _shoppingList = updated);
+    _shoppingListService.save(updated);
+  }
+
+  void _removeShoppingItem(ShoppingItem item) {
+    final updated = _shoppingList
+        .where((e) => !(e.productName == item.productName && e.store == item.store))
+        .toList();
+    setState(() => _shoppingList = updated);
+    _shoppingListService.save(updated);
+  }
+
+  void _clearCheckedItems() {
+    final updated = _shoppingList.where((e) => !e.checked).toList();
+    setState(() => _shoppingList = updated);
+    _shoppingListService.save(updated);
   }
 
   @override
@@ -129,6 +177,13 @@ class _AppHomeState extends State<AppHome> {
         groceryData: _groceryData,
         favorites: _favorites,
         onFavoritesChanged: _saveFavorites,
+        onAddToShoppingList: _addToShoppingList,
+      ),
+      ShoppingListScreen(
+        items: _shoppingList,
+        onToggleChecked: _toggleShoppingItem,
+        onRemove: _removeShoppingItem,
+        onClearChecked: _clearCheckedItems,
       ),
     ];
 
@@ -140,16 +195,35 @@ class _AppHomeState extends State<AppHome> {
         backgroundColor: Colors.white,
         indicatorColor: const Color(0xFFDBEAFE),
         height: 64,
-        destinations: const [
-          NavigationDestination(
+        destinations: [
+          const NavigationDestination(
             icon: Icon(Icons.dashboard_outlined),
             selectedIcon: Icon(Icons.dashboard, color: Color(0xFF3B82F6)),
             label: 'Orcamento',
           ),
-          NavigationDestination(
+          const NavigationDestination(
             icon: Icon(Icons.shopping_cart_outlined),
             selectedIcon: Icon(Icons.shopping_cart, color: Color(0xFF3B82F6)),
             label: 'Supermercados',
+          ),
+          NavigationDestination(
+            icon: Badge(
+              isLabelVisible: _shoppingList.any((i) => !i.checked),
+              label: Text(
+                '${_shoppingList.where((i) => !i.checked).length}',
+                style: const TextStyle(fontSize: 10),
+              ),
+              child: const Icon(Icons.shopping_basket_outlined),
+            ),
+            selectedIcon: Badge(
+              isLabelVisible: _shoppingList.any((i) => !i.checked),
+              label: Text(
+                '${_shoppingList.where((i) => !i.checked).length}',
+                style: const TextStyle(fontSize: 10),
+              ),
+              child: const Icon(Icons.shopping_basket, color: Color(0xFF3B82F6)),
+            ),
+            label: 'Lista',
           ),
         ],
       ),
