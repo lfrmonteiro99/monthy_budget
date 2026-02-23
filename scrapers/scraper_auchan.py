@@ -17,10 +17,10 @@ CATEGORIES = [
     {"slug": "pt/produtos-frescos/legumes", "name": "Legumes"},
     {"slug": "pt/produtos-frescos/padaria", "name": "Padaria e Pastelaria"},
     {"slug": "pt/alimentacao/mercearia", "name": "Mercearia"},
-    {"slug": "pt/alimentacao/bebidas", "name": "Bebidas"},
+    {"slug": "pt/bebidas-e-garrafeira", "name": "Bebidas"},
     {"slug": "pt/alimentacao/congelados", "name": "Congelados"},
     {"slug": "pt/beleza-e-higiene", "name": "Higiene e Beleza"},
-    {"slug": "pt/casa-e-jardim/limpeza", "name": "Limpeza"},
+    # Limpeza page returns a JS-only shell (113 bytes) — not server-side rendered, skip
 ]
 
 HEADERS = {
