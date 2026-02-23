@@ -1,0 +1,427 @@
+import 'dart:convert';
+
+enum MaritalStatus {
+  solteiro,
+  casado,
+  uniaoFacto,
+  divorciado,
+  viuvo;
+
+  String get label {
+    switch (this) {
+      case MaritalStatus.solteiro:
+        return 'Solteiro(a)';
+      case MaritalStatus.casado:
+        return 'Casado(a)';
+      case MaritalStatus.uniaoFacto:
+        return 'Uniao de Facto';
+      case MaritalStatus.divorciado:
+        return 'Divorciado(a)';
+      case MaritalStatus.viuvo:
+        return 'Viuvo(a)';
+    }
+  }
+
+  String get jsonValue {
+    switch (this) {
+      case MaritalStatus.solteiro:
+        return 'solteiro';
+      case MaritalStatus.casado:
+        return 'casado';
+      case MaritalStatus.uniaoFacto:
+        return 'uniao_facto';
+      case MaritalStatus.divorciado:
+        return 'divorciado';
+      case MaritalStatus.viuvo:
+        return 'viuvo';
+    }
+  }
+
+  static MaritalStatus fromJson(String value) {
+    switch (value) {
+      case 'casado':
+        return MaritalStatus.casado;
+      case 'uniao_facto':
+        return MaritalStatus.uniaoFacto;
+      case 'divorciado':
+        return MaritalStatus.divorciado;
+      case 'viuvo':
+        return MaritalStatus.viuvo;
+      default:
+        return MaritalStatus.solteiro;
+    }
+  }
+}
+
+enum MealAllowanceType {
+  none,
+  card,
+  cash;
+
+  String get label {
+    switch (this) {
+      case MealAllowanceType.none:
+        return 'Sem';
+      case MealAllowanceType.card:
+        return 'Cartao';
+      case MealAllowanceType.cash:
+        return 'Com base';
+    }
+  }
+}
+
+enum ExpenseCategory {
+  telecomunicacoes,
+  energia,
+  agua,
+  alimentacao,
+  educacao,
+  habitacao,
+  transportes,
+  saude,
+  lazer,
+  outros;
+
+  String get label {
+    switch (this) {
+      case ExpenseCategory.telecomunicacoes:
+        return 'Telecomunicações';
+      case ExpenseCategory.energia:
+        return 'Energia';
+      case ExpenseCategory.agua:
+        return 'Água';
+      case ExpenseCategory.alimentacao:
+        return 'Alimentação';
+      case ExpenseCategory.educacao:
+        return 'Educação';
+      case ExpenseCategory.habitacao:
+        return 'Habitação';
+      case ExpenseCategory.transportes:
+        return 'Transportes';
+      case ExpenseCategory.saude:
+        return 'Saúde';
+      case ExpenseCategory.lazer:
+        return 'Lazer';
+      case ExpenseCategory.outros:
+        return 'Outros';
+    }
+  }
+
+  static ExpenseCategory fromJson(String value) {
+    for (final cat in ExpenseCategory.values) {
+      if (cat.name == value) return cat;
+    }
+    return ExpenseCategory.outros;
+  }
+}
+
+enum ChartType {
+  expensesPie,
+  incomeVsExpenses,
+  netIncomeBar,
+  deductionsBreakdown,
+  savingsRate;
+
+  String get label {
+    switch (this) {
+      case ChartType.expensesPie:
+        return 'Despesas por Categoria';
+      case ChartType.incomeVsExpenses:
+        return 'Rendimento vs Despesas';
+      case ChartType.netIncomeBar:
+        return 'Rendimento Líquido';
+      case ChartType.deductionsBreakdown:
+        return 'Descontos (IRS + SS)';
+      case ChartType.savingsRate:
+        return 'Taxa de Poupança';
+    }
+  }
+
+  String get jsonValue {
+    switch (this) {
+      case ChartType.expensesPie:
+        return 'expenses_pie';
+      case ChartType.incomeVsExpenses:
+        return 'income_vs_expenses';
+      case ChartType.netIncomeBar:
+        return 'net_income_bar';
+      case ChartType.deductionsBreakdown:
+        return 'deductions_breakdown';
+      case ChartType.savingsRate:
+        return 'savings_rate';
+    }
+  }
+
+  static ChartType fromJson(String value) {
+    switch (value) {
+      case 'expenses_pie':
+        return ChartType.expensesPie;
+      case 'income_vs_expenses':
+        return ChartType.incomeVsExpenses;
+      case 'net_income_bar':
+        return ChartType.netIncomeBar;
+      case 'deductions_breakdown':
+        return ChartType.deductionsBreakdown;
+      case 'savings_rate':
+        return ChartType.savingsRate;
+      default:
+        return ChartType.expensesPie;
+    }
+  }
+}
+
+class PersonalInfo {
+  final MaritalStatus maritalStatus;
+  final int dependentes;
+  final bool deficiente;
+
+  const PersonalInfo({
+    this.maritalStatus = MaritalStatus.solteiro,
+    this.dependentes = 0,
+    this.deficiente = false,
+  });
+
+  PersonalInfo copyWith({
+    MaritalStatus? maritalStatus,
+    int? dependentes,
+    bool? deficiente,
+  }) {
+    return PersonalInfo(
+      maritalStatus: maritalStatus ?? this.maritalStatus,
+      dependentes: dependentes ?? this.dependentes,
+      deficiente: deficiente ?? this.deficiente,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'maritalStatus': maritalStatus.jsonValue,
+        'dependentes': dependentes,
+        'deficiente': deficiente,
+      };
+
+  factory PersonalInfo.fromJson(Map<String, dynamic> json) => PersonalInfo(
+        maritalStatus: MaritalStatus.fromJson(json['maritalStatus'] ?? 'solteiro'),
+        dependentes: json['dependentes'] ?? 0,
+        deficiente: json['deficiente'] ?? false,
+      );
+}
+
+class SalaryInfo {
+  final String label;
+  final double grossAmount;
+  final bool enabled;
+  final int titulares;
+  final MealAllowanceType mealAllowanceType;
+  final double mealAllowancePerDay;
+  final int workingDaysPerMonth;
+
+  const SalaryInfo({
+    this.label = '',
+    this.grossAmount = 0,
+    this.enabled = true,
+    this.titulares = 1,
+    this.mealAllowanceType = MealAllowanceType.none,
+    this.mealAllowancePerDay = 0,
+    this.workingDaysPerMonth = 22,
+  });
+
+  SalaryInfo copyWith({
+    String? label,
+    double? grossAmount,
+    bool? enabled,
+    int? titulares,
+    MealAllowanceType? mealAllowanceType,
+    double? mealAllowancePerDay,
+    int? workingDaysPerMonth,
+  }) {
+    return SalaryInfo(
+      label: label ?? this.label,
+      grossAmount: grossAmount ?? this.grossAmount,
+      enabled: enabled ?? this.enabled,
+      titulares: titulares ?? this.titulares,
+      mealAllowanceType: mealAllowanceType ?? this.mealAllowanceType,
+      mealAllowancePerDay: mealAllowancePerDay ?? this.mealAllowancePerDay,
+      workingDaysPerMonth: workingDaysPerMonth ?? this.workingDaysPerMonth,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'label': label,
+        'grossAmount': grossAmount,
+        'enabled': enabled,
+        'titulares': titulares,
+        'mealAllowanceType': mealAllowanceType.name,
+        'mealAllowancePerDay': mealAllowancePerDay,
+        'workingDaysPerMonth': workingDaysPerMonth,
+      };
+
+  factory SalaryInfo.fromJson(Map<String, dynamic> json) => SalaryInfo(
+        label: json['label'] ?? '',
+        grossAmount: (json['grossAmount'] ?? 0).toDouble(),
+        enabled: json['enabled'] ?? true,
+        titulares: json['titulares'] ?? 1,
+        mealAllowanceType: MealAllowanceType.values.firstWhere(
+          (e) => e.name == json['mealAllowanceType'],
+          orElse: () => MealAllowanceType.none,
+        ),
+        mealAllowancePerDay: (json['mealAllowancePerDay'] ?? 0).toDouble(),
+        workingDaysPerMonth: json['workingDaysPerMonth'] ?? 22,
+      );
+}
+
+class ExpenseItem {
+  final String id;
+  final String label;
+  final double amount;
+  final ExpenseCategory category;
+  final bool enabled;
+
+  const ExpenseItem({
+    required this.id,
+    this.label = '',
+    this.amount = 0,
+    this.category = ExpenseCategory.outros,
+    this.enabled = true,
+  });
+
+  ExpenseItem copyWith({
+    String? id,
+    String? label,
+    double? amount,
+    ExpenseCategory? category,
+    bool? enabled,
+  }) {
+    return ExpenseItem(
+      id: id ?? this.id,
+      label: label ?? this.label,
+      amount: amount ?? this.amount,
+      category: category ?? this.category,
+      enabled: enabled ?? this.enabled,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'label': label,
+        'amount': amount,
+        'category': category.name,
+        'enabled': enabled,
+      };
+
+  factory ExpenseItem.fromJson(Map<String, dynamic> json) => ExpenseItem(
+        id: json['id'] ?? 'expense_${DateTime.now().millisecondsSinceEpoch}',
+        label: json['label'] ?? '',
+        amount: (json['amount'] ?? 0).toDouble(),
+        category: ExpenseCategory.fromJson(json['category'] ?? 'outros'),
+        enabled: json['enabled'] ?? true,
+      );
+}
+
+class DashboardConfig {
+  final bool showSummaryCards;
+  final List<ChartType> enabledCharts;
+
+  const DashboardConfig({
+    this.showSummaryCards = true,
+    this.enabledCharts = const [
+      ChartType.expensesPie,
+      ChartType.incomeVsExpenses,
+      ChartType.deductionsBreakdown,
+      ChartType.savingsRate,
+    ],
+  });
+
+  DashboardConfig copyWith({
+    bool? showSummaryCards,
+    List<ChartType>? enabledCharts,
+  }) {
+    return DashboardConfig(
+      showSummaryCards: showSummaryCards ?? this.showSummaryCards,
+      enabledCharts: enabledCharts ?? this.enabledCharts,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'showSummaryCards': showSummaryCards,
+        'enabledCharts': enabledCharts.map((c) => c.jsonValue).toList(),
+      };
+
+  factory DashboardConfig.fromJson(Map<String, dynamic> json) => DashboardConfig(
+        showSummaryCards: json['showSummaryCards'] ?? true,
+        enabledCharts: (json['enabledCharts'] as List<dynamic>?)
+                ?.map((e) => ChartType.fromJson(e as String))
+                .toList() ??
+            const [
+              ChartType.expensesPie,
+              ChartType.incomeVsExpenses,
+              ChartType.deductionsBreakdown,
+              ChartType.savingsRate,
+            ],
+      );
+}
+
+class AppSettings {
+  final PersonalInfo personalInfo;
+  final List<SalaryInfo> salaries;
+  final List<ExpenseItem> expenses;
+  final DashboardConfig dashboardConfig;
+
+  const AppSettings({
+    this.personalInfo = const PersonalInfo(),
+    this.salaries = const [
+      SalaryInfo(label: 'Vencimento 1', enabled: true),
+      SalaryInfo(label: 'Vencimento 2', enabled: false),
+    ],
+    this.expenses = const [
+      ExpenseItem(id: 'vodafone', label: 'Vodafone', category: ExpenseCategory.telecomunicacoes),
+      ExpenseItem(id: 'eletricidade', label: 'Eletricidade', category: ExpenseCategory.energia),
+      ExpenseItem(id: 'agua', label: 'Água', category: ExpenseCategory.agua),
+      ExpenseItem(id: 'compras', label: 'Compras / Alimentação', category: ExpenseCategory.alimentacao),
+      ExpenseItem(id: 'escola', label: 'Escola', category: ExpenseCategory.educacao),
+    ],
+    this.dashboardConfig = const DashboardConfig(),
+  });
+
+  AppSettings copyWith({
+    PersonalInfo? personalInfo,
+    List<SalaryInfo>? salaries,
+    List<ExpenseItem>? expenses,
+    DashboardConfig? dashboardConfig,
+  }) {
+    return AppSettings(
+      personalInfo: personalInfo ?? this.personalInfo,
+      salaries: salaries ?? this.salaries,
+      expenses: expenses ?? this.expenses,
+      dashboardConfig: dashboardConfig ?? this.dashboardConfig,
+    );
+  }
+
+  String toJsonString() {
+    final map = {
+      'personalInfo': personalInfo.toJson(),
+      'salaries': salaries.map((s) => s.toJson()).toList(),
+      'expenses': expenses.map((e) => e.toJson()).toList(),
+      'dashboardConfig': dashboardConfig.toJson(),
+    };
+    return jsonEncode(map);
+  }
+
+  factory AppSettings.fromJsonString(String jsonStr) {
+    final map = jsonDecode(jsonStr) as Map<String, dynamic>;
+    return AppSettings(
+      personalInfo: PersonalInfo.fromJson(map['personalInfo'] ?? {}),
+      salaries: (map['salaries'] as List<dynamic>?)
+              ?.map((s) => SalaryInfo.fromJson(s as Map<String, dynamic>))
+              .toList() ??
+          const [
+            SalaryInfo(label: 'Vencimento 1', enabled: true),
+            SalaryInfo(label: 'Vencimento 2', enabled: false),
+          ],
+      expenses: (map['expenses'] as List<dynamic>?)
+              ?.map((e) => ExpenseItem.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      dashboardConfig: DashboardConfig.fromJson(map['dashboardConfig'] ?? {}),
+    );
+  }
+}

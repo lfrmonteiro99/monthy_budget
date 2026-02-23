@@ -22,3 +22,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Flutter
+monthy_budget_flutter/.dart_tool/
+monthy_budget_flutter/build/
+monthy_budget_flutter/.flutter-plugins
+monthy_budget_flutter/.flutter-plugins-dependencies
+monthy_budget_flutter/android/.gradle/
+monthy_budget_flutter/android/app/build/
+monthy_budget_flutter/ios/Pods/
+monthy_budget_flutter/ios/.symlinks/
+monthy_budget_flutter/.pub-cache/
+monthy_budget_flutter/.packages
