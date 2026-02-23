@@ -8,6 +8,7 @@ import 'services/favorites_service.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/grocery_screen.dart';
+import 'screens/meal_plan_screen.dart';
 
 void main() {
   runApp(const OrcamentoMensalApp());
@@ -125,6 +126,9 @@ class _AppHomeState extends State<AppHome> {
           );
         },
       ),
+      MealPlanScreen(
+        settings: _settings,
+      ),
       GroceryScreen(
         groceryData: _groceryData,
         favorites: _favorites,
@@ -145,6 +149,11 @@ class _AppHomeState extends State<AppHome> {
             icon: Icon(Icons.dashboard_outlined),
             selectedIcon: Icon(Icons.dashboard, color: Color(0xFF3B82F6)),
             label: 'Orcamento',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.restaurant_menu_outlined),
+            selectedIcon: Icon(Icons.restaurant_menu, color: Color(0xFF3B82F6)),
+            label: 'Refeicoes',
           ),
           NavigationDestination(
             icon: Icon(Icons.shopping_cart_outlined),
