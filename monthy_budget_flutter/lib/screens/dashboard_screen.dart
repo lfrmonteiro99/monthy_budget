@@ -497,6 +497,7 @@ class DashboardScreen extends StatelessWidget {
   }
 
   void _showAllHistory(BuildContext context) {
+    final expandedMap = <int, bool>{};
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -509,101 +510,118 @@ class DashboardScreen extends StatelessWidget {
         maxChildSize: 0.95,
         minChildSize: 0.4,
         expand: false,
-        builder: (_, scrollController) => Column(
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                margin: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFCBD5E1),
-                  borderRadius: BorderRadius.circular(2),
+        builder: (_, scrollController) => StatefulBuilder(
+          builder: (ctx, setLocalState) => Column(
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.symmetric(vertical: 12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFCBD5E1),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
               ),
-            ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 16),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Todas as Compras',
-                  style: TextStyle(
-                      fontSize: 17, fontWeight: FontWeight.w700),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 16),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Todas as Compras',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+                  ),
                 ),
               ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                controller: scrollController,
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
-                itemCount: purchaseHistory.records.length,
-                itemBuilder: (_, i) {
-                  final r = purchaseHistory.records[i];
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF8FAFC),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFE2E8F0)),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
+              Expanded(
+                child: ListView.builder(
+                  controller: scrollController,
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+                  itemCount: purchaseHistory.records.length,
+                  itemBuilder: (_, i) {
+                    final r = purchaseHistory.records[i];
+                    final isExpanded = expandedMap[i] ?? false;
+                    return GestureDetector(
+                      onTap: () =>
+                          setLocalState(() => expandedMap[i] = !isExpanded),
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF8FAFC),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              '${r.date.day}/${r.date.month}/${r.date.year}',
-                              style: const TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xFF475569)),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '${r.date.day}/${r.date.month}/${r.date.year}',
+                                  style: const TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xFF475569)),
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      formatCurrency(r.amount),
+                                      style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w700,
+                                          color: Color(0xFF1E293B)),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Icon(
+                                      isExpanded
+                                          ? Icons.expand_less
+                                          : Icons.expand_more,
+                                      size: 18,
+                                      color: const Color(0xFF94A3B8),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                            Text(
-                              formatCurrency(r.amount),
-                              style: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                  color: Color(0xFF1E293B)),
-                            ),
+                            if (!isExpanded)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Text(
+                                  '${r.itemCount} produto${r.itemCount != 1 ? 's' : ''}',
+                                  style: const TextStyle(
+                                      fontSize: 12, color: Color(0xFF94A3B8)),
+                                ),
+                              ),
+                            if (isExpanded && r.items.isNotEmpty) ...[
+                              const SizedBox(height: 8),
+                              ...r.items.map((name) => Padding(
+                                    padding: const EdgeInsets.only(bottom: 3),
+                                    child: Row(
+                                      children: [
+                                        const Icon(Icons.circle,
+                                            size: 4, color: Color(0xFF94A3B8)),
+                                        const SizedBox(width: 8),
+                                        Text(name,
+                                            style: const TextStyle(
+                                                fontSize: 13,
+                                                color: Color(0xFF475569))),
+                                      ],
+                                    ),
+                                  )),
+                            ],
                           ],
                         ),
-                        if (r.items.isNotEmpty) ...[
-                          const SizedBox(height: 6),
-                          Wrap(
-                            spacing: 6,
-                            runSpacing: 4,
-                            children: r.items
-                                .map((name) => Container(
-                                      padding:
-                                          const EdgeInsets.symmetric(
-                                              horizontal: 8, vertical: 3),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(20),
-                                        border: Border.all(
-                                            color:
-                                                const Color(0xFFE2E8F0)),
-                                      ),
-                                      child: Text(name,
-                                          style: const TextStyle(
-                                              fontSize: 11,
-                                              color: Color(0xFF475569))),
-                                    ))
-                                .toList(),
-                          ),
-                        ],
-                      ],
-                    ),
-                  );
-                },
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -148,15 +148,51 @@ class _AppHomeState extends State<AppHome> {
 
   void _toggleShoppingItem(ShoppingItem item) async {
     if (item.id.isEmpty) return;
-    await _shoppingListService.toggle(item.id, !item.checked);
+    // Optimistic: update local state immediately, don't wait for Realtime
+    setState(() {
+      _shoppingList = _shoppingList.map((i) {
+        if (i.id != item.id) return i;
+        return ShoppingItem(
+          id: i.id,
+          productName: i.productName,
+          store: i.store,
+          price: i.price,
+          unitPrice: i.unitPrice,
+          checked: !i.checked,
+        );
+      }).toList();
+    });
+    try {
+      await _shoppingListService.toggle(item.id, !item.checked);
+    } catch (_) {
+      // Revert on failure — Realtime will correct on next emission anyway
+      setState(() {
+        _shoppingList = _shoppingList.map((i) {
+          if (i.id != item.id) return i;
+          return ShoppingItem(
+            id: i.id,
+            productName: i.productName,
+            store: i.store,
+            price: i.price,
+            unitPrice: i.unitPrice,
+            checked: item.checked,
+          );
+        }).toList();
+      });
+    }
   }
 
   void _removeShoppingItem(ShoppingItem item) async {
     if (item.id.isEmpty) return;
-    await _shoppingListService.remove(item.id);
+    // Dismissible already removes it from view; fire-and-forget
+    _shoppingListService.remove(item.id);
   }
 
   void _clearCheckedItems() async {
+    // Optimistic: remove checked items locally immediately
+    setState(() {
+      _shoppingList = _shoppingList.where((i) => !i.checked).toList();
+    });
     await _shoppingListService.clearChecked(widget.householdId);
   }
 
