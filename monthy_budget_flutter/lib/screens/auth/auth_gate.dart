@@ -16,18 +16,33 @@ class _AuthGateState extends State<AuthGate> {
   final _householdService = HouseholdService();
   HouseholdProfile? _profile;
   bool _loadingProfile = false;
+  bool _profileFetched = false; // true once getProfile() has completed
 
   void _loadProfile() {
-    if (_loadingProfile) return;
+    if (_loadingProfile || _profileFetched) return;
     _loadingProfile = true;
     _householdService.getProfile().then((p) {
       if (mounted) {
         setState(() {
           _profile = p;
           _loadingProfile = false;
+          _profileFetched = true;
+        });
+      }
+    }).catchError((e) {
+      if (mounted) {
+        setState(() {
+          _loadingProfile = false;
+          _profileFetched = true;
         });
       }
     });
+  }
+
+  void _reset() {
+    _profile = null;
+    _loadingProfile = false;
+    _profileFetched = false;
   }
 
   @override
@@ -39,21 +54,17 @@ class _AuthGateState extends State<AuthGate> {
 
         // Not authenticated → Login
         if (session == null) {
-          _profile = null;
+          _reset();
           return LoginScreen(onAuthenticated: _loadProfile);
         }
 
-        // Authenticated but profile not loaded yet
-        if (_profile == null && !_loadingProfile) {
+        // Authenticated but profile not fetched yet → fetch + show spinner
+        if (!_profileFetched) {
           _loadProfile();
           return const _Loading();
         }
 
-        if (_loadingProfile) {
-          return const _Loading();
-        }
-
-        // Authenticated but no household → Setup
+        // Profile fetched but no household → Setup
         if (_profile == null) {
           return HouseholdSetupScreen(
             onSetupComplete: (profile) => setState(() => _profile = profile),
