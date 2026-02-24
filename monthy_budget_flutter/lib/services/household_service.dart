@@ -52,38 +52,15 @@ class HouseholdService {
 
   /// Joins an existing household via 6-char invite code.
   Future<HouseholdProfile> joinHousehold(String inviteCode) async {
-    final userId = _client.auth.currentUser!.id;
-
-    // No foreign key join — joiner has no household yet so households RLS
-    // would block the join and return null even with a valid code.
-    final invite = await _client
-        .from('household_invites')
-        .select('household_id')
-        .eq('code', inviteCode.trim().toUpperCase())
-        .gte('expires_at', DateTime.now().toIso8601String())
-        .maybeSingle();
-
-    if (invite == null) throw Exception('Código inválido ou expirado.');
-
-    final householdId = invite['household_id'] as String;
-
-    // Update profile first so subsequent household SELECT passes RLS.
-    await _client.from('profiles').update({
-      'household_id': householdId,
-      'role': 'admin',
-    }).eq('id', userId);
-
-    // Now fetch household name (profile belongs to household, RLS passes).
-    final household = await _client
-        .from('households')
-        .select('name')
-        .eq('id', householdId)
-        .single();
+    final result = await _client.rpc(
+      'join_household',
+      params: {'p_code': inviteCode.trim().toUpperCase()},
+    ) as Map<String, dynamic>;
 
     return HouseholdProfile(
-      householdId: householdId,
-      householdName: household['name'] as String,
-      role: 'admin',
+      householdId: result['household_id'] as String,
+      householdName: result['name'] as String,
+      role: result['role'] as String,
     );
   }
 
