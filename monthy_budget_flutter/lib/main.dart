@@ -213,8 +213,13 @@ class _AppHomeState extends State<AppHome> {
       await _purchaseHistoryService.saveRecord(record, widget.householdId);
       await _shoppingListService.clearChecked(widget.householdId);
       final updated =
-          PurchaseHistory(records: [..._purchaseHistory.records, record]);
-      if (mounted) setState(() => _purchaseHistory = updated);
+          PurchaseHistory(records: [record, ..._purchaseHistory.records]);
+      if (mounted) {
+        setState(() {
+          _purchaseHistory = updated;
+          _shoppingList = _shoppingList.where((i) => !i.checked).toList();
+        });
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
