@@ -251,15 +251,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       onTap: () => _toggleSection('coach'),
                     ),
                     if (_openSection == 'coach') _buildCoachSection(),
-                    if (widget.isAdmin) ...[
-                      _SectionHeader(
-                        icon: Icons.people_outline,
-                        title: 'Agregado',
-                        isOpen: _openSection == 'household',
-                        onTap: () => _toggleSection('household'),
-                      ),
-                      if (_openSection == 'household') _buildHouseholdSection(),
-                    ],
+                    _SectionHeader(
+                      icon: Icons.people_outline,
+                      title: 'Agregado',
+                      isOpen: _openSection == 'household',
+                      onTap: () => _toggleSection('household'),
+                    ),
+                    if (_openSection == 'household') _buildHouseholdSection(),
                     const SizedBox(height: 32),
                   ],
                 ),

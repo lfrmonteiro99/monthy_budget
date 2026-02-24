@@ -81,11 +81,11 @@ class HouseholdService {
 
     await _client.from('profiles').update({
       'household_id': householdId,
-      'role': 'member',
+      'role': 'admin',
     }).eq('id', userId);
 
     return HouseholdProfile(
-        householdId: householdId, householdName: householdName, role: 'member');
+        householdId: householdId, householdName: householdName, role: 'admin');
   }
 
   /// Admin only: generates and persists a 6-char invite code.
