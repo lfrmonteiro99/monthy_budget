@@ -38,28 +38,16 @@ class HouseholdService {
 
   /// Creates a new household; assigns current user as admin.
   Future<HouseholdProfile> createHousehold(String name) async {
-    final userId = _client.auth.currentUser!.id;
-
-    final hh = await _client
-        .from('households')
-        .insert({'name': name})
-        .select()
-        .single();
-
-    final householdId = hh['id'] as String;
-
-    await _client.from('profiles').update({
-      'household_id': householdId,
-      'role': 'admin',
-    }).eq('id', userId);
-
-    await _client.from('household_settings').insert({
-      'household_id': householdId,
-      'settings_json': '{}',
-    });
+    final result = await _client.rpc(
+      'create_household',
+      params: {'p_name': name},
+    ) as Map<String, dynamic>;
 
     return HouseholdProfile(
-        householdId: householdId, householdName: name, role: 'admin');
+      householdId: result['household_id'] as String,
+      householdName: result['name'] as String,
+      role: result['role'] as String,
+    );
   }
 
   /// Joins an existing household via 6-char invite code.
