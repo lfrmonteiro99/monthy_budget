@@ -263,6 +263,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         child: OutlinedButton.icon(
                           onPressed: () async {
                             await Supabase.instance.client.auth.signOut();
+                            if (context.mounted) {
+                              Navigator.of(context)
+                                  .popUntil((route) => route.isFirst);
+                            }
                           },
                           icon: const Icon(Icons.logout, size: 18),
                           label: const Text('Terminar Sessão'),
