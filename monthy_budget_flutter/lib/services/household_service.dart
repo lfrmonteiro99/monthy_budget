@@ -80,10 +80,12 @@ class HouseholdService {
   Future<String> generateInviteCode(String householdId) async {
     final userId = _client.auth.currentUser!.id;
     final code = _randomCode();
+    final expiresAt = DateTime.now().add(const Duration(days: 7));
     await _client.from('household_invites').insert({
       'household_id': householdId,
       'code': code,
       'created_by': userId,
+      'expires_at': expiresAt.toIso8601String(),
     });
     return code;
   }

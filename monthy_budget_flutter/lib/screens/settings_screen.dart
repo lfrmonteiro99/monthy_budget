@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/app_settings.dart';
 import '../models/product.dart';
 import '../data/irs_tables.dart';
@@ -254,6 +255,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       onTap: () => _toggleSection('household'),
                     ),
                     if (_openSection == 'household') _buildHouseholdSection(),
+                    const SizedBox(height: 24),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () async {
+                            await Supabase.instance.client.auth.signOut();
+                          },
+                          icon: const Icon(Icons.logout, size: 18),
+                          label: const Text('Terminar Sessão'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: const Color(0xFFEF4444),
+                            side: const BorderSide(color: Color(0xFFFECACA)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            textStyle: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 32),
                   ],
                 ),
