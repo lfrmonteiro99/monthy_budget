@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'config/supabase_config.dart';
 import 'models/app_settings.dart';
 import 'models/grocery_data.dart';
+import 'models/product.dart';
 import 'models/shopping_item.dart';
 import 'models/purchase_record.dart';
 import 'utils/calculations.dart';
@@ -13,6 +14,7 @@ import 'services/favorites_service.dart';
 import 'services/shopping_list_service.dart';
 import 'services/ai_coach_service.dart';
 import 'services/purchase_history_service.dart';
+import 'services/products_service.dart';
 import 'services/household_service.dart';
 import 'screens/shopping_list_screen.dart';
 import 'screens/coach_screen.dart';
@@ -71,9 +73,11 @@ class _AppHomeState extends State<AppHome> {
   final _shoppingListService = ShoppingListService();
   final _aiCoachService = AiCoachService();
   final _purchaseHistoryService = PurchaseHistoryService();
+  final _productsService = ProductsService();
 
   AppSettings _settings = const AppSettings();
   GroceryData _groceryData = const GroceryData();
+  List<Product> _products = [];
   List<String> _favorites = [];
   List<ShoppingItem> _shoppingList = [];
   String _openAiApiKey = '';
@@ -105,6 +109,7 @@ class _AppHomeState extends State<AppHome> {
       _favoritesService.load(widget.householdId),
       _purchaseHistoryService.load(widget.householdId),
       _aiCoachService.loadApiKey(),
+      _productsService.load(),
     ]);
     setState(() {
       _settings = results[0] as AppSettings;
@@ -112,6 +117,7 @@ class _AppHomeState extends State<AppHome> {
       _favorites = results[2] as List<String>;
       _purchaseHistory = results[3] as PurchaseHistory;
       _openAiApiKey = results[4] as String;
+      _products = results[5] as List<Product>;
       _loaded = true;
     });
   }
@@ -134,7 +140,7 @@ class _AppHomeState extends State<AppHome> {
 
   void _addToShoppingList(ShoppingItem item) async {
     final exists = _shoppingList.any(
-      (e) => e.productName == item.productName && e.store == item.store,
+      (e) => e.productName == item.productName,
     );
     if (exists) return;
     await _shoppingListService.add(item, widget.householdId);
@@ -154,17 +160,20 @@ class _AppHomeState extends State<AppHome> {
     await _shoppingListService.clearChecked(widget.householdId);
   }
 
-  void _finalizeShopping(double? amount, int itemCount) {
+  void _finalizeShopping(double? amount, List<ShoppingItem> checkedItems) {
     _clearCheckedItems();
-    if (amount != null && amount > 0) {
+    if (checkedItems.isNotEmpty) {
+      final estimated = checkedItems.fold(0.0, (s, i) => s + i.price);
+      final totalAmount = (amount != null && amount > 0) ? amount : estimated;
       final record = PurchaseRecord(
         id: 'purchase_${DateTime.now().millisecondsSinceEpoch}',
         date: DateTime.now(),
-        amount: amount,
-        itemCount: itemCount,
+        amount: totalAmount,
+        itemCount: checkedItems.length,
+        items: checkedItems.map((i) => i.productName).toList(),
       );
-      final updated = PurchaseHistory(
-          records: [..._purchaseHistory.records, record]);
+      final updated =
+          PurchaseHistory(records: [..._purchaseHistory.records, record]);
       setState(() => _purchaseHistory = updated);
       _purchaseHistoryService.saveRecord(record, widget.householdId);
     }
@@ -180,6 +189,7 @@ class _AppHomeState extends State<AppHome> {
       onSaveApiKey: _saveApiKey,
       isAdmin: widget.isAdmin,
       householdId: widget.householdId,
+      products: _products,
     );
   }
 
@@ -225,9 +235,7 @@ class _AppHomeState extends State<AppHome> {
         },
       ),
       GroceryScreen(
-        groceryData: _groceryData,
-        favorites: _favorites,
-        onFavoritesChanged: _saveFavorites,
+        products: _products,
         onAddToShoppingList: _addToShoppingList,
       ),
       ShoppingListScreen(
@@ -274,7 +282,7 @@ class _AppHomeState extends State<AppHome> {
             icon: Icon(Icons.shopping_cart_outlined),
             selectedIcon:
                 Icon(Icons.shopping_cart, color: Color(0xFF3B82F6)),
-            label: 'Supermercados',
+            label: 'Supermercado',
           ),
           NavigationDestination(
             icon: Badge(
@@ -291,8 +299,8 @@ class _AppHomeState extends State<AppHome> {
                 '${_shoppingList.where((i) => !i.checked).length}',
                 style: const TextStyle(fontSize: 10),
               ),
-              child:
-                  const Icon(Icons.shopping_basket, color: Color(0xFF3B82F6)),
+              child: const Icon(Icons.shopping_basket,
+                  color: Color(0xFF3B82F6)),
             ),
             label: 'Lista',
           ),
@@ -305,7 +313,7 @@ class _AppHomeState extends State<AppHome> {
             icon: Icon(Icons.restaurant_outlined),
             selectedIcon:
                 Icon(Icons.restaurant, color: Color(0xFF3B82F6)),
-            label: 'Refeições',
+            label: 'Refeicoes',
           ),
         ],
       ),

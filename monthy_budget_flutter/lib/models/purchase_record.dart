@@ -5,12 +5,14 @@ class PurchaseRecord {
   final DateTime date;
   final double amount;
   final int itemCount;
+  final List<String> items;
 
   const PurchaseRecord({
     required this.id,
     required this.date,
     required this.amount,
     required this.itemCount,
+    this.items = const [],
   });
 
   factory PurchaseRecord.fromJson(Map<String, dynamic> json) => PurchaseRecord(
@@ -18,6 +20,10 @@ class PurchaseRecord {
         date: DateTime.parse(json['date'] as String),
         amount: (json['amount'] as num).toDouble(),
         itemCount: json['itemCount'] as int,
+        items: (json['items'] as List<dynamic>?)
+                ?.map((e) => e as String)
+                .toList() ??
+            [],
       );
 
   Map<String, dynamic> toJson() => {
@@ -25,6 +31,7 @@ class PurchaseRecord {
         'date': date.toIso8601String(),
         'amount': amount,
         'itemCount': itemCount,
+        'items': items,
       };
 }
 

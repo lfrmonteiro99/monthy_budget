@@ -7,7 +7,8 @@ class ShoppingListScreen extends StatefulWidget {
   final ValueChanged<ShoppingItem> onToggleChecked;
   final ValueChanged<ShoppingItem> onRemove;
   final VoidCallback onClearChecked;
-  final void Function(double? amount, int itemCount) onFinalize;
+  final void Function(double? amount, List<ShoppingItem> checkedItems)
+      onFinalize;
 
   const ShoppingListScreen({
     super.key,
@@ -26,6 +27,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   void _showFinalizeSheet() {
     final checkedItems = widget.items.where((i) => i.checked).toList();
     final controller = TextEditingController();
+    final estimatedTotal = checkedItems.fold(0.0, (s, i) => s + i.price);
 
     showModalBottomSheet(
       context: context,
@@ -80,13 +82,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis),
                         ),
-                        Text(
-                          formatCurrency(item.price),
-                          style: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFF10B981)),
-                        ),
+                        if (item.price > 0)
+                          Text(
+                            formatCurrency(item.price),
+                            style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF10B981)),
+                          ),
                       ],
                     ),
                   );
@@ -99,6 +102,23 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (estimatedTotal > 0)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Total estimado',
+                              style: TextStyle(
+                                  fontSize: 13, color: Color(0xFF64748B))),
+                          Text(formatCurrency(estimatedTotal),
+                              style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF1E293B))),
+                        ],
+                      ),
+                    ),
                   const Text(
                     'QUANTO GASTEI NO TOTAL? (opcional)',
                     style: TextStyle(
@@ -144,7 +164,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                             ? double.tryParse(raw.replaceAll(',', '.'))
                             : null;
                         Navigator.pop(ctx);
-                        widget.onFinalize(amount, checkedItems.length);
+                        widget.onFinalize(amount, checkedItems);
                       },
                       style: FilledButton.styleFrom(
                         backgroundColor: const Color(0xFF3B82F6),
@@ -166,23 +186,33 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   @override
   Widget build(BuildContext context) {
     final hasChecked = widget.items.any((i) => i.checked);
+    final uncheckedTotal =
+        widget.items.where((i) => !i.checked).fold(0.0, (s, i) => s + i.price);
 
     if (widget.items.isEmpty) {
       return Scaffold(
         backgroundColor: const Color(0xFFF8FAFC),
         appBar: _buildAppBar(),
-        body: const Center(
+        body: Center(
           child: Padding(
-            padding: EdgeInsets.all(32),
+            padding: const EdgeInsets.all(32),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.shopping_basket_outlined,
-                    size: 48, color: Color(0xFFCBD5E1)),
-                SizedBox(height: 16),
-                Text(
-                  'Lista vazia.\nAdiciona produtos nas Categorias.',
-                  style: TextStyle(fontSize: 14, color: Color(0xFF64748B)),
+                    size: 56, color: Colors.grey.shade300),
+                const SizedBox(height: 16),
+                const Text(
+                  'Lista vazia',
+                  style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF475569)),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Adiciona produtos a partir do\necra Supermercado.',
+                  style: TextStyle(fontSize: 14, color: Color(0xFF94A3B8)),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -192,20 +222,6 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       );
     }
 
-    final Map<String, List<ShoppingItem>> byStore = {};
-    for (final item in widget.items) {
-      byStore.putIfAbsent(item.store, () => []).add(item);
-    }
-    final stores = byStore.keys.toList()
-      ..sort((a, b) {
-        final aUnchecked = byStore[a]!.where((i) => !i.checked).length;
-        final bUnchecked = byStore[b]!.where((i) => !i.checked).length;
-        return bUnchecked.compareTo(aUnchecked);
-      });
-
-    final uncheckedTotal =
-        widget.items.where((i) => !i.checked).fold(0.0, (s, i) => s + i.price);
-
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: _buildAppBar(),
@@ -213,7 +229,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         children: [
           Container(
             color: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             child: Row(
               children: [
                 Icon(Icons.shopping_basket,
@@ -246,9 +262,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
-              itemCount: stores.length,
-              itemBuilder: (_, i) =>
-                  _buildStoreSection(stores[i], byStore[stores[i]]!),
+              itemCount: widget.items.length,
+              itemBuilder: (_, i) => _buildItemRow(widget.items[i]),
             ),
           ),
         ],
@@ -257,12 +272,11 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           ? FloatingActionButton.extended(
               onPressed: _showFinalizeSheet,
               backgroundColor: const Color(0xFF10B981),
-              icon: const Icon(Icons.check_circle_outline,
-                  color: Colors.white),
+              icon: const Icon(Icons.check_circle_outline, color: Colors.white),
               label: const Text(
                 'Finalizar Compra',
-                style: TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.w600),
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
               ),
             )
           : null,
@@ -272,71 +286,20 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   AppBar _buildAppBar() => AppBar(
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Lista de Compras',
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF1E293B)),
-            ),
-            Text(
-              'SUPERMERCADOS',
-              style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF94A3B8),
-                  letterSpacing: 1.2),
-            ),
-          ],
+        title: const Text(
+          'Lista de Compras',
+          style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF1E293B)),
         ),
       );
 
-  Widget _buildStoreSection(String store, List<ShoppingItem> storeItems) {
-    final unchecked = storeItems.where((i) => !i.checked).length;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8, top: 4),
-          child: Row(
-            children: [
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFEFF6FF),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  store.isEmpty ? 'GERAL' : store.toUpperCase(),
-                  style: const TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF3B82F6),
-                      letterSpacing: 1.1),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                '$unchecked por comprar',
-                style:
-                    const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
-              ),
-            ],
-          ),
-        ),
-        ...storeItems.map((item) => _buildItemRow(item)),
-        const SizedBox(height: 12),
-      ],
-    );
-  }
-
   Widget _buildItemRow(ShoppingItem item) {
     return Dismissible(
-      key: Key('${item.productName}_${item.store}'),
+      key: Key(item.id.isNotEmpty
+          ? item.id
+          : '${item.productName}_${item.store}'),
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
@@ -346,8 +309,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           color: const Color(0xFFFEE2E2),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: const Icon(Icons.delete_outline,
-            color: Color(0xFFEF4444), size: 22),
+        child:
+            const Icon(Icons.delete_outline, color: Color(0xFFEF4444), size: 22),
       ),
       onDismissed: (_) => widget.onRemove(item),
       child: GestureDetector(
@@ -394,19 +357,20 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 ),
               ),
               const SizedBox(width: 8),
-              Text(
-                formatCurrency(item.price),
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: item.checked
-                      ? const Color(0xFFCBD5E1)
-                      : const Color(0xFF10B981),
-                  decoration:
-                      item.checked ? TextDecoration.lineThrough : null,
-                  decorationColor: const Color(0xFFCBD5E1),
+              if (item.price > 0)
+                Text(
+                  formatCurrency(item.price),
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: item.checked
+                        ? const Color(0xFFCBD5E1)
+                        : const Color(0xFF10B981),
+                    decoration:
+                        item.checked ? TextDecoration.lineThrough : null,
+                    decorationColor: const Color(0xFFCBD5E1),
+                  ),
                 ),
-              ),
             ],
           ),
         ),

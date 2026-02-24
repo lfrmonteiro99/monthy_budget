@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/app_settings.dart';
+import '../models/product.dart';
 import '../data/irs_tables.dart';
 import '../utils/formatters.dart';
 import '../services/household_service.dart';
@@ -13,6 +14,7 @@ class SettingsScreen extends StatefulWidget {
   final ValueChanged<String> onSaveApiKey;
   final bool isAdmin;
   final String householdId;
+  final List<Product> products;
 
   const SettingsScreen({
     super.key,
@@ -24,6 +26,7 @@ class SettingsScreen extends StatefulWidget {
     required this.onSaveApiKey,
     required this.isAdmin,
     required this.householdId,
+    this.products = const [],
   });
 
   @override
@@ -38,14 +41,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final _customProductController = TextEditingController();
   String? _inviteCode;
 
-  static const _suggestions = [
-    'Leite', 'Pao', 'Ovos', 'Arroz', 'Massa', 'Manteiga',
-    'Iogurte', 'Queijo', 'Frango', 'Carne', 'Peixe', 'Atum',
-    'Tomate', 'Batata', 'Cebola', 'Alho', 'Cenoura',
-    'Macas', 'Bananas', 'Laranjas', 'Uvas',
-    'Azeite', 'Cafe', 'Acucar', 'Agua', 'Sumo', 'Cerveja',
-    'Detergente', 'Papel Higienico', 'Champô',
-  ];
+  String _favSearch = '';
 
   @override
   void initState() {
@@ -677,6 +673,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildFavoritesSection() {
+    // All product names from catalog, filtered by search
+    final allNames = widget.products.map((p) => p.name).toList();
+    final filtered = _favSearch.isEmpty
+        ? allNames
+        : allNames
+            .where((n) =>
+                n.toLowerCase().contains(_favSearch.toLowerCase()))
+            .toList();
+
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.all(20),
@@ -692,12 +697,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             child: Row(
               children: [
-                const Icon(Icons.tips_and_updates, size: 18, color: Color(0xFFF97316)),
+                const Icon(Icons.tips_and_updates,
+                    size: 18, color: Color(0xFFF97316)),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    'Os produtos favoritos aparecem em destaque no topo das comparacoes.',
-                    style: TextStyle(fontSize: 12, color: Colors.orange.shade800, height: 1.4),
+                    'Os produtos favoritos influenciam o plano de refeicoes — receitas com esses ingredientes ficam em prioridade.',
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.orange.shade800,
+                        height: 1.4),
                   ),
                 ),
               ],
@@ -710,52 +719,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: _favorites.map((f) => _buildFavoriteChip(f, isSelected: true)).toList(),
+              children: _favorites
+                  .map((f) => _buildFavoriteChip(f, isSelected: true))
+                  .toList(),
             ),
             const SizedBox(height: 20),
           ],
-          _label('ADICIONAR PRODUTO'),
+          _label('CATALOGO DE PRODUTOS'),
           const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _customProductController,
-                  onSubmitted: (_) => _addCustomProduct(),
-                  decoration: _inputDecoration('ex: Cereais, Salmao...').copyWith(
-                    prefixIcon: const Icon(Icons.add, size: 18, color: Color(0xFF94A3B8)),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              SizedBox(
-                height: 46,
-                child: ElevatedButton(
-                  onPressed: _addCustomProduct,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF3B82F6),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                  ),
-                  child: const Icon(Icons.add, size: 20),
-                ),
-              ),
-            ],
+          TextField(
+            onChanged: (v) => setState(() => _favSearch = v),
+            decoration: _inputDecoration('Pesquisar produto...').copyWith(
+              prefixIcon: const Icon(Icons.search,
+                  size: 18, color: Color(0xFF94A3B8)),
+              contentPadding: const EdgeInsets.symmetric(vertical: 12),
+            ),
           ),
-          const SizedBox(height: 20),
-          _label('SUGESTOES'),
-          const SizedBox(height: 10),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: _suggestions.map((s) {
-              final isSelected = _favorites.any((f) => f.toLowerCase() == s.toLowerCase());
-              return _buildFavoriteChip(s, isSelected: isSelected);
-            }).toList(),
-          ),
+          const SizedBox(height: 12),
+          if (widget.products.isEmpty)
+            const Text('A carregar produtos...',
+                style:
+                    TextStyle(fontSize: 12, color: Color(0xFF94A3B8)))
+          else
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: filtered.map((name) {
+                final isSelected = _favorites
+                    .any((f) => f.toLowerCase() == name.toLowerCase());
+                return _buildFavoriteChip(name, isSelected: isSelected);
+              }).toList(),
+            ),
         ],
       ),
     );
