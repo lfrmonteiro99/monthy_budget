@@ -1,0 +1,119 @@
+import 'package:flutter/material.dart';
+import '../../services/auth_service.dart';
+
+class LoginScreen extends StatefulWidget {
+  final VoidCallback onAuthenticated;
+  const LoginScreen({super.key, required this.onAuthenticated});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _auth = AuthService();
+  final _emailCtrl = TextEditingController();
+  final _passCtrl = TextEditingController();
+  bool _isLogin = true;
+  bool _loading = false;
+  String? _error;
+
+  @override
+  void dispose() {
+    _emailCtrl.dispose();
+    _passCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      if (_isLogin) {
+        await _auth.signIn(_emailCtrl.text.trim(), _passCtrl.text);
+      } else {
+        await _auth.signUp(_emailCtrl.text.trim(), _passCtrl.text);
+      }
+      widget.onAuthenticated();
+    } catch (e) {
+      setState(() => _error = e.toString());
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.account_balance_wallet,
+                  size: 64, color: Color(0xFF3B82F6)),
+              const SizedBox(height: 8),
+              Text(
+                'Orçamento Mensal',
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                _isLogin ? 'Entrar na conta' : 'Criar conta',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: const Color(0xFF64748B)),
+              ),
+              const SizedBox(height: 32),
+              TextField(
+                controller: _emailCtrl,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                    labelText: 'Email', border: OutlineInputBorder()),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _passCtrl,
+                obscureText: true,
+                decoration: const InputDecoration(
+                    labelText: 'Palavra-passe', border: OutlineInputBorder()),
+                onSubmitted: (_) => _submit(),
+              ),
+              if (_error != null) ...[
+                const SizedBox(height: 8),
+                Text(_error!,
+                    style: const TextStyle(color: Colors.red, fontSize: 13)),
+              ],
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: _loading ? null : _submit,
+                  child: _loading
+                      ? const SizedBox(
+                          height: 16,
+                          width: 16,
+                          child: CircularProgressIndicator(
+                              color: Colors.white, strokeWidth: 2))
+                      : Text(_isLogin ? 'Entrar' : 'Registar'),
+                ),
+              ),
+              TextButton(
+                onPressed: () => setState(() => _isLogin = !_isLogin),
+                child:
+                    Text(_isLogin ? 'Criar conta nova' : 'Já tenho conta'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

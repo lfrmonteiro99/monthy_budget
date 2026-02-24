@@ -1,23 +1,30 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'config/supabase_config.dart';
 import 'models/app_settings.dart';
 import 'models/grocery_data.dart';
+import 'models/shopping_item.dart';
+import 'models/purchase_record.dart';
 import 'utils/calculations.dart';
 import 'services/settings_service.dart';
 import 'services/grocery_service.dart';
 import 'services/favorites_service.dart';
-import 'models/shopping_item.dart';
 import 'services/shopping_list_service.dart';
-import 'models/purchase_record.dart';
 import 'services/ai_coach_service.dart';
 import 'services/purchase_history_service.dart';
+import 'services/household_service.dart';
 import 'screens/shopping_list_screen.dart';
 import 'screens/coach_screen.dart';
 import 'screens/meal_planner_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/grocery_screen.dart';
+import 'screens/auth/auth_gate.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
   runApp(const OrcamentoMensalApp());
 }
 
@@ -33,13 +40,25 @@ class OrcamentoMensalApp extends StatelessWidget {
         colorSchemeSeed: const Color(0xFF3B82F6),
         useMaterial3: true,
       ),
-      home: const AppHome(),
+      home: AuthGate(
+        appBuilder: (profile) => AppHome(
+          householdId: profile.householdId,
+          isAdmin: profile.role == 'admin',
+        ),
+      ),
     );
   }
 }
 
 class AppHome extends StatefulWidget {
-  const AppHome({super.key});
+  final String householdId;
+  final bool isAdmin;
+
+  const AppHome({
+    super.key,
+    required this.householdId,
+    required this.isAdmin,
+  });
 
   @override
   State<AppHome> createState() => _AppHomeState();
@@ -52,6 +71,7 @@ class _AppHomeState extends State<AppHome> {
   final _shoppingListService = ShoppingListService();
   final _aiCoachService = AiCoachService();
   final _purchaseHistoryService = PurchaseHistoryService();
+
   AppSettings _settings = const AppSettings();
   GroceryData _groceryData = const GroceryData();
   List<String> _favorites = [];
@@ -61,44 +81,50 @@ class _AppHomeState extends State<AppHome> {
   bool _loaded = false;
   int _currentIndex = 0;
 
+  late StreamSubscription<List<ShoppingItem>> _shoppingListSub;
+
   @override
   void initState() {
     super.initState();
+    _shoppingListSub = _shoppingListService
+        .stream(widget.householdId)
+        .listen((items) => setState(() => _shoppingList = items));
     _loadAll();
+  }
+
+  @override
+  void dispose() {
+    _shoppingListSub.cancel();
+    super.dispose();
   }
 
   Future<void> _loadAll() async {
     final results = await Future.wait([
-      _settingsService.load(),
+      _settingsService.load(widget.householdId),
       _groceryService.load(),
-      _favoritesService.load(),
-      _shoppingListService.load(),
+      _favoritesService.load(widget.householdId),
+      _purchaseHistoryService.load(widget.householdId),
       _aiCoachService.loadApiKey(),
-      _purchaseHistoryService.load(),
     ]);
     setState(() {
       _settings = results[0] as AppSettings;
       _groceryData = results[1] as GroceryData;
       _favorites = results[2] as List<String>;
-      _shoppingList = results[3] as List<ShoppingItem>;
+      _purchaseHistory = results[3] as PurchaseHistory;
       _openAiApiKey = results[4] as String;
-      _purchaseHistory = results[5] as PurchaseHistory;
       _loaded = true;
     });
   }
 
   void _saveSettings(AppSettings settings) {
-    setState(() {
-      _settings = settings;
-    });
-    _settingsService.save(settings);
+    if (!widget.isAdmin) return;
+    setState(() => _settings = settings);
+    _settingsService.save(settings, widget.householdId);
   }
 
   void _saveFavorites(List<String> favorites) {
-    setState(() {
-      _favorites = favorites;
-    });
-    _favoritesService.save(favorites);
+    setState(() => _favorites = favorites);
+    _favoritesService.save(favorites, widget.householdId);
   }
 
   void _saveApiKey(String key) {
@@ -106,45 +132,26 @@ class _AppHomeState extends State<AppHome> {
     _aiCoachService.saveApiKey(key);
   }
 
-  void _addToShoppingList(ShoppingItem item) {
+  void _addToShoppingList(ShoppingItem item) async {
     final exists = _shoppingList.any(
       (e) => e.productName == item.productName && e.store == item.store,
     );
     if (exists) return;
-    final updated = [..._shoppingList, item];
-    setState(() => _shoppingList = updated);
-    _shoppingListService.save(updated);
+    await _shoppingListService.add(item, widget.householdId);
   }
 
-  void _toggleShoppingItem(ShoppingItem item) {
-    final updated = _shoppingList.map((e) {
-      if (e.productName == item.productName && e.store == item.store) {
-        return ShoppingItem(
-          productName: e.productName,
-          store: e.store,
-          price: e.price,
-          unitPrice: e.unitPrice,
-          checked: !e.checked,
-        );
-      }
-      return e;
-    }).toList();
-    setState(() => _shoppingList = updated);
-    _shoppingListService.save(updated);
+  void _toggleShoppingItem(ShoppingItem item) async {
+    if (item.id.isEmpty) return;
+    await _shoppingListService.toggle(item.id, !item.checked);
   }
 
-  void _removeShoppingItem(ShoppingItem item) {
-    final updated = _shoppingList
-        .where((e) => !(e.productName == item.productName && e.store == item.store))
-        .toList();
-    setState(() => _shoppingList = updated);
-    _shoppingListService.save(updated);
+  void _removeShoppingItem(ShoppingItem item) async {
+    if (item.id.isEmpty) return;
+    await _shoppingListService.remove(item.id);
   }
 
-  void _clearCheckedItems() {
-    final updated = _shoppingList.where((e) => !e.checked).toList();
-    setState(() => _shoppingList = updated);
-    _shoppingListService.save(updated);
+  void _clearCheckedItems() async {
+    await _shoppingListService.clearChecked(widget.householdId);
   }
 
   void _finalizeShopping(double? amount, int itemCount) {
@@ -156,10 +163,24 @@ class _AppHomeState extends State<AppHome> {
         amount: amount,
         itemCount: itemCount,
       );
-      final updated = PurchaseHistory(records: [..._purchaseHistory.records, record]);
+      final updated = PurchaseHistory(
+          records: [..._purchaseHistory.records, record]);
       setState(() => _purchaseHistory = updated);
-      _purchaseHistoryService.saveAll(updated);
+      _purchaseHistoryService.saveRecord(record, widget.householdId);
     }
+  }
+
+  SettingsScreen _buildSettingsScreen() {
+    return SettingsScreen(
+      settings: _settings,
+      onSave: _saveSettings,
+      favorites: _favorites,
+      onSaveFavorites: _saveFavorites,
+      apiKey: _openAiApiKey,
+      onSaveApiKey: _saveApiKey,
+      isAdmin: widget.isAdmin,
+      householdId: widget.householdId,
+    );
   }
 
   @override
@@ -175,7 +196,10 @@ class _AppHomeState extends State<AppHome> {
               SizedBox(height: 16),
               Text(
                 'A carregar...',
-                style: TextStyle(color: Color(0xFF94A3B8), fontSize: 14, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                    color: Color(0xFF94A3B8),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500),
               ),
             ],
           ),
@@ -196,16 +220,7 @@ class _AppHomeState extends State<AppHome> {
         purchaseHistory: _purchaseHistory,
         onOpenSettings: () {
           Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => SettingsScreen(
-                settings: _settings,
-                onSave: _saveSettings,
-                favorites: _favorites,
-                onSaveFavorites: _saveFavorites,
-                apiKey: _openAiApiKey,
-                onSaveApiKey: _saveApiKey,
-              ),
-            ),
+            MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
           );
         },
       ),
@@ -228,16 +243,7 @@ class _AppHomeState extends State<AppHome> {
         apiKey: _openAiApiKey,
         onOpenSettings: () {
           Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => SettingsScreen(
-                settings: _settings,
-                onSave: _saveSettings,
-                favorites: _favorites,
-                onSaveFavorites: _saveFavorites,
-                apiKey: _openAiApiKey,
-                onSaveApiKey: _saveApiKey,
-              ),
-            ),
+            MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
           );
         },
       ),
@@ -246,6 +252,7 @@ class _AppHomeState extends State<AppHome> {
         apiKey: _openAiApiKey,
         favorites: _favorites,
         onAddToShoppingList: _addToShoppingList,
+        householdId: widget.householdId,
       ),
     ];
 
@@ -265,7 +272,8 @@ class _AppHomeState extends State<AppHome> {
           ),
           const NavigationDestination(
             icon: Icon(Icons.shopping_cart_outlined),
-            selectedIcon: Icon(Icons.shopping_cart, color: Color(0xFF3B82F6)),
+            selectedIcon:
+                Icon(Icons.shopping_cart, color: Color(0xFF3B82F6)),
             label: 'Supermercados',
           ),
           NavigationDestination(
@@ -283,7 +291,8 @@ class _AppHomeState extends State<AppHome> {
                 '${_shoppingList.where((i) => !i.checked).length}',
                 style: const TextStyle(fontSize: 10),
               ),
-              child: const Icon(Icons.shopping_basket, color: Color(0xFF3B82F6)),
+              child:
+                  const Icon(Icons.shopping_basket, color: Color(0xFF3B82F6)),
             ),
             label: 'Lista',
           ),
@@ -294,7 +303,8 @@ class _AppHomeState extends State<AppHome> {
           ),
           const NavigationDestination(
             icon: Icon(Icons.restaurant_outlined),
-            selectedIcon: Icon(Icons.restaurant, color: Color(0xFF3B82F6)),
+            selectedIcon:
+                Icon(Icons.restaurant, color: Color(0xFF3B82F6)),
             label: 'Refeições',
           ),
         ],

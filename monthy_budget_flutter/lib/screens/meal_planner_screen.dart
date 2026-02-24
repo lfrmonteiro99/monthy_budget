@@ -10,6 +10,7 @@ class MealPlannerScreen extends StatefulWidget {
   final String apiKey;
   final List<String> favorites;
   final void Function(ShoppingItem) onAddToShoppingList;
+  final String householdId;
 
   const MealPlannerScreen({
     super.key,
@@ -17,6 +18,7 @@ class MealPlannerScreen extends StatefulWidget {
     required this.apiKey,
     required this.favorites,
     required this.onAddToShoppingList,
+    required this.householdId,
   });
 
   @override
@@ -44,7 +46,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
   Future<void> _init() async {
     await _service.loadCatalog();
-    final saved = await _service.load();
+    final now = DateTime.now();
+    final saved = await _service.load(widget.householdId, now.month, now.year);
     setState(() {
       _plan = saved;
       _catalogReady = true;
@@ -56,7 +59,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     setState(() => _loading = true);
     final now = DateTime.now();
     final plan = _service.generate(widget.settings, now, favorites: widget.favorites);
-    await _service.save(plan);
+    await _service.save(plan, widget.householdId);
     setState(() {
       _plan = plan;
       _loading = false;
@@ -104,7 +107,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         service: _service,
         onSelect: (newRecipeId) {
           final updated = _service.swapDay(plan, dayIndex, newRecipeId);
-          _service.save(updated);
+          _service.save(updated, widget.householdId);
           setState(() => _plan = updated);
           _enrichPlan(updated);
         },
@@ -220,8 +223,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   ),
                   TextButton.icon(
                     onPressed: () {
+                      final plan = _plan!;
                       setState(() => _plan = null);
-                      _service.clear();
+                      _service.clear(widget.householdId, plan.month, plan.year);
                     },
                     icon: const Icon(Icons.refresh, size: 16),
                     label: const Text('Regenerar'),

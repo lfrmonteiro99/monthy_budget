@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/app_settings.dart';
 import '../data/irs_tables.dart';
 import '../utils/formatters.dart';
+import '../services/household_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   final AppSettings settings;
@@ -10,6 +11,8 @@ class SettingsScreen extends StatefulWidget {
   final ValueChanged<List<String>> onSaveFavorites;
   final String apiKey;
   final ValueChanged<String> onSaveApiKey;
+  final bool isAdmin;
+  final String householdId;
 
   const SettingsScreen({
     super.key,
@@ -19,6 +22,8 @@ class SettingsScreen extends StatefulWidget {
     required this.onSaveFavorites,
     required this.apiKey,
     required this.onSaveApiKey,
+    required this.isAdmin,
+    required this.householdId,
   });
 
   @override
@@ -31,6 +36,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   late TextEditingController _apiKeyController;
   String? _openSection = 'personal';
   final _customProductController = TextEditingController();
+  String? _inviteCode;
 
   static const _suggestions = [
     'Leite', 'Pao', 'Ovos', 'Arroz', 'Massa', 'Manteiga',
@@ -67,10 +73,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _handleSave() {
+    if (!widget.isAdmin) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text(
+                'Apenas o administrador pode alterar as definições.')),
+      );
+      return;
+    }
     widget.onSave(_draft);
     widget.onSaveFavorites(_favorites);
     widget.onSaveApiKey(_apiKeyController.text.trim());
     Navigator.of(context).pop();
+  }
+
+  Future<void> _generateInvite() async {
+    final code =
+        await HouseholdService().generateInviteCode(widget.householdId);
+    setState(() => _inviteCode = code);
   }
 
   void _toggleFavorite(String product) {
@@ -231,6 +251,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       onTap: () => _toggleSection('coach'),
                     ),
                     if (_openSection == 'coach') _buildCoachSection(),
+                    if (widget.isAdmin) ...[
+                      _SectionHeader(
+                        icon: Icons.people_outline,
+                        title: 'Agregado',
+                        isOpen: _openSection == 'household',
+                        onTap: () => _toggleSection('household'),
+                      ),
+                      if (_openSection == 'household') _buildHouseholdSection(),
+                    ],
                     const SizedBox(height: 32),
                   ],
                 ),
@@ -798,6 +827,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildHouseholdSection() {
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _label('CÓDIGO DE CONVITE'),
+          const SizedBox(height: 8),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.link, color: Color(0xFF3B82F6)),
+            title: const Text('Gerar código de convite'),
+            subtitle: _inviteCode != null
+                ? SelectableText(
+                    _inviteCode!,
+                    style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 6,
+                        color: Color(0xFF1E293B)),
+                  )
+                : const Text('Partilha com membros do agregado'),
+            trailing: IconButton(
+              icon: const Icon(Icons.refresh),
+              tooltip: 'Novo código',
+              onPressed: _generateInvite,
+            ),
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'O código é válido por 7 dias. Partilha-o com quem queres adicionar ao agregado.',
+            style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8), height: 1.5),
+          ),
+        ],
       ),
     );
   }

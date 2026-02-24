@@ -1,0 +1,4 @@
+// Copy this file to supabase_config.dart and fill in your credentials.
+// Dashboard → your project → Settings → API
+const supabaseUrl = 'https://YOUR_PROJECT_ID.supabase.co';
+const supabaseAnonKey = 'YOUR_ANON_PUBLIC_KEY';

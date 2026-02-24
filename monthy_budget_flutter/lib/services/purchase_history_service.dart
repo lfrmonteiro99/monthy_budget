@@ -1,22 +1,35 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/purchase_record.dart';
 
 class PurchaseHistoryService {
-  static const _key = 'purchase_history';
+  final _client = Supabase.instance.client;
 
-  Future<PurchaseHistory> load() async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_key);
-    if (raw == null) return const PurchaseHistory();
-    try {
-      return PurchaseHistory.fromJsonString(raw);
-    } catch (_) {
-      return const PurchaseHistory();
-    }
+  Future<PurchaseHistory> load(String householdId) async {
+    final rows = await _client
+        .from('purchase_records')
+        .select()
+        .eq('household_id', householdId)
+        .order('purchased_at', ascending: false);
+
+    final records = rows
+        .map((r) => PurchaseRecord(
+              id: r['id'] as String,
+              date: DateTime.parse(r['purchased_at'] as String),
+              amount: (r['amount'] as num).toDouble(),
+              itemCount: r['item_count'] as int,
+            ))
+        .toList();
+
+    return PurchaseHistory(records: records);
   }
 
-  Future<void> saveAll(PurchaseHistory history) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_key, history.toJsonString());
+  Future<void> saveRecord(PurchaseRecord record, String householdId) async {
+    await _client.from('purchase_records').upsert({
+      'id': record.id,
+      'household_id': householdId,
+      'amount': record.amount,
+      'item_count': record.itemCount,
+      'purchased_at': record.date.toIso8601String(),
+    });
   }
 }

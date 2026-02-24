@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/meal_planner.dart';
 import '../models/app_settings.dart';
 
 class MealPlannerService {
-  static const _planKey = 'meal_plan';
 
   // Protein clusters: dominant protein ids per week (index 0-3)
   static const _weekClusters = [
@@ -217,24 +216,42 @@ class MealPlannerService {
 
   // --- Persistence ---
 
-  Future<MealPlan?> load() async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_planKey);
-    if (raw == null) return null;
+  Future<MealPlan?> load(String householdId, int month, int year) async {
+    final client = Supabase.instance.client;
+    final row = await client
+        .from('meal_plans')
+        .select('plan_json')
+        .eq('household_id', householdId)
+        .eq('month', month)
+        .eq('year', year)
+        .maybeSingle();
+
+    if (row == null) return null;
     try {
-      return MealPlan.fromJsonString(raw);
+      return MealPlan.fromJsonString(row['plan_json'] as String);
     } catch (_) {
       return null;
     }
   }
 
-  Future<void> save(MealPlan plan) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_planKey, plan.toJsonString());
+  Future<void> save(MealPlan plan, String householdId) async {
+    final client = Supabase.instance.client;
+    await client.from('meal_plans').upsert({
+      'household_id': householdId,
+      'month': plan.month,
+      'year': plan.year,
+      'plan_json': plan.toJsonString(),
+      'updated_at': DateTime.now().toIso8601String(),
+    });
   }
 
-  Future<void> clear() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_planKey);
+  Future<void> clear(String householdId, int month, int year) async {
+    final client = Supabase.instance.client;
+    await client
+        .from('meal_plans')
+        .delete()
+        .eq('household_id', householdId)
+        .eq('month', month)
+        .eq('year', year);
   }
 }

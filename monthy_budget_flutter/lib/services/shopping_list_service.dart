@@ -1,24 +1,45 @@
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/shopping_item.dart';
 
 class ShoppingListService {
-  static const _key = 'shopping_list';
+  final _client = Supabase.instance.client;
 
-  Future<List<ShoppingItem>> load() async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_key);
-    if (raw == null) return [];
-    try {
-      final list = json.decode(raw) as List<dynamic>;
-      return list.map((e) => ShoppingItem.fromJson(e as Map<String, dynamic>)).toList();
-    } catch (_) {
-      return [];
-    }
+  /// Realtime stream — updates automatically whenever the table changes.
+  Stream<List<ShoppingItem>> stream(String householdId) {
+    return _client
+        .from('shopping_items')
+        .stream(primaryKey: ['id'])
+        .eq('household_id', householdId)
+        .order('created_at')
+        .map((rows) => rows.map((r) => ShoppingItem.fromSupabase(r)).toList());
   }
 
-  Future<void> save(List<ShoppingItem> items) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_key, json.encode(items.map((e) => e.toJson()).toList()));
+  /// Inserts a new item and returns the server-persisted record (with UUID id).
+  Future<ShoppingItem> add(ShoppingItem item, String householdId) async {
+    final row = await _client
+        .from('shopping_items')
+        .insert(item.toSupabase(householdId))
+        .select()
+        .single();
+    return ShoppingItem.fromSupabase(row);
+  }
+
+  Future<void> toggle(String id, bool checked) async {
+    await _client.from('shopping_items').update({
+      'checked': checked,
+      'updated_at': DateTime.now().toIso8601String(),
+    }).eq('id', id);
+  }
+
+  Future<void> remove(String id) async {
+    await _client.from('shopping_items').delete().eq('id', id);
+  }
+
+  Future<void> clearChecked(String householdId) async {
+    await _client
+        .from('shopping_items')
+        .delete()
+        .eq('household_id', householdId)
+        .eq('checked', true);
   }
 }
