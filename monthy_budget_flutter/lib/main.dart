@@ -257,6 +257,7 @@ class _AppHomeState extends State<AppHome> {
         onRemove: _removeShoppingItem,
         onClearChecked: _clearCheckedItems,
         onFinalize: _finalizeShopping,
+        purchaseHistory: _purchaseHistory,
       ),
       CoachScreen(
         settings: _settings,

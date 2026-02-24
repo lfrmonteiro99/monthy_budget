@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/shopping_item.dart';
+import '../models/purchase_record.dart';
 import '../utils/formatters.dart';
 
 class ShoppingListScreen extends StatefulWidget {
@@ -9,6 +10,7 @@ class ShoppingListScreen extends StatefulWidget {
   final VoidCallback onClearChecked;
   final void Function(double? amount, List<ShoppingItem> checkedItems)
       onFinalize;
+  final PurchaseHistory purchaseHistory;
 
   const ShoppingListScreen({
     super.key,
@@ -17,6 +19,7 @@ class ShoppingListScreen extends StatefulWidget {
     required this.onRemove,
     required this.onClearChecked,
     required this.onFinalize,
+    required this.purchaseHistory,
   });
 
   @override
@@ -293,7 +296,129 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               fontWeight: FontWeight.w700,
               color: Color(0xFF1E293B)),
         ),
+        actions: [
+          if (widget.purchaseHistory.records.isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.receipt_long_outlined,
+                  color: Color(0xFF64748B)),
+              tooltip: 'Historico',
+              onPressed: _showHistory,
+            ),
+        ],
       );
+
+  void _showHistory() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => DraggableScrollableSheet(
+        initialChildSize: 0.7,
+        maxChildSize: 0.95,
+        minChildSize: 0.4,
+        expand: false,
+        builder: (_, scrollController) => Column(
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFCBD5E1),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20, 0, 20, 16),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Historico de Compras',
+                  style:
+                      TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+                ),
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                controller: scrollController,
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+                itemCount: widget.purchaseHistory.records.length,
+                itemBuilder: (_, i) {
+                  final r = widget.purchaseHistory.records[i];
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF8FAFC),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '${r.date.day}/${r.date.month}/${r.date.year}',
+                              style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF475569)),
+                            ),
+                            Text(
+                              formatCurrency(r.amount),
+                              style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF1E293B)),
+                            ),
+                          ],
+                        ),
+                        if (r.items.isNotEmpty) ...[
+                          const SizedBox(height: 6),
+                          Wrap(
+                            spacing: 6,
+                            runSpacing: 4,
+                            children: r.items
+                                .map((name) => Container(
+                                      padding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 8, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(20),
+                                        border: Border.all(
+                                            color:
+                                                const Color(0xFFE2E8F0)),
+                                      ),
+                                      child: Text(name,
+                                          style: const TextStyle(
+                                              fontSize: 11,
+                                              color: Color(0xFF475569))),
+                                    ))
+                                .toList(),
+                          ),
+                        ],
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _buildItemRow(ShoppingItem item) {
     return Dismissible(
