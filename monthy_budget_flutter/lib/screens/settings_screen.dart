@@ -376,8 +376,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   const SizedBox(height: 12),
                   _label('SALARIO BRUTO MENSAL'),
                   const SizedBox(height: 8),
-                  TextField(
-                    controller: TextEditingController(text: salary.grossAmount > 0 ? salary.grossAmount.toString() : ''),
+                  TextFormField(
+                    initialValue: salary.grossAmount > 0 ? salary.grossAmount.toString() : '',
                     onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(grossAmount: double.tryParse(v) ?? 0)),
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     decoration: _inputDecoration('0.00', suffix: 'EUR'),
@@ -417,8 +417,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             children: [
                               _label('VALOR/DIA'),
                               const SizedBox(height: 4),
-                              TextField(
-                                controller: TextEditingController(text: salary.mealAllowancePerDay > 0 ? salary.mealAllowancePerDay.toString() : ''),
+                              TextFormField(
+                                initialValue: salary.mealAllowancePerDay > 0 ? salary.mealAllowancePerDay.toString() : '',
                                 onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(mealAllowancePerDay: double.tryParse(v) ?? 0)),
                                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                                 decoration: _inputDecoration('0.00', suffix: 'EUR'),
@@ -434,8 +434,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             children: [
                               _label('DIAS/MES'),
                               const SizedBox(height: 4),
-                              TextField(
-                                controller: TextEditingController(text: salary.workingDaysPerMonth > 0 ? salary.workingDaysPerMonth.toString() : ''),
+                              TextFormField(
+                                initialValue: salary.workingDaysPerMonth > 0 ? salary.workingDaysPerMonth.toString() : '',
                                 onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(workingDaysPerMonth: int.tryParse(v) ?? 0)),
                                 keyboardType: TextInputType.number,
                                 decoration: _inputDecoration('22'),
@@ -581,8 +581,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         const SizedBox(width: 12),
                         SizedBox(
                           width: 112,
-                          child: TextField(
-                            controller: TextEditingController(text: expense.amount > 0 ? expense.amount.toString() : ''),
+                          child: TextFormField(
+                            initialValue: expense.amount > 0 ? expense.amount.toString() : '',
                             onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(amount: double.tryParse(v) ?? 0)),
                             keyboardType: const TextInputType.numberWithOptions(decimal: true),
                             decoration: _inputDecoration('0.00', suffix: 'EUR'),

@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import '../models/app_settings.dart';
 import '../models/budget_summary.dart';
+import '../models/purchase_record.dart';
 import '../utils/formatters.dart';
 import '../widgets/charts/budget_charts.dart';
 
 class DashboardScreen extends StatelessWidget {
   final AppSettings settings;
   final BudgetSummary summary;
+  final PurchaseHistory purchaseHistory;
   final VoidCallback onOpenSettings;
 
   const DashboardScreen({
     super.key,
     required this.settings,
     required this.summary,
+    required this.purchaseHistory,
     required this.onOpenSettings,
   });
 
@@ -95,6 +98,7 @@ class DashboardScreen extends StatelessWidget {
                       if (settings.dashboardConfig.showSummaryCards) _buildSummaryCards(),
                       const SizedBox(height: 16),
                       _buildSalaryBreakdown(),
+                      _buildFoodSpendingCard(),
                       if (summary.totalExpenses > 0) ...[
                         const SizedBox(height: 16),
                         _buildExpensesBreakdown(),
@@ -304,6 +308,101 @@ class DashboardScreen extends StatelessWidget {
           ],
         ],
       ),
+    );
+  }
+
+  Widget _buildFoodSpendingCard() {
+    final now = DateTime.now();
+    final foodBudget = settings.expenses
+        .where((e) => e.category == ExpenseCategory.alimentacao && e.enabled)
+        .fold(0.0, (s, e) => s + e.amount);
+
+    if (foodBudget <= 0) return const SizedBox();
+
+    final spent = purchaseHistory.spentInMonth(now.year, now.month);
+    final remaining = foodBudget - spent;
+    final progress = (spent / foodBudget).clamp(0.0, 1.0);
+    final isOver = spent > foodBudget;
+
+    return Container(
+      margin: const EdgeInsets.only(top: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF34D399),
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 8),
+              const Text(
+                'ALIMENTACAO',
+                style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF64748B),
+                    letterSpacing: 0.8),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _foodStatColumn(
+                  'Orcado', formatCurrency(foodBudget), const Color(0xFF64748B)),
+              _foodStatColumn('Gasto', formatCurrency(spent),
+                  isOver ? const Color(0xFFEF4444) : const Color(0xFF1E293B)),
+              _foodStatColumn(
+                  'Restante',
+                  isOver
+                      ? '-${formatCurrency(spent - foodBudget)}'
+                      : formatCurrency(remaining),
+                  isOver ? const Color(0xFFEF4444) : const Color(0xFF10B981)),
+            ],
+          ),
+          const SizedBox(height: 12),
+          LinearProgressIndicator(
+            value: progress,
+            backgroundColor: const Color(0xFFE2E8F0),
+            color: isOver ? const Color(0xFFEF4444) : const Color(0xFF34D399),
+            minHeight: 6,
+            borderRadius: BorderRadius.circular(3),
+          ),
+          if (spent == 0) ...[
+            const SizedBox(height: 8),
+            const Text(
+              'Finaliza uma compra na Lista para registar gastos.',
+              style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _foodStatColumn(String label, String value, Color valueColor) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label,
+            style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
+        const SizedBox(height: 2),
+        Text(value,
+            style: TextStyle(
+                fontSize: 15, fontWeight: FontWeight.w700, color: valueColor)),
+      ],
     );
   }
 

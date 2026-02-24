@@ -75,7 +75,7 @@ class MealPlannerService {
 
   // --- Plan generation ---
 
-  MealPlan generate(AppSettings settings, DateTime forMonth) {
+  MealPlan generate(AppSettings settings, DateTime forMonth, {List<String> favorites = const []}) {
     assert(_catalogLoaded, 'Call loadCatalog() first');
     final np = nPessoas(settings);
     final budget = monthlyFoodBudget(settings);
@@ -100,8 +100,20 @@ class MealPlannerService {
 
       if (candidates.isEmpty) continue;
 
+      // Boost recipes whose protein ingredient name matches a favorite
+      final boosted = favorites.isNotEmpty
+          ? candidates.where((r) {
+              final ing = iMap[r.proteinId];
+              if (ing == null) return false;
+              return favorites.any((fav) =>
+                  fav.toLowerCase().contains(ing.name.toLowerCase()) ||
+                  ing.name.toLowerCase().contains(fav.toLowerCase().split(' ').first));
+            }).toList()
+          : <Recipe>[];
+
+      final pool = boosted.isNotEmpty ? boosted : candidates;
       final slotInWeek = (day - 1) % 7;
-      final recipe = candidates[slotInWeek % candidates.length];
+      final recipe = pool[slotInWeek % pool.length];
       final cost = recipeCost(recipe, np, iMap);
 
       days.add(MealDay(dayIndex: day, recipeId: recipe.id, costEstimate: cost));

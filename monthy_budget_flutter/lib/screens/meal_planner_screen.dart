@@ -8,12 +8,14 @@ import '../services/meal_planner_ai_service.dart';
 class MealPlannerScreen extends StatefulWidget {
   final AppSettings settings;
   final String apiKey;
+  final List<String> favorites;
   final void Function(ShoppingItem) onAddToShoppingList;
 
   const MealPlannerScreen({
     super.key,
     required this.settings,
     required this.apiKey,
+    required this.favorites,
     required this.onAddToShoppingList,
   });
 
@@ -53,7 +55,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   Future<void> _generatePlan() async {
     setState(() => _loading = true);
     final now = DateTime.now();
-    final plan = _service.generate(widget.settings, now);
+    final plan = _service.generate(widget.settings, now, favorites: widget.favorites);
     await _service.save(plan);
     setState(() {
       _plan = plan;
@@ -494,8 +496,15 @@ class _DayCard extends StatelessWidget {
                               unitPrice:
                                   '${ing.avgPricePerUnit.toStringAsFixed(2)}€/${ing.unit}',
                             )),
-                            child: const Icon(Icons.add_shopping_cart,
-                                size: 18, color: Color(0xFF3B82F6)),
+                            child: Container(
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF3B82F6),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(Icons.add, size: 16, color: Colors.white),
+                            ),
                           ),
                         ],
                       ),
@@ -740,8 +749,15 @@ class _ConsolidatedSheet extends StatelessWidget {
                               unitPrice:
                                   '${ing.avgPricePerUnit.toStringAsFixed(2)}€/${ing.unit}',
                             )),
-                            child: const Icon(Icons.add_shopping_cart,
-                                size: 18, color: Color(0xFF3B82F6)),
+                            child: Container(
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF3B82F6),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(Icons.add, size: 16, color: Colors.white),
+                            ),
                           ),
                         ],
                       ),

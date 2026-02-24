@@ -7,7 +7,9 @@ import 'services/grocery_service.dart';
 import 'services/favorites_service.dart';
 import 'models/shopping_item.dart';
 import 'services/shopping_list_service.dart';
+import 'models/purchase_record.dart';
 import 'services/ai_coach_service.dart';
+import 'services/purchase_history_service.dart';
 import 'screens/shopping_list_screen.dart';
 import 'screens/coach_screen.dart';
 import 'screens/meal_planner_screen.dart';
@@ -49,11 +51,13 @@ class _AppHomeState extends State<AppHome> {
   final _favoritesService = FavoritesService();
   final _shoppingListService = ShoppingListService();
   final _aiCoachService = AiCoachService();
+  final _purchaseHistoryService = PurchaseHistoryService();
   AppSettings _settings = const AppSettings();
   GroceryData _groceryData = const GroceryData();
   List<String> _favorites = [];
   List<ShoppingItem> _shoppingList = [];
   String _openAiApiKey = '';
+  PurchaseHistory _purchaseHistory = const PurchaseHistory();
   bool _loaded = false;
   int _currentIndex = 0;
 
@@ -70,6 +74,7 @@ class _AppHomeState extends State<AppHome> {
       _favoritesService.load(),
       _shoppingListService.load(),
       _aiCoachService.loadApiKey(),
+      _purchaseHistoryService.load(),
     ]);
     setState(() {
       _settings = results[0] as AppSettings;
@@ -77,6 +82,7 @@ class _AppHomeState extends State<AppHome> {
       _favorites = results[2] as List<String>;
       _shoppingList = results[3] as List<ShoppingItem>;
       _openAiApiKey = results[4] as String;
+      _purchaseHistory = results[5] as PurchaseHistory;
       _loaded = true;
     });
   }
@@ -141,6 +147,21 @@ class _AppHomeState extends State<AppHome> {
     _shoppingListService.save(updated);
   }
 
+  void _finalizeShopping(double? amount, int itemCount) {
+    _clearCheckedItems();
+    if (amount != null && amount > 0) {
+      final record = PurchaseRecord(
+        id: 'purchase_${DateTime.now().millisecondsSinceEpoch}',
+        date: DateTime.now(),
+        amount: amount,
+        itemCount: itemCount,
+      );
+      final updated = PurchaseHistory(records: [..._purchaseHistory.records, record]);
+      setState(() => _purchaseHistory = updated);
+      _purchaseHistoryService.saveAll(updated);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!_loaded) {
@@ -172,6 +193,7 @@ class _AppHomeState extends State<AppHome> {
       DashboardScreen(
         settings: _settings,
         summary: summary,
+        purchaseHistory: _purchaseHistory,
         onOpenSettings: () {
           Navigator.of(context).push(
             MaterialPageRoute(
@@ -198,6 +220,7 @@ class _AppHomeState extends State<AppHome> {
         onToggleChecked: _toggleShoppingItem,
         onRemove: _removeShoppingItem,
         onClearChecked: _clearCheckedItems,
+        onFinalize: _finalizeShopping,
       ),
       CoachScreen(
         settings: _settings,
@@ -221,6 +244,7 @@ class _AppHomeState extends State<AppHome> {
       MealPlannerScreen(
         settings: _settings,
         apiKey: _openAiApiKey,
+        favorites: _favorites,
         onAddToShoppingList: _addToShoppingList,
       ),
     ];
