@@ -160,11 +160,13 @@ class _AppHomeState extends State<AppHome> {
     await _shoppingListService.clearChecked(widget.householdId);
   }
 
-  void _finalizeShopping(double? amount, List<ShoppingItem> checkedItems) {
-    _clearCheckedItems();
-    if (checkedItems.isNotEmpty) {
+  Future<void> _finalizeShopping(
+      double? amount, List<ShoppingItem> checkedItems) async {
+    if (checkedItems.isEmpty) return;
+    try {
       final estimated = checkedItems.fold(0.0, (s, i) => s + i.price);
-      final totalAmount = (amount != null && amount > 0) ? amount : estimated;
+      final totalAmount =
+          (amount != null && amount > 0) ? amount : estimated;
       final record = PurchaseRecord(
         id: 'purchase_${DateTime.now().millisecondsSinceEpoch}',
         date: DateTime.now(),
@@ -172,10 +174,21 @@ class _AppHomeState extends State<AppHome> {
         itemCount: checkedItems.length,
         items: checkedItems.map((i) => i.productName).toList(),
       );
+      await _purchaseHistoryService.saveRecord(record, widget.householdId);
+      await _shoppingListService.clearChecked(widget.householdId);
       final updated =
           PurchaseHistory(records: [..._purchaseHistory.records, record]);
-      setState(() => _purchaseHistory = updated);
-      _purchaseHistoryService.saveRecord(record, widget.householdId);
+      if (mounted) setState(() => _purchaseHistory = updated);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erro ao guardar compra: $e'),
+            backgroundColor: const Color(0xFFEF4444),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
     }
   }
 

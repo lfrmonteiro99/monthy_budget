@@ -99,6 +99,10 @@ class DashboardScreen extends StatelessWidget {
                       const SizedBox(height: 16),
                       _buildSalaryBreakdown(),
                       _buildFoodSpendingCard(),
+                      if (purchaseHistory.records.isNotEmpty) ...[
+                        const SizedBox(height: 16),
+                        _buildPurchaseHistoryCard(context),
+                      ],
                       if (summary.totalExpenses > 0) ...[
                         const SizedBox(height: 16),
                         _buildExpensesBreakdown(),
@@ -388,6 +392,219 @@ class DashboardScreen extends StatelessWidget {
             ),
           ],
         ],
+      ),
+    );
+  }
+
+  Widget _buildPurchaseHistoryCard(BuildContext context) {
+    final recent = purchaseHistory.records.take(5).toList();
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.receipt_long_outlined,
+                  size: 16, color: Color(0xFF64748B)),
+              const SizedBox(width: 8),
+              const Expanded(
+                child: Text(
+                  'HISTORICO DE COMPRAS',
+                  style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF64748B),
+                      letterSpacing: 0.8),
+                ),
+              ),
+              GestureDetector(
+                onTap: () => _showAllHistory(context),
+                child: const Text(
+                  'Ver tudo',
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF3B82F6),
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ...recent.map((r) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8FAFC),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                        child: Text(
+                          '${r.date.day}/${r.date.month}',
+                          style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF64748B)),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${r.itemCount} produto${r.itemCount != 1 ? 's' : ''}',
+                            style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFF1E293B)),
+                          ),
+                          if (r.items.isNotEmpty)
+                            Text(
+                              r.items.take(3).join(', ') +
+                                  (r.items.length > 3 ? '...' : ''),
+                              style: const TextStyle(
+                                  fontSize: 11, color: Color(0xFF94A3B8)),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      formatCurrency(r.amount),
+                      style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF1E293B)),
+                    ),
+                  ],
+                ),
+              )),
+        ],
+      ),
+    );
+  }
+
+  void _showAllHistory(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => DraggableScrollableSheet(
+        initialChildSize: 0.7,
+        maxChildSize: 0.95,
+        minChildSize: 0.4,
+        expand: false,
+        builder: (_, scrollController) => Column(
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFCBD5E1),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20, 0, 20, 16),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Todas as Compras',
+                  style: TextStyle(
+                      fontSize: 17, fontWeight: FontWeight.w700),
+                ),
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                controller: scrollController,
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+                itemCount: purchaseHistory.records.length,
+                itemBuilder: (_, i) {
+                  final r = purchaseHistory.records[i];
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF8FAFC),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '${r.date.day}/${r.date.month}/${r.date.year}',
+                              style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF475569)),
+                            ),
+                            Text(
+                              formatCurrency(r.amount),
+                              style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF1E293B)),
+                            ),
+                          ],
+                        ),
+                        if (r.items.isNotEmpty) ...[
+                          const SizedBox(height: 6),
+                          Wrap(
+                            spacing: 6,
+                            runSpacing: 4,
+                            children: r.items
+                                .map((name) => Container(
+                                      padding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 8, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(20),
+                                        border: Border.all(
+                                            color:
+                                                const Color(0xFFE2E8F0)),
+                                      ),
+                                      child: Text(name,
+                                          style: const TextStyle(
+                                              fontSize: 11,
+                                              color: Color(0xFF475569))),
+                                    ))
+                                .toList(),
+                          ),
+                        ],
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

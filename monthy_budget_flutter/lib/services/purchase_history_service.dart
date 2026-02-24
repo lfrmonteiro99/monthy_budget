@@ -35,7 +35,7 @@ class PurchaseHistoryService {
   }
 
   Future<void> saveRecord(PurchaseRecord record, String householdId) async {
-    await _client.from('purchase_records').upsert({
+    await _client.from('purchase_records').insert({
       'id': record.id,
       'household_id': householdId,
       'amount': record.amount,
