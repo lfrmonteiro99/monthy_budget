@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../models/app_settings.dart';
 import '../models/meal_planner.dart';
 import '../models/shopping_item.dart';
@@ -151,7 +150,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final budget = _service.monthlyFoodBudget(widget.settings);
     final np = _service.nPessoas(widget.settings);
     final now = DateTime.now();
-    final monthName = DateFormat('MMMM yyyy', 'pt_PT').format(now);
+    const months = ['', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    final monthName = '${months[now.month]} ${now.year}';
 
     return Center(
       child: Padding(
@@ -162,7 +162,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             const Icon(Icons.restaurant_outlined, size: 64, color: Color(0xFF94A3B8)),
             const SizedBox(height: 24),
             Text(
-              monthName[0].toUpperCase() + monthName.substring(1),
+              monthName,
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 24),
