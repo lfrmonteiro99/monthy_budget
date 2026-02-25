@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import '../models/app_settings.dart';
-import '../models/grocery_data.dart';
+import '../models/purchase_record.dart';
 import '../services/ai_coach_service.dart';
 import '../utils/calculations.dart';
 
 class CoachScreen extends StatefulWidget {
   final AppSettings settings;
-  final GroceryData groceryData;
+  final PurchaseHistory purchaseHistory;
   final String apiKey;
   final VoidCallback onOpenSettings;
 
   const CoachScreen({
     super.key,
     required this.settings,
-    required this.groceryData,
+    required this.purchaseHistory,
     required this.apiKey,
     required this.onOpenSettings,
   });
@@ -48,7 +48,7 @@ class _CoachScreenState extends State<CoachScreen> {
         apiKey: widget.apiKey,
         settings: widget.settings,
         summary: summary,
-        groceryData: widget.groceryData,
+        purchaseHistory: widget.purchaseHistory,
       );
       setState(() => _advice = result);
     } catch (e) {
@@ -123,7 +123,7 @@ class _CoachScreenState extends State<CoachScreen> {
                 ),
                 const SizedBox(height: 4),
                 const Text(
-                  'O GPT-4o mini analisa os teus dados reais de orçamento e preços de supermercado para gerar conselhos personalizados.',
+                  'O GPT-4o mini analisa o teu orçamento, Índice de Tranquilidade e histórico de compras para identificar os factores mais fracos e sugerir acções concretas.',
                   style: TextStyle(fontSize: 12, color: Color(0xFF64748B), height: 1.5),
                 ),
                 if (widget.apiKey.isEmpty) ...[

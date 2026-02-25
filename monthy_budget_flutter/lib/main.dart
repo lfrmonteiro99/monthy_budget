@@ -303,7 +303,7 @@ class _AppHomeState extends State<AppHome> {
       ),
       CoachScreen(
         settings: _settings,
-        groceryData: _groceryData,
+        purchaseHistory: _purchaseHistory,
         apiKey: _openAiApiKey,
         onOpenSettings: () {
           Navigator.of(context).push(

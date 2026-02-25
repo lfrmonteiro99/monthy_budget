@@ -3,7 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/app_settings.dart';
 import '../models/budget_summary.dart';
-import '../models/grocery_data.dart';
+import '../models/purchase_record.dart';
+import '../utils/stress_index.dart';
 
 class AiCoachService {
   static const _apiKeyPref = 'openai_api_key';
@@ -24,9 +25,9 @@ class AiCoachService {
     required String apiKey,
     required AppSettings settings,
     required BudgetSummary summary,
-    required GroceryData groceryData,
+    required PurchaseHistory purchaseHistory,
   }) async {
-    final prompt = _buildPrompt(settings, summary, groceryData);
+    final prompt = _buildPrompt(settings, summary, purchaseHistory);
 
     final response = await http
         .post(
@@ -66,64 +67,114 @@ class AiCoachService {
     }
   }
 
-  String _buildPrompt(AppSettings settings, BudgetSummary summary, GroceryData groceryData) {
+  String _buildPrompt(
+      AppSettings settings, BudgetSummary summary, PurchaseHistory purchaseHistory) {
+    final now = DateTime.now();
+    final monthNames = [
+      '', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+      'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+    ];
+    final monthLabel = '${monthNames[now.month]} ${now.year}';
+    final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
+    final daysLeft = daysInMonth - now.day;
+
+    final stress = calculateStressIndex(
+      summary: summary,
+      purchaseHistory: purchaseHistory,
+      settings: settings,
+    );
+
     final buf = StringBuffer();
-
-    buf.writeln('Os meus dados financeiros mensais:');
-    buf.writeln();
-    buf.writeln('ORÇAMENTO');
-    buf.writeln('- Rendimento bruto: ${summary.totalGross.toStringAsFixed(2)}€');
-    buf.writeln('- Rendimento líquido (c/ subsídio): ${summary.totalNetWithMeal.toStringAsFixed(2)}€');
-    buf.writeln('- IRS retido: ${summary.totalIRS.toStringAsFixed(2)}€');
-    buf.writeln('- Segurança Social: ${summary.totalSS.toStringAsFixed(2)}€');
-    buf.writeln('- Total despesas fixas: ${summary.totalExpenses.toStringAsFixed(2)}€');
-    buf.writeln('- Disponível/poupança: ${summary.netLiquidity.toStringAsFixed(2)}€');
-    buf.writeln('- Taxa de poupança: ${summary.savingsRate.toStringAsFixed(1)}%');
+    buf.writeln('CONTEXTO: Orçamento pessoal mensal — $monthLabel');
     buf.writeln();
 
+    // Stress index
+    final prevMonth = now.month == 1 ? 12 : now.month - 1;
+    final prevYear = now.month == 1 ? now.year - 1 : now.year;
+    final prevKey = '$prevYear-${prevMonth.toString().padLeft(2, '0')}';
+    final prevScore = settings.stressHistory[prevKey];
+    final deltaStr = prevScore != null
+        ? ' (${stress.score >= prevScore ? '+' : ''}${stress.score - prevScore} vs ${monthNames[prevMonth]})'
+        : '';
+    buf.writeln('ÍNDICE DE TRANQUILIDADE: ${stress.score}/100 — ${stress.label}$deltaStr');
+    buf.writeln('Factores (pontuação 0–100, peso, estado):');
+    final weights = [35, 30, 20, 15];
+    for (var i = 0; i < stress.factors.length; i++) {
+      final f = stress.factors[i];
+      final pts = (f.normalizedScore * weights[i] / 100).toStringAsFixed(0);
+      final status = f.ok ? '✓' : '⚠';
+      buf.writeln(
+          '  $status ${f.label}: ${f.valueLabel} → ${f.normalizedScore.toStringAsFixed(0)}/100 '
+          '(contribui $pts/${weights[i]} pts)');
+    }
+    buf.writeln();
+
+    // Budget
+    buf.writeln('RENDIMENTO');
+    buf.writeln('  Bruto: ${summary.totalGross.toStringAsFixed(2)}€');
+    buf.writeln('  Líquido (c/ subsídio alim.): ${summary.totalNetWithMeal.toStringAsFixed(2)}€');
+    buf.writeln('  IRS: ${summary.totalIRS.toStringAsFixed(2)}€ | SS: ${summary.totalSS.toStringAsFixed(2)}€');
+    buf.writeln();
+
+    // Expenses by category
     final expByCategory = <String, double>{};
     for (final e in settings.expenses.where((e) => e.enabled && e.amount > 0)) {
       expByCategory.update(e.category.label, (v) => v + e.amount, ifAbsent: () => e.amount);
     }
     if (expByCategory.isNotEmpty) {
-      buf.writeln('DESPESAS POR CATEGORIA');
+      buf.writeln('DESPESAS FIXAS (total: ${summary.totalExpenses.toStringAsFixed(2)}€)');
       final sorted = expByCategory.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
       for (final e in sorted) {
-        buf.writeln('- ${e.key}: ${e.value.toStringAsFixed(2)}€');
+        final pct = summary.totalNetWithMeal > 0
+            ? (e.value / summary.totalNetWithMeal * 100).toStringAsFixed(1)
+            : '0';
+        buf.writeln('  ${e.key}: ${e.value.toStringAsFixed(2)}€ ($pct% do líquido)');
       }
       buf.writeln();
     }
 
-    if (groceryData.decoIndex.rankings.isNotEmpty) {
-      buf.writeln('SUPERMERCADOS (Índice DECO PROteste)');
-      for (final r in groceryData.decoIndex.rankings.take(4)) {
-        final diff = r.index - groceryData.decoIndex.rankings.first.index;
-        final label = diff == 0 ? 'mais barato' : '+$diff%';
-        buf.writeln('- ${r.store}: índice ${r.index} ($label)');
+    // Purchase history this month
+    final foodBudget = settings.expenses
+        .where((e) => e.category == ExpenseCategory.alimentacao && e.enabled)
+        .fold(0.0, (s, e) => s + e.amount);
+    final foodSpent = purchaseHistory.spentInMonth(now.year, now.month);
+    final monthRecords =
+        purchaseHistory.records.where((r) => r.date.year == now.year && r.date.month == now.month).toList();
+    if (monthRecords.isNotEmpty || foodBudget > 0) {
+      buf.writeln('COMPRAS DE SUPERMERCADO — $monthLabel');
+      buf.writeln('  Compras realizadas: ${monthRecords.length}');
+      if (monthRecords.isNotEmpty) {
+        final avg = foodSpent / monthRecords.length;
+        buf.writeln('  Valor médio por compra: ${avg.toStringAsFixed(2)}€');
+      }
+      if (foodBudget > 0) {
+        final remaining = foodBudget - foodSpent;
+        final projected = daysLeft > 0 && now.day > 1
+            ? foodSpent / now.day * daysInMonth
+            : foodSpent;
+        buf.writeln('  Orçamento alimentação: ${foodBudget.toStringAsFixed(2)}€/mês');
+        buf.writeln('  Gasto até hoje: ${foodSpent.toStringAsFixed(2)}€ '
+            '(${(foodSpent / foodBudget * 100).toStringAsFixed(0)}%)');
+        buf.writeln('  Restante: ${remaining.toStringAsFixed(2)}€ | '
+            'Projeção fim do mês: ${projected.toStringAsFixed(2)}€');
+        buf.writeln('  Dias restantes no mês: $daysLeft');
       }
       buf.writeln();
     }
 
-    if (groceryData.categorySummary.isNotEmpty) {
-      buf.writeln('CATEGORIAS COM MAIOR POUPANÇA POTENCIAL');
-      final savingsData = groceryData.categorySummary
-          .where((c) => c.stores.length >= 2)
-          .map((c) {
-            final sorted = c.stores.entries.toList()
-              ..sort((a, b) => a.value.avgPrice.compareTo(b.value.avgPrice));
-            final saving = sorted.last.value.avgPrice - sorted.first.value.avgPrice;
-            return (cat: c.category, cheap: sorted.first.key, saving: saving);
-          })
-          .toList()
-        ..sort((a, b) => b.saving.compareTo(a.saving));
+    buf.writeln('DISPONÍVEL/POUPANÇA: ${summary.netLiquidity.toStringAsFixed(2)}€ '
+        '(taxa: ${(summary.savingsRate * 100).toStringAsFixed(1)}%)');
+    buf.writeln();
 
-      for (final d in savingsData.take(4)) {
-        buf.writeln('- ${d.cat}: comprar em ${d.cheap} (diferença média: ${d.saving.toStringAsFixed(2)}€/produto)');
-      }
-      buf.writeln();
-    }
-
-    buf.writeln('Com base nestes dados reais, dá-me 4-5 conselhos financeiros personalizados e acionáveis.');
+    buf.writeln(
+        'Com base EXCLUSIVAMENTE nestes dados (sem inventar informação externa):\n'
+        '1. Identifica os 2 factores com pior pontuação e explica em 1 frase cada um '
+        'porquê estão fracos — usa os números exactos fornecidos.\n'
+        '2. Para cada factor fraco, propõe UMA ação concreta com um valor-alvo '
+        'específico em euros ou percentagem e estima o impacto no score.\n'
+        '3. Indica 1 oportunidade de melhoria imediata para $monthLabel.\n'
+        'Sê cirúrgico. Zero conselhos genéricos. Zero introdução ou conclusão. '
+        'Responde directamente ao ponto 1, depois 2, depois 3.');
     return buf.toString();
   }
 }
