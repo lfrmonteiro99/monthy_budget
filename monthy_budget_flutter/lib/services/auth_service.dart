@@ -13,7 +13,11 @@ class AuthService {
   }
 
   Future<void> signUp(String email, String password) async {
-    await _client.auth.signUp(email: email, password: password);
+    await _client.auth.signUp(
+      email: email,
+      password: password,
+      emailRedirectTo: 'orcamentomensal://login-callback/',
+    );
   }
 
   Future<void> signOut() async {
