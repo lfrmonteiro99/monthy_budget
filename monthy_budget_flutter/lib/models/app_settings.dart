@@ -54,6 +54,36 @@ enum MaritalStatus {
   }
 }
 
+enum SubsidyMode {
+  none,   // sem duodécimos — fator 1.0
+  full,   // com duodécimos férias+natal — fator 14/12
+  half;   // com duodécimos a 50% — fator 13/12
+
+  double get monthlyFactor {
+    switch (this) {
+      case SubsidyMode.none: return 1.0;
+      case SubsidyMode.full: return 14 / 12;
+      case SubsidyMode.half: return 13 / 12;
+    }
+  }
+
+  String get label {
+    switch (this) {
+      case SubsidyMode.none: return 'Sem duodécimos';
+      case SubsidyMode.full: return 'Com duodécimos';
+      case SubsidyMode.half: return '50% duodécimos';
+    }
+  }
+
+  String get shortLabel {
+    switch (this) {
+      case SubsidyMode.none: return 'Sem';
+      case SubsidyMode.full: return 'Com';
+      case SubsidyMode.half: return '50%';
+    }
+  }
+}
+
 enum MealAllowanceType {
   none,
   card,
@@ -215,6 +245,8 @@ class SalaryInfo {
   final MealAllowanceType mealAllowanceType;
   final double mealAllowancePerDay;
   final int workingDaysPerMonth;
+  final SubsidyMode subsidyMode;
+  final double otherExemptIncome;
 
   const SalaryInfo({
     this.label = '',
@@ -224,6 +256,8 @@ class SalaryInfo {
     this.mealAllowanceType = MealAllowanceType.none,
     this.mealAllowancePerDay = 0,
     this.workingDaysPerMonth = 22,
+    this.subsidyMode = SubsidyMode.none,
+    this.otherExemptIncome = 0,
   });
 
   SalaryInfo copyWith({
@@ -234,6 +268,8 @@ class SalaryInfo {
     MealAllowanceType? mealAllowanceType,
     double? mealAllowancePerDay,
     int? workingDaysPerMonth,
+    SubsidyMode? subsidyMode,
+    double? otherExemptIncome,
   }) {
     return SalaryInfo(
       label: label ?? this.label,
@@ -243,6 +279,8 @@ class SalaryInfo {
       mealAllowanceType: mealAllowanceType ?? this.mealAllowanceType,
       mealAllowancePerDay: mealAllowancePerDay ?? this.mealAllowancePerDay,
       workingDaysPerMonth: workingDaysPerMonth ?? this.workingDaysPerMonth,
+      subsidyMode: subsidyMode ?? this.subsidyMode,
+      otherExemptIncome: otherExemptIncome ?? this.otherExemptIncome,
     );
   }
 
@@ -254,6 +292,8 @@ class SalaryInfo {
         'mealAllowanceType': mealAllowanceType.name,
         'mealAllowancePerDay': mealAllowancePerDay,
         'workingDaysPerMonth': workingDaysPerMonth,
+        'subsidyMode': subsidyMode.name,
+        'otherExemptIncome': otherExemptIncome,
       };
 
   factory SalaryInfo.fromJson(Map<String, dynamic> json) => SalaryInfo(
@@ -267,6 +307,11 @@ class SalaryInfo {
         ),
         mealAllowancePerDay: (json['mealAllowancePerDay'] ?? 0).toDouble(),
         workingDaysPerMonth: json['workingDaysPerMonth'] ?? 22,
+        subsidyMode: SubsidyMode.values.firstWhere(
+          (e) => e.name == json['subsidyMode'],
+          orElse: () => SubsidyMode.none,
+        ),
+        otherExemptIncome: (json['otherExemptIncome'] ?? 0).toDouble(),
       );
 }
 

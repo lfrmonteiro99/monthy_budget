@@ -17,7 +17,10 @@ class MealAllowanceCalculation {
 }
 
 class SalaryCalculation {
-  final double grossAmount;
+  final double grossAmount;         // base mensal introduzido pelo utilizador
+  final double effectiveGrossAmount; // grossAmount × subsidyMode.monthlyFactor
+  final double subsidyMonthlyBonus; // extra mensal de duodécimos
+  final double otherExemptIncome;   // rendimentos isentos de IRS/SS
   final double irsRetention;
   final double irsRate;
   final double socialSecurity;
@@ -28,6 +31,9 @@ class SalaryCalculation {
 
   const SalaryCalculation({
     this.grossAmount = 0,
+    this.effectiveGrossAmount = 0,
+    this.subsidyMonthlyBonus = 0,
+    this.otherExemptIncome = 0,
     this.irsRetention = 0,
     this.irsRate = 0,
     this.socialSecurity = 0,
@@ -39,8 +45,7 @@ class SalaryCalculation {
 }
 
 class BudgetSummary {
-  final SalaryCalculation salary1;
-  final SalaryCalculation salary2;
+  final List<SalaryCalculation> salaries;
   final double totalGross;
   final double totalNet;
   final double totalNetWithMeal;
@@ -53,8 +58,7 @@ class BudgetSummary {
   final double savingsRate;
 
   const BudgetSummary({
-    this.salary1 = const SalaryCalculation(),
-    this.salary2 = const SalaryCalculation(),
+    this.salaries = const [],
     this.totalGross = 0,
     this.totalNet = 0,
     this.totalNetWithMeal = 0,

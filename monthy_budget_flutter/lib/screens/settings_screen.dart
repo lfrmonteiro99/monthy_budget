@@ -385,143 +385,136 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  void _addSalary() {
+    setState(() {
+      final newSalaries = List<SalaryInfo>.from(_draft.salaries);
+      newSalaries.add(SalaryInfo(label: 'Vencimento ${newSalaries.length + 1}'));
+      _draft = _draft.copyWith(salaries: newSalaries);
+    });
+  }
+
+  void _removeSalary(int idx) {
+    if (_draft.salaries.length <= 1) return;
+    setState(() {
+      final newSalaries = List<SalaryInfo>.from(_draft.salaries)..removeAt(idx);
+      _draft = _draft.copyWith(salaries: newSalaries);
+    });
+  }
+
   Widget _buildSalariesSection() {
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.all(20),
       child: Column(
-        children: List.generate(_draft.salaries.length, (idx) {
-          final salary = _draft.salaries[idx];
-          return Container(
-            margin: EdgeInsets.only(bottom: idx < _draft.salaries.length - 1 ? 16 : 0),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: salary.enabled ? Colors.white : const Color(0xFFF8FAFC),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: salary.enabled ? const Color(0xFFE2E8F0) : const Color(0xFFF1F5F9),
-                width: 2,
+        children: [
+          ...List.generate(_draft.salaries.length, (idx) {
+            final salary = _draft.salaries[idx];
+            return Container(
+              margin: EdgeInsets.only(bottom: idx < _draft.salaries.length - 1 ? 16 : 0),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: salary.enabled ? Colors.white : const Color(0xFFF8FAFC),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: salary.enabled ? const Color(0xFFE2E8F0) : const Color(0xFFF1F5F9),
+                  width: 2,
+                ),
               ),
-            ),
-            child: Opacity(
-              opacity: salary.enabled ? 1.0 : 0.5,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: TextEditingController(text: salary.label)
-                            ..selection = TextSelection.collapsed(offset: salary.label.length),
-                          onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(label: v)),
-                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF475569)),
-                          decoration: InputDecoration(
-                            hintText: 'Vencimento ${idx + 1}',
-                            border: InputBorder.none,
-                            isDense: true,
-                            contentPadding: EdgeInsets.zero,
-                          ),
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Text('Ativo', style: TextStyle(fontSize: 12, color: Colors.grey.shade400)),
-                          const SizedBox(width: 4),
-                          Switch(
-                            value: salary.enabled,
-                            onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(enabled: v)),
-                            activeTrackColor: const Color(0xFF3B82F6),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  _label('SALARIO BRUTO MENSAL'),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    initialValue: salary.grossAmount > 0 ? salary.grossAmount.toString() : '',
-                    onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(grossAmount: double.tryParse(v) ?? 0)),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    decoration: _inputDecoration('0.00', suffix: 'EUR'),
-                  ),
-                  const SizedBox(height: 12),
-                  _label('SUBSIDIO DE ALIMENTACAO'),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: MealAllowanceType.values.map((type) {
-                      final isSelected = salary.mealAllowanceType == type;
-                      return Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(right: type != MealAllowanceType.cash ? 6 : 0),
-                          child: OutlinedButton(
-                            onPressed: () => _updateSalary(idx, (s) => s.copyWith(mealAllowanceType: type)),
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: isSelected ? const Color(0xFF3B82F6) : Colors.white,
-                              foregroundColor: isSelected ? Colors.white : const Color(0xFF64748B),
-                              side: BorderSide(color: isSelected ? const Color(0xFF3B82F6) : const Color(0xFFE2E8F0), width: 2),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                            ),
-                            child: Text(type.label),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                  if (salary.mealAllowanceType != MealAllowanceType.none) ...[
-                    const SizedBox(height: 12),
+              child: Opacity(
+                opacity: salary.enabled ? 1.0 : 0.5,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Row(
                       children: [
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _label('VALOR/DIA'),
-                              const SizedBox(height: 4),
-                              TextFormField(
-                                initialValue: salary.mealAllowancePerDay > 0 ? salary.mealAllowancePerDay.toString() : '',
-                                onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(mealAllowancePerDay: double.tryParse(v) ?? 0)),
-                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                decoration: _inputDecoration('0.00', suffix: 'EUR'),
-                              ),
-                            ],
+                          child: TextField(
+                            controller: TextEditingController(text: salary.label)
+                              ..selection = TextSelection.collapsed(offset: salary.label.length),
+                            onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(label: v)),
+                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF475569)),
+                            decoration: InputDecoration(
+                              hintText: 'Vencimento ${idx + 1}',
+                              border: InputBorder.none,
+                              isDense: true,
+                              contentPadding: EdgeInsets.zero,
+                            ),
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        SizedBox(
-                          width: 96,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _label('DIAS/MES'),
-                              const SizedBox(height: 4),
-                              TextFormField(
-                                initialValue: salary.workingDaysPerMonth > 0 ? salary.workingDaysPerMonth.toString() : '',
-                                onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(workingDaysPerMonth: int.tryParse(v) ?? 0)),
-                                keyboardType: TextInputType.number,
-                                decoration: _inputDecoration('22'),
-                              ),
-                            ],
+                        if (_draft.salaries.length > 1)
+                          IconButton(
+                            onPressed: () => _removeSalary(idx),
+                            icon: const Icon(Icons.remove_circle_outline, size: 18, color: Color(0xFFCBD5E1)),
+                            visualDensity: VisualDensity.compact,
+                            padding: EdgeInsets.zero,
                           ),
+                        Row(
+                          children: [
+                            Text('Ativo', style: TextStyle(fontSize: 12, color: Colors.grey.shade400)),
+                            const SizedBox(width: 4),
+                            Switch(
+                              value: salary.enabled,
+                              onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(enabled: v)),
+                              activeTrackColor: const Color(0xFF3B82F6),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                  if (_isCasado) ...[
                     const SizedBox(height: 12),
-                    _label('N. TITULARES'),
+                    _label('SALARIO BRUTO MENSAL'),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      initialValue: salary.grossAmount > 0 ? salary.grossAmount.toString() : '',
+                      onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(grossAmount: double.tryParse(v) ?? 0)),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      decoration: _inputDecoration('0.00', suffix: 'EUR'),
+                    ),
+                    const SizedBox(height: 12),
+                    _label('SUBSIDIOS DE FERIAS E NATAL (DUODÉCIMOS)'),
                     const SizedBox(height: 8),
                     Row(
-                      children: [1, 2].map((n) {
-                        final isSelected = salary.titulares == n;
+                      children: SubsidyMode.values.map((mode) {
+                        final isSelected = salary.subsidyMode == mode;
                         return Expanded(
                           child: Padding(
-                            padding: EdgeInsets.only(right: n == 1 ? 8 : 0),
+                            padding: EdgeInsets.only(right: mode != SubsidyMode.half ? 6 : 0),
                             child: OutlinedButton(
-                              onPressed: () => _updateSalary(idx, (s) => s.copyWith(titulares: n)),
+                              onPressed: () => _updateSalary(idx, (s) => s.copyWith(subsidyMode: mode)),
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: isSelected ? const Color(0xFF3B82F6) : Colors.white,
+                                foregroundColor: isSelected ? Colors.white : const Color(0xFF64748B),
+                                side: BorderSide(color: isSelected ? const Color(0xFF3B82F6) : const Color(0xFFE2E8F0), width: 2),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                textStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+                              ),
+                              child: Text(mode.shortLabel),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 12),
+                    _label('OUTROS RENDIMENTOS ISENTOS DE IRS'),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      initialValue: salary.otherExemptIncome > 0 ? salary.otherExemptIncome.toString() : '',
+                      onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(otherExemptIncome: double.tryParse(v) ?? 0)),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      decoration: _inputDecoration('0.00', suffix: 'EUR'),
+                    ),
+                    const SizedBox(height: 12),
+                    _label('SUBSIDIO DE ALIMENTACAO'),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: MealAllowanceType.values.map((type) {
+                        final isSelected = salary.mealAllowanceType == type;
+                        return Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(right: type != MealAllowanceType.cash ? 6 : 0),
+                            child: OutlinedButton(
+                              onPressed: () => _updateSalary(idx, (s) => s.copyWith(mealAllowanceType: type)),
                               style: OutlinedButton.styleFrom(
                                 backgroundColor: isSelected ? const Color(0xFF3B82F6) : Colors.white,
                                 foregroundColor: isSelected ? Colors.white : const Color(0xFF64748B),
@@ -530,37 +523,119 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 padding: const EdgeInsets.symmetric(vertical: 8),
                                 textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                               ),
-                              child: Text('$n Titular${n > 1 ? "es" : ""}'),
+                              child: Text(type.label),
                             ),
                           ),
                         );
                       }).toList(),
                     ),
+                    if (salary.mealAllowanceType != MealAllowanceType.none) ...[
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _label('VALOR/DIA'),
+                                const SizedBox(height: 4),
+                                TextFormField(
+                                  initialValue: salary.mealAllowancePerDay > 0 ? salary.mealAllowancePerDay.toString() : '',
+                                  onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(mealAllowancePerDay: double.tryParse(v) ?? 0)),
+                                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                  decoration: _inputDecoration('0.00', suffix: 'EUR'),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          SizedBox(
+                            width: 96,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _label('DIAS/MES'),
+                                const SizedBox(height: 4),
+                                TextFormField(
+                                  initialValue: salary.workingDaysPerMonth > 0 ? salary.workingDaysPerMonth.toString() : '',
+                                  onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(workingDaysPerMonth: int.tryParse(v) ?? 0)),
+                                  keyboardType: TextInputType.number,
+                                  decoration: _inputDecoration('22'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                    if (_isCasado) ...[
+                      const SizedBox(height: 12),
+                      _label('N. TITULARES'),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [1, 2].map((n) {
+                          final isSelected = salary.titulares == n;
+                          return Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.only(right: n == 1 ? 8 : 0),
+                              child: OutlinedButton(
+                                onPressed: () => _updateSalary(idx, (s) => s.copyWith(titulares: n)),
+                                style: OutlinedButton.styleFrom(
+                                  backgroundColor: isSelected ? const Color(0xFF3B82F6) : Colors.white,
+                                  foregroundColor: isSelected ? Colors.white : const Color(0xFF64748B),
+                                  side: BorderSide(color: isSelected ? const Color(0xFF3B82F6) : const Color(0xFFE2E8F0), width: 2),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                                ),
+                                child: Text('$n Titular${n > 1 ? "es" : ""}'),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                    const SizedBox(height: 12),
+                    Builder(builder: (_) {
+                      final table = getApplicableTable(
+                        _draft.personalInfo.maritalStatus.jsonValue,
+                        salary.titulares,
+                        _draft.personalInfo.dependentes,
+                      );
+                      return Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF8FAFC),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          '${table.label} — ${table.description}',
+                          style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+                        ),
+                      );
+                    }),
                   ],
-                  const SizedBox(height: 12),
-                  Builder(builder: (_) {
-                    final table = getApplicableTable(
-                      _draft.personalInfo.maritalStatus.jsonValue,
-                      salary.titulares,
-                      _draft.personalInfo.dependentes,
-                    );
-                    return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF8FAFC),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        '${table.label} — ${table.description}',
-                        style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
-                      ),
-                    );
-                  }),
-                ],
+                ),
+              ),
+            );
+          }),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: _addSalary,
+              icon: const Icon(Icons.add, size: 16),
+              label: const Text('Adicionar vencimento'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF3B82F6),
+                side: const BorderSide(color: Color(0xFF3B82F6)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
               ),
             ),
-          );
-        }),
+          ),
+        ],
       ),
     );
   }

@@ -80,14 +80,17 @@ MealAllowanceCalculation calculateMealAllowance(
   );
 }
 
-/// Calcula o salário líquido completo
+/// Calcula o salário líquido completo, considerando duodécimos e rendimentos isentos
 SalaryCalculation calculateNetSalary(
   SalaryInfo salary,
   PersonalInfo personalInfo,
 ) {
-  final grossSalary = salary.grossAmount;
+  final baseGross = salary.grossAmount;
+  // Com duodécimos, o bruto efetivo mensal é mais alto (IRS/SS incidem sobre ele)
+  final effectiveGross = _round2(baseGross * salary.subsidyMode.monthlyFactor);
+  final subsidyBonus = _round2(effectiveGross - baseGross);
 
-  if (grossSalary <= 0) {
+  if (effectiveGross <= 0) {
     final meal = calculateMealAllowance(
       salary.mealAllowanceType,
       salary.mealAllowancePerDay,
@@ -95,20 +98,23 @@ SalaryCalculation calculateNetSalary(
       0,
     );
     return SalaryCalculation(
-      grossAmount: 0,
+      grossAmount: baseGross,
+      effectiveGrossAmount: 0,
+      subsidyMonthlyBonus: 0,
+      otherExemptIncome: salary.otherExemptIncome,
       irsRetention: 0,
       irsRate: 0,
       socialSecurity: 0,
       socialSecurityRate: socialSecurityRate,
       netAmount: 0,
       mealAllowance: meal,
-      totalNetWithMeal: meal.netMealAllowance,
+      totalNetWithMeal: _round2(meal.netMealAllowance + salary.otherExemptIncome),
     );
   }
 
-  final irs = calculateIRSRetention(grossSalary, personalInfo, salary.titulares);
-  final ss = calculateSocialSecurity(grossSalary);
-  final net = _round2(grossSalary - irs.retention - ss);
+  final irs = calculateIRSRetention(effectiveGross, personalInfo, salary.titulares);
+  final ss = calculateSocialSecurity(effectiveGross);
+  final net = _round2(effectiveGross - irs.retention - ss);
   final netAmount = math.max(0.0, net);
 
   final meal = calculateMealAllowance(
@@ -119,14 +125,17 @@ SalaryCalculation calculateNetSalary(
   );
 
   return SalaryCalculation(
-    grossAmount: grossSalary,
+    grossAmount: baseGross,
+    effectiveGrossAmount: effectiveGross,
+    subsidyMonthlyBonus: subsidyBonus,
+    otherExemptIncome: salary.otherExemptIncome,
     irsRetention: irs.retention,
     irsRate: irs.rate,
     socialSecurity: ss,
     socialSecurityRate: socialSecurityRate,
     netAmount: netAmount,
     mealAllowance: meal,
-    totalNetWithMeal: _round2(netAmount + meal.netMealAllowance),
+    totalNetWithMeal: _round2(netAmount + meal.netMealAllowance + salary.otherExemptIncome),
   );
 }
 
@@ -136,32 +145,17 @@ BudgetSummary calculateBudgetSummary(
   PersonalInfo personalInfo,
   List<ExpenseItem> expenses,
 ) {
-  SalaryInfo disabledSalary(SalaryInfo s) => s.copyWith(grossAmount: 0);
+  final calcs = salaries.map((s) {
+    if (!s.enabled) return const SalaryCalculation();
+    return calculateNetSalary(s, personalInfo);
+  }).toList();
 
-  final salary1 = calculateNetSalary(
-    salaries[0].enabled ? salaries[0] : disabledSalary(salaries[0]),
-    personalInfo,
-  );
-  final salary2 = salaries.length > 1
-      ? calculateNetSalary(
-          salaries[1].enabled ? salaries[1] : disabledSalary(salaries[1]),
-          personalInfo,
-        )
-      : const SalaryCalculation();
-
-  final totalGross = salary1.grossAmount + salary2.grossAmount;
-  final totalNet = salary1.netAmount + salary2.netAmount;
-  final totalMealAllowance =
-      salary1.mealAllowance.netMealAllowance + salary2.mealAllowance.netMealAllowance;
-  final totalNetWithMeal = salary1.totalNetWithMeal + salary2.totalNetWithMeal;
-  final totalIRS = salary1.irsRetention +
-      salary2.irsRetention +
-      salary1.mealAllowance.irsTaxOnMeal +
-      salary2.mealAllowance.irsTaxOnMeal;
-  final totalSS = salary1.socialSecurity +
-      salary2.socialSecurity +
-      salary1.mealAllowance.ssTaxOnMeal +
-      salary2.mealAllowance.ssTaxOnMeal;
+  final totalGross = calcs.fold(0.0, (sum, s) => sum + s.effectiveGrossAmount);
+  final totalNet = calcs.fold(0.0, (sum, s) => sum + s.netAmount);
+  final totalMealAllowance = calcs.fold(0.0, (sum, s) => sum + s.mealAllowance.netMealAllowance);
+  final totalNetWithMeal = calcs.fold(0.0, (sum, s) => sum + s.totalNetWithMeal);
+  final totalIRS = calcs.fold(0.0, (sum, s) => sum + s.irsRetention + s.mealAllowance.irsTaxOnMeal);
+  final totalSS = calcs.fold(0.0, (sum, s) => sum + s.socialSecurity + s.mealAllowance.ssTaxOnMeal);
   final totalDeductions = totalIRS + totalSS;
 
   final totalExpenses = expenses
@@ -172,8 +166,7 @@ BudgetSummary calculateBudgetSummary(
   final savingsRate = totalNetWithMeal > 0 ? netLiquidity / totalNetWithMeal : 0.0;
 
   return BudgetSummary(
-    salary1: salary1,
-    salary2: salary2,
+    salaries: calcs,
     totalGross: totalGross,
     totalNet: totalNet,
     totalNetWithMeal: totalNetWithMeal,

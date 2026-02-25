@@ -307,15 +307,13 @@ class _NetIncomeChart extends StatelessWidget {
     final grossValues = <double>[];
     final netValues = <double>[];
 
-    if (summary.salary1.grossAmount > 0) {
-      labels.add('Vencimento 1');
-      grossValues.add(summary.salary1.grossAmount);
-      netValues.add(summary.salary1.totalNetWithMeal);
-    }
-    if (summary.salary2.grossAmount > 0) {
-      labels.add('Vencimento 2');
-      grossValues.add(summary.salary2.grossAmount);
-      netValues.add(summary.salary2.totalNetWithMeal);
+    for (var i = 0; i < summary.salaries.length; i++) {
+      final s = summary.salaries[i];
+      if (s.effectiveGrossAmount > 0) {
+        labels.add('Venc. ${i + 1}');
+        grossValues.add(s.effectiveGrossAmount);
+        netValues.add(s.totalNetWithMeal);
+      }
     }
 
     if (labels.isEmpty) return const SizedBox.shrink();

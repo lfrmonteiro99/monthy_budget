@@ -317,20 +317,17 @@ class DashboardScreen extends StatelessWidget {
             style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.grey.shade400, letterSpacing: 1.2),
           ),
           const SizedBox(height: 16),
-          if (summary.salary1.grossAmount > 0)
-            _SalaryRow(
-              label: settings.salaries[0].label.isNotEmpty ? settings.salaries[0].label : 'Vencimento 1',
-              calc: summary.salary1,
-            ),
-          if (summary.salary2.grossAmount > 0) ...[
-            const SizedBox(height: 12),
-            _SalaryRow(
-              label: settings.salaries.length > 1 && settings.salaries[1].label.isNotEmpty
-                  ? settings.salaries[1].label
-                  : 'Vencimento 2',
-              calc: summary.salary2,
-            ),
-          ],
+          ...List.generate(summary.salaries.length, (i) {
+            final calc = summary.salaries[i];
+            if (calc.effectiveGrossAmount <= 0) return const SizedBox.shrink();
+            final label = i < settings.salaries.length && settings.salaries[i].label.isNotEmpty
+                ? settings.salaries[i].label
+                : 'Vencimento ${i + 1}';
+            return Padding(
+              padding: EdgeInsets.only(top: i > 0 ? 12 : 0),
+              child: _SalaryRow(label: label, calc: calc),
+            );
+          }),
         ],
       ),
     );
@@ -1006,6 +1003,8 @@ class _SalaryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasMeal = calc.mealAllowance.totalMonthly > 0;
+    final hasSubsidy = calc.subsidyMonthlyBonus > 0;
+    final hasExempt = calc.otherExemptIncome > 0;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -1032,9 +1031,15 @@ class _SalaryRow extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Bruto', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: Colors.grey.shade400)),
+                    Text(
+                      hasSubsidy ? 'Bruto c/ duodéc.' : 'Bruto',
+                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: Colors.grey.shade400),
+                    ),
                     const SizedBox(height: 2),
-                    Text(formatCurrency(calc.grossAmount), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF475569))),
+                    Text(
+                      formatCurrency(calc.effectiveGrossAmount),
+                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF475569)),
+                    ),
                   ],
                 ),
               ),
@@ -1075,6 +1080,19 @@ class _SalaryRow extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+          ],
+          if (hasExempt) ...[
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Rend. Isento', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.grey.shade400)),
+                Text(
+                  '+${formatCurrency(calc.otherExemptIncome)}',
+                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF10B981)),
+                ),
+              ],
             ),
           ],
         ],
