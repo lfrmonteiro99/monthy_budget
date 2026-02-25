@@ -282,6 +282,7 @@ class _AppHomeState extends State<AppHome> {
         settings: _settings,
         summary: summary,
         purchaseHistory: _purchaseHistory,
+        onSaveSettings: _saveSettings,
         onOpenSettings: () {
           Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => _buildSettingsScreen()),

@@ -367,6 +367,7 @@ class AppSettings {
   final List<ExpenseItem> expenses;
   final DashboardConfig dashboardConfig;
   final MealSettings mealSettings;
+  final Map<String, int> stressHistory;
 
   const AppSettings({
     this.personalInfo = const PersonalInfo(),
@@ -383,6 +384,7 @@ class AppSettings {
     ],
     this.dashboardConfig = const DashboardConfig(),
     this.mealSettings = const MealSettings(),
+    this.stressHistory = const {},
   });
 
   AppSettings copyWith({
@@ -391,6 +393,7 @@ class AppSettings {
     List<ExpenseItem>? expenses,
     DashboardConfig? dashboardConfig,
     MealSettings? mealSettings,
+    Map<String, int>? stressHistory,
   }) {
     return AppSettings(
       personalInfo: personalInfo ?? this.personalInfo,
@@ -398,6 +401,7 @@ class AppSettings {
       expenses: expenses ?? this.expenses,
       dashboardConfig: dashboardConfig ?? this.dashboardConfig,
       mealSettings: mealSettings ?? this.mealSettings,
+      stressHistory: stressHistory ?? this.stressHistory,
     );
   }
 
@@ -408,6 +412,7 @@ class AppSettings {
       'expenses': expenses.map((e) => e.toJson()).toList(),
       'dashboardConfig': dashboardConfig.toJson(),
       'mealSettings': mealSettings.toJson(),
+      'stressHistory': stressHistory,
     };
     return jsonEncode(map);
   }
@@ -431,6 +436,9 @@ class AppSettings {
       mealSettings: MealSettings.fromJson(
         (map['mealSettings'] as Map<String, dynamic>?) ?? {},
       ),
+      stressHistory: (map['stressHistory'] as Map<String, dynamic>?)
+              ?.map((k, v) => MapEntry(k, (v as num).toInt())) ??
+          const {},
     );
   }
 }

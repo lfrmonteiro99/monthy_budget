@@ -3,6 +3,7 @@ import '../models/app_settings.dart';
 import '../models/budget_summary.dart';
 import '../models/purchase_record.dart';
 import '../utils/formatters.dart';
+import '../utils/stress_index.dart';
 import '../widgets/charts/budget_charts.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -10,6 +11,7 @@ class DashboardScreen extends StatelessWidget {
   final BudgetSummary summary;
   final PurchaseHistory purchaseHistory;
   final VoidCallback onOpenSettings;
+  final ValueChanged<AppSettings> onSaveSettings;
 
   const DashboardScreen({
     super.key,
@@ -17,12 +19,29 @@ class DashboardScreen extends StatelessWidget {
     required this.summary,
     required this.purchaseHistory,
     required this.onOpenSettings,
+    required this.onSaveSettings,
   });
 
   @override
   Widget build(BuildContext context) {
     final hasData = summary.totalGross > 0;
     final isPositive = summary.netLiquidity >= 0;
+
+    // Stress Index — calculate and persist if changed
+    final stressResult = calculateStressIndex(
+      summary: summary,
+      purchaseHistory: purchaseHistory,
+      settings: settings,
+    );
+    final now = DateTime.now();
+    final monthKey = '${now.year}-${now.month.toString().padLeft(2, '0')}';
+    if (hasData && settings.stressHistory[monthKey] != stressResult.score) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final updated = Map<String, int>.from(settings.stressHistory)
+          ..[monthKey] = stressResult.score;
+        onSaveSettings(settings.copyWith(stressHistory: updated));
+      });
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
@@ -95,6 +114,8 @@ class DashboardScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                   child: Column(
                     children: [
+                      _StressIndexCard(result: stressResult),
+                      const SizedBox(height: 16),
                       if (settings.dashboardConfig.showSummaryCards) _buildSummaryCards(),
                       const SizedBox(height: 16),
                       _buildSalaryBreakdown(),
@@ -773,6 +794,207 @@ class _SummaryCard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _StressIndexCard extends StatefulWidget {
+  final StressIndexResult result;
+  const _StressIndexCard({required this.result});
+
+  @override
+  State<_StressIndexCard> createState() => _StressIndexCardState();
+}
+
+class _StressIndexCardState extends State<_StressIndexCard> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final result = widget.result;
+    final color = _scoreColor(result.score);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'ÍNDICE DE TRANQUILIDADE',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.grey.shade400,
+                  letterSpacing: 0.8,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                '${result.score}',
+                style: TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.w800,
+                  color: color,
+                  letterSpacing: -1,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Text(
+                        result.label,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: color,
+                        ),
+                      ),
+                    ),
+                    if (result.delta != null)
+                      Row(
+                        children: [
+                          Icon(
+                            result.delta! > 0
+                                ? Icons.arrow_upward
+                                : result.delta! < 0
+                                    ? Icons.arrow_downward
+                                    : Icons.remove,
+                            size: 12,
+                            color: result.delta! > 0
+                                ? const Color(0xFF10B981)
+                                : result.delta! < 0
+                                    ? const Color(0xFFEF4444)
+                                    : Colors.grey,
+                          ),
+                          const SizedBox(width: 2),
+                          Text(
+                            '${result.delta! > 0 ? '+' : ''}${result.delta} vs mês passado',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                              color: result.delta! > 0
+                                  ? const Color(0xFF10B981)
+                                  : result.delta! < 0
+                                      ? const Color(0xFFEF4444)
+                                      : Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          LinearProgressIndicator(
+            value: result.score / 100.0,
+            backgroundColor: const Color(0xFFE2E8F0),
+            color: color,
+            minHeight: 6,
+            borderRadius: BorderRadius.circular(3),
+          ),
+          if (_expanded) ...[
+            const SizedBox(height: 12),
+            const Divider(height: 1, color: Color(0xFFE2E8F0)),
+            const SizedBox(height: 10),
+            ...result.factors.map((f) => Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Row(
+                    children: [
+                      Icon(
+                        f.ok
+                            ? Icons.check_circle_outline
+                            : Icons.warning_amber_outlined,
+                        size: 16,
+                        color: f.ok
+                            ? const Color(0xFF10B981)
+                            : const Color(0xFFF59E0B),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          f.label,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Color(0xFF475569),
+                          ),
+                        ),
+                      ),
+                      Text(
+                        f.valueLabel,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF1E293B),
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+          ],
+          const SizedBox(height: 6),
+          GestureDetector(
+            onTap: () => setState(() => _expanded = !_expanded),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  _expanded ? 'Fechar' : 'Ver detalhes',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFF94A3B8),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Icon(
+                  _expanded ? Icons.expand_less : Icons.expand_more,
+                  size: 16,
+                  color: const Color(0xFF94A3B8),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _scoreColor(int score) {
+    if (score >= 80) return const Color(0xFF10B981);
+    if (score >= 60) return const Color(0xFF3B82F6);
+    if (score >= 40) return const Color(0xFFF59E0B);
+    return const Color(0xFFEF4444);
   }
 }
 
