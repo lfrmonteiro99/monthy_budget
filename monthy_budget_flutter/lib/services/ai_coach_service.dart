@@ -1,15 +1,21 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/app_settings.dart';
 import '../models/budget_summary.dart';
+import '../models/coach_insight.dart';
 import '../models/purchase_record.dart';
 import '../utils/stress_index.dart';
 
 class AiCoachService {
   static const _apiKeyPref = 'openai_api_key';
+  static const _insightsPref = 'coach_insights';
+  static const _maxInsights = 20;
   static const _endpoint = 'https://api.openai.com/v1/chat/completions';
   static const _model = 'gpt-4o-mini';
+
+  // ── API key ────────────────────────────────────────────────────────────────
 
   Future<String> loadApiKey() async {
     final prefs = await SharedPreferences.getInstance();
@@ -21,13 +27,55 @@ class AiCoachService {
     await prefs.setString(_apiKeyPref, key.trim());
   }
 
-  Future<String> analyze({
+  // ── Insight history ────────────────────────────────────────────────────────
+
+  Future<List<CoachInsight>> loadInsights() async {
+    final prefs = await SharedPreferences.getInstance();
+    final json = prefs.getString(_insightsPref);
+    if (json == null) return [];
+    try {
+      return CoachInsight.listFromJsonString(json);
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<List<CoachInsight>> _persistInsight(CoachInsight insight) async {
+    final prefs = await SharedPreferences.getInstance();
+    final existing = await loadInsights();
+    final updated = [insight, ...existing].take(_maxInsights).toList();
+    await prefs.setString(_insightsPref, CoachInsight.listToJsonString(updated));
+    return updated;
+  }
+
+  Future<List<CoachInsight>> deleteInsight(String id) async {
+    final prefs = await SharedPreferences.getInstance();
+    final existing = await loadInsights();
+    final updated = existing.where((e) => e.id != id).toList();
+    await prefs.setString(_insightsPref, CoachInsight.listToJsonString(updated));
+    return updated;
+  }
+
+  Future<void> clearInsights() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_insightsPref);
+  }
+
+  // ── Analysis ───────────────────────────────────────────────────────────────
+
+  /// Returns the new [CoachInsight] and the updated full list.
+  Future<({CoachInsight insight, List<CoachInsight> history})> analyze({
     required String apiKey,
     required AppSettings settings,
     required BudgetSummary summary,
     required PurchaseHistory purchaseHistory,
   }) async {
-    final prompt = _buildPrompt(settings, summary, purchaseHistory);
+    final stress = calculateStressIndex(
+      summary: summary,
+      purchaseHistory: purchaseHistory,
+      settings: settings,
+    );
+    final prompt = _buildPrompt(settings, summary, purchaseHistory, stress);
 
     final response = await http
         .post(
@@ -42,35 +90,52 @@ class AiCoachService {
               {
                 'role': 'system',
                 'content':
-                    'És um consultor financeiro pessoal para utilizadores portugueses. '
-                    'Responde sempre em português europeu. Sê direto, usa números concretos '
-                    'do contexto fornecido e organiza os conselhos com bullet points (•). '
-                    'Não introduzas dados que não foram fornecidos.',
+                    'És um analista financeiro pessoal para utilizadores portugueses. '
+                    'Responde sempre em português europeu. Sê directo e analítico — '
+                    'usa sempre números concretos do contexto fornecido. '
+                    'Estrutura a resposta exactamente nas 3 partes pedidas. '
+                    'Não introduzas dados, benchmarks ou referências externas que não foram fornecidos.',
               },
               {'role': 'user', 'content': prompt},
             ],
-            'max_tokens': 700,
-            'temperature': 0.7,
+            'max_tokens': 1000,
+            'temperature': 0.5,
           }),
         )
         .timeout(const Duration(seconds: 30));
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-      return (data['choices'] as List).first['message']['content'] as String;
-    } else if (response.statusCode == 401) {
-      throw Exception('API key inválida. Verifica nas Definições.');
-    } else {
+    if (response.statusCode != 200) {
+      if (response.statusCode == 401) {
+        throw Exception('API key inválida. Verifica nas Definições.');
+      }
       final body = jsonDecode(response.body) as Map<String, dynamic>;
       final msg = (body['error'] as Map?)?['message'] ?? 'Erro ${response.statusCode}';
       throw Exception(msg);
     }
+
+    final data = jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+    final content = (data['choices'] as List).first['message']['content'] as String;
+
+    final insight = CoachInsight(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      timestamp: DateTime.now(),
+      content: content,
+      stressScore: stress.score,
+    );
+    final history = await _persistInsight(insight);
+    return (insight: insight, history: history);
   }
 
+  // ── Prompt ─────────────────────────────────────────────────────────────────
+
   String _buildPrompt(
-      AppSettings settings, BudgetSummary summary, PurchaseHistory purchaseHistory) {
+    AppSettings settings,
+    BudgetSummary summary,
+    PurchaseHistory purchaseHistory,
+    StressIndexResult stress,
+  ) {
     final now = DateTime.now();
-    final monthNames = [
+    const monthNames = [
       '', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
       'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
     ];
@@ -78,103 +143,130 @@ class AiCoachService {
     final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
     final daysLeft = daysInMonth - now.day;
 
-    final stress = calculateStressIndex(
-      summary: summary,
-      purchaseHistory: purchaseHistory,
-      settings: settings,
-    );
-
     final buf = StringBuffer();
     buf.writeln('CONTEXTO: Orçamento pessoal mensal — $monthLabel');
     buf.writeln();
 
-    // Stress index
+    // ── Stress index ─────────────────────────────────────────────────────────
     final prevMonth = now.month == 1 ? 12 : now.month - 1;
     final prevYear = now.month == 1 ? now.year - 1 : now.year;
     final prevKey = '$prevYear-${prevMonth.toString().padLeft(2, '0')}';
     final prevScore = settings.stressHistory[prevKey];
     final deltaStr = prevScore != null
         ? ' (${stress.score >= prevScore ? '+' : ''}${stress.score - prevScore} vs ${monthNames[prevMonth]})'
-        : '';
+        : ' (primeiro registo)';
     buf.writeln('ÍNDICE DE TRANQUILIDADE: ${stress.score}/100 — ${stress.label}$deltaStr');
-    buf.writeln('Factores (pontuação 0–100, peso, estado):');
+    buf.writeln('Factores (pontuação 0–100, peso):');
     final weights = [35, 30, 20, 15];
     for (var i = 0; i < stress.factors.length; i++) {
       final f = stress.factors[i];
-      final pts = (f.normalizedScore * weights[i] / 100).toStringAsFixed(0);
+      final pts = (f.normalizedScore * weights[i] / 100).round();
       final status = f.ok ? '✓' : '⚠';
       buf.writeln(
-          '  $status ${f.label}: ${f.valueLabel} → ${f.normalizedScore.toStringAsFixed(0)}/100 '
-          '(contribui $pts/${weights[i]} pts)');
+          '  $status ${f.label}: ${f.valueLabel} '
+          '→ ${f.normalizedScore.toStringAsFixed(0)}/100 pts (peso ${weights[i]}%, contribui $pts pts)');
     }
     buf.writeln();
 
-    // Budget
+    // ── Stress history trend ──────────────────────────────────────────────────
+    if (settings.stressHistory.length >= 2) {
+      final sorted = settings.stressHistory.entries.toList()
+        ..sort((a, b) => b.key.compareTo(a.key));
+      buf.writeln('EVOLUÇÃO DO ÍNDICE (${min(6, sorted.length)} meses):');
+      for (final e in sorted.take(6)) {
+        final parts = e.key.split('-');
+        final mLabel = monthNames[int.parse(parts[1])];
+        buf.writeln('  $mLabel ${parts[0]}: ${e.value}/100');
+      }
+      buf.writeln();
+    }
+
+    // ── Income ───────────────────────────────────────────────────────────────
     buf.writeln('RENDIMENTO');
-    buf.writeln('  Bruto: ${summary.totalGross.toStringAsFixed(2)}€');
+    buf.writeln('  Bruto total: ${summary.totalGross.toStringAsFixed(2)}€');
     buf.writeln('  Líquido (c/ subsídio alim.): ${summary.totalNetWithMeal.toStringAsFixed(2)}€');
-    buf.writeln('  IRS: ${summary.totalIRS.toStringAsFixed(2)}€ | SS: ${summary.totalSS.toStringAsFixed(2)}€');
+    buf.writeln('  IRS retido: ${summary.totalIRS.toStringAsFixed(2)}€'
+        ' (${summary.totalGross > 0 ? (summary.totalIRS / summary.totalGross * 100).toStringAsFixed(1) : 0}% do bruto)');
+    buf.writeln('  Seg. Social: ${summary.totalSS.toStringAsFixed(2)}€'
+        ' (${summary.totalGross > 0 ? (summary.totalSS / summary.totalGross * 100).toStringAsFixed(1) : 0}% do bruto)');
     buf.writeln();
 
-    // Expenses by category
+    // ── Fixed expenses ────────────────────────────────────────────────────────
     final expByCategory = <String, double>{};
     for (final e in settings.expenses.where((e) => e.enabled && e.amount > 0)) {
       expByCategory.update(e.category.label, (v) => v + e.amount, ifAbsent: () => e.amount);
     }
     if (expByCategory.isNotEmpty) {
-      buf.writeln('DESPESAS FIXAS (total: ${summary.totalExpenses.toStringAsFixed(2)}€)');
+      final net = summary.totalNetWithMeal;
+      buf.writeln(
+          'DESPESAS FIXAS: ${summary.totalExpenses.toStringAsFixed(2)}€ '
+          '(${net > 0 ? (summary.totalExpenses / net * 100).toStringAsFixed(1) : 0}% do líquido)');
       final sorted = expByCategory.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
       for (final e in sorted) {
-        final pct = summary.totalNetWithMeal > 0
-            ? (e.value / summary.totalNetWithMeal * 100).toStringAsFixed(1)
-            : '0';
-        buf.writeln('  ${e.key}: ${e.value.toStringAsFixed(2)}€ ($pct% do líquido)');
+        final pct = net > 0 ? (e.value / net * 100).toStringAsFixed(1) : '0';
+        buf.writeln('  ${e.key}: ${e.value.toStringAsFixed(2)}€ ($pct%)');
       }
       buf.writeln();
     }
 
-    // Purchase history this month
+    // ── Food / purchase history ───────────────────────────────────────────────
     final foodBudget = settings.expenses
         .where((e) => e.category == ExpenseCategory.alimentacao && e.enabled)
         .fold(0.0, (s, e) => s + e.amount);
     final foodSpent = purchaseHistory.spentInMonth(now.year, now.month);
-    final monthRecords =
-        purchaseHistory.records.where((r) => r.date.year == now.year && r.date.month == now.month).toList();
+    final monthRecords = purchaseHistory.records
+        .where((r) => r.date.year == now.year && r.date.month == now.month)
+        .toList();
     if (monthRecords.isNotEmpty || foodBudget > 0) {
-      buf.writeln('COMPRAS DE SUPERMERCADO — $monthLabel');
+      buf.writeln('COMPRAS — $monthLabel');
       buf.writeln('  Compras realizadas: ${monthRecords.length}');
       if (monthRecords.isNotEmpty) {
-        final avg = foodSpent / monthRecords.length;
-        buf.writeln('  Valor médio por compra: ${avg.toStringAsFixed(2)}€');
+        buf.writeln(
+            '  Valor médio/compra: ${(foodSpent / monthRecords.length).toStringAsFixed(2)}€');
       }
       if (foodBudget > 0) {
         final remaining = foodBudget - foodSpent;
-        final projected = daysLeft > 0 && now.day > 1
-            ? foodSpent / now.day * daysInMonth
-            : foodSpent;
-        buf.writeln('  Orçamento alimentação: ${foodBudget.toStringAsFixed(2)}€/mês');
-        buf.writeln('  Gasto até hoje: ${foodSpent.toStringAsFixed(2)}€ '
-            '(${(foodSpent / foodBudget * 100).toStringAsFixed(0)}%)');
-        buf.writeln('  Restante: ${remaining.toStringAsFixed(2)}€ | '
-            'Projeção fim do mês: ${projected.toStringAsFixed(2)}€');
-        buf.writeln('  Dias restantes no mês: $daysLeft');
+        final projected =
+            now.day > 1 ? (foodSpent / now.day * daysInMonth) : foodSpent;
+        buf.writeln('  Orçamento: ${foodBudget.toStringAsFixed(2)}€'
+            ' | Gasto: ${foodSpent.toStringAsFixed(2)}€'
+            ' (${(foodSpent / foodBudget * 100).toStringAsFixed(0)}%)');
+        buf.writeln('  Restante: ${remaining.toStringAsFixed(2)}€'
+            ' | Projeção fim mês: ${projected.toStringAsFixed(2)}€'
+            ' | Dias restantes: $daysLeft');
       }
       buf.writeln();
     }
 
-    buf.writeln('DISPONÍVEL/POUPANÇA: ${summary.netLiquidity.toStringAsFixed(2)}€ '
-        '(taxa: ${(summary.savingsRate * 100).toStringAsFixed(1)}%)');
+    // ── Bottom line ───────────────────────────────────────────────────────────
+    buf.writeln('POSIÇÃO FINAL');
+    buf.writeln('  Disponível/poupança: ${summary.netLiquidity.toStringAsFixed(2)}€/mês');
+    buf.writeln('  Taxa de poupança: ${(summary.savingsRate * 100).toStringAsFixed(1)}%');
+    if (summary.totalExpenses > 0 && summary.netLiquidity > 0) {
+      final monthsCovered = (summary.netLiquidity / summary.totalExpenses).toStringAsFixed(1);
+      buf.writeln('  Meses de despesas cobertos pela poupança mensal: $monthsCovered');
+    }
     buf.writeln();
 
+    // ── Directive ─────────────────────────────────────────────────────────────
     buf.writeln(
-        'Com base EXCLUSIVAMENTE nestes dados (sem inventar informação externa):\n'
-        '1. Identifica os 2 factores com pior pontuação e explica em 1 frase cada um '
-        'porquê estão fracos — usa os números exactos fornecidos.\n'
-        '2. Para cada factor fraco, propõe UMA ação concreta com um valor-alvo '
-        'específico em euros ou percentagem e estima o impacto no score.\n'
-        '3. Indica 1 oportunidade de melhoria imediata para $monthLabel.\n'
-        'Sê cirúrgico. Zero conselhos genéricos. Zero introdução ou conclusão. '
-        'Responde directamente ao ponto 1, depois 2, depois 3.');
+        'ANÁLISE PEDIDA — responde em 3 partes, sem introdução nem conclusão:\n'
+        '\n'
+        '**1. POSICIONAMENTO GERAL**\n'
+        'Com base nos dados acima, avalia 3 dimensões:\n'
+        '(a) Estrutura de custos: o rácio despesas fixas/líquido e o que implica para a margem de manobra;\n'
+        '(b) Capacidade de absorção de imprevistos: a poupança mensal cobre quantas vezes as despesas fixas?\n'
+        '(c) Trajectória: o índice está a melhorar, estável ou a deteriorar? Porquê (com os dados)?\n'
+        '\n'
+        '**2. FACTORES CRÍTICOS**\n'
+        'Os 2 factores com pior pontuação no Índice. Para cada um:\n'
+        '(a) 1 frase de diagnóstico com os números exactos do contexto;\n'
+        '(b) 1 acção concreta com valor-alvo em € ou % e impacto estimado no score.\n'
+        '\n'
+        '**3. OPORTUNIDADE IMEDIATA — $monthLabel**\n'
+        '1 acção aplicável ainda este mês com base nos dados actuais (compras restantes, orçamento, etc.).\n'
+        '\n'
+        'Sê cirúrgico. Zero conselhos genéricos. Usa EXCLUSIVAMENTE os números fornecidos.');
     return buf.toString();
   }
 }
