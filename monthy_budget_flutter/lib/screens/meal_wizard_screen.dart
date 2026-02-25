@@ -1,0 +1,689 @@
+import 'package:flutter/material.dart';
+import '../models/meal_settings.dart';
+
+class MealWizardScreen extends StatefulWidget {
+  final MealSettings initial;
+  final ValueChanged<MealSettings> onComplete;
+
+  const MealWizardScreen({
+    super.key,
+    required this.initial,
+    required this.onComplete,
+  });
+
+  @override
+  State<MealWizardScreen> createState() => _MealWizardScreenState();
+}
+
+class _MealWizardScreenState extends State<MealWizardScreen> {
+  late MealSettings _draft;
+  int _step = 0;
+  final _pageController = PageController();
+
+  static const _totalSteps = 5;
+  static const _stepTitles = [
+    'Refeições',
+    'Objetivo',
+    'Restrições',
+    'Cozinha',
+    'Estratégia',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _draft = widget.initial;
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _next() {
+    if (_step < _totalSteps - 1) {
+      setState(() => _step++);
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      _finish();
+    }
+  }
+
+  void _back() {
+    if (_step > 0) {
+      setState(() => _step--);
+      _pageController.previousPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  void _finish() {
+    final completed = _draft.copyWith(wizardCompleted: true);
+    widget.onComplete(completed);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: _step > 0
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: _back,
+              )
+            : null,
+        title: Text(
+          _stepTitles[_step],
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(4),
+          child: LinearProgressIndicator(
+            value: (_step + 1) / _totalSteps,
+            backgroundColor: const Color(0xFFE2E8F0),
+            color: const Color(0xFF3B82F6),
+            minHeight: 4,
+          ),
+        ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: PageView(
+              controller: _pageController,
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                _Step1Meals(
+                  draft: _draft,
+                  onChanged: (s) => setState(() => _draft = s),
+                ),
+                _Step2Objective(
+                  draft: _draft,
+                  onChanged: (s) => setState(() => _draft = s),
+                ),
+                _Step3Restrictions(
+                  draft: _draft,
+                  onChanged: (s) => setState(() => _draft = s),
+                ),
+                _Step4Kitchen(
+                  draft: _draft,
+                  onChanged: (s) => setState(() => _draft = s),
+                ),
+                _Step5Strategy(
+                  draft: _draft,
+                  onChanged: (s) => setState(() => _draft = s),
+                ),
+              ],
+            ),
+          ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+              child: Column(
+                children: [
+                  if (_step == _totalSteps - 1)
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFEFF6FF),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: const Color(0xFFDBEAFE)),
+                      ),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.info_outline,
+                              size: 16, color: Color(0xFF3B82F6)),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Podes alterar as definições do planeador em qualquer altura em Definições → Refeições.',
+                              style: TextStyle(
+                                  fontSize: 12, color: Color(0xFF1E40AF)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      onPressed: _next,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: const Color(0xFF3B82F6),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                      child: Text(
+                        _step == _totalSteps - 1 ? 'Gerar Plano' : 'Continuar',
+                        style: const TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Passo ${_step + 1} de $_totalSteps',
+                    style: const TextStyle(
+                        fontSize: 11, color: Color(0xFF94A3B8)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// --- Step 1: Refeições ---
+class _Step1Meals extends StatelessWidget {
+  final MealSettings draft;
+  final ValueChanged<MealSettings> onChanged;
+  const _Step1Meals({required this.draft, required this.onChanged});
+
+  static const _weights = {
+    MealType.breakfast: '10%',
+    MealType.lunch: '35%',
+    MealType.snack: '15%',
+    MealType.dinner: '40%',
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        const Text(
+          'Quais refeições queres incluir no plano diário?',
+          style: TextStyle(fontSize: 15, color: Color(0xFF475569)),
+        ),
+        const SizedBox(height: 20),
+        ...MealType.values.map((mt) {
+          final enabled = draft.enabledMeals.contains(mt);
+          return Container(
+            margin: const EdgeInsets.only(bottom: 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: enabled
+                    ? const Color(0xFF3B82F6)
+                    : const Color(0xFFE2E8F0),
+                width: enabled ? 2 : 1,
+              ),
+            ),
+            child: SwitchListTile(
+              value: enabled,
+              onChanged: (v) {
+                final newSet = Set<MealType>.from(draft.enabledMeals);
+                if (v) {
+                  newSet.add(mt);
+                } else {
+                  newSet.remove(mt);
+                }
+                if (newSet.isEmpty) return; // must have at least 1
+                onChanged(draft.copyWith(enabledMeals: newSet));
+              },
+              title: Text(mt.label,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w600, fontSize: 14)),
+              subtitle: Text('${_weights[mt]} do orçamento',
+                  style: const TextStyle(
+                      fontSize: 12, color: Color(0xFF94A3B8))),
+              activeTrackColor: const Color(0xFF3B82F6),
+            ),
+          );
+        }),
+      ],
+    );
+  }
+}
+
+// --- Step 2: Objetivo ---
+class _Step2Objective extends StatelessWidget {
+  final MealSettings draft;
+  final ValueChanged<MealSettings> onChanged;
+  const _Step2Objective({required this.draft, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        const Text(
+          'Qual é o objetivo principal do teu plano alimentar?',
+          style: TextStyle(fontSize: 15, color: Color(0xFF475569)),
+        ),
+        const SizedBox(height: 20),
+        ...MealObjective.values.map((obj) {
+          final selected = draft.objective == obj;
+          return GestureDetector(
+            onTap: () {
+              var updated = draft.copyWith(objective: obj);
+              if (obj == MealObjective.vegetarian) {
+                updated = updated.copyWith(veggieDaysPerWeek: 7);
+              }
+              onChanged(updated);
+            },
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: selected ? const Color(0xFFEFF6FF) : Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: selected
+                      ? const Color(0xFF3B82F6)
+                      : const Color(0xFFE2E8F0),
+                  width: selected ? 2 : 1,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    selected
+                        ? Icons.radio_button_checked
+                        : Icons.radio_button_unchecked,
+                    color: selected
+                        ? const Color(0xFF3B82F6)
+                        : const Color(0xFFCBD5E1),
+                    size: 20,
+                  ),
+                  const SizedBox(width: 12),
+                  Text(obj.label,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: selected
+                            ? FontWeight.w600
+                            : FontWeight.w400,
+                        color: selected
+                            ? const Color(0xFF1E293B)
+                            : const Color(0xFF475569),
+                      )),
+                ],
+              ),
+            ),
+          );
+        }),
+      ],
+    );
+  }
+}
+
+// --- Step 3: Restrições ---
+class _Step3Restrictions extends StatefulWidget {
+  final MealSettings draft;
+  final ValueChanged<MealSettings> onChanged;
+  const _Step3Restrictions({required this.draft, required this.onChanged});
+
+  @override
+  State<_Step3Restrictions> createState() => _Step3RestrictionsState();
+}
+
+class _Step3RestrictionsState extends State<_Step3Restrictions> {
+  final _dislikedCtrl = TextEditingController();
+
+  @override
+  void dispose() {
+    _dislikedCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final d = widget.draft;
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        _sectionLabel('RESTRIÇÕES DIETÉTICAS'),
+        const SizedBox(height: 8),
+        ...[
+          ('Sem glúten', d.glutenFree,
+              (bool v) => widget.onChanged(d.copyWith(glutenFree: v))),
+          ('Sem lactose', d.lactoseFree,
+              (bool v) => widget.onChanged(d.copyWith(lactoseFree: v))),
+          ('Sem frutos secos', d.nutFree,
+              (bool v) => widget.onChanged(d.copyWith(nutFree: v))),
+          ('Sem marisco', d.shellfishFree,
+              (bool v) => widget.onChanged(d.copyWith(shellfishFree: v))),
+        ].map(
+          (item) => CheckboxListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(item.$1,
+                style: const TextStyle(
+                    fontSize: 14, fontWeight: FontWeight.w500)),
+            value: item.$2,
+            activeColor: const Color(0xFF3B82F6),
+            controlAffinity: ListTileControlAffinity.leading,
+            onChanged: (v) => item.$3(v ?? false),
+          ),
+        ),
+        const SizedBox(height: 20),
+        _sectionLabel('INGREDIENTES QUE NÃO GOSTAS'),
+        const SizedBox(height: 8),
+        if (d.dislikedIngredients.isNotEmpty)
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            children: d.dislikedIngredients
+                .map((name) => Chip(
+                      label: Text(name,
+                          style: const TextStyle(fontSize: 12)),
+                      deleteIcon: const Icon(Icons.close, size: 14),
+                      onDeleted: () {
+                        final updated =
+                            List<String>.from(d.dislikedIngredients)
+                              ..remove(name);
+                        widget.onChanged(
+                            d.copyWith(dislikedIngredients: updated));
+                      },
+                    ))
+                .toList(),
+          ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _dislikedCtrl,
+                decoration: InputDecoration(
+                  hintText: 'ex: atum, brócolos',
+                  hintStyle: const TextStyle(color: Color(0xFFCBD5E1)),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide:
+                          const BorderSide(color: Color(0xFFE2E8F0))),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide:
+                          const BorderSide(color: Color(0xFFE2E8F0))),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(
+                          color: Color(0xFF3B82F6), width: 2)),
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 10),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            IconButton.filled(
+              onPressed: () {
+                final text = _dislikedCtrl.text.trim();
+                if (text.isEmpty) return;
+                final updated = [...d.dislikedIngredients, text];
+                widget.onChanged(d.copyWith(dislikedIngredients: updated));
+                _dislikedCtrl.clear();
+              },
+              icon: const Icon(Icons.add),
+              style: IconButton.styleFrom(
+                  backgroundColor: const Color(0xFF3B82F6)),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+// --- Step 4: Cozinha ---
+class _Step4Kitchen extends StatelessWidget {
+  final MealSettings draft;
+  final ValueChanged<MealSettings> onChanged;
+  const _Step4Kitchen({required this.draft, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final prepOptions = [15, 30, 45, 60];
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        _sectionLabel('TEMPO MÁXIMO POR REFEIÇÃO'),
+        const SizedBox(height: 12),
+        Row(
+          children: prepOptions.map((mins) {
+            final selected = draft.maxPrepMinutes == mins;
+            return Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(
+                    right: mins != prepOptions.last ? 8 : 0),
+                child: GestureDetector(
+                  onTap: () =>
+                      onChanged(draft.copyWith(maxPrepMinutes: mins)),
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      color: selected
+                          ? const Color(0xFF3B82F6)
+                          : Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: selected
+                            ? const Color(0xFF3B82F6)
+                            : const Color(0xFFE2E8F0),
+                      ),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      mins == 60 ? '60+' : '${mins}min',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: selected
+                            ? Colors.white
+                            : const Color(0xFF475569),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 20),
+        _sectionLabel('COMPLEXIDADE MÁXIMA'),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            ('Fácil', 2),
+            ('Médio', 3),
+            ('Avançado', 5),
+          ].map(((String, int) item) {
+            final selected = draft.maxComplexity == item.$2;
+            return Expanded(
+              child: Padding(
+                padding:
+                    EdgeInsets.only(right: item.$2 != 5 ? 8 : 0),
+                child: GestureDetector(
+                  onTap: () =>
+                      onChanged(draft.copyWith(maxComplexity: item.$2)),
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      color: selected
+                          ? const Color(0xFF3B82F6)
+                          : Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: selected
+                            ? const Color(0xFF3B82F6)
+                            : const Color(0xFFE2E8F0),
+                      ),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      item.$1,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: selected
+                            ? Colors.white
+                            : const Color(0xFF475569),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 20),
+        _sectionLabel('EQUIPAMENTO DISPONÍVEL'),
+        const SizedBox(height: 8),
+        ...KitchenEquipment.values.map((eq) => CheckboxListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(eq.label,
+                  style: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.w500)),
+              value: draft.availableEquipment.contains(eq),
+              activeColor: const Color(0xFF3B82F6),
+              controlAffinity: ListTileControlAffinity.leading,
+              onChanged: (v) {
+                final updated =
+                    Set<KitchenEquipment>.from(draft.availableEquipment);
+                if (v == true) {
+                  updated.add(eq);
+                } else {
+                  updated.remove(eq);
+                }
+                onChanged(draft.copyWith(availableEquipment: updated));
+              },
+            )),
+      ],
+    );
+  }
+}
+
+// --- Step 5: Estratégia ---
+class _Step5Strategy extends StatelessWidget {
+  final MealSettings draft;
+  final ValueChanged<MealSettings> onChanged;
+  const _Step5Strategy({required this.draft, required this.onChanged});
+
+  static const _weekdays = [
+    'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: const Text('Batch cooking',
+              style: TextStyle(
+                  fontSize: 14, fontWeight: FontWeight.w600)),
+          subtitle: const Text('Cozinhar para vários dias de uma vez',
+              style:
+                  TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
+          value: draft.batchCookingEnabled,
+          activeTrackColor: const Color(0xFF3B82F6),
+          onChanged: (v) =>
+              onChanged(draft.copyWith(batchCookingEnabled: v)),
+        ),
+        if (draft.batchCookingEnabled) ...[
+          const SizedBox(height: 12),
+          _sectionLabel('MÁXIMO DE DIAS POR RECEITA'),
+          Slider(
+            value: draft.maxBatchDays.toDouble(),
+            min: 1,
+            max: 4,
+            divisions: 3,
+            label: '${draft.maxBatchDays} dias',
+            activeColor: const Color(0xFF3B82F6),
+            onChanged: (v) =>
+                onChanged(draft.copyWith(maxBatchDays: v.round())),
+          ),
+          _sectionLabel('DIA PREFERIDO PARA COZINHAR'),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 6,
+            children: List.generate(7, (i) {
+              final selected = draft.preferredCookingWeekday == i;
+              return ChoiceChip(
+                label: Text(_weekdays[i]),
+                selected: selected,
+                selectedColor: const Color(0xFF3B82F6),
+                labelStyle: TextStyle(
+                  color: selected
+                      ? Colors.white
+                      : const Color(0xFF475569),
+                  fontSize: 12,
+                ),
+                onSelected: (v) => onChanged(
+                  draft.copyWith(
+                      preferredCookingWeekday: v ? i : null),
+                ),
+              );
+            }),
+          ),
+        ],
+        const SizedBox(height: 16),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: const Text('Reaproveitar sobras',
+              style: TextStyle(
+                  fontSize: 14, fontWeight: FontWeight.w600)),
+          subtitle: const Text(
+              'Jantar de ontem = almoço de hoje (custo 0)',
+              style:
+                  TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
+          value: draft.reuseLeftovers,
+          activeTrackColor: const Color(0xFF3B82F6),
+          onChanged: (v) => onChanged(draft.copyWith(reuseLeftovers: v)),
+        ),
+        const SizedBox(height: 16),
+        _sectionLabel('MÁXIMO DE INGREDIENTES NOVOS POR SEMANA'),
+        Slider(
+          value: draft.maxNewIngredientsPerWeek.toDouble(),
+          min: 1,
+          max: 10,
+          divisions: 9,
+          label: draft.maxNewIngredientsPerWeek == 10
+              ? 'Sem limite'
+              : '${draft.maxNewIngredientsPerWeek}',
+          activeColor: const Color(0xFF3B82F6),
+          onChanged: (v) => onChanged(
+              draft.copyWith(maxNewIngredientsPerWeek: v.round())),
+        ),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: const Text('Minimizar desperdício',
+              style: TextStyle(
+                  fontSize: 14, fontWeight: FontWeight.w600)),
+          subtitle: const Text(
+              'Prefere receitas que reutilizam ingredientes já usados',
+              style:
+                  TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
+          value: draft.minimizeWaste,
+          activeTrackColor: const Color(0xFF3B82F6),
+          onChanged: (v) => onChanged(draft.copyWith(minimizeWaste: v)),
+        ),
+      ],
+    );
+  }
+}
+
+Widget _sectionLabel(String text) => Text(
+      text,
+      style: const TextStyle(
+        fontSize: 10,
+        fontWeight: FontWeight.w700,
+        color: Color(0xFF94A3B8),
+        letterSpacing: 1.2,
+      ),
+    );

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'meal_settings.dart';
 
 enum IngredientCategory { proteina, carbo, vegetal, gordura, condimento }
 enum RecipeType { carne, peixe, vegetariano, ovos, leguminosas }
@@ -59,6 +60,16 @@ class Recipe {
   final int prepMinutes;
   final int servings;
   final List<RecipeIngredient> ingredients;
+  final bool glutenFree;
+  final bool lactoseFree;
+  final bool nutFree;
+  final bool shellfishFree;
+  final bool isVegetarian;
+  final bool isHighProtein;
+  final bool isLowCarb;
+  final List<String> requiresEquipment;
+  final bool batchCookable;
+  final int maxBatchDays;
 
   const Recipe({
     required this.id,
@@ -69,6 +80,16 @@ class Recipe {
     required this.prepMinutes,
     required this.servings,
     required this.ingredients,
+    this.glutenFree = false,
+    this.lactoseFree = true,
+    this.nutFree = true,
+    this.shellfishFree = true,
+    this.isVegetarian = false,
+    this.isHighProtein = false,
+    this.isLowCarb = false,
+    this.requiresEquipment = const [],
+    this.batchCookable = false,
+    this.maxBatchDays = 1,
   });
 
   factory Recipe.fromJson(Map<String, dynamic> json) => Recipe(
@@ -85,6 +106,16 @@ class Recipe {
         ingredients: (json['ingredients'] as List<dynamic>)
             .map((e) => RecipeIngredient.fromJson(e as Map<String, dynamic>))
             .toList(),
+        glutenFree: json['glutenFree'] ?? false,
+        lactoseFree: json['lactoseFree'] ?? true,
+        nutFree: json['nutFree'] ?? true,
+        shellfishFree: json['shellfishFree'] ?? true,
+        isVegetarian: json['isVegetarian'] ?? false,
+        isHighProtein: json['isHighProtein'] ?? false,
+        isLowCarb: json['isLowCarb'] ?? false,
+        requiresEquipment: List<String>.from(json['requiresEquipment'] ?? []),
+        batchCookable: json['batchCookable'] ?? false,
+        maxBatchDays: json['maxBatchDays'] ?? 1,
       );
 
   Map<String, dynamic> toJson() => {
@@ -96,6 +127,16 @@ class Recipe {
         'prepMinutes': prepMinutes,
         'servings': servings,
         'ingredients': ingredients.map((e) => e.toJson()).toList(),
+        'glutenFree': glutenFree,
+        'lactoseFree': lactoseFree,
+        'nutFree': nutFree,
+        'shellfishFree': shellfishFree,
+        'isVegetarian': isVegetarian,
+        'isHighProtein': isHighProtein,
+        'isLowCarb': isLowCarb,
+        'requiresEquipment': requiresEquipment,
+        'batchCookable': batchCookable,
+        'maxBatchDays': maxBatchDays,
       };
 }
 
@@ -104,19 +145,22 @@ class MealDay {
   final String recipeId;
   final bool isLeftover;
   final double costEstimate;
+  final MealType mealType;
 
   const MealDay({
     required this.dayIndex,
     required this.recipeId,
     this.isLeftover = false,
     required this.costEstimate,
+    this.mealType = MealType.dinner,
   });
 
-  MealDay copyWith({String? recipeId, double? costEstimate}) => MealDay(
+  MealDay copyWith({String? recipeId, double? costEstimate, MealType? mealType}) => MealDay(
         dayIndex: dayIndex,
         recipeId: recipeId ?? this.recipeId,
         isLeftover: isLeftover,
         costEstimate: costEstimate ?? this.costEstimate,
+        mealType: mealType ?? this.mealType,
       );
 
   factory MealDay.fromJson(Map<String, dynamic> json) => MealDay(
@@ -124,6 +168,10 @@ class MealDay {
         recipeId: json['recipeId'] as String,
         isLeftover: json['isLeftover'] as bool? ?? false,
         costEstimate: (json['costEstimate'] as num).toDouble(),
+        mealType: MealType.values.firstWhere(
+          (e) => e.name == (json['mealType'] ?? 'dinner'),
+          orElse: () => MealType.dinner,
+        ),
       );
 
   Map<String, dynamic> toJson() => {
@@ -131,6 +179,7 @@ class MealDay {
         'recipeId': recipeId,
         'isLeftover': isLeftover,
         'costEstimate': costEstimate,
+        'mealType': mealType.name,
       };
 }
 

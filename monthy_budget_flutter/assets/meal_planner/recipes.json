@@ -2,6 +2,9 @@
   {
     "id":"frango_assado","name":"Frango Assado com Batata","proteinId":"frango",
     "type":"carne","complexity":1,"prepMinutes":15,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
+    "requiresEquipment":["oven"],"batchCookable":true,"maxBatchDays":3,
     "ingredients":[
       {"ingredientId":"frango","quantity":1.0},
       {"ingredientId":"batata","quantity":0.6},
@@ -12,6 +15,9 @@
   {
     "id":"frango_arroz","name":"Frango com Arroz","proteinId":"frango",
     "type":"carne","complexity":2,"prepMinutes":30,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
+    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":2,
     "ingredients":[
       {"ingredientId":"frango","quantity":0.5},
       {"ingredientId":"arroz","quantity":0.25},
@@ -23,6 +29,9 @@
   {
     "id":"frango_estufado","name":"Frango Estufado com Legumes","proteinId":"frango",
     "type":"carne","complexity":2,"prepMinutes":30,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":false,"isHighProtein":true,"isLowCarb":true,
+    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":3,
     "ingredients":[
       {"ingredientId":"frango","quantity":0.6},
       {"ingredientId":"cenoura","quantity":0.3},
@@ -34,6 +43,9 @@
   {
     "id":"frango_grelhado","name":"Peito de Frango Grelhado","proteinId":"frango",
     "type":"carne","complexity":1,"prepMinutes":20,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":false,"isHighProtein":true,"isLowCarb":true,
+    "requiresEquipment":[],"batchCookable":false,"maxBatchDays":1,
     "ingredients":[
       {"ingredientId":"frango","quantity":0.5},
       {"ingredientId":"azeite","quantity":0.03}
@@ -42,6 +54,9 @@
   {
     "id":"frango_broculos","name":"Frango com Brócolos","proteinId":"frango",
     "type":"carne","complexity":2,"prepMinutes":25,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":false,"isHighProtein":true,"isLowCarb":true,
+    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":2,
     "ingredients":[
       {"ingredientId":"frango","quantity":0.5},
       {"ingredientId":"broculos","quantity":0.5},
@@ -52,6 +67,9 @@
   {
     "id":"esparguete_bolonhesa","name":"Esparguete à Bolonhesa","proteinId":"carne_picada",
     "type":"carne","complexity":2,"prepMinutes":30,"servings":4,
+    "glutenFree":false,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
+    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":2,
     "ingredients":[
       {"ingredientId":"carne_picada","quantity":0.4},
       {"ingredientId":"massa","quantity":0.3},
@@ -63,6 +81,9 @@
   {
     "id":"almondegas","name":"Almôndegas em Molho de Tomate","proteinId":"carne_picada",
     "type":"carne","complexity":3,"prepMinutes":40,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":false,"isHighProtein":true,"isLowCarb":true,
+    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":3,
     "ingredients":[
       {"ingredientId":"carne_picada","quantity":0.5},
       {"ingredientId":"tomate_pelado","quantity":2.0},
@@ -73,6 +94,9 @@
   {
     "id":"empadao","name":"Empadão de Carne","proteinId":"carne_picada",
     "type":"carne","complexity":3,"prepMinutes":60,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
+    "requiresEquipment":["oven"],"batchCookable":true,"maxBatchDays":3,
     "ingredients":[
       {"ingredientId":"carne_picada","quantity":0.4},
       {"ingredientId":"batata","quantity":0.8},
@@ -83,6 +107,9 @@
   {
     "id":"hamburguer","name":"Hambúrguer Caseiro","proteinId":"carne_picada",
     "type":"carne","complexity":2,"prepMinutes":20,"servings":4,
+    "glutenFree":false,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
+    "requiresEquipment":[],"batchCookable":false,"maxBatchDays":1,
     "ingredients":[
       {"ingredientId":"carne_picada","quantity":0.5},
       {"ingredientId":"pao","quantity":4.0},
@@ -93,6 +120,9 @@
   {
     "id":"lasanha","name":"Lasanha Simples","proteinId":"carne_picada",
     "type":"carne","complexity":4,"prepMinutes":75,"servings":4,
+    "glutenFree":false,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
+    "requiresEquipment":["oven"],"batchCookable":true,"maxBatchDays":3,
     "ingredients":[
       {"ingredientId":"carne_picada","quantity":0.4},
       {"ingredientId":"massa_lasanha","quantity":0.25},
@@ -103,6 +133,9 @@
   {
     "id":"feijoada_simples","name":"Feijoada Simples","proteinId":"feijao",
     "type":"leguminosas","complexity":2,"prepMinutes":30,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
+    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":3,
     "ingredients":[
       {"ingredientId":"feijao","quantity":0.3},
       {"ingredientId":"chourico","quantity":0.1},
@@ -114,6 +147,9 @@
   {
     "id":"grao_espinafres","name":"Grão com Espinafres","proteinId":"grao",
     "type":"leguminosas","complexity":1,"prepMinutes":15,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":true,"isHighProtein":true,"isLowCarb":false,
+    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":3,
     "ingredients":[
       {"ingredientId":"grao","quantity":0.3},
       {"ingredientId":"espinafres","quantity":0.3},
@@ -124,6 +160,9 @@
   {
     "id":"lentilhas_estufadas","name":"Lentilhas Estufadas","proteinId":"lentilhas",
     "type":"leguminosas","complexity":2,"prepMinutes":30,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":true,"isHighProtein":true,"isLowCarb":false,
+    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":4,
     "ingredients":[
       {"ingredientId":"lentilhas","quantity":0.3},
       {"ingredientId":"cenoura","quantity":0.2},
@@ -135,6 +174,9 @@
   {
     "id":"feijao_verde_batata","name":"Feijão Verde com Batata","proteinId":"feijao",
     "type":"leguminosas","complexity":1,"prepMinutes":20,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":true,"isHighProtein":false,"isLowCarb":false,
+    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":2,
     "ingredients":[
       {"ingredientId":"feijao_verde","quantity":0.4},
       {"ingredientId":"batata","quantity":0.4},
@@ -145,6 +187,9 @@
   {
     "id":"sopa_feijao","name":"Sopa de Feijão Rica","proteinId":"feijao",
     "type":"leguminosas","complexity":1,"prepMinutes":30,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":true,"isHighProtein":true,"isLowCarb":false,
+    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":3,
     "ingredients":[
       {"ingredientId":"feijao","quantity":0.2},
       {"ingredientId":"batata","quantity":0.3},
@@ -156,6 +201,9 @@
   {
     "id":"omelete_legumes","name":"Omelete de Legumes","proteinId":"ovo",
     "type":"ovos","complexity":1,"prepMinutes":15,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":true,"isHighProtein":true,"isLowCarb":true,
+    "requiresEquipment":[],"batchCookable":false,"maxBatchDays":1,
     "ingredients":[
       {"ingredientId":"ovo","quantity":6.0},
       {"ingredientId":"pimento","quantity":0.2},
@@ -166,6 +214,9 @@
   {
     "id":"tortilha","name":"Tortilha Espanhola","proteinId":"ovo",
     "type":"ovos","complexity":2,"prepMinutes":30,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":true,"isHighProtein":true,"isLowCarb":false,
+    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":2,
     "ingredients":[
       {"ingredientId":"ovo","quantity":6.0},
       {"ingredientId":"batata","quantity":0.5},
@@ -176,6 +227,9 @@
   {
     "id":"frittata_espinafres","name":"Frittata de Espinafres","proteinId":"ovo",
     "type":"ovos","complexity":2,"prepMinutes":20,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":true,"isHighProtein":true,"isLowCarb":true,
+    "requiresEquipment":["oven"],"batchCookable":false,"maxBatchDays":1,
     "ingredients":[
       {"ingredientId":"ovo","quantity":6.0},
       {"ingredientId":"espinafres","quantity":0.3},
@@ -186,6 +240,9 @@
   {
     "id":"ovos_mexidos_tomate","name":"Ovos Mexidos com Tomate","proteinId":"ovo",
     "type":"ovos","complexity":1,"prepMinutes":15,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":true,"isHighProtein":true,"isLowCarb":true,
+    "requiresEquipment":[],"batchCookable":false,"maxBatchDays":1,
     "ingredients":[
       {"ingredientId":"ovo","quantity":8.0},
       {"ingredientId":"tomate","quantity":0.3},
@@ -196,6 +253,9 @@
   {
     "id":"ovo_arroz","name":"Ovos com Arroz e Legumes","proteinId":"ovo",
     "type":"ovos","complexity":1,"prepMinutes":25,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":true,"isHighProtein":true,"isLowCarb":false,
+    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":2,
     "ingredients":[
       {"ingredientId":"ovo","quantity":4.0},
       {"ingredientId":"arroz","quantity":0.3},
@@ -206,6 +266,9 @@
   {
     "id":"pescada_forno","name":"Pescada no Forno com Batata","proteinId":"pescada",
     "type":"peixe","complexity":2,"prepMinutes":50,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
+    "requiresEquipment":["oven"],"batchCookable":false,"maxBatchDays":1,
     "ingredients":[
       {"ingredientId":"pescada","quantity":0.6},
       {"ingredientId":"batata","quantity":0.5},
@@ -216,6 +279,9 @@
   {
     "id":"peixe_grelhado","name":"Peixe Grelhado com Legumes","proteinId":"pescada",
     "type":"peixe","complexity":1,"prepMinutes":25,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":false,"isHighProtein":true,"isLowCarb":true,
+    "requiresEquipment":[],"batchCookable":false,"maxBatchDays":1,
     "ingredients":[
       {"ingredientId":"pescada","quantity":0.5},
       {"ingredientId":"courgette","quantity":0.3},
@@ -226,6 +292,9 @@
   {
     "id":"arroz_peixe","name":"Arroz de Peixe","proteinId":"pescada",
     "type":"peixe","complexity":3,"prepMinutes":40,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
+    "requiresEquipment":[],"batchCookable":false,"maxBatchDays":1,
     "ingredients":[
       {"ingredientId":"pescada","quantity":0.4},
       {"ingredientId":"arroz","quantity":0.3},
@@ -237,6 +306,9 @@
   {
     "id":"bacalhau_cozido","name":"Bacalhau Cozido","proteinId":"bacalhau",
     "type":"peixe","complexity":2,"prepMinutes":40,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
+    "requiresEquipment":[],"batchCookable":false,"maxBatchDays":1,
     "ingredients":[
       {"ingredientId":"bacalhau","quantity":0.4},
       {"ingredientId":"batata","quantity":0.5},
@@ -248,6 +320,9 @@
   {
     "id":"bacalhau_grao","name":"Bacalhau com Grão","proteinId":"bacalhau",
     "type":"peixe","complexity":2,"prepMinutes":30,"servings":4,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
+    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
+    "requiresEquipment":[],"batchCookable":false,"maxBatchDays":1,
     "ingredients":[
       {"ingredientId":"bacalhau","quantity":0.3},
       {"ingredientId":"grao","quantity":0.2},

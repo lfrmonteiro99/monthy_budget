@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'meal_settings.dart';
 
 enum MaritalStatus {
   solteiro,
@@ -365,6 +366,7 @@ class AppSettings {
   final List<SalaryInfo> salaries;
   final List<ExpenseItem> expenses;
   final DashboardConfig dashboardConfig;
+  final MealSettings mealSettings;
 
   const AppSettings({
     this.personalInfo = const PersonalInfo(),
@@ -380,6 +382,7 @@ class AppSettings {
       ExpenseItem(id: 'escola', label: 'Escola', category: ExpenseCategory.educacao),
     ],
     this.dashboardConfig = const DashboardConfig(),
+    this.mealSettings = const MealSettings(),
   });
 
   AppSettings copyWith({
@@ -387,12 +390,14 @@ class AppSettings {
     List<SalaryInfo>? salaries,
     List<ExpenseItem>? expenses,
     DashboardConfig? dashboardConfig,
+    MealSettings? mealSettings,
   }) {
     return AppSettings(
       personalInfo: personalInfo ?? this.personalInfo,
       salaries: salaries ?? this.salaries,
       expenses: expenses ?? this.expenses,
       dashboardConfig: dashboardConfig ?? this.dashboardConfig,
+      mealSettings: mealSettings ?? this.mealSettings,
     );
   }
 
@@ -402,6 +407,7 @@ class AppSettings {
       'salaries': salaries.map((s) => s.toJson()).toList(),
       'expenses': expenses.map((e) => e.toJson()).toList(),
       'dashboardConfig': dashboardConfig.toJson(),
+      'mealSettings': mealSettings.toJson(),
     };
     return jsonEncode(map);
   }
@@ -422,6 +428,9 @@ class AppSettings {
               .toList() ??
           const [],
       dashboardConfig: DashboardConfig.fromJson(map['dashboardConfig'] ?? {}),
+      mealSettings: MealSettings.fromJson(
+        (map['mealSettings'] as Map<String, dynamic>?) ?? {},
+      ),
     );
   }
 }

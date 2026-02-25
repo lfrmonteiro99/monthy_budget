@@ -5,6 +5,7 @@ import '../models/product.dart';
 import '../data/irs_tables.dart';
 import '../utils/formatters.dart';
 import '../services/household_service.dart';
+import '../models/meal_settings.dart';
 
 class SettingsScreen extends StatefulWidget {
   final AppSettings settings;
@@ -16,6 +17,7 @@ class SettingsScreen extends StatefulWidget {
   final bool isAdmin;
   final String householdId;
   final List<Product> products;
+  final String? initialSection;
 
   const SettingsScreen({
     super.key,
@@ -28,6 +30,7 @@ class SettingsScreen extends StatefulWidget {
     required this.isAdmin,
     required this.householdId,
     this.products = const [],
+    this.initialSection,
   });
 
   @override
@@ -50,6 +53,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _draft = widget.settings;
     _favorites = List<String>.from(widget.favorites);
     _apiKeyController = TextEditingController(text: widget.apiKey);
+    if (widget.initialSection != null) {
+      _openSection = widget.initialSection;
+    }
   }
 
   @override
@@ -241,6 +247,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       onTap: () => _toggleSection('favorites'),
                     ),
                     if (_openSection == 'favorites') _buildFavoritesSection(),
+                    _SectionHeader(
+                      icon: Icons.restaurant,
+                      title: 'Refeições',
+                      isOpen: _openSection == 'meals',
+                      onTap: () => _toggleSection('meals'),
+                    ),
+                    if (_openSection == 'meals') _buildMealsSection(),
                     _SectionHeader(
                       icon: Icons.psychology_outlined,
                       title: 'Coach IA (OpenAI)',
@@ -778,6 +791,216 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 return _buildFavoriteChip(name, isSelected: isSelected);
               }).toList(),
             ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMealsSection() {
+    final ms = _draft.mealSettings;
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _label('REFEIÇÕES ATIVAS'),
+          const SizedBox(height: 8),
+          ...MealType.values.map((mt) => SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(mt.label,
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w500)),
+                value: ms.enabledMeals.contains(mt),
+                activeTrackColor: const Color(0xFF3B82F6),
+                onChanged: (v) {
+                  final newSet = Set<MealType>.from(ms.enabledMeals);
+                  if (v) {
+                    newSet.add(mt);
+                  } else {
+                    newSet.remove(mt);
+                  }
+                  if (newSet.isEmpty) return;
+                  setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(enabledMeals: newSet)));
+                },
+              )),
+          const SizedBox(height: 16),
+          _label('OBJETIVO'),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              border: Border.all(color: const Color(0xFFE2E8F0)),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<MealObjective>(
+                value: ms.objective,
+                isExpanded: true,
+                style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF475569)),
+                items: MealObjective.values
+                    .map((o) =>
+                        DropdownMenuItem(value: o, child: Text(o.label)))
+                    .toList(),
+                onChanged: (v) {
+                  if (v == null) return;
+                  var updated = ms.copyWith(objective: v);
+                  if (v == MealObjective.vegetarian) {
+                    updated = updated.copyWith(veggieDaysPerWeek: 7);
+                  }
+                  setState(() =>
+                      _draft = _draft.copyWith(mealSettings: updated));
+                },
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          _label('DIAS VEGETARIANOS POR SEMANA'),
+          Slider(
+            value: ms.veggieDaysPerWeek.toDouble(),
+            min: 0,
+            max: 7,
+            divisions: 7,
+            label: '${ms.veggieDaysPerWeek}',
+            activeColor: const Color(0xFF3B82F6),
+            onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                mealSettings: ms.copyWith(veggieDaysPerWeek: v.round()))),
+          ),
+          const SizedBox(height: 8),
+          _label('RESTRIÇÕES DIETÉTICAS'),
+          ...[
+            ('Sem glúten', ms.glutenFree,
+                (bool v) => setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(glutenFree: v)))),
+            ('Sem lactose', ms.lactoseFree,
+                (bool v) => setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(lactoseFree: v)))),
+            ('Sem frutos secos', ms.nutFree,
+                (bool v) => setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(nutFree: v)))),
+            ('Sem marisco', ms.shellfishFree,
+                (bool v) => setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(shellfishFree: v)))),
+          ].map((item) => CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(item.$1,
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w500)),
+                value: item.$2,
+                activeColor: const Color(0xFF3B82F6),
+                controlAffinity: ListTileControlAffinity.leading,
+                onChanged: (v) => item.$3(v ?? false),
+              )),
+          const SizedBox(height: 16),
+          _label('TEMPO MÁXIMO (MINUTOS)'),
+          Slider(
+            value: ms.maxPrepMinutes.toDouble(),
+            min: 15,
+            max: 60,
+            divisions: 3,
+            label: ms.maxPrepMinutes == 60 ? '60+' : '${ms.maxPrepMinutes}',
+            activeColor: const Color(0xFF3B82F6),
+            onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                mealSettings: ms.copyWith(maxPrepMinutes: v.round()))),
+          ),
+          _label('COMPLEXIDADE MÁXIMA (${ms.maxComplexity}/5)'),
+          Slider(
+            value: ms.maxComplexity.toDouble(),
+            min: 1,
+            max: 5,
+            divisions: 4,
+            label: '${ms.maxComplexity}',
+            activeColor: const Color(0xFF3B82F6),
+            onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                mealSettings: ms.copyWith(maxComplexity: v.round()))),
+          ),
+          const SizedBox(height: 8),
+          _label('EQUIPAMENTO DISPONÍVEL'),
+          ...KitchenEquipment.values.map((eq) => CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(eq.label,
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w500)),
+                value: ms.availableEquipment.contains(eq),
+                activeColor: const Color(0xFF3B82F6),
+                controlAffinity: ListTileControlAffinity.leading,
+                onChanged: (v) {
+                  final updated =
+                      Set<KitchenEquipment>.from(ms.availableEquipment);
+                  if (v == true) {
+                    updated.add(eq);
+                  } else {
+                    updated.remove(eq);
+                  }
+                  setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(availableEquipment: updated)));
+                },
+              )),
+          const SizedBox(height: 16),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text('Batch cooking',
+                style:
+                    TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            value: ms.batchCookingEnabled,
+            activeTrackColor: const Color(0xFF3B82F6),
+            onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                mealSettings: ms.copyWith(batchCookingEnabled: v))),
+          ),
+          if (ms.batchCookingEnabled) ...[
+            _label('MÁXIMO DE DIAS POR RECEITA'),
+            Slider(
+              value: ms.maxBatchDays.toDouble(),
+              min: 1,
+              max: 4,
+              divisions: 3,
+              label: '${ms.maxBatchDays}',
+              activeColor: const Color(0xFF3B82F6),
+              onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                  mealSettings: ms.copyWith(maxBatchDays: v.round()))),
+            ),
+          ],
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text('Reaproveitar sobras',
+                style:
+                    TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            value: ms.reuseLeftovers,
+            activeTrackColor: const Color(0xFF3B82F6),
+            onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                mealSettings: ms.copyWith(reuseLeftovers: v))),
+          ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text('Minimizar desperdício',
+                style:
+                    TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            value: ms.minimizeWaste,
+            activeTrackColor: const Color(0xFF3B82F6),
+            onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                mealSettings: ms.copyWith(minimizeWaste: v))),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => setState(() => _draft = _draft.copyWith(
+                  mealSettings: ms.copyWith(wizardCompleted: false))),
+              icon: const Icon(Icons.restart_alt, size: 18),
+              label: const Text('Repor Wizard'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF64748B),
+                side: const BorderSide(color: Color(0xFFE2E8F0)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+            ),
+          ),
         ],
       ),
     );

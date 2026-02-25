@@ -3,22 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/meal_planner.dart';
 import '../models/app_settings.dart';
+import '../models/meal_settings.dart';
 
 class MealPlannerService {
-
-  // Protein clusters: dominant protein ids per week (index 0-3)
-  static const _weekClusters = [
-    ['frango'],
-    ['carne_picada'],
-    ['feijao', 'grao', 'lentilhas'],
-    ['pescada', 'bacalhau'],
-  ];
-  static const _weekVariety = [
-    ['feijao', 'grao', 'lentilhas'],
-    ['ovo'],
-    ['frango'],
-    ['carne_picada'],
-  ];
 
   List<Ingredient> _ingredients = [];
   List<Recipe> _recipes = [];
@@ -76,60 +63,248 @@ class MealPlannerService {
 
   MealPlan generate(AppSettings settings, DateTime forMonth, {List<String> favorites = const []}) {
     assert(_catalogLoaded, 'Call loadCatalog() first');
+    final ms = settings.mealSettings;
     final np = nPessoas(settings);
-    final budget = monthlyFoodBudget(settings);
+    final totalBudget = monthlyFoodBudget(settings);
     final iMap = ingredientMap;
     final daysInMonth = DateTime(forMonth.year, forMonth.month + 1, 0).day;
 
+    // Compute per-meal budgets based on enabled meals
+    final enabledWeights = {
+      for (final m in ms.enabledMeals) m: m.budgetWeight
+    };
+    final totalWeight = enabledWeights.values.fold(0.0, (s, v) => s + v);
+    final mealBudgets = {
+      for (final e in enabledWeights.entries)
+        e.key: totalWeight > 0 ? (e.value / totalWeight) * totalBudget : 0.0
+    };
+
+    // Base filtered pool (eliminatory)
+    List<Recipe> basePool(MealType mealType) {
+      var pool = _recipes.where((r) {
+        if (ms.glutenFree && !r.glutenFree) return false;
+        if (ms.lactoseFree && !r.lactoseFree) return false;
+        if (ms.nutFree && !r.nutFree) return false;
+        if (ms.shellfishFree && !r.shellfishFree) return false;
+        if (r.complexity > ms.maxComplexity) return false;
+        if (r.prepMinutes > ms.maxPrepMinutes) return false;
+        if (ms.excludedProteins.contains(r.proteinId)) return false;
+        // Equipment check
+        for (final eq in r.requiresEquipment) {
+          final mapped = KitchenEquipment.values.firstWhere(
+            (k) => k.name == eq, orElse: () => KitchenEquipment.oven);
+          if (!ms.availableEquipment.contains(mapped)) return false;
+        }
+        // Disliked ingredients
+        for (final ri in r.ingredients) {
+          final ing = iMap[ri.ingredientId];
+          if (ing == null) continue;
+          if (ms.dislikedIngredients.any((d) =>
+              d.toLowerCase() == ing.name.toLowerCase())) return false;
+        }
+        return true;
+      }).toList();
+
+      // Objective filter
+      switch (ms.objective) {
+        case MealObjective.highProtein:
+          final hp = pool.where((r) => r.isHighProtein).toList();
+          if (hp.isNotEmpty) pool = hp;
+          break;
+        case MealObjective.lowCarb:
+          final lc = pool.where((r) => r.isLowCarb).toList();
+          if (lc.isNotEmpty) pool = lc;
+          break;
+        case MealObjective.vegetarian:
+          final veg = pool.where((r) => r.isVegetarian).toList();
+          if (veg.isNotEmpty) pool = veg;
+          break;
+        default:
+          break;
+      }
+
+      if (pool.isEmpty) pool = _recipes.toList(); // fallback: no filters
+      return pool;
+    }
+
+    // Determine veggie day indices (distributed evenly across month)
+    final Set<int> veggieDays = {};
+    if (ms.veggieDaysPerWeek > 0 && ms.objective != MealObjective.vegetarian) {
+      final totalVegDays = (ms.veggieDaysPerWeek * daysInMonth / 7).round();
+      final step = daysInMonth / (totalVegDays + 1);
+      for (int i = 1; i <= totalVegDays; i++) {
+        veggieDays.add((step * i).round().clamp(1, daysInMonth));
+      }
+    }
+
     final days = <MealDay>[];
 
+    // Per-meal-type tracking for waste minimization
+    final usedIngredientsThisWeek = <MealType, Set<String>>{
+      for (final m in ms.enabledMeals) m: {}
+    };
+    final newIngredientCountThisWeek = <MealType, int>{
+      for (final m in ms.enabledMeals) m: 0
+    };
+
+    // Batch cooking tracking: {mealType: {recipeId, daysRemaining}}
+    final batchState = <MealType, ({String recipeId, int daysLeft})>{};
+
     for (int day = 1; day <= daysInMonth; day++) {
-      final weekIndex = ((day - 1) ~/ 7).clamp(0, 3);
-      final isVarietyDay = (day % 7 == 0);
+      // Reset weekly tracking on Mondays (weekday 1)
+      final weekday = DateTime(forMonth.year, forMonth.month, day).weekday;
+      if (weekday == 1) {
+        for (final m in ms.enabledMeals) {
+          usedIngredientsThisWeek[m] = {};
+          newIngredientCountThisWeek[m] = 0;
+        }
+      }
 
-      final clusterIds = isVarietyDay
-          ? _weekVariety[weekIndex]
-          : _weekClusters[weekIndex];
+      final isVeggieDay = veggieDays.contains(day);
 
-      final candidates = _recipes
-          .where((r) => clusterIds.contains(r.proteinId))
-          .toList()
-        ..sort((a, b) =>
-            recipeCost(a, np, iMap).compareTo(recipeCost(b, np, iMap)));
+      for (final mealType in ms.enabledMeals) {
+        // --- Batch cooking ---
+        if (ms.batchCookingEnabled && batchState.containsKey(mealType)) {
+          final state = batchState[mealType]!;
+          if (state.daysLeft > 0) {
+            final recipe = recipeMap[state.recipeId]!;
+            final mealBudgetRatio = totalBudget > 0
+                ? (mealBudgets[mealType] ?? 0) / totalBudget
+                : 1.0;
+            final cost = recipeCost(recipe, np, iMap) * mealBudgetRatio;
+            days.add(MealDay(
+              dayIndex: day,
+              recipeId: state.recipeId,
+              costEstimate: cost,
+              mealType: mealType,
+            ));
+            batchState[mealType] = (
+              recipeId: state.recipeId,
+              daysLeft: state.daysLeft - 1,
+            );
+            continue;
+          } else {
+            batchState.remove(mealType);
+          }
+        }
 
-      if (candidates.isEmpty) continue;
+        // --- Leftovers (lunch reuses previous dinner) ---
+        if (ms.reuseLeftovers && mealType == MealType.lunch && day > 1) {
+          final prevDinner = days.lastWhere(
+            (d) => d.dayIndex == day - 1 && d.mealType == MealType.dinner,
+            orElse: () => MealDay(dayIndex: 0, recipeId: '', costEstimate: 0),
+          );
+          if (prevDinner.recipeId.isNotEmpty) {
+            days.add(MealDay(
+              dayIndex: day,
+              recipeId: prevDinner.recipeId,
+              isLeftover: true,
+              costEstimate: 0,
+              mealType: MealType.lunch,
+            ));
+            continue;
+          }
+        }
 
-      // Boost recipes whose protein ingredient name matches a favorite
-      final boosted = favorites.isNotEmpty
-          ? candidates.where((r) {
-              final ing = iMap[r.proteinId];
-              if (ing == null) return false;
-              return favorites.any((fav) =>
-                  fav.toLowerCase().contains(ing.name.toLowerCase()) ||
-                  ing.name.toLowerCase().contains(fav.toLowerCase().split(' ').first));
-            }).toList()
-          : <Recipe>[];
+        var pool = basePool(mealType);
 
-      final pool = boosted.isNotEmpty ? boosted : candidates;
-      final slotInWeek = (day - 1) % 7;
-      final recipe = pool[slotInWeek % pool.length];
-      final cost = recipeCost(recipe, np, iMap);
+        // Force veggie on designated days
+        if (isVeggieDay) {
+          final veg = pool.where((r) => r.isVegetarian).toList();
+          if (veg.isNotEmpty) pool = veg;
+        }
 
-      days.add(MealDay(dayIndex: day, recipeId: recipe.id, costEstimate: cost));
+        // Sort by objective
+        if (ms.objective == MealObjective.minimizeCost || ms.prioritizeLowCost) {
+          pool.sort((a, b) => recipeCost(a, np, iMap).compareTo(recipeCost(b, np, iMap)));
+        }
+
+        // Waste minimization: prefer recipes with known ingredients
+        if (ms.minimizeWaste) {
+          final used = usedIngredientsThisWeek[mealType]!;
+          final reuseFirst = pool.where((r) =>
+              r.ingredients.every((ri) => used.contains(ri.ingredientId))).toList();
+          if (reuseFirst.isNotEmpty) pool = reuseFirst;
+        }
+
+        // Max new ingredients cap
+        if (ms.maxNewIngredientsPerWeek < 10) {
+          final used = usedIngredientsThisWeek[mealType]!;
+          final remaining = ms.maxNewIngredientsPerWeek - (newIngredientCountThisWeek[mealType] ?? 0);
+          if (remaining <= 0) {
+            final noNew = pool.where((r) =>
+                r.ingredients.every((ri) => used.contains(ri.ingredientId))).toList();
+            if (noNew.isNotEmpty) pool = noNew;
+          }
+        }
+
+        // Favorites boost
+        if (favorites.isNotEmpty) {
+          final boosted = pool.where((r) {
+            final ing = iMap[r.proteinId];
+            if (ing == null) return false;
+            return favorites.any((fav) =>
+                fav.toLowerCase().contains(ing.name.toLowerCase()) ||
+                ing.name.toLowerCase().contains(fav.toLowerCase().split(' ').first));
+          }).toList();
+          if (boosted.isNotEmpty) pool = boosted;
+        }
+
+        // Pick recipe (rotate by day slot)
+        final weekIndex = ((day - 1) ~/ 7).clamp(0, 3);
+        final slotInWeek = (day - 1) % 7;
+        final fallbackPool = pool.isNotEmpty ? pool : _recipes;
+        final recipe = fallbackPool[
+            (weekIndex * 7 + slotInWeek) % fallbackPool.length];
+
+        final mealBudgetRatio = totalBudget > 0
+            ? (mealBudgets[mealType] ?? 0) / totalBudget
+            : 1.0;
+        final cost = recipeCost(recipe, np, iMap) * mealBudgetRatio;
+
+        days.add(MealDay(
+          dayIndex: day,
+          recipeId: recipe.id,
+          costEstimate: cost,
+          mealType: mealType,
+        ));
+
+        // Update ingredient tracking
+        final used = usedIngredientsThisWeek[mealType]!;
+        int newCount = newIngredientCountThisWeek[mealType] ?? 0;
+        for (final ri in recipe.ingredients) {
+          if (!used.contains(ri.ingredientId)) {
+            used.add(ri.ingredientId);
+            newCount++;
+          }
+        }
+        newIngredientCountThisWeek[mealType] = newCount;
+
+        // Start batch cooking block if applicable and on preferred day
+        if (ms.batchCookingEnabled && recipe.batchCookable && ms.maxBatchDays > 1) {
+          final isPreferredDay = ms.preferredCookingWeekday == null ||
+              weekday - 1 == ms.preferredCookingWeekday;
+          if (isPreferredDay && !batchState.containsKey(mealType)) {
+            batchState[mealType] = (
+              recipeId: recipe.id,
+              daysLeft: recipe.maxBatchDays.clamp(1, ms.maxBatchDays) - 1,
+            );
+          }
+        }
+      }
     }
 
     var plan = MealPlan(
       month: forMonth.month,
       year: forMonth.year,
       nPessoas: np,
-      monthlyBudget: budget,
+      monthlyBudget: totalBudget,
       days: days,
-      totalEstimatedCost: days.fold(0.0, (s, d) => s + d.costEstimate),
+      totalEstimatedCost: days.fold(0.0, (d, e) => d + e.costEstimate),
       generatedAt: DateTime.now(),
     );
 
     plan = _enforceBudget(plan, np, iMap);
-
     return plan;
   }
 
@@ -197,7 +372,6 @@ class MealPlannerService {
   // --- Consolidated ingredient list ---
 
   Map<String, double> consolidatedIngredients(MealPlan plan) {
-    final iMap = ingredientMap;
     final totals = <String, double>{};
     for (final day in plan.days) {
       final recipe = recipeMap[day.recipeId];

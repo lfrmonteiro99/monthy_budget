@@ -4,6 +4,7 @@ import '../models/meal_planner.dart';
 import '../models/shopping_item.dart';
 import '../services/meal_planner_service.dart';
 import '../services/meal_planner_ai_service.dart';
+import 'meal_wizard_screen.dart';
 
 class MealPlannerScreen extends StatefulWidget {
   final AppSettings settings;
@@ -11,6 +12,8 @@ class MealPlannerScreen extends StatefulWidget {
   final List<String> favorites;
   final void Function(ShoppingItem) onAddToShoppingList;
   final String householdId;
+  final ValueChanged<AppSettings> onSaveSettings;
+  final VoidCallback onOpenMealSettings;
 
   const MealPlannerScreen({
     super.key,
@@ -19,6 +22,8 @@ class MealPlannerScreen extends StatefulWidget {
     required this.favorites,
     required this.onAddToShoppingList,
     required this.householdId,
+    required this.onSaveSettings,
+    required this.onOpenMealSettings,
   });
 
   @override
@@ -36,7 +41,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
   final Map<String, RecipeAiContent> _aiContent = {};
   final Set<String> _aiPending = {};
-  final Set<int> _expanded = {};
+  final Set<String> _expanded = {};
 
   @override
   void initState() {
@@ -133,6 +138,14 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.settings.mealSettings.wizardCompleted) {
+      return MealWizardScreen(
+        initial: widget.settings.mealSettings,
+        onComplete: (ms) {
+          widget.onSaveSettings(widget.settings.copyWith(mealSettings: ms));
+        },
+      );
+    }
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
@@ -142,6 +155,12 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           'Planeador de Refeições',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: widget.onOpenMealSettings,
+          ),
+        ],
       ),
       body: !_catalogReady
           ? const Center(child: CircularProgressIndicator(color: Color(0xFF3B82F6)))
@@ -222,10 +241,28 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
                   ),
                   TextButton.icon(
-                    onPressed: () {
-                      final plan = _plan!;
-                      setState(() => _plan = null);
-                      _service.clear(widget.householdId, plan.month, plan.year);
+                    onPressed: () async {
+                      final confirmed = await showDialog<bool>(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: const Text('Regenerar plano?'),
+                          content: const Text('O plano atual será substituído.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(ctx, false),
+                              child: const Text('Cancelar'),
+                            ),
+                            FilledButton(
+                              onPressed: () => Navigator.pop(ctx, true),
+                              child: const Text('Regenerar'),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (confirmed == true && mounted) {
+                        setState(() => _plan = null);
+                        _service.clear(widget.householdId, plan.month, plan.year);
+                      }
                     },
                     icon: const Icon(Icons.refresh, size: 16),
                     label: const Text('Regenerar'),
@@ -284,12 +321,13 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   plan: plan,
                   service: _service,
                   aiContent: _aiContent[weekDays[i].recipeId],
-                  isExpanded: _expanded.contains(weekDays[i].dayIndex),
+                  isExpanded: _expanded.contains('${weekDays[i].dayIndex}_${weekDays[i].mealType.name}'),
                   onToggleExpand: () => setState(() {
-                    if (_expanded.contains(weekDays[i].dayIndex)) {
-                      _expanded.remove(weekDays[i].dayIndex);
+                    final key = '${weekDays[i].dayIndex}_${weekDays[i].mealType.name}';
+                    if (_expanded.contains(key)) {
+                      _expanded.remove(key);
                     } else {
-                      _expanded.add(weekDays[i].dayIndex);
+                      _expanded.add(key);
                     }
                   }),
                   onSwap: () => _swapRecipe(weekDays[i].dayIndex, weekDays[i].recipeId),
@@ -385,6 +423,21 @@ class _DayCard extends StatelessWidget {
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
                             color: Color(0xFF3B82F6)),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF0FDF4),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        mealDay.mealType.label,
+                        style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF16A34A)),
                       ),
                     ),
                     const Spacer(),

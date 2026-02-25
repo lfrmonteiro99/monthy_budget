@@ -316,6 +316,23 @@ class _AppHomeState extends State<AppHome> {
         favorites: _favorites,
         onAddToShoppingList: _addToShoppingList,
         householdId: widget.householdId,
+        onSaveSettings: _saveSettings,
+        onOpenMealSettings: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => SettingsScreen(
+              settings: _settings,
+              onSave: _saveSettings,
+              favorites: _favorites,
+              onSaveFavorites: _saveFavorites,
+              apiKey: _openAiApiKey,
+              onSaveApiKey: _saveApiKey,
+              isAdmin: widget.isAdmin,
+              householdId: widget.householdId,
+              products: _products,
+              initialSection: 'meals',
+            ),
+          ),
+        ),
       ),
     ];
 
