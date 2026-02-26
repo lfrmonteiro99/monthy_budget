@@ -209,22 +209,17 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                 ),
                 if (widget.apiKey.isEmpty) ...[
                   const SizedBox(height: 10),
-                  GestureDetector(
-                    onTap: widget.onOpenSettings,
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.settings_outlined,
-                            size: 14, color: Color(0xFF3B82F6)),
-                        SizedBox(width: 4),
-                        Text(
-                          'Configurar API key nas Definições',
-                          style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFF3B82F6)),
-                        ),
-                      ],
+                  TextButton.icon(
+                    onPressed: widget.onOpenSettings,
+                    icon: const Icon(Icons.settings_outlined, size: 14),
+                    label: const Text(
+                      'Configurar API key nas Definições',
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                    ),
+                    style: TextButton.styleFrom(
+                      foregroundColor: const Color(0xFF3B82F6),
+                      padding: EdgeInsets.zero,
+                      minimumSize: const Size(48, 40),
                     ),
                   ),
                 ] else ...[
@@ -360,21 +355,18 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                 fontSize: 14, color: Color(0xFF334155), height: 1.65),
           ),
           const SizedBox(height: 14),
-          Row(
-            children: [
-              const Icon(Icons.refresh, size: 14, color: Color(0xFF94A3B8)),
-              const SizedBox(width: 6),
-              GestureDetector(
-                onTap: _loading ? null : _analyze,
-                child: const Text(
-                  'Gerar nova análise',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF94A3B8),
-                      fontWeight: FontWeight.w500),
-                ),
-              ),
-            ],
+          TextButton.icon(
+            onPressed: _loading ? null : _analyze,
+            icon: const Icon(Icons.refresh, size: 14),
+            label: const Text(
+              'Gerar nova análise',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+            ),
+            style: TextButton.styleFrom(
+              foregroundColor: const Color(0xFF64748B),
+              padding: EdgeInsets.zero,
+              minimumSize: const Size(48, 40),
+            ),
           ),
         ],
       ),
@@ -422,15 +414,14 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                 ),
               ],
             ),
-            GestureDetector(
-              onTap: _clearHistory,
-              child: const Text(
-                'Limpar tudo',
-                style: TextStyle(
-                    fontSize: 12,
-                    color: Color(0xFF94A3B8),
-                    fontWeight: FontWeight.w500),
+            TextButton(
+              onPressed: _clearHistory,
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFF64748B),
+                textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                minimumSize: const Size(48, 40),
               ),
+              child: const Text('Limpar tudo'),
             ),
           ],
         ),
@@ -558,10 +549,17 @@ class _InsightHistoryCardState extends State<_InsightHistoryCard> {
                         color: const Color(0xFF94A3B8),
                       ),
                       const SizedBox(height: 8),
-                      GestureDetector(
-                        onTap: widget.onDelete,
-                        child: const Icon(Icons.delete_outline,
-                            size: 16, color: Color(0xFFCBD5E1)),
+                      Semantics(
+                        button: true,
+                        label: 'Eliminar análise',
+                        child: IconButton(
+                          onPressed: widget.onDelete,
+                          icon: const Icon(Icons.delete_outline, size: 16),
+                          color: const Color(0xFF94A3B8),
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+                          tooltip: 'Eliminar',
+                        ),
                       ),
                     ],
                   ),

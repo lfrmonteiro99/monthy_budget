@@ -75,15 +75,25 @@ class _LoginScreenState extends State<LoginScreen> {
               TextField(
                 controller: _emailCtrl,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                    labelText: 'Email', border: OutlineInputBorder()),
+                autocorrect: false,
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  hintText: 'exemplo@email.com',
+                  prefixIcon: const Icon(Icons.email_outlined),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                ),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: _passCtrl,
                 obscureText: true,
-                decoration: const InputDecoration(
-                    labelText: 'Palavra-passe', border: OutlineInputBorder()),
+                textInputAction: TextInputAction.done,
+                decoration: InputDecoration(
+                  labelText: 'Palavra-passe',
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                ),
                 onSubmitted: (_) => _submit(),
               ),
               if (_error != null) ...[

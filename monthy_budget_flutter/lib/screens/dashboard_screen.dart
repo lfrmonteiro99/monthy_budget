@@ -92,7 +92,7 @@ class DashboardScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                'Orcamento Mensal',
+                                'Orçamento Mensal',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w700,
@@ -112,19 +112,23 @@ class DashboardScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                          Material(
-                            color: const Color(0xFFF8FAFC),
-                            borderRadius: BorderRadius.circular(12),
-                            child: InkWell(
-                              onTap: onOpenSettings,
+                          Semantics(
+                            button: true,
+                            label: 'Abrir definições',
+                            child: Material(
+                              color: const Color(0xFFF8FAFC),
                               borderRadius: BorderRadius.circular(12),
-                              child: Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: const Color(0xFFE2E8F0)),
-                                  borderRadius: BorderRadius.circular(12),
+                              child: InkWell(
+                                onTap: onOpenSettings,
+                                borderRadius: BorderRadius.circular(12),
+                                child: Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Icon(Icons.settings, size: 20, color: Colors.grey.shade500),
                                 ),
-                                child: Icon(Icons.settings, size: 20, color: Colors.grey.shade500),
                               ),
                             ),
                           ),
@@ -200,7 +204,9 @@ class DashboardScreen extends StatelessWidget {
   }
 
   Widget _buildHeroCard(bool isPositive) {
-    return Container(
+    return Semantics(
+      label: 'Liquidez mensal: ${formatCurrency(summary.netLiquidity)}, ${isPositive ? "saldo positivo" : "saldo negativo"}',
+      child: Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       decoration: BoxDecoration(
@@ -258,6 +264,7 @@ class DashboardScreen extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 
@@ -289,7 +296,7 @@ class DashboardScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               elevation: 0,
             ),
-            child: const Text('Abrir Definicoes', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+            child: const Text('Abrir Definições', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
           ),
         ],
       ),
@@ -313,7 +320,7 @@ class DashboardScreen extends StatelessWidget {
             Expanded(
               child: _SummaryCard(
                 icon: Icons.arrow_circle_up,
-                label: 'Rendimento Liquido',
+                label: 'Rendimento Líquido',
                 value: formatCurrency(summary.totalNetWithMeal),
                 sublabel: summary.totalMealAllowance > 0
                     ? 'Incl. sub. alim.: ${formatCurrency(summary.totalMealAllowance)}'
@@ -339,7 +346,7 @@ class DashboardScreen extends StatelessWidget {
             Expanded(
               child: _SummaryCard(
                 icon: Icons.savings,
-                label: 'Taxa Poupanca',
+                label: 'Taxa Poupança',
                 value: formatPercentage(summary.savingsRate > 0 ? summary.savingsRate : 0),
                 sublabel: 'Despesas: ${formatCurrency(summary.totalExpenses)}',
                 color: Colors.purple,
@@ -427,7 +434,7 @@ class DashboardScreen extends StatelessWidget {
               const SizedBox(width: 8),
               const Expanded(
                 child: Text(
-                  'ALIMENTACAO',
+                  'ALIMENTAÇÃO',
                   style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
@@ -435,25 +442,22 @@ class DashboardScreen extends StatelessWidget {
                       letterSpacing: 0.8),
                 ),
               ),
-              GestureDetector(
-                onTap: () => showProjectionSheet(
+              TextButton.icon(
+                onPressed: () => showProjectionSheet(
                   context: context,
                   settings: settings,
                   summary: summary,
                   purchaseHistory: purchaseHistory,
                 ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.auto_graph, size: 14, color: Color(0xFF3B82F6)),
-                    SizedBox(width: 4),
-                    Text(
-                      'Simular',
-                      style: TextStyle(
-                        fontSize: 12, color: Color(0xFF3B82F6), fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
+                icon: const Icon(Icons.auto_graph, size: 14),
+                label: const Text(
+                  'Simular',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                ),
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFF3B82F6),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  minimumSize: const Size(48, 40),
                 ),
               ),
             ],
@@ -463,7 +467,7 @@ class DashboardScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _foodStatColumn(
-                  'Orcado', formatCurrency(foodBudget), const Color(0xFF64748B)),
+                  'Orçado', formatCurrency(foodBudget), const Color(0xFF64748B)),
               _foodStatColumn('Gasto', formatCurrency(spent),
                   isOver ? const Color(0xFFEF4444) : const Color(0xFF1E293B)),
               _foodStatColumn(
@@ -513,7 +517,7 @@ class DashboardScreen extends StatelessWidget {
               const SizedBox(width: 8),
               const Expanded(
                 child: Text(
-                  'HISTORICO DE COMPRAS',
+                  'HISTÓRICO DE COMPRAS',
                   style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
@@ -521,15 +525,15 @@ class DashboardScreen extends StatelessWidget {
                       letterSpacing: 0.8),
                 ),
               ),
-              GestureDetector(
-                onTap: () => _showAllHistory(context),
-                child: const Text(
-                  'Ver tudo',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF3B82F6),
-                      fontWeight: FontWeight.w600),
+              TextButton(
+                onPressed: () => _showAllHistory(context),
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFF3B82F6),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  minimumSize: const Size(48, 40),
+                  textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                 ),
+                child: const Text('Ver tudo'),
               ),
             ],
           ),
@@ -640,14 +644,20 @@ class DashboardScreen extends StatelessWidget {
                   itemBuilder: (_, i) {
                     final r = purchaseHistory.records[i];
                     final isExpanded = expandedMap[i] ?? false;
-                    return GestureDetector(
+                    return Semantics(
+                      button: true,
+                      label: 'Compra de ${r.date.day}/${r.date.month}/${r.date.year}, ${formatCurrency(r.amount)}',
+                      child: Material(
+                      color: const Color(0xFFF8FAFC),
+                      borderRadius: BorderRadius.circular(12),
+                      child: InkWell(
                       onTap: () =>
                           setLocalState(() => expandedMap[i] = !isExpanded),
+                      borderRadius: BorderRadius.circular(12),
                       child: Container(
                         margin: const EdgeInsets.only(bottom: 10),
                         padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF8FAFC),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: const Color(0xFFE2E8F0)),
                         ),
@@ -714,6 +724,8 @@ class DashboardScreen extends StatelessWidget {
                           ],
                         ),
                       ),
+                    ),
+                    ),
                     );
                   },
                 ),
@@ -1044,45 +1056,33 @@ class _StressIndexCardState extends State<_StressIndexCard> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              GestureDetector(
-                onTap: () => setState(() => _expanded = !_expanded),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      _expanded ? 'Fechar' : 'Detalhes',
-                      style: const TextStyle(
-                        fontSize: 12, color: Color(0xFF94A3B8), fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Icon(
-                      _expanded ? Icons.expand_less : Icons.expand_more,
-                      size: 16, color: const Color(0xFF94A3B8),
-                    ),
-                  ],
+              TextButton.icon(
+                onPressed: () => setState(() => _expanded = !_expanded),
+                icon: Icon(
+                  _expanded ? Icons.expand_less : Icons.expand_more,
+                  size: 16,
+                ),
+                label: Text(_expanded ? 'Fechar' : 'Detalhes'),
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFF64748B),
+                  textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                  minimumSize: const Size(48, 40),
                 ),
               ),
               if (widget.onShowTrend != null) ...[
                 Container(
                   width: 1, height: 14,
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  margin: const EdgeInsets.symmetric(horizontal: 8),
                   color: const Color(0xFFE2E8F0),
                 ),
-                GestureDetector(
-                  onTap: widget.onShowTrend,
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.show_chart, size: 14, color: Color(0xFF3B82F6)),
-                      SizedBox(width: 4),
-                      Text(
-                        'Evolução',
-                        style: TextStyle(
-                          fontSize: 12, color: Color(0xFF3B82F6), fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
+                TextButton.icon(
+                  onPressed: widget.onShowTrend,
+                  icon: const Icon(Icons.show_chart, size: 14),
+                  label: const Text('Evolução'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: const Color(0xFF3B82F6),
+                    textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                    minimumSize: const Size(48, 40),
                   ),
                 ),
               ],
@@ -1179,7 +1179,7 @@ class _SalaryRow extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Sub. Alimentacao', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.grey.shade400)),
+                  Text('Sub. Alimentação', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.grey.shade400)),
                   Text(
                     '+${formatCurrency(calc.mealAllowance.netMealAllowance)}',
                     style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF10B981)),
@@ -1324,12 +1324,18 @@ class _MonthReviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isOver = review.totalDifference > 0;
-    return GestureDetector(
+    return Semantics(
+      button: true,
+      label: 'Ver resumo do mês',
+      child: Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: const Color(0xFFE2E8F0)),
         ),
@@ -1398,6 +1404,8 @@ class _MonthReviewCard extends StatelessWidget {
           ],
         ),
       ),
+    ),
+    ),
     );
   }
 }

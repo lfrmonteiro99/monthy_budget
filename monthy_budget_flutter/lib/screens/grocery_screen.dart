@@ -132,7 +132,22 @@ class _GroceryScreenState extends State<GroceryScreen> {
         ),
       ),
       body: widget.products.isEmpty
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(
+              child: Semantics(
+                label: 'A carregar produtos',
+                child: const Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircularProgressIndicator(color: Color(0xFF3B82F6)),
+                    SizedBox(height: 16),
+                    Text(
+                      'A carregar produtos...',
+                      style: TextStyle(fontSize: 14, color: Color(0xFF64748B)),
+                    ),
+                  ],
+                ),
+              ),
+            )
           : Column(
               children: [
                 // Category filter chips
@@ -218,7 +233,9 @@ class _GroceryScreenState extends State<GroceryScreen> {
   }
 
   Widget _buildProductRow(Product product) {
-    return Container(
+    return Semantics(
+      label: '${product.name}, ${formatCurrency(product.avgPrice)}, ${product.unit}',
+      child: Container(
       margin: const EdgeInsets.only(bottom: 6),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
@@ -256,43 +273,58 @@ class _GroceryScreenState extends State<GroceryScreen> {
                 color: Color(0xFF10B981)),
           ),
           const SizedBox(width: 10),
-          GestureDetector(
-            onTap: () => _addToCart(product),
-            child: Container(
-              width: 34,
-              height: 34,
-              decoration: BoxDecoration(
+          Semantics(
+            button: true,
+            label: 'Adicionar ${product.name} à lista',
+            child: SizedBox(
+              width: 44,
+              height: 44,
+              child: Material(
                 color: const Color(0xFF3B82F6),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
+                child: InkWell(
+                  onTap: () => _addToCart(product),
+                  borderRadius: BorderRadius.circular(12),
+                  child: const Icon(Icons.add, size: 20, color: Colors.white),
+                ),
               ),
-              child: const Icon(Icons.add, size: 18, color: Colors.white),
             ),
           ),
         ],
       ),
+    ),
     );
   }
 
   Widget _chip(String label, bool selected, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: selected ? const Color(0xFF3B82F6) : Colors.white,
+    return Semantics(
+      button: true,
+      label: 'Filtrar por $label',
+      selected: selected,
+      child: Material(
+        color: selected ? const Color(0xFF3B82F6) : Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        child: InkWell(
+          onTap: onTap,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-              color: selected
-                  ? const Color(0xFF3B82F6)
-                  : const Color(0xFFE2E8F0)),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color:
-                  selected ? Colors.white : const Color(0xFF64748B)),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                  color: selected
+                      ? const Color(0xFF3B82F6)
+                      : const Color(0xFFE2E8F0)),
+            ),
+            child: Text(
+              label,
+              style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color:
+                      selected ? Colors.white : const Color(0xFF64748B)),
+            ),
+          ),
         ),
       ),
     );

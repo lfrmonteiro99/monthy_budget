@@ -40,11 +40,16 @@ class OrcamentoMensalApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Orcamento Mensal',
+      title: 'Orçamento Mensal',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorSchemeSeed: const Color(0xFF3B82F6),
         useMaterial3: true,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        snackBarTheme: SnackBarThemeData(
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
       ),
       home: AuthGate(
         appBuilder: (profile) => AppHome(
@@ -308,22 +313,25 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     if (!_loaded) {
-      return const Scaffold(
-        backgroundColor: Color(0xFFF8FAFC),
+      return Scaffold(
+        backgroundColor: const Color(0xFFF8FAFC),
         body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircularProgressIndicator(color: Color(0xFF3B82F6)),
-              SizedBox(height: 16),
-              Text(
-                'A carregar...',
-                style: TextStyle(
-                    color: Color(0xFF94A3B8),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500),
-              ),
-            ],
+          child: Semantics(
+            label: 'A carregar a aplicação',
+            child: const Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(color: Color(0xFF3B82F6)),
+                SizedBox(height: 16),
+                Text(
+                  'A carregar...',
+                  style: TextStyle(
+                      color: Color(0xFF64748B),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -408,18 +416,21 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         onDestinationSelected: (i) => setState(() => _currentIndex = i),
         backgroundColor: Colors.white,
         indicatorColor: const Color(0xFFDBEAFE),
-        height: 64,
+        height: 72,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         destinations: [
           const NavigationDestination(
             icon: Icon(Icons.dashboard_outlined),
             selectedIcon: Icon(Icons.dashboard, color: Color(0xFF3B82F6)),
-            label: 'Orcamento',
+            label: 'Orçamento',
+            tooltip: 'Resumo do orçamento mensal',
           ),
           const NavigationDestination(
             icon: Icon(Icons.shopping_cart_outlined),
             selectedIcon:
                 Icon(Icons.shopping_cart, color: Color(0xFF3B82F6)),
             label: 'Supermercado',
+            tooltip: 'Catálogo de produtos',
           ),
           NavigationDestination(
             icon: Badge(
@@ -440,17 +451,20 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                   color: Color(0xFF3B82F6)),
             ),
             label: 'Lista',
+            tooltip: 'Lista de compras',
           ),
           const NavigationDestination(
             icon: Icon(Icons.psychology_outlined),
             selectedIcon: Icon(Icons.psychology, color: Color(0xFF3B82F6)),
             label: 'Coach',
+            tooltip: 'Coach financeiro com IA',
           ),
           const NavigationDestination(
             icon: Icon(Icons.restaurant_outlined),
             selectedIcon:
                 Icon(Icons.restaurant, color: Color(0xFF3B82F6)),
-            label: 'Refeicoes',
+            label: 'Refeições',
+            tooltip: 'Planeador de refeições',
           ),
         ],
       ),

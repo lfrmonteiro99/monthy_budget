@@ -236,7 +236,7 @@ class _DeductionsChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _ChartCard(
-      title: 'Descontos (IRS + Seguranca Social)',
+      title: 'Descontos (IRS + Segurança Social)',
       child: Column(
         children: [
           SizedBox(
@@ -321,7 +321,7 @@ class _NetIncomeChart extends StatelessWidget {
     final maxVal = [...grossValues, ...netValues].reduce(math.max);
 
     return _ChartCard(
-      title: 'Rendimento Bruto vs Liquido',
+      title: 'Rendimento Bruto vs Líquido',
       child: Column(
         children: [
           SizedBox(
@@ -406,7 +406,7 @@ class _SavingsRateChart extends StatelessWidget {
     final expenseRate = 1 - savingsRate;
 
     return _ChartCard(
-      title: 'Taxa de Poupanca',
+      title: 'Taxa de Poupança',
       child: SizedBox(
         height: 180,
         child: Stack(
@@ -441,7 +441,7 @@ class _SavingsRateChart extends StatelessWidget {
                   formatPercentage(savingsRate),
                   style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: Color(0xFF10B981), letterSpacing: -0.5),
                 ),
-                Text('poupanca', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.grey.shade400)),
+                Text('poupança', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.grey.shade400)),
               ],
             ),
           ],

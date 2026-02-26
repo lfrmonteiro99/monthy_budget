@@ -267,7 +267,13 @@ class _Step2Objective extends StatelessWidget {
         const SizedBox(height: 20),
         ...MealObjective.values.map((obj) {
           final selected = draft.objective == obj;
-          return GestureDetector(
+          return Semantics(
+            button: true,
+            label: '${obj.label}${selected ? ", selecionado" : ""}',
+            child: Material(
+            color: selected ? const Color(0xFFEFF6FF) : Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            child: InkWell(
             onTap: () {
               var updated = draft.copyWith(objective: obj);
               if (obj == MealObjective.vegetarian) {
@@ -275,11 +281,11 @@ class _Step2Objective extends StatelessWidget {
               }
               onChanged(updated);
             },
+            borderRadius: BorderRadius.circular(12),
             child: Container(
               margin: const EdgeInsets.only(bottom: 10),
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: selected ? const Color(0xFFEFF6FF) : Colors.white,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: selected
@@ -313,6 +319,8 @@ class _Step2Objective extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+          ),
           );
         }),
       ],
@@ -458,16 +466,17 @@ class _Step4Kitchen extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.only(
                     right: mins != prepOptions.last ? 8 : 0),
-                child: GestureDetector(
+                child: Material(
+                  color: selected ? const Color(0xFF3B82F6) : Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  child: InkWell(
                   onTap: () =>
                       onChanged(draft.copyWith(maxPrepMinutes: mins)),
+                  borderRadius: BorderRadius.circular(10),
                   child: Container(
                     padding:
-                        const EdgeInsets.symmetric(vertical: 10),
+                        const EdgeInsets.symmetric(vertical: 12),
                     decoration: BoxDecoration(
-                      color: selected
-                          ? const Color(0xFF3B82F6)
-                          : Colors.white,
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
                         color: selected
@@ -488,6 +497,7 @@ class _Step4Kitchen extends StatelessWidget {
                     ),
                   ),
                 ),
+                ),
               ),
             );
           }).toList(),
@@ -506,16 +516,17 @@ class _Step4Kitchen extends StatelessWidget {
               child: Padding(
                 padding:
                     EdgeInsets.only(right: item.$2 != 5 ? 8 : 0),
-                child: GestureDetector(
+                child: Material(
+                  color: selected ? const Color(0xFF3B82F6) : Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  child: InkWell(
                   onTap: () =>
                       onChanged(draft.copyWith(maxComplexity: item.$2)),
+                  borderRadius: BorderRadius.circular(10),
                   child: Container(
                     padding:
-                        const EdgeInsets.symmetric(vertical: 10),
+                        const EdgeInsets.symmetric(vertical: 12),
                     decoration: BoxDecoration(
-                      color: selected
-                          ? const Color(0xFF3B82F6)
-                          : Colors.white,
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
                         color: selected
@@ -535,6 +546,7 @@ class _Step4Kitchen extends StatelessWidget {
                       ),
                     ),
                   ),
+                ),
                 ),
               ),
             );

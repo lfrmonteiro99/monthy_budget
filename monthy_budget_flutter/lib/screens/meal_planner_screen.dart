@@ -283,15 +283,19 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 children: List.generate(4, (i) {
                   final selected = _selectedWeek == i;
                   return Expanded(
-                    child: GestureDetector(
+                    child: Semantics(
+                      button: true,
+                      label: 'Semana ${i + 1}',
+                      selected: selected,
+                      child: Material(
+                      color: selected ? const Color(0xFF3B82F6) : const Color(0xFFF1F5F9),
+                      borderRadius: BorderRadius.circular(8),
+                      child: InkWell(
                       onTap: () => setState(() => _selectedWeek = i),
+                      borderRadius: BorderRadius.circular(8),
                       child: Container(
                         margin: const EdgeInsets.only(right: 4),
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        decoration: BoxDecoration(
-                          color: selected ? const Color(0xFF3B82F6) : const Color(0xFFF1F5F9),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
                         alignment: Alignment.center,
                         child: Text(
                           'Sem.${i + 1}',
@@ -302,6 +306,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                           ),
                         ),
                       ),
+                    ),
+                    ),
                     ),
                   );
                 }),
@@ -545,23 +551,28 @@ class _DayCard extends StatelessWidget {
                                 fontSize: 13, color: Color(0xFF64748B)),
                           ),
                           const SizedBox(width: 12),
-                          GestureDetector(
-                            onTap: () => onAddIngredientToList(ShoppingItem(
-                              productName: ing.name,
-                              store: '',
-                              price: cost,
-                              unitPrice:
-                                  '${ing.avgPricePerUnit.toStringAsFixed(2)}€/${ing.unit}',
-                            )),
-                            child: Container(
-                              width: 30,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF3B82F6),
-                                borderRadius: BorderRadius.circular(8),
+                          Semantics(
+                            button: true,
+                            label: 'Adicionar ${ing.name} à lista',
+                            child: SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: Material(
+                              color: const Color(0xFF3B82F6),
+                              borderRadius: BorderRadius.circular(10),
+                              child: InkWell(
+                                onTap: () => onAddIngredientToList(ShoppingItem(
+                                  productName: ing.name,
+                                  store: '',
+                                  price: cost,
+                                  unitPrice:
+                                      '${ing.avgPricePerUnit.toStringAsFixed(2)}€/${ing.unit}',
+                                )),
+                                borderRadius: BorderRadius.circular(10),
+                                child: const Icon(Icons.add, size: 18, color: Colors.white),
                               ),
-                              child: const Icon(Icons.add, size: 16, color: Colors.white),
                             ),
+                          ),
                           ),
                         ],
                       ),
@@ -798,23 +809,28 @@ class _ConsolidatedSheet extends StatelessWidget {
                                 fontSize: 13, fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(width: 10),
-                          GestureDetector(
-                            onTap: () => onAddToShoppingList(ShoppingItem(
-                              productName: ing.name,
-                              store: '',
-                              price: cost,
-                              unitPrice:
-                                  '${ing.avgPricePerUnit.toStringAsFixed(2)}€/${ing.unit}',
-                            )),
-                            child: Container(
-                              width: 30,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF3B82F6),
-                                borderRadius: BorderRadius.circular(8),
+                          Semantics(
+                            button: true,
+                            label: 'Adicionar ${ing.name} à lista',
+                            child: SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: Material(
+                              color: const Color(0xFF3B82F6),
+                              borderRadius: BorderRadius.circular(10),
+                              child: InkWell(
+                                onTap: () => onAddToShoppingList(ShoppingItem(
+                                  productName: ing.name,
+                                  store: '',
+                                  price: cost,
+                                  unitPrice:
+                                      '${ing.avgPricePerUnit.toStringAsFixed(2)}€/${ing.unit}',
+                                )),
+                                borderRadius: BorderRadius.circular(10),
+                                child: const Icon(Icons.add, size: 18, color: Colors.white),
                               ),
-                              child: const Icon(Icons.add, size: 16, color: Colors.white),
                             ),
+                          ),
                           ),
                         ],
                       ),

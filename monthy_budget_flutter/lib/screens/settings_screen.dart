@@ -188,7 +188,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   const Expanded(
                     child: Text(
-                      'Definicoes',
+                      'Definições',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xFF1E293B), letterSpacing: -0.3),
                     ),
                   ),
@@ -377,7 +377,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               border: Border.all(color: const Color(0xFFDBEAFE)),
             ),
             child: Text(
-              'Seguranca Social: ${formatPercentage(socialSecurityRate)}',
+              'Segurança Social: ${formatPercentage(socialSecurityRate)}',
               style: const TextStyle(fontSize: 12, color: Color(0xFF3B82F6)),
             ),
           ),
@@ -472,7 +472,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       decoration: _inputDecoration('0.00', suffix: 'EUR'),
                     ),
                     const SizedBox(height: 12),
-                    _label('SUBSIDIOS DE FERIAS E NATAL (DUODÉCIMOS)'),
+                    _label('SUBSÍDIOS DE FÉRIAS E NATAL (DUODÉCIMOS)'),
                     const SizedBox(height: 8),
                     Row(
                       children: SubsidyMode.values.map((mode) {
@@ -506,7 +506,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       decoration: _inputDecoration('0.00', suffix: 'EUR'),
                     ),
                     const SizedBox(height: 12),
-                    _label('SUBSIDIO DE ALIMENTACAO'),
+                    _label('SUBSÍDIO DE ALIMENTAÇÃO'),
                     const SizedBox(height: 8),
                     Row(
                       children: MealAllowanceType.values.map((type) {
@@ -1240,13 +1240,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildFavoriteChip(String label, {required bool isSelected}) {
-    return GestureDetector(
+    return Semantics(
+      button: true,
+      label: '$label${isSelected ? ", selecionado" : ""}',
+      child: Material(
+      color: isSelected ? const Color(0xFFEF4444).withValues(alpha: 0.08) : Colors.white,
+      borderRadius: BorderRadius.circular(20),
+      child: InkWell(
       onTap: () => _toggleFavorite(label),
+      borderRadius: BorderRadius.circular(20),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFEF4444).withValues(alpha: 0.08) : Colors.white,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected ? const Color(0xFFEF4444).withValues(alpha: 0.4) : const Color(0xFFE2E8F0),
@@ -1273,6 +1279,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ],
         ),
       ),
+    ),
+    ),
     );
   }
 

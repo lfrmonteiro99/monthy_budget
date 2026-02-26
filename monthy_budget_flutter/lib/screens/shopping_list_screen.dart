@@ -214,7 +214,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  'Adiciona produtos a partir do\necra Supermercado.',
+                  'Adiciona produtos a partir do\necrã Supermercado.',
                   style: TextStyle(fontSize: 14, color: Color(0xFF94A3B8)),
                   textAlign: TextAlign.center,
                 ),
@@ -301,7 +301,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             IconButton(
               icon: const Icon(Icons.receipt_long_outlined,
                   color: Color(0xFF64748B)),
-              tooltip: 'Historico',
+              tooltip: 'Histórico de compras',
               onPressed: _showHistory,
             ),
         ],
@@ -340,7 +340,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Historico de Compras',
+                    'Histórico de Compras',
                     style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
                   ),
                 ),
@@ -353,14 +353,17 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   itemBuilder: (_, i) {
                     final r = widget.purchaseHistory.records[i];
                     final isExpanded = expandedMap[i] ?? false;
-                    return GestureDetector(
+                    return Material(
+                      color: const Color(0xFFF8FAFC),
+                      borderRadius: BorderRadius.circular(12),
+                      child: InkWell(
                       onTap: () =>
                           setLocalState(() => expandedMap[i] = !isExpanded),
+                      borderRadius: BorderRadius.circular(12),
                       child: Container(
                         margin: const EdgeInsets.only(bottom: 10),
                         padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF8FAFC),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: const Color(0xFFE2E8F0)),
                         ),
@@ -427,6 +430,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                           ],
                         ),
                       ),
+                    ),
                     );
                   },
                 ),
@@ -456,13 +460,19 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             const Icon(Icons.delete_outline, color: Color(0xFFEF4444), size: 22),
       ),
       onDismissed: (_) => widget.onRemove(item),
-      child: GestureDetector(
+      child: Semantics(
+        button: true,
+        label: '${item.productName}${item.checked ? ", comprado" : ""}, deslizar para remover',
+        child: Material(
+        color: item.checked ? const Color(0xFFF8FAFC) : Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell(
         onTap: () => widget.onToggleChecked(item),
+        borderRadius: BorderRadius.circular(12),
         child: Container(
           margin: const EdgeInsets.only(bottom: 6),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
           decoration: BoxDecoration(
-            color: item.checked ? const Color(0xFFF8FAFC) : Colors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: item.checked
@@ -517,6 +527,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             ],
           ),
         ),
+      ),
+      ),
       ),
     );
   }
