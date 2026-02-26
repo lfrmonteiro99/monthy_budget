@@ -48,7 +48,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   late TextEditingController _apiKeyController;
   String? _openSection = 'personal';
   late LocalDashboardConfig _localDashboard;
-  final _customProductController = TextEditingController();
   String? _inviteCode;
 
   String _favSearch = '';
@@ -67,7 +66,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   void dispose() {
-    _customProductController.dispose();
     _apiKeyController.dispose();
     super.dispose();
   }
@@ -116,16 +114,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
-  void _addCustomProduct() {
-    final text = _customProductController.text.trim();
-    if (text.isEmpty) return;
-    final lower = text.toLowerCase();
-    if (_favorites.any((f) => f.toLowerCase() == lower)) return;
-    setState(() {
-      _favorites.add(text);
-      _customProductController.clear();
-    });
-  }
 
   void _addExpense() {
     setState(() {

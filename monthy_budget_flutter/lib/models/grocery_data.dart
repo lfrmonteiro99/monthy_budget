@@ -1,4 +1,4 @@
-/// Models for grocery price comparison data loaded from scraped JSON.
+// Models for grocery price comparison data loaded from scraped JSON.
 
 class GroceryData {
   final GroceryMetadata metadata;

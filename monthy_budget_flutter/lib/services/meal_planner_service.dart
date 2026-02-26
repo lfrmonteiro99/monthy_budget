@@ -103,7 +103,9 @@ class MealPlannerService {
           final ing = iMap[ri.ingredientId];
           if (ing == null) continue;
           if (ms.dislikedIngredients.any((d) =>
-              d.toLowerCase() == ing.name.toLowerCase())) return false;
+              d.toLowerCase() == ing.name.toLowerCase())) {
+            return false;
+          }
         }
         return true;
       }).toList();

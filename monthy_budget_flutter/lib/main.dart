@@ -3,19 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'config/supabase_config.dart';
 import 'models/app_settings.dart';
-import 'models/grocery_data.dart';
 import 'models/product.dart';
 import 'models/shopping_item.dart';
 import 'models/purchase_record.dart';
 import 'utils/calculations.dart';
 import 'services/settings_service.dart';
-import 'services/grocery_service.dart';
 import 'services/favorites_service.dart';
 import 'services/shopping_list_service.dart';
 import 'services/ai_coach_service.dart';
 import 'services/purchase_history_service.dart';
 import 'services/products_service.dart';
-import 'services/household_service.dart';
 import 'services/expense_snapshot_service.dart';
 import 'services/local_config_service.dart';
 import 'models/local_dashboard_config.dart';
@@ -77,7 +74,6 @@ class AppHome extends StatefulWidget {
 
 class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   final _settingsService = SettingsService();
-  final _groceryService = GroceryService();
   final _favoritesService = FavoritesService();
   final _shoppingListService = ShoppingListService();
   final _aiCoachService = AiCoachService();
@@ -87,7 +83,6 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   final _localConfigService = LocalConfigService();
 
   AppSettings _settings = const AppSettings();
-  GroceryData _groceryData = const GroceryData();
   List<Product> _products = [];
   List<String> _favorites = [];
   List<ShoppingItem> _shoppingList = [];
@@ -145,7 +140,6 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   Future<void> _loadAll() async {
     final results = await Future.wait([
       _settingsService.load(widget.householdId),
-      _groceryService.load(),
       _favoritesService.load(widget.householdId),
       _purchaseHistoryService.load(widget.householdId),
       _aiCoachService.loadApiKey(),
@@ -154,12 +148,11 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     ]);
     setState(() {
       _settings = results[0] as AppSettings;
-      _groceryData = results[1] as GroceryData;
-      _favorites = results[2] as List<String>;
-      _purchaseHistory = results[3] as PurchaseHistory;
-      _openAiApiKey = results[4] as String;
-      _products = results[5] as List<Product>;
-      _dashboardConfig = results[6] as LocalDashboardConfig;
+      _favorites = results[1] as List<String>;
+      _purchaseHistory = results[2] as PurchaseHistory;
+      _openAiApiKey = results[3] as String;
+      _products = results[4] as List<Product>;
+      _dashboardConfig = results[5] as LocalDashboardConfig;
       _loaded = true;
     });
     _expenseSnapshotService.loadHistory(widget.householdId).then((history) {
