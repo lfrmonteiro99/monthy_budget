@@ -9,6 +9,7 @@ class CoachScreen extends StatefulWidget {
   final AppSettings settings;
   final PurchaseHistory purchaseHistory;
   final String apiKey;
+  final String householdId;
   final VoidCallback onOpenSettings;
 
   const CoachScreen({
@@ -16,6 +17,7 @@ class CoachScreen extends StatefulWidget {
     required this.settings,
     required this.purchaseHistory,
     required this.apiKey,
+    required this.householdId,
     required this.onOpenSettings,
   });
 
@@ -23,7 +25,7 @@ class CoachScreen extends StatefulWidget {
   State<CoachScreen> createState() => _CoachScreenState();
 }
 
-class _CoachScreenState extends State<CoachScreen> {
+class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   final _service = AiCoachService();
   CoachInsight? _currentInsight;
   List<CoachInsight> _insights = [];
@@ -33,11 +35,25 @@ class _CoachScreenState extends State<CoachScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadHistory();
   }
 
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadHistory();
+    }
+  }
+
   Future<void> _loadHistory() async {
-    final insights = await _service.loadInsights();
+    final insights = await _service.loadInsights(widget.householdId);
     if (mounted) setState(() => _insights = insights);
   }
 
@@ -60,6 +76,7 @@ class _CoachScreenState extends State<CoachScreen> {
       );
       final result = await _service.analyze(
         apiKey: widget.apiKey,
+        householdId: widget.householdId,
         settings: widget.settings,
         summary: summary,
         purchaseHistory: widget.purchaseHistory,
@@ -80,7 +97,7 @@ class _CoachScreenState extends State<CoachScreen> {
   }
 
   Future<void> _deleteInsight(String id) async {
-    final updated = await _service.deleteInsight(id);
+    final updated = await _service.deleteInsight(id, widget.householdId);
     if (mounted) {
       setState(() {
         _insights = updated;
@@ -105,7 +122,7 @@ class _CoachScreenState extends State<CoachScreen> {
       ),
     );
     if (confirm == true) {
-      await _service.clearInsights();
+      await _service.clearInsights(widget.householdId);
       if (mounted) setState(() => _insights = []);
     }
   }
@@ -365,7 +382,6 @@ class _CoachScreenState extends State<CoachScreen> {
   }
 
   Widget _buildHistorySection() {
-    // Show previous insights (skip the current one, already shown above)
     final history = _currentInsight != null
         ? _insights.where((i) => i.id != _currentInsight!.id).toList()
         : _insights;

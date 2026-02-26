@@ -66,7 +66,7 @@ class AppHome extends StatefulWidget {
   State<AppHome> createState() => _AppHomeState();
 }
 
-class _AppHomeState extends State<AppHome> {
+class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   final _settingsService = SettingsService();
   final _groceryService = GroceryService();
   final _favoritesService = FavoritesService();
@@ -90,6 +90,7 @@ class _AppHomeState extends State<AppHome> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _shoppingListSub = _shoppingListService
         .stream(widget.householdId)
         .listen((items) => setState(() => _shoppingList = items));
@@ -98,8 +99,31 @@ class _AppHomeState extends State<AppHome> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _shoppingListSub.cancel();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _refreshData();
+  }
+
+  /// Lightweight refresh of household-synced data — called on app resume.
+  Future<void> _refreshData() async {
+    if (!mounted) return;
+    final results = await Future.wait([
+      _settingsService.load(widget.householdId),
+      _favoritesService.load(widget.householdId),
+      _purchaseHistoryService.load(widget.householdId),
+    ]);
+    if (mounted) {
+      setState(() {
+        _settings = results[0] as AppSettings;
+        _favorites = results[1] as List<String>;
+        _purchaseHistory = results[2] as PurchaseHistory;
+      });
+    }
   }
 
   Future<void> _loadAll() async {
@@ -305,6 +329,7 @@ class _AppHomeState extends State<AppHome> {
         settings: _settings,
         purchaseHistory: _purchaseHistory,
         apiKey: _openAiApiKey,
+        householdId: widget.householdId,
         onOpenSettings: () {
           Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => _buildSettingsScreen()),

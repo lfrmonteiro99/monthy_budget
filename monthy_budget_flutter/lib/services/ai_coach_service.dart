@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/app_settings.dart';
 import '../models/budget_summary.dart';
 import '../models/coach_insight.dart';
@@ -10,12 +10,13 @@ import '../utils/stress_index.dart';
 
 class AiCoachService {
   static const _apiKeyPref = 'openai_api_key';
-  static const _insightsPref = 'coach_insights';
-  static const _maxInsights = 20;
   static const _endpoint = 'https://api.openai.com/v1/chat/completions';
   static const _model = 'gpt-4o-mini';
+  static const _maxInsights = 20;
 
-  // ── API key ────────────────────────────────────────────────────────────────
+  final _client = Supabase.instance.client;
+
+  // ── API key (device-local) ─────────────────────────────────────────────────
 
   Future<String> loadApiKey() async {
     final prefs = await SharedPreferences.getInstance();
@@ -27,38 +28,53 @@ class AiCoachService {
     await prefs.setString(_apiKeyPref, key.trim());
   }
 
-  // ── Insight history ────────────────────────────────────────────────────────
+  // ── Insight history (household-shared via Supabase) ────────────────────────
 
-  Future<List<CoachInsight>> loadInsights() async {
-    final prefs = await SharedPreferences.getInstance();
-    final json = prefs.getString(_insightsPref);
-    if (json == null) return [];
+  Future<List<CoachInsight>> loadInsights(String householdId) async {
     try {
-      return CoachInsight.listFromJsonString(json);
+      final rows = await _client
+          .from('household_coach_insights')
+          .select()
+          .eq('household_id', householdId)
+          .order('created_at', ascending: false)
+          .limit(_maxInsights);
+      return (rows as List<dynamic>).map((r) {
+        final m = r as Map<String, dynamic>;
+        return CoachInsight(
+          id: m['id'] as String,
+          timestamp: DateTime.parse(m['created_at'] as String),
+          content: m['content'] as String,
+          stressScore: (m['stress_score'] as num).toInt(),
+        );
+      }).toList();
     } catch (_) {
       return [];
     }
   }
 
-  Future<List<CoachInsight>> _persistInsight(CoachInsight insight) async {
-    final prefs = await SharedPreferences.getInstance();
-    final existing = await loadInsights();
-    final updated = [insight, ...existing].take(_maxInsights).toList();
-    await prefs.setString(_insightsPref, CoachInsight.listToJsonString(updated));
-    return updated;
+  Future<List<CoachInsight>> _persistInsight(
+      CoachInsight insight, String householdId) async {
+    await _client.from('household_coach_insights').insert({
+      'id': insight.id,
+      'household_id': householdId,
+      'created_at': insight.timestamp.toIso8601String(),
+      'content': insight.content,
+      'stress_score': insight.stressScore,
+    });
+    return loadInsights(householdId);
   }
 
-  Future<List<CoachInsight>> deleteInsight(String id) async {
-    final prefs = await SharedPreferences.getInstance();
-    final existing = await loadInsights();
-    final updated = existing.where((e) => e.id != id).toList();
-    await prefs.setString(_insightsPref, CoachInsight.listToJsonString(updated));
-    return updated;
+  Future<List<CoachInsight>> deleteInsight(
+      String id, String householdId) async {
+    await _client.from('household_coach_insights').delete().eq('id', id);
+    return loadInsights(householdId);
   }
 
-  Future<void> clearInsights() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_insightsPref);
+  Future<void> clearInsights(String householdId) async {
+    await _client
+        .from('household_coach_insights')
+        .delete()
+        .eq('household_id', householdId);
   }
 
   // ── Analysis ───────────────────────────────────────────────────────────────
@@ -66,6 +82,7 @@ class AiCoachService {
   /// Returns the new [CoachInsight] and the updated full list.
   Future<({CoachInsight insight, List<CoachInsight> history})> analyze({
     required String apiKey,
+    required String householdId,
     required AppSettings settings,
     required BudgetSummary summary,
     required PurchaseHistory purchaseHistory,
@@ -122,7 +139,7 @@ class AiCoachService {
       content: content,
       stressScore: stress.score,
     );
-    final history = await _persistInsight(insight);
+    final history = await _persistInsight(insight, householdId);
     return (insight: insight, history: history);
   }
 
@@ -172,7 +189,7 @@ class AiCoachService {
     if (settings.stressHistory.length >= 2) {
       final sorted = settings.stressHistory.entries.toList()
         ..sort((a, b) => b.key.compareTo(a.key));
-      buf.writeln('EVOLUÇÃO DO ÍNDICE (${min(6, sorted.length)} meses):');
+      buf.writeln('EVOLUÇÃO DO ÍNDICE (${sorted.length < 6 ? sorted.length : 6} meses):');
       for (final e in sorted.take(6)) {
         final parts = e.key.split('-');
         final mLabel = monthNames[int.parse(parts[1])];
