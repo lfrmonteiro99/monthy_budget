@@ -32,36 +32,49 @@ const CATEGORY_COLORS: Record<ExpenseCategory, string> = {
 // Shared chart defaults
 const SHARED_FONT = { family: "Inter, system-ui, sans-serif" };
 
+// Dark mode aware chart colors
+function chartColors(dark: boolean) {
+  return {
+    tooltipBg: dark ? "#334155" : "#1e293b",
+    gridColor: dark ? "#334155" : "#f1f5f9",
+    tickColor: dark ? "#64748b" : "#94a3b8",
+    labelColor: dark ? "#94a3b8" : "#64748b",
+    borderColor: dark ? "#1e293b" : "#ffffff",
+    emptyFill: dark ? "#334155" : "#f1f5f9",
+  };
+}
+
 interface ChartsProps {
   summary: BudgetSummary;
   expenses: ExpenseItem[];
   enabledCharts: ChartType[];
+  dark?: boolean;
 }
 
-export default function Charts({ summary, expenses, enabledCharts }: ChartsProps) {
+export default function Charts({ summary, expenses, enabledCharts, dark = false }: ChartsProps) {
   const activeExpenses = expenses.filter((e) => e.enabled && e.amount > 0);
 
   return (
     <div className="space-y-4">
       {enabledCharts.includes("expenses_pie") && activeExpenses.length > 0 && (
-        <ExpensesPieChart expenses={activeExpenses} />
+        <ExpensesPieChart expenses={activeExpenses} dark={dark} />
       )}
       {enabledCharts.includes("income_vs_expenses") && (
-        <IncomeVsExpensesChart summary={summary} />
+        <IncomeVsExpensesChart summary={summary} dark={dark} />
       )}
       {enabledCharts.includes("deductions_breakdown") && (
-        <DeductionsChart summary={summary} />
+        <DeductionsChart summary={summary} dark={dark} />
       )}
-      {enabledCharts.includes("net_income_bar") && <NetIncomeChart summary={summary} />}
-      {enabledCharts.includes("savings_rate") && <SavingsRateChart summary={summary} />}
+      {enabledCharts.includes("net_income_bar") && <NetIncomeChart summary={summary} dark={dark} />}
+      {enabledCharts.includes("savings_rate") && <SavingsRateChart summary={summary} dark={dark} />}
     </div>
   );
 }
 
 function ChartCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-      <h3 className="text-xs font-semibold text-slate-400 mb-4 tracking-wide uppercase">
+    <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden transition-colors duration-300">
+      <h3 className="text-xs font-semibold text-slate-400 dark:text-slate-500 mb-4 tracking-wide uppercase">
         {title}
       </h3>
       {children}
@@ -69,7 +82,8 @@ function ChartCard({ title, children }: { title: string; children: React.ReactNo
   );
 }
 
-function ExpensesPieChart({ expenses }: { expenses: ExpenseItem[] }) {
+function ExpensesPieChart({ expenses, dark }: { expenses: ExpenseItem[]; dark: boolean }) {
+  const c = chartColors(dark);
   const grouped: Record<string, number> = {};
   for (const exp of expenses) {
     const cat = EXPENSE_CATEGORY_LABELS[exp.category];
@@ -93,7 +107,7 @@ function ExpensesPieChart({ expenses }: { expenses: ExpenseItem[] }) {
         data: values,
         backgroundColor: bgColors,
         borderWidth: 3,
-        borderColor: "#ffffff",
+        borderColor: c.borderColor,
         hoverOffset: 6,
       },
     ],
@@ -101,7 +115,7 @@ function ExpensesPieChart({ expenses }: { expenses: ExpenseItem[] }) {
 
   return (
     <ChartCard title="Despesas por Categoria">
-      <div className="h-64 flex items-center justify-center">
+      <div className="h-60 flex items-center justify-center">
         <Pie
           data={data}
           options={{
@@ -114,13 +128,13 @@ function ExpensesPieChart({ expenses }: { expenses: ExpenseItem[] }) {
                   boxWidth: 10,
                   padding: 12,
                   font: { size: 11, ...SHARED_FONT },
-                  color: "#64748b",
+                  color: c.labelColor,
                   usePointStyle: true,
                   pointStyle: "circle",
                 },
               },
               tooltip: {
-                backgroundColor: "#1e293b",
+                backgroundColor: c.tooltipBg,
                 titleFont: { ...SHARED_FONT, size: 12 },
                 bodyFont: { ...SHARED_FONT, size: 12 },
                 cornerRadius: 10,
@@ -142,9 +156,10 @@ function ExpensesPieChart({ expenses }: { expenses: ExpenseItem[] }) {
   );
 }
 
-function IncomeVsExpensesChart({ summary }: { summary: BudgetSummary }) {
+function IncomeVsExpensesChart({ summary, dark }: { summary: BudgetSummary; dark: boolean }) {
+  const c = chartColors(dark);
   const data = {
-    labels: ["Rend. Liquido", "Despesas", "Liquidez"],
+    labels: ["Rend. Líquido", "Despesas", "Liquidez"],
     datasets: [
       {
         data: [summary.totalNetWithMeal, summary.totalExpenses, Math.max(0, summary.netLiquidity)],
@@ -167,7 +182,7 @@ function IncomeVsExpensesChart({ summary }: { summary: BudgetSummary }) {
             plugins: {
               legend: { display: false },
               tooltip: {
-                backgroundColor: "#1e293b",
+                backgroundColor: c.tooltipBg,
                 titleFont: { ...SHARED_FONT, size: 12 },
                 bodyFont: { ...SHARED_FONT, size: 12 },
                 cornerRadius: 10,
@@ -183,13 +198,13 @@ function IncomeVsExpensesChart({ summary }: { summary: BudgetSummary }) {
                 ticks: {
                   callback: (v) => formatCurrency(v as number),
                   font: { size: 10, ...SHARED_FONT },
-                  color: "#94a3b8",
+                  color: c.tickColor,
                 },
-                grid: { color: "#f1f5f9" },
+                grid: { color: c.gridColor },
                 border: { display: false },
               },
               x: {
-                ticks: { font: { size: 11, ...SHARED_FONT }, color: "#64748b" },
+                ticks: { font: { size: 11, ...SHARED_FONT }, color: c.labelColor },
                 grid: { display: false },
                 border: { display: false },
               },
@@ -201,25 +216,26 @@ function IncomeVsExpensesChart({ summary }: { summary: BudgetSummary }) {
   );
 }
 
-function DeductionsChart({ summary }: { summary: BudgetSummary }) {
+function DeductionsChart({ summary, dark }: { summary: BudgetSummary; dark: boolean }) {
   if (summary.totalGross === 0) return null;
+  const c = chartColors(dark);
 
   const data = {
-    labels: ["Salario Liquido", "IRS", "Seguranca Social"],
+    labels: ["Salário Líquido", "IRS", "Segurança Social"],
     datasets: [
       {
         data: [summary.totalNet, summary.totalIRS, summary.totalSS],
         backgroundColor: ["#34d399", "#f87171", "#fbbf24"],
         borderWidth: 4,
-        borderColor: "#ffffff",
+        borderColor: c.borderColor,
         hoverOffset: 6,
       },
     ],
   };
 
   return (
-    <ChartCard title="Descontos (IRS + Seguranca Social)">
-      <div className="h-64 flex items-center justify-center">
+    <ChartCard title="Descontos (IRS + Segurança Social)">
+      <div className="h-60 flex items-center justify-center">
         <Doughnut
           data={data}
           options={{
@@ -233,13 +249,13 @@ function DeductionsChart({ summary }: { summary: BudgetSummary }) {
                   boxWidth: 10,
                   padding: 12,
                   font: { size: 11, ...SHARED_FONT },
-                  color: "#64748b",
+                  color: c.labelColor,
                   usePointStyle: true,
                   pointStyle: "circle",
                 },
               },
               tooltip: {
-                backgroundColor: "#1e293b",
+                backgroundColor: c.tooltipBg,
                 titleFont: { ...SHARED_FONT, size: 12 },
                 bodyFont: { ...SHARED_FONT, size: 12 },
                 cornerRadius: 10,
@@ -260,7 +276,8 @@ function DeductionsChart({ summary }: { summary: BudgetSummary }) {
   );
 }
 
-function NetIncomeChart({ summary }: { summary: BudgetSummary }) {
+function NetIncomeChart({ summary, dark }: { summary: BudgetSummary; dark: boolean }) {
+  const c = chartColors(dark);
   const labels = [];
   const grossValues = [];
   const netValues = [];
@@ -284,12 +301,12 @@ function NetIncomeChart({ summary }: { summary: BudgetSummary }) {
       {
         label: "Bruto",
         data: grossValues,
-        backgroundColor: "#c7d2fe",
+        backgroundColor: dark ? "#6366f1" : "#c7d2fe",
         borderRadius: 10,
         borderSkipped: false,
       },
       {
-        label: "Liquido",
+        label: "Líquido",
         data: netValues,
         backgroundColor: "#818cf8",
         borderRadius: 10,
@@ -299,7 +316,7 @@ function NetIncomeChart({ summary }: { summary: BudgetSummary }) {
   };
 
   return (
-    <ChartCard title="Rendimento Bruto vs Liquido">
+    <ChartCard title="Rendimento Bruto vs Líquido">
       <div className="h-56">
         <Bar
           data={data}
@@ -313,13 +330,13 @@ function NetIncomeChart({ summary }: { summary: BudgetSummary }) {
                   boxWidth: 10,
                   padding: 12,
                   font: { size: 11, ...SHARED_FONT },
-                  color: "#64748b",
+                  color: c.labelColor,
                   usePointStyle: true,
                   pointStyle: "circle",
                 },
               },
               tooltip: {
-                backgroundColor: "#1e293b",
+                backgroundColor: c.tooltipBg,
                 titleFont: { ...SHARED_FONT, size: 12 },
                 bodyFont: { ...SHARED_FONT, size: 12 },
                 cornerRadius: 10,
@@ -335,13 +352,13 @@ function NetIncomeChart({ summary }: { summary: BudgetSummary }) {
                 ticks: {
                   callback: (v) => formatCurrency(v as number),
                   font: { size: 10, ...SHARED_FONT },
-                  color: "#94a3b8",
+                  color: c.tickColor,
                 },
-                grid: { color: "#f1f5f9" },
+                grid: { color: c.gridColor },
                 border: { display: false },
               },
               x: {
-                ticks: { font: { size: 11, ...SHARED_FONT }, color: "#64748b" },
+                ticks: { font: { size: 11, ...SHARED_FONT }, color: c.labelColor },
                 grid: { display: false },
                 border: { display: false },
               },
@@ -353,18 +370,19 @@ function NetIncomeChart({ summary }: { summary: BudgetSummary }) {
   );
 }
 
-function SavingsRateChart({ summary }: { summary: BudgetSummary }) {
+function SavingsRateChart({ summary, dark }: { summary: BudgetSummary; dark: boolean }) {
   if (summary.totalNetWithMeal === 0) return null;
+  const c = chartColors(dark);
 
   const savingsRate = Math.max(0, summary.savingsRate);
   const expenseRate = 1 - savingsRate;
 
   const data = {
-    labels: ["Poupanca", "Despesas"],
+    labels: ["Poupança", "Despesas"],
     datasets: [
       {
         data: [savingsRate * 100, expenseRate * 100],
-        backgroundColor: ["#34d399", "#f1f5f9"],
+        backgroundColor: ["#34d399", c.emptyFill],
         borderWidth: 0,
         hoverOffset: 4,
       },
@@ -372,8 +390,8 @@ function SavingsRateChart({ summary }: { summary: BudgetSummary }) {
   };
 
   return (
-    <ChartCard title="Taxa de Poupanca">
-      <div className="h-48 flex items-center justify-center relative">
+    <ChartCard title="Taxa de Poupança">
+      <div className="h-52 flex items-center justify-center relative">
         <Doughnut
           data={data}
           options={{
@@ -383,7 +401,7 @@ function SavingsRateChart({ summary }: { summary: BudgetSummary }) {
             plugins: {
               legend: { display: false },
               tooltip: {
-                backgroundColor: "#1e293b",
+                backgroundColor: c.tooltipBg,
                 titleFont: { ...SHARED_FONT, size: 12 },
                 bodyFont: { ...SHARED_FONT, size: 12 },
                 cornerRadius: 10,
@@ -399,7 +417,7 @@ function SavingsRateChart({ summary }: { summary: BudgetSummary }) {
           <span className="text-3xl font-extrabold text-emerald-500 tracking-tight">
             {formatPercentage(savingsRate)}
           </span>
-          <span className="text-xs font-medium text-slate-400 mt-0.5">poupanca</span>
+          <span className="text-xs font-medium text-slate-400 dark:text-slate-500 mt-0.5">poupança</span>
         </div>
       </div>
     </ChartCard>

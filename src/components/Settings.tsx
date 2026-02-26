@@ -10,6 +10,8 @@ import {
   ChevronDown,
   ChevronUp,
   Check,
+  Moon,
+  Sun,
 } from "lucide-react";
 import type {
   AppSettings,
@@ -29,14 +31,16 @@ interface SettingsProps {
   settings: AppSettings;
   onSave: (settings: AppSettings) => void;
   onBack: () => void;
+  dark: boolean;
+  onToggleDark: () => void;
 }
 
 const MARITAL_STATUS_OPTIONS: { value: MaritalStatus; label: string }[] = [
   { value: "solteiro", label: "Solteiro(a)" },
   { value: "casado", label: "Casado(a)" },
-  { value: "uniao_facto", label: "Uniao de Facto" },
+  { value: "uniao_facto", label: "União de Facto" },
   { value: "divorciado", label: "Divorciado(a)" },
-  { value: "viuvo", label: "Viuvo(a)" },
+  { value: "viuvo", label: "Viúvo(a)" },
 ];
 
 const CATEGORY_OPTIONS: { value: ExpenseCategory; label: string }[] = Object.entries(
@@ -45,7 +49,7 @@ const CATEGORY_OPTIONS: { value: ExpenseCategory; label: string }[] = Object.ent
 
 type SettingsSection = "personal" | "salaries" | "expenses" | "dashboard";
 
-export default function Settings({ settings, onSave, onBack }: SettingsProps) {
+export default function Settings({ settings, onSave, onBack, dark, onToggleDark }: SettingsProps) {
   const [draft, setDraft] = useState<AppSettings>(structuredClone(settings));
   const [openSection, setOpenSection] = useState<SettingsSection | null>("personal");
 
@@ -91,6 +95,14 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
     });
   };
 
+  const moveExpense = (index: number, direction: -1 | 1) => {
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= draft.expenses.length) return;
+    const newExpenses = [...draft.expenses];
+    [newExpenses[index], newExpenses[newIndex]] = [newExpenses[newIndex], newExpenses[index]];
+    setDraft({ ...draft, expenses: newExpenses });
+  };
+
   const toggleChart = (chart: ChartType) => {
     const enabled = draft.dashboardConfig.enabledCharts;
     const newEnabled = enabled.includes(chart)
@@ -103,21 +115,29 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 animate-fade-in">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 animate-fade-in transition-colors duration-300">
       {/* Header */}
-      <div className="bg-white border-b border-slate-100 px-4 py-4 flex items-center gap-3 sticky top-0 z-10">
+      <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-b border-slate-100 dark:border-slate-700 px-4 py-4 flex items-center gap-3 sticky top-0 z-10 shadow-sm transition-colors duration-300">
         <button
           onClick={onBack}
-          className="p-2 hover:bg-slate-100 rounded-xl transition-colors"
+          aria-label="Voltar ao dashboard"
+          className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition-all active:scale-95"
         >
-          <ArrowLeft size={22} className="text-slate-600" />
+          <ArrowLeft size={22} className="text-slate-600 dark:text-slate-300" />
         </button>
-        <h1 className="text-lg font-bold text-slate-800 flex-1 tracking-tight">
-          Definicoes
+        <h1 className="text-lg font-bold text-slate-800 dark:text-slate-100 flex-1 tracking-tight">
+          Definições
         </h1>
         <button
+          onClick={onToggleDark}
+          aria-label={dark ? "Ativar modo claro" : "Ativar modo escuro"}
+          className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition-all active:scale-95"
+        >
+          {dark ? <Sun size={18} className="text-amber-400" /> : <Moon size={18} className="text-slate-400" />}
+        </button>
+        <button
           onClick={handleSave}
-          className="bg-blue-500 hover:bg-blue-600 text-white pl-3 pr-4 py-2 rounded-xl font-semibold text-sm transition-colors shadow-sm flex items-center gap-1.5"
+          className="bg-blue-500 hover:bg-blue-600 text-white pl-3 pr-4 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm hover:shadow active:scale-[0.97] flex items-center gap-1.5"
         >
           <Check size={16} strokeWidth={2.5} />
           Guardar
@@ -133,9 +153,9 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
           onClick={() => toggleSection("personal")}
         />
         {openSection === "personal" && (
-          <div className="bg-white px-5 py-5 space-y-5 animate-slide-down border-b border-slate-100">
+          <div className="bg-white dark:bg-slate-800 px-5 py-5 space-y-5 animate-slide-down border-b border-slate-100 dark:border-slate-700 transition-colors duration-300">
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-2 tracking-wide uppercase">
+              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 tracking-wide uppercase">
                 Estado Civil
               </label>
               <select
@@ -149,7 +169,7 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                     },
                   })
                 }
-                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm bg-white text-slate-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow"
+                className="w-full border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-sm bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow"
               >
                 {MARITAL_STATUS_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -160,8 +180,8 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-2 tracking-wide uppercase">
-                Numero de Dependentes
+              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 tracking-wide uppercase">
+                Número de Dependentes
               </label>
               <div className="flex items-center gap-4">
                 <button
@@ -174,11 +194,12 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                       },
                     })
                   }
-                  className="w-11 h-11 rounded-xl border-2 border-slate-200 flex items-center justify-center text-lg font-bold text-slate-500 hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95"
+                  aria-label="Remover dependente"
+                  className="w-11 h-11 rounded-xl border-2 border-slate-200 dark:border-slate-600 flex items-center justify-center text-lg font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500 transition-all active:scale-95"
                 >
                   -
                 </button>
-                <span className="text-2xl font-bold text-slate-800 w-8 text-center tabular-nums">
+                <span className="text-2xl font-bold text-slate-800 dark:text-slate-100 w-8 text-center tabular-nums">
                   {draft.personalInfo.dependentes}
                 </span>
                 <button
@@ -191,16 +212,17 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                       },
                     })
                   }
-                  className="w-11 h-11 rounded-xl border-2 border-slate-200 flex items-center justify-center text-lg font-bold text-slate-500 hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95"
+                  aria-label="Adicionar dependente"
+                  className="w-11 h-11 rounded-xl border-2 border-slate-200 dark:border-slate-600 flex items-center justify-center text-lg font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500 transition-all active:scale-95"
                 >
                   +
                 </button>
               </div>
             </div>
 
-            <div className="bg-blue-50 rounded-xl p-4 text-sm border border-blue-100">
-              <p className="text-blue-600 text-xs leading-relaxed">
-                Seguranca Social: {formatPercentage(SOCIAL_SECURITY_RATE)}
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 text-sm border border-blue-100 dark:border-blue-800/40">
+              <p className="text-blue-600 dark:text-blue-400 text-xs leading-relaxed">
+                Segurança Social: {formatPercentage(SOCIAL_SECURITY_RATE)}
               </p>
             </div>
           </div>
@@ -214,14 +236,14 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
           onClick={() => toggleSection("salaries")}
         />
         {openSection === "salaries" && (
-          <div className="bg-white px-5 py-5 space-y-4 animate-slide-down border-b border-slate-100">
+          <div className="bg-white dark:bg-slate-800 px-5 py-5 space-y-4 animate-slide-down border-b border-slate-100 dark:border-slate-700 transition-colors duration-300">
             {draft.salaries.map((salary, idx) => (
               <div
                 key={idx}
                 className={`border-2 rounded-2xl p-4 space-y-3 transition-all ${
                   salary.enabled
-                    ? "border-slate-200 bg-white"
-                    : "border-slate-100 bg-slate-50 opacity-50"
+                    ? "border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800"
+                    : "border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 opacity-50"
                 }`}
               >
                 <div className="flex items-center justify-between">
@@ -233,10 +255,10 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                       newSalaries[idx] = { ...salary, label: e.target.value };
                       setDraft({ ...draft, salaries: newSalaries });
                     }}
-                    className="text-sm font-semibold text-slate-700 border-none p-0 focus:ring-0 bg-transparent placeholder-slate-300"
+                    className="text-sm font-semibold text-slate-700 dark:text-slate-200 border-b border-dashed border-transparent hover:border-slate-300 dark:hover:border-slate-500 focus:border-blue-400 px-0.5 py-0.5 focus:ring-0 bg-transparent placeholder-slate-300 dark:placeholder-slate-600 transition-colors"
                     placeholder={`Vencimento ${idx + 1}`}
                   />
-                  <label className="flex items-center gap-2 text-xs font-medium text-slate-400 cursor-pointer">
+                  <label className="flex items-center gap-2 text-xs font-medium text-slate-400 dark:text-slate-500 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={salary.enabled}
@@ -250,8 +272,8 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                   </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-400 mb-1.5">
-                    Salario Bruto Mensal
+                  <label className="block text-xs font-medium text-slate-400 dark:text-slate-500 mb-1.5">
+                    Salário Bruto Mensal
                   </label>
                   <div className="relative">
                     <input
@@ -266,25 +288,25 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                         setDraft({ ...draft, salaries: newSalaries });
                       }}
                       placeholder="0.00"
-                      className="w-full border border-slate-200 rounded-xl px-4 py-3 pr-10 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow placeholder-slate-300"
+                      className="w-full border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 pr-10 text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow placeholder-slate-300 dark:placeholder-slate-500"
                       min="0"
                       step="50"
                     />
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-semibold">
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-sm font-semibold">
                       EUR
                     </span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-400 mb-1.5">
-                    Subsidio de Alimentacao
+                  <label className="block text-xs font-medium text-slate-400 dark:text-slate-500 mb-1.5">
+                    Subsídio de Alimentação
                   </label>
                   <div className="flex gap-1.5">
                     {([
                       { value: "none", label: "Sem" },
-                      { value: "card", label: "Cartao" },
-                      { value: "cash", label: "Com base" },
+                      { value: "card", label: "Cartão" },
+                      { value: "cash", label: "Dinheiro" },
                     ] as { value: MealAllowanceType; label: string }[]).map((opt) => (
                       <button
                         key={opt.value}
@@ -296,7 +318,7 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                         className={`flex-1 py-2 rounded-lg text-xs font-semibold border-2 transition-all ${
                           salary.mealAllowanceType === opt.value
                             ? "bg-blue-500 text-white border-blue-500"
-                            : "bg-white text-slate-500 border-slate-200 hover:border-slate-300"
+                            : "bg-white dark:bg-slate-700 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500"
                         }`}
                       >
                         {opt.label}
@@ -308,7 +330,7 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                 {salary.mealAllowanceType !== "none" && (
                   <div className="flex gap-3">
                     <div className="flex-1">
-                      <label className="block text-xs font-medium text-slate-400 mb-1.5">
+                      <label className="block text-xs font-medium text-slate-400 dark:text-slate-500 mb-1.5">
                         Valor/dia
                       </label>
                       <div className="relative">
@@ -324,18 +346,18 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                             setDraft({ ...draft, salaries: newSalaries });
                           }}
                           placeholder="0.00"
-                          className="w-full border border-slate-200 rounded-xl px-3 py-2.5 pr-8 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-blue-500 transition-shadow placeholder-slate-300"
+                          className="w-full border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2.5 pr-8 text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 focus:ring-2 focus:ring-blue-500 transition-shadow placeholder-slate-300 dark:placeholder-slate-500"
                           min="0"
                           step="0.10"
                         />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-semibold">
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-xs font-semibold">
                           EUR
                         </span>
                       </div>
                     </div>
                     <div className="w-24">
-                      <label className="block text-xs font-medium text-slate-400 mb-1.5">
-                        Dias/mes
+                      <label className="block text-xs font-medium text-slate-400 dark:text-slate-500 mb-1.5">
+                        Dias/mês
                       </label>
                       <input
                         type="number"
@@ -349,7 +371,7 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                           setDraft({ ...draft, salaries: newSalaries });
                         }}
                         placeholder="22"
-                        className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-blue-500 transition-shadow placeholder-slate-300"
+                        className="w-full border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 focus:ring-2 focus:ring-blue-500 transition-shadow placeholder-slate-300 dark:placeholder-slate-500"
                         min="0"
                         max="31"
                         step="1"
@@ -360,7 +382,7 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
 
                 {isCasado && (
                   <div>
-                    <label className="block text-xs font-medium text-slate-400 mb-1.5">
+                    <label className="block text-xs font-medium text-slate-400 dark:text-slate-500 mb-1.5">
                       N. Titulares
                     </label>
                     <div className="flex gap-2">
@@ -375,7 +397,7 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                           className={`flex-1 py-2 rounded-lg text-xs font-semibold border-2 transition-all ${
                             salary.titulares === n
                               ? "bg-blue-500 text-white border-blue-500"
-                              : "bg-white text-slate-500 border-slate-200 hover:border-slate-300"
+                              : "bg-white dark:bg-slate-700 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500"
                           }`}
                         >
                           {n} Titular{n > 1 ? "es" : ""}
@@ -392,8 +414,8 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                     draft.personalInfo.dependentes,
                   );
                   return (
-                    <div className="bg-slate-50 rounded-lg px-3 py-2 text-xs text-slate-500">
-                      {table.label} — {table.description}
+                    <div className="bg-slate-50 dark:bg-slate-700/50 rounded-xl px-3.5 py-2.5 text-xs text-slate-500 dark:text-slate-400 border border-slate-100 dark:border-slate-600">
+                      <span className="font-medium">{table.label}</span> — {table.description}
                     </div>
                   );
                 })()}
@@ -410,17 +432,36 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
           onClick={() => toggleSection("expenses")}
         />
         {openSection === "expenses" && (
-          <div className="bg-white px-5 py-5 space-y-3 animate-slide-down border-b border-slate-100">
-            {draft.expenses.map((expense) => (
+          <div className="bg-white dark:bg-slate-800 px-5 py-5 space-y-3 animate-slide-down border-b border-slate-100 dark:border-slate-700 transition-colors duration-300">
+            {draft.expenses.map((expense, idx) => (
               <div
                 key={expense.id}
                 className={`border-2 rounded-2xl p-4 space-y-3 transition-all ${
                   expense.enabled
-                    ? "border-slate-200 bg-white"
-                    : "border-slate-100 bg-slate-50 opacity-50"
+                    ? "border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800"
+                    : "border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 opacity-50"
                 }`}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  {/* Reorder handle */}
+                  <div className="flex flex-col -space-y-1">
+                    <button
+                      onClick={() => moveExpense(idx, -1)}
+                      disabled={idx === 0}
+                      aria-label="Mover despesa para cima"
+                      className="p-0.5 text-slate-300 dark:text-slate-600 hover:text-slate-500 dark:hover:text-slate-400 disabled:opacity-30 disabled:cursor-default transition-colors"
+                    >
+                      <ChevronUp size={14} strokeWidth={2.5} />
+                    </button>
+                    <button
+                      onClick={() => moveExpense(idx, 1)}
+                      disabled={idx === draft.expenses.length - 1}
+                      aria-label="Mover despesa para baixo"
+                      className="p-0.5 text-slate-300 dark:text-slate-600 hover:text-slate-500 dark:hover:text-slate-400 disabled:opacity-30 disabled:cursor-default transition-colors"
+                    >
+                      <ChevronDown size={14} strokeWidth={2.5} />
+                    </button>
+                  </div>
                   <input
                     type="checkbox"
                     checked={expense.enabled}
@@ -431,11 +472,12 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                     value={expense.label}
                     onChange={(e) => updateExpense(expense.id, { label: e.target.value })}
                     placeholder="Nome da despesa"
-                    className="flex-1 text-sm font-semibold border-none p-0 focus:ring-0 bg-transparent placeholder-slate-300 text-slate-700"
+                    className="flex-1 text-sm font-semibold border-none p-0 focus:ring-0 bg-transparent placeholder-slate-300 dark:placeholder-slate-600 text-slate-700 dark:text-slate-200"
                   />
                   <button
                     onClick={() => removeExpense(expense.id)}
-                    className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                    aria-label={`Remover despesa ${expense.label}`}
+                    className="p-2.5 text-slate-300 dark:text-slate-600 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -449,7 +491,7 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                           category: e.target.value as ExpenseCategory,
                         })
                       }
-                      className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-white text-slate-600 font-medium focus:ring-2 focus:ring-blue-500 transition-shadow"
+                      className="w-full border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2.5 text-xs bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium focus:ring-2 focus:ring-blue-500 transition-shadow"
                     >
                       {CATEGORY_OPTIONS.map((opt) => (
                         <option key={opt.value} value={opt.value}>
@@ -468,11 +510,11 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                         })
                       }
                       placeholder="0.00"
-                      className="w-full border border-slate-200 rounded-xl px-3 py-2.5 pr-7 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-blue-500 transition-shadow placeholder-slate-300"
+                      className="w-full border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2.5 pr-7 text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 focus:ring-2 focus:ring-blue-500 transition-shadow placeholder-slate-300 dark:placeholder-slate-500"
                       min="0"
                       step="5"
                     />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-semibold">
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-xs font-semibold">
                       EUR
                     </span>
                   </div>
@@ -481,7 +523,7 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
             ))}
             <button
               onClick={addExpense}
-              className="w-full border-2 border-dashed border-slate-200 rounded-2xl py-4 flex items-center justify-center gap-2 text-sm font-semibold text-slate-400 hover:border-blue-400 hover:text-blue-500 hover:bg-blue-50 transition-all"
+              className="w-full border-2 border-dashed border-slate-200 dark:border-slate-600 rounded-2xl py-4 flex items-center justify-center gap-2 text-sm font-semibold text-slate-400 dark:text-slate-500 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all active:scale-[0.98]"
             >
               <Plus size={18} />
               Adicionar Despesa
@@ -497,8 +539,8 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
           onClick={() => toggleSection("dashboard")}
         />
         {openSection === "dashboard" && (
-          <div className="bg-white px-5 py-5 space-y-5 animate-slide-down border-b border-slate-100">
-            <label className="flex items-center gap-3 text-sm font-medium text-slate-700 cursor-pointer">
+          <div className="bg-white dark:bg-slate-800 px-5 py-5 space-y-5 animate-slide-down border-b border-slate-100 dark:border-slate-700 transition-colors duration-300">
+            <label className="flex items-center gap-3 text-sm font-medium text-slate-700 dark:text-slate-200 cursor-pointer">
               <input
                 type="checkbox"
                 checked={draft.dashboardConfig.showSummaryCards}
@@ -512,17 +554,17 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                   })
                 }
               />
-              Mostrar cartoes de resumo
+              Mostrar cartões de resumo
             </label>
             <div>
-              <p className="text-xs font-semibold text-slate-500 mb-3 tracking-wide uppercase">
-                Graficos visiveis
+              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3 tracking-wide uppercase">
+                Gráficos visíveis
               </p>
               <div className="space-y-2.5">
                 {(Object.entries(CHART_LABELS) as [ChartType, string][]).map(([key, label]) => (
                   <label
                     key={key}
-                    className="flex items-center gap-3 text-sm font-medium text-slate-600 cursor-pointer hover:text-slate-800 transition-colors"
+                    className="flex items-center gap-3 text-sm font-medium text-slate-600 dark:text-slate-300 cursor-pointer hover:text-slate-800 dark:hover:text-slate-100 transition-colors"
                   >
                     <input
                       type="checkbox"
@@ -555,15 +597,16 @@ function SectionHeader({
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-3 px-5 py-4 bg-white border-b border-slate-100 mt-2 hover:bg-slate-50 transition-colors ${
-        open ? "bg-slate-50" : ""
+      aria-expanded={open}
+      className={`w-full flex items-center gap-3 px-5 py-4 border-b border-slate-100 dark:border-slate-700 mt-1.5 transition-all active:scale-[0.99] ${
+        open ? "bg-blue-50/40 dark:bg-blue-900/20" : "bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750"
       }`}
     >
-      <span className="text-blue-500">{icon}</span>
-      <span className="flex-1 text-left font-semibold text-slate-700 text-sm">{title}</span>
+      <span className={`transition-colors ${open ? "text-blue-500" : "text-slate-400 dark:text-slate-500"}`}>{icon}</span>
+      <span className={`flex-1 text-left font-semibold text-sm transition-colors ${open ? "text-blue-600 dark:text-blue-400" : "text-slate-700 dark:text-slate-200"}`}>{title}</span>
       <div
-        className={`p-1 rounded-lg transition-all ${
-          open ? "bg-blue-50 text-blue-500 rotate-0" : "text-slate-300"
+        className={`p-1.5 rounded-lg transition-all ${
+          open ? "bg-blue-100/60 dark:bg-blue-900/40 text-blue-500 dark:text-blue-400" : "text-slate-300 dark:text-slate-600"
         }`}
       >
         {open ? (
