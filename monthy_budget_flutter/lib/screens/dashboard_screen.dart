@@ -5,6 +5,8 @@ import '../models/purchase_record.dart';
 import '../utils/formatters.dart';
 import '../utils/stress_index.dart';
 import '../widgets/charts/budget_charts.dart';
+import '../widgets/trend_sheet.dart';
+import '../widgets/projection_sheet.dart';
 
 class DashboardScreen extends StatelessWidget {
   final AppSettings settings;
@@ -114,12 +116,25 @@ class DashboardScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                   child: Column(
                     children: [
-                      _StressIndexCard(result: stressResult),
+                      _StressIndexCard(
+                        result: stressResult,
+                        onShowTrend: stressResult.score > 0 ? () {
+                          final foodBudget = settings.expenses
+                              .where((e) => e.category == ExpenseCategory.alimentacao && e.enabled)
+                              .fold(0.0, (s, e) => s + e.amount);
+                          showTrendSheet(
+                            context: context,
+                            stressHistory: settings.stressHistory,
+                            spendingByMonth: purchaseHistory.spentByMonth(),
+                            currentFoodBudget: foodBudget,
+                          );
+                        } : null,
+                      ),
                       const SizedBox(height: 16),
                       if (settings.dashboardConfig.showSummaryCards) _buildSummaryCards(),
                       const SizedBox(height: 16),
                       _buildSalaryBreakdown(),
-                      _buildFoodSpendingCard(),
+                      _buildFoodSpendingCard(context),
                       if (purchaseHistory.records.isNotEmpty) ...[
                         const SizedBox(height: 16),
                         _buildPurchaseHistoryCard(context),
@@ -333,7 +348,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFoodSpendingCard() {
+  Widget _buildFoodSpendingCard(BuildContext context) {
     final now = DateTime.now();
     final foodBudget = settings.expenses
         .where((e) => e.category == ExpenseCategory.alimentacao && e.enabled)
@@ -368,13 +383,36 @@ class DashboardScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              const Text(
-                'ALIMENTACAO',
-                style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF64748B),
-                    letterSpacing: 0.8),
+              const Expanded(
+                child: Text(
+                  'ALIMENTACAO',
+                  style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF64748B),
+                      letterSpacing: 0.8),
+                ),
+              ),
+              GestureDetector(
+                onTap: () => showProjectionSheet(
+                  context: context,
+                  settings: settings,
+                  summary: summary,
+                  purchaseHistory: purchaseHistory,
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.auto_graph, size: 14, color: Color(0xFF3B82F6)),
+                    SizedBox(width: 4),
+                    Text(
+                      'Simular',
+                      style: TextStyle(
+                        fontSize: 12, color: Color(0xFF3B82F6), fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -796,7 +834,8 @@ class _SummaryCard extends StatelessWidget {
 
 class _StressIndexCard extends StatefulWidget {
   final StressIndexResult result;
-  const _StressIndexCard({required this.result});
+  final VoidCallback? onShowTrend;
+  const _StressIndexCard({required this.result, this.onShowTrend});
 
   @override
   State<_StressIndexCard> createState() => _StressIndexCardState();
@@ -960,27 +999,52 @@ class _StressIndexCardState extends State<_StressIndexCard> {
                 )),
           ],
           const SizedBox(height: 6),
-          GestureDetector(
-            onTap: () => setState(() => _expanded = !_expanded),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  _expanded ? 'Fechar' : 'Ver detalhes',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Color(0xFF94A3B8),
-                    fontWeight: FontWeight.w500,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () => setState(() => _expanded = !_expanded),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      _expanded ? 'Fechar' : 'Detalhes',
+                      style: const TextStyle(
+                        fontSize: 12, color: Color(0xFF94A3B8), fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Icon(
+                      _expanded ? Icons.expand_less : Icons.expand_more,
+                      size: 16, color: const Color(0xFF94A3B8),
+                    ),
+                  ],
+                ),
+              ),
+              if (widget.onShowTrend != null) ...[
+                Container(
+                  width: 1, height: 14,
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  color: const Color(0xFFE2E8F0),
+                ),
+                GestureDetector(
+                  onTap: widget.onShowTrend,
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.show_chart, size: 14, color: Color(0xFF3B82F6)),
+                      SizedBox(width: 4),
+                      Text(
+                        'Evolução',
+                        style: TextStyle(
+                          fontSize: 12, color: Color(0xFF3B82F6), fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(width: 4),
-                Icon(
-                  _expanded ? Icons.expand_less : Icons.expand_more,
-                  size: 16,
-                  color: const Color(0xFF94A3B8),
-                ),
               ],
-            ),
+            ],
           ),
         ],
       ),
