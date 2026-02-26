@@ -39,11 +39,11 @@ export default function Dashboard({ settings, summary, onOpenSettings }: Dashboa
   return (
     <div className="min-h-screen bg-slate-50 animate-fade-in">
       {/* Header */}
-      <div className="bg-white border-b border-slate-100 px-5 pt-5 pb-6">
+      <div className="bg-gradient-to-b from-white to-slate-50/80 border-b border-slate-100 px-5 pt-5 pb-6">
         <div className="flex items-center justify-between mb-5">
           <div>
             <h1 className="text-lg font-bold text-slate-800 tracking-tight">
-              Orcamento Mensal
+              Orçamento Mensal
             </h1>
             <p className="text-slate-400 text-xs font-medium mt-0.5 tracking-wide uppercase">
               Resumo financeiro
@@ -51,14 +51,19 @@ export default function Dashboard({ settings, summary, onOpenSettings }: Dashboa
           </div>
           <button
             onClick={onOpenSettings}
-            className="p-2.5 bg-slate-50 hover:bg-slate-100 rounded-xl transition-colors border border-slate-200"
+            aria-label="Abrir definições"
+            className="p-2.5 bg-white hover:bg-slate-50 rounded-xl transition-all border border-slate-200 shadow-sm hover:shadow active:scale-95"
           >
             <SettingsIcon size={20} className="text-slate-500" />
           </button>
         </div>
 
         {hasData ? (
-          <div className="bg-slate-50 rounded-2xl px-5 py-5 text-center border border-slate-100">
+          <div className={`rounded-2xl px-5 py-5 text-center border ${
+            isPositive
+              ? "bg-gradient-to-br from-emerald-50 to-teal-50/50 border-emerald-100"
+              : "bg-gradient-to-br from-red-50 to-orange-50/50 border-red-100"
+          }`}>
             <p className="text-slate-400 text-xs font-semibold mb-2 tracking-wide uppercase">
               Liquidez Mensal
             </p>
@@ -69,10 +74,10 @@ export default function Dashboard({ settings, summary, onOpenSettings }: Dashboa
             </p>
             <div className="flex items-center justify-center gap-1.5 mt-3">
               <div
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${
                   isPositive
-                    ? "bg-emerald-50 text-emerald-600"
-                    : "bg-red-50 text-red-600"
+                    ? "bg-emerald-100/60 text-emerald-700"
+                    : "bg-red-100/60 text-red-700"
                 }`}
               >
                 {isPositive ? (
@@ -85,16 +90,21 @@ export default function Dashboard({ settings, summary, onOpenSettings }: Dashboa
             </div>
           </div>
         ) : (
-          <div className="bg-blue-50 rounded-2xl px-5 py-8 text-center border border-blue-100">
-            <CircleDollarSign size={40} className="text-blue-300 mx-auto mb-3" />
-            <p className="text-slate-600 text-sm font-medium mb-4">
-              Configure os seus dados para ver o resumo.
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50/50 rounded-2xl px-5 py-8 text-center border border-blue-100">
+            <div className="w-16 h-16 rounded-2xl bg-blue-100/60 flex items-center justify-center mx-auto mb-4">
+              <CircleDollarSign size={32} className="text-blue-400" />
+            </div>
+            <p className="text-slate-700 text-sm font-semibold mb-1.5">
+              Bem-vindo ao seu orçamento
+            </p>
+            <p className="text-slate-400 text-xs font-medium mb-5">
+              Configure os seus dados para ver o resumo mensal.
             </p>
             <button
               onClick={onOpenSettings}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-sm"
+              className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-sm hover:shadow active:scale-[0.98]"
             >
-              Abrir Definicoes
+              Abrir Definições
             </button>
           </div>
         )}
@@ -107,13 +117,13 @@ export default function Dashboard({ settings, summary, onOpenSettings }: Dashboa
             <div className="grid grid-cols-2 gap-3">
               <SummaryCard
                 icon={<Wallet size={18} />}
-                label="Rendimento Bruto"
+                label="Rendim. Bruto"
                 value={formatCurrency(summary.totalGross)}
                 color="blue"
               />
               <SummaryCard
                 icon={<ArrowUpCircle size={18} />}
-                label="Rendimento Liquido"
+                label="Rendim. Líquido"
                 value={formatCurrency(summary.totalNetWithMeal)}
                 sublabel={summary.totalMealAllowance > 0 ? `Incl. sub. alim.: ${formatCurrency(summary.totalMealAllowance)}` : undefined}
                 color="emerald"
@@ -127,7 +137,7 @@ export default function Dashboard({ settings, summary, onOpenSettings }: Dashboa
               />
               <SummaryCard
                 icon={<PiggyBank size={18} />}
-                label="Taxa Poupanca"
+                label="Taxa Poupança"
                 value={formatPercentage(Math.max(0, summary.savingsRate))}
                 sublabel={`Despesas: ${formatCurrency(summary.totalExpenses)}`}
                 color="violet"
@@ -162,7 +172,7 @@ export default function Dashboard({ settings, summary, onOpenSettings }: Dashboa
               <h3 className="text-xs font-semibold text-slate-400 mb-4 tracking-wide uppercase">
                 Despesas Mensais
               </h3>
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 {settings.expenses
                   .filter((e) => e.enabled && e.amount > 0)
                   .map((expense) => (
@@ -170,20 +180,20 @@ export default function Dashboard({ settings, summary, onOpenSettings }: Dashboa
                       key={expense.id}
                       className="flex items-center justify-between py-2.5 border-b border-slate-50 last:border-0"
                     >
-                      <div className="flex items-center gap-2.5">
+                      <div className="flex items-center gap-3">
                         <div
-                          className={`w-2 h-2 rounded-full ${CATEGORY_DOT_COLORS[expense.category]}`}
+                          className={`w-2.5 h-2.5 rounded-full shrink-0 ${CATEGORY_DOT_COLORS[expense.category]}`}
                         />
-                        <div>
+                        <div className="flex flex-col">
                           <span className="text-sm font-medium text-slate-700">
                             {expense.label}
                           </span>
-                          <span className="text-xs text-slate-400 ml-2">
+                          <span className="text-[11px] text-slate-400">
                             {EXPENSE_CATEGORY_LABELS[expense.category]}
                           </span>
                         </div>
                       </div>
-                      <span className="text-sm font-semibold text-slate-800">
+                      <span className="text-sm font-semibold text-slate-800 tabular-nums">
                         {formatCurrency(expense.amount)}
                       </span>
                     </div>
@@ -257,7 +267,7 @@ function SummaryCard({
       <p className="text-xs font-medium text-slate-400">{label}</p>
       <p className="text-lg font-bold text-slate-800 mt-0.5 tracking-tight">{value}</p>
       {sublabel && (
-        <p className="text-[10px] text-slate-400 mt-1 leading-tight">{sublabel}</p>
+        <p className="text-[11px] text-slate-400 mt-1.5 leading-snug">{sublabel}</p>
       )}
     </div>
   );
@@ -297,7 +307,7 @@ function SalaryRow({ label, calc }: { label: string; calc: SalaryCalculation }) 
       </div>
       {hasMeal && (
         <div className="mt-3 pt-3 border-t border-slate-200 flex items-center justify-between text-xs">
-          <span className="text-slate-400 font-medium">Sub. Alimentacao</span>
+          <span className="text-slate-400 font-medium">Sub. Alimentação</span>
           <span className="text-emerald-500 font-semibold">
             +{formatCurrency(calc.mealAllowance.netMealAllowance)}
           </span>

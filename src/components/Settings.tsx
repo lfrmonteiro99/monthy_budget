@@ -34,9 +34,9 @@ interface SettingsProps {
 const MARITAL_STATUS_OPTIONS: { value: MaritalStatus; label: string }[] = [
   { value: "solteiro", label: "Solteiro(a)" },
   { value: "casado", label: "Casado(a)" },
-  { value: "uniao_facto", label: "Uniao de Facto" },
+  { value: "uniao_facto", label: "União de Facto" },
   { value: "divorciado", label: "Divorciado(a)" },
-  { value: "viuvo", label: "Viuvo(a)" },
+  { value: "viuvo", label: "Viúvo(a)" },
 ];
 
 const CATEGORY_OPTIONS: { value: ExpenseCategory; label: string }[] = Object.entries(
@@ -105,19 +105,20 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
   return (
     <div className="min-h-screen bg-slate-50 animate-fade-in">
       {/* Header */}
-      <div className="bg-white border-b border-slate-100 px-4 py-4 flex items-center gap-3 sticky top-0 z-10">
+      <div className="bg-white/95 backdrop-blur-sm border-b border-slate-100 px-4 py-4 flex items-center gap-3 sticky top-0 z-10 shadow-sm">
         <button
           onClick={onBack}
-          className="p-2 hover:bg-slate-100 rounded-xl transition-colors"
+          aria-label="Voltar ao dashboard"
+          className="p-2 hover:bg-slate-100 rounded-xl transition-all active:scale-95"
         >
           <ArrowLeft size={22} className="text-slate-600" />
         </button>
         <h1 className="text-lg font-bold text-slate-800 flex-1 tracking-tight">
-          Definicoes
+          Definições
         </h1>
         <button
           onClick={handleSave}
-          className="bg-blue-500 hover:bg-blue-600 text-white pl-3 pr-4 py-2 rounded-xl font-semibold text-sm transition-colors shadow-sm flex items-center gap-1.5"
+          className="bg-blue-500 hover:bg-blue-600 text-white pl-3 pr-4 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm hover:shadow active:scale-[0.97] flex items-center gap-1.5"
         >
           <Check size={16} strokeWidth={2.5} />
           Guardar
@@ -161,7 +162,7 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
 
             <div>
               <label className="block text-xs font-semibold text-slate-500 mb-2 tracking-wide uppercase">
-                Numero de Dependentes
+                Número de Dependentes
               </label>
               <div className="flex items-center gap-4">
                 <button
@@ -174,6 +175,7 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                       },
                     })
                   }
+                  aria-label="Remover dependente"
                   className="w-11 h-11 rounded-xl border-2 border-slate-200 flex items-center justify-center text-lg font-bold text-slate-500 hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95"
                 >
                   -
@@ -191,6 +193,7 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                       },
                     })
                   }
+                  aria-label="Adicionar dependente"
                   className="w-11 h-11 rounded-xl border-2 border-slate-200 flex items-center justify-center text-lg font-bold text-slate-500 hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95"
                 >
                   +
@@ -200,7 +203,7 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
 
             <div className="bg-blue-50 rounded-xl p-4 text-sm border border-blue-100">
               <p className="text-blue-600 text-xs leading-relaxed">
-                Seguranca Social: {formatPercentage(SOCIAL_SECURITY_RATE)}
+                Segurança Social: {formatPercentage(SOCIAL_SECURITY_RATE)}
               </p>
             </div>
           </div>
@@ -233,7 +236,7 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                       newSalaries[idx] = { ...salary, label: e.target.value };
                       setDraft({ ...draft, salaries: newSalaries });
                     }}
-                    className="text-sm font-semibold text-slate-700 border-none p-0 focus:ring-0 bg-transparent placeholder-slate-300"
+                    className="text-sm font-semibold text-slate-700 border-b border-dashed border-transparent hover:border-slate-300 focus:border-blue-400 px-0.5 py-0.5 focus:ring-0 bg-transparent placeholder-slate-300 transition-colors"
                     placeholder={`Vencimento ${idx + 1}`}
                   />
                   <label className="flex items-center gap-2 text-xs font-medium text-slate-400 cursor-pointer">
@@ -251,7 +254,7 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-400 mb-1.5">
-                    Salario Bruto Mensal
+                    Salário Bruto Mensal
                   </label>
                   <div className="relative">
                     <input
@@ -278,13 +281,13 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
 
                 <div>
                   <label className="block text-xs font-medium text-slate-400 mb-1.5">
-                    Subsidio de Alimentacao
+                    Subsídio de Alimentação
                   </label>
                   <div className="flex gap-1.5">
                     {([
                       { value: "none", label: "Sem" },
-                      { value: "card", label: "Cartao" },
-                      { value: "cash", label: "Com base" },
+                      { value: "card", label: "Cartão" },
+                      { value: "cash", label: "Dinheiro" },
                     ] as { value: MealAllowanceType; label: string }[]).map((opt) => (
                       <button
                         key={opt.value}
@@ -335,7 +338,7 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                     </div>
                     <div className="w-24">
                       <label className="block text-xs font-medium text-slate-400 mb-1.5">
-                        Dias/mes
+                        Dias/mês
                       </label>
                       <input
                         type="number"
@@ -392,8 +395,8 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                     draft.personalInfo.dependentes,
                   );
                   return (
-                    <div className="bg-slate-50 rounded-lg px-3 py-2 text-xs text-slate-500">
-                      {table.label} — {table.description}
+                    <div className="bg-slate-50 rounded-xl px-3.5 py-2.5 text-xs text-slate-500 border border-slate-100">
+                      <span className="font-medium">{table.label}</span> — {table.description}
                     </div>
                   );
                 })()}
@@ -435,7 +438,8 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                   />
                   <button
                     onClick={() => removeExpense(expense.id)}
-                    className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                    aria-label={`Remover despesa ${expense.label}`}
+                    className="p-2.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -481,7 +485,7 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
             ))}
             <button
               onClick={addExpense}
-              className="w-full border-2 border-dashed border-slate-200 rounded-2xl py-4 flex items-center justify-center gap-2 text-sm font-semibold text-slate-400 hover:border-blue-400 hover:text-blue-500 hover:bg-blue-50 transition-all"
+              className="w-full border-2 border-dashed border-slate-200 rounded-2xl py-4 flex items-center justify-center gap-2 text-sm font-semibold text-slate-400 hover:border-blue-400 hover:text-blue-500 hover:bg-blue-50/50 transition-all active:scale-[0.98]"
             >
               <Plus size={18} />
               Adicionar Despesa
@@ -512,11 +516,11 @@ export default function Settings({ settings, onSave, onBack }: SettingsProps) {
                   })
                 }
               />
-              Mostrar cartoes de resumo
+              Mostrar cartões de resumo
             </label>
             <div>
               <p className="text-xs font-semibold text-slate-500 mb-3 tracking-wide uppercase">
-                Graficos visiveis
+                Gráficos visíveis
               </p>
               <div className="space-y-2.5">
                 {(Object.entries(CHART_LABELS) as [ChartType, string][]).map(([key, label]) => (
@@ -555,15 +559,16 @@ function SectionHeader({
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-3 px-5 py-4 bg-white border-b border-slate-100 mt-2 hover:bg-slate-50 transition-colors ${
-        open ? "bg-slate-50" : ""
+      aria-expanded={open}
+      className={`w-full flex items-center gap-3 px-5 py-4 border-b border-slate-100 mt-1.5 transition-all active:scale-[0.99] ${
+        open ? "bg-blue-50/40" : "bg-white hover:bg-slate-50"
       }`}
     >
-      <span className="text-blue-500">{icon}</span>
-      <span className="flex-1 text-left font-semibold text-slate-700 text-sm">{title}</span>
+      <span className={`transition-colors ${open ? "text-blue-500" : "text-slate-400"}`}>{icon}</span>
+      <span className={`flex-1 text-left font-semibold text-sm transition-colors ${open ? "text-blue-600" : "text-slate-700"}`}>{title}</span>
       <div
-        className={`p-1 rounded-lg transition-all ${
-          open ? "bg-blue-50 text-blue-500 rotate-0" : "text-slate-300"
+        className={`p-1.5 rounded-lg transition-all ${
+          open ? "bg-blue-100/60 text-blue-500" : "text-slate-300"
         }`}
       >
         {open ? (

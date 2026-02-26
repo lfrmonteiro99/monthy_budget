@@ -60,7 +60,7 @@ export default function Charts({ summary, expenses, enabledCharts }: ChartsProps
 
 function ChartCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+    <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 overflow-hidden">
       <h3 className="text-xs font-semibold text-slate-400 mb-4 tracking-wide uppercase">
         {title}
       </h3>
@@ -101,7 +101,7 @@ function ExpensesPieChart({ expenses }: { expenses: ExpenseItem[] }) {
 
   return (
     <ChartCard title="Despesas por Categoria">
-      <div className="h-64 flex items-center justify-center">
+      <div className="h-60 flex items-center justify-center">
         <Pie
           data={data}
           options={{
@@ -144,7 +144,7 @@ function ExpensesPieChart({ expenses }: { expenses: ExpenseItem[] }) {
 
 function IncomeVsExpensesChart({ summary }: { summary: BudgetSummary }) {
   const data = {
-    labels: ["Rend. Liquido", "Despesas", "Liquidez"],
+    labels: ["Rend. Líquido", "Despesas", "Liquidez"],
     datasets: [
       {
         data: [summary.totalNetWithMeal, summary.totalExpenses, Math.max(0, summary.netLiquidity)],
@@ -205,7 +205,7 @@ function DeductionsChart({ summary }: { summary: BudgetSummary }) {
   if (summary.totalGross === 0) return null;
 
   const data = {
-    labels: ["Salario Liquido", "IRS", "Seguranca Social"],
+    labels: ["Salário Líquido", "IRS", "Segurança Social"],
     datasets: [
       {
         data: [summary.totalNet, summary.totalIRS, summary.totalSS],
@@ -218,8 +218,8 @@ function DeductionsChart({ summary }: { summary: BudgetSummary }) {
   };
 
   return (
-    <ChartCard title="Descontos (IRS + Seguranca Social)">
-      <div className="h-64 flex items-center justify-center">
+    <ChartCard title="Descontos (IRS + Segurança Social)">
+      <div className="h-60 flex items-center justify-center">
         <Doughnut
           data={data}
           options={{
@@ -289,7 +289,7 @@ function NetIncomeChart({ summary }: { summary: BudgetSummary }) {
         borderSkipped: false,
       },
       {
-        label: "Liquido",
+        label: "Líquido",
         data: netValues,
         backgroundColor: "#818cf8",
         borderRadius: 10,
@@ -299,7 +299,7 @@ function NetIncomeChart({ summary }: { summary: BudgetSummary }) {
   };
 
   return (
-    <ChartCard title="Rendimento Bruto vs Liquido">
+    <ChartCard title="Rendimento Bruto vs Líquido">
       <div className="h-56">
         <Bar
           data={data}
@@ -360,7 +360,7 @@ function SavingsRateChart({ summary }: { summary: BudgetSummary }) {
   const expenseRate = 1 - savingsRate;
 
   const data = {
-    labels: ["Poupanca", "Despesas"],
+    labels: ["Poupança", "Despesas"],
     datasets: [
       {
         data: [savingsRate * 100, expenseRate * 100],
@@ -372,8 +372,8 @@ function SavingsRateChart({ summary }: { summary: BudgetSummary }) {
   };
 
   return (
-    <ChartCard title="Taxa de Poupanca">
-      <div className="h-48 flex items-center justify-center relative">
+    <ChartCard title="Taxa de Poupança">
+      <div className="h-52 flex items-center justify-center relative">
         <Doughnut
           data={data}
           options={{
@@ -399,7 +399,7 @@ function SavingsRateChart({ summary }: { summary: BudgetSummary }) {
           <span className="text-3xl font-extrabold text-emerald-500 tracking-tight">
             {formatPercentage(savingsRate)}
           </span>
-          <span className="text-xs font-medium text-slate-400 mt-0.5">poupanca</span>
+          <span className="text-xs font-medium text-slate-400 mt-0.5">poupança</span>
         </div>
       </div>
     </ChartCard>

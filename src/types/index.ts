@@ -64,7 +64,7 @@ export const CHART_LABELS: Record<ChartType, string> = {
   expenses_pie: "Despesas por Categoria",
   income_vs_expenses: "Rendimento vs Despesas",
   net_income_bar: "Rendimento Líquido",
-  deductions_breakdown: "Descontos (IRS + SS)",
+  deductions_breakdown: "Descontos (IRS + Seg. Social)",
   savings_rate: "Taxa de Poupança",
 };
 

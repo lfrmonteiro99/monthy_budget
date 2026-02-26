@@ -18,9 +18,9 @@ function App() {
 
   if (!loaded) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-slate-50 gap-4">
-        <div className="w-10 h-10 border-[3px] border-slate-200 border-t-blue-500 rounded-full animate-spin-slow" />
-        <p className="text-slate-400 text-sm font-medium animate-pulse-soft">A carregar...</p>
+      <div className="flex flex-col items-center justify-center h-screen bg-slate-50 gap-5">
+        <div className="w-11 h-11 border-[3px] border-slate-200 border-t-blue-500 rounded-full animate-spin-slow" />
+        <p className="text-slate-400 text-sm font-medium animate-pulse-soft tracking-wide">A carregar...</p>
       </div>
     );
   }
