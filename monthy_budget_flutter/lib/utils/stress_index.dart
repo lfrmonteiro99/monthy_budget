@@ -116,3 +116,58 @@ StressIndexResult calculateStressIndex({
     previousScore: previousScore,
   );
 }
+
+class BudgetPaceResult {
+  final double dailyPace;
+  final double expectedPace;
+  final double projectedTotal;
+  final double projectedOverspend;
+  final bool isOverPace;
+  final String severity; // 'ok' | 'warning' | 'danger'
+  final int daysElapsed;
+  final int daysRemaining;
+
+  const BudgetPaceResult({
+    required this.dailyPace,
+    required this.expectedPace,
+    required this.projectedTotal,
+    required this.projectedOverspend,
+    required this.isOverPace,
+    required this.severity,
+    required this.daysElapsed,
+    required this.daysRemaining,
+  });
+}
+
+BudgetPaceResult checkBudgetPace({
+  required double foodBudget,
+  required double foodSpent,
+  required DateTime now,
+}) {
+  final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
+  final daysElapsed = now.day;
+  final daysRemaining = daysInMonth - daysElapsed;
+
+  final dailyPace = daysElapsed > 0 ? foodSpent / daysElapsed : 0.0;
+  final expectedPace = foodBudget / daysInMonth;
+  final projectedTotal = foodSpent + (dailyPace * daysRemaining);
+  final projectedOverspend = projectedTotal - foodBudget;
+
+  final paceRatio = expectedPace > 0 ? dailyPace / expectedPace : 0.0;
+  final severity = paceRatio <= 1.0
+      ? 'ok'
+      : paceRatio <= 1.2
+          ? 'warning'
+          : 'danger';
+
+  return BudgetPaceResult(
+    dailyPace: dailyPace,
+    expectedPace: expectedPace,
+    projectedTotal: projectedTotal,
+    projectedOverspend: projectedOverspend,
+    isOverPace: paceRatio > 1.0,
+    severity: severity,
+    daysElapsed: daysElapsed,
+    daysRemaining: daysRemaining,
+  );
+}

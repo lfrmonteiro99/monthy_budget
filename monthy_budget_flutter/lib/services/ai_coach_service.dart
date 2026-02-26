@@ -28,6 +28,13 @@ class AiCoachService {
     await prefs.setString(_apiKeyPref, key.trim());
   }
 
+  /// Gate for AI features. Currently checks API key existence.
+  /// Future: replace with subscription tier check.
+  Future<bool> canUseAI() async {
+    final key = await loadApiKey();
+    return key.isNotEmpty;
+  }
+
   // ── Insight history (household-shared via Supabase) ────────────────────────
 
   Future<List<CoachInsight>> loadInsights(String householdId) async {
@@ -116,6 +123,81 @@ class AiCoachService {
               {'role': 'user', 'content': prompt},
             ],
             'max_tokens': 1000,
+            'temperature': 0.5,
+          }),
+        )
+        .timeout(const Duration(seconds: 30));
+
+    if (response.statusCode != 200) {
+      if (response.statusCode == 401) {
+        throw Exception('API key inválida. Verifica nas Definições.');
+      }
+      final body = jsonDecode(response.body) as Map<String, dynamic>;
+      final msg = (body['error'] as Map?)?['message'] ?? 'Erro ${response.statusCode}';
+      throw Exception(msg);
+    }
+
+    final data = jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+    final content = (data['choices'] as List).first['message']['content'] as String;
+
+    final insight = CoachInsight(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      timestamp: DateTime.now(),
+      content: content,
+      stressScore: stress.score,
+    );
+    final history = await _persistInsight(insight, householdId);
+    return (insight: insight, history: history);
+  }
+
+  Future<({CoachInsight insight, List<CoachInsight> history})> analyzeMidMonth({
+    required String apiKey,
+    required String householdId,
+    required AppSettings settings,
+    required BudgetSummary summary,
+    required PurchaseHistory purchaseHistory,
+    required BudgetPaceResult pace,
+  }) async {
+    final stress = calculateStressIndex(
+      summary: summary,
+      purchaseHistory: purchaseHistory,
+      settings: settings,
+    );
+
+    final now = DateTime.now();
+    final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
+    final prompt = StringBuffer();
+    prompt.writeln('CONTEXTO: Alerta de desvio orçamental a meio do mês.');
+    prompt.writeln('Dia do mês: ${now.day}/$daysInMonth');
+    prompt.writeln('Orçamento alimentar: ${(pace.expectedPace * daysInMonth).toStringAsFixed(2)}€');
+    prompt.writeln('Gasto até agora: ${(pace.dailyPace * pace.daysElapsed).toStringAsFixed(2)}€');
+    prompt.writeln('Ritmo actual: ${pace.dailyPace.toStringAsFixed(2)}€/dia vs previsto ${pace.expectedPace.toStringAsFixed(2)}€/dia');
+    prompt.writeln('Projeção fim mês: ${pace.projectedTotal.toStringAsFixed(2)}€ (excesso: +${pace.projectedOverspend.toStringAsFixed(2)}€)');
+    prompt.writeln('Dias restantes: ${pace.daysRemaining}');
+    prompt.writeln('Índice de Tranquilidade: ${stress.score}/100');
+    prompt.writeln();
+    prompt.writeln('PEDIDO: Dá 3 sugestões concretas e accionáveis para reduzir o gasto alimentar '
+        'nos restantes ${pace.daysRemaining} dias. Cada sugestão deve incluir a poupança estimada em €. '
+        'Sê directo e específico. Sem introdução nem conclusão.');
+
+    final response = await http
+        .post(
+          Uri.parse(_endpoint),
+          headers: {
+            'Authorization': 'Bearer $apiKey',
+            'Content-Type': 'application/json; charset=utf-8',
+          },
+          body: jsonEncode({
+            'model': _model,
+            'messages': [
+              {
+                'role': 'system',
+                'content': 'És um consultor de orçamento doméstico português. '
+                    'Responde sempre em português europeu. Sê prático e directo.',
+              },
+              {'role': 'user', 'content': prompt.toString()},
+            ],
+            'max_tokens': 500,
             'temperature': 0.5,
           }),
         )

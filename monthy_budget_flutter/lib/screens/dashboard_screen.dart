@@ -9,6 +9,8 @@ import '../widgets/trend_sheet.dart';
 import '../widgets/projection_sheet.dart';
 import '../models/local_dashboard_config.dart';
 import '../models/expense_snapshot.dart';
+import '../utils/month_review.dart';
+import '../widgets/month_review_sheet.dart';
 
 class DashboardScreen extends StatelessWidget {
   final AppSettings settings;
@@ -45,6 +47,19 @@ class DashboardScreen extends StatelessWidget {
     );
     final now = DateTime.now();
     final monthKey = '${now.year}-${now.month.toString().padLeft(2, '0')}';
+    final monthReview = buildMonthReview(
+      expenseHistory: expenseHistory,
+      currentExpenses: settings.expenses,
+      purchaseHistory: purchaseHistory,
+      now: now,
+    );
+    final foodBudgetTotal = settings.expenses
+        .where((e) => e.category == ExpenseCategory.alimentacao && e.enabled)
+        .fold(0.0, (s, e) => s + e.amount);
+    final foodSpentTotal = purchaseHistory.spentInMonth(now.year, now.month);
+    final paceResult = foodBudgetTotal > 0 && foodSpentTotal > 0
+        ? checkBudgetPace(foodBudget: foodBudgetTotal, foodSpent: foodSpentTotal, now: now)
+        : null;
     if (hasData) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (settings.stressHistory[monthKey] != stressResult.score) {
@@ -141,10 +156,21 @@ class DashboardScreen extends StatelessWidget {
                           } : null,
                         ),
                       if (dashboardConfig.showStressIndex) const SizedBox(height: 16),
+                      if (monthReview != null)
+                        _MonthReviewCard(
+                          review: monthReview,
+                          onTap: () => showMonthReviewSheet(
+                            context: context,
+                            review: monthReview,
+                          ),
+                        ),
+                      if (monthReview != null) const SizedBox(height: 16),
                       if (dashboardConfig.showSummaryCards) _buildSummaryCards(),
                       if (dashboardConfig.showSummaryCards) const SizedBox(height: 16),
                       if (dashboardConfig.showSalaryBreakdown) _buildSalaryBreakdown(),
                       if (dashboardConfig.showFoodSpending) _buildFoodSpendingCard(context),
+                      if (paceResult != null && paceResult.isOverPace)
+                        _BudgetPaceAlert(pace: paceResult),
                       if (dashboardConfig.showPurchaseHistory && purchaseHistory.records.isNotEmpty) ...[
                         const SizedBox(height: 16),
                         _buildPurchaseHistoryCard(context),
@@ -1211,6 +1237,166 @@ class _ExemptIncomeRow extends StatelessWidget {
             style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF10B981)),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _BudgetPaceAlert extends StatelessWidget {
+  final BudgetPaceResult pace;
+
+  const _BudgetPaceAlert({required this.pace});
+
+  @override
+  Widget build(BuildContext context) {
+    final isWarning = pace.severity == 'warning';
+    final borderColor = isWarning ? const Color(0xFFFBBF24) : const Color(0xFFEF4444);
+    final bgColor = isWarning ? const Color(0xFFFFFBEB) : const Color(0xFFFEF2F2);
+    final iconColor = isWarning ? const Color(0xFFF59E0B) : const Color(0xFFEF4444);
+    final title = isWarning
+        ? 'A gastar mais rápido que o previsto'
+        : 'Risco de ultrapassar orçamento alimentar';
+
+    return Container(
+      margin: const EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: borderColor.withValues(alpha: 0.5)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.trending_up, size: 16, color: iconColor),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(title,
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: iconColor)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Ritmo', style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${pace.dailyPace.toStringAsFixed(1)}€/dia vs ${pace.expectedPace.toStringAsFixed(1)}€/dia',
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF475569)),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text('Projeção', style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
+                    const SizedBox(height: 2),
+                    Text(
+                      '+${pace.projectedOverspend.toStringAsFixed(0)}€',
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: iconColor),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MonthReviewCard extends StatelessWidget {
+  final MonthReviewResult review;
+  final VoidCallback onTap;
+
+  const _MonthReviewCard({required this.review, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final isOver = review.totalDifference > 0;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.assessment_outlined, size: 16, color: Colors.grey.shade400),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    '${review.monthLabel.toUpperCase()} — RESUMO',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey.shade400,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                ),
+                Icon(Icons.chevron_right, size: 18, color: Colors.grey.shade400),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Planeado', style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
+                      Text(formatCurrency(review.totalPlanned),
+                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF475569))),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Real', style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
+                      Text(formatCurrency(review.totalActual),
+                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF1E293B))),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text('Diferença', style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
+                      Text(
+                        '${isOver ? '+' : ''}${formatCurrency(review.totalDifference)}',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: isOver ? const Color(0xFFEF4444) : const Color(0xFF10B981),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

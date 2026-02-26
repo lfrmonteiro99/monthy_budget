@@ -29,6 +29,20 @@ class LocalDashboardConfig {
     ],
   });
 
+  factory LocalDashboardConfig.minimalist() => const LocalDashboardConfig(
+    showHeroCard: true,
+    showStressIndex: false,
+    showSummaryCards: false,
+    showSalaryBreakdown: false,
+    showFoodSpending: true,
+    showPurchaseHistory: false,
+    showExpensesBreakdown: false,
+    showCharts: false,
+    enabledCharts: [],
+  );
+
+  factory LocalDashboardConfig.full() => const LocalDashboardConfig();
+
   LocalDashboardConfig copyWith({
     bool? showHeroCard,
     bool? showStressIndex,

@@ -782,6 +782,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 16),
           _label('SECÇÕES VISÍVEIS'),
           const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => setState(() => _localDashboard = LocalDashboardConfig.minimalist()),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFF64748B),
+                    side: const BorderSide(color: Color(0xFFE2E8F0)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                  ),
+                  child: const Text('Minimalista', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => setState(() => _localDashboard = LocalDashboardConfig.full()),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFF64748B),
+                    side: const BorderSide(color: Color(0xFFE2E8F0)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                  ),
+                  child: const Text('Completo', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
           _dashToggle('Liquidez mensal', _localDashboard.showHeroCard,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showHeroCard: v))),
           _dashToggle('Índice de Tranquilidade', _localDashboard.showStressIndex,
