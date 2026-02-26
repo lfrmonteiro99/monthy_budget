@@ -6,6 +6,7 @@ import '../data/irs_tables.dart';
 import '../utils/formatters.dart';
 import '../services/household_service.dart';
 import '../models/meal_settings.dart';
+import '../models/local_dashboard_config.dart';
 
 class SettingsScreen extends StatefulWidget {
   final AppSettings settings;
@@ -18,6 +19,8 @@ class SettingsScreen extends StatefulWidget {
   final String householdId;
   final List<Product> products;
   final String? initialSection;
+  final LocalDashboardConfig? dashboardConfig;
+  final ValueChanged<LocalDashboardConfig>? onSaveDashboardConfig;
 
   const SettingsScreen({
     super.key,
@@ -31,6 +34,8 @@ class SettingsScreen extends StatefulWidget {
     required this.householdId,
     this.products = const [],
     this.initialSection,
+    this.dashboardConfig,
+    this.onSaveDashboardConfig,
   });
 
   @override
@@ -42,6 +47,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   late List<String> _favorites;
   late TextEditingController _apiKeyController;
   String? _openSection = 'personal';
+  late LocalDashboardConfig _localDashboard;
   final _customProductController = TextEditingController();
   String? _inviteCode;
 
@@ -56,6 +62,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (widget.initialSection != null) {
       _openSection = widget.initialSection;
     }
+    _localDashboard = widget.dashboardConfig ?? const LocalDashboardConfig();
   }
 
   @override
@@ -87,6 +94,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     widget.onSave(_draft);
     widget.onSaveFavorites(_favorites);
     widget.onSaveApiKey(_apiKeyController.text.trim());
+    widget.onSaveDashboardConfig?.call(_localDashboard);
     Navigator.of(context).pop();
   }
 
@@ -151,20 +159,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       final newSalaries = List<SalaryInfo>.from(_draft.salaries);
       newSalaries[idx] = updater(newSalaries[idx]);
       _draft = _draft.copyWith(salaries: newSalaries);
-    });
-  }
-
-  void _toggleChart(ChartType chart) {
-    setState(() {
-      final enabled = List<ChartType>.from(_draft.dashboardConfig.enabledCharts);
-      if (enabled.contains(chart)) {
-        enabled.remove(chart);
-      } else {
-        enabled.add(chart);
-      }
-      _draft = _draft.copyWith(
-        dashboardConfig: _draft.dashboardConfig.copyWith(enabledCharts: enabled),
-      );
     });
   }
 
@@ -759,32 +753,77 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: const Text('Mostrar cartoes de resumo', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF475569))),
-            value: _draft.dashboardConfig.showSummaryCards,
-            activeTrackColor: const Color(0xFF3B82F6),
-            onChanged: (v) {
-              setState(() {
-                _draft = _draft.copyWith(
-                  dashboardConfig: _draft.dashboardConfig.copyWith(showSummaryCards: v),
-                );
-              });
-            },
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFEFF6FF),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.phone_android, size: 16, color: Colors.blue.shade600),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Estas definições são guardadas neste dispositivo.',
+                    style: TextStyle(fontSize: 12, color: Colors.blue.shade700),
+                  ),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 12),
-          _label('GRAFICOS VISIVEIS'),
+          const SizedBox(height: 16),
+          _label('SECÇÕES VISÍVEIS'),
           const SizedBox(height: 8),
-          ...ChartType.values.map((chart) => CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(chart.label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF475569))),
-                value: _draft.dashboardConfig.enabledCharts.contains(chart),
-                activeColor: const Color(0xFF3B82F6),
-                controlAffinity: ListTileControlAffinity.leading,
-                onChanged: (_) => _toggleChart(chart),
-              )),
+          _dashToggle('Liquidez mensal', _localDashboard.showHeroCard,
+              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showHeroCard: v))),
+          _dashToggle('Índice de Tranquilidade', _localDashboard.showStressIndex,
+              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showStressIndex: v))),
+          _dashToggle('Cartões de resumo', _localDashboard.showSummaryCards,
+              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showSummaryCards: v))),
+          _dashToggle('Detalhe por vencimento', _localDashboard.showSalaryBreakdown,
+              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showSalaryBreakdown: v))),
+          _dashToggle('Alimentação', _localDashboard.showFoodSpending,
+              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showFoodSpending: v))),
+          _dashToggle('Histórico de compras', _localDashboard.showPurchaseHistory,
+              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showPurchaseHistory: v))),
+          _dashToggle('Breakdown despesas', _localDashboard.showExpensesBreakdown,
+              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showExpensesBreakdown: v))),
+          _dashToggle('Gráficos', _localDashboard.showCharts,
+              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showCharts: v))),
+          if (_localDashboard.showCharts) ...[
+            const SizedBox(height: 16),
+            _label('GRÁFICOS VISÍVEIS'),
+            const SizedBox(height: 8),
+            ...ChartType.values.map((chart) => CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(chart.label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF475569))),
+                  value: _localDashboard.enabledCharts.contains(chart),
+                  activeColor: const Color(0xFF3B82F6),
+                  controlAffinity: ListTileControlAffinity.leading,
+                  onChanged: (_) {
+                    final enabled = List<ChartType>.from(_localDashboard.enabledCharts);
+                    if (enabled.contains(chart)) {
+                      enabled.remove(chart);
+                    } else {
+                      enabled.add(chart);
+                    }
+                    setState(() => _localDashboard = _localDashboard.copyWith(enabledCharts: enabled));
+                  },
+                )),
+          ],
         ],
       ),
+    );
+  }
+
+  Widget _dashToggle(String label, bool value, ValueChanged<bool> onChanged) {
+    return SwitchListTile(
+      contentPadding: EdgeInsets.zero,
+      title: Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF475569))),
+      value: value,
+      activeTrackColor: const Color(0xFF3B82F6),
+      onChanged: onChanged,
     );
   }
 

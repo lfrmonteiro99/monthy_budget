@@ -410,6 +410,8 @@ class AppSettings {
   final PersonalInfo personalInfo;
   final List<SalaryInfo> salaries;
   final List<ExpenseItem> expenses;
+  /// @deprecated Use LocalDashboardConfig (stored in SharedPreferences) instead.
+  /// Kept for backwards compatibility with existing serialized data.
   final DashboardConfig dashboardConfig;
   final MealSettings mealSettings;
   final Map<String, int> stressHistory;

@@ -16,6 +16,10 @@ import 'services/ai_coach_service.dart';
 import 'services/purchase_history_service.dart';
 import 'services/products_service.dart';
 import 'services/household_service.dart';
+import 'services/expense_snapshot_service.dart';
+import 'services/local_config_service.dart';
+import 'models/local_dashboard_config.dart';
+import 'models/expense_snapshot.dart';
 import 'screens/shopping_list_screen.dart';
 import 'screens/coach_screen.dart';
 import 'screens/meal_planner_screen.dart';
@@ -74,6 +78,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   final _aiCoachService = AiCoachService();
   final _purchaseHistoryService = PurchaseHistoryService();
   final _productsService = ProductsService();
+  final _expenseSnapshotService = ExpenseSnapshotService();
+  final _localConfigService = LocalConfigService();
 
   AppSettings _settings = const AppSettings();
   GroceryData _groceryData = const GroceryData();
@@ -82,6 +88,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   List<ShoppingItem> _shoppingList = [];
   String _openAiApiKey = '';
   PurchaseHistory _purchaseHistory = const PurchaseHistory();
+  LocalDashboardConfig _dashboardConfig = const LocalDashboardConfig();
+  Map<String, List<ExpenseSnapshot>> _expenseHistory = {};
   bool _loaded = false;
   int _currentIndex = 0;
 
@@ -124,6 +132,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         _purchaseHistory = results[2] as PurchaseHistory;
       });
     }
+    _expenseSnapshotService.loadHistory(widget.householdId).then((history) {
+      if (mounted) setState(() => _expenseHistory = history);
+    });
   }
 
   Future<void> _loadAll() async {
@@ -134,6 +145,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       _purchaseHistoryService.load(widget.householdId),
       _aiCoachService.loadApiKey(),
       _productsService.load(),
+      _localConfigService.load(),
     ]);
     setState(() {
       _settings = results[0] as AppSettings;
@@ -142,7 +154,11 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       _purchaseHistory = results[3] as PurchaseHistory;
       _openAiApiKey = results[4] as String;
       _products = results[5] as List<Product>;
+      _dashboardConfig = results[6] as LocalDashboardConfig;
       _loaded = true;
+    });
+    _expenseSnapshotService.loadHistory(widget.householdId).then((history) {
+      if (mounted) setState(() => _expenseHistory = history);
     });
   }
 
@@ -150,6 +166,22 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     if (!widget.isAdmin) return;
     setState(() => _settings = settings);
     _settingsService.save(settings, widget.householdId);
+  }
+
+  void _saveDashboardConfig(LocalDashboardConfig config) {
+    setState(() => _dashboardConfig = config);
+    _localConfigService.save(config);
+  }
+
+  void _snapshotExpenses() {
+    final now = DateTime.now();
+    final monthKey = '${now.year}-${now.month.toString().padLeft(2, '0')}';
+    _expenseSnapshotService
+        .snapshotIfNeeded(widget.householdId, monthKey, _settings.expenses)
+        .then((_) => _expenseSnapshotService.loadHistory(widget.householdId))
+        .then((history) {
+      if (mounted) setState(() => _expenseHistory = history);
+    });
   }
 
   void _saveFavorites(List<String> favorites) {
@@ -268,6 +300,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       isAdmin: widget.isAdmin,
       householdId: widget.householdId,
       products: _products,
+      dashboardConfig: _dashboardConfig,
+      onSaveDashboardConfig: _saveDashboardConfig,
     );
   }
 
@@ -307,6 +341,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         summary: summary,
         purchaseHistory: _purchaseHistory,
         onSaveSettings: _saveSettings,
+        dashboardConfig: _dashboardConfig,
+        expenseHistory: _expenseHistory,
+        onSnapshotExpenses: _snapshotExpenses,
         onOpenSettings: () {
           Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
@@ -355,6 +392,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
               isAdmin: widget.isAdmin,
               householdId: widget.householdId,
               products: _products,
+              dashboardConfig: _dashboardConfig,
+              onSaveDashboardConfig: _saveDashboardConfig,
               initialSection: 'meals',
             ),
           ),

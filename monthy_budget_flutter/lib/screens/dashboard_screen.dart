@@ -7,6 +7,8 @@ import '../utils/stress_index.dart';
 import '../widgets/charts/budget_charts.dart';
 import '../widgets/trend_sheet.dart';
 import '../widgets/projection_sheet.dart';
+import '../models/local_dashboard_config.dart';
+import '../models/expense_snapshot.dart';
 
 class DashboardScreen extends StatelessWidget {
   final AppSettings settings;
@@ -14,6 +16,9 @@ class DashboardScreen extends StatelessWidget {
   final PurchaseHistory purchaseHistory;
   final VoidCallback onOpenSettings;
   final ValueChanged<AppSettings> onSaveSettings;
+  final LocalDashboardConfig dashboardConfig;
+  final Map<String, List<ExpenseSnapshot>> expenseHistory;
+  final VoidCallback onSnapshotExpenses;
 
   const DashboardScreen({
     super.key,
@@ -22,6 +27,9 @@ class DashboardScreen extends StatelessWidget {
     required this.purchaseHistory,
     required this.onOpenSettings,
     required this.onSaveSettings,
+    required this.dashboardConfig,
+    required this.expenseHistory,
+    required this.onSnapshotExpenses,
   });
 
   @override
@@ -37,11 +45,14 @@ class DashboardScreen extends StatelessWidget {
     );
     final now = DateTime.now();
     final monthKey = '${now.year}-${now.month.toString().padLeft(2, '0')}';
-    if (hasData && settings.stressHistory[monthKey] != stressResult.score) {
+    if (hasData) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final updated = Map<String, int>.from(settings.stressHistory)
-          ..[monthKey] = stressResult.score;
-        onSaveSettings(settings.copyWith(stressHistory: updated));
+        if (settings.stressHistory[monthKey] != stressResult.score) {
+          final updated = Map<String, int>.from(settings.stressHistory)
+            ..[monthKey] = stressResult.score;
+          onSaveSettings(settings.copyWith(stressHistory: updated));
+        }
+        onSnapshotExpenses();
       });
     }
 
@@ -106,7 +117,8 @@ class DashboardScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    if (hasData) _buildHeroCard(isPositive) else _buildEmptyState(),
+                    if (hasData && dashboardConfig.showHeroCard) _buildHeroCard(isPositive)
+                    else if (!hasData) _buildEmptyState(),
                     const SizedBox(height: 24),
                   ],
                 ),
@@ -116,39 +128,39 @@ class DashboardScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                   child: Column(
                     children: [
-                      _StressIndexCard(
-                        result: stressResult,
-                        onShowTrend: stressResult.score > 0 ? () {
-                          final foodBudget = settings.expenses
-                              .where((e) => e.category == ExpenseCategory.alimentacao && e.enabled)
-                              .fold(0.0, (s, e) => s + e.amount);
-                          showTrendSheet(
-                            context: context,
-                            stressHistory: settings.stressHistory,
-                            spendingByMonth: purchaseHistory.spentByMonth(),
-                            currentFoodBudget: foodBudget,
-                          );
-                        } : null,
-                      ),
-                      const SizedBox(height: 16),
-                      if (settings.dashboardConfig.showSummaryCards) _buildSummaryCards(),
-                      const SizedBox(height: 16),
-                      _buildSalaryBreakdown(),
-                      _buildFoodSpendingCard(context),
-                      if (purchaseHistory.records.isNotEmpty) ...[
+                      if (dashboardConfig.showStressIndex)
+                        _StressIndexCard(
+                          result: stressResult,
+                          onShowTrend: stressResult.score > 0 ? () {
+                            showTrendSheet(
+                              context: context,
+                              stressHistory: settings.stressHistory,
+                              expenseHistory: expenseHistory,
+                              currentTotalExpenses: summary.totalExpenses,
+                            );
+                          } : null,
+                        ),
+                      if (dashboardConfig.showStressIndex) const SizedBox(height: 16),
+                      if (dashboardConfig.showSummaryCards) _buildSummaryCards(),
+                      if (dashboardConfig.showSummaryCards) const SizedBox(height: 16),
+                      if (dashboardConfig.showSalaryBreakdown) _buildSalaryBreakdown(),
+                      if (dashboardConfig.showFoodSpending) _buildFoodSpendingCard(context),
+                      if (dashboardConfig.showPurchaseHistory && purchaseHistory.records.isNotEmpty) ...[
                         const SizedBox(height: 16),
                         _buildPurchaseHistoryCard(context),
                       ],
-                      if (summary.totalExpenses > 0) ...[
+                      if (dashboardConfig.showExpensesBreakdown && summary.totalExpenses > 0) ...[
                         const SizedBox(height: 16),
                         _buildExpensesBreakdown(),
                       ],
-                      const SizedBox(height: 16),
-                      BudgetCharts(
-                        summary: summary,
-                        expenses: settings.expenses,
-                        enabledCharts: settings.dashboardConfig.enabledCharts,
-                      ),
+                      if (dashboardConfig.showCharts) ...[
+                        const SizedBox(height: 16),
+                        BudgetCharts(
+                          summary: summary,
+                          expenses: settings.expenses,
+                          enabledCharts: dashboardConfig.enabledCharts,
+                        ),
+                      ],
                       const SizedBox(height: 16),
                     ],
                   ),

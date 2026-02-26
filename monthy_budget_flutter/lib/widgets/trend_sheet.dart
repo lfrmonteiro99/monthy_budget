@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import '../models/expense_snapshot.dart';
 import '../utils/formatters.dart';
 
 const _monthNames = [
@@ -8,12 +9,38 @@ const _monthNames = [
   'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
 ];
 
+const _categoryColors = {
+  'telecomunicacoes': Color(0xFF818CF8),
+  'energia': Color(0xFFFBBF24),
+  'agua': Color(0xFF60A5FA),
+  'alimentacao': Color(0xFF34D399),
+  'educacao': Color(0xFFA78BFA),
+  'habitacao': Color(0xFFF87171),
+  'transportes': Color(0xFFFB923C),
+  'saude': Color(0xFFF472B6),
+  'lazer': Color(0xFF2DD4BF),
+  'outros': Color(0xFF94A3B8),
+};
+
+const _categoryLabels = {
+  'telecomunicacoes': 'Telecom',
+  'energia': 'Energia',
+  'agua': 'Água',
+  'alimentacao': 'Alimentação',
+  'educacao': 'Educação',
+  'habitacao': 'Habitação',
+  'transportes': 'Transportes',
+  'saude': 'Saúde',
+  'lazer': 'Lazer',
+  'outros': 'Outros',
+};
+
 /// Opens the trend bottom sheet from a parent context.
 void showTrendSheet({
   required BuildContext context,
   required Map<String, int> stressHistory,
-  required Map<String, double> spendingByMonth,
-  required double currentFoodBudget,
+  required Map<String, List<ExpenseSnapshot>> expenseHistory,
+  required double currentTotalExpenses,
 }) {
   showModalBottomSheet(
     context: context,
@@ -30,8 +57,8 @@ void showTrendSheet({
       builder: (_, scrollController) => _TrendSheetContent(
         scrollController: scrollController,
         stressHistory: stressHistory,
-        spendingByMonth: spendingByMonth,
-        currentFoodBudget: currentFoodBudget,
+        expenseHistory: expenseHistory,
+        currentTotalExpenses: currentTotalExpenses,
       ),
     ),
   );
@@ -40,14 +67,14 @@ void showTrendSheet({
 class _TrendSheetContent extends StatelessWidget {
   final ScrollController scrollController;
   final Map<String, int> stressHistory;
-  final Map<String, double> spendingByMonth;
-  final double currentFoodBudget;
+  final Map<String, List<ExpenseSnapshot>> expenseHistory;
+  final double currentTotalExpenses;
 
   const _TrendSheetContent({
     required this.scrollController,
     required this.stressHistory,
-    required this.spendingByMonth,
-    required this.currentFoodBudget,
+    required this.expenseHistory,
+    required this.currentTotalExpenses,
   });
 
   @override
@@ -75,7 +102,11 @@ class _TrendSheetContent extends StatelessWidget {
           _buildStressChart(),
           const SizedBox(height: 24),
         ],
-        if (spendingByMonth.isNotEmpty) _buildSpendingChart(),
+        if (expenseHistory.isNotEmpty) ...[
+          _buildExpenseTotalChart(),
+          const SizedBox(height: 24),
+          _buildExpenseCategoryChart(),
+        ],
       ],
     );
   }
@@ -223,10 +254,17 @@ class _TrendSheetContent extends StatelessWidget {
     );
   }
 
-  Widget _buildSpendingChart() {
-    final entries = spendingByMonth.entries.toList();
-    final maxSpend = entries.map((e) => e.value).fold(0.0, math.max);
-    final maxY = math.max(maxSpend, currentFoodBudget) * 1.2;
+  // ── Total expenses bar chart ────────────────────────────────────────
+
+  Widget _buildExpenseTotalChart() {
+    final months = expenseHistory.keys.toList()..sort();
+    final totals = months.map((m) {
+      return expenseHistory[m]!
+          .where((s) => s.enabled)
+          .fold(0.0, (sum, s) => sum + s.amount);
+    }).toList();
+    final maxSpend = totals.fold(0.0, math.max);
+    final maxY = math.max(maxSpend, currentTotalExpenses) * 1.2;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -239,7 +277,7 @@ class _TrendSheetContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'GASTOS MENSAIS',
+            'DESPESAS TOTAIS',
             style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600,
                 color: Colors.grey.shade400, letterSpacing: 1.2),
           ),
@@ -248,26 +286,26 @@ class _TrendSheetContent extends StatelessWidget {
             height: 200,
             child: BarChart(
               BarChartData(
-                maxY: maxY,
-                barGroups: List.generate(entries.length, (i) {
+                maxY: maxY > 0 ? maxY : 1,
+                barGroups: List.generate(months.length, (i) {
                   return BarChartGroupData(
                     x: i,
                     barRods: [
                       BarChartRodData(
-                        toY: entries[i].value,
-                        color: entries[i].value > currentFoodBudget
+                        toY: totals[i],
+                        color: totals[i] > currentTotalExpenses
                             ? const Color(0xFFF87171)
-                            : const Color(0xFF34D399),
-                        width: entries.length <= 6 ? 28 : 20,
+                            : const Color(0xFF3B82F6),
+                        width: months.length <= 6 ? 28 : 20,
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
                       ),
                     ],
                   );
                 }),
-                extraLinesData: currentFoodBudget > 0
+                extraLinesData: currentTotalExpenses > 0
                     ? ExtraLinesData(horizontalLines: [
                         HorizontalLine(
-                          y: currentFoodBudget,
+                          y: currentTotalExpenses,
                           color: const Color(0xFF94A3B8),
                           strokeWidth: 1,
                           dashArray: [6, 4],
@@ -275,7 +313,7 @@ class _TrendSheetContent extends StatelessWidget {
                             show: true,
                             alignment: Alignment.topRight,
                             style: TextStyle(fontSize: 10, color: Colors.grey.shade500),
-                            labelResolver: (_) => 'Orçamento: ${formatCurrency(currentFoodBudget)}',
+                            labelResolver: (_) => 'Atual: ${formatCurrency(currentTotalExpenses)}',
                           ),
                         ),
                       ])
@@ -289,8 +327,8 @@ class _TrendSheetContent extends StatelessWidget {
                       showTitles: true,
                       getTitlesWidget: (value, _) {
                         final idx = value.toInt();
-                        if (idx < entries.length) {
-                          final parts = entries[idx].key.split('-');
+                        if (idx < months.length) {
+                          final parts = months[idx].split('-');
                           final monthNum = int.parse(parts[1]);
                           return Padding(
                             padding: const EdgeInsets.only(top: 8),
@@ -318,17 +356,143 @@ class _TrendSheetContent extends StatelessWidget {
               ),
             ),
           ),
-          if (currentFoodBudget > 0) ...[
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _zoneDot(const Color(0xFF34D399), 'Dentro orçamento'),
-                const SizedBox(width: 16),
-                _zoneDot(const Color(0xFFF87171), 'Acima orçamento'),
-              ],
+        ],
+      ),
+    );
+  }
+
+  // ── Stacked category bar chart ──────────────────────────────────────
+
+  Widget _buildExpenseCategoryChart() {
+    final months = expenseHistory.keys.toList()..sort();
+
+    // Collect all categories that appear across all months
+    final allCategories = <String>{};
+    for (final snapshots in expenseHistory.values) {
+      for (final s in snapshots) {
+        if (s.enabled && s.amount > 0) allCategories.add(s.category);
+      }
+    }
+    final categories = allCategories.toList()..sort();
+
+    if (categories.isEmpty) return const SizedBox();
+
+    // Build stacked bars
+    double maxY = 0;
+    final groups = List.generate(months.length, (i) {
+      final snapshots = expenseHistory[months[i]]!;
+      final stackItems = <BarChartRodStackItem>[];
+      double runningY = 0;
+      for (final cat in categories) {
+        final amount = snapshots
+            .where((s) => s.category == cat && s.enabled)
+            .fold(0.0, (sum, s) => sum + s.amount);
+        if (amount > 0) {
+          stackItems.add(BarChartRodStackItem(
+            runningY,
+            runningY + amount,
+            _categoryColors[cat] ?? const Color(0xFF94A3B8),
+          ));
+          runningY += amount;
+        }
+      }
+      if (runningY > maxY) maxY = runningY;
+      return BarChartGroupData(
+        x: i,
+        barRods: [
+          BarChartRodData(
+            toY: runningY,
+            rodStackItems: stackItems,
+            width: months.length <= 6 ? 28 : 20,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+            color: Colors.transparent,
+          ),
+        ],
+      );
+    });
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'DESPESAS POR CATEGORIA',
+            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600,
+                color: Colors.grey.shade400, letterSpacing: 1.2),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 200,
+            child: BarChart(
+              BarChartData(
+                maxY: maxY > 0 ? maxY * 1.1 : 1,
+                barGroups: groups,
+                titlesData: FlTitlesData(
+                  leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (value, _) {
+                        final idx = value.toInt();
+                        if (idx < months.length) {
+                          final parts = months[idx].split('-');
+                          final monthNum = int.parse(parts[1]);
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Text(_monthNames[monthNum],
+                                style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
+                          );
+                        }
+                        return const SizedBox();
+                      },
+                    ),
+                  ),
+                ),
+                gridData: const FlGridData(show: false),
+                borderData: FlBorderData(show: false),
+                barTouchData: BarTouchData(
+                  touchTooltipData: BarTouchTooltipData(
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                      final month = months[groupIndex];
+                      final snapshots = expenseHistory[month]!;
+                      final lines = <String>[];
+                      for (final cat in categories) {
+                        final amount = snapshots
+                            .where((s) => s.category == cat && s.enabled)
+                            .fold(0.0, (sum, s) => sum + s.amount);
+                        if (amount > 0) {
+                          final label = _categoryLabels[cat] ?? cat;
+                          lines.add('$label: ${formatCurrency(amount)}');
+                        }
+                      }
+                      lines.add('Total: ${formatCurrency(rod.toY)}');
+                      return BarTooltipItem(
+                        lines.join('\n'),
+                        const TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.w500),
+                      );
+                    },
+                  ),
+                ),
+              ),
             ),
-          ],
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 12,
+            runSpacing: 4,
+            children: categories.map((cat) => _zoneDot(
+              _categoryColors[cat] ?? const Color(0xFF94A3B8),
+              _categoryLabels[cat] ?? cat,
+            )).toList(),
+          ),
         ],
       ),
     );

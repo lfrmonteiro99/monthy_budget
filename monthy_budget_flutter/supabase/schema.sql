@@ -146,5 +146,25 @@ create policy "write plans" on meal_plans for all   using (household_id = my_hou
 create policy "read invites"        on household_invites for select using (household_id = my_household_id());
 create policy "create invite admin" on household_invites for insert with check (household_id = my_household_id() and my_role() = 'admin');
 
+-- ─── Expense Snapshots ──────────────────────────────────────
+create table expense_snapshots (
+  id            uuid primary key default gen_random_uuid(),
+  household_id  uuid not null references households(id) on delete cascade,
+  month         text not null,
+  expense_id    text not null,
+  label         text not null,
+  category      text not null,
+  amount        double precision not null,
+  enabled       boolean not null default true,
+  created_at    timestamptz default now(),
+  unique(household_id, month, expense_id)
+);
+
+alter table expense_snapshots enable row level security;
+
+create policy "read snapshots"   on expense_snapshots for select using (household_id = my_household_id());
+create policy "insert snapshots" on expense_snapshots for insert with check (household_id = my_household_id());
+create policy "update snapshots" on expense_snapshots for update using (household_id = my_household_id());
+
 -- ─── Realtime ─────────────────────────────────────────────
 alter publication supabase_realtime add table shopping_items;
