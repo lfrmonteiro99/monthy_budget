@@ -36,6 +36,9 @@ class MealPlannerService {
   // --- Settings helpers ---
 
   int nPessoas(AppSettings settings) {
+    if (settings.mealSettings.householdSize != null) {
+      return settings.mealSettings.householdSize!;
+    }
     final titulares = settings.salaries
         .where((s) => s.enabled)
         .fold(0, (sum, s) => sum + s.titulares);

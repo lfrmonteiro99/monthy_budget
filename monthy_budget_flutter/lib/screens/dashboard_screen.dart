@@ -346,13 +346,17 @@ class DashboardScreen extends StatelessWidget {
           const SizedBox(height: 16),
           ...List.generate(summary.salaries.length, (i) {
             final calc = summary.salaries[i];
-            if (calc.effectiveGrossAmount <= 0) return const SizedBox.shrink();
+            final hasGross = calc.effectiveGrossAmount > 0;
+            final hasAnyIncome = hasGross || calc.otherExemptIncome > 0;
+            if (!hasAnyIncome) return const SizedBox.shrink();
             final label = i < settings.salaries.length && settings.salaries[i].label.isNotEmpty
                 ? settings.salaries[i].label
                 : 'Vencimento ${i + 1}';
             return Padding(
               padding: EdgeInsets.only(top: i > 0 ? 12 : 0),
-              child: _SalaryRow(label: label, calc: calc),
+              child: hasGross
+                  ? _SalaryRow(label: label, calc: calc)
+                  : _ExemptIncomeRow(label: label, amount: calc.otherExemptIncome),
             );
           }),
         ],
@@ -1171,6 +1175,41 @@ class _SalaryRow extends StatelessWidget {
               ],
             ),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ExemptIncomeRow extends StatelessWidget {
+  final String label;
+  final double amount;
+  const _ExemptIncomeRow({required this.label, required this.amount});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFAFAFA),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFF1F5F9)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Color(0xFF94A3B8))),
+              const SizedBox(height: 2),
+              Text('Rend. Isento', style: TextStyle(fontSize: 10, color: Colors.grey.shade400)),
+            ],
+          ),
+          Text(
+            '+${formatCurrency(amount)}',
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF10B981)),
+          ),
         ],
       ),
     );

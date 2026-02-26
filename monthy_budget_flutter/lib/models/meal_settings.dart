@@ -84,10 +84,12 @@ class MealSettings {
   final int maxBatchDays;
   final int? preferredCookingWeekday;
   final bool reuseLeftovers;
+  final int? householdSize;
   final bool advancedMode;
   final bool wizardCompleted;
 
   const MealSettings({
+    this.householdSize,
     this.enabledMeals = const {MealType.lunch, MealType.dinner},
     this.objective = MealObjective.balancedHealth,
     this.glutenFree = false,
@@ -118,6 +120,7 @@ class MealSettings {
   static const Object _sentinel = Object();
 
   MealSettings copyWith({
+    Object? householdSize = _sentinel,
     Set<MealType>? enabledMeals,
     MealObjective? objective,
     bool? glutenFree,
@@ -142,6 +145,9 @@ class MealSettings {
     bool? wizardCompleted,
   }) {
     return MealSettings(
+      householdSize: householdSize == _sentinel
+          ? this.householdSize
+          : householdSize as int?,
       enabledMeals: enabledMeals ?? this.enabledMeals,
       objective: objective ?? this.objective,
       glutenFree: glutenFree ?? this.glutenFree,
@@ -170,6 +176,7 @@ class MealSettings {
   }
 
   Map<String, dynamic> toJson() => {
+    'householdSize': householdSize,
     'enabledMeals': enabledMeals.map((e) => e.name).toList(),
     'objective': objective.name,
     'glutenFree': glutenFree,
@@ -216,6 +223,7 @@ class MealSettings {
     }
 
     return MealSettings(
+      householdSize: json['householdSize'] as int?,
       enabledMeals: parseMealTypes(json['enabledMeals']),
       objective: MealObjective.values.firstWhere(
         (e) => e.name == json['objective'],

@@ -154,6 +154,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
+  int _autoHouseholdSize() {
+    final titulares = _draft.salaries
+        .where((s) => s.enabled)
+        .fold(0, (sum, s) => sum + s.titulares);
+    return titulares + _draft.personalInfo.dependentes;
+  }
+
   void _updateSalary(int idx, SalaryInfo Function(SalaryInfo) updater) {
     setState(() {
       final newSalaries = List<SalaryInfo>.from(_draft.salaries);
@@ -918,6 +925,57 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          _label('AGREGADO (PESSOAS)'),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: TextFormField(
+                    initialValue: ms.householdSize?.toString() ?? '',
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: _autoHouseholdSize().toString(),
+                      hintStyle: TextStyle(color: Colors.grey.shade400),
+                      suffixText: ms.householdSize == null ? '(auto)' : null,
+                      suffixStyle: TextStyle(fontSize: 12, color: Colors.grey.shade400),
+                    ),
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                    onChanged: (v) {
+                      final parsed = int.tryParse(v);
+                      setState(() => _draft = _draft.copyWith(
+                          mealSettings: ms.copyWith(
+                              householdSize: (parsed != null && parsed > 0) ? parsed : null)));
+                    },
+                  ),
+                ),
+              ),
+              if (ms.householdSize != null) ...[
+                const SizedBox(width: 8),
+                IconButton(
+                  icon: const Icon(Icons.restart_alt, size: 20, color: Color(0xFF94A3B8)),
+                  tooltip: 'Usar valor automático',
+                  onPressed: () => setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(householdSize: null))),
+                ),
+              ],
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 4, bottom: 16),
+            child: Text(
+              ms.householdSize != null
+                  ? 'Valor manual: ${ms.householdSize} pessoas'
+                  : 'Calculado automaticamente: ${_autoHouseholdSize()} (titulares + dependentes)',
+              style: TextStyle(fontSize: 11, color: Colors.grey.shade400),
+            ),
+          ),
           _label('REFEIÇÕES ATIVAS'),
           const SizedBox(height: 8),
           ...MealType.values.map((mt) => SwitchListTile(
