@@ -8,7 +8,6 @@ import '../utils/calculations.dart';
 class CoachScreen extends StatefulWidget {
   final AppSettings settings;
   final PurchaseHistory purchaseHistory;
-  final String apiKey;
   final String householdId;
   final VoidCallback onOpenSettings;
 
@@ -16,7 +15,6 @@ class CoachScreen extends StatefulWidget {
     super.key,
     required this.settings,
     required this.purchaseHistory,
-    required this.apiKey,
     required this.householdId,
     required this.onOpenSettings,
   });
@@ -58,11 +56,6 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 
   Future<void> _analyze() async {
-    if (widget.apiKey.isEmpty) {
-      setState(() => _error =
-          'Adiciona a tua OpenAI API key nas Definições para usar esta funcionalidade.');
-      return;
-    }
     setState(() {
       _loading = true;
       _error = null;
@@ -75,7 +68,6 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         widget.settings.expenses,
       );
       final result = await _service.analyze(
-        apiKey: widget.apiKey,
         householdId: widget.householdId,
         settings: widget.settings,
         summary: summary,
@@ -207,42 +199,25 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                   style:
                       TextStyle(fontSize: 12, color: Color(0xFF64748B), height: 1.5),
                 ),
-                if (widget.apiKey.isEmpty) ...[
-                  const SizedBox(height: 10),
-                  TextButton.icon(
-                    onPressed: widget.onOpenSettings,
-                    icon: const Icon(Icons.settings_outlined, size: 14),
-                    label: const Text(
-                      'Configurar API key nas Definições',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: const BoxDecoration(
+                          color: Color(0xFF10B981), shape: BoxShape.circle),
                     ),
-                    style: TextButton.styleFrom(
-                      foregroundColor: const Color(0xFF3B82F6),
-                      padding: EdgeInsets.zero,
-                      minimumSize: const Size(48, 40),
+                    const SizedBox(width: 6),
+                    const Text(
+                      'IA incluída',
+                      style: TextStyle(
+                          fontSize: 11,
+                          color: Color(0xFF10B981),
+                          fontWeight: FontWeight.w500),
                     ),
-                  ),
-                ] else ...[
-                  const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      Container(
-                        width: 6,
-                        height: 6,
-                        decoration: const BoxDecoration(
-                            color: Color(0xFF10B981), shape: BoxShape.circle),
-                      ),
-                      const SizedBox(width: 6),
-                      const Text(
-                        'API key configurada',
-                        style: TextStyle(
-                            fontSize: 11,
-                            color: Color(0xFF10B981),
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ],
             ),
           ),

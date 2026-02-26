@@ -12,7 +12,6 @@ import 'services/settings_service.dart';
 import 'services/grocery_service.dart';
 import 'services/favorites_service.dart';
 import 'services/shopping_list_service.dart';
-import 'services/ai_coach_service.dart';
 import 'services/purchase_history_service.dart';
 import 'services/products_service.dart';
 import 'services/household_service.dart';
@@ -40,7 +39,7 @@ class OrcamentoMensalApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Orçamento Mensal',
+      title: 'Gestão Mensal',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorSchemeSeed: const Color(0xFF3B82F6),
@@ -80,7 +79,6 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   final _groceryService = GroceryService();
   final _favoritesService = FavoritesService();
   final _shoppingListService = ShoppingListService();
-  final _aiCoachService = AiCoachService();
   final _purchaseHistoryService = PurchaseHistoryService();
   final _productsService = ProductsService();
   final _expenseSnapshotService = ExpenseSnapshotService();
@@ -91,7 +89,6 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   List<Product> _products = [];
   List<String> _favorites = [];
   List<ShoppingItem> _shoppingList = [];
-  String _openAiApiKey = '';
   PurchaseHistory _purchaseHistory = const PurchaseHistory();
   LocalDashboardConfig _dashboardConfig = const LocalDashboardConfig();
   Map<String, List<ExpenseSnapshot>> _expenseHistory = {};
@@ -148,7 +145,6 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       _groceryService.load(),
       _favoritesService.load(widget.householdId),
       _purchaseHistoryService.load(widget.householdId),
-      _aiCoachService.loadApiKey(),
       _productsService.load(),
       _localConfigService.load(),
     ]);
@@ -157,9 +153,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       _groceryData = results[1] as GroceryData;
       _favorites = results[2] as List<String>;
       _purchaseHistory = results[3] as PurchaseHistory;
-      _openAiApiKey = results[4] as String;
-      _products = results[5] as List<Product>;
-      _dashboardConfig = results[6] as LocalDashboardConfig;
+      _products = results[4] as List<Product>;
+      _dashboardConfig = results[5] as LocalDashboardConfig;
       _loaded = true;
     });
     _expenseSnapshotService.loadHistory(widget.householdId).then((history) {
@@ -192,11 +187,6 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   void _saveFavorites(List<String> favorites) {
     setState(() => _favorites = favorites);
     _favoritesService.save(favorites, widget.householdId);
-  }
-
-  void _saveApiKey(String key) {
-    setState(() => _openAiApiKey = key);
-    _aiCoachService.saveApiKey(key);
   }
 
   void _addToShoppingList(ShoppingItem item) async {
@@ -300,8 +290,6 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       onSave: _saveSettings,
       favorites: _favorites,
       onSaveFavorites: _saveFavorites,
-      apiKey: _openAiApiKey,
-      onSaveApiKey: _saveApiKey,
       isAdmin: widget.isAdmin,
       householdId: widget.householdId,
       products: _products,
@@ -373,7 +361,6 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       CoachScreen(
         settings: _settings,
         purchaseHistory: _purchaseHistory,
-        apiKey: _openAiApiKey,
         householdId: widget.householdId,
         onOpenSettings: () {
           Navigator.of(context).push(
@@ -383,7 +370,6 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       ),
       MealPlannerScreen(
         settings: _settings,
-        apiKey: _openAiApiKey,
         favorites: _favorites,
         onAddToShoppingList: _addToShoppingList,
         householdId: widget.householdId,
@@ -395,8 +381,6 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
               onSave: _saveSettings,
               favorites: _favorites,
               onSaveFavorites: _saveFavorites,
-              apiKey: _openAiApiKey,
-              onSaveApiKey: _saveApiKey,
               isAdmin: widget.isAdmin,
               householdId: widget.householdId,
               products: _products,

@@ -13,8 +13,6 @@ class SettingsScreen extends StatefulWidget {
   final ValueChanged<AppSettings> onSave;
   final List<String> favorites;
   final ValueChanged<List<String>> onSaveFavorites;
-  final String apiKey;
-  final ValueChanged<String> onSaveApiKey;
   final bool isAdmin;
   final String householdId;
   final List<Product> products;
@@ -28,8 +26,6 @@ class SettingsScreen extends StatefulWidget {
     required this.onSave,
     required this.favorites,
     required this.onSaveFavorites,
-    required this.apiKey,
-    required this.onSaveApiKey,
     required this.isAdmin,
     required this.householdId,
     this.products = const [],
@@ -45,11 +41,11 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   late AppSettings _draft;
   late List<String> _favorites;
-  late TextEditingController _apiKeyController;
   String? _openSection = 'personal';
   late LocalDashboardConfig _localDashboard;
   final _customProductController = TextEditingController();
   String? _inviteCode;
+  bool _deletingAccount = false;
 
   String _favSearch = '';
 
@@ -58,7 +54,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     _draft = widget.settings;
     _favorites = List<String>.from(widget.favorites);
-    _apiKeyController = TextEditingController(text: widget.apiKey);
     if (widget.initialSection != null) {
       _openSection = widget.initialSection;
     }
@@ -68,7 +63,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void dispose() {
     _customProductController.dispose();
-    _apiKeyController.dispose();
     super.dispose();
   }
 
@@ -93,7 +87,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
     widget.onSave(_draft);
     widget.onSaveFavorites(_favorites);
-    widget.onSaveApiKey(_apiKeyController.text.trim());
     widget.onSaveDashboardConfig?.call(_localDashboard);
     Navigator.of(context).pop();
   }
@@ -256,13 +249,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     if (_openSection == 'meals') _buildMealsSection(),
                     _SectionHeader(
-                      icon: Icons.psychology_outlined,
-                      title: 'Coach IA (OpenAI)',
-                      isOpen: _openSection == 'coach',
-                      onTap: () => _toggleSection('coach'),
-                    ),
-                    if (_openSection == 'coach') _buildCoachSection(),
-                    _SectionHeader(
                       icon: Icons.people_outline,
                       title: 'Agregado',
                       isOpen: _openSection == 'household',
@@ -287,6 +273,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           style: OutlinedButton.styleFrom(
                             foregroundColor: const Color(0xFFEF4444),
                             side: const BorderSide(color: Color(0xFFFECACA)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            textStyle: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: _deletingAccount ? null : _confirmDeleteAccount,
+                          icon: _deletingAccount
+                              ? const SizedBox(
+                                  width: 16, height: 16,
+                                  child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFFDC2626)),
+                                )
+                              : const Icon(Icons.delete_forever, size: 18),
+                          label: Text(_deletingAccount ? 'A eliminar...' : 'Eliminar conta e dados'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: const Color(0xFFDC2626),
+                            side: const BorderSide(color: Color(0xFFFCA5A5)),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12)),
                             padding: const EdgeInsets.symmetric(vertical: 14),
@@ -1208,35 +1220,51 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildCoachSection() {
-    final hasKey = _apiKeyController.text.trim().isNotEmpty;
-    return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _label('OPENAI API KEY'),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _apiKeyController,
-            obscureText: true,
-            onChanged: (_) => setState(() {}),
-            decoration: _inputDecoration('sk-...').copyWith(
-              hintText: 'sk-...',
-              suffixIcon: hasKey
-                  ? const Icon(Icons.check_circle, color: Color(0xFF10B981), size: 20)
-                  : const Icon(Icons.key_outlined, color: Color(0xFFCBD5E1), size: 20),
-            ),
+  Future<void> _confirmDeleteAccount() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Eliminar conta'),
+        content: const Text(
+          'Tens a certeza que queres eliminar permanentemente a tua conta e todos os dados associados?\n\n'
+          'Esta ação não pode ser revertida.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
           ),
-          const SizedBox(height: 10),
-          const Text(
-            'A key é guardada localmente no dispositivo e nunca é partilhada. Usa o modelo GPT-4o mini (~€0,00008 por análise).',
-            style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8), height: 1.5),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Eliminar', style: TextStyle(color: Color(0xFFDC2626))),
           ),
         ],
       ),
     );
+    if (confirm != true || !mounted) return;
+
+    setState(() => _deletingAccount = true);
+    try {
+      final response = await Supabase.instance.client.functions.invoke('delete-account');
+      if (response.status != 200) {
+        final data = response.data as Map<String, dynamic>?;
+        throw Exception(data?['error'] ?? 'Erro ao eliminar conta');
+      }
+      await Supabase.instance.client.auth.signOut();
+      if (mounted) {
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _deletingAccount = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erro: ${e.toString().replaceFirst("Exception: ", "")}'),
+            backgroundColor: const Color(0xFFEF4444),
+          ),
+        );
+      }
+    }
   }
 
   Widget _buildFavoriteChip(String label, {required bool isSelected}) {

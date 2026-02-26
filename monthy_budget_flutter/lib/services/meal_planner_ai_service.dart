@@ -1,21 +1,19 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/meal_planner.dart';
 
 class MealPlannerAiService {
-  static const _endpoint = 'https://api.openai.com/v1/chat/completions';
-  static const _model = 'gpt-4o-mini';
+  final _client = Supabase.instance.client;
 
   // In-memory cache: recipeId → content
   final Map<String, RecipeAiContent> _cache = {};
 
   Future<RecipeAiContent?> enrichRecipe({
-    required String apiKey,
     required Recipe recipe,
     required Map<String, Ingredient> ingredientMap,
     required int nPessoas,
   }) async {
-    if (apiKey.isEmpty) return null;
+    if (_client.auth.currentUser == null) return null;
     if (_cache.containsKey(recipe.id)) return _cache[recipe.id];
 
     final ingList = recipe.ingredients.map((ri) {
@@ -39,32 +37,25 @@ Responde APENAS em JSON válido com esta estrutura:
 ''';
 
     try {
-      final response = await http
-          .post(
-            Uri.parse(_endpoint),
-            headers: {
-              'Authorization': 'Bearer $apiKey',
-              'Content-Type': 'application/json; charset=utf-8',
+      final response = await _client.functions.invoke(
+        'ai-chat',
+        body: {
+          'messages': [
+            {
+              'role': 'system',
+              'content': 'És um chef português. Responde sempre em português europeu. '
+                  'Responde APENAS com JSON válido, sem texto extra.',
             },
-            body: jsonEncode({
-              'model': _model,
-              'messages': [
-                {
-                  'role': 'system',
-                  'content': 'És um chef português. Responde sempre em português europeu. '
-                      'Responde APENAS com JSON válido, sem texto extra.',
-                },
-                {'role': 'user', 'content': prompt},
-              ],
-              'max_tokens': 400,
-              'temperature': 0.7,
-            }),
-          )
-          .timeout(const Duration(seconds: 20));
+            {'role': 'user', 'content': prompt},
+          ],
+          'max_tokens': 400,
+          'temperature': 0.7,
+        },
+      );
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-        final content = (data['choices'] as List).first['message']['content'] as String;
+      if (response.status == 200) {
+        final data = response.data as Map<String, dynamic>;
+        final content = data['content'] as String;
         final clean = content.replaceAll(RegExp(r'```json|```'), '').trim();
         final parsed = jsonDecode(clean) as Map<String, dynamic>;
         final result = RecipeAiContent.fromJson(parsed);

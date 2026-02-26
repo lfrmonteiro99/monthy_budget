@@ -8,7 +8,6 @@ import 'meal_wizard_screen.dart';
 
 class MealPlannerScreen extends StatefulWidget {
   final AppSettings settings;
-  final String apiKey;
   final List<String> favorites;
   final void Function(ShoppingItem) onAddToShoppingList;
   final String householdId;
@@ -18,7 +17,6 @@ class MealPlannerScreen extends StatefulWidget {
   const MealPlannerScreen({
     super.key,
     required this.settings,
-    required this.apiKey,
     required this.favorites,
     required this.onAddToShoppingList,
     required this.householdId,
@@ -75,7 +73,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   }
 
   void _enrichPlan(MealPlan plan) {
-    if (widget.apiKey.isEmpty) return;
     final iMap = _service.ingredientMap;
     final uniqueRecipeIds = plan.days.map((d) => d.recipeId).toSet();
     for (final recipeId in uniqueRecipeIds) {
@@ -84,7 +81,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       final recipe = _service.recipeMap[recipeId];
       if (recipe == null) continue;
       _aiService.enrichRecipe(
-        apiKey: widget.apiKey,
         recipe: recipe,
         ingredientMap: iMap,
         nPessoas: plan.nPessoas,
