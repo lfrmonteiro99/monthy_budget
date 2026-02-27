@@ -935,6 +935,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  void _showAddDislikedDialog() {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Adicionar ingrediente'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: const InputDecoration(
+            hintText: 'Nome do ingrediente',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () {
+              final name = controller.text.trim();
+              if (name.isNotEmpty) {
+                final ms = _draft.mealSettings;
+                final updated = List<String>.from(ms.dislikedIngredients)..add(name);
+                setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(dislikedIngredients: updated)));
+              }
+              Navigator.pop(ctx);
+            },
+            child: const Text('Adicionar'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildMealsSection() {
     final ms = _draft.mealSettings;
     return Container(
@@ -1086,7 +1122,61 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onChanged: (v) => item.$3(v ?? false),
               )),
           const SizedBox(height: 16),
-          _label('TEMPO MÁXIMO (MINUTOS)'),
+          _label('INGREDIENTES INDESEJADOS'),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: [
+              ...ms.dislikedIngredients.map((d) => Chip(
+                label: Text(d, style: const TextStyle(fontSize: 13)),
+                deleteIcon: const Icon(Icons.close, size: 16),
+                onDeleted: () {
+                  final updated = List<String>.from(ms.dislikedIngredients)..remove(d);
+                  setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(dislikedIngredients: updated)));
+                },
+              )),
+              ActionChip(
+                avatar: const Icon(Icons.add, size: 16),
+                label: const Text('Adicionar', style: TextStyle(fontSize: 13)),
+                onPressed: () => _showAddDislikedDialog(),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _label('PROTE\u00CDNAS EXCLU\u00CDDAS'),
+          const SizedBox(height: 8),
+          ...{
+            'frango': 'Frango',
+            'carne_picada': 'Carne Picada',
+            'porco': 'Porco',
+            'pescada': 'Pescada',
+            'bacalhau': 'Bacalhau',
+            'sardinha': 'Sardinha',
+            'atum_lata': 'Atum',
+            'ovo': 'Ovos',
+          }.entries.map((entry) => CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(entry.value,
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w500)),
+                value: ms.excludedProteins.contains(entry.key),
+                activeColor: const Color(0xFF3B82F6),
+                controlAffinity: ListTileControlAffinity.leading,
+                onChanged: (v) {
+                  final updated = List<String>.from(ms.excludedProteins);
+                  if (v == true) {
+                    updated.add(entry.key);
+                  } else {
+                    updated.remove(entry.key);
+                  }
+                  setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(excludedProteins: updated)));
+                },
+              )),
+          const SizedBox(height: 16),
+          _label('TEMPO M\u00C1XIMO (MINUTOS)'),
           Slider(
             value: ms.maxPrepMinutes.toDouble(),
             min: 15,

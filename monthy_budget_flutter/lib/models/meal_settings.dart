@@ -28,17 +28,15 @@ enum MealObjective {
   balancedHealth,
   highProtein,
   lowCarb,
-  vegetarian,
-  custom;
+  vegetarian;
 
   String get label {
     switch (this) {
       case MealObjective.minimizeCost:   return 'Minimizar custo';
-      case MealObjective.balancedHealth: return 'Equilíbrio custo/saúde';
-      case MealObjective.highProtein:    return 'Alta proteína';
+      case MealObjective.balancedHealth: return 'Equil\u00EDbrio custo/sa\u00FAde';
+      case MealObjective.highProtein:    return 'Alta prote\u00EDna';
       case MealObjective.lowCarb:        return 'Baixo carboidrato';
       case MealObjective.vegetarian:     return 'Vegetariano';
-      case MealObjective.custom:         return 'Personalizado';
     }
   }
 }
@@ -70,7 +68,6 @@ class MealSettings {
   final bool lactoseFree;
   final bool nutFree;
   final bool shellfishFree;
-  final List<String> otherRestrictions;
   final List<String> dislikedIngredients;
   final List<String> excludedProteins;
   final int veggieDaysPerWeek;
@@ -85,7 +82,6 @@ class MealSettings {
   final int? preferredCookingWeekday;
   final bool reuseLeftovers;
   final int? householdSize;
-  final bool advancedMode;
   final bool wizardCompleted;
 
   const MealSettings({
@@ -96,7 +92,6 @@ class MealSettings {
     this.lactoseFree = false,
     this.nutFree = false,
     this.shellfishFree = false,
-    this.otherRestrictions = const [],
     this.dislikedIngredients = const [],
     this.excludedProteins = const [],
     this.veggieDaysPerWeek = 0,
@@ -113,7 +108,6 @@ class MealSettings {
     this.maxBatchDays = 2,
     this.preferredCookingWeekday,
     this.reuseLeftovers = false,
-    this.advancedMode = false,
     this.wizardCompleted = false,
   });
 
@@ -127,7 +121,6 @@ class MealSettings {
     bool? lactoseFree,
     bool? nutFree,
     bool? shellfishFree,
-    List<String>? otherRestrictions,
     List<String>? dislikedIngredients,
     List<String>? excludedProteins,
     int? veggieDaysPerWeek,
@@ -141,7 +134,6 @@ class MealSettings {
     int? maxBatchDays,
     Object? preferredCookingWeekday = _sentinel,
     bool? reuseLeftovers,
-    bool? advancedMode,
     bool? wizardCompleted,
   }) {
     return MealSettings(
@@ -154,7 +146,6 @@ class MealSettings {
       lactoseFree: lactoseFree ?? this.lactoseFree,
       nutFree: nutFree ?? this.nutFree,
       shellfishFree: shellfishFree ?? this.shellfishFree,
-      otherRestrictions: otherRestrictions ?? this.otherRestrictions,
       dislikedIngredients: dislikedIngredients ?? this.dislikedIngredients,
       excludedProteins: excludedProteins ?? this.excludedProteins,
       veggieDaysPerWeek: veggieDaysPerWeek ?? this.veggieDaysPerWeek,
@@ -170,7 +161,6 @@ class MealSettings {
           ? this.preferredCookingWeekday
           : preferredCookingWeekday as int?,
       reuseLeftovers: reuseLeftovers ?? this.reuseLeftovers,
-      advancedMode: advancedMode ?? this.advancedMode,
       wizardCompleted: wizardCompleted ?? this.wizardCompleted,
     );
   }
@@ -183,7 +173,6 @@ class MealSettings {
     'lactoseFree': lactoseFree,
     'nutFree': nutFree,
     'shellfishFree': shellfishFree,
-    'otherRestrictions': otherRestrictions,
     'dislikedIngredients': dislikedIngredients,
     'excludedProteins': excludedProteins,
     'veggieDaysPerWeek': veggieDaysPerWeek,
@@ -197,7 +186,6 @@ class MealSettings {
     'maxBatchDays': maxBatchDays,
     'preferredCookingWeekday': preferredCookingWeekday,
     'reuseLeftovers': reuseLeftovers,
-    'advancedMode': advancedMode,
     'wizardCompleted': wizardCompleted,
   };
 
@@ -233,7 +221,6 @@ class MealSettings {
       lactoseFree: json['lactoseFree'] ?? false,
       nutFree: json['nutFree'] ?? false,
       shellfishFree: json['shellfishFree'] ?? false,
-      otherRestrictions: List<String>.from(json['otherRestrictions'] ?? []),
       dislikedIngredients: List<String>.from(json['dislikedIngredients'] ?? []),
       excludedProteins: List<String>.from(json['excludedProteins'] ?? []),
       veggieDaysPerWeek: json['veggieDaysPerWeek'] ?? 0,
@@ -247,7 +234,6 @@ class MealSettings {
       maxBatchDays: json['maxBatchDays'] ?? 2,
       preferredCookingWeekday: json['preferredCookingWeekday'] as int?,
       reuseLeftovers: json['reuseLeftovers'] ?? false,
-      advancedMode: json['advancedMode'] ?? false,
       wizardCompleted: json['wizardCompleted'] ?? false,
     );
   }

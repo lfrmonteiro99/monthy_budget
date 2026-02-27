@@ -99,7 +99,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
   void _swapRecipe(int dayIndex, String currentRecipeId) {
     final plan = _plan!;
-    final alternatives = _service.alternativesFor(currentRecipeId, plan.nPessoas);
+    final alternatives = _service.alternativesFor(currentRecipeId, plan.nPessoas, ms: widget.settings.mealSettings);
     final iMap = _service.ingredientMap;
 
     showModalBottomSheet(
@@ -118,6 +118,42 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         },
       ),
     );
+  }
+
+  void _addWeekToShoppingList(int weekIndex) {
+    final plan = _plan;
+    if (plan == null) return;
+    final weekDays = _getWeekDays(plan, weekIndex);
+    final iMap = _service.ingredientMap;
+    final totals = <String, double>{};
+    for (final day in weekDays) {
+      if (day.isLeftover) continue;
+      final recipe = _service.recipeMap[day.recipeId];
+      if (recipe == null) continue;
+      final scale = plan.nPessoas / recipe.servings;
+      for (final ri in recipe.ingredients) {
+        totals.update(ri.ingredientId, (v) => v + ri.quantity * scale,
+            ifAbsent: () => ri.quantity * scale);
+      }
+    }
+    int count = 0;
+    for (final entry in totals.entries) {
+      final ing = iMap[entry.key];
+      if (ing == null) continue;
+      final cost = entry.value * ing.avgPricePerUnit;
+      widget.onAddToShoppingList(ShoppingItem(
+        productName: ing.name,
+        store: '',
+        price: cost,
+        unitPrice: '${ing.avgPricePerUnit.toStringAsFixed(2)}\u20AC/${ing.unit}',
+      ));
+      count++;
+    }
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$count ingredientes adicionados \u00E0 lista')),
+      );
+    }
   }
 
   void _showConsolidatedList() {
@@ -279,8 +315,16 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 borderRadius: BorderRadius.circular(3),
               ),
               const SizedBox(height: 12),
-              Row(
-                children: List.generate(4, (i) {
+              Builder(builder: (_) {
+                final daysInMonth = DateTime(plan.year, plan.month + 1, 0).day;
+                final weekCount = (daysInMonth / 7).ceil();
+                if (_selectedWeek >= weekCount) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (mounted) setState(() => _selectedWeek = weekCount - 1);
+                  });
+                }
+                return Row(
+                children: List.generate(weekCount, (i) {
                   final selected = _selectedWeek == i;
                   return Expanded(
                     child: Semantics(
@@ -311,9 +355,27 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     ),
                   );
                 }),
-              ),
+              );
+              }),
               const SizedBox(height: 12),
             ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => _addWeekToShoppingList(_selectedWeek),
+              icon: const Icon(Icons.add_shopping_cart, size: 18),
+              label: const Text('Adicionar semana \u00E0 lista'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF3B82F6),
+                side: const BorderSide(color: Color(0xFF3B82F6)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+            ),
           ),
         ),
         Expanded(
@@ -363,7 +425,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
   List<MealDay> _getWeekDays(MealPlan plan, int weekIndex) {
     final start = weekIndex * 7 + 1;
-    final end = start + 6;
+    final daysInMonth = DateTime(plan.year, plan.month + 1, 0).day;
+    final end = (weekIndex + 1) * 7 < daysInMonth ? start + 6 : daysInMonth;
     return plan.days.where((d) => d.dayIndex >= start && d.dayIndex <= end).toList();
   }
 }
@@ -671,7 +734,7 @@ class _SwapSheet extends StatelessWidget {
             const Text('Alternativas',
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
             const SizedBox(height: 16),
-            ...alternatives.take(3).map((r) {
+            ...alternatives.take(6).map((r) {
               final cost = service.recipeCost(r, nPessoas, ingredientMap);
               final delta = cost - currentCost;
               final deltaStr = delta >= 0

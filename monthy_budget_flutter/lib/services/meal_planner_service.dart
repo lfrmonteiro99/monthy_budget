@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/meal_planner.dart';
@@ -72,19 +73,12 @@ class MealPlannerService {
     final iMap = ingredientMap;
     final daysInMonth = DateTime(forMonth.year, forMonth.month + 1, 0).day;
 
-    // Compute per-meal budgets based on enabled meals
-    final enabledWeights = {
-      for (final m in ms.enabledMeals) m: m.budgetWeight
-    };
-    final totalWeight = enabledWeights.values.fold(0.0, (s, v) => s + v);
-    final mealBudgets = {
-      for (final e in enabledWeights.entries)
-        e.key: totalWeight > 0 ? (e.value / totalWeight) * totalBudget : 0.0
-    };
+    final rng = Random();
 
     // Base filtered pool (eliminatory)
     List<Recipe> basePool(MealType mealType) {
       var pool = _recipes.where((r) {
+        if (!r.suitableMealTypes.contains(mealType.name)) return false;
         if (ms.glutenFree && !r.glutenFree) return false;
         if (ms.lactoseFree && !r.lactoseFree) return false;
         if (ms.nutFree && !r.nutFree) return false;
@@ -128,7 +122,28 @@ class MealPlannerService {
           break;
       }
 
-      if (pool.isEmpty) pool = _recipes.toList(); // fallback: no filters
+      if (pool.isEmpty) {
+        // Fallback: keep allergy/dietary hard filters, drop soft filters
+        pool = _recipes.where((r) {
+          if (!r.suitableMealTypes.contains(mealType.name)) return false;
+          if (ms.glutenFree && !r.glutenFree) return false;
+          if (ms.lactoseFree && !r.lactoseFree) return false;
+          if (ms.nutFree && !r.nutFree) return false;
+          if (ms.shellfishFree && !r.shellfishFree) return false;
+          if (ms.excludedProteins.contains(r.proteinId)) return false;
+          for (final ri in r.ingredients) {
+            final ing = iMap[ri.ingredientId];
+            if (ing == null) continue;
+            if (ms.dislikedIngredients.any((d) =>
+                d.toLowerCase() == ing.name.toLowerCase())) {
+              return false;
+            }
+          }
+          return true;
+        }).toList();
+      }
+      // Ultimate fallback: if still empty after allergy filters, use full list
+      if (pool.isEmpty) pool = _recipes.toList();
       return pool;
     }
 
@@ -154,8 +169,10 @@ class MealPlannerService {
 
     // Batch cooking tracking: {mealType: {recipeId, daysRemaining}}
     final batchState = <MealType, ({String recipeId, int daysLeft})>{};
+    final usedRecipesPerDay = <int, Set<String>>{};
 
     for (int day = 1; day <= daysInMonth; day++) {
+      usedRecipesPerDay[day] = {};
       // Reset weekly tracking on Mondays (weekday 1)
       final weekday = DateTime(forMonth.year, forMonth.month, day).weekday;
       if (weekday == 1) {
@@ -173,10 +190,7 @@ class MealPlannerService {
           final state = batchState[mealType]!;
           if (state.daysLeft > 0) {
             final recipe = recipeMap[state.recipeId]!;
-            final mealBudgetRatio = totalBudget > 0
-                ? (mealBudgets[mealType] ?? 0) / totalBudget
-                : 1.0;
-            final cost = recipeCost(recipe, np, iMap) * mealBudgetRatio;
+            final cost = recipeCost(recipe, np, iMap);
             days.add(MealDay(
               dayIndex: day,
               recipeId: state.recipeId,
@@ -255,17 +269,16 @@ class MealPlannerService {
           if (boosted.isNotEmpty) pool = boosted;
         }
 
-        // Pick recipe (rotate by day slot)
-        final weekIndex = ((day - 1) ~/ 7).clamp(0, 3);
-        final slotInWeek = (day - 1) % 7;
-        final fallbackPool = pool.isNotEmpty ? pool : _recipes;
-        final recipe = fallbackPool[
-            (weekIndex * 7 + slotInWeek) % fallbackPool.length];
+        // Pick recipe: shuffle + avoid same-day duplicates
+        final usedToday = usedRecipesPerDay[day]!;
+        var available = pool.where((r) => !usedToday.contains(r.id)).toList();
+        if (available.isEmpty) available = pool.toList();
+        if (available.isEmpty) available = _recipes.toList();
+        available.shuffle(rng);
+        final recipe = available.first;
+        usedToday.add(recipe.id);
 
-        final mealBudgetRatio = totalBudget > 0
-            ? (mealBudgets[mealType] ?? 0) / totalBudget
-            : 1.0;
-        final cost = recipeCost(recipe, np, iMap) * mealBudgetRatio;
+        final cost = recipeCost(recipe, np, iMap);
 
         days.add(MealDay(
           dayIndex: day,
@@ -309,11 +322,11 @@ class MealPlannerService {
       generatedAt: DateTime.now(),
     );
 
-    plan = _enforceBudget(plan, np, iMap);
+    plan = _enforceBudget(plan, np, iMap, ms);
     return plan;
   }
 
-  MealPlan _enforceBudget(MealPlan plan, int np, Map<String, Ingredient> iMap) {
+  MealPlan _enforceBudget(MealPlan plan, int np, Map<String, Ingredient> iMap, MealSettings ms) {
     var days = List<MealDay>.from(plan.days);
     var total = days.fold(0.0, (s, d) => s + d.costEstimate);
 
@@ -324,10 +337,16 @@ class MealPlannerService {
       final expensive = days.first;
       final currentRecipe = recipeMap[expensive.recipeId]!;
 
-      final cheaper = _recipes
-          .where((r) =>
-              r.proteinId == currentRecipe.proteinId &&
-              r.id != currentRecipe.id)
+      final cheaper = _recipes.where((r) {
+        if (r.id == currentRecipe.id) return false;
+        if (ms.glutenFree && !r.glutenFree) return false;
+        if (ms.lactoseFree && !r.lactoseFree) return false;
+        if (ms.nutFree && !r.nutFree) return false;
+        if (ms.shellfishFree && !r.shellfishFree) return false;
+        if (ms.excludedProteins.contains(r.proteinId)) return false;
+        if (!r.suitableMealTypes.contains(expensive.mealType.name)) return false;
+        return true;
+      })
           .map((r) => (recipe: r, cost: recipeCost(r, np, iMap)))
           .where((e) => e.cost < expensive.costEstimate)
           .toList()
@@ -336,7 +355,7 @@ class MealPlannerService {
       if (cheaper.isEmpty) break;
 
       final replacement = cheaper.first;
-      final idx = days.indexWhere((d) => d.dayIndex == expensive.dayIndex);
+      final idx = days.indexWhere((d) => d.dayIndex == expensive.dayIndex && d.mealType == expensive.mealType);
       days[idx] = expensive.copyWith(
         recipeId: replacement.recipe.id,
         costEstimate: replacement.cost,
@@ -345,20 +364,46 @@ class MealPlannerService {
     }
 
     days.sort((a, b) => a.dayIndex.compareTo(b.dayIndex));
+
+    // Fix stale leftover references
+    for (int i = 0; i < days.length; i++) {
+      if (!days[i].isLeftover) continue;
+      final dinnerDay = days[i].dayIndex - 1;
+      final dinner = days.where(
+        (d) => d.dayIndex == dinnerDay && d.mealType == MealType.dinner,
+      ).firstOrNull;
+      if (dinner != null && dinner.recipeId != days[i].recipeId) {
+        days[i] = days[i].copyWith(recipeId: dinner.recipeId, costEstimate: 0);
+      }
+    }
+
     return plan.copyWithDays(days);
   }
 
   // --- Swap ---
 
-  List<Recipe> alternativesFor(String recipeId, int np) {
+  List<Recipe> alternativesFor(String recipeId, int np, {MealSettings? ms}) {
     final current = recipeMap[recipeId];
     if (current == null) return [];
     final iMap = ingredientMap;
-    return _recipes
-        .where((r) => r.proteinId == current.proteinId && r.id != recipeId)
-        .toList()
-      ..sort((a, b) =>
-          recipeCost(a, np, iMap).compareTo(recipeCost(b, np, iMap)));
+    var pool = _recipes.where((r) => r.id != recipeId).toList();
+    if (ms != null) {
+      pool = pool.where((r) {
+        if (ms.glutenFree && !r.glutenFree) return false;
+        if (ms.lactoseFree && !r.lactoseFree) return false;
+        if (ms.nutFree && !r.nutFree) return false;
+        if (ms.shellfishFree && !r.shellfishFree) return false;
+        if (ms.excludedProteins.contains(r.proteinId)) return false;
+        return true;
+      }).toList();
+    }
+    pool.sort((a, b) {
+      final aMatch = a.proteinId == current.proteinId ? 0 : 1;
+      final bMatch = b.proteinId == current.proteinId ? 0 : 1;
+      if (aMatch != bMatch) return aMatch.compareTo(bMatch);
+      return recipeCost(a, np, iMap).compareTo(recipeCost(b, np, iMap));
+    });
+    return pool;
   }
 
   MealPlan swapDay(MealPlan plan, int dayIndex, String newRecipeId) {
