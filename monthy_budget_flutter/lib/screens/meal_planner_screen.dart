@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/app_settings.dart';
 import '../models/meal_planner.dart';
+import '../models/meal_settings.dart';
 import '../models/shopping_item.dart';
 import '../services/meal_planner_service.dart';
 import '../services/meal_planner_ai_service.dart';
@@ -97,7 +98,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     }
   }
 
-  void _swapRecipe(int dayIndex, String currentRecipeId) {
+  void _swapRecipe(int dayIndex, MealType mealType, String currentRecipeId) {
     final plan = _plan!;
     final alternatives = _service.alternativesFor(currentRecipeId, plan.nPessoas, ms: widget.settings.mealSettings);
     final iMap = _service.ingredientMap;
@@ -111,7 +112,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         ingredientMap: iMap,
         service: _service,
         onSelect: (newRecipeId) {
-          final updated = _service.swapDay(plan, dayIndex, newRecipeId);
+          final updated = _service.swapDay(plan, dayIndex, mealType, newRecipeId);
           _service.save(updated, widget.householdId);
           setState(() => _plan = updated);
           _enrichPlan(updated);
@@ -398,7 +399,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                       _expanded.add(key);
                     }
                   }),
-                  onSwap: () => _swapRecipe(weekDays[i].dayIndex, weekDays[i].recipeId),
+                  onSwap: () => _swapRecipe(weekDays[i].dayIndex, weekDays[i].mealType, weekDays[i].recipeId),
                   onAddIngredientToList: widget.onAddToShoppingList,
                 ),
               ),

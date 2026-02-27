@@ -185,7 +185,7 @@
     ]
   },
   {
-    "id":"feijao_verde_batata","name":"Feijão Verde com Batata","proteinId":"feijao",
+    "id":"feijao_verde_batata","name":"Feijão Verde com Batata","proteinId":"feijao_verde",
     "type":"leguminosas","complexity":1,"prepMinutes":20,"servings":4,
     "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
     "isVegetarian":true,"isHighProtein":false,"isLowCarb":false,
@@ -372,7 +372,7 @@
   {
     "id":"porco_alentejana","name":"Carne de Porco à Alentejana","proteinId":"porco",
     "type":"carne","complexity":3,"prepMinutes":45,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":false,
+    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
     "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
     "requiresEquipment":[],"batchCookable":false,"maxBatchDays":1,
     "suitableMealTypes":["lunch","dinner"],

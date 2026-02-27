@@ -1264,6 +1264,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(minimizeWaste: v))),
           ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text('Priorizar custo baixo',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            subtitle: const Text('Preferir receitas mais económicas',
+                style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
+            value: ms.prioritizeLowCost,
+            activeTrackColor: const Color(0xFF3B82F6),
+            onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                mealSettings: ms.copyWith(prioritizeLowCost: v))),
+          ),
+          if (ms.minimizeWaste) ...[
+            _label('INGREDIENTES NOVOS POR SEMANA (${ms.maxNewIngredientsPerWeek})'),
+            Slider(
+              value: ms.maxNewIngredientsPerWeek.toDouble(),
+              min: 3,
+              max: 10,
+              divisions: 7,
+              label: ms.maxNewIngredientsPerWeek == 10 ? 'Sem limite' : '${ms.maxNewIngredientsPerWeek}',
+              activeColor: const Color(0xFF3B82F6),
+              onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                  mealSettings: ms.copyWith(maxNewIngredientsPerWeek: v.round()))),
+            ),
+          ],
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,

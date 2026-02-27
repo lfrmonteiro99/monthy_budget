@@ -38,12 +38,13 @@ class MealPlannerService {
 
   int nPessoas(AppSettings settings) {
     if (settings.mealSettings.householdSize != null) {
-      return settings.mealSettings.householdSize!;
+      return settings.mealSettings.householdSize!.clamp(1, 99);
     }
     final titulares = settings.salaries
         .where((s) => s.enabled)
         .fold(0, (sum, s) => sum + s.titulares);
-    return titulares + settings.personalInfo.dependentes;
+    final total = titulares + settings.personalInfo.dependentes;
+    return total.clamp(1, 99);
   }
 
   double monthlyFoodBudget(AppSettings settings) {
@@ -142,7 +143,11 @@ class MealPlannerService {
           return true;
         }).toList();
       }
-      // Ultimate fallback: if still empty after allergy filters, use full list
+      // Ultimate fallback: if still empty after allergy filters, at least respect mealType
+      if (pool.isEmpty) {
+        pool = _recipes.where((r) => r.suitableMealTypes.contains(mealType.name)).toList();
+      }
+      // Absolute last resort: if no recipes match even by mealType, use all
       if (pool.isEmpty) pool = _recipes.toList();
       return pool;
     }
@@ -159,10 +164,8 @@ class MealPlannerService {
 
     final days = <MealDay>[];
 
-    // Per-meal-type tracking for waste minimization
-    final usedIngredientsThisWeek = <MealType, Set<String>>{
-      for (final m in ms.enabledMeals) m: {}
-    };
+    // Global tracking for waste minimization (shared across meal types)
+    var globalUsedIngredientsThisWeek = <String>{};
     final newIngredientCountThisWeek = <MealType, int>{
       for (final m in ms.enabledMeals) m: 0
     };
@@ -176,8 +179,8 @@ class MealPlannerService {
       // Reset weekly tracking on Mondays (weekday 1)
       final weekday = DateTime(forMonth.year, forMonth.month, day).weekday;
       if (weekday == 1) {
+        globalUsedIngredientsThisWeek = {};
         for (final m in ms.enabledMeals) {
-          usedIngredientsThisWeek[m] = {};
           newIngredientCountThisWeek[m] = 0;
         }
       }
@@ -208,7 +211,7 @@ class MealPlannerService {
         }
 
         // --- Leftovers (lunch reuses previous dinner) ---
-        if (ms.reuseLeftovers && mealType == MealType.lunch && day > 1) {
+        if (ms.reuseLeftovers && mealType == MealType.lunch && day > 1 && ms.enabledMeals.contains(MealType.dinner)) {
           final prevDinner = days.lastWhere(
             (d) => d.dayIndex == day - 1 && d.mealType == MealType.dinner,
             orElse: () => MealDay(dayIndex: 0, recipeId: '', costEstimate: 0),
@@ -240,19 +243,17 @@ class MealPlannerService {
 
         // Waste minimization: prefer recipes with known ingredients
         if (ms.minimizeWaste) {
-          final used = usedIngredientsThisWeek[mealType]!;
           final reuseFirst = pool.where((r) =>
-              r.ingredients.every((ri) => used.contains(ri.ingredientId))).toList();
+              r.ingredients.every((ri) => globalUsedIngredientsThisWeek.contains(ri.ingredientId))).toList();
           if (reuseFirst.isNotEmpty) pool = reuseFirst;
         }
 
         // Max new ingredients cap
         if (ms.maxNewIngredientsPerWeek < 10) {
-          final used = usedIngredientsThisWeek[mealType]!;
           final remaining = ms.maxNewIngredientsPerWeek - (newIngredientCountThisWeek[mealType] ?? 0);
           if (remaining <= 0) {
             final noNew = pool.where((r) =>
-                r.ingredients.every((ri) => used.contains(ri.ingredientId))).toList();
+                r.ingredients.every((ri) => globalUsedIngredientsThisWeek.contains(ri.ingredientId))).toList();
             if (noNew.isNotEmpty) pool = noNew;
           }
         }
@@ -288,11 +289,10 @@ class MealPlannerService {
         ));
 
         // Update ingredient tracking
-        final used = usedIngredientsThisWeek[mealType]!;
         int newCount = newIngredientCountThisWeek[mealType] ?? 0;
         for (final ri in recipe.ingredients) {
-          if (!used.contains(ri.ingredientId)) {
-            used.add(ri.ingredientId);
+          if (!globalUsedIngredientsThisWeek.contains(ri.ingredientId)) {
+            globalUsedIngredientsThisWeek.add(ri.ingredientId);
             newCount++;
           }
         }
@@ -345,6 +345,15 @@ class MealPlannerService {
         if (ms.shellfishFree && !r.shellfishFree) return false;
         if (ms.excludedProteins.contains(r.proteinId)) return false;
         if (!r.suitableMealTypes.contains(expensive.mealType.name)) return false;
+        // Disliked ingredients check
+        for (final ri in r.ingredients) {
+          final ing = iMap[ri.ingredientId];
+          if (ing == null) continue;
+          if (ms.dislikedIngredients.any((d) =>
+              d.toLowerCase() == ing.name.toLowerCase())) {
+            return false;
+          }
+        }
         return true;
       })
           .map((r) => (recipe: r, cost: recipeCost(r, np, iMap)))
@@ -406,12 +415,12 @@ class MealPlannerService {
     return pool;
   }
 
-  MealPlan swapDay(MealPlan plan, int dayIndex, String newRecipeId) {
+  MealPlan swapDay(MealPlan plan, int dayIndex, MealType mealType, String newRecipeId) {
     final iMap = ingredientMap;
     final newRecipe = recipeMap[newRecipeId]!;
     final newCost = recipeCost(newRecipe, plan.nPessoas, iMap);
     final updatedDays = plan.days.map((d) {
-      if (d.dayIndex == dayIndex) {
+      if (d.dayIndex == dayIndex && d.mealType == mealType) {
         return d.copyWith(recipeId: newRecipeId, costEstimate: newCost);
       }
       return d;
@@ -424,6 +433,7 @@ class MealPlannerService {
   Map<String, double> consolidatedIngredients(MealPlan plan) {
     final totals = <String, double>{};
     for (final day in plan.days) {
+      if (day.isLeftover) continue;
       final recipe = recipeMap[day.recipeId];
       if (recipe == null) continue;
       final scale = plan.nPessoas / recipe.servings;
