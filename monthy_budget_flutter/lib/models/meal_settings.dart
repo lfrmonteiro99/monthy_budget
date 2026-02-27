@@ -6,8 +6,8 @@ enum MealType {
 
   String get label {
     switch (this) {
-      case MealType.breakfast: return 'Pequeno-almoço';
-      case MealType.lunch:     return 'Almoço';
+      case MealType.breakfast: return 'Pequeno-almo\u00E7o';
+      case MealType.lunch:     return 'Almo\u00E7o';
       case MealType.snack:     return 'Lanche';
       case MealType.dinner:    return 'Jantar';
     }
@@ -46,19 +46,35 @@ enum KitchenEquipment {
   airFryer,
   foodProcessor,
   pressureCooker,
-  microwave;
+  microwave,
+  bimby;
 
   String get label {
     switch (this) {
       case KitchenEquipment.oven:           return 'Forno';
       case KitchenEquipment.airFryer:       return 'Air Fryer';
       case KitchenEquipment.foodProcessor:  return 'Robot de cozinha';
-      case KitchenEquipment.pressureCooker: return 'Panela de pressão';
+      case KitchenEquipment.pressureCooker: return 'Panela de press\u00E3o';
       case KitchenEquipment.microwave:      return 'Micro-ondas';
+      case KitchenEquipment.bimby:          return 'Bimby / Thermomix';
     }
   }
 
   String get jsonValue => name;
+}
+
+enum SodiumPreference {
+  noRestriction,
+  reducedSodium,
+  lowSodium;
+
+  String get label {
+    switch (this) {
+      case SodiumPreference.noRestriction: return 'Sem restri\u00E7\u00E3o';
+      case SodiumPreference.reducedSodium: return 'S\u00F3dio reduzido';
+      case SodiumPreference.lowSodium:     return 'Baixo s\u00F3dio';
+    }
+  }
 }
 
 class MealSettings {
@@ -68,6 +84,8 @@ class MealSettings {
   final bool lactoseFree;
   final bool nutFree;
   final bool shellfishFree;
+  final bool eggFree;
+  final SodiumPreference sodiumPreference;
   final List<String> dislikedIngredients;
   final List<String> excludedProteins;
   final int veggieDaysPerWeek;
@@ -76,6 +94,8 @@ class MealSettings {
   final int maxNewIngredientsPerWeek;
   final int maxPrepMinutes;
   final int maxComplexity;
+  final int maxPrepMinutesWeekend;
+  final int maxComplexityWeekend;
   final Set<KitchenEquipment> availableEquipment;
   final bool batchCookingEnabled;
   final int maxBatchDays;
@@ -83,6 +103,13 @@ class MealSettings {
   final bool reuseLeftovers;
   final int? householdSize;
   final bool wizardCompleted;
+  final Set<int> eatingOutWeekdays;
+  final Map<String, String> pinnedMeals;
+  final List<String> pantryIngredients;
+  final bool lunchboxLunches;
+  final int fishDaysPerWeek;
+  final int legumeDaysPerWeek;
+  final int redMeatMaxPerWeek;
 
   const MealSettings({
     this.householdSize,
@@ -92,6 +119,8 @@ class MealSettings {
     this.lactoseFree = false,
     this.nutFree = false,
     this.shellfishFree = false,
+    this.eggFree = false,
+    this.sodiumPreference = SodiumPreference.noRestriction,
     this.dislikedIngredients = const [],
     this.excludedProteins = const [],
     this.veggieDaysPerWeek = 0,
@@ -100,6 +129,8 @@ class MealSettings {
     this.maxNewIngredientsPerWeek = 10,
     this.maxPrepMinutes = 60,
     this.maxComplexity = 5,
+    this.maxPrepMinutesWeekend = 90,
+    this.maxComplexityWeekend = 5,
     this.availableEquipment = const {
       KitchenEquipment.oven,
       KitchenEquipment.microwave,
@@ -109,6 +140,13 @@ class MealSettings {
     this.preferredCookingWeekday,
     this.reuseLeftovers = false,
     this.wizardCompleted = false,
+    this.eatingOutWeekdays = const {},
+    this.pinnedMeals = const {},
+    this.pantryIngredients = const [],
+    this.lunchboxLunches = false,
+    this.fishDaysPerWeek = 0,
+    this.legumeDaysPerWeek = 0,
+    this.redMeatMaxPerWeek = 7,
   });
 
   static const Object _sentinel = Object();
@@ -121,6 +159,8 @@ class MealSettings {
     bool? lactoseFree,
     bool? nutFree,
     bool? shellfishFree,
+    bool? eggFree,
+    SodiumPreference? sodiumPreference,
     List<String>? dislikedIngredients,
     List<String>? excludedProteins,
     int? veggieDaysPerWeek,
@@ -129,12 +169,21 @@ class MealSettings {
     int? maxNewIngredientsPerWeek,
     int? maxPrepMinutes,
     int? maxComplexity,
+    int? maxPrepMinutesWeekend,
+    int? maxComplexityWeekend,
     Set<KitchenEquipment>? availableEquipment,
     bool? batchCookingEnabled,
     int? maxBatchDays,
     Object? preferredCookingWeekday = _sentinel,
     bool? reuseLeftovers,
     bool? wizardCompleted,
+    Set<int>? eatingOutWeekdays,
+    Map<String, String>? pinnedMeals,
+    List<String>? pantryIngredients,
+    bool? lunchboxLunches,
+    int? fishDaysPerWeek,
+    int? legumeDaysPerWeek,
+    int? redMeatMaxPerWeek,
   }) {
     return MealSettings(
       householdSize: householdSize == _sentinel
@@ -146,6 +195,8 @@ class MealSettings {
       lactoseFree: lactoseFree ?? this.lactoseFree,
       nutFree: nutFree ?? this.nutFree,
       shellfishFree: shellfishFree ?? this.shellfishFree,
+      eggFree: eggFree ?? this.eggFree,
+      sodiumPreference: sodiumPreference ?? this.sodiumPreference,
       dislikedIngredients: dislikedIngredients ?? this.dislikedIngredients,
       excludedProteins: excludedProteins ?? this.excludedProteins,
       veggieDaysPerWeek: veggieDaysPerWeek ?? this.veggieDaysPerWeek,
@@ -154,6 +205,8 @@ class MealSettings {
       maxNewIngredientsPerWeek: maxNewIngredientsPerWeek ?? this.maxNewIngredientsPerWeek,
       maxPrepMinutes: maxPrepMinutes ?? this.maxPrepMinutes,
       maxComplexity: maxComplexity ?? this.maxComplexity,
+      maxPrepMinutesWeekend: maxPrepMinutesWeekend ?? this.maxPrepMinutesWeekend,
+      maxComplexityWeekend: maxComplexityWeekend ?? this.maxComplexityWeekend,
       availableEquipment: availableEquipment ?? this.availableEquipment,
       batchCookingEnabled: batchCookingEnabled ?? this.batchCookingEnabled,
       maxBatchDays: maxBatchDays ?? this.maxBatchDays,
@@ -162,6 +215,13 @@ class MealSettings {
           : preferredCookingWeekday as int?,
       reuseLeftovers: reuseLeftovers ?? this.reuseLeftovers,
       wizardCompleted: wizardCompleted ?? this.wizardCompleted,
+      eatingOutWeekdays: eatingOutWeekdays ?? this.eatingOutWeekdays,
+      pinnedMeals: pinnedMeals ?? this.pinnedMeals,
+      pantryIngredients: pantryIngredients ?? this.pantryIngredients,
+      lunchboxLunches: lunchboxLunches ?? this.lunchboxLunches,
+      fishDaysPerWeek: fishDaysPerWeek ?? this.fishDaysPerWeek,
+      legumeDaysPerWeek: legumeDaysPerWeek ?? this.legumeDaysPerWeek,
+      redMeatMaxPerWeek: redMeatMaxPerWeek ?? this.redMeatMaxPerWeek,
     );
   }
 
@@ -173,6 +233,8 @@ class MealSettings {
     'lactoseFree': lactoseFree,
     'nutFree': nutFree,
     'shellfishFree': shellfishFree,
+    'eggFree': eggFree,
+    'sodiumPreference': sodiumPreference.name,
     'dislikedIngredients': dislikedIngredients,
     'excludedProteins': excludedProteins,
     'veggieDaysPerWeek': veggieDaysPerWeek,
@@ -181,12 +243,21 @@ class MealSettings {
     'maxNewIngredientsPerWeek': maxNewIngredientsPerWeek,
     'maxPrepMinutes': maxPrepMinutes,
     'maxComplexity': maxComplexity,
+    'maxPrepMinutesWeekend': maxPrepMinutesWeekend,
+    'maxComplexityWeekend': maxComplexityWeekend,
     'availableEquipment': availableEquipment.map((e) => e.jsonValue).toList(),
     'batchCookingEnabled': batchCookingEnabled,
     'maxBatchDays': maxBatchDays,
     'preferredCookingWeekday': preferredCookingWeekday,
     'reuseLeftovers': reuseLeftovers,
     'wizardCompleted': wizardCompleted,
+    'eatingOutWeekdays': eatingOutWeekdays.toList(),
+    'pinnedMeals': pinnedMeals,
+    'pantryIngredients': pantryIngredients,
+    'lunchboxLunches': lunchboxLunches,
+    'fishDaysPerWeek': fishDaysPerWeek,
+    'legumeDaysPerWeek': legumeDaysPerWeek,
+    'redMeatMaxPerWeek': redMeatMaxPerWeek,
   };
 
   factory MealSettings.fromJson(Map<String, dynamic> json) {
@@ -221,6 +292,11 @@ class MealSettings {
       lactoseFree: json['lactoseFree'] ?? false,
       nutFree: json['nutFree'] ?? false,
       shellfishFree: json['shellfishFree'] ?? false,
+      eggFree: json['eggFree'] ?? false,
+      sodiumPreference: SodiumPreference.values.firstWhere(
+        (e) => e.name == (json['sodiumPreference'] ?? 'noRestriction'),
+        orElse: () => SodiumPreference.noRestriction,
+      ),
       dislikedIngredients: List<String>.from(json['dislikedIngredients'] ?? []),
       excludedProteins: List<String>.from(json['excludedProteins'] ?? []),
       veggieDaysPerWeek: json['veggieDaysPerWeek'] ?? 0,
@@ -229,12 +305,25 @@ class MealSettings {
       maxNewIngredientsPerWeek: json['maxNewIngredientsPerWeek'] ?? 10,
       maxPrepMinutes: json['maxPrepMinutes'] ?? 60,
       maxComplexity: json['maxComplexity'] ?? 5,
+      maxPrepMinutesWeekend: json['maxPrepMinutesWeekend'] ?? 90,
+      maxComplexityWeekend: json['maxComplexityWeekend'] ?? 5,
       availableEquipment: parseEquipment(json['availableEquipment']),
       batchCookingEnabled: json['batchCookingEnabled'] ?? false,
       maxBatchDays: json['maxBatchDays'] ?? 2,
       preferredCookingWeekday: json['preferredCookingWeekday'] as int?,
       reuseLeftovers: json['reuseLeftovers'] ?? false,
       wizardCompleted: json['wizardCompleted'] ?? false,
+      eatingOutWeekdays: json['eatingOutWeekdays'] != null
+          ? Set<int>.from((json['eatingOutWeekdays'] as List<dynamic>).map((e) => e as int))
+          : const {},
+      pinnedMeals: json['pinnedMeals'] != null
+          ? Map<String, String>.from(json['pinnedMeals'] as Map)
+          : const {},
+      pantryIngredients: List<String>.from(json['pantryIngredients'] ?? []),
+      lunchboxLunches: json['lunchboxLunches'] ?? false,
+      fishDaysPerWeek: json['fishDaysPerWeek'] ?? 0,
+      legumeDaysPerWeek: json['legumeDaysPerWeek'] ?? 0,
+      redMeatMaxPerWeek: json['redMeatMaxPerWeek'] ?? 7,
     );
   }
 }

@@ -77,15 +77,26 @@ class MealPlannerService {
     final rng = Random();
 
     // Base filtered pool (eliminatory)
-    List<Recipe> basePool(MealType mealType) {
+    List<Recipe> basePool(MealType mealType, int weekday) {
+      final isWeekend = weekday == 6 || weekday == 7;
+      final effectiveMaxPrep = isWeekend ? ms.maxPrepMinutesWeekend : ms.maxPrepMinutes;
+      final effectiveMaxComplexity = isWeekend ? ms.maxComplexityWeekend : ms.maxComplexity;
+
       var pool = _recipes.where((r) {
         if (!r.suitableMealTypes.contains(mealType.name)) return false;
         if (ms.glutenFree && !r.glutenFree) return false;
         if (ms.lactoseFree && !r.lactoseFree) return false;
         if (ms.nutFree && !r.nutFree) return false;
         if (ms.shellfishFree && !r.shellfishFree) return false;
-        if (r.complexity > ms.maxComplexity) return false;
-        if (r.prepMinutes > ms.maxPrepMinutes) return false;
+        if (ms.eggFree) {
+          if (r.ingredients.any((ri) => ri.ingredientId == 'ovo')) return false;
+        }
+        if (ms.sodiumPreference == SodiumPreference.lowSodium) {
+          const highSodium = {'bacalhau', 'chourico', 'fiambre', 'sardinha'};
+          if (r.ingredients.any((ri) => highSodium.contains(ri.ingredientId))) return false;
+        }
+        if (r.complexity > effectiveMaxComplexity) return false;
+        if (r.prepMinutes > effectiveMaxPrep) return false;
         if (ms.excludedProteins.contains(r.proteinId)) return false;
         // Equipment check
         for (final eq in r.requiresEquipment) {
@@ -131,6 +142,9 @@ class MealPlannerService {
           if (ms.lactoseFree && !r.lactoseFree) return false;
           if (ms.nutFree && !r.nutFree) return false;
           if (ms.shellfishFree && !r.shellfishFree) return false;
+          if (ms.eggFree) {
+            if (r.ingredients.any((ri) => ri.ingredientId == 'ovo')) return false;
+          }
           if (ms.excludedProteins.contains(r.proteinId)) return false;
           for (final ri in r.ingredients) {
             final ing = iMap[ri.ingredientId];
@@ -176,10 +190,16 @@ class MealPlannerService {
     final recentRecipePerMealType = <MealType, String>{};
     final recentProteinPerMealType = <MealType, List<String>>{};
 
+    final weeklyFishCount = <int, int>{}; // weekNumber -> count
+    final weeklyLegumeCount = <int, int>{};
+    final weeklyRedMeatCount = <int, int>{};
+
     for (int day = 1; day <= daysInMonth; day++) {
       usedRecipesPerDay[day] = {};
       // Reset weekly tracking on Mondays (weekday 1)
       final weekday = DateTime(forMonth.year, forMonth.month, day).weekday;
+      // Skip eating-out days
+      if (ms.eatingOutWeekdays.contains(weekday)) continue;
       if (weekday == 1) {
         globalUsedIngredientsThisWeek = {};
         for (final m in ms.enabledMeals) {
@@ -230,7 +250,31 @@ class MealPlannerService {
           }
         }
 
-        var pool = basePool(mealType);
+        // Pinned meals: check if this weekday/mealType is pinned
+        final pinKey = '${weekday}_${mealType.name}';
+        final pinnedRecipeId = ms.pinnedMeals[pinKey];
+        if (pinnedRecipeId != null) {
+          if (pinnedRecipeId == 'skip') continue;
+          final pinnedRecipe = recipeMap[pinnedRecipeId];
+          if (pinnedRecipe != null) {
+            final cost = recipeCost(pinnedRecipe, np, iMap);
+            days.add(MealDay(
+              dayIndex: day,
+              recipeId: pinnedRecipeId,
+              costEstimate: cost,
+              mealType: mealType,
+            ));
+            continue;
+          }
+        }
+
+        var pool = basePool(mealType, weekday);
+
+        // Lunchbox filter: only portable recipes for lunch
+        if (ms.lunchboxLunches && mealType == MealType.lunch) {
+          final portable = pool.where((r) => r.isPortable).toList();
+          if (portable.isNotEmpty) pool = portable;
+        }
 
         // Force veggie on designated days
         if (isVeggieDay) {
@@ -257,6 +301,32 @@ class MealPlannerService {
             final noNew = pool.where((r) =>
                 r.ingredients.every((ri) => globalUsedIngredientsThisWeek.contains(ri.ingredientId))).toList();
             if (noNew.length >= 2) pool = noNew;
+          }
+        }
+
+        // Food group distribution enforcement
+        final weekNum = ((day - 1) / 7).floor();
+        if (ms.fishDaysPerWeek > 0) {
+          final fishSoFar = weeklyFishCount[weekNum] ?? 0;
+          final daysLeftInWeek = 7 - ((day - 1) % 7);
+          if (fishSoFar < ms.fishDaysPerWeek && daysLeftInWeek <= (ms.fishDaysPerWeek - fishSoFar)) {
+            final fishPool = pool.where((r) => r.type == RecipeType.peixe).toList();
+            if (fishPool.isNotEmpty) pool = fishPool;
+          }
+        }
+        if (ms.legumeDaysPerWeek > 0) {
+          final legSoFar = weeklyLegumeCount[weekNum] ?? 0;
+          final daysLeftInWeek = 7 - ((day - 1) % 7);
+          if (legSoFar < ms.legumeDaysPerWeek && daysLeftInWeek <= (ms.legumeDaysPerWeek - legSoFar)) {
+            final legPool = pool.where((r) => r.type == RecipeType.leguminosas).toList();
+            if (legPool.isNotEmpty) pool = legPool;
+          }
+        }
+        if (ms.redMeatMaxPerWeek < 7) {
+          final redSoFar = weeklyRedMeatCount[weekNum] ?? 0;
+          if (redSoFar >= ms.redMeatMaxPerWeek) {
+            final noRed = pool.where((r) => !(r.type == RecipeType.carne && const {'porco', 'carne_picada'}.contains(r.proteinId))).toList();
+            if (noRed.isNotEmpty) pool = noRed;
           }
         }
 
@@ -304,6 +374,16 @@ class MealPlannerService {
         rpList.add(recipe.proteinId);
         if (rpList.length > 2) rpList.removeAt(0);
         recentProteinPerMealType[mealType] = rpList;
+
+        // Track food group distribution
+        final rType = recipe.type;
+        if (rType == RecipeType.peixe) {
+          weeklyFishCount[weekNum] = (weeklyFishCount[weekNum] ?? 0) + 1;
+        } else if (rType == RecipeType.leguminosas) {
+          weeklyLegumeCount[weekNum] = (weeklyLegumeCount[weekNum] ?? 0) + 1;
+        } else if (rType == RecipeType.carne && const {'porco', 'carne_picada'}.contains(recipe.proteinId)) {
+          weeklyRedMeatCount[weekNum] = (weeklyRedMeatCount[weekNum] ?? 0) + 1;
+        }
 
         final cost = recipeCost(recipe, np, iMap);
 
@@ -456,7 +536,7 @@ class MealPlannerService {
 
   // --- Consolidated ingredient list ---
 
-  Map<String, double> consolidatedIngredients(MealPlan plan) {
+  Map<String, double> consolidatedIngredients(MealPlan plan, {List<String> pantryIngredients = const []}) {
     final totals = <String, double>{};
     for (final day in plan.days) {
       if (day.isLeftover) continue;
@@ -470,6 +550,9 @@ class MealPlannerService {
           ifAbsent: () => ri.quantity * scale,
         );
       }
+    }
+    for (final id in pantryIngredients) {
+      totals.remove(id);
     }
     return totals;
   }

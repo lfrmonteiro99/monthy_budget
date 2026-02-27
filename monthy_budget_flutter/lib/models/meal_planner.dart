@@ -71,6 +71,7 @@ class Recipe {
   final bool batchCookable;
   final int maxBatchDays;
   final List<String> suitableMealTypes;
+  final bool isPortable;
 
   const Recipe({
     required this.id,
@@ -92,6 +93,7 @@ class Recipe {
     this.batchCookable = false,
     this.maxBatchDays = 1,
     this.suitableMealTypes = const ['lunch', 'dinner'],
+    this.isPortable = true,
   });
 
   factory Recipe.fromJson(Map<String, dynamic> json) => Recipe(
@@ -119,6 +121,7 @@ class Recipe {
         batchCookable: json['batchCookable'] ?? false,
         maxBatchDays: json['maxBatchDays'] ?? 1,
         suitableMealTypes: List<String>.from(json['suitableMealTypes'] ?? ['lunch', 'dinner']),
+        isPortable: json['isPortable'] ?? true,
       );
 
   Map<String, dynamic> toJson() => {
@@ -141,6 +144,7 @@ class Recipe {
         'batchCookable': batchCookable,
         'maxBatchDays': maxBatchDays,
         'suitableMealTypes': suitableMealTypes,
+        'isPortable': isPortable,
       };
 }
 

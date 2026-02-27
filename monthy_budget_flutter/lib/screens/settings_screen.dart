@@ -971,6 +971,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  void _showAddPantryDialog() {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Adicionar \u00E0 despensa'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: const InputDecoration(hintText: 'Nome do ingrediente'),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancelar')),
+          FilledButton(
+            onPressed: () {
+              final name = controller.text.trim();
+              if (name.isNotEmpty) {
+                final ms = _draft.mealSettings;
+                final updated = List<String>.from(ms.pantryIngredients)..add(name);
+                setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(pantryIngredients: updated)));
+              }
+              Navigator.pop(ctx);
+            },
+            child: const Text('Adicionar'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildMealsSection() {
     final ms = _draft.mealSettings;
     return Container(
@@ -1111,6 +1142,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ('Sem marisco', ms.shellfishFree,
                 (bool v) => setState(() => _draft = _draft.copyWith(
                     mealSettings: ms.copyWith(shellfishFree: v)))),
+            ('Sem ovos', ms.eggFree,
+                (bool v) => setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(eggFree: v)))),
           ].map((item) => CheckboxListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text(item.$1,
@@ -1121,6 +1155,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 controlAffinity: ListTileControlAffinity.leading,
                 onChanged: (v) => item.$3(v ?? false),
               )),
+          const SizedBox(height: 16),
+          _label('PREFER\u00CANCIA DE S\u00D3DIO'),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              border: Border.all(color: const Color(0xFFE2E8F0)),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<SodiumPreference>(
+                value: ms.sodiumPreference,
+                isExpanded: true,
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF475569)),
+                items: SodiumPreference.values
+                    .map((s) => DropdownMenuItem(value: s, child: Text(s.label)))
+                    .toList(),
+                onChanged: (v) {
+                  if (v == null) return;
+                  setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(sodiumPreference: v)));
+                },
+              ),
+            ),
+          ),
           const SizedBox(height: 16),
           _label('INGREDIENTES INDESEJADOS'),
           const SizedBox(height: 8),
@@ -1197,6 +1256,84 @@ class _SettingsScreenState extends State<SettingsScreen> {
             activeColor: const Color(0xFF3B82F6),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(maxComplexity: v.round()))),
+          ),
+          const SizedBox(height: 8),
+          _label('TEMPO FIM-DE-SEMANA (MINUTOS)'),
+          Slider(
+            value: ms.maxPrepMinutesWeekend.toDouble(),
+            min: 15,
+            max: 120,
+            divisions: 7,
+            label: ms.maxPrepMinutesWeekend >= 120 ? '120+' : '${ms.maxPrepMinutesWeekend}',
+            activeColor: const Color(0xFF3B82F6),
+            onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                mealSettings: ms.copyWith(maxPrepMinutesWeekend: v.round()))),
+          ),
+          _label('COMPLEXIDADE FIM-DE-SEMANA (${ms.maxComplexityWeekend}/5)'),
+          Slider(
+            value: ms.maxComplexityWeekend.toDouble(),
+            min: 1,
+            max: 5,
+            divisions: 4,
+            label: '${ms.maxComplexityWeekend}',
+            activeColor: const Color(0xFF3B82F6),
+            onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                mealSettings: ms.copyWith(maxComplexityWeekend: v.round()))),
+          ),
+          const SizedBox(height: 8),
+          _label('DIAS DE COMER FORA'),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: [
+              for (final entry in {1: 'Seg', 2: 'Ter', 3: 'Qua', 4: 'Qui', 5: 'Sex', 6: 'S\u00E1b', 7: 'Dom'}.entries)
+                FilterChip(
+                  label: Text(entry.value, style: const TextStyle(fontSize: 13)),
+                  selected: ms.eatingOutWeekdays.contains(entry.key),
+                  selectedColor: const Color(0xFF3B82F6).withValues(alpha: 0.15),
+                  checkmarkColor: const Color(0xFF3B82F6),
+                  onSelected: (v) {
+                    final updated = Set<int>.from(ms.eatingOutWeekdays);
+                    if (v) { updated.add(entry.key); } else { updated.remove(entry.key); }
+                    setState(() => _draft = _draft.copyWith(
+                        mealSettings: ms.copyWith(eatingOutWeekdays: updated)));
+                  },
+                ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _label('DISTRIBUI\u00C7\u00C3O SEMANAL'),
+          const SizedBox(height: 4),
+          Text('Peixe por semana: ${ms.fishDaysPerWeek == 0 ? "sem m\u00EDnimo" : ms.fishDaysPerWeek}',
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+          Slider(
+            value: ms.fishDaysPerWeek.toDouble(),
+            min: 0, max: 5, divisions: 5,
+            label: ms.fishDaysPerWeek == 0 ? 'Sem m\u00EDnimo' : '${ms.fishDaysPerWeek}',
+            activeColor: const Color(0xFF3B82F6),
+            onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                mealSettings: ms.copyWith(fishDaysPerWeek: v.round()))),
+          ),
+          Text('Leguminosas por semana: ${ms.legumeDaysPerWeek == 0 ? "sem m\u00EDnimo" : ms.legumeDaysPerWeek}',
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+          Slider(
+            value: ms.legumeDaysPerWeek.toDouble(),
+            min: 0, max: 5, divisions: 5,
+            label: ms.legumeDaysPerWeek == 0 ? 'Sem m\u00EDnimo' : '${ms.legumeDaysPerWeek}',
+            activeColor: const Color(0xFF3B82F6),
+            onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                mealSettings: ms.copyWith(legumeDaysPerWeek: v.round()))),
+          ),
+          Text('Carne vermelha m\u00E1x/semana: ${ms.redMeatMaxPerWeek >= 7 ? "sem limite" : ms.redMeatMaxPerWeek}',
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+          Slider(
+            value: ms.redMeatMaxPerWeek.toDouble(),
+            min: 0, max: 7, divisions: 7,
+            label: ms.redMeatMaxPerWeek >= 7 ? 'Sem limite' : '${ms.redMeatMaxPerWeek}',
+            activeColor: const Color(0xFF3B82F6),
+            onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                mealSettings: ms.copyWith(redMeatMaxPerWeek: v.round()))),
           ),
           const SizedBox(height: 8),
           _label('EQUIPAMENTO DISPONÍVEL'),
@@ -1288,6 +1425,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   mealSettings: ms.copyWith(maxNewIngredientsPerWeek: v.round()))),
             ),
           ],
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text('Almo\u00E7os de marmita',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            subtitle: const Text('Apenas receitas transport\u00E1veis ao almo\u00E7o',
+                style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
+            value: ms.lunchboxLunches,
+            activeTrackColor: const Color(0xFF3B82F6),
+            onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                mealSettings: ms.copyWith(lunchboxLunches: v))),
+          ),
+          const SizedBox(height: 16),
+          _label('DESPENSA (SEMPRE EM STOCK)'),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: [
+              ...ms.pantryIngredients.map((p) => Chip(
+                label: Text(p, style: const TextStyle(fontSize: 13)),
+                deleteIcon: const Icon(Icons.close, size: 16),
+                onDeleted: () {
+                  final updated = List<String>.from(ms.pantryIngredients)..remove(p);
+                  setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(pantryIngredients: updated)));
+                },
+              )),
+              ActionChip(
+                avatar: const Icon(Icons.add, size: 16),
+                label: const Text('Adicionar', style: TextStyle(fontSize: 13)),
+                onPressed: () => _showAddPantryDialog(),
+              ),
+            ],
+          ),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
