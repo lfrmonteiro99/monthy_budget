@@ -173,6 +173,8 @@ class MealPlannerService {
     // Batch cooking tracking: {mealType: {recipeId, daysRemaining}}
     final batchState = <MealType, ({String recipeId, int daysLeft})>{};
     final usedRecipesPerDay = <int, Set<String>>{};
+    final recentRecipePerMealType = <MealType, String>{};
+    final recentProteinPerMealType = <MealType, List<String>>{};
 
     for (int day = 1; day <= daysInMonth; day++) {
       usedRecipesPerDay[day] = {};
@@ -241,11 +243,11 @@ class MealPlannerService {
           pool.sort((a, b) => recipeCost(a, np, iMap).compareTo(recipeCost(b, np, iMap)));
         }
 
-        // Waste minimization: prefer recipes with known ingredients
-        if (ms.minimizeWaste) {
-          final reuseFirst = pool.where((r) =>
-              r.ingredients.every((ri) => globalUsedIngredientsThisWeek.contains(ri.ingredientId))).toList();
-          if (reuseFirst.isNotEmpty) pool = reuseFirst;
+        // Waste minimization: prefer recipes sharing ingredients (any, not all)
+        if (ms.minimizeWaste && globalUsedIngredientsThisWeek.isNotEmpty) {
+          final reuse = pool.where((r) =>
+              r.ingredients.any((ri) => globalUsedIngredientsThisWeek.contains(ri.ingredientId))).toList();
+          if (reuse.length >= 3) pool = reuse;
         }
 
         // Max new ingredients cap
@@ -254,30 +256,54 @@ class MealPlannerService {
           if (remaining <= 0) {
             final noNew = pool.where((r) =>
                 r.ingredients.every((ri) => globalUsedIngredientsThisWeek.contains(ri.ingredientId))).toList();
-            if (noNew.isNotEmpty) pool = noNew;
+            if (noNew.length >= 2) pool = noNew;
           }
         }
 
-        // Favorites boost
-        if (favorites.isNotEmpty) {
-          final boosted = pool.where((r) {
-            final ing = iMap[r.proteinId];
-            if (ing == null) return false;
-            return favorites.any((fav) =>
-                fav.toLowerCase().contains(ing.name.toLowerCase()) ||
-                ing.name.toLowerCase().contains(fav.toLowerCase().split(' ').first));
-          }).toList();
-          if (boosted.isNotEmpty) pool = boosted;
-        }
-
-        // Pick recipe: shuffle + avoid same-day duplicates
+        // Pick recipe: dedup + protein diversity + favorites boost
         final usedToday = usedRecipesPerDay[day]!;
         var available = pool.where((r) => !usedToday.contains(r.id)).toList();
         if (available.isEmpty) available = pool.toList();
         if (available.isEmpty) available = _recipes.toList();
+
+        // Consecutive-day dedup: avoid same recipe as yesterday for this mealType
+        final prevRecipe = recentRecipePerMealType[mealType];
+        if (prevRecipe != null && available.length > 1) {
+          available.removeWhere((r) => r.id == prevRecipe);
+        }
+
+        // Protein diversity: avoid same protein as last 2 days for this mealType
+        final recentProteins = recentProteinPerMealType[mealType] ?? [];
+        if (recentProteins.isNotEmpty && available.length > 1) {
+          final diverse = available.where((r) => !recentProteins.contains(r.proteinId)).toList();
+          if (diverse.isNotEmpty) available = diverse;
+        }
+
+        // Shuffle then partition: favorites first, rest after (boost, don't eliminate)
         available.shuffle(rng);
+        if (favorites.isNotEmpty) {
+          final favs = <Recipe>[];
+          final rest = <Recipe>[];
+          for (final r in available) {
+            final ing = iMap[r.proteinId];
+            if (ing != null && favorites.any((fav) =>
+                fav.toLowerCase().contains(ing.name.toLowerCase()) ||
+                ing.name.toLowerCase().contains(fav.toLowerCase().split(' ').first))) {
+              favs.add(r);
+            } else {
+              rest.add(r);
+            }
+          }
+          available = [...favs, ...rest];
+        }
+
         final recipe = available.first;
         usedToday.add(recipe.id);
+        recentRecipePerMealType[mealType] = recipe.id;
+        final rpList = List<String>.from(recentProteinPerMealType[mealType] ?? []);
+        rpList.add(recipe.proteinId);
+        if (rpList.length > 2) rpList.removeAt(0);
+        recentProteinPerMealType[mealType] = rpList;
 
         final cost = recipeCost(recipe, np, iMap);
 
