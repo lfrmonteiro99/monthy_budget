@@ -77,6 +77,91 @@ enum SodiumPreference {
   }
 }
 
+enum AgeGroup {
+  child0to3,
+  child4to10,
+  teen,
+  adult,
+  senior;
+
+  String get label {
+    switch (this) {
+      case AgeGroup.child0to3:  return '0\u20133 anos';
+      case AgeGroup.child4to10: return '4\u201310 anos';
+      case AgeGroup.teen:       return 'Adolescente';
+      case AgeGroup.adult:      return 'Adulto';
+      case AgeGroup.senior:     return 'S\u00E9nior (65+)';
+    }
+  }
+
+  double get portionFactor {
+    switch (this) {
+      case AgeGroup.child0to3:  return 0.4;
+      case AgeGroup.child4to10: return 0.65;
+      case AgeGroup.teen:       return 1.0;
+      case AgeGroup.adult:      return 1.0;
+      case AgeGroup.senior:     return 0.8;
+    }
+  }
+}
+
+enum ActivityLevel {
+  sedentary,
+  moderate,
+  active,
+  veryActive;
+
+  String get label {
+    switch (this) {
+      case ActivityLevel.sedentary:  return 'Sedent\u00E1rio';
+      case ActivityLevel.moderate:   return 'Moderado';
+      case ActivityLevel.active:     return 'Ativo';
+      case ActivityLevel.veryActive: return 'Muito ativo';
+    }
+  }
+
+  double get multiplier {
+    switch (this) {
+      case ActivityLevel.sedentary:  return 1.0;
+      case ActivityLevel.moderate:   return 1.1;
+      case ActivityLevel.active:     return 1.25;
+      case ActivityLevel.veryActive: return 1.4;
+    }
+  }
+}
+
+class HouseholdMember {
+  final String name;
+  final AgeGroup ageGroup;
+  final ActivityLevel activityLevel;
+
+  const HouseholdMember({
+    required this.name,
+    this.ageGroup = AgeGroup.adult,
+    this.activityLevel = ActivityLevel.moderate,
+  });
+
+  double get portionEquivalent => ageGroup.portionFactor * activityLevel.multiplier;
+
+  Map<String, dynamic> toJson() => {
+    'name': name,
+    'ageGroup': ageGroup.name,
+    'activityLevel': activityLevel.name,
+  };
+
+  factory HouseholdMember.fromJson(Map<String, dynamic> json) => HouseholdMember(
+    name: json['name'] as String? ?? '',
+    ageGroup: AgeGroup.values.firstWhere(
+      (e) => e.name == json['ageGroup'],
+      orElse: () => AgeGroup.adult,
+    ),
+    activityLevel: ActivityLevel.values.firstWhere(
+      (e) => e.name == json['activityLevel'],
+      orElse: () => ActivityLevel.moderate,
+    ),
+  );
+}
+
 class MealSettings {
   final Set<MealType> enabledMeals;
   final MealObjective objective;
@@ -110,6 +195,8 @@ class MealSettings {
   final int fishDaysPerWeek;
   final int legumeDaysPerWeek;
   final int redMeatMaxPerWeek;
+  final List<HouseholdMember> householdMembers;
+  final bool preferSeasonal;
 
   const MealSettings({
     this.householdSize,
@@ -147,6 +234,8 @@ class MealSettings {
     this.fishDaysPerWeek = 0,
     this.legumeDaysPerWeek = 0,
     this.redMeatMaxPerWeek = 7,
+    this.householdMembers = const [],
+    this.preferSeasonal = false,
   });
 
   static const Object _sentinel = Object();
@@ -184,6 +273,8 @@ class MealSettings {
     int? fishDaysPerWeek,
     int? legumeDaysPerWeek,
     int? redMeatMaxPerWeek,
+    List<HouseholdMember>? householdMembers,
+    bool? preferSeasonal,
   }) {
     return MealSettings(
       householdSize: householdSize == _sentinel
@@ -222,6 +313,8 @@ class MealSettings {
       fishDaysPerWeek: fishDaysPerWeek ?? this.fishDaysPerWeek,
       legumeDaysPerWeek: legumeDaysPerWeek ?? this.legumeDaysPerWeek,
       redMeatMaxPerWeek: redMeatMaxPerWeek ?? this.redMeatMaxPerWeek,
+      householdMembers: householdMembers ?? this.householdMembers,
+      preferSeasonal: preferSeasonal ?? this.preferSeasonal,
     );
   }
 
@@ -258,6 +351,8 @@ class MealSettings {
     'fishDaysPerWeek': fishDaysPerWeek,
     'legumeDaysPerWeek': legumeDaysPerWeek,
     'redMeatMaxPerWeek': redMeatMaxPerWeek,
+    'householdMembers': householdMembers.map((m) => m.toJson()).toList(),
+    'preferSeasonal': preferSeasonal,
   };
 
   factory MealSettings.fromJson(Map<String, dynamic> json) {
@@ -324,6 +419,12 @@ class MealSettings {
       fishDaysPerWeek: json['fishDaysPerWeek'] ?? 0,
       legumeDaysPerWeek: json['legumeDaysPerWeek'] ?? 0,
       redMeatMaxPerWeek: json['redMeatMaxPerWeek'] ?? 7,
+      householdMembers: json['householdMembers'] != null
+          ? (json['householdMembers'] as List<dynamic>)
+              .map((e) => HouseholdMember.fromJson(e as Map<String, dynamic>))
+              .toList()
+          : const [],
+      preferSeasonal: json['preferSeasonal'] ?? false,
     );
   }
 }

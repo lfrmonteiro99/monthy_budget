@@ -1061,6 +1061,75 @@ class _SettingsScreenState extends State<SettingsScreen> {
               style: TextStyle(fontSize: 11, color: Colors.grey.shade400),
             ),
           ),
+          _label('MEMBROS DO AGREGADO'),
+          const SizedBox(height: 8),
+          if (ms.householdMembers.isNotEmpty) ...[
+            ...ms.householdMembers.asMap().entries.map((entry) {
+              final i = entry.key;
+              final m = entry.value;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(m.name,
+                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                          Text(
+                            '${m.ageGroup.label} \u2022 ${m.activityLevel.label} \u2022 ${m.portionEquivalent.toStringAsFixed(2)} porções',
+                            style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close, size: 18, color: Color(0xFFEF4444)),
+                      onPressed: () {
+                        final updated = List<HouseholdMember>.from(ms.householdMembers)..removeAt(i);
+                        setState(() => _draft = _draft.copyWith(
+                            mealSettings: ms.copyWith(householdMembers: updated)));
+                      },
+                    ),
+                  ],
+                ),
+              );
+            }),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                'Equivalente total: ${ms.householdMembers.fold(0.0, (sum, m) => sum + m.portionEquivalent).toStringAsFixed(1)} porções',
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF3B82F6)),
+              ),
+            ),
+          ],
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => _showAddMemberDialog(),
+              icon: const Icon(Icons.person_add_outlined, size: 18),
+              label: const Text('Adicionar membro', style: TextStyle(fontSize: 13)),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF3B82F6),
+                side: const BorderSide(color: Color(0xFFE2E8F0)),
+                padding: const EdgeInsets.symmetric(vertical: 10),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text('Preferir receitas sazonais',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            subtitle: const Text('Prioriza receitas da época atual',
+                style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
+            value: ms.preferSeasonal,
+            activeTrackColor: const Color(0xFF3B82F6),
+            onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                mealSettings: ms.copyWith(preferSeasonal: v))),
+          ),
+          const SizedBox(height: 16),
           _label('REFEIÇÕES ATIVAS'),
           const SizedBox(height: 8),
           ...MealType.values.map((mt) => SwitchListTile(
@@ -1592,6 +1661,61 @@ class _SettingsScreenState extends State<SettingsScreen> {
             style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8), height: 1.5),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showAddMemberDialog() {
+    String name = '';
+    AgeGroup ageGroup = AgeGroup.adult;
+    ActivityLevel activityLevel = ActivityLevel.moderate;
+    final ms = _draft.mealSettings;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          title: const Text('Adicionar membro'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: const InputDecoration(labelText: 'Nome'),
+                onChanged: (v) => name = v,
+              ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<AgeGroup>(
+                initialValue: ageGroup,
+                decoration: const InputDecoration(labelText: 'Faixa etária'),
+                items: AgeGroup.values.map((a) =>
+                  DropdownMenuItem(value: a, child: Text(a.label))).toList(),
+                onChanged: (v) { if (v != null) ageGroup = v; },
+              ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<ActivityLevel>(
+                initialValue: activityLevel,
+                decoration: const InputDecoration(labelText: 'Nível de atividade'),
+                items: ActivityLevel.values.map((a) =>
+                  DropdownMenuItem(value: a, child: Text(a.label))).toList(),
+                onChanged: (v) { if (v != null) activityLevel = v; },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancelar')),
+            FilledButton(
+              onPressed: () {
+                if (name.trim().isEmpty) return;
+                final member = HouseholdMember(name: name.trim(), ageGroup: ageGroup, activityLevel: activityLevel);
+                final updated = [...ms.householdMembers, member];
+                setState(() => _draft = _draft.copyWith(
+                  mealSettings: ms.copyWith(householdMembers: updated)));
+                Navigator.pop(ctx);
+              },
+              child: const Text('Adicionar'),
+            ),
+          ],
+        ),
       ),
     );
   }

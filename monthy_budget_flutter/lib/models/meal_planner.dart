@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'meal_settings.dart';
 
+enum MealFeedback { none, liked, disliked, skipped }
+
 enum IngredientCategory { proteina, carbo, vegetal, gordura, condimento }
 enum RecipeType { carne, peixe, vegetariano, ovos, leguminosas }
 
@@ -72,6 +74,7 @@ class Recipe {
   final int maxBatchDays;
   final List<String> suitableMealTypes;
   final bool isPortable;
+  final List<String> seasons; // empty = all seasons
 
   const Recipe({
     required this.id,
@@ -94,6 +97,7 @@ class Recipe {
     this.maxBatchDays = 1,
     this.suitableMealTypes = const ['lunch', 'dinner'],
     this.isPortable = true,
+    this.seasons = const [],
   });
 
   factory Recipe.fromJson(Map<String, dynamic> json) => Recipe(
@@ -122,6 +126,7 @@ class Recipe {
         maxBatchDays: json['maxBatchDays'] ?? 1,
         suitableMealTypes: List<String>.from(json['suitableMealTypes'] ?? ['lunch', 'dinner']),
         isPortable: json['isPortable'] ?? true,
+        seasons: List<String>.from(json['seasons'] ?? []),
       );
 
   Map<String, dynamic> toJson() => {
@@ -145,6 +150,7 @@ class Recipe {
         'maxBatchDays': maxBatchDays,
         'suitableMealTypes': suitableMealTypes,
         'isPortable': isPortable,
+        'seasons': seasons,
       };
 }
 
@@ -154,6 +160,7 @@ class MealDay {
   final bool isLeftover;
   final double costEstimate;
   final MealType mealType;
+  final MealFeedback feedback;
 
   const MealDay({
     required this.dayIndex,
@@ -161,14 +168,16 @@ class MealDay {
     this.isLeftover = false,
     required this.costEstimate,
     this.mealType = MealType.dinner,
+    this.feedback = MealFeedback.none,
   });
 
-  MealDay copyWith({String? recipeId, double? costEstimate, MealType? mealType}) => MealDay(
+  MealDay copyWith({String? recipeId, double? costEstimate, MealType? mealType, MealFeedback? feedback}) => MealDay(
         dayIndex: dayIndex,
         recipeId: recipeId ?? this.recipeId,
         isLeftover: isLeftover,
         costEstimate: costEstimate ?? this.costEstimate,
         mealType: mealType ?? this.mealType,
+        feedback: feedback ?? this.feedback,
       );
 
   factory MealDay.fromJson(Map<String, dynamic> json) => MealDay(
@@ -180,6 +189,10 @@ class MealDay {
           (e) => e.name == (json['mealType'] ?? 'dinner'),
           orElse: () => MealType.dinner,
         ),
+        feedback: MealFeedback.values.firstWhere(
+          (e) => e.name == (json['feedback'] ?? 'none'),
+          orElse: () => MealFeedback.none,
+        ),
       );
 
   Map<String, dynamic> toJson() => {
@@ -188,6 +201,7 @@ class MealDay {
         'isLeftover': isLeftover,
         'costEstimate': costEstimate,
         'mealType': mealType.name,
+        'feedback': feedback.name,
       };
 }
 
@@ -217,6 +231,7 @@ class MealPlan {
   final List<MealDay> days;
   final double totalEstimatedCost;
   final DateTime generatedAt;
+  final Map<int, int> extraGuests; // dayIndex -> extra people
 
   const MealPlan({
     required this.month,
@@ -226,6 +241,7 @@ class MealPlan {
     required this.days,
     required this.totalEstimatedCost,
     required this.generatedAt,
+    this.extraGuests = const {},
   });
 
   MealPlan copyWithDays(List<MealDay> days) => MealPlan(

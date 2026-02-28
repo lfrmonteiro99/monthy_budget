@@ -64,7 +64,21 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   Future<void> _generatePlan() async {
     setState(() => _loading = true);
     final now = DateTime.now();
-    final plan = _service.generate(widget.settings, now, favorites: widget.favorites);
+
+    // Collect feedback from previous plan
+    final previousFeedback = <String, MealFeedback>{};
+    if (_plan != null) {
+      for (final day in _plan!.days) {
+        if (day.feedback != MealFeedback.none) {
+          previousFeedback[day.recipeId] = day.feedback;
+        }
+      }
+    }
+
+    final plan = _service.generate(widget.settings, now,
+      favorites: widget.favorites,
+      previousFeedback: previousFeedback,
+    );
     await _service.save(plan, widget.householdId);
     setState(() {
       _plan = plan;
@@ -96,6 +110,19 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         _aiPending.remove(recipeId);
       });
     }
+  }
+
+  void _setFeedback(int dayIndex, MealType mealType, MealFeedback feedback) {
+    final plan = _plan!;
+    final updatedDays = plan.days.map((d) {
+      if (d.dayIndex == dayIndex && d.mealType == mealType) {
+        return d.copyWith(feedback: d.feedback == feedback ? MealFeedback.none : feedback);
+      }
+      return d;
+    }).toList();
+    final updated = plan.copyWithDays(updatedDays);
+    _service.save(updated, widget.householdId);
+    setState(() => _plan = updated);
   }
 
   void _swapRecipe(int dayIndex, MealType mealType, String currentRecipeId) {
@@ -401,6 +428,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   }),
                   onSwap: () => _swapRecipe(weekDays[i].dayIndex, weekDays[i].mealType, weekDays[i].recipeId),
                   onAddIngredientToList: widget.onAddToShoppingList,
+                  onFeedback: (fb) => _setFeedback(weekDays[i].dayIndex, weekDays[i].mealType, fb),
                 ),
               ),
               Positioned(
@@ -443,6 +471,7 @@ class _DayCard extends StatelessWidget {
   final VoidCallback onToggleExpand;
   final VoidCallback onSwap;
   final void Function(ShoppingItem) onAddIngredientToList;
+  final ValueChanged<MealFeedback> onFeedback;
 
   const _DayCard({
     required this.mealDay,
@@ -453,6 +482,7 @@ class _DayCard extends StatelessWidget {
     required this.onToggleExpand,
     required this.onSwap,
     required this.onAddIngredientToList,
+    required this.onFeedback,
   });
 
   @override
@@ -576,6 +606,37 @@ class _DayCard extends StatelessWidget {
                       ),
                     ),
                   ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _FeedbackButton(
+                        icon: Icons.thumb_up_outlined,
+                        activeIcon: Icons.thumb_up,
+                        isActive: mealDay.feedback == MealFeedback.liked,
+                        color: const Color(0xFF16A34A),
+                        onTap: () => onFeedback(MealFeedback.liked),
+                      ),
+                      const SizedBox(width: 16),
+                      _FeedbackButton(
+                        icon: Icons.thumb_down_outlined,
+                        activeIcon: Icons.thumb_down,
+                        isActive: mealDay.feedback == MealFeedback.disliked,
+                        color: const Color(0xFFEF4444),
+                        onTap: () => onFeedback(MealFeedback.disliked),
+                      ),
+                      const SizedBox(width: 16),
+                      _FeedbackButton(
+                        icon: Icons.skip_next_outlined,
+                        activeIcon: Icons.skip_next,
+                        isActive: mealDay.feedback == MealFeedback.skipped,
+                        color: const Color(0xFF94A3B8),
+                        onTap: () => onFeedback(MealFeedback.skipped),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -966,6 +1027,31 @@ class _Stars extends StatelessWidget {
           i < complexity ? Icons.star : Icons.star_border,
           size: 13,
           color: const Color(0xFFF59E0B),
+        ),
+      ),
+    );
+  }
+}
+
+class _FeedbackButton extends StatelessWidget {
+  final IconData icon;
+  final IconData activeIcon;
+  final bool isActive;
+  final Color color;
+  final VoidCallback onTap;
+  const _FeedbackButton({required this.icon, required this.activeIcon, required this.isActive, required this.color, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: isActive ? color.withValues(alpha: 0.1) : Colors.transparent,
+      borderRadius: BorderRadius.circular(20),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Icon(isActive ? activeIcon : icon, size: 20, color: isActive ? color : const Color(0xFFCBD5E1)),
         ),
       ),
     );

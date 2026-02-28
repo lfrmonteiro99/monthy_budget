@@ -37,6 +37,10 @@ class MealPlannerService {
   // --- Settings helpers ---
 
   int nPessoas(AppSettings settings) {
+    final members = settings.mealSettings.householdMembers;
+    if (members.isNotEmpty) {
+      return members.fold(0.0, (sum, m) => sum + m.portionEquivalent).round().clamp(1, 99);
+    }
     if (settings.mealSettings.householdSize != null) {
       return settings.mealSettings.householdSize!.clamp(1, 99);
     }
@@ -66,7 +70,7 @@ class MealPlannerService {
 
   // --- Plan generation ---
 
-  MealPlan generate(AppSettings settings, DateTime forMonth, {List<String> favorites = const []}) {
+  MealPlan generate(AppSettings settings, DateTime forMonth, {List<String> favorites = const [], Map<String, MealFeedback> previousFeedback = const {}}) {
     assert(_catalogLoaded, 'Call loadCatalog() first');
     final ms = settings.mealSettings;
     final np = nPessoas(settings);
@@ -365,6 +369,47 @@ class MealPlannerService {
             }
           }
           available = [...favs, ...rest];
+        }
+
+        // Feedback integration
+        if (previousFeedback.isNotEmpty) {
+          // Remove disliked
+          final noDisliked = available.where((r) =>
+            previousFeedback[r.id] != MealFeedback.disliked).toList();
+          if (noDisliked.length >= 3) available = noDisliked;
+
+          // Boost liked
+          final liked = <Recipe>[];
+          final fbRest = <Recipe>[];
+          for (final r in available) {
+            if (previousFeedback[r.id] == MealFeedback.liked) {
+              liked.add(r);
+            } else {
+              fbRest.add(r);
+            }
+          }
+          available = [...liked, ...fbRest];
+        }
+
+        // Seasonal boost
+        if (ms.preferSeasonal) {
+          final month = forMonth.month;
+          final season = month >= 3 && month <= 5 ? 'spring'
+              : month >= 6 && month <= 8 ? 'summer'
+              : month >= 9 && month <= 11 ? 'autumn'
+              : 'winter';
+          final seasonal = <Recipe>[];
+          final nonSeasonal = <Recipe>[];
+          for (final r in available) {
+            if (r.seasons.isEmpty || r.seasons.contains(season)) {
+              seasonal.add(r);
+            } else {
+              nonSeasonal.add(r);
+            }
+          }
+          if (seasonal.isNotEmpty) {
+            available = [...seasonal, ...nonSeasonal];
+          }
         }
 
         final recipe = available.first;

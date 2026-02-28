@@ -41,7 +41,8 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "frango_arroz",
@@ -87,7 +88,8 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "frango_estufado",
@@ -133,7 +135,11 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ]
   },
   {
     "id": "frango_grelhado",
@@ -175,7 +181,8 @@
         "quantity": 0.03
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "frango_broculos",
@@ -217,7 +224,8 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "esparguete_bolonhesa",
@@ -263,7 +271,8 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "almondegas",
@@ -305,7 +314,8 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "empadao",
@@ -349,7 +359,11 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ]
   },
   {
     "id": "hamburguer",
@@ -391,7 +405,8 @@
         "quantity": 0.2
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "lasanha",
@@ -435,7 +450,11 @@
         "quantity": 0.15
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ]
   },
   {
     "id": "feijoada_simples",
@@ -481,7 +500,11 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ]
   },
   {
     "id": "grao_espinafres",
@@ -523,7 +546,8 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "lentilhas_estufadas",
@@ -569,7 +593,11 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ]
   },
   {
     "id": "feijao_verde_batata",
@@ -611,7 +639,8 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "sopa_feijao",
@@ -657,7 +686,11 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": false
+    "isPortable": false,
+    "seasons": [
+      "autumn",
+      "winter"
+    ]
   },
   {
     "id": "omelete_legumes",
@@ -700,7 +733,8 @@
         "quantity": 0.03
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "tortilha",
@@ -743,7 +777,8 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "frittata_espinafres",
@@ -788,7 +823,8 @@
         "quantity": 0.03
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "ovos_mexidos_tomate",
@@ -831,7 +867,8 @@
         "quantity": 0.03
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "ovo_arroz",
@@ -873,7 +910,8 @@
         "quantity": 0.03
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "pescada_forno",
@@ -917,7 +955,8 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "peixe_grelhado",
@@ -959,7 +998,8 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "arroz_peixe",
@@ -1005,7 +1045,8 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "bacalhau_cozido",
@@ -1051,7 +1092,11 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ]
   },
   {
     "id": "bacalhau_grao",
@@ -1093,7 +1138,11 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ]
   },
   {
     "id": "costeletas_porco",
@@ -1135,7 +1184,8 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "porco_alentejana",
@@ -1177,7 +1227,8 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "bifanas",
@@ -1219,7 +1270,8 @@
         "quantity": 0.03
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "porco_assado",
@@ -1263,7 +1315,8 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "feijoada_porco",
@@ -1309,7 +1362,11 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ]
   },
   {
     "id": "sardinhas_assadas",
@@ -1351,7 +1408,10 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": [
+      "summer"
+    ]
   },
   {
     "id": "atum_salada",
@@ -1397,7 +1457,11 @@
         "quantity": 0.03
       }
     ],
-    "isPortable": false
+    "isPortable": false,
+    "seasons": [
+      "spring",
+      "summer"
+    ]
   },
   {
     "id": "atum_arroz",
@@ -1443,7 +1507,8 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "caldeirada",
@@ -1493,7 +1558,11 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": false
+    "isPortable": false,
+    "seasons": [
+      "autumn",
+      "winter"
+    ]
   },
   {
     "id": "pataniscas_bacalhau",
@@ -1539,7 +1608,11 @@
         "quantity": 0.1
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ]
   },
   {
     "id": "papas_aveia",
@@ -1576,7 +1649,8 @@
         "quantity": 0.4
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "torradas_queijo",
@@ -1618,7 +1692,8 @@
         "quantity": 0.03
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "cereais_leite",
@@ -1655,7 +1730,8 @@
         "quantity": 0.3
       }
     ],
-    "isPortable": false
+    "isPortable": false,
+    "seasons": []
   },
   {
     "id": "iogurte_fruta",
@@ -1693,7 +1769,8 @@
         "quantity": 0.1
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "ovos_pequeno_almoco",
@@ -1730,7 +1807,8 @@
         "quantity": 0.03
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "panquecas",
@@ -1772,7 +1850,8 @@
         "quantity": 0.3
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "tosta_mista",
@@ -1810,7 +1889,8 @@
         "quantity": 0.1
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "fruta_iogurte",
@@ -1847,7 +1927,8 @@
         "quantity": 0.3
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "caldo_verde",
@@ -1893,7 +1974,11 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": false
+    "isPortable": false,
+    "seasons": [
+      "autumn",
+      "winter"
+    ]
   },
   {
     "id": "arroz_legumes",
@@ -1939,7 +2024,8 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": []
   },
   {
     "id": "massa_cogumelos",
@@ -1985,7 +2071,11 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": true
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ]
   },
   {
     "id": "sopa_legumes",
@@ -2031,7 +2121,11 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": false
+    "isPortable": false,
+    "seasons": [
+      "autumn",
+      "winter"
+    ]
   },
   {
     "id": "salada_grao",
@@ -2077,6 +2171,10 @@
         "quantity": 0.05
       }
     ],
-    "isPortable": false
+    "isPortable": false,
+    "seasons": [
+      "spring",
+      "summer"
+    ]
   }
 ]
