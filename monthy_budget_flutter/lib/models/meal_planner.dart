@@ -53,6 +53,42 @@ class RecipeIngredient {
       };
 }
 
+class NutritionInfo {
+  final int kcal;
+  final double proteinG;
+  final double carbsG;
+  final double fatG;
+  final double fiberG;
+  final double sodiumMg;
+
+  const NutritionInfo({
+    required this.kcal,
+    required this.proteinG,
+    required this.carbsG,
+    required this.fatG,
+    required this.fiberG,
+    required this.sodiumMg,
+  });
+
+  factory NutritionInfo.fromJson(Map<String, dynamic> json) => NutritionInfo(
+    kcal: json['kcal'] as int,
+    proteinG: (json['proteinG'] as num).toDouble(),
+    carbsG: (json['carbsG'] as num).toDouble(),
+    fatG: (json['fatG'] as num).toDouble(),
+    fiberG: (json['fiberG'] as num).toDouble(),
+    sodiumMg: (json['sodiumMg'] as num).toDouble(),
+  );
+
+  Map<String, dynamic> toJson() => {
+    'kcal': kcal,
+    'proteinG': proteinG,
+    'carbsG': carbsG,
+    'fatG': fatG,
+    'fiberG': fiberG,
+    'sodiumMg': sodiumMg,
+  };
+}
+
 class Recipe {
   final String id;
   final String name;
@@ -75,6 +111,7 @@ class Recipe {
   final List<String> suitableMealTypes;
   final bool isPortable;
   final List<String> seasons; // empty = all seasons
+  final NutritionInfo? nutrition;
 
   const Recipe({
     required this.id,
@@ -98,6 +135,7 @@ class Recipe {
     this.suitableMealTypes = const ['lunch', 'dinner'],
     this.isPortable = true,
     this.seasons = const [],
+    this.nutrition,
   });
 
   factory Recipe.fromJson(Map<String, dynamic> json) => Recipe(
@@ -127,6 +165,9 @@ class Recipe {
         suitableMealTypes: List<String>.from(json['suitableMealTypes'] ?? ['lunch', 'dinner']),
         isPortable: json['isPortable'] ?? true,
         seasons: List<String>.from(json['seasons'] ?? []),
+        nutrition: json['nutrition'] != null
+            ? NutritionInfo.fromJson(json['nutrition'] as Map<String, dynamic>)
+            : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -151,6 +192,7 @@ class Recipe {
         'suitableMealTypes': suitableMealTypes,
         'isPortable': isPortable,
         'seasons': seasons,
+        if (nutrition != null) 'nutrition': nutrition!.toJson(),
       };
 }
 

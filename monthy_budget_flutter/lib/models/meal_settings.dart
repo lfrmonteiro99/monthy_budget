@@ -130,6 +130,24 @@ enum ActivityLevel {
   }
 }
 
+enum MedicalCondition {
+  diabetes,
+  hypertension,
+  highCholesterol,
+  gout,
+  ibs;
+
+  String get label {
+    switch (this) {
+      case MedicalCondition.diabetes:        return 'Diabetes';
+      case MedicalCondition.hypertension:    return 'Hipertensão';
+      case MedicalCondition.highCholesterol: return 'Colesterol alto';
+      case MedicalCondition.gout:            return 'Gota';
+      case MedicalCondition.ibs:             return 'Síndrome do intestino irritável';
+    }
+  }
+}
+
 class HouseholdMember {
   final String name;
   final AgeGroup ageGroup;
@@ -197,6 +215,10 @@ class MealSettings {
   final int redMeatMaxPerWeek;
   final List<HouseholdMember> householdMembers;
   final bool preferSeasonal;
+  final int? dailyCalorieTarget;
+  final int? dailyProteinTargetG;
+  final int? dailyFiberTargetG;
+  final Set<MedicalCondition> medicalConditions;
 
   const MealSettings({
     this.householdSize,
@@ -236,6 +258,10 @@ class MealSettings {
     this.redMeatMaxPerWeek = 7,
     this.householdMembers = const [],
     this.preferSeasonal = false,
+    this.dailyCalorieTarget,
+    this.dailyProteinTargetG,
+    this.dailyFiberTargetG,
+    this.medicalConditions = const {},
   });
 
   static const Object _sentinel = Object();
@@ -275,6 +301,10 @@ class MealSettings {
     int? redMeatMaxPerWeek,
     List<HouseholdMember>? householdMembers,
     bool? preferSeasonal,
+    Object? dailyCalorieTarget = _sentinel,
+    Object? dailyProteinTargetG = _sentinel,
+    Object? dailyFiberTargetG = _sentinel,
+    Set<MedicalCondition>? medicalConditions,
   }) {
     return MealSettings(
       householdSize: householdSize == _sentinel
@@ -315,6 +345,10 @@ class MealSettings {
       redMeatMaxPerWeek: redMeatMaxPerWeek ?? this.redMeatMaxPerWeek,
       householdMembers: householdMembers ?? this.householdMembers,
       preferSeasonal: preferSeasonal ?? this.preferSeasonal,
+      dailyCalorieTarget: dailyCalorieTarget == _sentinel ? this.dailyCalorieTarget : dailyCalorieTarget as int?,
+      dailyProteinTargetG: dailyProteinTargetG == _sentinel ? this.dailyProteinTargetG : dailyProteinTargetG as int?,
+      dailyFiberTargetG: dailyFiberTargetG == _sentinel ? this.dailyFiberTargetG : dailyFiberTargetG as int?,
+      medicalConditions: medicalConditions ?? this.medicalConditions,
     );
   }
 
@@ -353,6 +387,10 @@ class MealSettings {
     'redMeatMaxPerWeek': redMeatMaxPerWeek,
     'householdMembers': householdMembers.map((m) => m.toJson()).toList(),
     'preferSeasonal': preferSeasonal,
+    'dailyCalorieTarget': dailyCalorieTarget,
+    'dailyProteinTargetG': dailyProteinTargetG,
+    'dailyFiberTargetG': dailyFiberTargetG,
+    'medicalConditions': medicalConditions.map((c) => c.name).toList(),
   };
 
   factory MealSettings.fromJson(Map<String, dynamic> json) {
@@ -425,6 +463,17 @@ class MealSettings {
               .toList()
           : const [],
       preferSeasonal: json['preferSeasonal'] ?? false,
+      dailyCalorieTarget: json['dailyCalorieTarget'] as int?,
+      dailyProteinTargetG: json['dailyProteinTargetG'] as int?,
+      dailyFiberTargetG: json['dailyFiberTargetG'] as int?,
+      medicalConditions: json['medicalConditions'] != null
+          ? (json['medicalConditions'] as List<dynamic>)
+              .map((e) => MedicalCondition.values.firstWhere(
+                    (c) => c.name == e,
+                    orElse: () => MedicalCondition.diabetes,
+                  ))
+              .toSet()
+          : const {},
     );
   }
 }

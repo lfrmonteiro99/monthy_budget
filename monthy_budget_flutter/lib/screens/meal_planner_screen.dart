@@ -571,6 +571,24 @@ class _DayCard extends StatelessWidget {
                         style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
                   ],
                 ),
+                if (recipe.nutrition != null) ...[
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      _NutriBadge('${recipe.nutrition!.kcal}', 'kcal', const Color(0xFFEF4444)),
+                      const SizedBox(width: 6),
+                      _NutriBadge('${recipe.nutrition!.proteinG.round()}g', 'prot', const Color(0xFF3B82F6)),
+                      const SizedBox(width: 6),
+                      _NutriBadge('${recipe.nutrition!.carbsG.round()}g', 'carbs', const Color(0xFFF59E0B)),
+                      const SizedBox(width: 6),
+                      _NutriBadge('${recipe.nutrition!.fatG.round()}g', 'gord', const Color(0xFF8B5CF6)),
+                      if (recipe.nutrition!.fiberG >= 5) ...[
+                        const SizedBox(width: 6),
+                        _NutriBadge('${recipe.nutrition!.fiberG.round()}g', 'fibra', const Color(0xFF10B981)),
+                      ],
+                    ],
+                  ),
+                ],
                 const SizedBox(height: 10),
                 Row(
                   children: [
@@ -1053,6 +1071,28 @@ class _FeedbackButton extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           child: Icon(isActive ? activeIcon : icon, size: 20, color: isActive ? color : const Color(0xFFCBD5E1)),
         ),
+      ),
+    );
+  }
+}
+
+class _NutriBadge extends StatelessWidget {
+  final String value;
+  final String label;
+  final Color color;
+  const _NutriBadge(this.value, this.label, this.color);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        '$value $label',
+        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: color),
       ),
     );
   }

@@ -42,7 +42,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 420,
+      "proteinG": 35,
+      "carbsG": 30,
+      "fatG": 16,
+      "fiberG": 2.5,
+      "sodiumMg": 380
+    }
   },
   {
     "id": "frango_arroz",
@@ -89,7 +97,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 480,
+      "proteinG": 32,
+      "carbsG": 52,
+      "fatG": 12,
+      "fiberG": 1.5,
+      "sodiumMg": 350
+    }
   },
   {
     "id": "frango_estufado",
@@ -139,7 +155,15 @@
     "seasons": [
       "autumn",
       "winter"
-    ]
+    ],
+    "nutrition": {
+      "kcal": 390,
+      "proteinG": 30,
+      "carbsG": 25,
+      "fatG": 18,
+      "fiberG": 3,
+      "sodiumMg": 420
+    }
   },
   {
     "id": "frango_grelhado",
@@ -182,7 +206,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 350,
+      "proteinG": 34,
+      "carbsG": 28,
+      "fatG": 10,
+      "fiberG": 2,
+      "sodiumMg": 300
+    }
   },
   {
     "id": "frango_broculos",
@@ -225,7 +257,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 360,
+      "proteinG": 32,
+      "carbsG": 15,
+      "fatG": 14,
+      "fiberG": 4,
+      "sodiumMg": 320
+    }
   },
   {
     "id": "esparguete_bolonhesa",
@@ -272,7 +312,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 520,
+      "proteinG": 28,
+      "carbsG": 55,
+      "fatG": 18,
+      "fiberG": 3.5,
+      "sodiumMg": 480
+    }
   },
   {
     "id": "almondegas",
@@ -315,7 +363,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 460,
+      "proteinG": 26,
+      "carbsG": 32,
+      "fatG": 22,
+      "fiberG": 3,
+      "sodiumMg": 460
+    }
   },
   {
     "id": "empadao",
@@ -363,7 +419,15 @@
     "seasons": [
       "autumn",
       "winter"
-    ]
+    ],
+    "nutrition": {
+      "kcal": 450,
+      "proteinG": 24,
+      "carbsG": 38,
+      "fatG": 22,
+      "fiberG": 2.5,
+      "sodiumMg": 440
+    }
   },
   {
     "id": "hamburguer",
@@ -406,7 +470,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 480,
+      "proteinG": 26,
+      "carbsG": 35,
+      "fatG": 24,
+      "fiberG": 2,
+      "sodiumMg": 550
+    }
   },
   {
     "id": "lasanha",
@@ -454,7 +526,15 @@
     "seasons": [
       "autumn",
       "winter"
-    ]
+    ],
+    "nutrition": {
+      "kcal": 550,
+      "proteinG": 28,
+      "carbsG": 42,
+      "fatG": 28,
+      "fiberG": 2,
+      "sodiumMg": 520
+    }
   },
   {
     "id": "feijoada_simples",
@@ -504,7 +584,15 @@
     "seasons": [
       "autumn",
       "winter"
-    ]
+    ],
+    "nutrition": {
+      "kcal": 420,
+      "proteinG": 22,
+      "carbsG": 52,
+      "fatG": 10,
+      "fiberG": 12,
+      "sodiumMg": 380
+    }
   },
   {
     "id": "grao_espinafres",
@@ -547,7 +635,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 350,
+      "proteinG": 16,
+      "carbsG": 42,
+      "fatG": 10,
+      "fiberG": 10,
+      "sodiumMg": 320
+    }
   },
   {
     "id": "lentilhas_estufadas",
@@ -597,7 +693,15 @@
     "seasons": [
       "autumn",
       "winter"
-    ]
+    ],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 20,
+      "carbsG": 48,
+      "fatG": 8,
+      "fiberG": 14,
+      "sodiumMg": 350
+    }
   },
   {
     "id": "feijao_verde_batata",
@@ -640,7 +744,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 280,
+      "proteinG": 10,
+      "carbsG": 38,
+      "fatG": 8,
+      "fiberG": 8,
+      "sodiumMg": 300
+    }
   },
   {
     "id": "sopa_feijao",
@@ -690,7 +802,15 @@
     "seasons": [
       "autumn",
       "winter"
-    ]
+    ],
+    "nutrition": {
+      "kcal": 280,
+      "proteinG": 12,
+      "carbsG": 38,
+      "fatG": 6,
+      "fiberG": 10,
+      "sodiumMg": 350
+    }
   },
   {
     "id": "omelete_legumes",
@@ -734,7 +854,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 340,
+      "proteinG": 18,
+      "carbsG": 12,
+      "fatG": 24,
+      "fiberG": 2.5,
+      "sodiumMg": 400
+    }
   },
   {
     "id": "tortilha",
@@ -778,7 +906,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 16,
+      "carbsG": 30,
+      "fatG": 20,
+      "fiberG": 2.5,
+      "sodiumMg": 350
+    }
   },
   {
     "id": "frittata_espinafres",
@@ -824,7 +960,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 330,
+      "proteinG": 20,
+      "carbsG": 10,
+      "fatG": 22,
+      "fiberG": 3,
+      "sodiumMg": 380
+    }
   },
   {
     "id": "ovos_mexidos_tomate",
@@ -868,7 +1012,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 310,
+      "proteinG": 16,
+      "carbsG": 20,
+      "fatG": 18,
+      "fiberG": 2,
+      "sodiumMg": 360
+    }
   },
   {
     "id": "ovo_arroz",
@@ -911,7 +1063,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 16,
+      "carbsG": 48,
+      "fatG": 12,
+      "fiberG": 2.5,
+      "sodiumMg": 340
+    }
   },
   {
     "id": "pescada_forno",
@@ -956,7 +1116,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 300,
+      "proteinG": 30,
+      "carbsG": 28,
+      "fatG": 8,
+      "fiberG": 2.5,
+      "sodiumMg": 340
+    }
   },
   {
     "id": "peixe_grelhado",
@@ -999,7 +1167,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 290,
+      "proteinG": 32,
+      "carbsG": 18,
+      "fatG": 8,
+      "fiberG": 3,
+      "sodiumMg": 300
+    }
   },
   {
     "id": "arroz_peixe",
@@ -1046,7 +1222,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 26,
+      "carbsG": 45,
+      "fatG": 10,
+      "fiberG": 2,
+      "sodiumMg": 380
+    }
   },
   {
     "id": "bacalhau_cozido",
@@ -1096,7 +1280,15 @@
     "seasons": [
       "autumn",
       "winter"
-    ]
+    ],
+    "nutrition": {
+      "kcal": 350,
+      "proteinG": 32,
+      "carbsG": 28,
+      "fatG": 10,
+      "fiberG": 3.5,
+      "sodiumMg": 680
+    }
   },
   {
     "id": "bacalhau_grao",
@@ -1142,7 +1334,15 @@
     "seasons": [
       "autumn",
       "winter"
-    ]
+    ],
+    "nutrition": {
+      "kcal": 420,
+      "proteinG": 30,
+      "carbsG": 38,
+      "fatG": 14,
+      "fiberG": 6,
+      "sodiumMg": 650
+    }
   },
   {
     "id": "costeletas_porco",
@@ -1185,7 +1385,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 400,
+      "proteinG": 32,
+      "carbsG": 22,
+      "fatG": 20,
+      "fiberG": 1.5,
+      "sodiumMg": 350
+    }
   },
   {
     "id": "porco_alentejana",
@@ -1228,7 +1436,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 520,
+      "proteinG": 32,
+      "carbsG": 28,
+      "fatG": 28,
+      "fiberG": 3,
+      "sodiumMg": 580
+    }
   },
   {
     "id": "bifanas",
@@ -1271,7 +1487,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 450,
+      "proteinG": 30,
+      "carbsG": 32,
+      "fatG": 22,
+      "fiberG": 1.5,
+      "sodiumMg": 500
+    }
   },
   {
     "id": "porco_assado",
@@ -1316,7 +1540,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 480,
+      "proteinG": 34,
+      "carbsG": 25,
+      "fatG": 24,
+      "fiberG": 2,
+      "sodiumMg": 420
+    }
   },
   {
     "id": "feijoada_porco",
@@ -1366,7 +1598,15 @@
     "seasons": [
       "autumn",
       "winter"
-    ]
+    ],
+    "nutrition": {
+      "kcal": 550,
+      "proteinG": 30,
+      "carbsG": 45,
+      "fatG": 24,
+      "fiberG": 8,
+      "sodiumMg": 620
+    }
   },
   {
     "id": "sardinhas_assadas",
@@ -1411,7 +1651,15 @@
     "isPortable": true,
     "seasons": [
       "summer"
-    ]
+    ],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 28,
+      "carbsG": 25,
+      "fatG": 18,
+      "fiberG": 2.5,
+      "sodiumMg": 420
+    }
   },
   {
     "id": "atum_salada",
@@ -1461,7 +1709,15 @@
     "seasons": [
       "spring",
       "summer"
-    ]
+    ],
+    "nutrition": {
+      "kcal": 320,
+      "proteinG": 24,
+      "carbsG": 18,
+      "fatG": 16,
+      "fiberG": 4,
+      "sodiumMg": 380
+    }
   },
   {
     "id": "atum_arroz",
@@ -1508,7 +1764,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 420,
+      "proteinG": 24,
+      "carbsG": 50,
+      "fatG": 12,
+      "fiberG": 2,
+      "sodiumMg": 340
+    }
   },
   {
     "id": "caldeirada",
@@ -1562,7 +1826,15 @@
     "seasons": [
       "autumn",
       "winter"
-    ]
+    ],
+    "nutrition": {
+      "kcal": 350,
+      "proteinG": 30,
+      "carbsG": 22,
+      "fatG": 12,
+      "fiberG": 3,
+      "sodiumMg": 480
+    }
   },
   {
     "id": "pataniscas_bacalhau",
@@ -1612,7 +1884,15 @@
     "seasons": [
       "autumn",
       "winter"
-    ]
+    ],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 22,
+      "carbsG": 32,
+      "fatG": 18,
+      "fiberG": 2,
+      "sodiumMg": 580
+    }
   },
   {
     "id": "papas_aveia",
@@ -1650,7 +1930,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 260,
+      "proteinG": 8,
+      "carbsG": 42,
+      "fatG": 6,
+      "fiberG": 5,
+      "sodiumMg": 80
+    }
   },
   {
     "id": "torradas_queijo",
@@ -1693,7 +1981,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 340,
+      "proteinG": 16,
+      "carbsG": 30,
+      "fatG": 16,
+      "fiberG": 1.5,
+      "sodiumMg": 460
+    }
   },
   {
     "id": "cereais_leite",
@@ -1731,7 +2027,15 @@
       }
     ],
     "isPortable": false,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 280,
+      "proteinG": 10,
+      "carbsG": 48,
+      "fatG": 4,
+      "fiberG": 3,
+      "sodiumMg": 200
+    }
   },
   {
     "id": "iogurte_fruta",
@@ -1770,7 +2074,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 260,
+      "proteinG": 10,
+      "carbsG": 36,
+      "fatG": 6,
+      "fiberG": 3,
+      "sodiumMg": 100
+    }
   },
   {
     "id": "ovos_pequeno_almoco",
@@ -1808,7 +2120,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 340,
+      "proteinG": 18,
+      "carbsG": 28,
+      "fatG": 16,
+      "fiberG": 1.5,
+      "sodiumMg": 400
+    }
   },
   {
     "id": "panquecas",
@@ -1851,7 +2171,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 320,
+      "proteinG": 10,
+      "carbsG": 42,
+      "fatG": 12,
+      "fiberG": 1.5,
+      "sodiumMg": 280
+    }
   },
   {
     "id": "tosta_mista",
@@ -1890,7 +2218,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 350,
+      "proteinG": 18,
+      "carbsG": 30,
+      "fatG": 16,
+      "fiberG": 1.5,
+      "sodiumMg": 480
+    }
   },
   {
     "id": "fruta_iogurte",
@@ -1928,7 +2264,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 240,
+      "proteinG": 8,
+      "carbsG": 38,
+      "fatG": 4,
+      "fiberG": 4,
+      "sodiumMg": 80
+    }
   },
   {
     "id": "caldo_verde",
@@ -1978,7 +2322,15 @@
     "seasons": [
       "autumn",
       "winter"
-    ]
+    ],
+    "nutrition": {
+      "kcal": 220,
+      "proteinG": 8,
+      "carbsG": 28,
+      "fatG": 8,
+      "fiberG": 4,
+      "sodiumMg": 380
+    }
   },
   {
     "id": "arroz_legumes",
@@ -2025,7 +2377,15 @@
       }
     ],
     "isPortable": true,
-    "seasons": []
+    "seasons": [],
+    "nutrition": {
+      "kcal": 320,
+      "proteinG": 8,
+      "carbsG": 52,
+      "fatG": 8,
+      "fiberG": 4.5,
+      "sodiumMg": 280
+    }
   },
   {
     "id": "massa_cogumelos",
@@ -2075,7 +2435,15 @@
     "seasons": [
       "autumn",
       "winter"
-    ]
+    ],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 12,
+      "carbsG": 52,
+      "fatG": 12,
+      "fiberG": 3.5,
+      "sodiumMg": 280
+    }
   },
   {
     "id": "sopa_legumes",
@@ -2125,7 +2493,15 @@
     "seasons": [
       "autumn",
       "winter"
-    ]
+    ],
+    "nutrition": {
+      "kcal": 180,
+      "proteinG": 6,
+      "carbsG": 24,
+      "fatG": 4,
+      "fiberG": 5,
+      "sodiumMg": 300
+    }
   },
   {
     "id": "salada_grao",
@@ -2175,6 +2551,14 @@
     "seasons": [
       "spring",
       "summer"
-    ]
+    ],
+    "nutrition": {
+      "kcal": 320,
+      "proteinG": 14,
+      "carbsG": 38,
+      "fatG": 12,
+      "fiberG": 8,
+      "sodiumMg": 280
+    }
   }
 ]

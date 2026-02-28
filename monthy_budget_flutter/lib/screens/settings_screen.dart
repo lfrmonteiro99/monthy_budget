@@ -1130,6 +1130,94 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 mealSettings: ms.copyWith(preferSeasonal: v))),
           ),
           const SizedBox(height: 16),
+          _label('OBJETIVOS NUTRICIONAIS'),
+          const SizedBox(height: 8),
+          TextFormField(
+            initialValue: ms.dailyCalorieTarget?.toString() ?? '',
+            keyboardType: TextInputType.number,
+            decoration: _inputDecoration('ex: 2000', suffix: 'kcal/dia').copyWith(
+              suffixIcon: ms.dailyCalorieTarget != null
+                  ? IconButton(
+                      icon: const Icon(Icons.close, size: 18, color: Color(0xFF94A3B8)),
+                      onPressed: () => setState(() => _draft = _draft.copyWith(
+                          mealSettings: ms.copyWith(dailyCalorieTarget: null))),
+                    )
+                  : null,
+            ),
+            onChanged: (v) {
+              final parsed = int.tryParse(v);
+              setState(() => _draft = _draft.copyWith(
+                  mealSettings: ms.copyWith(
+                      dailyCalorieTarget: (parsed != null && parsed > 0) ? parsed : null)));
+            },
+          ),
+          const SizedBox(height: 8),
+          TextFormField(
+            initialValue: ms.dailyProteinTargetG?.toString() ?? '',
+            keyboardType: TextInputType.number,
+            decoration: _inputDecoration('ex: 60', suffix: 'g/dia').copyWith(
+              labelText: 'Proteína diária',
+              labelStyle: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+              suffixIcon: ms.dailyProteinTargetG != null
+                  ? IconButton(
+                      icon: const Icon(Icons.close, size: 18, color: Color(0xFF94A3B8)),
+                      onPressed: () => setState(() => _draft = _draft.copyWith(
+                          mealSettings: ms.copyWith(dailyProteinTargetG: null))),
+                    )
+                  : null,
+            ),
+            onChanged: (v) {
+              final parsed = int.tryParse(v);
+              setState(() => _draft = _draft.copyWith(
+                  mealSettings: ms.copyWith(
+                      dailyProteinTargetG: (parsed != null && parsed > 0) ? parsed : null)));
+            },
+          ),
+          const SizedBox(height: 8),
+          TextFormField(
+            initialValue: ms.dailyFiberTargetG?.toString() ?? '',
+            keyboardType: TextInputType.number,
+            decoration: _inputDecoration('ex: 25', suffix: 'g/dia').copyWith(
+              labelText: 'Fibra diária',
+              labelStyle: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+              suffixIcon: ms.dailyFiberTargetG != null
+                  ? IconButton(
+                      icon: const Icon(Icons.close, size: 18, color: Color(0xFF94A3B8)),
+                      onPressed: () => setState(() => _draft = _draft.copyWith(
+                          mealSettings: ms.copyWith(dailyFiberTargetG: null))),
+                    )
+                  : null,
+            ),
+            onChanged: (v) {
+              final parsed = int.tryParse(v);
+              setState(() => _draft = _draft.copyWith(
+                  mealSettings: ms.copyWith(
+                      dailyFiberTargetG: (parsed != null && parsed > 0) ? parsed : null)));
+            },
+          ),
+          const SizedBox(height: 16),
+          _label('CONDIÇÕES MÉDICAS'),
+          const SizedBox(height: 8),
+          ...MedicalCondition.values.map((mc) => CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(mc.label,
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w500)),
+                value: ms.medicalConditions.contains(mc),
+                activeColor: const Color(0xFF3B82F6),
+                controlAffinity: ListTileControlAffinity.leading,
+                onChanged: (v) {
+                  final updated = Set<MedicalCondition>.from(ms.medicalConditions);
+                  if (v == true) {
+                    updated.add(mc);
+                  } else {
+                    updated.remove(mc);
+                  }
+                  setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(medicalConditions: updated)));
+                },
+              )),
+          const SizedBox(height: 16),
           _label('REFEIÇÕES ATIVAS'),
           const SizedBox(height: 8),
           ...MealType.values.map((mt) => SwitchListTile(

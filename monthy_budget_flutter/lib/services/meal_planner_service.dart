@@ -99,6 +99,20 @@ class MealPlannerService {
           const highSodium = {'bacalhau', 'chourico', 'fiambre', 'sardinha'};
           if (r.ingredients.any((ri) => highSodium.contains(ri.ingredientId))) return false;
         }
+        // Medical condition filtering
+        if (ms.medicalConditions.contains(MedicalCondition.diabetes)) {
+          if (r.nutrition != null && r.nutrition!.carbsG > 55) return false;
+        }
+        if (ms.medicalConditions.contains(MedicalCondition.hypertension)) {
+          if (r.nutrition != null && r.nutrition!.sodiumMg > 500) return false;
+        }
+        if (ms.medicalConditions.contains(MedicalCondition.highCholesterol)) {
+          if (r.nutrition != null && r.nutrition!.fatG > 25) return false;
+        }
+        if (ms.medicalConditions.contains(MedicalCondition.gout)) {
+          const highPurine = {'sardinha', 'porco'};
+          if (highPurine.contains(r.proteinId)) return false;
+        }
         if (r.complexity > effectiveMaxComplexity) return false;
         if (r.prepMinutes > effectiveMaxPrep) return false;
         if (ms.excludedProteins.contains(r.proteinId)) return false;
@@ -351,6 +365,36 @@ class MealPlannerService {
         if (recentProteins.isNotEmpty && available.length > 1) {
           final diverse = available.where((r) => !recentProteins.contains(r.proteinId)).toList();
           if (diverse.isNotEmpty) available = diverse;
+        }
+
+        // Calorie target soft filter
+        if (ms.dailyCalorieTarget != null) {
+          final mealsPerDay = ms.enabledMeals.length;
+          final targetPerMeal = ms.dailyCalorieTarget! / mealsPerDay;
+          final maxKcal = (targetPerMeal * 1.3).round();
+          final calFiltered = available.where((r) =>
+            r.nutrition == null || r.nutrition!.kcal <= maxKcal).toList();
+          if (calFiltered.length >= 3) available = calFiltered;
+        }
+
+        // Fiber boost
+        if (ms.dailyFiberTargetG != null && ms.dailyFiberTargetG! > 0) {
+          available.sort((a, b) {
+            final aFiber = a.nutrition?.fiberG ?? 0;
+            final bFiber = b.nutrition?.fiberG ?? 0;
+            return bFiber.compareTo(aFiber);
+          });
+        }
+
+        // Protein boost
+        if (ms.dailyProteinTargetG != null) {
+          final mealsPerDay = ms.enabledMeals.length;
+          final targetPerMeal = ms.dailyProteinTargetG! / mealsPerDay;
+          available.sort((a, b) {
+            final aDiff = ((a.nutrition?.proteinG ?? 0) - targetPerMeal).abs();
+            final bDiff = ((b.nutrition?.proteinG ?? 0) - targetPerMeal).abs();
+            return aDiff.compareTo(bDiff);
+          });
         }
 
         // Shuffle then partition: favorites first, rest after (boost, don't eliminate)
