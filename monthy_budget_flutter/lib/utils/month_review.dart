@@ -42,16 +42,12 @@ class MonthReviewResult {
   });
 }
 
-const _monthNames = [
-  '', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
-];
-
 MonthReviewResult? buildMonthReview({
   required Map<String, List<ExpenseSnapshot>> expenseHistory,
   required List<ExpenseItem> currentExpenses,
   required PurchaseHistory purchaseHistory,
   required DateTime now,
+  required String Function(int month, int year) monthLabelBuilder,
 }) {
   if (now.day > 7) return null;
 
@@ -62,7 +58,7 @@ MonthReviewResult? buildMonthReview({
   final snapshots = expenseHistory[prevKey];
   if (snapshots == null || snapshots.isEmpty) return null;
 
-  final monthLabel = '${_monthNames[prevMonth]} $prevYear';
+  final monthLabel = monthLabelBuilder(prevMonth, prevYear);
 
   final currentMap = <String, ExpenseItem>{};
   for (final e in currentExpenses) {

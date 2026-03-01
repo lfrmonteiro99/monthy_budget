@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'meal_settings.dart';
+import '../data/tax/tax_system.dart';
+import '../l10n/generated/app_localizations.dart';
 
 enum MaritalStatus {
   solteiro,
@@ -52,6 +54,16 @@ enum MaritalStatus {
         return MaritalStatus.solteiro;
     }
   }
+
+  String localizedLabel(S l10n) {
+    switch (this) {
+      case MaritalStatus.solteiro: return l10n.enumMaritalSolteiro;
+      case MaritalStatus.casado: return l10n.enumMaritalCasado;
+      case MaritalStatus.uniaoFacto: return l10n.enumMaritalUniaoFacto;
+      case MaritalStatus.divorciado: return l10n.enumMaritalDivorciado;
+      case MaritalStatus.viuvo: return l10n.enumMaritalViuvo;
+    }
+  }
 }
 
 enum SubsidyMode {
@@ -82,6 +94,21 @@ enum SubsidyMode {
       case SubsidyMode.half: return '50%';
     }
   }
+
+  String localizedLabel(S l10n) {
+    switch (this) {
+      case SubsidyMode.none: return l10n.enumSubsidyNone;
+      case SubsidyMode.full: return l10n.enumSubsidyFull;
+      case SubsidyMode.half: return l10n.enumSubsidyHalf;
+    }
+  }
+  String localizedShortLabel(S l10n) {
+    switch (this) {
+      case SubsidyMode.none: return l10n.enumSubsidyNoneShort;
+      case SubsidyMode.full: return l10n.enumSubsidyFullShort;
+      case SubsidyMode.half: return l10n.enumSubsidyHalfShort;
+    }
+  }
 }
 
 enum MealAllowanceType {
@@ -97,6 +124,14 @@ enum MealAllowanceType {
         return 'Cartao';
       case MealAllowanceType.cash:
         return 'Com base';
+    }
+  }
+
+  String localizedLabel(S l10n) {
+    switch (this) {
+      case MealAllowanceType.none: return l10n.enumMealAllowanceNone;
+      case MealAllowanceType.card: return l10n.enumMealAllowanceCard;
+      case MealAllowanceType.cash: return l10n.enumMealAllowanceCash;
     }
   }
 }
@@ -138,6 +173,21 @@ enum ExpenseCategory {
     }
   }
 
+  String localizedLabel(S l10n) {
+    switch (this) {
+      case ExpenseCategory.telecomunicacoes: return l10n.enumCatTelecomunicacoes;
+      case ExpenseCategory.energia: return l10n.enumCatEnergia;
+      case ExpenseCategory.agua: return l10n.enumCatAgua;
+      case ExpenseCategory.alimentacao: return l10n.enumCatAlimentacao;
+      case ExpenseCategory.educacao: return l10n.enumCatEducacao;
+      case ExpenseCategory.habitacao: return l10n.enumCatHabitacao;
+      case ExpenseCategory.transportes: return l10n.enumCatTransportes;
+      case ExpenseCategory.saude: return l10n.enumCatSaude;
+      case ExpenseCategory.lazer: return l10n.enumCatLazer;
+      case ExpenseCategory.outros: return l10n.enumCatOutros;
+    }
+  }
+
   static ExpenseCategory fromJson(String value) {
     for (final cat in ExpenseCategory.values) {
       if (cat.name == value) return cat;
@@ -165,6 +215,16 @@ enum ChartType {
         return 'Descontos (IRS + SS)';
       case ChartType.savingsRate:
         return 'Taxa de Poupança';
+    }
+  }
+
+  String localizedLabel(S l10n) {
+    switch (this) {
+      case ChartType.expensesPie: return l10n.enumChartExpensesPie;
+      case ChartType.incomeVsExpenses: return l10n.enumChartIncomeVsExpenses;
+      case ChartType.netIncomeBar: return l10n.enumChartNetIncome;
+      case ChartType.deductionsBreakdown: return l10n.enumChartDeductions;
+      case ChartType.savingsRate: return l10n.enumChartSavingsRate;
     }
   }
 
@@ -415,6 +475,9 @@ class AppSettings {
   final DashboardConfig dashboardConfig;
   final MealSettings mealSettings;
   final Map<String, int> stressHistory;
+  final Country country;
+  final String? localeOverride;
+  final bool setupWizardCompleted;
 
   const AppSettings({
     this.personalInfo = const PersonalInfo(),
@@ -432,7 +495,12 @@ class AppSettings {
     this.dashboardConfig = const DashboardConfig(),
     this.mealSettings = const MealSettings(),
     this.stressHistory = const {},
+    this.country = Country.pt,
+    this.localeOverride,
+    this.setupWizardCompleted = false,
   });
+
+  static const Object _sentinel = Object();
 
   AppSettings copyWith({
     PersonalInfo? personalInfo,
@@ -441,6 +509,9 @@ class AppSettings {
     DashboardConfig? dashboardConfig,
     MealSettings? mealSettings,
     Map<String, int>? stressHistory,
+    Country? country,
+    Object? localeOverride = _sentinel,
+    bool? setupWizardCompleted,
   }) {
     return AppSettings(
       personalInfo: personalInfo ?? this.personalInfo,
@@ -449,6 +520,11 @@ class AppSettings {
       dashboardConfig: dashboardConfig ?? this.dashboardConfig,
       mealSettings: mealSettings ?? this.mealSettings,
       stressHistory: stressHistory ?? this.stressHistory,
+      country: country ?? this.country,
+      localeOverride: localeOverride == _sentinel
+          ? this.localeOverride
+          : localeOverride as String?,
+      setupWizardCompleted: setupWizardCompleted ?? this.setupWizardCompleted,
     );
   }
 
@@ -460,6 +536,9 @@ class AppSettings {
       'dashboardConfig': dashboardConfig.toJson(),
       'mealSettings': mealSettings.toJson(),
       'stressHistory': stressHistory,
+      'country': country.name,
+      'localeOverride': localeOverride,
+      'setupWizardCompleted': setupWizardCompleted,
     };
     return jsonEncode(map);
   }
@@ -486,6 +565,12 @@ class AppSettings {
       stressHistory: (map['stressHistory'] as Map<String, dynamic>?)
               ?.map((k, v) => MapEntry(k, (v as num).toInt())) ??
           const {},
+      country: Country.fromJson(map['country'] as String?),
+      localeOverride: map['localeOverride'] as String?,
+      // Existing users (row exists but key missing) → true; new users → false
+      setupWizardCompleted: map.containsKey('setupWizardCompleted')
+          ? (map['setupWizardCompleted'] ?? false)
+          : true,
     );
   }
 }

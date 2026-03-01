@@ -1,0 +1,1037 @@
+{
+  "@@locale": "fr",
+
+  "navBudget": "Budget",
+  "navGrocery": "Courses",
+  "navList": "Liste",
+  "navCoach": "Coach",
+  "navMeals": "Repas",
+  "navBudgetTooltip": "Aperçu du budget mensuel",
+  "navGroceryTooltip": "Catalogue de produits",
+  "navListTooltip": "Liste de courses",
+  "navCoachTooltip": "Coach financier IA",
+  "navMealsTooltip": "Planificateur de repas",
+
+  "appTitle": "Budget Mensuel",
+  "loading": "Chargement...",
+  "loadingApp": "Chargement de l'application",
+  "cancel": "Annuler",
+  "confirm": "Confirmer",
+  "close": "Fermer",
+  "save": "Enregistrer",
+  "delete": "Supprimer",
+  "clear": "Effacer",
+  "errorSavingPurchase": "Erreur lors de l'enregistrement : {error}",
+  "@errorSavingPurchase": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "filterBy": "Filtrer par {label}",
+  "@filterBy": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "addToList": "Ajouter {name} à la liste",
+  "@addToList": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+
+  "enumMaritalSolteiro": "Célibataire",
+  "enumMaritalCasado": "Marié(e)",
+  "enumMaritalUniaoFacto": "Union libre",
+  "enumMaritalDivorciado": "Divorcé(e)",
+  "enumMaritalViuvo": "Veuf/Veuve",
+
+  "enumSubsidyNone": "Sans primes",
+  "enumSubsidyFull": "Avec primes",
+  "enumSubsidyHalf": "50% primes",
+  "enumSubsidyNoneShort": "Sans",
+  "enumSubsidyFullShort": "Avec",
+  "enumSubsidyHalfShort": "50%",
+
+  "enumMealAllowanceNone": "Sans",
+  "enumMealAllowanceCard": "Carte",
+  "enumMealAllowanceCash": "Espèces",
+
+  "enumCatTelecomunicacoes": "Télécom",
+  "enumCatEnergia": "Énergie",
+  "enumCatAgua": "Eau",
+  "enumCatAlimentacao": "Alimentation",
+  "enumCatEducacao": "Éducation",
+  "enumCatHabitacao": "Logement",
+  "enumCatTransportes": "Transport",
+  "enumCatSaude": "Santé",
+  "enumCatLazer": "Loisirs",
+  "enumCatOutros": "Autres",
+
+  "enumChartExpensesPie": "Dépenses par catégorie",
+  "enumChartIncomeVsExpenses": "Revenus vs Dépenses",
+  "enumChartNetIncome": "Revenu Net",
+  "enumChartDeductions": "Prélèvements (IR + Cotis.)",
+  "enumChartSavingsRate": "Taux d'épargne",
+
+  "enumMealBreakfast": "Petit-déjeuner",
+  "enumMealLunch": "Déjeuner",
+  "enumMealSnack": "Goûter",
+  "enumMealDinner": "Dîner",
+
+  "enumObjMinimizeCost": "Minimiser les coûts",
+  "enumObjBalancedHealth": "Équilibre coût/santé",
+  "enumObjHighProtein": "Riche en protéines",
+  "enumObjLowCarb": "Faible en glucides",
+  "enumObjVegetarian": "Végétarien",
+
+  "enumEquipOven": "Four",
+  "enumEquipAirFryer": "Friteuse à air",
+  "enumEquipFoodProcessor": "Robot culinaire",
+  "enumEquipPressureCooker": "Autocuiseur",
+  "enumEquipMicrowave": "Micro-ondes",
+  "enumEquipBimby": "Bimby / Thermomix",
+
+  "enumSodiumNoRestriction": "Sans restriction",
+  "enumSodiumReduced": "Sodium réduit",
+  "enumSodiumLow": "Faible en sodium",
+
+  "enumAge0to3": "0–3 ans",
+  "enumAge4to10": "4–10 ans",
+  "enumAgeTeen": "Adolescent",
+  "enumAgeAdult": "Adulte",
+  "enumAgeSenior": "Senior (65+)",
+
+  "enumActivitySedentary": "Sédentaire",
+  "enumActivityModerate": "Modéré",
+  "enumActivityActive": "Actif",
+  "enumActivityVeryActive": "Très actif",
+
+  "enumMedDiabetes": "Diabète",
+  "enumMedHypertension": "Hypertension",
+  "enumMedHighCholesterol": "Cholestérol élevé",
+  "enumMedGout": "Goutte",
+  "enumMedIbs": "Syndrome du côlon irritable",
+
+  "stressExcellent": "Excellent",
+  "stressGood": "Bon",
+  "stressWarning": "Attention",
+  "stressCritical": "Critique",
+  "stressFactorSavings": "Taux d'épargne",
+  "stressFactorSafety": "Marge de sécurité",
+  "stressFactorFood": "Budget alimentation",
+  "stressFactorStability": "Stabilité des dépenses",
+  "stressStable": "Stable",
+  "stressHigh": "Élevée",
+  "stressUsed": "{percent}% utilisé",
+  "@stressUsed": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "stressNA": "N/D",
+
+  "monthReviewFoodExceeded": "L'alimentation a dépassé le budget de {percent}% — envisagez de revoir les portions ou la fréquence des courses.",
+  "@monthReviewFoodExceeded": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "monthReviewExpensesExceeded": "Les dépenses réelles ont dépassé le prévu de {amount}€ — ajuster les valeurs dans les paramètres ?",
+  "@monthReviewExpensesExceeded": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "monthReviewSavedMore": "Économisé {amount}€ de plus que prévu — vous pouvez renforcer le fonds d'urgence.",
+  "@monthReviewSavedMore": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "monthReviewOnTrack": "Dépenses dans les prévisions. Bon contrôle budgétaire.",
+
+  "dashboardTitle": "Budget Mensuel",
+  "dashboardStressIndex": "Indice de Sérénité",
+  "dashboardTension": "Tension",
+  "dashboardLiquidity": "Liquidité",
+  "dashboardFinalPosition": "Position Finale",
+  "dashboardMonth": "Mois",
+  "dashboardGross": "Brut",
+  "dashboardNet": "Net",
+  "dashboardExpenses": "Dépenses",
+  "dashboardSavingsRate": "Taux Épargne",
+  "dashboardViewTrends": "Voir évolution",
+  "dashboardViewProjection": "Voir projection",
+  "dashboardFinancialSummary": "RÉSUMÉ FINANCIER",
+  "dashboardOpenSettings": "Ouvrir les paramètres",
+  "dashboardMonthlyLiquidity": "LIQUIDITÉ MENSUELLE",
+  "dashboardPositiveBalance": "Solde positif",
+  "dashboardNegativeBalance": "Solde négatif",
+  "dashboardHeroLabel": "Liquidité mensuelle : {amount}, {status}",
+  "@dashboardHeroLabel": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "status": { "type": "String" }
+    }
+  },
+  "dashboardConfigureData": "Configurez vos données pour voir le résumé.",
+  "dashboardOpenSettingsButton": "Ouvrir les Paramètres",
+  "dashboardGrossIncome": "Revenu Brut",
+  "dashboardNetIncome": "Revenu Net",
+  "dashboardInclMealAllowance": "Incl. indemn. repas : {amount}",
+  "@dashboardInclMealAllowance": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "dashboardDeductions": "Prélèvements",
+  "dashboardIrsSs": "IR : {irs} | Cotis. : {ss}",
+  "@dashboardIrsSs": {
+    "placeholders": {
+      "irs": { "type": "String" },
+      "ss": { "type": "String" }
+    }
+  },
+  "dashboardExpensesAmount": "Dépenses : {amount}",
+  "@dashboardExpensesAmount": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "dashboardSalaryDetail": "DÉTAIL DES SALAIRES",
+  "dashboardSalaryN": "Salaire {n}",
+  "@dashboardSalaryN": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "dashboardFood": "ALIMENTATION",
+  "dashboardSimulate": "Simuler",
+  "dashboardBudgeted": "Budgété",
+  "dashboardSpent": "Dépensé",
+  "dashboardRemaining": "Restant",
+  "dashboardFinalizePurchaseHint": "Finalisez un achat dans la Liste pour enregistrer les dépenses.",
+  "dashboardPurchaseHistory": "HISTORIQUE DES ACHATS",
+  "dashboardViewAll": "Tout voir",
+  "dashboardAllPurchases": "Tous les Achats",
+  "dashboardPurchaseLabel": "Achat du {date}, {amount}",
+  "@dashboardPurchaseLabel": {
+    "placeholders": {
+      "date": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "dashboardProductCount": "{count, plural, =1{1 produit} other{{count} produits}}",
+  "@dashboardProductCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "dashboardMonthlyExpenses": "DÉPENSES MENSUELLES",
+  "dashboardTotal": "Total",
+  "dashboardGrossWithSubsidy": "Brut av/ primes",
+  "dashboardIrsRate": "IR ({rate})",
+  "@dashboardIrsRate": {
+    "placeholders": {
+      "rate": { "type": "String" }
+    }
+  },
+  "dashboardSsRate": "Cotis. Soc. (11%)",
+  "dashboardMealAllowance": "Indemn. Repas",
+  "dashboardExemptIncome": "Rev. Exonéré",
+  "dashboardDetails": "Détails",
+  "dashboardVsLastMonth": "{delta} vs mois dernier",
+  "@dashboardVsLastMonth": {
+    "placeholders": {
+      "delta": { "type": "String" }
+    }
+  },
+  "dashboardPaceWarning": "Dépenses plus rapides que prévu",
+  "dashboardPaceCritical": "Risque de dépassement du budget alimentaire",
+  "dashboardPace": "Rythme",
+  "dashboardProjection": "Projection",
+  "dashboardPaceValue": "{actual}\u20ac/jour vs {expected}\u20ac/jour",
+  "@dashboardPaceValue": {
+    "placeholders": {
+      "actual": { "type": "String" },
+      "expected": { "type": "String" }
+    }
+  },
+  "dashboardSummaryLabel": "— RÉSUMÉ",
+  "dashboardViewMonthSummary": "Voir le résumé du mois",
+
+  "coachTitle": "Coach Financier",
+  "coachSubtitle": "IA · GPT-4o mini",
+  "coachApiKeyRequired": "Ajoutez votre clé API OpenAI dans les Paramètres pour utiliser cette fonctionnalité.",
+  "coachAnalysisTitle": "Analyse financière en 3 parties",
+  "coachAnalysisDescription": "Positionnement général · Facteurs critiques de l'Indice de Sérénité · Opportunité immédiate. Basé sur vos données réelles de budget, dépenses et historique d'achats.",
+  "coachConfigureApiKey": "Configurer la clé API dans les Paramètres",
+  "coachApiKeyConfigured": "Clé API configurée",
+  "coachAnalyzeButton": "Analyser mon budget",
+  "coachAnalyzing": "Analyse en cours...",
+  "coachCustomAnalysis": "Analyse personnalisée",
+  "coachNewAnalysis": "Générer nouvelle analyse",
+  "coachHistory": "HISTORIQUE",
+  "coachClearAll": "Tout effacer",
+  "coachClearTitle": "Effacer l'historique",
+  "coachClearContent": "Êtes-vous sûr de vouloir supprimer toutes les analyses enregistrées ?",
+  "coachDeleteLabel": "Supprimer l'analyse",
+  "coachDeleteTooltip": "Supprimer",
+
+  "groceryTitle": "Courses",
+  "grocerySearchHint": "Rechercher un produit...",
+  "groceryLoadingLabel": "Chargement des produits",
+  "groceryLoadingMessage": "Chargement des produits...",
+  "groceryAll": "Tous",
+  "groceryProductCount": "{count} produits",
+  "@groceryProductCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "groceryAddedToList": "{name} ajouté à la liste",
+  "@groceryAddedToList": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "groceryAvgPrice": "{unit} · prix moyen",
+  "@groceryAvgPrice": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+
+  "shoppingTitle": "Liste de Courses",
+  "shoppingEmpty": "Liste vide",
+  "shoppingEmptyMessage": "Ajoutez des produits depuis\nl'écran Courses.",
+  "shoppingItemsRemaining": "{count} à acheter · {total}",
+  "@shoppingItemsRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "shoppingClear": "Effacer",
+  "shoppingFinalize": "Finaliser l'Achat",
+  "shoppingEstimatedTotal": "Total estimé",
+  "shoppingHowMuchSpent": "COMBIEN AI-JE DÉPENSÉ ? (optionnel)",
+  "shoppingConfirm": "Confirmer",
+  "shoppingHistoryTooltip": "Historique d'achats",
+  "shoppingHistoryTitle": "Historique d'Achats",
+  "shoppingItemChecked": "{name}, acheté",
+  "@shoppingItemChecked": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "shoppingItemSwipe": "{name}, glisser pour supprimer",
+  "@shoppingItemSwipe": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "shoppingProductCount": "{count, plural, =1{1 produit} other{{count} produits}}",
+  "@shoppingProductCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "authLogin": "Se connecter",
+  "authRegister": "Créer un compte",
+  "authEmail": "Email",
+  "authEmailHint": "exemple@email.com",
+  "authPassword": "Mot de passe",
+  "authLoginButton": "Se connecter",
+  "authRegisterButton": "S'inscrire",
+  "authSwitchToRegister": "Créer un nouveau compte",
+  "authSwitchToLogin": "J'ai déjà un compte",
+  "householdSetupTitle": "Configurer le Foyer",
+  "householdCreate": "Créer",
+  "householdJoinWithCode": "Rejoindre avec un code",
+  "householdNameLabel": "Nom du foyer",
+  "householdNameHint": "ex : Famille Dupont",
+  "householdCodeLabel": "Code d'invitation",
+  "householdCodeHint": "XXXXXX",
+  "householdCreateButton": "Créer le Foyer",
+  "householdJoinButton": "Rejoindre le Foyer",
+  "householdNameRequired": "Veuillez indiquer le nom du foyer.",
+
+  "chartExpensesByCategory": "Dépenses par Catégorie",
+  "chartIncomeVsExpenses": "Revenus vs Dépenses",
+  "chartDeductions": "Prélèvements (IR + Cotisations)",
+  "chartGrossVsNet": "Revenu Brut vs Net",
+  "chartSavingsRate": "Taux d'Épargne",
+  "chartNetIncome": "Rev. Net",
+  "chartExpensesLabel": "Dépenses",
+  "chartLiquidity": "Liquidité",
+  "chartSalaryN": "Sal. {n}",
+  "@chartSalaryN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "chartGross": "Brut",
+  "chartNet": "Net",
+  "chartNetSalary": "Sal. Net",
+  "chartIRS": "IR",
+  "chartSocialSecurity": "Cotis. Soc.",
+  "chartSavings": "épargne",
+
+  "projectionTitle": "Projection — {month} {year}",
+  "@projectionTitle": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "projectionSubtitle": "Dépensé {spent} sur {budget} en {days} jours",
+  "@projectionSubtitle": {
+    "placeholders": {
+      "spent": {
+        "type": "String"
+      },
+      "budget": {
+        "type": "String"
+      },
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "projectionFood": "ALIMENTATION",
+  "projectionCurrentPace": "Rythme actuel",
+  "projectionNoShopping": "Sans courses",
+  "projectionReduce20": "-20%",
+  "projectionDailySpend": "Dépense journalière estimée : {amount}/jour",
+  "@projectionDailySpend": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "projectionEndOfMonth": "Projection fin de mois",
+  "projectionRemaining": "Restant projeté",
+  "projectionStressImpact": "Impact sur l'indice",
+  "projectionExpenses": "DÉPENSES",
+  "projectionSimulation": "Simulation — non enregistré",
+  "projectionReduceAll": "Réduire toutes de ",
+  "projectionSimLiquidity": "Liquidité simulée",
+  "projectionDelta": "Delta",
+  "projectionSimSavingsRate": "Taux épargne simulé",
+  "projectionSimIndex": "Indice simulé",
+
+  "trendTitle": "Évolution",
+  "trendStressIndex": "INDICE DE SÉRÉNITÉ",
+  "trendTotalExpenses": "DÉPENSES TOTALES",
+  "trendExpensesByCategory": "DÉPENSES PAR CATÉGORIE",
+  "trendCurrent": "Actuel : {amount}",
+  "@trendCurrent": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+
+  "trendCatTelecom": "Télécom",
+  "trendCatEnergy": "Énergie",
+  "trendCatWater": "Eau",
+  "trendCatFood": "Alimentation",
+  "trendCatEducation": "Éducation",
+  "trendCatHousing": "Logement",
+  "trendCatTransport": "Transport",
+  "trendCatHealth": "Santé",
+  "trendCatLeisure": "Loisirs",
+  "trendCatOther": "Autres",
+
+  "monthReviewTitle": "Résumé — {month}",
+  "@monthReviewTitle": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "monthReviewPlanned": "Prévu",
+  "monthReviewActual": "Réel",
+  "monthReviewDifference": "Différence",
+  "monthReviewFood": "Alimentation",
+  "monthReviewFoodValue": "{actual} sur {budget}",
+  "@monthReviewFoodValue": {
+    "placeholders": {
+      "actual": {
+        "type": "String"
+      },
+      "budget": {
+        "type": "String"
+      }
+    }
+  },
+  "monthReviewTopDeviations": "ÉCARTS PRINCIPAUX",
+  "monthReviewSuggestions": "SUGGESTIONS",
+  "monthReviewAiAnalysis": "Analyse IA détaillée",
+
+  "mealPlannerTitle": "Planificateur de Repas",
+  "mealBudgetLabel": "Budget alimentation",
+  "mealPeopleLabel": "Personnes au foyer",
+  "mealGeneratePlan": "Générer le Plan Mensuel",
+  "mealGenerating": "Génération...",
+  "mealRegenerateTitle": "Régénérer le plan ?",
+  "mealRegenerateContent": "Le plan actuel sera remplacé.",
+  "mealRegenerate": "Régénérer",
+  "mealWeekLabel": "Semaine {n}",
+  "@mealWeekLabel": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "mealWeekAbbr": "Sem.{n}",
+  "@mealWeekAbbr": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "mealAddWeekToList": "Ajouter la semaine à la liste",
+  "mealIngredientsAdded": "{count} ingrédients ajoutés à la liste",
+  "@mealIngredientsAdded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mealDayLabel": "Jour {n}",
+  "@mealDayLabel": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "mealIngredients": "Ingrédients",
+  "mealPreparation": "Préparation",
+  "mealSwap": "Échanger",
+  "mealConsolidatedList": "Voir la liste consolidée",
+  "mealConsolidatedTitle": "Liste Consolidée",
+  "mealAlternatives": "Alternatives",
+  "mealTotalCost": "{cost}€ total",
+  "@mealTotalCost": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
+  "mealCatProteins": "Protéines",
+  "mealCatVegetables": "Légumes",
+  "mealCatCarbs": "Glucides",
+  "mealCatFats": "Matières grasses",
+  "mealCatCondiments": "Condiments",
+  "mealCostPerPerson": "{cost}\u20ac/pers",
+  "@mealCostPerPerson": {
+    "placeholders": {
+      "cost": { "type": "String" }
+    }
+  },
+  "mealNutriProt": "prot",
+  "mealNutriCarbs": "gluc",
+  "mealNutriFat": "gras",
+  "mealNutriFiber": "fibre",
+
+  "wizardStepMeals": "Repas",
+  "wizardStepObjective": "Objectif",
+  "wizardStepRestrictions": "Restrictions",
+  "wizardStepKitchen": "Cuisine",
+  "wizardStepStrategy": "Stratégie",
+  "wizardMealsQuestion": "Quels repas voulez-vous inclure dans le plan quotidien ?",
+  "wizardBudgetWeight": "{weight} du budget",
+  "@wizardBudgetWeight": {
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
+  "wizardObjectiveQuestion": "Quel est l'objectif principal de votre plan alimentaire ?",
+  "wizardSelected": "{label}, sélectionné",
+  "@wizardSelected": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "wizardDietaryRestrictions": "RESTRICTIONS ALIMENTAIRES",
+  "wizardGlutenFree": "Sans gluten",
+  "wizardLactoseFree": "Sans lactose",
+  "wizardNutFree": "Sans fruits à coque",
+  "wizardShellfishFree": "Sans crustacés",
+  "wizardDislikedIngredients": "INGRÉDIENTS QUE VOUS N'AIMEZ PAS",
+  "wizardDislikedHint": "ex : thon, brocoli",
+  "wizardMaxPrepTime": "TEMPS DE PRÉPARATION MAXIMUM",
+  "wizardMaxComplexity": "COMPLEXITÉ MAXIMUM",
+  "wizardComplexityEasy": "Facile",
+  "wizardComplexityMedium": "Moyen",
+  "wizardComplexityAdvanced": "Avancé",
+  "wizardEquipment": "ÉQUIPEMENT DISPONIBLE",
+  "wizardBatchCooking": "Batch cooking",
+  "wizardBatchCookingDesc": "Cuisiner pour plusieurs jours à la fois",
+  "wizardMaxBatchDays": "JOURS MAXIMUM PAR RECETTE",
+  "wizardBatchDays": "{days} jours",
+  "@wizardBatchDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "wizardPreferredCookingDay": "JOUR DE CUISINE PRÉFÉRÉ",
+  "wizardReuseLeftovers": "Réutiliser les restes",
+  "wizardReuseLeftoversDesc": "Le dîner d'hier = le déjeuner d'aujourd'hui (coût 0)",
+  "wizardMaxNewIngredients": "NOUVEAUX INGRÉDIENTS PAR SEMAINE MAX",
+  "wizardNoLimit": "Sans limite",
+  "wizardMinimizeWaste": "Minimiser le gaspillage",
+  "wizardMinimizeWasteDesc": "Préférer les recettes réutilisant des ingrédients déjà utilisés",
+  "wizardSettingsInfo": "Vous pouvez modifier les paramètres du planificateur à tout moment dans Paramètres → Repas.",
+  "wizardContinue": "Continuer",
+  "wizardGeneratePlan": "Générer le Plan",
+  "wizardStepOf": "Étape {current} sur {total}",
+  "@wizardStepOf": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "wizardWeekdayMon": "Lun",
+  "wizardWeekdayTue": "Mar",
+  "wizardWeekdayWed": "Mer",
+  "wizardWeekdayThu": "Jeu",
+  "wizardWeekdayFri": "Ven",
+  "wizardWeekdaySat": "Sam",
+  "wizardWeekdaySun": "Dim",
+  "wizardPrepMin": "{mins}min",
+  "@wizardPrepMin": {
+    "placeholders": {
+      "mins": {
+        "type": "int"
+      }
+    }
+  },
+  "wizardPrepMin60Plus": "60+",
+
+  "settingsTitle": "Paramètres",
+  "settingsPersonal": "Données Personnelles",
+  "settingsSalaries": "Salaires",
+  "settingsExpenses": "Dépenses",
+  "settingsCoachAi": "Coach IA",
+  "settingsDashboard": "Tableau de bord",
+  "settingsMeals": "Repas",
+  "settingsRegion": "Région et Langue",
+  "settingsCountry": "Pays",
+  "settingsLanguage": "Langue",
+  "settingsMaritalStatus": "État civil",
+  "settingsDependents": "Personnes à charge",
+  "settingsDisability": "Handicap",
+  "settingsGrossSalary": "Salaire brut",
+  "settingsTitulares": "Titulaires d'impôt",
+  "settingsSubsidyMode": "Primes",
+  "settingsMealAllowance": "Indemnité repas",
+  "settingsMealAllowancePerDay": "Montant/jour",
+  "settingsWorkingDays": "Jours ouvrés/mois",
+  "settingsOtherExemptIncome": "Autres revenus exonérés",
+  "settingsAddSalary": "Ajouter un salaire",
+  "settingsAddExpense": "Ajouter une dépense",
+  "settingsExpenseName": "Nom de la dépense",
+  "settingsExpenseAmount": "Montant",
+  "settingsExpenseCategory": "Catégorie",
+  "settingsApiKey": "Clé API OpenAI",
+  "settingsInviteCode": "Code d'invitation",
+  "settingsCopyCode": "Copier",
+  "settingsCodeCopied": "Code copié !",
+  "settingsAdminOnly": "Seul l'administrateur peut modifier les paramètres.",
+  "settingsShowSummaryCards": "Afficher les cartes résumé",
+  "settingsEnabledCharts": "Graphiques actifs",
+  "settingsLogout": "Se déconnecter",
+  "settingsLogoutConfirmTitle": "Se déconnecter",
+  "settingsLogoutConfirmContent": "Êtes-vous sûr de vouloir vous déconnecter ?",
+  "settingsLogoutConfirmButton": "Se déconnecter",
+
+  "settingsSalariesSection": "Revenus",
+  "settingsExpensesMonthly": "Dépenses Mensuelles",
+  "settingsFavorites": "Produits Favoris",
+  "settingsCoachOpenAi": "Coach IA (OpenAI)",
+  "settingsHousehold": "Foyer",
+  "settingsMaritalStatusLabel": "ÉTAT CIVIL",
+  "settingsDependentsLabel": "NOMBRE DE PERSONNES À CHARGE",
+  "settingsSocialSecurityRate": "Cotisations sociales : {rate}",
+  "@settingsSocialSecurityRate": {
+    "placeholders": {
+      "rate": { "type": "String" }
+    }
+  },
+  "settingsSalaryActive": "Actif",
+  "settingsGrossMonthlySalary": "SALAIRE BRUT MENSUEL",
+  "settingsSubsidyHoliday": "PRIMES DE VACANCES ET NOËL (DOUZIÈMES)",
+  "settingsOtherExemptLabel": "AUTRES REVENUS EXONÉRÉS D'IMPÔT",
+  "settingsMealAllowanceLabel": "INDEMNITÉ REPAS",
+  "settingsAmountPerDay": "MONTANT/JOUR",
+  "settingsDaysPerMonth": "JOURS/MOIS",
+  "settingsTitularesLabel": "TITULAIRES D'IMPÔT",
+  "settingsTitularCount": "{n} Titulaire{suffix}",
+  "@settingsTitularCount": {
+    "placeholders": {
+      "n": { "type": "int" },
+      "suffix": { "type": "String" }
+    }
+  },
+  "settingsAddSalaryButton": "Ajouter un salaire",
+  "settingsAddExpenseButton": "Ajouter une Dépense",
+  "settingsDeviceLocal": "Ces paramètres sont stockés localement sur cet appareil.",
+  "settingsVisibleSections": "SECTIONS VISIBLES",
+  "settingsMinimalist": "Minimaliste",
+  "settingsFull": "Complet",
+  "settingsDashMonthlyLiquidity": "Liquidité mensuelle",
+  "settingsDashStressIndex": "Indice de Sérénité",
+  "settingsDashSummaryCards": "Cartes résumé",
+  "settingsDashSalaryBreakdown": "Détail par salaire",
+  "settingsDashFood": "Alimentation",
+  "settingsDashPurchaseHistory": "Historique d'achats",
+  "settingsDashExpensesBreakdown": "Détail des dépenses",
+  "settingsDashCharts": "Graphiques",
+  "settingsVisibleCharts": "GRAPHIQUES VISIBLES",
+  "settingsFavTip": "Les produits favoris influencent le plan repas \u2014 les recettes avec ces ingrédients sont prioritaires.",
+  "settingsMyFavorites": "MES FAVORIS",
+  "settingsProductCatalog": "CATALOGUE DE PRODUITS",
+  "settingsSearchProduct": "Rechercher un produit...",
+  "settingsLoadingProducts": "Chargement des produits...",
+  "settingsAddIngredient": "Ajouter un ingrédient",
+  "settingsIngredientName": "Nom de l'ingrédient",
+  "settingsAddButton": "Ajouter",
+  "settingsAddToPantry": "Ajouter au garde-manger",
+  "settingsHouseholdPeople": "FOYER (PERSONNES)",
+  "settingsAutomatic": "(auto)",
+  "settingsUseAutoValue": "Utiliser la valeur automatique",
+  "settingsManualValue": "Valeur manuelle : {count} personnes",
+  "@settingsManualValue": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "settingsAutoValue": "Calculé automatiquement : {count} (titulaires + personnes à charge)",
+  "@settingsAutoValue": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "settingsHouseholdMembers": "MEMBRES DU FOYER",
+  "settingsPortions": "portions",
+  "settingsTotalEquivalent": "Équivalent total : {total} portions",
+  "@settingsTotalEquivalent": {
+    "placeholders": {
+      "total": { "type": "String" }
+    }
+  },
+  "settingsAddMember": "Ajouter un membre",
+  "settingsPreferSeasonal": "Préférer les recettes de saison",
+  "settingsPreferSeasonalDesc": "Priorise les recettes de la saison actuelle",
+  "settingsNutritionalGoals": "OBJECTIFS NUTRITIONNELS",
+  "settingsCalorieHint": "ex : 2000",
+  "settingsKcalPerDay": "kcal/jour",
+  "settingsProteinHint": "ex : 60",
+  "settingsGramsPerDay": "g/jour",
+  "settingsFiberHint": "ex : 25",
+  "settingsDailyProtein": "Protéines quotidiennes",
+  "settingsDailyFiber": "Fibres quotidiennes",
+  "settingsMedicalConditions": "CONDITIONS MÉDICALES",
+  "settingsActiveMeals": "REPAS ACTIFS",
+  "settingsObjective": "OBJECTIF",
+  "settingsVeggieDays": "JOURS VÉGÉTARIENS PAR SEMAINE",
+  "settingsDietaryRestrictions": "RESTRICTIONS ALIMENTAIRES",
+  "settingsEggFree": "Sans oeufs",
+  "settingsSodiumPref": "PRÉFÉRENCE EN SODIUM",
+  "settingsDislikedIngredients": "INGRÉDIENTS NON SOUHAITÉS",
+  "settingsExcludedProteins": "PROTÉINES EXCLUES",
+  "settingsProteinChicken": "Poulet",
+  "settingsProteinGroundMeat": "Viande hachée",
+  "settingsProteinPork": "Porc",
+  "settingsProteinHake": "Merlu",
+  "settingsProteinCod": "Morue",
+  "settingsProteinSardine": "Sardine",
+  "settingsProteinTuna": "Thon",
+  "settingsProteinEgg": "Oeufs",
+  "settingsMaxPrepTime": "TEMPS MAX (MINUTES)",
+  "settingsMaxComplexity": "COMPLEXITÉ MAXIMUM ({value}/5)",
+  "@settingsMaxComplexity": {
+    "placeholders": {
+      "value": { "type": "int" }
+    }
+  },
+  "settingsWeekendPrepTime": "TEMPS WEEK-END (MINUTES)",
+  "settingsWeekendComplexity": "COMPLEXITÉ WEEK-END ({value}/5)",
+  "@settingsWeekendComplexity": {
+    "placeholders": {
+      "value": { "type": "int" }
+    }
+  },
+  "settingsEatingOutDays": "JOURS AU RESTAURANT",
+  "settingsWeeklyDistribution": "DISTRIBUTION HEBDOMADAIRE",
+  "settingsFishPerWeek": "Poisson par semaine : {count}",
+  "@settingsFishPerWeek": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "settingsNoMinimum": "sans minimum",
+  "settingsLegumePerWeek": "Légumineuses par semaine : {count}",
+  "@settingsLegumePerWeek": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "settingsRedMeatPerWeek": "Viande rouge max/semaine : {count}",
+  "@settingsRedMeatPerWeek": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "settingsNoLimit": "sans limite",
+  "settingsAvailableEquipment": "ÉQUIPEMENT DISPONIBLE",
+  "settingsBatchCooking": "Batch cooking",
+  "settingsMaxBatchDays": "JOURS MAX PAR RECETTE",
+  "settingsReuseLeftovers": "Réutiliser les restes",
+  "settingsMinimizeWaste": "Minimiser le gaspillage",
+  "settingsPrioritizeLowCost": "Prioriser le bas coût",
+  "settingsPrioritizeLowCostDesc": "Préférer les recettes moins chères",
+  "settingsNewIngredientsPerWeek": "NOUVEAUX INGRÉDIENTS PAR SEMAINE ({count})",
+  "@settingsNewIngredientsPerWeek": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "settingsLunchboxLunches": "Déjeuners en boîte",
+  "settingsLunchboxLunchesDesc": "Uniquement des recettes transportables pour le déjeuner",
+  "settingsPantry": "GARDE-MANGER (TOUJOURS EN STOCK)",
+  "settingsResetWizard": "Réinitialiser l'Assistant",
+  "settingsApiKeyInfo": "La clé est stockée localement sur l'appareil et n'est jamais partagée. Utilise le modèle GPT-4o mini (~\u20ac0,00008 par analyse).",
+  "settingsInviteCodeLabel": "CODE D'INVITATION",
+  "settingsGenerateInvite": "Générer un code d'invitation",
+  "settingsShareWithMembers": "Partager avec les membres du foyer",
+  "settingsNewCode": "Nouveau code",
+  "settingsCodeValidInfo": "Le code est valide pendant 7 jours. Partagez-le avec les personnes que vous souhaitez ajouter au foyer.",
+  "settingsName": "Nom",
+  "settingsAgeGroup": "Tranche d'âge",
+  "settingsActivityLevel": "Niveau d'activité",
+  "settingsSalaryN": "Salaire {n}",
+  "@settingsSalaryN": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+
+  "countryPT": "Portugal",
+  "countryES": "Espagne",
+  "countryFR": "France",
+  "countryUK": "Royaume-Uni",
+
+  "langPT": "Português",
+  "langEN": "English",
+  "langFR": "Français",
+  "langES": "Español",
+  "langSystem": "Système",
+
+  "taxIncomeTax": "Impôt sur le revenu",
+  "taxSocialContribution": "Cotisation sociale",
+  "taxIRS": "IRS",
+  "taxSS": "Sécurité Sociale",
+  "taxIRPF": "IRPF",
+  "taxSSSpain": "Seguridad Social",
+  "taxIR": "Impôt sur le Revenu",
+  "taxCSG": "CSG + CRDS",
+  "taxPAYE": "Income Tax",
+  "taxNI": "National Insurance",
+  "enumSubsidyEsNone": "Sans payes extras",
+  "enumSubsidyEsFull": "Avec payes extras",
+  "enumSubsidyEsHalf": "50% payes extras",
+
+  "aiCoachSystemPrompt": "Tu es un analyste financier personnel pour des utilisateurs portugais. Réponds toujours en portugais européen. Sois direct et analytique — utilise toujours les chiffres concrets du contexte fourni. Structure la réponse exactement dans les 3 parties demandées. N'introduis pas de données, benchmarks ou références externes non fournis.",
+  "aiCoachInvalidApiKey": "Clé API invalide. Vérifiez dans les Paramètres.",
+  "aiCoachMidMonthSystem": "Tu es un consultant en budget domestique portugais. Réponds toujours en portugais européen. Sois pratique et direct.",
+  "aiMealPlannerSystem": "Tu es un chef portugais. Réponds toujours en portugais européen. Réponds UNIQUEMENT avec du JSON valide, sans texte supplémentaire.",
+
+  "monthAbbrJan": "Jan",
+  "monthAbbrFeb": "Fév",
+  "monthAbbrMar": "Mar",
+  "monthAbbrApr": "Avr",
+  "monthAbbrMay": "Mai",
+  "monthAbbrJun": "Jui",
+  "monthAbbrJul": "Jul",
+  "monthAbbrAug": "Aoû",
+  "monthAbbrSep": "Sep",
+  "monthAbbrOct": "Oct",
+  "monthAbbrNov": "Nov",
+  "monthAbbrDec": "Déc",
+
+  "monthFullJan": "Janvier",
+  "monthFullFeb": "Février",
+  "monthFullMar": "Mars",
+  "monthFullApr": "Avril",
+  "monthFullMay": "Mai",
+  "monthFullJun": "Juin",
+  "monthFullJul": "Juillet",
+  "monthFullAug": "Août",
+  "monthFullSep": "Septembre",
+  "monthFullOct": "Octobre",
+  "monthFullNov": "Novembre",
+  "monthFullDec": "Décembre",
+
+  "setupWizardWelcomeTitle": "Bienvenue dans votre budget",
+  "setupWizardWelcomeSubtitle": "Configurons l'essentiel pour que votre tableau de bord soit prêt.",
+  "setupWizardBullet1": "Calculer votre salaire net",
+  "setupWizardBullet2": "Organiser vos dépenses",
+  "setupWizardBullet3": "Voir combien il vous reste chaque mois",
+  "setupWizardReassurance": "Vous pouvez tout modifier plus tard dans les paramètres.",
+  "setupWizardStart": "Commencer",
+  "setupWizardSkipAll": "Passer la configuration",
+  "setupWizardStepOf": "Étape {step} sur {total}",
+  "@setupWizardStepOf": {
+    "placeholders": {
+      "step": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "setupWizardContinue": "Continuer",
+  "setupWizardCountryTitle": "Où habitez-vous ?",
+  "setupWizardCountrySubtitle": "Cela définit le système fiscal, la devise et les valeurs par défaut.",
+  "setupWizardLanguage": "Langue",
+  "setupWizardLangSystem": "Par défaut du système",
+  "setupWizardCountryPT": "Portugal",
+  "setupWizardCountryES": "Espagne",
+  "setupWizardCountryFR": "France",
+  "setupWizardCountryUK": "Royaume-Uni",
+  "setupWizardPersonalTitle": "Informations personnelles",
+  "setupWizardPersonalSubtitle": "Nous utilisons ceci pour calculer vos impôts plus précisément.",
+  "setupWizardPrivacyNote": "Vos données restent dans votre compte et ne sont jamais partagées.",
+  "setupWizardSingle": "Célibataire",
+  "setupWizardMarried": "Marié(e)",
+  "setupWizardDependents": "Personnes à charge",
+  "setupWizardTitulares": "Titulaires fiscaux",
+  "setupWizardSalaryTitle": "Quel est votre salaire ?",
+  "setupWizardSalarySubtitle": "Entrez le montant brut mensuel. Nous calculerons le net automatiquement.",
+  "setupWizardSalaryGross": "Salaire brut mensuel",
+  "setupWizardNetEstimate": "Net estimé : {amount}",
+  "@setupWizardNetEstimate": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "setupWizardSalaryMoreLater": "Vous pouvez ajouter d'autres sources de revenus plus tard.",
+  "setupWizardSalarySkip": "Passer cette étape",
+  "setupWizardExpensesTitle": "Vos dépenses mensuelles",
+  "setupWizardExpensesSubtitle": "Valeurs suggérées pour votre pays. Ajustez selon vos besoins.",
+  "setupWizardExpensesMoreLater": "Vous pouvez ajouter d'autres catégories plus tard.",
+  "setupWizardNetLabel": "Net : {amount}",
+  "@setupWizardNetLabel": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "setupWizardTotalExpenses": "Dépenses : {amount}",
+  "@setupWizardTotalExpenses": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "setupWizardAvailableLabel": "Disponible : {amount}",
+  "@setupWizardAvailableLabel": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "setupWizardFinish": "Terminer",
+  "setupWizardCompleteTitle": "Tout est prêt !",
+  "setupWizardCompleteReassurance": "Votre budget est configuré. Vous pouvez tout ajuster dans les paramètres à tout moment.",
+  "setupWizardGoToDashboard": "Voir mon budget",
+  "setupWizardConfigureSalaryHint": "Configurez votre salaire dans les paramètres pour voir le calcul complet.",
+  "setupWizardExpRent": "Loyer / Crédit immobilier",
+  "setupWizardExpGroceries": "Alimentation",
+  "setupWizardExpTransport": "Transport",
+  "setupWizardExpUtilities": "Services (électricité, eau, gaz)",
+  "setupWizardExpTelecom": "Télécommunications",
+  "setupWizardExpHealth": "Santé",
+  "setupWizardExpLeisure": "Loisirs",
+
+  "expenseTrackerTitle": "BUDGET VS RÉEL",
+  "expenseTrackerBudgeted": "Budgété",
+  "expenseTrackerActual": "Réel",
+  "expenseTrackerRemaining": "Restant",
+  "expenseTrackerOver": "Dépassement",
+  "expenseTrackerViewAll": "Voir détails",
+  "expenseTrackerNoExpenses": "Aucune dépense enregistrée.",
+  "expenseTrackerScreenTitle": "Suivi des Dépenses",
+  "expenseTrackerMonthTotal": "Total : {amount}",
+  "@expenseTrackerMonthTotal": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "expenseTrackerDeleteConfirm": "Supprimer cette dépense ?",
+  "expenseTrackerEmpty": "Aucune dépense ce mois.\nAppuyez sur + pour ajouter.",
+  "addExpenseTitle": "Ajouter une Dépense",
+  "editExpenseTitle": "Modifier la Dépense",
+  "addExpenseCategory": "Catégorie",
+  "addExpenseAmount": "Montant",
+  "addExpenseDate": "Date",
+  "addExpenseDescription": "Description (facultatif)",
+  "addExpenseCustomCategory": "Catégorie personnalisée",
+  "addExpenseInvalidAmount": "Entrez un montant valide",
+  "addExpenseTooltip": "Ajouter une dépense",
+  "settingsDashBudgetVsActual": "Budget vs Réel"
+}

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../models/meal_settings.dart';
 
 class MealWizardScreen extends StatefulWidget {
@@ -21,12 +22,13 @@ class _MealWizardScreenState extends State<MealWizardScreen> {
   final _pageController = PageController();
 
   static const _totalSteps = 5;
-  static const _stepTitles = [
-    'Refeições',
-    'Objetivo',
-    'Restrições',
-    'Cozinha',
-    'Estratégia',
+
+  List<String> _stepTitles(S l10n) => [
+    l10n.wizardStepMeals,
+    l10n.wizardStepObjective,
+    l10n.wizardStepRestrictions,
+    l10n.wizardStepKitchen,
+    l10n.wizardStepStrategy,
   ];
 
   @override
@@ -70,6 +72,7 @@ class _MealWizardScreenState extends State<MealWizardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
@@ -82,7 +85,7 @@ class _MealWizardScreenState extends State<MealWizardScreen> {
               )
             : null,
         title: Text(
-          _stepTitles[_step],
+          _stepTitles(l10n)[_step],
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
         ),
         bottom: PreferredSize(
@@ -139,15 +142,15 @@ class _MealWizardScreenState extends State<MealWizardScreen> {
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: const Color(0xFFDBEAFE)),
                       ),
-                      child: const Row(
+                      child: Row(
                         children: [
-                          Icon(Icons.info_outline,
+                          const Icon(Icons.info_outline,
                               size: 16, color: Color(0xFF3B82F6)),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              'Podes alterar as definições do planeador em qualquer altura em Definições → Refeições.',
-                              style: TextStyle(
+                              l10n.wizardSettingsInfo,
+                              style: const TextStyle(
                                   fontSize: 12, color: Color(0xFF1E40AF)),
                             ),
                           ),
@@ -163,7 +166,7 @@ class _MealWizardScreenState extends State<MealWizardScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       child: Text(
-                        _step == _totalSteps - 1 ? 'Gerar Plano' : 'Continuar',
+                        _step == _totalSteps - 1 ? l10n.wizardGeneratePlan : l10n.wizardContinue,
                         style: const TextStyle(
                             fontSize: 15, fontWeight: FontWeight.w600),
                       ),
@@ -171,7 +174,7 @@ class _MealWizardScreenState extends State<MealWizardScreen> {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'Passo ${_step + 1} de $_totalSteps',
+                    l10n.wizardStepOf(_step + 1, _totalSteps),
                     style: const TextStyle(
                         fontSize: 11, color: Color(0xFF94A3B8)),
                   ),
@@ -200,12 +203,13 @@ class _Step1Meals extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
-        const Text(
-          'Quais refeições queres incluir no plano diário?',
-          style: TextStyle(fontSize: 15, color: Color(0xFF475569)),
+        Text(
+          l10n.wizardMealsQuestion,
+          style: const TextStyle(fontSize: 15, color: Color(0xFF475569)),
         ),
         const SizedBox(height: 20),
         ...MealType.values.map((mt) {
@@ -234,10 +238,10 @@ class _Step1Meals extends StatelessWidget {
                 if (newSet.isEmpty) return; // must have at least 1
                 onChanged(draft.copyWith(enabledMeals: newSet));
               },
-              title: Text(mt.label,
+              title: Text(mt.localizedLabel(l10n),
                   style: const TextStyle(
                       fontWeight: FontWeight.w600, fontSize: 14)),
-              subtitle: Text('${_weights[mt]} do orçamento',
+              subtitle: Text(l10n.wizardBudgetWeight(_weights[mt]!),
                   style: const TextStyle(
                       fontSize: 12, color: Color(0xFF94A3B8))),
               activeTrackColor: const Color(0xFF3B82F6),
@@ -257,19 +261,21 @@ class _Step2Objective extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
-        const Text(
-          'Qual é o objetivo principal do teu plano alimentar?',
-          style: TextStyle(fontSize: 15, color: Color(0xFF475569)),
+        Text(
+          l10n.wizardObjectiveQuestion,
+          style: const TextStyle(fontSize: 15, color: Color(0xFF475569)),
         ),
         const SizedBox(height: 20),
         ...MealObjective.values.map((obj) {
           final selected = draft.objective == obj;
+          final label = obj.localizedLabel(l10n);
           return Semantics(
             button: true,
-            label: '${obj.label}${selected ? ", selecionado" : ""}',
+            label: selected ? l10n.wizardSelected(label) : label,
             child: Material(
             color: selected ? const Color(0xFFEFF6FF) : Colors.white,
             borderRadius: BorderRadius.circular(12),
@@ -306,7 +312,7 @@ class _Step2Objective extends StatelessWidget {
                     size: 20,
                   ),
                   const SizedBox(width: 12),
-                  Text(obj.label,
+                  Text(label,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: selected
@@ -349,20 +355,21 @@ class _Step3RestrictionsState extends State<_Step3Restrictions> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final d = widget.draft;
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
-        _sectionLabel('RESTRIÇÕES DIETÉTICAS'),
+        _sectionLabel(l10n.wizardDietaryRestrictions),
         const SizedBox(height: 8),
         ...[
-          ('Sem glúten', d.glutenFree,
+          (l10n.wizardGlutenFree, d.glutenFree,
               (bool v) => widget.onChanged(d.copyWith(glutenFree: v))),
-          ('Sem lactose', d.lactoseFree,
+          (l10n.wizardLactoseFree, d.lactoseFree,
               (bool v) => widget.onChanged(d.copyWith(lactoseFree: v))),
-          ('Sem frutos secos', d.nutFree,
+          (l10n.wizardNutFree, d.nutFree,
               (bool v) => widget.onChanged(d.copyWith(nutFree: v))),
-          ('Sem marisco', d.shellfishFree,
+          (l10n.wizardShellfishFree, d.shellfishFree,
               (bool v) => widget.onChanged(d.copyWith(shellfishFree: v))),
         ].map(
           (item) => CheckboxListTile(
@@ -377,7 +384,7 @@ class _Step3RestrictionsState extends State<_Step3Restrictions> {
           ),
         ),
         const SizedBox(height: 20),
-        _sectionLabel('INGREDIENTES QUE NÃO GOSTAS'),
+        _sectionLabel(l10n.wizardDislikedIngredients),
         const SizedBox(height: 8),
         if (d.dislikedIngredients.isNotEmpty)
           Wrap(
@@ -405,7 +412,7 @@ class _Step3RestrictionsState extends State<_Step3Restrictions> {
               child: TextField(
                 controller: _dislikedCtrl,
                 decoration: InputDecoration(
-                  hintText: 'ex: atum, brócolos',
+                  hintText: l10n.wizardDislikedHint,
                   hintStyle: const TextStyle(color: Color(0xFFCBD5E1)),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -453,11 +460,12 @@ class _Step4Kitchen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final prepOptions = [15, 30, 45, 60];
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
-        _sectionLabel('TEMPO MÁXIMO POR REFEIÇÃO'),
+        _sectionLabel(l10n.wizardMaxPrepTime),
         const SizedBox(height: 12),
         Row(
           children: prepOptions.map((mins) {
@@ -486,7 +494,7 @@ class _Step4Kitchen extends StatelessWidget {
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      mins == 60 ? '60+' : '${mins}min',
+                      mins == 60 ? l10n.wizardPrepMin60Plus : l10n.wizardPrepMin(mins),
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
@@ -503,13 +511,13 @@ class _Step4Kitchen extends StatelessWidget {
           }).toList(),
         ),
         const SizedBox(height: 20),
-        _sectionLabel('COMPLEXIDADE MÁXIMA'),
+        _sectionLabel(l10n.wizardMaxComplexity),
         const SizedBox(height: 12),
         Row(
           children: [
-            ('Fácil', 2),
-            ('Médio', 3),
-            ('Avançado', 5),
+            (l10n.wizardComplexityEasy, 2),
+            (l10n.wizardComplexityMedium, 3),
+            (l10n.wizardComplexityAdvanced, 5),
           ].map(((String, int) item) {
             final selected = draft.maxComplexity == item.$2;
             return Expanded(
@@ -553,11 +561,11 @@ class _Step4Kitchen extends StatelessWidget {
           }).toList(),
         ),
         const SizedBox(height: 20),
-        _sectionLabel('EQUIPAMENTO DISPONÍVEL'),
+        _sectionLabel(l10n.wizardEquipment),
         const SizedBox(height: 8),
         ...KitchenEquipment.values.map((eq) => CheckboxListTile(
               contentPadding: EdgeInsets.zero,
-              title: Text(eq.label,
+              title: Text(eq.localizedLabel(l10n),
                   style: const TextStyle(
                       fontSize: 14, fontWeight: FontWeight.w500)),
               value: draft.availableEquipment.contains(eq),
@@ -585,22 +593,24 @@ class _Step5Strategy extends StatelessWidget {
   final ValueChanged<MealSettings> onChanged;
   const _Step5Strategy({required this.draft, required this.onChanged});
 
-  static const _weekdays = [
-    'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
+    final weekdays = [
+      l10n.wizardWeekdayMon, l10n.wizardWeekdayTue, l10n.wizardWeekdayWed,
+      l10n.wizardWeekdayThu, l10n.wizardWeekdayFri, l10n.wizardWeekdaySat,
+      l10n.wizardWeekdaySun,
+    ];
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
-          title: const Text('Batch cooking',
-              style: TextStyle(
+          title: Text(l10n.wizardBatchCooking,
+              style: const TextStyle(
                   fontSize: 14, fontWeight: FontWeight.w600)),
-          subtitle: const Text('Cozinhar para vários dias de uma vez',
-              style:
+          subtitle: Text(l10n.wizardBatchCookingDesc,
+              style: const
                   TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
           value: draft.batchCookingEnabled,
           activeTrackColor: const Color(0xFF3B82F6),
@@ -609,25 +619,25 @@ class _Step5Strategy extends StatelessWidget {
         ),
         if (draft.batchCookingEnabled) ...[
           const SizedBox(height: 12),
-          _sectionLabel('MÁXIMO DE DIAS POR RECEITA'),
+          _sectionLabel(l10n.wizardMaxBatchDays),
           Slider(
             value: draft.maxBatchDays.toDouble(),
             min: 1,
             max: 4,
             divisions: 3,
-            label: '${draft.maxBatchDays} dias',
+            label: l10n.wizardBatchDays(draft.maxBatchDays),
             activeColor: const Color(0xFF3B82F6),
             onChanged: (v) =>
                 onChanged(draft.copyWith(maxBatchDays: v.round())),
           ),
-          _sectionLabel('DIA PREFERIDO PARA COZINHAR'),
+          _sectionLabel(l10n.wizardPreferredCookingDay),
           const SizedBox(height: 8),
           Wrap(
             spacing: 6,
             children: List.generate(7, (i) {
               final selected = draft.preferredCookingWeekday == i;
               return ChoiceChip(
-                label: Text(_weekdays[i]),
+                label: Text(weekdays[i]),
                 selected: selected,
                 selectedColor: const Color(0xFF3B82F6),
                 labelStyle: TextStyle(
@@ -647,26 +657,26 @@ class _Step5Strategy extends StatelessWidget {
         const SizedBox(height: 16),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
-          title: const Text('Reaproveitar sobras',
-              style: TextStyle(
+          title: Text(l10n.wizardReuseLeftovers,
+              style: const TextStyle(
                   fontSize: 14, fontWeight: FontWeight.w600)),
-          subtitle: const Text(
-              'Jantar de ontem = almoço de hoje (custo 0)',
-              style:
+          subtitle: Text(
+              l10n.wizardReuseLeftoversDesc,
+              style: const
                   TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
           value: draft.reuseLeftovers,
           activeTrackColor: const Color(0xFF3B82F6),
           onChanged: (v) => onChanged(draft.copyWith(reuseLeftovers: v)),
         ),
         const SizedBox(height: 16),
-        _sectionLabel('MÁXIMO DE INGREDIENTES NOVOS POR SEMANA'),
+        _sectionLabel(l10n.wizardMaxNewIngredients),
         Slider(
           value: draft.maxNewIngredientsPerWeek.toDouble(),
           min: 1,
           max: 10,
           divisions: 9,
           label: draft.maxNewIngredientsPerWeek == 10
-              ? 'Sem limite'
+              ? l10n.wizardNoLimit
               : '${draft.maxNewIngredientsPerWeek}',
           activeColor: const Color(0xFF3B82F6),
           onChanged: (v) => onChanged(
@@ -674,12 +684,12 @@ class _Step5Strategy extends StatelessWidget {
         ),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
-          title: const Text('Minimizar desperdício',
-              style: TextStyle(
+          title: Text(l10n.wizardMinimizeWaste,
+              style: const TextStyle(
                   fontSize: 14, fontWeight: FontWeight.w600)),
-          subtitle: const Text(
-              'Prefere receitas que reutilizam ingredientes já usados',
-              style:
+          subtitle: Text(
+              l10n.wizardMinimizeWasteDesc,
+              style: const
                   TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
           value: draft.minimizeWaste,
           activeTrackColor: const Color(0xFF3B82F6),

@@ -1,15 +1,48 @@
 import '../models/app_settings.dart';
 import '../models/budget_summary.dart';
 import '../models/purchase_record.dart';
+import '../l10n/generated/app_localizations.dart';
+
+enum StressFactorType {
+  savings,
+  safety,
+  food,
+  stability;
+
+  String localizedLabel(S l10n) {
+    switch (this) {
+      case StressFactorType.savings: return l10n.stressFactorSavings;
+      case StressFactorType.safety: return l10n.stressFactorSafety;
+      case StressFactorType.food: return l10n.stressFactorFood;
+      case StressFactorType.stability: return l10n.stressFactorStability;
+    }
+  }
+}
+
+enum StressLevel {
+  excellent,
+  good,
+  warning,
+  critical;
+
+  String localizedLabel(S l10n) {
+    switch (this) {
+      case StressLevel.excellent: return l10n.stressExcellent;
+      case StressLevel.good: return l10n.stressGood;
+      case StressLevel.warning: return l10n.stressWarning;
+      case StressLevel.critical: return l10n.stressCritical;
+    }
+  }
+}
 
 class StressFactorResult {
-  final String label;
+  final StressFactorType type;
   final String valueLabel;
   final bool ok;
   final double normalizedScore;
 
   const StressFactorResult({
-    required this.label,
+    required this.type,
     required this.valueLabel,
     required this.ok,
     required this.normalizedScore,
@@ -18,13 +51,13 @@ class StressFactorResult {
 
 class StressIndexResult {
   final int score;
-  final String label;
+  final StressLevel level;
   final List<StressFactorResult> factors;
   final int? previousScore;
 
   const StressIndexResult({
     required this.score,
-    required this.label,
+    required this.level,
     required this.factors,
     this.previousScore,
   });
@@ -43,27 +76,27 @@ StressIndexResult calculateStressIndex({
   final prevKey = '$prevYear-${prevMonth.toString().padLeft(2, '0')}';
   final previousScore = settings.stressHistory[prevKey];
 
-  // Factor 1 — Taxa de poupança (35%)
+  // Factor 1 — Savings rate (35%)
   final savingsRate = summary.savingsRate.clamp(0.0, 1.0);
   final savingsScore = (savingsRate / 0.25 * 100).clamp(0.0, 100.0);
   final savingsFactor = StressFactorResult(
-    label: 'Taxa de poupança',
+    type: StressFactorType.savings,
     valueLabel: '${(savingsRate * 100).toStringAsFixed(0)}%',
     ok: savingsRate >= 0.10,
     normalizedScore: savingsScore,
   );
 
-  // Factor 2 — Margem de segurança / liquidez (30%)
+  // Factor 2 — Safety margin / liquidity (30%)
   final liquidity = summary.netLiquidity;
   final liquidityScore = (liquidity / 500.0 * 100).clamp(0.0, 100.0);
   final liquidityFactor = StressFactorResult(
-    label: 'Margem de segurança',
-    valueLabel: '${liquidity.toStringAsFixed(0)}€',
+    type: StressFactorType.safety,
+    valueLabel: '${liquidity.toStringAsFixed(0)}\u20ac',
     ok: liquidity >= 100,
     normalizedScore: liquidityScore,
   );
 
-  // Factor 3 — Orçamento alimentação (20%)
+  // Factor 3 — Food budget (20%)
   final foodBudget = settings.expenses
       .where((e) => e.category == ExpenseCategory.alimentacao && e.enabled)
       .fold(0.0, (s, e) => s + e.amount);
@@ -72,24 +105,25 @@ StressIndexResult calculateStressIndex({
   final foodRatio =
       hasFoodBudget ? (foodSpent / foodBudget).clamp(0.0, 2.0) : 0.0;
   final foodScore = ((1.0 - foodRatio) * 100).clamp(0.0, 100.0);
+  final foodValueLabel = hasFoodBudget
+      ? (foodRatio * 100).toStringAsFixed(0)
+      : null;
   final foodFactor = StressFactorResult(
-    label: 'Orçamento alimentação',
-    valueLabel: hasFoodBudget
-        ? '${(foodRatio * 100).toStringAsFixed(0)}% usado'
-        : 'N/D',
+    type: StressFactorType.food,
+    valueLabel: foodValueLabel ?? '',
     ok: foodRatio <= 0.80,
     normalizedScore: foodScore,
   );
 
-  // Factor 4 — Estabilidade despesas (15%)
+  // Factor 4 — Expense stability (15%)
   final totalNet = summary.totalNetWithMeal;
   final expenseRatio = totalNet > 0
       ? (summary.totalExpenses / totalNet).clamp(0.0, 1.5)
       : 1.0;
   final stabilityScore = ((1.0 - expenseRatio) * 100).clamp(0.0, 100.0);
   final stabilityFactor = StressFactorResult(
-    label: 'Estabilidade despesas',
-    valueLabel: expenseRatio <= 0.70 ? 'Estável' : 'Elevada',
+    type: StressFactorType.stability,
+    valueLabel: expenseRatio <= 0.70 ? 'stable' : 'high',
     ok: expenseRatio <= 0.70,
     normalizedScore: stabilityScore,
   );
@@ -101,17 +135,17 @@ StressIndexResult calculateStressIndex({
       .round()
       .clamp(0, 100);
 
-  final label = score >= 80
-      ? 'Excelente'
+  final level = score >= 80
+      ? StressLevel.excellent
       : score >= 60
-          ? 'Bom'
+          ? StressLevel.good
           : score >= 40
-              ? 'Atenção'
-              : 'Crítico';
+              ? StressLevel.warning
+              : StressLevel.critical;
 
   return StressIndexResult(
     score: score,
-    label: label,
+    level: level,
     factors: [savingsFactor, liquidityFactor, foodFactor, stabilityFactor],
     previousScore: previousScore,
   );

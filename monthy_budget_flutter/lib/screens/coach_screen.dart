@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/coach_insight.dart';
 import '../models/purchase_record.dart';
 import '../services/ai_coach_service.dart';
 import '../utils/calculations.dart';
+import '../data/tax/tax_factory.dart';
 
 class CoachScreen extends StatefulWidget {
   final AppSettings settings;
@@ -58,9 +60,9 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 
   Future<void> _analyze() async {
+    final l10n = S.of(context);
     if (widget.apiKey.isEmpty) {
-      setState(() => _error =
-          'Adiciona a tua OpenAI API key nas Definições para usar esta funcionalidade.');
+      setState(() => _error = l10n.coachApiKeyRequired);
       return;
     }
     setState(() {
@@ -69,10 +71,12 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
       _currentInsight = null;
     });
     try {
+      final taxSystem = getTaxSystem(widget.settings.country);
       final summary = calculateBudgetSummary(
         widget.settings.salaries,
         widget.settings.personalInfo,
         widget.settings.expenses,
+        taxSystem,
       );
       final result = await _service.analyze(
         apiKey: widget.apiKey,
@@ -107,16 +111,17 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 
   Future<void> _clearHistory() async {
+    final l10n = S.of(context);
     final confirm = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Limpar histórico'),
-        content: const Text('Tens a certeza que queres apagar todas as análises guardadas?'),
+        title: Text(l10n.coachClearTitle),
+        content: Text(l10n.coachClearContent),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Limpar', style: TextStyle(color: Color(0xFFEF4444))),
+            child: Text(l10n.clear, style: const TextStyle(color: Color(0xFFEF4444))),
           ),
         ],
       ),
@@ -129,22 +134,23 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
-        title: const Column(
+        title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Coach Financeiro',
-              style: TextStyle(
+              l10n.coachTitle,
+              style: const TextStyle(
                   fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xFF1E293B)),
             ),
             Text(
-              'IA · GPT-4o mini',
-              style: TextStyle(
+              l10n.coachSubtitle,
+              style: const TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF94A3B8),
@@ -170,6 +176,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildInfoCard() {
+    final l10n = S.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -193,28 +200,27 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Análise financeira em 3 partes',
-                  style: TextStyle(
+                Text(
+                  l10n.coachAnalysisTitle,
+                  style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: Color(0xFF1E293B)),
                 ),
                 const SizedBox(height: 4),
-                const Text(
-                  'Posicionamento geral · Factores críticos do Índice de Tranquilidade · Oportunidade imediata. '
-                  'Baseado nos teus dados reais de orçamento, despesas e histórico de compras.',
-                  style:
-                      TextStyle(fontSize: 12, color: Color(0xFF64748B), height: 1.5),
+                Text(
+                  l10n.coachAnalysisDescription,
+                  style: const TextStyle(
+                      fontSize: 12, color: Color(0xFF64748B), height: 1.5),
                 ),
                 if (widget.apiKey.isEmpty) ...[
                   const SizedBox(height: 10),
                   TextButton.icon(
                     onPressed: widget.onOpenSettings,
                     icon: const Icon(Icons.settings_outlined, size: 14),
-                    label: const Text(
-                      'Configurar API key nas Definições',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                    label: Text(
+                      l10n.coachConfigureApiKey,
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                     ),
                     style: TextButton.styleFrom(
                       foregroundColor: const Color(0xFF3B82F6),
@@ -233,9 +239,9 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                             color: Color(0xFF10B981), shape: BoxShape.circle),
                       ),
                       const SizedBox(width: 6),
-                      const Text(
-                        'API key configurada',
-                        style: TextStyle(
+                      Text(
+                        l10n.coachApiKeyConfigured,
+                        style: const TextStyle(
                             fontSize: 11,
                             color: Color(0xFF10B981),
                             fontWeight: FontWeight.w500),
@@ -252,6 +258,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildAnalyzeButton() {
+    final l10n = S.of(context);
     return SizedBox(
       width: double.infinity,
       child: FilledButton.icon(
@@ -264,7 +271,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
               )
             : const Icon(Icons.psychology_outlined, size: 20),
         label: Text(
-          _loading ? 'A analisar...' : 'Analisar o meu orçamento',
+          _loading ? l10n.coachAnalyzing : l10n.coachAnalyzeButton,
           style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
         ),
         style: FilledButton.styleFrom(
@@ -306,6 +313,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildAdviceCard(CoachInsight insight) {
+    final l10n = S.of(context);
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(18),
@@ -336,10 +344,10 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                     size: 16, color: Color(0xFF3B82F6)),
               ),
               const SizedBox(width: 10),
-              const Expanded(
+              Expanded(
                 child: Text(
-                  'Análise personalizada',
-                  style: TextStyle(
+                  l10n.coachCustomAnalysis,
+                  style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
                       color: Color(0xFF1E293B)),
@@ -358,9 +366,9 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           TextButton.icon(
             onPressed: _loading ? null : _analyze,
             icon: const Icon(Icons.refresh, size: 14),
-            label: const Text(
-              'Gerar nova análise',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+            label: Text(
+              l10n.coachNewAnalysis,
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
             ),
             style: TextButton.styleFrom(
               foregroundColor: const Color(0xFF64748B),
@@ -374,6 +382,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildHistorySection() {
+    final l10n = S.of(context);
     final history = _currentInsight != null
         ? _insights.where((i) => i.id != _currentInsight!.id).toList()
         : _insights;
@@ -388,9 +397,9 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           children: [
             Row(
               children: [
-                const Text(
-                  'HISTÓRICO',
-                  style: TextStyle(
+                Text(
+                  l10n.coachHistory,
+                  style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
                       color: Color(0xFF94A3B8),
@@ -421,7 +430,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                 textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
                 minimumSize: const Size(48, 40),
               ),
-              child: const Text('Limpar tudo'),
+              child: Text(l10n.coachClearAll),
             ),
           ],
         ),
@@ -478,18 +487,21 @@ class _InsightHistoryCard extends StatefulWidget {
 class _InsightHistoryCardState extends State<_InsightHistoryCard> {
   bool _expanded = false;
 
-  String _formatDate(DateTime dt) {
-    const months = [
-      '', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
-      'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
+  String _formatDate(DateTime dt, S l10n) {
+    final months = [
+      '', l10n.monthAbbrJan, l10n.monthAbbrFeb, l10n.monthAbbrMar,
+      l10n.monthAbbrApr, l10n.monthAbbrMay, l10n.monthAbbrJun,
+      l10n.monthAbbrJul, l10n.monthAbbrAug, l10n.monthAbbrSep,
+      l10n.monthAbbrOct, l10n.monthAbbrNov, l10n.monthAbbrDec,
     ];
     final h = dt.hour.toString().padLeft(2, '0');
     final m = dt.minute.toString().padLeft(2, '0');
-    return '${dt.day} ${months[dt.month]} ${dt.year} · $h:$m';
+    return '${dt.day} ${months[dt.month]} ${dt.year} \u00b7 $h:$m';
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final insight = widget.insight;
     final preview = insight.content.length > 100
         ? '${insight.content.substring(0, 100)}…'
@@ -519,7 +531,7 @@ class _InsightHistoryCardState extends State<_InsightHistoryCard> {
                         Row(
                           children: [
                             Text(
-                              _formatDate(insight.timestamp),
+                              _formatDate(insight.timestamp, l10n),
                               style: const TextStyle(
                                   fontSize: 11,
                                   color: Color(0xFF94A3B8),
@@ -551,14 +563,14 @@ class _InsightHistoryCardState extends State<_InsightHistoryCard> {
                       const SizedBox(height: 8),
                       Semantics(
                         button: true,
-                        label: 'Eliminar análise',
+                        label: l10n.coachDeleteLabel,
                         child: IconButton(
                           onPressed: widget.onDelete,
                           icon: const Icon(Icons.delete_outline, size: 16),
                           color: const Color(0xFF94A3B8),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
-                          tooltip: 'Eliminar',
+                          tooltip: l10n.coachDeleteTooltip,
                         ),
                       ),
                     ],

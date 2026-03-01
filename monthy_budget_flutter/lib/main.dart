@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/generated/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'config/supabase_config.dart';
 import 'models/app_settings.dart';
@@ -7,6 +9,8 @@ import 'models/product.dart';
 import 'models/shopping_item.dart';
 import 'models/purchase_record.dart';
 import 'utils/calculations.dart';
+import 'utils/formatters.dart';
+import 'data/tax/tax_factory.dart';
 import 'services/settings_service.dart';
 import 'services/favorites_service.dart';
 import 'services/shopping_list_service.dart';
@@ -15,6 +19,10 @@ import 'services/purchase_history_service.dart';
 import 'services/products_service.dart';
 import 'services/expense_snapshot_service.dart';
 import 'services/local_config_service.dart';
+import 'services/actual_expense_service.dart';
+import 'models/actual_expense.dart';
+import 'widgets/add_expense_sheet.dart';
+import 'screens/expense_tracker_screen.dart';
 import 'models/local_dashboard_config.dart';
 import 'models/expense_snapshot.dart';
 import 'screens/shopping_list_screen.dart';
@@ -24,6 +32,10 @@ import 'screens/dashboard_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/grocery_screen.dart';
 import 'screens/auth/auth_gate.dart';
+import 'screens/setup_wizard_screen.dart';
+
+/// Global notifier for reactive locale changes from settings.
+final appLocaleNotifier = ValueNotifier<Locale?>(null);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,22 +48,33 @@ class OrcamentoMensalApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Orçamento Mensal',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorSchemeSeed: const Color(0xFF3B82F6),
-        useMaterial3: true,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        snackBarTheme: SnackBarThemeData(
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    return ValueListenableBuilder<Locale?>(
+      valueListenable: appLocaleNotifier,
+      builder: (_, locale, __) => MaterialApp(
+        title: 'Orçamento Mensal',
+        debugShowCheckedModeBanner: false,
+        locale: locale,
+        localizationsDelegates: const [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.supportedLocales,
+        theme: ThemeData(
+          colorSchemeSeed: const Color(0xFF3B82F6),
+          useMaterial3: true,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          snackBarTheme: SnackBarThemeData(
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
         ),
-      ),
-      home: AuthGate(
-        appBuilder: (profile) => AppHome(
-          householdId: profile.householdId,
-          isAdmin: profile.role == 'admin',
+        home: AuthGate(
+          appBuilder: (profile) => AppHome(
+            householdId: profile.householdId,
+            isAdmin: profile.role == 'admin',
+          ),
         ),
       ),
     );
@@ -81,8 +104,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   final _productsService = ProductsService();
   final _expenseSnapshotService = ExpenseSnapshotService();
   final _localConfigService = LocalConfigService();
+  final _actualExpenseService = ActualExpenseService();
 
   AppSettings _settings = const AppSettings();
+  List<ActualExpense> _actualExpenses = [];
   List<Product> _products = [];
   List<String> _favorites = [];
   List<ShoppingItem> _shoppingList = [];
@@ -135,6 +160,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     _expenseSnapshotService.loadHistory(widget.householdId).then((history) {
       if (mounted) setState(() => _expenseHistory = history);
     });
+    _loadActualExpenses();
   }
 
   Future<void> _loadAll() async {
@@ -155,14 +181,37 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       _dashboardConfig = results[5] as LocalDashboardConfig;
       _loaded = true;
     });
+    _syncLocaleAndFormatter(_settings);
     _expenseSnapshotService.loadHistory(widget.householdId).then((history) {
       if (mounted) setState(() => _expenseHistory = history);
     });
+    _loadActualExpenses();
+  }
+
+  String get _currentMonthKey {
+    final now = DateTime.now();
+    return '${now.year}-${now.month.toString().padLeft(2, '0')}';
+  }
+
+  Future<void> _loadActualExpenses() async {
+    final expenses = await _actualExpenseService.loadMonth(
+        widget.householdId, _currentMonthKey);
+    if (mounted) setState(() => _actualExpenses = expenses);
+  }
+
+  void _syncLocaleAndFormatter(AppSettings settings) {
+    setFormatterCountry(settings.country);
+    if (settings.localeOverride != null) {
+      appLocaleNotifier.value = Locale(settings.localeOverride!);
+    } else {
+      appLocaleNotifier.value = null; // system default
+    }
   }
 
   void _saveSettings(AppSettings settings) {
     if (!widget.isAdmin) return;
     setState(() => _settings = settings);
+    _syncLocaleAndFormatter(settings);
     _settingsService.save(settings, widget.householdId);
   }
 
@@ -287,6 +336,54 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     }
   }
 
+  Future<void> _addActualExpense(ActualExpense expense) async {
+    setState(() => _actualExpenses = [expense, ..._actualExpenses]);
+    await _actualExpenseService.add(expense, widget.householdId);
+  }
+
+  Future<void> _updateActualExpense(ActualExpense expense) async {
+    setState(() {
+      _actualExpenses =
+          _actualExpenses.map((e) => e.id == expense.id ? expense : e).toList();
+    });
+    await _actualExpenseService.update(expense);
+  }
+
+  Future<void> _deleteActualExpense(String id) async {
+    setState(() {
+      _actualExpenses = _actualExpenses.where((e) => e.id != id).toList();
+    });
+    await _actualExpenseService.delete(id);
+  }
+
+  void _openAddExpenseSheet() async {
+    final result = await showAddExpenseSheet(
+      context: context,
+      budgetExpenses: _settings.expenses,
+      currentExpenses: _actualExpenses,
+    );
+    if (result != null) {
+      _addActualExpense(result);
+    }
+  }
+
+  void _openExpenseTracker() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ExpenseTrackerScreen(
+          settings: _settings,
+          expenses: _actualExpenses,
+          householdId: widget.householdId,
+          onAdd: _addActualExpense,
+          onUpdate: _updateActualExpense,
+          onDelete: _deleteActualExpense,
+          onLoadMonth: (monthKey) =>
+              _actualExpenseService.loadMonth(widget.householdId, monthKey),
+        ),
+      ),
+    );
+  }
+
   SettingsScreen _buildSettingsScreen() {
     return SettingsScreen(
       settings: _settings,
@@ -330,10 +427,22 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       );
     }
 
+    if (!_settings.setupWizardCompleted) {
+      return SetupWizardScreen(
+        initial: _settings,
+        onComplete: (settings) {
+          final completed = settings.copyWith(setupWizardCompleted: true);
+          _saveSettings(completed);
+        },
+      );
+    }
+
+    final taxSystem = getTaxSystem(_settings.country);
     final summary = calculateBudgetSummary(
       _settings.salaries,
       _settings.personalInfo,
       _settings.expenses,
+      taxSystem,
     );
 
     final screens = [
@@ -345,6 +454,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         dashboardConfig: _dashboardConfig,
         expenseHistory: _expenseHistory,
         onSnapshotExpenses: _snapshotExpenses,
+        actualExpenses: _actualExpenses,
+        onAddExpense: _openAddExpenseSheet,
+        onOpenExpenseTracker: _openExpenseTracker,
         onOpenSettings: () {
           Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
@@ -404,6 +516,14 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
     return Scaffold(
       body: screens[_currentIndex],
+      floatingActionButton: _currentIndex == 0
+          ? FloatingActionButton(
+              onPressed: _openAddExpenseSheet,
+              backgroundColor: const Color(0xFF3B82F6),
+              tooltip: S.of(context).addExpenseTooltip,
+              child: const Icon(Icons.add, color: Colors.white),
+            )
+          : null,
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (i) => setState(() => _currentIndex = i),

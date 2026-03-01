@@ -6,11 +6,8 @@ import '../models/purchase_record.dart';
 import '../utils/calculations.dart';
 import '../utils/formatters.dart';
 import '../utils/stress_index.dart';
-
-const _monthNames = [
-  '', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
-];
+import '../data/tax/tax_factory.dart';
+import '../l10n/generated/app_localizations.dart';
 
 /// Opens the projection simulator bottom sheet.
 void showProjectionSheet({
@@ -101,10 +98,12 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
   double get _projectedRemaining => _foodBudget - _projectedTotal;
 
   StressIndexResult _simulateStress({double? simulatedFoodSpent, List<ExpenseItem>? simulatedExpenses}) {
+    final taxSystem = getTaxSystem(widget.settings.country);
     final simSummary = calculateBudgetSummary(
       widget.settings.salaries,
       widget.settings.personalInfo,
       simulatedExpenses ?? widget.settings.expenses,
+      taxSystem,
     );
     final simHistory = simulatedFoodSpent != null
         ? _buildSimulatedHistory(simulatedFoodSpent)
@@ -158,12 +157,12 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
           ),
         ),
         Text(
-          'Projeção — ${_monthNames[_now.month]} ${_now.year}',
+          S.of(context).projectionTitle(localizedMonthFull(S.of(context), _now.month), '${_now.year}'),
           style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 4),
         Text(
-          'Gastou ${formatCurrency(_foodSpent)} de ${formatCurrency(_foodBudget)} em $_dayOfMonth dias',
+          S.of(context).projectionSubtitle(formatCurrency(_foodSpent), formatCurrency(_foodBudget), '$_dayOfMonth'),
           style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
         ),
         const SizedBox(height: 20),
@@ -192,7 +191,7 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('ALIMENTAÇÃO', style: TextStyle(
+          Text(S.of(context).projectionFood, style: TextStyle(
             fontSize: 10, fontWeight: FontWeight.w600,
             color: Colors.grey.shade400, letterSpacing: 1.2,
           )),
@@ -202,16 +201,16 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
           Wrap(
             spacing: 8,
             children: [
-              _scenarioChip('Ritmo atual', _dailyAvg),
-              _scenarioChip('Sem compras', 0),
-              _scenarioChip('-20%', _dailyAvg * 0.8),
+              _scenarioChip(S.of(context).projectionCurrentPace, _dailyAvg),
+              _scenarioChip(S.of(context).projectionNoShopping, 0),
+              _scenarioChip(S.of(context).projectionReduce20, _dailyAvg * 0.8),
             ],
           ),
           const SizedBox(height: 16),
 
           // Slider
           Text(
-            'Gasto diário estimado: ${formatCurrency(_dailySpend)}/dia',
+            S.of(context).projectionDailySpend(formatCurrency(_dailySpend)),
             style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Color(0xFF475569)),
           ),
           Slider(
@@ -224,17 +223,17 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
           const SizedBox(height: 12),
 
           // Results
-          _resultRow('Projeção fim de mês', formatCurrency(_projectedTotal),
+          _resultRow(S.of(context).projectionEndOfMonth, formatCurrency(_projectedTotal),
               _projectedTotal > _foodBudget ? const Color(0xFFEF4444) : const Color(0xFF1E293B)),
           const SizedBox(height: 8),
           _resultRow(
-            'Restante projetado',
+            S.of(context).projectionRemaining,
             '${_projectedRemaining >= 0 ? '' : '-'}${formatCurrency(_projectedRemaining.abs())}',
             _projectedRemaining >= 0 ? const Color(0xFF10B981) : const Color(0xFFEF4444),
           ),
           const SizedBox(height: 8),
           _resultRow(
-            'Impacto no Índice',
+            S.of(context).projectionStressImpact,
             '${delta >= 0 ? '+' : ''}$delta pts (${simStress.score}/100)',
             delta >= 0 ? const Color(0xFF10B981) : const Color(0xFFEF4444),
           ),
@@ -262,10 +261,12 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
 
   Widget _buildExpenseSection() {
     final simExpenses = _simulatedExpenses;
+    final taxSystem = getTaxSystem(widget.settings.country);
     final simSummary = calculateBudgetSummary(
       widget.settings.salaries,
       widget.settings.personalInfo,
       simExpenses,
+      taxSystem,
     );
     final simStress = _simulateStress(simulatedExpenses: simExpenses);
     final currentStress = _simulateStress();
@@ -284,7 +285,7 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
         children: [
           Row(
             children: [
-              Text('DESPESAS', style: TextStyle(
+              Text(S.of(context).projectionExpenses, style: TextStyle(
                 fontSize: 10, fontWeight: FontWeight.w600,
                 color: Colors.grey.shade400, letterSpacing: 1.2,
               )),
@@ -296,7 +297,7 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  'Simulação — não guardado',
+                  S.of(context).projectionSimulation,
                   style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500,
                       color: Colors.orange.shade700),
                 ),
@@ -308,7 +309,7 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
           // Global reduction slider
           Row(
             children: [
-              const Text('Reduzir todas em ', style: TextStyle(fontSize: 13, color: Color(0xFF475569))),
+              Text(S.of(context).projectionReduceAll, style: const TextStyle(fontSize: 13, color: Color(0xFF475569))),
               Text('${_globalReduction.toStringAsFixed(0)}%',
                   style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF3B82F6))),
             ],
@@ -332,23 +333,23 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
           // Results
           const Divider(color: Color(0xFFE2E8F0)),
           const SizedBox(height: 12),
-          _resultRow('Liquidez simulada', formatCurrency(simSummary.netLiquidity),
+          _resultRow(S.of(context).projectionSimLiquidity, formatCurrency(simSummary.netLiquidity),
               simSummary.netLiquidity >= 0 ? const Color(0xFF10B981) : const Color(0xFFEF4444)),
           const SizedBox(height: 8),
           _resultRow(
-            'Delta',
+            S.of(context).projectionDelta,
             '${liquidityDelta >= 0 ? '+' : ''}${formatCurrency(liquidityDelta)}/mês',
             liquidityDelta >= 0 ? const Color(0xFF10B981) : const Color(0xFFEF4444),
           ),
           const SizedBox(height: 8),
           _resultRow(
-            'Taxa poupança simulada',
+            S.of(context).projectionSimSavingsRate,
             formatPercentage(simSummary.savingsRate > 0 ? simSummary.savingsRate : 0),
             const Color(0xFF475569),
           ),
           const SizedBox(height: 8),
           _resultRow(
-            'Índice simulado',
+            S.of(context).projectionSimIndex,
             '${simStress.score}/100 (${stressDelta >= 0 ? '+' : ''}$stressDelta)',
             stressDelta >= 0 ? const Color(0xFF10B981) : const Color(0xFFEF4444),
           ),

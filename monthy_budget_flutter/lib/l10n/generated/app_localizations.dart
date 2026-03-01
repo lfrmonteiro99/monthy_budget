@@ -1,0 +1,3800 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
+
+import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
+import 'app_localizations_fr.dart';
+import 'app_localizations_pt.dart';
+
+// ignore_for_file: type=lint
+
+/// Callers can lookup localized strings with an instance of S
+/// returned by `S.of(context)`.
+///
+/// Applications need to include `S.delegate()` in their app's
+/// `localizationDelegates` list, and the locales they support in the app's
+/// `supportedLocales` list. For example:
+///
+/// ```dart
+/// import 'generated/app_localizations.dart';
+///
+/// return MaterialApp(
+///   localizationsDelegates: S.localizationsDelegates,
+///   supportedLocales: S.supportedLocales,
+///   home: MyApplicationHome(),
+/// );
+/// ```
+///
+/// ## Update pubspec.yaml
+///
+/// Please make sure to update your pubspec.yaml to include the following
+/// packages:
+///
+/// ```yaml
+/// dependencies:
+///   # Internationalization support.
+///   flutter_localizations:
+///     sdk: flutter
+///   intl: any # Use the pinned version from flutter_localizations
+///
+///   # Rest of dependencies
+/// ```
+///
+/// ## iOS Applications
+///
+/// iOS applications define key application metadata, including supported
+/// locales, in an Info.plist file that is built into the application bundle.
+/// To configure the locales supported by your app, you’ll need to edit this
+/// file.
+///
+/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
+/// Then, in the Project Navigator, open the Info.plist file under the Runner
+/// project’s Runner folder.
+///
+/// Next, select the Information Property List item, select Add Item from the
+/// Editor menu, then select Localizations from the pop-up menu.
+///
+/// Select and expand the newly-created Localizations item then, for each
+/// locale your application supports, add a new item and select the locale
+/// you wish to add from the pop-up menu in the Value field. This list should
+/// be consistent with the languages listed in the S.supportedLocales
+/// property.
+abstract class S {
+  S(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+
+  final String localeName;
+
+  static S of(BuildContext context) {
+    return Localizations.of<S>(context, S)!;
+  }
+
+  static const LocalizationsDelegate<S> delegate = _SDelegate();
+
+  /// A list of this localizations delegate along with the default localizations
+  /// delegates.
+  ///
+  /// Returns a list of localizations delegates containing this delegate along with
+  /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
+  /// and GlobalWidgetsLocalizations.delegate.
+  ///
+  /// Additional delegates can be added by appending to this list in
+  /// MaterialApp. This list does not have to be used at all if a custom list
+  /// of delegates is preferred or required.
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
+
+  /// A list of this localizations delegate's supported locales.
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('es'),
+    Locale('fr'),
+    Locale('pt'),
+  ];
+
+  /// Bottom nav label for budget tab
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamento'**
+  String get navBudget;
+
+  /// Bottom nav label for grocery tab
+  ///
+  /// In pt, this message translates to:
+  /// **'Supermercado'**
+  String get navGrocery;
+
+  /// Bottom nav label for shopping list tab
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista'**
+  String get navList;
+
+  /// Bottom nav label for AI coach tab
+  ///
+  /// In pt, this message translates to:
+  /// **'Coach'**
+  String get navCoach;
+
+  /// Bottom nav label for meal planner tab
+  ///
+  /// In pt, this message translates to:
+  /// **'Refeições'**
+  String get navMeals;
+
+  /// Tooltip for budget nav item
+  ///
+  /// In pt, this message translates to:
+  /// **'Resumo do orçamento mensal'**
+  String get navBudgetTooltip;
+
+  /// Tooltip for grocery nav item
+  ///
+  /// In pt, this message translates to:
+  /// **'Catálogo de produtos'**
+  String get navGroceryTooltip;
+
+  /// Tooltip for shopping list nav item
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista de compras'**
+  String get navListTooltip;
+
+  /// Tooltip for coach nav item
+  ///
+  /// In pt, this message translates to:
+  /// **'Coach financeiro com IA'**
+  String get navCoachTooltip;
+
+  /// Tooltip for meals nav item
+  ///
+  /// In pt, this message translates to:
+  /// **'Planeador de refeições'**
+  String get navMealsTooltip;
+
+  /// App title shown in app bar
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamento Mensal'**
+  String get appTitle;
+
+  /// Generic loading text
+  ///
+  /// In pt, this message translates to:
+  /// **'A carregar...'**
+  String get loading;
+
+  /// Loading text shown on app startup
+  ///
+  /// In pt, this message translates to:
+  /// **'A carregar a aplicação'**
+  String get loadingApp;
+
+  /// Cancel button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get cancel;
+
+  /// Confirm button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmar'**
+  String get confirm;
+
+  /// Close button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Fechar'**
+  String get close;
+
+  /// Save button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Guardar'**
+  String get save;
+
+  /// Delete button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Eliminar'**
+  String get delete;
+
+  /// Clear button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Limpar'**
+  String get clear;
+
+  /// Error message when saving a purchase fails
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao guardar compra: {error}'**
+  String errorSavingPurchase(String error);
+
+  /// Filter chip label
+  ///
+  /// In pt, this message translates to:
+  /// **'Filtrar por {label}'**
+  String filterBy(String label);
+
+  /// Accessibility label for adding item to shopping list
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar {name} à lista'**
+  String addToList(String name);
+
+  /// Marital status: single
+  ///
+  /// In pt, this message translates to:
+  /// **'Solteiro(a)'**
+  String get enumMaritalSolteiro;
+
+  /// Marital status: married
+  ///
+  /// In pt, this message translates to:
+  /// **'Casado(a)'**
+  String get enumMaritalCasado;
+
+  /// Marital status: domestic partnership
+  ///
+  /// In pt, this message translates to:
+  /// **'Uniao de Facto'**
+  String get enumMaritalUniaoFacto;
+
+  /// Marital status: divorced
+  ///
+  /// In pt, this message translates to:
+  /// **'Divorciado(a)'**
+  String get enumMaritalDivorciado;
+
+  /// Marital status: widowed
+  ///
+  /// In pt, this message translates to:
+  /// **'Viuvo(a)'**
+  String get enumMaritalViuvo;
+
+  /// Subsidy mode: no twelfths
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem duodécimos'**
+  String get enumSubsidyNone;
+
+  /// Subsidy mode: full twelfths
+  ///
+  /// In pt, this message translates to:
+  /// **'Com duodécimos'**
+  String get enumSubsidyFull;
+
+  /// Subsidy mode: half twelfths
+  ///
+  /// In pt, this message translates to:
+  /// **'50% duodécimos'**
+  String get enumSubsidyHalf;
+
+  /// Subsidy mode short label: none
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem'**
+  String get enumSubsidyNoneShort;
+
+  /// Subsidy mode short label: full
+  ///
+  /// In pt, this message translates to:
+  /// **'Com'**
+  String get enumSubsidyFullShort;
+
+  /// Subsidy mode short label: half
+  ///
+  /// In pt, this message translates to:
+  /// **'50%'**
+  String get enumSubsidyHalfShort;
+
+  /// Meal allowance type: none
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem'**
+  String get enumMealAllowanceNone;
+
+  /// Meal allowance type: card
+  ///
+  /// In pt, this message translates to:
+  /// **'Cartao'**
+  String get enumMealAllowanceCard;
+
+  /// Meal allowance type: cash
+  ///
+  /// In pt, this message translates to:
+  /// **'Com base'**
+  String get enumMealAllowanceCash;
+
+  /// Expense category: telecommunications
+  ///
+  /// In pt, this message translates to:
+  /// **'Telecomunicações'**
+  String get enumCatTelecomunicacoes;
+
+  /// Expense category: energy
+  ///
+  /// In pt, this message translates to:
+  /// **'Energia'**
+  String get enumCatEnergia;
+
+  /// Expense category: water
+  ///
+  /// In pt, this message translates to:
+  /// **'Água'**
+  String get enumCatAgua;
+
+  /// Expense category: food
+  ///
+  /// In pt, this message translates to:
+  /// **'Alimentação'**
+  String get enumCatAlimentacao;
+
+  /// Expense category: education
+  ///
+  /// In pt, this message translates to:
+  /// **'Educação'**
+  String get enumCatEducacao;
+
+  /// Expense category: housing
+  ///
+  /// In pt, this message translates to:
+  /// **'Habitação'**
+  String get enumCatHabitacao;
+
+  /// Expense category: transport
+  ///
+  /// In pt, this message translates to:
+  /// **'Transportes'**
+  String get enumCatTransportes;
+
+  /// Expense category: health
+  ///
+  /// In pt, this message translates to:
+  /// **'Saúde'**
+  String get enumCatSaude;
+
+  /// Expense category: leisure
+  ///
+  /// In pt, this message translates to:
+  /// **'Lazer'**
+  String get enumCatLazer;
+
+  /// Expense category: other
+  ///
+  /// In pt, this message translates to:
+  /// **'Outros'**
+  String get enumCatOutros;
+
+  /// Chart type: expenses pie
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas por Categoria'**
+  String get enumChartExpensesPie;
+
+  /// Chart type: income vs expenses
+  ///
+  /// In pt, this message translates to:
+  /// **'Rendimento vs Despesas'**
+  String get enumChartIncomeVsExpenses;
+
+  /// Chart type: net income
+  ///
+  /// In pt, this message translates to:
+  /// **'Rendimento Líquido'**
+  String get enumChartNetIncome;
+
+  /// Chart type: deductions
+  ///
+  /// In pt, this message translates to:
+  /// **'Descontos (IRS + SS)'**
+  String get enumChartDeductions;
+
+  /// Chart type: savings rate
+  ///
+  /// In pt, this message translates to:
+  /// **'Taxa de Poupança'**
+  String get enumChartSavingsRate;
+
+  /// Meal type: breakfast
+  ///
+  /// In pt, this message translates to:
+  /// **'Pequeno-almoço'**
+  String get enumMealBreakfast;
+
+  /// Meal type: lunch
+  ///
+  /// In pt, this message translates to:
+  /// **'Almoço'**
+  String get enumMealLunch;
+
+  /// Meal type: snack
+  ///
+  /// In pt, this message translates to:
+  /// **'Lanche'**
+  String get enumMealSnack;
+
+  /// Meal type: dinner
+  ///
+  /// In pt, this message translates to:
+  /// **'Jantar'**
+  String get enumMealDinner;
+
+  /// Meal objective: minimize cost
+  ///
+  /// In pt, this message translates to:
+  /// **'Minimizar custo'**
+  String get enumObjMinimizeCost;
+
+  /// Meal objective: balanced health
+  ///
+  /// In pt, this message translates to:
+  /// **'Equilíbrio custo/saúde'**
+  String get enumObjBalancedHealth;
+
+  /// Meal objective: high protein
+  ///
+  /// In pt, this message translates to:
+  /// **'Alta proteína'**
+  String get enumObjHighProtein;
+
+  /// Meal objective: low carb
+  ///
+  /// In pt, this message translates to:
+  /// **'Baixo carboidrato'**
+  String get enumObjLowCarb;
+
+  /// Meal objective: vegetarian
+  ///
+  /// In pt, this message translates to:
+  /// **'Vegetariano'**
+  String get enumObjVegetarian;
+
+  /// Kitchen equipment: oven
+  ///
+  /// In pt, this message translates to:
+  /// **'Forno'**
+  String get enumEquipOven;
+
+  /// Kitchen equipment: air fryer
+  ///
+  /// In pt, this message translates to:
+  /// **'Air Fryer'**
+  String get enumEquipAirFryer;
+
+  /// Kitchen equipment: food processor
+  ///
+  /// In pt, this message translates to:
+  /// **'Robot de cozinha'**
+  String get enumEquipFoodProcessor;
+
+  /// Kitchen equipment: pressure cooker
+  ///
+  /// In pt, this message translates to:
+  /// **'Panela de pressão'**
+  String get enumEquipPressureCooker;
+
+  /// Kitchen equipment: microwave
+  ///
+  /// In pt, this message translates to:
+  /// **'Micro-ondas'**
+  String get enumEquipMicrowave;
+
+  /// Kitchen equipment: Bimby/Thermomix
+  ///
+  /// In pt, this message translates to:
+  /// **'Bimby / Thermomix'**
+  String get enumEquipBimby;
+
+  /// Sodium preference: no restriction
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem restrição'**
+  String get enumSodiumNoRestriction;
+
+  /// Sodium preference: reduced
+  ///
+  /// In pt, this message translates to:
+  /// **'Sódio reduzido'**
+  String get enumSodiumReduced;
+
+  /// Sodium preference: low
+  ///
+  /// In pt, this message translates to:
+  /// **'Baixo sódio'**
+  String get enumSodiumLow;
+
+  /// Age group: 0 to 3 years
+  ///
+  /// In pt, this message translates to:
+  /// **'0–3 anos'**
+  String get enumAge0to3;
+
+  /// Age group: 4 to 10 years
+  ///
+  /// In pt, this message translates to:
+  /// **'4–10 anos'**
+  String get enumAge4to10;
+
+  /// Age group: teenager
+  ///
+  /// In pt, this message translates to:
+  /// **'Adolescente'**
+  String get enumAgeTeen;
+
+  /// Age group: adult
+  ///
+  /// In pt, this message translates to:
+  /// **'Adulto'**
+  String get enumAgeAdult;
+
+  /// Age group: senior
+  ///
+  /// In pt, this message translates to:
+  /// **'Sénior (65+)'**
+  String get enumAgeSenior;
+
+  /// Activity level: sedentary
+  ///
+  /// In pt, this message translates to:
+  /// **'Sedentário'**
+  String get enumActivitySedentary;
+
+  /// Activity level: moderate
+  ///
+  /// In pt, this message translates to:
+  /// **'Moderado'**
+  String get enumActivityModerate;
+
+  /// Activity level: active
+  ///
+  /// In pt, this message translates to:
+  /// **'Ativo'**
+  String get enumActivityActive;
+
+  /// Activity level: very active
+  ///
+  /// In pt, this message translates to:
+  /// **'Muito ativo'**
+  String get enumActivityVeryActive;
+
+  /// Medical condition: diabetes
+  ///
+  /// In pt, this message translates to:
+  /// **'Diabetes'**
+  String get enumMedDiabetes;
+
+  /// Medical condition: hypertension
+  ///
+  /// In pt, this message translates to:
+  /// **'Hipertensão'**
+  String get enumMedHypertension;
+
+  /// Medical condition: high cholesterol
+  ///
+  /// In pt, this message translates to:
+  /// **'Colesterol alto'**
+  String get enumMedHighCholesterol;
+
+  /// Medical condition: gout
+  ///
+  /// In pt, this message translates to:
+  /// **'Gota'**
+  String get enumMedGout;
+
+  /// Medical condition: IBS
+  ///
+  /// In pt, this message translates to:
+  /// **'Síndrome do intestino irritável'**
+  String get enumMedIbs;
+
+  /// Stress index level: excellent
+  ///
+  /// In pt, this message translates to:
+  /// **'Excelente'**
+  String get stressExcellent;
+
+  /// Stress index level: good
+  ///
+  /// In pt, this message translates to:
+  /// **'Bom'**
+  String get stressGood;
+
+  /// Stress index level: warning
+  ///
+  /// In pt, this message translates to:
+  /// **'Atenção'**
+  String get stressWarning;
+
+  /// Stress index level: critical
+  ///
+  /// In pt, this message translates to:
+  /// **'Crítico'**
+  String get stressCritical;
+
+  /// Stress factor: savings rate
+  ///
+  /// In pt, this message translates to:
+  /// **'Taxa de poupança'**
+  String get stressFactorSavings;
+
+  /// Stress factor: safety margin
+  ///
+  /// In pt, this message translates to:
+  /// **'Margem de segurança'**
+  String get stressFactorSafety;
+
+  /// Stress factor: food budget
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamento alimentação'**
+  String get stressFactorFood;
+
+  /// Stress factor: expense stability
+  ///
+  /// In pt, this message translates to:
+  /// **'Estabilidade despesas'**
+  String get stressFactorStability;
+
+  /// Stability label: stable
+  ///
+  /// In pt, this message translates to:
+  /// **'Estável'**
+  String get stressStable;
+
+  /// Stability label: high
+  ///
+  /// In pt, this message translates to:
+  /// **'Elevada'**
+  String get stressHigh;
+
+  /// Percentage used label
+  ///
+  /// In pt, this message translates to:
+  /// **'{percent}% usado'**
+  String stressUsed(String percent);
+
+  /// Not available label
+  ///
+  /// In pt, this message translates to:
+  /// **'N/D'**
+  String get stressNA;
+
+  /// Month review insight: food budget exceeded
+  ///
+  /// In pt, this message translates to:
+  /// **'Alimentação excedeu o orçamento em {percent}% — considere rever porções ou frequência de compras.'**
+  String monthReviewFoodExceeded(String percent);
+
+  /// Month review insight: expenses exceeded plan
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas reais superaram o planeado em {amount}€ — ajustar valores nas definições?'**
+  String monthReviewExpensesExceeded(String amount);
+
+  /// Month review insight: saved more than expected
+  ///
+  /// In pt, this message translates to:
+  /// **'Poupou {amount}€ mais do que previsto — pode reforçar fundo de emergência.'**
+  String monthReviewSavedMore(String amount);
+
+  /// Month review insight: on track
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas dentro do previsto. Bom controlo orçamental.'**
+  String get monthReviewOnTrack;
+
+  /// Dashboard screen title
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamento Mensal'**
+  String get dashboardTitle;
+
+  /// Stress index card title
+  ///
+  /// In pt, this message translates to:
+  /// **'Índice de Tranquilidade'**
+  String get dashboardStressIndex;
+
+  /// Dashboard tension label
+  ///
+  /// In pt, this message translates to:
+  /// **'Tensão'**
+  String get dashboardTension;
+
+  /// Dashboard liquidity label
+  ///
+  /// In pt, this message translates to:
+  /// **'Liquidez'**
+  String get dashboardLiquidity;
+
+  /// Dashboard final position label
+  ///
+  /// In pt, this message translates to:
+  /// **'Posição Final'**
+  String get dashboardFinalPosition;
+
+  /// Dashboard month label
+  ///
+  /// In pt, this message translates to:
+  /// **'Mês'**
+  String get dashboardMonth;
+
+  /// Dashboard gross income label
+  ///
+  /// In pt, this message translates to:
+  /// **'Bruto'**
+  String get dashboardGross;
+
+  /// Dashboard net income label
+  ///
+  /// In pt, this message translates to:
+  /// **'Líquido'**
+  String get dashboardNet;
+
+  /// Dashboard expenses label
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas'**
+  String get dashboardExpenses;
+
+  /// Dashboard savings rate label
+  ///
+  /// In pt, this message translates to:
+  /// **'Taxa Poupança'**
+  String get dashboardSavingsRate;
+
+  /// Dashboard view trends button
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver evolução'**
+  String get dashboardViewTrends;
+
+  /// Dashboard view projection button
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver projeção'**
+  String get dashboardViewProjection;
+
+  /// Dashboard subtitle label
+  ///
+  /// In pt, this message translates to:
+  /// **'RESUMO FINANCEIRO'**
+  String get dashboardFinancialSummary;
+
+  /// Accessibility label for settings button
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir definições'**
+  String get dashboardOpenSettings;
+
+  /// Hero card monthly liquidity label
+  ///
+  /// In pt, this message translates to:
+  /// **'LIQUIDEZ MENSAL'**
+  String get dashboardMonthlyLiquidity;
+
+  /// Positive balance badge text
+  ///
+  /// In pt, this message translates to:
+  /// **'Saldo positivo'**
+  String get dashboardPositiveBalance;
+
+  /// Negative balance badge text
+  ///
+  /// In pt, this message translates to:
+  /// **'Saldo negativo'**
+  String get dashboardNegativeBalance;
+
+  /// Accessibility label for hero card
+  ///
+  /// In pt, this message translates to:
+  /// **'Liquidez mensal: {amount}, {status}'**
+  String dashboardHeroLabel(String amount, String status);
+
+  /// Empty state message
+  ///
+  /// In pt, this message translates to:
+  /// **'Configure os seus dados para ver o resumo.'**
+  String get dashboardConfigureData;
+
+  /// Empty state settings button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir Definições'**
+  String get dashboardOpenSettingsButton;
+
+  /// Summary card gross income label
+  ///
+  /// In pt, this message translates to:
+  /// **'Rendimento Bruto'**
+  String get dashboardGrossIncome;
+
+  /// Summary card net income label
+  ///
+  /// In pt, this message translates to:
+  /// **'Rendimento Líquido'**
+  String get dashboardNetIncome;
+
+  /// Summary card meal allowance sublabel
+  ///
+  /// In pt, this message translates to:
+  /// **'Incl. sub. alim.: {amount}'**
+  String dashboardInclMealAllowance(String amount);
+
+  /// Summary card deductions label
+  ///
+  /// In pt, this message translates to:
+  /// **'Descontos'**
+  String get dashboardDeductions;
+
+  /// Summary card IRS and SS sublabel
+  ///
+  /// In pt, this message translates to:
+  /// **'IRS: {irs} | SS: {ss}'**
+  String dashboardIrsSs(String irs, String ss);
+
+  /// Summary card expenses sublabel
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas: {amount}'**
+  String dashboardExpensesAmount(String amount);
+
+  /// Salary breakdown section header
+  ///
+  /// In pt, this message translates to:
+  /// **'DETALHE VENCIMENTOS'**
+  String get dashboardSalaryDetail;
+
+  /// Default salary label with index
+  ///
+  /// In pt, this message translates to:
+  /// **'Vencimento {n}'**
+  String dashboardSalaryN(int n);
+
+  /// Food spending card header
+  ///
+  /// In pt, this message translates to:
+  /// **'ALIMENTAÇÃO'**
+  String get dashboardFood;
+
+  /// Simulate button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Simular'**
+  String get dashboardSimulate;
+
+  /// Food card budgeted label
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçado'**
+  String get dashboardBudgeted;
+
+  /// Food card spent label
+  ///
+  /// In pt, this message translates to:
+  /// **'Gasto'**
+  String get dashboardSpent;
+
+  /// Food card remaining label
+  ///
+  /// In pt, this message translates to:
+  /// **'Restante'**
+  String get dashboardRemaining;
+
+  /// Food card hint when no purchases yet
+  ///
+  /// In pt, this message translates to:
+  /// **'Finaliza uma compra na Lista para registar gastos.'**
+  String get dashboardFinalizePurchaseHint;
+
+  /// Purchase history card header
+  ///
+  /// In pt, this message translates to:
+  /// **'HISTÓRICO DE COMPRAS'**
+  String get dashboardPurchaseHistory;
+
+  /// View all button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver tudo'**
+  String get dashboardViewAll;
+
+  /// All purchases sheet title
+  ///
+  /// In pt, this message translates to:
+  /// **'Todas as Compras'**
+  String get dashboardAllPurchases;
+
+  /// Accessibility label for a purchase record
+  ///
+  /// In pt, this message translates to:
+  /// **'Compra de {date}, {amount}'**
+  String dashboardPurchaseLabel(String date, String amount);
+
+  /// Product count in purchase history
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 produto} other{{count} produtos}}'**
+  String dashboardProductCount(int count);
+
+  /// Monthly expenses breakdown header
+  ///
+  /// In pt, this message translates to:
+  /// **'DESPESAS MENSAIS'**
+  String get dashboardMonthlyExpenses;
+
+  /// Total row label
+  ///
+  /// In pt, this message translates to:
+  /// **'Total'**
+  String get dashboardTotal;
+
+  /// Gross with subsidies label
+  ///
+  /// In pt, this message translates to:
+  /// **'Bruto c/ duodéc.'**
+  String get dashboardGrossWithSubsidy;
+
+  /// IRS with rate label
+  ///
+  /// In pt, this message translates to:
+  /// **'IRS ({rate})'**
+  String dashboardIrsRate(String rate);
+
+  /// Social security rate label
+  ///
+  /// In pt, this message translates to:
+  /// **'SS (11%)'**
+  String get dashboardSsRate;
+
+  /// Meal allowance label in salary breakdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Sub. Alimentação'**
+  String get dashboardMealAllowance;
+
+  /// Exempt income label
+  ///
+  /// In pt, this message translates to:
+  /// **'Rend. Isento'**
+  String get dashboardExemptIncome;
+
+  /// Details expand button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Detalhes'**
+  String get dashboardDetails;
+
+  /// Stress index delta vs last month
+  ///
+  /// In pt, this message translates to:
+  /// **'{delta} vs mês passado'**
+  String dashboardVsLastMonth(String delta);
+
+  /// Budget pace warning title
+  ///
+  /// In pt, this message translates to:
+  /// **'A gastar mais rápido que o previsto'**
+  String get dashboardPaceWarning;
+
+  /// Budget pace critical title
+  ///
+  /// In pt, this message translates to:
+  /// **'Risco de ultrapassar orçamento alimentar'**
+  String get dashboardPaceCritical;
+
+  /// Pace label in budget pace alert
+  ///
+  /// In pt, this message translates to:
+  /// **'Ritmo'**
+  String get dashboardPace;
+
+  /// Projection label in budget pace alert
+  ///
+  /// In pt, this message translates to:
+  /// **'Projeção'**
+  String get dashboardProjection;
+
+  /// Budget pace comparison value
+  ///
+  /// In pt, this message translates to:
+  /// **'{actual}€/dia vs {expected}€/dia'**
+  String dashboardPaceValue(String actual, String expected);
+
+  /// Month review card summary suffix
+  ///
+  /// In pt, this message translates to:
+  /// **'— RESUMO'**
+  String get dashboardSummaryLabel;
+
+  /// Accessibility label for month review card
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver resumo do mês'**
+  String get dashboardViewMonthSummary;
+
+  /// Coach screen title
+  ///
+  /// In pt, this message translates to:
+  /// **'Coach Financeiro'**
+  String get coachTitle;
+
+  /// Coach screen subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'IA · GPT-4o mini'**
+  String get coachSubtitle;
+
+  /// Coach API key required message
+  ///
+  /// In pt, this message translates to:
+  /// **'Adiciona a tua OpenAI API key nas Definições para usar esta funcionalidade.'**
+  String get coachApiKeyRequired;
+
+  /// Coach analysis card title
+  ///
+  /// In pt, this message translates to:
+  /// **'Análise financeira em 3 partes'**
+  String get coachAnalysisTitle;
+
+  /// Coach analysis card description
+  ///
+  /// In pt, this message translates to:
+  /// **'Posicionamento geral · Factores críticos do Índice de Tranquilidade · Oportunidade imediata. Baseado nos teus dados reais de orçamento, despesas e histórico de compras.'**
+  String get coachAnalysisDescription;
+
+  /// Coach configure API key button
+  ///
+  /// In pt, this message translates to:
+  /// **'Configurar API key nas Definições'**
+  String get coachConfigureApiKey;
+
+  /// Coach API key configured label
+  ///
+  /// In pt, this message translates to:
+  /// **'API key configurada'**
+  String get coachApiKeyConfigured;
+
+  /// Coach analyze button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Analisar o meu orçamento'**
+  String get coachAnalyzeButton;
+
+  /// Coach analyzing state text
+  ///
+  /// In pt, this message translates to:
+  /// **'A analisar...'**
+  String get coachAnalyzing;
+
+  /// Coach custom analysis label
+  ///
+  /// In pt, this message translates to:
+  /// **'Análise personalizada'**
+  String get coachCustomAnalysis;
+
+  /// Coach new analysis button
+  ///
+  /// In pt, this message translates to:
+  /// **'Gerar nova análise'**
+  String get coachNewAnalysis;
+
+  /// Coach history section header
+  ///
+  /// In pt, this message translates to:
+  /// **'HISTÓRICO'**
+  String get coachHistory;
+
+  /// Coach clear all button
+  ///
+  /// In pt, this message translates to:
+  /// **'Limpar tudo'**
+  String get coachClearAll;
+
+  /// Coach clear history dialog title
+  ///
+  /// In pt, this message translates to:
+  /// **'Limpar histórico'**
+  String get coachClearTitle;
+
+  /// Coach clear history dialog content
+  ///
+  /// In pt, this message translates to:
+  /// **'Tens a certeza que queres apagar todas as análises guardadas?'**
+  String get coachClearContent;
+
+  /// Coach delete analysis label
+  ///
+  /// In pt, this message translates to:
+  /// **'Eliminar análise'**
+  String get coachDeleteLabel;
+
+  /// Coach delete tooltip
+  ///
+  /// In pt, this message translates to:
+  /// **'Eliminar'**
+  String get coachDeleteTooltip;
+
+  /// Grocery screen title
+  ///
+  /// In pt, this message translates to:
+  /// **'Supermercado'**
+  String get groceryTitle;
+
+  /// Grocery search field hint
+  ///
+  /// In pt, this message translates to:
+  /// **'Pesquisar produto...'**
+  String get grocerySearchHint;
+
+  /// Grocery loading semantic label
+  ///
+  /// In pt, this message translates to:
+  /// **'A carregar produtos'**
+  String get groceryLoadingLabel;
+
+  /// Grocery loading message
+  ///
+  /// In pt, this message translates to:
+  /// **'A carregar produtos...'**
+  String get groceryLoadingMessage;
+
+  /// Grocery filter: all products
+  ///
+  /// In pt, this message translates to:
+  /// **'Todos'**
+  String get groceryAll;
+
+  /// Number of products shown
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} produtos'**
+  String groceryProductCount(int count);
+
+  /// Snackbar message when product added to list
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} adicionado à lista'**
+  String groceryAddedToList(String name);
+
+  /// Product card average price label
+  ///
+  /// In pt, this message translates to:
+  /// **'{unit} · preço médio'**
+  String groceryAvgPrice(String unit);
+
+  /// Shopping list screen title
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista de Compras'**
+  String get shoppingTitle;
+
+  /// Shopping list empty state title
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista vazia'**
+  String get shoppingEmpty;
+
+  /// Shopping list empty state message
+  ///
+  /// In pt, this message translates to:
+  /// **'Adiciona produtos a partir do\necrã Supermercado.'**
+  String get shoppingEmptyMessage;
+
+  /// Shopping list items remaining summary
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} por comprar · {total}'**
+  String shoppingItemsRemaining(int count, String total);
+
+  /// Shopping list clear button
+  ///
+  /// In pt, this message translates to:
+  /// **'Limpar'**
+  String get shoppingClear;
+
+  /// Shopping list finalize button
+  ///
+  /// In pt, this message translates to:
+  /// **'Finalizar Compra'**
+  String get shoppingFinalize;
+
+  /// Shopping list estimated total label
+  ///
+  /// In pt, this message translates to:
+  /// **'Total estimado'**
+  String get shoppingEstimatedTotal;
+
+  /// Shopping list finalize dialog question
+  ///
+  /// In pt, this message translates to:
+  /// **'QUANTO GASTEI NO TOTAL? (opcional)'**
+  String get shoppingHowMuchSpent;
+
+  /// Shopping list finalize confirm button
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmar'**
+  String get shoppingConfirm;
+
+  /// Shopping list history tooltip
+  ///
+  /// In pt, this message translates to:
+  /// **'Histórico de compras'**
+  String get shoppingHistoryTooltip;
+
+  /// Shopping history screen title
+  ///
+  /// In pt, this message translates to:
+  /// **'Histórico de Compras'**
+  String get shoppingHistoryTitle;
+
+  /// Accessibility label for checked shopping item
+  ///
+  /// In pt, this message translates to:
+  /// **'{name}, comprado'**
+  String shoppingItemChecked(String name);
+
+  /// Accessibility label for swipe to remove
+  ///
+  /// In pt, this message translates to:
+  /// **'{name}, deslizar para remover'**
+  String shoppingItemSwipe(String name);
+
+  /// Pluralized product count
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 produto} other{{count} produtos}}'**
+  String shoppingProductCount(int count);
+
+  /// Auth login screen title
+  ///
+  /// In pt, this message translates to:
+  /// **'Entrar na conta'**
+  String get authLogin;
+
+  /// Auth register screen title
+  ///
+  /// In pt, this message translates to:
+  /// **'Criar conta'**
+  String get authRegister;
+
+  /// Auth email field label
+  ///
+  /// In pt, this message translates to:
+  /// **'Email'**
+  String get authEmail;
+
+  /// Auth email field hint
+  ///
+  /// In pt, this message translates to:
+  /// **'exemplo@email.com'**
+  String get authEmailHint;
+
+  /// Auth password field label
+  ///
+  /// In pt, this message translates to:
+  /// **'Palavra-passe'**
+  String get authPassword;
+
+  /// Auth login button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Entrar'**
+  String get authLoginButton;
+
+  /// Auth register button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Registar'**
+  String get authRegisterButton;
+
+  /// Auth switch to register link
+  ///
+  /// In pt, this message translates to:
+  /// **'Criar conta nova'**
+  String get authSwitchToRegister;
+
+  /// Auth switch to login link
+  ///
+  /// In pt, this message translates to:
+  /// **'Já tenho conta'**
+  String get authSwitchToLogin;
+
+  /// Household setup screen title
+  ///
+  /// In pt, this message translates to:
+  /// **'Configurar Agregado'**
+  String get householdSetupTitle;
+
+  /// Household create tab label
+  ///
+  /// In pt, this message translates to:
+  /// **'Criar'**
+  String get householdCreate;
+
+  /// Household join tab label
+  ///
+  /// In pt, this message translates to:
+  /// **'Entrar com código'**
+  String get householdJoinWithCode;
+
+  /// Household name field label
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome do agregado'**
+  String get householdNameLabel;
+
+  /// Household name field hint
+  ///
+  /// In pt, this message translates to:
+  /// **'ex: Família Silva'**
+  String get householdNameHint;
+
+  /// Household invite code field label
+  ///
+  /// In pt, this message translates to:
+  /// **'Código de convite'**
+  String get householdCodeLabel;
+
+  /// Household invite code field hint
+  ///
+  /// In pt, this message translates to:
+  /// **'XXXXXX'**
+  String get householdCodeHint;
+
+  /// Household create button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Criar Agregado'**
+  String get householdCreateButton;
+
+  /// Household join button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Entrar no Agregado'**
+  String get householdJoinButton;
+
+  /// Household name validation error
+  ///
+  /// In pt, this message translates to:
+  /// **'Indica o nome do agregado.'**
+  String get householdNameRequired;
+
+  /// Chart title: expenses by category
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas por Categoria'**
+  String get chartExpensesByCategory;
+
+  /// Chart title: income vs expenses
+  ///
+  /// In pt, this message translates to:
+  /// **'Rendimento vs Despesas'**
+  String get chartIncomeVsExpenses;
+
+  /// Chart title: deductions
+  ///
+  /// In pt, this message translates to:
+  /// **'Descontos (IRS + Segurança Social)'**
+  String get chartDeductions;
+
+  /// Chart title: gross vs net
+  ///
+  /// In pt, this message translates to:
+  /// **'Rendimento Bruto vs Líquido'**
+  String get chartGrossVsNet;
+
+  /// Chart title: savings rate
+  ///
+  /// In pt, this message translates to:
+  /// **'Taxa de Poupança'**
+  String get chartSavingsRate;
+
+  /// Chart label: net income abbreviated
+  ///
+  /// In pt, this message translates to:
+  /// **'Rend. Liq.'**
+  String get chartNetIncome;
+
+  /// Chart label: expenses
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas'**
+  String get chartExpensesLabel;
+
+  /// Chart label: liquidity
+  ///
+  /// In pt, this message translates to:
+  /// **'Liquidez'**
+  String get chartLiquidity;
+
+  /// Chart label: salary number N
+  ///
+  /// In pt, this message translates to:
+  /// **'Venc. {n}'**
+  String chartSalaryN(int n);
+
+  /// Chart label: gross
+  ///
+  /// In pt, this message translates to:
+  /// **'Bruto'**
+  String get chartGross;
+
+  /// Chart label: net
+  ///
+  /// In pt, this message translates to:
+  /// **'Líquido'**
+  String get chartNet;
+
+  /// Chart label: net salary
+  ///
+  /// In pt, this message translates to:
+  /// **'Sal. Líquido'**
+  String get chartNetSalary;
+
+  /// Chart label: IRS tax
+  ///
+  /// In pt, this message translates to:
+  /// **'IRS'**
+  String get chartIRS;
+
+  /// Chart label: social security
+  ///
+  /// In pt, this message translates to:
+  /// **'Seg. Social'**
+  String get chartSocialSecurity;
+
+  /// Chart label: savings
+  ///
+  /// In pt, this message translates to:
+  /// **'poupança'**
+  String get chartSavings;
+
+  /// Projection sheet title
+  ///
+  /// In pt, this message translates to:
+  /// **'Projeção — {month} {year}'**
+  String projectionTitle(String month, String year);
+
+  /// Projection sheet subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Gastou {spent} de {budget} em {days} dias'**
+  String projectionSubtitle(String spent, String budget, String days);
+
+  /// Projection section: food
+  ///
+  /// In pt, this message translates to:
+  /// **'ALIMENTAÇÃO'**
+  String get projectionFood;
+
+  /// Projection scenario: current pace
+  ///
+  /// In pt, this message translates to:
+  /// **'Ritmo atual'**
+  String get projectionCurrentPace;
+
+  /// Projection scenario: no shopping
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem compras'**
+  String get projectionNoShopping;
+
+  /// Projection scenario: reduce 20%
+  ///
+  /// In pt, this message translates to:
+  /// **'-20%'**
+  String get projectionReduce20;
+
+  /// Projection daily spend estimate
+  ///
+  /// In pt, this message translates to:
+  /// **'Gasto diário estimado: {amount}/dia'**
+  String projectionDailySpend(String amount);
+
+  /// Projection end of month label
+  ///
+  /// In pt, this message translates to:
+  /// **'Projeção fim de mês'**
+  String get projectionEndOfMonth;
+
+  /// Projection remaining label
+  ///
+  /// In pt, this message translates to:
+  /// **'Restante projetado'**
+  String get projectionRemaining;
+
+  /// Projection stress impact label
+  ///
+  /// In pt, this message translates to:
+  /// **'Impacto no Índice'**
+  String get projectionStressImpact;
+
+  /// Projection section: expenses
+  ///
+  /// In pt, this message translates to:
+  /// **'DESPESAS'**
+  String get projectionExpenses;
+
+  /// Projection simulation disclaimer
+  ///
+  /// In pt, this message translates to:
+  /// **'Simulação — não guardado'**
+  String get projectionSimulation;
+
+  /// Projection reduce all expenses label
+  ///
+  /// In pt, this message translates to:
+  /// **'Reduzir todas em '**
+  String get projectionReduceAll;
+
+  /// Projection simulated liquidity label
+  ///
+  /// In pt, this message translates to:
+  /// **'Liquidez simulada'**
+  String get projectionSimLiquidity;
+
+  /// Projection delta label
+  ///
+  /// In pt, this message translates to:
+  /// **'Delta'**
+  String get projectionDelta;
+
+  /// Projection simulated savings rate label
+  ///
+  /// In pt, this message translates to:
+  /// **'Taxa poupança simulada'**
+  String get projectionSimSavingsRate;
+
+  /// Projection simulated stress index label
+  ///
+  /// In pt, this message translates to:
+  /// **'Índice simulado'**
+  String get projectionSimIndex;
+
+  /// Trend sheet title
+  ///
+  /// In pt, this message translates to:
+  /// **'Evolução'**
+  String get trendTitle;
+
+  /// Trend section: stress index
+  ///
+  /// In pt, this message translates to:
+  /// **'ÍNDICE DE TRANQUILIDADE'**
+  String get trendStressIndex;
+
+  /// Trend section: total expenses
+  ///
+  /// In pt, this message translates to:
+  /// **'DESPESAS TOTAIS'**
+  String get trendTotalExpenses;
+
+  /// Trend section: expenses by category
+  ///
+  /// In pt, this message translates to:
+  /// **'DESPESAS POR CATEGORIA'**
+  String get trendExpensesByCategory;
+
+  /// Trend current value label
+  ///
+  /// In pt, this message translates to:
+  /// **'Atual: {amount}'**
+  String trendCurrent(String amount);
+
+  /// Trend category: telecom
+  ///
+  /// In pt, this message translates to:
+  /// **'Telecom'**
+  String get trendCatTelecom;
+
+  /// Trend category: energy
+  ///
+  /// In pt, this message translates to:
+  /// **'Energia'**
+  String get trendCatEnergy;
+
+  /// Trend category: water
+  ///
+  /// In pt, this message translates to:
+  /// **'Água'**
+  String get trendCatWater;
+
+  /// Trend category: food
+  ///
+  /// In pt, this message translates to:
+  /// **'Alimentação'**
+  String get trendCatFood;
+
+  /// Trend category: education
+  ///
+  /// In pt, this message translates to:
+  /// **'Educação'**
+  String get trendCatEducation;
+
+  /// Trend category: housing
+  ///
+  /// In pt, this message translates to:
+  /// **'Habitação'**
+  String get trendCatHousing;
+
+  /// Trend category: transport
+  ///
+  /// In pt, this message translates to:
+  /// **'Transportes'**
+  String get trendCatTransport;
+
+  /// Trend category: health
+  ///
+  /// In pt, this message translates to:
+  /// **'Saúde'**
+  String get trendCatHealth;
+
+  /// Trend category: leisure
+  ///
+  /// In pt, this message translates to:
+  /// **'Lazer'**
+  String get trendCatLeisure;
+
+  /// Trend category: other
+  ///
+  /// In pt, this message translates to:
+  /// **'Outros'**
+  String get trendCatOther;
+
+  /// Month review sheet title
+  ///
+  /// In pt, this message translates to:
+  /// **'Resumo — {month}'**
+  String monthReviewTitle(String month);
+
+  /// Month review column: planned
+  ///
+  /// In pt, this message translates to:
+  /// **'Planeado'**
+  String get monthReviewPlanned;
+
+  /// Month review column: actual
+  ///
+  /// In pt, this message translates to:
+  /// **'Real'**
+  String get monthReviewActual;
+
+  /// Month review column: difference
+  ///
+  /// In pt, this message translates to:
+  /// **'Diferença'**
+  String get monthReviewDifference;
+
+  /// Month review row: food
+  ///
+  /// In pt, this message translates to:
+  /// **'Alimentação'**
+  String get monthReviewFood;
+
+  /// Month review food value display
+  ///
+  /// In pt, this message translates to:
+  /// **'{actual} de {budget}'**
+  String monthReviewFoodValue(String actual, String budget);
+
+  /// Month review section: top deviations
+  ///
+  /// In pt, this message translates to:
+  /// **'MAIORES DESVIOS'**
+  String get monthReviewTopDeviations;
+
+  /// Month review section: suggestions
+  ///
+  /// In pt, this message translates to:
+  /// **'SUGESTÕES'**
+  String get monthReviewSuggestions;
+
+  /// Month review AI analysis button
+  ///
+  /// In pt, this message translates to:
+  /// **'Análise AI detalhada'**
+  String get monthReviewAiAnalysis;
+
+  /// Meal planner screen title
+  ///
+  /// In pt, this message translates to:
+  /// **'Planeador de Refeições'**
+  String get mealPlannerTitle;
+
+  /// Meal planner budget label
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamento alimentação'**
+  String get mealBudgetLabel;
+
+  /// Meal planner people count label
+  ///
+  /// In pt, this message translates to:
+  /// **'Pessoas no agregado'**
+  String get mealPeopleLabel;
+
+  /// Meal planner generate button
+  ///
+  /// In pt, this message translates to:
+  /// **'Gerar Plano Mensal'**
+  String get mealGeneratePlan;
+
+  /// Meal planner generating state
+  ///
+  /// In pt, this message translates to:
+  /// **'A gerar...'**
+  String get mealGenerating;
+
+  /// Meal planner regenerate dialog title
+  ///
+  /// In pt, this message translates to:
+  /// **'Regenerar plano?'**
+  String get mealRegenerateTitle;
+
+  /// Meal planner regenerate dialog content
+  ///
+  /// In pt, this message translates to:
+  /// **'O plano atual será substituído.'**
+  String get mealRegenerateContent;
+
+  /// Meal planner regenerate button
+  ///
+  /// In pt, this message translates to:
+  /// **'Regenerar'**
+  String get mealRegenerate;
+
+  /// Meal planner week label
+  ///
+  /// In pt, this message translates to:
+  /// **'Semana {n}'**
+  String mealWeekLabel(int n);
+
+  /// Meal planner week abbreviation
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem.{n}'**
+  String mealWeekAbbr(int n);
+
+  /// Meal planner add week to shopping list button
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar semana à lista'**
+  String get mealAddWeekToList;
+
+  /// Meal planner ingredients added snackbar
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} ingredientes adicionados à lista'**
+  String mealIngredientsAdded(int count);
+
+  /// Meal planner day label
+  ///
+  /// In pt, this message translates to:
+  /// **'Dia {n}'**
+  String mealDayLabel(int n);
+
+  /// Meal detail: ingredients section
+  ///
+  /// In pt, this message translates to:
+  /// **'Ingredientes'**
+  String get mealIngredients;
+
+  /// Meal detail: preparation section
+  ///
+  /// In pt, this message translates to:
+  /// **'Preparação'**
+  String get mealPreparation;
+
+  /// Meal detail: swap button
+  ///
+  /// In pt, this message translates to:
+  /// **'Trocar'**
+  String get mealSwap;
+
+  /// Meal planner consolidated list button
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver lista consolidada'**
+  String get mealConsolidatedList;
+
+  /// Meal planner consolidated list title
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista Consolidada'**
+  String get mealConsolidatedTitle;
+
+  /// Meal detail: alternatives section
+  ///
+  /// In pt, this message translates to:
+  /// **'Alternativas'**
+  String get mealAlternatives;
+
+  /// Meal planner total cost display
+  ///
+  /// In pt, this message translates to:
+  /// **'{cost}€ total'**
+  String mealTotalCost(String cost);
+
+  /// Meal ingredient category: proteins
+  ///
+  /// In pt, this message translates to:
+  /// **'Proteínas'**
+  String get mealCatProteins;
+
+  /// Meal ingredient category: vegetables
+  ///
+  /// In pt, this message translates to:
+  /// **'Vegetais'**
+  String get mealCatVegetables;
+
+  /// Meal ingredient category: carbs
+  ///
+  /// In pt, this message translates to:
+  /// **'Hidratos'**
+  String get mealCatCarbs;
+
+  /// Meal ingredient category: fats
+  ///
+  /// In pt, this message translates to:
+  /// **'Gorduras'**
+  String get mealCatFats;
+
+  /// Meal ingredient category: condiments
+  ///
+  /// In pt, this message translates to:
+  /// **'Condimentos'**
+  String get mealCatCondiments;
+
+  /// Cost per person display in meal card
+  ///
+  /// In pt, this message translates to:
+  /// **'{cost}€/pess'**
+  String mealCostPerPerson(String cost);
+
+  /// Nutrition badge abbreviation: protein
+  ///
+  /// In pt, this message translates to:
+  /// **'prot'**
+  String get mealNutriProt;
+
+  /// Nutrition badge abbreviation: carbohydrates
+  ///
+  /// In pt, this message translates to:
+  /// **'carbs'**
+  String get mealNutriCarbs;
+
+  /// Nutrition badge abbreviation: fat
+  ///
+  /// In pt, this message translates to:
+  /// **'gord'**
+  String get mealNutriFat;
+
+  /// Nutrition badge abbreviation: fiber
+  ///
+  /// In pt, this message translates to:
+  /// **'fibra'**
+  String get mealNutriFiber;
+
+  /// Wizard step label: meals
+  ///
+  /// In pt, this message translates to:
+  /// **'Refeições'**
+  String get wizardStepMeals;
+
+  /// Wizard step label: objective
+  ///
+  /// In pt, this message translates to:
+  /// **'Objetivo'**
+  String get wizardStepObjective;
+
+  /// Wizard step label: restrictions
+  ///
+  /// In pt, this message translates to:
+  /// **'Restrições'**
+  String get wizardStepRestrictions;
+
+  /// Wizard step label: kitchen
+  ///
+  /// In pt, this message translates to:
+  /// **'Cozinha'**
+  String get wizardStepKitchen;
+
+  /// Wizard step label: strategy
+  ///
+  /// In pt, this message translates to:
+  /// **'Estratégia'**
+  String get wizardStepStrategy;
+
+  /// Wizard meals step question
+  ///
+  /// In pt, this message translates to:
+  /// **'Quais refeições queres incluir no plano diário?'**
+  String get wizardMealsQuestion;
+
+  /// Wizard budget weight display
+  ///
+  /// In pt, this message translates to:
+  /// **'{weight} do orçamento'**
+  String wizardBudgetWeight(String weight);
+
+  /// Wizard objective step question
+  ///
+  /// In pt, this message translates to:
+  /// **'Qual é o objetivo principal do teu plano alimentar?'**
+  String get wizardObjectiveQuestion;
+
+  /// Wizard accessibility label for selected item
+  ///
+  /// In pt, this message translates to:
+  /// **'{label}, selecionado'**
+  String wizardSelected(String label);
+
+  /// Wizard restrictions section header
+  ///
+  /// In pt, this message translates to:
+  /// **'RESTRIÇÕES DIETÉTICAS'**
+  String get wizardDietaryRestrictions;
+
+  /// Wizard dietary restriction: gluten free
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem glúten'**
+  String get wizardGlutenFree;
+
+  /// Wizard dietary restriction: lactose free
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem lactose'**
+  String get wizardLactoseFree;
+
+  /// Wizard dietary restriction: nut free
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem frutos secos'**
+  String get wizardNutFree;
+
+  /// Wizard dietary restriction: shellfish free
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem marisco'**
+  String get wizardShellfishFree;
+
+  /// Wizard disliked ingredients section header
+  ///
+  /// In pt, this message translates to:
+  /// **'INGREDIENTES QUE NÃO GOSTAS'**
+  String get wizardDislikedIngredients;
+
+  /// Wizard disliked ingredients hint
+  ///
+  /// In pt, this message translates to:
+  /// **'ex: atum, brócolos'**
+  String get wizardDislikedHint;
+
+  /// Wizard max prep time section header
+  ///
+  /// In pt, this message translates to:
+  /// **'TEMPO MÁXIMO POR REFEIÇÃO'**
+  String get wizardMaxPrepTime;
+
+  /// Wizard max complexity section header
+  ///
+  /// In pt, this message translates to:
+  /// **'COMPLEXIDADE MÁXIMA'**
+  String get wizardMaxComplexity;
+
+  /// Wizard complexity level: easy
+  ///
+  /// In pt, this message translates to:
+  /// **'Fácil'**
+  String get wizardComplexityEasy;
+
+  /// Wizard complexity level: medium
+  ///
+  /// In pt, this message translates to:
+  /// **'Médio'**
+  String get wizardComplexityMedium;
+
+  /// Wizard complexity level: advanced
+  ///
+  /// In pt, this message translates to:
+  /// **'Avançado'**
+  String get wizardComplexityAdvanced;
+
+  /// Wizard equipment section header
+  ///
+  /// In pt, this message translates to:
+  /// **'EQUIPAMENTO DISPONÍVEL'**
+  String get wizardEquipment;
+
+  /// Wizard strategy: batch cooking toggle
+  ///
+  /// In pt, this message translates to:
+  /// **'Batch cooking'**
+  String get wizardBatchCooking;
+
+  /// Wizard strategy: batch cooking description
+  ///
+  /// In pt, this message translates to:
+  /// **'Cozinhar para vários dias de uma vez'**
+  String get wizardBatchCookingDesc;
+
+  /// Wizard max batch days section header
+  ///
+  /// In pt, this message translates to:
+  /// **'MÁXIMO DE DIAS POR RECEITA'**
+  String get wizardMaxBatchDays;
+
+  /// Wizard batch days display
+  ///
+  /// In pt, this message translates to:
+  /// **'{days} dias'**
+  String wizardBatchDays(int days);
+
+  /// Wizard preferred cooking day section header
+  ///
+  /// In pt, this message translates to:
+  /// **'DIA PREFERIDO PARA COZINHAR'**
+  String get wizardPreferredCookingDay;
+
+  /// Wizard strategy: reuse leftovers toggle
+  ///
+  /// In pt, this message translates to:
+  /// **'Reaproveitar sobras'**
+  String get wizardReuseLeftovers;
+
+  /// Wizard strategy: reuse leftovers description
+  ///
+  /// In pt, this message translates to:
+  /// **'Jantar de ontem = almoço de hoje (custo 0)'**
+  String get wizardReuseLeftoversDesc;
+
+  /// Wizard max new ingredients section header
+  ///
+  /// In pt, this message translates to:
+  /// **'MÁXIMO DE INGREDIENTES NOVOS POR SEMANA'**
+  String get wizardMaxNewIngredients;
+
+  /// Wizard no limit label
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem limite'**
+  String get wizardNoLimit;
+
+  /// Wizard strategy: minimize waste toggle
+  ///
+  /// In pt, this message translates to:
+  /// **'Minimizar desperdício'**
+  String get wizardMinimizeWaste;
+
+  /// Wizard strategy: minimize waste description
+  ///
+  /// In pt, this message translates to:
+  /// **'Prefere receitas que reutilizam ingredientes já usados'**
+  String get wizardMinimizeWasteDesc;
+
+  /// Wizard settings info text
+  ///
+  /// In pt, this message translates to:
+  /// **'Podes alterar as definições do planeador em qualquer altura em Definições → Refeições.'**
+  String get wizardSettingsInfo;
+
+  /// Wizard continue button
+  ///
+  /// In pt, this message translates to:
+  /// **'Continuar'**
+  String get wizardContinue;
+
+  /// Wizard generate plan button
+  ///
+  /// In pt, this message translates to:
+  /// **'Gerar Plano'**
+  String get wizardGeneratePlan;
+
+  /// Wizard step progress indicator
+  ///
+  /// In pt, this message translates to:
+  /// **'Passo {current} de {total}'**
+  String wizardStepOf(int current, int total);
+
+  /// Weekday abbreviation: Monday
+  ///
+  /// In pt, this message translates to:
+  /// **'Seg'**
+  String get wizardWeekdayMon;
+
+  /// Weekday abbreviation: Tuesday
+  ///
+  /// In pt, this message translates to:
+  /// **'Ter'**
+  String get wizardWeekdayTue;
+
+  /// Weekday abbreviation: Wednesday
+  ///
+  /// In pt, this message translates to:
+  /// **'Qua'**
+  String get wizardWeekdayWed;
+
+  /// Weekday abbreviation: Thursday
+  ///
+  /// In pt, this message translates to:
+  /// **'Qui'**
+  String get wizardWeekdayThu;
+
+  /// Weekday abbreviation: Friday
+  ///
+  /// In pt, this message translates to:
+  /// **'Sex'**
+  String get wizardWeekdayFri;
+
+  /// Weekday abbreviation: Saturday
+  ///
+  /// In pt, this message translates to:
+  /// **'Sáb'**
+  String get wizardWeekdaySat;
+
+  /// Weekday abbreviation: Sunday
+  ///
+  /// In pt, this message translates to:
+  /// **'Dom'**
+  String get wizardWeekdaySun;
+
+  /// Wizard prep time in minutes
+  ///
+  /// In pt, this message translates to:
+  /// **'{mins}min'**
+  String wizardPrepMin(int mins);
+
+  /// Wizard prep time: 60+ minutes
+  ///
+  /// In pt, this message translates to:
+  /// **'60+'**
+  String get wizardPrepMin60Plus;
+
+  /// Settings screen title
+  ///
+  /// In pt, this message translates to:
+  /// **'Definições'**
+  String get settingsTitle;
+
+  /// Settings section: personal data
+  ///
+  /// In pt, this message translates to:
+  /// **'Dados Pessoais'**
+  String get settingsPersonal;
+
+  /// Settings section: salaries
+  ///
+  /// In pt, this message translates to:
+  /// **'Salários'**
+  String get settingsSalaries;
+
+  /// Settings section: expenses
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas'**
+  String get settingsExpenses;
+
+  /// Settings section: AI coach
+  ///
+  /// In pt, this message translates to:
+  /// **'Coach IA'**
+  String get settingsCoachAi;
+
+  /// Settings section: dashboard
+  ///
+  /// In pt, this message translates to:
+  /// **'Dashboard'**
+  String get settingsDashboard;
+
+  /// Settings section: meals
+  ///
+  /// In pt, this message translates to:
+  /// **'Refeições'**
+  String get settingsMeals;
+
+  /// Settings section: region and language
+  ///
+  /// In pt, this message translates to:
+  /// **'Região e Idioma'**
+  String get settingsRegion;
+
+  /// Settings field: country
+  ///
+  /// In pt, this message translates to:
+  /// **'País'**
+  String get settingsCountry;
+
+  /// Settings field: language
+  ///
+  /// In pt, this message translates to:
+  /// **'Idioma'**
+  String get settingsLanguage;
+
+  /// Settings field: marital status
+  ///
+  /// In pt, this message translates to:
+  /// **'Estado civil'**
+  String get settingsMaritalStatus;
+
+  /// Settings field: dependents
+  ///
+  /// In pt, this message translates to:
+  /// **'Dependentes'**
+  String get settingsDependents;
+
+  /// Settings field: disability
+  ///
+  /// In pt, this message translates to:
+  /// **'Deficiente'**
+  String get settingsDisability;
+
+  /// Settings field: gross salary
+  ///
+  /// In pt, this message translates to:
+  /// **'Salário bruto'**
+  String get settingsGrossSalary;
+
+  /// Settings field: titulares (tax holders)
+  ///
+  /// In pt, this message translates to:
+  /// **'Titulares'**
+  String get settingsTitulares;
+
+  /// Settings field: subsidy mode
+  ///
+  /// In pt, this message translates to:
+  /// **'Duodécimos'**
+  String get settingsSubsidyMode;
+
+  /// Settings field: meal allowance
+  ///
+  /// In pt, this message translates to:
+  /// **'Subsídio de alimentação'**
+  String get settingsMealAllowance;
+
+  /// Settings field: meal allowance per day
+  ///
+  /// In pt, this message translates to:
+  /// **'Valor/dia'**
+  String get settingsMealAllowancePerDay;
+
+  /// Settings field: working days per month
+  ///
+  /// In pt, this message translates to:
+  /// **'Dias úteis/mês'**
+  String get settingsWorkingDays;
+
+  /// Settings field: other exempt income
+  ///
+  /// In pt, this message translates to:
+  /// **'Outros rendimentos isentos'**
+  String get settingsOtherExemptIncome;
+
+  /// Settings add salary button
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar salário'**
+  String get settingsAddSalary;
+
+  /// Settings add expense button
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar despesa'**
+  String get settingsAddExpense;
+
+  /// Settings field: expense name
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome da despesa'**
+  String get settingsExpenseName;
+
+  /// Settings field: expense amount
+  ///
+  /// In pt, this message translates to:
+  /// **'Valor'**
+  String get settingsExpenseAmount;
+
+  /// Settings field: expense category
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria'**
+  String get settingsExpenseCategory;
+
+  /// Settings field: OpenAI API key
+  ///
+  /// In pt, this message translates to:
+  /// **'API Key OpenAI'**
+  String get settingsApiKey;
+
+  /// Settings field: invite code
+  ///
+  /// In pt, this message translates to:
+  /// **'Código de convite'**
+  String get settingsInviteCode;
+
+  /// Settings copy code button
+  ///
+  /// In pt, this message translates to:
+  /// **'Copiar'**
+  String get settingsCopyCode;
+
+  /// Settings code copied snackbar
+  ///
+  /// In pt, this message translates to:
+  /// **'Código copiado!'**
+  String get settingsCodeCopied;
+
+  /// Settings admin only warning
+  ///
+  /// In pt, this message translates to:
+  /// **'Apenas o administrador pode editar as definições.'**
+  String get settingsAdminOnly;
+
+  /// Settings toggle: show summary cards
+  ///
+  /// In pt, this message translates to:
+  /// **'Mostrar cartões resumo'**
+  String get settingsShowSummaryCards;
+
+  /// Settings section: enabled charts
+  ///
+  /// In pt, this message translates to:
+  /// **'Gráficos ativos'**
+  String get settingsEnabledCharts;
+
+  /// Settings logout button
+  ///
+  /// In pt, this message translates to:
+  /// **'Terminar sessão'**
+  String get settingsLogout;
+
+  /// Settings logout dialog title
+  ///
+  /// In pt, this message translates to:
+  /// **'Terminar sessão'**
+  String get settingsLogoutConfirmTitle;
+
+  /// Settings logout dialog content
+  ///
+  /// In pt, this message translates to:
+  /// **'Tens a certeza que queres sair?'**
+  String get settingsLogoutConfirmContent;
+
+  /// Settings logout dialog confirm button
+  ///
+  /// In pt, this message translates to:
+  /// **'Sair'**
+  String get settingsLogoutConfirmButton;
+
+  /// Settings section header: salaries/income
+  ///
+  /// In pt, this message translates to:
+  /// **'Vencimentos'**
+  String get settingsSalariesSection;
+
+  /// Settings section header: monthly expenses
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas Mensais'**
+  String get settingsExpensesMonthly;
+
+  /// Settings section header: favorite products
+  ///
+  /// In pt, this message translates to:
+  /// **'Produtos Favoritos'**
+  String get settingsFavorites;
+
+  /// Settings section header: AI coach
+  ///
+  /// In pt, this message translates to:
+  /// **'Coach IA (OpenAI)'**
+  String get settingsCoachOpenAi;
+
+  /// Settings section header: household
+  ///
+  /// In pt, this message translates to:
+  /// **'Agregado'**
+  String get settingsHousehold;
+
+  /// Settings label: marital status
+  ///
+  /// In pt, this message translates to:
+  /// **'ESTADO CIVIL'**
+  String get settingsMaritalStatusLabel;
+
+  /// Settings label: number of dependents
+  ///
+  /// In pt, this message translates to:
+  /// **'NÚMERO DE DEPENDENTES'**
+  String get settingsDependentsLabel;
+
+  /// Settings social security rate display
+  ///
+  /// In pt, this message translates to:
+  /// **'Segurança Social: {rate}'**
+  String settingsSocialSecurityRate(String rate);
+
+  /// Settings salary active toggle label
+  ///
+  /// In pt, this message translates to:
+  /// **'Ativo'**
+  String get settingsSalaryActive;
+
+  /// Settings label: gross monthly salary
+  ///
+  /// In pt, this message translates to:
+  /// **'SALÁRIO BRUTO MENSAL'**
+  String get settingsGrossMonthlySalary;
+
+  /// Settings label: holiday subsidies
+  ///
+  /// In pt, this message translates to:
+  /// **'SUBSÍDIOS DE FÉRIAS E NATAL (DUODÉCIMOS)'**
+  String get settingsSubsidyHoliday;
+
+  /// Settings label: other exempt income
+  ///
+  /// In pt, this message translates to:
+  /// **'OUTROS RENDIMENTOS ISENTOS DE IRS'**
+  String get settingsOtherExemptLabel;
+
+  /// Settings label: meal allowance
+  ///
+  /// In pt, this message translates to:
+  /// **'SUBSÍDIO DE ALIMENTAÇÃO'**
+  String get settingsMealAllowanceLabel;
+
+  /// Settings label: amount per day
+  ///
+  /// In pt, this message translates to:
+  /// **'VALOR/DIA'**
+  String get settingsAmountPerDay;
+
+  /// Settings label: days per month
+  ///
+  /// In pt, this message translates to:
+  /// **'DIAS/MÊS'**
+  String get settingsDaysPerMonth;
+
+  /// Settings label: number of tax holders
+  ///
+  /// In pt, this message translates to:
+  /// **'N. TITULARES'**
+  String get settingsTitularesLabel;
+
+  /// Settings titular count button
+  ///
+  /// In pt, this message translates to:
+  /// **'{n} Titular{suffix}'**
+  String settingsTitularCount(int n, String suffix);
+
+  /// Settings add salary button
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar vencimento'**
+  String get settingsAddSalaryButton;
+
+  /// Settings add expense button
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar Despesa'**
+  String get settingsAddExpenseButton;
+
+  /// Settings device local storage info
+  ///
+  /// In pt, this message translates to:
+  /// **'Estas definições são guardadas neste dispositivo.'**
+  String get settingsDeviceLocal;
+
+  /// Settings label: visible sections
+  ///
+  /// In pt, this message translates to:
+  /// **'SECÇÕES VISÍVEIS'**
+  String get settingsVisibleSections;
+
+  /// Settings dashboard preset: minimalist
+  ///
+  /// In pt, this message translates to:
+  /// **'Minimalista'**
+  String get settingsMinimalist;
+
+  /// Settings dashboard preset: full
+  ///
+  /// In pt, this message translates to:
+  /// **'Completo'**
+  String get settingsFull;
+
+  /// Settings dashboard toggle: monthly liquidity
+  ///
+  /// In pt, this message translates to:
+  /// **'Liquidez mensal'**
+  String get settingsDashMonthlyLiquidity;
+
+  /// Settings dashboard toggle: stress index
+  ///
+  /// In pt, this message translates to:
+  /// **'Índice de Tranquilidade'**
+  String get settingsDashStressIndex;
+
+  /// Settings dashboard toggle: summary cards
+  ///
+  /// In pt, this message translates to:
+  /// **'Cartões de resumo'**
+  String get settingsDashSummaryCards;
+
+  /// Settings dashboard toggle: salary breakdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Detalhe por vencimento'**
+  String get settingsDashSalaryBreakdown;
+
+  /// Settings dashboard toggle: food spending
+  ///
+  /// In pt, this message translates to:
+  /// **'Alimentação'**
+  String get settingsDashFood;
+
+  /// Settings dashboard toggle: purchase history
+  ///
+  /// In pt, this message translates to:
+  /// **'Histórico de compras'**
+  String get settingsDashPurchaseHistory;
+
+  /// Settings dashboard toggle: expenses breakdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Breakdown despesas'**
+  String get settingsDashExpensesBreakdown;
+
+  /// Settings dashboard toggle: charts
+  ///
+  /// In pt, this message translates to:
+  /// **'Gráficos'**
+  String get settingsDashCharts;
+
+  /// Settings label: visible charts
+  ///
+  /// In pt, this message translates to:
+  /// **'GRÁFICOS VISÍVEIS'**
+  String get settingsVisibleCharts;
+
+  /// Settings favorites tip text
+  ///
+  /// In pt, this message translates to:
+  /// **'Os produtos favoritos influenciam o plano de refeições — receitas com esses ingredientes ficam em prioridade.'**
+  String get settingsFavTip;
+
+  /// Settings label: my favorites
+  ///
+  /// In pt, this message translates to:
+  /// **'OS MEUS FAVORITOS'**
+  String get settingsMyFavorites;
+
+  /// Settings label: product catalog
+  ///
+  /// In pt, this message translates to:
+  /// **'CATÁLOGO DE PRODUTOS'**
+  String get settingsProductCatalog;
+
+  /// Settings search product hint
+  ///
+  /// In pt, this message translates to:
+  /// **'Pesquisar produto...'**
+  String get settingsSearchProduct;
+
+  /// Settings loading products message
+  ///
+  /// In pt, this message translates to:
+  /// **'A carregar produtos...'**
+  String get settingsLoadingProducts;
+
+  /// Settings dialog title: add ingredient
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar ingrediente'**
+  String get settingsAddIngredient;
+
+  /// Settings dialog hint: ingredient name
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome do ingrediente'**
+  String get settingsIngredientName;
+
+  /// Settings add button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar'**
+  String get settingsAddButton;
+
+  /// Settings dialog title: add to pantry
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar à despensa'**
+  String get settingsAddToPantry;
+
+  /// Settings label: household people
+  ///
+  /// In pt, this message translates to:
+  /// **'AGREGADO (PESSOAS)'**
+  String get settingsHouseholdPeople;
+
+  /// Settings automatic value suffix
+  ///
+  /// In pt, this message translates to:
+  /// **'(auto)'**
+  String get settingsAutomatic;
+
+  /// Settings tooltip: use automatic value
+  ///
+  /// In pt, this message translates to:
+  /// **'Usar valor automático'**
+  String get settingsUseAutoValue;
+
+  /// Settings manual household value
+  ///
+  /// In pt, this message translates to:
+  /// **'Valor manual: {count} pessoas'**
+  String settingsManualValue(int count);
+
+  /// Settings auto household value
+  ///
+  /// In pt, this message translates to:
+  /// **'Calculado automaticamente: {count} (titulares + dependentes)'**
+  String settingsAutoValue(int count);
+
+  /// Settings label: household members
+  ///
+  /// In pt, this message translates to:
+  /// **'MEMBROS DO AGREGADO'**
+  String get settingsHouseholdMembers;
+
+  /// Settings portions unit label
+  ///
+  /// In pt, this message translates to:
+  /// **'porções'**
+  String get settingsPortions;
+
+  /// Settings total portion equivalent
+  ///
+  /// In pt, this message translates to:
+  /// **'Equivalente total: {total} porções'**
+  String settingsTotalEquivalent(String total);
+
+  /// Settings add member button/dialog title
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar membro'**
+  String get settingsAddMember;
+
+  /// Settings toggle: prefer seasonal recipes
+  ///
+  /// In pt, this message translates to:
+  /// **'Preferir receitas sazonais'**
+  String get settingsPreferSeasonal;
+
+  /// Settings toggle description: seasonal
+  ///
+  /// In pt, this message translates to:
+  /// **'Prioriza receitas da época atual'**
+  String get settingsPreferSeasonalDesc;
+
+  /// Settings label: nutritional goals
+  ///
+  /// In pt, this message translates to:
+  /// **'OBJETIVOS NUTRICIONAIS'**
+  String get settingsNutritionalGoals;
+
+  /// Settings calorie target hint
+  ///
+  /// In pt, this message translates to:
+  /// **'ex: 2000'**
+  String get settingsCalorieHint;
+
+  /// Settings kcal per day suffix
+  ///
+  /// In pt, this message translates to:
+  /// **'kcal/dia'**
+  String get settingsKcalPerDay;
+
+  /// Settings protein target hint
+  ///
+  /// In pt, this message translates to:
+  /// **'ex: 60'**
+  String get settingsProteinHint;
+
+  /// Settings grams per day suffix
+  ///
+  /// In pt, this message translates to:
+  /// **'g/dia'**
+  String get settingsGramsPerDay;
+
+  /// Settings fiber target hint
+  ///
+  /// In pt, this message translates to:
+  /// **'ex: 25'**
+  String get settingsFiberHint;
+
+  /// Settings field: daily protein
+  ///
+  /// In pt, this message translates to:
+  /// **'Proteína diária'**
+  String get settingsDailyProtein;
+
+  /// Settings field: daily fiber
+  ///
+  /// In pt, this message translates to:
+  /// **'Fibra diária'**
+  String get settingsDailyFiber;
+
+  /// Settings label: medical conditions
+  ///
+  /// In pt, this message translates to:
+  /// **'CONDIÇÕES MÉDICAS'**
+  String get settingsMedicalConditions;
+
+  /// Settings label: active meals
+  ///
+  /// In pt, this message translates to:
+  /// **'REFEIÇÕES ATIVAS'**
+  String get settingsActiveMeals;
+
+  /// Settings label: objective
+  ///
+  /// In pt, this message translates to:
+  /// **'OBJETIVO'**
+  String get settingsObjective;
+
+  /// Settings label: veggie days per week
+  ///
+  /// In pt, this message translates to:
+  /// **'DIAS VEGETARIANOS POR SEMANA'**
+  String get settingsVeggieDays;
+
+  /// Settings label: dietary restrictions
+  ///
+  /// In pt, this message translates to:
+  /// **'RESTRIÇÕES DIETÉTICAS'**
+  String get settingsDietaryRestrictions;
+
+  /// Settings dietary restriction: egg free
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem ovos'**
+  String get settingsEggFree;
+
+  /// Settings label: sodium preference
+  ///
+  /// In pt, this message translates to:
+  /// **'PREFERÊNCIA DE SÓDIO'**
+  String get settingsSodiumPref;
+
+  /// Settings label: disliked ingredients
+  ///
+  /// In pt, this message translates to:
+  /// **'INGREDIENTES INDESEJADOS'**
+  String get settingsDislikedIngredients;
+
+  /// Settings label: excluded proteins
+  ///
+  /// In pt, this message translates to:
+  /// **'PROTEÍNAS EXCLUÍDAS'**
+  String get settingsExcludedProteins;
+
+  /// Settings protein: chicken
+  ///
+  /// In pt, this message translates to:
+  /// **'Frango'**
+  String get settingsProteinChicken;
+
+  /// Settings protein: ground meat
+  ///
+  /// In pt, this message translates to:
+  /// **'Carne Picada'**
+  String get settingsProteinGroundMeat;
+
+  /// Settings protein: pork
+  ///
+  /// In pt, this message translates to:
+  /// **'Porco'**
+  String get settingsProteinPork;
+
+  /// Settings protein: hake
+  ///
+  /// In pt, this message translates to:
+  /// **'Pescada'**
+  String get settingsProteinHake;
+
+  /// Settings protein: cod
+  ///
+  /// In pt, this message translates to:
+  /// **'Bacalhau'**
+  String get settingsProteinCod;
+
+  /// Settings protein: sardine
+  ///
+  /// In pt, this message translates to:
+  /// **'Sardinha'**
+  String get settingsProteinSardine;
+
+  /// Settings protein: tuna
+  ///
+  /// In pt, this message translates to:
+  /// **'Atum'**
+  String get settingsProteinTuna;
+
+  /// Settings protein: eggs
+  ///
+  /// In pt, this message translates to:
+  /// **'Ovos'**
+  String get settingsProteinEgg;
+
+  /// Settings label: max prep time
+  ///
+  /// In pt, this message translates to:
+  /// **'TEMPO MÁXIMO (MINUTOS)'**
+  String get settingsMaxPrepTime;
+
+  /// Settings label: max complexity
+  ///
+  /// In pt, this message translates to:
+  /// **'COMPLEXIDADE MÁXIMA ({value}/5)'**
+  String settingsMaxComplexity(int value);
+
+  /// Settings label: weekend prep time
+  ///
+  /// In pt, this message translates to:
+  /// **'TEMPO FIM-DE-SEMANA (MINUTOS)'**
+  String get settingsWeekendPrepTime;
+
+  /// Settings label: weekend complexity
+  ///
+  /// In pt, this message translates to:
+  /// **'COMPLEXIDADE FIM-DE-SEMANA ({value}/5)'**
+  String settingsWeekendComplexity(int value);
+
+  /// Settings label: eating out days
+  ///
+  /// In pt, this message translates to:
+  /// **'DIAS DE COMER FORA'**
+  String get settingsEatingOutDays;
+
+  /// Settings label: weekly distribution
+  ///
+  /// In pt, this message translates to:
+  /// **'DISTRIBUIÇÃO SEMANAL'**
+  String get settingsWeeklyDistribution;
+
+  /// Settings fish days per week display
+  ///
+  /// In pt, this message translates to:
+  /// **'Peixe por semana: {count}'**
+  String settingsFishPerWeek(String count);
+
+  /// Settings no minimum label
+  ///
+  /// In pt, this message translates to:
+  /// **'sem mínimo'**
+  String get settingsNoMinimum;
+
+  /// Settings legume days per week display
+  ///
+  /// In pt, this message translates to:
+  /// **'Leguminosas por semana: {count}'**
+  String settingsLegumePerWeek(String count);
+
+  /// Settings red meat max per week display
+  ///
+  /// In pt, this message translates to:
+  /// **'Carne vermelha máx/semana: {count}'**
+  String settingsRedMeatPerWeek(String count);
+
+  /// Settings no limit label
+  ///
+  /// In pt, this message translates to:
+  /// **'sem limite'**
+  String get settingsNoLimit;
+
+  /// Settings label: available equipment
+  ///
+  /// In pt, this message translates to:
+  /// **'EQUIPAMENTO DISPONÍVEL'**
+  String get settingsAvailableEquipment;
+
+  /// Settings toggle: batch cooking
+  ///
+  /// In pt, this message translates to:
+  /// **'Batch cooking'**
+  String get settingsBatchCooking;
+
+  /// Settings label: max batch days
+  ///
+  /// In pt, this message translates to:
+  /// **'MÁXIMO DE DIAS POR RECEITA'**
+  String get settingsMaxBatchDays;
+
+  /// Settings toggle: reuse leftovers
+  ///
+  /// In pt, this message translates to:
+  /// **'Reaproveitar sobras'**
+  String get settingsReuseLeftovers;
+
+  /// Settings toggle: minimize waste
+  ///
+  /// In pt, this message translates to:
+  /// **'Minimizar desperdício'**
+  String get settingsMinimizeWaste;
+
+  /// Settings toggle: prioritize low cost
+  ///
+  /// In pt, this message translates to:
+  /// **'Priorizar custo baixo'**
+  String get settingsPrioritizeLowCost;
+
+  /// Settings toggle desc: prioritize low cost
+  ///
+  /// In pt, this message translates to:
+  /// **'Preferir receitas mais económicas'**
+  String get settingsPrioritizeLowCostDesc;
+
+  /// Settings label: new ingredients per week
+  ///
+  /// In pt, this message translates to:
+  /// **'INGREDIENTES NOVOS POR SEMANA ({count})'**
+  String settingsNewIngredientsPerWeek(int count);
+
+  /// Settings toggle: lunchbox lunches
+  ///
+  /// In pt, this message translates to:
+  /// **'Almoços de marmita'**
+  String get settingsLunchboxLunches;
+
+  /// Settings toggle desc: lunchbox lunches
+  ///
+  /// In pt, this message translates to:
+  /// **'Apenas receitas transportáveis ao almoço'**
+  String get settingsLunchboxLunchesDesc;
+
+  /// Settings label: pantry
+  ///
+  /// In pt, this message translates to:
+  /// **'DESPENSA (SEMPRE EM STOCK)'**
+  String get settingsPantry;
+
+  /// Settings reset wizard button
+  ///
+  /// In pt, this message translates to:
+  /// **'Repor Wizard'**
+  String get settingsResetWizard;
+
+  /// Settings API key info text
+  ///
+  /// In pt, this message translates to:
+  /// **'A key é guardada localmente no dispositivo e nunca é partilhada. Usa o modelo GPT-4o mini (~€0,00008 por análise).'**
+  String get settingsApiKeyInfo;
+
+  /// Settings label: invite code
+  ///
+  /// In pt, this message translates to:
+  /// **'CÓDIGO DE CONVITE'**
+  String get settingsInviteCodeLabel;
+
+  /// Settings generate invite code
+  ///
+  /// In pt, this message translates to:
+  /// **'Gerar código de convite'**
+  String get settingsGenerateInvite;
+
+  /// Settings share invite code info
+  ///
+  /// In pt, this message translates to:
+  /// **'Partilha com membros do agregado'**
+  String get settingsShareWithMembers;
+
+  /// Settings new code tooltip
+  ///
+  /// In pt, this message translates to:
+  /// **'Novo código'**
+  String get settingsNewCode;
+
+  /// Settings invite code validity info
+  ///
+  /// In pt, this message translates to:
+  /// **'O código é válido por 7 dias. Partilha-o com quem queres adicionar ao agregado.'**
+  String get settingsCodeValidInfo;
+
+  /// Settings field: name
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome'**
+  String get settingsName;
+
+  /// Settings field: age group
+  ///
+  /// In pt, this message translates to:
+  /// **'Faixa etária'**
+  String get settingsAgeGroup;
+
+  /// Settings field: activity level
+  ///
+  /// In pt, this message translates to:
+  /// **'Nível de atividade'**
+  String get settingsActivityLevel;
+
+  /// Settings salary number placeholder
+  ///
+  /// In pt, this message translates to:
+  /// **'Vencimento {n}'**
+  String settingsSalaryN(int n);
+
+  /// Country name: Portugal
+  ///
+  /// In pt, this message translates to:
+  /// **'Portugal'**
+  String get countryPT;
+
+  /// Country name: Spain
+  ///
+  /// In pt, this message translates to:
+  /// **'Espanha'**
+  String get countryES;
+
+  /// Country name: France
+  ///
+  /// In pt, this message translates to:
+  /// **'França'**
+  String get countryFR;
+
+  /// Country name: United Kingdom
+  ///
+  /// In pt, this message translates to:
+  /// **'Reino Unido'**
+  String get countryUK;
+
+  /// Language name: Portuguese
+  ///
+  /// In pt, this message translates to:
+  /// **'Português'**
+  String get langPT;
+
+  /// Language name: English
+  ///
+  /// In pt, this message translates to:
+  /// **'English'**
+  String get langEN;
+
+  /// Language name: French
+  ///
+  /// In pt, this message translates to:
+  /// **'Français'**
+  String get langFR;
+
+  /// Language name: Spanish
+  ///
+  /// In pt, this message translates to:
+  /// **'Español'**
+  String get langES;
+
+  /// Language option: system default
+  ///
+  /// In pt, this message translates to:
+  /// **'Sistema'**
+  String get langSystem;
+
+  /// Tax label: income tax (generic)
+  ///
+  /// In pt, this message translates to:
+  /// **'Imposto sobre rendimento'**
+  String get taxIncomeTax;
+
+  /// Tax label: social contribution (generic)
+  ///
+  /// In pt, this message translates to:
+  /// **'Contribuição social'**
+  String get taxSocialContribution;
+
+  /// Tax label: IRS (Portugal)
+  ///
+  /// In pt, this message translates to:
+  /// **'IRS'**
+  String get taxIRS;
+
+  /// Tax label: Social Security (Portugal)
+  ///
+  /// In pt, this message translates to:
+  /// **'Segurança Social'**
+  String get taxSS;
+
+  /// Tax label: IRPF (Spain)
+  ///
+  /// In pt, this message translates to:
+  /// **'IRPF'**
+  String get taxIRPF;
+
+  /// Tax label: Social Security (Spain)
+  ///
+  /// In pt, this message translates to:
+  /// **'Seguridad Social'**
+  String get taxSSSpain;
+
+  /// Tax label: Income Tax (France)
+  ///
+  /// In pt, this message translates to:
+  /// **'Impôt sur le Revenu'**
+  String get taxIR;
+
+  /// Tax label: CSG + CRDS (France)
+  ///
+  /// In pt, this message translates to:
+  /// **'CSG + CRDS'**
+  String get taxCSG;
+
+  /// Tax label: PAYE Income Tax (UK)
+  ///
+  /// In pt, this message translates to:
+  /// **'Income Tax'**
+  String get taxPAYE;
+
+  /// Tax label: National Insurance (UK)
+  ///
+  /// In pt, this message translates to:
+  /// **'National Insurance'**
+  String get taxNI;
+
+  /// ES subsidy mode: no extra pay
+  ///
+  /// In pt, this message translates to:
+  /// **'Sin pagas extras'**
+  String get enumSubsidyEsNone;
+
+  /// ES subsidy mode: with extra pay
+  ///
+  /// In pt, this message translates to:
+  /// **'Con pagas extras'**
+  String get enumSubsidyEsFull;
+
+  /// ES subsidy mode: half extra pay
+  ///
+  /// In pt, this message translates to:
+  /// **'50% pagas extras'**
+  String get enumSubsidyEsHalf;
+
+  /// AI coach system prompt for financial analysis
+  ///
+  /// In pt, this message translates to:
+  /// **'És um analista financeiro pessoal para utilizadores portugueses. Responde sempre em português europeu. Sê directo e analítico — usa sempre números concretos do contexto fornecido. Estrutura a resposta exactamente nas 3 partes pedidas. Não introduzas dados, benchmarks ou referências externas que não foram fornecidos.'**
+  String get aiCoachSystemPrompt;
+
+  /// AI coach invalid API key error
+  ///
+  /// In pt, this message translates to:
+  /// **'API key inválida. Verifica nas Definições.'**
+  String get aiCoachInvalidApiKey;
+
+  /// AI coach mid-month system prompt
+  ///
+  /// In pt, this message translates to:
+  /// **'És um consultor de orçamento doméstico português. Responde sempre em português europeu. Sê prático e directo.'**
+  String get aiCoachMidMonthSystem;
+
+  /// AI meal planner system prompt
+  ///
+  /// In pt, this message translates to:
+  /// **'És um chef português. Responde sempre em português europeu. Responde APENAS com JSON válido, sem texto extra.'**
+  String get aiMealPlannerSystem;
+
+  /// Month abbreviation: January
+  ///
+  /// In pt, this message translates to:
+  /// **'Jan'**
+  String get monthAbbrJan;
+
+  /// Month abbreviation: February
+  ///
+  /// In pt, this message translates to:
+  /// **'Fev'**
+  String get monthAbbrFeb;
+
+  /// Month abbreviation: March
+  ///
+  /// In pt, this message translates to:
+  /// **'Mar'**
+  String get monthAbbrMar;
+
+  /// Month abbreviation: April
+  ///
+  /// In pt, this message translates to:
+  /// **'Abr'**
+  String get monthAbbrApr;
+
+  /// Month abbreviation: May
+  ///
+  /// In pt, this message translates to:
+  /// **'Mai'**
+  String get monthAbbrMay;
+
+  /// Month abbreviation: June
+  ///
+  /// In pt, this message translates to:
+  /// **'Jun'**
+  String get monthAbbrJun;
+
+  /// Month abbreviation: July
+  ///
+  /// In pt, this message translates to:
+  /// **'Jul'**
+  String get monthAbbrJul;
+
+  /// Month abbreviation: August
+  ///
+  /// In pt, this message translates to:
+  /// **'Ago'**
+  String get monthAbbrAug;
+
+  /// Month abbreviation: September
+  ///
+  /// In pt, this message translates to:
+  /// **'Set'**
+  String get monthAbbrSep;
+
+  /// Month abbreviation: October
+  ///
+  /// In pt, this message translates to:
+  /// **'Out'**
+  String get monthAbbrOct;
+
+  /// Month abbreviation: November
+  ///
+  /// In pt, this message translates to:
+  /// **'Nov'**
+  String get monthAbbrNov;
+
+  /// Month abbreviation: December
+  ///
+  /// In pt, this message translates to:
+  /// **'Dez'**
+  String get monthAbbrDec;
+
+  /// Full month name: January
+  ///
+  /// In pt, this message translates to:
+  /// **'Janeiro'**
+  String get monthFullJan;
+
+  /// Full month name: February
+  ///
+  /// In pt, this message translates to:
+  /// **'Fevereiro'**
+  String get monthFullFeb;
+
+  /// Full month name: March
+  ///
+  /// In pt, this message translates to:
+  /// **'Março'**
+  String get monthFullMar;
+
+  /// Full month name: April
+  ///
+  /// In pt, this message translates to:
+  /// **'Abril'**
+  String get monthFullApr;
+
+  /// Full month name: May
+  ///
+  /// In pt, this message translates to:
+  /// **'Maio'**
+  String get monthFullMay;
+
+  /// Full month name: June
+  ///
+  /// In pt, this message translates to:
+  /// **'Junho'**
+  String get monthFullJun;
+
+  /// Full month name: July
+  ///
+  /// In pt, this message translates to:
+  /// **'Julho'**
+  String get monthFullJul;
+
+  /// Full month name: August
+  ///
+  /// In pt, this message translates to:
+  /// **'Agosto'**
+  String get monthFullAug;
+
+  /// Full month name: September
+  ///
+  /// In pt, this message translates to:
+  /// **'Setembro'**
+  String get monthFullSep;
+
+  /// Full month name: October
+  ///
+  /// In pt, this message translates to:
+  /// **'Outubro'**
+  String get monthFullOct;
+
+  /// Full month name: November
+  ///
+  /// In pt, this message translates to:
+  /// **'Novembro'**
+  String get monthFullNov;
+
+  /// Full month name: December
+  ///
+  /// In pt, this message translates to:
+  /// **'Dezembro'**
+  String get monthFullDec;
+
+  /// Setup wizard welcome screen title
+  ///
+  /// In pt, this message translates to:
+  /// **'Bem-vindo ao seu orçamento'**
+  String get setupWizardWelcomeTitle;
+
+  /// Setup wizard welcome screen subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Vamos configurar o essencial para que o seu painel fique pronto a usar.'**
+  String get setupWizardWelcomeSubtitle;
+
+  /// Setup wizard welcome bullet 1
+  ///
+  /// In pt, this message translates to:
+  /// **'Calcular o seu salário líquido'**
+  String get setupWizardBullet1;
+
+  /// Setup wizard welcome bullet 2
+  ///
+  /// In pt, this message translates to:
+  /// **'Organizar as suas despesas'**
+  String get setupWizardBullet2;
+
+  /// Setup wizard welcome bullet 3
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver quanto sobra cada mês'**
+  String get setupWizardBullet3;
+
+  /// Reassurance text shown on welcome screen
+  ///
+  /// In pt, this message translates to:
+  /// **'Pode alterar tudo mais tarde nas definições.'**
+  String get setupWizardReassurance;
+
+  /// Start button on welcome screen
+  ///
+  /// In pt, this message translates to:
+  /// **'Começar'**
+  String get setupWizardStart;
+
+  /// Skip all button on welcome screen
+  ///
+  /// In pt, this message translates to:
+  /// **'Saltar configuração'**
+  String get setupWizardSkipAll;
+
+  /// Step progress indicator
+  ///
+  /// In pt, this message translates to:
+  /// **'Passo {step} de {total}'**
+  String setupWizardStepOf(int step, int total);
+
+  /// Continue button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Continuar'**
+  String get setupWizardContinue;
+
+  /// Country step title
+  ///
+  /// In pt, this message translates to:
+  /// **'Onde vive?'**
+  String get setupWizardCountryTitle;
+
+  /// Country step subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Isto define o sistema fiscal, moeda e valores por defeito.'**
+  String get setupWizardCountrySubtitle;
+
+  /// Language dropdown label
+  ///
+  /// In pt, this message translates to:
+  /// **'Idioma'**
+  String get setupWizardLanguage;
+
+  /// System default language option
+  ///
+  /// In pt, this message translates to:
+  /// **'Predefinição do sistema'**
+  String get setupWizardLangSystem;
+
+  /// Portugal country name
+  ///
+  /// In pt, this message translates to:
+  /// **'Portugal'**
+  String get setupWizardCountryPT;
+
+  /// Spain country name
+  ///
+  /// In pt, this message translates to:
+  /// **'Espanha'**
+  String get setupWizardCountryES;
+
+  /// France country name
+  ///
+  /// In pt, this message translates to:
+  /// **'França'**
+  String get setupWizardCountryFR;
+
+  /// UK country name
+  ///
+  /// In pt, this message translates to:
+  /// **'Reino Unido'**
+  String get setupWizardCountryUK;
+
+  /// Personal info step title
+  ///
+  /// In pt, this message translates to:
+  /// **'Informação pessoal'**
+  String get setupWizardPersonalTitle;
+
+  /// Personal info step subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Usamos isto para calcular os seus impostos com mais precisão.'**
+  String get setupWizardPersonalSubtitle;
+
+  /// Privacy note on personal info step
+  ///
+  /// In pt, this message translates to:
+  /// **'Os seus dados ficam na sua conta e nunca são partilhados.'**
+  String get setupWizardPrivacyNote;
+
+  /// Single marital status card
+  ///
+  /// In pt, this message translates to:
+  /// **'Solteiro(a)'**
+  String get setupWizardSingle;
+
+  /// Married marital status card
+  ///
+  /// In pt, this message translates to:
+  /// **'Casado(a)'**
+  String get setupWizardMarried;
+
+  /// Dependents label
+  ///
+  /// In pt, this message translates to:
+  /// **'Dependentes'**
+  String get setupWizardDependents;
+
+  /// Tax holders label (PT only)
+  ///
+  /// In pt, this message translates to:
+  /// **'Titulares'**
+  String get setupWizardTitulares;
+
+  /// Salary step title
+  ///
+  /// In pt, this message translates to:
+  /// **'Qual é o seu salário?'**
+  String get setupWizardSalaryTitle;
+
+  /// Salary step subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Introduza o valor bruto mensal. Calculamos o líquido automaticamente.'**
+  String get setupWizardSalarySubtitle;
+
+  /// Gross salary field label
+  ///
+  /// In pt, this message translates to:
+  /// **'Salário bruto mensal'**
+  String get setupWizardSalaryGross;
+
+  /// Inline net salary estimate
+  ///
+  /// In pt, this message translates to:
+  /// **'Líquido estimado: {amount}'**
+  String setupWizardNetEstimate(String amount);
+
+  /// Info text on salary step
+  ///
+  /// In pt, this message translates to:
+  /// **'Pode adicionar mais fontes de rendimento mais tarde.'**
+  String get setupWizardSalaryMoreLater;
+
+  /// Skip button on salary step
+  ///
+  /// In pt, this message translates to:
+  /// **'Saltar este passo'**
+  String get setupWizardSalarySkip;
+
+  /// Expenses step title
+  ///
+  /// In pt, this message translates to:
+  /// **'As suas despesas mensais'**
+  String get setupWizardExpensesTitle;
+
+  /// Expenses step subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Valores sugeridos para o seu país. Ajuste conforme necessário.'**
+  String get setupWizardExpensesSubtitle;
+
+  /// Info text on expenses step
+  ///
+  /// In pt, this message translates to:
+  /// **'Pode adicionar mais categorias mais tarde.'**
+  String get setupWizardExpensesMoreLater;
+
+  /// Net salary label on expenses step
+  ///
+  /// In pt, this message translates to:
+  /// **'Líquido: {amount}'**
+  String setupWizardNetLabel(String amount);
+
+  /// Total expenses label
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas: {amount}'**
+  String setupWizardTotalExpenses(String amount);
+
+  /// Available amount label on completion screen
+  ///
+  /// In pt, this message translates to:
+  /// **'Disponível: {amount}'**
+  String setupWizardAvailableLabel(String amount);
+
+  /// Finish button on expenses step
+  ///
+  /// In pt, this message translates to:
+  /// **'Concluir'**
+  String get setupWizardFinish;
+
+  /// Completion screen title
+  ///
+  /// In pt, this message translates to:
+  /// **'Tudo pronto!'**
+  String get setupWizardCompleteTitle;
+
+  /// Reassurance text on completion screen
+  ///
+  /// In pt, this message translates to:
+  /// **'O seu orçamento está configurado. Pode ajustar tudo nas definições a qualquer momento.'**
+  String get setupWizardCompleteReassurance;
+
+  /// Button to go to dashboard from completion screen
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver o meu orçamento'**
+  String get setupWizardGoToDashboard;
+
+  /// Hint when salary not configured
+  ///
+  /// In pt, this message translates to:
+  /// **'Configure o seu salário nas definições para ver o cálculo completo.'**
+  String get setupWizardConfigureSalaryHint;
+
+  /// Rent expense category
+  ///
+  /// In pt, this message translates to:
+  /// **'Renda / Prestação'**
+  String get setupWizardExpRent;
+
+  /// Groceries expense category
+  ///
+  /// In pt, this message translates to:
+  /// **'Alimentação'**
+  String get setupWizardExpGroceries;
+
+  /// Transport expense category
+  ///
+  /// In pt, this message translates to:
+  /// **'Transportes'**
+  String get setupWizardExpTransport;
+
+  /// Utilities expense category
+  ///
+  /// In pt, this message translates to:
+  /// **'Utilidades (luz, água, gás)'**
+  String get setupWizardExpUtilities;
+
+  /// Telecom expense category
+  ///
+  /// In pt, this message translates to:
+  /// **'Telecomunicações'**
+  String get setupWizardExpTelecom;
+
+  /// Health expense category
+  ///
+  /// In pt, this message translates to:
+  /// **'Saúde'**
+  String get setupWizardExpHealth;
+
+  /// Leisure expense category
+  ///
+  /// In pt, this message translates to:
+  /// **'Lazer'**
+  String get setupWizardExpLeisure;
+
+  /// Budget vs actual card title
+  ///
+  /// In pt, this message translates to:
+  /// **'ORÇAMENTO VS REAL'**
+  String get expenseTrackerTitle;
+
+  /// Budgeted label
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamentado'**
+  String get expenseTrackerBudgeted;
+
+  /// Actual label
+  ///
+  /// In pt, this message translates to:
+  /// **'Real'**
+  String get expenseTrackerActual;
+
+  /// Remaining label
+  ///
+  /// In pt, this message translates to:
+  /// **'Restante'**
+  String get expenseTrackerRemaining;
+
+  /// Over budget label
+  ///
+  /// In pt, this message translates to:
+  /// **'Acima do orçamento'**
+  String get expenseTrackerOver;
+
+  /// View all link
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver detalhes'**
+  String get expenseTrackerViewAll;
+
+  /// No expenses empty state
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda sem despesas registadas.'**
+  String get expenseTrackerNoExpenses;
+
+  /// Expense tracker screen title
+  ///
+  /// In pt, this message translates to:
+  /// **'Controlo de Despesas'**
+  String get expenseTrackerScreenTitle;
+
+  /// Month total label
+  ///
+  /// In pt, this message translates to:
+  /// **'Total: {amount}'**
+  String expenseTrackerMonthTotal(String amount);
+
+  /// Delete expense confirmation
+  ///
+  /// In pt, this message translates to:
+  /// **'Eliminar esta despesa?'**
+  String get expenseTrackerDeleteConfirm;
+
+  /// Empty state for tracker screen
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem despesas este mês.\nToca + para adicionar a primeira.'**
+  String get expenseTrackerEmpty;
+
+  /// Add expense sheet title
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar Despesa'**
+  String get addExpenseTitle;
+
+  /// Edit expense sheet title
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar Despesa'**
+  String get editExpenseTitle;
+
+  /// Category field label
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria'**
+  String get addExpenseCategory;
+
+  /// Amount field label
+  ///
+  /// In pt, this message translates to:
+  /// **'Montante'**
+  String get addExpenseAmount;
+
+  /// Date field label
+  ///
+  /// In pt, this message translates to:
+  /// **'Data'**
+  String get addExpenseDate;
+
+  /// Description field label
+  ///
+  /// In pt, this message translates to:
+  /// **'Descrição (opcional)'**
+  String get addExpenseDescription;
+
+  /// Custom category hint
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria personalizada'**
+  String get addExpenseCustomCategory;
+
+  /// Invalid amount error
+  ///
+  /// In pt, this message translates to:
+  /// **'Introduza um valor válido'**
+  String get addExpenseInvalidAmount;
+
+  /// FAB tooltip
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar despesa'**
+  String get addExpenseTooltip;
+
+  /// Settings dashboard toggle: budget vs actual
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamento vs Real'**
+  String get settingsDashBudgetVsActual;
+}
+
+class _SDelegate extends LocalizationsDelegate<S> {
+  const _SDelegate();
+
+  @override
+  Future<S> load(Locale locale) {
+    return SynchronousFuture<S>(lookupS(locale));
+  }
+
+  @override
+  bool isSupported(Locale locale) =>
+      <String>['en', 'es', 'fr', 'pt'].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_SDelegate old) => false;
+}
+
+S lookupS(Locale locale) {
+  // Lookup logic when only language code is specified.
+  switch (locale.languageCode) {
+    case 'en':
+      return SEn();
+    case 'es':
+      return SEs();
+    case 'fr':
+      return SFr();
+    case 'pt':
+      return SPt();
+  }
+
+  throw FlutterError(
+    'S.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
+}

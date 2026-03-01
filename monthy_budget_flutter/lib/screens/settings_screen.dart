@@ -3,10 +3,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/app_settings.dart';
 import '../models/product.dart';
 import '../data/irs_tables.dart';
+import '../data/tax/tax_system.dart';
+import '../data/tax/tax_factory.dart';
 import '../utils/formatters.dart';
 import '../services/household_service.dart';
 import '../models/meal_settings.dart';
 import '../models/local_dashboard_config.dart';
+import '../l10n/generated/app_localizations.dart';
 
 class SettingsScreen extends StatefulWidget {
   final AppSettings settings;
@@ -83,9 +86,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _handleSave() {
     if (!widget.isAdmin) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text(
-                'Apenas o administrador pode alterar as definições.')),
+        SnackBar(
+            content: Text(S.of(context).settingsAdminOnly)),
       );
       return;
     }
@@ -159,6 +161,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       body: SafeArea(
@@ -174,16 +177,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     onPressed: () => Navigator.of(context).pop(),
                     icon: const Icon(Icons.arrow_back, color: Color(0xFF475569)),
                   ),
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      'Definições',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xFF1E293B), letterSpacing: -0.3),
+                      l10n.settingsTitle,
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xFF1E293B), letterSpacing: -0.3),
                     ),
                   ),
                   ElevatedButton.icon(
                     onPressed: _handleSave,
                     icon: const Icon(Icons.check, size: 16),
-                    label: const Text('Guardar'),
+                    label: Text(l10n.save),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF3B82F6),
                       foregroundColor: Colors.white,
@@ -202,57 +205,64 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: Column(
                   children: [
                     _SectionHeader(
+                      icon: Icons.language,
+                      title: l10n.settingsRegion,
+                      isOpen: _openSection == 'region',
+                      onTap: () => _toggleSection('region'),
+                    ),
+                    if (_openSection == 'region') _buildRegionSection(),
+                    _SectionHeader(
                       icon: Icons.person,
-                      title: 'Dados Pessoais',
+                      title: l10n.settingsPersonal,
                       isOpen: _openSection == 'personal',
                       onTap: () => _toggleSection('personal'),
                     ),
                     if (_openSection == 'personal') _buildPersonalSection(),
                     _SectionHeader(
                       icon: Icons.account_balance_wallet,
-                      title: 'Vencimentos',
+                      title: l10n.settingsSalariesSection,
                       isOpen: _openSection == 'salaries',
                       onTap: () => _toggleSection('salaries'),
                     ),
                     if (_openSection == 'salaries') _buildSalariesSection(),
                     _SectionHeader(
                       icon: Icons.receipt_long,
-                      title: 'Despesas Mensais',
+                      title: l10n.settingsExpensesMonthly,
                       isOpen: _openSection == 'expenses',
                       onTap: () => _toggleSection('expenses'),
                     ),
                     if (_openSection == 'expenses') _buildExpensesSection(),
                     _SectionHeader(
                       icon: Icons.dashboard,
-                      title: 'Dashboard',
+                      title: l10n.settingsDashboard,
                       isOpen: _openSection == 'dashboard',
                       onTap: () => _toggleSection('dashboard'),
                     ),
                     if (_openSection == 'dashboard') _buildDashboardSection(),
                     _SectionHeader(
                       icon: Icons.favorite,
-                      title: 'Produtos Favoritos',
+                      title: l10n.settingsFavorites,
                       isOpen: _openSection == 'favorites',
                       onTap: () => _toggleSection('favorites'),
                     ),
                     if (_openSection == 'favorites') _buildFavoritesSection(),
                     _SectionHeader(
                       icon: Icons.restaurant,
-                      title: 'Refeições',
+                      title: l10n.settingsMeals,
                       isOpen: _openSection == 'meals',
                       onTap: () => _toggleSection('meals'),
                     ),
                     if (_openSection == 'meals') _buildMealsSection(),
                     _SectionHeader(
                       icon: Icons.psychology_outlined,
-                      title: 'Coach IA (OpenAI)',
+                      title: l10n.settingsCoachOpenAi,
                       isOpen: _openSection == 'coach',
                       onTap: () => _toggleSection('coach'),
                     ),
                     if (_openSection == 'coach') _buildCoachSection(),
                     _SectionHeader(
                       icon: Icons.people_outline,
-                      title: 'Agregado',
+                      title: l10n.settingsHousehold,
                       isOpen: _openSection == 'household',
                       onTap: () => _toggleSection('household'),
                     ),
@@ -271,7 +281,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             }
                           },
                           icon: const Icon(Icons.logout, size: 18),
-                          label: const Text('Terminar Sessão'),
+                          label: Text(l10n.settingsLogout),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: const Color(0xFFEF4444),
                             side: const BorderSide(color: Color(0xFFFECACA)),
@@ -295,14 +305,96 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildPersonalSection() {
+  String _countryLabel(Country c, S l10n) {
+    switch (c) {
+      case Country.pt: return l10n.countryPT;
+      case Country.es: return l10n.countryES;
+      case Country.fr: return l10n.countryFR;
+      case Country.uk: return l10n.countryUK;
+    }
+  }
+
+  String _languageLabel(String? code, S l10n) {
+    switch (code) {
+      case 'pt': return l10n.langPT;
+      case 'en': return l10n.langEN;
+      case 'fr': return l10n.langFR;
+      case 'es': return l10n.langES;
+      default: return l10n.langSystem;
+    }
+  }
+
+  Widget _buildRegionSection() {
+    final l10n = S.of(context);
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _label('ESTADO CIVIL'),
+          _label(l10n.settingsCountry),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              border: Border.all(color: const Color(0xFFE2E8F0)),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<Country>(
+                value: _draft.country,
+                isExpanded: true,
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF475569)),
+                items: Country.values.map((c) => DropdownMenuItem(
+                  value: c,
+                  child: Text('${_countryLabel(c, l10n)} (${c.currencySymbol})'),
+                )).toList(),
+                onChanged: (v) {
+                  if (v != null) {
+                    setState(() => _draft = _draft.copyWith(country: v));
+                  }
+                },
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          _label(l10n.settingsLanguage),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              border: Border.all(color: const Color(0xFFE2E8F0)),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String?>(
+                value: _draft.localeOverride,
+                isExpanded: true,
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF475569)),
+                items: [null, 'pt', 'en', 'fr', 'es'].map((code) => DropdownMenuItem(
+                  value: code,
+                  child: Text(_languageLabel(code, l10n)),
+                )).toList(),
+                onChanged: (v) {
+                  setState(() => _draft = _draft.copyWith(localeOverride: v));
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPersonalSection() {
+    final l10n = S.of(context);
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _label(l10n.settingsMaritalStatusLabel),
           const SizedBox(height: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -315,7 +407,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 value: _draft.personalInfo.maritalStatus,
                 isExpanded: true,
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF475569)),
-                items: MaritalStatus.values.map((s) => DropdownMenuItem(value: s, child: Text(s.label))).toList(),
+                items: MaritalStatus.values.map((s) => DropdownMenuItem(value: s, child: Text(s.localizedLabel(l10n)))).toList(),
                 onChanged: (v) {
                   if (v != null) {
                     setState(() {
@@ -327,7 +419,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           const SizedBox(height: 20),
-          _label('NUMERO DE DEPENDENTES'),
+          _label(l10n.settingsDependentsLabel),
           const SizedBox(height: 8),
           Row(
             children: [
@@ -365,7 +457,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               border: Border.all(color: const Color(0xFFDBEAFE)),
             ),
             child: Text(
-              'Segurança Social: ${formatPercentage(socialSecurityRate)}',
+              l10n.settingsSocialSecurityRate(formatPercentage(getTaxSystem(_draft.country).socialContributionRate)),
               style: const TextStyle(fontSize: 12, color: Color(0xFF3B82F6)),
             ),
           ),
@@ -377,7 +469,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _addSalary() {
     setState(() {
       final newSalaries = List<SalaryInfo>.from(_draft.salaries);
-      newSalaries.add(SalaryInfo(label: 'Vencimento ${newSalaries.length + 1}'));
+      newSalaries.add(SalaryInfo(label: S.of(context).settingsSalaryN(newSalaries.length + 1)));
       _draft = _draft.copyWith(salaries: newSalaries);
     });
   }
@@ -391,6 +483,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildSalariesSection() {
+    final l10n = S.of(context);
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.all(20),
@@ -423,7 +516,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(label: v)),
                             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF475569)),
                             decoration: InputDecoration(
-                              hintText: 'Vencimento ${idx + 1}',
+                              hintText: l10n.settingsSalaryN(idx + 1),
                               border: InputBorder.none,
                               isDense: true,
                               contentPadding: EdgeInsets.zero,
@@ -439,7 +532,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                         Row(
                           children: [
-                            Text('Ativo', style: TextStyle(fontSize: 12, color: Colors.grey.shade400)),
+                            Text(l10n.settingsSalaryActive, style: TextStyle(fontSize: 12, color: Colors.grey.shade400)),
                             const SizedBox(width: 4),
                             Switch(
                               value: salary.enabled,
@@ -451,99 +544,102 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    _label('SALARIO BRUTO MENSAL'),
+                    _label(l10n.settingsGrossMonthlySalary),
                     const SizedBox(height: 8),
                     TextFormField(
                       initialValue: salary.grossAmount > 0 ? salary.grossAmount.toString() : '',
                       onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(grossAmount: double.tryParse(v) ?? 0)),
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      decoration: _inputDecoration('0.00', suffix: 'EUR'),
+                      decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode),
                     ),
-                    const SizedBox(height: 12),
-                    _label('SUBSÍDIOS DE FÉRIAS E NATAL (DUODÉCIMOS)'),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: SubsidyMode.values.map((mode) {
-                        final isSelected = salary.subsidyMode == mode;
-                        return Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.only(right: mode != SubsidyMode.half ? 6 : 0),
-                            child: OutlinedButton(
-                              onPressed: () => _updateSalary(idx, (s) => s.copyWith(subsidyMode: mode)),
-                              style: OutlinedButton.styleFrom(
-                                backgroundColor: isSelected ? const Color(0xFF3B82F6) : Colors.white,
-                                foregroundColor: isSelected ? Colors.white : const Color(0xFF64748B),
-                                side: BorderSide(color: isSelected ? const Color(0xFF3B82F6) : const Color(0xFFE2E8F0), width: 2),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                padding: const EdgeInsets.symmetric(vertical: 8),
-                                textStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+                    if (_draft.country.hasSubsidies) ...[
+                      const SizedBox(height: 12),
+                      _label(l10n.settingsSubsidyHoliday),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: SubsidyMode.values.map((mode) {
+                          final isSelected = salary.subsidyMode == mode;
+                          return Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.only(right: mode != SubsidyMode.half ? 6 : 0),
+                              child: OutlinedButton(
+                                onPressed: () => _updateSalary(idx, (s) => s.copyWith(subsidyMode: mode)),
+                                style: OutlinedButton.styleFrom(
+                                  backgroundColor: isSelected ? const Color(0xFF3B82F6) : Colors.white,
+                                  foregroundColor: isSelected ? Colors.white : const Color(0xFF64748B),
+                                  side: BorderSide(color: isSelected ? const Color(0xFF3B82F6) : const Color(0xFFE2E8F0), width: 2),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  textStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+                                ),
+                                child: Text(mode.localizedShortLabel(l10n)),
                               ),
-                              child: Text(mode.shortLabel),
                             ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
                     const SizedBox(height: 12),
-                    _label('OUTROS RENDIMENTOS ISENTOS DE IRS'),
+                    _label(l10n.settingsOtherExemptLabel),
                     const SizedBox(height: 8),
                     TextFormField(
                       initialValue: salary.otherExemptIncome > 0 ? salary.otherExemptIncome.toString() : '',
                       onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(otherExemptIncome: double.tryParse(v) ?? 0)),
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      decoration: _inputDecoration('0.00', suffix: 'EUR'),
+                      decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode),
                     ),
-                    const SizedBox(height: 12),
-                    _label('SUBSÍDIO DE ALIMENTAÇÃO'),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: MealAllowanceType.values.map((type) {
-                        final isSelected = salary.mealAllowanceType == type;
-                        return Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.only(right: type != MealAllowanceType.cash ? 6 : 0),
-                            child: OutlinedButton(
-                              onPressed: () => _updateSalary(idx, (s) => s.copyWith(mealAllowanceType: type)),
-                              style: OutlinedButton.styleFrom(
-                                backgroundColor: isSelected ? const Color(0xFF3B82F6) : Colors.white,
-                                foregroundColor: isSelected ? Colors.white : const Color(0xFF64748B),
-                                side: BorderSide(color: isSelected ? const Color(0xFF3B82F6) : const Color(0xFFE2E8F0), width: 2),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                padding: const EdgeInsets.symmetric(vertical: 8),
-                                textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                              ),
-                              child: Text(type.label),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                    if (salary.mealAllowanceType != MealAllowanceType.none) ...[
+                    if (_draft.country.hasMealAllowance) ...[
                       const SizedBox(height: 12),
+                      _label(l10n.settingsMealAllowanceLabel),
+                      const SizedBox(height: 8),
                       Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _label('VALOR/DIA'),
-                                const SizedBox(height: 4),
-                                TextFormField(
-                                  initialValue: salary.mealAllowancePerDay > 0 ? salary.mealAllowancePerDay.toString() : '',
-                                  onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(mealAllowancePerDay: double.tryParse(v) ?? 0)),
-                                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                  decoration: _inputDecoration('0.00', suffix: 'EUR'),
+                        children: MealAllowanceType.values.map((type) {
+                          final isSelected = salary.mealAllowanceType == type;
+                          return Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.only(right: type != MealAllowanceType.cash ? 6 : 0),
+                              child: OutlinedButton(
+                                onPressed: () => _updateSalary(idx, (s) => s.copyWith(mealAllowanceType: type)),
+                                style: OutlinedButton.styleFrom(
+                                  backgroundColor: isSelected ? const Color(0xFF3B82F6) : Colors.white,
+                                  foregroundColor: isSelected ? Colors.white : const Color(0xFF64748B),
+                                  side: BorderSide(color: isSelected ? const Color(0xFF3B82F6) : const Color(0xFFE2E8F0), width: 2),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                                 ),
-                              ],
+                                child: Text(type.localizedLabel(l10n)),
+                              ),
                             ),
-                          ),
+                          );
+                        }).toList(),
+                      ),
+                      if (salary.mealAllowanceType != MealAllowanceType.none) ...[
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _label(l10n.settingsAmountPerDay),
+                                  const SizedBox(height: 4),
+                                  TextFormField(
+                                    initialValue: salary.mealAllowancePerDay > 0 ? salary.mealAllowancePerDay.toString() : '',
+                                    onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(mealAllowancePerDay: double.tryParse(v) ?? 0)),
+                                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                    decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode),
+                                  ),
+                                ],
+                              ),
+                            ),
                           const SizedBox(width: 12),
                           SizedBox(
                             width: 96,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _label('DIAS/MES'),
+                                _label(l10n.settingsDaysPerMonth),
                                 const SizedBox(height: 4),
                                 TextFormField(
                                   initialValue: salary.workingDaysPerMonth > 0 ? salary.workingDaysPerMonth.toString() : '',
@@ -556,10 +652,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                         ],
                       ),
+                      ],
                     ],
-                    if (_isCasado) ...[
+                    if (_draft.country.hasTitulares && _isCasado) ...[
                       const SizedBox(height: 12),
-                      _label('N. TITULARES'),
+                      _label(l10n.settingsTitularesLabel),
                       const SizedBox(height: 8),
                       Row(
                         children: [1, 2].map((n) {
@@ -577,32 +674,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   padding: const EdgeInsets.symmetric(vertical: 8),
                                   textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                                 ),
-                                child: Text('$n Titular${n > 1 ? "es" : ""}'),
+                                child: Text(l10n.settingsTitularCount(n, n > 1 ? 'es' : '')),
                               ),
                             ),
                           );
                         }).toList(),
                       ),
                     ],
-                    const SizedBox(height: 12),
-                    Builder(builder: (_) {
-                      final table = getApplicableTable(
-                        _draft.personalInfo.maritalStatus.jsonValue,
-                        salary.titulares,
-                        _draft.personalInfo.dependentes,
-                      );
-                      return Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF8FAFC),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          '${table.label} — ${table.description}',
-                          style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
-                        ),
-                      );
-                    }),
+                    if (_draft.country == Country.pt) ...[
+                      const SizedBox(height: 12),
+                      Builder(builder: (_) {
+                        final table = getApplicableTable(
+                          _draft.personalInfo.maritalStatus.jsonValue,
+                          salary.titulares,
+                          _draft.personalInfo.dependentes,
+                        );
+                        return Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF8FAFC),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            '${table.label} — ${table.description}',
+                            style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+                          ),
+                        );
+                      }),
+                    ],
                   ],
                 ),
               ),
@@ -614,7 +713,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: OutlinedButton.icon(
               onPressed: _addSalary,
               icon: const Icon(Icons.add, size: 16),
-              label: const Text('Adicionar vencimento'),
+              label: Text(l10n.settingsAddSalaryButton),
               style: OutlinedButton.styleFrom(
                 foregroundColor: const Color(0xFF3B82F6),
                 side: const BorderSide(color: Color(0xFF3B82F6)),
@@ -630,6 +729,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildExpensesSection() {
+    final l10n = S.of(context);
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.all(20),
@@ -664,8 +764,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ..selection = TextSelection.collapsed(offset: expense.label.length),
                             onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(label: v)),
                             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF475569)),
-                            decoration: const InputDecoration(
-                              hintText: 'Nome da despesa',
+                            decoration: InputDecoration(
+                              hintText: l10n.settingsExpenseName,
                               border: InputBorder.none,
                               isDense: true,
                               contentPadding: EdgeInsets.zero,
@@ -695,7 +795,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 isExpanded: true,
                                 style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Color(0xFF475569)),
                                 items: ExpenseCategory.values
-                                    .map((c) => DropdownMenuItem(value: c, child: Text(c.label)))
+                                    .map((c) => DropdownMenuItem(value: c, child: Text(c.localizedLabel(l10n))))
                                     .toList(),
                                 onChanged: (v) {
                                   if (v != null) {
@@ -713,7 +813,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             initialValue: expense.amount > 0 ? expense.amount.toString() : '',
                             onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(amount: double.tryParse(v) ?? 0)),
                             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                            decoration: _inputDecoration('0.00', suffix: 'EUR'),
+                            decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode),
                           ),
                         ),
                       ],
@@ -726,7 +826,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           OutlinedButton.icon(
             onPressed: _addExpense,
             icon: const Icon(Icons.add, size: 18),
-            label: const Text('Adicionar Despesa'),
+            label: Text(l10n.settingsAddExpenseButton),
             style: OutlinedButton.styleFrom(
               foregroundColor: Colors.grey.shade400,
               side: BorderSide(color: Colors.grey.shade200, width: 2, style: BorderStyle.solid),
@@ -742,6 +842,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildDashboardSection() {
+    final l10n = S.of(context);
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.all(20),
@@ -760,7 +861,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Estas definições são guardadas neste dispositivo.',
+                    l10n.settingsDeviceLocal,
                     style: TextStyle(fontSize: 12, color: Colors.blue.shade700),
                   ),
                 ),
@@ -768,7 +869,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          _label('SECÇÕES VISÍVEIS'),
+          _label(l10n.settingsVisibleSections),
           const SizedBox(height: 8),
           Row(
             children: [
@@ -781,7 +882,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     padding: const EdgeInsets.symmetric(vertical: 10),
                   ),
-                  child: const Text('Minimalista', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                  child: Text(l10n.settingsMinimalist, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
                 ),
               ),
               const SizedBox(width: 8),
@@ -794,35 +895,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     padding: const EdgeInsets.symmetric(vertical: 10),
                   ),
-                  child: const Text('Completo', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                  child: Text(l10n.settingsFull, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 12),
-          _dashToggle('Liquidez mensal', _localDashboard.showHeroCard,
+          _dashToggle(l10n.settingsDashMonthlyLiquidity, _localDashboard.showHeroCard,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showHeroCard: v))),
-          _dashToggle('Índice de Tranquilidade', _localDashboard.showStressIndex,
+          _dashToggle(l10n.settingsDashStressIndex, _localDashboard.showStressIndex,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showStressIndex: v))),
-          _dashToggle('Cartões de resumo', _localDashboard.showSummaryCards,
+          _dashToggle(l10n.settingsDashSummaryCards, _localDashboard.showSummaryCards,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showSummaryCards: v))),
-          _dashToggle('Detalhe por vencimento', _localDashboard.showSalaryBreakdown,
+          _dashToggle(l10n.settingsDashSalaryBreakdown, _localDashboard.showSalaryBreakdown,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showSalaryBreakdown: v))),
-          _dashToggle('Alimentação', _localDashboard.showFoodSpending,
+          _dashToggle(l10n.settingsDashFood, _localDashboard.showFoodSpending,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showFoodSpending: v))),
-          _dashToggle('Histórico de compras', _localDashboard.showPurchaseHistory,
+          _dashToggle(l10n.settingsDashPurchaseHistory, _localDashboard.showPurchaseHistory,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showPurchaseHistory: v))),
-          _dashToggle('Breakdown despesas', _localDashboard.showExpensesBreakdown,
+          _dashToggle(l10n.settingsDashBudgetVsActual, _localDashboard.showBudgetVsActual,
+              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showBudgetVsActual: v))),
+          _dashToggle(l10n.settingsDashExpensesBreakdown, _localDashboard.showExpensesBreakdown,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showExpensesBreakdown: v))),
-          _dashToggle('Gráficos', _localDashboard.showCharts,
+          _dashToggle(l10n.settingsDashCharts, _localDashboard.showCharts,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showCharts: v))),
           if (_localDashboard.showCharts) ...[
             const SizedBox(height: 16),
-            _label('GRÁFICOS VISÍVEIS'),
+            _label(l10n.settingsVisibleCharts),
             const SizedBox(height: 8),
             ...ChartType.values.map((chart) => CheckboxListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: Text(chart.label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF475569))),
+                  title: Text(chart.localizedLabel(l10n), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF475569))),
                   value: _localDashboard.enabledCharts.contains(chart),
                   activeColor: const Color(0xFF3B82F6),
                   controlAffinity: ListTileControlAffinity.leading,
@@ -853,6 +956,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildFavoritesSection() {
+    final l10n = S.of(context);
     // All product names from catalog, filtered by search
     final allNames = widget.products.map((p) => p.name).toList();
     final filtered = _favSearch.isEmpty
@@ -882,7 +986,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    'Os produtos favoritos influenciam o plano de refeicoes — receitas com esses ingredientes ficam em prioridade.',
+                    l10n.settingsFavTip,
                     style: TextStyle(
                         fontSize: 12,
                         color: Colors.orange.shade800,
@@ -894,7 +998,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const SizedBox(height: 20),
           if (_favorites.isNotEmpty) ...[
-            _label('OS MEUS FAVORITOS'),
+            _label(l10n.settingsMyFavorites),
             const SizedBox(height: 10),
             Wrap(
               spacing: 8,
@@ -905,11 +1009,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             const SizedBox(height: 20),
           ],
-          _label('CATALOGO DE PRODUTOS'),
+          _label(l10n.settingsProductCatalog),
           const SizedBox(height: 8),
           TextField(
             onChanged: (v) => setState(() => _favSearch = v),
-            decoration: _inputDecoration('Pesquisar produto...').copyWith(
+            decoration: _inputDecoration(l10n.settingsSearchProduct).copyWith(
               prefixIcon: const Icon(Icons.search,
                   size: 18, color: Color(0xFF94A3B8)),
               contentPadding: const EdgeInsets.symmetric(vertical: 12),
@@ -917,9 +1021,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const SizedBox(height: 12),
           if (widget.products.isEmpty)
-            const Text('A carregar produtos...',
+            Text(l10n.settingsLoadingProducts,
                 style:
-                    TextStyle(fontSize: 12, color: Color(0xFF94A3B8)))
+                    const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)))
           else
             Wrap(
               spacing: 8,
@@ -936,22 +1040,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _showAddDislikedDialog() {
+    final l10n = S.of(context);
     final controller = TextEditingController();
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Adicionar ingrediente'),
+        title: Text(l10n.settingsAddIngredient),
         content: TextField(
           controller: controller,
           autofocus: true,
-          decoration: const InputDecoration(
-            hintText: 'Nome do ingrediente',
+          decoration: InputDecoration(
+            hintText: l10n.settingsIngredientName,
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancelar'),
+            child: Text(l10n.cancel),
           ),
           FilledButton(
             onPressed: () {
@@ -964,7 +1069,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               }
               Navigator.pop(ctx);
             },
-            child: const Text('Adicionar'),
+            child: Text(l10n.settingsAddButton),
           ),
         ],
       ),
@@ -972,18 +1077,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _showAddPantryDialog() {
+    final l10n = S.of(context);
     final controller = TextEditingController();
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Adicionar \u00E0 despensa'),
+        title: Text(l10n.settingsAddToPantry),
         content: TextField(
           controller: controller,
           autofocus: true,
-          decoration: const InputDecoration(hintText: 'Nome do ingrediente'),
+          decoration: InputDecoration(hintText: l10n.settingsIngredientName),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancelar')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l10n.cancel)),
           FilledButton(
             onPressed: () {
               final name = controller.text.trim();
@@ -995,7 +1101,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               }
               Navigator.pop(ctx);
             },
-            child: const Text('Adicionar'),
+            child: Text(l10n.settingsAddButton),
           ),
         ],
       ),
@@ -1003,6 +1109,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildMealsSection() {
+    final l10n = S.of(context);
     final ms = _draft.mealSettings;
     return Container(
       color: Colors.white,
@@ -1010,7 +1117,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _label('AGREGADO (PESSOAS)'),
+          _label(l10n.settingsHouseholdPeople),
           const SizedBox(height: 8),
           Row(
             children: [
@@ -1028,7 +1135,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       border: InputBorder.none,
                       hintText: _autoHouseholdSize().toString(),
                       hintStyle: TextStyle(color: Colors.grey.shade400),
-                      suffixText: ms.householdSize == null ? '(auto)' : null,
+                      suffixText: ms.householdSize == null ? l10n.settingsAutomatic : null,
                       suffixStyle: TextStyle(fontSize: 12, color: Colors.grey.shade400),
                     ),
                     style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
@@ -1045,7 +1152,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(width: 8),
                 IconButton(
                   icon: const Icon(Icons.restart_alt, size: 20, color: Color(0xFF94A3B8)),
-                  tooltip: 'Usar valor automático',
+                  tooltip: l10n.settingsUseAutoValue,
                   onPressed: () => setState(() => _draft = _draft.copyWith(
                       mealSettings: ms.copyWith(householdSize: null))),
                 ),
@@ -1056,12 +1163,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             padding: const EdgeInsets.only(top: 4, bottom: 16),
             child: Text(
               ms.householdSize != null
-                  ? 'Valor manual: ${ms.householdSize} pessoas'
-                  : 'Calculado automaticamente: ${_autoHouseholdSize()} (titulares + dependentes)',
+                  ? l10n.settingsManualValue(ms.householdSize!)
+                  : l10n.settingsAutoValue(_autoHouseholdSize()),
               style: TextStyle(fontSize: 11, color: Colors.grey.shade400),
             ),
           ),
-          _label('MEMBROS DO AGREGADO'),
+          _label(l10n.settingsHouseholdMembers),
           const SizedBox(height: 8),
           if (ms.householdMembers.isNotEmpty) ...[
             ...ms.householdMembers.asMap().entries.map((entry) {
@@ -1078,7 +1185,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           Text(m.name,
                               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
                           Text(
-                            '${m.ageGroup.label} \u2022 ${m.activityLevel.label} \u2022 ${m.portionEquivalent.toStringAsFixed(2)} porções',
+                            '${m.ageGroup.localizedLabel(l10n)} \u2022 ${m.activityLevel.localizedLabel(l10n)} \u2022 ${m.portionEquivalent.toStringAsFixed(2)} ${l10n.settingsPortions}',
                             style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
                           ),
                         ],
@@ -1099,7 +1206,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
-                'Equivalente total: ${ms.householdMembers.fold(0.0, (sum, m) => sum + m.portionEquivalent).toStringAsFixed(1)} porções',
+                l10n.settingsTotalEquivalent(ms.householdMembers.fold(0.0, (sum, m) => sum + m.portionEquivalent).toStringAsFixed(1)),
                 style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF3B82F6)),
               ),
             ),
@@ -1109,7 +1216,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: OutlinedButton.icon(
               onPressed: () => _showAddMemberDialog(),
               icon: const Icon(Icons.person_add_outlined, size: 18),
-              label: const Text('Adicionar membro', style: TextStyle(fontSize: 13)),
+              label: Text(l10n.settingsAddMember, style: const TextStyle(fontSize: 13)),
               style: OutlinedButton.styleFrom(
                 foregroundColor: const Color(0xFF3B82F6),
                 side: const BorderSide(color: Color(0xFFE2E8F0)),
@@ -1120,22 +1227,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 16),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Preferir receitas sazonais',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-            subtitle: const Text('Prioriza receitas da época atual',
-                style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
+            title: Text(l10n.settingsPreferSeasonal,
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            subtitle: Text(l10n.settingsPreferSeasonalDesc,
+                style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
             value: ms.preferSeasonal,
             activeTrackColor: const Color(0xFF3B82F6),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(preferSeasonal: v))),
           ),
           const SizedBox(height: 16),
-          _label('OBJETIVOS NUTRICIONAIS'),
+          _label(l10n.settingsNutritionalGoals),
           const SizedBox(height: 8),
           TextFormField(
             initialValue: ms.dailyCalorieTarget?.toString() ?? '',
             keyboardType: TextInputType.number,
-            decoration: _inputDecoration('ex: 2000', suffix: 'kcal/dia').copyWith(
+            decoration: _inputDecoration(l10n.settingsCalorieHint, suffix: l10n.settingsKcalPerDay).copyWith(
               suffixIcon: ms.dailyCalorieTarget != null
                   ? IconButton(
                       icon: const Icon(Icons.close, size: 18, color: Color(0xFF94A3B8)),
@@ -1155,8 +1262,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           TextFormField(
             initialValue: ms.dailyProteinTargetG?.toString() ?? '',
             keyboardType: TextInputType.number,
-            decoration: _inputDecoration('ex: 60', suffix: 'g/dia').copyWith(
-              labelText: 'Proteína diária',
+            decoration: _inputDecoration(l10n.settingsProteinHint, suffix: l10n.settingsGramsPerDay).copyWith(
+              labelText: l10n.settingsDailyProtein,
               labelStyle: TextStyle(fontSize: 13, color: Colors.grey.shade500),
               suffixIcon: ms.dailyProteinTargetG != null
                   ? IconButton(
@@ -1177,8 +1284,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           TextFormField(
             initialValue: ms.dailyFiberTargetG?.toString() ?? '',
             keyboardType: TextInputType.number,
-            decoration: _inputDecoration('ex: 25', suffix: 'g/dia').copyWith(
-              labelText: 'Fibra diária',
+            decoration: _inputDecoration(l10n.settingsFiberHint, suffix: l10n.settingsGramsPerDay).copyWith(
+              labelText: l10n.settingsDailyFiber,
               labelStyle: TextStyle(fontSize: 13, color: Colors.grey.shade500),
               suffixIcon: ms.dailyFiberTargetG != null
                   ? IconButton(
@@ -1196,11 +1303,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           const SizedBox(height: 16),
-          _label('CONDIÇÕES MÉDICAS'),
+          _label(l10n.settingsMedicalConditions),
           const SizedBox(height: 8),
           ...MedicalCondition.values.map((mc) => CheckboxListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text(mc.label,
+                title: Text(mc.localizedLabel(l10n),
                     style: const TextStyle(
                         fontSize: 14, fontWeight: FontWeight.w500)),
                 value: ms.medicalConditions.contains(mc),
@@ -1218,11 +1325,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
               )),
           const SizedBox(height: 16),
-          _label('REFEIÇÕES ATIVAS'),
+          _label(l10n.settingsActiveMeals),
           const SizedBox(height: 8),
           ...MealType.values.map((mt) => SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text(mt.label,
+                title: Text(mt.localizedLabel(l10n),
                     style: const TextStyle(
                         fontSize: 14, fontWeight: FontWeight.w500)),
                 value: ms.enabledMeals.contains(mt),
@@ -1240,7 +1347,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
               )),
           const SizedBox(height: 16),
-          _label('OBJETIVO'),
+          _label(l10n.settingsObjective),
           const SizedBox(height: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -1258,7 +1365,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     color: Color(0xFF475569)),
                 items: MealObjective.values
                     .map((o) =>
-                        DropdownMenuItem(value: o, child: Text(o.label)))
+                        DropdownMenuItem(value: o, child: Text(o.localizedLabel(l10n))))
                     .toList(),
                 onChanged: (v) {
                   if (v == null) return;
@@ -1273,7 +1380,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          _label('DIAS VEGETARIANOS POR SEMANA'),
+          _label(l10n.settingsVeggieDays),
           Slider(
             value: ms.veggieDaysPerWeek.toDouble(),
             min: 0,
@@ -1285,21 +1392,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 mealSettings: ms.copyWith(veggieDaysPerWeek: v.round()))),
           ),
           const SizedBox(height: 8),
-          _label('RESTRIÇÕES DIETÉTICAS'),
+          _label(l10n.settingsDietaryRestrictions),
           ...[
-            ('Sem glúten', ms.glutenFree,
+            (l10n.wizardGlutenFree, ms.glutenFree,
                 (bool v) => setState(() => _draft = _draft.copyWith(
                     mealSettings: ms.copyWith(glutenFree: v)))),
-            ('Sem lactose', ms.lactoseFree,
+            (l10n.wizardLactoseFree, ms.lactoseFree,
                 (bool v) => setState(() => _draft = _draft.copyWith(
                     mealSettings: ms.copyWith(lactoseFree: v)))),
-            ('Sem frutos secos', ms.nutFree,
+            (l10n.wizardNutFree, ms.nutFree,
                 (bool v) => setState(() => _draft = _draft.copyWith(
                     mealSettings: ms.copyWith(nutFree: v)))),
-            ('Sem marisco', ms.shellfishFree,
+            (l10n.wizardShellfishFree, ms.shellfishFree,
                 (bool v) => setState(() => _draft = _draft.copyWith(
                     mealSettings: ms.copyWith(shellfishFree: v)))),
-            ('Sem ovos', ms.eggFree,
+            (l10n.settingsEggFree, ms.eggFree,
                 (bool v) => setState(() => _draft = _draft.copyWith(
                     mealSettings: ms.copyWith(eggFree: v)))),
           ].map((item) => CheckboxListTile(
@@ -1313,7 +1420,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onChanged: (v) => item.$3(v ?? false),
               )),
           const SizedBox(height: 16),
-          _label('PREFER\u00CANCIA DE S\u00D3DIO'),
+          _label(l10n.settingsSodiumPref),
           const SizedBox(height: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -1327,7 +1434,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 isExpanded: true,
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF475569)),
                 items: SodiumPreference.values
-                    .map((s) => DropdownMenuItem(value: s, child: Text(s.label)))
+                    .map((s) => DropdownMenuItem(value: s, child: Text(s.localizedLabel(l10n))))
                     .toList(),
                 onChanged: (v) {
                   if (v == null) return;
@@ -1338,7 +1445,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          _label('INGREDIENTES INDESEJADOS'),
+          _label(l10n.settingsDislikedIngredients),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -1355,23 +1462,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
               )),
               ActionChip(
                 avatar: const Icon(Icons.add, size: 16),
-                label: const Text('Adicionar', style: TextStyle(fontSize: 13)),
+                label: Text(l10n.settingsAddButton, style: const TextStyle(fontSize: 13)),
                 onPressed: () => _showAddDislikedDialog(),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          _label('PROTE\u00CDNAS EXCLU\u00CDDAS'),
+          _label(l10n.settingsExcludedProteins),
           const SizedBox(height: 8),
           ...{
-            'frango': 'Frango',
-            'carne_picada': 'Carne Picada',
-            'porco': 'Porco',
-            'pescada': 'Pescada',
-            'bacalhau': 'Bacalhau',
-            'sardinha': 'Sardinha',
-            'atum_lata': 'Atum',
-            'ovo': 'Ovos',
+            'frango': l10n.settingsProteinChicken,
+            'carne_picada': l10n.settingsProteinGroundMeat,
+            'porco': l10n.settingsProteinPork,
+            'pescada': l10n.settingsProteinHake,
+            'bacalhau': l10n.settingsProteinCod,
+            'sardinha': l10n.settingsProteinSardine,
+            'atum_lata': l10n.settingsProteinTuna,
+            'ovo': l10n.settingsProteinEgg,
           }.entries.map((entry) => CheckboxListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text(entry.value,
@@ -1392,7 +1499,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
               )),
           const SizedBox(height: 16),
-          _label('TEMPO M\u00C1XIMO (MINUTOS)'),
+          _label(l10n.settingsMaxPrepTime),
           Slider(
             value: ms.maxPrepMinutes.toDouble(),
             min: 15,
@@ -1403,7 +1510,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(maxPrepMinutes: v.round()))),
           ),
-          _label('COMPLEXIDADE MÁXIMA (${ms.maxComplexity}/5)'),
+          _label(l10n.settingsMaxComplexity(ms.maxComplexity)),
           Slider(
             value: ms.maxComplexity.toDouble(),
             min: 1,
@@ -1415,7 +1522,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 mealSettings: ms.copyWith(maxComplexity: v.round()))),
           ),
           const SizedBox(height: 8),
-          _label('TEMPO FIM-DE-SEMANA (MINUTOS)'),
+          _label(l10n.settingsWeekendPrepTime),
           Slider(
             value: ms.maxPrepMinutesWeekend.toDouble(),
             min: 15,
@@ -1426,7 +1533,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(maxPrepMinutesWeekend: v.round()))),
           ),
-          _label('COMPLEXIDADE FIM-DE-SEMANA (${ms.maxComplexityWeekend}/5)'),
+          _label(l10n.settingsWeekendComplexity(ms.maxComplexityWeekend)),
           Slider(
             value: ms.maxComplexityWeekend.toDouble(),
             min: 1,
@@ -1438,13 +1545,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 mealSettings: ms.copyWith(maxComplexityWeekend: v.round()))),
           ),
           const SizedBox(height: 8),
-          _label('DIAS DE COMER FORA'),
+          _label(l10n.settingsEatingOutDays),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
             runSpacing: 4,
             children: [
-              for (final entry in {1: 'Seg', 2: 'Ter', 3: 'Qua', 4: 'Qui', 5: 'Sex', 6: 'S\u00E1b', 7: 'Dom'}.entries)
+              for (final entry in {1: l10n.wizardWeekdayMon, 2: l10n.wizardWeekdayTue, 3: l10n.wizardWeekdayWed, 4: l10n.wizardWeekdayThu, 5: l10n.wizardWeekdayFri, 6: l10n.wizardWeekdaySat, 7: l10n.wizardWeekdaySun}.entries)
                 FilterChip(
                   label: Text(entry.value, style: const TextStyle(fontSize: 13)),
                   selected: ms.eatingOutWeekdays.contains(entry.key),
@@ -1460,43 +1567,43 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          _label('DISTRIBUI\u00C7\u00C3O SEMANAL'),
+          _label(l10n.settingsWeeklyDistribution),
           const SizedBox(height: 4),
-          Text('Peixe por semana: ${ms.fishDaysPerWeek == 0 ? "sem m\u00EDnimo" : ms.fishDaysPerWeek}',
+          Text(l10n.settingsFishPerWeek(ms.fishDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.fishDaysPerWeek}'),
               style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
           Slider(
             value: ms.fishDaysPerWeek.toDouble(),
             min: 0, max: 5, divisions: 5,
-            label: ms.fishDaysPerWeek == 0 ? 'Sem m\u00EDnimo' : '${ms.fishDaysPerWeek}',
+            label: ms.fishDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.fishDaysPerWeek}',
             activeColor: const Color(0xFF3B82F6),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(fishDaysPerWeek: v.round()))),
           ),
-          Text('Leguminosas por semana: ${ms.legumeDaysPerWeek == 0 ? "sem m\u00EDnimo" : ms.legumeDaysPerWeek}',
+          Text(l10n.settingsLegumePerWeek(ms.legumeDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.legumeDaysPerWeek}'),
               style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
           Slider(
             value: ms.legumeDaysPerWeek.toDouble(),
             min: 0, max: 5, divisions: 5,
-            label: ms.legumeDaysPerWeek == 0 ? 'Sem m\u00EDnimo' : '${ms.legumeDaysPerWeek}',
+            label: ms.legumeDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.legumeDaysPerWeek}',
             activeColor: const Color(0xFF3B82F6),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(legumeDaysPerWeek: v.round()))),
           ),
-          Text('Carne vermelha m\u00E1x/semana: ${ms.redMeatMaxPerWeek >= 7 ? "sem limite" : ms.redMeatMaxPerWeek}',
+          Text(l10n.settingsRedMeatPerWeek(ms.redMeatMaxPerWeek >= 7 ? l10n.settingsNoLimit : '${ms.redMeatMaxPerWeek}'),
               style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
           Slider(
             value: ms.redMeatMaxPerWeek.toDouble(),
             min: 0, max: 7, divisions: 7,
-            label: ms.redMeatMaxPerWeek >= 7 ? 'Sem limite' : '${ms.redMeatMaxPerWeek}',
+            label: ms.redMeatMaxPerWeek >= 7 ? l10n.settingsNoLimit : '${ms.redMeatMaxPerWeek}',
             activeColor: const Color(0xFF3B82F6),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(redMeatMaxPerWeek: v.round()))),
           ),
           const SizedBox(height: 8),
-          _label('EQUIPAMENTO DISPONÍVEL'),
+          _label(l10n.settingsAvailableEquipment),
           ...KitchenEquipment.values.map((eq) => CheckboxListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text(eq.label,
+                title: Text(eq.localizedLabel(l10n),
                     style: const TextStyle(
                         fontSize: 14, fontWeight: FontWeight.w500)),
                 value: ms.availableEquipment.contains(eq),
@@ -1517,16 +1624,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 16),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Batch cooking',
+            title: Text(l10n.settingsBatchCooking,
                 style:
-                    TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
             value: ms.batchCookingEnabled,
             activeTrackColor: const Color(0xFF3B82F6),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(batchCookingEnabled: v))),
           ),
           if (ms.batchCookingEnabled) ...[
-            _label('MÁXIMO DE DIAS POR RECEITA'),
+            _label(l10n.settingsMaxBatchDays),
             Slider(
               value: ms.maxBatchDays.toDouble(),
               min: 1,
@@ -1540,9 +1647,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ],
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Reaproveitar sobras',
+            title: Text(l10n.settingsReuseLeftovers,
                 style:
-                    TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
             value: ms.reuseLeftovers,
             activeTrackColor: const Color(0xFF3B82F6),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
@@ -1550,9 +1657,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Minimizar desperdício',
+            title: Text(l10n.settingsMinimizeWaste,
                 style:
-                    TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
             value: ms.minimizeWaste,
             activeTrackColor: const Color(0xFF3B82F6),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
@@ -1560,23 +1667,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Priorizar custo baixo',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-            subtitle: const Text('Preferir receitas mais económicas',
-                style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
+            title: Text(l10n.settingsPrioritizeLowCost,
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            subtitle: Text(l10n.settingsPrioritizeLowCostDesc,
+                style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
             value: ms.prioritizeLowCost,
             activeTrackColor: const Color(0xFF3B82F6),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(prioritizeLowCost: v))),
           ),
           if (ms.minimizeWaste) ...[
-            _label('INGREDIENTES NOVOS POR SEMANA (${ms.maxNewIngredientsPerWeek})'),
+            _label(l10n.settingsNewIngredientsPerWeek(ms.maxNewIngredientsPerWeek)),
             Slider(
               value: ms.maxNewIngredientsPerWeek.toDouble(),
               min: 3,
               max: 10,
               divisions: 7,
-              label: ms.maxNewIngredientsPerWeek == 10 ? 'Sem limite' : '${ms.maxNewIngredientsPerWeek}',
+              label: ms.maxNewIngredientsPerWeek == 10 ? l10n.settingsNoLimit : '${ms.maxNewIngredientsPerWeek}',
               activeColor: const Color(0xFF3B82F6),
               onChanged: (v) => setState(() => _draft = _draft.copyWith(
                   mealSettings: ms.copyWith(maxNewIngredientsPerWeek: v.round()))),
@@ -1584,17 +1691,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ],
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Almo\u00E7os de marmita',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-            subtitle: const Text('Apenas receitas transport\u00E1veis ao almo\u00E7o',
-                style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
+            title: Text(l10n.settingsLunchboxLunches,
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            subtitle: Text(l10n.settingsLunchboxLunchesDesc,
+                style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
             value: ms.lunchboxLunches,
             activeTrackColor: const Color(0xFF3B82F6),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(lunchboxLunches: v))),
           ),
           const SizedBox(height: 16),
-          _label('DESPENSA (SEMPRE EM STOCK)'),
+          _label(l10n.settingsPantry),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -1611,7 +1718,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               )),
               ActionChip(
                 avatar: const Icon(Icons.add, size: 16),
-                label: const Text('Adicionar', style: TextStyle(fontSize: 13)),
+                label: Text(l10n.settingsAddButton, style: const TextStyle(fontSize: 13)),
                 onPressed: () => _showAddPantryDialog(),
               ),
             ],
@@ -1623,7 +1730,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onPressed: () => setState(() => _draft = _draft.copyWith(
                   mealSettings: ms.copyWith(wizardCompleted: false))),
               icon: const Icon(Icons.restart_alt, size: 18),
-              label: const Text('Repor Wizard'),
+              label: Text(l10n.settingsResetWizard),
               style: OutlinedButton.styleFrom(
                 foregroundColor: const Color(0xFF64748B),
                 side: const BorderSide(color: Color(0xFFE2E8F0)),
@@ -1639,6 +1746,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildCoachSection() {
+    final l10n = S.of(context);
     final hasKey = _apiKeyController.text.trim().isNotEmpty;
     return Container(
       color: Colors.white,
@@ -1646,7 +1754,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _label('OPENAI API KEY'),
+          _label(l10n.settingsApiKey),
           const SizedBox(height: 8),
           TextField(
             controller: _apiKeyController,
@@ -1660,9 +1768,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           const SizedBox(height: 10),
-          const Text(
-            'A key é guardada localmente no dispositivo e nunca é partilhada. Usa o modelo GPT-4o mini (~€0,00008 por análise).',
-            style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8), height: 1.5),
+          Text(
+            l10n.settingsApiKeyInfo,
+            style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8), height: 1.5),
           ),
         ],
       ),
@@ -1670,9 +1778,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildFavoriteChip(String label, {required bool isSelected}) {
+    final l10n = S.of(context);
     return Semantics(
       button: true,
-      label: '$label${isSelected ? ", selecionado" : ""}',
+      label: isSelected ? l10n.wizardSelected(label) : label,
       child: Material(
       color: isSelected ? const Color(0xFFEF4444).withValues(alpha: 0.08) : Colors.white,
       borderRadius: BorderRadius.circular(20),
@@ -1715,18 +1824,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildHouseholdSection() {
+    final l10n = S.of(context);
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _label('CÓDIGO DE CONVITE'),
+          _label(l10n.settingsInviteCodeLabel),
           const SizedBox(height: 8),
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.link, color: Color(0xFF3B82F6)),
-            title: const Text('Gerar código de convite'),
+            title: Text(l10n.settingsGenerateInvite),
             subtitle: _inviteCode != null
                 ? SelectableText(
                     _inviteCode!,
@@ -1736,17 +1846,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         letterSpacing: 6,
                         color: Color(0xFF1E293B)),
                   )
-                : const Text('Partilha com membros do agregado'),
+                : Text(l10n.settingsShareWithMembers),
             trailing: IconButton(
               icon: const Icon(Icons.refresh),
-              tooltip: 'Novo código',
+              tooltip: l10n.settingsNewCode,
               onPressed: _generateInvite,
             ),
           ),
           const SizedBox(height: 4),
-          const Text(
-            'O código é válido por 7 dias. Partilha-o com quem queres adicionar ao agregado.',
-            style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8), height: 1.5),
+          Text(
+            l10n.settingsCodeValidInfo,
+            style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8), height: 1.5),
           ),
         ],
       ),
@@ -1754,6 +1864,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _showAddMemberDialog() {
+    final l10n = S.of(context);
     String name = '';
     AgeGroup ageGroup = AgeGroup.adult;
     ActivityLevel activityLevel = ActivityLevel.moderate;
@@ -1763,34 +1874,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
-          title: const Text('Adicionar membro'),
+          title: Text(l10n.settingsAddMember),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                decoration: const InputDecoration(labelText: 'Nome'),
+                decoration: InputDecoration(labelText: l10n.settingsName),
                 onChanged: (v) => name = v,
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<AgeGroup>(
                 initialValue: ageGroup,
-                decoration: const InputDecoration(labelText: 'Faixa etária'),
+                decoration: InputDecoration(labelText: l10n.settingsAgeGroup),
                 items: AgeGroup.values.map((a) =>
-                  DropdownMenuItem(value: a, child: Text(a.label))).toList(),
+                  DropdownMenuItem(value: a, child: Text(a.localizedLabel(l10n)))).toList(),
                 onChanged: (v) { if (v != null) ageGroup = v; },
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<ActivityLevel>(
                 initialValue: activityLevel,
-                decoration: const InputDecoration(labelText: 'Nível de atividade'),
+                decoration: InputDecoration(labelText: l10n.settingsActivityLevel),
                 items: ActivityLevel.values.map((a) =>
-                  DropdownMenuItem(value: a, child: Text(a.label))).toList(),
+                  DropdownMenuItem(value: a, child: Text(a.localizedLabel(l10n)))).toList(),
                 onChanged: (v) { if (v != null) activityLevel = v; },
               ),
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancelar')),
+            TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l10n.cancel)),
             FilledButton(
               onPressed: () {
                 if (name.trim().isEmpty) return;
@@ -1800,7 +1911,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   mealSettings: ms.copyWith(householdMembers: updated)));
                 Navigator.pop(ctx);
               },
-              child: const Text('Adicionar'),
+              child: Text(l10n.settingsAddButton),
             ),
           ],
         ),

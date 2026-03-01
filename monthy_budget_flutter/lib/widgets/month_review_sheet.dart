@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../utils/month_review.dart';
 import '../utils/formatters.dart';
 
@@ -57,7 +58,7 @@ class _MonthReviewContent extends StatelessWidget {
           ),
         ),
         Text(
-          'Resumo — ${review.monthLabel}',
+          S.of(context).monthReviewTitle(review.monthLabel),
           style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 20),
@@ -74,11 +75,11 @@ class _MonthReviewContent extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Expanded(child: _stat('Planeado', formatCurrency(review.totalPlanned), const Color(0xFF64748B))),
-                  Expanded(child: _stat('Real', formatCurrency(review.totalActual), const Color(0xFF1E293B))),
+                  Expanded(child: _stat(S.of(context).monthReviewPlanned, formatCurrency(review.totalPlanned), const Color(0xFF64748B))),
+                  Expanded(child: _stat(S.of(context).monthReviewActual, formatCurrency(review.totalActual), const Color(0xFF1E293B))),
                   Expanded(
                     child: _stat(
-                      'Diferença',
+                      S.of(context).monthReviewDifference,
                       '${isOver ? '+' : ''}${formatCurrency(review.totalDifference)}',
                       isOver ? const Color(0xFFEF4444) : const Color(0xFF10B981),
                     ),
@@ -90,9 +91,9 @@ class _MonthReviewContent extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Alimentação', style: TextStyle(fontSize: 13, color: Color(0xFF64748B))),
+                    Text(S.of(context).monthReviewFood, style: const TextStyle(fontSize: 13, color: Color(0xFF64748B))),
                     Text(
-                      '${formatCurrency(review.foodActual)} de ${formatCurrency(review.foodBudget)}',
+                      S.of(context).monthReviewFoodValue(formatCurrency(review.foodActual), formatCurrency(review.foodBudget)),
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
@@ -111,9 +112,9 @@ class _MonthReviewContent extends StatelessWidget {
 
         // Top deviations
         if (review.deviations.isNotEmpty) ...[
-          const Text(
-            'MAIORES DESVIOS',
-            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xFF94A3B8), letterSpacing: 1.2),
+          Text(
+            S.of(context).monthReviewTopDeviations,
+            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xFF94A3B8), letterSpacing: 1.2),
           ),
           const SizedBox(height: 8),
           ...review.deviations.take(3).map((d) => Container(
@@ -161,9 +162,9 @@ class _MonthReviewContent extends StatelessWidget {
         ],
 
         // Suggestions
-        const Text(
-          'SUGESTÕES',
-          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xFF94A3B8), letterSpacing: 1.2),
+        Text(
+          S.of(context).monthReviewSuggestions,
+          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xFF94A3B8), letterSpacing: 1.2),
         ),
         const SizedBox(height: 8),
         ...review.suggestions.map((s) => Padding(
@@ -187,7 +188,7 @@ class _MonthReviewContent extends StatelessWidget {
             child: OutlinedButton.icon(
               onPressed: onAskAI,
               icon: const Icon(Icons.auto_awesome, size: 16),
-              label: const Text('Análise AI detalhada'),
+              label: Text(S.of(context).monthReviewAiAnalysis),
               style: OutlinedButton.styleFrom(
                 foregroundColor: const Color(0xFF3B82F6),
                 side: const BorderSide(color: Color(0xFFBFDBFE)),

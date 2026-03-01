@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../models/product.dart';
 import '../models/shopping_item.dart';
 import '../utils/formatters.dart';
@@ -61,6 +62,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
 
   void _addToCart(Product product) {
     if (widget.onAddToShoppingList == null) return;
+    final l10n = S.of(context);
     widget.onAddToShoppingList!(ShoppingItem(
       productName: product.name,
       store: '',
@@ -68,7 +70,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
     ));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${product.name} adicionado à lista'),
+        content: Text(l10n.groceryAddedToList(product.name)),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -78,6 +80,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final filtered = _filtered;
     // Group by category preserving current filter
     final Map<String, List<Product>> byCategory = {};
@@ -91,9 +94,9 @@ class _GroceryScreenState extends State<GroceryScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
-        title: const Text(
-          'Supermercado',
-          style: TextStyle(
+        title: Text(
+          l10n.groceryTitle,
+          style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
               color: Color(0xFF1E293B)),
@@ -105,7 +108,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
             child: TextField(
               onChanged: (v) => setState(() => _searchQuery = v),
               decoration: InputDecoration(
-                hintText: 'Pesquisar produto...',
+                hintText: l10n.grocerySearchHint,
                 hintStyle:
                     const TextStyle(color: Color(0xFF94A3B8), fontSize: 14),
                 prefixIcon: const Icon(Icons.search,
@@ -134,15 +137,15 @@ class _GroceryScreenState extends State<GroceryScreen> {
       body: widget.products.isEmpty
           ? Center(
               child: Semantics(
-                label: 'A carregar produtos',
-                child: const Column(
+                label: l10n.groceryLoadingLabel,
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    CircularProgressIndicator(color: Color(0xFF3B82F6)),
-                    SizedBox(height: 16),
+                    const CircularProgressIndicator(color: Color(0xFF3B82F6)),
+                    const SizedBox(height: 16),
                     Text(
-                      'A carregar produtos...',
-                      style: TextStyle(fontSize: 14, color: Color(0xFF64748B)),
+                      l10n.groceryLoadingMessage,
+                      style: const TextStyle(fontSize: 14, color: Color(0xFF64748B)),
                     ),
                   ],
                 ),
@@ -157,7 +160,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
                     children: [
-                      _chip('Todos', _selectedCategory == null,
+                      _chip(l10n.groceryAll, _selectedCategory == null,
                           () => setState(() => _selectedCategory = null)),
                       ..._categories.map((cat) => Padding(
                             padding: const EdgeInsets.only(left: 8),
@@ -179,7 +182,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
                   child: Row(
                     children: [
                       Text(
-                        '${filtered.length} produtos',
+                        l10n.groceryProductCount(filtered.length),
                         style: const TextStyle(
                             fontSize: 12,
                             color: Color(0xFF94A3B8),
@@ -233,6 +236,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
   }
 
   Widget _buildProductRow(Product product) {
+    final l10n = S.of(context);
     return Semantics(
       label: '${product.name}, ${formatCurrency(product.avgPrice)}, ${product.unit}',
       child: Container(
@@ -258,7 +262,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  '${product.unit} · preço médio',
+                  l10n.groceryAvgPrice(product.unit),
                   style: const TextStyle(
                       fontSize: 11, color: Color(0xFF94A3B8)),
                 ),
@@ -275,7 +279,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
           const SizedBox(width: 10),
           Semantics(
             button: true,
-            label: 'Adicionar ${product.name} à lista',
+            label: l10n.addToList(product.name),
             child: SizedBox(
               width: 44,
               height: 44,
@@ -299,7 +303,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
   Widget _chip(String label, bool selected, VoidCallback onTap) {
     return Semantics(
       button: true,
-      label: 'Filtrar por $label',
+      label: S.of(context).filterBy(label),
       selected: selected,
       child: Material(
         color: selected ? const Color(0xFF3B82F6) : Colors.white,

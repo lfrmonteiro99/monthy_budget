@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../models/shopping_item.dart';
 import '../models/purchase_record.dart';
 import '../utils/formatters.dart';
@@ -28,6 +29,7 @@ class ShoppingListScreen extends StatefulWidget {
 
 class _ShoppingListScreenState extends State<ShoppingListScreen> {
   void _showFinalizeSheet() {
+    final l10n = S.of(context);
     final checkedItems = widget.items.where((i) => i.checked).toList();
     final controller = TextEditingController();
     final estimatedTotal = checkedItems.fold(0.0, (s, i) => s + i.price);
@@ -56,11 +58,11 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(20, 4, 20, 0),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
               child: Text(
-                'Finalizar Compra',
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+                l10n.shoppingFinalize,
+                style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
               ),
             ),
             const SizedBox(height: 12),
@@ -111,8 +113,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Total estimado',
-                              style: TextStyle(
+                          Text(l10n.shoppingEstimatedTotal,
+                              style: const TextStyle(
                                   fontSize: 13, color: Color(0xFF64748B))),
                           Text(formatCurrency(estimatedTotal),
                               style: const TextStyle(
@@ -122,9 +124,9 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                         ],
                       ),
                     ),
-                  const Text(
-                    'QUANTO GASTEI NO TOTAL? (opcional)',
-                    style: TextStyle(
+                  Text(
+                    l10n.shoppingHowMuchSpent,
+                    style: const TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
                         color: Color(0xFF94A3B8),
@@ -137,7 +139,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                         const TextInputType.numberWithOptions(decimal: true),
                     decoration: InputDecoration(
                       hintText: '0.00',
-                      suffixText: 'EUR',
+                      suffixText: activeCurrencyCode,
                       contentPadding: const EdgeInsets.symmetric(
                           horizontal: 14, vertical: 12),
                       border: OutlineInputBorder(
@@ -173,7 +175,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                         backgroundColor: const Color(0xFF3B82F6),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
-                      child: const Text('Confirmar'),
+                      child: Text(l10n.shoppingConfirm),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -188,6 +190,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final hasChecked = widget.items.any((i) => i.checked);
     final uncheckedTotal =
         widget.items.where((i) => !i.checked).fold(0.0, (s, i) => s + i.price);
@@ -205,17 +208,17 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 Icon(Icons.shopping_basket_outlined,
                     size: 56, color: Colors.grey.shade300),
                 const SizedBox(height: 16),
-                const Text(
-                  'Lista vazia',
-                  style: TextStyle(
+                Text(
+                  l10n.shoppingEmpty,
+                  style: const TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w600,
                       color: Color(0xFF475569)),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'Adiciona produtos a partir do\necrã Supermercado.',
-                  style: TextStyle(fontSize: 14, color: Color(0xFF94A3B8)),
+                Text(
+                  l10n.shoppingEmptyMessage,
+                  style: const TextStyle(fontSize: 14, color: Color(0xFF94A3B8)),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -240,7 +243,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    '${widget.items.where((i) => !i.checked).length} por comprar · ${formatCurrency(uncheckedTotal)}',
+                    l10n.shoppingItemsRemaining(widget.items.where((i) => !i.checked).length, formatCurrency(uncheckedTotal)),
                     style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
@@ -251,7 +254,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   TextButton.icon(
                     onPressed: widget.onClearChecked,
                     icon: const Icon(Icons.delete_sweep, size: 16),
-                    label: const Text('Limpar'),
+                    label: Text(l10n.shoppingClear),
                     style: TextButton.styleFrom(
                       foregroundColor: const Color(0xFF94A3B8),
                       textStyle: const TextStyle(
@@ -276,9 +279,9 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               onPressed: _showFinalizeSheet,
               backgroundColor: const Color(0xFF10B981),
               icon: const Icon(Icons.check_circle_outline, color: Colors.white),
-              label: const Text(
-                'Finalizar Compra',
-                style:
+              label: Text(
+                l10n.shoppingFinalize,
+                style: const
                     TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
               ),
             )
@@ -286,12 +289,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     );
   }
 
-  AppBar _buildAppBar() => AppBar(
+  AppBar _buildAppBar() {
+    final l10n = S.of(context);
+    return AppBar(
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
-        title: const Text(
-          'Lista de Compras',
-          style: TextStyle(
+        title: Text(
+          l10n.shoppingTitle,
+          style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
               color: Color(0xFF1E293B)),
@@ -301,13 +306,15 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             IconButton(
               icon: const Icon(Icons.receipt_long_outlined,
                   color: Color(0xFF64748B)),
-              tooltip: 'Histórico de compras',
+              tooltip: l10n.shoppingHistoryTooltip,
               onPressed: _showHistory,
             ),
         ],
       );
+  }
 
   void _showHistory() {
+    final l10n = S.of(context);
     final expandedMap = <int, bool>{};
     showModalBottomSheet(
       context: context,
@@ -335,13 +342,13 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   ),
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.fromLTRB(20, 0, 20, 16),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Histórico de Compras',
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+                    l10n.shoppingHistoryTitle,
+                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
                   ),
                 ),
               ),
@@ -405,7 +412,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 4),
                                 child: Text(
-                                  '${r.itemCount} produto${r.itemCount != 1 ? 's' : ''}',
+                                  l10n.shoppingProductCount(r.itemCount),
                                   style: const TextStyle(
                                       fontSize: 12, color: Color(0xFF94A3B8)),
                                 ),
@@ -443,6 +450,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   }
 
   Widget _buildItemRow(ShoppingItem item) {
+    final l10n = S.of(context);
     return Dismissible(
       key: Key(item.id.isNotEmpty
           ? item.id
@@ -462,7 +470,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       onDismissed: (_) => widget.onRemove(item),
       child: Semantics(
         button: true,
-        label: '${item.productName}${item.checked ? ", comprado" : ""}, deslizar para remover',
+        label: item.checked ? l10n.shoppingItemChecked(item.productName) : l10n.shoppingItemSwipe(item.productName),
         child: Material(
         color: item.checked ? const Color(0xFFF8FAFC) : Colors.white,
         borderRadius: BorderRadius.circular(12),

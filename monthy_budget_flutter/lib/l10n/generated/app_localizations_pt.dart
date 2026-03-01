@@ -1,0 +1,2010 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Portuguese (`pt`).
+class SPt extends S {
+  SPt([String locale = 'pt']) : super(locale);
+
+  @override
+  String get navBudget => 'Orçamento';
+
+  @override
+  String get navGrocery => 'Supermercado';
+
+  @override
+  String get navList => 'Lista';
+
+  @override
+  String get navCoach => 'Coach';
+
+  @override
+  String get navMeals => 'Refeições';
+
+  @override
+  String get navBudgetTooltip => 'Resumo do orçamento mensal';
+
+  @override
+  String get navGroceryTooltip => 'Catálogo de produtos';
+
+  @override
+  String get navListTooltip => 'Lista de compras';
+
+  @override
+  String get navCoachTooltip => 'Coach financeiro com IA';
+
+  @override
+  String get navMealsTooltip => 'Planeador de refeições';
+
+  @override
+  String get appTitle => 'Orçamento Mensal';
+
+  @override
+  String get loading => 'A carregar...';
+
+  @override
+  String get loadingApp => 'A carregar a aplicação';
+
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String get confirm => 'Confirmar';
+
+  @override
+  String get close => 'Fechar';
+
+  @override
+  String get save => 'Guardar';
+
+  @override
+  String get delete => 'Eliminar';
+
+  @override
+  String get clear => 'Limpar';
+
+  @override
+  String errorSavingPurchase(String error) {
+    return 'Erro ao guardar compra: $error';
+  }
+
+  @override
+  String filterBy(String label) {
+    return 'Filtrar por $label';
+  }
+
+  @override
+  String addToList(String name) {
+    return 'Adicionar $name à lista';
+  }
+
+  @override
+  String get enumMaritalSolteiro => 'Solteiro(a)';
+
+  @override
+  String get enumMaritalCasado => 'Casado(a)';
+
+  @override
+  String get enumMaritalUniaoFacto => 'Uniao de Facto';
+
+  @override
+  String get enumMaritalDivorciado => 'Divorciado(a)';
+
+  @override
+  String get enumMaritalViuvo => 'Viuvo(a)';
+
+  @override
+  String get enumSubsidyNone => 'Sem duodécimos';
+
+  @override
+  String get enumSubsidyFull => 'Com duodécimos';
+
+  @override
+  String get enumSubsidyHalf => '50% duodécimos';
+
+  @override
+  String get enumSubsidyNoneShort => 'Sem';
+
+  @override
+  String get enumSubsidyFullShort => 'Com';
+
+  @override
+  String get enumSubsidyHalfShort => '50%';
+
+  @override
+  String get enumMealAllowanceNone => 'Sem';
+
+  @override
+  String get enumMealAllowanceCard => 'Cartao';
+
+  @override
+  String get enumMealAllowanceCash => 'Com base';
+
+  @override
+  String get enumCatTelecomunicacoes => 'Telecomunicações';
+
+  @override
+  String get enumCatEnergia => 'Energia';
+
+  @override
+  String get enumCatAgua => 'Água';
+
+  @override
+  String get enumCatAlimentacao => 'Alimentação';
+
+  @override
+  String get enumCatEducacao => 'Educação';
+
+  @override
+  String get enumCatHabitacao => 'Habitação';
+
+  @override
+  String get enumCatTransportes => 'Transportes';
+
+  @override
+  String get enumCatSaude => 'Saúde';
+
+  @override
+  String get enumCatLazer => 'Lazer';
+
+  @override
+  String get enumCatOutros => 'Outros';
+
+  @override
+  String get enumChartExpensesPie => 'Despesas por Categoria';
+
+  @override
+  String get enumChartIncomeVsExpenses => 'Rendimento vs Despesas';
+
+  @override
+  String get enumChartNetIncome => 'Rendimento Líquido';
+
+  @override
+  String get enumChartDeductions => 'Descontos (IRS + SS)';
+
+  @override
+  String get enumChartSavingsRate => 'Taxa de Poupança';
+
+  @override
+  String get enumMealBreakfast => 'Pequeno-almoço';
+
+  @override
+  String get enumMealLunch => 'Almoço';
+
+  @override
+  String get enumMealSnack => 'Lanche';
+
+  @override
+  String get enumMealDinner => 'Jantar';
+
+  @override
+  String get enumObjMinimizeCost => 'Minimizar custo';
+
+  @override
+  String get enumObjBalancedHealth => 'Equilíbrio custo/saúde';
+
+  @override
+  String get enumObjHighProtein => 'Alta proteína';
+
+  @override
+  String get enumObjLowCarb => 'Baixo carboidrato';
+
+  @override
+  String get enumObjVegetarian => 'Vegetariano';
+
+  @override
+  String get enumEquipOven => 'Forno';
+
+  @override
+  String get enumEquipAirFryer => 'Air Fryer';
+
+  @override
+  String get enumEquipFoodProcessor => 'Robot de cozinha';
+
+  @override
+  String get enumEquipPressureCooker => 'Panela de pressão';
+
+  @override
+  String get enumEquipMicrowave => 'Micro-ondas';
+
+  @override
+  String get enumEquipBimby => 'Bimby / Thermomix';
+
+  @override
+  String get enumSodiumNoRestriction => 'Sem restrição';
+
+  @override
+  String get enumSodiumReduced => 'Sódio reduzido';
+
+  @override
+  String get enumSodiumLow => 'Baixo sódio';
+
+  @override
+  String get enumAge0to3 => '0–3 anos';
+
+  @override
+  String get enumAge4to10 => '4–10 anos';
+
+  @override
+  String get enumAgeTeen => 'Adolescente';
+
+  @override
+  String get enumAgeAdult => 'Adulto';
+
+  @override
+  String get enumAgeSenior => 'Sénior (65+)';
+
+  @override
+  String get enumActivitySedentary => 'Sedentário';
+
+  @override
+  String get enumActivityModerate => 'Moderado';
+
+  @override
+  String get enumActivityActive => 'Ativo';
+
+  @override
+  String get enumActivityVeryActive => 'Muito ativo';
+
+  @override
+  String get enumMedDiabetes => 'Diabetes';
+
+  @override
+  String get enumMedHypertension => 'Hipertensão';
+
+  @override
+  String get enumMedHighCholesterol => 'Colesterol alto';
+
+  @override
+  String get enumMedGout => 'Gota';
+
+  @override
+  String get enumMedIbs => 'Síndrome do intestino irritável';
+
+  @override
+  String get stressExcellent => 'Excelente';
+
+  @override
+  String get stressGood => 'Bom';
+
+  @override
+  String get stressWarning => 'Atenção';
+
+  @override
+  String get stressCritical => 'Crítico';
+
+  @override
+  String get stressFactorSavings => 'Taxa de poupança';
+
+  @override
+  String get stressFactorSafety => 'Margem de segurança';
+
+  @override
+  String get stressFactorFood => 'Orçamento alimentação';
+
+  @override
+  String get stressFactorStability => 'Estabilidade despesas';
+
+  @override
+  String get stressStable => 'Estável';
+
+  @override
+  String get stressHigh => 'Elevada';
+
+  @override
+  String stressUsed(String percent) {
+    return '$percent% usado';
+  }
+
+  @override
+  String get stressNA => 'N/D';
+
+  @override
+  String monthReviewFoodExceeded(String percent) {
+    return 'Alimentação excedeu o orçamento em $percent% — considere rever porções ou frequência de compras.';
+  }
+
+  @override
+  String monthReviewExpensesExceeded(String amount) {
+    return 'Despesas reais superaram o planeado em $amount€ — ajustar valores nas definições?';
+  }
+
+  @override
+  String monthReviewSavedMore(String amount) {
+    return 'Poupou $amount€ mais do que previsto — pode reforçar fundo de emergência.';
+  }
+
+  @override
+  String get monthReviewOnTrack =>
+      'Despesas dentro do previsto. Bom controlo orçamental.';
+
+  @override
+  String get dashboardTitle => 'Orçamento Mensal';
+
+  @override
+  String get dashboardStressIndex => 'Índice de Tranquilidade';
+
+  @override
+  String get dashboardTension => 'Tensão';
+
+  @override
+  String get dashboardLiquidity => 'Liquidez';
+
+  @override
+  String get dashboardFinalPosition => 'Posição Final';
+
+  @override
+  String get dashboardMonth => 'Mês';
+
+  @override
+  String get dashboardGross => 'Bruto';
+
+  @override
+  String get dashboardNet => 'Líquido';
+
+  @override
+  String get dashboardExpenses => 'Despesas';
+
+  @override
+  String get dashboardSavingsRate => 'Taxa Poupança';
+
+  @override
+  String get dashboardViewTrends => 'Ver evolução';
+
+  @override
+  String get dashboardViewProjection => 'Ver projeção';
+
+  @override
+  String get dashboardFinancialSummary => 'RESUMO FINANCEIRO';
+
+  @override
+  String get dashboardOpenSettings => 'Abrir definições';
+
+  @override
+  String get dashboardMonthlyLiquidity => 'LIQUIDEZ MENSAL';
+
+  @override
+  String get dashboardPositiveBalance => 'Saldo positivo';
+
+  @override
+  String get dashboardNegativeBalance => 'Saldo negativo';
+
+  @override
+  String dashboardHeroLabel(String amount, String status) {
+    return 'Liquidez mensal: $amount, $status';
+  }
+
+  @override
+  String get dashboardConfigureData =>
+      'Configure os seus dados para ver o resumo.';
+
+  @override
+  String get dashboardOpenSettingsButton => 'Abrir Definições';
+
+  @override
+  String get dashboardGrossIncome => 'Rendimento Bruto';
+
+  @override
+  String get dashboardNetIncome => 'Rendimento Líquido';
+
+  @override
+  String dashboardInclMealAllowance(String amount) {
+    return 'Incl. sub. alim.: $amount';
+  }
+
+  @override
+  String get dashboardDeductions => 'Descontos';
+
+  @override
+  String dashboardIrsSs(String irs, String ss) {
+    return 'IRS: $irs | SS: $ss';
+  }
+
+  @override
+  String dashboardExpensesAmount(String amount) {
+    return 'Despesas: $amount';
+  }
+
+  @override
+  String get dashboardSalaryDetail => 'DETALHE VENCIMENTOS';
+
+  @override
+  String dashboardSalaryN(int n) {
+    return 'Vencimento $n';
+  }
+
+  @override
+  String get dashboardFood => 'ALIMENTAÇÃO';
+
+  @override
+  String get dashboardSimulate => 'Simular';
+
+  @override
+  String get dashboardBudgeted => 'Orçado';
+
+  @override
+  String get dashboardSpent => 'Gasto';
+
+  @override
+  String get dashboardRemaining => 'Restante';
+
+  @override
+  String get dashboardFinalizePurchaseHint =>
+      'Finaliza uma compra na Lista para registar gastos.';
+
+  @override
+  String get dashboardPurchaseHistory => 'HISTÓRICO DE COMPRAS';
+
+  @override
+  String get dashboardViewAll => 'Ver tudo';
+
+  @override
+  String get dashboardAllPurchases => 'Todas as Compras';
+
+  @override
+  String dashboardPurchaseLabel(String date, String amount) {
+    return 'Compra de $date, $amount';
+  }
+
+  @override
+  String dashboardProductCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count produtos',
+      one: '1 produto',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dashboardMonthlyExpenses => 'DESPESAS MENSAIS';
+
+  @override
+  String get dashboardTotal => 'Total';
+
+  @override
+  String get dashboardGrossWithSubsidy => 'Bruto c/ duodéc.';
+
+  @override
+  String dashboardIrsRate(String rate) {
+    return 'IRS ($rate)';
+  }
+
+  @override
+  String get dashboardSsRate => 'SS (11%)';
+
+  @override
+  String get dashboardMealAllowance => 'Sub. Alimentação';
+
+  @override
+  String get dashboardExemptIncome => 'Rend. Isento';
+
+  @override
+  String get dashboardDetails => 'Detalhes';
+
+  @override
+  String dashboardVsLastMonth(String delta) {
+    return '$delta vs mês passado';
+  }
+
+  @override
+  String get dashboardPaceWarning => 'A gastar mais rápido que o previsto';
+
+  @override
+  String get dashboardPaceCritical =>
+      'Risco de ultrapassar orçamento alimentar';
+
+  @override
+  String get dashboardPace => 'Ritmo';
+
+  @override
+  String get dashboardProjection => 'Projeção';
+
+  @override
+  String dashboardPaceValue(String actual, String expected) {
+    return '$actual€/dia vs $expected€/dia';
+  }
+
+  @override
+  String get dashboardSummaryLabel => '— RESUMO';
+
+  @override
+  String get dashboardViewMonthSummary => 'Ver resumo do mês';
+
+  @override
+  String get coachTitle => 'Coach Financeiro';
+
+  @override
+  String get coachSubtitle => 'IA · GPT-4o mini';
+
+  @override
+  String get coachApiKeyRequired =>
+      'Adiciona a tua OpenAI API key nas Definições para usar esta funcionalidade.';
+
+  @override
+  String get coachAnalysisTitle => 'Análise financeira em 3 partes';
+
+  @override
+  String get coachAnalysisDescription =>
+      'Posicionamento geral · Factores críticos do Índice de Tranquilidade · Oportunidade imediata. Baseado nos teus dados reais de orçamento, despesas e histórico de compras.';
+
+  @override
+  String get coachConfigureApiKey => 'Configurar API key nas Definições';
+
+  @override
+  String get coachApiKeyConfigured => 'API key configurada';
+
+  @override
+  String get coachAnalyzeButton => 'Analisar o meu orçamento';
+
+  @override
+  String get coachAnalyzing => 'A analisar...';
+
+  @override
+  String get coachCustomAnalysis => 'Análise personalizada';
+
+  @override
+  String get coachNewAnalysis => 'Gerar nova análise';
+
+  @override
+  String get coachHistory => 'HISTÓRICO';
+
+  @override
+  String get coachClearAll => 'Limpar tudo';
+
+  @override
+  String get coachClearTitle => 'Limpar histórico';
+
+  @override
+  String get coachClearContent =>
+      'Tens a certeza que queres apagar todas as análises guardadas?';
+
+  @override
+  String get coachDeleteLabel => 'Eliminar análise';
+
+  @override
+  String get coachDeleteTooltip => 'Eliminar';
+
+  @override
+  String get groceryTitle => 'Supermercado';
+
+  @override
+  String get grocerySearchHint => 'Pesquisar produto...';
+
+  @override
+  String get groceryLoadingLabel => 'A carregar produtos';
+
+  @override
+  String get groceryLoadingMessage => 'A carregar produtos...';
+
+  @override
+  String get groceryAll => 'Todos';
+
+  @override
+  String groceryProductCount(int count) {
+    return '$count produtos';
+  }
+
+  @override
+  String groceryAddedToList(String name) {
+    return '$name adicionado à lista';
+  }
+
+  @override
+  String groceryAvgPrice(String unit) {
+    return '$unit · preço médio';
+  }
+
+  @override
+  String get shoppingTitle => 'Lista de Compras';
+
+  @override
+  String get shoppingEmpty => 'Lista vazia';
+
+  @override
+  String get shoppingEmptyMessage =>
+      'Adiciona produtos a partir do\necrã Supermercado.';
+
+  @override
+  String shoppingItemsRemaining(int count, String total) {
+    return '$count por comprar · $total';
+  }
+
+  @override
+  String get shoppingClear => 'Limpar';
+
+  @override
+  String get shoppingFinalize => 'Finalizar Compra';
+
+  @override
+  String get shoppingEstimatedTotal => 'Total estimado';
+
+  @override
+  String get shoppingHowMuchSpent => 'QUANTO GASTEI NO TOTAL? (opcional)';
+
+  @override
+  String get shoppingConfirm => 'Confirmar';
+
+  @override
+  String get shoppingHistoryTooltip => 'Histórico de compras';
+
+  @override
+  String get shoppingHistoryTitle => 'Histórico de Compras';
+
+  @override
+  String shoppingItemChecked(String name) {
+    return '$name, comprado';
+  }
+
+  @override
+  String shoppingItemSwipe(String name) {
+    return '$name, deslizar para remover';
+  }
+
+  @override
+  String shoppingProductCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count produtos',
+      one: '1 produto',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get authLogin => 'Entrar na conta';
+
+  @override
+  String get authRegister => 'Criar conta';
+
+  @override
+  String get authEmail => 'Email';
+
+  @override
+  String get authEmailHint => 'exemplo@email.com';
+
+  @override
+  String get authPassword => 'Palavra-passe';
+
+  @override
+  String get authLoginButton => 'Entrar';
+
+  @override
+  String get authRegisterButton => 'Registar';
+
+  @override
+  String get authSwitchToRegister => 'Criar conta nova';
+
+  @override
+  String get authSwitchToLogin => 'Já tenho conta';
+
+  @override
+  String get householdSetupTitle => 'Configurar Agregado';
+
+  @override
+  String get householdCreate => 'Criar';
+
+  @override
+  String get householdJoinWithCode => 'Entrar com código';
+
+  @override
+  String get householdNameLabel => 'Nome do agregado';
+
+  @override
+  String get householdNameHint => 'ex: Família Silva';
+
+  @override
+  String get householdCodeLabel => 'Código de convite';
+
+  @override
+  String get householdCodeHint => 'XXXXXX';
+
+  @override
+  String get householdCreateButton => 'Criar Agregado';
+
+  @override
+  String get householdJoinButton => 'Entrar no Agregado';
+
+  @override
+  String get householdNameRequired => 'Indica o nome do agregado.';
+
+  @override
+  String get chartExpensesByCategory => 'Despesas por Categoria';
+
+  @override
+  String get chartIncomeVsExpenses => 'Rendimento vs Despesas';
+
+  @override
+  String get chartDeductions => 'Descontos (IRS + Segurança Social)';
+
+  @override
+  String get chartGrossVsNet => 'Rendimento Bruto vs Líquido';
+
+  @override
+  String get chartSavingsRate => 'Taxa de Poupança';
+
+  @override
+  String get chartNetIncome => 'Rend. Liq.';
+
+  @override
+  String get chartExpensesLabel => 'Despesas';
+
+  @override
+  String get chartLiquidity => 'Liquidez';
+
+  @override
+  String chartSalaryN(int n) {
+    return 'Venc. $n';
+  }
+
+  @override
+  String get chartGross => 'Bruto';
+
+  @override
+  String get chartNet => 'Líquido';
+
+  @override
+  String get chartNetSalary => 'Sal. Líquido';
+
+  @override
+  String get chartIRS => 'IRS';
+
+  @override
+  String get chartSocialSecurity => 'Seg. Social';
+
+  @override
+  String get chartSavings => 'poupança';
+
+  @override
+  String projectionTitle(String month, String year) {
+    return 'Projeção — $month $year';
+  }
+
+  @override
+  String projectionSubtitle(String spent, String budget, String days) {
+    return 'Gastou $spent de $budget em $days dias';
+  }
+
+  @override
+  String get projectionFood => 'ALIMENTAÇÃO';
+
+  @override
+  String get projectionCurrentPace => 'Ritmo atual';
+
+  @override
+  String get projectionNoShopping => 'Sem compras';
+
+  @override
+  String get projectionReduce20 => '-20%';
+
+  @override
+  String projectionDailySpend(String amount) {
+    return 'Gasto diário estimado: $amount/dia';
+  }
+
+  @override
+  String get projectionEndOfMonth => 'Projeção fim de mês';
+
+  @override
+  String get projectionRemaining => 'Restante projetado';
+
+  @override
+  String get projectionStressImpact => 'Impacto no Índice';
+
+  @override
+  String get projectionExpenses => 'DESPESAS';
+
+  @override
+  String get projectionSimulation => 'Simulação — não guardado';
+
+  @override
+  String get projectionReduceAll => 'Reduzir todas em ';
+
+  @override
+  String get projectionSimLiquidity => 'Liquidez simulada';
+
+  @override
+  String get projectionDelta => 'Delta';
+
+  @override
+  String get projectionSimSavingsRate => 'Taxa poupança simulada';
+
+  @override
+  String get projectionSimIndex => 'Índice simulado';
+
+  @override
+  String get trendTitle => 'Evolução';
+
+  @override
+  String get trendStressIndex => 'ÍNDICE DE TRANQUILIDADE';
+
+  @override
+  String get trendTotalExpenses => 'DESPESAS TOTAIS';
+
+  @override
+  String get trendExpensesByCategory => 'DESPESAS POR CATEGORIA';
+
+  @override
+  String trendCurrent(String amount) {
+    return 'Atual: $amount';
+  }
+
+  @override
+  String get trendCatTelecom => 'Telecom';
+
+  @override
+  String get trendCatEnergy => 'Energia';
+
+  @override
+  String get trendCatWater => 'Água';
+
+  @override
+  String get trendCatFood => 'Alimentação';
+
+  @override
+  String get trendCatEducation => 'Educação';
+
+  @override
+  String get trendCatHousing => 'Habitação';
+
+  @override
+  String get trendCatTransport => 'Transportes';
+
+  @override
+  String get trendCatHealth => 'Saúde';
+
+  @override
+  String get trendCatLeisure => 'Lazer';
+
+  @override
+  String get trendCatOther => 'Outros';
+
+  @override
+  String monthReviewTitle(String month) {
+    return 'Resumo — $month';
+  }
+
+  @override
+  String get monthReviewPlanned => 'Planeado';
+
+  @override
+  String get monthReviewActual => 'Real';
+
+  @override
+  String get monthReviewDifference => 'Diferença';
+
+  @override
+  String get monthReviewFood => 'Alimentação';
+
+  @override
+  String monthReviewFoodValue(String actual, String budget) {
+    return '$actual de $budget';
+  }
+
+  @override
+  String get monthReviewTopDeviations => 'MAIORES DESVIOS';
+
+  @override
+  String get monthReviewSuggestions => 'SUGESTÕES';
+
+  @override
+  String get monthReviewAiAnalysis => 'Análise AI detalhada';
+
+  @override
+  String get mealPlannerTitle => 'Planeador de Refeições';
+
+  @override
+  String get mealBudgetLabel => 'Orçamento alimentação';
+
+  @override
+  String get mealPeopleLabel => 'Pessoas no agregado';
+
+  @override
+  String get mealGeneratePlan => 'Gerar Plano Mensal';
+
+  @override
+  String get mealGenerating => 'A gerar...';
+
+  @override
+  String get mealRegenerateTitle => 'Regenerar plano?';
+
+  @override
+  String get mealRegenerateContent => 'O plano atual será substituído.';
+
+  @override
+  String get mealRegenerate => 'Regenerar';
+
+  @override
+  String mealWeekLabel(int n) {
+    return 'Semana $n';
+  }
+
+  @override
+  String mealWeekAbbr(int n) {
+    return 'Sem.$n';
+  }
+
+  @override
+  String get mealAddWeekToList => 'Adicionar semana à lista';
+
+  @override
+  String mealIngredientsAdded(int count) {
+    return '$count ingredientes adicionados à lista';
+  }
+
+  @override
+  String mealDayLabel(int n) {
+    return 'Dia $n';
+  }
+
+  @override
+  String get mealIngredients => 'Ingredientes';
+
+  @override
+  String get mealPreparation => 'Preparação';
+
+  @override
+  String get mealSwap => 'Trocar';
+
+  @override
+  String get mealConsolidatedList => 'Ver lista consolidada';
+
+  @override
+  String get mealConsolidatedTitle => 'Lista Consolidada';
+
+  @override
+  String get mealAlternatives => 'Alternativas';
+
+  @override
+  String mealTotalCost(String cost) {
+    return '$cost€ total';
+  }
+
+  @override
+  String get mealCatProteins => 'Proteínas';
+
+  @override
+  String get mealCatVegetables => 'Vegetais';
+
+  @override
+  String get mealCatCarbs => 'Hidratos';
+
+  @override
+  String get mealCatFats => 'Gorduras';
+
+  @override
+  String get mealCatCondiments => 'Condimentos';
+
+  @override
+  String mealCostPerPerson(String cost) {
+    return '$cost€/pess';
+  }
+
+  @override
+  String get mealNutriProt => 'prot';
+
+  @override
+  String get mealNutriCarbs => 'carbs';
+
+  @override
+  String get mealNutriFat => 'gord';
+
+  @override
+  String get mealNutriFiber => 'fibra';
+
+  @override
+  String get wizardStepMeals => 'Refeições';
+
+  @override
+  String get wizardStepObjective => 'Objetivo';
+
+  @override
+  String get wizardStepRestrictions => 'Restrições';
+
+  @override
+  String get wizardStepKitchen => 'Cozinha';
+
+  @override
+  String get wizardStepStrategy => 'Estratégia';
+
+  @override
+  String get wizardMealsQuestion =>
+      'Quais refeições queres incluir no plano diário?';
+
+  @override
+  String wizardBudgetWeight(String weight) {
+    return '$weight do orçamento';
+  }
+
+  @override
+  String get wizardObjectiveQuestion =>
+      'Qual é o objetivo principal do teu plano alimentar?';
+
+  @override
+  String wizardSelected(String label) {
+    return '$label, selecionado';
+  }
+
+  @override
+  String get wizardDietaryRestrictions => 'RESTRIÇÕES DIETÉTICAS';
+
+  @override
+  String get wizardGlutenFree => 'Sem glúten';
+
+  @override
+  String get wizardLactoseFree => 'Sem lactose';
+
+  @override
+  String get wizardNutFree => 'Sem frutos secos';
+
+  @override
+  String get wizardShellfishFree => 'Sem marisco';
+
+  @override
+  String get wizardDislikedIngredients => 'INGREDIENTES QUE NÃO GOSTAS';
+
+  @override
+  String get wizardDislikedHint => 'ex: atum, brócolos';
+
+  @override
+  String get wizardMaxPrepTime => 'TEMPO MÁXIMO POR REFEIÇÃO';
+
+  @override
+  String get wizardMaxComplexity => 'COMPLEXIDADE MÁXIMA';
+
+  @override
+  String get wizardComplexityEasy => 'Fácil';
+
+  @override
+  String get wizardComplexityMedium => 'Médio';
+
+  @override
+  String get wizardComplexityAdvanced => 'Avançado';
+
+  @override
+  String get wizardEquipment => 'EQUIPAMENTO DISPONÍVEL';
+
+  @override
+  String get wizardBatchCooking => 'Batch cooking';
+
+  @override
+  String get wizardBatchCookingDesc => 'Cozinhar para vários dias de uma vez';
+
+  @override
+  String get wizardMaxBatchDays => 'MÁXIMO DE DIAS POR RECEITA';
+
+  @override
+  String wizardBatchDays(int days) {
+    return '$days dias';
+  }
+
+  @override
+  String get wizardPreferredCookingDay => 'DIA PREFERIDO PARA COZINHAR';
+
+  @override
+  String get wizardReuseLeftovers => 'Reaproveitar sobras';
+
+  @override
+  String get wizardReuseLeftoversDesc =>
+      'Jantar de ontem = almoço de hoje (custo 0)';
+
+  @override
+  String get wizardMaxNewIngredients =>
+      'MÁXIMO DE INGREDIENTES NOVOS POR SEMANA';
+
+  @override
+  String get wizardNoLimit => 'Sem limite';
+
+  @override
+  String get wizardMinimizeWaste => 'Minimizar desperdício';
+
+  @override
+  String get wizardMinimizeWasteDesc =>
+      'Prefere receitas que reutilizam ingredientes já usados';
+
+  @override
+  String get wizardSettingsInfo =>
+      'Podes alterar as definições do planeador em qualquer altura em Definições → Refeições.';
+
+  @override
+  String get wizardContinue => 'Continuar';
+
+  @override
+  String get wizardGeneratePlan => 'Gerar Plano';
+
+  @override
+  String wizardStepOf(int current, int total) {
+    return 'Passo $current de $total';
+  }
+
+  @override
+  String get wizardWeekdayMon => 'Seg';
+
+  @override
+  String get wizardWeekdayTue => 'Ter';
+
+  @override
+  String get wizardWeekdayWed => 'Qua';
+
+  @override
+  String get wizardWeekdayThu => 'Qui';
+
+  @override
+  String get wizardWeekdayFri => 'Sex';
+
+  @override
+  String get wizardWeekdaySat => 'Sáb';
+
+  @override
+  String get wizardWeekdaySun => 'Dom';
+
+  @override
+  String wizardPrepMin(int mins) {
+    return '${mins}min';
+  }
+
+  @override
+  String get wizardPrepMin60Plus => '60+';
+
+  @override
+  String get settingsTitle => 'Definições';
+
+  @override
+  String get settingsPersonal => 'Dados Pessoais';
+
+  @override
+  String get settingsSalaries => 'Salários';
+
+  @override
+  String get settingsExpenses => 'Despesas';
+
+  @override
+  String get settingsCoachAi => 'Coach IA';
+
+  @override
+  String get settingsDashboard => 'Dashboard';
+
+  @override
+  String get settingsMeals => 'Refeições';
+
+  @override
+  String get settingsRegion => 'Região e Idioma';
+
+  @override
+  String get settingsCountry => 'País';
+
+  @override
+  String get settingsLanguage => 'Idioma';
+
+  @override
+  String get settingsMaritalStatus => 'Estado civil';
+
+  @override
+  String get settingsDependents => 'Dependentes';
+
+  @override
+  String get settingsDisability => 'Deficiente';
+
+  @override
+  String get settingsGrossSalary => 'Salário bruto';
+
+  @override
+  String get settingsTitulares => 'Titulares';
+
+  @override
+  String get settingsSubsidyMode => 'Duodécimos';
+
+  @override
+  String get settingsMealAllowance => 'Subsídio de alimentação';
+
+  @override
+  String get settingsMealAllowancePerDay => 'Valor/dia';
+
+  @override
+  String get settingsWorkingDays => 'Dias úteis/mês';
+
+  @override
+  String get settingsOtherExemptIncome => 'Outros rendimentos isentos';
+
+  @override
+  String get settingsAddSalary => 'Adicionar salário';
+
+  @override
+  String get settingsAddExpense => 'Adicionar despesa';
+
+  @override
+  String get settingsExpenseName => 'Nome da despesa';
+
+  @override
+  String get settingsExpenseAmount => 'Valor';
+
+  @override
+  String get settingsExpenseCategory => 'Categoria';
+
+  @override
+  String get settingsApiKey => 'API Key OpenAI';
+
+  @override
+  String get settingsInviteCode => 'Código de convite';
+
+  @override
+  String get settingsCopyCode => 'Copiar';
+
+  @override
+  String get settingsCodeCopied => 'Código copiado!';
+
+  @override
+  String get settingsAdminOnly =>
+      'Apenas o administrador pode editar as definições.';
+
+  @override
+  String get settingsShowSummaryCards => 'Mostrar cartões resumo';
+
+  @override
+  String get settingsEnabledCharts => 'Gráficos ativos';
+
+  @override
+  String get settingsLogout => 'Terminar sessão';
+
+  @override
+  String get settingsLogoutConfirmTitle => 'Terminar sessão';
+
+  @override
+  String get settingsLogoutConfirmContent => 'Tens a certeza que queres sair?';
+
+  @override
+  String get settingsLogoutConfirmButton => 'Sair';
+
+  @override
+  String get settingsSalariesSection => 'Vencimentos';
+
+  @override
+  String get settingsExpensesMonthly => 'Despesas Mensais';
+
+  @override
+  String get settingsFavorites => 'Produtos Favoritos';
+
+  @override
+  String get settingsCoachOpenAi => 'Coach IA (OpenAI)';
+
+  @override
+  String get settingsHousehold => 'Agregado';
+
+  @override
+  String get settingsMaritalStatusLabel => 'ESTADO CIVIL';
+
+  @override
+  String get settingsDependentsLabel => 'NÚMERO DE DEPENDENTES';
+
+  @override
+  String settingsSocialSecurityRate(String rate) {
+    return 'Segurança Social: $rate';
+  }
+
+  @override
+  String get settingsSalaryActive => 'Ativo';
+
+  @override
+  String get settingsGrossMonthlySalary => 'SALÁRIO BRUTO MENSAL';
+
+  @override
+  String get settingsSubsidyHoliday =>
+      'SUBSÍDIOS DE FÉRIAS E NATAL (DUODÉCIMOS)';
+
+  @override
+  String get settingsOtherExemptLabel => 'OUTROS RENDIMENTOS ISENTOS DE IRS';
+
+  @override
+  String get settingsMealAllowanceLabel => 'SUBSÍDIO DE ALIMENTAÇÃO';
+
+  @override
+  String get settingsAmountPerDay => 'VALOR/DIA';
+
+  @override
+  String get settingsDaysPerMonth => 'DIAS/MÊS';
+
+  @override
+  String get settingsTitularesLabel => 'N. TITULARES';
+
+  @override
+  String settingsTitularCount(int n, String suffix) {
+    return '$n Titular$suffix';
+  }
+
+  @override
+  String get settingsAddSalaryButton => 'Adicionar vencimento';
+
+  @override
+  String get settingsAddExpenseButton => 'Adicionar Despesa';
+
+  @override
+  String get settingsDeviceLocal =>
+      'Estas definições são guardadas neste dispositivo.';
+
+  @override
+  String get settingsVisibleSections => 'SECÇÕES VISÍVEIS';
+
+  @override
+  String get settingsMinimalist => 'Minimalista';
+
+  @override
+  String get settingsFull => 'Completo';
+
+  @override
+  String get settingsDashMonthlyLiquidity => 'Liquidez mensal';
+
+  @override
+  String get settingsDashStressIndex => 'Índice de Tranquilidade';
+
+  @override
+  String get settingsDashSummaryCards => 'Cartões de resumo';
+
+  @override
+  String get settingsDashSalaryBreakdown => 'Detalhe por vencimento';
+
+  @override
+  String get settingsDashFood => 'Alimentação';
+
+  @override
+  String get settingsDashPurchaseHistory => 'Histórico de compras';
+
+  @override
+  String get settingsDashExpensesBreakdown => 'Breakdown despesas';
+
+  @override
+  String get settingsDashCharts => 'Gráficos';
+
+  @override
+  String get settingsVisibleCharts => 'GRÁFICOS VISÍVEIS';
+
+  @override
+  String get settingsFavTip =>
+      'Os produtos favoritos influenciam o plano de refeições — receitas com esses ingredientes ficam em prioridade.';
+
+  @override
+  String get settingsMyFavorites => 'OS MEUS FAVORITOS';
+
+  @override
+  String get settingsProductCatalog => 'CATÁLOGO DE PRODUTOS';
+
+  @override
+  String get settingsSearchProduct => 'Pesquisar produto...';
+
+  @override
+  String get settingsLoadingProducts => 'A carregar produtos...';
+
+  @override
+  String get settingsAddIngredient => 'Adicionar ingrediente';
+
+  @override
+  String get settingsIngredientName => 'Nome do ingrediente';
+
+  @override
+  String get settingsAddButton => 'Adicionar';
+
+  @override
+  String get settingsAddToPantry => 'Adicionar à despensa';
+
+  @override
+  String get settingsHouseholdPeople => 'AGREGADO (PESSOAS)';
+
+  @override
+  String get settingsAutomatic => '(auto)';
+
+  @override
+  String get settingsUseAutoValue => 'Usar valor automático';
+
+  @override
+  String settingsManualValue(int count) {
+    return 'Valor manual: $count pessoas';
+  }
+
+  @override
+  String settingsAutoValue(int count) {
+    return 'Calculado automaticamente: $count (titulares + dependentes)';
+  }
+
+  @override
+  String get settingsHouseholdMembers => 'MEMBROS DO AGREGADO';
+
+  @override
+  String get settingsPortions => 'porções';
+
+  @override
+  String settingsTotalEquivalent(String total) {
+    return 'Equivalente total: $total porções';
+  }
+
+  @override
+  String get settingsAddMember => 'Adicionar membro';
+
+  @override
+  String get settingsPreferSeasonal => 'Preferir receitas sazonais';
+
+  @override
+  String get settingsPreferSeasonalDesc => 'Prioriza receitas da época atual';
+
+  @override
+  String get settingsNutritionalGoals => 'OBJETIVOS NUTRICIONAIS';
+
+  @override
+  String get settingsCalorieHint => 'ex: 2000';
+
+  @override
+  String get settingsKcalPerDay => 'kcal/dia';
+
+  @override
+  String get settingsProteinHint => 'ex: 60';
+
+  @override
+  String get settingsGramsPerDay => 'g/dia';
+
+  @override
+  String get settingsFiberHint => 'ex: 25';
+
+  @override
+  String get settingsDailyProtein => 'Proteína diária';
+
+  @override
+  String get settingsDailyFiber => 'Fibra diária';
+
+  @override
+  String get settingsMedicalConditions => 'CONDIÇÕES MÉDICAS';
+
+  @override
+  String get settingsActiveMeals => 'REFEIÇÕES ATIVAS';
+
+  @override
+  String get settingsObjective => 'OBJETIVO';
+
+  @override
+  String get settingsVeggieDays => 'DIAS VEGETARIANOS POR SEMANA';
+
+  @override
+  String get settingsDietaryRestrictions => 'RESTRIÇÕES DIETÉTICAS';
+
+  @override
+  String get settingsEggFree => 'Sem ovos';
+
+  @override
+  String get settingsSodiumPref => 'PREFERÊNCIA DE SÓDIO';
+
+  @override
+  String get settingsDislikedIngredients => 'INGREDIENTES INDESEJADOS';
+
+  @override
+  String get settingsExcludedProteins => 'PROTEÍNAS EXCLUÍDAS';
+
+  @override
+  String get settingsProteinChicken => 'Frango';
+
+  @override
+  String get settingsProteinGroundMeat => 'Carne Picada';
+
+  @override
+  String get settingsProteinPork => 'Porco';
+
+  @override
+  String get settingsProteinHake => 'Pescada';
+
+  @override
+  String get settingsProteinCod => 'Bacalhau';
+
+  @override
+  String get settingsProteinSardine => 'Sardinha';
+
+  @override
+  String get settingsProteinTuna => 'Atum';
+
+  @override
+  String get settingsProteinEgg => 'Ovos';
+
+  @override
+  String get settingsMaxPrepTime => 'TEMPO MÁXIMO (MINUTOS)';
+
+  @override
+  String settingsMaxComplexity(int value) {
+    return 'COMPLEXIDADE MÁXIMA ($value/5)';
+  }
+
+  @override
+  String get settingsWeekendPrepTime => 'TEMPO FIM-DE-SEMANA (MINUTOS)';
+
+  @override
+  String settingsWeekendComplexity(int value) {
+    return 'COMPLEXIDADE FIM-DE-SEMANA ($value/5)';
+  }
+
+  @override
+  String get settingsEatingOutDays => 'DIAS DE COMER FORA';
+
+  @override
+  String get settingsWeeklyDistribution => 'DISTRIBUIÇÃO SEMANAL';
+
+  @override
+  String settingsFishPerWeek(String count) {
+    return 'Peixe por semana: $count';
+  }
+
+  @override
+  String get settingsNoMinimum => 'sem mínimo';
+
+  @override
+  String settingsLegumePerWeek(String count) {
+    return 'Leguminosas por semana: $count';
+  }
+
+  @override
+  String settingsRedMeatPerWeek(String count) {
+    return 'Carne vermelha máx/semana: $count';
+  }
+
+  @override
+  String get settingsNoLimit => 'sem limite';
+
+  @override
+  String get settingsAvailableEquipment => 'EQUIPAMENTO DISPONÍVEL';
+
+  @override
+  String get settingsBatchCooking => 'Batch cooking';
+
+  @override
+  String get settingsMaxBatchDays => 'MÁXIMO DE DIAS POR RECEITA';
+
+  @override
+  String get settingsReuseLeftovers => 'Reaproveitar sobras';
+
+  @override
+  String get settingsMinimizeWaste => 'Minimizar desperdício';
+
+  @override
+  String get settingsPrioritizeLowCost => 'Priorizar custo baixo';
+
+  @override
+  String get settingsPrioritizeLowCostDesc =>
+      'Preferir receitas mais económicas';
+
+  @override
+  String settingsNewIngredientsPerWeek(int count) {
+    return 'INGREDIENTES NOVOS POR SEMANA ($count)';
+  }
+
+  @override
+  String get settingsLunchboxLunches => 'Almoços de marmita';
+
+  @override
+  String get settingsLunchboxLunchesDesc =>
+      'Apenas receitas transportáveis ao almoço';
+
+  @override
+  String get settingsPantry => 'DESPENSA (SEMPRE EM STOCK)';
+
+  @override
+  String get settingsResetWizard => 'Repor Wizard';
+
+  @override
+  String get settingsApiKeyInfo =>
+      'A key é guardada localmente no dispositivo e nunca é partilhada. Usa o modelo GPT-4o mini (~€0,00008 por análise).';
+
+  @override
+  String get settingsInviteCodeLabel => 'CÓDIGO DE CONVITE';
+
+  @override
+  String get settingsGenerateInvite => 'Gerar código de convite';
+
+  @override
+  String get settingsShareWithMembers => 'Partilha com membros do agregado';
+
+  @override
+  String get settingsNewCode => 'Novo código';
+
+  @override
+  String get settingsCodeValidInfo =>
+      'O código é válido por 7 dias. Partilha-o com quem queres adicionar ao agregado.';
+
+  @override
+  String get settingsName => 'Nome';
+
+  @override
+  String get settingsAgeGroup => 'Faixa etária';
+
+  @override
+  String get settingsActivityLevel => 'Nível de atividade';
+
+  @override
+  String settingsSalaryN(int n) {
+    return 'Vencimento $n';
+  }
+
+  @override
+  String get countryPT => 'Portugal';
+
+  @override
+  String get countryES => 'Espanha';
+
+  @override
+  String get countryFR => 'França';
+
+  @override
+  String get countryUK => 'Reino Unido';
+
+  @override
+  String get langPT => 'Português';
+
+  @override
+  String get langEN => 'English';
+
+  @override
+  String get langFR => 'Français';
+
+  @override
+  String get langES => 'Español';
+
+  @override
+  String get langSystem => 'Sistema';
+
+  @override
+  String get taxIncomeTax => 'Imposto sobre rendimento';
+
+  @override
+  String get taxSocialContribution => 'Contribuição social';
+
+  @override
+  String get taxIRS => 'IRS';
+
+  @override
+  String get taxSS => 'Segurança Social';
+
+  @override
+  String get taxIRPF => 'IRPF';
+
+  @override
+  String get taxSSSpain => 'Seguridad Social';
+
+  @override
+  String get taxIR => 'Impôt sur le Revenu';
+
+  @override
+  String get taxCSG => 'CSG + CRDS';
+
+  @override
+  String get taxPAYE => 'Income Tax';
+
+  @override
+  String get taxNI => 'National Insurance';
+
+  @override
+  String get enumSubsidyEsNone => 'Sin pagas extras';
+
+  @override
+  String get enumSubsidyEsFull => 'Con pagas extras';
+
+  @override
+  String get enumSubsidyEsHalf => '50% pagas extras';
+
+  @override
+  String get aiCoachSystemPrompt =>
+      'És um analista financeiro pessoal para utilizadores portugueses. Responde sempre em português europeu. Sê directo e analítico — usa sempre números concretos do contexto fornecido. Estrutura a resposta exactamente nas 3 partes pedidas. Não introduzas dados, benchmarks ou referências externas que não foram fornecidos.';
+
+  @override
+  String get aiCoachInvalidApiKey =>
+      'API key inválida. Verifica nas Definições.';
+
+  @override
+  String get aiCoachMidMonthSystem =>
+      'És um consultor de orçamento doméstico português. Responde sempre em português europeu. Sê prático e directo.';
+
+  @override
+  String get aiMealPlannerSystem =>
+      'És um chef português. Responde sempre em português europeu. Responde APENAS com JSON válido, sem texto extra.';
+
+  @override
+  String get monthAbbrJan => 'Jan';
+
+  @override
+  String get monthAbbrFeb => 'Fev';
+
+  @override
+  String get monthAbbrMar => 'Mar';
+
+  @override
+  String get monthAbbrApr => 'Abr';
+
+  @override
+  String get monthAbbrMay => 'Mai';
+
+  @override
+  String get monthAbbrJun => 'Jun';
+
+  @override
+  String get monthAbbrJul => 'Jul';
+
+  @override
+  String get monthAbbrAug => 'Ago';
+
+  @override
+  String get monthAbbrSep => 'Set';
+
+  @override
+  String get monthAbbrOct => 'Out';
+
+  @override
+  String get monthAbbrNov => 'Nov';
+
+  @override
+  String get monthAbbrDec => 'Dez';
+
+  @override
+  String get monthFullJan => 'Janeiro';
+
+  @override
+  String get monthFullFeb => 'Fevereiro';
+
+  @override
+  String get monthFullMar => 'Março';
+
+  @override
+  String get monthFullApr => 'Abril';
+
+  @override
+  String get monthFullMay => 'Maio';
+
+  @override
+  String get monthFullJun => 'Junho';
+
+  @override
+  String get monthFullJul => 'Julho';
+
+  @override
+  String get monthFullAug => 'Agosto';
+
+  @override
+  String get monthFullSep => 'Setembro';
+
+  @override
+  String get monthFullOct => 'Outubro';
+
+  @override
+  String get monthFullNov => 'Novembro';
+
+  @override
+  String get monthFullDec => 'Dezembro';
+
+  @override
+  String get setupWizardWelcomeTitle => 'Bem-vindo ao seu orçamento';
+
+  @override
+  String get setupWizardWelcomeSubtitle =>
+      'Vamos configurar o essencial para que o seu painel fique pronto a usar.';
+
+  @override
+  String get setupWizardBullet1 => 'Calcular o seu salário líquido';
+
+  @override
+  String get setupWizardBullet2 => 'Organizar as suas despesas';
+
+  @override
+  String get setupWizardBullet3 => 'Ver quanto sobra cada mês';
+
+  @override
+  String get setupWizardReassurance =>
+      'Pode alterar tudo mais tarde nas definições.';
+
+  @override
+  String get setupWizardStart => 'Começar';
+
+  @override
+  String get setupWizardSkipAll => 'Saltar configuração';
+
+  @override
+  String setupWizardStepOf(int step, int total) {
+    return 'Passo $step de $total';
+  }
+
+  @override
+  String get setupWizardContinue => 'Continuar';
+
+  @override
+  String get setupWizardCountryTitle => 'Onde vive?';
+
+  @override
+  String get setupWizardCountrySubtitle =>
+      'Isto define o sistema fiscal, moeda e valores por defeito.';
+
+  @override
+  String get setupWizardLanguage => 'Idioma';
+
+  @override
+  String get setupWizardLangSystem => 'Predefinição do sistema';
+
+  @override
+  String get setupWizardCountryPT => 'Portugal';
+
+  @override
+  String get setupWizardCountryES => 'Espanha';
+
+  @override
+  String get setupWizardCountryFR => 'França';
+
+  @override
+  String get setupWizardCountryUK => 'Reino Unido';
+
+  @override
+  String get setupWizardPersonalTitle => 'Informação pessoal';
+
+  @override
+  String get setupWizardPersonalSubtitle =>
+      'Usamos isto para calcular os seus impostos com mais precisão.';
+
+  @override
+  String get setupWizardPrivacyNote =>
+      'Os seus dados ficam na sua conta e nunca são partilhados.';
+
+  @override
+  String get setupWizardSingle => 'Solteiro(a)';
+
+  @override
+  String get setupWizardMarried => 'Casado(a)';
+
+  @override
+  String get setupWizardDependents => 'Dependentes';
+
+  @override
+  String get setupWizardTitulares => 'Titulares';
+
+  @override
+  String get setupWizardSalaryTitle => 'Qual é o seu salário?';
+
+  @override
+  String get setupWizardSalarySubtitle =>
+      'Introduza o valor bruto mensal. Calculamos o líquido automaticamente.';
+
+  @override
+  String get setupWizardSalaryGross => 'Salário bruto mensal';
+
+  @override
+  String setupWizardNetEstimate(String amount) {
+    return 'Líquido estimado: $amount';
+  }
+
+  @override
+  String get setupWizardSalaryMoreLater =>
+      'Pode adicionar mais fontes de rendimento mais tarde.';
+
+  @override
+  String get setupWizardSalarySkip => 'Saltar este passo';
+
+  @override
+  String get setupWizardExpensesTitle => 'As suas despesas mensais';
+
+  @override
+  String get setupWizardExpensesSubtitle =>
+      'Valores sugeridos para o seu país. Ajuste conforme necessário.';
+
+  @override
+  String get setupWizardExpensesMoreLater =>
+      'Pode adicionar mais categorias mais tarde.';
+
+  @override
+  String setupWizardNetLabel(String amount) {
+    return 'Líquido: $amount';
+  }
+
+  @override
+  String setupWizardTotalExpenses(String amount) {
+    return 'Despesas: $amount';
+  }
+
+  @override
+  String setupWizardAvailableLabel(String amount) {
+    return 'Disponível: $amount';
+  }
+
+  @override
+  String get setupWizardFinish => 'Concluir';
+
+  @override
+  String get setupWizardCompleteTitle => 'Tudo pronto!';
+
+  @override
+  String get setupWizardCompleteReassurance =>
+      'O seu orçamento está configurado. Pode ajustar tudo nas definições a qualquer momento.';
+
+  @override
+  String get setupWizardGoToDashboard => 'Ver o meu orçamento';
+
+  @override
+  String get setupWizardConfigureSalaryHint =>
+      'Configure o seu salário nas definições para ver o cálculo completo.';
+
+  @override
+  String get setupWizardExpRent => 'Renda / Prestação';
+
+  @override
+  String get setupWizardExpGroceries => 'Alimentação';
+
+  @override
+  String get setupWizardExpTransport => 'Transportes';
+
+  @override
+  String get setupWizardExpUtilities => 'Utilidades (luz, água, gás)';
+
+  @override
+  String get setupWizardExpTelecom => 'Telecomunicações';
+
+  @override
+  String get setupWizardExpHealth => 'Saúde';
+
+  @override
+  String get setupWizardExpLeisure => 'Lazer';
+
+  @override
+  String get expenseTrackerTitle => 'ORÇAMENTO VS REAL';
+
+  @override
+  String get expenseTrackerBudgeted => 'Orçamentado';
+
+  @override
+  String get expenseTrackerActual => 'Real';
+
+  @override
+  String get expenseTrackerRemaining => 'Restante';
+
+  @override
+  String get expenseTrackerOver => 'Acima do orçamento';
+
+  @override
+  String get expenseTrackerViewAll => 'Ver detalhes';
+
+  @override
+  String get expenseTrackerNoExpenses => 'Ainda sem despesas registadas.';
+
+  @override
+  String get expenseTrackerScreenTitle => 'Controlo de Despesas';
+
+  @override
+  String expenseTrackerMonthTotal(String amount) {
+    return 'Total: $amount';
+  }
+
+  @override
+  String get expenseTrackerDeleteConfirm => 'Eliminar esta despesa?';
+
+  @override
+  String get expenseTrackerEmpty =>
+      'Sem despesas este mês.\nToca + para adicionar a primeira.';
+
+  @override
+  String get addExpenseTitle => 'Adicionar Despesa';
+
+  @override
+  String get editExpenseTitle => 'Editar Despesa';
+
+  @override
+  String get addExpenseCategory => 'Categoria';
+
+  @override
+  String get addExpenseAmount => 'Montante';
+
+  @override
+  String get addExpenseDate => 'Data';
+
+  @override
+  String get addExpenseDescription => 'Descrição (opcional)';
+
+  @override
+  String get addExpenseCustomCategory => 'Categoria personalizada';
+
+  @override
+  String get addExpenseInvalidAmount => 'Introduza um valor válido';
+
+  @override
+  String get addExpenseTooltip => 'Adicionar despesa';
+
+  @override
+  String get settingsDashBudgetVsActual => 'Orçamento vs Real';
+}

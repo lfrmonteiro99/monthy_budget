@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
+import '../models/actual_expense.dart';
 import '../models/budget_summary.dart';
 import '../models/purchase_record.dart';
 import '../utils/formatters.dart';
@@ -21,6 +23,9 @@ class DashboardScreen extends StatelessWidget {
   final LocalDashboardConfig dashboardConfig;
   final Map<String, List<ExpenseSnapshot>> expenseHistory;
   final VoidCallback onSnapshotExpenses;
+  final List<ActualExpense> actualExpenses;
+  final VoidCallback onAddExpense;
+  final VoidCallback onOpenExpenseTracker;
 
   const DashboardScreen({
     super.key,
@@ -32,6 +37,9 @@ class DashboardScreen extends StatelessWidget {
     required this.dashboardConfig,
     required this.expenseHistory,
     required this.onSnapshotExpenses,
+    required this.actualExpenses,
+    required this.onAddExpense,
+    required this.onOpenExpenseTracker,
   });
 
   @override
@@ -47,11 +55,13 @@ class DashboardScreen extends StatelessWidget {
     );
     final now = DateTime.now();
     final monthKey = '${now.year}-${now.month.toString().padLeft(2, '0')}';
+    final l10n = S.of(context);
     final monthReview = buildMonthReview(
       expenseHistory: expenseHistory,
       currentExpenses: settings.expenses,
       purchaseHistory: purchaseHistory,
       now: now,
+      monthLabelBuilder: (m, y) => '${localizedMonthFull(l10n, m)} $y',
     );
     final foodBudgetTotal = settings.expenses
         .where((e) => e.category == ExpenseCategory.alimentacao && e.enabled)
@@ -91,9 +101,9 @@ class DashboardScreen extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                'Orçamento Mensal',
-                                style: TextStyle(
+                              Text(
+                                l10n.dashboardTitle,
+                                style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w700,
                                   color: Color(0xFF1E293B),
@@ -102,7 +112,7 @@ class DashboardScreen extends StatelessWidget {
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                'RESUMO FINANCEIRO',
+                                l10n.dashboardFinancialSummary,
                                 style: TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.w600,
@@ -114,7 +124,7 @@ class DashboardScreen extends StatelessWidget {
                           ),
                           Semantics(
                             button: true,
-                            label: 'Abrir definições',
+                            label: l10n.dashboardOpenSettings,
                             child: Material(
                               color: const Color(0xFFF8FAFC),
                               borderRadius: BorderRadius.circular(12),
@@ -136,8 +146,8 @@ class DashboardScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    if (hasData && dashboardConfig.showHeroCard) _buildHeroCard(isPositive)
-                    else if (!hasData) _buildEmptyState(),
+                    if (hasData && dashboardConfig.showHeroCard) _buildHeroCard(isPositive, l10n)
+                    else if (!hasData) _buildEmptyState(l10n),
                     const SizedBox(height: 24),
                   ],
                 ),
@@ -169,19 +179,23 @@ class DashboardScreen extends StatelessWidget {
                           ),
                         ),
                       if (monthReview != null) const SizedBox(height: 16),
-                      if (dashboardConfig.showSummaryCards) _buildSummaryCards(),
+                      if (dashboardConfig.showSummaryCards) _buildSummaryCards(l10n),
                       if (dashboardConfig.showSummaryCards) const SizedBox(height: 16),
-                      if (dashboardConfig.showSalaryBreakdown) _buildSalaryBreakdown(),
+                      if (dashboardConfig.showSalaryBreakdown) _buildSalaryBreakdown(l10n),
                       if (dashboardConfig.showFoodSpending) _buildFoodSpendingCard(context),
                       if (paceResult != null && paceResult.isOverPace)
                         _BudgetPaceAlert(pace: paceResult),
+                      if (dashboardConfig.showBudgetVsActual) ...[
+                        const SizedBox(height: 16),
+                        _buildBudgetVsActualCard(context),
+                      ],
                       if (dashboardConfig.showPurchaseHistory && purchaseHistory.records.isNotEmpty) ...[
                         const SizedBox(height: 16),
                         _buildPurchaseHistoryCard(context),
                       ],
                       if (dashboardConfig.showExpensesBreakdown && summary.totalExpenses > 0) ...[
                         const SizedBox(height: 16),
-                        _buildExpensesBreakdown(),
+                        _buildExpensesBreakdown(l10n),
                       ],
                       if (dashboardConfig.showCharts) ...[
                         const SizedBox(height: 16),
@@ -203,9 +217,9 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeroCard(bool isPositive) {
+  Widget _buildHeroCard(bool isPositive, S l10n) {
     return Semantics(
-      label: 'Liquidez mensal: ${formatCurrency(summary.netLiquidity)}, ${isPositive ? "saldo positivo" : "saldo negativo"}',
+      label: l10n.dashboardHeroLabel(formatCurrency(summary.netLiquidity), isPositive ? l10n.dashboardPositiveBalance : l10n.dashboardNegativeBalance),
       child: Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -217,7 +231,7 @@ class DashboardScreen extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            'LIQUIDEZ MENSAL',
+            l10n.dashboardMonthlyLiquidity,
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w600,
@@ -252,7 +266,7 @@ class DashboardScreen extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  isPositive ? 'Saldo positivo' : 'Saldo negativo',
+                  isPositive ? l10n.dashboardPositiveBalance : l10n.dashboardNegativeBalance,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -268,7 +282,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(S l10n) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 32),
@@ -281,9 +295,9 @@ class DashboardScreen extends StatelessWidget {
         children: [
           Icon(Icons.monetization_on_outlined, size: 40, color: Colors.blue.shade200),
           const SizedBox(height: 12),
-          const Text(
-            'Configure os seus dados para ver o resumo.',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF475569)),
+          Text(
+            l10n.dashboardConfigureData,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF475569)),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -296,14 +310,14 @@ class DashboardScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               elevation: 0,
             ),
-            child: const Text('Abrir Definições', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+            child: Text(l10n.dashboardOpenSettingsButton, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildSummaryCards() {
+  Widget _buildSummaryCards(S l10n) {
     return Column(
       children: [
         Row(
@@ -311,7 +325,7 @@ class DashboardScreen extends StatelessWidget {
             Expanded(
               child: _SummaryCard(
                 icon: Icons.account_balance_wallet,
-                label: 'Rendimento Bruto',
+                label: l10n.dashboardGrossIncome,
                 value: formatCurrency(summary.totalGross),
                 color: Colors.blue,
               ),
@@ -320,10 +334,10 @@ class DashboardScreen extends StatelessWidget {
             Expanded(
               child: _SummaryCard(
                 icon: Icons.arrow_circle_up,
-                label: 'Rendimento Líquido',
+                label: l10n.dashboardNetIncome,
                 value: formatCurrency(summary.totalNetWithMeal),
                 sublabel: summary.totalMealAllowance > 0
-                    ? 'Incl. sub. alim.: ${formatCurrency(summary.totalMealAllowance)}'
+                    ? l10n.dashboardInclMealAllowance(formatCurrency(summary.totalMealAllowance))
                     : null,
                 color: Colors.green,
               ),
@@ -336,9 +350,9 @@ class DashboardScreen extends StatelessWidget {
             Expanded(
               child: _SummaryCard(
                 icon: Icons.arrow_circle_down,
-                label: 'Descontos',
+                label: l10n.dashboardDeductions,
                 value: formatCurrency(summary.totalDeductions),
-                sublabel: 'IRS: ${formatCurrency(summary.totalIRS)} | SS: ${formatCurrency(summary.totalSS)}',
+                sublabel: l10n.dashboardIrsSs(formatCurrency(summary.totalIRS), formatCurrency(summary.totalSS)),
                 color: Colors.amber,
               ),
             ),
@@ -346,9 +360,9 @@ class DashboardScreen extends StatelessWidget {
             Expanded(
               child: _SummaryCard(
                 icon: Icons.savings,
-                label: 'Taxa Poupança',
+                label: l10n.dashboardSavingsRate,
                 value: formatPercentage(summary.savingsRate > 0 ? summary.savingsRate : 0),
-                sublabel: 'Despesas: ${formatCurrency(summary.totalExpenses)}',
+                sublabel: l10n.dashboardExpensesAmount(formatCurrency(summary.totalExpenses)),
                 color: Colors.purple,
               ),
             ),
@@ -358,7 +372,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSalaryBreakdown() {
+  Widget _buildSalaryBreakdown(S l10n) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -373,7 +387,7 @@ class DashboardScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'DETALHE VENCIMENTOS',
+            l10n.dashboardSalaryDetail,
             style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.grey.shade400, letterSpacing: 1.2),
           ),
           const SizedBox(height: 16),
@@ -384,7 +398,7 @@ class DashboardScreen extends StatelessWidget {
             if (!hasAnyIncome) return const SizedBox.shrink();
             final label = i < settings.salaries.length && settings.salaries[i].label.isNotEmpty
                 ? settings.salaries[i].label
-                : 'Vencimento ${i + 1}';
+                : l10n.dashboardSalaryN(i + 1);
             return Padding(
               padding: EdgeInsets.only(top: i > 0 ? 12 : 0),
               child: hasGross
@@ -432,10 +446,10 @@ class DashboardScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              const Expanded(
+              Expanded(
                 child: Text(
-                  'ALIMENTAÇÃO',
-                  style: TextStyle(
+                  S.of(context).dashboardFood,
+                  style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
                       color: Color(0xFF64748B),
@@ -450,9 +464,9 @@ class DashboardScreen extends StatelessWidget {
                   purchaseHistory: purchaseHistory,
                 ),
                 icon: const Icon(Icons.auto_graph, size: 14),
-                label: const Text(
-                  'Simular',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                label: Text(
+                  S.of(context).dashboardSimulate,
+                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                 ),
                 style: TextButton.styleFrom(
                   foregroundColor: const Color(0xFF3B82F6),
@@ -467,11 +481,11 @@ class DashboardScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _foodStatColumn(
-                  'Orçado', formatCurrency(foodBudget), const Color(0xFF64748B)),
-              _foodStatColumn('Gasto', formatCurrency(spent),
+                  S.of(context).dashboardBudgeted, formatCurrency(foodBudget), const Color(0xFF64748B)),
+              _foodStatColumn(S.of(context).dashboardSpent, formatCurrency(spent),
                   isOver ? const Color(0xFFEF4444) : const Color(0xFF1E293B)),
               _foodStatColumn(
-                  'Restante',
+                  S.of(context).dashboardRemaining,
                   isOver
                       ? '-${formatCurrency(spent - foodBudget)}'
                       : formatCurrency(remaining),
@@ -488,14 +502,189 @@ class DashboardScreen extends StatelessWidget {
           ),
           if (spent == 0) ...[
             const SizedBox(height: 8),
-            const Text(
-              'Finaliza uma compra na Lista para registar gastos.',
-              style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+            Text(
+              S.of(context).dashboardFinalizePurchaseHint,
+              style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
             ),
           ],
         ],
       ),
     );
+  }
+
+  Widget _buildBudgetVsActualCard(BuildContext context) {
+    final l10n = S.of(context);
+    final summaries = CategoryBudgetSummary.buildSummaries(
+      settings.expenses,
+      actualExpenses,
+    );
+    final totalBudgeted = summaries.fold(0.0, (s, e) => s + e.budgeted);
+    final totalActual = summaries.fold(0.0, (s, e) => s + e.actual);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.compare_arrows,
+                  size: 16, color: Color(0xFF64748B)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  l10n.expenseTrackerTitle,
+                  style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF64748B),
+                      letterSpacing: 0.8),
+                ),
+              ),
+              TextButton(
+                onPressed: onOpenExpenseTracker,
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFF3B82F6),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  minimumSize: const Size(48, 40),
+                  textStyle: const TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.w600),
+                ),
+                child: Text(l10n.expenseTrackerViewAll),
+              ),
+            ],
+          ),
+          if (actualExpenses.isEmpty) ...[
+            const SizedBox(height: 12),
+            Text(
+              l10n.expenseTrackerNoExpenses,
+              style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+            ),
+          ] else ...[
+            const SizedBox(height: 12),
+            ...summaries.where((s) => s.actual > 0 || s.budgeted > 0).take(6).map((s) {
+              final progressColor = s.isOver
+                  ? const Color(0xFFEF4444)
+                  : s.progress > 0.8
+                      ? const Color(0xFFF59E0B)
+                      : const Color(0xFF10B981);
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(_budgetCategoryIcon(s.category),
+                            size: 14, color: const Color(0xFF64748B)),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            _budgetCategoryLabel(s.category, l10n),
+                            style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFF1E293B)),
+                          ),
+                        ),
+                        Text(
+                          s.isOver
+                              ? '-${formatCurrency(s.remaining.abs())}'
+                              : formatCurrency(s.remaining),
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: s.isOver
+                                ? const Color(0xFFEF4444)
+                                : const Color(0xFF10B981),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    LinearProgressIndicator(
+                      value: s.progress.clamp(0.0, 1.0),
+                      backgroundColor: const Color(0xFFE2E8F0),
+                      color: progressColor,
+                      minHeight: 4,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${formatCurrency(s.actual)} / ${formatCurrency(s.budgeted)}',
+                          style: const TextStyle(
+                              fontSize: 10, color: Color(0xFF94A3B8)),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            }),
+            const Divider(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '${l10n.expenseTrackerBudgeted}: ${formatCurrency(totalBudgeted)}',
+                  style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF64748B)),
+                ),
+                Text(
+                  '${l10n.expenseTrackerActual}: ${formatCurrency(totalActual)}',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: totalActual > totalBudgeted
+                        ? const Color(0xFFEF4444)
+                        : const Color(0xFF1E293B),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  static IconData _budgetCategoryIcon(String catName) {
+    try {
+      final cat = ExpenseCategory.values.firstWhere((c) => c.name == catName);
+      switch (cat) {
+        case ExpenseCategory.telecomunicacoes: return Icons.phone;
+        case ExpenseCategory.energia: return Icons.bolt;
+        case ExpenseCategory.agua: return Icons.water_drop;
+        case ExpenseCategory.alimentacao: return Icons.restaurant;
+        case ExpenseCategory.educacao: return Icons.school;
+        case ExpenseCategory.habitacao: return Icons.home;
+        case ExpenseCategory.transportes: return Icons.directions_car;
+        case ExpenseCategory.saude: return Icons.local_hospital;
+        case ExpenseCategory.lazer: return Icons.sports_esports;
+        case ExpenseCategory.outros: return Icons.more_horiz;
+      }
+    } catch (_) {
+      return Icons.label_outline;
+    }
+  }
+
+  static String _budgetCategoryLabel(String catName, S l10n) {
+    try {
+      final cat = ExpenseCategory.values.firstWhere((c) => c.name == catName);
+      return cat.localizedLabel(l10n);
+    } catch (_) {
+      return catName;
+    }
   }
 
   Widget _buildPurchaseHistoryCard(BuildContext context) {
@@ -515,10 +704,10 @@ class DashboardScreen extends StatelessWidget {
               const Icon(Icons.receipt_long_outlined,
                   size: 16, color: Color(0xFF64748B)),
               const SizedBox(width: 8),
-              const Expanded(
+              Expanded(
                 child: Text(
-                  'HISTÓRICO DE COMPRAS',
-                  style: TextStyle(
+                  S.of(context).dashboardPurchaseHistory,
+                  style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
                       color: Color(0xFF64748B),
@@ -533,7 +722,7 @@ class DashboardScreen extends StatelessWidget {
                   minimumSize: const Size(48, 40),
                   textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                 ),
-                child: const Text('Ver tudo'),
+                child: Text(S.of(context).dashboardViewAll),
               ),
             ],
           ),
@@ -565,7 +754,7 @@ class DashboardScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '${r.itemCount} produto${r.itemCount != 1 ? 's' : ''}',
+                            S.of(context).dashboardProductCount(r.itemCount),
                             style: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
@@ -626,13 +815,13 @@ class DashboardScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.fromLTRB(20, 0, 20, 16),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Todas as Compras',
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+                    S.of(context).dashboardAllPurchases,
+                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
                   ),
                 ),
               ),
@@ -646,7 +835,7 @@ class DashboardScreen extends StatelessWidget {
                     final isExpanded = expandedMap[i] ?? false;
                     return Semantics(
                       button: true,
-                      label: 'Compra de ${r.date.day}/${r.date.month}/${r.date.year}, ${formatCurrency(r.amount)}',
+                      label: S.of(context).dashboardPurchaseLabel('${r.date.day}/${r.date.month}/${r.date.year}', formatCurrency(r.amount)),
                       child: Material(
                       color: const Color(0xFFF8FAFC),
                       borderRadius: BorderRadius.circular(12),
@@ -699,7 +888,7 @@ class DashboardScreen extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(top: 4),
                                 child: Text(
-                                  '${r.itemCount} produto${r.itemCount != 1 ? 's' : ''}',
+                                  S.of(context).dashboardProductCount(r.itemCount),
                                   style: const TextStyle(
                                       fontSize: 12, color: Color(0xFF94A3B8)),
                                 ),
@@ -751,7 +940,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildExpensesBreakdown() {
+  Widget _buildExpensesBreakdown(S l10n) {
     final activeExpenses = settings.expenses.where((e) => e.enabled && e.amount > 0).toList();
     return Container(
       padding: const EdgeInsets.all(20),
@@ -767,7 +956,7 @@ class DashboardScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'DESPESAS MENSAIS',
+            l10n.dashboardMonthlyExpenses,
             style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.grey.shade400, letterSpacing: 1.2),
           ),
           const SizedBox(height: 16),
@@ -808,7 +997,7 @@ class DashboardScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Total', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF475569))),
+                Text(l10n.dashboardTotal, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF475569))),
                 Text(formatCurrency(summary.totalExpenses), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFFEF4444))),
               ],
             ),
@@ -898,9 +1087,21 @@ class _StressIndexCard extends StatefulWidget {
 class _StressIndexCardState extends State<_StressIndexCard> {
   bool _expanded = false;
 
+  String _localizedValueLabel(StressFactorResult f, S l10n) {
+    switch (f.type) {
+      case StressFactorType.food:
+        return f.valueLabel.isEmpty ? l10n.stressNA : l10n.stressUsed(f.valueLabel);
+      case StressFactorType.stability:
+        return f.valueLabel == 'stable' ? l10n.stressStable : l10n.stressHigh;
+      default:
+        return f.valueLabel;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final result = widget.result;
+    final l10n = S.of(context);
     final color = _scoreColor(result.score);
 
     return Container(
@@ -929,7 +1130,7 @@ class _StressIndexCardState extends State<_StressIndexCard> {
               ),
               const SizedBox(width: 8),
               Text(
-                'ÍNDICE DE TRANQUILIDADE',
+                l10n.dashboardStressIndex.toUpperCase(),
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
@@ -961,7 +1162,7 @@ class _StressIndexCardState extends State<_StressIndexCard> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 4),
                       child: Text(
-                        result.label,
+                        result.level.localizedLabel(l10n),
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
@@ -987,7 +1188,7 @@ class _StressIndexCardState extends State<_StressIndexCard> {
                           ),
                           const SizedBox(width: 2),
                           Text(
-                            '${result.delta! > 0 ? '+' : ''}${result.delta} vs mês passado',
+                            l10n.dashboardVsLastMonth('${result.delta! > 0 ? '+' : ''}${result.delta}'),
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w500,
@@ -1033,7 +1234,7 @@ class _StressIndexCardState extends State<_StressIndexCard> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          f.label,
+                          f.type.localizedLabel(l10n),
                           style: const TextStyle(
                             fontSize: 13,
                             color: Color(0xFF475569),
@@ -1041,7 +1242,7 @@ class _StressIndexCardState extends State<_StressIndexCard> {
                         ),
                       ),
                       Text(
-                        f.valueLabel,
+                        _localizedValueLabel(f, l10n),
                         style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
@@ -1062,7 +1263,7 @@ class _StressIndexCardState extends State<_StressIndexCard> {
                   _expanded ? Icons.expand_less : Icons.expand_more,
                   size: 16,
                 ),
-                label: Text(_expanded ? 'Fechar' : 'Detalhes'),
+                label: Text(_expanded ? l10n.close : l10n.dashboardDetails),
                 style: TextButton.styleFrom(
                   foregroundColor: const Color(0xFF64748B),
                   textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
@@ -1078,7 +1279,7 @@ class _StressIndexCardState extends State<_StressIndexCard> {
                 TextButton.icon(
                   onPressed: widget.onShowTrend,
                   icon: const Icon(Icons.show_chart, size: 14),
-                  label: const Text('Evolução'),
+                  label: Text(l10n.trendTitle),
                   style: TextButton.styleFrom(
                     foregroundColor: const Color(0xFF3B82F6),
                     textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
@@ -1108,6 +1309,7 @@ class _SalaryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final hasMeal = calc.mealAllowance.totalMonthly > 0;
     final hasSubsidy = calc.subsidyMonthlyBonus > 0;
     final hasExempt = calc.otherExemptIncome > 0;
@@ -1138,7 +1340,7 @@ class _SalaryRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      hasSubsidy ? 'Bruto c/ duodéc.' : 'Bruto',
+                      hasSubsidy ? l10n.dashboardGrossWithSubsidy : l10n.dashboardGross,
                       style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: Colors.grey.shade400),
                     ),
                     const SizedBox(height: 2),
@@ -1153,7 +1355,7 @@ class _SalaryRow extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('IRS (${formatPercentage(calc.irsRate)})', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: Colors.grey.shade400)),
+                    Text(l10n.dashboardIrsRate(formatPercentage(calc.irsRate)), style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: Colors.grey.shade400)),
                     const SizedBox(height: 2),
                     Text('-${formatCurrency(calc.irsRetention)}', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFFF87171))),
                   ],
@@ -1163,7 +1365,7 @@ class _SalaryRow extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('SS (11%)', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: Colors.grey.shade400)),
+                    Text(l10n.dashboardSsRate, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: Colors.grey.shade400)),
                     const SizedBox(height: 2),
                     Text('-${formatCurrency(calc.socialSecurity)}', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFFF59E0B))),
                   ],
@@ -1179,7 +1381,7 @@ class _SalaryRow extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Sub. Alimentação', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.grey.shade400)),
+                  Text(l10n.dashboardMealAllowance, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.grey.shade400)),
                   Text(
                     '+${formatCurrency(calc.mealAllowance.netMealAllowance)}',
                     style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF10B981)),
@@ -1193,7 +1395,7 @@ class _SalaryRow extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Rend. Isento', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.grey.shade400)),
+                Text(l10n.dashboardExemptIncome, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.grey.shade400)),
                 Text(
                   '+${formatCurrency(calc.otherExemptIncome)}',
                   style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF10B981)),
@@ -1214,6 +1416,7 @@ class _ExemptIncomeRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -1229,7 +1432,7 @@ class _ExemptIncomeRow extends StatelessWidget {
             children: [
               Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Color(0xFF94A3B8))),
               const SizedBox(height: 2),
-              Text('Rend. Isento', style: TextStyle(fontSize: 10, color: Colors.grey.shade400)),
+              Text(l10n.dashboardExemptIncome, style: TextStyle(fontSize: 10, color: Colors.grey.shade400)),
             ],
           ),
           Text(
@@ -1249,13 +1452,14 @@ class _BudgetPaceAlert extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final isWarning = pace.severity == 'warning';
     final borderColor = isWarning ? const Color(0xFFFBBF24) : const Color(0xFFEF4444);
     final bgColor = isWarning ? const Color(0xFFFFFBEB) : const Color(0xFFFEF2F2);
     final iconColor = isWarning ? const Color(0xFFF59E0B) : const Color(0xFFEF4444);
     final title = isWarning
-        ? 'A gastar mais rápido que o previsto'
-        : 'Risco de ultrapassar orçamento alimentar';
+        ? l10n.dashboardPaceWarning
+        : l10n.dashboardPaceCritical;
 
     return Container(
       margin: const EdgeInsets.only(top: 8),
@@ -1285,10 +1489,10 @@ class _BudgetPaceAlert extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Ritmo', style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
+                    Text(l10n.dashboardPace, style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
                     const SizedBox(height: 2),
                     Text(
-                      '${pace.dailyPace.toStringAsFixed(1)}€/dia vs ${pace.expectedPace.toStringAsFixed(1)}€/dia',
+                      l10n.dashboardPaceValue(pace.dailyPace.toStringAsFixed(1), pace.expectedPace.toStringAsFixed(1)),
                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF475569)),
                     ),
                   ],
@@ -1298,10 +1502,10 @@ class _BudgetPaceAlert extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text('Projeção', style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
+                    Text(l10n.dashboardProjection, style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
                     const SizedBox(height: 2),
                     Text(
-                      '+${pace.projectedOverspend.toStringAsFixed(0)}€',
+                      '+${pace.projectedOverspend.toStringAsFixed(0)}\u20ac',
                       style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: iconColor),
                     ),
                   ],
@@ -1323,10 +1527,11 @@ class _MonthReviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final isOver = review.totalDifference > 0;
     return Semantics(
       button: true,
-      label: 'Ver resumo do mês',
+      label: l10n.dashboardViewMonthSummary,
       child: Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(16),
@@ -1348,7 +1553,7 @@ class _MonthReviewCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    '${review.monthLabel.toUpperCase()} — RESUMO',
+                    '${review.monthLabel.toUpperCase()} ${l10n.dashboardSummaryLabel}',
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
@@ -1367,7 +1572,7 @@ class _MonthReviewCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Planeado', style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
+                      Text(l10n.monthReviewPlanned, style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
                       Text(formatCurrency(review.totalPlanned),
                           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF475569))),
                     ],
@@ -1377,7 +1582,7 @@ class _MonthReviewCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Real', style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
+                      Text(l10n.monthReviewActual, style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
                       Text(formatCurrency(review.totalActual),
                           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF1E293B))),
                     ],
@@ -1387,7 +1592,7 @@ class _MonthReviewCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text('Diferença', style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
+                      Text(l10n.monthReviewDifference, style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
                       Text(
                         '${isOver ? '+' : ''}${formatCurrency(review.totalDifference)}',
                         style: TextStyle(

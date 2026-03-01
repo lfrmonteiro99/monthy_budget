@@ -254,7 +254,8 @@ class AiCoachService {
     final deltaStr = prevScore != null
         ? ' (${stress.score >= prevScore ? '+' : ''}${stress.score - prevScore} vs ${monthNames[prevMonth]})'
         : ' (primeiro registo)';
-    buf.writeln('ÍNDICE DE TRANQUILIDADE: ${stress.score}/100 — ${stress.label}$deltaStr');
+    final levelName = stress.level.name;
+    buf.writeln('ÍNDICE DE TRANQUILIDADE: ${stress.score}/100 — $levelName$deltaStr');
     buf.writeln('Factores (pontuação 0–100, peso):');
     final weights = [35, 30, 20, 15];
     for (var i = 0; i < stress.factors.length; i++) {
@@ -262,7 +263,7 @@ class AiCoachService {
       final pts = (f.normalizedScore * weights[i] / 100).round();
       final status = f.ok ? '✓' : '⚠';
       buf.writeln(
-          '  $status ${f.label}: ${f.valueLabel} '
+          '  $status ${f.type.name}: ${f.valueLabel} '
           '→ ${f.normalizedScore.toStringAsFixed(0)}/100 pts (peso ${weights[i]}%, contribui $pts pts)');
     }
     buf.writeln();

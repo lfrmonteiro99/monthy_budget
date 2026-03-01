@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../services/household_service.dart';
 
 class HouseholdSetupScreen extends StatefulWidget {
@@ -33,7 +34,7 @@ class _HouseholdSetupScreenState extends State<HouseholdSetupScreen> {
       final HouseholdProfile profile;
       if (_creating) {
         final name = _nameCtrl.text.trim();
-        if (name.isEmpty) throw Exception('Indica o nome do agregado.');
+        if (name.isEmpty) throw Exception(S.of(context).householdNameRequired);
         profile = await _service.createHousehold(name);
       } else {
         profile = await _service.joinHousehold(_codeCtrl.text.trim());
@@ -60,7 +61,7 @@ class _HouseholdSetupScreenState extends State<HouseholdSetupScreen> {
                   size: 64, color: Color(0xFF3B82F6)),
               const SizedBox(height: 8),
               Text(
-                'Configurar Agregado',
+                S.of(context).householdSetupTitle,
                 style: Theme.of(context)
                     .textTheme
                     .headlineSmall
@@ -68,15 +69,15 @@ class _HouseholdSetupScreenState extends State<HouseholdSetupScreen> {
               ),
               const SizedBox(height: 24),
               SegmentedButton<bool>(
-                segments: const [
+                segments: [
                   ButtonSegment(
                       value: true,
-                      label: Text('Criar'),
-                      icon: Icon(Icons.add)),
+                      label: Text(S.of(context).householdCreate),
+                      icon: const Icon(Icons.add)),
                   ButtonSegment(
                       value: false,
-                      label: Text('Entrar com código'),
-                      icon: Icon(Icons.link)),
+                      label: Text(S.of(context).householdJoinWithCode),
+                      icon: const Icon(Icons.link)),
                 ],
                 selected: {_creating},
                 onSelectionChanged: (s) =>
@@ -86,20 +87,20 @@ class _HouseholdSetupScreenState extends State<HouseholdSetupScreen> {
               if (_creating)
                 TextField(
                   controller: _nameCtrl,
-                  decoration: const InputDecoration(
-                    labelText: 'Nome do agregado',
-                    hintText: 'ex: Família Silva',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: S.of(context).householdNameLabel,
+                    hintText: S.of(context).householdNameHint,
+                    border: const OutlineInputBorder(),
                   ),
                 )
               else
                 TextField(
                   controller: _codeCtrl,
                   textCapitalization: TextCapitalization.characters,
-                  decoration: const InputDecoration(
-                    labelText: 'Código de convite',
-                    hintText: 'XXXXXX',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: S.of(context).householdCodeLabel,
+                    hintText: S.of(context).householdCodeHint,
+                    border: const OutlineInputBorder(),
                   ),
                 ),
               if (_error != null) ...[
@@ -119,8 +120,8 @@ class _HouseholdSetupScreenState extends State<HouseholdSetupScreen> {
                           child: CircularProgressIndicator(
                               color: Colors.white, strokeWidth: 2))
                       : Text(_creating
-                          ? 'Criar Agregado'
-                          : 'Entrar no Agregado'),
+                          ? S.of(context).householdCreateButton
+                          : S.of(context).householdJoinButton),
                 ),
               ),
             ],

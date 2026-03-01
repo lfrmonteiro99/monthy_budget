@@ -47,7 +47,7 @@ void main() {
         settings: settings,
       );
       expect(result.score, 100);
-      expect(result.label, 'Excelente');
+      expect(result.level, StressLevel.excellent);
     });
 
     test('label is Crítico when score < 40', () {
@@ -70,7 +70,7 @@ void main() {
         settings: settings,
       );
       expect(result.score, lessThan(40));
-      expect(result.label, 'Crítico');
+      expect(result.level, StressLevel.critical);
     });
 
     test('delta is null when no previous month in history', () {
@@ -108,8 +108,8 @@ void main() {
         settings: noFoodSettings,
       );
       final foodFactor = result.factors
-          .firstWhere((f) => f.label == 'Orçamento alimentação');
-      expect(foodFactor.valueLabel, 'N/D');
+          .firstWhere((f) => f.type == StressFactorType.food);
+      expect(foodFactor.valueLabel, '');
     });
   });
 }

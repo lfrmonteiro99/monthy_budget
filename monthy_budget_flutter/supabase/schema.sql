@@ -166,5 +166,30 @@ create policy "read snapshots"   on expense_snapshots for select using (househol
 create policy "insert snapshots" on expense_snapshots for insert with check (household_id = my_household_id());
 create policy "update snapshots" on expense_snapshots for update using (household_id = my_household_id());
 
+-- ─── Actual Expenses ──────────────────────────────────────
+create table actual_expenses (
+  id            text primary key,
+  household_id  uuid not null references households(id) on delete cascade,
+  category      text not null,
+  amount        double precision not null,
+  expense_date  date not null,
+  description   text,
+  month_key     text not null,
+  created_at    timestamptz default now()
+);
+
+create index idx_actual_expenses_month on actual_expenses(household_id, month_key);
+
+alter table actual_expenses enable row level security;
+
+create policy "read actual_expenses" on actual_expenses
+  for select using (household_id = my_household_id());
+create policy "insert actual_expenses" on actual_expenses
+  for insert with check (household_id = my_household_id());
+create policy "update actual_expenses" on actual_expenses
+  for update using (household_id = my_household_id());
+create policy "delete actual_expenses" on actual_expenses
+  for delete using (household_id = my_household_id());
+
 -- ─── Realtime ─────────────────────────────────────────────
 alter publication supabase_realtime add table shopping_items;

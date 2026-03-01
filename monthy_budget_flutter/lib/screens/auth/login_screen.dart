@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -57,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   size: 64, color: Color(0xFF3B82F6)),
               const SizedBox(height: 8),
               Text(
-                'Orçamento Mensal',
+                S.of(context).appTitle,
                 style: Theme.of(context)
                     .textTheme
                     .headlineSmall
@@ -65,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 4),
               Text(
-                _isLogin ? 'Entrar na conta' : 'Criar conta',
+                _isLogin ? S.of(context).authLogin : S.of(context).authRegister,
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium
@@ -78,8 +79,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 autocorrect: false,
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
-                  labelText: 'Email',
-                  hintText: 'exemplo@email.com',
+                  labelText: S.of(context).authEmail,
+                  hintText: S.of(context).authEmailHint,
                   prefixIcon: const Icon(Icons.email_outlined),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
@@ -90,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 obscureText: true,
                 textInputAction: TextInputAction.done,
                 decoration: InputDecoration(
-                  labelText: 'Palavra-passe',
+                  labelText: S.of(context).authPassword,
                   prefixIcon: const Icon(Icons.lock_outline),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
@@ -112,13 +113,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: 16,
                           child: CircularProgressIndicator(
                               color: Colors.white, strokeWidth: 2))
-                      : Text(_isLogin ? 'Entrar' : 'Registar'),
+                      : Text(_isLogin ? S.of(context).authLoginButton : S.of(context).authRegisterButton),
                 ),
               ),
               TextButton(
                 onPressed: () => setState(() => _isLogin = !_isLogin),
                 child:
-                    Text(_isLogin ? 'Criar conta nova' : 'Já tenho conta'),
+                    Text(_isLogin ? S.of(context).authSwitchToRegister : S.of(context).authSwitchToLogin),
               ),
             ],
           ),

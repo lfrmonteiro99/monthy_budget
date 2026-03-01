@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../models/app_settings.dart';
 import '../../models/budget_summary.dart';
 import '../../utils/formatters.dart';
@@ -104,8 +105,9 @@ class _ExpensesPieChart extends StatelessWidget {
     final total = grouped.values.fold(0.0, (a, b) => a + b);
     final entries = grouped.entries.toList();
 
+    final l10n = S.of(context);
     return _ChartCard(
-      title: 'Despesas por Categoria',
+      title: l10n.chartExpensesByCategory,
       child: Column(
         children: [
           SizedBox(
@@ -145,7 +147,7 @@ class _ExpensesPieChart extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    '${e.key.label}: ${formatCurrency(e.value)}',
+                    '${e.key.localizedLabel(l10n)}: ${formatCurrency(e.value)}',
                     style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
                   ),
                 ],
@@ -167,8 +169,9 @@ class _IncomeVsExpensesChart extends StatelessWidget {
     final maxVal = [summary.totalNetWithMeal, summary.totalExpenses, math.max(0.0, summary.netLiquidity)]
         .reduce(math.max);
 
+    final l10n = S.of(context);
     return _ChartCard(
-      title: 'Rendimento vs Despesas',
+      title: l10n.chartIncomeVsExpenses,
       child: SizedBox(
         height: 200,
         child: BarChart(
@@ -187,7 +190,7 @@ class _IncomeVsExpensesChart extends StatelessWidget {
                 sideTitles: SideTitles(
                   showTitles: true,
                   getTitlesWidget: (value, _) {
-                    const labels = ['Rend. Liq.', 'Despesas', 'Liquidez'];
+                    final labels = [l10n.chartNetIncome, l10n.chartExpensesLabel, l10n.chartLiquidity];
                     if (value.toInt() < labels.length) {
                       return Padding(
                         padding: const EdgeInsets.only(top: 8),
@@ -235,8 +238,9 @@ class _DeductionsChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return _ChartCard(
-      title: 'Descontos (IRS + Segurança Social)',
+      title: l10n.chartDeductions,
       child: Column(
         children: [
           SizedBox(
@@ -275,11 +279,11 @@ class _DeductionsChart extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _legendDot(const Color(0xFF34D399), 'Sal. Líquido'),
+              _legendDot(const Color(0xFF34D399), l10n.chartNetSalary),
               const SizedBox(width: 16),
-              _legendDot(const Color(0xFFF87171), 'IRS'),
+              _legendDot(const Color(0xFFF87171), l10n.chartIRS),
               const SizedBox(width: 16),
-              _legendDot(const Color(0xFFFBBF24), 'Seg. Social'),
+              _legendDot(const Color(0xFFFBBF24), l10n.chartSocialSecurity),
             ],
           ),
         ],
@@ -303,6 +307,7 @@ class _NetIncomeChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final labels = <String>[];
     final grossValues = <double>[];
     final netValues = <double>[];
@@ -310,7 +315,7 @@ class _NetIncomeChart extends StatelessWidget {
     for (var i = 0; i < summary.salaries.length; i++) {
       final s = summary.salaries[i];
       if (s.effectiveGrossAmount > 0) {
-        labels.add('Venc. ${i + 1}');
+        labels.add(l10n.chartSalaryN(i + 1));
         grossValues.add(s.effectiveGrossAmount);
         netValues.add(s.totalNetWithMeal);
       }
@@ -321,7 +326,7 @@ class _NetIncomeChart extends StatelessWidget {
     final maxVal = [...grossValues, ...netValues].reduce(math.max);
 
     return _ChartCard(
-      title: 'Rendimento Bruto vs Líquido',
+      title: l10n.chartGrossVsNet,
       child: Column(
         children: [
           SizedBox(
@@ -376,9 +381,9 @@ class _NetIncomeChart extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _legendDot(const Color(0xFFC7D2FE), 'Bruto'),
+              _legendDot(const Color(0xFFC7D2FE), l10n.chartGross),
               const SizedBox(width: 16),
-              _legendDot(const Color(0xFF818CF8), 'Líquido'),
+              _legendDot(const Color(0xFF818CF8), l10n.chartNet),
             ],
           ),
         ],
@@ -405,8 +410,9 @@ class _SavingsRateChart extends StatelessWidget {
     final savingsRate = math.max(0.0, summary.savingsRate);
     final expenseRate = 1 - savingsRate;
 
+    final l10n = S.of(context);
     return _ChartCard(
-      title: 'Taxa de Poupança',
+      title: l10n.chartSavingsRate,
       child: SizedBox(
         height: 180,
         child: Stack(
@@ -441,7 +447,7 @@ class _SavingsRateChart extends StatelessWidget {
                   formatPercentage(savingsRate),
                   style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: Color(0xFF10B981), letterSpacing: -0.5),
                 ),
-                Text('poupança', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.grey.shade400)),
+                Text(l10n.chartSavings, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.grey.shade400)),
               ],
             ),
           ],

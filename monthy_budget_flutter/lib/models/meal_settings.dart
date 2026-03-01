@@ -1,3 +1,5 @@
+import '../l10n/generated/app_localizations.dart';
+
 enum MealType {
   breakfast,
   lunch,
@@ -21,6 +23,15 @@ enum MealType {
       case MealType.dinner:    return 0.40;
     }
   }
+
+  String localizedLabel(S l10n) {
+    switch (this) {
+      case MealType.breakfast: return l10n.enumMealBreakfast;
+      case MealType.lunch: return l10n.enumMealLunch;
+      case MealType.snack: return l10n.enumMealSnack;
+      case MealType.dinner: return l10n.enumMealDinner;
+    }
+  }
 }
 
 enum MealObjective {
@@ -37,6 +48,16 @@ enum MealObjective {
       case MealObjective.highProtein:    return 'Alta prote\u00EDna';
       case MealObjective.lowCarb:        return 'Baixo carboidrato';
       case MealObjective.vegetarian:     return 'Vegetariano';
+    }
+  }
+
+  String localizedLabel(S l10n) {
+    switch (this) {
+      case MealObjective.minimizeCost: return l10n.enumObjMinimizeCost;
+      case MealObjective.balancedHealth: return l10n.enumObjBalancedHealth;
+      case MealObjective.highProtein: return l10n.enumObjHighProtein;
+      case MealObjective.lowCarb: return l10n.enumObjLowCarb;
+      case MealObjective.vegetarian: return l10n.enumObjVegetarian;
     }
   }
 }
@@ -61,6 +82,17 @@ enum KitchenEquipment {
   }
 
   String get jsonValue => name;
+
+  String localizedLabel(S l10n) {
+    switch (this) {
+      case KitchenEquipment.oven: return l10n.enumEquipOven;
+      case KitchenEquipment.airFryer: return l10n.enumEquipAirFryer;
+      case KitchenEquipment.foodProcessor: return l10n.enumEquipFoodProcessor;
+      case KitchenEquipment.pressureCooker: return l10n.enumEquipPressureCooker;
+      case KitchenEquipment.microwave: return l10n.enumEquipMicrowave;
+      case KitchenEquipment.bimby: return l10n.enumEquipBimby;
+    }
+  }
 }
 
 enum SodiumPreference {
@@ -73,6 +105,14 @@ enum SodiumPreference {
       case SodiumPreference.noRestriction: return 'Sem restri\u00E7\u00E3o';
       case SodiumPreference.reducedSodium: return 'S\u00F3dio reduzido';
       case SodiumPreference.lowSodium:     return 'Baixo s\u00F3dio';
+    }
+  }
+
+  String localizedLabel(S l10n) {
+    switch (this) {
+      case SodiumPreference.noRestriction: return l10n.enumSodiumNoRestriction;
+      case SodiumPreference.reducedSodium: return l10n.enumSodiumReduced;
+      case SodiumPreference.lowSodium: return l10n.enumSodiumLow;
     }
   }
 }
@@ -103,6 +143,16 @@ enum AgeGroup {
       case AgeGroup.senior:     return 0.8;
     }
   }
+
+  String localizedLabel(S l10n) {
+    switch (this) {
+      case AgeGroup.child0to3: return l10n.enumAge0to3;
+      case AgeGroup.child4to10: return l10n.enumAge4to10;
+      case AgeGroup.teen: return l10n.enumAgeTeen;
+      case AgeGroup.adult: return l10n.enumAgeAdult;
+      case AgeGroup.senior: return l10n.enumAgeSenior;
+    }
+  }
 }
 
 enum ActivityLevel {
@@ -128,6 +178,15 @@ enum ActivityLevel {
       case ActivityLevel.veryActive: return 1.4;
     }
   }
+
+  String localizedLabel(S l10n) {
+    switch (this) {
+      case ActivityLevel.sedentary: return l10n.enumActivitySedentary;
+      case ActivityLevel.moderate: return l10n.enumActivityModerate;
+      case ActivityLevel.active: return l10n.enumActivityActive;
+      case ActivityLevel.veryActive: return l10n.enumActivityVeryActive;
+    }
+  }
 }
 
 enum MedicalCondition {
@@ -144,6 +203,16 @@ enum MedicalCondition {
       case MedicalCondition.highCholesterol: return 'Colesterol alto';
       case MedicalCondition.gout:            return 'Gota';
       case MedicalCondition.ibs:             return 'Síndrome do intestino irritável';
+    }
+  }
+
+  String localizedLabel(S l10n) {
+    switch (this) {
+      case MedicalCondition.diabetes: return l10n.enumMedDiabetes;
+      case MedicalCondition.hypertension: return l10n.enumMedHypertension;
+      case MedicalCondition.highCholesterol: return l10n.enumMedHighCholesterol;
+      case MedicalCondition.gout: return l10n.enumMedGout;
+      case MedicalCondition.ibs: return l10n.enumMedIbs;
     }
   }
 }

@@ -1,58 +1,18 @@
 import 'dart:math' as math;
 import '../models/app_settings.dart';
 import '../models/budget_summary.dart';
+import '../data/tax/tax_system.dart';
 import '../data/irs_tables.dart';
 
 double _round2(double v) => (v * 100).roundToDouble() / 100;
 
-/// Calcula a retenção de IRS para um dado salário bruto
-({double retention, double rate}) calculateIRSRetention(
-  double grossSalary,
-  PersonalInfo personalInfo,
-  int titulares,
-) {
-  if (grossSalary <= 0) return (retention: 0, rate: 0);
-
-  final table = getApplicableTable(
-    personalInfo.maritalStatus.jsonValue,
-    titulares,
-    personalInfo.dependentes,
-  );
-
-  final bracket = table.brackets.cast<IRSBracket?>().firstWhere(
-        (b) => grossSalary <= b!.upTo,
-        orElse: () => null,
-      );
-
-  if (bracket == null || bracket.rate == 0) {
-    return (retention: 0, rate: 0);
-  }
-
-  final retention = grossSalary * bracket.rate -
-      bracket.parcelaAbater -
-      bracket.parcelaDependente * personalInfo.dependentes;
-
-  final finalRetention = math.max(0.0, _round2(retention));
-  final effectiveRate = grossSalary > 0 ? finalRetention / grossSalary : 0.0;
-
-  return (
-    retention: finalRetention,
-    rate: (effectiveRate * 10000).roundToDouble() / 10000,
-  );
-}
-
-/// Calcula a contribuição para a Segurança Social (11%)
-double calculateSocialSecurity(double grossSalary) {
-  if (grossSalary <= 0) return 0;
-  return _round2(grossSalary * socialSecurityRate);
-}
-
-/// Calcula o subsidio de alimentação mensal
+/// Calcula o subsidio de alimentação mensal (PT only)
 MealAllowanceCalculation calculateMealAllowance(
   MealAllowanceType type,
   double perDay,
   int workingDays,
   double irsRate,
+  double ssRate,
 ) {
   if (type == MealAllowanceType.none || perDay <= 0 || workingDays <= 0) {
     return const MealAllowanceCalculation();
@@ -67,7 +27,7 @@ MealAllowanceCalculation calculateMealAllowance(
   final taxablePortion = _round2(taxablePerDay * workingDays);
 
   final irsTaxOnMeal = _round2(taxablePortion * irsRate);
-  final ssTaxOnMeal = _round2(taxablePortion * socialSecurityRate);
+  final ssTaxOnMeal = _round2(taxablePortion * ssRate);
   final netMealAllowance = _round2(totalMonthly - irsTaxOnMeal - ssTaxOnMeal);
 
   return MealAllowanceCalculation(
@@ -80,23 +40,30 @@ MealAllowanceCalculation calculateMealAllowance(
   );
 }
 
-/// Calcula o salário líquido completo, considerando duodécimos e rendimentos isentos
+/// Calcula o salário líquido completo, usando o sistema fiscal do país selecionado
 SalaryCalculation calculateNetSalary(
   SalaryInfo salary,
   PersonalInfo personalInfo,
+  TaxSystem taxSystem,
 ) {
+  final country = taxSystem.country;
   final baseGross = salary.grossAmount;
-  // Com duodécimos, o bruto efetivo mensal é mais alto (IRS/SS incidem sobre ele)
-  final effectiveGross = _round2(baseGross * salary.subsidyMode.monthlyFactor);
+
+  // Subsidies: PT and ES have duodécimos/pagas extras, FR and UK don't
+  final factor = country.hasSubsidies ? salary.subsidyMode.monthlyFactor : 1.0;
+  final effectiveGross = _round2(baseGross * factor);
   final subsidyBonus = _round2(effectiveGross - baseGross);
 
   if (effectiveGross <= 0) {
-    final meal = calculateMealAllowance(
-      salary.mealAllowanceType,
-      salary.mealAllowancePerDay,
-      salary.workingDaysPerMonth,
-      0,
-    );
+    final meal = country.hasMealAllowance
+        ? calculateMealAllowance(
+            salary.mealAllowanceType,
+            salary.mealAllowancePerDay,
+            salary.workingDaysPerMonth,
+            0,
+            taxSystem.socialContributionRate,
+          )
+        : const MealAllowanceCalculation();
     return SalaryCalculation(
       grossAmount: baseGross,
       effectiveGrossAmount: 0,
@@ -105,34 +72,41 @@ SalaryCalculation calculateNetSalary(
       irsRetention: 0,
       irsRate: 0,
       socialSecurity: 0,
-      socialSecurityRate: socialSecurityRate,
+      socialSecurityRate: taxSystem.socialContributionRate,
       netAmount: 0,
       mealAllowance: meal,
       totalNetWithMeal: _round2(meal.netMealAllowance + salary.otherExemptIncome),
     );
   }
 
-  final irs = calculateIRSRetention(effectiveGross, personalInfo, salary.titulares);
-  final ss = calculateSocialSecurity(effectiveGross);
-  final net = _round2(effectiveGross - irs.retention - ss);
-  final netAmount = math.max(0.0, net);
-
-  final meal = calculateMealAllowance(
-    salary.mealAllowanceType,
-    salary.mealAllowancePerDay,
-    salary.workingDaysPerMonth,
-    irs.rate,
+  final taxResult = taxSystem.calculateTax(
+    grossSalary: effectiveGross,
+    maritalStatus: personalInfo.maritalStatus.jsonValue,
+    titulares: salary.titulares,
+    dependentes: personalInfo.dependentes,
   );
+
+  final netAmount = math.max(0.0, _round2(effectiveGross - taxResult.incomeTax - taxResult.socialContribution));
+
+  final meal = country.hasMealAllowance
+      ? calculateMealAllowance(
+          salary.mealAllowanceType,
+          salary.mealAllowancePerDay,
+          salary.workingDaysPerMonth,
+          taxResult.incomeTaxRate,
+          taxSystem.socialContributionRate,
+        )
+      : const MealAllowanceCalculation();
 
   return SalaryCalculation(
     grossAmount: baseGross,
     effectiveGrossAmount: effectiveGross,
     subsidyMonthlyBonus: subsidyBonus,
     otherExemptIncome: salary.otherExemptIncome,
-    irsRetention: irs.retention,
-    irsRate: irs.rate,
-    socialSecurity: ss,
-    socialSecurityRate: socialSecurityRate,
+    irsRetention: taxResult.incomeTax,
+    irsRate: taxResult.incomeTaxRate,
+    socialSecurity: taxResult.socialContribution,
+    socialSecurityRate: taxSystem.socialContributionRate,
     netAmount: netAmount,
     mealAllowance: meal,
     totalNetWithMeal: _round2(netAmount + meal.netMealAllowance + salary.otherExemptIncome),
@@ -144,10 +118,11 @@ BudgetSummary calculateBudgetSummary(
   List<SalaryInfo> salaries,
   PersonalInfo personalInfo,
   List<ExpenseItem> expenses,
+  TaxSystem taxSystem,
 ) {
   final calcs = salaries.map((s) {
     if (!s.enabled) return const SalaryCalculation();
-    return calculateNetSalary(s, personalInfo);
+    return calculateNetSalary(s, personalInfo, taxSystem);
   }).toList();
 
   final totalGross = calcs.fold(0.0, (sum, s) => sum + s.effectiveGrossAmount);

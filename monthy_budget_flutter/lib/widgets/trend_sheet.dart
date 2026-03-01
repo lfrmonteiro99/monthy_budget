@@ -3,11 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import '../models/expense_snapshot.dart';
 import '../utils/formatters.dart';
-
-const _monthNames = [
-  '', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
-  'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
-];
+import '../l10n/generated/app_localizations.dart';
 
 const _categoryColors = {
   'telecomunicacoes': Color(0xFF818CF8),
@@ -22,17 +18,17 @@ const _categoryColors = {
   'outros': Color(0xFF94A3B8),
 };
 
-const _categoryLabels = {
-  'telecomunicacoes': 'Telecom',
-  'energia': 'Energia',
-  'agua': 'Água',
-  'alimentacao': 'Alimentação',
-  'educacao': 'Educação',
-  'habitacao': 'Habitação',
-  'transportes': 'Transportes',
-  'saude': 'Saúde',
-  'lazer': 'Lazer',
-  'outros': 'Outros',
+Map<String, String> _localizedCategoryLabels(S l10n) => {
+  'telecomunicacoes': l10n.trendCatTelecom,
+  'energia': l10n.trendCatEnergy,
+  'agua': l10n.trendCatWater,
+  'alimentacao': l10n.trendCatFood,
+  'educacao': l10n.trendCatEducation,
+  'habitacao': l10n.trendCatHousing,
+  'transportes': l10n.trendCatTransport,
+  'saude': l10n.trendCatHealth,
+  'lazer': l10n.trendCatLeisure,
+  'outros': l10n.trendCatOther,
 };
 
 /// Opens the trend bottom sheet from a parent context.
@@ -79,6 +75,7 @@ class _TrendSheetContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return ListView(
       controller: scrollController,
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
@@ -93,25 +90,25 @@ class _TrendSheetContent extends StatelessWidget {
             ),
           ),
         ),
-        const Text(
-          'Evolução',
-          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+        Text(
+          l10n.trendTitle,
+          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 24),
         if (stressHistory.length >= 2) ...[
-          _buildStressChart(),
+          _buildStressChart(l10n),
           const SizedBox(height: 24),
         ],
         if (expenseHistory.isNotEmpty) ...[
-          _buildExpenseTotalChart(),
+          _buildExpenseTotalChart(l10n),
           const SizedBox(height: 24),
-          _buildExpenseCategoryChart(),
+          _buildExpenseCategoryChart(l10n),
         ],
       ],
     );
   }
 
-  Widget _buildStressChart() {
+  Widget _buildStressChart(S l10n) {
     final sorted = stressHistory.entries.toList()
       ..sort((a, b) => a.key.compareTo(b.key));
     final entries = sorted.length > 12 ? sorted.sublist(sorted.length - 12) : sorted;
@@ -122,7 +119,7 @@ class _TrendSheetContent extends StatelessWidget {
       spots.add(FlSpot(i.toDouble(), entries[i].value.toDouble()));
       final parts = entries[i].key.split('-');
       final monthNum = int.parse(parts[1]);
-      labels[i] = _monthNames[monthNum];
+      labels[i] = localizedMonthAbbr(l10n, monthNum);
     }
 
     return Container(
@@ -136,7 +133,7 @@ class _TrendSheetContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'ÍNDICE DE TRANQUILIDADE',
+            l10n.trendStressIndex,
             style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600,
                 color: Colors.grey.shade400, letterSpacing: 1.2),
           ),
@@ -240,13 +237,13 @@ class _TrendSheetContent extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _zoneDot(const Color(0xFFEF4444), 'Crítico'),
+              _zoneDot(const Color(0xFFEF4444), l10n.stressCritical),
               const SizedBox(width: 12),
-              _zoneDot(const Color(0xFFF59E0B), 'Atenção'),
+              _zoneDot(const Color(0xFFF59E0B), l10n.stressWarning),
               const SizedBox(width: 12),
-              _zoneDot(const Color(0xFF3B82F6), 'Bom'),
+              _zoneDot(const Color(0xFF3B82F6), l10n.stressGood),
               const SizedBox(width: 12),
-              _zoneDot(const Color(0xFF10B981), 'Excelente'),
+              _zoneDot(const Color(0xFF10B981), l10n.stressExcellent),
             ],
           ),
         ],
@@ -256,7 +253,7 @@ class _TrendSheetContent extends StatelessWidget {
 
   // ── Total expenses bar chart ────────────────────────────────────────
 
-  Widget _buildExpenseTotalChart() {
+  Widget _buildExpenseTotalChart(S l10n) {
     final months = expenseHistory.keys.toList()..sort();
     final totals = months.map((m) {
       return expenseHistory[m]!
@@ -277,7 +274,7 @@ class _TrendSheetContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'DESPESAS TOTAIS',
+            l10n.trendTotalExpenses,
             style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600,
                 color: Colors.grey.shade400, letterSpacing: 1.2),
           ),
@@ -313,7 +310,7 @@ class _TrendSheetContent extends StatelessWidget {
                             show: true,
                             alignment: Alignment.topRight,
                             style: TextStyle(fontSize: 10, color: Colors.grey.shade500),
-                            labelResolver: (_) => 'Atual: ${formatCurrency(currentTotalExpenses)}',
+                            labelResolver: (_) => l10n.trendCurrent(formatCurrency(currentTotalExpenses)),
                           ),
                         ),
                       ])
@@ -332,7 +329,7 @@ class _TrendSheetContent extends StatelessWidget {
                           final monthNum = int.parse(parts[1]);
                           return Padding(
                             padding: const EdgeInsets.only(top: 8),
-                            child: Text(_monthNames[monthNum],
+                            child: Text(localizedMonthAbbr(l10n, monthNum),
                                 style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
                           );
                         }
@@ -363,7 +360,8 @@ class _TrendSheetContent extends StatelessWidget {
 
   // ── Stacked category bar chart ──────────────────────────────────────
 
-  Widget _buildExpenseCategoryChart() {
+  Widget _buildExpenseCategoryChart(S l10n) {
+    final categoryLabels = _localizedCategoryLabels(l10n);
     final months = expenseHistory.keys.toList()..sort();
 
     // Collect all categories that appear across all months
@@ -422,7 +420,7 @@ class _TrendSheetContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'DESPESAS POR CATEGORIA',
+            l10n.trendExpensesByCategory,
             style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600,
                 color: Colors.grey.shade400, letterSpacing: 1.2),
           ),
@@ -447,7 +445,7 @@ class _TrendSheetContent extends StatelessWidget {
                           final monthNum = int.parse(parts[1]);
                           return Padding(
                             padding: const EdgeInsets.only(top: 8),
-                            child: Text(_monthNames[monthNum],
+                            child: Text(localizedMonthAbbr(l10n, monthNum),
                                 style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
                           );
                         }
@@ -469,7 +467,7 @@ class _TrendSheetContent extends StatelessWidget {
                             .where((s) => s.category == cat && s.enabled)
                             .fold(0.0, (sum, s) => sum + s.amount);
                         if (amount > 0) {
-                          final label = _categoryLabels[cat] ?? cat;
+                          final label = categoryLabels[cat] ?? cat;
                           lines.add('$label: ${formatCurrency(amount)}');
                         }
                       }
@@ -490,7 +488,7 @@ class _TrendSheetContent extends StatelessWidget {
             runSpacing: 4,
             children: categories.map((cat) => _zoneDot(
               _categoryColors[cat] ?? const Color(0xFF94A3B8),
-              _categoryLabels[cat] ?? cat,
+              categoryLabels[cat] ?? cat,
             )).toList(),
           ),
         ],

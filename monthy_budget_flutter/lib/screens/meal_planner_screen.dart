@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/meal_planner.dart';
 import '../models/meal_settings.dart';
 import '../models/shopping_item.dart';
 import '../services/meal_planner_service.dart';
 import '../services/meal_planner_ai_service.dart';
+import '../utils/formatters.dart';
 import 'meal_wizard_screen.dart';
 
 class MealPlannerScreen extends StatefulWidget {
@@ -164,6 +166,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             ifAbsent: () => ri.quantity * scale);
       }
     }
+    final l10n = S.of(context);
     int count = 0;
     for (final entry in totals.entries) {
       final ing = iMap[entry.key];
@@ -179,7 +182,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     }
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('$count ingredientes adicionados \u00E0 lista')),
+        SnackBar(content: Text(l10n.mealIngredientsAdded(count))),
       );
     }
   }
@@ -210,14 +213,15 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         },
       );
     }
+    final l10n = S.of(context);
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          'Planeador de Refeições',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+        title: Text(
+          l10n.mealPlannerTitle,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
         ),
         actions: [
           IconButton(
@@ -235,11 +239,11 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   }
 
   Widget _buildEmptyState() {
+    final l10n = S.of(context);
     final budget = _service.monthlyFoodBudget(widget.settings);
     final np = _service.nPessoas(widget.settings);
     final now = DateTime.now();
-    const months = ['', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-    final monthName = '${months[now.month]} ${now.year}';
+    final monthName = '${localizedMonthFull(l10n, now.month)} ${now.year}';
 
     return Center(
       child: Padding(
@@ -254,9 +258,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 24),
-            _InfoRow(label: 'Orçamento alimentação', value: '${budget.toStringAsFixed(2)}€'),
+            _InfoRow(label: l10n.mealBudgetLabel, value: '${budget.toStringAsFixed(2)}\u20AC'),
             const SizedBox(height: 8),
-            _InfoRow(label: 'Pessoas no agregado', value: '$np'),
+            _InfoRow(label: l10n.mealPeopleLabel, value: '$np'),
             const SizedBox(height: 32),
             SizedBox(
               width: double.infinity,
@@ -269,7 +273,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                         child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                       )
                     : const Icon(Icons.auto_awesome),
-                label: Text(_loading ? 'A gerar...' : 'Gerar Plano Mensal'),
+                label: Text(_loading ? l10n.mealGenerating : l10n.mealGeneratePlan),
                 style: FilledButton.styleFrom(
                   backgroundColor: const Color(0xFF3B82F6),
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -283,6 +287,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   }
 
   Widget _buildPlanView() {
+    final l10n = S.of(context);
     final plan = _plan!;
     final budgetUsed = plan.monthlyBudget > 0
         ? plan.totalEstimatedCost / plan.monthlyBudget
@@ -301,7 +306,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '${plan.totalEstimatedCost.toStringAsFixed(2)}€ / ${plan.monthlyBudget.toStringAsFixed(2)}€',
+                    '${plan.totalEstimatedCost.toStringAsFixed(2)}\u20AC / ${plan.monthlyBudget.toStringAsFixed(2)}\u20AC',
                     style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
                   ),
                   TextButton.icon(
@@ -309,16 +314,16 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                       final confirmed = await showDialog<bool>(
                         context: context,
                         builder: (ctx) => AlertDialog(
-                          title: const Text('Regenerar plano?'),
-                          content: const Text('O plano atual será substituído.'),
+                          title: Text(l10n.mealRegenerateTitle),
+                          content: Text(l10n.mealRegenerateContent),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(ctx, false),
-                              child: const Text('Cancelar'),
+                              child: Text(l10n.cancel),
                             ),
                             FilledButton(
                               onPressed: () => Navigator.pop(ctx, true),
-                              child: const Text('Regenerar'),
+                              child: Text(l10n.mealRegenerate),
                             ),
                           ],
                         ),
@@ -329,7 +334,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                       }
                     },
                     icon: const Icon(Icons.refresh, size: 16),
-                    label: const Text('Regenerar'),
+                    label: Text(l10n.mealRegenerate),
                     style: TextButton.styleFrom(foregroundColor: const Color(0xFF64748B)),
                   ),
                 ],
@@ -357,7 +362,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   return Expanded(
                     child: Semantics(
                       button: true,
-                      label: 'Semana ${i + 1}',
+                      label: l10n.mealWeekLabel(i + 1),
                       selected: selected,
                       child: Material(
                       color: selected ? const Color(0xFF3B82F6) : const Color(0xFFF1F5F9),
@@ -370,7 +375,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         alignment: Alignment.center,
                         child: Text(
-                          'Sem.${i + 1}',
+                          l10n.mealWeekAbbr(i + 1),
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
@@ -396,7 +401,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             child: OutlinedButton.icon(
               onPressed: () => _addWeekToShoppingList(_selectedWeek),
               icon: const Icon(Icons.add_shopping_cart, size: 18),
-              label: const Text('Adicionar semana \u00E0 lista'),
+              label: Text(l10n.mealAddWeekToList),
               style: OutlinedButton.styleFrom(
                 foregroundColor: const Color(0xFF3B82F6),
                 side: const BorderSide(color: Color(0xFF3B82F6)),
@@ -438,7 +443,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 child: FilledButton.icon(
                   onPressed: _showConsolidatedList,
                   icon: const Icon(Icons.list_alt),
-                  label: const Text('Ver lista consolidada'),
+                  label: Text(l10n.mealConsolidatedList),
                   style: FilledButton.styleFrom(
                     backgroundColor: const Color(0xFF1E293B),
                     padding: const EdgeInsets.symmetric(vertical: 14),
@@ -487,6 +492,7 @@ class _DayCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final recipe = service.recipeMap[mealDay.recipeId];
     if (recipe == null) return const SizedBox();
     final iMap = service.ingredientMap;
@@ -518,7 +524,7 @@ class _DayCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
-                        'Dia ${mealDay.dayIndex}',
+                        l10n.mealDayLabel(mealDay.dayIndex),
                         style: const TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
@@ -533,7 +539,7 @@ class _DayCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
-                        mealDay.mealType.label,
+                        mealDay.mealType.localizedLabel(l10n),
                         style: const TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
@@ -542,7 +548,7 @@ class _DayCard extends StatelessWidget {
                     ),
                     const Spacer(),
                     Text(
-                      '${mealDay.costEstimate.toStringAsFixed(2)}€',
+                      '${mealDay.costEstimate.toStringAsFixed(2)}\u20AC',
                       style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
@@ -567,7 +573,7 @@ class _DayCard extends StatelessWidget {
                     const SizedBox(width: 10),
                     const Icon(Icons.person_outline, size: 14, color: Color(0xFF94A3B8)),
                     const SizedBox(width: 3),
-                    Text('${costPerPerson.toStringAsFixed(2)}€/pess',
+                    Text(l10n.mealCostPerPerson(costPerPerson.toStringAsFixed(2)),
                         style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
                   ],
                 ),
@@ -577,14 +583,14 @@ class _DayCard extends StatelessWidget {
                     children: [
                       _NutriBadge('${recipe.nutrition!.kcal}', 'kcal', const Color(0xFFEF4444)),
                       const SizedBox(width: 6),
-                      _NutriBadge('${recipe.nutrition!.proteinG.round()}g', 'prot', const Color(0xFF3B82F6)),
+                      _NutriBadge('${recipe.nutrition!.proteinG.round()}g', l10n.mealNutriProt, const Color(0xFF3B82F6)),
                       const SizedBox(width: 6),
-                      _NutriBadge('${recipe.nutrition!.carbsG.round()}g', 'carbs', const Color(0xFFF59E0B)),
+                      _NutriBadge('${recipe.nutrition!.carbsG.round()}g', l10n.mealNutriCarbs, const Color(0xFFF59E0B)),
                       const SizedBox(width: 6),
-                      _NutriBadge('${recipe.nutrition!.fatG.round()}g', 'gord', const Color(0xFF8B5CF6)),
+                      _NutriBadge('${recipe.nutrition!.fatG.round()}g', l10n.mealNutriFat, const Color(0xFF8B5CF6)),
                       if (recipe.nutrition!.fiberG >= 5) ...[
                         const SizedBox(width: 6),
-                        _NutriBadge('${recipe.nutrition!.fiberG.round()}g', 'fibra', const Color(0xFF10B981)),
+                        _NutriBadge('${recipe.nutrition!.fiberG.round()}g', l10n.mealNutriFiber, const Color(0xFF10B981)),
                       ],
                     ],
                   ),
@@ -600,7 +606,7 @@ class _DayCard extends StatelessWidget {
                           size: 16,
                         ),
                         label: Text(
-                          isExpanded ? 'Fechar' : 'Ingredientes',
+                          isExpanded ? l10n.close : l10n.mealIngredients,
                           style: const TextStyle(fontSize: 13),
                         ),
                         style: OutlinedButton.styleFrom(
@@ -615,7 +621,7 @@ class _DayCard extends StatelessWidget {
                       child: OutlinedButton.icon(
                         onPressed: onSwap,
                         icon: const Icon(Icons.swap_horiz, size: 16),
-                        label: const Text('Trocar', style: TextStyle(fontSize: 13)),
+                        label: Text(l10n.mealSwap, style: const TextStyle(fontSize: 13)),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: const Color(0xFF64748B),
                           side: const BorderSide(color: Color(0xFFE2E8F0)),
@@ -666,9 +672,9 @@ class _DayCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Ingredientes',
-                    style: TextStyle(
+                  Text(
+                    l10n.mealIngredients,
+                    style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF64748B)),
@@ -696,7 +702,7 @@ class _DayCard extends StatelessWidget {
                           const SizedBox(width: 12),
                           Semantics(
                             button: true,
-                            label: 'Adicionar ${ing.name} à lista',
+                            label: l10n.addToList(ing.name),
                             child: SizedBox(
                             width: 40,
                             height: 40,
@@ -709,7 +715,7 @@ class _DayCard extends StatelessWidget {
                                   store: '',
                                   price: cost,
                                   unitPrice:
-                                      '${ing.avgPricePerUnit.toStringAsFixed(2)}€/${ing.unit}',
+                                      '${ing.avgPricePerUnit.toStringAsFixed(2)}\u20AC/${ing.unit}',
                                 )),
                                 borderRadius: BorderRadius.circular(10),
                                 child: const Icon(Icons.add, size: 18, color: Colors.white),
@@ -723,9 +729,9 @@ class _DayCard extends StatelessWidget {
                   }),
                   if (aiContent != null) ...[
                     const SizedBox(height: 12),
-                    const Text(
-                      'Preparação',
-                      style: TextStyle(
+                    Text(
+                      l10n.mealPreparation,
+                      style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                           color: Color(0xFF64748B)),
@@ -799,6 +805,7 @@ class _SwapSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final currentRecipe = service.recipeMap[currentRecipeId];
     final currentCost = currentRecipe != null
         ? service.recipeCost(currentRecipe, nPessoas, ingredientMap)
@@ -811,22 +818,22 @@ class _SwapSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Alternativas',
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+            Text(l10n.mealAlternatives,
+                style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
             const SizedBox(height: 16),
             ...alternatives.take(6).map((r) {
               final cost = service.recipeCost(r, nPessoas, ingredientMap);
               final delta = cost - currentCost;
               final deltaStr = delta >= 0
-                  ? '+${delta.toStringAsFixed(2)}€'
-                  : '${delta.toStringAsFixed(2)}€';
+                  ? '+${delta.toStringAsFixed(2)}\u20AC'
+                  : '${delta.toStringAsFixed(2)}\u20AC';
               final deltaColor =
                   delta > 0 ? Colors.red : const Color(0xFF16A34A);
               return ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text(r.name, style: const TextStyle(fontSize: 14)),
                 subtitle: Text(
-                  '${cost.toStringAsFixed(2)}€ total',
+                  l10n.mealTotalCost(cost.toStringAsFixed(2)),
                   style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
                 ),
                 trailing: Text(
@@ -847,7 +854,7 @@ class _SwapSheet extends StatelessWidget {
               width: double.infinity,
               child: TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Cancelar'),
+                child: Text(l10n.cancel),
               ),
             ),
           ],
@@ -872,6 +879,7 @@ class _ConsolidatedSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final grouped = <IngredientCategory, List<MapEntry<String, double>>>{};
     for (final entry in totals.entries) {
       final ing = ingredientMap[entry.key];
@@ -902,12 +910,12 @@ class _ConsolidatedSheet extends StatelessWidget {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text('Lista Consolidada',
-                  style:
+              child: Text(l10n.mealConsolidatedTitle,
+                  style: const
                       TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
             ),
           ),
@@ -922,7 +930,7 @@ class _ConsolidatedSheet extends StatelessWidget {
                 return [
                   const SizedBox(height: 16),
                   Text(
-                    _categoryLabel(cat).toUpperCase(),
+                    _categoryLabel(cat, l10n).toUpperCase(),
                     style: const TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
@@ -954,7 +962,7 @@ class _ConsolidatedSheet extends StatelessWidget {
                           const SizedBox(width: 10),
                           Semantics(
                             button: true,
-                            label: 'Adicionar ${ing.name} à lista',
+                            label: l10n.addToList(ing.name),
                             child: SizedBox(
                             width: 40,
                             height: 40,
@@ -967,7 +975,7 @@ class _ConsolidatedSheet extends StatelessWidget {
                                   store: '',
                                   price: cost,
                                   unitPrice:
-                                      '${ing.avgPricePerUnit.toStringAsFixed(2)}€/${ing.unit}',
+                                      '${ing.avgPricePerUnit.toStringAsFixed(2)}\u20AC/${ing.unit}',
                                 )),
                                 borderRadius: BorderRadius.circular(10),
                                 child: const Icon(Icons.add, size: 18, color: Colors.white),
@@ -988,18 +996,18 @@ class _ConsolidatedSheet extends StatelessWidget {
     );
   }
 
-  String _categoryLabel(IngredientCategory cat) {
+  String _categoryLabel(IngredientCategory cat, S l10n) {
     switch (cat) {
       case IngredientCategory.proteina:
-        return 'Proteínas';
+        return l10n.mealCatProteins;
       case IngredientCategory.vegetal:
-        return 'Vegetais';
+        return l10n.mealCatVegetables;
       case IngredientCategory.carbo:
-        return 'Hidratos';
+        return l10n.mealCatCarbs;
       case IngredientCategory.gordura:
-        return 'Gorduras';
+        return l10n.mealCatFats;
       case IngredientCategory.condimento:
-        return 'Condimentos';
+        return l10n.mealCatCondiments;
     }
   }
 

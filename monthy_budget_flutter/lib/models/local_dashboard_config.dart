@@ -10,6 +10,7 @@ class LocalDashboardConfig {
   final bool showPurchaseHistory;
   final bool showExpensesBreakdown;
   final bool showCharts;
+  final bool showBudgetVsActual;
   final List<ChartType> enabledCharts;
 
   const LocalDashboardConfig({
@@ -21,6 +22,7 @@ class LocalDashboardConfig {
     this.showPurchaseHistory = true,
     this.showExpensesBreakdown = true,
     this.showCharts = true,
+    this.showBudgetVsActual = true,
     this.enabledCharts = const [
       ChartType.expensesPie,
       ChartType.incomeVsExpenses,
@@ -38,6 +40,7 @@ class LocalDashboardConfig {
     showPurchaseHistory: false,
     showExpensesBreakdown: false,
     showCharts: false,
+    showBudgetVsActual: false,
     enabledCharts: [],
   );
 
@@ -52,6 +55,7 @@ class LocalDashboardConfig {
     bool? showPurchaseHistory,
     bool? showExpensesBreakdown,
     bool? showCharts,
+    bool? showBudgetVsActual,
     List<ChartType>? enabledCharts,
   }) {
     return LocalDashboardConfig(
@@ -63,6 +67,7 @@ class LocalDashboardConfig {
       showPurchaseHistory: showPurchaseHistory ?? this.showPurchaseHistory,
       showExpensesBreakdown: showExpensesBreakdown ?? this.showExpensesBreakdown,
       showCharts: showCharts ?? this.showCharts,
+      showBudgetVsActual: showBudgetVsActual ?? this.showBudgetVsActual,
       enabledCharts: enabledCharts ?? this.enabledCharts,
     );
   }
@@ -76,6 +81,7 @@ class LocalDashboardConfig {
         'showPurchaseHistory': showPurchaseHistory,
         'showExpensesBreakdown': showExpensesBreakdown,
         'showCharts': showCharts,
+        'showBudgetVsActual': showBudgetVsActual,
         'enabledCharts': enabledCharts.map((c) => c.jsonValue).toList(),
       };
 
@@ -89,6 +95,7 @@ class LocalDashboardConfig {
       showPurchaseHistory: json['showPurchaseHistory'] ?? true,
       showExpensesBreakdown: json['showExpensesBreakdown'] ?? true,
       showCharts: json['showCharts'] ?? true,
+      showBudgetVsActual: json['showBudgetVsActual'] ?? true,
       enabledCharts: (json['enabledCharts'] as List<dynamic>?)
               ?.map((e) => ChartType.fromJson(e as String))
               .toList() ??
