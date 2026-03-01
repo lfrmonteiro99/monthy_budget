@@ -49,7 +49,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   late AppSettings _draft;
   late List<String> _favorites;
   late TextEditingController _apiKeyController;
-  String? _openSection = 'personal';
+  String? _openSection = 'salaries';
   late LocalDashboardConfig _localDashboard;
   String? _inviteCode;
 
@@ -205,22 +205,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: Column(
                   children: [
                     _SectionHeader(
-                      icon: Icons.language,
-                      title: l10n.settingsRegion,
-                      isOpen: _openSection == 'region',
-                      onTap: () => _toggleSection('region'),
-                    ),
-                    if (_openSection == 'region') _buildRegionSection(),
-                    _SectionHeader(
-                      icon: Icons.person,
-                      title: l10n.settingsPersonal,
-                      isOpen: _openSection == 'personal',
-                      onTap: () => _toggleSection('personal'),
-                    ),
-                    if (_openSection == 'personal') _buildPersonalSection(),
-                    _SectionHeader(
                       icon: Icons.account_balance_wallet,
                       title: l10n.settingsSalariesSection,
+                      subtitle: formatCurrency(
+                        _draft.salaries
+                            .where((s) => s.enabled)
+                            .fold(0.0, (sum, s) => sum + s.grossAmount),
+                      ),
                       isOpen: _openSection == 'salaries',
                       onTap: () => _toggleSection('salaries'),
                     ),
@@ -228,10 +219,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     _SectionHeader(
                       icon: Icons.receipt_long,
                       title: l10n.settingsExpensesMonthly,
+                      subtitle: '(${_draft.expenses.where((e) => e.enabled).length})',
                       isOpen: _openSection == 'expenses',
                       onTap: () => _toggleSection('expenses'),
                     ),
                     if (_openSection == 'expenses') _buildExpensesSection(),
+                    _SectionHeader(
+                      icon: Icons.restaurant,
+                      title: l10n.settingsMeals,
+                      isOpen: _openSection == 'meals',
+                      onTap: () => _toggleSection('meals'),
+                    ),
+                    if (_openSection == 'meals') _buildMealsSection(),
+                    _SectionHeader(
+                      icon: Icons.favorite,
+                      title: l10n.settingsFavorites,
+                      subtitle: '(${_favorites.length})',
+                      isOpen: _openSection == 'favorites',
+                      onTap: () => _toggleSection('favorites'),
+                    ),
+                    if (_openSection == 'favorites') _buildFavoritesSection(),
                     _SectionHeader(
                       icon: Icons.dashboard,
                       title: l10n.settingsDashboard,
@@ -240,19 +247,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     if (_openSection == 'dashboard') _buildDashboardSection(),
                     _SectionHeader(
-                      icon: Icons.favorite,
-                      title: l10n.settingsFavorites,
-                      isOpen: _openSection == 'favorites',
-                      onTap: () => _toggleSection('favorites'),
+                      icon: Icons.person,
+                      title: l10n.settingsPersonal,
+                      isOpen: _openSection == 'profile',
+                      onTap: () => _toggleSection('profile'),
                     ),
-                    if (_openSection == 'favorites') _buildFavoritesSection(),
-                    _SectionHeader(
-                      icon: Icons.restaurant,
-                      title: l10n.settingsMeals,
-                      isOpen: _openSection == 'meals',
-                      onTap: () => _toggleSection('meals'),
-                    ),
-                    if (_openSection == 'meals') _buildMealsSection(),
+                    if (_openSection == 'profile') _buildProfileSection(),
                     _SectionHeader(
                       icon: Icons.psychology_outlined,
                       title: l10n.settingsCoachOpenAi,
@@ -324,7 +324,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  Widget _buildRegionSection() {
+  Widget _buildProfileSection() {
     final l10n = S.of(context);
     return Container(
       color: Colors.white,
@@ -332,6 +332,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Region content
           _label(l10n.settingsCountry),
           const SizedBox(height: 8),
           Container(
@@ -381,19 +382,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPersonalSection() {
-    final l10n = S.of(context);
-    return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+          // Divider between region and personal
+          const SizedBox(height: 16),
+          const Divider(color: Color(0xFFE2E8F0)),
+          const SizedBox(height: 16),
+          // Personal content
           _label(l10n.settingsMaritalStatusLabel),
           const SizedBox(height: 8),
           Container(
@@ -901,22 +894,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
           const SizedBox(height: 12),
+          _groupLabel('VISÃO GERAL'),
           _dashToggle(l10n.settingsDashMonthlyLiquidity, _localDashboard.showHeroCard,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showHeroCard: v))),
           _dashToggle(l10n.settingsDashStressIndex, _localDashboard.showStressIndex,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showStressIndex: v))),
           _dashToggle(l10n.settingsDashSummaryCards, _localDashboard.showSummaryCards,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showSummaryCards: v))),
+          const SizedBox(height: 8),
+          _groupLabel('DETALHE FINANCEIRO'),
           _dashToggle(l10n.settingsDashSalaryBreakdown, _localDashboard.showSalaryBreakdown,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showSalaryBreakdown: v))),
-          _dashToggle(l10n.settingsDashFood, _localDashboard.showFoodSpending,
-              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showFoodSpending: v))),
-          _dashToggle(l10n.settingsDashPurchaseHistory, _localDashboard.showPurchaseHistory,
-              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showPurchaseHistory: v))),
           _dashToggle(l10n.settingsDashBudgetVsActual, _localDashboard.showBudgetVsActual,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showBudgetVsActual: v))),
           _dashToggle(l10n.settingsDashExpensesBreakdown, _localDashboard.showExpensesBreakdown,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showExpensesBreakdown: v))),
+          const SizedBox(height: 8),
+          _groupLabel('ALIMENTAÇÃO E HISTÓRICO'),
+          _dashToggle(l10n.settingsDashFood, _localDashboard.showFoodSpending,
+              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showFoodSpending: v))),
+          _dashToggle(l10n.settingsDashPurchaseHistory, _localDashboard.showPurchaseHistory,
+              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showPurchaseHistory: v))),
+          const SizedBox(height: 8),
+          _groupLabel('GRÁFICOS'),
           _dashToggle(l10n.settingsDashCharts, _localDashboard.showCharts,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showCharts: v))),
           if (_localDashboard.showCharts) ...[
@@ -1108,6 +1108,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  Widget _groupLabel(String title) => Padding(
+    padding: const EdgeInsets.only(top: 20, bottom: 8),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Divider(color: Color(0xFFE2E8F0)),
+        const SizedBox(height: 8),
+        Text(title,
+          style: const TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF3B82F6),
+            letterSpacing: 1.0,
+          ),
+        ),
+      ],
+    ),
+  );
+
   Widget _buildMealsSection() {
     final l10n = S.of(context);
     final ms = _draft.mealSettings;
@@ -1117,6 +1136,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // ── Group A: AGREGADO (no divider, first group) ──
           _label(l10n.settingsHouseholdPeople),
           const SizedBox(height: 8),
           Row(
@@ -1224,7 +1244,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+
+          // ── Group B: OBJETIVO E REFEICOES ──
+          _groupLabel('OBJETIVO E REFEIÇÕES'),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(l10n.settingsPreferSeasonal,
@@ -1236,116 +1258,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(preferSeasonal: v))),
           ),
-          const SizedBox(height: 16),
-          _label(l10n.settingsNutritionalGoals),
-          const SizedBox(height: 8),
-          TextFormField(
-            initialValue: ms.dailyCalorieTarget?.toString() ?? '',
-            keyboardType: TextInputType.number,
-            decoration: _inputDecoration(l10n.settingsCalorieHint, suffix: l10n.settingsKcalPerDay).copyWith(
-              suffixIcon: ms.dailyCalorieTarget != null
-                  ? IconButton(
-                      icon: const Icon(Icons.close, size: 18, color: Color(0xFF94A3B8)),
-                      onPressed: () => setState(() => _draft = _draft.copyWith(
-                          mealSettings: ms.copyWith(dailyCalorieTarget: null))),
-                    )
-                  : null,
-            ),
-            onChanged: (v) {
-              final parsed = int.tryParse(v);
-              setState(() => _draft = _draft.copyWith(
-                  mealSettings: ms.copyWith(
-                      dailyCalorieTarget: (parsed != null && parsed > 0) ? parsed : null)));
-            },
-          ),
-          const SizedBox(height: 8),
-          TextFormField(
-            initialValue: ms.dailyProteinTargetG?.toString() ?? '',
-            keyboardType: TextInputType.number,
-            decoration: _inputDecoration(l10n.settingsProteinHint, suffix: l10n.settingsGramsPerDay).copyWith(
-              labelText: l10n.settingsDailyProtein,
-              labelStyle: TextStyle(fontSize: 13, color: Colors.grey.shade500),
-              suffixIcon: ms.dailyProteinTargetG != null
-                  ? IconButton(
-                      icon: const Icon(Icons.close, size: 18, color: Color(0xFF94A3B8)),
-                      onPressed: () => setState(() => _draft = _draft.copyWith(
-                          mealSettings: ms.copyWith(dailyProteinTargetG: null))),
-                    )
-                  : null,
-            ),
-            onChanged: (v) {
-              final parsed = int.tryParse(v);
-              setState(() => _draft = _draft.copyWith(
-                  mealSettings: ms.copyWith(
-                      dailyProteinTargetG: (parsed != null && parsed > 0) ? parsed : null)));
-            },
-          ),
-          const SizedBox(height: 8),
-          TextFormField(
-            initialValue: ms.dailyFiberTargetG?.toString() ?? '',
-            keyboardType: TextInputType.number,
-            decoration: _inputDecoration(l10n.settingsFiberHint, suffix: l10n.settingsGramsPerDay).copyWith(
-              labelText: l10n.settingsDailyFiber,
-              labelStyle: TextStyle(fontSize: 13, color: Colors.grey.shade500),
-              suffixIcon: ms.dailyFiberTargetG != null
-                  ? IconButton(
-                      icon: const Icon(Icons.close, size: 18, color: Color(0xFF94A3B8)),
-                      onPressed: () => setState(() => _draft = _draft.copyWith(
-                          mealSettings: ms.copyWith(dailyFiberTargetG: null))),
-                    )
-                  : null,
-            ),
-            onChanged: (v) {
-              final parsed = int.tryParse(v);
-              setState(() => _draft = _draft.copyWith(
-                  mealSettings: ms.copyWith(
-                      dailyFiberTargetG: (parsed != null && parsed > 0) ? parsed : null)));
-            },
-          ),
-          const SizedBox(height: 16),
-          _label(l10n.settingsMedicalConditions),
-          const SizedBox(height: 8),
-          ...MedicalCondition.values.map((mc) => CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(mc.localizedLabel(l10n),
-                    style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w500)),
-                value: ms.medicalConditions.contains(mc),
-                activeColor: const Color(0xFF3B82F6),
-                controlAffinity: ListTileControlAffinity.leading,
-                onChanged: (v) {
-                  final updated = Set<MedicalCondition>.from(ms.medicalConditions);
-                  if (v == true) {
-                    updated.add(mc);
-                  } else {
-                    updated.remove(mc);
-                  }
-                  setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(medicalConditions: updated)));
-                },
-              )),
-          const SizedBox(height: 16),
-          _label(l10n.settingsActiveMeals),
-          const SizedBox(height: 8),
-          ...MealType.values.map((mt) => SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(mt.localizedLabel(l10n),
-                    style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w500)),
-                value: ms.enabledMeals.contains(mt),
-                activeTrackColor: const Color(0xFF3B82F6),
-                onChanged: (v) {
-                  final newSet = Set<MealType>.from(ms.enabledMeals);
-                  if (v) {
-                    newSet.add(mt);
-                  } else {
-                    newSet.remove(mt);
-                  }
-                  if (newSet.isEmpty) return;
-                  setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(enabledMeals: newSet)));
-                },
-              )),
           const SizedBox(height: 16),
           _label(l10n.settingsObjective),
           const SizedBox(height: 8),
@@ -1380,6 +1292,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           const SizedBox(height: 16),
+          _label(l10n.settingsActiveMeals),
+          const SizedBox(height: 8),
+          ...MealType.values.map((mt) => SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(mt.localizedLabel(l10n),
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w500)),
+                value: ms.enabledMeals.contains(mt),
+                activeTrackColor: const Color(0xFF3B82F6),
+                onChanged: (v) {
+                  final newSet = Set<MealType>.from(ms.enabledMeals);
+                  if (v) {
+                    newSet.add(mt);
+                  } else {
+                    newSet.remove(mt);
+                  }
+                  if (newSet.isEmpty) return;
+                  setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(enabledMeals: newSet)));
+                },
+              )),
+          const SizedBox(height: 16),
           _label(l10n.settingsVeggieDays),
           Slider(
             value: ms.veggieDaysPerWeek.toDouble(),
@@ -1392,6 +1326,63 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 mealSettings: ms.copyWith(veggieDaysPerWeek: v.round()))),
           ),
           const SizedBox(height: 8),
+          _label(l10n.settingsEatingOutDays),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: [
+              for (final entry in {1: l10n.wizardWeekdayMon, 2: l10n.wizardWeekdayTue, 3: l10n.wizardWeekdayWed, 4: l10n.wizardWeekdayThu, 5: l10n.wizardWeekdayFri, 6: l10n.wizardWeekdaySat, 7: l10n.wizardWeekdaySun}.entries)
+                FilterChip(
+                  label: Text(entry.value, style: const TextStyle(fontSize: 13)),
+                  selected: ms.eatingOutWeekdays.contains(entry.key),
+                  selectedColor: const Color(0xFF3B82F6).withValues(alpha: 0.15),
+                  checkmarkColor: const Color(0xFF3B82F6),
+                  onSelected: (v) {
+                    final updated = Set<int>.from(ms.eatingOutWeekdays);
+                    if (v) { updated.add(entry.key); } else { updated.remove(entry.key); }
+                    setState(() => _draft = _draft.copyWith(
+                        mealSettings: ms.copyWith(eatingOutWeekdays: updated)));
+                  },
+                ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _label(l10n.settingsWeeklyDistribution),
+          const SizedBox(height: 4),
+          Text(l10n.settingsFishPerWeek(ms.fishDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.fishDaysPerWeek}'),
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+          Slider(
+            value: ms.fishDaysPerWeek.toDouble(),
+            min: 0, max: 5, divisions: 5,
+            label: ms.fishDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.fishDaysPerWeek}',
+            activeColor: const Color(0xFF3B82F6),
+            onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                mealSettings: ms.copyWith(fishDaysPerWeek: v.round()))),
+          ),
+          Text(l10n.settingsLegumePerWeek(ms.legumeDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.legumeDaysPerWeek}'),
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+          Slider(
+            value: ms.legumeDaysPerWeek.toDouble(),
+            min: 0, max: 5, divisions: 5,
+            label: ms.legumeDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.legumeDaysPerWeek}',
+            activeColor: const Color(0xFF3B82F6),
+            onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                mealSettings: ms.copyWith(legumeDaysPerWeek: v.round()))),
+          ),
+          Text(l10n.settingsRedMeatPerWeek(ms.redMeatMaxPerWeek >= 7 ? l10n.settingsNoLimit : '${ms.redMeatMaxPerWeek}'),
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+          Slider(
+            value: ms.redMeatMaxPerWeek.toDouble(),
+            min: 0, max: 7, divisions: 7,
+            label: ms.redMeatMaxPerWeek >= 7 ? l10n.settingsNoLimit : '${ms.redMeatMaxPerWeek}',
+            activeColor: const Color(0xFF3B82F6),
+            onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                mealSettings: ms.copyWith(redMeatMaxPerWeek: v.round()))),
+          ),
+
+          // ── Group C: RESTRICOES E PREFERENCIAS ──
+          _groupLabel('RESTRIÇÕES E PREFERÊNCIAS'),
           _label(l10n.settingsDietaryRestrictions),
           ...[
             (l10n.wizardGlutenFree, ms.glutenFree,
@@ -1498,7 +1489,99 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       mealSettings: ms.copyWith(excludedProteins: updated)));
                 },
               )),
+
+          // ── Group D: NUTRICAO E SAUDE ──
+          _groupLabel('NUTRIÇÃO E SAÚDE'),
+          _label(l10n.settingsNutritionalGoals),
+          const SizedBox(height: 8),
+          TextFormField(
+            initialValue: ms.dailyCalorieTarget?.toString() ?? '',
+            keyboardType: TextInputType.number,
+            decoration: _inputDecoration(l10n.settingsCalorieHint, suffix: l10n.settingsKcalPerDay).copyWith(
+              suffixIcon: ms.dailyCalorieTarget != null
+                  ? IconButton(
+                      icon: const Icon(Icons.close, size: 18, color: Color(0xFF94A3B8)),
+                      onPressed: () => setState(() => _draft = _draft.copyWith(
+                          mealSettings: ms.copyWith(dailyCalorieTarget: null))),
+                    )
+                  : null,
+            ),
+            onChanged: (v) {
+              final parsed = int.tryParse(v);
+              setState(() => _draft = _draft.copyWith(
+                  mealSettings: ms.copyWith(
+                      dailyCalorieTarget: (parsed != null && parsed > 0) ? parsed : null)));
+            },
+          ),
+          const SizedBox(height: 8),
+          TextFormField(
+            initialValue: ms.dailyProteinTargetG?.toString() ?? '',
+            keyboardType: TextInputType.number,
+            decoration: _inputDecoration(l10n.settingsProteinHint, suffix: l10n.settingsGramsPerDay).copyWith(
+              labelText: l10n.settingsDailyProtein,
+              labelStyle: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+              suffixIcon: ms.dailyProteinTargetG != null
+                  ? IconButton(
+                      icon: const Icon(Icons.close, size: 18, color: Color(0xFF94A3B8)),
+                      onPressed: () => setState(() => _draft = _draft.copyWith(
+                          mealSettings: ms.copyWith(dailyProteinTargetG: null))),
+                    )
+                  : null,
+            ),
+            onChanged: (v) {
+              final parsed = int.tryParse(v);
+              setState(() => _draft = _draft.copyWith(
+                  mealSettings: ms.copyWith(
+                      dailyProteinTargetG: (parsed != null && parsed > 0) ? parsed : null)));
+            },
+          ),
+          const SizedBox(height: 8),
+          TextFormField(
+            initialValue: ms.dailyFiberTargetG?.toString() ?? '',
+            keyboardType: TextInputType.number,
+            decoration: _inputDecoration(l10n.settingsFiberHint, suffix: l10n.settingsGramsPerDay).copyWith(
+              labelText: l10n.settingsDailyFiber,
+              labelStyle: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+              suffixIcon: ms.dailyFiberTargetG != null
+                  ? IconButton(
+                      icon: const Icon(Icons.close, size: 18, color: Color(0xFF94A3B8)),
+                      onPressed: () => setState(() => _draft = _draft.copyWith(
+                          mealSettings: ms.copyWith(dailyFiberTargetG: null))),
+                    )
+                  : null,
+            ),
+            onChanged: (v) {
+              final parsed = int.tryParse(v);
+              setState(() => _draft = _draft.copyWith(
+                  mealSettings: ms.copyWith(
+                      dailyFiberTargetG: (parsed != null && parsed > 0) ? parsed : null)));
+            },
+          ),
           const SizedBox(height: 16),
+          _label(l10n.settingsMedicalConditions),
+          const SizedBox(height: 8),
+          ...MedicalCondition.values.map((mc) => CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(mc.localizedLabel(l10n),
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w500)),
+                value: ms.medicalConditions.contains(mc),
+                activeColor: const Color(0xFF3B82F6),
+                controlAffinity: ListTileControlAffinity.leading,
+                onChanged: (v) {
+                  final updated = Set<MedicalCondition>.from(ms.medicalConditions);
+                  if (v == true) {
+                    updated.add(mc);
+                  } else {
+                    updated.remove(mc);
+                  }
+                  setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(medicalConditions: updated)));
+                },
+              )),
+
+          // ── Group E: PREPARACAO E COZINHA ──
+          _groupLabel('PREPARAÇÃO E COZINHA'),
           _label(l10n.settingsMaxPrepTime),
           Slider(
             value: ms.maxPrepMinutes.toDouble(),
@@ -1545,61 +1628,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 mealSettings: ms.copyWith(maxComplexityWeekend: v.round()))),
           ),
           const SizedBox(height: 8),
-          _label(l10n.settingsEatingOutDays),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 4,
-            children: [
-              for (final entry in {1: l10n.wizardWeekdayMon, 2: l10n.wizardWeekdayTue, 3: l10n.wizardWeekdayWed, 4: l10n.wizardWeekdayThu, 5: l10n.wizardWeekdayFri, 6: l10n.wizardWeekdaySat, 7: l10n.wizardWeekdaySun}.entries)
-                FilterChip(
-                  label: Text(entry.value, style: const TextStyle(fontSize: 13)),
-                  selected: ms.eatingOutWeekdays.contains(entry.key),
-                  selectedColor: const Color(0xFF3B82F6).withValues(alpha: 0.15),
-                  checkmarkColor: const Color(0xFF3B82F6),
-                  onSelected: (v) {
-                    final updated = Set<int>.from(ms.eatingOutWeekdays);
-                    if (v) { updated.add(entry.key); } else { updated.remove(entry.key); }
-                    setState(() => _draft = _draft.copyWith(
-                        mealSettings: ms.copyWith(eatingOutWeekdays: updated)));
-                  },
-                ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          _label(l10n.settingsWeeklyDistribution),
-          const SizedBox(height: 4),
-          Text(l10n.settingsFishPerWeek(ms.fishDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.fishDaysPerWeek}'),
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-          Slider(
-            value: ms.fishDaysPerWeek.toDouble(),
-            min: 0, max: 5, divisions: 5,
-            label: ms.fishDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.fishDaysPerWeek}',
-            activeColor: const Color(0xFF3B82F6),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                mealSettings: ms.copyWith(fishDaysPerWeek: v.round()))),
-          ),
-          Text(l10n.settingsLegumePerWeek(ms.legumeDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.legumeDaysPerWeek}'),
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-          Slider(
-            value: ms.legumeDaysPerWeek.toDouble(),
-            min: 0, max: 5, divisions: 5,
-            label: ms.legumeDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.legumeDaysPerWeek}',
-            activeColor: const Color(0xFF3B82F6),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                mealSettings: ms.copyWith(legumeDaysPerWeek: v.round()))),
-          ),
-          Text(l10n.settingsRedMeatPerWeek(ms.redMeatMaxPerWeek >= 7 ? l10n.settingsNoLimit : '${ms.redMeatMaxPerWeek}'),
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-          Slider(
-            value: ms.redMeatMaxPerWeek.toDouble(),
-            min: 0, max: 7, divisions: 7,
-            label: ms.redMeatMaxPerWeek >= 7 ? l10n.settingsNoLimit : '${ms.redMeatMaxPerWeek}',
-            activeColor: const Color(0xFF3B82F6),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                mealSettings: ms.copyWith(redMeatMaxPerWeek: v.round()))),
-          ),
-          const SizedBox(height: 8),
           _label(l10n.settingsAvailableEquipment),
           ...KitchenEquipment.values.map((eq) => CheckboxListTile(
                 contentPadding: EdgeInsets.zero,
@@ -1621,7 +1649,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       mealSettings: ms.copyWith(availableEquipment: updated)));
                 },
               )),
-          const SizedBox(height: 16),
+
+          // ── Group F: EFICIENCIA E CUSTOS ──
+          _groupLabel('EFICIÊNCIA E CUSTOS'),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(l10n.settingsBatchCooking,
@@ -1665,17 +1695,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(minimizeWaste: v))),
           ),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(l10n.settingsPrioritizeLowCost,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-            subtitle: Text(l10n.settingsPrioritizeLowCostDesc,
-                style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
-            value: ms.prioritizeLowCost,
-            activeTrackColor: const Color(0xFF3B82F6),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                mealSettings: ms.copyWith(prioritizeLowCost: v))),
-          ),
           if (ms.minimizeWaste) ...[
             _label(l10n.settingsNewIngredientsPerWeek(ms.maxNewIngredientsPerWeek)),
             Slider(
@@ -1689,6 +1708,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   mealSettings: ms.copyWith(maxNewIngredientsPerWeek: v.round()))),
             ),
           ],
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(l10n.settingsPrioritizeLowCost,
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            subtitle: Text(l10n.settingsPrioritizeLowCostDesc,
+                style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
+            value: ms.prioritizeLowCost,
+            activeTrackColor: const Color(0xFF3B82F6),
+            onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                mealSettings: ms.copyWith(prioritizeLowCost: v))),
+          ),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(l10n.settingsLunchboxLunches,
@@ -1723,7 +1753,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+
+          // ── Group G: ASSISTENTE ──
+          _groupLabel('ASSISTENTE'),
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
@@ -1959,12 +1991,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
 class _SectionHeader extends StatelessWidget {
   final IconData icon;
   final String title;
+  final String? subtitle;
   final bool isOpen;
   final VoidCallback onTap;
 
   const _SectionHeader({
     required this.icon,
     required this.title,
+    this.subtitle,
     required this.isOpen,
     required this.onTap,
   });
@@ -1984,7 +2018,14 @@ class _SectionHeader extends StatelessWidget {
               Icon(icon, size: 20, color: const Color(0xFF3B82F6)),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF475569))),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF475569))),
+                    if (subtitle != null)
+                      Text(subtitle!, style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
+                  ],
+                ),
               ),
               Container(
                 padding: const EdgeInsets.all(4),
