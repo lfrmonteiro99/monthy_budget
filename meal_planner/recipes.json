@@ -1,333 +1,2564 @@
 [
   {
-    "id":"frango_assado","name":"Frango Assado com Batata","proteinId":"frango",
-    "type":"carne","complexity":1,"prepMinutes":15,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
-    "requiresEquipment":["oven"],"batchCookable":true,"maxBatchDays":3,
-    "ingredients":[
-      {"ingredientId":"frango","quantity":1.0},
-      {"ingredientId":"batata","quantity":0.6},
-      {"ingredientId":"alho","quantity":0.02},
-      {"ingredientId":"azeite","quantity":0.05}
-    ]
+    "id": "frango_assado",
+    "name": "Frango Assado com Batata",
+    "proteinId": "frango",
+    "type": "carne",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "frango",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.6
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 420,
+      "proteinG": 35,
+      "carbsG": 30,
+      "fatG": 16,
+      "fiberG": 2.5,
+      "sodiumMg": 380
+    }
   },
   {
-    "id":"frango_arroz","name":"Frango com Arroz","proteinId":"frango",
-    "type":"carne","complexity":2,"prepMinutes":30,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
-    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":2,
-    "ingredients":[
-      {"ingredientId":"frango","quantity":0.5},
-      {"ingredientId":"arroz","quantity":0.25},
-      {"ingredientId":"cenoura","quantity":0.2},
-      {"ingredientId":"cebola","quantity":0.15},
-      {"ingredientId":"azeite","quantity":0.05}
-    ]
+    "id": "frango_arroz",
+    "name": "Frango com Arroz",
+    "proteinId": "frango",
+    "type": "carne",
+    "complexity": 2,
+    "prepMinutes": 30,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "frango",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.25
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 480,
+      "proteinG": 32,
+      "carbsG": 52,
+      "fatG": 12,
+      "fiberG": 1.5,
+      "sodiumMg": 350
+    }
   },
   {
-    "id":"frango_estufado","name":"Frango Estufado com Legumes","proteinId":"frango",
-    "type":"carne","complexity":2,"prepMinutes":30,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":false,"isHighProtein":true,"isLowCarb":true,
-    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":3,
-    "ingredients":[
-      {"ingredientId":"frango","quantity":0.6},
-      {"ingredientId":"cenoura","quantity":0.3},
-      {"ingredientId":"cebola","quantity":0.2},
-      {"ingredientId":"tomate_pelado","quantity":1.0},
-      {"ingredientId":"azeite","quantity":0.05}
-    ]
+    "id": "frango_estufado",
+    "name": "Frango Estufado com Legumes",
+    "proteinId": "frango",
+    "type": "carne",
+    "complexity": 2,
+    "prepMinutes": 30,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "frango",
+        "quantity": 0.6
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 390,
+      "proteinG": 30,
+      "carbsG": 25,
+      "fatG": 18,
+      "fiberG": 3,
+      "sodiumMg": 420
+    }
   },
   {
-    "id":"frango_grelhado","name":"Peito de Frango Grelhado","proteinId":"frango",
-    "type":"carne","complexity":1,"prepMinutes":20,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":false,"isHighProtein":true,"isLowCarb":true,
-    "requiresEquipment":[],"batchCookable":false,"maxBatchDays":1,
-    "ingredients":[
-      {"ingredientId":"frango","quantity":0.5},
-      {"ingredientId":"azeite","quantity":0.03}
-    ]
+    "id": "frango_grelhado",
+    "name": "Peito de Frango Grelhado",
+    "proteinId": "frango",
+    "type": "carne",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "frango",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.25
+      },
+      {
+        "ingredientId": "alface",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 350,
+      "proteinG": 34,
+      "carbsG": 28,
+      "fatG": 10,
+      "fiberG": 2,
+      "sodiumMg": 300
+    }
   },
   {
-    "id":"frango_broculos","name":"Frango com Brócolos","proteinId":"frango",
-    "type":"carne","complexity":2,"prepMinutes":25,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":false,"isHighProtein":true,"isLowCarb":true,
-    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":2,
-    "ingredients":[
-      {"ingredientId":"frango","quantity":0.5},
-      {"ingredientId":"broculos","quantity":0.5},
-      {"ingredientId":"alho","quantity":0.02},
-      {"ingredientId":"azeite","quantity":0.05}
-    ]
+    "id": "frango_broculos",
+    "name": "Frango com Brócolos",
+    "proteinId": "frango",
+    "type": "carne",
+    "complexity": 2,
+    "prepMinutes": 25,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "frango",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "broculos",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 360,
+      "proteinG": 32,
+      "carbsG": 15,
+      "fatG": 14,
+      "fiberG": 4,
+      "sodiumMg": 320
+    }
   },
   {
-    "id":"esparguete_bolonhesa","name":"Esparguete à Bolonhesa","proteinId":"carne_picada",
-    "type":"carne","complexity":2,"prepMinutes":30,"servings":4,
-    "glutenFree":false,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
-    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":2,
-    "ingredients":[
-      {"ingredientId":"carne_picada","quantity":0.4},
-      {"ingredientId":"massa","quantity":0.3},
-      {"ingredientId":"tomate_pelado","quantity":1.0},
-      {"ingredientId":"cebola","quantity":0.15},
-      {"ingredientId":"azeite","quantity":0.05}
-    ]
+    "id": "esparguete_bolonhesa",
+    "name": "Esparguete à Bolonhesa",
+    "proteinId": "carne_picada",
+    "type": "carne",
+    "complexity": 2,
+    "prepMinutes": 30,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "carne_picada",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "massa",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 520,
+      "proteinG": 28,
+      "carbsG": 55,
+      "fatG": 18,
+      "fiberG": 3.5,
+      "sodiumMg": 480
+    }
   },
   {
-    "id":"almondegas","name":"Almôndegas em Molho de Tomate","proteinId":"carne_picada",
-    "type":"carne","complexity":3,"prepMinutes":40,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":false,"isHighProtein":true,"isLowCarb":true,
-    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":3,
-    "ingredients":[
-      {"ingredientId":"carne_picada","quantity":0.5},
-      {"ingredientId":"tomate_pelado","quantity":2.0},
-      {"ingredientId":"cebola","quantity":0.15},
-      {"ingredientId":"azeite","quantity":0.05}
-    ]
+    "id": "almondegas",
+    "name": "Almôndegas em Molho de Tomate",
+    "proteinId": "carne_picada",
+    "type": "carne",
+    "complexity": 3,
+    "prepMinutes": 40,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "carne_picada",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 460,
+      "proteinG": 26,
+      "carbsG": 32,
+      "fatG": 22,
+      "fiberG": 3,
+      "sodiumMg": 460
+    }
   },
   {
-    "id":"empadao","name":"Empadão de Carne","proteinId":"carne_picada",
-    "type":"carne","complexity":3,"prepMinutes":60,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
-    "requiresEquipment":["oven"],"batchCookable":true,"maxBatchDays":3,
-    "ingredients":[
-      {"ingredientId":"carne_picada","quantity":0.4},
-      {"ingredientId":"batata","quantity":0.8},
-      {"ingredientId":"cebola","quantity":0.15},
-      {"ingredientId":"azeite","quantity":0.05}
-    ]
+    "id": "empadao",
+    "name": "Empadão de Carne",
+    "proteinId": "carne_picada",
+    "type": "carne",
+    "complexity": 3,
+    "prepMinutes": 60,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "carne_picada",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.8
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 450,
+      "proteinG": 24,
+      "carbsG": 38,
+      "fatG": 22,
+      "fiberG": 2.5,
+      "sodiumMg": 440
+    }
   },
   {
-    "id":"hamburguer","name":"Hambúrguer Caseiro","proteinId":"carne_picada",
-    "type":"carne","complexity":2,"prepMinutes":20,"servings":4,
-    "glutenFree":false,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
-    "requiresEquipment":[],"batchCookable":false,"maxBatchDays":1,
-    "ingredients":[
-      {"ingredientId":"carne_picada","quantity":0.5},
-      {"ingredientId":"pao","quantity":4.0},
-      {"ingredientId":"cebola","quantity":0.1},
-      {"ingredientId":"tomate","quantity":0.2}
-    ]
+    "id": "hamburguer",
+    "name": "Hambúrguer Caseiro",
+    "proteinId": "carne_picada",
+    "type": "carne",
+    "complexity": 2,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "carne_picada",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "pao",
+        "quantity": 4
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "tomate",
+        "quantity": 0.2
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 480,
+      "proteinG": 26,
+      "carbsG": 35,
+      "fatG": 24,
+      "fiberG": 2,
+      "sodiumMg": 550
+    }
   },
   {
-    "id":"lasanha","name":"Lasanha Simples","proteinId":"carne_picada",
-    "type":"carne","complexity":4,"prepMinutes":75,"servings":4,
-    "glutenFree":false,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
-    "requiresEquipment":["oven"],"batchCookable":true,"maxBatchDays":3,
-    "ingredients":[
-      {"ingredientId":"carne_picada","quantity":0.4},
-      {"ingredientId":"massa_lasanha","quantity":0.25},
-      {"ingredientId":"tomate_pelado","quantity":2.0},
-      {"ingredientId":"cebola","quantity":0.15}
-    ]
+    "id": "lasanha",
+    "name": "Lasanha Simples",
+    "proteinId": "carne_picada",
+    "type": "carne",
+    "complexity": 4,
+    "prepMinutes": 75,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "carne_picada",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "massa_lasanha",
+        "quantity": 0.25
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 550,
+      "proteinG": 28,
+      "carbsG": 42,
+      "fatG": 28,
+      "fiberG": 2,
+      "sodiumMg": 520
+    }
   },
   {
-    "id":"feijoada_simples","name":"Feijoada Simples","proteinId":"feijao",
-    "type":"leguminosas","complexity":2,"prepMinutes":30,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
-    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":3,
-    "ingredients":[
-      {"ingredientId":"feijao","quantity":0.3},
-      {"ingredientId":"chourico","quantity":0.1},
-      {"ingredientId":"cenoura","quantity":0.2},
-      {"ingredientId":"cebola","quantity":0.15},
-      {"ingredientId":"azeite","quantity":0.05}
-    ]
+    "id": "feijoada_simples",
+    "name": "Feijoada Simples",
+    "proteinId": "feijao",
+    "type": "leguminosas",
+    "complexity": 2,
+    "prepMinutes": 30,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "feijao",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "chourico",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 420,
+      "proteinG": 22,
+      "carbsG": 52,
+      "fatG": 10,
+      "fiberG": 12,
+      "sodiumMg": 380
+    }
   },
   {
-    "id":"grao_espinafres","name":"Grão com Espinafres","proteinId":"grao",
-    "type":"leguminosas","complexity":1,"prepMinutes":15,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":true,"isHighProtein":true,"isLowCarb":false,
-    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":3,
-    "ingredients":[
-      {"ingredientId":"grao","quantity":0.3},
-      {"ingredientId":"espinafres","quantity":0.3},
-      {"ingredientId":"alho","quantity":0.02},
-      {"ingredientId":"azeite","quantity":0.05}
-    ]
+    "id": "grao_espinafres",
+    "name": "Grão com Espinafres",
+    "proteinId": "grao",
+    "type": "leguminosas",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "grao",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "espinafres",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 350,
+      "proteinG": 16,
+      "carbsG": 42,
+      "fatG": 10,
+      "fiberG": 10,
+      "sodiumMg": 320
+    }
   },
   {
-    "id":"lentilhas_estufadas","name":"Lentilhas Estufadas","proteinId":"lentilhas",
-    "type":"leguminosas","complexity":2,"prepMinutes":30,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":true,"isHighProtein":true,"isLowCarb":false,
-    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":4,
-    "ingredients":[
-      {"ingredientId":"lentilhas","quantity":0.3},
-      {"ingredientId":"cenoura","quantity":0.2},
-      {"ingredientId":"cebola","quantity":0.15},
-      {"ingredientId":"tomate_pelado","quantity":1.0},
-      {"ingredientId":"azeite","quantity":0.05}
-    ]
+    "id": "lentilhas_estufadas",
+    "name": "Lentilhas Estufadas",
+    "proteinId": "lentilhas",
+    "type": "leguminosas",
+    "complexity": 2,
+    "prepMinutes": 30,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 4,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "lentilhas",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 20,
+      "carbsG": 48,
+      "fatG": 8,
+      "fiberG": 14,
+      "sodiumMg": 350
+    }
   },
   {
-    "id":"feijao_verde_batata","name":"Feijão Verde com Batata","proteinId":"feijao",
-    "type":"leguminosas","complexity":1,"prepMinutes":20,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":true,"isHighProtein":false,"isLowCarb":false,
-    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":2,
-    "ingredients":[
-      {"ingredientId":"feijao_verde","quantity":0.4},
-      {"ingredientId":"batata","quantity":0.4},
-      {"ingredientId":"alho","quantity":0.02},
-      {"ingredientId":"azeite","quantity":0.05}
-    ]
+    "id": "feijao_verde_batata",
+    "name": "Feijão Verde com Batata",
+    "proteinId": "feijao_verde",
+    "type": "leguminosas",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "feijao_verde",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 280,
+      "proteinG": 10,
+      "carbsG": 38,
+      "fatG": 8,
+      "fiberG": 8,
+      "sodiumMg": 300
+    }
   },
   {
-    "id":"sopa_feijao","name":"Sopa de Feijão Rica","proteinId":"feijao",
-    "type":"leguminosas","complexity":1,"prepMinutes":30,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":true,"isHighProtein":true,"isLowCarb":false,
-    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":3,
-    "ingredients":[
-      {"ingredientId":"feijao","quantity":0.2},
-      {"ingredientId":"batata","quantity":0.3},
-      {"ingredientId":"cenoura","quantity":0.2},
-      {"ingredientId":"cebola","quantity":0.1},
-      {"ingredientId":"azeite","quantity":0.05}
-    ]
+    "id": "sopa_feijao",
+    "name": "Sopa de Feijão Rica",
+    "proteinId": "feijao",
+    "type": "leguminosas",
+    "complexity": 1,
+    "prepMinutes": 30,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "feijao",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": false,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 280,
+      "proteinG": 12,
+      "carbsG": 38,
+      "fatG": 6,
+      "fiberG": 10,
+      "sodiumMg": 350
+    }
   },
   {
-    "id":"omelete_legumes","name":"Omelete de Legumes","proteinId":"ovo",
-    "type":"ovos","complexity":1,"prepMinutes":15,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":true,"isHighProtein":true,"isLowCarb":true,
-    "requiresEquipment":[],"batchCookable":false,"maxBatchDays":1,
-    "ingredients":[
-      {"ingredientId":"ovo","quantity":6.0},
-      {"ingredientId":"pimento","quantity":0.2},
-      {"ingredientId":"cebola","quantity":0.1},
-      {"ingredientId":"azeite","quantity":0.03}
-    ]
+    "id": "omelete_legumes",
+    "name": "Omelete de Legumes",
+    "proteinId": "ovo",
+    "type": "ovos",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "breakfast",
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "ovo",
+        "quantity": 6
+      },
+      {
+        "ingredientId": "pimento",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 340,
+      "proteinG": 18,
+      "carbsG": 12,
+      "fatG": 24,
+      "fiberG": 2.5,
+      "sodiumMg": 400
+    }
   },
   {
-    "id":"tortilha","name":"Tortilha Espanhola","proteinId":"ovo",
-    "type":"ovos","complexity":2,"prepMinutes":30,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":true,"isHighProtein":true,"isLowCarb":false,
-    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":2,
-    "ingredients":[
-      {"ingredientId":"ovo","quantity":6.0},
-      {"ingredientId":"batata","quantity":0.5},
-      {"ingredientId":"cebola","quantity":0.15},
-      {"ingredientId":"azeite","quantity":0.05}
-    ]
+    "id": "tortilha",
+    "name": "Tortilha Espanhola",
+    "proteinId": "ovo",
+    "type": "ovos",
+    "complexity": 2,
+    "prepMinutes": 30,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "breakfast",
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "ovo",
+        "quantity": 6
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 16,
+      "carbsG": 30,
+      "fatG": 20,
+      "fiberG": 2.5,
+      "sodiumMg": 350
+    }
   },
   {
-    "id":"frittata_espinafres","name":"Frittata de Espinafres","proteinId":"ovo",
-    "type":"ovos","complexity":2,"prepMinutes":20,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":true,"isHighProtein":true,"isLowCarb":true,
-    "requiresEquipment":["oven"],"batchCookable":false,"maxBatchDays":1,
-    "ingredients":[
-      {"ingredientId":"ovo","quantity":6.0},
-      {"ingredientId":"espinafres","quantity":0.3},
-      {"ingredientId":"alho","quantity":0.02},
-      {"ingredientId":"azeite","quantity":0.03}
-    ]
+    "id": "frittata_espinafres",
+    "name": "Frittata de Espinafres",
+    "proteinId": "ovo",
+    "type": "ovos",
+    "complexity": 2,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "breakfast",
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "ovo",
+        "quantity": 6
+      },
+      {
+        "ingredientId": "espinafres",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 330,
+      "proteinG": 20,
+      "carbsG": 10,
+      "fatG": 22,
+      "fiberG": 3,
+      "sodiumMg": 380
+    }
   },
   {
-    "id":"ovos_mexidos_tomate","name":"Ovos Mexidos com Tomate","proteinId":"ovo",
-    "type":"ovos","complexity":1,"prepMinutes":15,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":true,"isHighProtein":true,"isLowCarb":true,
-    "requiresEquipment":[],"batchCookable":false,"maxBatchDays":1,
-    "ingredients":[
-      {"ingredientId":"ovo","quantity":8.0},
-      {"ingredientId":"tomate","quantity":0.3},
-      {"ingredientId":"cebola","quantity":0.1},
-      {"ingredientId":"azeite","quantity":0.03}
-    ]
+    "id": "ovos_mexidos_tomate",
+    "name": "Ovos Mexidos com Tomate",
+    "proteinId": "ovo",
+    "type": "ovos",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "breakfast",
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "ovo",
+        "quantity": 8
+      },
+      {
+        "ingredientId": "tomate",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 310,
+      "proteinG": 16,
+      "carbsG": 20,
+      "fatG": 18,
+      "fiberG": 2,
+      "sodiumMg": 360
+    }
   },
   {
-    "id":"ovo_arroz","name":"Ovos com Arroz e Legumes","proteinId":"ovo",
-    "type":"ovos","complexity":1,"prepMinutes":25,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":true,"isHighProtein":true,"isLowCarb":false,
-    "requiresEquipment":[],"batchCookable":true,"maxBatchDays":2,
-    "ingredients":[
-      {"ingredientId":"ovo","quantity":4.0},
-      {"ingredientId":"arroz","quantity":0.3},
-      {"ingredientId":"cenoura","quantity":0.2},
-      {"ingredientId":"azeite","quantity":0.03}
-    ]
+    "id": "ovo_arroz",
+    "name": "Ovos com Arroz e Legumes",
+    "proteinId": "ovo",
+    "type": "ovos",
+    "complexity": 1,
+    "prepMinutes": 25,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "ovo",
+        "quantity": 4
+      },
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 16,
+      "carbsG": 48,
+      "fatG": 12,
+      "fiberG": 2.5,
+      "sodiumMg": 340
+    }
   },
   {
-    "id":"pescada_forno","name":"Pescada no Forno com Batata","proteinId":"pescada",
-    "type":"peixe","complexity":2,"prepMinutes":50,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
-    "requiresEquipment":["oven"],"batchCookable":false,"maxBatchDays":1,
-    "ingredients":[
-      {"ingredientId":"pescada","quantity":0.6},
-      {"ingredientId":"batata","quantity":0.5},
-      {"ingredientId":"cebola","quantity":0.2},
-      {"ingredientId":"azeite","quantity":0.05}
-    ]
+    "id": "pescada_forno",
+    "name": "Pescada no Forno com Batata",
+    "proteinId": "pescada",
+    "type": "peixe",
+    "complexity": 2,
+    "prepMinutes": 50,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "pescada",
+        "quantity": 0.6
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 300,
+      "proteinG": 30,
+      "carbsG": 28,
+      "fatG": 8,
+      "fiberG": 2.5,
+      "sodiumMg": 340
+    }
   },
   {
-    "id":"peixe_grelhado","name":"Peixe Grelhado com Legumes","proteinId":"pescada",
-    "type":"peixe","complexity":1,"prepMinutes":25,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":false,"isHighProtein":true,"isLowCarb":true,
-    "requiresEquipment":[],"batchCookable":false,"maxBatchDays":1,
-    "ingredients":[
-      {"ingredientId":"pescada","quantity":0.5},
-      {"ingredientId":"courgette","quantity":0.3},
-      {"ingredientId":"cenoura","quantity":0.2},
-      {"ingredientId":"azeite","quantity":0.05}
-    ]
+    "id": "peixe_grelhado",
+    "name": "Peixe Grelhado com Legumes",
+    "proteinId": "pescada",
+    "type": "peixe",
+    "complexity": 1,
+    "prepMinutes": 25,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "pescada",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "courgette",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 290,
+      "proteinG": 32,
+      "carbsG": 18,
+      "fatG": 8,
+      "fiberG": 3,
+      "sodiumMg": 300
+    }
   },
   {
-    "id":"arroz_peixe","name":"Arroz de Peixe","proteinId":"pescada",
-    "type":"peixe","complexity":3,"prepMinutes":40,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
-    "requiresEquipment":[],"batchCookable":false,"maxBatchDays":1,
-    "ingredients":[
-      {"ingredientId":"pescada","quantity":0.4},
-      {"ingredientId":"arroz","quantity":0.3},
-      {"ingredientId":"tomate_pelado","quantity":1.0},
-      {"ingredientId":"cebola","quantity":0.15},
-      {"ingredientId":"azeite","quantity":0.05}
-    ]
+    "id": "arroz_peixe",
+    "name": "Arroz de Peixe",
+    "proteinId": "pescada",
+    "type": "peixe",
+    "complexity": 3,
+    "prepMinutes": 40,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "pescada",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 26,
+      "carbsG": 45,
+      "fatG": 10,
+      "fiberG": 2,
+      "sodiumMg": 380
+    }
   },
   {
-    "id":"bacalhau_cozido","name":"Bacalhau Cozido","proteinId":"bacalhau",
-    "type":"peixe","complexity":2,"prepMinutes":40,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
-    "requiresEquipment":[],"batchCookable":false,"maxBatchDays":1,
-    "ingredients":[
-      {"ingredientId":"bacalhau","quantity":0.4},
-      {"ingredientId":"batata","quantity":0.5},
-      {"ingredientId":"ovo","quantity":4.0},
-      {"ingredientId":"cebola","quantity":0.2},
-      {"ingredientId":"azeite","quantity":0.05}
-    ]
+    "id": "bacalhau_cozido",
+    "name": "Bacalhau Cozido",
+    "proteinId": "bacalhau",
+    "type": "peixe",
+    "complexity": 2,
+    "prepMinutes": 40,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "bacalhau",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "ovo",
+        "quantity": 4
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 350,
+      "proteinG": 32,
+      "carbsG": 28,
+      "fatG": 10,
+      "fiberG": 3.5,
+      "sodiumMg": 680
+    }
   },
   {
-    "id":"bacalhau_grao","name":"Bacalhau com Grão","proteinId":"bacalhau",
-    "type":"peixe","complexity":2,"prepMinutes":30,"servings":4,
-    "glutenFree":true,"lactoseFree":true,"nutFree":true,"shellfishFree":true,
-    "isVegetarian":false,"isHighProtein":true,"isLowCarb":false,
-    "requiresEquipment":[],"batchCookable":false,"maxBatchDays":1,
-    "ingredients":[
-      {"ingredientId":"bacalhau","quantity":0.3},
-      {"ingredientId":"grao","quantity":0.2},
-      {"ingredientId":"alho","quantity":0.03},
-      {"ingredientId":"azeite","quantity":0.05}
-    ]
+    "id": "bacalhau_grao",
+    "name": "Bacalhau com Grão",
+    "proteinId": "bacalhau",
+    "type": "peixe",
+    "complexity": 2,
+    "prepMinutes": 30,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "bacalhau",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "grao",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.03
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 420,
+      "proteinG": 30,
+      "carbsG": 38,
+      "fatG": 14,
+      "fiberG": 6,
+      "sodiumMg": 650
+    }
+  },
+  {
+    "id": "costeletas_porco",
+    "name": "Costeletas de Porco Grelhadas",
+    "proteinId": "porco",
+    "type": "carne",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "porco",
+        "quantity": 0.6
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 400,
+      "proteinG": 32,
+      "carbsG": 22,
+      "fatG": 20,
+      "fiberG": 1.5,
+      "sodiumMg": 350
+    }
+  },
+  {
+    "id": "porco_alentejana",
+    "name": "Carne de Porco à Alentejana",
+    "proteinId": "porco",
+    "type": "carne",
+    "complexity": 3,
+    "prepMinutes": 45,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "porco",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.03
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 520,
+      "proteinG": 32,
+      "carbsG": 28,
+      "fatG": 28,
+      "fiberG": 3,
+      "sodiumMg": 580
+    }
+  },
+  {
+    "id": "bifanas",
+    "name": "Bifanas",
+    "proteinId": "porco",
+    "type": "carne",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "porco",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "pao",
+        "quantity": 4
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 450,
+      "proteinG": 30,
+      "carbsG": 32,
+      "fatG": 22,
+      "fiberG": 1.5,
+      "sodiumMg": 500
+    }
+  },
+  {
+    "id": "porco_assado",
+    "name": "Lombo de Porco Assado",
+    "proteinId": "porco",
+    "type": "carne",
+    "complexity": 2,
+    "prepMinutes": 50,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "porco",
+        "quantity": 0.8
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.6
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 480,
+      "proteinG": 34,
+      "carbsG": 25,
+      "fatG": 24,
+      "fiberG": 2,
+      "sodiumMg": 420
+    }
+  },
+  {
+    "id": "feijoada_porco",
+    "name": "Feijoada à Transmontana",
+    "proteinId": "porco",
+    "type": "carne",
+    "complexity": 3,
+    "prepMinutes": 60,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "porco",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "feijao",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "chourico",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 550,
+      "proteinG": 30,
+      "carbsG": 45,
+      "fatG": 24,
+      "fiberG": 8,
+      "sodiumMg": 620
+    }
+  },
+  {
+    "id": "sardinhas_assadas",
+    "name": "Sardinhas Assadas",
+    "proteinId": "sardinha",
+    "type": "peixe",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "sardinha",
+        "quantity": 0.6
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "pimento",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "summer"
+    ],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 28,
+      "carbsG": 25,
+      "fatG": 18,
+      "fiberG": 2.5,
+      "sodiumMg": 420
+    }
+  },
+  {
+    "id": "atum_salada",
+    "name": "Salada de Atum",
+    "proteinId": "atum_lata",
+    "type": "peixe",
+    "complexity": 1,
+    "prepMinutes": 10,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "atum_lata",
+        "quantity": 2
+      },
+      {
+        "ingredientId": "alface",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "tomate",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": false,
+    "seasons": [
+      "spring",
+      "summer"
+    ],
+    "nutrition": {
+      "kcal": 320,
+      "proteinG": 24,
+      "carbsG": 18,
+      "fatG": 16,
+      "fiberG": 4,
+      "sodiumMg": 380
+    }
+  },
+  {
+    "id": "atum_arroz",
+    "name": "Arroz de Atum",
+    "proteinId": "atum_lata",
+    "type": "peixe",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "atum_lata",
+        "quantity": 2
+      },
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 420,
+      "proteinG": 24,
+      "carbsG": 50,
+      "fatG": 12,
+      "fiberG": 2,
+      "sodiumMg": 340
+    }
+  },
+  {
+    "id": "caldeirada",
+    "name": "Caldeirada de Peixe",
+    "proteinId": "pescada",
+    "type": "peixe",
+    "complexity": 3,
+    "prepMinutes": 45,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "pescada",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "tomate",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "pimento",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": false,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 350,
+      "proteinG": 30,
+      "carbsG": 22,
+      "fatG": 12,
+      "fiberG": 3,
+      "sodiumMg": 480
+    }
+  },
+  {
+    "id": "pataniscas_bacalhau",
+    "name": "Pataniscas de Bacalhau",
+    "proteinId": "bacalhau",
+    "type": "peixe",
+    "complexity": 2,
+    "prepMinutes": 30,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "bacalhau",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "massa",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "ovo",
+        "quantity": 2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.1
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 22,
+      "carbsG": 32,
+      "fatG": 18,
+      "fiberG": 2,
+      "sodiumMg": 580
+    }
+  },
+  {
+    "id": "papas_aveia",
+    "name": "Papas de Aveia com Fruta",
+    "proteinId": "aveia",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 10,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "breakfast"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "aveia",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "leite",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "banana",
+        "quantity": 0.4
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 260,
+      "proteinG": 8,
+      "carbsG": 42,
+      "fatG": 6,
+      "fiberG": 5,
+      "sodiumMg": 80
+    }
+  },
+  {
+    "id": "torradas_queijo",
+    "name": "Torradas com Queijo e Fiambre",
+    "proteinId": "queijo",
+    "type": "carne",
+    "complexity": 1,
+    "prepMinutes": 5,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "breakfast",
+      "snack"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "pao_forma",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "queijo",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "fiambre",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "manteiga",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 340,
+      "proteinG": 16,
+      "carbsG": 30,
+      "fatG": 16,
+      "fiberG": 1.5,
+      "sodiumMg": 460
+    }
+  },
+  {
+    "id": "cereais_leite",
+    "name": "Cereais com Leite e Fruta",
+    "proteinId": "cereais",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 5,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "breakfast"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "cereais",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "leite",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "fruta",
+        "quantity": 0.3
+      }
+    ],
+    "isPortable": false,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 280,
+      "proteinG": 10,
+      "carbsG": 48,
+      "fatG": 4,
+      "fiberG": 3,
+      "sodiumMg": 200
+    }
+  },
+  {
+    "id": "iogurte_fruta",
+    "name": "Iogurte com Fruta e Aveia",
+    "proteinId": "iogurte",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 5,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "breakfast",
+      "snack"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "iogurte",
+        "quantity": 4
+      },
+      {
+        "ingredientId": "fruta",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "aveia",
+        "quantity": 0.1
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 260,
+      "proteinG": 10,
+      "carbsG": 36,
+      "fatG": 6,
+      "fiberG": 3,
+      "sodiumMg": 100
+    }
+  },
+  {
+    "id": "ovos_pequeno_almoco",
+    "name": "Ovos Mexidos com Torrada",
+    "proteinId": "ovo",
+    "type": "ovos",
+    "complexity": 1,
+    "prepMinutes": 10,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "breakfast"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "ovo",
+        "quantity": 6
+      },
+      {
+        "ingredientId": "pao_forma",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "manteiga",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 340,
+      "proteinG": 18,
+      "carbsG": 28,
+      "fatG": 16,
+      "fiberG": 1.5,
+      "sodiumMg": 400
+    }
+  },
+  {
+    "id": "panquecas",
+    "name": "Panquecas de Aveia",
+    "proteinId": "aveia",
+    "type": "vegetariano",
+    "complexity": 2,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "breakfast",
+      "snack"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "aveia",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "ovo",
+        "quantity": 2
+      },
+      {
+        "ingredientId": "leite",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "banana",
+        "quantity": 0.3
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 320,
+      "proteinG": 10,
+      "carbsG": 42,
+      "fatG": 12,
+      "fiberG": 1.5,
+      "sodiumMg": 280
+    }
+  },
+  {
+    "id": "tosta_mista",
+    "name": "Tosta Mista",
+    "proteinId": "queijo",
+    "type": "carne",
+    "complexity": 1,
+    "prepMinutes": 5,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "snack",
+      "lunch"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "pao_forma",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "queijo",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "fiambre",
+        "quantity": 0.1
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 350,
+      "proteinG": 18,
+      "carbsG": 30,
+      "fatG": 16,
+      "fiberG": 1.5,
+      "sodiumMg": 480
+    }
+  },
+  {
+    "id": "fruta_iogurte",
+    "name": "Tigela de Fruta com Iogurte",
+    "proteinId": "iogurte",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 5,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "snack"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "iogurte",
+        "quantity": 4
+      },
+      {
+        "ingredientId": "fruta",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "banana",
+        "quantity": 0.3
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 240,
+      "proteinG": 8,
+      "carbsG": 38,
+      "fatG": 4,
+      "fiberG": 4,
+      "sodiumMg": 80
+    }
+  },
+  {
+    "id": "caldo_verde",
+    "name": "Caldo Verde",
+    "proteinId": "chourico",
+    "type": "leguminosas",
+    "complexity": 1,
+    "prepMinutes": 25,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": false,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "batata",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "espinafres",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "chourico",
+        "quantity": 0.05
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": false,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 220,
+      "proteinG": 8,
+      "carbsG": 28,
+      "fatG": 8,
+      "fiberG": 4,
+      "sodiumMg": 380
+    }
+  },
+  {
+    "id": "arroz_legumes",
+    "name": "Arroz de Legumes",
+    "proteinId": "arroz",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "courgette",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "pimento",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 320,
+      "proteinG": 8,
+      "carbsG": 52,
+      "fatG": 8,
+      "fiberG": 4.5,
+      "sodiumMg": 280
+    }
+  },
+  {
+    "id": "massa_cogumelos",
+    "name": "Massa com Cogumelos",
+    "proteinId": "cogumelos",
+    "type": "vegetariano",
+    "complexity": 2,
+    "prepMinutes": 25,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "massa",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cogumelos",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "natas",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 12,
+      "carbsG": 52,
+      "fatG": 12,
+      "fiberG": 3.5,
+      "sodiumMg": 280
+    }
+  },
+  {
+    "id": "sopa_legumes",
+    "name": "Sopa de Legumes",
+    "proteinId": "batata",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 25,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 4,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "batata",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "courgette",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": false,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 180,
+      "proteinG": 6,
+      "carbsG": 24,
+      "fatG": 4,
+      "fiberG": 5,
+      "sodiumMg": 300
+    }
+  },
+  {
+    "id": "salada_grao",
+    "name": "Salada de Grão-de-Bico",
+    "proteinId": "grao",
+    "type": "leguminosas",
+    "complexity": 1,
+    "prepMinutes": 10,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "grao",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "tomate",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "alface",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": false,
+    "seasons": [
+      "spring",
+      "summer"
+    ],
+    "nutrition": {
+      "kcal": 320,
+      "proteinG": 14,
+      "carbsG": 38,
+      "fatG": 12,
+      "fiberG": 8,
+      "sodiumMg": 280
+    }
   }
 ]

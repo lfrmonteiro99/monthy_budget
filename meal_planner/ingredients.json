@@ -23,5 +23,21 @@
   {"id":"arroz","name":"Arroz","category":"carbo","unit":"kg","avgPricePerUnit":1.20,"minPurchaseQty":1.0},
   {"id":"massa","name":"Massa","category":"carbo","unit":"kg","avgPricePerUnit":1.00,"minPurchaseQty":0.5},
   {"id":"massa_lasanha","name":"Lasanha (folhas)","category":"carbo","unit":"kg","avgPricePerUnit":1.50,"minPurchaseQty":0.25},
-  {"id":"pao","name":"Pão","category":"carbo","unit":"unidade","avgPricePerUnit":1.20,"minPurchaseQty":1.0}
+  {"id":"pao","name":"Pão","category":"carbo","unit":"unidade","avgPricePerUnit":1.20,"minPurchaseQty":1.0},
+  {"id":"porco","name":"Carne de Porco","category":"proteina","unit":"kg","avgPricePerUnit":4.50,"minPurchaseQty":0.5},
+  {"id":"sardinha","name":"Sardinhas","category":"proteina","unit":"kg","avgPricePerUnit":4.00,"minPurchaseQty":0.5},
+  {"id":"atum_lata","name":"Atum (lata)","category":"proteina","unit":"unidade","avgPricePerUnit":1.20,"minPurchaseQty":1.0},
+  {"id":"iogurte","name":"Iogurte Natural","category":"proteina","unit":"unidade","avgPricePerUnit":0.30,"minPurchaseQty":4.0},
+  {"id":"leite","name":"Leite","category":"proteina","unit":"litro","avgPricePerUnit":0.75,"minPurchaseQty":1.0},
+  {"id":"queijo","name":"Queijo Flamengo","category":"proteina","unit":"kg","avgPricePerUnit":6.50,"minPurchaseQty":0.2},
+  {"id":"fiambre","name":"Fiambre","category":"proteina","unit":"kg","avgPricePerUnit":5.00,"minPurchaseQty":0.2},
+  {"id":"cereais","name":"Cereais/Muesli","category":"carbo","unit":"kg","avgPricePerUnit":3.50,"minPurchaseQty":0.5},
+  {"id":"pao_forma","name":"Pão de Forma","category":"carbo","unit":"unidade","avgPricePerUnit":1.50,"minPurchaseQty":1.0},
+  {"id":"aveia","name":"Flocos de Aveia","category":"carbo","unit":"kg","avgPricePerUnit":2.00,"minPurchaseQty":0.5},
+  {"id":"fruta","name":"Fruta da Época","category":"vegetal","unit":"kg","avgPricePerUnit":1.50,"minPurchaseQty":1.0},
+  {"id":"banana","name":"Banana","category":"vegetal","unit":"kg","avgPricePerUnit":1.20,"minPurchaseQty":1.0},
+  {"id":"alface","name":"Alface","category":"vegetal","unit":"unidade","avgPricePerUnit":0.60,"minPurchaseQty":1.0},
+  {"id":"cogumelos","name":"Cogumelos","category":"vegetal","unit":"kg","avgPricePerUnit":3.50,"minPurchaseQty":0.3},
+  {"id":"manteiga","name":"Manteiga","category":"gordura","unit":"kg","avgPricePerUnit":7.00,"minPurchaseQty":0.25},
+  {"id":"natas","name":"Natas","category":"gordura","unit":"litro","avgPricePerUnit":1.50,"minPurchaseQty":0.2}
 ]
