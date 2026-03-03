@@ -1321,13 +1321,26 @@ img { max-width: 100%; height: auto; display: block; }
 .timeline-card h3 {
   font-size: 1rem;
   font-weight: 700;
-  margin-bottom: 6px;
+  margin-bottom: 12px;
+  font-style: italic;
+  color: var(--text-primary);
 }
 
 .timeline-card p {
   font-size: 0.9rem;
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: 1.7;
+}
+
+.timeline-pain {
+  margin-bottom: 12px;
+  color: var(--text-muted);
+}
+
+.timeline-resolution {
+  border-left: 2px solid var(--primary);
+  padding-left: 14px;
+  color: var(--text-secondary);
 }
 
 /* ── Timeline Mobile (<768px) ──────────────────────────────── */
