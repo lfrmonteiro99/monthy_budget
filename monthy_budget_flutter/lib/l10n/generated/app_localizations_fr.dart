@@ -2326,6 +2326,35 @@ class SFr extends S {
   String get mealCostUnder => 'En dessous du budget';
 
   @override
+  String get mealVariation => 'Variante';
+
+  @override
+  String get mealPairing => 'Accompagnement';
+
+  @override
+  String get mealStorage => 'Conservation';
+
+  @override
+  String get mealLeftover => 'Restes';
+
+  @override
+  String get mealLeftoverIdea => 'Idée de transformation';
+
+  @override
+  String get mealWeeklySummary => 'Nutrition Hebdomadaire';
+
+  @override
+  String get mealBatchPrepGuide => 'Guide de Préparation';
+
+  @override
+  String mealBatchTotalTime(String time) {
+    return 'Temps estimé: $time';
+  }
+
+  @override
+  String get mealBatchParallelTips => 'Astuces de cuisson parallèle';
+
+  @override
   String get notifications => 'Notifications';
 
   @override

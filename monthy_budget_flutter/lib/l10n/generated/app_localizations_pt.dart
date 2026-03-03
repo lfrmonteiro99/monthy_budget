@@ -2324,6 +2324,35 @@ class SPt extends S {
   String get mealCostUnder => 'Abaixo do orçamento';
 
   @override
+  String get mealVariation => 'Variação';
+
+  @override
+  String get mealPairing => 'Acompanhamento';
+
+  @override
+  String get mealStorage => 'Conservação';
+
+  @override
+  String get mealLeftover => 'Sobras';
+
+  @override
+  String get mealLeftoverIdea => 'Ideia de reaproveitamento';
+
+  @override
+  String get mealWeeklySummary => 'Nutrição Semanal';
+
+  @override
+  String get mealBatchPrepGuide => 'Guia de Preparação';
+
+  @override
+  String mealBatchTotalTime(String time) {
+    return 'Tempo estimado: $time';
+  }
+
+  @override
+  String get mealBatchParallelTips => 'Dicas de cozinha paralela';
+
+  @override
   String get notifications => 'Notificações';
 
   @override

@@ -2324,6 +2324,35 @@ class SEs extends S {
   String get mealCostUnder => 'Por debajo del presupuesto';
 
   @override
+  String get mealVariation => 'Variación';
+
+  @override
+  String get mealPairing => 'Maridaje';
+
+  @override
+  String get mealStorage => 'Conservación';
+
+  @override
+  String get mealLeftover => 'Sobras';
+
+  @override
+  String get mealLeftoverIdea => 'Idea de transformación';
+
+  @override
+  String get mealWeeklySummary => 'Nutrición Semanal';
+
+  @override
+  String get mealBatchPrepGuide => 'Guía de Preparación';
+
+  @override
+  String mealBatchTotalTime(String time) {
+    return 'Tiempo estimado: $time';
+  }
+
+  @override
+  String get mealBatchParallelTips => 'Consejos de cocina paralela';
+
+  @override
   String get notifications => 'Notificaciones';
 
   @override
