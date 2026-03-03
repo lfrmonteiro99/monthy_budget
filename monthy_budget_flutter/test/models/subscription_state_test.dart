@@ -15,6 +15,17 @@ void main() {
       expect(SubscriptionTier.values,
           containsAll([SubscriptionTier.free, SubscriptionTier.premium, SubscriptionTier.family]));
     });
+
+    test('.name returns expected serialization strings', () {
+      expect(SubscriptionTier.free.name, 'free');
+      expect(SubscriptionTier.premium.name, 'premium');
+      expect(SubscriptionTier.family.name, 'family');
+    });
+
+    test('index order is free < premium < family', () {
+      expect(SubscriptionTier.free.index, lessThan(SubscriptionTier.premium.index));
+      expect(SubscriptionTier.premium.index, lessThan(SubscriptionTier.family.index));
+    });
   });
 
   group('PremiumFeature enum', () {
@@ -102,6 +113,67 @@ void main() {
         featuresExplored: featuresExplored,
       );
     }
+
+    group('constructor defaults', () {
+      test('tier defaults to free', () {
+        final state = SubscriptionState(trialStartDate: DateTime.now());
+        expect(state.tier, SubscriptionTier.free);
+      });
+
+      test('trialUsed defaults to false', () {
+        final state = SubscriptionState(trialStartDate: DateTime.now());
+        expect(state.trialUsed, false);
+      });
+
+      test('featuresExplored defaults to empty set', () {
+        final state = SubscriptionState(trialStartDate: DateTime.now());
+        expect(state.featuresExplored, isEmpty);
+        expect(state.featuresExplored, isA<Set<String>>());
+      });
+    });
+
+    group('tier hierarchy invariant', () {
+      test('hasFamilyAccess implies hasPremiumAccess for family tier', () {
+        final state = makeState(
+          tier: SubscriptionTier.family,
+          trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
+        );
+        expect(state.hasFamilyAccess, true);
+        expect(state.hasPremiumAccess, true);
+      });
+
+      test('hasFamilyAccess implies hasPremiumAccess during trial', () {
+        final state = makeState(
+          tier: SubscriptionTier.free,
+          trialStartDate: DateTime.now(),
+        );
+        expect(state.hasFamilyAccess, true);
+        expect(state.hasPremiumAccess, true);
+      });
+
+      test('hasPremiumAccess does NOT imply hasFamilyAccess for premium tier', () {
+        final state = makeState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
+        );
+        expect(state.hasPremiumAccess, true);
+        expect(state.hasFamilyAccess, false);
+      });
+
+      test('invariant holds for all tiers: hasFamilyAccess → hasPremiumAccess', () {
+        for (final tier in SubscriptionTier.values) {
+          final state = makeState(
+            tier: tier,
+            trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
+            trialUsed: true,
+          );
+          if (state.hasFamilyAccess) {
+            expect(state.hasPremiumAccess, true,
+                reason: '${tier.name}: hasFamilyAccess should imply hasPremiumAccess');
+          }
+        }
+      });
+    });
 
     group('isTrialActive', () {
       test('true within 14 days of trial start', () {
@@ -673,6 +745,106 @@ void main() {
       expect(state.trialDaysRemaining, 0);
       expect(state.hasPremiumAccess, false);
       expect(state.canAccess(PremiumFeature.aiCoach), false);
+    });
+
+    group('access after tier transitions (via copyWith)', () {
+      test('free → premium: gains premium features, still no family', () {
+        final expired = DateTime.now().subtract(const Duration(days: 30));
+        final free = makeState(
+          tier: SubscriptionTier.free,
+          trialStartDate: expired,
+          trialUsed: true,
+        );
+        expect(free.canAccess(PremiumFeature.aiCoach), false);
+        expect(free.canAccess(PremiumFeature.householdSharing), false);
+
+        final premium = free.copyWith(tier: SubscriptionTier.premium);
+        expect(premium.canAccess(PremiumFeature.aiCoach), true);
+        expect(premium.canAccess(PremiumFeature.householdSharing), false);
+      });
+
+      test('premium → family: gains family features', () {
+        final expired = DateTime.now().subtract(const Duration(days: 30));
+        final premium = makeState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: expired,
+          trialUsed: true,
+        );
+        expect(premium.canAccess(PremiumFeature.aiCoach), true);
+        expect(premium.canAccess(PremiumFeature.householdSharing), false);
+
+        final family = premium.copyWith(tier: SubscriptionTier.family);
+        expect(family.canAccess(PremiumFeature.aiCoach), true);
+        expect(family.canAccess(PremiumFeature.householdSharing), true);
+      });
+
+      test('family → free: loses all gated features', () {
+        final expired = DateTime.now().subtract(const Duration(days: 30));
+        final family = makeState(
+          tier: SubscriptionTier.family,
+          trialStartDate: expired,
+          trialUsed: true,
+        );
+        expect(family.canAccess(PremiumFeature.aiCoach), true);
+        expect(family.canAccess(PremiumFeature.householdSharing), true);
+
+        final free = family.copyWith(tier: SubscriptionTier.free);
+        expect(free.canAccess(PremiumFeature.aiCoach), false);
+        expect(free.canAccess(PremiumFeature.householdSharing), false);
+      });
+
+      test('full cycle: free → premium → family → free', () {
+        final expired = DateTime.now().subtract(const Duration(days: 30));
+        var state = makeState(
+          tier: SubscriptionTier.free,
+          trialStartDate: expired,
+          trialUsed: true,
+        );
+
+        // free: no access
+        for (final f in PremiumFeature.values) {
+          expect(state.canAccess(f), false, reason: 'free: ${f.name}');
+        }
+
+        // → premium
+        state = state.copyWith(tier: SubscriptionTier.premium);
+        for (final f in PremiumFeature.values) {
+          final req = featureTierRequirements[f]!;
+          if (req == SubscriptionTier.premium) {
+            expect(state.canAccess(f), true, reason: 'premium: ${f.name}');
+          } else {
+            expect(state.canAccess(f), false, reason: 'premium: ${f.name}');
+          }
+        }
+
+        // → family
+        state = state.copyWith(tier: SubscriptionTier.family);
+        for (final f in PremiumFeature.values) {
+          expect(state.canAccess(f), true, reason: 'family: ${f.name}');
+        }
+
+        // → free again
+        state = state.copyWith(tier: SubscriptionTier.free);
+        for (final f in PremiumFeature.values) {
+          expect(state.canAccess(f), false, reason: 'free again: ${f.name}');
+        }
+      });
+
+      test('canAccess is idempotent (calling multiple times gives same result)', () {
+        final state = makeState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
+          trialUsed: true,
+        );
+
+        final first = state.canAccess(PremiumFeature.aiCoach);
+        final second = state.canAccess(PremiumFeature.aiCoach);
+        final third = state.canAccess(PremiumFeature.aiCoach);
+
+        expect(first, true);
+        expect(second, true);
+        expect(third, true);
+      });
     });
   });
 }
