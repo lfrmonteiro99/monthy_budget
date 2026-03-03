@@ -6,6 +6,8 @@ on:
     paths:
       - 'monthy_budget_flutter/**'
       - '.github/workflows/flutter-ci.yml'
+    tags:
+      - 'v*'
   pull_request:
     branches: [main]
     paths:
@@ -40,3 +42,68 @@ jobs:
 
       - name: Run tests
         run: flutter test
+
+  build-apk:
+    needs: test
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: monthy_budget_flutter
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.2'
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate l10n
+        run: flutter gen-l10n
+
+      - name: Decode keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/keystore.jks
+
+      - name: Build APK
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: flutter build apk --release
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gestao-mensal-apk
+          path: monthy_budget_flutter/build/app/outputs/flutter-apk/*.apk
+          retention-days: 30
+
+      # Tagged releases → formal GitHub Release
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: monthy_budget_flutter/build/app/outputs/flutter-apk/*.apk
+          generate_release_notes: true
+
+      # Push to main → prerelease with commit SHA
+      - name: Create prerelease
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: dev-${{ github.sha }}
+          name: Dev build (${{ github.sha }})
+          files: monthy_budget_flutter/build/app/outputs/flutter-apk/*.apk
+          prerelease: true
+          make_latest: false
