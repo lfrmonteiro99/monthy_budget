@@ -6,10 +6,10 @@ export default function Hero() {
   const { t } = useLocale();
 
   const stats = [
-    { value: "6", label: t.stat_features_label },
-    { value: "5", label: t.stat_screens_label },
-    { value: "4", label: t.stat_languages_label },
-    { value: "100%", label: t.stat_free_label },
+    { value: t.stat1_value, label: t.stat1_label },
+    { value: t.stat2_value, label: t.stat2_label },
+    { value: t.stat3_value, label: t.stat3_label },
+    { value: t.stat4_value, label: t.stat4_label },
   ];
 
   return (

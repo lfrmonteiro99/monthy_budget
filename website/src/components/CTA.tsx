@@ -28,6 +28,7 @@ export default function CTA() {
               </svg>
               {t.cta_button}
             </a>
+            <p className="text-xs sm:text-sm opacity-70 mt-4">{t.cta_micro}</p>
           </div>
         </AnimatedSection>
       </div>

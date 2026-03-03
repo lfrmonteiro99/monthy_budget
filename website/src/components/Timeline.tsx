@@ -30,7 +30,13 @@ export default function Timeline() {
         <AnimatedSection>
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl font-bold mb-3" style={{ color: "var(--text-primary)" }}>{t.timeline_title}</h2>
-            <p className="text-sm sm:text-base max-w-xl mx-auto" style={{ color: "var(--text-secondary)" }}>{t.timeline_subtitle}</p>
+            <p className="text-sm sm:text-base max-w-xl mx-auto mb-4" style={{ color: "var(--text-secondary)" }}>{t.timeline_subtitle}</p>
+            <p
+              className="text-sm sm:text-base max-w-2xl mx-auto italic leading-relaxed rounded-2xl p-4 sm:p-5"
+              style={{ background: "var(--surface-variant)", color: "var(--text-secondary)" }}
+            >
+              {t.timeline_intro}
+            </p>
           </div>
         </AnimatedSection>
 
