@@ -180,7 +180,7 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
                     subtitle: Text(
                       [
                         formatCurrency(e.amount),
-                        if (e.dayOfMonth != null) 'Dia ${e.dayOfMonth}',
+                        if (e.dayOfMonth != null) '${l10n.recurringExpenseDayOfMonth} ${e.dayOfMonth}',
                         if (e.description != null && e.description!.isNotEmpty)
                           e.description!,
                         if (!e.isActive) l10n.recurringExpenseInactive,
@@ -408,15 +408,22 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
               ),
               const SizedBox(height: 20),
 
-              // Day of month
-              Text(
-                l10n.recurringExpenseDayOfMonth,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary(context),
-                  letterSpacing: 0.8,
-                ),
+              // Day of month (due day for bill reminders)
+              Row(
+                children: [
+                  Icon(Icons.notifications_outlined,
+                      size: 14, color: AppColors.primary(context)),
+                  const SizedBox(width: 6),
+                  Text(
+                    l10n.recurringExpenseDayOfMonth,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textSecondary(context),
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
               TextFormField(
@@ -424,6 +431,8 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   hintText: l10n.recurringExpenseDayHint,
+                  prefixIcon: Icon(Icons.calendar_today,
+                      size: 18, color: AppColors.textMuted(context)),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -476,7 +485,7 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
                       : l10n.recurringExpenseInactive,
                   style: TextStyle(color: AppColors.textPrimary(context)),
                 ),
-                activeColor: AppColors.primary(context),
+                activeThumbColor: AppColors.primary(context),
                 contentPadding: EdgeInsets.zero,
               ),
               const SizedBox(height: 24),

@@ -18,6 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLogin = true;
   bool _loading = false;
   String? _error;
+  bool _registrationSuccess = false;
 
   @override
   void dispose() {
@@ -30,14 +31,20 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _loading = true;
       _error = null;
+      _registrationSuccess = false;
     });
     try {
       if (_isLogin) {
         await _auth.signIn(_emailCtrl.text.trim(), _passCtrl.text);
+        widget.onAuthenticated();
       } else {
         await _auth.signUp(_emailCtrl.text.trim(), _passCtrl.text);
+        setState(() {
+          _registrationSuccess = true;
+          _isLogin = true;
+          _passCtrl.clear();
+        });
       }
-      widget.onAuthenticated();
     } catch (e) {
       setState(() => _error = e.toString());
     } finally {
@@ -73,6 +80,35 @@ class _LoginScreenState extends State<LoginScreen> {
                     .bodyMedium
                     ?.copyWith(color: AppColors.textSecondary(context)),
               ),
+              if (_registrationSuccess) ...[
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: AppColors.success(context).withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.success(context).withValues(alpha: 0.4)),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(Icons.mark_email_read_outlined, size: 20, color: AppColors.success(context)),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          S.of(context).authRegistrationSuccess,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: AppColors.success(context),
+                            height: 1.4,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               const SizedBox(height: 32),
               TextField(
                 controller: _emailCtrl,
@@ -118,7 +154,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               TextButton(
-                onPressed: () => setState(() => _isLogin = !_isLogin),
+                onPressed: () => setState(() {
+                  _isLogin = !_isLogin;
+                  _registrationSuccess = false;
+                  _error = null;
+                }),
                 child:
                     Text(_isLogin ? S.of(context).authSwitchToRegister : S.of(context).authSwitchToLogin),
               ),

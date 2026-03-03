@@ -4,15 +4,20 @@ import '../models/product.dart';
 import '../models/shopping_item.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
+import '../onboarding/grocery_tour.dart';
 
 class GroceryScreen extends StatefulWidget {
   final List<Product> products;
   final ValueChanged<ShoppingItem>? onAddToShoppingList;
+  final bool showTour;
+  final VoidCallback? onTourComplete;
 
   const GroceryScreen({
     super.key,
     required this.products,
     this.onAddToShoppingList,
+    this.showTour = false,
+    this.onTourComplete,
   });
 
   @override
@@ -22,6 +27,40 @@ class GroceryScreen extends StatefulWidget {
 class _GroceryScreenState extends State<GroceryScreen> {
   String _searchQuery = '';
   String? _selectedCategory;
+  bool _tourShown = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.showTour && widget.products.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _tryShowTour();
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(GroceryScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.showTour && !_tourShown && widget.products.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _tryShowTour();
+      });
+    }
+  }
+
+  void _tryShowTour() {
+    if (_tourShown || !mounted || widget.products.isEmpty) return;
+    _tourShown = true;
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (!mounted) return;
+      buildGroceryTour(
+        context: context,
+        onFinish: () => widget.onTourComplete?.call(),
+        onSkip: () => widget.onTourComplete?.call(),
+      ).show(context: context);
+    });
+  }
 
   List<String> get _categories {
     final cats = widget.products.map((p) => p.category).toSet().toList();
@@ -107,6 +146,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
             child: TextField(
+              key: GroceryTourKeys.searchBar,
               onChanged: (v) => setState(() => _searchQuery = v),
               decoration: InputDecoration(
                 hintText: l10n.grocerySearchHint,
@@ -156,6 +196,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
               children: [
                 // Category filter chips
                 SizedBox(
+                  key: GroceryTourKeys.categoryFilter,
                   height: 44,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
@@ -200,7 +241,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
                     itemBuilder: (_, i) {
                       final cat = cats[i];
                       final items = byCategory[cat]!;
-                      return _buildCategory(cat, items);
+                      return _buildCategory(cat, items, isFirst: i == 0);
                     },
                   ),
                 ),
@@ -209,7 +250,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
     );
   }
 
-  Widget _buildCategory(String category, List<Product> items) {
+  Widget _buildCategory(String category, List<Product> items, {bool isFirst = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -231,16 +272,18 @@ class _GroceryScreenState extends State<GroceryScreen> {
             ],
           ),
         ),
-        ...items.map(_buildProductRow),
+        ...items.asMap().entries.map((e) =>
+          _buildProductRow(e.value, tourKey: isFirst && e.key == 0 ? GroceryTourKeys.productCard : null)),
       ],
     );
   }
 
-  Widget _buildProductRow(Product product) {
+  Widget _buildProductRow(Product product, {GlobalKey? tourKey}) {
     final l10n = S.of(context);
     return Semantics(
       label: '${product.name}, ${formatCurrency(product.avgPrice)}, ${product.unit}',
       child: Container(
+      key: tourKey,
       margin: const EdgeInsets.only(bottom: 6),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(

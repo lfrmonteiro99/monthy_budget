@@ -4,6 +4,7 @@ import '../models/savings_goal.dart';
 import '../services/savings_goal_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
+import '../utils/savings_projections.dart';
 import '../widgets/add_savings_goal_sheet.dart';
 
 class SavingsGoalsScreen extends StatefulWidget {
@@ -377,6 +378,7 @@ class _GoalDetailScreen extends StatefulWidget {
 class _GoalDetailScreenState extends State<_GoalDetailScreen> {
   late SavingsGoal _goal;
   List<SavingsContribution> _contributions = [];
+  SavingsProjection? _projection;
   bool _loading = true;
 
   @override
@@ -392,6 +394,10 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
     if (mounted) {
       setState(() {
         _contributions = contributions;
+        _projection = calculateProjection(
+          goal: _goal,
+          contributions: contributions,
+        );
         _loading = false;
       });
     }
@@ -409,9 +415,14 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
     final updatedGoal =
         await widget.service.addContribution(result, widget.householdId);
     if (mounted) {
+      final updated = [result, ..._contributions];
       setState(() {
         _goal = updatedGoal;
-        _contributions = [result, ..._contributions];
+        _contributions = updated;
+        _projection = calculateProjection(
+          goal: updatedGoal,
+          contributions: updated,
+        );
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(S.of(context).savingsGoalContributionSaved)),
@@ -450,6 +461,136 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
         );
       });
     }
+  }
+
+  Widget _buildProjectionSection(BuildContext context, S l10n) {
+    final p = _projection!;
+    final goalColor = _goal.color != null
+        ? _hexToColor(_goal.color!)
+        : AppColors.primary(context);
+
+    if (!p.hasData) {
+      return Text(
+        l10n.savingsProjectionNoData,
+        style: TextStyle(
+          fontSize: 12,
+          color: AppColors.textMuted(context),
+          fontStyle: FontStyle.italic,
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.background(context),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.border(context)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Average contribution
+          Row(
+            children: [
+              Icon(Icons.trending_up, size: 14, color: goalColor),
+              const SizedBox(width: 6),
+              Text(
+                l10n.savingsProjectionAvgContribution(
+                    formatCurrency(p.averageMonthlyContribution)),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textPrimary(context),
+                ),
+              ),
+            ],
+          ),
+          // Projected date
+          if (p.projectedDate != null) ...[
+            const SizedBox(height: 6),
+            Row(
+              children: [
+                Icon(Icons.calendar_today, size: 14, color: goalColor),
+                const SizedBox(width: 6),
+                Text(
+                  l10n.savingsProjectionReachedBy(
+                      '${p.projectedDate!.month.toString().padLeft(2, '0')}/${p.projectedDate!.year}'),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textPrimary(context),
+                  ),
+                ),
+              ],
+            ),
+          ],
+          // On-track status
+          if (p.onTrack != null) ...[
+            const SizedBox(height: 6),
+            Row(
+              children: [
+                Icon(
+                  p.onTrack! ? Icons.check_circle_outline : Icons.warning_amber,
+                  size: 14,
+                  color: p.onTrack!
+                      ? AppColors.success(context)
+                      : AppColors.warning(context),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  p.onTrack!
+                      ? l10n.savingsProjectionOnTrack
+                      : l10n.savingsProjectionBehind,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: p.onTrack!
+                        ? AppColors.success(context)
+                        : AppColors.warning(context),
+                  ),
+                ),
+              ],
+            ),
+          ],
+          // Required per month
+          if (p.requiredMonthlyContribution != null &&
+              p.requiredMonthlyContribution! > 0) ...[
+            const SizedBox(height: 6),
+            Row(
+              children: [
+                Icon(Icons.flag_outlined, size: 14,
+                    color: AppColors.textSecondary(context)),
+                const SizedBox(width: 6),
+                Text(
+                  l10n.savingsProjectionNeedPerMonth(
+                      formatCurrency(p.requiredMonthlyContribution!)),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary(context),
+                  ),
+                ),
+              ],
+            ),
+          ],
+          // Timeline bar
+          const SizedBox(height: 10),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(3),
+            child: LinearProgressIndicator(
+              value: _goal.progress,
+              backgroundColor: AppColors.border(context),
+              color: p.onTrack == null
+                  ? goalColor
+                  : p.onTrack!
+                      ? AppColors.success(context)
+                      : AppColors.warning(context),
+              minHeight: 4,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -556,6 +697,11 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
                             : AppColors.textMuted(context),
                       ),
                     ),
+                  ],
+                  // Projection section
+                  if (_projection != null && !_goal.isCompleted) ...[
+                    const SizedBox(height: 16),
+                    _buildProjectionSection(context, l10n),
                   ],
                 ],
               ),

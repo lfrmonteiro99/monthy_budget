@@ -4,19 +4,30 @@ import '../models/app_settings.dart';
 import '../models/actual_expense.dart';
 import '../models/budget_summary.dart';
 import '../models/purchase_record.dart';
+import '../models/recurring_expense.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 import '../utils/stress_index.dart';
+import '../utils/budget_streaks.dart';
+import '../data/tax/tax_system.dart';
+import '../data/tax/tax_deductions.dart';
 import '../widgets/charts/budget_charts.dart';
 import '../widgets/trend_sheet.dart';
+import '../widgets/tax_deduction_card.dart';
+import '../widgets/upcoming_bills_card.dart';
+import '../widgets/budget_streak_card.dart';
 import '../models/local_dashboard_config.dart';
 import '../models/expense_snapshot.dart';
 import '../utils/month_review.dart';
 import '../widgets/month_review_sheet.dart';
 import '../models/savings_goal.dart';
 import '../widgets/savings_goal_card.dart';
+import '../utils/savings_projections.dart';
+import '../onboarding/dashboard_tour.dart';
+import 'tax_deduction_detail_screen.dart';
+import 'tax_simulator_screen.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   final AppSettings settings;
   final BudgetSummary summary;
   final PurchaseHistory purchaseHistory;
@@ -30,8 +41,17 @@ class DashboardScreen extends StatelessWidget {
   final VoidCallback onOpenExpenseTracker;
   final VoidCallback? onViewTrends;
   final List<SavingsGoal> savingsGoals;
+  final Map<String, SavingsProjection> savingsProjections;
   final VoidCallback? onOpenSavingsGoals;
   final Map<String, double> monthlyBudgets;
+  final List<RecurringExpense> recurringExpenses;
+  final Map<String, List<ActualExpense>> actualExpenseHistory;
+  final int billReminderDaysBefore;
+  final VoidCallback? onOpenRecurringExpenses;
+  final bool showTour;
+  final VoidCallback? onTourComplete;
+  final GlobalKey? fabKey;
+  final GlobalKey? navBarKey;
 
   const DashboardScreen({
     super.key,
@@ -48,9 +68,67 @@ class DashboardScreen extends StatelessWidget {
     required this.onOpenExpenseTracker,
     this.onViewTrends,
     this.savingsGoals = const [],
+    this.savingsProjections = const {},
     this.onOpenSavingsGoals,
     this.monthlyBudgets = const {},
+    this.recurringExpenses = const [],
+    this.actualExpenseHistory = const {},
+    this.billReminderDaysBefore = 3,
+    this.onOpenRecurringExpenses,
+    this.showTour = false,
+    this.onTourComplete,
+    this.fabKey,
+    this.navBarKey,
   });
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  bool _tourShown = false;
+
+  // Convenience accessors so helper methods don't need widget. prefix everywhere
+  AppSettings get settings => widget.settings;
+  BudgetSummary get summary => widget.summary;
+  PurchaseHistory get purchaseHistory => widget.purchaseHistory;
+  LocalDashboardConfig get dashboardConfig => widget.dashboardConfig;
+  Map<String, List<ExpenseSnapshot>> get expenseHistory => widget.expenseHistory;
+  List<ActualExpense> get actualExpenses => widget.actualExpenses;
+  List<SavingsGoal> get savingsGoals => widget.savingsGoals;
+  Map<String, SavingsProjection> get savingsProjections => widget.savingsProjections;
+  Map<String, double> get monthlyBudgets => widget.monthlyBudgets;
+  List<RecurringExpense> get recurringExpenses => widget.recurringExpenses;
+  Map<String, List<ActualExpense>> get actualExpenseHistory => widget.actualExpenseHistory;
+  VoidCallback get onOpenSettings => widget.onOpenSettings;
+  ValueChanged<AppSettings> get onSaveSettings => widget.onSaveSettings;
+  VoidCallback get onSnapshotExpenses => widget.onSnapshotExpenses;
+  VoidCallback get onAddExpense => widget.onAddExpense;
+  VoidCallback get onOpenExpenseTracker => widget.onOpenExpenseTracker;
+  VoidCallback? get onViewTrends => widget.onViewTrends;
+  VoidCallback? get onOpenSavingsGoals => widget.onOpenSavingsGoals;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.showTour && widget.fabKey != null && widget.navBarKey != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!_tourShown && mounted) {
+          _tourShown = true;
+          Future.delayed(const Duration(milliseconds: 500), () {
+            if (!mounted) return;
+            buildDashboardTour(
+              context: context,
+              fabKey: widget.fabKey!,
+              navBarKey: widget.navBarKey!,
+              onFinish: () => widget.onTourComplete?.call(),
+              onSkip: () => widget.onTourComplete?.call(),
+            ).show(context: context);
+          });
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -162,6 +240,7 @@ class DashboardScreen extends StatelessWidget {
                     children: [
                       if (dashboardConfig.showStressIndex)
                         _StressIndexCard(
+                          key: DashboardTourKeys.stressIndex,
                           result: stressResult,
                           onShowTrend: stressResult.score > 0 ? () {
                             showTrendSheet(
@@ -173,6 +252,19 @@ class DashboardScreen extends StatelessWidget {
                           } : null,
                         ),
                       if (dashboardConfig.showStressIndex) const SizedBox(height: 16),
+                      // Budget Streaks — high visibility after stress index
+                      if (dashboardConfig.showBudgetStreaks) ...[
+                        BudgetStreakCard(
+                          streaks: calculateStreaks(
+                            actualExpenseHistory: actualExpenseHistory,
+                            expenses: settings.expenses,
+                            totalNetIncome: summary.totalNetWithMeal,
+                            purchaseHistory: purchaseHistory,
+                            monthlyBudgets: monthlyBudgets,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
                       if (dashboardConfig.showMonthReview && monthReview != null)
                         _MonthReviewCard(
                           review: monthReview,
@@ -182,9 +274,23 @@ class DashboardScreen extends StatelessWidget {
                           ),
                         ),
                       if (dashboardConfig.showMonthReview && monthReview != null) const SizedBox(height: 16),
+                      // Upcoming Bills
+                      if (dashboardConfig.showUpcomingBills && recurringExpenses.any((r) => r.isActive && r.dayOfMonth != null)) ...[
+                        UpcomingBillsCard(
+                          recurringExpenses: recurringExpenses,
+                          reminderDaysBefore: widget.billReminderDaysBefore,
+                          onOpenRecurring: widget.onOpenRecurringExpenses,
+                        ),
+                        const SizedBox(height: 16),
+                      ],
                       if (dashboardConfig.showSummaryCards) _buildSummaryCards(l10n),
                       if (dashboardConfig.showSummaryCards) const SizedBox(height: 16),
                       if (dashboardConfig.showSalaryBreakdown) _buildSalaryBreakdown(context, l10n),
+                      // Tax Simulator button — after salary breakdown
+                      if (dashboardConfig.showSalaryBreakdown && settings.country == Country.pt) ...[
+                        const SizedBox(height: 8),
+                        _buildTaxSimulatorButton(context, l10n),
+                      ],
                       if (dashboardConfig.showBudgetVsActual) ...[
                         const SizedBox(height: 16),
                         _buildBudgetVsActualCard(context),
@@ -198,7 +304,13 @@ class DashboardScreen extends StatelessWidget {
                         SavingsGoalCard(
                           goals: savingsGoals,
                           onSeeAll: onOpenSavingsGoals!,
+                          projections: savingsProjections,
                         ),
+                      ],
+                      // Tax Deductions — PT only, after savings goals
+                      if (dashboardConfig.showTaxDeductions && settings.country == Country.pt) ...[
+                        const SizedBox(height: 16),
+                        _buildTaxDeductionCard(context),
                       ],
                       if (dashboardConfig.showPurchaseHistory && purchaseHistory.records.isNotEmpty) ...[
                         const SizedBox(height: 16),
@@ -230,6 +342,7 @@ class DashboardScreen extends StatelessWidget {
 
   Widget _buildHeroCard(BuildContext context, bool isPositive, S l10n) {
     return Semantics(
+      key: DashboardTourKeys.heroCard,
       label: l10n.dashboardHeroLabel(formatCurrency(summary.netLiquidity), isPositive ? l10n.dashboardPositiveBalance : l10n.dashboardNegativeBalance),
       child: Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -457,6 +570,93 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildTaxSimulatorButton(BuildContext context, S l10n) {
+    return Material(
+      color: AppColors.surface(context),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => TaxSimulatorScreen(settings: settings),
+          ),
+        ),
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.border(context)),
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.calculate_outlined, size: 20, color: AppColors.primary(context)),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  l10n.taxSimButton,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary(context),
+                  ),
+                ),
+              ),
+              Icon(Icons.chevron_right, size: 20, color: AppColors.textMuted(context)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTaxDeductionCard(BuildContext context) {
+    final now = DateTime.now();
+    // Aggregate spending by category for the current tax year (Jan-Dec)
+    final spentByCategory = <String, double>{};
+    for (final entry in actualExpenseHistory.entries) {
+      final parts = entry.key.split('-');
+      if (parts.length < 2) continue;
+      final year = int.tryParse(parts[0]);
+      if (year != now.year) continue;
+      for (final expense in entry.value) {
+        spentByCategory[expense.category] =
+            (spentByCategory[expense.category] ?? 0) + expense.amount;
+      }
+    }
+    // Also include current month actuals
+    for (final expense in actualExpenses) {
+      if (expense.date.year == now.year) {
+        spentByCategory[expense.category] =
+            (spentByCategory[expense.category] ?? 0) + expense.amount;
+      }
+    }
+    // Include food purchases
+    final foodSpent = purchaseHistory.records
+        .where((r) => r.date.year == now.year)
+        .fold(0.0, (s, r) => s + r.amount);
+    if (foodSpent > 0) {
+      spentByCategory['alimentacao'] =
+          (spentByCategory['alimentacao'] ?? 0) + foodSpent;
+    }
+
+    final deductionSystem = getTaxDeductionSystem(settings.country);
+    if (deductionSystem == null) return const SizedBox.shrink();
+
+    final deductionSummary = deductionSystem.calculate(
+      spentByCategory: spentByCategory,
+      year: now.year,
+    );
+
+    return TaxDeductionCard(
+      summary: deductionSummary,
+      onSeeDetail: () => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => TaxDeductionDetailScreen(summary: deductionSummary),
+        ),
+      ),
+    );
+  }
+
   Widget _buildBudgetVsActualCard(BuildContext context) {
     final l10n = S.of(context);
     final now = DateTime.now();
@@ -479,6 +679,7 @@ class DashboardScreen extends StatelessWidget {
         .length;
 
     return Container(
+      key: DashboardTourKeys.budgetVsActual,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.surface(context),
@@ -1072,7 +1273,7 @@ class _SummaryCard extends StatelessWidget {
 class _StressIndexCard extends StatefulWidget {
   final StressIndexResult result;
   final VoidCallback? onShowTrend;
-  const _StressIndexCard({required this.result, this.onShowTrend});
+  const _StressIndexCard({super.key, required this.result, this.onShowTrend});
 
   @override
   State<_StressIndexCard> createState() => _StressIndexCardState();

@@ -4,6 +4,7 @@ import '../models/shopping_item.dart';
 import '../models/purchase_record.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
+import '../onboarding/shopping_tour.dart';
 
 class ShoppingListScreen extends StatefulWidget {
   final List<ShoppingItem> items;
@@ -12,6 +13,8 @@ class ShoppingListScreen extends StatefulWidget {
   final VoidCallback onClearChecked;
   final void Function(double? amount, List<ShoppingItem> checkedItems, {bool isMealPurchase}) onFinalize;
   final PurchaseHistory purchaseHistory;
+  final bool showTour;
+  final VoidCallback? onTourComplete;
 
   const ShoppingListScreen({
     super.key,
@@ -21,6 +24,8 @@ class ShoppingListScreen extends StatefulWidget {
     required this.onClearChecked,
     required this.onFinalize,
     required this.purchaseHistory,
+    this.showTour = false,
+    this.onTourComplete,
   });
 
   @override
@@ -28,6 +33,37 @@ class ShoppingListScreen extends StatefulWidget {
 }
 
 class _ShoppingListScreenState extends State<ShoppingListScreen> {
+  bool _tourShown = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.showTour && widget.items.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _tryShowTour());
+    }
+  }
+
+  @override
+  void didUpdateWidget(ShoppingListScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.showTour && !_tourShown && widget.items.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _tryShowTour());
+    }
+  }
+
+  void _tryShowTour() {
+    if (_tourShown || !mounted || widget.items.isEmpty) return;
+    _tourShown = true;
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (!mounted) return;
+      buildShoppingTour(
+        context: context,
+        onFinish: () => widget.onTourComplete?.call(),
+        onSkip: () => widget.onTourComplete?.call(),
+      ).show(context: context);
+    });
+  }
+
   void _showFinalizeSheet() {
     final l10n = S.of(context);
     final checkedItems = widget.items.where((i) => i.checked).toList();
@@ -296,13 +332,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             child: ListView.builder(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
               itemCount: widget.items.length,
-              itemBuilder: (_, i) => _buildItemRow(widget.items[i]),
+              itemBuilder: (_, i) => _buildItemRow(widget.items[i], tourKey: i == 0 ? ShoppingTourKeys.shoppingItem : null),
             ),
           ),
         ],
       ),
       floatingActionButton: hasChecked
           ? FloatingActionButton.extended(
+              key: ShoppingTourKeys.finalizeButton,
               onPressed: _showFinalizeSheet,
               backgroundColor: AppColors.success(context),
               icon: Icon(Icons.check_circle_outline, color: AppColors.onPrimary(context)),
@@ -330,6 +367,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         actions: [
           if (widget.purchaseHistory.records.isNotEmpty)
             IconButton(
+              key: ShoppingTourKeys.historyButton,
               icon: Icon(Icons.receipt_long_outlined,
                   color: AppColors.textSecondary(context)),
               tooltip: l10n.shoppingHistoryTooltip,
@@ -475,7 +513,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     );
   }
 
-  Widget _buildItemRow(ShoppingItem item) {
+  Widget _buildItemRow(ShoppingItem item, {GlobalKey? tourKey}) {
     final l10n = S.of(context);
     return Dismissible(
       key: Key(item.id.isNotEmpty
@@ -495,6 +533,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       ),
       onDismissed: (_) => widget.onRemove(item),
       child: Semantics(
+        key: tourKey,
         button: true,
         label: item.checked ? l10n.shoppingItemChecked(item.productName) : l10n.shoppingItemSwipe(item.productName),
         child: Material(

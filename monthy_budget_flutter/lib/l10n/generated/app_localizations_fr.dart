@@ -684,6 +684,10 @@ class SFr extends S {
   String get authSwitchToLogin => 'J\'ai déjà un compte';
 
   @override
+  String get authRegistrationSuccess =>
+      'Compte créé ! Vérifiez votre email pour confirmer votre compte avant de vous connecter.';
+
+  @override
   String get householdSetupTitle => 'Configurer le Foyer';
 
   @override
@@ -2065,7 +2069,7 @@ class SFr extends S {
   String get recurringExpenseDescription => 'Description (facultatif)';
 
   @override
-  String get recurringExpenseDayOfMonth => 'Jour du mois';
+  String get recurringExpenseDayOfMonth => 'Jour d\'échéance';
 
   @override
   String get recurringExpenseActive => 'Active';
@@ -2465,5 +2469,343 @@ class SFr extends S {
   @override
   String paceProjected(String amount) {
     return 'Projection : $amount';
+  }
+
+  @override
+  String get onbSkip => 'Passer';
+
+  @override
+  String get onbNext => 'Suivant';
+
+  @override
+  String get onbGetStarted => 'Commencer';
+
+  @override
+  String get onbSlide0Title => 'Votre budget, en un coup d\'œil';
+
+  @override
+  String get onbSlide0Body =>
+      'Le tableau de bord affiche votre liquidité mensuelle, dépenses et Indice de Sérénité.';
+
+  @override
+  String get onbSlide1Title => 'Suivez chaque dépense';
+
+  @override
+  String get onbSlide1Body =>
+      'Appuyez sur + pour enregistrer un achat. Assignez une catégorie et regardez les barres se mettre à jour.';
+
+  @override
+  String get onbSlide2Title => 'Achetez avec une liste';
+
+  @override
+  String get onbSlide2Body =>
+      'Parcourez les produits, créez une liste, puis finalisez pour enregistrer vos dépenses automatiquement.';
+
+  @override
+  String get onbSlide3Title => 'Votre coach financier IA';
+
+  @override
+  String get onbSlide3Body =>
+      'Obtenez une analyse en 3 parties basée sur votre budget réel — pas des conseils génériques.';
+
+  @override
+  String get onbSlide4Title => 'Planifiez vos repas dans le budget';
+
+  @override
+  String get onbSlide4Body =>
+      'Générez un plan mensuel adapté à votre budget alimentaire et la taille du foyer.';
+
+  @override
+  String get onbTourSkip => 'Passer la visite';
+
+  @override
+  String get onbTourNext => 'Suivant';
+
+  @override
+  String get onbTourDone => 'Compris';
+
+  @override
+  String get onbTourDash1Title => 'Liquidité mensuelle';
+
+  @override
+  String get onbTourDash1Body =>
+      'Revenus moins toutes les dépenses. Vert signifie solde positif.';
+
+  @override
+  String get onbTourDash2Title => 'Indice de Sérénité';
+
+  @override
+  String get onbTourDash2Body =>
+      'Score de santé financière 0–100. Appuyez pour voir les facteurs.';
+
+  @override
+  String get onbTourDash3Title => 'Budget vs réel';
+
+  @override
+  String get onbTourDash3Body => 'Dépenses prévues vs réelles par catégorie.';
+
+  @override
+  String get onbTourDash4Title => 'Ajouter une dépense';
+
+  @override
+  String get onbTourDash4Body =>
+      'Appuyez sur + à tout moment pour enregistrer une dépense.';
+
+  @override
+  String get onbTourDash5Title => 'Navigation';
+
+  @override
+  String get onbTourDash5Body =>
+      '5 sections : Budget, Épicerie, Liste, Coach, Repas.';
+
+  @override
+  String get onbTourGrocery1Title => 'Rechercher et filtrer';
+
+  @override
+  String get onbTourGrocery1Body =>
+      'Recherchez par nom ou filtrez par catégorie.';
+
+  @override
+  String get onbTourGrocery2Title => 'Ajouter à la liste';
+
+  @override
+  String get onbTourGrocery2Body =>
+      'Appuyez sur + sur un produit pour l\'ajouter à votre liste de courses.';
+
+  @override
+  String get onbTourGrocery3Title => 'Catégories';
+
+  @override
+  String get onbTourGrocery3Body =>
+      'Faites défiler les filtres de catégorie pour affiner les produits.';
+
+  @override
+  String get onbTourShopping1Title => 'Cocher les articles';
+
+  @override
+  String get onbTourShopping1Body =>
+      'Appuyez sur un article pour le marquer comme pris.';
+
+  @override
+  String get onbTourShopping2Title => 'Finaliser l\'achat';
+
+  @override
+  String get onbTourShopping2Body =>
+      'Enregistre la dépense et efface les articles cochés.';
+
+  @override
+  String get onbTourShopping3Title => 'Historique d\'achats';
+
+  @override
+  String get onbTourShopping3Body =>
+      'Consultez toutes vos sessions d\'achats passées ici.';
+
+  @override
+  String get onbTourCoach1Title => 'Analyser mon budget';
+
+  @override
+  String get onbTourCoach1Body =>
+      'Appuyez pour générer une analyse basée sur vos données réelles.';
+
+  @override
+  String get onbTourCoach2Title => 'Historique d\'analyses';
+
+  @override
+  String get onbTourCoach2Body =>
+      'Les analyses sauvegardées apparaissent ici, les plus récentes en premier.';
+
+  @override
+  String get onbTourMeals1Title => 'Générer un plan';
+
+  @override
+  String get onbTourMeals1Body =>
+      'Crée un mois complet de repas dans votre budget alimentaire.';
+
+  @override
+  String get onbTourMeals2Title => 'Vue hebdomadaire';
+
+  @override
+  String get onbTourMeals2Body =>
+      'Parcourez les repas par semaine. Appuyez sur un jour pour voir la recette.';
+
+  @override
+  String get onbTourMeals3Title => 'Ajouter à la liste de courses';
+
+  @override
+  String get onbTourMeals3Body =>
+      'Envoyez les ingrédients de la semaine à votre liste en un seul appui.';
+
+  @override
+  String get taxDeductionTitle => 'Déductions Fiscales';
+
+  @override
+  String get taxDeductionSeeDetail => 'Voir détail';
+
+  @override
+  String get taxDeductionEstimated => 'déduction estimée';
+
+  @override
+  String taxDeductionMaxOf(String amount) {
+    return 'Max. de $amount';
+  }
+
+  @override
+  String get taxDeductionDetailTitle => 'Déductions Fiscales — Détail';
+
+  @override
+  String get taxDeductionDeductibleTitle => 'CATÉGORIES DÉDUCTIBLES';
+
+  @override
+  String get taxDeductionNonDeductibleTitle => 'CATÉGORIES NON DÉDUCTIBLES';
+
+  @override
+  String get taxDeductionTotalLabel => 'DÉDUCTION ESTIMÉE';
+
+  @override
+  String taxDeductionSpent(String amount) {
+    return 'Dépensé : $amount';
+  }
+
+  @override
+  String taxDeductionCapUsed(String percent, String cap) {
+    return '$percent de $cap utilisé';
+  }
+
+  @override
+  String get taxDeductionNotDeductible => 'Non déductible';
+
+  @override
+  String get taxDeductionDisclaimer =>
+      'Ces valeurs sont des estimations basées sur vos dépenses enregistrées. Les déductions réelles dépendent des factures déclarées. Consultez un professionnel fiscal pour les montants définitifs.';
+
+  @override
+  String get settingsDashTaxDeductions => 'Déductions fiscales (PT)';
+
+  @override
+  String get settingsDashUpcomingBills => 'Factures à venir';
+
+  @override
+  String get settingsDashBudgetStreaks => 'Séries de budget';
+
+  @override
+  String get upcomingBillsTitle => 'Factures à Venir';
+
+  @override
+  String get upcomingBillsManage => 'Gérer';
+
+  @override
+  String get billDueToday => 'Aujourd\'hui';
+
+  @override
+  String get billDueTomorrow => 'Demain';
+
+  @override
+  String billDueInDays(int days) {
+    return 'Dans $days jours';
+  }
+
+  @override
+  String savingsProjectionReachedBy(String date) {
+    return 'Atteint d\'ici $date';
+  }
+
+  @override
+  String savingsProjectionNeedPerMonth(String amount) {
+    return 'Besoin de $amount/mois pour respecter l\'échéance';
+  }
+
+  @override
+  String get savingsProjectionOnTrack => 'En bonne voie';
+
+  @override
+  String get savingsProjectionBehind => 'En retard';
+
+  @override
+  String get savingsProjectionNoData =>
+      'Ajoutez des contributions pour voir la projection';
+
+  @override
+  String savingsProjectionAvgContribution(String amount) {
+    return 'Moy. $amount/mois';
+  }
+
+  @override
+  String get taxSimTitle => 'Simulateur Fiscal';
+
+  @override
+  String get taxSimPresets => 'SCÉNARIOS RAPIDES';
+
+  @override
+  String get taxSimPresetRaise => '+€200 augmentation';
+
+  @override
+  String get taxSimPresetMeal => 'Carte vs espèces';
+
+  @override
+  String get taxSimPresetTitular => 'Conjoint vs séparé';
+
+  @override
+  String get taxSimParameters => 'PARAMÈTRES';
+
+  @override
+  String get taxSimGross => 'Salaire brut';
+
+  @override
+  String get taxSimMarital => 'État civil';
+
+  @override
+  String get taxSimTitulares => 'Titulaires';
+
+  @override
+  String get taxSimDependentes => 'Personnes à charge';
+
+  @override
+  String get taxSimMealType => 'Type d\'indemnité repas';
+
+  @override
+  String get taxSimMealAmount => 'Indemnité repas/jour';
+
+  @override
+  String get taxSimComparison => 'ACTUEL VS SIMULÉ';
+
+  @override
+  String get taxSimNetTakeHome => 'Net à percevoir';
+
+  @override
+  String get taxSimIRS => 'Retenue d\'impôt';
+
+  @override
+  String get taxSimSS => 'Sécurité sociale';
+
+  @override
+  String get taxSimDelta => 'Différence mensuelle :';
+
+  @override
+  String get taxSimButton => 'Simulateur Fiscal';
+
+  @override
+  String get streakTitle => 'Séries de Budget';
+
+  @override
+  String get streakBronze => 'Bronze';
+
+  @override
+  String get streakSilver => 'Argent';
+
+  @override
+  String get streakGold => 'Or';
+
+  @override
+  String get streakBronzeDesc => 'Liquidité positive';
+
+  @override
+  String get streakSilverDesc => 'Dans le budget';
+
+  @override
+  String get streakGoldDesc => 'Toutes catégories';
+
+  @override
+  String streakMonths(int count) {
+    return '$count mois';
   }
 }

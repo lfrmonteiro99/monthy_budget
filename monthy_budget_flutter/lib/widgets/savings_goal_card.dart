@@ -3,16 +3,20 @@ import '../l10n/generated/app_localizations.dart';
 import '../models/savings_goal.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
+import '../utils/savings_projections.dart';
 
-/// Compact dashboard card showing top 1-2 active savings goals with progress bars.
+/// Compact dashboard card showing top 1-2 active savings goals with progress bars
+/// and projection info when available.
 class SavingsGoalCard extends StatelessWidget {
   final List<SavingsGoal> goals;
   final VoidCallback onSeeAll;
+  final Map<String, SavingsProjection> projections;
 
   const SavingsGoalCard({
     super.key,
     required this.goals,
     required this.onSeeAll,
+    this.projections = const {},
   });
 
   @override
@@ -39,7 +43,12 @@ class SavingsGoalCard extends StatelessWidget {
     return _wrapper(
       context,
       l10n,
-      children: display.map((g) => _GoalRow(goal: g)).toList(),
+      children: display
+          .map((g) => _GoalRow(
+                goal: g,
+                projection: projections[g.id],
+              ))
+          .toList(),
     );
   }
 
@@ -97,7 +106,8 @@ class SavingsGoalCard extends StatelessWidget {
 
 class _GoalRow extends StatelessWidget {
   final SavingsGoal goal;
-  const _GoalRow({required this.goal});
+  final SavingsProjection? projection;
+  const _GoalRow({required this.goal, this.projection});
 
   @override
   Widget build(BuildContext context) {
@@ -155,16 +165,78 @@ class _GoalRow extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            '${formatCurrency(goal.currentAmount)} / ${formatCurrency(goal.targetAmount)}',
-            style: TextStyle(
-              fontSize: 11,
-              color: AppColors.textMuted(context),
-            ),
+          Row(
+            children: [
+              Text(
+                '${formatCurrency(goal.currentAmount)} / ${formatCurrency(goal.targetAmount)}',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: AppColors.textMuted(context),
+                ),
+              ),
+              const Spacer(),
+              if (projection != null) _buildProjectionText(context, l10n),
+            ],
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildProjectionText(BuildContext context, S l10n) {
+    final p = projection!;
+    if (!p.hasData) {
+      return Text(
+        l10n.savingsProjectionNoData,
+        style: TextStyle(
+          fontSize: 10,
+          color: AppColors.textMuted(context),
+          fontStyle: FontStyle.italic,
+        ),
+      );
+    }
+
+    if (p.projectedDate != null && p.onTrack != null) {
+      final dateStr =
+          '${p.projectedDate!.month.toString().padLeft(2, '0')}/${p.projectedDate!.year}';
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            p.onTrack! ? Icons.check_circle_outline : Icons.warning_amber,
+            size: 12,
+            color: p.onTrack!
+                ? AppColors.success(context)
+                : AppColors.warning(context),
+          ),
+          const SizedBox(width: 3),
+          Text(
+            l10n.savingsProjectionReachedBy(dateStr),
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              color: p.onTrack!
+                  ? AppColors.success(context)
+                  : AppColors.warning(context),
+            ),
+          ),
+        ],
+      );
+    }
+
+    if (p.projectedDate != null) {
+      final dateStr =
+          '${p.projectedDate!.month.toString().padLeft(2, '0')}/${p.projectedDate!.year}';
+      return Text(
+        l10n.savingsProjectionReachedBy(dateStr),
+        style: TextStyle(
+          fontSize: 10,
+          color: AppColors.textSecondary(context),
+        ),
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 }
 

@@ -1313,6 +1313,12 @@ abstract class S {
   /// **'Já tenho conta'**
   String get authSwitchToLogin;
 
+  /// Registration success message
+  ///
+  /// In pt, this message translates to:
+  /// **'Conta criada! Verifique o seu email para confirmar a conta antes de iniciar sessão.'**
+  String get authRegistrationSuccess;
+
   /// Household setup screen title
   ///
   /// In pt, this message translates to:
@@ -3872,7 +3878,7 @@ abstract class S {
   /// Day of month field
   ///
   /// In pt, this message translates to:
-  /// **'Dia do mês'**
+  /// **'Dia de vencimento'**
   String get recurringExpenseDayOfMonth;
 
   /// Active toggle label
@@ -4606,6 +4612,606 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Projeção: {amount}'**
   String paceProjected(String amount);
+
+  /// No description provided for @onbSkip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Saltar'**
+  String get onbSkip;
+
+  /// No description provided for @onbNext.
+  ///
+  /// In pt, this message translates to:
+  /// **'Seguinte'**
+  String get onbNext;
+
+  /// No description provided for @onbGetStarted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Começar'**
+  String get onbGetStarted;
+
+  /// No description provided for @onbSlide0Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'O seu orçamento, num relance'**
+  String get onbSlide0Title;
+
+  /// No description provided for @onbSlide0Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'O painel mostra a sua liquidez mensal, despesas e Índice de Serenidade.'**
+  String get onbSlide0Body;
+
+  /// No description provided for @onbSlide1Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Registe cada despesa'**
+  String get onbSlide1Title;
+
+  /// No description provided for @onbSlide1Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque + para registar uma compra. Atribua uma categoria e veja as barras atualizarem.'**
+  String get onbSlide1Body;
+
+  /// No description provided for @onbSlide2Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Compre com lista'**
+  String get onbSlide2Title;
+
+  /// No description provided for @onbSlide2Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Navegue produtos, monte a lista e finalize para registar o gasto automaticamente.'**
+  String get onbSlide2Body;
+
+  /// No description provided for @onbSlide3Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'O seu coach financeiro IA'**
+  String get onbSlide3Title;
+
+  /// No description provided for @onbSlide3Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Obtenha uma análise em 3 partes baseada no seu orçamento real — não conselhos genéricos.'**
+  String get onbSlide3Body;
+
+  /// No description provided for @onbSlide4Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Planeie refeições no orçamento'**
+  String get onbSlide4Title;
+
+  /// No description provided for @onbSlide4Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Gere um plano mensal ajustado ao seu orçamento alimentar e agregado familiar.'**
+  String get onbSlide4Body;
+
+  /// No description provided for @onbTourSkip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Saltar tour'**
+  String get onbTourSkip;
+
+  /// No description provided for @onbTourNext.
+  ///
+  /// In pt, this message translates to:
+  /// **'Seguinte'**
+  String get onbTourNext;
+
+  /// No description provided for @onbTourDone.
+  ///
+  /// In pt, this message translates to:
+  /// **'Entendido'**
+  String get onbTourDone;
+
+  /// No description provided for @onbTourDash1Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Liquidez mensal'**
+  String get onbTourDash1Title;
+
+  /// No description provided for @onbTourDash1Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Rendimento menos todas as despesas. Verde significa saldo positivo.'**
+  String get onbTourDash1Body;
+
+  /// No description provided for @onbTourDash2Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Índice de Serenidade'**
+  String get onbTourDash2Title;
+
+  /// No description provided for @onbTourDash2Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pontuação de saúde financeira 0–100. Toque para ver os fatores.'**
+  String get onbTourDash2Body;
+
+  /// No description provided for @onbTourDash3Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamento vs real'**
+  String get onbTourDash3Title;
+
+  /// No description provided for @onbTourDash3Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Gastos planeados vs reais por categoria.'**
+  String get onbTourDash3Body;
+
+  /// No description provided for @onbTourDash4Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar despesa'**
+  String get onbTourDash4Title;
+
+  /// No description provided for @onbTourDash4Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque + a qualquer momento para registar uma despesa.'**
+  String get onbTourDash4Body;
+
+  /// No description provided for @onbTourDash5Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Navegação'**
+  String get onbTourDash5Title;
+
+  /// No description provided for @onbTourDash5Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'5 secções: Orçamento, Supermercado, Lista, Coach, Refeições.'**
+  String get onbTourDash5Body;
+
+  /// No description provided for @onbTourGrocery1Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pesquisar e filtrar'**
+  String get onbTourGrocery1Title;
+
+  /// No description provided for @onbTourGrocery1Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pesquise por nome ou filtre por categoria.'**
+  String get onbTourGrocery1Body;
+
+  /// No description provided for @onbTourGrocery2Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar à lista'**
+  String get onbTourGrocery2Title;
+
+  /// No description provided for @onbTourGrocery2Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque + num produto para o adicionar à lista de compras.'**
+  String get onbTourGrocery2Body;
+
+  /// No description provided for @onbTourGrocery3Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categorias'**
+  String get onbTourGrocery3Title;
+
+  /// No description provided for @onbTourGrocery3Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Deslize os filtros de categoria para refinar produtos.'**
+  String get onbTourGrocery3Body;
+
+  /// No description provided for @onbTourShopping1Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Riscar itens'**
+  String get onbTourShopping1Title;
+
+  /// No description provided for @onbTourShopping1Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque num item para o marcar como apanhado.'**
+  String get onbTourShopping1Body;
+
+  /// No description provided for @onbTourShopping2Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Finalizar compra'**
+  String get onbTourShopping2Title;
+
+  /// No description provided for @onbTourShopping2Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Regista o gasto e limpa os itens marcados.'**
+  String get onbTourShopping2Body;
+
+  /// No description provided for @onbTourShopping3Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Histórico de compras'**
+  String get onbTourShopping3Title;
+
+  /// No description provided for @onbTourShopping3Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Veja todas as sessões de compras anteriores aqui.'**
+  String get onbTourShopping3Body;
+
+  /// No description provided for @onbTourCoach1Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Analisar o meu orçamento'**
+  String get onbTourCoach1Title;
+
+  /// No description provided for @onbTourCoach1Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque para gerar uma análise baseada nos seus dados reais.'**
+  String get onbTourCoach1Body;
+
+  /// No description provided for @onbTourCoach2Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Histórico de análises'**
+  String get onbTourCoach2Title;
+
+  /// No description provided for @onbTourCoach2Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'As análises guardadas aparecem aqui, mais recentes primeiro.'**
+  String get onbTourCoach2Body;
+
+  /// No description provided for @onbTourMeals1Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Gerar plano'**
+  String get onbTourMeals1Title;
+
+  /// No description provided for @onbTourMeals1Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cria um mês completo de refeições dentro do orçamento alimentar.'**
+  String get onbTourMeals1Body;
+
+  /// No description provided for @onbTourMeals2Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Vista semanal'**
+  String get onbTourMeals2Title;
+
+  /// No description provided for @onbTourMeals2Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Navegue refeições por semana. Toque num dia para ver a receita.'**
+  String get onbTourMeals2Body;
+
+  /// No description provided for @onbTourMeals3Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar à lista de compras'**
+  String get onbTourMeals3Title;
+
+  /// No description provided for @onbTourMeals3Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Envie os ingredientes da semana para a lista com um toque.'**
+  String get onbTourMeals3Body;
+
+  /// No description provided for @taxDeductionTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Deduções IRS'**
+  String get taxDeductionTitle;
+
+  /// No description provided for @taxDeductionSeeDetail.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver detalhe'**
+  String get taxDeductionSeeDetail;
+
+  /// No description provided for @taxDeductionEstimated.
+  ///
+  /// In pt, this message translates to:
+  /// **'dedução estimada'**
+  String get taxDeductionEstimated;
+
+  /// No description provided for @taxDeductionMaxOf.
+  ///
+  /// In pt, this message translates to:
+  /// **'Máx. de {amount}'**
+  String taxDeductionMaxOf(String amount);
+
+  /// No description provided for @taxDeductionDetailTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Deduções IRS — Detalhe'**
+  String get taxDeductionDetailTitle;
+
+  /// No description provided for @taxDeductionDeductibleTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'CATEGORIAS DEDUTÍVEIS'**
+  String get taxDeductionDeductibleTitle;
+
+  /// No description provided for @taxDeductionNonDeductibleTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'CATEGORIAS NÃO DEDUTÍVEIS'**
+  String get taxDeductionNonDeductibleTitle;
+
+  /// No description provided for @taxDeductionTotalLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'DEDUÇÃO IRS ESTIMADA'**
+  String get taxDeductionTotalLabel;
+
+  /// No description provided for @taxDeductionSpent.
+  ///
+  /// In pt, this message translates to:
+  /// **'Gasto: {amount}'**
+  String taxDeductionSpent(String amount);
+
+  /// No description provided for @taxDeductionCapUsed.
+  ///
+  /// In pt, this message translates to:
+  /// **'{percent} de {cap} utilizado'**
+  String taxDeductionCapUsed(String percent, String cap);
+
+  /// No description provided for @taxDeductionNotDeductible.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não dedutível'**
+  String get taxDeductionNotDeductible;
+
+  /// No description provided for @taxDeductionDisclaimer.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estes valores são estimativas baseadas nas despesas registadas. As deduções reais dependem das faturas registadas no e-Fatura. Consulte um profissional fiscal para valores definitivos.'**
+  String get taxDeductionDisclaimer;
+
+  /// No description provided for @settingsDashTaxDeductions.
+  ///
+  /// In pt, this message translates to:
+  /// **'Deduções fiscais (PT)'**
+  String get settingsDashTaxDeductions;
+
+  /// No description provided for @settingsDashUpcomingBills.
+  ///
+  /// In pt, this message translates to:
+  /// **'Contas a pagar'**
+  String get settingsDashUpcomingBills;
+
+  /// No description provided for @settingsDashBudgetStreaks.
+  ///
+  /// In pt, this message translates to:
+  /// **'Séries de orçamento'**
+  String get settingsDashBudgetStreaks;
+
+  /// No description provided for @upcomingBillsTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Contas a Pagar'**
+  String get upcomingBillsTitle;
+
+  /// No description provided for @upcomingBillsManage.
+  ///
+  /// In pt, this message translates to:
+  /// **'Gerir'**
+  String get upcomingBillsManage;
+
+  /// No description provided for @billDueToday.
+  ///
+  /// In pt, this message translates to:
+  /// **'Hoje'**
+  String get billDueToday;
+
+  /// No description provided for @billDueTomorrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'Amanhã'**
+  String get billDueTomorrow;
+
+  /// No description provided for @billDueInDays.
+  ///
+  /// In pt, this message translates to:
+  /// **'Em {days} dias'**
+  String billDueInDays(int days);
+
+  /// No description provided for @savingsProjectionReachedBy.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atingido até {date}'**
+  String savingsProjectionReachedBy(String date);
+
+  /// No description provided for @savingsProjectionNeedPerMonth.
+  ///
+  /// In pt, this message translates to:
+  /// **'Precisa {amount}/mês para cumprir prazo'**
+  String savingsProjectionNeedPerMonth(String amount);
+
+  /// No description provided for @savingsProjectionOnTrack.
+  ///
+  /// In pt, this message translates to:
+  /// **'No caminho certo'**
+  String get savingsProjectionOnTrack;
+
+  /// No description provided for @savingsProjectionBehind.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atrasado'**
+  String get savingsProjectionBehind;
+
+  /// No description provided for @savingsProjectionNoData.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicione contribuições para ver projeção'**
+  String get savingsProjectionNoData;
+
+  /// No description provided for @savingsProjectionAvgContribution.
+  ///
+  /// In pt, this message translates to:
+  /// **'Média {amount}/mês'**
+  String savingsProjectionAvgContribution(String amount);
+
+  /// No description provided for @taxSimTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Simulador Fiscal'**
+  String get taxSimTitle;
+
+  /// No description provided for @taxSimPresets.
+  ///
+  /// In pt, this message translates to:
+  /// **'CENÁRIOS RÁPIDOS'**
+  String get taxSimPresets;
+
+  /// No description provided for @taxSimPresetRaise.
+  ///
+  /// In pt, this message translates to:
+  /// **'+€200 aumento'**
+  String get taxSimPresetRaise;
+
+  /// No description provided for @taxSimPresetMeal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cartão vs dinheiro'**
+  String get taxSimPresetMeal;
+
+  /// No description provided for @taxSimPresetTitular.
+  ///
+  /// In pt, this message translates to:
+  /// **'Único vs conjunto'**
+  String get taxSimPresetTitular;
+
+  /// No description provided for @taxSimParameters.
+  ///
+  /// In pt, this message translates to:
+  /// **'PARÂMETROS'**
+  String get taxSimParameters;
+
+  /// No description provided for @taxSimGross.
+  ///
+  /// In pt, this message translates to:
+  /// **'Salário bruto'**
+  String get taxSimGross;
+
+  /// No description provided for @taxSimMarital.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estado civil'**
+  String get taxSimMarital;
+
+  /// No description provided for @taxSimTitulares.
+  ///
+  /// In pt, this message translates to:
+  /// **'Titulares'**
+  String get taxSimTitulares;
+
+  /// No description provided for @taxSimDependentes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dependentes'**
+  String get taxSimDependentes;
+
+  /// No description provided for @taxSimMealType.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tipo de subsídio de alimentação'**
+  String get taxSimMealType;
+
+  /// No description provided for @taxSimMealAmount.
+  ///
+  /// In pt, this message translates to:
+  /// **'Subsídio alim./dia'**
+  String get taxSimMealAmount;
+
+  /// No description provided for @taxSimComparison.
+  ///
+  /// In pt, this message translates to:
+  /// **'ATUAL VS SIMULADO'**
+  String get taxSimComparison;
+
+  /// No description provided for @taxSimNetTakeHome.
+  ///
+  /// In pt, this message translates to:
+  /// **'Líquido a receber'**
+  String get taxSimNetTakeHome;
+
+  /// No description provided for @taxSimIRS.
+  ///
+  /// In pt, this message translates to:
+  /// **'Retenção IRS'**
+  String get taxSimIRS;
+
+  /// No description provided for @taxSimSS.
+  ///
+  /// In pt, this message translates to:
+  /// **'Segurança social'**
+  String get taxSimSS;
+
+  /// No description provided for @taxSimDelta.
+  ///
+  /// In pt, this message translates to:
+  /// **'Diferença mensal:'**
+  String get taxSimDelta;
+
+  /// No description provided for @taxSimButton.
+  ///
+  /// In pt, this message translates to:
+  /// **'Simulador Fiscal'**
+  String get taxSimButton;
+
+  /// No description provided for @streakTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Séries de Orçamento'**
+  String get streakTitle;
+
+  /// No description provided for @streakBronze.
+  ///
+  /// In pt, this message translates to:
+  /// **'Bronze'**
+  String get streakBronze;
+
+  /// No description provided for @streakSilver.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prata'**
+  String get streakSilver;
+
+  /// No description provided for @streakGold.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ouro'**
+  String get streakGold;
+
+  /// No description provided for @streakBronzeDesc.
+  ///
+  /// In pt, this message translates to:
+  /// **'Liquidez positiva'**
+  String get streakBronzeDesc;
+
+  /// No description provided for @streakSilverDesc.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dentro do orçamento'**
+  String get streakSilverDesc;
+
+  /// No description provided for @streakGoldDesc.
+  ///
+  /// In pt, this message translates to:
+  /// **'Todas as categorias'**
+  String get streakGoldDesc;
+
+  /// No description provided for @streakMonths.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} meses'**
+  String streakMonths(int count);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

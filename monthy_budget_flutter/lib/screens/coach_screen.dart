@@ -7,6 +7,7 @@ import '../services/ai_coach_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/calculations.dart';
 import '../data/tax/tax_factory.dart';
+import '../onboarding/coach_tour.dart';
 
 class CoachScreen extends StatefulWidget {
   final AppSettings settings;
@@ -14,6 +15,8 @@ class CoachScreen extends StatefulWidget {
   final String apiKey;
   final String householdId;
   final VoidCallback onOpenSettings;
+  final bool showTour;
+  final VoidCallback? onTourComplete;
 
   const CoachScreen({
     super.key,
@@ -22,6 +25,8 @@ class CoachScreen extends StatefulWidget {
     required this.apiKey,
     required this.householdId,
     required this.onOpenSettings,
+    this.showTour = false,
+    this.onTourComplete,
   });
 
   @override
@@ -35,11 +40,28 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   bool _loading = false;
   String? _error;
 
+  bool _tourShown = false;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _loadHistory();
+    if (widget.showTour) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!_tourShown && mounted) {
+          _tourShown = true;
+          Future.delayed(const Duration(milliseconds: 500), () {
+            if (!mounted) return;
+            buildCoachTour(
+              context: context,
+              onFinish: () => widget.onTourComplete?.call(),
+              onSkip: () => widget.onTourComplete?.call(),
+            ).show(context: context);
+          });
+        }
+      });
+    }
   }
 
   @override
@@ -261,6 +283,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   Widget _buildAnalyzeButton() {
     final l10n = S.of(context);
     return SizedBox(
+      key: CoachTourKeys.analyzeButton,
       width: double.infinity,
       child: FilledButton.icon(
         onPressed: _loading ? null : _analyze,
@@ -391,6 +414,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     if (history.isEmpty) return const SizedBox();
 
     return Column(
+      key: CoachTourKeys.historyList,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(

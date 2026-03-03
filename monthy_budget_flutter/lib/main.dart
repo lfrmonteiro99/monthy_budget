@@ -45,8 +45,11 @@ import 'services/notification_service.dart';
 import 'services/savings_goal_service.dart';
 import 'models/savings_goal.dart';
 import 'screens/savings_goals_screen.dart';
+import 'utils/savings_projections.dart';
 import 'theme/app_theme.dart';
 import 'theme/app_colors.dart';
+import 'models/onboarding_state.dart';
+import 'screens/welcome_slideshow_screen.dart';
 
 /// Global notifier for reactive locale changes from settings.
 final appLocaleNotifier = ValueNotifier<Locale?>(null);
@@ -140,6 +143,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   final _savingsGoalService = SavingsGoalService();
   final _monthlyBudgetService = MonthlyBudgetService();
 
+  OnboardingState _onboardingState = const OnboardingState();
+  final _fabKey = GlobalKey(debugLabel: 'tour_fab');
+  final _navBarKey = GlobalKey(debugLabel: 'tour_nav_bar');
+
   AppSettings _settings = const AppSettings();
   List<ActualExpense> _actualExpenses = [];
   List<RecurringExpense> _recurringExpenses = [];
@@ -147,6 +154,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   Map<String, double> _monthlyBudgets = {};
   NotificationPreferences _notificationPrefs = const NotificationPreferences();
   List<SavingsGoal> _savingsGoals = [];
+  Map<String, SavingsProjection> _savingsProjections = {};
   List<Product> _products = [];
   List<String> _favorites = [];
   List<ShoppingItem> _shoppingList = [];
@@ -210,6 +218,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       _aiCoachService.loadApiKey(),
       _productsService.load(),
       _localConfigService.load(),
+      _localConfigService.loadOnboardingState(),
     ]);
     setState(() {
       _settings = results[0] as AppSettings;
@@ -218,6 +227,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       _openAiApiKey = results[3] as String;
       _products = results[4] as List<Product>;
       _dashboardConfig = results[5] as LocalDashboardConfig;
+      _onboardingState = results[6] as OnboardingState;
       _loaded = true;
     });
     _syncLocaleAndFormatter(_settings);
@@ -287,7 +297,18 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   Future<void> _loadNotificationPrefs() async {
     final prefs =
         await _localConfigService.loadNotificationPreferences();
-    if (mounted) setState(() => _notificationPrefs = prefs);
+    if (mounted) {
+      setState(() => _notificationPrefs = prefs);
+      // Schedule bill reminders on app start if enabled
+      if (prefs.billReminders) {
+        NotificationService().refreshAllSchedules(
+          prefs: prefs,
+          recurringExpenses: _recurringExpenses,
+          budgetUsagePercent: 0,
+          hasMealPlan: true,
+        );
+      }
+    }
   }
 
   void _openExpenseTrends() {
@@ -304,6 +325,17 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   Future<void> _loadSavingsGoals() async {
     final goals = await _savingsGoalService.loadGoals(widget.householdId);
     if (mounted) setState(() => _savingsGoals = goals);
+    // Load contributions and compute projections for dashboard card
+    final allContribs = await _savingsGoalService.loadAllContributions(
+        widget.householdId, recentMonths: 6);
+    final projections = <String, SavingsProjection>{};
+    for (final goal in goals) {
+      projections[goal.id] = calculateProjection(
+        goal: goal,
+        contributions: allContribs[goal.id] ?? [],
+      );
+    }
+    if (mounted) setState(() => _savingsProjections = projections);
   }
 
   void _openSavingsGoals() {
@@ -335,6 +367,14 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         ),
       ),
     );
+  }
+
+  void _markTourDone(String key) {
+    final updated = _onboardingState.copyWith(
+      toursCompleted: {..._onboardingState.toursCompleted, key: true},
+    );
+    setState(() => _onboardingState = updated);
+    _localConfigService.saveOnboardingState(updated);
   }
 
   void _syncLocaleAndFormatter(AppSettings settings) {
@@ -599,6 +639,16 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       );
     }
 
+    if (!_onboardingState.welcomeSeen) {
+      return WelcomeSlideshowScreen(
+        onComplete: () {
+          final updated = _onboardingState.copyWith(welcomeSeen: true);
+          setState(() => _onboardingState = updated);
+          _localConfigService.saveOnboardingState(updated);
+        },
+      );
+    }
+
     final taxSystem = getTaxSystem(_settings.country);
     final summary = calculateBudgetSummary(
       _settings.salaries,
@@ -623,16 +673,27 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         onOpenExpenseTracker: _openExpenseTracker,
         onViewTrends: _openExpenseTrends,
         savingsGoals: _savingsGoals,
+        savingsProjections: _savingsProjections,
         onOpenSavingsGoals: _openSavingsGoals,
+        recurringExpenses: _recurringExpenses,
+        actualExpenseHistory: _actualExpenseHistory,
+        billReminderDaysBefore: _notificationPrefs.billReminderDaysBefore,
+        onOpenRecurringExpenses: _openRecurringExpenses,
         onOpenSettings: () {
           Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
           );
         },
+        showTour: !_onboardingState.isTourDone('dashboard'),
+        onTourComplete: () => _markTourDone('dashboard'),
+        fabKey: _fabKey,
+        navBarKey: _navBarKey,
       ),
       GroceryScreen(
         products: _products,
         onAddToShoppingList: _addToShoppingList,
+        showTour: !_onboardingState.isTourDone('grocery'),
+        onTourComplete: () => _markTourDone('grocery'),
       ),
       ShoppingListScreen(
         items: _shoppingList,
@@ -641,6 +702,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         onClearChecked: _clearCheckedItems,
         onFinalize: _finalizeShopping,
         purchaseHistory: _purchaseHistory,
+        showTour: !_onboardingState.isTourDone('shopping'),
+        onTourComplete: () => _markTourDone('shopping'),
       ),
       CoachScreen(
         settings: _settings,
@@ -652,6 +715,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
             MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
           );
         },
+        showTour: !_onboardingState.isTourDone('coach'),
+        onTourComplete: () => _markTourDone('coach'),
       ),
       MealPlannerScreen(
         settings: _settings,
@@ -666,6 +731,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
             builder: (_) => _buildSettingsScreen(initialSection: 'meals'),
           ),
         ),
+        showTour: !_onboardingState.isTourDone('meals'),
+        onTourComplete: () => _markTourDone('meals'),
       ),
     ];
 
@@ -673,6 +740,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       body: screens[_currentIndex],
       floatingActionButton: _currentIndex == 0
           ? FloatingActionButton(
+              key: _fabKey,
               onPressed: _openAddExpenseSheet,
               backgroundColor: AppColors.primary(context),
               tooltip: S.of(context).addExpenseTooltip,
@@ -680,6 +748,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
             )
           : null,
       bottomNavigationBar: NavigationBar(
+        key: _navBarKey,
         selectedIndex: _currentIndex,
         onDestinationSelected: (i) => setState(() => _currentIndex = i),
         backgroundColor: AppColors.surface(context),

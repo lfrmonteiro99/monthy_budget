@@ -117,7 +117,7 @@ class _NotificationSettingsScreenState
                       color: AppColors.textSecondary(context),
                       fontSize: 13),
                 ),
-                activeColor: AppColors.primary(context),
+                activeThumbColor: AppColors.primary(context),
               ),
               if (_prefs.billReminders) ...[
                 Padding(
@@ -169,7 +169,7 @@ class _NotificationSettingsScreenState
                       color: AppColors.textSecondary(context),
                       fontSize: 13),
                 ),
-                activeColor: AppColors.primary(context),
+                activeThumbColor: AppColors.primary(context),
               ),
               if (_prefs.budgetAlerts) ...[
                 Padding(
@@ -209,7 +209,7 @@ class _NotificationSettingsScreenState
                       color: AppColors.textSecondary(context),
                       fontSize: 13),
                 ),
-                activeColor: AppColors.primary(context),
+                activeThumbColor: AppColors.primary(context),
               ),
             ],
           ),

@@ -10,6 +10,7 @@ import '../services/meal_planner_ai_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 import '../widgets/meal_cost_reconciliation_sheet.dart';
+import '../onboarding/meals_tour.dart';
 import 'meal_wizard_screen.dart';
 
 class MealPlannerScreen extends StatefulWidget {
@@ -21,6 +22,8 @@ class MealPlannerScreen extends StatefulWidget {
   final ValueChanged<AppSettings> onSaveSettings;
   final VoidCallback onOpenMealSettings;
   final PurchaseHistory purchaseHistory;
+  final bool showTour;
+  final VoidCallback? onTourComplete;
 
   const MealPlannerScreen({
     super.key,
@@ -32,6 +35,8 @@ class MealPlannerScreen extends StatefulWidget {
     required this.onSaveSettings,
     required this.onOpenMealSettings,
     required this.purchaseHistory,
+    this.showTour = false,
+    this.onTourComplete,
   });
 
   @override
@@ -50,6 +55,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   final Map<String, RecipeAiContent> _aiContent = {};
   final Set<String> _aiPending = {};
   final Set<String> _expanded = {};
+  bool _tourShown = false;
 
   @override
   void initState() {
@@ -66,6 +72,23 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       _catalogReady = true;
     });
     if (saved != null) _enrichPlan(saved);
+    _tryShowTour();
+  }
+
+  void _tryShowTour() {
+    if (_tourShown || !widget.showTour || !mounted || !_catalogReady) return;
+    if (!widget.settings.mealSettings.wizardCompleted) return;
+    _tourShown = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (!mounted) return;
+        buildMealsTour(
+          context: context,
+          onFinish: () => widget.onTourComplete?.call(),
+          onSkip: () => widget.onTourComplete?.call(),
+        ).show(context: context);
+      });
+    });
   }
 
   Future<void> _generatePlan() async {
@@ -280,6 +303,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             _InfoRow(label: l10n.mealPeopleLabel, value: '$np'),
             const SizedBox(height: 32),
             SizedBox(
+              key: MealsTourKeys.generateButton,
               width: double.infinity,
               child: FilledButton.icon(
                 onPressed: _loading ? null : _generatePlan,
@@ -374,6 +398,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   });
                 }
                 return Row(
+                key: MealsTourKeys.weekTabs,
                 children: List.generate(weekCount, (i) {
                   final selected = _selectedWeek == i;
                   return Expanded(
@@ -414,6 +439,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: SizedBox(
+            key: MealsTourKeys.addToListButton,
             width: double.infinity,
             child: OutlinedButton.icon(
               onPressed: () => _addWeekToShoppingList(_selectedWeek),

@@ -12,6 +12,9 @@ class LocalDashboardConfig {
   final bool showCharts;
   final bool showBudgetVsActual;
   final bool showSavingsGoals;
+  final bool showTaxDeductions;
+  final bool showUpcomingBills;
+  final bool showBudgetStreaks;
   final List<ChartType> enabledCharts;
 
   const LocalDashboardConfig({
@@ -25,6 +28,9 @@ class LocalDashboardConfig {
     this.showCharts = true,
     this.showBudgetVsActual = true,
     this.showSavingsGoals = true,
+    this.showTaxDeductions = true,
+    this.showUpcomingBills = true,
+    this.showBudgetStreaks = true,
     this.enabledCharts = const [
       ChartType.expensesPie,
       ChartType.incomeVsExpenses,
@@ -44,6 +50,9 @@ class LocalDashboardConfig {
     showCharts: false,
     showBudgetVsActual: false,
     showSavingsGoals: false,
+    showTaxDeductions: false,
+    showUpcomingBills: false,
+    showBudgetStreaks: false,
     enabledCharts: [],
   );
 
@@ -60,6 +69,9 @@ class LocalDashboardConfig {
     bool? showCharts,
     bool? showBudgetVsActual,
     bool? showSavingsGoals,
+    bool? showTaxDeductions,
+    bool? showUpcomingBills,
+    bool? showBudgetStreaks,
     List<ChartType>? enabledCharts,
   }) {
     return LocalDashboardConfig(
@@ -73,6 +85,9 @@ class LocalDashboardConfig {
       showCharts: showCharts ?? this.showCharts,
       showBudgetVsActual: showBudgetVsActual ?? this.showBudgetVsActual,
       showSavingsGoals: showSavingsGoals ?? this.showSavingsGoals,
+      showTaxDeductions: showTaxDeductions ?? this.showTaxDeductions,
+      showUpcomingBills: showUpcomingBills ?? this.showUpcomingBills,
+      showBudgetStreaks: showBudgetStreaks ?? this.showBudgetStreaks,
       enabledCharts: enabledCharts ?? this.enabledCharts,
     );
   }
@@ -88,6 +103,9 @@ class LocalDashboardConfig {
         'showCharts': showCharts,
         'showBudgetVsActual': showBudgetVsActual,
         'showSavingsGoals': showSavingsGoals,
+        'showTaxDeductions': showTaxDeductions,
+        'showUpcomingBills': showUpcomingBills,
+        'showBudgetStreaks': showBudgetStreaks,
         'enabledCharts': enabledCharts.map((c) => c.jsonValue).toList(),
       };
 
@@ -103,6 +121,9 @@ class LocalDashboardConfig {
       showCharts: json['showCharts'] ?? true,
       showBudgetVsActual: json['showBudgetVsActual'] ?? true,
       showSavingsGoals: json['showSavingsGoals'] ?? true,
+      showTaxDeductions: json['showTaxDeductions'] ?? true,
+      showUpcomingBills: json['showUpcomingBills'] ?? true,
+      showBudgetStreaks: json['showBudgetStreaks'] ?? true,
       enabledCharts: (json['enabledCharts'] as List<dynamic>?)
               ?.map((e) => ChartType.fromJson(e as String))
               .toList() ??

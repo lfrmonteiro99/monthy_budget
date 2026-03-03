@@ -279,7 +279,7 @@ class _AddSavingsGoalSheetState extends State<_AddSavingsGoalSheet> {
                   _isActive ? l10n.savingsGoalActive : l10n.savingsGoalInactive,
                   style: TextStyle(color: AppColors.textPrimary(context)),
                 ),
-                activeColor: AppColors.primary(context),
+                activeThumbColor: AppColors.primary(context),
                 contentPadding: EdgeInsets.zero,
               ),
               const SizedBox(height: 24),

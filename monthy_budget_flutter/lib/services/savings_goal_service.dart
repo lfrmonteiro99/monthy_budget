@@ -75,6 +75,30 @@ class SavingsGoalService {
     return goal.copyWith(currentAmount: updatedAmount);
   }
 
+  /// Load contributions for all goals in a household, optionally limited to recent months.
+  Future<Map<String, List<SavingsContribution>>> loadAllContributions(
+    String householdId, {
+    int? recentMonths,
+  }) async {
+    var query = _client
+        .from('savings_contributions')
+        .select()
+        .eq('household_id', householdId);
+
+    if (recentMonths != null) {
+      final cutoff = DateTime.now().subtract(Duration(days: recentMonths * 31));
+      query = query.gte('contribution_date', cutoff.toIso8601String());
+    }
+
+    final rows = await query.order('contribution_date', ascending: false);
+    final map = <String, List<SavingsContribution>>{};
+    for (final r in (rows as List<dynamic>)) {
+      final c = SavingsContribution.fromSupabase(r as Map<String, dynamic>);
+      (map[c.goalId] ??= []).add(c);
+    }
+    return map;
+  }
+
   Future<void> deleteContribution(
     SavingsContribution contribution,
   ) async {
