@@ -3,6 +3,7 @@ import Hero from "./components/Hero";
 import TrustBar from "./components/TrustBar";
 import HowItWorks from "./components/HowItWorks";
 import Features from "./components/Features";
+import Pricing from "./components/Pricing";
 import Screens from "./components/Screens";
 import Timeline from "./components/Timeline";
 import FAQ from "./components/FAQ";
@@ -17,6 +18,7 @@ export default function App() {
       <TrustBar />
       <HowItWorks />
       <Features />
+      <Pricing />
       <Screens />
       <Timeline />
       <FAQ />

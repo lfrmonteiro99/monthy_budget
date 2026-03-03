@@ -29,6 +29,7 @@ export default function Header() {
     ? [
         { label: t.nav_home, href: "#", isHash: true },
         { label: t.nav_features, href: "#funcionalidades", isHash: true },
+        { label: t.nav_pricing, href: "#precos", isHash: true },
         { label: t.nav_screens, href: "#ecras", isHash: true },
         { label: t.nav_usecases, href: "#casos-de-uso", isHash: true },
         { label: t.nav_privacy, href: "/privacy-policy", isHash: false },
@@ -37,6 +38,7 @@ export default function Header() {
     : [
         { label: t.nav_home, href: "/", isHash: false },
         { label: t.nav_features, href: "/#funcionalidades", isHash: false },
+        { label: t.nav_pricing, href: "/#precos", isHash: false },
         { label: t.nav_privacy, href: "/privacy-policy", isHash: false },
         { label: t.nav_terms, href: "/terms-of-use", isHash: false },
       ];

@@ -45,6 +45,11 @@ export default function Footer() {
                 </a>
               </li>
               <li>
+                <a href="#precos" className="text-sm no-underline hover:underline" style={{ color: "var(--text-secondary)" }}>
+                  {t.footer_pricing_link}
+                </a>
+              </li>
+              <li>
                 <a href="#ecras" className="text-sm no-underline hover:underline" style={{ color: "var(--text-secondary)" }}>
                   {t.footer_screens_link}
                 </a>

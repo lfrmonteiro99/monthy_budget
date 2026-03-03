@@ -72,11 +72,10 @@ export default function Hero() {
                 boxShadow: "0 4px 14px rgba(59,130,246,0.35)"
               }}
             >
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" className="shrink-0">
-                <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-1.832l2.545 1.463c.486.279.756.658.756 1.066 0 .408-.27.787-.756 1.066l-2.545 1.463-2.564-2.529 2.564-2.529zM5.864 2.658L16.8 8.99l-2.302 2.302-8.635-8.635z" />
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0">
+                <path d="m5 12 5 5L20 7" />
               </svg>
-              <span className="hidden sm:inline">{t.hero_cta_primary}</span>
-              <span className="sm:hidden">Google Play</span>
+              {t.hero_cta_primary}
             </a>
             <a
               href="#funcionalidades"
