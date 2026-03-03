@@ -23,32 +23,32 @@ export default function Features() {
   ];
 
   return (
-    <section className="py-20" id="funcionalidades">
-      <div className="max-w-[1140px] mx-auto px-6">
+    <section className="py-12 sm:py-20" id="funcionalidades">
+      <div className="max-w-[1140px] mx-auto px-4 sm:px-6">
         <AnimatedSection>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-3" style={{ color: "var(--text-primary)" }}>{t.features_title}</h2>
-            <p className="text-base max-w-xl mx-auto" style={{ color: "var(--text-secondary)" }}>{t.features_desc}</p>
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3" style={{ color: "var(--text-primary)" }}>{t.features_title}</h2>
+            <p className="text-sm sm:text-base max-w-xl mx-auto" style={{ color: "var(--text-secondary)" }}>{t.features_desc}</p>
           </div>
         </AnimatedSection>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {features.map((feat, i) => (
             <AnimatedSection key={i} delay={i * 0.08}>
               <div
-                className="rounded-2xl p-7 border transition-all hover:-translate-y-0.5 hover:border-[var(--primary-val)] h-full"
+                className="rounded-2xl p-5 sm:p-7 border transition-all sm:hover:-translate-y-0.5 sm:hover:border-[var(--primary-val)] h-full active:scale-[0.98]"
                 style={{
                   background: "var(--surface)",
                   borderColor: "var(--border-card)",
                 }}
               >
                 <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
+                  className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4"
                   style={{ background: "var(--primary-light-val)", color: "var(--primary-val)" }}
                 >
                   {featureIcons[i]}
                 </div>
-                <h3 className="text-lg font-bold mb-2" style={{ color: "var(--text-primary)" }}>{feat.title}</h3>
+                <h3 className="text-base sm:text-lg font-bold mb-2" style={{ color: "var(--text-primary)" }}>{feat.title}</h3>
                 <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>{feat.desc}</p>
               </div>
             </AnimatedSection>

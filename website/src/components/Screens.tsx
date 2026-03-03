@@ -209,6 +209,7 @@ const mockups = [DashboardMockup, SupermarketMockup, ShoppingListMockup, MealsMo
 export default function Screens() {
   const { t } = useLocale();
   const [active, setActive] = useState(0);
+  const [touchStart, setTouchStart] = useState(0);
 
   const screens = [
     { title: t.screen1_title, desc: t.screen1_desc },
@@ -220,32 +221,41 @@ export default function Screens() {
 
   const ActiveMockup = mockups[active];
 
+  const handleSwipe = (endX: number) => {
+    const diff = touchStart - endX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0 && active < screens.length - 1) setActive(active + 1);
+      if (diff < 0 && active > 0) setActive(active - 1);
+    }
+  };
+
   return (
-    <section className="py-20" id="ecras" style={{ background: "var(--surface-variant)" }}>
-      <div className="max-w-[1140px] mx-auto px-6">
+    <section className="py-12 sm:py-20" id="ecras" style={{ background: "var(--surface-variant)" }}>
+      <div className="max-w-[1140px] mx-auto px-4 sm:px-6">
         <AnimatedSection>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-3" style={{ color: "var(--text-primary)" }}>{t.screens_title}</h2>
-            <p className="text-base max-w-xl mx-auto" style={{ color: "var(--text-secondary)" }}>{t.screens_desc}</p>
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3" style={{ color: "var(--text-primary)" }}>{t.screens_title}</h2>
+            <p className="text-sm sm:text-base max-w-xl mx-auto" style={{ color: "var(--text-secondary)" }}>{t.screens_desc}</p>
           </div>
         </AnimatedSection>
 
         <AnimatedSection delay={0.1}>
-          <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-8 max-w-[900px] mx-auto">
-            {/* Left: Screen list */}
-            <div className="flex flex-col gap-2">
+          <div className="max-w-[900px] mx-auto">
+            {/* Mobile: horizontal scrollable tabs */}
+            <div className="flex lg:hidden gap-2 overflow-x-auto pb-3 mb-4 -mx-4 px-4 scrollbar-hide">
               {screens.map((screen, i) => (
                 <button
                   key={i}
                   onClick={() => setActive(i)}
-                  className="flex items-center gap-4 p-4 rounded-2xl text-left transition-all cursor-pointer border-none w-full"
+                  className="flex items-center gap-2.5 px-4 py-3 rounded-2xl text-left transition-all cursor-pointer border-none whitespace-nowrap shrink-0"
                   style={{
                     background: active === i ? "var(--surface)" : "transparent",
                     boxShadow: active === i ? "var(--shadow-md)" : "none",
+                    minHeight: "48px",
                   }}
                 >
                   <div
-                    className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-colors"
+                    className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors"
                     style={{
                       background: active === i ? "var(--primary-light-val)" : "transparent",
                       color: active === i ? "var(--primary-val)" : "var(--text-muted)",
@@ -253,73 +263,112 @@ export default function Screens() {
                   >
                     {screenIcons[i]}
                   </div>
-                  <div>
-                    <h3
-                      className="text-base font-bold mb-0.5 transition-colors"
-                      style={{ color: active === i ? "var(--text-primary)" : "var(--text-secondary)" }}
-                    >
-                      {screen.title}
-                    </h3>
-                    <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>{screen.desc}</p>
-                  </div>
-                  {active === i && (
-                    <motion.div
-                      layoutId="screen-indicator"
-                      className="ml-auto w-1.5 h-10 rounded-full shrink-0"
-                      style={{ background: "var(--primary-val)" }}
-                    />
-                  )}
+                  <span
+                    className="text-sm font-bold transition-colors"
+                    style={{ color: active === i ? "var(--text-primary)" : "var(--text-secondary)" }}
+                  >
+                    {screen.title}
+                  </span>
                 </button>
               ))}
             </div>
 
-            {/* Right: Phone mockup preview */}
-            <div className="flex justify-center">
-              <div
-                className="w-[300px] rounded-[36px] border-[3px] overflow-hidden relative"
-                style={{
-                  background: "var(--surface)",
-                  borderColor: "var(--border)",
-                  boxShadow: "var(--shadow-xl)"
-                }}
-              >
-                {/* Notch */}
-                <div className="w-[120px] h-7 rounded-b-2xl mx-auto" style={{ background: "var(--bg)" }} />
+            {/* Mobile: active screen description */}
+            <p className="lg:hidden text-sm text-center mb-5 leading-relaxed px-2" style={{ color: "var(--text-muted)" }}>
+              {screens[active].desc}
+            </p>
 
-                {/* Screen content */}
-                <div className="px-4 py-4 min-h-[400px]">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={active}
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -12 }}
-                      transition={{ duration: 0.25 }}
+            <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-8">
+              {/* Desktop: left sidebar - hidden on mobile */}
+              <div className="hidden lg:flex flex-col gap-2">
+                {screens.map((screen, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActive(i)}
+                    className="flex items-center gap-4 p-4 rounded-2xl text-left transition-all cursor-pointer border-none w-full"
+                    style={{
+                      background: active === i ? "var(--surface)" : "transparent",
+                      boxShadow: active === i ? "var(--shadow-md)" : "none",
+                    }}
+                  >
+                    <div
+                      className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-colors"
+                      style={{
+                        background: active === i ? "var(--primary-light-val)" : "transparent",
+                        color: active === i ? "var(--primary-val)" : "var(--text-muted)",
+                      }}
                     >
-                      <ActiveMockup />
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
-
-                {/* Bottom nav */}
-                <div className="flex justify-around py-3 border-t mx-4 mb-4" style={{ borderColor: "var(--border-card)" }}>
-                  {screens.map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setActive(i)}
-                      className="border-none bg-transparent cursor-pointer p-0"
-                    >
-                      <div
-                        className="transition-all"
-                        style={{
-                          width: active === i ? 24 : 8,
-                          height: 8,
-                          borderRadius: active === i ? 4 : "50%",
-                          background: active === i ? "var(--primary-val)" : "var(--text-muted)"
-                        }}
+                      {screenIcons[i]}
+                    </div>
+                    <div>
+                      <h3
+                        className="text-base font-bold mb-0.5 transition-colors"
+                        style={{ color: active === i ? "var(--text-primary)" : "var(--text-secondary)" }}
+                      >
+                        {screen.title}
+                      </h3>
+                      <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>{screen.desc}</p>
+                    </div>
+                    {active === i && (
+                      <motion.div
+                        layoutId="screen-indicator"
+                        className="ml-auto w-1.5 h-10 rounded-full shrink-0"
+                        style={{ background: "var(--primary-val)" }}
                       />
-                    </button>
-                  ))}
+                    )}
+                  </button>
+                ))}
+              </div>
+
+              {/* Phone mockup preview */}
+              <div
+                className="flex justify-center"
+                onTouchStart={(e) => setTouchStart(e.touches[0].clientX)}
+                onTouchEnd={(e) => handleSwipe(e.changedTouches[0].clientX)}
+              >
+                <div
+                  className="w-[280px] sm:w-[300px] rounded-[36px] border-[3px] overflow-hidden relative"
+                  style={{
+                    background: "var(--surface)",
+                    borderColor: "var(--border)",
+                    boxShadow: "var(--shadow-xl)"
+                  }}
+                >
+                  <div className="w-[120px] h-7 rounded-b-2xl mx-auto" style={{ background: "var(--bg)" }} />
+
+                  <div className="px-4 py-4 min-h-[380px] sm:min-h-[400px]">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={active}
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -12 }}
+                        transition={{ duration: 0.25 }}
+                      >
+                        <ActiveMockup />
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+
+                  <div className="flex justify-around py-3 border-t mx-4 mb-4" style={{ borderColor: "var(--border-card)" }}>
+                    {screens.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setActive(i)}
+                        className="border-none bg-transparent cursor-pointer p-2.5 flex items-center justify-center"
+                      >
+                        <div
+                          className="transition-all"
+                          style={{
+                            width: active === i ? 24 : 8,
+                            height: 8,
+                            borderRadius: active === i ? 4 : "50%",
+                            background: active === i ? "var(--primary-val)" : "var(--text-muted)"
+                          }}
+                        />
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

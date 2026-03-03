@@ -9,8 +9,8 @@ export default function Footer() {
       className="border-t pt-10 pb-6 transition-colors"
       style={{ background: "var(--surface)", borderTopColor: "var(--border-card)" }}
     >
-      <div className="max-w-[1140px] mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-12 mb-8">
+      <div className="max-w-[1140px] mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-8 sm:gap-12 mb-8">
           <div>
             <Link
               to="/"
@@ -80,7 +80,7 @@ export default function Footer() {
         </div>
 
         <div
-          className="border-t pt-5 flex flex-wrap justify-between items-center gap-3 text-xs"
+          className="border-t pt-5 flex flex-col sm:flex-row flex-wrap justify-between items-center gap-2 sm:gap-3 text-xs text-center"
           style={{ borderTopColor: "var(--border-card)", color: "var(--text-muted)" }}
         >
           <span>{t.footer_copyright}</span>

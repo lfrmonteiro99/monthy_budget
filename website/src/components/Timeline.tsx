@@ -25,23 +25,23 @@ export default function Timeline() {
   ];
 
   return (
-    <section className="py-20" id="casos-de-uso">
-      <div className="max-w-[1140px] mx-auto px-6">
+    <section className="py-12 sm:py-20" id="casos-de-uso">
+      <div className="max-w-[1140px] mx-auto px-4 sm:px-6">
         <AnimatedSection>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-3" style={{ color: "var(--text-primary)" }}>{t.timeline_title}</h2>
-            <p className="text-base max-w-xl mx-auto" style={{ color: "var(--text-secondary)" }}>{t.timeline_subtitle}</p>
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3" style={{ color: "var(--text-primary)" }}>{t.timeline_title}</h2>
+            <p className="text-sm sm:text-base max-w-xl mx-auto" style={{ color: "var(--text-secondary)" }}>{t.timeline_subtitle}</p>
           </div>
         </AnimatedSection>
 
         <div className="max-w-[900px] mx-auto">
           {days.map((item, i) => (
             <AnimatedSection key={item.day} delay={i * 0.05}>
-              <div className="flex gap-6 mb-10 last:mb-0">
+              <div className="flex gap-3 sm:gap-6 mb-8 sm:mb-10 last:mb-0">
                 {/* Day badge */}
                 <div className="flex flex-col items-center shrink-0">
                   <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold z-[2]"
+                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs font-bold z-[2]"
                     style={{
                       background: "var(--primary-val)",
                       color: "var(--on-primary)",
@@ -57,7 +57,7 @@ export default function Timeline() {
 
                 {/* Card */}
                 <div
-                  className="rounded-2xl p-6 flex-1 border transition-all hover:border-[var(--primary-val)] hover:-translate-y-0.5"
+                  className="rounded-2xl p-4 sm:p-6 flex-1 border transition-all sm:hover:border-[var(--primary-val)] sm:hover:-translate-y-0.5"
                   style={{
                     background: "var(--surface)",
                     borderColor: "var(--border-card)",

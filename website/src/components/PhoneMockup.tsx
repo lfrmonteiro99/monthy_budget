@@ -5,7 +5,7 @@ export default function PhoneMockup() {
   const { t } = useLocale();
 
   return (
-    <section className="pb-16 flex flex-col items-center justify-center">
+    <section className="pb-8 sm:pb-16 flex flex-col items-center justify-center overflow-hidden">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}

@@ -14,11 +14,11 @@ export default function TrustBar() {
 
   return (
     <section className="py-8 border-b" style={{ borderBottomColor: "var(--border-card)" }}>
-      <div className="max-w-[1140px] mx-auto px-6">
+      <div className="max-w-[1140px] mx-auto px-4 sm:px-6">
         <AnimatedSection>
-          <div className="flex justify-center items-center gap-12 flex-wrap">
+          <div className="grid grid-cols-2 sm:flex sm:justify-center sm:items-center gap-4 sm:gap-12">
             {items.map((item, i) => (
-              <div key={i} className="flex items-center gap-2.5 text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
+              <div key={i} className="flex items-center justify-center sm:justify-start gap-2.5 text-xs sm:text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
                 <span className="w-5 h-5 shrink-0" style={{ color: "var(--primary-val)" }}>{icons[i]}</span>
                 {item}
               </div>

@@ -10,12 +10,12 @@ export default function TermsOfUse() {
 
   return (
     <LegalLayout>
-      <h1 className="text-3xl font-bold mb-2" style={{ color: "var(--text-primary)" }}>{t.terms_title}</h1>
-      <p className="text-sm mb-8" style={{ color: "var(--text-muted)" }}>{t.terms_last_updated}</p>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-2" style={{ color: "var(--text-primary)" }}>{t.terms_title}</h1>
+      <p className="text-xs sm:text-sm mb-6 sm:mb-8" style={{ color: "var(--text-muted)" }}>{t.terms_last_updated}</p>
 
       {/* TOC */}
       <nav
-        className="rounded-r-xl pl-6 pr-6 py-5 mb-8 border-l-[3px]"
+        className="rounded-r-xl pl-4 pr-4 sm:pl-6 sm:pr-6 py-4 sm:py-5 mb-6 sm:mb-8 border-l-[3px]"
         style={{ background: "var(--surface-variant)", borderLeftColor: "var(--primary-val)" }}
         aria-label="Índice"
       >
@@ -39,7 +39,7 @@ export default function TermsOfUse() {
         </ol>
       </nav>
 
-      <div className="legal-body space-y-4 text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+      <div className="legal-body space-y-4 text-[0.8rem] sm:text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
         <p>Bem-vindo à <strong style={{ color: "var(--text-primary)" }}>Gestão Mensal</strong>. Ao descarregar, instalar ou utilizar a nossa aplicação móvel ("App"), concorda com os presentes Termos de Utilização ("Termos"). Leia-os cuidadosamente antes de utilizar a App.</p>
 
         <h2 id="tu-1" className="text-xl font-bold mt-8 mb-3" style={{ color: "var(--text-primary)" }}>1. Aceitação dos Termos</h2>
