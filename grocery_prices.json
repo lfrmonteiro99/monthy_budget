@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "scraped_at": "2026-03-02T06:48:24.082488+00:00",
+    "scraped_at": "2026-03-03T06:40:53.654998+00:00",
     "scraper_version": "1.0.0",
     "scraper_results": {
       "Continente": {
         "status": "ok",
-        "count": 80
+        "count": 81
       },
       "Pingo Doce": {
         "status": "ok",
@@ -20,11 +20,11 @@
       },
       "Open Food Facts": {
         "status": "ok",
-        "open_prices_count": 96
+        "open_prices_count": 97
       }
     },
-    "total_products": 716,
-    "total_comparisons": 18
+    "total_products": 717,
+    "total_comparisons": 19
   },
   "deco_index": {
     "period": "2025-annual",
@@ -81,8 +81,8 @@
   "products": [
     {
       "name": "Iogurte Líquido Morango Yoggi",
-      "price": 3.19,
-      "unit_price": "2,49€/kg",
+      "price": 3.89,
+      "unit_price": "3,04€/kg",
       "category": "Lacticínios e Ovos",
       "product_id": "6078857",
       "store": "Continente",
@@ -90,8 +90,8 @@
     },
     {
       "name": "Bebida Vegetal de Amêndoa sem Açúcar Alpro",
-      "price": 1.99,
-      "unit_price": "1,99€/lt",
+      "price": 2.59,
+      "unit_price": "2,59€/lt",
       "category": "Lacticínios e Ovos",
       "product_id": "5752443",
       "store": "Continente",
@@ -144,8 +144,8 @@
     },
     {
       "name": "Queijo Flamengo sem Lactose Fatiado Limiano",
-      "price": 3.79,
-      "unit_price": "9,47€/kg",
+      "price": 5.09,
+      "unit_price": "12,73€/kg",
       "category": "Lacticínios e Ovos",
       "product_id": "4863936",
       "store": "Continente",
@@ -170,6 +170,15 @@
       "brand": ""
     },
     {
+      "name": "Carne Picada Angus Granulada Ultracongelada Prime Meat",
+      "price": 14.99,
+      "unit_price": "14,99€/kg",
+      "category": "Carne",
+      "product_id": "8718657",
+      "store": "Continente",
+      "brand": ""
+    },
+    {
       "name": "Tranches de Salmão Selvagem MSC Ultracongelado Iglo",
       "price": 12.99,
       "unit_price": "29,52€/kg",
@@ -180,8 +189,8 @@
     },
     {
       "name": "Miolo de Camarão 80/100 Ultracongelado Continente",
-      "price": 3.49,
-      "unit_price": "13,96€/kg",
+      "price": 3.39,
+      "unit_price": "13,56€/kg",
       "category": "Peixe e Marisco",
       "product_id": "4750959",
       "store": "Continente",
@@ -189,8 +198,8 @@
     },
     {
       "name": "Medalhões de Salmão Ultracongelado Pescanova",
-      "price": 11.99,
-      "unit_price": "29,97€/kg",
+      "price": 12.59,
+      "unit_price": "31,47€/kg",
       "category": "Peixe e Marisco",
       "product_id": "7656035",
       "store": "Continente",
@@ -215,11 +224,11 @@
       "brand": ""
     },
     {
-      "name": "Porções de Salmão Ultracongelado Royal Greenland",
-      "price": 15.99,
-      "unit_price": "31,98€/kg",
+      "name": "Mimos de Pescada do Cabo Ultracongelados Pescanova",
+      "price": 12.29,
+      "unit_price": "12,29€/kg",
       "category": "Peixe e Marisco",
-      "product_id": "3738132",
+      "product_id": "5014116",
       "store": "Continente",
       "brand": ""
     },
@@ -233,11 +242,11 @@
       "brand": ""
     },
     {
-      "name": "Mimos de Pescada do Cabo Ultracongelados Pescanova",
-      "price": 12.29,
-      "unit_price": "12,29€/kg",
+      "name": "Porções de Salmão Ultracongelado Royal Greenland",
+      "price": 15.99,
+      "unit_price": "31,98€/kg",
       "category": "Peixe e Marisco",
-      "product_id": "5014116",
+      "product_id": "3738132",
       "store": "Continente",
       "brand": ""
     },
@@ -270,8 +279,8 @@
     },
     {
       "name": "Batata Vermelha Continente",
-      "price": 3.59,
-      "unit_price": "1,20€/kg",
+      "price": 2.89,
+      "unit_price": "0,96€/kg",
       "category": "Frutas e Legumes",
       "product_id": "5454736",
       "store": "Continente",
@@ -333,8 +342,8 @@
     },
     {
       "name": "Tostas Rosmaninho La Mole",
-      "price": 3.39,
-      "unit_price": "13,56€/kg",
+      "price": 2.71,
+      "unit_price": "10,84€/kg",
       "category": "Padaria e Pastelaria",
       "product_id": "7638917",
       "store": "Continente",
@@ -396,8 +405,8 @@
     },
     {
       "name": "Atum Posta em Óleo sem Glúten Bom Petisco",
-      "price": 1.72,
-      "unit_price": "22,05€/kg",
+      "price": 1.2,
+      "unit_price": "15,38€/kg",
       "category": "Mercearia",
       "product_id": "2003646",
       "store": "Continente",
@@ -423,8 +432,8 @@
     },
     {
       "name": "Arroz Agulha Cigala",
-      "price": 1.38,
-      "unit_price": "1,38€/kg",
+      "price": 1.69,
+      "unit_price": "1,69€/kg",
       "category": "Mercearia",
       "product_id": "2305902",
       "store": "Continente",
@@ -450,8 +459,8 @@
     },
     {
       "name": "Atum ao Natural Ramirez",
-      "price": 1.89,
-      "unit_price": "22,50€/kg",
+      "price": 1.19,
+      "unit_price": "14,17€/kg",
       "category": "Mercearia",
       "product_id": "2546351",
       "store": "Continente",
@@ -495,8 +504,8 @@
     },
     {
       "name": "Bebida Isotónica Ice Pop Prime",
-      "price": 2.59,
-      "unit_price": "5,18€/lt",
+      "price": 2.99,
+      "unit_price": "5,98€/lt",
       "category": "Bebidas",
       "product_id": "8036088",
       "store": "Continente",
@@ -504,8 +513,8 @@
     },
     {
       "name": "Néctar Laranja do Algarve Compal Origens",
-      "price": 1.79,
-      "unit_price": "1,79€/lt",
+      "price": 1.99,
+      "unit_price": "1,99€/lt",
       "category": "Bebidas",
       "product_id": "4957905",
       "store": "Continente",
@@ -522,8 +531,8 @@
     },
     {
       "name": "Muralhas de Monção Vinho Verde Branco",
-      "price": 3.74,
-      "unit_price": "4,99€/lt",
+      "price": 4.99,
+      "unit_price": "6,65€/lt",
       "category": "Bebidas",
       "product_id": "2050440",
       "store": "Continente",
@@ -540,8 +549,8 @@
     },
     {
       "name": "Aperol Aperitivo",
-      "price": 18.29,
-      "unit_price": "26,13€/lt",
+      "price": 16.29,
+      "unit_price": "23,27€/lt",
       "category": "Bebidas",
       "product_id": "5965482",
       "store": "Continente",
@@ -576,8 +585,8 @@
     },
     {
       "name": "Mini Pizzas de Fiambre e Queijo Buitoni Piccolinis",
-      "price": 3.49,
-      "unit_price": "12,93€/kg",
+      "price": 3.56,
+      "unit_price": "13,19€/kg",
       "category": "Congelados",
       "product_id": "3052221",
       "store": "Continente",
@@ -603,8 +612,8 @@
     },
     {
       "name": "Ervilhas Iglo",
-      "price": 5.39,
-      "unit_price": "4,79€/kg",
+      "price": 6.39,
+      "unit_price": "5,68€/kg",
       "category": "Congelados",
       "product_id": "4882816",
       "store": "Continente",
@@ -612,8 +621,8 @@
     },
     {
       "name": "Batata Gomos Mediterranean McCain",
-      "price": 3.29,
-      "unit_price": "4,39€/kg",
+      "price": 3.89,
+      "unit_price": "5,19€/kg",
       "category": "Congelados",
       "product_id": "3911249",
       "store": "Continente",
@@ -639,8 +648,8 @@
     },
     {
       "name": "Creme Corpo Body Milk Hidratante Nutritivo Nivea",
-      "price": 7.47,
-      "unit_price": "11,95€/lt",
+      "price": 7.48,
+      "unit_price": "11,97€/lt",
       "category": "Higiene e Beleza",
       "product_id": "7397198",
       "store": "Continente",
@@ -648,7 +657,7 @@
     },
     {
       "name": "Aparador Barba com 3 Pentes Gillette King C.",
-      "price": 29.59,
+      "price": 29.58,
       "unit_price": "",
       "category": "Higiene e Beleza",
       "product_id": "7252602",
@@ -666,7 +675,7 @@
     },
     {
       "name": "Escova de Dentes Elétrica Vitality Pro Preta Oral-B",
-      "price": 28.89,
+      "price": 33.99,
       "unit_price": "",
       "category": "Higiene e Beleza",
       "product_id": "8123731",
@@ -684,8 +693,8 @@
     },
     {
       "name": "Sérum de Rosto Cellular Luminous 630 Antimanchas Anti-Idade Nivea",
-      "price": 20.99,
-      "unit_price": "699,67€/lt",
+      "price": 22.49,
+      "unit_price": "749,67€/lt",
       "category": "Higiene e Beleza",
       "product_id": "7803502",
       "store": "Continente",
@@ -828,7 +837,7 @@
     },
     {
       "name": "Leite de Pastagem UHT Meio Gordo",
-      "price": 1.07,
+      "price": 0.89,
       "unit_price": "",
       "category": "Lacticínios e Ovos",
       "product_id": "822652",
@@ -837,7 +846,7 @@
     },
     {
       "name": "Leite UHT Meio Gordo sem Lactose ",
-      "price": 1.29,
+      "price": 1.14,
       "unit_price": "",
       "category": "Lacticínios e Ovos",
       "product_id": "574701",
@@ -846,7 +855,7 @@
     },
     {
       "name": "Bebida Vegetal de Amêndoa sem Açúcar",
-      "price": 1.99,
+      "price": 2.59,
       "unit_price": "",
       "category": "Lacticínios e Ovos",
       "product_id": "967610",
@@ -855,7 +864,7 @@
     },
     {
       "name": "Leite Achocolatado Pack 4",
-      "price": 1.68,
+      "price": 2.0,
       "unit_price": "",
       "category": "Lacticínios e Ovos",
       "product_id": "676403",
@@ -864,7 +873,7 @@
     },
     {
       "name": "Leite Achocolatado Pack 8",
-      "price": 2.96,
+      "price": 3.52,
       "unit_price": "",
       "category": "Lacticínios e Ovos",
       "product_id": "851761",
@@ -873,7 +882,7 @@
     },
     {
       "name": "Leite de Pastagem UHT Magro",
-      "price": 1.07,
+      "price": 0.89,
       "unit_price": "",
       "category": "Lacticínios e Ovos",
       "product_id": "822645",
@@ -891,7 +900,7 @@
     },
     {
       "name": "Bebida Láctea Infantil 1 a 3 anos",
-      "price": 2.24,
+      "price": 1.79,
       "unit_price": "",
       "category": "Lacticínios e Ovos",
       "product_id": "272437",
@@ -909,7 +918,7 @@
     },
     {
       "name": "Bebida Vegetal de Aveia sem Açúcar",
-      "price": 1.99,
+      "price": 2.59,
       "unit_price": "",
       "category": "Lacticínios e Ovos",
       "product_id": "967611",
@@ -945,7 +954,7 @@
     },
     {
       "name": "Leite Achocolatado sem Lactose Pack 4",
-      "price": 1.99,
+      "price": 2.39,
       "unit_price": "",
       "category": "Lacticínios e Ovos",
       "product_id": "871236",
@@ -972,7 +981,7 @@
     },
     {
       "name": "Leite Meio Gordo Fresco",
-      "price": 1.0,
+      "price": 1.14,
       "unit_price": "",
       "category": "Lacticínios e Ovos",
       "product_id": "843768",
@@ -981,7 +990,7 @@
     },
     {
       "name": "Leite Proteína Cacau sem Lactose Pack 3",
-      "price": 3.3,
+      "price": 2.97,
       "unit_price": "",
       "category": "Lacticínios e Ovos",
       "product_id": "866780",
@@ -1017,7 +1026,7 @@
     },
     {
       "name": "Leite UHT Magro Leve",
-      "price": 1.24,
+      "price": 1.1,
       "unit_price": "",
       "category": "Lacticínios e Ovos",
       "product_id": "847454",
@@ -1044,7 +1053,7 @@
     },
     {
       "name": "Bebida de Leite UHT Livre Meio Gordo",
-      "price": 1.25,
+      "price": 1.49,
       "unit_price": "",
       "category": "Lacticínios e Ovos",
       "product_id": "974724",
@@ -1062,7 +1071,7 @@
     },
     {
       "name": "Bebida Vegetal de Arroz",
-      "price": 2.59,
+      "price": 1.99,
       "unit_price": "",
       "category": "Lacticínios e Ovos",
       "product_id": "755549",
@@ -1098,7 +1107,7 @@
     },
     {
       "name": "Bife/Peito de Frango Embalado",
-      "price": 5.99,
+      "price": 6.49,
       "unit_price": "",
       "category": "Carne",
       "product_id": "544184",
@@ -1116,7 +1125,7 @@
     },
     {
       "name": "Costeleta do Cachaço de Porco",
-      "price": 4.49,
+      "price": 4.99,
       "unit_price": "",
       "category": "Carne",
       "product_id": "250130",
@@ -1179,7 +1188,7 @@
     },
     {
       "name": "Preparado de Carne Picada de Vitelão",
-      "price": 11.99,
+      "price": 12.99,
       "unit_price": "",
       "category": "Carne",
       "product_id": "622075",
@@ -1197,7 +1206,7 @@
     },
     {
       "name": "Vitelão para Cozer/Estufar",
-      "price": 11.99,
+      "price": 12.99,
       "unit_price": "",
       "category": "Carne",
       "product_id": "250553",
@@ -1233,7 +1242,7 @@
     },
     {
       "name": "Cachaço de Porco sem Osso Embalado",
-      "price": 5.29,
+      "price": 4.49,
       "unit_price": "",
       "category": "Carne",
       "product_id": "981746",
@@ -1242,7 +1251,7 @@
     },
     {
       "name": "Coelho Inteiro",
-      "price": 6.59,
+      "price": 6.99,
       "unit_price": "",
       "category": "Carne",
       "product_id": "250328",
@@ -1260,7 +1269,7 @@
     },
     {
       "name": "Coxas de Frango Embaladas",
-      "price": 4.49,
+      "price": 3.99,
       "unit_price": "",
       "category": "Carne",
       "product_id": "465643",
@@ -1287,7 +1296,7 @@
     },
     {
       "name": "Pá de Porco com Osso",
-      "price": 4.09,
+      "price": 4.49,
       "unit_price": "",
       "category": "Carne",
       "product_id": "250168",
@@ -1350,7 +1359,7 @@
     },
     {
       "name": "Bifanas de Porco",
-      "price": 4.49,
+      "price": 4.99,
       "unit_price": "",
       "category": "Carne",
       "product_id": "250119",
@@ -1395,7 +1404,7 @@
     },
     {
       "name": "Costeletas de Porco",
-      "price": 4.49,
+      "price": 4.99,
       "unit_price": "",
       "category": "Carne",
       "product_id": "250128",
@@ -1422,7 +1431,7 @@
     },
     {
       "name": "Entremeada de Porco com Entrecosto",
-      "price": 4.29,
+      "price": 4.89,
       "unit_price": "",
       "category": "Carne",
       "product_id": "250170",
@@ -1476,7 +1485,7 @@
     },
     {
       "name": "Frango para Churrasco Embalado",
-      "price": 2.99,
+      "price": 3.49,
       "unit_price": "",
       "category": "Carne",
       "product_id": "476488",
@@ -1584,7 +1593,7 @@
     },
     {
       "name": "Tranche de Salmão Fresco",
-      "price": 2.99,
+      "price": 3.49,
       "unit_price": "",
       "category": "Peixe e Marisco",
       "product_id": "835854",
@@ -1638,7 +1647,7 @@
     },
     {
       "name": "Medalhões de Pescada Congelados",
-      "price": 10.69,
+      "price": 7.99,
       "unit_price": "",
       "category": "Peixe e Marisco",
       "product_id": "947316",
@@ -1656,7 +1665,7 @@
     },
     {
       "name": "Mimos de Pescada do Cabo Congelados",
-      "price": 12.29,
+      "price": 15.59,
       "unit_price": "",
       "category": "Peixe e Marisco",
       "product_id": "956837",
@@ -1692,7 +1701,7 @@
     },
     {
       "name": "Robalo 600/1000 Fresco",
-      "price": 8.99,
+      "price": 9.99,
       "unit_price": "",
       "category": "Peixe e Marisco",
       "product_id": "373546",
@@ -1710,7 +1719,7 @@
     },
     {
       "name": "Filetes de Garoupa Congelada",
-      "price": 6.99,
+      "price": 5.99,
       "unit_price": "",
       "category": "Peixe e Marisco",
       "product_id": "953360",
@@ -1719,7 +1728,7 @@
     },
     {
       "name": "Filetes de Pangasius Congelados",
-      "price": 4.49,
+      "price": 5.64,
       "unit_price": "",
       "category": "Peixe e Marisco",
       "product_id": "609444",
@@ -1728,7 +1737,7 @@
     },
     {
       "name": "Filetes de Pescada da Argentina Congelada",
-      "price": 2.79,
+      "price": 3.59,
       "unit_price": "",
       "category": "Peixe e Marisco",
       "product_id": "971064",
@@ -1737,7 +1746,7 @@
     },
     {
       "name": "Filetes de Pescada do Cabo Congelados",
-      "price": 5.49,
+      "price": 6.49,
       "unit_price": "",
       "category": "Peixe e Marisco",
       "product_id": "967557",
@@ -1746,7 +1755,7 @@
     },
     {
       "name": "Pescada da América do Sul a Granel Congelada",
-      "price": 6.99,
+      "price": 4.49,
       "unit_price": "",
       "category": "Peixe e Marisco",
       "product_id": "582241",
@@ -1773,7 +1782,7 @@
     },
     {
       "name": "Rodelas de Pescada Congelada",
-      "price": 8.99,
+      "price": 6.99,
       "unit_price": "",
       "category": "Peixe e Marisco",
       "product_id": "636290",
@@ -1782,7 +1791,7 @@
     },
     {
       "name": "Salmão Inteiro Fresco",
-      "price": 8.99,
+      "price": 13.99,
       "unit_price": "",
       "category": "Peixe e Marisco",
       "product_id": "303618",
@@ -1818,7 +1827,7 @@
     },
     {
       "name": "Meio Polvo Cozido Congelado Embalado",
-      "price": 9.99,
+      "price": 8.99,
       "unit_price": "",
       "category": "Peixe e Marisco",
       "product_id": "947913",
@@ -1836,7 +1845,7 @@
     },
     {
       "name": "Pescada Grande do Chile a Granel Congelada",
-      "price": 9.99,
+      "price": 11.99,
       "unit_price": "",
       "category": "Peixe e Marisco",
       "product_id": "662933",
@@ -1845,7 +1854,7 @@
     },
     {
       "name": "Pescada Média da África do Sul a Granel Congelada",
-      "price": 5.99,
+      "price": 7.99,
       "unit_price": "",
       "category": "Peixe e Marisco",
       "product_id": "562919",
@@ -1872,7 +1881,7 @@
     },
     {
       "name": "Posta de Solha para Fritar Congelada",
-      "price": 5.99,
+      "price": 6.99,
       "unit_price": "",
       "category": "Peixe e Marisco",
       "product_id": "879641",
@@ -1890,7 +1899,7 @@
     },
     {
       "name": "Postas de Pescada do Cabo para Fritar Congelada",
-      "price": 4.99,
+      "price": 5.99,
       "unit_price": "",
       "category": "Peixe e Marisco",
       "product_id": "945102",
@@ -1908,7 +1917,7 @@
     },
     {
       "name": "Pregado Fresco",
-      "price": 18.99,
+      "price": 15.99,
       "unit_price": "",
       "category": "Peixe e Marisco",
       "product_id": "44149",
@@ -1926,7 +1935,7 @@
     },
     {
       "name": "Tranches de Salmão Congeladas",
-      "price": 11.49,
+      "price": 7.99,
       "unit_price": "",
       "category": "Peixe e Marisco",
       "product_id": "673697",
@@ -1944,7 +1953,7 @@
     },
     {
       "name": "Lulas Frescas",
-      "price": 9.99,
+      "price": 12.99,
       "unit_price": "",
       "category": "Peixe e Marisco",
       "product_id": "44174",
@@ -1998,7 +2007,7 @@
     },
     {
       "name": "Puré de Batata com Noz Moscada",
-      "price": 2.29,
+      "price": 2.49,
       "unit_price": "",
       "category": "Frutas e Legumes",
       "product_id": "26230",
@@ -2079,7 +2088,7 @@
     },
     {
       "name": "Ervilhas Congeladas",
-      "price": 2.99,
+      "price": 4.29,
       "unit_price": "",
       "category": "Frutas e Legumes",
       "product_id": "767327",
@@ -2277,7 +2286,7 @@
     },
     {
       "name": "Batatas Mediterrâneas Congeladas",
-      "price": 2.89,
+      "price": 3.89,
       "unit_price": "",
       "category": "Frutas e Legumes",
       "product_id": "644667",
@@ -2367,7 +2376,7 @@
     },
     {
       "name": "Pão de Rio Maior",
-      "price": 1.19,
+      "price": 0.99,
       "unit_price": "",
       "category": "Padaria e Pastelaria",
       "product_id": "254253",
@@ -2403,7 +2412,7 @@
     },
     {
       "name": "Pão de Forma Multicereais com Sementes de Girassol",
-      "price": 1.79,
+      "price": 1.99,
       "unit_price": "",
       "category": "Padaria e Pastelaria",
       "product_id": "949045",
@@ -2583,7 +2592,7 @@
     },
     {
       "name": "Farinha de Trigo Fina com Fermento",
-      "price": 1.39,
+      "price": 1.79,
       "unit_price": "",
       "category": "Mercearia",
       "product_id": "11001",
@@ -2637,7 +2646,7 @@
     },
     {
       "name": "Azeite Virgem Extra As Nossas Planícies",
-      "price": 4.49,
+      "price": 4.29,
       "unit_price": "",
       "category": "Mercearia",
       "product_id": "654603",
@@ -2646,7 +2655,7 @@
     },
     {
       "name": "Azeite Virgem Extra Nossas Planicies",
-      "price": 15.95,
+      "price": 15.99,
       "unit_price": "",
       "category": "Mercearia",
       "product_id": "705656",
@@ -2682,7 +2691,7 @@
     },
     {
       "name": "Azeite Virgem Extra Especial",
-      "price": 16.89,
+      "price": 20.49,
       "unit_price": "",
       "category": "Mercearia",
       "product_id": "906654",
@@ -2700,7 +2709,7 @@
     },
     {
       "name": "Arroz Agulha",
-      "price": 1.69,
+      "price": 1.38,
       "unit_price": "",
       "category": "Mercearia",
       "product_id": "623900",
@@ -2736,7 +2745,7 @@
     },
     {
       "name": "Azeite Subtil",
-      "price": 3.99,
+      "price": 4.69,
       "unit_price": "",
       "category": "Mercearia",
       "product_id": "755922",
@@ -2880,7 +2889,7 @@
     },
     {
       "name": "Arroz Basmati Brajma",
-      "price": 2.54,
+      "price": 2.98,
       "unit_price": "",
       "category": "Mercearia",
       "product_id": "804038",
@@ -2916,7 +2925,7 @@
     },
     {
       "name": "Refrigerante com Gás Cola Zero Pack 2",
-      "price": 3.29,
+      "price": 3.69,
       "unit_price": "",
       "category": "Bebidas",
       "product_id": "846157",
@@ -2934,7 +2943,7 @@
     },
     {
       "name": "Néctar de 8 Frutos Pack 6",
-      "price": 2.89,
+      "price": 2.29,
       "unit_price": "",
       "category": "Bebidas",
       "product_id": "859727",
@@ -2943,7 +2952,7 @@
     },
     {
       "name": "Néctar de Laranja do Algarve",
-      "price": 1.79,
+      "price": 1.99,
       "unit_price": "",
       "category": "Bebidas",
       "product_id": "720074",
@@ -2961,7 +2970,7 @@
     },
     {
       "name": "Refrigerante com Gás Cola Zero Lata Pack 6",
-      "price": 4.99,
+      "price": 4.49,
       "unit_price": "",
       "category": "Bebidas",
       "product_id": "720920",
@@ -3024,7 +3033,7 @@
     },
     {
       "name": "Água sem Gás Family",
-      "price": 1.39,
+      "price": 1.09,
       "unit_price": "",
       "category": "Bebidas",
       "product_id": "633777",
@@ -3033,7 +3042,7 @@
     },
     {
       "name": "Água sem Gás Pack 4",
-      "price": 2.79,
+      "price": 2.19,
       "unit_price": "",
       "category": "Bebidas",
       "product_id": "531030",
@@ -3060,7 +3069,7 @@
     },
     {
       "name": "Néctar de 8 Frutos",
-      "price": 1.59,
+      "price": 1.35,
       "unit_price": "",
       "category": "Bebidas",
       "product_id": "697207",
@@ -3069,7 +3078,7 @@
     },
     {
       "name": "Néctar de Manga e Laranja",
-      "price": 1.35,
+      "price": 1.59,
       "unit_price": "",
       "category": "Bebidas",
       "product_id": "15035",
@@ -3078,7 +3087,7 @@
     },
     {
       "name": "Néctar de Maracujá",
-      "price": 1.79,
+      "price": 1.99,
       "unit_price": "",
       "category": "Bebidas",
       "product_id": "445228",
@@ -3087,7 +3096,7 @@
     },
     {
       "name": "Néctar de Tutti Frutti Pack 6",
-      "price": 2.39,
+      "price": 2.99,
       "unit_price": "",
       "category": "Bebidas",
       "product_id": "926595",
@@ -3114,7 +3123,7 @@
     },
     {
       "name": "Refrigerante com Gás Cola Pack 6",
-      "price": 4.99,
+      "price": 4.49,
       "unit_price": "",
       "category": "Bebidas",
       "product_id": "922602",
@@ -3123,7 +3132,7 @@
     },
     {
       "name": "Refrigerante com Gás Cola Zero",
-      "price": 1.39,
+      "price": 1.79,
       "unit_price": "",
       "category": "Bebidas",
       "product_id": "886631",
@@ -3141,7 +3150,7 @@
     },
     {
       "name": "Refrigerante com Gás Lima Limão Zero Açúcar",
-      "price": 1.69,
+      "price": 1.99,
       "unit_price": "",
       "category": "Bebidas",
       "product_id": "887289",
@@ -3168,7 +3177,7 @@
     },
     {
       "name": "Sumo de 100% Maçã",
-      "price": 1.69,
+      "price": 1.49,
       "unit_price": "",
       "category": "Bebidas",
       "product_id": "38885",
@@ -3195,7 +3204,7 @@
     },
     {
       "name": "Sumo de Manga e Maracujá",
-      "price": 1.09,
+      "price": 0.99,
       "unit_price": "",
       "category": "Bebidas",
       "product_id": "959685",
@@ -3303,7 +3312,7 @@
     },
     {
       "name": "Hambúrgueres de Frango sem Glúten Congelados",
-      "price": 16.99,
+      "price": 18.99,
       "unit_price": "",
       "category": "Congelados",
       "product_id": "907040",
@@ -3357,7 +3366,7 @@
     },
     {
       "name": "Medalhões de Pescada Congelados",
-      "price": 10.69,
+      "price": 7.99,
       "unit_price": "",
       "category": "Congelados",
       "product_id": "947316",
@@ -3375,7 +3384,7 @@
     },
     {
       "name": "Mimos de Pescada do Cabo Congelados",
-      "price": 12.29,
+      "price": 15.59,
       "unit_price": "",
       "category": "Congelados",
       "product_id": "956837",
@@ -3384,7 +3393,7 @@
     },
     {
       "name": "Nuggets de Frango Congelados",
-      "price": 12.99,
+      "price": 25.99,
       "unit_price": "",
       "category": "Congelados",
       "product_id": "819934",
@@ -3402,7 +3411,7 @@
     },
     {
       "name": "Polvo Limpo Congelado 1,5 a 3kgs",
-      "price": 12.99,
+      "price": 15.49,
       "unit_price": "",
       "category": "Congelados",
       "product_id": "556779",
@@ -3420,7 +3429,7 @@
     },
     {
       "name": "Puré de Batata com Noz Moscada",
-      "price": 2.29,
+      "price": 2.49,
       "unit_price": "",
       "category": "Congelados",
       "product_id": "26230",
@@ -3429,7 +3438,7 @@
     },
     {
       "name": "Tentáculos de Pota Congelados",
-      "price": 6.99,
+      "price": 4.99,
       "unit_price": "",
       "category": "Congelados",
       "product_id": "670789",
@@ -3510,7 +3519,7 @@
     },
     {
       "name": "Camarão 20/30 Vannamei Congelado",
-      "price": 9.99,
+      "price": 8.99,
       "unit_price": "",
       "category": "Congelados",
       "product_id": "658218",
@@ -3537,7 +3546,7 @@
     },
     {
       "name": "Choco Limpo Congelado",
-      "price": 6.79,
+      "price": 7.69,
       "unit_price": "",
       "category": "Congelados",
       "product_id": "842918",
@@ -4504,17 +4513,17 @@
       "store": "Auchan"
     },
     {
-      "name": "ovos galinhas solo auchan : classe m 1 dúzia",
-      "price": 3.09,
-      "unit_price": "0.26 €/un",
+      "name": "manteiga auchan à mesa em portugal pasteurizada com sal açores 250g",
+      "price": 2.09,
+      "unit_price": "8.36 €/Kg",
       "category": "Lacticínios e Ovos",
       "product_id": "",
       "store": "Auchan"
     },
     {
-      "name": "manteiga auchan à mesa em portugal pasteurizada com sal açores 250g",
-      "price": 2.09,
-      "unit_price": "8.36 €/Kg",
+      "name": "ovos galinhas solo auchan : classe m 1 dúzia",
+      "price": 3.09,
+      "unit_price": "0.26 €/un",
       "category": "Lacticínios e Ovos",
       "product_id": "",
       "store": "Auchan"
@@ -4553,8 +4562,8 @@
     },
     {
       "name": "ovos matinados do campo ar livre classe m e l uma dúzia",
-      "price": 4.59,
-      "unit_price": "0.38 €/un",
+      "price": 4.13,
+      "unit_price": "0.34 €/un",
       "category": "Lacticínios e Ovos",
       "product_id": "",
       "store": "Auchan"
@@ -4600,14 +4609,6 @@
       "store": "Auchan"
     },
     {
-      "name": "queijo mozarella polegar ralado 200 g",
-      "price": 1.65,
-      "unit_price": "8.25 €/Kg",
-      "category": "Lacticínios e Ovos",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
       "name": "queijo flamengo light auchan fatias 200g",
       "price": 1.89,
       "unit_price": "9.45 €/Kg",
@@ -4624,9 +4625,9 @@
       "store": "Auchan"
     },
     {
-      "name": "queijo flamengo auchan à mesa em portugal açores fatias 500g",
-      "price": 3.99,
-      "unit_price": "7.98 €/Kg",
+      "name": "queijo mozarella polegar ralado 200 g",
+      "price": 1.65,
+      "unit_price": "8.25 €/Kg",
       "category": "Lacticínios e Ovos",
       "product_id": "",
       "store": "Auchan"
@@ -4635,6 +4636,14 @@
       "name": "leite mimosa uht especial 0% lactose meio gordo 1l",
       "price": 1.29,
       "unit_price": "1.29 €/Lt",
+      "category": "Lacticínios e Ovos",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
+      "name": "queijo flamengo auchan à mesa em portugal açores fatias 500g",
+      "price": 3.99,
+      "unit_price": "7.98 €/Kg",
       "category": "Lacticínios e Ovos",
       "product_id": "",
       "store": "Auchan"
@@ -4656,7 +4665,7 @@
       "store": "Auchan"
     },
     {
-      "name": "iogurte liquido auchan stracciatella 4x170g",
+      "name": "iogurte auchan líquido banana e morango 4x170g",
       "price": 1.36,
       "unit_price": "2 €/Kg",
       "category": "Lacticínios e Ovos",
@@ -4728,17 +4737,17 @@
       "store": "Auchan"
     },
     {
-      "name": "asas de frango auchan emb.familiar kg",
-      "price": 2.79,
-      "unit_price": "2.79 €/un",
+      "name": "bife de frango do campo auchan cultivamos o bom kg",
+      "price": 8.69,
+      "unit_price": "4.35 €/un",
       "category": "Carne",
       "product_id": "",
       "store": "Auchan"
     },
     {
-      "name": "bife de frango do campo auchan cultivamos o bom kg",
-      "price": 8.69,
-      "unit_price": "4.35 €/un",
+      "name": "asas de frango auchan emb.familiar kg",
+      "price": 2.79,
+      "unit_price": "2.79 €/un",
       "category": "Carne",
       "product_id": "",
       "store": "Auchan"
@@ -4768,9 +4777,9 @@
       "store": "Auchan"
     },
     {
-      "name": "preparado de carne picada bovino 500gr",
-      "price": 6.49,
-      "unit_price": "12.98 €/Kg",
+      "name": "bife extra fino de frango auchan 320gr",
+      "price": 4.49,
+      "unit_price": "14.03 €/Kg",
       "category": "Carne",
       "product_id": "",
       "store": "Auchan"
@@ -4784,9 +4793,9 @@
       "store": "Auchan"
     },
     {
-      "name": "bife extra fino de frango auchan 320gr",
-      "price": 4.49,
-      "unit_price": "14.03 €/Kg",
+      "name": "preparado de carne picada bovino 500gr",
+      "price": 6.49,
+      "unit_price": "12.98 €/Kg",
       "category": "Carne",
       "product_id": "",
       "store": "Auchan"
@@ -4808,17 +4817,17 @@
       "store": "Auchan"
     },
     {
-      "name": "bifes de frango finos auchan kg",
-      "price": 8.99,
-      "unit_price": "3.60 €/un",
+      "name": "bife fino de peru auchan 320gr",
+      "price": 3.89,
+      "unit_price": "12.16 €/Kg",
       "category": "Carne",
       "product_id": "",
       "store": "Auchan"
     },
     {
-      "name": "preparado de carne misto 500gr",
-      "price": 4.79,
-      "unit_price": "9.58 €/Kg",
+      "name": "bifes de frango finos auchan kg",
+      "price": 8.99,
+      "unit_price": "3.60 €/un",
       "category": "Carne",
       "product_id": "",
       "store": "Auchan"
@@ -4832,9 +4841,9 @@
       "store": "Auchan"
     },
     {
-      "name": "preparado de carne picada de suino isento de gluten auchan 400gr",
-      "price": 2.59,
-      "unit_price": "6.48 €/Kg",
+      "name": "preparado de carne misto 500gr",
+      "price": 4.79,
+      "unit_price": "9.58 €/Kg",
       "category": "Carne",
       "product_id": "",
       "store": "Auchan"
@@ -4848,9 +4857,9 @@
       "store": "Auchan"
     },
     {
-      "name": "bife de peru auchan kg",
-      "price": 8.99,
-      "unit_price": "4.50 €/un",
+      "name": "preparado de carne picada de suino isento de gluten auchan 400gr",
+      "price": 2.59,
+      "unit_price": "6.48 €/Kg",
       "category": "Carne",
       "product_id": "",
       "store": "Auchan"
@@ -4867,14 +4876,6 @@
       "name": "medalhões pescanova salmão 400g",
       "price": 11.99,
       "unit_price": "29.97 €/Kg",
-      "category": "Peixe e Marisco",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
-      "name": "lombo de salmão porções 150g",
-      "price": 3.49,
-      "unit_price": "24.93 €/Kg",
       "category": "Peixe e Marisco",
       "product_id": "",
       "store": "Auchan"
@@ -4913,8 +4914,8 @@
     },
     {
       "name": "miolo de camarão pescanova grande 40-60 200g",
-      "price": 4.59,
-      "unit_price": "22.95 €/Kg",
+      "price": 4.13,
+      "unit_price": "20.65 €/Kg",
       "category": "Peixe e Marisco",
       "product_id": "",
       "store": "Auchan"
@@ -4944,25 +4945,17 @@
       "store": "Auchan"
     },
     {
-      "name": "tentáculos polegar de pota congelado 800g",
-      "price": 5.59,
-      "unit_price": "6.99 €/Kg",
-      "category": "Peixe e Marisco",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
-      "name": "filete robalo fresco 110g",
-      "price": 2.99,
-      "unit_price": "24.92 €/Kg",
-      "category": "Peixe e Marisco",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
       "name": "dourada grande kg",
       "price": 8.99,
       "unit_price": "5.39 €/un",
+      "category": "Peixe e Marisco",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
+      "name": "tentáculos polegar de pota congelado 800g",
+      "price": 5.59,
+      "unit_price": "6.99 €/Kg",
       "category": "Peixe e Marisco",
       "product_id": "",
       "store": "Auchan"
@@ -5048,6 +5041,22 @@
       "store": "Auchan"
     },
     {
+      "name": "camarão vannamei 20/30 cru congelado kg",
+      "price": 7.99,
+      "unit_price": "0.80 €/un",
+      "category": "Peixe e Marisco",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
+      "name": "ameijoa vietnamita congelada kg",
+      "price": 1.99,
+      "unit_price": "1.00 €/un",
+      "category": "Peixe e Marisco",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
       "name": "banana del monte kg",
       "price": 1.29,
       "unit_price": "0.39 €/un",
@@ -5088,17 +5097,17 @@
       "store": "Auchan"
     },
     {
-      "name": "limão algarve igp auchan cultivamos o bom 500 g",
-      "price": 1.19,
-      "unit_price": "2.38 €/Kg",
+      "name": "pera rocha oeste dop auchan 1 kg",
+      "price": 1.99,
+      "unit_price": "1.99 €/Kg",
       "category": "Frutas e Legumes",
       "product_id": "",
       "store": "Auchan"
     },
     {
-      "name": "pera rocha oeste dop auchan 1 kg",
-      "price": 1.99,
-      "unit_price": "1.99 €/Kg",
+      "name": "limão algarve igp auchan cultivamos o bom 500 g",
+      "price": 1.19,
+      "unit_price": "2.38 €/Kg",
       "category": "Frutas e Legumes",
       "product_id": "",
       "store": "Auchan"
@@ -5168,25 +5177,9 @@
       "store": "Auchan"
     },
     {
-      "name": "uva branca vale da rosa sem grainha 400 g",
-      "price": 3.19,
-      "unit_price": "7.98 €/Kg",
-      "category": "Frutas e Legumes",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
       "name": "maçã fuji alcobaça igp auchan 1 kg",
       "price": 2.09,
       "unit_price": "2.09 €/Kg",
-      "category": "Frutas e Legumes",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
-      "name": "morango e kiwi pedaços kg",
-      "price": 12.99,
-      "unit_price": "3.90 €/un",
       "category": "Frutas e Legumes",
       "product_id": "",
       "store": "Auchan"
@@ -5200,9 +5193,33 @@
       "store": "Auchan"
     },
     {
+      "name": "morango e kiwi pedaços kg",
+      "price": 12.99,
+      "unit_price": "3.90 €/un",
+      "category": "Frutas e Legumes",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
+      "name": "uva branca vale da rosa sem grainha 400 g",
+      "price": 3.19,
+      "unit_price": "7.98 €/Kg",
+      "category": "Frutas e Legumes",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
       "name": "abacate hass kg",
       "price": 4.79,
       "unit_price": "0.96 €/un",
+      "category": "Frutas e Legumes",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
+      "name": "papaia via aérea kg",
+      "price": 4.59,
+      "unit_price": "2.75 €/un",
       "category": "Frutas e Legumes",
       "product_id": "",
       "store": "Auchan"
@@ -5216,14 +5233,6 @@
       "store": "Auchan"
     },
     {
-      "name": "abacaxi metade kg",
-      "price": 1.64,
-      "unit_price": "1.64 €/un",
-      "category": "Frutas e Legumes",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
       "name": "uva rosada sem grainha auchan 500 g",
       "price": 2.79,
       "unit_price": "5.58 €/Kg",
@@ -5232,9 +5241,9 @@
       "store": "Auchan"
     },
     {
-      "name": "papaia via aérea kg",
-      "price": 4.59,
-      "unit_price": "2.75 €/un",
+      "name": "manga pronta a comer via aérea kg",
+      "price": 4.99,
+      "unit_price": "2.50 €/un",
       "category": "Frutas e Legumes",
       "product_id": "",
       "store": "Auchan"
@@ -5320,14 +5329,6 @@
       "store": "Auchan"
     },
     {
-      "name": "cebola kg produto local",
-      "price": 1.39,
-      "unit_price": "0.28 €/un",
-      "category": "Frutas e Legumes",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
       "name": "pimento vermelho kg",
       "price": 3.29,
       "unit_price": "1.15 €/un",
@@ -5336,25 +5337,17 @@
       "store": "Auchan"
     },
     {
+      "name": "cebola kg produto local",
+      "price": 1.39,
+      "unit_price": "0.28 €/un",
+      "category": "Frutas e Legumes",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
       "name": "alho seco auchan 250 g",
       "price": 1.45,
       "unit_price": "5.8 €/Kg",
-      "category": "Frutas e Legumes",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
-      "name": "cebola auchan 2 kg",
-      "price": 2.45,
-      "unit_price": "1.23 €/Kg",
-      "category": "Frutas e Legumes",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
-      "name": "espinafres folha baby auchan 150 g",
-      "price": 1.09,
-      "unit_price": "7.27 €/Kg",
       "category": "Frutas e Legumes",
       "product_id": "",
       "store": "Auchan"
@@ -5408,14 +5401,6 @@
       "store": "Auchan"
     },
     {
-      "name": "batata doce kg",
-      "price": 2.39,
-      "unit_price": "0.72 €/un",
-      "category": "Frutas e Legumes",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
       "name": "abóbora em pedaços 600g",
       "price": 1.59,
       "unit_price": "2.65 €/Kg",
@@ -5424,9 +5409,33 @@
       "store": "Auchan"
     },
     {
+      "name": "batata doce kg",
+      "price": 2.39,
+      "unit_price": "0.72 €/un",
+      "category": "Frutas e Legumes",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
       "name": "batata vermelha kg produto local",
       "price": 0.99,
       "unit_price": "0.25 €/un",
+      "category": "Frutas e Legumes",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
+      "name": "batata para cozer auchan 3kg",
+      "price": 3.99,
+      "unit_price": "1.33 €/Kg",
+      "category": "Frutas e Legumes",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
+      "name": "couve coração kg produto local",
+      "price": 1.69,
+      "unit_price": "1.69 €/un",
       "category": "Frutas e Legumes",
       "product_id": "",
       "store": "Auchan"
@@ -5473,8 +5482,16 @@
     },
     {
       "name": "pão com chouriço produção própria 100g",
-      "price": 0.89,
-      "unit_price": "8.9 €/Kg",
+      "price": 0.99,
+      "unit_price": "9.9 €/Kg",
+      "category": "Padaria e Pastelaria",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
+      "name": "pão bimbo forma sem côdea 650g",
+      "price": 2.42,
+      "unit_price": "3.72 €/Kg",
       "category": "Padaria e Pastelaria",
       "product_id": "",
       "store": "Auchan"
@@ -5483,14 +5500,6 @@
       "name": "pão da casa com massa mãe produção própria kg",
       "price": 2.99,
       "unit_price": "1.50 €/un",
-      "category": "Padaria e Pastelaria",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
-      "name": "pão bimbo forma sem côdea 650g",
-      "price": 2.69,
-      "unit_price": "4.14 €/Kg",
       "category": "Padaria e Pastelaria",
       "product_id": "",
       "store": "Auchan"
@@ -5536,9 +5545,9 @@
       "store": "Auchan"
     },
     {
-      "name": "pão avó bolas produção própria kg",
-      "price": 2.79,
-      "unit_price": "1.40 €/un",
+      "name": "pão de forma bimbo familiar com côdea 640g",
+      "price": 2.24,
+      "unit_price": "3.5 €/Kg",
       "category": "Padaria e Pastelaria",
       "product_id": "",
       "store": "Auchan"
@@ -5552,9 +5561,9 @@
       "store": "Auchan"
     },
     {
-      "name": "pão de forma bimbo familiar com côdea 640g",
-      "price": 1.89,
-      "unit_price": "2.95 €/Kg",
+      "name": "pão avó bolas produção própria kg",
+      "price": 2.79,
+      "unit_price": "1.40 €/un",
       "category": "Padaria e Pastelaria",
       "product_id": "",
       "store": "Auchan"
@@ -5592,25 +5601,9 @@
       "store": "Auchan"
     },
     {
-      "name": "pao de forma auchan sem codea integral 450 g",
-      "price": 1.39,
-      "unit_price": "3.09 €/Kg",
-      "category": "Padaria e Pastelaria",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
-      "name": "pão hot dog auchan 6 un 330g",
-      "price": 0.98,
-      "unit_price": "2.97 €/Kg",
-      "category": "Padaria e Pastelaria",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
       "name": "pão oroweat bimbo 12 cereais sementes 550g",
-      "price": 2.89,
-      "unit_price": "5.25 €/Kg",
+      "price": 2.6,
+      "unit_price": "4.73 €/Kg",
       "category": "Padaria e Pastelaria",
       "product_id": "",
       "store": "Auchan"
@@ -5624,10 +5617,18 @@
       "store": "Auchan"
     },
     {
-      "name": "arroz basmati auchan extra longo 1kg",
+      "name": "pão de queijo un",
+      "price": 0.22,
+      "unit_price": "10 €/Kg",
+      "category": "Padaria e Pastelaria",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
+      "name": "pão panrico forma integral receita económica 520g",
       "price": 1.99,
-      "unit_price": "1.99 €/Kg",
-      "category": "Mercearia",
+      "unit_price": "3.83 €/Kg",
+      "category": "Padaria e Pastelaria",
       "product_id": "",
       "store": "Auchan"
     },
@@ -5635,6 +5636,14 @@
       "name": "esparguete auchan 1kg",
       "price": 0.99,
       "unit_price": "0.99 €/Kg",
+      "category": "Mercearia",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
+      "name": "arroz basmati auchan extra longo 1kg",
+      "price": 1.99,
+      "unit_price": "1.99 €/Kg",
       "category": "Mercearia",
       "product_id": "",
       "store": "Auchan"
@@ -5688,14 +5697,6 @@
       "store": "Auchan"
     },
     {
-      "name": "alho auchan moido frasco 55 g",
-      "price": 0.8,
-      "unit_price": "14.55 €/Kg",
-      "category": "Mercearia",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
       "name": "arroz agulha auchan extra longo branqueado 1kg",
       "price": 1.25,
       "unit_price": "1.25 €/Kg",
@@ -5704,17 +5705,17 @@
       "store": "Auchan"
     },
     {
-      "name": "polpa tomate polegar 3x210 g",
-      "price": 1.49,
-      "unit_price": "2.37 €/Kg",
+      "name": "alho auchan moido frasco 55 g",
+      "price": 0.8,
+      "unit_price": "14.55 €/Kg",
       "category": "Mercearia",
       "product_id": "",
       "store": "Auchan"
     },
     {
-      "name": "massa auchan espirais com vegetais 500g",
-      "price": 0.79,
-      "unit_price": "1.58 €/Kg",
+      "name": "polpa tomate polegar 3x210 g",
+      "price": 1.49,
+      "unit_price": "2.37 €/Kg",
       "category": "Mercearia",
       "product_id": "",
       "store": "Auchan"
@@ -5745,8 +5746,8 @@
     },
     {
       "name": "arroz agulha cigala 1kg",
-      "price": 1.69,
-      "unit_price": "1.69 €/Kg",
+      "price": 1.44,
+      "unit_price": "1.44 €/Kg",
       "category": "Mercearia",
       "product_id": "",
       "store": "Auchan"
@@ -5755,22 +5756,6 @@
       "name": "atum posta auchan em azeite 120 (78)g",
       "price": 1.12,
       "unit_price": "14.36 €/Kg",
-      "category": "Mercearia",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
-      "name": "pão auchan de leite 10un 350g",
-      "price": 1.59,
-      "unit_price": "4.54 €/Kg",
-      "category": "Mercearia",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
-      "name": "bolacha snack lotus biscoff caramelizadas 124 g",
-      "price": 1.79,
-      "unit_price": "14.44 €/Kg",
       "category": "Mercearia",
       "product_id": "",
       "store": "Auchan"
@@ -5787,6 +5772,14 @@
       "name": "batatas auchan fritas onduladas girassol 200g",
       "price": 1.25,
       "unit_price": "6.25 €/Kg",
+      "category": "Mercearia",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
+      "name": "pão auchan de leite 10un 350g",
+      "price": 1.59,
+      "unit_price": "4.54 €/Kg",
       "category": "Mercearia",
       "product_id": "",
       "store": "Auchan"
@@ -5811,6 +5804,22 @@
       "name": "arroz carolino auchan extra longo 1kg",
       "price": 1.15,
       "unit_price": "1.15 €/Kg",
+      "category": "Mercearia",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
+      "name": "óleo alimentar fula 1l",
+      "price": 1.82,
+      "unit_price": "1.82 €/Lt",
+      "category": "Mercearia",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
+      "name": "sal marinho polegar 1 kg",
+      "price": 0.29,
+      "unit_price": "0.29 €/Kg",
       "category": "Mercearia",
       "product_id": "",
       "store": "Auchan"
@@ -5856,6 +5865,14 @@
       "store": "Auchan"
     },
     {
+      "name": "iced tea auchan pêssego brick 1.5l",
+      "price": 1.14,
+      "unit_price": "0.76 €/Lt",
+      "category": "Bebidas",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
       "name": "água caldas de penacova mineral 6x1.5l",
       "price": 2.46,
       "unit_price": "0.27 €/Lt",
@@ -5867,14 +5884,6 @@
       "name": "nectar compal família frutos tropicais 1l",
       "price": 1.09,
       "unit_price": "1.09 €/Lt",
-      "category": "Bebidas",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
-      "name": "iced tea auchan pêssego brick 1.5l",
-      "price": 1.14,
-      "unit_price": "0.76 €/Lt",
       "category": "Bebidas",
       "product_id": "",
       "store": "Auchan"
@@ -5920,17 +5929,17 @@
       "store": "Auchan"
     },
     {
-      "name": "néctar um bongo 8 frutos 6x0.20l",
-      "price": 2.89,
-      "unit_price": "2.41 €/Lt",
+      "name": "néctar compal origens manga magdalena 1l",
+      "price": 1.52,
+      "unit_price": "1.52 €/Lt",
       "category": "Bebidas",
       "product_id": "",
       "store": "Auchan"
     },
     {
-      "name": "néctar compal origens manga magdalena 1l",
-      "price": 1.69,
-      "unit_price": "1.69 €/Lt",
+      "name": "néctar um bongo 8 frutos 6x0.20l",
+      "price": 2.89,
+      "unit_price": "2.41 €/Lt",
       "category": "Bebidas",
       "product_id": "",
       "store": "Auchan"
@@ -5944,17 +5953,17 @@
       "store": "Auchan"
     },
     {
-      "name": "iced tea auchan manga brick 1.5l",
-      "price": 1.14,
-      "unit_price": "0.76 €/Lt",
+      "name": "ice tea auchan limão 6x200ml",
+      "price": 1.19,
+      "unit_price": "0.99 €/Lt",
       "category": "Bebidas",
       "product_id": "",
       "store": "Auchan"
     },
     {
-      "name": "ice tea auchan limão 6x200ml",
-      "price": 1.19,
-      "unit_price": "0.99 €/Lt",
+      "name": "iced tea auchan manga brick 1.5l",
+      "price": 1.14,
+      "unit_price": "0.76 €/Lt",
       "category": "Bebidas",
       "product_id": "",
       "store": "Auchan"
@@ -5968,6 +5977,14 @@
       "store": "Auchan"
     },
     {
+      "name": "refrigerante com gás coca-cola zero açúcar 2x1.75l",
+      "price": 4.1,
+      "unit_price": "1.17 €/Lt",
+      "category": "Bebidas",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
       "name": "ice tea auchan pessego 6x200ml",
       "price": 1.19,
       "unit_price": "0.99 €/Lt",
@@ -5976,33 +5993,25 @@
       "store": "Auchan"
     },
     {
-      "name": "nectar compal família frutos do pomar 1l",
-      "price": 1.09,
-      "unit_price": "1.09 €/Lt",
-      "category": "Bebidas",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
-      "name": "água pedras salgadas com gás pet 6x0.33l",
-      "price": 2.99,
-      "unit_price": "1.51 €/Lt",
-      "category": "Bebidas",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
-      "name": "água monchique mineral ecopack 10l",
-      "price": 3.89,
-      "unit_price": "0.39 €/Lt",
-      "category": "Bebidas",
-      "product_id": "",
-      "store": "Auchan"
-    },
-    {
       "name": "néctar compal clássico manga 1l",
       "price": 1.01,
       "unit_price": "1.01 €/Lt",
+      "category": "Bebidas",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
+      "name": "água c/ gás auchan 6x1.5l",
+      "price": 2.88,
+      "unit_price": "0.32 €/Lt",
+      "category": "Bebidas",
+      "product_id": "",
+      "store": "Auchan"
+    },
+    {
+      "name": "nectar compal família frutos do pomar 1l",
+      "price": 1.09,
+      "unit_price": "1.09 €/Lt",
       "category": "Bebidas",
       "product_id": "",
       "store": "Auchan"
@@ -6201,8 +6210,8 @@
     },
     {
       "name": "champô elvive collagen lifter 700ml",
-      "price": 6.89,
-      "unit_price": "9.84 €/Lt",
+      "price": 6.2,
+      "unit_price": "8.86 €/Lt",
       "category": "Higiene e Beleza",
       "product_id": "3978295",
       "store": "Auchan"
@@ -6308,15 +6317,15 @@
         },
         {
           "store": "Continente",
-          "price": 5.39,
-          "unit_price": "4,79€/kg",
+          "price": 6.39,
+          "unit_price": "5,68€/kg",
           "product_id": "4882816"
         }
       ],
       "cheapest_store": "Auchan",
       "cheapest_price": 4.29,
-      "potential_savings": 1.1,
-      "savings_percent": 20.4
+      "potential_savings": 2.1,
+      "savings_percent": 32.9
     },
     {
       "product_name": "polpa de tomate auchan 500g",
@@ -6340,6 +6349,48 @@
       "savings_percent": 47.6
     },
     {
+      "product_name": "batata vermelha auchan 3 kg",
+      "prices": [
+        {
+          "store": "Continente",
+          "price": 2.89,
+          "unit_price": "0,96€/kg",
+          "product_id": "5454736"
+        },
+        {
+          "store": "Auchan",
+          "price": 3.59,
+          "unit_price": "1.2 €/Kg",
+          "product_id": ""
+        }
+      ],
+      "cheapest_store": "Continente",
+      "cheapest_price": 2.89,
+      "potential_savings": 0.7,
+      "savings_percent": 19.5
+    },
+    {
+      "product_name": "Coxas de Frango Embaladas",
+      "prices": [
+        {
+          "store": "Pingo Doce",
+          "price": 3.99,
+          "unit_price": "",
+          "product_id": "465643"
+        },
+        {
+          "store": "Auchan",
+          "price": 4.49,
+          "unit_price": "3.37 €/un",
+          "product_id": ""
+        }
+      ],
+      "cheapest_store": "Pingo Doce",
+      "cheapest_price": 3.99,
+      "potential_savings": 0.5,
+      "savings_percent": 11.1
+    },
+    {
       "product_name": "alho francês cortado auchan 400 g",
       "prices": [
         {
@@ -6359,27 +6410,6 @@
       "cheapest_price": 1.45,
       "potential_savings": 0.44,
       "savings_percent": 23.3
-    },
-    {
-      "product_name": "arroz agulha cigala 1kg",
-      "prices": [
-        {
-          "store": "Continente",
-          "price": 1.38,
-          "unit_price": "1,38€/kg",
-          "product_id": "2305902"
-        },
-        {
-          "store": "Auchan",
-          "price": 1.69,
-          "unit_price": "1.69 €/Kg",
-          "product_id": ""
-        }
-      ],
-      "cheapest_store": "Continente",
-      "cheapest_price": 1.38,
-      "potential_savings": 0.31,
-      "savings_percent": 18.3
     },
     {
       "product_name": "manteiga milhafre com sal 250g",
@@ -6424,25 +6454,46 @@
       "savings_percent": 3.8
     },
     {
-      "product_name": "pão de rio maior 450g",
+      "product_name": "arroz agulha cigala 1kg",
       "prices": [
         {
           "store": "Auchan",
-          "price": 0.99,
-          "unit_price": "2.2 €/Kg",
+          "price": 1.44,
+          "unit_price": "1.44 €/Kg",
           "product_id": ""
         },
         {
-          "store": "Pingo Doce",
-          "price": 1.19,
-          "unit_price": "",
-          "product_id": "254253"
+          "store": "Continente",
+          "price": 1.69,
+          "unit_price": "1,69€/kg",
+          "product_id": "2305902"
         }
       ],
       "cheapest_store": "Auchan",
-      "cheapest_price": 0.99,
-      "potential_savings": 0.2,
-      "savings_percent": 16.8
+      "cheapest_price": 1.44,
+      "potential_savings": 0.25,
+      "savings_percent": 14.8
+    },
+    {
+      "product_name": "pão de queijo un",
+      "prices": [
+        {
+          "store": "Auchan",
+          "price": 0.22,
+          "unit_price": "10 €/Kg",
+          "product_id": ""
+        },
+        {
+          "store": "Continente",
+          "price": 0.29,
+          "unit_price": "13,18€/kg",
+          "product_id": "7446837"
+        }
+      ],
+      "cheapest_store": "Auchan",
+      "cheapest_price": 0.22,
+      "potential_savings": 0.07,
+      "savings_percent": 24.1
     },
     {
       "product_name": "leite auchan uht meio gordo sem lactose 1l",
@@ -6497,40 +6548,19 @@
       "prices": [
         {
           "store": "Continente",
-          "price": 1.99,
-          "unit_price": "1,99€/lt",
+          "price": 2.59,
+          "unit_price": "2,59€/lt",
           "product_id": "5752443"
         },
         {
           "store": "Pingo Doce",
-          "price": 1.99,
+          "price": 2.59,
           "unit_price": "",
           "product_id": "967610"
         }
       ],
       "cheapest_store": "Continente",
-      "cheapest_price": 1.99,
-      "potential_savings": 0.0,
-      "savings_percent": 0.0
-    },
-    {
-      "product_name": "batata vermelha auchan 3 kg",
-      "prices": [
-        {
-          "store": "Continente",
-          "price": 3.59,
-          "unit_price": "1,20€/kg",
-          "product_id": "5454736"
-        },
-        {
-          "store": "Auchan",
-          "price": 3.59,
-          "unit_price": "1.2 €/Kg",
-          "product_id": ""
-        }
-      ],
-      "cheapest_store": "Continente",
-      "cheapest_price": 3.59,
+      "cheapest_price": 2.59,
       "potential_savings": 0.0,
       "savings_percent": 0.0
     },
@@ -6598,27 +6628,6 @@
       "savings_percent": 0.0
     },
     {
-      "product_name": "Coxas de Frango Embaladas",
-      "prices": [
-        {
-          "store": "Pingo Doce",
-          "price": 4.49,
-          "unit_price": "",
-          "product_id": "465643"
-        },
-        {
-          "store": "Auchan",
-          "price": 4.49,
-          "unit_price": "3.37 €/un",
-          "product_id": ""
-        }
-      ],
-      "cheapest_store": "Pingo Doce",
-      "cheapest_price": 4.49,
-      "potential_savings": 0.0,
-      "savings_percent": 0.0
-    },
-    {
       "product_name": "Perninhas de Frango Embaladas",
       "prices": [
         {
@@ -6636,6 +6645,27 @@
       ],
       "cheapest_store": "Pingo Doce",
       "cheapest_price": 4.99,
+      "potential_savings": 0.0,
+      "savings_percent": 0.0
+    },
+    {
+      "product_name": "pão de rio maior 450g",
+      "prices": [
+        {
+          "store": "Pingo Doce",
+          "price": 0.99,
+          "unit_price": "",
+          "product_id": "254253"
+        },
+        {
+          "store": "Auchan",
+          "price": 0.99,
+          "unit_price": "2.2 €/Kg",
+          "product_id": ""
+        }
+      ],
+      "cheapest_store": "Pingo Doce",
+      "cheapest_price": 0.99,
       "potential_savings": 0.0,
       "savings_percent": 0.0
     },
@@ -6687,13 +6717,13 @@
       "category": "Bebidas",
       "stores": {
         "Continente": {
-          "avg_price": 8.39,
+          "avg_price": 8.37,
           "product_count": 9,
           "min_price": 0.64,
-          "max_price": 18.29
+          "max_price": 17.49
         },
         "Pingo Doce": {
-          "avg_price": 2.45,
+          "avg_price": 2.43,
           "product_count": 35,
           "min_price": 0.17,
           "max_price": 7.8
@@ -6711,19 +6741,19 @@
       "category": "Carne",
       "stores": {
         "Continente": {
-          "avg_price": 10.99,
-          "product_count": 1,
+          "avg_price": 12.99,
+          "product_count": 2,
           "min_price": 10.99,
-          "max_price": 10.99
+          "max_price": 14.99
         },
         "Pingo Doce": {
-          "avg_price": 7.18,
+          "avg_price": 7.28,
           "product_count": 50,
           "min_price": 2.49,
           "max_price": 27.99
         },
         "Auchan": {
-          "avg_price": 5.83,
+          "avg_price": 5.61,
           "product_count": 24,
           "min_price": 2.49,
           "max_price": 11.99
@@ -6735,16 +6765,16 @@
       "category": "Congelados",
       "stores": {
         "Continente": {
-          "avg_price": 4.87,
+          "avg_price": 5.06,
           "product_count": 9,
-          "min_price": 3.29,
+          "min_price": 3.49,
           "max_price": 12.29
         },
         "Pingo Doce": {
-          "avg_price": 6.93,
+          "avg_price": 7.3,
           "product_count": 44,
           "min_price": 0.89,
-          "max_price": 18.99
+          "max_price": 25.99
         },
         "Auchan": {
           "avg_price": 5.83,
@@ -6759,34 +6789,34 @@
       "category": "Frutas e Legumes",
       "stores": {
         "Continente": {
-          "avg_price": 3.02,
+          "avg_price": 2.93,
           "product_count": 8,
           "min_price": 0.95,
           "max_price": 9.99
         },
         "Pingo Doce": {
-          "avg_price": 2.53,
+          "avg_price": 2.59,
           "product_count": 38,
           "min_price": 0.65,
           "max_price": 9.98
         },
         "Auchan": {
-          "avg_price": 2.5,
+          "avg_price": 2.61,
           "product_count": 48,
           "min_price": 0.99,
           "max_price": 12.99
         }
       },
-      "cheapest_store": "Auchan"
+      "cheapest_store": "Pingo Doce"
     },
     {
       "category": "Higiene e Beleza",
       "stores": {
         "Continente": {
-          "avg_price": 14.15,
+          "avg_price": 14.88,
           "product_count": 9,
           "min_price": 2.99,
-          "max_price": 29.59
+          "max_price": 33.99
         },
         "Pingo Doce": {
           "avg_price": 6.62,
@@ -6795,7 +6825,7 @@
           "max_price": 23.79
         },
         "Auchan": {
-          "avg_price": 5.9,
+          "avg_price": 5.84,
           "product_count": 12,
           "min_price": 1.99,
           "max_price": 17.54
@@ -6807,19 +6837,19 @@
       "category": "Lacticínios e Ovos",
       "stores": {
         "Continente": {
-          "avg_price": 2.41,
+          "avg_price": 2.7,
           "product_count": 9,
           "min_price": 1.14,
-          "max_price": 3.79
+          "max_price": 5.09
         },
         "Pingo Doce": {
-          "avg_price": 1.98,
+          "avg_price": 2.01,
           "product_count": 34,
           "min_price": 0.64,
           "max_price": 12.99
         },
         "Auchan": {
-          "avg_price": 2.21,
+          "avg_price": 2.19,
           "product_count": 24,
           "min_price": 0.79,
           "max_price": 5.75
@@ -6849,21 +6879,21 @@
       "category": "Mercearia",
       "stores": {
         "Continente": {
-          "avg_price": 3.83,
+          "avg_price": 3.73,
           "product_count": 9,
           "min_price": 0.75,
           "max_price": 20.99
         },
         "Pingo Doce": {
-          "avg_price": 2.28,
+          "avg_price": 2.4,
           "product_count": 38,
           "min_price": 0.29,
-          "max_price": 16.89
+          "max_price": 20.49
         },
         "Auchan": {
-          "avg_price": 1.19,
+          "avg_price": 1.16,
           "product_count": 24,
-          "min_price": 0.69,
+          "min_price": 0.29,
           "max_price": 1.99
         }
       },
@@ -6873,7 +6903,7 @@
       "category": "Padaria e Pastelaria",
       "stores": {
         "Continente": {
-          "avg_price": 2.36,
+          "avg_price": 2.28,
           "product_count": 9,
           "min_price": 0.29,
           "max_price": 4.69
@@ -6885,7 +6915,7 @@
           "max_price": 2.79
         },
         "Auchan": {
-          "avg_price": 1.47,
+          "avg_price": 1.46,
           "product_count": 24,
           "min_price": 0.11,
           "max_price": 2.99
@@ -6897,19 +6927,19 @@
       "category": "Peixe e Marisco",
       "stores": {
         "Continente": {
-          "avg_price": 9.13,
+          "avg_price": 9.19,
           "product_count": 8,
-          "min_price": 3.49,
+          "min_price": 3.39,
           "max_price": 15.99
         },
         "Pingo Doce": {
-          "avg_price": 9.19,
+          "avg_price": 9.32,
           "product_count": 47,
-          "min_price": 2.79,
+          "min_price": 3.39,
           "max_price": 34.99
         },
         "Auchan": {
-          "avg_price": 6.53,
+          "avg_price": 6.66,
           "product_count": 24,
           "min_price": 1.29,
           "max_price": 15.99
@@ -6919,24 +6949,6 @@
     }
   ],
   "open_prices": [
-    {
-      "product_name": "Pain au chocolat",
-      "product_code": "3256549997616",
-      "price": 1.75,
-      "currency": null,
-      "store": "Lidl",
-      "city": "Fontaine-le-Comte",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "e",
-      "categories": [
-        "en:snacks",
-        "en:sweet-snacks",
-        "en:sweet-pastries-and-pies",
-        "en:viennoiseries",
-        "en:chocolate-croissant"
-      ]
-    },
     {
       "product_name": "Pane ai cereali e soia a fette",
       "product_code": "8030582018034",
@@ -6957,1022 +6969,42 @@
       ]
     },
     {
-      "product_name": "Wok & Go Porc et riz Aigre Douce",
-      "product_code": "3302740082481",
-      "price": 3.63,
+      "product_name": "Steviana",
+      "product_code": "5285000910572",
+      "price": 19.95,
       "currency": null,
-      "store": "Intermarché",
-      "city": "Gex",
+      "store": "دبي",
+      "city": "دبي",
       "date": null,
       "source": "Open Prices (crowdsourced)",
-      "nutriscore": "c",
+      "nutriscore": "not-applicable",
       "categories": [
-        "en:meals",
-        "en:meals-with-meat",
-        "en:rice-dishes",
-        "en:pork-meals",
-        "en:microwave-meals",
-        "en:caramel-pork"
-      ]
-    },
-    {
-      "product_name": "Sonnenblumenkerne geschält",
-      "product_code": "4099200162355",
-      "price": 1.19,
-      "currency": null,
-      "store": "Hofer",
-      "city": "Wien",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "a",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:seeds",
-        "en:sunflower-seeds-and-their-products",
-        "en:sunflower-seeds",
-        "en:shelled-sunflower-seeds"
-      ]
-    },
-    {
-      "product_name": "Tuiles saveur paprika",
-      "product_code": "3596710324392",
-      "price": 1.61,
-      "currency": null,
-      "store": "Auchan",
-      "city": "Calais",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "d",
-      "categories": [
-        "en:snacks",
-        "en:salty-snacks",
-        "en:appetizers",
-        "en:chips-and-fries",
-        "en:crisps",
-        "en:salty-snacks-made-from-potato"
-      ]
-    },
-    {
-      "product_name": "Älplermagronen",
-      "product_code": "20656775",
-      "price": 1.19,
-      "currency": null,
-      "store": "Lidl",
-      "city": "München",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "a",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:cereals-and-potatoes",
-        "en:cereals-and-their-products",
-        "en:pastas",
-        "en:cereal-pastas",
-        "en:noodles",
-        "en:durum-wheat-pasta",
-        "en:egg-pastas",
-        "en:egg-noodles"
-      ]
-    },
-    {
-      "product_name": "Provolone valpadana DOP dolce",
-      "product_code": "8003100802460",
-      "price": 2.95,
-      "currency": null,
-      "store": "Mega",
-      "city": "Marghera",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "d",
-      "categories": [
-        "en:dairies",
-        "en:fermented-foods",
-        "en:fermented-milk-products",
-        "en:cheeses",
-        "en:cow-cheeses",
-        "en:italian-cheeses",
-        "en:provolone",
-        "it:provolone-valpadana"
-      ]
-    },
-    {
-      "product_name": "Poesie Amelie Bio-Nussriegel",
-      "product_code": "4260229230169",
-      "price": 1.89,
-      "currency": "EUR",
-      "store": "Rossmann",
-      "city": "Chemnitz",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "d",
-      "categories": [
-        "en:snacks",
-        "en:sweet-snacks",
-        "en:bars",
-        "en:cereal-bars",
-        "en:fruits-cereal-bars",
-        "de:bio-nussriegel"
-      ]
-    },
-    {
-      "product_name": "Natural Mix",
-      "product_code": "5906827018295",
-      "price": 4.19,
-      "currency": null,
-      "store": "Sokołów Podlaski",
-      "city": "Sokołów Podlaski",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "b",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:cereals-and-potatoes",
-        "en:cereals-and-their-products",
-        "en:groats"
-      ]
-    },
-    {
-      "product_name": "Havregryn Finvalsede",
-      "product_code": "5712870510156",
-      "price": 9.95,
-      "currency": null,
-      "store": "Netto",
-      "city": "Odense",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "a",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:breakfasts",
-        "en:cereals-and-potatoes",
-        "en:seeds",
-        "en:cereals-and-their-products",
-        "en:breakfast-cereals",
-        "en:cereal-grains",
-        "en:flakes",
-        "en:cereal-flakes",
-        "en:rolled-flakes",
-        "en:rolled-oats",
-        "en:oat"
-      ]
-    },
-    {
-      "product_name": "Miel liquide Bio",
-      "product_code": "3596710450923",
-      "price": 3.1,
-      "currency": null,
-      "store": "Auchan",
-      "city": "Calais",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "e",
-      "categories": [
-        "en:breakfasts",
-        "en:spreads",
-        "en:sweet-spreads",
-        "en:bee-products",
-        "en:farming-products",
         "en:sweeteners",
-        "en:honeys",
-        "en:confectionary-based-spreads",
-        "en:liquid-honeys",
-        "fr:miel-origine-amerique-latine"
+        "en:food-additives",
+        "en:sugar-substitutes",
+        "en:artificial-sugar-substitutes",
+        "en:stevia-sweetener"
       ]
     },
     {
-      "product_name": "Pico-Balla",
-      "product_code": "4001686120132",
-      "price": 1.19,
+      "product_name": "Essig-Essenz, 25 % Säure",
+      "product_code": "4061458019859",
+      "price": 0.79,
       "currency": null,
-      "store": "EDEKA xpress",
-      "city": "München",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "e",
-      "categories": [
-        "en:snacks",
-        "en:sweet-snacks",
-        "en:cocoa-and-its-products",
-        "en:confectioneries",
-        "en:chocolate-candies",
-        "en:bonbons",
-        "en:candies",
-        "en:gummi-candies"
-      ]
-    },
-    {
-      "product_name": "Mentos fruit",
-      "product_code": "87108026",
-      "price": 0.89,
-      "currency": null,
-      "store": "Jumbo",
-      "city": "Δημοτική Ενότητα Πατρέων",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "e",
-      "categories": [
-        "en:snacks",
-        "en:sweet-snacks",
-        "en:confectioneries",
-        "en:candies",
-        "en:dragees"
-      ]
-    },
-    {
-      "product_name": "Ketchup",
-      "product_code": "8435382811449",
-      "price": 5.56,
-      "currency": null,
-      "store": "Hiperdino",
-      "city": "Gáldar",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "d",
-      "categories": [
-        "en:condiments",
-        "en:sauces",
-        "en:tomato-sauces",
-        "en:ketchup",
-        "en:groceries"
-      ]
-    },
-    {
-      "product_name": "Purée crue 100% Sésame Complet",
-      "product_code": "3267110001281",
-      "price": 6.55,
-      "currency": null,
-      "store": "Franprix",
-      "city": "Paris",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "c",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:cereals-and-potatoes",
-        "en:spreads",
-        "en:cereals-and-their-products",
-        "en:plant-based-spreads",
-        "en:oilseed-purees",
-        "en:cereal-butters",
-        "en:tahini"
-      ]
-    },
-    {
-      "product_name": "Lasagnes à garnir",
-      "product_code": "3257980420763",
-      "price": 1.76,
-      "currency": null,
-      "store": "Cora",
-      "city": "Livry-Gargan",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "a",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:cereals-and-potatoes",
-        "en:cereals-and-their-products",
-        "en:pastas",
-        "en:lasagna-sheets"
-      ]
-    },
-    {
-      "product_name": "Iron Plus 28 mg, Gentle - Iron (II) Bisglycinate",
-      "product_code": "0029537808958",
-      "price": 12.74,
-      "currency": null,
-      "store": "Real Canadian Superstore",
-      "city": "Coquitlam",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "unknown",
-      "categories": [
-        "en:iron-28-mg",
-        "en:iron-supplements",
-        "en:nutritional-supplement"
-      ]
-    },
-    {
-      "product_name": "Confiture Abricots",
-      "product_code": "3270190114895",
-      "price": 1.49,
-      "currency": null,
-      "store": "Carrefour Market Villepreux",
-      "city": "Villepreux",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "d",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:breakfasts",
-        "en:spreads",
-        "en:plant-based-spreads",
-        "en:sweet-spreads",
-        "en:fruit-and-vegetable-preserves",
-        "en:jams",
-        "en:apricot-jams"
-      ]
-    },
-    {
-      "product_name": "Mineralwasser",
-      "product_code": "40554006",
-      "price": 0.29,
-      "currency": null,
-      "store": "Edeka",
-      "city": "Lohnde",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "a",
-      "categories": [
-        "en:beverages-and-beverages-preparations",
-        "en:beverages",
-        "en:carbonated-drinks",
-        "en:waters",
-        "en:spring-waters",
-        "en:mineral-waters",
-        "en:carbonated-waters",
-        "en:natural-mineral-waters",
-        "en:getranke"
-      ]
-    },
-    {
-      "product_name": "Alpro® goût chocolat noisette",
-      "product_code": "5411188132264",
-      "price": 3.62,
-      "currency": null,
-      "store": "Carrefour City",
-      "city": "Paris",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "d",
-      "categories": [
-        "en:beverages-and-beverages-preparations",
-        "en:plant-based-foods-and-beverages",
-        "en:beverages",
-        "en:plant-based-foods",
-        "en:dairy-substitutes",
-        "en:milk-substitutes",
-        "en:nuts-and-their-products",
-        "en:plant-based-beverages",
-        "en:plant-based-milk-alternatives",
-        "en:nut-based-drinks",
-        "en:hazelnut-based-drinks"
-      ]
-    },
-    {
-      "product_name": "6 uova fresche grandi da allevamento a terra",
-      "product_code": "8030582508146",
-      "price": 1.69,
-      "currency": null,
-      "store": "Iperal Cinisello Balsamo",
-      "city": "Cinisello Balsamo",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "b",
-      "categories": [
-        "en:farming-products",
-        "en:eggs",
-        "en:chicken-eggs",
-        "en:barn-chicken-eggs"
-      ]
-    },
-    {
-      "product_name": "Tortillas chips Nacho cheese",
-      "product_code": "3168930174219",
-      "price": 3.21,
-      "currency": null,
-      "store": "Auchan",
-      "city": "Calais",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "c",
-      "categories": [
-        "en:snacks",
-        "en:salty-snacks",
-        "en:appetizers",
-        "en:chips-and-fries",
-        "en:crisps",
-        "en:corn-chips"
-      ]
-    },
-    {
-      "product_name": "Couscous",
-      "product_code": "8004350131850",
-      "price": 109.0,
-      "currency": null,
-      "store": "Сільпо",
-      "city": "Київ",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "a",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:cereals-and-potatoes",
-        "en:cereals-and-their-products",
-        "en:pastas",
-        "en:cereal-semolinas",
-        "en:wheat-semolinas",
-        "en:durum-wheat-semolinas",
-        "en:durum-wheat-semolinas-for-couscous"
-      ]
-    },
-    {
-      "product_name": "BLE 70CL PULCO CITRON VERT",
-      "product_code": "3124480185235",
-      "price": 2.89,
-      "currency": null,
-      "store": "Auchan",
-      "city": "Calais",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "b",
-      "categories": [
-        "en:beverages-and-beverages-preparations",
-        "en:beverages",
-        "en:beverage-preparations",
-        "en:syrups",
-        "en:flavoured-syrups",
-        "fr:jus"
-      ]
-    },
-    {
-      "product_name": "Saveur poulet braisé",
-      "product_code": "3596710496785",
-      "price": 1.61,
-      "currency": null,
-      "store": "Auchan",
-      "city": "Calais",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "d",
-      "categories": [
-        "en:snacks",
-        "en:salty-snacks",
-        "en:appetizers",
-        "en:chips-and-fries",
-        "en:crisps",
-        "en:salty-snacks-made-from-potato"
-      ]
-    },
-    {
-      "product_name": "wraps complet",
-      "product_code": "5400119580977",
-      "price": 1.99,
-      "currency": null,
-      "store": "AD Delhaize",
-      "city": "Aubange",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "a",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:cereals-and-potatoes",
-        "en:cereals-and-their-products",
-        "en:breads",
-        "en:flatbreads",
-        "en:white-breads",
-        "en:wheat-breads",
-        "en:wheat-flatbreads"
-      ]
-    },
-    {
-      "product_name": "Müsli Riegel Ahorn-Dattel",
-      "product_code": "4104420221833",
-      "price": 1.99,
-      "currency": "EUR",
-      "store": "Rossmann",
-      "city": "Chemnitz",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "b",
-      "categories": [
-        "en:snacks",
-        "en:sweet-snacks",
-        "en:bars",
-        "en:cereal-bars"
-      ]
-    },
-    {
-      "product_name": "Riegel Mix",
-      "product_code": "4305615985817",
-      "price": 1.69,
-      "currency": "EUR",
-      "store": "Rossmann",
-      "city": "Chemnitz",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "d",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:snacks",
-        "en:sweet-snacks",
-        "en:nuts-and-their-products",
-        "en:bars",
-        "en:cereal-bars",
-        "en:nut-bars",
-        "de:fruchtriegel"
-      ]
-    },
-    {
-      "product_name": "Ener bio",
-      "product_code": "4305615985831",
-      "price": 1.99,
-      "currency": "EUR",
-      "store": "Rossmann",
-      "city": "Chemnitz",
+      "store": "Aldi Nord",
+      "city": "Gemarkung Remscheid",
       "date": null,
       "source": "Open Prices (crowdsourced)",
       "nutriscore": "not-applicable",
       "categories": [
-        "en:snacks",
-        "en:sweet-snacks",
-        "en:bars",
-        "en:dietary-supplements",
-        "en:bodybuilding-supplements",
-        "en:protein-bars"
-      ]
-    },
-    {
-      "product_name": "Nussriegel Erdnuss & Mandel",
-      "product_code": "4305615678832",
-      "price": 1.69,
-      "currency": "EUR",
-      "store": "Rossmann",
-      "city": "Chemnitz",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "d",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:snacks",
-        "en:sweet-snacks",
-        "en:nuts-and-their-products",
-        "en:bars",
-        "en:nut-bars"
-      ]
-    },
-    {
-      "product_name": "Hej Natural",
-      "product_code": "4260446585431",
-      "price": 1.99,
-      "currency": "EUR",
-      "store": "Rossmann",
-      "city": "Chemnitz",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "d",
-      "categories": [
-        "en:snacks",
-        "en:sweet-snacks",
-        "en:bars",
-        "en:cereal-bars",
-        "en:barretta",
-        "en:barrette",
-        "en:snack-dolci"
-      ]
-    },
-    {
-      "product_name": "Extra Old Cheddar Cheese",
-      "product_code": "06836917",
-      "price": 5.77,
-      "currency": null,
-      "store": "Real Canadian Superstore",
-      "city": "Coquitlam",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "e",
-      "categories": [
-        "en:dairies",
-        "en:fermented-foods",
-        "en:fermented-milk-products",
-        "en:cheeses",
-        "en:cow-cheeses",
-        "en:dairy-by-products",
-        "en:extra-old-cheddar-cheese",
-        "en:vegetarian-lacto-animal-rennet-free"
-      ]
-    },
-    {
-      "product_name": "Natur Joghurt Bioland Schauhof",
-      "product_code": "4260712620019",
-      "price": 1.99,
-      "currency": null,
-      "store": "Neu Lammertzhof",
-      "city": "Kaarst",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "b",
-      "categories": [
-        "en:dairies",
-        "en:fermented-foods",
-        "en:fermented-milk-products",
-        "en:desserts",
-        "en:dairy-desserts",
-        "en:fermented-dairy-desserts",
-        "en:yogurts"
-      ]
-    },
-    {
-      "product_name": "Kaffee",
-      "product_code": "4063367408496",
-      "price": 4.29,
-      "currency": null,
-      "store": "Kaufland",
-      "city": "Dortmund",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "unknown",
-      "categories": [
-        "en:beverages-and-beverages-preparations",
-        "en:beverages"
-      ]
-    },
-    {
-      "product_name": "Saumon pâtes au basilic et sauce citronnée",
-      "product_code": "4056489194996",
-      "price": 3.45,
-      "currency": null,
-      "store": "Lidl",
-      "city": "Marzy",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "c",
-      "categories": [
-        "en:meals",
-        "en:pasta-dishes",
-        "en:meals-with-fish",
-        "en:meals-with-salmon",
-        "en:microwave-meals",
-        "en:pasta-with-fish",
-        "en:pasta-with-salmon"
-      ]
-    },
-    {
-      "product_name": "Bocconcini di pollo panati",
-      "product_code": "8008110028077",
-      "price": 5.99,
-      "currency": null,
-      "store": "Supermercato Carrefour Express",
-      "city": "Roma",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "b",
-      "categories": [
-        "en:meats-and-their-products",
-        "en:meat-preparations",
-        "en:meats",
-        "en:chicken-and-its-products",
-        "en:poultries",
-        "en:chickens",
-        "en:cooked-poultries",
-        "en:cooked-chicken"
-      ]
-    },
-    {
-      "product_name": "Grauburgunder",
-      "product_code": "4311605701305",
-      "price": 2.89,
-      "currency": null,
-      "store": "EDEKA",
-      "city": "Kiel",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "unknown",
-      "categories": [
-        "en:beverages-and-beverages-preparations",
-        "en:beverages"
-      ]
-    },
-    {
-      "product_name": "Pesto alla Calabrese",
-      "product_code": "7624841393713",
-      "price": 4.95,
-      "currency": null,
-      "store": "Coop",
-      "city": "Ostermundigen",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "d",
-      "categories": [
         "en:condiments",
-        "en:sauces",
-        "en:pestos"
+        "en:vinegars",
+        "de:essigessenzen"
       ]
     },
     {
-      "product_name": "Crocchette di patate (prefritte)",
-      "product_code": "8004263663318",
-      "price": 2.8,
-      "currency": null,
-      "store": "Torino",
-      "city": "Torino",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "c",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:cereals-and-potatoes",
-        "en:frozen-foods",
-        "en:potatoes-and-their-products",
-        "en:breaded-products",
-        "en:potato-preparations",
-        "en:kroketten"
-      ]
-    },
-    {
-      "product_name": "Saaten Brot",
-      "product_code": "4068134004802",
-      "price": 2.99,
-      "currency": null,
-      "store": "Rossmann",
-      "city": "Burgwedel",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "a",
-      "categories": [
-        "de:brotbackmischung"
-      ]
-    },
-    {
-      "product_name": "Sardines à l'huile de tournesol",
-      "product_code": "3251870002770",
-      "price": 0.88,
-      "currency": null,
-      "store": "Carrefour Market",
-      "city": "Boulogne-sur-Mer",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "b",
-      "categories": [
-        "en:seafood",
-        "en:fishes-and-their-products",
-        "en:canned-foods",
-        "en:fishes",
-        "en:fatty-fishes",
-        "en:canned-fishes",
-        "en:sardines",
-        "en:canned-sardines",
-        "en:sardines-in-oil",
-        "en:sardines-in-sunflower-oil"
-      ]
-    },
-    {
-      "product_name": "Rinderhack",
-      "product_code": "4056489496663",
-      "price": 4.99,
-      "currency": null,
-      "store": "Frankenstraße",
-      "city": "Koblenz",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "unknown",
-      "categories": []
-    },
-    {
-      "product_name": "Ziegencamembert Pfeffer",
-      "product_code": "4099200191072",
-      "price": 2.19,
-      "currency": null,
-      "store": "Hofer",
-      "city": "Wien",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "e",
-      "categories": [
-        "de:ziegencamembert"
-      ]
-    },
-    {
-      "product_name": "Haribo Schlümpfe",
-      "product_code": "4001686333044",
-      "price": 7.99,
-      "currency": null,
-      "store": "EDEKA xpress",
-      "city": "München",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "d",
-      "categories": [
-        "en:snacks",
-        "en:sweet-snacks",
-        "en:cocoa-and-its-products",
-        "en:confectioneries",
-        "en:chocolate-candies",
-        "en:bonbons",
-        "en:candies",
-        "en:gummi-candies",
-        "en:bonbons-gelifies",
-        "en:snacks-sucres"
-      ]
-    },
-    {
-      "product_name": "Whey Protein French Vanilla Macaron",
-      "product_code": "3856026707280",
-      "price": 21.9,
-      "currency": null,
-      "store": "Bipa",
-      "city": "Wien",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "unknown",
-      "categories": [
-        "de:whey-protein"
-      ]
-    },
-    {
-      "product_name": "Veganer Burger - Crispy Chicken-Style",
-      "product_code": "4061461667146",
-      "price": 2.29,
-      "currency": null,
-      "store": "ALDI Süd",
-      "city": "München",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "a",
-      "categories": [
-        "en:vegan-products",
-        "en:meat-alternatives",
-        "en:vegetarian-patties",
-        "en:vegan-patties"
-      ]
-    },
-    {
-      "product_name": "Tahin Nature",
-      "product_code": "5411788037785",
-      "price": 4.19,
-      "currency": null,
-      "store": "Franprix",
-      "city": "Paris",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "d",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:cereals-and-potatoes",
-        "en:spreads",
-        "en:cereals-and-their-products",
-        "en:plant-based-spreads",
-        "en:oilseed-purees",
-        "en:cereal-butters",
-        "en:tahini"
-      ]
-    },
-    {
-      "product_name": "Haskap Berry Soda",
-      "product_code": "0616312986484",
-      "price": 5.5,
-      "currency": null,
-      "store": "Kelowna Farmers Market",
-      "city": "Kelowna",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "b",
-      "categories": [
-        "en:beverages-and-beverages-preparations",
-        "en:beverages",
-        "en:carbonated-drinks",
-        "en:carbonated-berry-juice",
-        "en:carbonated-haskap-berry-juice",
-        "en:carbonated-haskap-berry-soda",
-        "en:haskap-berry-soda",
-        "en:natural-haskap-soda"
-      ]
-    },
-    {
-      "product_name": "Ceci",
-      "product_code": "8051770851745",
-      "price": 0.63,
-      "currency": null,
-      "store": "Mega",
-      "city": "Marghera",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "a",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:legumes-and-their-products",
-        "en:canned-foods",
-        "en:legumes",
-        "en:seeds",
-        "en:canned-plant-based-foods",
-        "en:legume-seeds",
-        "en:pulses",
-        "en:chickpeas",
-        "en:canned-legumes",
-        "en:canned-chickpeas"
-      ]
-    },
-    {
-      "product_name": "Croccantelle gusto bacon",
-      "product_code": "8011795106008",
-      "price": 1.29,
-      "currency": null,
-      "store": "Iperal Cinisello Balsamo",
-      "city": "Cinisello Balsamo",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "e",
-      "categories": [
-        "en:snacks",
-        "en:meats-and-their-products",
-        "en:salty-snacks",
-        "en:appetizers",
-        "en:biscuits-and-crackers",
-        "en:meats",
-        "en:pork-and-its-products",
-        "en:pork",
-        "en:bacon",
-        "en:crackers-appetizers"
-      ]
-    },
-    {
-      "product_name": "Himbeeren",
-      "product_code": "4304218430830",
-      "price": 5.99,
-      "currency": null,
-      "store": "Globus",
-      "city": "Hattersheim",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "a",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:fruits-and-vegetables-based-foods",
-        "en:frozen-foods",
-        "en:fruits-based-foods",
-        "en:frozen-plant-based-foods",
-        "en:fruits",
-        "en:berries",
-        "en:frozen-fruits",
-        "en:raspberries",
-        "en:frozen-berries",
-        "en:frozen-raspberries"
-      ]
-    },
-    {
-      "product_name": "Pur Jus ORANGE MANGUE & PASSION",
-      "product_code": "3560071180768",
-      "price": 3.49,
-      "currency": null,
-      "store": "Carrefour Market",
-      "city": "Boulogne-sur-Mer",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "d",
-      "categories": [
-        "en:beverages-and-beverages-preparations",
-        "en:plant-based-foods-and-beverages",
-        "en:beverages",
-        "en:plant-based-beverages",
-        "en:fruit-based-beverages",
-        "en:juices-and-nectars",
-        "en:fruit-juices",
-        "en:multifruit-juices",
-        "en:squeezed-fruit-juices",
-        "en:squeezed-multifruit-juices"
-      ]
-    },
-    {
-      "product_name": "Nougat Schokolade Bio",
-      "product_code": "4104420222625",
-      "price": 2.29,
-      "currency": "EUR",
-      "store": "Rossmann",
-      "city": "Chemnitz",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "e",
-      "categories": [
-        "en:snacks",
-        "en:sweet-snacks",
-        "en:cocoa-and-its-products",
-        "en:confectioneries",
-        "en:chocolate-candies",
-        "en:chocolates",
-        "en:milk-chocolates",
-        "en:filled-chocolates",
-        "en:nougats",
-        "en:filled-milk-chocolates",
-        "de:schokoladentafeln-vm"
-      ]
-    },
-    {
-      "product_name": "Vollmilch Schokolade",
-      "product_code": "4104420236165",
+      "product_name": "Natural Bite",
+      "product_code": "4260644581143",
       "price": 1.99,
       "currency": "EUR",
       "store": "Rossmann",
@@ -7981,247 +7013,9 @@
       "source": "Open Prices (crowdsourced)",
       "nutriscore": "e",
       "categories": [
-        "en:snacks",
-        "en:sweet-snacks",
-        "en:cocoa-and-its-products",
-        "en:chocolates",
-        "en:milk-chocolates"
-      ]
-    },
-    {
-      "product_name": "Cappuccino Schokolade",
-      "product_code": "4104420222595",
-      "price": 2.49,
-      "currency": "EUR",
-      "store": "Rossmann",
-      "city": "Chemnitz",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "e",
-      "categories": [
-        "en:snacks",
-        "en:sweet-snacks",
-        "en:cocoa-and-its-products",
-        "en:chocolates",
-        "de:schokoladentafeln-vm"
-      ]
-    },
-    {
-      "product_name": "Nuez natural pelada",
-      "product_code": "8480000340245",
-      "price": 2.3,
-      "currency": null,
-      "store": "Mercadona",
-      "city": "Palma",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "a",
-      "categories": [
         "en:plant-based-foods-and-beverages",
         "en:plant-based-foods",
-        "en:seeds",
-        "en:nuts-and-their-products",
-        "en:nuts",
-        "en:shelled-nuts",
-        "en:walnuts"
-      ]
-    },
-    {
-      "product_name": "ABC MIDI Loaf",
-      "product_code": "0220028002101",
-      "price": 2.1,
-      "currency": null,
-      "store": "Dunnes Stores",
-      "city": "Cork",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "unknown",
-      "categories": [
-        "en:abc-midi-loaf"
-      ]
-    },
-    {
-      "product_name": "Brown Sourdough Bloomer",
-      "product_code": "5000129340129",
-      "price": 2.0,
-      "currency": null,
-      "store": "Co-op Food",
-      "city": "Park Central",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "d",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:cereals-and-potatoes",
-        "en:breads"
-      ]
-    },
-    {
-      "product_name": "Walnuts",
-      "product_code": "0096619745234",
-      "price": 19.99,
-      "currency": null,
-      "store": "Costco Wholesale Australia Depot 15",
-      "city": "Sydney",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "b",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:nuts-and-their-products",
-        "en:nuts",
-        "en:walnuts"
-      ]
-    },
-    {
-      "product_name": "100% pur jus multifruits",
-      "product_code": "3560070215713",
-      "price": 3.45,
-      "currency": null,
-      "store": "Carrefour Market",
-      "city": "Boulogne-sur-Mer",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "c",
-      "categories": [
-        "en:beverages-and-beverages-preparations",
-        "en:plant-based-foods-and-beverages",
-        "en:beverages",
-        "en:plant-based-beverages",
-        "en:fruit-based-beverages",
-        "en:juices-and-nectars",
-        "en:fruit-juices",
-        "en:non-alcoholic-beverages",
-        "en:multifruit-juices",
-        "en:squeezed-fruit-juices",
-        "en:squeezed-multifruit-juices"
-      ]
-    },
-    {
-      "product_name": "Ketchup",
-      "product_code": "8435382811449",
-      "price": 6.45,
-      "currency": null,
-      "store": "Hiperdino",
-      "city": "Gáldar",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "d",
-      "categories": [
-        "en:condiments",
-        "en:sauces",
-        "en:tomato-sauces",
-        "en:ketchup",
-        "en:groceries"
-      ]
-    },
-    {
-      "product_name": "k-fox",
-      "product_code": "8888166607613",
-      "price": 250.0,
-      "currency": null,
-      "store": "Departmental Store",
-      "city": "Sangchar",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "unknown",
-      "categories": [
-        "en:snacks",
-        "en:sweet-snacks",
-        "en:biscuits-and-cakes",
-        "en:biscuits-and-crackers",
-        "en:biscuits"
-      ]
-    },
-    {
-      "product_name": "Sushi wrap Vuna",
-      "product_code": "7623186243899",
-      "price": 6.95,
-      "currency": null,
-      "store": "Migros",
-      "city": "Genève",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "b",
-      "categories": [
-        "en:meals",
-        "en:sushi-and-maki",
-        "en:sushis"
-      ]
-    },
-    {
-      "product_name": "Krazy snacks sauce",
-      "product_code": "8906028799198",
-      "price": 1.0,
-      "currency": null,
-      "store": "Bokaro Mall",
-      "city": "Bokaro",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "unknown",
-      "categories": []
-    },
-    {
-      "product_name": "AUCHAN BIO LAIT ECREMEorigine France SOLIDAIRES POUR SOUTENIR NOS PRODUCTEURS1L",
-      "product_code": "3596710465385",
-      "price": 1.16,
-      "currency": null,
-      "store": "C. C. Auchan",
-      "city": "Saint-Martin-Boulogne",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "b",
-      "categories": [
-        "en:dairies",
-        "en:milks-liquid-and-powder",
-        "en:milks",
-        "en:homogenized-milks",
-        "en:pasteurised-products",
-        "en:uht-milks",
-        "en:skimmed-milks",
-        "en:cow-milks",
-        "en:esl-milks",
-        "en:uht-skimmed-milks"
-      ]
-    },
-    {
-      "product_name": "Sunsweet Dried Plums - Pitted Prunes",
-      "product_code": "0096619583577",
-      "price": 16.99,
-      "currency": null,
-      "store": "Costco Wholesale Australia Depot 15",
-      "city": "Sydney",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "e",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:fruits-and-vegetables-based-foods",
-        "en:fruits-based-foods",
-        "en:dried-products",
-        "en:dried-plant-based-foods",
-        "en:dried-fruits",
-        "en:dried-prunes"
-      ]
-    },
-    {
-      "product_name": "Especial Lager Beer",
-      "product_code": "0080660957555",
-      "price": 9000.0,
-      "currency": null,
-      "store": "Cárcel  La Modelo",
-      "city": "Bogotá",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "not-applicable",
-      "categories": [
-        "en:beverages",
-        "en:alcoholic-beverages",
-        "en:beers",
-        "en:5-beer"
+        "en:pflanzliche-lebensmittel-und-getranke"
       ]
     },
     {
@@ -8245,39 +7039,38 @@
       ]
     },
     {
-      "product_name": "Golosoni multicereali - Grissini fragranti e gustosi",
-      "product_code": "8009273002751",
-      "price": 1.4,
-      "currency": null,
-      "store": "Torino",
-      "city": "Torino",
+      "product_name": "Nüssriegel Rock’o Choc",
+      "product_code": "4260229231067",
+      "price": 1.89,
+      "currency": "EUR",
+      "store": "Rossmann",
+      "city": "Chemnitz",
       "date": null,
       "source": "Open Prices (crowdsourced)",
       "nutriscore": "d",
       "categories": [
         "en:plant-based-foods-and-beverages",
         "en:plant-based-foods",
-        "en:cereals-and-potatoes",
-        "en:breads",
-        "en:breadsticks"
+        "en:snacks",
+        "en:sweet-snacks",
+        "en:nuts-and-their-products",
+        "en:bars",
+        "en:cereal-bars",
+        "en:nut-bars",
+        "de:bio-nussriegel"
       ]
     },
     {
-      "product_name": "Pistachios",
-      "product_code": "0096619058259",
-      "price": 23.99,
+      "product_name": "Activia Kefir Blueberry",
+      "product_code": "5202353000200",
+      "price": 1.59,
       "currency": null,
-      "store": "Costco Wholesale Australia Depot 15",
-      "city": "Sydney",
+      "store": "ΑΒ Βασιλόπουλος",
+      "city": "Δημοτική Ενότητα Πατρέων",
       "date": null,
       "source": "Open Prices (crowdsourced)",
-      "nutriscore": "e",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:nuts-and-their-products",
-        "en:nuts"
-      ]
+      "nutriscore": "unknown",
+      "categories": []
     },
     {
       "product_name": "Minestrone 13 verdure",
@@ -8307,6 +7100,32 @@
       ]
     },
     {
+      "product_name": "Havregryn Finvalsede",
+      "product_code": "5712870510156",
+      "price": 9.95,
+      "currency": null,
+      "store": "Netto",
+      "city": "Odense",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "a",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:breakfasts",
+        "en:cereals-and-potatoes",
+        "en:seeds",
+        "en:cereals-and-their-products",
+        "en:breakfast-cereals",
+        "en:cereal-grains",
+        "en:flakes",
+        "en:cereal-flakes",
+        "en:rolled-flakes",
+        "en:rolled-oats",
+        "en:oat"
+      ]
+    },
+    {
       "product_name": "Bluebert",
       "product_code": "4251725803445",
       "price": 3.99,
@@ -8324,284 +7143,44 @@
       ]
     },
     {
-      "product_name": "Ziegenkäse Bockshornklee",
-      "product_code": "4088500721089",
-      "price": 2.99,
-      "currency": null,
-      "store": "Hofer",
-      "city": "Wien",
+      "product_name": "Müsli-Riegel Schoko",
+      "product_code": "4104420221796",
+      "price": 2.29,
+      "currency": "EUR",
+      "store": "Rossmann",
+      "city": "Chemnitz",
       "date": null,
       "source": "Open Prices (crowdsourced)",
       "nutriscore": "d",
       "categories": [
-        "en:dairies",
-        "en:fermented-foods",
-        "en:fermented-milk-products",
-        "en:cheeses",
-        "en:goat-cheeses"
+        "en:snacks",
+        "en:sweet-snacks",
+        "en:bars",
+        "en:cereal-bars",
+        "en:chocolate-cereal-bars",
+        "de:müsli-getrriegel"
       ]
     },
     {
-      "product_name": "Walnussöl geröstet",
-      "product_code": "4008722010112",
-      "price": 2.19,
-      "currency": null,
-      "store": "EDEKA",
-      "city": "Hamburg",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "b",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:fats",
-        "en:nuts-and-their-products",
-        "en:vegetable-fats",
-        "en:vegetable-oils",
-        "en:nut-oils",
-        "en:walnut-oils"
-      ]
-    },
-    {
-      "product_name": "Münchner Weißwurst (5 Stück)",
-      "product_code": "9100200099543",
-      "price": 2.79,
-      "currency": null,
-      "store": "Spar Gourmet",
-      "city": "Wien",
+      "product_name": "Coco Caramella Bio-Nussriegel",
+      "product_code": "4260229230992",
+      "price": 1.89,
+      "currency": "EUR",
+      "store": "Rossmann",
+      "city": "Chemnitz",
       "date": null,
       "source": "Open Prices (crowdsourced)",
       "nutriscore": "e",
       "categories": [
-        "de:weißwurst"
-      ]
-    },
-    {
-      "product_name": "Bulgursalat mit Kichererbsen & Kidneybohnen",
-      "product_code": "4051009007589",
-      "price": 1.79,
-      "currency": null,
-      "store": "Netto",
-      "city": "Neustrelitz",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "c",
-      "categories": [
-        "en:meals",
-        "en:prepared-salads"
-      ]
-    },
-    {
-      "product_name": "Coquillette Cuisson Rapide En 3 Min",
-      "product_code": "3257981946040",
-      "price": 0.99,
-      "currency": null,
-      "store": "Cora",
-      "city": "Livry-Gargan",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "b",
-      "categories": [
         "en:plant-based-foods-and-beverages",
         "en:plant-based-foods",
-        "en:pastas",
-        "fr:pates-rapide"
-      ]
-    },
-    {
-      "product_name": "Linguine aux œufs frais",
-      "product_code": "3660861021346",
-      "price": 1.08,
-      "currency": null,
-      "store": "Cora",
-      "city": "Livry-Gargan",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "a",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:cereals-and-potatoes",
-        "en:cereals-and-their-products",
-        "en:pastas",
-        "en:dry-pastas",
-        "en:egg-pastas",
-        "en:dry-egg-pastas",
-        "en:linguine",
-        "fr:linguine-aux-oeufs"
-      ]
-    },
-    {
-      "product_name": "Coquillettes",
-      "product_code": "3257980084170",
-      "price": 0.9,
-      "currency": null,
-      "store": "Cora",
-      "city": "Livry-Gargan",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "a",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:cereals-and-potatoes",
-        "en:cereals-and-their-products",
-        "en:pastas",
-        "en:cereal-pastas",
-        "en:dry-pastas",
-        "en:durum-wheat-pasta",
-        "en:dry-durum-wheat-pasta",
-        "fr:coquillettes",
-        "fr:coquillettes-de-ble-dur"
-      ]
-    },
-    {
-      "product_name": "Macaroni aux Œufs Frais",
-      "product_code": "3660861900092",
-      "price": 1.91,
-      "currency": null,
-      "store": "Cora",
-      "city": "Livry-Gargan",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "a",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:cereals-and-potatoes",
-        "en:cereals-and-their-products",
-        "en:pastas",
-        "en:cereal-pastas",
-        "en:dry-pastas",
-        "en:durum-wheat-pasta",
-        "en:egg-pastas",
-        "en:dry-egg-pastas",
-        "en:durum-wheat-macaroni",
-        "en:durum-wheat-pasta-with-egg"
-      ]
-    },
-    {
-      "product_name": "Panzani spaghetti 500g",
-      "product_code": "3038350015006",
-      "price": 1.01,
-      "currency": null,
-      "store": "Cora",
-      "city": "Livry-Gargan",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "a",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:cereals-and-potatoes",
-        "en:cereals-and-their-products",
-        "en:pastas",
-        "en:cereal-pastas",
-        "en:dry-pastas",
-        "en:durum-wheat-pasta",
-        "en:spaghetti",
-        "en:dry-durum-wheat-pasta",
-        "en:durum-wheat-spaghetti"
-      ]
-    },
-    {
-      "product_name": "Panzani spaghetti plat 1kg",
-      "product_code": "3038359000904",
-      "price": 2.31,
-      "currency": null,
-      "store": "Cora",
-      "city": "Livry-Gargan",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "a",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:cereals-and-potatoes",
-        "en:cereals-and-their-products",
-        "en:pastas",
-        "en:cereal-pastas",
-        "en:dry-pastas",
-        "en:durum-wheat-pasta",
-        "en:spaghetti",
-        "en:durum-wheat-spaghetti"
-      ]
-    },
-    {
-      "product_name": "Spaghetti aux œufs frais (Format Familial)",
-      "product_code": "3073190102073",
-      "price": 2.01,
-      "currency": null,
-      "store": "Cora",
-      "city": "Livry-Gargan",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "a",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:cereals-and-potatoes",
-        "en:cereals-and-their-products",
-        "en:pastas",
-        "en:noodles",
-        "en:dry-pastas",
-        "en:egg-pastas",
-        "en:spaghetti",
-        "en:egg-noodles",
-        "en:egg-spaghetti"
-      ]
-    },
-    {
-      "product_name": "Pâtes risoni 500g",
-      "product_code": "8076809579100",
-      "price": 1.35,
-      "currency": null,
-      "store": "Cora",
-      "city": "Livry-Gargan",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "b",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:pastas",
-        "en:dry-pastas",
-        "fr:emballage-carton"
-      ]
-    },
-    {
-      "product_name": "Essig-Essenz, 25 % Säure",
-      "product_code": "4061458019859",
-      "price": 0.79,
-      "currency": null,
-      "store": "Aldi Nord",
-      "city": "Gemarkung Remscheid",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "not-applicable",
-      "categories": [
-        "en:condiments",
-        "en:vinegars",
-        "de:essigessenzen"
-      ]
-    },
-    {
-      "product_name": "Grand Mie 7 céréales",
-      "product_code": "3250390758075",
-      "price": 1.23,
-      "currency": null,
-      "store": "Intermarché",
-      "city": "Rennes",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "c",
-      "categories": [
-        "en:plant-based-foods-and-beverages",
-        "en:plant-based-foods",
-        "en:cereals-and-potatoes",
-        "en:breads",
-        "en:sliced-breads",
-        "en:multigrain-sliced-breads"
+        "en:snacks",
+        "en:sweet-snacks",
+        "en:nuts-and-their-products",
+        "en:bars",
+        "en:cereal-bars",
+        "en:nut-bars",
+        "de:bio-nussriegel"
       ]
     },
     {
@@ -8628,23 +7207,73 @@
       ]
     },
     {
-      "product_name": "Milk chocolate crunch Geschmack Vitamin & Proteinregel",
-      "product_code": "5391532124155",
-      "price": 2.65,
+      "product_name": "Ziegencamembert Pfeffer",
+      "product_code": "4099200191072",
+      "price": 2.19,
       "currency": null,
-      "store": "EDEKA",
-      "city": "Halle (Saale)",
+      "store": "Hofer",
+      "city": "Wien",
       "date": null,
       "source": "Open Prices (crowdsourced)",
-      "nutriscore": "not-applicable",
+      "nutriscore": "e",
       "categories": [
-        "en:snacks",
-        "en:sweet-snacks",
-        "en:bars",
-        "en:dietary-supplements",
-        "en:bodybuilding-supplements",
-        "en:protein-bars"
+        "de:ziegencamembert"
       ]
+    },
+    {
+      "product_name": "ΒΑΝ orangeade",
+      "product_code": "5202382311117",
+      "price": 1.8,
+      "currency": null,
+      "store": "Φαληράκι",
+      "city": "Φαληράκι",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "unknown",
+      "categories": [
+        "en:beverages-and-beverages-preparations",
+        "en:plant-based-foods-and-beverages",
+        "en:beverages",
+        "en:plant-based-beverages",
+        "en:carbonated-drinks",
+        "en:fruit-based-beverages",
+        "en:sodas",
+        "en:fruit-sodas",
+        "en:orange-soft-drinks"
+      ]
+    },
+    {
+      "product_name": "Bocconcini di pollo panati",
+      "product_code": "8008110028077",
+      "price": 5.99,
+      "currency": null,
+      "store": "Supermercato Carrefour Express",
+      "city": "Roma",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "b",
+      "categories": [
+        "en:meats-and-their-products",
+        "en:meat-preparations",
+        "en:meats",
+        "en:chicken-and-its-products",
+        "en:poultries",
+        "en:chickens",
+        "en:cooked-poultries",
+        "en:cooked-chicken"
+      ]
+    },
+    {
+      "product_name": "Salty Cara",
+      "product_code": "4260229233283",
+      "price": 1.89,
+      "currency": "EUR",
+      "store": "Rossmann",
+      "city": "Chemnitz",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "unknown",
+      "categories": []
     },
     {
       "product_name": "Presunto sem capa de Gordura à Granel",
@@ -8724,6 +7353,24 @@
       ]
     },
     {
+      "product_name": "Mentos fruit",
+      "product_code": "87108026",
+      "price": 0.89,
+      "currency": null,
+      "store": "Jumbo",
+      "city": "Δημοτική Ενότητα Πατρέων",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "e",
+      "categories": [
+        "en:snacks",
+        "en:sweet-snacks",
+        "en:confectioneries",
+        "en:candies",
+        "en:dragees"
+      ]
+    },
+    {
       "product_name": "Doony's sucre",
       "product_code": "3123456004945",
       "price": 1.6,
@@ -8742,6 +7389,105 @@
       ]
     },
     {
+      "product_name": "Pain au chocolat",
+      "product_code": "3256549997616",
+      "price": 1.75,
+      "currency": null,
+      "store": "Lidl",
+      "city": "Fontaine-le-Comte",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "e",
+      "categories": [
+        "en:snacks",
+        "en:sweet-snacks",
+        "en:sweet-pastries-and-pies",
+        "en:viennoiseries",
+        "en:chocolate-croissant"
+      ]
+    },
+    {
+      "product_name": "Sonnenblumenkerne geschält",
+      "product_code": "4099200162355",
+      "price": 1.19,
+      "currency": null,
+      "store": "Hofer",
+      "city": "Wien",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "a",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:seeds",
+        "en:sunflower-seeds-and-their-products",
+        "en:sunflower-seeds",
+        "en:shelled-sunflower-seeds"
+      ]
+    },
+    {
+      "product_name": "Pico-Balla",
+      "product_code": "4001686120132",
+      "price": 1.19,
+      "currency": null,
+      "store": "EDEKA xpress",
+      "city": "München",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "e",
+      "categories": [
+        "en:snacks",
+        "en:sweet-snacks",
+        "en:cocoa-and-its-products",
+        "en:confectioneries",
+        "en:chocolate-candies",
+        "en:bonbons",
+        "en:candies",
+        "en:gummi-candies"
+      ]
+    },
+    {
+      "product_name": "Wok & Go Porc et riz Aigre Douce",
+      "product_code": "3302740082481",
+      "price": 3.63,
+      "currency": null,
+      "store": "Intermarché",
+      "city": "Gex",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "c",
+      "categories": [
+        "en:meals",
+        "en:meals-with-meat",
+        "en:rice-dishes",
+        "en:pork-meals",
+        "en:microwave-meals",
+        "en:caramel-pork"
+      ]
+    },
+    {
+      "product_name": "Bio Schokomüsli ohne Rosinen",
+      "product_code": "4066447524413",
+      "price": 2.35,
+      "currency": null,
+      "store": "dm",
+      "city": "Hamburg",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "c",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:breakfasts",
+        "en:cereals-and-potatoes",
+        "en:cereals-and-their-products",
+        "en:breakfast-cereals",
+        "en:chocolate-cereals",
+        "en:mueslis",
+        "en:mueslis-with-chocolate"
+      ]
+    },
+    {
       "product_name": "Filetti di Alici",
       "product_code": "8006460000460",
       "price": 3.29,
@@ -8756,26 +7502,6 @@
         "en:fishes-and-their-products",
         "en:fish-preparations",
         "en:anchovies"
-      ]
-    },
-    {
-      "product_name": "Filets de maquereaux tomate et basilic",
-      "product_code": "3263855403816",
-      "price": 3.79,
-      "currency": null,
-      "store": "Franprix",
-      "city": "Paris",
-      "date": null,
-      "source": "Open Prices (crowdsourced)",
-      "nutriscore": "c",
-      "categories": [
-        "en:seafood",
-        "en:fishes-and-their-products",
-        "en:fishes",
-        "en:fatty-fishes",
-        "en:fish-fillets",
-        "en:mackerels",
-        "en:mackerel-fillets"
       ]
     },
     {
@@ -8800,6 +7526,1324 @@
         "en:mackerel-fillets",
         "en:mackerel-fillets-in-mustard-sauce",
         "en:tinned-mackerels"
+      ]
+    },
+    {
+      "product_name": "Sardines à l'huile de tournesol",
+      "product_code": "3251870002770",
+      "price": 0.88,
+      "currency": null,
+      "store": "Carrefour Market",
+      "city": "Boulogne-sur-Mer",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "b",
+      "categories": [
+        "en:seafood",
+        "en:fishes-and-their-products",
+        "en:canned-foods",
+        "en:fishes",
+        "en:fatty-fishes",
+        "en:canned-fishes",
+        "en:sardines",
+        "en:canned-sardines",
+        "en:sardines-in-oil",
+        "en:sardines-in-sunflower-oil"
+      ]
+    },
+    {
+      "product_name": "Wholegrain Wheat Bisks",
+      "product_code": "29310609",
+      "price": 2.4,
+      "currency": null,
+      "store": "Marks & Spencer",
+      "city": "St John",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "a",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:breakfasts",
+        "en:cereals-and-potatoes",
+        "en:cereals-and-their-products",
+        "en:breakfast-cereals"
+      ]
+    },
+    {
+      "product_name": "Dattes moelleuses",
+      "product_code": "26022666",
+      "price": 1.49,
+      "currency": null,
+      "store": "ALDI",
+      "city": "Outreau",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "d",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:fruits-and-vegetables-based-foods",
+        "en:fruits-based-foods",
+        "en:dried-products",
+        "en:fruits",
+        "en:dried-plant-based-foods",
+        "en:dried-fruits",
+        "en:dates",
+        "en:deglet-noor-dates"
+      ]
+    },
+    {
+      "product_name": "Pistachios",
+      "product_code": "0096619058259",
+      "price": 23.99,
+      "currency": null,
+      "store": "Costco Wholesale Australia Depot 15",
+      "city": "Sydney",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "e",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:nuts-and-their-products",
+        "en:nuts"
+      ]
+    },
+    {
+      "product_name": "Crocchette di patate (prefritte)",
+      "product_code": "8004263663318",
+      "price": 2.8,
+      "currency": null,
+      "store": "Torino",
+      "city": "Torino",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "c",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:cereals-and-potatoes",
+        "en:frozen-foods",
+        "en:potatoes-and-their-products",
+        "en:breaded-products",
+        "en:potato-preparations",
+        "en:kroketten"
+      ]
+    },
+    {
+      "product_name": "Amarena frutto & sciroppo",
+      "product_code": "8008310030047",
+      "price": 4.4,
+      "currency": null,
+      "store": "Conad",
+      "city": "Reggiolo",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "unknown",
+      "categories": [
+        "en:beverages-and-beverages-preparations",
+        "en:plant-based-foods-and-beverages",
+        "en:beverages",
+        "en:plant-based-foods",
+        "en:canned-foods",
+        "en:desserts",
+        "en:canned-plant-based-foods",
+        "en:beverage-preparations",
+        "en:syrups",
+        "en:canned-fruits",
+        "en:fruits-in-syrup",
+        "en:flavoured-syrups"
+      ]
+    },
+    {
+      "product_name": "Pesto alla Calabrese",
+      "product_code": "7624841393713",
+      "price": 4.95,
+      "currency": null,
+      "store": "Coop",
+      "city": "Ostermundigen",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "d",
+      "categories": [
+        "en:condiments",
+        "en:sauces",
+        "en:pestos"
+      ]
+    },
+    {
+      "product_name": "Saaten Brot",
+      "product_code": "4068134004802",
+      "price": 2.99,
+      "currency": null,
+      "store": "Rossmann",
+      "city": "Burgwedel",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "a",
+      "categories": [
+        "de:brotbackmischung"
+      ]
+    },
+    {
+      "product_name": "Purée crue 100% Sésame Complet",
+      "product_code": "3267110001281",
+      "price": 6.55,
+      "currency": null,
+      "store": "Franprix",
+      "city": "Paris",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "c",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:cereals-and-potatoes",
+        "en:spreads",
+        "en:cereals-and-their-products",
+        "en:plant-based-spreads",
+        "en:oilseed-purees",
+        "en:cereal-butters",
+        "en:tahini"
+      ]
+    },
+    {
+      "product_name": "Nuss Riegel Schoko & Meersalz",
+      "product_code": "4305615985824",
+      "price": 1.99,
+      "currency": "EUR",
+      "store": "Rossmann",
+      "city": "Chemnitz",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "d",
+      "categories": [
+        "en:snacks",
+        "en:sweet-snacks",
+        "en:bars"
+      ]
+    },
+    {
+      "product_name": "Filets de maquereaux tomate et basilic",
+      "product_code": "3263855403816",
+      "price": 3.79,
+      "currency": null,
+      "store": "Franprix",
+      "city": "Paris",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "c",
+      "categories": [
+        "en:seafood",
+        "en:fishes-and-their-products",
+        "en:fishes",
+        "en:fatty-fishes",
+        "en:fish-fillets",
+        "en:mackerels",
+        "en:mackerel-fillets"
+      ]
+    },
+    {
+      "product_name": "AUCHAN BIO LAIT ECREMEorigine France SOLIDAIRES POUR SOUTENIR NOS PRODUCTEURS1L",
+      "product_code": "3596710465385",
+      "price": 1.16,
+      "currency": null,
+      "store": "C. C. Auchan",
+      "city": "Saint-Martin-Boulogne",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "b",
+      "categories": [
+        "en:dairies",
+        "en:milks-liquid-and-powder",
+        "en:milks",
+        "en:homogenized-milks",
+        "en:pasteurised-products",
+        "en:uht-milks",
+        "en:skimmed-milks",
+        "en:cow-milks",
+        "en:esl-milks",
+        "en:uht-skimmed-milks"
+      ]
+    },
+    {
+      "product_name": "Haribo Schlümpfe",
+      "product_code": "4001686333044",
+      "price": 7.99,
+      "currency": null,
+      "store": "EDEKA xpress",
+      "city": "München",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "d",
+      "categories": [
+        "en:snacks",
+        "en:sweet-snacks",
+        "en:cocoa-and-its-products",
+        "en:confectioneries",
+        "en:chocolate-candies",
+        "en:bonbons",
+        "en:candies",
+        "en:gummi-candies",
+        "en:bonbons-gelifies",
+        "en:snacks-sucres"
+      ]
+    },
+    {
+      "product_name": "Mineralwasser still 6er Pack",
+      "product_code": "4311596435999",
+      "price": 1.74,
+      "currency": null,
+      "store": "Edeka",
+      "city": "Lohnde",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "a",
+      "categories": [
+        "en:beverages-and-beverages-preparations",
+        "en:beverages",
+        "en:waters",
+        "en:spring-waters"
+      ]
+    },
+    {
+      "product_name": "Veganer Burger - Crispy Chicken-Style",
+      "product_code": "4061461667146",
+      "price": 2.29,
+      "currency": null,
+      "store": "ALDI Süd",
+      "city": "München",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "a",
+      "categories": [
+        "en:vegan-products",
+        "en:meat-alternatives",
+        "en:vegetarian-patties",
+        "en:vegan-patties"
+      ]
+    },
+    {
+      "product_name": "Miel liquide Bio",
+      "product_code": "3596710450923",
+      "price": 3.1,
+      "currency": null,
+      "store": "Auchan",
+      "city": "Calais",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "e",
+      "categories": [
+        "en:breakfasts",
+        "en:spreads",
+        "en:sweet-spreads",
+        "en:bee-products",
+        "en:farming-products",
+        "en:sweeteners",
+        "en:honeys",
+        "en:confectionary-based-spreads",
+        "en:liquid-honeys",
+        "fr:miel-origine-amerique-latine"
+      ]
+    },
+    {
+      "product_name": "Natural Mix",
+      "product_code": "5906827018295",
+      "price": 4.19,
+      "currency": null,
+      "store": "Sokołów Podlaski",
+      "city": "Sokołów Podlaski",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "b",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:cereals-and-potatoes",
+        "en:cereals-and-their-products",
+        "en:groats"
+      ]
+    },
+    {
+      "product_name": "Poesie Amelie Bio-Nussriegel",
+      "product_code": "4260229230169",
+      "price": 1.89,
+      "currency": "EUR",
+      "store": "Rossmann",
+      "city": "Chemnitz",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "d",
+      "categories": [
+        "en:snacks",
+        "en:sweet-snacks",
+        "en:bars",
+        "en:cereal-bars",
+        "en:fruits-cereal-bars",
+        "de:bio-nussriegel"
+      ]
+    },
+    {
+      "product_name": "Walnuts",
+      "product_code": "0096619745234",
+      "price": 19.99,
+      "currency": null,
+      "store": "Costco Wholesale Australia Depot 15",
+      "city": "Sydney",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "b",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:nuts-and-their-products",
+        "en:nuts",
+        "en:walnuts"
+      ]
+    },
+    {
+      "product_name": "Ketchup",
+      "product_code": "8435382811449",
+      "price": 5.56,
+      "currency": null,
+      "store": "Hiperdino",
+      "city": "Gáldar",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "d",
+      "categories": [
+        "en:condiments",
+        "en:sauces",
+        "en:tomato-sauces",
+        "en:ketchup",
+        "en:groceries"
+      ]
+    },
+    {
+      "product_name": "Gnocchi",
+      "product_code": "8006013016689",
+      "price": 2.3,
+      "currency": null,
+      "store": "Marks & Spencer",
+      "city": "City of Edinburgh",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "d",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:cereals-and-potatoes",
+        "en:cereals-and-their-products",
+        "en:pastas",
+        "en:gnocchi",
+        "en:potato-gnocchi"
+      ]
+    },
+    {
+      "product_name": "Coconut Milk",
+      "product_code": "3560071000066",
+      "price": 1.09,
+      "currency": null,
+      "store": "Carrefour Market",
+      "city": "Boulogne-sur-Mer",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "e",
+      "categories": [
+        "en:beverages-and-beverages-preparations",
+        "en:plant-based-foods-and-beverages",
+        "en:beverages",
+        "en:plant-based-foods",
+        "en:dairy-substitutes",
+        "en:milk-substitutes",
+        "en:plant-based-beverages",
+        "en:plant-based-milk-alternatives",
+        "en:plant-based-creams",
+        "en:plant-based-creams-for-cooking",
+        "en:coconut-milks-and-creams"
+      ]
+    },
+    {
+      "product_name": "Lasagnes à garnir",
+      "product_code": "3257980420763",
+      "price": 1.76,
+      "currency": null,
+      "store": "Cora",
+      "city": "Livry-Gargan",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "a",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:cereals-and-potatoes",
+        "en:cereals-and-their-products",
+        "en:pastas",
+        "en:lasagna-sheets"
+      ]
+    },
+    {
+      "product_name": "Ketchup",
+      "product_code": "8435382811449",
+      "price": 6.45,
+      "currency": null,
+      "store": "Hiperdino",
+      "city": "Gáldar",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "d",
+      "categories": [
+        "en:condiments",
+        "en:sauces",
+        "en:tomato-sauces",
+        "en:ketchup",
+        "en:groceries"
+      ]
+    },
+    {
+      "product_name": "Whey Protein French Vanilla Macaron",
+      "product_code": "3856026707280",
+      "price": 21.9,
+      "currency": null,
+      "store": "Bipa",
+      "city": "Wien",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "unknown",
+      "categories": [
+        "de:whey-protein"
+      ]
+    },
+    {
+      "product_name": "Natur Joghurt Bioland Schauhof",
+      "product_code": "4260712620019",
+      "price": 1.99,
+      "currency": null,
+      "store": "Neu Lammertzhof",
+      "city": "Kaarst",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "b",
+      "categories": [
+        "en:dairies",
+        "en:fermented-foods",
+        "en:fermented-milk-products",
+        "en:desserts",
+        "en:dairy-desserts",
+        "en:fermented-dairy-desserts",
+        "en:yogurts"
+      ]
+    },
+    {
+      "product_name": "Pizza Crust Spicy",
+      "product_code": "3242273051557",
+      "price": 6.75,
+      "currency": null,
+      "store": "Centre Commercial Carrefour Nevers Marzy",
+      "city": "Marzy",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "c",
+      "categories": [
+        "en:meals",
+        "en:pizzas-pies-and-quiches",
+        "en:pizzas",
+        "en:chorizo-pizzas"
+      ]
+    },
+    {
+      "product_name": "Kaffee",
+      "product_code": "4063367408496",
+      "price": 4.29,
+      "currency": null,
+      "store": "Kaufland",
+      "city": "Dortmund",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "unknown",
+      "categories": [
+        "en:beverages-and-beverages-preparations",
+        "en:beverages"
+      ]
+    },
+    {
+      "product_name": "Pur Jus ORANGE MANGUE & PASSION",
+      "product_code": "3560071180768",
+      "price": 3.49,
+      "currency": null,
+      "store": "Carrefour Market",
+      "city": "Boulogne-sur-Mer",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "d",
+      "categories": [
+        "en:beverages-and-beverages-preparations",
+        "en:plant-based-foods-and-beverages",
+        "en:beverages",
+        "en:plant-based-beverages",
+        "en:fruit-based-beverages",
+        "en:juices-and-nectars",
+        "en:fruit-juices",
+        "en:multifruit-juices",
+        "en:squeezed-fruit-juices",
+        "en:squeezed-multifruit-juices"
+      ]
+    },
+    {
+      "product_name": "Especial Lager Beer",
+      "product_code": "0080660957555",
+      "price": 9000.0,
+      "currency": null,
+      "store": "Cárcel  La Modelo",
+      "city": "Bogotá",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "not-applicable",
+      "categories": [
+        "en:beverages",
+        "en:alcoholic-beverages",
+        "en:beers",
+        "en:5-beer"
+      ]
+    },
+    {
+      "product_name": "Milk chocolate crunch Geschmack Vitamin & Proteinregel",
+      "product_code": "5391532124155",
+      "price": 2.65,
+      "currency": null,
+      "store": "EDEKA",
+      "city": "Halle (Saale)",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "not-applicable",
+      "categories": [
+        "en:snacks",
+        "en:sweet-snacks",
+        "en:bars",
+        "en:dietary-supplements",
+        "en:bodybuilding-supplements",
+        "en:protein-bars"
+      ]
+    },
+    {
+      "product_name": "Tuiles saveur paprika",
+      "product_code": "3596710324392",
+      "price": 1.61,
+      "currency": null,
+      "store": "Auchan",
+      "city": "Calais",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "d",
+      "categories": [
+        "en:snacks",
+        "en:salty-snacks",
+        "en:appetizers",
+        "en:chips-and-fries",
+        "en:crisps",
+        "en:salty-snacks-made-from-potato"
+      ]
+    },
+    {
+      "product_name": "Knusper Honig-Nuss Müsli",
+      "product_code": "4000540023169",
+      "price": 3.79,
+      "currency": null,
+      "store": "Lidl",
+      "city": "Wernau (Neckar)",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "d",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:breakfasts",
+        "en:cereals-and-potatoes",
+        "en:cereals-and-their-products",
+        "en:breakfast-cereals",
+        "en:mueslis",
+        "en:cereals-with-nuts",
+        "en:fruhstucke",
+        "en:fruhstuckscerealien",
+        "en:getreide-und-kartoffeln",
+        "en:getreideprodukte",
+        "en:muslis",
+        "en:muslis-mit-nussen",
+        "en:pflanzliche-lebensmittel",
+        "en:pflanzliche-lebensmittel-und-getranke"
+      ]
+    },
+    {
+      "product_name": "Νούντλς αυγών",
+      "product_code": "5206674102032",
+      "price": 2.6,
+      "currency": null,
+      "store": "ΑΒ Βασιλόπουλος",
+      "city": "Δημοτική Ενότητα Πατρέων",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "b",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:cereals-and-potatoes",
+        "en:cereals-and-their-products",
+        "en:pastas",
+        "en:noodles",
+        "en:egg-pastas",
+        "en:egg-noodles"
+      ]
+    },
+    {
+      "product_name": "100% pur jus multifruits",
+      "product_code": "3560070215713",
+      "price": 3.45,
+      "currency": null,
+      "store": "Carrefour Market",
+      "city": "Boulogne-sur-Mer",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "c",
+      "categories": [
+        "en:beverages-and-beverages-preparations",
+        "en:plant-based-foods-and-beverages",
+        "en:beverages",
+        "en:plant-based-beverages",
+        "en:fruit-based-beverages",
+        "en:juices-and-nectars",
+        "en:fruit-juices",
+        "en:non-alcoholic-beverages",
+        "en:multifruit-juices",
+        "en:squeezed-fruit-juices",
+        "en:squeezed-multifruit-juices"
+      ]
+    },
+    {
+      "product_name": "Iron Plus 28 mg, Gentle - Iron (II) Bisglycinate",
+      "product_code": "0029537808958",
+      "price": 12.74,
+      "currency": null,
+      "store": "Real Canadian Superstore",
+      "city": "Coquitlam",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "unknown",
+      "categories": [
+        "en:iron-28-mg",
+        "en:iron-supplements",
+        "en:nutritional-supplement"
+      ]
+    },
+    {
+      "product_name": "Cappuccino Schokolade",
+      "product_code": "4104420222595",
+      "price": 2.49,
+      "currency": "EUR",
+      "store": "Rossmann",
+      "city": "Chemnitz",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "e",
+      "categories": [
+        "en:snacks",
+        "en:sweet-snacks",
+        "en:cocoa-and-its-products",
+        "en:chocolates",
+        "de:schokoladentafeln-vm"
+      ]
+    },
+    {
+      "product_name": "Pomme de terre nature",
+      "product_code": "3168930167983",
+      "price": 1.45,
+      "currency": null,
+      "store": "Rue Santos-Dumont",
+      "city": "Limoges",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "d",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:snacks",
+        "en:cereals-and-potatoes",
+        "en:salty-snacks",
+        "en:appetizers",
+        "en:chips-and-fries",
+        "en:frozen-foods",
+        "en:crisps",
+        "en:potato-crisps",
+        "en:old-fashioned-crisps",
+        "en:potato-crisps-in-sunflower-oil"
+      ]
+    },
+    {
+      "product_name": "Grand Mie 7 céréales",
+      "product_code": "3250390758075",
+      "price": 1.23,
+      "currency": null,
+      "store": "Intermarché",
+      "city": "Rennes",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "c",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:cereals-and-potatoes",
+        "en:breads",
+        "en:sliced-breads",
+        "en:multigrain-sliced-breads"
+      ]
+    },
+    {
+      "product_name": "Hej Natural",
+      "product_code": "4260446585431",
+      "price": 1.99,
+      "currency": "EUR",
+      "store": "Rossmann",
+      "city": "Chemnitz",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "d",
+      "categories": [
+        "en:snacks",
+        "en:sweet-snacks",
+        "en:bars",
+        "en:cereal-bars",
+        "en:barretta",
+        "en:barrette",
+        "en:snack-dolci"
+      ]
+    },
+    {
+      "product_name": "Vollmilch Schokolade",
+      "product_code": "4104420236165",
+      "price": 1.99,
+      "currency": "EUR",
+      "store": "Rossmann",
+      "city": "Chemnitz",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "e",
+      "categories": [
+        "en:snacks",
+        "en:sweet-snacks",
+        "en:cocoa-and-its-products",
+        "en:chocolates",
+        "en:milk-chocolates"
+      ]
+    },
+    {
+      "product_name": "OREO Original",
+      "product_code": "7622300336738",
+      "price": 1.29,
+      "currency": null,
+      "store": "Jumbo",
+      "city": "Δημοτική Ενότητα Πατρέων",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "e",
+      "categories": [
+        "en:snacks",
+        "en:sweet-snacks",
+        "en:biscuits-and-cakes",
+        "en:biscuits-and-crackers",
+        "en:biscuits",
+        "en:biscuits-cookies-shelf-stable"
+      ]
+    },
+    {
+      "product_name": "Himbeeren",
+      "product_code": "4304218430830",
+      "price": 5.99,
+      "currency": null,
+      "store": "Globus",
+      "city": "Hattersheim",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "a",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:fruits-and-vegetables-based-foods",
+        "en:frozen-foods",
+        "en:fruits-based-foods",
+        "en:frozen-plant-based-foods",
+        "en:fruits",
+        "en:berries",
+        "en:frozen-fruits",
+        "en:raspberries",
+        "en:frozen-berries",
+        "en:frozen-raspberries"
+      ]
+    },
+    {
+      "product_name": "Älplermagronen",
+      "product_code": "20656775",
+      "price": 1.19,
+      "currency": null,
+      "store": "Lidl",
+      "city": "München",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "a",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:cereals-and-potatoes",
+        "en:cereals-and-their-products",
+        "en:pastas",
+        "en:cereal-pastas",
+        "en:noodles",
+        "en:durum-wheat-pasta",
+        "en:egg-pastas",
+        "en:egg-noodles"
+      ]
+    },
+    {
+      "product_name": "Nougat Schokolade Bio",
+      "product_code": "4104420222625",
+      "price": 2.29,
+      "currency": "EUR",
+      "store": "Rossmann",
+      "city": "Chemnitz",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "e",
+      "categories": [
+        "en:snacks",
+        "en:sweet-snacks",
+        "en:cocoa-and-its-products",
+        "en:confectioneries",
+        "en:chocolate-candies",
+        "en:chocolates",
+        "en:milk-chocolates",
+        "en:filled-chocolates",
+        "en:nougats",
+        "en:filled-milk-chocolates",
+        "de:schokoladentafeln-vm"
+      ]
+    },
+    {
+      "product_name": "Kichererbsen",
+      "product_code": "4045178003855",
+      "price": 1.69,
+      "currency": null,
+      "store": "Kaufland",
+      "city": "Herzogenrath",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "a",
+      "categories": [
+        "en:bonen",
+        "en:bonen-in-blik-pot",
+        "en:bonen-en-afgeleide-producten",
+        "en:bonenzaden",
+        "en:conserven",
+        "en:conserven-producten-in-blik-pot",
+        "en:gedroogde-bonen",
+        "en:kikkererwten",
+        "en:plantaardige-levensmiddelen",
+        "en:plantaardige-levensmiddelen-en-dranken",
+        "en:zaden"
+      ]
+    },
+    {
+      "product_name": "Krazy snacks sauce",
+      "product_code": "8906028799198",
+      "price": 1.0,
+      "currency": null,
+      "store": "Bokaro Mall",
+      "city": "Bokaro",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "unknown",
+      "categories": []
+    },
+    {
+      "product_name": "Nuez natural pelada",
+      "product_code": "8480000340245",
+      "price": 2.3,
+      "currency": null,
+      "store": "Mercadona",
+      "city": "Palma",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "a",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:seeds",
+        "en:nuts-and-their-products",
+        "en:nuts",
+        "en:shelled-nuts",
+        "en:walnuts"
+      ]
+    },
+    {
+      "product_name": "Golosoni multicereali - Grissini fragranti e gustosi",
+      "product_code": "8009273002751",
+      "price": 1.4,
+      "currency": null,
+      "store": "Torino",
+      "city": "Torino",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "d",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:cereals-and-potatoes",
+        "en:breads",
+        "en:breadsticks"
+      ]
+    },
+    {
+      "product_name": "Sushi wrap Vuna",
+      "product_code": "7623186243899",
+      "price": 6.95,
+      "currency": null,
+      "store": "Migros",
+      "city": "Genève",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "b",
+      "categories": [
+        "en:meals",
+        "en:sushi-and-maki",
+        "en:sushis"
+      ]
+    },
+    {
+      "product_name": "Smoked Salmon",
+      "product_code": "0772945910750",
+      "price": 24.99,
+      "currency": null,
+      "store": "Costco Business Center",
+      "city": "Montréal",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "b",
+      "categories": [
+        "en:seafood",
+        "en:fishes-and-their-products",
+        "en:fishes",
+        "en:fatty-fishes",
+        "en:salmons",
+        "en:smoked-fishes",
+        "en:smoked-salmons",
+        "en:smoked-salmons-from-farming"
+      ]
+    },
+    {
+      "product_name": "Extra Old Cheddar Cheese",
+      "product_code": "06836917",
+      "price": 5.77,
+      "currency": null,
+      "store": "Real Canadian Superstore",
+      "city": "Coquitlam",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "e",
+      "categories": [
+        "en:dairies",
+        "en:fermented-foods",
+        "en:fermented-milk-products",
+        "en:cheeses",
+        "en:cow-cheeses",
+        "en:dairy-by-products",
+        "en:extra-old-cheddar-cheese",
+        "en:vegetarian-lacto-animal-rennet-free"
+      ]
+    },
+    {
+      "product_name": "ABC MIDI Loaf",
+      "product_code": "0220028002101",
+      "price": 2.1,
+      "currency": null,
+      "store": "Dunnes Stores",
+      "city": "Cork",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "unknown",
+      "categories": [
+        "en:abc-midi-loaf"
+      ]
+    },
+    {
+      "product_name": "Landpark Bio-Quelle",
+      "product_code": "4017943110082",
+      "price": 0.99,
+      "currency": null,
+      "store": "denn's Biomarkt",
+      "city": "Kiel",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "unknown",
+      "categories": []
+    },
+    {
+      "product_name": "Protein Chocolate Flavoured Shake",
+      "product_code": "5711953117312",
+      "price": 1.61,
+      "currency": null,
+      "store": "ΑΒ Βασιλόπουλος",
+      "city": "Δημοτική Ενότητα Πατρέων",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "c",
+      "categories": [
+        "en:beverages",
+        "en:dairies",
+        "en:dairy-drinks",
+        "en:flavoured-milks",
+        "en:chocolate-milks"
+      ]
+    },
+    {
+      "product_name": "k-fox",
+      "product_code": "8888166607613",
+      "price": 250.0,
+      "currency": null,
+      "store": "Departmental Store",
+      "city": "Sangchar",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "unknown",
+      "categories": [
+        "en:snacks",
+        "en:sweet-snacks",
+        "en:biscuits-and-cakes",
+        "en:biscuits-and-crackers",
+        "en:biscuits"
+      ]
+    },
+    {
+      "product_name": "Brown Sourdough Bloomer",
+      "product_code": "5000129340129",
+      "price": 2.0,
+      "currency": null,
+      "store": "Co-op Food",
+      "city": "Park Central",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "d",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:cereals-and-potatoes",
+        "en:breads"
+      ]
+    },
+    {
+      "product_name": "Provolone valpadana DOP dolce",
+      "product_code": "8003100802460",
+      "price": 2.95,
+      "currency": null,
+      "store": "Mega",
+      "city": "Marghera",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "d",
+      "categories": [
+        "en:dairies",
+        "en:fermented-foods",
+        "en:fermented-milk-products",
+        "en:cheeses",
+        "en:cow-cheeses",
+        "en:italian-cheeses",
+        "en:provolone",
+        "it:provolone-valpadana"
+      ]
+    },
+    {
+      "product_name": "Tahin Nature",
+      "product_code": "5411788037785",
+      "price": 4.19,
+      "currency": null,
+      "store": "Franprix",
+      "city": "Paris",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "d",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:cereals-and-potatoes",
+        "en:spreads",
+        "en:cereals-and-their-products",
+        "en:plant-based-spreads",
+        "en:oilseed-purees",
+        "en:cereal-butters",
+        "en:tahini"
+      ]
+    },
+    {
+      "product_name": "Croccantelle gusto bacon",
+      "product_code": "8011795106008",
+      "price": 1.29,
+      "currency": null,
+      "store": "Iperal Cinisello Balsamo",
+      "city": "Cinisello Balsamo",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "e",
+      "categories": [
+        "en:snacks",
+        "en:meats-and-their-products",
+        "en:salty-snacks",
+        "en:appetizers",
+        "en:biscuits-and-crackers",
+        "en:meats",
+        "en:pork-and-its-products",
+        "en:pork",
+        "en:bacon",
+        "en:crackers-appetizers"
+      ]
+    },
+    {
+      "product_name": "Penne Qualité Supérieure",
+      "product_code": "3257980420718",
+      "price": 0.98,
+      "currency": null,
+      "store": "Cora",
+      "city": "Livry-Gargan",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "b",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:cereals-and-potatoes",
+        "en:cereals-and-their-products",
+        "en:pastas",
+        "en:dry-pastas",
+        "en:penne"
+      ]
+    },
+    {
+      "product_name": "Ziegenkäse Bockshornklee",
+      "product_code": "4088500721089",
+      "price": 2.99,
+      "currency": null,
+      "store": "Hofer",
+      "city": "Wien",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "d",
+      "categories": [
+        "en:dairies",
+        "en:fermented-foods",
+        "en:fermented-milk-products",
+        "en:cheeses",
+        "en:goat-cheeses"
+      ]
+    },
+    {
+      "product_name": "Haskap Berry Soda",
+      "product_code": "0616312986484",
+      "price": 5.5,
+      "currency": null,
+      "store": "Kelowna Farmers Market",
+      "city": "Kelowna",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "b",
+      "categories": [
+        "en:beverages-and-beverages-preparations",
+        "en:beverages",
+        "en:carbonated-drinks",
+        "en:carbonated-berry-juice",
+        "en:carbonated-haskap-berry-juice",
+        "en:carbonated-haskap-berry-soda",
+        "en:haskap-berry-soda",
+        "en:natural-haskap-soda"
+      ]
+    },
+    {
+      "product_name": "Rawbite The Organic Fruit & Nut Bite Cacao",
+      "product_code": "5712840020029",
+      "price": 2.29,
+      "currency": null,
+      "store": "REWE",
+      "city": "Augsburg",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "d",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:snacks",
+        "en:sweet-snacks",
+        "en:cocoa-and-its-products",
+        "en:confectioneries",
+        "en:nuts-and-their-products",
+        "en:bars",
+        "en:nut-bars"
+      ]
+    },
+    {
+      "product_name": "Maoam Kracher",
+      "product_code": "4001686536025",
+      "price": 1.39,
+      "currency": null,
+      "store": "EDEKA xpress",
+      "city": "München",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "e",
+      "categories": [
+        "en:snacks",
+        "en:sweet-snacks",
+        "en:confectioneries",
+        "en:candies",
+        "de:süß"
+      ]
+    },
+    {
+      "product_name": "Walnussöl geröstet",
+      "product_code": "4008722010112",
+      "price": 2.19,
+      "currency": null,
+      "store": "EDEKA",
+      "city": "Hamburg",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "b",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:fats",
+        "en:nuts-and-their-products",
+        "en:vegetable-fats",
+        "en:vegetable-oils",
+        "en:nut-oils",
+        "en:walnut-oils"
+      ]
+    },
+    {
+      "product_name": "Torsettes",
+      "product_code": "3073190101267",
+      "price": 1.1,
+      "currency": null,
+      "store": "Cora",
+      "city": "Livry-Gargan",
+      "date": null,
+      "source": "Open Prices (crowdsourced)",
+      "nutriscore": "a",
+      "categories": [
+        "en:plant-based-foods-and-beverages",
+        "en:plant-based-foods",
+        "en:cereals-and-potatoes",
+        "en:cereals-and-their-products",
+        "en:pastas",
+        "en:dry-pastas",
+        "en:egg-pastas",
+        "en:dry-egg-pastas",
+        "fr:torsettes",
+        "fr:torsettes-aux-oeufs"
       ]
     }
   ],
