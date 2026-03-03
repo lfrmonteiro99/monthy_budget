@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../models/app_settings.dart';
 import '../../models/budget_summary.dart';
+import '../../theme/app_colors.dart';
 import '../../utils/formatters.dart';
 
 const _categoryColors = {
@@ -70,11 +71,11 @@ class _ChartCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(context),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFF1F5F9)),
+        border: Border.all(color: AppColors.surfaceVariant(context)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 8, offset: const Offset(0, 2)),
+          BoxShadow(color: AppColors.shimmer(context), blurRadius: 8, offset: const Offset(0, 2)),
         ],
       ),
       child: Column(
@@ -82,7 +83,7 @@ class _ChartCard extends StatelessWidget {
         children: [
           Text(
             title.toUpperCase(),
-            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.grey.shade400, letterSpacing: 1.2),
+            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.textMuted(context), letterSpacing: 1.2),
           ),
           const SizedBox(height: 16),
           child,
@@ -119,9 +120,9 @@ class _ExpensesPieChart extends StatelessWidget {
                     value: e.value,
                     color: _categoryColors[e.key] ?? const Color(0xFF94A3B8),
                     title: '${(e.value / total * 100).toStringAsFixed(1)}%',
-                    titleStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.white),
+                    titleStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.onPrimary(context)),
                     radius: 80,
-                    borderSide: const BorderSide(color: Colors.white, width: 2),
+                    borderSide: BorderSide(color: AppColors.surface(context), width: 2),
                   );
                 }).toList(),
                 sectionsSpace: 2,
@@ -148,7 +149,7 @@ class _ExpensesPieChart extends StatelessWidget {
                   const SizedBox(width: 4),
                   Text(
                     '${e.key.localizedLabel(l10n)}: ${formatCurrency(e.value)}',
-                    style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+                    style: TextStyle(fontSize: 11, color: AppColors.textSecondary(context)),
                   ),
                 ],
               );
@@ -194,7 +195,7 @@ class _IncomeVsExpensesChart extends StatelessWidget {
                     if (value.toInt() < labels.length) {
                       return Padding(
                         padding: const EdgeInsets.only(top: 8),
-                        child: Text(labels[value.toInt()], style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
+                        child: Text(labels[value.toInt()], style: TextStyle(fontSize: 10, color: AppColors.textSecondary(context))),
                       );
                     }
                     return const SizedBox();
@@ -207,7 +208,7 @@ class _IncomeVsExpensesChart extends StatelessWidget {
             barTouchData: BarTouchData(
               touchTooltipData: BarTouchTooltipData(
                 getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                  return BarTooltipItem(formatCurrency(rod.toY), const TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w600));
+                  return BarTooltipItem(formatCurrency(rod.toY), TextStyle(fontSize: 12, color: AppColors.onPrimary(context), fontWeight: FontWeight.w600));
                 },
               ),
             ),
@@ -253,21 +254,21 @@ class _DeductionsChart extends StatelessWidget {
                     color: const Color(0xFF34D399),
                     title: '',
                     radius: 70,
-                    borderSide: const BorderSide(color: Colors.white, width: 3),
+                    borderSide: BorderSide(color: AppColors.surface(context), width: 3),
                   ),
                   PieChartSectionData(
                     value: summary.totalIRS,
                     color: const Color(0xFFF87171),
                     title: '',
                     radius: 70,
-                    borderSide: const BorderSide(color: Colors.white, width: 3),
+                    borderSide: BorderSide(color: AppColors.surface(context), width: 3),
                   ),
                   PieChartSectionData(
                     value: summary.totalSS,
                     color: const Color(0xFFFBBF24),
                     title: '',
                     radius: 70,
-                    borderSide: const BorderSide(color: Colors.white, width: 3),
+                    borderSide: BorderSide(color: AppColors.surface(context), width: 3),
                   ),
                 ],
                 sectionsSpace: 0,
@@ -279,11 +280,11 @@ class _DeductionsChart extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _legendDot(const Color(0xFF34D399), l10n.chartNetSalary),
+              _legendDot(context, const Color(0xFF34D399), l10n.chartNetSalary),
               const SizedBox(width: 16),
-              _legendDot(const Color(0xFFF87171), l10n.chartIRS),
+              _legendDot(context, const Color(0xFFF87171), l10n.chartIRS),
               const SizedBox(width: 16),
-              _legendDot(const Color(0xFFFBBF24), l10n.chartSocialSecurity),
+              _legendDot(context, const Color(0xFFFBBF24), l10n.chartSocialSecurity),
             ],
           ),
         ],
@@ -291,12 +292,12 @@ class _DeductionsChart extends StatelessWidget {
     );
   }
 
-  Widget _legendDot(Color color, String label) => Row(
+  Widget _legendDot(BuildContext context, Color color, String label) => Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(width: 10, height: 10, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
           const SizedBox(width: 4),
-          Text(label, style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
+          Text(label, style: TextStyle(fontSize: 11, color: AppColors.textSecondary(context))),
         ],
       );
 }
@@ -364,7 +365,7 @@ class _NetIncomeChart extends StatelessWidget {
                         if (value.toInt() < labels.length) {
                           return Padding(
                             padding: const EdgeInsets.only(top: 8),
-                            child: Text(labels[value.toInt()], style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
+                            child: Text(labels[value.toInt()], style: TextStyle(fontSize: 10, color: AppColors.textSecondary(context))),
                           );
                         }
                         return const SizedBox();
@@ -381,9 +382,9 @@ class _NetIncomeChart extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _legendDot(const Color(0xFFC7D2FE), l10n.chartGross),
+              _legendDot(context, const Color(0xFFC7D2FE), l10n.chartGross),
               const SizedBox(width: 16),
-              _legendDot(const Color(0xFF818CF8), l10n.chartNet),
+              _legendDot(context, const Color(0xFF818CF8), l10n.chartNet),
             ],
           ),
         ],
@@ -391,12 +392,12 @@ class _NetIncomeChart extends StatelessWidget {
     );
   }
 
-  Widget _legendDot(Color color, String label) => Row(
+  Widget _legendDot(BuildContext context, Color color, String label) => Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(width: 10, height: 10, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
           const SizedBox(width: 4),
-          Text(label, style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
+          Text(label, style: TextStyle(fontSize: 11, color: AppColors.textSecondary(context))),
         ],
       );
 }
@@ -430,7 +431,7 @@ class _SavingsRateChart extends StatelessWidget {
                   ),
                   PieChartSectionData(
                     value: expenseRate * 100,
-                    color: const Color(0xFFF1F5F9),
+                    color: AppColors.surfaceVariant(context),
                     title: '',
                     radius: 24,
                     borderSide: BorderSide.none,
@@ -445,9 +446,9 @@ class _SavingsRateChart extends StatelessWidget {
               children: [
                 Text(
                   formatPercentage(savingsRate),
-                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: Color(0xFF10B981), letterSpacing: -0.5),
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: AppColors.success(context), letterSpacing: -0.5),
                 ),
-                Text(l10n.chartSavings, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.grey.shade400)),
+                Text(l10n.chartSavings, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: AppColors.textMuted(context))),
               ],
             ),
           ],

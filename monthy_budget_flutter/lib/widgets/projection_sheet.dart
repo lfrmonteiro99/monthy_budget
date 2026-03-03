@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/app_settings.dart';
 import '../models/budget_summary.dart';
 import '../models/purchase_record.dart';
+import '../theme/app_colors.dart';
 import '../utils/calculations.dart';
 import '../utils/formatters.dart';
 import '../utils/stress_index.dart';
@@ -19,7 +20,7 @@ void showProjectionSheet({
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.white,
+    backgroundColor: AppColors.surface(context),
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
@@ -151,7 +152,7 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
             width: 40, height: 4,
             margin: const EdgeInsets.symmetric(vertical: 12),
             decoration: BoxDecoration(
-              color: const Color(0xFFCBD5E1),
+              color: AppColors.dragHandle(context),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -163,7 +164,7 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
         const SizedBox(height: 4),
         Text(
           S.of(context).projectionSubtitle(formatCurrency(_foodSpent), formatCurrency(_foodBudget), '$_dayOfMonth'),
-          style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+          style: TextStyle(fontSize: 13, color: AppColors.textSecondary(context)),
         ),
         const SizedBox(height: 20),
         _buildFoodSection(),
@@ -184,16 +185,16 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(context),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: AppColors.border(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(S.of(context).projectionFood, style: TextStyle(
             fontSize: 10, fontWeight: FontWeight.w600,
-            color: Colors.grey.shade400, letterSpacing: 1.2,
+            color: AppColors.textMuted(context), letterSpacing: 1.2,
           )),
           const SizedBox(height: 16),
 
@@ -211,31 +212,31 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
           // Slider
           Text(
             S.of(context).projectionDailySpend(formatCurrency(_dailySpend)),
-            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Color(0xFF475569)),
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
           ),
           Slider(
             value: _dailySpend.clamp(0, sliderMax),
             min: 0,
             max: sliderMax > 0 ? sliderMax : 1,
-            activeColor: const Color(0xFF3B82F6),
+            activeColor: AppColors.primary(context),
             onChanged: (v) => setState(() => _dailySpend = v),
           ),
           const SizedBox(height: 12),
 
           // Results
           _resultRow(S.of(context).projectionEndOfMonth, formatCurrency(_projectedTotal),
-              _projectedTotal > _foodBudget ? const Color(0xFFEF4444) : const Color(0xFF1E293B)),
+              _projectedTotal > _foodBudget ? AppColors.error(context) : AppColors.textPrimary(context)),
           const SizedBox(height: 8),
           _resultRow(
             S.of(context).projectionRemaining,
             '${_projectedRemaining >= 0 ? '' : '-'}${formatCurrency(_projectedRemaining.abs())}',
-            _projectedRemaining >= 0 ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+            _projectedRemaining >= 0 ? AppColors.success(context) : AppColors.error(context),
           ),
           const SizedBox(height: 8),
           _resultRow(
             S.of(context).projectionStressImpact,
             '${delta >= 0 ? '+' : ''}$delta pts (${simStress.score}/100)',
-            delta >= 0 ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+            delta >= 0 ? AppColors.success(context) : AppColors.error(context),
           ),
         ],
       ),
@@ -247,10 +248,10 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
     return ActionChip(
       label: Text(label, style: TextStyle(
         fontSize: 12,
-        color: isActive ? Colors.white : const Color(0xFF475569),
+        color: isActive ? AppColors.onPrimary(context) : AppColors.textLabel(context),
         fontWeight: FontWeight.w500,
       )),
-      backgroundColor: isActive ? const Color(0xFF3B82F6) : const Color(0xFFF1F5F9),
+      backgroundColor: isActive ? AppColors.primary(context) : AppColors.surfaceVariant(context),
       side: BorderSide.none,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       onPressed: () => setState(() => _dailySpend = dailyValue),
@@ -276,9 +277,9 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(context),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: AppColors.border(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -287,7 +288,7 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
             children: [
               Text(S.of(context).projectionExpenses, style: TextStyle(
                 fontSize: 10, fontWeight: FontWeight.w600,
-                color: Colors.grey.shade400, letterSpacing: 1.2,
+                color: AppColors.textMuted(context), letterSpacing: 1.2,
               )),
               const Spacer(),
               Container(
@@ -309,9 +310,9 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
           // Global reduction slider
           Row(
             children: [
-              Text(S.of(context).projectionReduceAll, style: const TextStyle(fontSize: 13, color: Color(0xFF475569))),
+              Text(S.of(context).projectionReduceAll, style: TextStyle(fontSize: 13, color: AppColors.textLabel(context))),
               Text('${_globalReduction.toStringAsFixed(0)}%',
-                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF3B82F6))),
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.primary(context))),
             ],
           ),
           Slider(
@@ -319,7 +320,7 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
             min: 0,
             max: 50,
             divisions: 10,
-            activeColor: const Color(0xFF3B82F6),
+            activeColor: AppColors.primary(context),
             onChanged: (v) => setState(() => _globalReduction = v),
           ),
           const SizedBox(height: 8),
@@ -331,27 +332,27 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
           const SizedBox(height: 16),
 
           // Results
-          const Divider(color: Color(0xFFE2E8F0)),
+          Divider(color: AppColors.border(context)),
           const SizedBox(height: 12),
           _resultRow(S.of(context).projectionSimLiquidity, formatCurrency(simSummary.netLiquidity),
-              simSummary.netLiquidity >= 0 ? const Color(0xFF10B981) : const Color(0xFFEF4444)),
+              simSummary.netLiquidity >= 0 ? AppColors.success(context) : AppColors.error(context)),
           const SizedBox(height: 8),
           _resultRow(
             S.of(context).projectionDelta,
-            '${liquidityDelta >= 0 ? '+' : ''}${formatCurrency(liquidityDelta)}/mês',
-            liquidityDelta >= 0 ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+            '${liquidityDelta >= 0 ? '+' : ''}${formatCurrency(liquidityDelta)}/m\u00eas',
+            liquidityDelta >= 0 ? AppColors.success(context) : AppColors.error(context),
           ),
           const SizedBox(height: 8),
           _resultRow(
             S.of(context).projectionSimSavingsRate,
             formatPercentage(simSummary.savingsRate > 0 ? simSummary.savingsRate : 0),
-            const Color(0xFF475569),
+            AppColors.textLabel(context),
           ),
           const SizedBox(height: 8),
           _resultRow(
             S.of(context).projectionSimIndex,
             '${simStress.score}/100 (${stressDelta >= 0 ? '+' : ''}$stressDelta)',
-            stressDelta >= 0 ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+            stressDelta >= 0 ? AppColors.success(context) : AppColors.error(context),
           ),
         ],
       ),
@@ -371,7 +372,7 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
             width: 36,
             child: Switch(
               value: enabled,
-              activeTrackColor: const Color(0xFF3B82F6),
+              activeTrackColor: AppColors.primary(context),
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               onChanged: (v) => setState(() => _expenseEnabled[expense.id] = v),
             ),
@@ -382,7 +383,7 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
               expense.label,
               style: TextStyle(
                 fontSize: 13,
-                color: enabled ? const Color(0xFF475569) : const Color(0xFFCBD5E1),
+                color: enabled ? AppColors.textLabel(context) : AppColors.borderMuted(context),
                 decoration: enabled ? null : TextDecoration.lineThrough,
               ),
             ),
@@ -392,7 +393,7 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: enabled ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
+              color: enabled ? AppColors.textPrimary(context) : AppColors.borderMuted(context),
             ),
           ),
         ],
@@ -404,7 +405,7 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: const TextStyle(fontSize: 13, color: Color(0xFF64748B))),
+        Text(label, style: TextStyle(fontSize: 13, color: AppColors.textSecondary(context))),
         Text(value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: valueColor)),
       ],
     );

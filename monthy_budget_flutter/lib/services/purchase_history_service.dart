@@ -28,6 +28,7 @@ class PurchaseHistoryService {
         amount: (map['amount'] as num).toDouble(),
         itemCount: map['item_count'] as int,
         items: items,
+        isMealPurchase: map['is_meal_purchase'] as bool? ?? false,
       );
     }).toList();
 
@@ -42,6 +43,7 @@ class PurchaseHistoryService {
       'item_count': record.itemCount,
       'purchased_at': record.date.toIso8601String(),
       'items_json': jsonEncode(record.items),
+      'is_meal_purchase': record.isMealPurchase,
     });
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../services/auth_service.dart';
+import '../../theme/app_colors.dart';
 
 class LoginScreen extends StatefulWidget {
   final VoidCallback onAuthenticated;
@@ -47,15 +48,15 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background(context),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.account_balance_wallet,
-                  size: 64, color: Color(0xFF3B82F6)),
+              Icon(Icons.account_balance_wallet,
+                  size: 64, color: AppColors.primary(context)),
               const SizedBox(height: 8),
               Text(
                 S.of(context).appTitle,
@@ -70,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium
-                    ?.copyWith(color: const Color(0xFF64748B)),
+                    ?.copyWith(color: AppColors.textSecondary(context)),
               ),
               const SizedBox(height: 32),
               TextField(
@@ -100,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
               if (_error != null) ...[
                 const SizedBox(height: 8),
                 Text(_error!,
-                    style: const TextStyle(color: Colors.red, fontSize: 13)),
+                    style: TextStyle(color: AppColors.error(context), fontSize: 13)),
               ],
               const SizedBox(height: 16),
               SizedBox(
@@ -108,11 +109,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: FilledButton(
                   onPressed: _loading ? null : _submit,
                   child: _loading
-                      ? const SizedBox(
+                      ? SizedBox(
                           height: 16,
                           width: 16,
                           child: CircularProgressIndicator(
-                              color: Colors.white, strokeWidth: 2))
+                              color: AppColors.onPrimary(context), strokeWidth: 2))
                       : Text(_isLogin ? S.of(context).authLoginButton : S.of(context).authRegisterButton),
                 ),
               ),

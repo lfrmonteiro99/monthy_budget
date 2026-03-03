@@ -20,7 +20,9 @@ import 'services/products_service.dart';
 import 'services/expense_snapshot_service.dart';
 import 'services/local_config_service.dart';
 import 'services/actual_expense_service.dart';
+import 'services/monthly_budget_service.dart';
 import 'models/actual_expense.dart';
+import 'models/monthly_budget.dart';
 import 'widgets/add_expense_sheet.dart';
 import 'screens/expense_tracker_screen.dart';
 import 'models/local_dashboard_config.dart';
@@ -33,13 +35,39 @@ import 'screens/settings_screen.dart';
 import 'screens/grocery_screen.dart';
 import 'screens/auth/auth_gate.dart';
 import 'screens/setup_wizard_screen.dart';
+import 'screens/recurring_expenses_screen.dart';
+import 'screens/expense_trends_screen.dart';
+import 'screens/notification_settings_screen.dart';
+import 'models/recurring_expense.dart';
+import 'models/notification_preferences.dart';
+import 'services/recurring_expense_service.dart';
+import 'services/notification_service.dart';
+import 'services/savings_goal_service.dart';
+import 'models/savings_goal.dart';
+import 'screens/savings_goals_screen.dart';
+import 'theme/app_theme.dart';
+import 'theme/app_colors.dart';
 
 /// Global notifier for reactive locale changes from settings.
 final appLocaleNotifier = ValueNotifier<Locale?>(null);
 
+/// Global notifier for reactive theme changes.
+final appThemeModeNotifier = ValueNotifier<ThemeMode>(ThemeMode.system);
+
+/// Global notifier for reactive color palette changes.
+final appColorPaletteNotifier =
+    ValueNotifier<AppColorPalette>(AppColorPalette.ocean);
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
+  final configService = LocalConfigService();
+  final savedTheme = await configService.loadThemeMode();
+  final savedPalette = await configService.loadColorPalette();
+  appThemeModeNotifier.value = savedTheme;
+  appColorPaletteNotifier.value = savedPalette;
+  AppColors.palette = savedPalette;
+  await NotificationService().init();
   runApp(const OrcamentoMensalApp());
 }
 
@@ -48,34 +76,37 @@ class OrcamentoMensalApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Locale?>(
-      valueListenable: appLocaleNotifier,
-      builder: (_, locale, __) => MaterialApp(
-        title: 'Orçamento Mensal',
-        debugShowCheckedModeBanner: false,
-        locale: locale,
-        localizationsDelegates: const [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: S.supportedLocales,
-        theme: ThemeData(
-          colorSchemeSeed: const Color(0xFF3B82F6),
-          useMaterial3: true,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          snackBarTheme: SnackBarThemeData(
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-        ),
-        home: AuthGate(
-          appBuilder: (profile) => AppHome(
-            householdId: profile.householdId,
-            isAdmin: profile.role == 'admin',
-          ),
-        ),
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: appThemeModeNotifier,
+      builder: (_, themeMode, _) => ValueListenableBuilder<AppColorPalette>(
+        valueListenable: appColorPaletteNotifier,
+        builder: (_, palette, _) {
+          AppColors.palette = palette;
+          return ValueListenableBuilder<Locale?>(
+            valueListenable: appLocaleNotifier,
+            builder: (_, locale, _) => MaterialApp(
+              title: 'Orçamento Mensal',
+              debugShowCheckedModeBanner: false,
+              locale: locale,
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.supportedLocales,
+              theme: lightTheme(palette),
+              darkTheme: darkTheme(palette),
+              themeMode: themeMode,
+              home: AuthGate(
+                appBuilder: (profile) => AppHome(
+                  householdId: profile.householdId,
+                  isAdmin: profile.role == 'admin',
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -105,9 +136,17 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   final _expenseSnapshotService = ExpenseSnapshotService();
   final _localConfigService = LocalConfigService();
   final _actualExpenseService = ActualExpenseService();
+  final _recurringExpenseService = RecurringExpenseService();
+  final _savingsGoalService = SavingsGoalService();
+  final _monthlyBudgetService = MonthlyBudgetService();
 
   AppSettings _settings = const AppSettings();
   List<ActualExpense> _actualExpenses = [];
+  List<RecurringExpense> _recurringExpenses = [];
+  Map<String, List<ActualExpense>> _actualExpenseHistory = {};
+  Map<String, double> _monthlyBudgets = {};
+  NotificationPreferences _notificationPrefs = const NotificationPreferences();
+  List<SavingsGoal> _savingsGoals = [];
   List<Product> _products = [];
   List<String> _favorites = [];
   List<ShoppingItem> _shoppingList = [];
@@ -186,6 +225,11 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       if (mounted) setState(() => _expenseHistory = history);
     });
     _loadActualExpenses();
+    _loadRecurringExpenses();
+    _loadActualExpenseHistory();
+    _loadMonthlyBudgets();
+    _loadNotificationPrefs();
+    _loadSavingsGoals();
   }
 
   String get _currentMonthKey {
@@ -197,6 +241,100 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     final expenses = await _actualExpenseService.loadMonth(
         widget.householdId, _currentMonthKey);
     if (mounted) setState(() => _actualExpenses = expenses);
+  }
+
+  Future<void> _loadRecurringExpenses() async {
+    final recurring =
+        await _recurringExpenseService.load(widget.householdId);
+    if (mounted) setState(() => _recurringExpenses = recurring);
+    // Auto-populate recurring expenses for the current month
+    final created = await _recurringExpenseService.populateMonthIfNeeded(
+        widget.householdId, _currentMonthKey);
+    if (created.isNotEmpty) {
+      _loadActualExpenses();
+    }
+  }
+
+  void _openRecurringExpenses() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => RecurringExpensesScreen(
+          householdId: widget.householdId,
+          expenses: _recurringExpenses,
+          onChanged: (updated) =>
+              setState(() => _recurringExpenses = updated),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _loadActualExpenseHistory() async {
+    final history =
+        await _actualExpenseService.loadHistory(widget.householdId);
+    if (mounted) setState(() => _actualExpenseHistory = history);
+  }
+
+  Future<void> _loadMonthlyBudgets() async {
+    final budgets = await _monthlyBudgetService.loadMonth(
+        widget.householdId, _currentMonthKey);
+    if (mounted) {
+      setState(() => _monthlyBudgets = {
+        for (final b in budgets) b.category: b.amount,
+      });
+    }
+  }
+
+  Future<void> _loadNotificationPrefs() async {
+    final prefs =
+        await _localConfigService.loadNotificationPreferences();
+    if (mounted) setState(() => _notificationPrefs = prefs);
+  }
+
+  void _openExpenseTrends() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ExpenseTrendsScreen(
+          actualExpenseHistory: _actualExpenseHistory,
+          expenseHistory: _expenseHistory,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _loadSavingsGoals() async {
+    final goals = await _savingsGoalService.loadGoals(widget.householdId);
+    if (mounted) setState(() => _savingsGoals = goals);
+  }
+
+  void _openSavingsGoals() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => SavingsGoalsScreen(
+          householdId: widget.householdId,
+          goals: _savingsGoals,
+          onChanged: (updated) => setState(() => _savingsGoals = updated),
+        ),
+      ),
+    );
+  }
+
+  void _openNotificationSettings() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => NotificationSettingsScreen(
+          preferences: _notificationPrefs,
+          onSave: (prefs) {
+            setState(() => _notificationPrefs = prefs);
+            NotificationService().refreshAllSchedules(
+              prefs: prefs,
+              recurringExpenses: _recurringExpenses,
+              budgetUsagePercent: 0, // Calculated on demand
+              hasMealPlan: true, // Simplified
+            );
+          },
+        ),
+      ),
+    );
   }
 
   void _syncLocaleAndFormatter(AppSettings settings) {
@@ -300,7 +438,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   Future<void> _finalizeShopping(
-      double? amount, List<ShoppingItem> checkedItems) async {
+      double? amount, List<ShoppingItem> checkedItems, {bool isMealPurchase = false}) async {
     if (checkedItems.isEmpty) return;
     try {
       final estimated = checkedItems.fold(0.0, (s, i) => s + i.price);
@@ -312,6 +450,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         amount: totalAmount,
         itemCount: checkedItems.length,
         items: checkedItems.map((i) => i.productName).toList(),
+        isMealPurchase: isMealPurchase,
       );
       await _purchaseHistoryService.saveRecord(record, widget.householdId);
       await _shoppingListService.clearChecked(widget.householdId);
@@ -328,7 +467,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Erro ao guardar compra: $e'),
-            backgroundColor: const Color(0xFFEF4444),
+            backgroundColor: AppColors.error(context),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -338,7 +477,13 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
   Future<void> _addActualExpense(ActualExpense expense) async {
     setState(() => _actualExpenses = [expense, ..._actualExpenses]);
-    await _actualExpenseService.add(expense, widget.householdId);
+    try {
+      await _actualExpenseService.add(expense, widget.householdId);
+    } catch (e) {
+      debugPrint('Failed to add expense: $e');
+      // Reload from Supabase to get the real state
+      _loadActualExpenses();
+    }
   }
 
   Future<void> _updateActualExpense(ActualExpense expense) async {
@@ -379,12 +524,15 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           onDelete: _deleteActualExpense,
           onLoadMonth: (monthKey) =>
               _actualExpenseService.loadMonth(widget.householdId, monthKey),
+          onLoadHistory: () =>
+              _actualExpenseService.loadHistory(widget.householdId),
+          onOpenRecurring: _openRecurringExpenses,
         ),
       ),
     );
   }
 
-  SettingsScreen _buildSettingsScreen() {
+  SettingsScreen _buildSettingsScreen({String? initialSection}) {
     return SettingsScreen(
       settings: _settings,
       onSave: _saveSettings,
@@ -397,6 +545,20 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       products: _products,
       dashboardConfig: _dashboardConfig,
       onSaveDashboardConfig: _saveDashboardConfig,
+      onOpenNotificationSettings: _openNotificationSettings,
+      monthlyBudgets: _monthlyBudgets,
+      onSaveMonthlyBudgets: (budgetMap) async {
+        final budgets = budgetMap.entries
+            .map((e) => MonthlyBudget.create(
+                  category: e.key,
+                  amount: e.value,
+                  monthKey: _currentMonthKey,
+                ))
+            .toList();
+        await _monthlyBudgetService.saveAll(budgets, widget.householdId);
+        _loadMonthlyBudgets();
+      },
+      initialSection: initialSection,
     );
   }
 
@@ -404,19 +566,19 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     if (!_loaded) {
       return Scaffold(
-        backgroundColor: const Color(0xFFF8FAFC),
+        backgroundColor: AppColors.background(context),
         body: Center(
           child: Semantics(
             label: 'A carregar a aplicação',
-            child: const Column(
+            child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircularProgressIndicator(color: Color(0xFF3B82F6)),
-                SizedBox(height: 16),
+                CircularProgressIndicator(color: AppColors.primary(context)),
+                const SizedBox(height: 16),
                 Text(
                   'A carregar...',
                   style: TextStyle(
-                      color: Color(0xFF64748B),
+                      color: AppColors.textSecondary(context),
                       fontSize: 14,
                       fontWeight: FontWeight.w500),
                 ),
@@ -443,6 +605,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       _settings.personalInfo,
       _settings.expenses,
       taxSystem,
+      monthlyBudgets: _monthlyBudgets,
     );
 
     final screens = [
@@ -456,7 +619,11 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         onSnapshotExpenses: _snapshotExpenses,
         actualExpenses: _actualExpenses,
         onAddExpense: _openAddExpenseSheet,
+        monthlyBudgets: _monthlyBudgets,
         onOpenExpenseTracker: _openExpenseTracker,
+        onViewTrends: _openExpenseTrends,
+        savingsGoals: _savingsGoals,
+        onOpenSavingsGoals: _openSavingsGoals,
         onOpenSettings: () {
           Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
@@ -493,22 +660,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         onAddToShoppingList: _addToShoppingList,
         householdId: widget.householdId,
         onSaveSettings: _saveSettings,
+        purchaseHistory: _purchaseHistory,
         onOpenMealSettings: () => Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (_) => SettingsScreen(
-              settings: _settings,
-              onSave: _saveSettings,
-              favorites: _favorites,
-              onSaveFavorites: _saveFavorites,
-              apiKey: _openAiApiKey,
-              onSaveApiKey: _saveApiKey,
-              isAdmin: widget.isAdmin,
-              householdId: widget.householdId,
-              products: _products,
-              dashboardConfig: _dashboardConfig,
-              onSaveDashboardConfig: _saveDashboardConfig,
-              initialSection: 'meals',
-            ),
+            builder: (_) => _buildSettingsScreen(initialSection: 'meals'),
           ),
         ),
       ),
@@ -519,29 +674,29 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       floatingActionButton: _currentIndex == 0
           ? FloatingActionButton(
               onPressed: _openAddExpenseSheet,
-              backgroundColor: const Color(0xFF3B82F6),
+              backgroundColor: AppColors.primary(context),
               tooltip: S.of(context).addExpenseTooltip,
-              child: const Icon(Icons.add, color: Colors.white),
+              child: Icon(Icons.add, color: AppColors.onPrimary(context)),
             )
           : null,
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (i) => setState(() => _currentIndex = i),
-        backgroundColor: Colors.white,
-        indicatorColor: const Color(0xFFDBEAFE),
+        backgroundColor: AppColors.surface(context),
+        indicatorColor: AppColors.navIndicator(context),
         height: 72,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         destinations: [
-          const NavigationDestination(
-            icon: Icon(Icons.dashboard_outlined),
-            selectedIcon: Icon(Icons.dashboard, color: Color(0xFF3B82F6)),
+          NavigationDestination(
+            icon: const Icon(Icons.dashboard_outlined),
+            selectedIcon: Icon(Icons.dashboard, color: AppColors.primary(context)),
             label: 'Orçamento',
             tooltip: 'Resumo do orçamento mensal',
           ),
-          const NavigationDestination(
-            icon: Icon(Icons.shopping_cart_outlined),
+          NavigationDestination(
+            icon: const Icon(Icons.shopping_cart_outlined),
             selectedIcon:
-                Icon(Icons.shopping_cart, color: Color(0xFF3B82F6)),
+                Icon(Icons.shopping_cart, color: AppColors.primary(context)),
             label: 'Supermercado',
             tooltip: 'Catálogo de produtos',
           ),
@@ -560,22 +715,22 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                 '${_shoppingList.where((i) => !i.checked).length}',
                 style: const TextStyle(fontSize: 10),
               ),
-              child: const Icon(Icons.shopping_basket,
-                  color: Color(0xFF3B82F6)),
+              child: Icon(Icons.shopping_basket,
+                  color: AppColors.primary(context)),
             ),
             label: 'Lista',
             tooltip: 'Lista de compras',
           ),
-          const NavigationDestination(
-            icon: Icon(Icons.psychology_outlined),
-            selectedIcon: Icon(Icons.psychology, color: Color(0xFF3B82F6)),
+          NavigationDestination(
+            icon: const Icon(Icons.psychology_outlined),
+            selectedIcon: Icon(Icons.psychology, color: AppColors.primary(context)),
             label: 'Coach',
             tooltip: 'Coach financeiro com IA',
           ),
-          const NavigationDestination(
-            icon: Icon(Icons.restaurant_outlined),
+          NavigationDestination(
+            icon: const Icon(Icons.restaurant_outlined),
             selectedIcon:
-                Icon(Icons.restaurant, color: Color(0xFF3B82F6)),
+                Icon(Icons.restaurant, color: AppColors.primary(context)),
             label: 'Refeições',
             tooltip: 'Planeador de refeições',
           ),

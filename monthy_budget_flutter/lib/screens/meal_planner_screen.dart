@@ -3,10 +3,13 @@ import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/meal_planner.dart';
 import '../models/meal_settings.dart';
+import '../models/purchase_record.dart';
 import '../models/shopping_item.dart';
 import '../services/meal_planner_service.dart';
 import '../services/meal_planner_ai_service.dart';
+import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
+import '../widgets/meal_cost_reconciliation_sheet.dart';
 import 'meal_wizard_screen.dart';
 
 class MealPlannerScreen extends StatefulWidget {
@@ -17,6 +20,7 @@ class MealPlannerScreen extends StatefulWidget {
   final String householdId;
   final ValueChanged<AppSettings> onSaveSettings;
   final VoidCallback onOpenMealSettings;
+  final PurchaseHistory purchaseHistory;
 
   const MealPlannerScreen({
     super.key,
@@ -27,6 +31,7 @@ class MealPlannerScreen extends StatefulWidget {
     required this.householdId,
     required this.onSaveSettings,
     required this.onOpenMealSettings,
+    required this.purchaseHistory,
   });
 
   @override
@@ -215,15 +220,27 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     }
     final l10n = S.of(context);
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background(context),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface(context),
         elevation: 0,
         title: Text(
           l10n.mealPlannerTitle,
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
         ),
         actions: [
+          if (_plan != null)
+            IconButton(
+              icon: const Icon(Icons.receipt_long_outlined),
+              tooltip: l10n.mealCostReconciliation,
+              onPressed: () => showMealCostReconciliationSheet(
+                context: context,
+                mealDays: _plan!.days,
+                purchaseHistory: widget.purchaseHistory,
+                year: _plan!.year,
+                month: _plan!.month,
+              ),
+            ),
           IconButton(
             icon: const Icon(Icons.settings_outlined),
             onPressed: widget.onOpenMealSettings,
@@ -231,7 +248,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         ],
       ),
       body: !_catalogReady
-          ? const Center(child: CircularProgressIndicator(color: Color(0xFF3B82F6)))
+          ? Center(child: CircularProgressIndicator(color: AppColors.primary(context)))
           : _plan == null
               ? _buildEmptyState()
               : _buildPlanView(),
@@ -251,7 +268,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.restaurant_outlined, size: 64, color: Color(0xFF94A3B8)),
+            Icon(Icons.restaurant_outlined, size: 64, color: AppColors.textMuted(context)),
             const SizedBox(height: 24),
             Text(
               monthName,
@@ -267,15 +284,15 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               child: FilledButton.icon(
                 onPressed: _loading ? null : _generatePlan,
                 icon: _loading
-                    ? const SizedBox(
+                    ? SizedBox(
                         width: 18,
                         height: 18,
-                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                        child: CircularProgressIndicator(color: AppColors.onPrimary(context), strokeWidth: 2),
                       )
                     : const Icon(Icons.auto_awesome),
                 label: Text(_loading ? l10n.mealGenerating : l10n.mealGeneratePlan),
                 style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFF3B82F6),
+                  backgroundColor: AppColors.primary(context),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
               ),
@@ -297,7 +314,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     return Column(
       children: [
         Container(
-          color: Colors.white,
+          color: AppColors.surface(context),
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -335,15 +352,15 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     },
                     icon: const Icon(Icons.refresh, size: 16),
                     label: Text(l10n.mealRegenerate),
-                    style: TextButton.styleFrom(foregroundColor: const Color(0xFF64748B)),
+                    style: TextButton.styleFrom(foregroundColor: AppColors.textSecondary(context)),
                   ),
                 ],
               ),
               const SizedBox(height: 6),
               LinearProgressIndicator(
                 value: budgetUsed.clamp(0.0, 1.0),
-                backgroundColor: const Color(0xFFE2E8F0),
-                color: budgetUsed > 1 ? Colors.red : const Color(0xFF3B82F6),
+                backgroundColor: AppColors.border(context),
+                color: budgetUsed > 1 ? Colors.red : AppColors.primary(context),
                 minHeight: 6,
                 borderRadius: BorderRadius.circular(3),
               ),
@@ -365,7 +382,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                       label: l10n.mealWeekLabel(i + 1),
                       selected: selected,
                       child: Material(
-                      color: selected ? const Color(0xFF3B82F6) : const Color(0xFFF1F5F9),
+                      color: selected ? AppColors.primary(context) : AppColors.surfaceVariant(context),
                       borderRadius: BorderRadius.circular(8),
                       child: InkWell(
                       onTap: () => setState(() => _selectedWeek = i),
@@ -379,7 +396,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color: selected ? Colors.white : const Color(0xFF64748B),
+                            color: selected ? AppColors.onPrimary(context) : AppColors.textSecondary(context),
                           ),
                         ),
                       ),
@@ -403,8 +420,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               icon: const Icon(Icons.add_shopping_cart, size: 18),
               label: Text(l10n.mealAddWeekToList),
               style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF3B82F6),
-                side: const BorderSide(color: Color(0xFF3B82F6)),
+                foregroundColor: AppColors.primary(context),
+                side: BorderSide(color: AppColors.primary(context)),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
@@ -445,7 +462,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   icon: const Icon(Icons.list_alt),
                   label: Text(l10n.mealConsolidatedList),
                   style: FilledButton.styleFrom(
-                    backgroundColor: const Color(0xFF1E293B),
+                    backgroundColor: AppColors.textPrimary(context),
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
                 ),
@@ -502,11 +519,11 @@ class _DayCard extends StatelessWidget {
 
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
-      color: Colors.white,
+      color: AppColors.surface(context),
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: Color(0xFFE2E8F0)),
+        side: BorderSide(color: AppColors.border(context)),
       ),
       child: Column(
         children: [
@@ -520,15 +537,15 @@ class _DayCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFEFF6FF),
+                        color: AppColors.infoBackground(context),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
                         l10n.mealDayLabel(mealDay.dayIndex),
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF3B82F6)),
+                            color: AppColors.primary(context)),
                       ),
                     ),
                     const SizedBox(width: 6),
@@ -549,10 +566,10 @@ class _DayCard extends StatelessWidget {
                     const Spacer(),
                     Text(
                       '${mealDay.costEstimate.toStringAsFixed(2)}\u20AC',
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF1E293B)),
+                          color: AppColors.textPrimary(context)),
                     ),
                   ],
                 ),
@@ -566,31 +583,31 @@ class _DayCard extends StatelessWidget {
                   children: [
                     _Stars(recipe.complexity),
                     const SizedBox(width: 10),
-                    const Icon(Icons.timer_outlined, size: 14, color: Color(0xFF94A3B8)),
+                    Icon(Icons.timer_outlined, size: 14, color: AppColors.textMuted(context)),
                     const SizedBox(width: 3),
                     Text('${recipe.prepMinutes}min',
-                        style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
+                        style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
                     const SizedBox(width: 10),
-                    const Icon(Icons.person_outline, size: 14, color: Color(0xFF94A3B8)),
+                    Icon(Icons.person_outline, size: 14, color: AppColors.textMuted(context)),
                     const SizedBox(width: 3),
                     Text(l10n.mealCostPerPerson(costPerPerson.toStringAsFixed(2)),
-                        style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
+                        style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
                   ],
                 ),
                 if (recipe.nutrition != null) ...[
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      _NutriBadge('${recipe.nutrition!.kcal}', 'kcal', const Color(0xFFEF4444)),
+                      _NutriBadge('${recipe.nutrition!.kcal}', 'kcal', AppColors.error(context)),
                       const SizedBox(width: 6),
-                      _NutriBadge('${recipe.nutrition!.proteinG.round()}g', l10n.mealNutriProt, const Color(0xFF3B82F6)),
+                      _NutriBadge('${recipe.nutrition!.proteinG.round()}g', l10n.mealNutriProt, AppColors.primary(context)),
                       const SizedBox(width: 6),
-                      _NutriBadge('${recipe.nutrition!.carbsG.round()}g', l10n.mealNutriCarbs, const Color(0xFFF59E0B)),
+                      _NutriBadge('${recipe.nutrition!.carbsG.round()}g', l10n.mealNutriCarbs, AppColors.warning(context)),
                       const SizedBox(width: 6),
                       _NutriBadge('${recipe.nutrition!.fatG.round()}g', l10n.mealNutriFat, const Color(0xFF8B5CF6)),
                       if (recipe.nutrition!.fiberG >= 5) ...[
                         const SizedBox(width: 6),
-                        _NutriBadge('${recipe.nutrition!.fiberG.round()}g', l10n.mealNutriFiber, const Color(0xFF10B981)),
+                        _NutriBadge('${recipe.nutrition!.fiberG.round()}g', l10n.mealNutriFiber, AppColors.success(context)),
                       ],
                     ],
                   ),
@@ -610,8 +627,8 @@ class _DayCard extends StatelessWidget {
                           style: const TextStyle(fontSize: 13),
                         ),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFF64748B),
-                          side: const BorderSide(color: Color(0xFFE2E8F0)),
+                          foregroundColor: AppColors.textSecondary(context),
+                          side: BorderSide(color: AppColors.border(context)),
                           padding: const EdgeInsets.symmetric(vertical: 8),
                         ),
                       ),
@@ -623,8 +640,8 @@ class _DayCard extends StatelessWidget {
                         icon: const Icon(Icons.swap_horiz, size: 16),
                         label: Text(l10n.mealSwap, style: const TextStyle(fontSize: 13)),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFF64748B),
-                          side: const BorderSide(color: Color(0xFFE2E8F0)),
+                          foregroundColor: AppColors.textSecondary(context),
+                          side: BorderSide(color: AppColors.border(context)),
                           padding: const EdgeInsets.symmetric(vertical: 8),
                         ),
                       ),
@@ -648,7 +665,7 @@ class _DayCard extends StatelessWidget {
                         icon: Icons.thumb_down_outlined,
                         activeIcon: Icons.thumb_down,
                         isActive: mealDay.feedback == MealFeedback.disliked,
-                        color: const Color(0xFFEF4444),
+                        color: AppColors.error(context),
                         onTap: () => onFeedback(MealFeedback.disliked),
                       ),
                       const SizedBox(width: 16),
@@ -656,7 +673,7 @@ class _DayCard extends StatelessWidget {
                         icon: Icons.skip_next_outlined,
                         activeIcon: Icons.skip_next,
                         isActive: mealDay.feedback == MealFeedback.skipped,
-                        color: const Color(0xFF94A3B8),
+                        color: AppColors.textMuted(context),
                         onTap: () => onFeedback(MealFeedback.skipped),
                       ),
                     ],
@@ -666,7 +683,7 @@ class _DayCard extends StatelessWidget {
             ),
           ),
           if (isExpanded) ...[
-            const Divider(height: 1, color: Color(0xFFE2E8F0)),
+            Divider(height: 1, color: AppColors.border(context)),
             Padding(
               padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
               child: Column(
@@ -674,10 +691,10 @@ class _DayCard extends StatelessWidget {
                 children: [
                   Text(
                     l10n.mealIngredients,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF64748B)),
+                        color: AppColors.textSecondary(context)),
                   ),
                   const SizedBox(height: 8),
                   ...recipe.ingredients.map((ri) {
@@ -696,8 +713,8 @@ class _DayCard extends StatelessWidget {
                           ),
                           Text(
                             '${_fmt(qty)} ${ing.unit}',
-                            style: const TextStyle(
-                                fontSize: 13, color: Color(0xFF64748B)),
+                            style: TextStyle(
+                                fontSize: 13, color: AppColors.textSecondary(context)),
                           ),
                           const SizedBox(width: 12),
                           Semantics(
@@ -707,7 +724,7 @@ class _DayCard extends StatelessWidget {
                             width: 40,
                             height: 40,
                             child: Material(
-                              color: const Color(0xFF3B82F6),
+                              color: AppColors.primary(context),
                               borderRadius: BorderRadius.circular(10),
                               child: InkWell(
                                 onTap: () => onAddIngredientToList(ShoppingItem(
@@ -718,7 +735,7 @@ class _DayCard extends StatelessWidget {
                                       '${ing.avgPricePerUnit.toStringAsFixed(2)}\u20AC/${ing.unit}',
                                 )),
                                 borderRadius: BorderRadius.circular(10),
-                                child: const Icon(Icons.add, size: 18, color: Colors.white),
+                                child: Icon(Icons.add, size: 18, color: AppColors.onPrimary(context)),
                               ),
                             ),
                           ),
@@ -731,10 +748,10 @@ class _DayCard extends StatelessWidget {
                     const SizedBox(height: 12),
                     Text(
                       l10n.mealPreparation,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF64748B)),
+                          color: AppColors.textSecondary(context)),
                     ),
                     const SizedBox(height: 6),
                     ...aiContent!.steps.asMap().entries.map((e) => Padding(
@@ -749,13 +766,13 @@ class _DayCard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFFFBEB),
+                          color: AppColors.warningBackground(context),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.lightbulb_outline,
-                                size: 16, color: Color(0xFFF59E0B)),
+                            Icon(Icons.lightbulb_outline,
+                                size: 16, color: AppColors.warning(context)),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
@@ -834,7 +851,7 @@ class _SwapSheet extends StatelessWidget {
                 title: Text(r.name, style: const TextStyle(fontSize: 14)),
                 subtitle: Text(
                   l10n.mealTotalCost(cost.toStringAsFixed(2)),
-                  style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+                  style: TextStyle(fontSize: 12, color: AppColors.textSecondary(context)),
                 ),
                 trailing: Text(
                   deltaStr,
@@ -906,7 +923,7 @@ class _ConsolidatedSheet extends StatelessWidget {
             height: 4,
             margin: const EdgeInsets.symmetric(vertical: 12),
             decoration: BoxDecoration(
-              color: const Color(0xFFCBD5E1),
+              color: AppColors.borderMuted(context),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -931,10 +948,10 @@ class _ConsolidatedSheet extends StatelessWidget {
                   const SizedBox(height: 16),
                   Text(
                     _categoryLabel(cat, l10n).toUpperCase(),
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF94A3B8),
+                        color: AppColors.textMuted(context),
                         letterSpacing: 0.8),
                   ),
                   const SizedBox(height: 8),
@@ -950,12 +967,12 @@ class _ConsolidatedSheet extends StatelessWidget {
                                   style: const TextStyle(fontSize: 14))),
                           Text(
                             '${_fmt(entry.value)} ${ing.unit}',
-                            style: const TextStyle(
-                                fontSize: 13, color: Color(0xFF64748B)),
+                            style: TextStyle(
+                                fontSize: 13, color: AppColors.textSecondary(context)),
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            '${cost.toStringAsFixed(2)}€',
+                            '${cost.toStringAsFixed(2)}\u20AC',
                             style: const TextStyle(
                                 fontSize: 13, fontWeight: FontWeight.w600),
                           ),
@@ -967,7 +984,7 @@ class _ConsolidatedSheet extends StatelessWidget {
                             width: 40,
                             height: 40,
                             child: Material(
-                              color: const Color(0xFF3B82F6),
+                              color: AppColors.primary(context),
                               borderRadius: BorderRadius.circular(10),
                               child: InkWell(
                                 onTap: () => onAddToShoppingList(ShoppingItem(
@@ -978,7 +995,7 @@ class _ConsolidatedSheet extends StatelessWidget {
                                       '${ing.avgPricePerUnit.toStringAsFixed(2)}\u20AC/${ing.unit}',
                                 )),
                                 borderRadius: BorderRadius.circular(10),
-                                child: const Icon(Icons.add, size: 18, color: Colors.white),
+                                child: Icon(Icons.add, size: 18, color: AppColors.onPrimary(context)),
                               ),
                             ),
                           ),
@@ -1030,7 +1047,7 @@ class _InfoRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label,
-            style: const TextStyle(color: Color(0xFF64748B), fontSize: 14)),
+            style: TextStyle(color: AppColors.textSecondary(context), fontSize: 14)),
         Text(value,
             style: const TextStyle(
                 fontWeight: FontWeight.w700, fontSize: 14)),
@@ -1052,7 +1069,7 @@ class _Stars extends StatelessWidget {
         (i) => Icon(
           i < complexity ? Icons.star : Icons.star_border,
           size: 13,
-          color: const Color(0xFFF59E0B),
+          color: AppColors.warning(context),
         ),
       ),
     );
@@ -1077,7 +1094,7 @@ class _FeedbackButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         child: Padding(
           padding: const EdgeInsets.all(8),
-          child: Icon(isActive ? activeIcon : icon, size: 20, color: isActive ? color : const Color(0xFFCBD5E1)),
+          child: Icon(isActive ? activeIcon : icon, size: 20, color: isActive ? color : AppColors.borderMuted(context)),
         ),
       ),
     );

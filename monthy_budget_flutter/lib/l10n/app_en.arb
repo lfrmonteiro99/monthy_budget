@@ -744,7 +744,12 @@
   "settingsDashFood": "Food",
   "settingsDashPurchaseHistory": "Purchase history",
   "settingsDashExpensesBreakdown": "Expenses breakdown",
+  "settingsDashMonthReview": "Month review",
   "settingsDashCharts": "Charts",
+  "dashGroupOverview": "OVERVIEW",
+  "dashGroupFinancialDetail": "FINANCIAL DETAIL",
+  "dashGroupHistory": "HISTORY",
+  "dashGroupCharts": "CHARTS",
   "settingsVisibleCharts": "VISIBLE CHARTS",
   "settingsFavTip": "Favorite products influence the meal plan \u2014 recipes with those ingredients get priority.",
   "settingsMyFavorites": "MY FAVORITES",
@@ -1032,5 +1037,197 @@
   "addExpenseCustomCategory": "Custom category",
   "addExpenseInvalidAmount": "Enter a valid amount",
   "addExpenseTooltip": "Add expense",
-  "settingsDashBudgetVsActual": "Budget vs Actual"
+  "addExpenseItem": "Expense",
+  "addExpenseOthers": "Others",
+  "settingsDashBudgetVsActual": "Budget vs Actual",
+
+  "settingsAppearance": "Appearance",
+  "settingsTheme": "Theme",
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+
+  "recurringExpenses": "Recurring Expenses",
+  "recurringExpenseAdd": "Add Recurring Expense",
+  "recurringExpenseEdit": "Edit Recurring Expense",
+  "recurringExpenseCategory": "Category",
+  "recurringExpenseAmount": "Amount",
+  "recurringExpenseDescription": "Description (optional)",
+  "recurringExpenseDayOfMonth": "Day of month",
+  "recurringExpenseActive": "Active",
+  "recurringExpenseInactive": "Inactive",
+  "recurringExpenseEmpty": "No recurring expenses.\nAdd one to auto-generate every month.",
+  "recurringExpenseDeleteConfirm": "Delete this recurring expense?",
+  "recurringExpenseAutoCreated": "Auto-created",
+  "recurringExpenseManage": "Manage recurring",
+  "recurringExpenseMarkRecurring": "Mark as recurring",
+  "recurringExpensePopulated": "Recurring expenses generated for this month",
+  "recurringExpenseDayHint": "E.g. 1 for the 1st",
+  "recurringExpenseNoDay": "No fixed day",
+  "recurringExpenseSaved": "Recurring expense saved",
+
+  "expenseTrends": "Expense Trends",
+  "expenseTrendsViewTrends": "View Trends",
+  "expenseTrends3Months": "3M",
+  "expenseTrends6Months": "6M",
+  "expenseTrends12Months": "12M",
+  "expenseTrendsBudgeted": "Budgeted",
+  "expenseTrendsActual": "Actual",
+  "expenseTrendsByCategory": "By Category",
+  "expenseTrendsNoData": "Not enough data to show trends.",
+  "expenseTrendsTotal": "Total",
+  "expenseTrendsAverage": "Average",
+  "expenseTrendsOverview": "Overview",
+  "expenseTrendsMonthly": "Monthly",
+
+  "savingsGoals": "Savings Goals",
+  "savingsGoalAdd": "New Goal",
+  "savingsGoalEdit": "Edit Goal",
+  "savingsGoalName": "Goal name",
+  "savingsGoalTarget": "Target amount",
+  "savingsGoalCurrent": "Current amount",
+  "savingsGoalDeadline": "Deadline",
+  "savingsGoalNoDeadline": "No deadline",
+  "savingsGoalColor": "Color",
+  "savingsGoalProgress": "{percent}% reached",
+  "@savingsGoalProgress": {
+    "placeholders": { "percent": { "type": "String" } }
+  },
+  "savingsGoalRemaining": "{amount} remaining",
+  "@savingsGoalRemaining": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "savingsGoalCompleted": "Goal reached!",
+  "savingsGoalEmpty": "No savings goals.\nCreate one to track progress.",
+  "savingsGoalDeleteConfirm": "Delete this goal?",
+  "savingsGoalContribute": "Contribute",
+  "savingsGoalContributionAmount": "Contribution amount",
+  "savingsGoalContributionNote": "Note (optional)",
+  "savingsGoalContributionDate": "Date",
+  "savingsGoalContributionHistory": "Contribution History",
+  "savingsGoalSeeAll": "See all",
+  "savingsGoalSurplusSuggestion": "You had {amount} surplus last month — allocate to a goal?",
+  "@savingsGoalSurplusSuggestion": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "savingsGoalAllocate": "Allocate",
+  "savingsGoalSaved": "Goal saved",
+  "savingsGoalContributionSaved": "Contribution recorded",
+  "settingsDashSavingsGoals": "Savings Goals",
+  "savingsGoalActive": "Active",
+  "savingsGoalInactive": "Inactive",
+  "savingsGoalDaysLeft": "{days} days left",
+  "@savingsGoalDaysLeft": {
+    "placeholders": { "days": { "type": "String" } }
+  },
+  "savingsGoalOverdue": "Overdue",
+
+  "mealCostReconciliation": "Meal Costs",
+  "mealCostEstimated": "Estimated",
+  "mealCostActual": "Actual",
+  "mealCostWeek": "Week {number}",
+  "@mealCostWeek": {
+    "placeholders": { "number": { "type": "String" } }
+  },
+  "mealCostTotal": "Monthly Total",
+  "mealCostSavings": "Savings",
+  "mealCostOverrun": "Overrun",
+  "mealCostNoData": "No meal purchase data.",
+  "mealCostViewCosts": "Costs",
+  "mealCostIsMealPurchase": "Meal purchase",
+  "mealCostVsBudget": "vs budget",
+  "mealCostOnTrack": "On budget",
+  "mealCostOver": "Over budget",
+  "mealCostUnder": "Under budget",
+
+  "notifications": "Notifications",
+  "notificationSettings": "Notification Settings",
+  "notificationBillReminders": "Bill reminders",
+  "notificationBillReminderDays": "Days before due",
+  "notificationBudgetAlerts": "Budget alerts",
+  "notificationBudgetThreshold": "Alert threshold ({percent}%)",
+  "@notificationBudgetThreshold": {
+    "placeholders": { "percent": { "type": "String" } }
+  },
+  "notificationMealPlanReminder": "Meal plan reminder",
+  "notificationMealPlanReminderDesc": "Notifies if no plan for current month",
+  "notificationCustomReminders": "Custom Reminders",
+  "notificationAddCustom": "Add Reminder",
+  "notificationCustomTitle": "Title",
+  "notificationCustomBody": "Message",
+  "notificationCustomTime": "Time",
+  "notificationCustomRepeat": "Repeat",
+  "notificationCustomRepeatDaily": "Daily",
+  "notificationCustomRepeatWeekly": "Weekly",
+  "notificationCustomRepeatMonthly": "Monthly",
+  "notificationCustomRepeatNone": "Don't repeat",
+  "notificationCustomSaved": "Reminder saved",
+  "notificationCustomDeleteConfirm": "Delete this reminder?",
+  "notificationEmpty": "No custom reminders.",
+  "notificationBillTitle": "Bill due: {name}",
+  "@notificationBillTitle": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "notificationBillBody": "{amount} due in {days} days",
+  "@notificationBillBody": {
+    "placeholders": { "amount": { "type": "String" }, "days": { "type": "String" } }
+  },
+  "notificationBudgetTitle": "Budget alert",
+  "notificationBudgetBody": "You've spent {percent}% of your monthly budget",
+  "@notificationBudgetBody": {
+    "placeholders": { "percent": { "type": "String" } }
+  },
+  "notificationMealPlanTitle": "Meal plan",
+  "notificationMealPlanBody": "You haven't generated this month's meal plan yet",
+  "notificationPermissionRequired": "Notification permission required",
+  "notificationSelectDays": "Select days",
+
+  "settingsColorPalette": "Color palette",
+  "paletteOcean": "Ocean",
+  "paletteEmerald": "Emerald",
+  "paletteViolet": "Violet",
+  "paletteTeal": "Teal",
+  "paletteSunset": "Sunset",
+
+  "exportTooltip": "Export",
+  "exportTitle": "Export month",
+  "exportPdf": "PDF Report",
+  "exportPdfDesc": "Formatted report with budget vs actual",
+  "exportCsv": "CSV Data",
+  "exportCsvDesc": "Raw data for spreadsheets",
+  "exportReportTitle": "Monthly Expense Report",
+  "exportBudgetVsActual": "Budget vs Actual",
+  "exportExpenseDetail": "Expense Detail",
+  "searchExpenses": "Search",
+  "searchExpensesHint": "Search by description...",
+  "searchDateRange": "Date range",
+  "searchNoResults": "No expenses found",
+  "searchResultCount": "{count} results",
+  "@searchResultCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "expenseFixed": "Fixed",
+  "expenseVariable": "Variable",
+  "monthlyBudgetHint": "Budget for {month}",
+  "@monthlyBudgetHint": {
+    "placeholders": {
+      "month": { "type": "String" }
+    }
+  },
+  "unsetBudgetsWarning": "{count} variable budgets not set",
+  "@unsetBudgetsWarning": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "unsetBudgetsCta": "Set in settings",
+  "paceProjected": "Projected: {amount}",
+  "@paceProjected": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  }
 }

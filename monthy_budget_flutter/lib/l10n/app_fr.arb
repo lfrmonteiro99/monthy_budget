@@ -745,7 +745,12 @@
   "settingsDashFood": "Alimentation",
   "settingsDashPurchaseHistory": "Historique d'achats",
   "settingsDashExpensesBreakdown": "Détail des dépenses",
+  "settingsDashMonthReview": "Bilan du mois",
   "settingsDashCharts": "Graphiques",
+  "dashGroupOverview": "VUE D'ENSEMBLE",
+  "dashGroupFinancialDetail": "DÉTAIL FINANCIER",
+  "dashGroupHistory": "HISTORIQUE",
+  "dashGroupCharts": "GRAPHIQUES",
   "settingsVisibleCharts": "GRAPHIQUES VISIBLES",
   "settingsFavTip": "Les produits favoris influencent le plan repas \u2014 les recettes avec ces ingrédients sont prioritaires.",
   "settingsMyFavorites": "MES FAVORIS",
@@ -1033,5 +1038,197 @@
   "addExpenseCustomCategory": "Catégorie personnalisée",
   "addExpenseInvalidAmount": "Entrez un montant valide",
   "addExpenseTooltip": "Ajouter une dépense",
-  "settingsDashBudgetVsActual": "Budget vs Réel"
+  "addExpenseItem": "Dépense",
+  "addExpenseOthers": "Autres",
+  "settingsDashBudgetVsActual": "Budget vs Réel",
+
+  "settingsAppearance": "Apparence",
+  "settingsTheme": "Thème",
+  "themeSystem": "Système",
+  "themeLight": "Clair",
+  "themeDark": "Sombre",
+
+  "recurringExpenses": "Dépenses Récurrentes",
+  "recurringExpenseAdd": "Ajouter une Dépense Récurrente",
+  "recurringExpenseEdit": "Modifier la Dépense Récurrente",
+  "recurringExpenseCategory": "Catégorie",
+  "recurringExpenseAmount": "Montant",
+  "recurringExpenseDescription": "Description (facultatif)",
+  "recurringExpenseDayOfMonth": "Jour du mois",
+  "recurringExpenseActive": "Active",
+  "recurringExpenseInactive": "Inactive",
+  "recurringExpenseEmpty": "Aucune dépense récurrente.\nAjoutez-en pour générer automatiquement chaque mois.",
+  "recurringExpenseDeleteConfirm": "Supprimer cette dépense récurrente ?",
+  "recurringExpenseAutoCreated": "Créée automatiquement",
+  "recurringExpenseManage": "Gérer récurrentes",
+  "recurringExpenseMarkRecurring": "Marquer comme récurrente",
+  "recurringExpensePopulated": "Dépenses récurrentes générées pour ce mois",
+  "recurringExpenseDayHint": "Ex : 1 pour le 1er",
+  "recurringExpenseNoDay": "Pas de jour fixe",
+  "recurringExpenseSaved": "Dépense récurrente enregistrée",
+
+  "expenseTrends": "Tendances des Dépenses",
+  "expenseTrendsViewTrends": "Voir les Tendances",
+  "expenseTrends3Months": "3M",
+  "expenseTrends6Months": "6M",
+  "expenseTrends12Months": "12M",
+  "expenseTrendsBudgeted": "Budgété",
+  "expenseTrendsActual": "Réel",
+  "expenseTrendsByCategory": "Par Catégorie",
+  "expenseTrendsNoData": "Données insuffisantes pour afficher les tendances.",
+  "expenseTrendsTotal": "Total",
+  "expenseTrendsAverage": "Moyenne",
+  "expenseTrendsOverview": "Vue d'ensemble",
+  "expenseTrendsMonthly": "Mensuel",
+
+  "savingsGoals": "Objectifs d'Épargne",
+  "savingsGoalAdd": "Nouvel Objectif",
+  "savingsGoalEdit": "Modifier l'Objectif",
+  "savingsGoalName": "Nom de l'objectif",
+  "savingsGoalTarget": "Montant cible",
+  "savingsGoalCurrent": "Montant actuel",
+  "savingsGoalDeadline": "Date limite",
+  "savingsGoalNoDeadline": "Pas de date limite",
+  "savingsGoalColor": "Couleur",
+  "savingsGoalProgress": "{percent}% atteint",
+  "@savingsGoalProgress": {
+    "placeholders": { "percent": { "type": "String" } }
+  },
+  "savingsGoalRemaining": "{amount} restant",
+  "@savingsGoalRemaining": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "savingsGoalCompleted": "Objectif atteint !",
+  "savingsGoalEmpty": "Aucun objectif d'épargne.\nCréez-en un pour suivre vos progrès.",
+  "savingsGoalDeleteConfirm": "Supprimer cet objectif ?",
+  "savingsGoalContribute": "Contribuer",
+  "savingsGoalContributionAmount": "Montant de la contribution",
+  "savingsGoalContributionNote": "Note (facultatif)",
+  "savingsGoalContributionDate": "Date",
+  "savingsGoalContributionHistory": "Historique des Contributions",
+  "savingsGoalSeeAll": "Voir tout",
+  "savingsGoalSurplusSuggestion": "Vous aviez {amount} d'excédent le mois dernier — allouer à un objectif ?",
+  "@savingsGoalSurplusSuggestion": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "savingsGoalAllocate": "Allouer",
+  "savingsGoalSaved": "Objectif enregistré",
+  "savingsGoalContributionSaved": "Contribution enregistrée",
+  "settingsDashSavingsGoals": "Objectifs d'Épargne",
+  "savingsGoalActive": "Actif",
+  "savingsGoalInactive": "Inactif",
+  "savingsGoalDaysLeft": "{days} jours restants",
+  "@savingsGoalDaysLeft": {
+    "placeholders": { "days": { "type": "String" } }
+  },
+  "savingsGoalOverdue": "En retard",
+
+  "mealCostReconciliation": "Coûts des Repas",
+  "mealCostEstimated": "Estimé",
+  "mealCostActual": "Réel",
+  "mealCostWeek": "Semaine {number}",
+  "@mealCostWeek": {
+    "placeholders": { "number": { "type": "String" } }
+  },
+  "mealCostTotal": "Total du Mois",
+  "mealCostSavings": "Économie",
+  "mealCostOverrun": "Dépassement",
+  "mealCostNoData": "Aucune donnée d'achats repas.",
+  "mealCostViewCosts": "Coûts",
+  "mealCostIsMealPurchase": "Achat repas",
+  "mealCostVsBudget": "vs budget",
+  "mealCostOnTrack": "Dans le budget",
+  "mealCostOver": "Au-dessus du budget",
+  "mealCostUnder": "En dessous du budget",
+
+  "notifications": "Notifications",
+  "notificationSettings": "Paramètres de Notifications",
+  "notificationBillReminders": "Rappels de factures",
+  "notificationBillReminderDays": "Jours avant l'échéance",
+  "notificationBudgetAlerts": "Alertes budget",
+  "notificationBudgetThreshold": "Seuil d'alerte ({percent}%)",
+  "@notificationBudgetThreshold": {
+    "placeholders": { "percent": { "type": "String" } }
+  },
+  "notificationMealPlanReminder": "Rappel plan repas",
+  "notificationMealPlanReminderDesc": "Notifie si aucun plan pour le mois en cours",
+  "notificationCustomReminders": "Rappels Personnalisés",
+  "notificationAddCustom": "Ajouter un Rappel",
+  "notificationCustomTitle": "Titre",
+  "notificationCustomBody": "Message",
+  "notificationCustomTime": "Heure",
+  "notificationCustomRepeat": "Répéter",
+  "notificationCustomRepeatDaily": "Quotidien",
+  "notificationCustomRepeatWeekly": "Hebdomadaire",
+  "notificationCustomRepeatMonthly": "Mensuel",
+  "notificationCustomRepeatNone": "Ne pas répéter",
+  "notificationCustomSaved": "Rappel enregistré",
+  "notificationCustomDeleteConfirm": "Supprimer ce rappel ?",
+  "notificationEmpty": "Aucun rappel personnalisé.",
+  "notificationBillTitle": "Facture à payer : {name}",
+  "@notificationBillTitle": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "notificationBillBody": "{amount} dû dans {days} jours",
+  "@notificationBillBody": {
+    "placeholders": { "amount": { "type": "String" }, "days": { "type": "String" } }
+  },
+  "notificationBudgetTitle": "Alerte budget",
+  "notificationBudgetBody": "Vous avez dépensé {percent}% du budget mensuel",
+  "@notificationBudgetBody": {
+    "placeholders": { "percent": { "type": "String" } }
+  },
+  "notificationMealPlanTitle": "Plan de repas",
+  "notificationMealPlanBody": "Vous n'avez pas encore généré le plan repas ce mois-ci",
+  "notificationPermissionRequired": "Autorisation de notifications requise",
+  "notificationSelectDays": "Sélectionner les jours",
+
+  "settingsColorPalette": "Palette de couleurs",
+  "paletteOcean": "Océan",
+  "paletteEmerald": "Émeraude",
+  "paletteViolet": "Violet",
+  "paletteTeal": "Sarcelle",
+  "paletteSunset": "Coucher de soleil",
+
+  "exportTooltip": "Exporter",
+  "exportTitle": "Exporter le mois",
+  "exportPdf": "Rapport PDF",
+  "exportPdfDesc": "Rapport avec budget vs réel",
+  "exportCsv": "Données CSV",
+  "exportCsvDesc": "Données brutes pour tableur",
+  "exportReportTitle": "Rapport Mensuel des Dépenses",
+  "exportBudgetVsActual": "Budget vs Réel",
+  "exportExpenseDetail": "Détail des Dépenses",
+  "searchExpenses": "Rechercher",
+  "searchExpensesHint": "Rechercher par description...",
+  "searchDateRange": "Période",
+  "searchNoResults": "Aucune dépense trouvée",
+  "searchResultCount": "{count} résultats",
+  "@searchResultCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "expenseFixed": "Fixe",
+  "expenseVariable": "Variable",
+  "monthlyBudgetHint": "Budget pour {month}",
+  "@monthlyBudgetHint": {
+    "placeholders": {
+      "month": { "type": "String" }
+    }
+  },
+  "unsetBudgetsWarning": "{count} budgets variables non définis",
+  "@unsetBudgetsWarning": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "unsetBudgetsCta": "Définir dans les paramètres",
+  "paceProjected": "Projection : {amount}",
+  "@paceProjected": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  }
 }

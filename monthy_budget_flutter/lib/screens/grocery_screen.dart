@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/product.dart';
 import '../models/shopping_item.dart';
+import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 
 class GroceryScreen extends StatefulWidget {
@@ -90,16 +91,16 @@ class _GroceryScreenState extends State<GroceryScreen> {
     final cats = byCategory.keys.toList()..sort();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background(context),
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
+        backgroundColor: AppColors.surface(context),
+        surfaceTintColor: AppColors.surface(context),
         title: Text(
           l10n.groceryTitle,
-          style: const TextStyle(
+          style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF1E293B)),
+              color: AppColors.textPrimary(context)),
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(56),
@@ -110,24 +111,24 @@ class _GroceryScreenState extends State<GroceryScreen> {
               decoration: InputDecoration(
                 hintText: l10n.grocerySearchHint,
                 hintStyle:
-                    const TextStyle(color: Color(0xFF94A3B8), fontSize: 14),
-                prefixIcon: const Icon(Icons.search,
-                    color: Color(0xFF94A3B8), size: 20),
+                    TextStyle(color: AppColors.textMuted(context), fontSize: 14),
+                prefixIcon: Icon(Icons.search,
+                    color: AppColors.textMuted(context), size: 20),
                 filled: true,
-                fillColor: const Color(0xFFF8FAFC),
+                fillColor: AppColors.background(context),
                 contentPadding: const EdgeInsets.symmetric(vertical: 10),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                  borderSide: BorderSide(color: AppColors.border(context)),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                  borderSide: BorderSide(color: AppColors.border(context)),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide:
-                      const BorderSide(color: Color(0xFF3B82F6), width: 2),
+                      BorderSide(color: AppColors.primary(context), width: 2),
                 ),
               ),
             ),
@@ -141,11 +142,11 @@ class _GroceryScreenState extends State<GroceryScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const CircularProgressIndicator(color: Color(0xFF3B82F6)),
+                    CircularProgressIndicator(color: AppColors.primary(context)),
                     const SizedBox(height: 16),
                     Text(
                       l10n.groceryLoadingMessage,
-                      style: const TextStyle(fontSize: 14, color: Color(0xFF64748B)),
+                      style: TextStyle(fontSize: 14, color: AppColors.textSecondary(context)),
                     ),
                   ],
                 ),
@@ -183,9 +184,9 @@ class _GroceryScreenState extends State<GroceryScreen> {
                     children: [
                       Text(
                         l10n.groceryProductCount(filtered.length),
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 12,
-                            color: Color(0xFF94A3B8),
+                            color: AppColors.textMuted(context),
                             fontWeight: FontWeight.w500),
                       ),
                     ],
@@ -217,14 +218,14 @@ class _GroceryScreenState extends State<GroceryScreen> {
           child: Row(
             children: [
               Icon(_categoryIcon(category),
-                  size: 14, color: const Color(0xFF3B82F6)),
+                  size: 14, color: AppColors.primary(context)),
               const SizedBox(width: 6),
               Text(
                 category.toUpperCase(),
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF3B82F6),
+                    color: AppColors.primary(context),
                     letterSpacing: 1.1),
               ),
             ],
@@ -243,9 +244,9 @@ class _GroceryScreenState extends State<GroceryScreen> {
       margin: const EdgeInsets.only(bottom: 6),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(context),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: AppColors.border(context)),
       ),
       child: Row(
         children: [
@@ -255,26 +256,26 @@ class _GroceryScreenState extends State<GroceryScreen> {
               children: [
                 Text(
                   product.name,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
-                      color: Color(0xFF1E293B)),
+                      color: AppColors.textPrimary(context)),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   l10n.groceryAvgPrice(product.unit),
-                  style: const TextStyle(
-                      fontSize: 11, color: Color(0xFF94A3B8)),
+                  style: TextStyle(
+                      fontSize: 11, color: AppColors.textMuted(context)),
                 ),
               ],
             ),
           ),
           Text(
             formatCurrency(product.avgPrice),
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF10B981)),
+                color: AppColors.success(context)),
           ),
           const SizedBox(width: 10),
           Semantics(
@@ -284,12 +285,12 @@ class _GroceryScreenState extends State<GroceryScreen> {
               width: 44,
               height: 44,
               child: Material(
-                color: const Color(0xFF3B82F6),
+                color: AppColors.primary(context),
                 borderRadius: BorderRadius.circular(12),
                 child: InkWell(
                   onTap: () => _addToCart(product),
                   borderRadius: BorderRadius.circular(12),
-                  child: const Icon(Icons.add, size: 20, color: Colors.white),
+                  child: Icon(Icons.add, size: 20, color: AppColors.onPrimary(context)),
                 ),
               ),
             ),
@@ -306,7 +307,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
       label: S.of(context).filterBy(label),
       selected: selected,
       child: Material(
-        color: selected ? const Color(0xFF3B82F6) : Colors.white,
+        color: selected ? AppColors.primary(context) : AppColors.surface(context),
         borderRadius: BorderRadius.circular(20),
         child: InkWell(
           onTap: onTap,
@@ -317,8 +318,8 @@ class _GroceryScreenState extends State<GroceryScreen> {
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
                   color: selected
-                      ? const Color(0xFF3B82F6)
-                      : const Color(0xFFE2E8F0)),
+                      ? AppColors.primary(context)
+                      : AppColors.border(context)),
             ),
             child: Text(
               label,
@@ -326,7 +327,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                   color:
-                      selected ? Colors.white : const Color(0xFF64748B)),
+                      selected ? AppColors.onPrimary(context) : AppColors.textSecondary(context)),
             ),
           ),
         ),

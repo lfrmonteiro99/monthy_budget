@@ -1,9 +1,14 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/actual_expense.dart';
+import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 import '../widgets/add_expense_sheet.dart';
+import '../widgets/export_bottom_sheet.dart';
+import '../services/export_service.dart';
 
 class ExpenseTrackerScreen extends StatefulWidget {
   final AppSettings settings;
@@ -13,6 +18,8 @@ class ExpenseTrackerScreen extends StatefulWidget {
   final Future<void> Function(ActualExpense) onUpdate;
   final Future<void> Function(String) onDelete;
   final Future<List<ActualExpense>> Function(String monthKey) onLoadMonth;
+  final Future<Map<String, List<ActualExpense>>> Function()? onLoadHistory;
+  final VoidCallback? onOpenRecurring;
 
   const ExpenseTrackerScreen({
     super.key,
@@ -23,6 +30,8 @@ class ExpenseTrackerScreen extends StatefulWidget {
     required this.onUpdate,
     required this.onDelete,
     required this.onLoadMonth,
+    this.onLoadHistory,
+    this.onOpenRecurring,
   });
 
   @override
@@ -34,12 +43,31 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
   late List<ActualExpense> _expenses;
   bool _loading = false;
 
+  // Search state
+  bool _searchActive = false;
+  String _searchQuery = '';
+  Set<String> _selectedCategories = {};
+  DateTime? _dateFrom;
+  DateTime? _dateTo;
+  List<ActualExpense> _searchResults = [];
+  Map<String, List<ActualExpense>>? _historyCache;
+  bool _loadingHistory = false;
+
+  final _searchController = TextEditingController();
+  final _exportService = ExportService();
+
   @override
   void initState() {
     super.initState();
     final now = DateTime.now();
     _currentMonth = DateTime(now.year, now.month);
     _expenses = List.of(widget.expenses);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   Future<void> _navigateMonth(int delta) async {
@@ -78,6 +106,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
       budgetExpenses: widget.settings.expenses,
       currentExpenses: _expenses,
       existing: expense,
+      onDelete: _deleteExpense,
     );
     if (result != null && mounted) {
       await widget.onUpdate(result);
@@ -156,9 +185,176 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
     return '${monthNames[_currentMonth.month - 1]} ${_currentMonth.year}';
   }
 
+  // --- Export ---
+
+  Future<void> _exportMonth() async {
+    final format = await showExportSheet(context);
+    if (format == null || !mounted) return;
+
+    final l10n = S.of(context);
+    final summaries = CategoryBudgetSummary.buildSummaries(
+      widget.settings.expenses,
+      _expenses,
+    );
+    final label = _monthLabel(l10n);
+    String catLabel(String name) => _localizedCategory(name, l10n);
+
+    if (format == ExportFormat.pdf) {
+      final bytes = await _exportService.generatePdf(
+        monthLabel: label,
+        summaries: summaries,
+        expenses: _expenses,
+        categoryLabelMap: catLabel,
+        headerLabels: [
+          l10n.addExpenseCategory,
+          l10n.expenseTrackerBudgeted,
+          l10n.expenseTrackerActual,
+          l10n.expenseTrackerRemaining,
+          l10n.addExpenseDate,
+          l10n.addExpenseCategory,
+          l10n.addExpenseDescription.replaceAll(RegExp(r'\s*\(.*\)'), ''),
+          l10n.addExpenseAmount,
+        ],
+        formatCurrency: formatCurrency,
+        reportTitle: l10n.exportReportTitle,
+        budgetVsActualTitle: l10n.exportBudgetVsActual,
+        expenseDetailTitle: l10n.exportExpenseDetail,
+      );
+      final file = await _exportService.writeTempFile(
+        'expenses_${_currentMonth.year}_${_currentMonth.month.toString().padLeft(2, '0')}.pdf',
+        bytes,
+      );
+      await Share.shareXFiles([XFile(file.path)]);
+    } else {
+      final csv = _exportService.generateCsv(
+        expenses: _expenses,
+        categoryLabelMap: catLabel,
+        headerRow: [
+          l10n.addExpenseDate,
+          l10n.addExpenseCategory,
+          l10n.addExpenseDescription.replaceAll(RegExp(r'\s*\(.*\)'), ''),
+          l10n.addExpenseAmount,
+        ],
+      );
+      final file = await _exportService.writeTempFile(
+        'expenses_${_currentMonth.year}_${_currentMonth.month.toString().padLeft(2, '0')}.csv',
+        utf8.encode(csv),
+      );
+      await Share.shareXFiles([XFile(file.path)]);
+    }
+  }
+
+  // --- Search ---
+
+  Future<void> _activateSearch() async {
+    if (widget.onLoadHistory == null) return;
+
+    setState(() {
+      _searchActive = true;
+      _loadingHistory = _historyCache == null;
+    });
+
+    if (_historyCache == null) {
+      final history = await widget.onLoadHistory!();
+      if (mounted) {
+        setState(() {
+          _historyCache = history;
+          _loadingHistory = false;
+        });
+        _applyFilters();
+      }
+    } else {
+      _applyFilters();
+    }
+  }
+
+  void _deactivateSearch() {
+    _searchController.clear();
+    setState(() {
+      _searchActive = false;
+      _searchQuery = '';
+      _selectedCategories = {};
+      _dateFrom = null;
+      _dateTo = null;
+      _searchResults = [];
+    });
+  }
+
+  void _applyFilters() {
+    if (_historyCache == null) return;
+
+    final allExpenses = _historyCache!.values.expand((l) => l).toList();
+    final query = _searchQuery.toLowerCase();
+
+    final filtered = allExpenses.where((e) {
+      if (query.isNotEmpty) {
+        final desc = (e.description ?? '').toLowerCase();
+        if (!desc.contains(query)) return false;
+      }
+      if (_selectedCategories.isNotEmpty) {
+        if (!_selectedCategories.contains(e.category)) return false;
+      }
+      if (_dateFrom != null && e.date.isBefore(_dateFrom!)) return false;
+      if (_dateTo != null &&
+          e.date.isAfter(_dateTo!.add(const Duration(days: 1)))) {
+        return false;
+      }
+      return true;
+    }).toList()
+      ..sort((a, b) => b.date.compareTo(a.date));
+
+    setState(() => _searchResults = filtered);
+  }
+
+  void _toggleCategory(String cat) {
+    setState(() {
+      if (_selectedCategories.contains(cat)) {
+        _selectedCategories.remove(cat);
+      } else {
+        _selectedCategories.add(cat);
+      }
+    });
+    _applyFilters();
+  }
+
+  Future<void> _pickDateRange() async {
+    final now = DateTime.now();
+    final range = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(now.year - 2),
+      lastDate: now,
+      initialDateRange: _dateFrom != null && _dateTo != null
+          ? DateTimeRange(start: _dateFrom!, end: _dateTo!)
+          : null,
+    );
+    if (range != null && mounted) {
+      setState(() {
+        _dateFrom = range.start;
+        _dateTo = range.end;
+      });
+      _applyFilters();
+    }
+  }
+
+  Set<String> _allCategories() {
+    if (_historyCache == null) return {};
+    return _historyCache!.values
+        .expand((l) => l)
+        .map((e) => e.category)
+        .toSet();
+  }
+
+  // --- Build ---
+
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
+
+    if (_searchActive) return _buildSearchView(l10n);
+    return _buildNormalView(l10n);
+  }
+
+  Widget _buildNormalView(S l10n) {
     final summaries = CategoryBudgetSummary.buildSummaries(
       widget.settings.expenses,
       _expenses,
@@ -169,19 +365,38 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
     final isOver = totalActual > totalBudgeted;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background(context),
       appBar: AppBar(
         title: Text(l10n.expenseTrackerScreenTitle),
-        backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF1E293B),
+        backgroundColor: AppColors.surface(context),
+        foregroundColor: AppColors.textPrimary(context),
         elevation: 0,
         scrolledUnderElevation: 1,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share),
+            tooltip: l10n.exportTooltip,
+            onPressed: _exportMonth,
+          ),
+          if (widget.onLoadHistory != null)
+            IconButton(
+              icon: const Icon(Icons.search),
+              tooltip: l10n.searchExpenses,
+              onPressed: _activateSearch,
+            ),
+          if (widget.onOpenRecurring != null)
+            IconButton(
+              icon: const Icon(Icons.repeat),
+              tooltip: l10n.recurringExpenseManage,
+              onPressed: widget.onOpenRecurring,
+            ),
+        ],
       ),
       body: Column(
         children: [
           // Month navigator
           Container(
-            color: Colors.white,
+            color: AppColors.surface(context),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -192,10 +407,10 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                 ),
                 Text(
                   _monthLabel(l10n),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF1E293B),
+                    color: AppColors.textPrimary(context),
                   ),
                 ),
                 IconButton(
@@ -208,7 +423,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
 
           // Summary header
           Container(
-            color: Colors.white,
+            color: AppColors.surface(context),
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: Row(
               children: [
@@ -216,14 +431,14 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                   child: _SummaryColumn(
                     label: l10n.expenseTrackerBudgeted,
                     value: formatCurrency(totalBudgeted),
-                    color: const Color(0xFF64748B),
+                    color: AppColors.textSecondary(context),
                   ),
                 ),
                 Expanded(
                   child: _SummaryColumn(
                     label: l10n.expenseTrackerActual,
                     value: formatCurrency(totalActual),
-                    color: const Color(0xFF1E293B),
+                    color: AppColors.textPrimary(context),
                   ),
                 ),
                 Expanded(
@@ -235,8 +450,8 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                         ? '-${formatCurrency(diff.abs())}'
                         : formatCurrency(diff),
                     color: isOver
-                        ? const Color(0xFFEF4444)
-                        : const Color(0xFF10B981),
+                        ? AppColors.error(context)
+                        : AppColors.success(context),
                   ),
                 ),
               ],
@@ -248,9 +463,9 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
           // Content
           Expanded(
             child: _loading
-                ? const Center(
+                ? Center(
                     child:
-                        CircularProgressIndicator(color: Color(0xFF3B82F6)))
+                        CircularProgressIndicator(color: AppColors.primary(context)))
                 : _expenses.isEmpty
                     ? Center(
                         child: Padding(
@@ -258,9 +473,9 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                           child: Text(
                             l10n.expenseTrackerEmpty,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
-                              color: Color(0xFF94A3B8),
+                              color: AppColors.textMuted(context),
                               height: 1.5,
                             ),
                           ),
@@ -288,9 +503,243 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addExpense,
-        backgroundColor: const Color(0xFF3B82F6),
+        backgroundColor: AppColors.primary(context),
         tooltip: l10n.addExpenseTooltip,
-        child: const Icon(Icons.add, color: Colors.white),
+        child: Icon(Icons.add, color: AppColors.onPrimary(context)),
+      ),
+    );
+  }
+
+  Widget _buildSearchView(S l10n) {
+    return Scaffold(
+      backgroundColor: AppColors.background(context),
+      appBar: AppBar(
+        backgroundColor: AppColors.surface(context),
+        foregroundColor: AppColors.textPrimary(context),
+        elevation: 0,
+        scrolledUnderElevation: 1,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: _deactivateSearch,
+        ),
+        title: TextField(
+          controller: _searchController,
+          autofocus: true,
+          decoration: InputDecoration(
+            hintText: l10n.searchExpensesHint,
+            border: InputBorder.none,
+            hintStyle: TextStyle(
+              color: AppColors.textMuted(context),
+              fontSize: 16,
+            ),
+          ),
+          style: TextStyle(
+            color: AppColors.textPrimary(context),
+            fontSize: 16,
+          ),
+          onChanged: (value) {
+            _searchQuery = value;
+            _applyFilters();
+          },
+        ),
+        actions: [
+          if (_searchQuery.isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () {
+                _searchController.clear();
+                _searchQuery = '';
+                _applyFilters();
+              },
+            ),
+        ],
+      ),
+      body: _loadingHistory
+          ? Center(
+              child: CircularProgressIndicator(
+                  color: AppColors.primary(context)))
+          : Column(
+              children: [
+                // Category chips + date range
+                _buildFilterBar(l10n),
+                const Divider(height: 1),
+
+                // Result count
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    children: [
+                      Text(
+                        l10n.searchResultCount(_searchResults.length),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary(context),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Results
+                Expanded(
+                  child: _searchResults.isEmpty
+                      ? Center(
+                          child: Text(
+                            l10n.searchNoResults,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: AppColors.textMuted(context),
+                            ),
+                          ),
+                        )
+                      : ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          itemCount: _searchResults.length,
+                          itemBuilder: (_, i) {
+                            final expense = _searchResults[i];
+                            return _SearchResultTile(
+                              expense: expense,
+                              categoryLabel: _localizedCategory(
+                                  expense.category, l10n),
+                              categoryIcon: _categoryIcon(expense.category),
+                            );
+                          },
+                        ),
+                ),
+              ],
+            ),
+    );
+  }
+
+  Widget _buildFilterBar(S l10n) {
+    final categories = _allCategories().toList()..sort();
+
+    return Container(
+      color: AppColors.surface(context),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Category chips
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                ...categories.map((cat) {
+                  final selected = _selectedCategories.contains(cat);
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 6),
+                    child: FilterChip(
+                      label: Text(
+                        _localizedCategory(cat, l10n),
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      selected: selected,
+                      onSelected: (_) => _toggleCategory(cat),
+                      selectedColor:
+                          AppColors.primary(context).withValues(alpha: 0.2),
+                      checkmarkColor: AppColors.primary(context),
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity: VisualDensity.compact,
+                    ),
+                  );
+                }),
+                // Date range chip
+                Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: ActionChip(
+                    avatar: Icon(
+                      Icons.date_range,
+                      size: 16,
+                      color: _dateFrom != null
+                          ? AppColors.primary(context)
+                          : AppColors.textSecondary(context),
+                    ),
+                    label: Text(
+                      _dateFrom != null && _dateTo != null
+                          ? '${_dateFrom!.day}/${_dateFrom!.month} - ${_dateTo!.day}/${_dateTo!.month}'
+                          : l10n.searchDateRange,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: _dateFrom != null
+                            ? AppColors.primary(context)
+                            : AppColors.textSecondary(context),
+                      ),
+                    ),
+                    onPressed: _pickDateRange,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ),
+                if (_dateFrom != null)
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _dateFrom = null;
+                        _dateTo = null;
+                      });
+                      _applyFilters();
+                    },
+                    child: Icon(Icons.clear, size: 16,
+                        color: AppColors.textMuted(context)),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SearchResultTile extends StatelessWidget {
+  final ActualExpense expense;
+  final String categoryLabel;
+  final IconData categoryIcon;
+
+  const _SearchResultTile({
+    required this.expense,
+    required this.categoryLabel,
+    required this.categoryIcon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final dateStr =
+        '${expense.date.day.toString().padLeft(2, '0')}/${expense.date.month.toString().padLeft(2, '0')}/${expense.date.year}';
+    return Container(
+      margin: const EdgeInsets.only(bottom: 4),
+      child: ListTile(
+        dense: true,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        leading: Icon(categoryIcon, size: 20,
+            color: AppColors.textSecondary(context)),
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(
+                expense.description ?? categoryLabel,
+                style: const TextStyle(fontSize: 13),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            Text(
+              formatCurrency(expense.amount),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary(context),
+              ),
+            ),
+          ],
+        ),
+        subtitle: Text(
+          '$dateStr  •  $categoryLabel',
+          style:
+              TextStyle(fontSize: 11, color: AppColors.textMuted(context)),
+        ),
       ),
     );
   }
@@ -313,9 +762,9 @@ class _SummaryColumn extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 11,
-            color: Color(0xFF94A3B8),
+            color: AppColors.textMuted(context),
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -355,29 +804,29 @@ class _CategorySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final progressColor = summary.isOver
-        ? const Color(0xFFEF4444)
+        ? AppColors.error(context)
         : summary.progress > 0.8
-            ? const Color(0xFFF59E0B)
-            : const Color(0xFF10B981);
+            ? AppColors.warning(context)
+            : AppColors.success(context);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(context),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: AppColors.border(context)),
       ),
       child: ExpansionTile(
-        leading: Icon(icon, size: 20, color: const Color(0xFF64748B)),
+        leading: Icon(icon, size: 20, color: AppColors.textSecondary(context)),
         title: Row(
           children: [
             Expanded(
               child: Text(
                 label,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF1E293B),
+                  color: AppColors.textPrimary(context),
                 ),
               ),
             ),
@@ -387,8 +836,8 @@ class _CategorySection extends StatelessWidget {
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
                 color: summary.isOver
-                    ? const Color(0xFFEF4444)
-                    : const Color(0xFF64748B),
+                    ? AppColors.error(context)
+                    : AppColors.textSecondary(context),
               ),
             ),
           ],
@@ -399,7 +848,7 @@ class _CategorySection extends StatelessWidget {
             const SizedBox(height: 6),
             LinearProgressIndicator(
               value: summary.progress.clamp(0.0, 1.0),
-              backgroundColor: const Color(0xFFE2E8F0),
+              backgroundColor: AppColors.border(context),
               color: progressColor,
               minHeight: 4,
               borderRadius: BorderRadius.circular(2),
@@ -412,8 +861,8 @@ class _CategorySection extends StatelessWidget {
               style: TextStyle(
                 fontSize: 11,
                 color: summary.isOver
-                    ? const Color(0xFFEF4444)
-                    : const Color(0xFF64748B),
+                    ? AppColors.error(context)
+                    : AppColors.textSecondary(context),
               ),
             ),
           ],
@@ -438,7 +887,7 @@ class _CategorySection extends StatelessWidget {
                     TextButton(
                       onPressed: () => Navigator.pop(ctx, true),
                       child: Text(l10n.delete,
-                          style: const TextStyle(color: Color(0xFFEF4444))),
+                          style: TextStyle(color: AppColors.error(context))),
                     ),
                   ],
                 ),
@@ -449,9 +898,9 @@ class _CategorySection extends StatelessWidget {
             background: Container(
               alignment: Alignment.centerRight,
               padding: const EdgeInsets.only(right: 16),
-              color: const Color(0xFFFEE2E2),
+              color: AppColors.errorBackground(context),
               child:
-                  const Icon(Icons.delete, color: Color(0xFFEF4444), size: 20),
+                  Icon(Icons.delete, color: AppColors.error(context), size: 20),
             ),
             child: ListTile(
               onTap: () => onEdit(expense),
@@ -467,18 +916,18 @@ class _CategorySection extends StatelessWidget {
                   ),
                   Text(
                     formatCurrency(expense.amount),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF1E293B),
+                      color: AppColors.textPrimary(context),
                     ),
                   ),
                 ],
               ),
               subtitle: Text(
                 '${expense.date.day.toString().padLeft(2, '0')}/${expense.date.month.toString().padLeft(2, '0')}/${expense.date.year}',
-                style: const TextStyle(
-                    fontSize: 11, color: Color(0xFF94A3B8)),
+                style: TextStyle(
+                    fontSize: 11, color: AppColors.textMuted(context)),
               ),
             ),
           );

@@ -174,18 +174,18 @@ class BudgetPaceResult {
 }
 
 BudgetPaceResult checkBudgetPace({
-  required double foodBudget,
-  required double foodSpent,
+  required double budget,
+  required double spent,
   required DateTime now,
 }) {
   final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
   final daysElapsed = now.day;
   final daysRemaining = daysInMonth - daysElapsed;
 
-  final dailyPace = daysElapsed > 0 ? foodSpent / daysElapsed : 0.0;
-  final expectedPace = foodBudget / daysInMonth;
-  final projectedTotal = foodSpent + (dailyPace * daysRemaining);
-  final projectedOverspend = projectedTotal - foodBudget;
+  final dailyPace = daysElapsed > 0 ? spent / daysElapsed : 0.0;
+  final expectedPace = budget / daysInMonth;
+  final projectedTotal = spent + (dailyPace * daysRemaining);
+  final projectedOverspend = projectedTotal - budget;
 
   final paceRatio = expectedPace > 0 ? dailyPace / expectedPace : 0.0;
   final severity = paceRatio <= 1.0

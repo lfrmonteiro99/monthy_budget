@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/shopping_item.dart';
 import '../models/purchase_record.dart';
+import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 
 class ShoppingListScreen extends StatefulWidget {
@@ -9,8 +10,7 @@ class ShoppingListScreen extends StatefulWidget {
   final ValueChanged<ShoppingItem> onToggleChecked;
   final ValueChanged<ShoppingItem> onRemove;
   final VoidCallback onClearChecked;
-  final void Function(double? amount, List<ShoppingItem> checkedItems)
-      onFinalize;
+  final void Function(double? amount, List<ShoppingItem> checkedItems, {bool isMealPurchase}) onFinalize;
   final PurchaseHistory purchaseHistory;
 
   const ShoppingListScreen({
@@ -33,15 +33,17 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     final checkedItems = widget.items.where((i) => i.checked).toList();
     final controller = TextEditingController();
     final estimatedTotal = checkedItems.fold(0.0, (s, i) => s + i.price);
+    bool isMealPurchase = false;
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.surface(context),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (ctx) => Padding(
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setSheetState) => Padding(
         padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -53,7 +55,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 height: 4,
                 margin: const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFCBD5E1),
+                  color: AppColors.borderMuted(ctx),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -78,8 +80,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 3),
                     child: Row(
                       children: [
-                        const Icon(Icons.check_circle,
-                            size: 16, color: Color(0xFF10B981)),
+                        Icon(Icons.check_circle,
+                            size: 16, color: AppColors.success(ctx)),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(item.productName,
@@ -90,10 +92,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                         if (item.price > 0)
                           Text(
                             formatCurrency(item.price),
-                            style: const TextStyle(
+                            style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
-                                color: Color(0xFF10B981)),
+                                color: AppColors.success(ctx)),
                           ),
                       ],
                     ),
@@ -114,22 +116,22 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(l10n.shoppingEstimatedTotal,
-                              style: const TextStyle(
-                                  fontSize: 13, color: Color(0xFF64748B))),
+                              style: TextStyle(
+                                  fontSize: 13, color: AppColors.textSecondary(ctx))),
                           Text(formatCurrency(estimatedTotal),
-                              style: const TextStyle(
+                              style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
-                                  color: Color(0xFF1E293B))),
+                                  color: AppColors.textPrimary(ctx))),
                         ],
                       ),
                     ),
                   Text(
                     l10n.shoppingHowMuchSpent,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF94A3B8),
+                        color: AppColors.textMuted(ctx),
                         letterSpacing: 0.8),
                   ),
                   const SizedBox(height: 8),
@@ -145,19 +147,43 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide:
-                            const BorderSide(color: Color(0xFFE2E8F0)),
+                            BorderSide(color: AppColors.border(ctx)),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide:
-                            const BorderSide(color: Color(0xFFE2E8F0)),
+                            BorderSide(color: AppColors.border(ctx)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(
-                            color: Color(0xFF3B82F6), width: 2),
+                        borderSide: BorderSide(
+                            color: AppColors.primary(ctx), width: 2),
                       ),
                     ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: Checkbox(
+                          value: isMealPurchase,
+                          onChanged: (v) => setSheetState(() => isMealPurchase = v ?? false),
+                          activeColor: AppColors.primary(ctx),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          l10n.mealCostReconciliation,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: AppColors.textSecondary(ctx),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 16),
                   SizedBox(
@@ -169,10 +195,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                             ? double.tryParse(raw.replaceAll(',', '.'))
                             : null;
                         Navigator.pop(ctx);
-                        widget.onFinalize(amount, checkedItems);
+                        widget.onFinalize(amount, checkedItems, isMealPurchase: isMealPurchase);
                       },
                       style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xFF3B82F6),
+                        backgroundColor: AppColors.primary(ctx),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       child: Text(l10n.shoppingConfirm),
@@ -184,6 +210,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             ),
           ],
         ),
+      ),
       ),
     );
   }
@@ -197,7 +224,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
 
     if (widget.items.isEmpty) {
       return Scaffold(
-        backgroundColor: const Color(0xFFF8FAFC),
+        backgroundColor: AppColors.background(context),
         appBar: _buildAppBar(),
         body: Center(
           child: Padding(
@@ -206,19 +233,19 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.shopping_basket_outlined,
-                    size: 56, color: Colors.grey.shade300),
+                    size: 56, color: AppColors.dragHandle(context)),
                 const SizedBox(height: 16),
                 Text(
                   l10n.shoppingEmpty,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF475569)),
+                      color: AppColors.textLabel(context)),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   l10n.shoppingEmptyMessage,
-                  style: const TextStyle(fontSize: 14, color: Color(0xFF94A3B8)),
+                  style: TextStyle(fontSize: 14, color: AppColors.textMuted(context)),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -229,25 +256,25 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background(context),
       appBar: _buildAppBar(),
       body: Column(
         children: [
           Container(
-            color: Colors.white,
+            color: AppColors.surface(context),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             child: Row(
               children: [
                 Icon(Icons.shopping_basket,
-                    size: 16, color: Colors.green.shade400),
+                    size: 16, color: AppColors.success(context)),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     l10n.shoppingItemsRemaining(widget.items.where((i) => !i.checked).length, formatCurrency(uncheckedTotal)),
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF1E293B)),
+                        color: AppColors.textPrimary(context)),
                   ),
                 ),
                 if (hasChecked)
@@ -256,7 +283,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     icon: const Icon(Icons.delete_sweep, size: 16),
                     label: Text(l10n.shoppingClear),
                     style: TextButton.styleFrom(
-                      foregroundColor: const Color(0xFF94A3B8),
+                      foregroundColor: AppColors.textMuted(context),
                       textStyle: const TextStyle(
                           fontSize: 12, fontWeight: FontWeight.w500),
                     ),
@@ -264,7 +291,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               ],
             ),
           ),
-          const Divider(height: 1, color: Color(0xFFF1F5F9)),
+          Divider(height: 1, color: AppColors.surfaceVariant(context)),
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
@@ -277,12 +304,11 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       floatingActionButton: hasChecked
           ? FloatingActionButton.extended(
               onPressed: _showFinalizeSheet,
-              backgroundColor: const Color(0xFF10B981),
-              icon: const Icon(Icons.check_circle_outline, color: Colors.white),
+              backgroundColor: AppColors.success(context),
+              icon: Icon(Icons.check_circle_outline, color: AppColors.onPrimary(context)),
               label: Text(
                 l10n.shoppingFinalize,
-                style: const
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                style: TextStyle(color: AppColors.onPrimary(context), fontWeight: FontWeight.w600),
               ),
             )
           : null,
@@ -292,20 +318,20 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   AppBar _buildAppBar() {
     final l10n = S.of(context);
     return AppBar(
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
+        backgroundColor: AppColors.surface(context),
+        surfaceTintColor: AppColors.surface(context),
         title: Text(
           l10n.shoppingTitle,
-          style: const TextStyle(
+          style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF1E293B)),
+              color: AppColors.textPrimary(context)),
         ),
         actions: [
           if (widget.purchaseHistory.records.isNotEmpty)
             IconButton(
-              icon: const Icon(Icons.receipt_long_outlined,
-                  color: Color(0xFF64748B)),
+              icon: Icon(Icons.receipt_long_outlined,
+                  color: AppColors.textSecondary(context)),
               tooltip: l10n.shoppingHistoryTooltip,
               onPressed: _showHistory,
             ),
@@ -319,7 +345,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.surface(context),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -337,7 +363,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   height: 4,
                   margin: const EdgeInsets.symmetric(vertical: 12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFCBD5E1),
+                    color: AppColors.borderMuted(ctx),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -361,7 +387,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     final r = widget.purchaseHistory.records[i];
                     final isExpanded = expandedMap[i] ?? false;
                     return Material(
-                      color: const Color(0xFFF8FAFC),
+                      color: AppColors.background(ctx),
                       borderRadius: BorderRadius.circular(12),
                       child: InkWell(
                       onTap: () =>
@@ -372,7 +398,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                         padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                          border: Border.all(color: AppColors.border(ctx)),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -382,19 +408,19 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                               children: [
                                 Text(
                                   '${r.date.day}/${r.date.month}/${r.date.year}',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w600,
-                                      color: Color(0xFF475569)),
+                                      color: AppColors.textLabel(ctx)),
                                 ),
                                 Row(
                                   children: [
                                     Text(
                                       formatCurrency(r.amount),
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.w700,
-                                          color: Color(0xFF1E293B)),
+                                          color: AppColors.textPrimary(ctx)),
                                     ),
                                     const SizedBox(width: 6),
                                     Icon(
@@ -402,7 +428,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                           ? Icons.expand_less
                                           : Icons.expand_more,
                                       size: 18,
-                                      color: const Color(0xFF94A3B8),
+                                      color: AppColors.textMuted(ctx),
                                     ),
                                   ],
                                 ),
@@ -413,8 +439,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                 padding: const EdgeInsets.only(top: 4),
                                 child: Text(
                                   l10n.shoppingProductCount(r.itemCount),
-                                  style: const TextStyle(
-                                      fontSize: 12, color: Color(0xFF94A3B8)),
+                                  style: TextStyle(
+                                      fontSize: 12, color: AppColors.textMuted(ctx)),
                                 ),
                               ),
                             if (isExpanded && r.items.isNotEmpty) ...[
@@ -423,13 +449,13 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                     padding: const EdgeInsets.only(bottom: 3),
                                     child: Row(
                                       children: [
-                                        const Icon(Icons.circle,
-                                            size: 4, color: Color(0xFF94A3B8)),
+                                        Icon(Icons.circle,
+                                            size: 4, color: AppColors.textMuted(ctx)),
                                         const SizedBox(width: 8),
                                         Text(name,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                                 fontSize: 13,
-                                                color: Color(0xFF475569))),
+                                                color: AppColors.textLabel(ctx))),
                                       ],
                                     ),
                                   )),
@@ -461,18 +487,18 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         padding: const EdgeInsets.only(right: 16),
         margin: const EdgeInsets.only(bottom: 6),
         decoration: BoxDecoration(
-          color: const Color(0xFFFEE2E2),
+          color: AppColors.errorBackground(context),
           borderRadius: BorderRadius.circular(12),
         ),
         child:
-            const Icon(Icons.delete_outline, color: Color(0xFFEF4444), size: 22),
+            Icon(Icons.delete_outline, color: AppColors.error(context), size: 22),
       ),
       onDismissed: (_) => widget.onRemove(item),
       child: Semantics(
         button: true,
         label: item.checked ? l10n.shoppingItemChecked(item.productName) : l10n.shoppingItemSwipe(item.productName),
         child: Material(
-        color: item.checked ? const Color(0xFFF8FAFC) : Colors.white,
+        color: item.checked ? AppColors.background(context) : AppColors.surface(context),
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
         onTap: () => widget.onToggleChecked(item),
@@ -484,8 +510,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: item.checked
-                  ? const Color(0xFFF1F5F9)
-                  : const Color(0xFFE2E8F0),
+                  ? AppColors.surfaceVariant(context)
+                  : AppColors.border(context),
             ),
           ),
           child: Row(
@@ -496,8 +522,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     : Icons.radio_button_unchecked,
                 size: 20,
                 color: item.checked
-                    ? const Color(0xFF10B981)
-                    : const Color(0xFFCBD5E1),
+                    ? AppColors.success(context)
+                    : AppColors.borderMuted(context),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -507,11 +533,11 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
                     color: item.checked
-                        ? const Color(0xFF94A3B8)
-                        : const Color(0xFF1E293B),
+                        ? AppColors.textMuted(context)
+                        : AppColors.textPrimary(context),
                     decoration:
                         item.checked ? TextDecoration.lineThrough : null,
-                    decorationColor: const Color(0xFF94A3B8),
+                    decorationColor: AppColors.textMuted(context),
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -525,11 +551,11 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
                     color: item.checked
-                        ? const Color(0xFFCBD5E1)
-                        : const Color(0xFF10B981),
+                        ? AppColors.borderMuted(context)
+                        : AppColors.success(context),
                     decoration:
                         item.checked ? TextDecoration.lineThrough : null,
-                    decorationColor: const Color(0xFFCBD5E1),
+                    decorationColor: AppColors.borderMuted(context),
                   ),
                 ),
             ],

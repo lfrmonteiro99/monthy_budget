@@ -4,6 +4,7 @@ import '../models/app_settings.dart';
 import '../models/coach_insight.dart';
 import '../models/purchase_record.dart';
 import '../services/ai_coach_service.dart';
+import '../theme/app_colors.dart';
 import '../utils/calculations.dart';
 import '../data/tax/tax_factory.dart';
 
@@ -121,7 +122,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.clear, style: const TextStyle(color: Color(0xFFEF4444))),
+            child: Text(l10n.clear, style: TextStyle(color: AppColors.error(context))),
           ),
         ],
       ),
@@ -136,24 +137,24 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background(context),
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
+        backgroundColor: AppColors.surface(context),
+        surfaceTintColor: AppColors.surface(context),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               l10n.coachTitle,
-              style: const TextStyle(
-                  fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xFF1E293B)),
+              style: TextStyle(
+                  fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.textPrimary(context)),
             ),
             Text(
               l10n.coachSubtitle,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF94A3B8),
+                  color: AppColors.textMuted(context),
                   letterSpacing: 1.2),
             ),
           ],
@@ -180,9 +181,9 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFEFF6FF),
+        color: AppColors.infoBackground(context),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFDBEAFE)),
+        border: Border.all(color: AppColors.primaryLight(context)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,10 +191,10 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: const Color(0xFF3B82F6).withValues(alpha: 0.15),
+              color: AppColors.primary(context).withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.auto_awesome, size: 18, color: Color(0xFF3B82F6)),
+            child: Icon(Icons.auto_awesome, size: 18, color: AppColors.primary(context)),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -202,16 +203,16 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
               children: [
                 Text(
                   l10n.coachAnalysisTitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF1E293B)),
+                      color: AppColors.textPrimary(context)),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   l10n.coachAnalysisDescription,
-                  style: const TextStyle(
-                      fontSize: 12, color: Color(0xFF64748B), height: 1.5),
+                  style: TextStyle(
+                      fontSize: 12, color: AppColors.textSecondary(context), height: 1.5),
                 ),
                 if (widget.apiKey.isEmpty) ...[
                   const SizedBox(height: 10),
@@ -223,7 +224,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                     ),
                     style: TextButton.styleFrom(
-                      foregroundColor: const Color(0xFF3B82F6),
+                      foregroundColor: AppColors.primary(context),
                       padding: EdgeInsets.zero,
                       minimumSize: const Size(48, 40),
                     ),
@@ -235,15 +236,15 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                       Container(
                         width: 6,
                         height: 6,
-                        decoration: const BoxDecoration(
-                            color: Color(0xFF10B981), shape: BoxShape.circle),
+                        decoration: BoxDecoration(
+                            color: AppColors.success(context), shape: BoxShape.circle),
                       ),
                       const SizedBox(width: 6),
                       Text(
                         l10n.coachApiKeyConfigured,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 11,
-                            color: Color(0xFF10B981),
+                            color: AppColors.success(context),
                             fontWeight: FontWeight.w500),
                       ),
                     ],
@@ -264,10 +265,10 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
       child: FilledButton.icon(
         onPressed: _loading ? null : _analyze,
         icon: _loading
-            ? const SizedBox(
+            ? SizedBox(
                 width: 16,
                 height: 16,
-                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.onPrimary(context)),
               )
             : const Icon(Icons.psychology_outlined, size: 20),
         label: Text(
@@ -275,9 +276,9 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
         ),
         style: FilledButton.styleFrom(
-          backgroundColor: const Color(0xFF3B82F6),
+          backgroundColor: AppColors.primary(context),
           disabledBackgroundColor:
-              const Color(0xFF3B82F6).withValues(alpha: 0.5),
+              AppColors.primary(context).withValues(alpha: 0.5),
           padding: const EdgeInsets.symmetric(vertical: 15),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -318,12 +319,12 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(context),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFF1F5F9)),
+        border: Border.all(color: AppColors.surfaceVariant(context)),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF1E293B).withValues(alpha: 0.04),
+            color: AppColors.shimmer(context),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -337,26 +338,26 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
               Container(
                 padding: const EdgeInsets.all(7),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEFF6FF),
+                  color: AppColors.infoBackground(context),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(Icons.lightbulb_outline,
-                    size: 16, color: Color(0xFF3B82F6)),
+                child: Icon(Icons.lightbulb_outline,
+                    size: 16, color: AppColors.primary(context)),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   l10n.coachCustomAnalysis,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF1E293B)),
+                      color: AppColors.textPrimary(context)),
                 ),
               ),
               _ScoreBadge(score: insight.stressScore),
             ],
           ),
-          const Divider(height: 24, color: Color(0xFFF1F5F9)),
+          Divider(height: 24, color: AppColors.surfaceVariant(context)),
           Text(
             insight.content,
             style: const TextStyle(
@@ -371,7 +372,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
               style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
             ),
             style: TextButton.styleFrom(
-              foregroundColor: const Color(0xFF64748B),
+              foregroundColor: AppColors.textSecondary(context),
               padding: EdgeInsets.zero,
               minimumSize: const Size(48, 40),
             ),
@@ -399,10 +400,10 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
               children: [
                 Text(
                   l10n.coachHistory,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF94A3B8),
+                      color: AppColors.textMuted(context),
                       letterSpacing: 0.8),
                 ),
                 const SizedBox(width: 8),
@@ -410,15 +411,15 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE2E8F0),
+                    color: AppColors.border(context),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
                     '${history.length}',
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF475569)),
+                        color: AppColors.textLabel(context)),
                   ),
                 ),
               ],
@@ -426,7 +427,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
             TextButton(
               onPressed: _clearHistory,
               style: TextButton.styleFrom(
-                foregroundColor: const Color(0xFF64748B),
+                foregroundColor: AppColors.textSecondary(context),
                 textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
                 minimumSize: const Size(48, 40),
               ),
@@ -444,7 +445,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 }
 
-// ── Widgets ──────────────────────────────────────────────────────────────────
+// -- Widgets ------------------------------------------------------------------
 
 class _ScoreBadge extends StatelessWidget {
   final int score;
@@ -453,12 +454,12 @@ class _ScoreBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = score >= 80
-        ? const Color(0xFF10B981)
+        ? AppColors.success(context)
         : score >= 60
-            ? const Color(0xFF3B82F6)
+            ? AppColors.primary(context)
             : score >= 40
-                ? const Color(0xFFF59E0B)
-                : const Color(0xFFEF4444);
+                ? AppColors.warning(context)
+                : AppColors.error(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
@@ -504,15 +505,15 @@ class _InsightHistoryCardState extends State<_InsightHistoryCard> {
     final l10n = S.of(context);
     final insight = widget.insight;
     final preview = insight.content.length > 100
-        ? '${insight.content.substring(0, 100)}…'
+        ? '${insight.content.substring(0, 100)}...'
         : insight.content;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(context),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: AppColors.border(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -532,9 +533,9 @@ class _InsightHistoryCardState extends State<_InsightHistoryCard> {
                           children: [
                             Text(
                               _formatDate(insight.timestamp, l10n),
-                              style: const TextStyle(
+                              style: TextStyle(
                                   fontSize: 11,
-                                  color: Color(0xFF94A3B8),
+                                  color: AppColors.textMuted(context),
                                   fontWeight: FontWeight.w500),
                             ),
                             const SizedBox(width: 8),
@@ -544,9 +545,9 @@ class _InsightHistoryCardState extends State<_InsightHistoryCard> {
                         const SizedBox(height: 6),
                         Text(
                           _expanded ? insight.content : preview,
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontSize: 13,
-                              color: Color(0xFF475569),
+                              color: AppColors.textLabel(context),
                               height: 1.5),
                         ),
                       ],
@@ -558,7 +559,7 @@ class _InsightHistoryCardState extends State<_InsightHistoryCard> {
                       Icon(
                         _expanded ? Icons.expand_less : Icons.expand_more,
                         size: 18,
-                        color: const Color(0xFF94A3B8),
+                        color: AppColors.textMuted(context),
                       ),
                       const SizedBox(height: 8),
                       Semantics(
@@ -567,7 +568,7 @@ class _InsightHistoryCardState extends State<_InsightHistoryCard> {
                         child: IconButton(
                           onPressed: widget.onDelete,
                           icon: const Icon(Icons.delete_outline, size: 16),
-                          color: const Color(0xFF94A3B8),
+                          color: AppColors.textMuted(context),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
                           tooltip: l10n.coachDeleteTooltip,

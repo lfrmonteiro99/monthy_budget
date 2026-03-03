@@ -1356,7 +1356,22 @@ class SEs extends S {
   String get settingsDashExpensesBreakdown => 'Desglose de gastos';
 
   @override
+  String get settingsDashMonthReview => 'Revisión del mes';
+
+  @override
   String get settingsDashCharts => 'Gráficos';
+
+  @override
+  String get dashGroupOverview => 'RESUMEN';
+
+  @override
+  String get dashGroupFinancialDetail => 'DETALLE FINANCIERO';
+
+  @override
+  String get dashGroupHistory => 'HISTORIAL';
+
+  @override
+  String get dashGroupCharts => 'GRÁFICOS';
 
   @override
   String get settingsVisibleCharts => 'GRÁFICOS VISIBLES';
@@ -2006,5 +2021,447 @@ class SEs extends S {
   String get addExpenseTooltip => 'Añadir gasto';
 
   @override
+  String get addExpenseItem => 'Gasto';
+
+  @override
+  String get addExpenseOthers => 'Otros';
+
+  @override
   String get settingsDashBudgetVsActual => 'Presupuesto vs Real';
+
+  @override
+  String get settingsAppearance => 'Apariencia';
+
+  @override
+  String get settingsTheme => 'Tema';
+
+  @override
+  String get themeSystem => 'Sistema';
+
+  @override
+  String get themeLight => 'Claro';
+
+  @override
+  String get themeDark => 'Oscuro';
+
+  @override
+  String get recurringExpenses => 'Gastos Recurrentes';
+
+  @override
+  String get recurringExpenseAdd => 'Añadir Gasto Recurrente';
+
+  @override
+  String get recurringExpenseEdit => 'Editar Gasto Recurrente';
+
+  @override
+  String get recurringExpenseCategory => 'Categoría';
+
+  @override
+  String get recurringExpenseAmount => 'Importe';
+
+  @override
+  String get recurringExpenseDescription => 'Descripción (opcional)';
+
+  @override
+  String get recurringExpenseDayOfMonth => 'Día del mes';
+
+  @override
+  String get recurringExpenseActive => 'Activo';
+
+  @override
+  String get recurringExpenseInactive => 'Inactivo';
+
+  @override
+  String get recurringExpenseEmpty =>
+      'Sin gastos recurrentes.\nAñade uno para generar automáticamente cada mes.';
+
+  @override
+  String get recurringExpenseDeleteConfirm =>
+      '¿Eliminar este gasto recurrente?';
+
+  @override
+  String get recurringExpenseAutoCreated => 'Creado automáticamente';
+
+  @override
+  String get recurringExpenseManage => 'Gestionar recurrentes';
+
+  @override
+  String get recurringExpenseMarkRecurring => 'Marcar como recurrente';
+
+  @override
+  String get recurringExpensePopulated =>
+      'Gastos recurrentes generados para este mes';
+
+  @override
+  String get recurringExpenseDayHint => 'Ej: 1 para el día 1';
+
+  @override
+  String get recurringExpenseNoDay => 'Sin día fijo';
+
+  @override
+  String get recurringExpenseSaved => 'Gasto recurrente guardado';
+
+  @override
+  String get expenseTrends => 'Tendencias de Gastos';
+
+  @override
+  String get expenseTrendsViewTrends => 'Ver Tendencias';
+
+  @override
+  String get expenseTrends3Months => '3M';
+
+  @override
+  String get expenseTrends6Months => '6M';
+
+  @override
+  String get expenseTrends12Months => '12M';
+
+  @override
+  String get expenseTrendsBudgeted => 'Presupuestado';
+
+  @override
+  String get expenseTrendsActual => 'Real';
+
+  @override
+  String get expenseTrendsByCategory => 'Por Categoría';
+
+  @override
+  String get expenseTrendsNoData =>
+      'Datos insuficientes para mostrar tendencias.';
+
+  @override
+  String get expenseTrendsTotal => 'Total';
+
+  @override
+  String get expenseTrendsAverage => 'Media';
+
+  @override
+  String get expenseTrendsOverview => 'Resumen';
+
+  @override
+  String get expenseTrendsMonthly => 'Mensual';
+
+  @override
+  String get savingsGoals => 'Objetivos de Ahorro';
+
+  @override
+  String get savingsGoalAdd => 'Nuevo Objetivo';
+
+  @override
+  String get savingsGoalEdit => 'Editar Objetivo';
+
+  @override
+  String get savingsGoalName => 'Nombre del objetivo';
+
+  @override
+  String get savingsGoalTarget => 'Importe objetivo';
+
+  @override
+  String get savingsGoalCurrent => 'Importe actual';
+
+  @override
+  String get savingsGoalDeadline => 'Fecha límite';
+
+  @override
+  String get savingsGoalNoDeadline => 'Sin fecha límite';
+
+  @override
+  String get savingsGoalColor => 'Color';
+
+  @override
+  String savingsGoalProgress(String percent) {
+    return '$percent% alcanzado';
+  }
+
+  @override
+  String savingsGoalRemaining(String amount) {
+    return 'Faltan $amount';
+  }
+
+  @override
+  String get savingsGoalCompleted => '¡Objetivo alcanzado!';
+
+  @override
+  String get savingsGoalEmpty =>
+      'Sin objetivos de ahorro.\nCrea uno para seguir tu progreso.';
+
+  @override
+  String get savingsGoalDeleteConfirm => '¿Eliminar este objetivo?';
+
+  @override
+  String get savingsGoalContribute => 'Contribuir';
+
+  @override
+  String get savingsGoalContributionAmount => 'Importe de contribución';
+
+  @override
+  String get savingsGoalContributionNote => 'Nota (opcional)';
+
+  @override
+  String get savingsGoalContributionDate => 'Fecha';
+
+  @override
+  String get savingsGoalContributionHistory => 'Historial de Contribuciones';
+
+  @override
+  String get savingsGoalSeeAll => 'Ver todos';
+
+  @override
+  String savingsGoalSurplusSuggestion(String amount) {
+    return 'Tuviste $amount de excedente el mes pasado — ¿quieres asignar a un objetivo?';
+  }
+
+  @override
+  String get savingsGoalAllocate => 'Asignar';
+
+  @override
+  String get savingsGoalSaved => 'Objetivo guardado';
+
+  @override
+  String get savingsGoalContributionSaved => 'Contribución registrada';
+
+  @override
+  String get settingsDashSavingsGoals => 'Objetivos de Ahorro';
+
+  @override
+  String get savingsGoalActive => 'Activo';
+
+  @override
+  String get savingsGoalInactive => 'Inactivo';
+
+  @override
+  String savingsGoalDaysLeft(String days) {
+    return '$days días restantes';
+  }
+
+  @override
+  String get savingsGoalOverdue => 'Vencido';
+
+  @override
+  String get mealCostReconciliation => 'Costes de Comidas';
+
+  @override
+  String get mealCostEstimated => 'Estimado';
+
+  @override
+  String get mealCostActual => 'Real';
+
+  @override
+  String mealCostWeek(String number) {
+    return 'Semana $number';
+  }
+
+  @override
+  String get mealCostTotal => 'Total del Mes';
+
+  @override
+  String get mealCostSavings => 'Ahorro';
+
+  @override
+  String get mealCostOverrun => 'Exceso';
+
+  @override
+  String get mealCostNoData => 'Sin datos de compras para comidas.';
+
+  @override
+  String get mealCostViewCosts => 'Costes';
+
+  @override
+  String get mealCostIsMealPurchase => 'Compra para comidas';
+
+  @override
+  String get mealCostVsBudget => 'vs presupuesto';
+
+  @override
+  String get mealCostOnTrack => 'Dentro del presupuesto';
+
+  @override
+  String get mealCostOver => 'Por encima del presupuesto';
+
+  @override
+  String get mealCostUnder => 'Por debajo del presupuesto';
+
+  @override
+  String get notifications => 'Notificaciones';
+
+  @override
+  String get notificationSettings => 'Ajustes de Notificaciones';
+
+  @override
+  String get notificationBillReminders => 'Recordatorios de facturas';
+
+  @override
+  String get notificationBillReminderDays => 'Días antes del vencimiento';
+
+  @override
+  String get notificationBudgetAlerts => 'Alertas de presupuesto';
+
+  @override
+  String notificationBudgetThreshold(String percent) {
+    return 'Límite de alerta ($percent%)';
+  }
+
+  @override
+  String get notificationMealPlanReminder => 'Recordatorio de plan de comidas';
+
+  @override
+  String get notificationMealPlanReminderDesc =>
+      'Notifica si no hay plan para el mes actual';
+
+  @override
+  String get notificationCustomReminders => 'Recordatorios Personalizados';
+
+  @override
+  String get notificationAddCustom => 'Añadir Recordatorio';
+
+  @override
+  String get notificationCustomTitle => 'Título';
+
+  @override
+  String get notificationCustomBody => 'Mensaje';
+
+  @override
+  String get notificationCustomTime => 'Hora';
+
+  @override
+  String get notificationCustomRepeat => 'Repetir';
+
+  @override
+  String get notificationCustomRepeatDaily => 'Diario';
+
+  @override
+  String get notificationCustomRepeatWeekly => 'Semanal';
+
+  @override
+  String get notificationCustomRepeatMonthly => 'Mensual';
+
+  @override
+  String get notificationCustomRepeatNone => 'No repetir';
+
+  @override
+  String get notificationCustomSaved => 'Recordatorio guardado';
+
+  @override
+  String get notificationCustomDeleteConfirm => '¿Eliminar este recordatorio?';
+
+  @override
+  String get notificationEmpty => 'Sin recordatorios personalizados.';
+
+  @override
+  String notificationBillTitle(String name) {
+    return 'Factura pendiente: $name';
+  }
+
+  @override
+  String notificationBillBody(String amount, String days) {
+    return '$amount vence en $days días';
+  }
+
+  @override
+  String get notificationBudgetTitle => 'Alerta de presupuesto';
+
+  @override
+  String notificationBudgetBody(String percent) {
+    return 'Ya has gastado el $percent% del presupuesto mensual';
+  }
+
+  @override
+  String get notificationMealPlanTitle => 'Plan de comidas';
+
+  @override
+  String get notificationMealPlanBody =>
+      'Aún no has generado el plan de comidas de este mes';
+
+  @override
+  String get notificationPermissionRequired =>
+      'Permiso de notificaciones requerido';
+
+  @override
+  String get notificationSelectDays => 'Seleccionar días';
+
+  @override
+  String get settingsColorPalette => 'Paleta de colores';
+
+  @override
+  String get paletteOcean => 'Océano';
+
+  @override
+  String get paletteEmerald => 'Esmeralda';
+
+  @override
+  String get paletteViolet => 'Violeta';
+
+  @override
+  String get paletteTeal => 'Verde azulado';
+
+  @override
+  String get paletteSunset => 'Atardecer';
+
+  @override
+  String get exportTooltip => 'Exportar';
+
+  @override
+  String get exportTitle => 'Exportar mes';
+
+  @override
+  String get exportPdf => 'Informe PDF';
+
+  @override
+  String get exportPdfDesc => 'Informe con presupuesto vs real';
+
+  @override
+  String get exportCsv => 'Datos CSV';
+
+  @override
+  String get exportCsvDesc => 'Datos para hoja de cálculo';
+
+  @override
+  String get exportReportTitle => 'Informe Mensual de Gastos';
+
+  @override
+  String get exportBudgetVsActual => 'Presupuesto vs Real';
+
+  @override
+  String get exportExpenseDetail => 'Detalle de Gastos';
+
+  @override
+  String get searchExpenses => 'Buscar';
+
+  @override
+  String get searchExpensesHint => 'Buscar por descripción...';
+
+  @override
+  String get searchDateRange => 'Período';
+
+  @override
+  String get searchNoResults => 'No se encontraron gastos';
+
+  @override
+  String searchResultCount(int count) {
+    return '$count resultados';
+  }
+
+  @override
+  String get expenseFixed => 'Fijo';
+
+  @override
+  String get expenseVariable => 'Variable';
+
+  @override
+  String monthlyBudgetHint(String month) {
+    return 'Presupuesto para $month';
+  }
+
+  @override
+  String unsetBudgetsWarning(int count) {
+    return '$count presupuestos variables sin definir';
+  }
+
+  @override
+  String get unsetBudgetsCta => 'Definir en ajustes';
+
+  @override
+  String paceProjected(String amount) {
+    return 'Proyección: $amount';
+  }
 }

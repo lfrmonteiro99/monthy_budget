@@ -7,6 +7,7 @@ import '../data/tax/tax_factory.dart';
 import '../utils/calculations.dart';
 import '../utils/formatters.dart';
 import '../main.dart' show appLocaleNotifier;
+import '../theme/app_colors.dart';
 
 class SetupWizardScreen extends StatefulWidget {
   final AppSettings initial;
@@ -26,7 +27,7 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
   late AppSettings _draft;
   int _step = 0; // 0=welcome, 1=country, 2=personal, 3=salary, 4=expenses, 5=completion
   late PageController _pageController;
-  static const _dataSteps = 4; // for progress display (steps 1–4)
+  static const _dataSteps = 4; // for progress display (steps 1-4)
 
   // Expense controllers for step 4
   final _expenseControllers = <String, TextEditingController>{};
@@ -204,10 +205,10 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background(context),
       appBar: _step >= 1 && _step <= 4
           ? AppBar(
-              backgroundColor: Colors.white,
+              backgroundColor: AppColors.surface(context),
               elevation: 0,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
@@ -221,8 +222,8 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
                 preferredSize: const Size.fromHeight(4),
                 child: LinearProgressIndicator(
                   value: _step / _dataSteps,
-                  backgroundColor: const Color(0xFFE2E8F0),
-                  color: const Color(0xFF3B82F6),
+                  backgroundColor: AppColors.border(context),
+                  color: AppColors.primary(context),
                   minHeight: 4,
                 ),
               ),
@@ -277,7 +278,7 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
 }
 
 // ============================================================
-// Screen 0 — Welcome
+// Screen 0 -- Welcome
 // ============================================================
 class _WelcomeStep extends StatelessWidget {
   final VoidCallback onStart;
@@ -294,8 +295,8 @@ class _WelcomeStep extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Spacer(flex: 2),
-            const Icon(Icons.account_balance_wallet_outlined,
-                size: 64, color: Color(0xFF3B82F6)),
+            Icon(Icons.account_balance_wallet_outlined,
+                size: 64, color: AppColors.primary(context)),
             const SizedBox(height: 24),
             Text(
               l10n.setupWizardWelcomeTitle,
@@ -305,7 +306,7 @@ class _WelcomeStep extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               l10n.setupWizardWelcomeSubtitle,
-              style: const TextStyle(fontSize: 14, color: Color(0xFF64748B)),
+              style: TextStyle(fontSize: 14, color: AppColors.textSecondary(context)),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
@@ -317,7 +318,7 @@ class _WelcomeStep extends StatelessWidget {
             const SizedBox(height: 24),
             Text(
               l10n.setupWizardReassurance,
-              style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+              style: TextStyle(fontSize: 12, color: AppColors.textMuted(context)),
               textAlign: TextAlign.center,
             ),
             const Spacer(flex: 3),
@@ -326,7 +327,7 @@ class _WelcomeStep extends StatelessWidget {
               child: FilledButton(
                 onPressed: onStart,
                 style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFF3B82F6),
+                  backgroundColor: AppColors.primary(context),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 child: Text(l10n.setupWizardStart,
@@ -336,7 +337,7 @@ class _WelcomeStep extends StatelessWidget {
             TextButton(
               onPressed: onSkip,
               child: Text(l10n.setupWizardSkipAll,
-                  style: const TextStyle(fontSize: 13, color: Color(0xFF94A3B8))),
+                  style: TextStyle(fontSize: 13, color: AppColors.textMuted(context))),
             ),
             const SizedBox(height: 16),
           ],
@@ -355,7 +356,7 @@ class _BulletRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, size: 20, color: const Color(0xFF3B82F6)),
+        Icon(icon, size: 20, color: AppColors.primary(context)),
         const SizedBox(width: 12),
         Expanded(
           child: Text(text,
@@ -367,7 +368,7 @@ class _BulletRow extends StatelessWidget {
 }
 
 // ============================================================
-// Screen 1 — Country + Language
+// Screen 1 -- Country + Language
 // ============================================================
 class _CountryStep extends StatelessWidget {
   final AppSettings draft;
@@ -418,7 +419,7 @@ class _CountryStep extends StatelessWidget {
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
               const SizedBox(height: 6),
               Text(l10n.setupWizardCountrySubtitle,
-                  style: const TextStyle(fontSize: 14, color: Color(0xFF64748B))),
+                  style: TextStyle(fontSize: 14, color: AppColors.textSecondary(context))),
               const SizedBox(height: 20),
               ..._countries.map((entry) {
                 final (country, flag) = entry;
@@ -426,7 +427,7 @@ class _CountryStep extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: Material(
-                    color: selected ? const Color(0xFFEFF6FF) : Colors.white,
+                    color: selected ? AppColors.infoBackground(context) : AppColors.surface(context),
                     borderRadius: BorderRadius.circular(12),
                     child: InkWell(
                       onTap: () {
@@ -446,8 +447,8 @@ class _CountryStep extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: selected
-                                ? const Color(0xFF3B82F6)
-                                : const Color(0xFFE2E8F0),
+                                ? AppColors.primary(context)
+                                : AppColors.border(context),
                             width: selected ? 2 : 1,
                           ),
                         ),
@@ -467,9 +468,9 @@ class _CountryStep extends StatelessWidget {
                                             : FontWeight.w400,
                                       )),
                                   Text(country.currencySymbol,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                           fontSize: 12,
-                                          color: Color(0xFF94A3B8))),
+                                          color: AppColors.textMuted(context))),
                                 ],
                               ),
                             ),
@@ -478,8 +479,8 @@ class _CountryStep extends StatelessWidget {
                                   ? Icons.radio_button_checked
                                   : Icons.radio_button_unchecked,
                               color: selected
-                                  ? const Color(0xFF3B82F6)
-                                  : const Color(0xFFCBD5E1),
+                                  ? AppColors.primary(context)
+                                  : AppColors.borderMuted(context),
                               size: 20,
                             ),
                           ],
@@ -491,10 +492,10 @@ class _CountryStep extends StatelessWidget {
               }),
               const SizedBox(height: 20),
               Text(l10n.setupWizardLanguage,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF94A3B8),
+                      color: AppColors.textMuted(context),
                       letterSpacing: 1.2)),
               const SizedBox(height: 8),
               DropdownButtonFormField<String?>(
@@ -502,14 +503,14 @@ class _CountryStep extends StatelessWidget {
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
+                      borderSide: BorderSide(color: AppColors.border(context))),
                   enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
+                      borderSide: BorderSide(color: AppColors.border(context))),
                   focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide:
-                          const BorderSide(color: Color(0xFF3B82F6), width: 2)),
+                          BorderSide(color: AppColors.primary(context), width: 2)),
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 ),
@@ -542,7 +543,7 @@ class _CountryStep extends StatelessWidget {
 }
 
 // ============================================================
-// Screen 2 — Personal
+// Screen 2 -- Personal
 // ============================================================
 class _PersonalStep extends StatelessWidget {
   final AppSettings draft;
@@ -571,7 +572,7 @@ class _PersonalStep extends StatelessWidget {
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
               const SizedBox(height: 6),
               Text(l10n.setupWizardPersonalSubtitle,
-                  style: const TextStyle(fontSize: 14, color: Color(0xFF64748B))),
+                  style: TextStyle(fontSize: 14, color: AppColors.textSecondary(context))),
               const SizedBox(height: 20),
               Row(
                 children: [
@@ -610,10 +611,10 @@ class _PersonalStep extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(l10n.setupWizardTitulares,
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w700,
-                              color: Color(0xFF94A3B8),
+                              color: AppColors.textMuted(context),
                               letterSpacing: 1.2)),
                       const SizedBox(height: 8),
                       Row(
@@ -624,8 +625,8 @@ class _PersonalStep extends StatelessWidget {
                             padding: EdgeInsets.only(right: t == 1 ? 8 : 0),
                             child: Material(
                               color: selected
-                                  ? const Color(0xFF3B82F6)
-                                  : Colors.white,
+                                  ? AppColors.primary(context)
+                                  : AppColors.surface(context),
                               borderRadius: BorderRadius.circular(10),
                               child: InkWell(
                                 onTap: () {
@@ -646,8 +647,8 @@ class _PersonalStep extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(
                                       color: selected
-                                          ? const Color(0xFF3B82F6)
-                                          : const Color(0xFFE2E8F0),
+                                          ? AppColors.primary(context)
+                                          : AppColors.border(context),
                                     ),
                                   ),
                                   alignment: Alignment.center,
@@ -657,8 +658,8 @@ class _PersonalStep extends StatelessWidget {
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
                                       color: selected
-                                          ? Colors.white
-                                          : const Color(0xFF475569),
+                                          ? AppColors.onPrimary(context)
+                                          : AppColors.textLabel(context),
                                     ),
                                   ),
                                 ),
@@ -677,10 +678,10 @@ class _PersonalStep extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Text(l10n.setupWizardDependents,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF94A3B8),
+                      color: AppColors.textMuted(context),
                       letterSpacing: 1.2)),
               const SizedBox(height: 8),
               Row(
@@ -730,7 +731,7 @@ class _PersonalStep extends StatelessWidget {
 }
 
 // ============================================================
-// Screen 3 — Salary
+// Screen 3 -- Salary
 // ============================================================
 class _SalaryStep extends StatelessWidget {
   final AppSettings draft;
@@ -782,7 +783,7 @@ class _SalaryStep extends StatelessWidget {
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
               const SizedBox(height: 6),
               Text(l10n.setupWizardSalarySubtitle,
-                  style: const TextStyle(fontSize: 14, color: Color(0xFF64748B))),
+                  style: TextStyle(fontSize: 14, color: AppColors.textSecondary(context))),
               const SizedBox(height: 20),
               TextField(
                 controller: salaryController,
@@ -798,11 +799,11 @@ class _SalaryStep extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10)),
                   enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
+                      borderSide: BorderSide(color: AppColors.border(context))),
                   focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide:
-                          const BorderSide(color: Color(0xFF3B82F6), width: 2)),
+                          BorderSide(color: AppColors.primary(context), width: 2)),
                 ),
                 onChanged: (value) {
                   final amount =
@@ -841,10 +842,10 @@ class _SalaryStep extends StatelessWidget {
               if (showMealAllowance) ...[
                 const SizedBox(height: 20),
                 Text(l10n.enumMealAllowanceCard.isNotEmpty ? 'SUBSÍDIO DE ALIMENTAÇÃO' : 'MEAL ALLOWANCE',
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF94A3B8),
+                        color: AppColors.textMuted(context),
                         letterSpacing: 1.2)),
                 const SizedBox(height: 8),
                 Row(
@@ -857,8 +858,8 @@ class _SalaryStep extends StatelessWidget {
                             right: type != MealAllowanceType.cash ? 8 : 0),
                         child: Material(
                           color: selected
-                              ? const Color(0xFF3B82F6)
-                              : Colors.white,
+                              ? AppColors.primary(context)
+                              : AppColors.surface(context),
                           borderRadius: BorderRadius.circular(10),
                           child: InkWell(
                             onTap: () {
@@ -878,8 +879,8 @@ class _SalaryStep extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10),
                                 border: Border.all(
                                   color: selected
-                                      ? const Color(0xFF3B82F6)
-                                      : const Color(0xFFE2E8F0),
+                                      ? AppColors.primary(context)
+                                      : AppColors.border(context),
                                 ),
                               ),
                               alignment: Alignment.center,
@@ -889,8 +890,8 @@ class _SalaryStep extends StatelessWidget {
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
                                   color: selected
-                                      ? Colors.white
-                                      : const Color(0xFF475569),
+                                      ? AppColors.onPrimary(context)
+                                      : AppColors.textLabel(context),
                                 ),
                               ),
                             ),
@@ -918,11 +919,11 @@ class _SalaryStep extends StatelessWidget {
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide:
-                              const BorderSide(color: Color(0xFFE2E8F0))),
+                              BorderSide(color: AppColors.border(context))),
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(
-                              color: Color(0xFF3B82F6), width: 2)),
+                          borderSide: BorderSide(
+                              color: AppColors.primary(context), width: 2)),
                     ),
                     onChanged: (value) {
                       final amount =
@@ -941,10 +942,10 @@ class _SalaryStep extends StatelessWidget {
               if (showSubsidies) ...[
                 const SizedBox(height: 20),
                 Text('DUODÉCIMOS',
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF94A3B8),
+                        color: AppColors.textMuted(context),
                         letterSpacing: 1.2)),
                 const SizedBox(height: 8),
                 Row(
@@ -957,8 +958,8 @@ class _SalaryStep extends StatelessWidget {
                             right: mode != SubsidyMode.half ? 8 : 0),
                         child: Material(
                           color: selected
-                              ? const Color(0xFF3B82F6)
-                              : Colors.white,
+                              ? AppColors.primary(context)
+                              : AppColors.surface(context),
                           borderRadius: BorderRadius.circular(10),
                           child: InkWell(
                             onTap: () {
@@ -978,8 +979,8 @@ class _SalaryStep extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10),
                                 border: Border.all(
                                   color: selected
-                                      ? const Color(0xFF3B82F6)
-                                      : const Color(0xFFE2E8F0),
+                                      ? AppColors.primary(context)
+                                      : AppColors.border(context),
                                 ),
                               ),
                               alignment: Alignment.center,
@@ -989,8 +990,8 @@ class _SalaryStep extends StatelessWidget {
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
                                   color: selected
-                                      ? Colors.white
-                                      : const Color(0xFF475569),
+                                      ? AppColors.onPrimary(context)
+                                      : AppColors.textLabel(context),
                                 ),
                               ),
                             ),
@@ -1014,15 +1015,15 @@ class _SalaryStep extends StatelessWidget {
                 TextButton(
                   onPressed: onSkip,
                   child: Text(l10n.setupWizardSalarySkip,
-                      style: const TextStyle(
-                          fontSize: 13, color: Color(0xFF94A3B8))),
+                      style: TextStyle(
+                          fontSize: 13, color: AppColors.textMuted(context))),
                 ),
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton(
                     onPressed: onNext,
                     style: FilledButton.styleFrom(
-                      backgroundColor: const Color(0xFF3B82F6),
+                      backgroundColor: AppColors.primary(context),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
                     child: Text(l10n.setupWizardContinue,
@@ -1040,7 +1041,7 @@ class _SalaryStep extends StatelessWidget {
 }
 
 // ============================================================
-// Screen 4 — Expenses
+// Screen 4 -- Expenses
 // ============================================================
 class _ExpensesStep extends StatelessWidget {
   final AppSettings draft;
@@ -1093,28 +1094,28 @@ class _ExpensesStep extends StatelessWidget {
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
               const SizedBox(height: 6),
               Text(l10n.setupWizardExpensesSubtitle,
-                  style: const TextStyle(fontSize: 14, color: Color(0xFF64748B))),
+                  style: TextStyle(fontSize: 14, color: AppColors.textSecondary(context))),
               if (netSalary != null) ...[
                 const SizedBox(height: 12),
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF8FAFC),
+                    color: AppColors.background(context),
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                    border: Border.all(color: AppColors.border(context)),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(l10n.setupWizardNetLabel(formatCurrency(netSalary)),
-                          style: const TextStyle(
-                              fontSize: 12, color: Color(0xFF475569))),
+                          style: TextStyle(
+                              fontSize: 12, color: AppColors.textLabel(context))),
                       Text(
                           l10n.setupWizardTotalExpenses(
                               formatCurrency(totalExpenses)),
-                          style: const TextStyle(
-                              fontSize: 12, color: Color(0xFF475569))),
+                          style: TextStyle(
+                              fontSize: 12, color: AppColors.textLabel(context))),
                     ],
                   ),
                 ),
@@ -1125,7 +1126,7 @@ class _ExpensesStep extends StatelessWidget {
                     child: Row(
                       children: [
                         Icon(expenseIcon(key),
-                            size: 20, color: const Color(0xFF64748B)),
+                            size: 20, color: AppColors.textSecondary(context)),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(expenseLabel(key),
@@ -1150,16 +1151,16 @@ class _ExpensesStep extends StatelessWidget {
                                   horizontal: 10, vertical: 10),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
-                                  borderSide: const BorderSide(
-                                      color: Color(0xFFE2E8F0))),
+                                  borderSide: BorderSide(
+                                      color: AppColors.border(context))),
                               enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
-                                  borderSide: const BorderSide(
-                                      color: Color(0xFFE2E8F0))),
+                                  borderSide: BorderSide(
+                                      color: AppColors.border(context))),
                               focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
-                                  borderSide: const BorderSide(
-                                      color: Color(0xFF3B82F6), width: 2)),
+                                  borderSide: BorderSide(
+                                      color: AppColors.primary(context), width: 2)),
                             ),
                           ),
                         ),
@@ -1181,7 +1182,7 @@ class _ExpensesStep extends StatelessWidget {
 }
 
 // ============================================================
-// Screen 5 — Completion
+// Screen 5 -- Completion
 // ============================================================
 class _CompletionStep extends StatefulWidget {
   final AppSettings draft;
@@ -1286,9 +1287,9 @@ class _CompletionStepState extends State<_CompletionStep>
               width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.surface(context),
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: const Color(0xFFE2E8F0)),
+                border: Border.all(color: AppColors.border(context)),
               ),
               child: Column(
                 children: [
@@ -1322,8 +1323,8 @@ class _CompletionStepState extends State<_CompletionStep>
                     ),
                   ] else ...[
                     Text(l10n.setupWizardConfigureSalaryHint,
-                        style: const TextStyle(
-                            fontSize: 13, color: Color(0xFF64748B)),
+                        style: TextStyle(
+                            fontSize: 13, color: AppColors.textSecondary(context)),
                         textAlign: TextAlign.center),
                   ],
                 ],
@@ -1331,7 +1332,7 @@ class _CompletionStepState extends State<_CompletionStep>
             ),
             const SizedBox(height: 16),
             Text(l10n.setupWizardCompleteReassurance,
-                style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+                style: TextStyle(fontSize: 12, color: AppColors.textMuted(context)),
                 textAlign: TextAlign.center),
             const Spacer(flex: 3),
             SizedBox(
@@ -1339,7 +1340,7 @@ class _CompletionStepState extends State<_CompletionStep>
               child: FilledButton(
                 onPressed: widget.onGoToDashboard,
                 style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFF3B82F6),
+                  backgroundColor: AppColors.primary(context),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 child: Text(l10n.setupWizardGoToDashboard,
@@ -1374,7 +1375,7 @@ class _BottomButton extends StatelessWidget {
           child: FilledButton(
             onPressed: onPressed,
             style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFF3B82F6),
+              backgroundColor: AppColors.primary(context),
               padding: const EdgeInsets.symmetric(vertical: 14),
             ),
             child: Text(label,
@@ -1403,7 +1404,7 @@ class _SelectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: selected ? const Color(0xFFEFF6FF) : Colors.white,
+      color: selected ? AppColors.infoBackground(context) : AppColors.surface(context),
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: onTap,
@@ -1414,8 +1415,8 @@ class _SelectionCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: selected
-                  ? const Color(0xFF3B82F6)
-                  : const Color(0xFFE2E8F0),
+                  ? AppColors.primary(context)
+                  : AppColors.border(context),
               width: selected ? 2 : 1,
             ),
           ),
@@ -1424,8 +1425,8 @@ class _SelectionCard extends StatelessWidget {
               Icon(icon,
                   size: 28,
                   color: selected
-                      ? const Color(0xFF3B82F6)
-                      : const Color(0xFF94A3B8)),
+                      ? AppColors.primary(context)
+                      : AppColors.textMuted(context)),
               const SizedBox(height: 8),
               Text(label,
                   style: TextStyle(
@@ -1433,8 +1434,8 @@ class _SelectionCard extends StatelessWidget {
                     fontWeight:
                         selected ? FontWeight.w600 : FontWeight.w400,
                     color: selected
-                        ? const Color(0xFF1E293B)
-                        : const Color(0xFF475569),
+                        ? AppColors.textPrimary(context)
+                        : AppColors.textLabel(context),
                   )),
             ],
           ),
@@ -1452,7 +1453,7 @@ class _CounterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: onPressed != null ? Colors.white : const Color(0xFFF1F5F9),
+      color: onPressed != null ? AppColors.surface(context) : AppColors.surfaceVariant(context),
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
         onTap: onPressed,
@@ -1462,13 +1463,13 @@ class _CounterButton extends StatelessWidget {
           height: 36,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: const Color(0xFFE2E8F0)),
+            border: Border.all(color: AppColors.border(context)),
           ),
           child: Icon(icon,
               size: 18,
               color: onPressed != null
-                  ? const Color(0xFF475569)
-                  : const Color(0xFFCBD5E1)),
+                  ? AppColors.textLabel(context)
+                  : AppColors.borderMuted(context)),
         ),
       ),
     );
@@ -1484,14 +1485,14 @@ class _InfoBox extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFEFF6FF),
+        color: AppColors.infoBackground(context),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFDBEAFE)),
+        border: Border.all(color: AppColors.primaryLight(context)),
       ),
       child: Row(
         children: [
-          const Icon(Icons.info_outline,
-              size: 16, color: Color(0xFF3B82F6)),
+          Icon(Icons.info_outline,
+              size: 16, color: AppColors.primary(context)),
           const SizedBox(width: 8),
           Expanded(
             child: Text(text,
@@ -1525,14 +1526,14 @@ class _SummaryRow extends StatelessWidget {
         Text(label,
             style: TextStyle(
               fontSize: 13,
-              color: const Color(0xFF64748B),
+              color: AppColors.textSecondary(context),
               fontWeight: bold ? FontWeight.w600 : FontWeight.w400,
             )),
         Text(value,
             style: TextStyle(
               fontSize: 13,
               fontWeight: bold ? FontWeight.w700 : FontWeight.w500,
-              color: valueColor ?? const Color(0xFF1E293B),
+              color: valueColor ?? AppColors.textPrimary(context),
             )),
       ],
     );

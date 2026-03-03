@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../theme/app_colors.dart';
 import '../utils/month_review.dart';
 import '../utils/formatters.dart';
 
@@ -11,7 +12,7 @@ void showMonthReviewSheet({
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.white,
+    backgroundColor: AppColors.surface(context),
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
@@ -52,7 +53,7 @@ class _MonthReviewContent extends StatelessWidget {
             width: 40, height: 4,
             margin: const EdgeInsets.symmetric(vertical: 12),
             decoration: BoxDecoration(
-              color: const Color(0xFFCBD5E1),
+              color: AppColors.dragHandle(context),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -67,39 +68,40 @@ class _MonthReviewContent extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.surface(context),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFE2E8F0)),
+            border: Border.all(color: AppColors.border(context)),
           ),
           child: Column(
             children: [
               Row(
                 children: [
-                  Expanded(child: _stat(S.of(context).monthReviewPlanned, formatCurrency(review.totalPlanned), const Color(0xFF64748B))),
-                  Expanded(child: _stat(S.of(context).monthReviewActual, formatCurrency(review.totalActual), const Color(0xFF1E293B))),
+                  Expanded(child: _stat(context, S.of(context).monthReviewPlanned, formatCurrency(review.totalPlanned), AppColors.textSecondary(context))),
+                  Expanded(child: _stat(context, S.of(context).monthReviewActual, formatCurrency(review.totalActual), AppColors.textPrimary(context))),
                   Expanded(
                     child: _stat(
+                      context,
                       S.of(context).monthReviewDifference,
                       '${isOver ? '+' : ''}${formatCurrency(review.totalDifference)}',
-                      isOver ? const Color(0xFFEF4444) : const Color(0xFF10B981),
+                      isOver ? AppColors.error(context) : AppColors.success(context),
                     ),
                   ),
                 ],
               ),
               if (review.foodBudget > 0) ...[
-                const Divider(height: 24, color: Color(0xFFE2E8F0)),
+                Divider(height: 24, color: AppColors.border(context)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(S.of(context).monthReviewFood, style: const TextStyle(fontSize: 13, color: Color(0xFF64748B))),
+                    Text(S.of(context).monthReviewFood, style: TextStyle(fontSize: 13, color: AppColors.textSecondary(context))),
                     Text(
                       S.of(context).monthReviewFoodValue(formatCurrency(review.foodActual), formatCurrency(review.foodBudget)),
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                         color: review.foodActual > review.foodBudget
-                            ? const Color(0xFFEF4444)
-                            : const Color(0xFF10B981),
+                            ? AppColors.error(context)
+                            : AppColors.success(context),
                       ),
                     ),
                   ],
@@ -114,14 +116,14 @@ class _MonthReviewContent extends StatelessWidget {
         if (review.deviations.isNotEmpty) ...[
           Text(
             S.of(context).monthReviewTopDeviations,
-            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xFF94A3B8), letterSpacing: 1.2),
+            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.textMuted(context), letterSpacing: 1.2),
           ),
           const SizedBox(height: 8),
           ...review.deviations.take(3).map((d) => Container(
                 margin: const EdgeInsets.only(bottom: 8),
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF8FAFC),
+                  color: AppColors.background(context),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Row(
@@ -132,8 +134,8 @@ class _MonthReviewContent extends StatelessWidget {
                         children: [
                           Text(d.label, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
                           Text(
-                            '${formatCurrency(d.planned)} → ${formatCurrency(d.actual)}',
-                            style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+                            '${formatCurrency(d.planned)} \u2192 ${formatCurrency(d.actual)}',
+                            style: TextStyle(fontSize: 11, color: AppColors.textSecondary(context)),
                           ),
                         ],
                       ),
@@ -146,12 +148,12 @@ class _MonthReviewContent extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w700,
-                            color: d.difference > 0 ? const Color(0xFFEF4444) : const Color(0xFF10B981),
+                            color: d.difference > 0 ? AppColors.error(context) : AppColors.success(context),
                           ),
                         ),
                         Text(
                           '${d.difference > 0 ? '+' : ''}${(d.percentChange * 100).toStringAsFixed(0)}%',
-                          style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+                          style: TextStyle(fontSize: 11, color: AppColors.textSecondary(context)),
                         ),
                       ],
                     ),
@@ -164,7 +166,7 @@ class _MonthReviewContent extends StatelessWidget {
         // Suggestions
         Text(
           S.of(context).monthReviewSuggestions,
-          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xFF94A3B8), letterSpacing: 1.2),
+          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.textMuted(context), letterSpacing: 1.2),
         ),
         const SizedBox(height: 8),
         ...review.suggestions.map((s) => Padding(
@@ -172,9 +174,9 @@ class _MonthReviewContent extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('• ', style: TextStyle(fontSize: 13, color: Color(0xFF64748B))),
+                  Text('\u2022 ', style: TextStyle(fontSize: 13, color: AppColors.textSecondary(context))),
                   Expanded(
-                    child: Text(s, style: const TextStyle(fontSize: 13, color: Color(0xFF64748B))),
+                    child: Text(s, style: TextStyle(fontSize: 13, color: AppColors.textSecondary(context))),
                   ),
                 ],
               ),
@@ -190,8 +192,8 @@ class _MonthReviewContent extends StatelessWidget {
               icon: const Icon(Icons.auto_awesome, size: 16),
               label: Text(S.of(context).monthReviewAiAnalysis),
               style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF3B82F6),
-                side: const BorderSide(color: Color(0xFFBFDBFE)),
+                foregroundColor: AppColors.primary(context),
+                side: BorderSide(color: AppColors.infoBorder(context)),
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
@@ -202,10 +204,10 @@ class _MonthReviewContent extends StatelessWidget {
     );
   }
 
-  Widget _stat(String label, String value, Color color) {
+  Widget _stat(BuildContext context, String label, String value, Color color) {
     return Column(
       children: [
-        Text(label, style: TextStyle(fontSize: 10, color: Colors.grey.shade500)),
+        Text(label, style: TextStyle(fontSize: 10, color: AppColors.textSecondary(context))),
         const SizedBox(height: 4),
         Text(value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: color)),
       ],

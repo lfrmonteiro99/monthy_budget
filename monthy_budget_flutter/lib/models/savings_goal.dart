@@ -1,0 +1,112 @@
+class SavingsGoal {
+  final String id;
+  final String name;
+  final double targetAmount;
+  final double currentAmount;
+  final DateTime? deadline;
+  final String? color;
+  final bool isActive;
+
+  const SavingsGoal({
+    required this.id,
+    required this.name,
+    required this.targetAmount,
+    this.currentAmount = 0,
+    this.deadline,
+    this.color,
+    this.isActive = true,
+  });
+
+  double get progress =>
+      targetAmount > 0 ? (currentAmount / targetAmount).clamp(0.0, 1.0) : 0;
+
+  double get remaining => (targetAmount - currentAmount).clamp(0, targetAmount);
+
+  bool get isCompleted => currentAmount >= targetAmount;
+
+  SavingsGoal copyWith({
+    String? id,
+    String? name,
+    double? targetAmount,
+    double? currentAmount,
+    DateTime? deadline,
+    String? color,
+    bool? isActive,
+    bool clearDeadline = false,
+    bool clearColor = false,
+  }) {
+    return SavingsGoal(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      targetAmount: targetAmount ?? this.targetAmount,
+      currentAmount: currentAmount ?? this.currentAmount,
+      deadline: clearDeadline ? null : (deadline ?? this.deadline),
+      color: clearColor ? null : (color ?? this.color),
+      isActive: isActive ?? this.isActive,
+    );
+  }
+
+  factory SavingsGoal.fromSupabase(Map<String, dynamic> map) {
+    return SavingsGoal(
+      id: map['id'] as String,
+      name: map['name'] as String,
+      targetAmount: (map['target_amount'] as num).toDouble(),
+      currentAmount: (map['current_amount'] as num?)?.toDouble() ?? 0,
+      deadline: map['deadline'] != null
+          ? DateTime.parse(map['deadline'] as String)
+          : null,
+      color: map['color'] as String?,
+      isActive: map['is_active'] as bool? ?? true,
+    );
+  }
+
+  Map<String, dynamic> toSupabase(String householdId) => {
+        'id': id,
+        'household_id': householdId,
+        'name': name,
+        'target_amount': targetAmount,
+        'current_amount': currentAmount,
+        'deadline': deadline != null
+            ? '${deadline!.year}-${deadline!.month.toString().padLeft(2, '0')}-${deadline!.day.toString().padLeft(2, '0')}'
+            : null,
+        'color': color,
+        'is_active': isActive,
+      };
+}
+
+class SavingsContribution {
+  final String id;
+  final String goalId;
+  final double amount;
+  final DateTime contributionDate;
+  final String? note;
+
+  const SavingsContribution({
+    required this.id,
+    required this.goalId,
+    required this.amount,
+    required this.contributionDate,
+    this.note,
+  });
+
+  factory SavingsContribution.fromSupabase(Map<String, dynamic> map) {
+    return SavingsContribution(
+      id: map['id'] as String,
+      goalId: map['goal_id'] as String,
+      amount: (map['amount'] as num).toDouble(),
+      contributionDate:
+          DateTime.parse(map['contribution_date'] as String),
+      note: map['note'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toSupabase(String householdId) => {
+        'id': id,
+        'household_id': householdId,
+        'goal_id': goalId,
+        'amount': amount,
+        'contribution_date':
+            '${contributionDate.year}-${contributionDate.month.toString().padLeft(2, '0')}-${contributionDate.day.toString().padLeft(2, '0')}',
+        'note': note,
+      };
+}

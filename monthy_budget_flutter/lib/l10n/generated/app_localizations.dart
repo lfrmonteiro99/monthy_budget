@@ -2561,11 +2561,41 @@ abstract class S {
   /// **'Breakdown despesas'**
   String get settingsDashExpensesBreakdown;
 
+  /// Settings dashboard toggle: month review
+  ///
+  /// In pt, this message translates to:
+  /// **'Revisão do mês'**
+  String get settingsDashMonthReview;
+
   /// Settings dashboard toggle: charts
   ///
   /// In pt, this message translates to:
   /// **'Gráficos'**
   String get settingsDashCharts;
+
+  /// Dashboard settings group label: overview
+  ///
+  /// In pt, this message translates to:
+  /// **'VISÃO GERAL'**
+  String get dashGroupOverview;
+
+  /// Dashboard settings group label: financial detail
+  ///
+  /// In pt, this message translates to:
+  /// **'DETALHE FINANCEIRO'**
+  String get dashGroupFinancialDetail;
+
+  /// Dashboard settings group label: history
+  ///
+  /// In pt, this message translates to:
+  /// **'HISTÓRICO'**
+  String get dashGroupHistory;
+
+  /// Dashboard settings group label: charts
+  ///
+  /// In pt, this message translates to:
+  /// **'GRÁFICOS'**
+  String get dashGroupCharts;
 
   /// Settings label: visible charts
   ///
@@ -3755,11 +3785,827 @@ abstract class S {
   /// **'Adicionar despesa'**
   String get addExpenseTooltip;
 
+  /// Expense item section label
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesa'**
+  String get addExpenseItem;
+
+  /// Others chip label
+  ///
+  /// In pt, this message translates to:
+  /// **'Outros'**
+  String get addExpenseOthers;
+
   /// Settings dashboard toggle: budget vs actual
   ///
   /// In pt, this message translates to:
   /// **'Orçamento vs Real'**
   String get settingsDashBudgetVsActual;
+
+  /// Settings section: appearance
+  ///
+  /// In pt, this message translates to:
+  /// **'Aparência'**
+  String get settingsAppearance;
+
+  /// Theme setting label
+  ///
+  /// In pt, this message translates to:
+  /// **'Tema'**
+  String get settingsTheme;
+
+  /// System theme option
+  ///
+  /// In pt, this message translates to:
+  /// **'Sistema'**
+  String get themeSystem;
+
+  /// Light theme option
+  ///
+  /// In pt, this message translates to:
+  /// **'Claro'**
+  String get themeLight;
+
+  /// Dark theme option
+  ///
+  /// In pt, this message translates to:
+  /// **'Escuro'**
+  String get themeDark;
+
+  /// Recurring expenses title
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas Recorrentes'**
+  String get recurringExpenses;
+
+  /// Add recurring expense
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar Despesa Recorrente'**
+  String get recurringExpenseAdd;
+
+  /// Edit recurring expense
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar Despesa Recorrente'**
+  String get recurringExpenseEdit;
+
+  /// Category field
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria'**
+  String get recurringExpenseCategory;
+
+  /// Amount field
+  ///
+  /// In pt, this message translates to:
+  /// **'Montante'**
+  String get recurringExpenseAmount;
+
+  /// Description field
+  ///
+  /// In pt, this message translates to:
+  /// **'Descrição (opcional)'**
+  String get recurringExpenseDescription;
+
+  /// Day of month field
+  ///
+  /// In pt, this message translates to:
+  /// **'Dia do mês'**
+  String get recurringExpenseDayOfMonth;
+
+  /// Active toggle label
+  ///
+  /// In pt, this message translates to:
+  /// **'Ativa'**
+  String get recurringExpenseActive;
+
+  /// Inactive label
+  ///
+  /// In pt, this message translates to:
+  /// **'Inativa'**
+  String get recurringExpenseInactive;
+
+  /// Empty state message
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem despesas recorrentes.\nAdicione para gerar automaticamente todos os meses.'**
+  String get recurringExpenseEmpty;
+
+  /// Delete confirmation
+  ///
+  /// In pt, this message translates to:
+  /// **'Eliminar esta despesa recorrente?'**
+  String get recurringExpenseDeleteConfirm;
+
+  /// Badge for auto-created expenses
+  ///
+  /// In pt, this message translates to:
+  /// **'Criada automaticamente'**
+  String get recurringExpenseAutoCreated;
+
+  /// Manage recurring button
+  ///
+  /// In pt, this message translates to:
+  /// **'Gerir recorrentes'**
+  String get recurringExpenseManage;
+
+  /// Toggle to mark expense as recurring
+  ///
+  /// In pt, this message translates to:
+  /// **'Marcar como recorrente'**
+  String get recurringExpenseMarkRecurring;
+
+  /// Snackbar when recurring populated
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas recorrentes geradas para este mês'**
+  String get recurringExpensePopulated;
+
+  /// Hint for day of month field
+  ///
+  /// In pt, this message translates to:
+  /// **'Ex: 1 para dia 1'**
+  String get recurringExpenseDayHint;
+
+  /// Label when no day set
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem dia fixo'**
+  String get recurringExpenseNoDay;
+
+  /// Snackbar on save
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesa recorrente guardada'**
+  String get recurringExpenseSaved;
+
+  /// Expense trends screen title
+  ///
+  /// In pt, this message translates to:
+  /// **'Tendências de Despesas'**
+  String get expenseTrends;
+
+  /// Button to open trends
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver Tendências'**
+  String get expenseTrendsViewTrends;
+
+  /// 3 months chip
+  ///
+  /// In pt, this message translates to:
+  /// **'3M'**
+  String get expenseTrends3Months;
+
+  /// 6 months chip
+  ///
+  /// In pt, this message translates to:
+  /// **'6M'**
+  String get expenseTrends6Months;
+
+  /// 12 months chip
+  ///
+  /// In pt, this message translates to:
+  /// **'12M'**
+  String get expenseTrends12Months;
+
+  /// Budgeted line label
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamentado'**
+  String get expenseTrendsBudgeted;
+
+  /// Actual line label
+  ///
+  /// In pt, this message translates to:
+  /// **'Real'**
+  String get expenseTrendsActual;
+
+  /// Category breakdown header
+  ///
+  /// In pt, this message translates to:
+  /// **'Por Categoria'**
+  String get expenseTrendsByCategory;
+
+  /// No data message
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem dados suficientes para mostrar tendências.'**
+  String get expenseTrendsNoData;
+
+  /// Total label
+  ///
+  /// In pt, this message translates to:
+  /// **'Total'**
+  String get expenseTrendsTotal;
+
+  /// Average label
+  ///
+  /// In pt, this message translates to:
+  /// **'Média'**
+  String get expenseTrendsAverage;
+
+  /// Overview tab label
+  ///
+  /// In pt, this message translates to:
+  /// **'Visão Geral'**
+  String get expenseTrendsOverview;
+
+  /// Monthly label
+  ///
+  /// In pt, this message translates to:
+  /// **'Mensal'**
+  String get expenseTrendsMonthly;
+
+  /// Savings goals title
+  ///
+  /// In pt, this message translates to:
+  /// **'Objetivos de Poupança'**
+  String get savingsGoals;
+
+  /// Add savings goal
+  ///
+  /// In pt, this message translates to:
+  /// **'Novo Objetivo'**
+  String get savingsGoalAdd;
+
+  /// Edit savings goal
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar Objetivo'**
+  String get savingsGoalEdit;
+
+  /// Goal name field
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome do objetivo'**
+  String get savingsGoalName;
+
+  /// Target amount field
+  ///
+  /// In pt, this message translates to:
+  /// **'Valor alvo'**
+  String get savingsGoalTarget;
+
+  /// Current amount label
+  ///
+  /// In pt, this message translates to:
+  /// **'Valor atual'**
+  String get savingsGoalCurrent;
+
+  /// Deadline field
+  ///
+  /// In pt, this message translates to:
+  /// **'Data limite'**
+  String get savingsGoalDeadline;
+
+  /// No deadline label
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem data limite'**
+  String get savingsGoalNoDeadline;
+
+  /// Color picker label
+  ///
+  /// In pt, this message translates to:
+  /// **'Cor'**
+  String get savingsGoalColor;
+
+  /// Progress percentage
+  ///
+  /// In pt, this message translates to:
+  /// **'{percent}% alcançado'**
+  String savingsGoalProgress(String percent);
+
+  /// Remaining amount
+  ///
+  /// In pt, this message translates to:
+  /// **'Faltam {amount}'**
+  String savingsGoalRemaining(String amount);
+
+  /// Goal completed message
+  ///
+  /// In pt, this message translates to:
+  /// **'Objetivo alcançado!'**
+  String get savingsGoalCompleted;
+
+  /// Empty state
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem objetivos de poupança.\nCrie um para acompanhar o progresso.'**
+  String get savingsGoalEmpty;
+
+  /// Delete confirmation
+  ///
+  /// In pt, this message translates to:
+  /// **'Eliminar este objetivo?'**
+  String get savingsGoalDeleteConfirm;
+
+  /// Add contribution button
+  ///
+  /// In pt, this message translates to:
+  /// **'Contribuir'**
+  String get savingsGoalContribute;
+
+  /// Contribution amount field
+  ///
+  /// In pt, this message translates to:
+  /// **'Valor da contribuição'**
+  String get savingsGoalContributionAmount;
+
+  /// Contribution note field
+  ///
+  /// In pt, this message translates to:
+  /// **'Nota (opcional)'**
+  String get savingsGoalContributionNote;
+
+  /// Contribution date field
+  ///
+  /// In pt, this message translates to:
+  /// **'Data'**
+  String get savingsGoalContributionDate;
+
+  /// Contribution history header
+  ///
+  /// In pt, this message translates to:
+  /// **'Histórico de Contribuições'**
+  String get savingsGoalContributionHistory;
+
+  /// See all goals button
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver todos'**
+  String get savingsGoalSeeAll;
+
+  /// Surplus suggestion card
+  ///
+  /// In pt, this message translates to:
+  /// **'Tiveste {amount} de excedente no mês passado — queres alocar a um objetivo?'**
+  String savingsGoalSurplusSuggestion(String amount);
+
+  /// Allocate button
+  ///
+  /// In pt, this message translates to:
+  /// **'Alocar'**
+  String get savingsGoalAllocate;
+
+  /// Snackbar on save
+  ///
+  /// In pt, this message translates to:
+  /// **'Objetivo guardado'**
+  String get savingsGoalSaved;
+
+  /// Snackbar on contribution
+  ///
+  /// In pt, this message translates to:
+  /// **'Contribuição registada'**
+  String get savingsGoalContributionSaved;
+
+  /// Dashboard toggle for savings goals
+  ///
+  /// In pt, this message translates to:
+  /// **'Objetivos de Poupança'**
+  String get settingsDashSavingsGoals;
+
+  /// Active label
+  ///
+  /// In pt, this message translates to:
+  /// **'Ativo'**
+  String get savingsGoalActive;
+
+  /// Inactive label
+  ///
+  /// In pt, this message translates to:
+  /// **'Inativo'**
+  String get savingsGoalInactive;
+
+  /// Days until deadline
+  ///
+  /// In pt, this message translates to:
+  /// **'{days} dias restantes'**
+  String savingsGoalDaysLeft(String days);
+
+  /// Overdue label
+  ///
+  /// In pt, this message translates to:
+  /// **'Prazo ultrapassado'**
+  String get savingsGoalOverdue;
+
+  /// Meal cost reconciliation title
+  ///
+  /// In pt, this message translates to:
+  /// **'Custos de Refeições'**
+  String get mealCostReconciliation;
+
+  /// Estimated cost label
+  ///
+  /// In pt, this message translates to:
+  /// **'Estimado'**
+  String get mealCostEstimated;
+
+  /// Actual cost label
+  ///
+  /// In pt, this message translates to:
+  /// **'Real'**
+  String get mealCostActual;
+
+  /// Week label
+  ///
+  /// In pt, this message translates to:
+  /// **'Semana {number}'**
+  String mealCostWeek(String number);
+
+  /// Monthly total label
+  ///
+  /// In pt, this message translates to:
+  /// **'Total do Mês'**
+  String get mealCostTotal;
+
+  /// Savings indicator
+  ///
+  /// In pt, this message translates to:
+  /// **'Poupança'**
+  String get mealCostSavings;
+
+  /// Overrun indicator
+  ///
+  /// In pt, this message translates to:
+  /// **'Excesso'**
+  String get mealCostOverrun;
+
+  /// No meal purchase data
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem dados de compras para refeições.'**
+  String get mealCostNoData;
+
+  /// Button to open reconciliation
+  ///
+  /// In pt, this message translates to:
+  /// **'Custos'**
+  String get mealCostViewCosts;
+
+  /// Checkbox label in finalize
+  ///
+  /// In pt, this message translates to:
+  /// **'Compra para refeições'**
+  String get mealCostIsMealPurchase;
+
+  /// Vs budget label
+  ///
+  /// In pt, this message translates to:
+  /// **'vs orçamento'**
+  String get mealCostVsBudget;
+
+  /// On track message
+  ///
+  /// In pt, this message translates to:
+  /// **'Dentro do orçamento'**
+  String get mealCostOnTrack;
+
+  /// Over budget message
+  ///
+  /// In pt, this message translates to:
+  /// **'Acima do orçamento'**
+  String get mealCostOver;
+
+  /// Under budget message
+  ///
+  /// In pt, this message translates to:
+  /// **'Abaixo do orçamento'**
+  String get mealCostUnder;
+
+  /// Notifications title
+  ///
+  /// In pt, this message translates to:
+  /// **'Notificações'**
+  String get notifications;
+
+  /// Notification settings title
+  ///
+  /// In pt, this message translates to:
+  /// **'Definições de Notificações'**
+  String get notificationSettings;
+
+  /// Bill reminders toggle
+  ///
+  /// In pt, this message translates to:
+  /// **'Lembretes de contas'**
+  String get notificationBillReminders;
+
+  /// Days before bill due
+  ///
+  /// In pt, this message translates to:
+  /// **'Dias antes do vencimento'**
+  String get notificationBillReminderDays;
+
+  /// Budget alerts toggle
+  ///
+  /// In pt, this message translates to:
+  /// **'Alertas de orçamento'**
+  String get notificationBudgetAlerts;
+
+  /// Budget alert threshold
+  ///
+  /// In pt, this message translates to:
+  /// **'Limite de alerta ({percent}%)'**
+  String notificationBudgetThreshold(String percent);
+
+  /// Meal plan reminder toggle
+  ///
+  /// In pt, this message translates to:
+  /// **'Lembrete de plano de refeições'**
+  String get notificationMealPlanReminder;
+
+  /// Meal plan reminder description
+  ///
+  /// In pt, this message translates to:
+  /// **'Notifica se não há plano para o mês atual'**
+  String get notificationMealPlanReminderDesc;
+
+  /// Custom reminders section
+  ///
+  /// In pt, this message translates to:
+  /// **'Lembretes Personalizados'**
+  String get notificationCustomReminders;
+
+  /// Add custom reminder
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar Lembrete'**
+  String get notificationAddCustom;
+
+  /// Custom reminder title field
+  ///
+  /// In pt, this message translates to:
+  /// **'Título'**
+  String get notificationCustomTitle;
+
+  /// Custom reminder body field
+  ///
+  /// In pt, this message translates to:
+  /// **'Mensagem'**
+  String get notificationCustomBody;
+
+  /// Custom reminder time field
+  ///
+  /// In pt, this message translates to:
+  /// **'Hora'**
+  String get notificationCustomTime;
+
+  /// Custom reminder repeat field
+  ///
+  /// In pt, this message translates to:
+  /// **'Repetir'**
+  String get notificationCustomRepeat;
+
+  /// Daily repeat option
+  ///
+  /// In pt, this message translates to:
+  /// **'Diário'**
+  String get notificationCustomRepeatDaily;
+
+  /// Weekly repeat option
+  ///
+  /// In pt, this message translates to:
+  /// **'Semanal'**
+  String get notificationCustomRepeatWeekly;
+
+  /// Monthly repeat option
+  ///
+  /// In pt, this message translates to:
+  /// **'Mensal'**
+  String get notificationCustomRepeatMonthly;
+
+  /// No repeat option
+  ///
+  /// In pt, this message translates to:
+  /// **'Não repetir'**
+  String get notificationCustomRepeatNone;
+
+  /// Custom reminder saved
+  ///
+  /// In pt, this message translates to:
+  /// **'Lembrete guardado'**
+  String get notificationCustomSaved;
+
+  /// Delete custom reminder confirmation
+  ///
+  /// In pt, this message translates to:
+  /// **'Eliminar este lembrete?'**
+  String get notificationCustomDeleteConfirm;
+
+  /// Empty custom reminders
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem lembretes personalizados.'**
+  String get notificationEmpty;
+
+  /// Bill notification title
+  ///
+  /// In pt, this message translates to:
+  /// **'Conta a vencer: {name}'**
+  String notificationBillTitle(String name);
+
+  /// Bill notification body
+  ///
+  /// In pt, this message translates to:
+  /// **'{amount} vence em {days} dias'**
+  String notificationBillBody(String amount, String days);
+
+  /// Budget alert title
+  ///
+  /// In pt, this message translates to:
+  /// **'Alerta de orçamento'**
+  String get notificationBudgetTitle;
+
+  /// Budget alert body
+  ///
+  /// In pt, this message translates to:
+  /// **'Já gastaste {percent}% do orçamento mensal'**
+  String notificationBudgetBody(String percent);
+
+  /// Meal plan notification title
+  ///
+  /// In pt, this message translates to:
+  /// **'Plano de refeições'**
+  String get notificationMealPlanTitle;
+
+  /// Meal plan notification body
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não geraste o plano de refeições deste mês'**
+  String get notificationMealPlanBody;
+
+  /// Permission required message
+  ///
+  /// In pt, this message translates to:
+  /// **'Permissão de notificações necessária'**
+  String get notificationPermissionRequired;
+
+  /// Select days label
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecionar dias'**
+  String get notificationSelectDays;
+
+  /// Color palette setting label
+  ///
+  /// In pt, this message translates to:
+  /// **'Paleta de cores'**
+  String get settingsColorPalette;
+
+  /// Ocean palette name
+  ///
+  /// In pt, this message translates to:
+  /// **'Oceano'**
+  String get paletteOcean;
+
+  /// Emerald palette name
+  ///
+  /// In pt, this message translates to:
+  /// **'Esmeralda'**
+  String get paletteEmerald;
+
+  /// Violet palette name
+  ///
+  /// In pt, this message translates to:
+  /// **'Violeta'**
+  String get paletteViolet;
+
+  /// Teal palette name
+  ///
+  /// In pt, this message translates to:
+  /// **'Azul-petróleo'**
+  String get paletteTeal;
+
+  /// Sunset palette name
+  ///
+  /// In pt, this message translates to:
+  /// **'Pôr do sol'**
+  String get paletteSunset;
+
+  /// Export button tooltip
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar'**
+  String get exportTooltip;
+
+  /// Export sheet title
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar mês'**
+  String get exportTitle;
+
+  /// PDF export option
+  ///
+  /// In pt, this message translates to:
+  /// **'Relatório PDF'**
+  String get exportPdf;
+
+  /// PDF export description
+  ///
+  /// In pt, this message translates to:
+  /// **'Relatório formatado com orçamento vs real'**
+  String get exportPdfDesc;
+
+  /// CSV export option
+  ///
+  /// In pt, this message translates to:
+  /// **'Dados CSV'**
+  String get exportCsv;
+
+  /// CSV export description
+  ///
+  /// In pt, this message translates to:
+  /// **'Dados brutos para folha de cálculo'**
+  String get exportCsvDesc;
+
+  /// PDF report title
+  ///
+  /// In pt, this message translates to:
+  /// **'Relatório Mensal de Despesas'**
+  String get exportReportTitle;
+
+  /// Budget vs actual section header
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamento vs Real'**
+  String get exportBudgetVsActual;
+
+  /// Expense detail section header
+  ///
+  /// In pt, this message translates to:
+  /// **'Detalhe de Despesas'**
+  String get exportExpenseDetail;
+
+  /// Search button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Pesquisar'**
+  String get searchExpenses;
+
+  /// Search field hint
+  ///
+  /// In pt, this message translates to:
+  /// **'Pesquisar por descrição...'**
+  String get searchExpensesHint;
+
+  /// Date range label
+  ///
+  /// In pt, this message translates to:
+  /// **'Período'**
+  String get searchDateRange;
+
+  /// No search results message
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhuma despesa encontrada'**
+  String get searchNoResults;
+
+  /// Search result count
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} resultados'**
+  String searchResultCount(int count);
+
+  /// Fixed expense type label
+  ///
+  /// In pt, this message translates to:
+  /// **'Fixo'**
+  String get expenseFixed;
+
+  /// Variable expense type label
+  ///
+  /// In pt, this message translates to:
+  /// **'Variável'**
+  String get expenseVariable;
+
+  /// Monthly budget hint with month name
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamento para {month}'**
+  String monthlyBudgetHint(String month);
+
+  /// Warning for unset variable budgets
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} orçamentos variáveis por definir'**
+  String unsetBudgetsWarning(int count);
+
+  /// CTA to set budgets in settings
+  ///
+  /// In pt, this message translates to:
+  /// **'Definir nas definições'**
+  String get unsetBudgetsCta;
+
+  /// Projected spending amount
+  ///
+  /// In pt, this message translates to:
+  /// **'Projeção: {amount}'**
+  String paceProjected(String amount);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

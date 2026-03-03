@@ -381,6 +381,7 @@ class ExpenseItem {
   final double amount;
   final ExpenseCategory category;
   final bool enabled;
+  final bool isFixed;
 
   const ExpenseItem({
     required this.id,
@@ -388,6 +389,7 @@ class ExpenseItem {
     this.amount = 0,
     this.category = ExpenseCategory.outros,
     this.enabled = true,
+    this.isFixed = true,
   });
 
   ExpenseItem copyWith({
@@ -396,6 +398,7 @@ class ExpenseItem {
     double? amount,
     ExpenseCategory? category,
     bool? enabled,
+    bool? isFixed,
   }) {
     return ExpenseItem(
       id: id ?? this.id,
@@ -403,6 +406,7 @@ class ExpenseItem {
       amount: amount ?? this.amount,
       category: category ?? this.category,
       enabled: enabled ?? this.enabled,
+      isFixed: isFixed ?? this.isFixed,
     );
   }
 
@@ -412,6 +416,7 @@ class ExpenseItem {
         'amount': amount,
         'category': category.name,
         'enabled': enabled,
+        'isFixed': isFixed,
       };
 
   factory ExpenseItem.fromJson(Map<String, dynamic> json) => ExpenseItem(
@@ -420,6 +425,7 @@ class ExpenseItem {
         amount: (json['amount'] ?? 0).toDouble(),
         category: ExpenseCategory.fromJson(json['category'] ?? 'outros'),
         enabled: json['enabled'] ?? true,
+        isFixed: json['isFixed'] ?? true,
       );
 }
 

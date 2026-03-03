@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/actual_expense.dart';
+import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 
 Future<ActualExpense?> showAddExpenseSheet({
@@ -9,6 +10,7 @@ Future<ActualExpense?> showAddExpenseSheet({
   required List<ExpenseItem> budgetExpenses,
   required List<ActualExpense> currentExpenses,
   ActualExpense? existing,
+  Future<void> Function(ActualExpense)? onDelete,
 }) {
   return showModalBottomSheet<ActualExpense>(
     context: context,
@@ -18,6 +20,7 @@ Future<ActualExpense?> showAddExpenseSheet({
       budgetExpenses: budgetExpenses,
       currentExpenses: currentExpenses,
       existing: existing,
+      onDelete: onDelete,
     ),
   );
 }
@@ -26,11 +29,13 @@ class _AddExpenseSheet extends StatefulWidget {
   final List<ExpenseItem> budgetExpenses;
   final List<ActualExpense> currentExpenses;
   final ActualExpense? existing;
+  final Future<void> Function(ActualExpense)? onDelete;
 
   const _AddExpenseSheet({
     required this.budgetExpenses,
     required this.currentExpenses,
     this.existing,
+    this.onDelete,
   });
 
   @override
@@ -38,13 +43,22 @@ class _AddExpenseSheet extends StatefulWidget {
 }
 
 class _AddExpenseSheetState extends State<_AddExpenseSheet> {
+  // Expense item selection (tier 1)
+  ExpenseItem? _selectedExpenseItem;
+  bool _isOthers = false;
+
+  // Category selection (tier 2 — only when "Outros" is selected)
   String? _selectedCategory;
   bool _isCustom = false;
   final _customCategoryController = TextEditingController();
+
   final _amountController = TextEditingController();
   final _descriptionController = TextEditingController();
   late DateTime _selectedDate;
   final _formKey = GlobalKey<FormState>();
+
+  List<ExpenseItem> get _enabledItems =>
+      widget.budgetExpenses.where((e) => e.enabled).toList();
 
   @override
   void initState() {
@@ -54,14 +68,28 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
       _selectedDate = e.date;
       _amountController.text = e.amount.toStringAsFixed(2);
       _descriptionController.text = e.description ?? '';
-      // Check if category is a known enum
-      final isKnown = ExpenseCategory.values.any((c) => c.name == e.category);
-      if (isKnown) {
-        _selectedCategory = e.category;
-        _isCustom = false;
+
+      // Try to match an expense item by label + category
+      final match = _enabledItems.where(
+        (item) =>
+            item.label == e.description && item.category.name == e.category,
+      );
+      if (match.isNotEmpty) {
+        _selectedExpenseItem = match.first;
+        _isOthers = false;
       } else {
-        _isCustom = true;
-        _customCategoryController.text = e.category;
+        // "Outros" mode — restore category selection
+        _isOthers = true;
+        _selectedExpenseItem = null;
+        final isKnown =
+            ExpenseCategory.values.any((c) => c.name == e.category);
+        if (isKnown) {
+          _selectedCategory = e.category;
+          _isCustom = false;
+        } else {
+          _isCustom = true;
+          _customCategoryController.text = e.category;
+        }
       }
     } else {
       _selectedDate = DateTime.now();
@@ -132,15 +160,42 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
     }
   }
 
+  void _selectExpenseItem(ExpenseItem item) {
+    setState(() {
+      _selectedExpenseItem = item;
+      _isOthers = false;
+      _selectedCategory = item.category.name;
+      _isCustom = false;
+      // Pre-fill description with item label if description is empty
+      if (_descriptionController.text.trim().isEmpty) {
+        _descriptionController.text = item.label;
+      }
+    });
+  }
+
+  void _selectOthers() {
+    setState(() {
+      _selectedExpenseItem = null;
+      _isOthers = true;
+      _selectedCategory = null;
+      _isCustom = false;
+    });
+  }
+
   void _save() {
     if (!_formKey.currentState!.validate()) return;
-    final amount = double.tryParse(
-        _amountController.text.replaceAll(',', '.'));
+    final amount =
+        double.tryParse(_amountController.text.replaceAll(',', '.'));
     if (amount == null || amount <= 0) return;
 
-    final category = _isCustom
-        ? _customCategoryController.text.trim()
-        : _selectedCategory;
+    final String? category;
+    if (_selectedExpenseItem != null) {
+      category = _selectedExpenseItem!.category.name;
+    } else if (_isCustom) {
+      category = _customCategoryController.text.trim();
+    } else {
+      category = _selectedCategory;
+    }
     if (category == null || category.isEmpty) return;
 
     final description = _descriptionController.text.trim();
@@ -166,6 +221,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     final isEdit = widget.existing != null;
+    final enabledItems = _enabledItems;
     final budgetCats = _budgetCategories;
     final customCats = _customCategoriesUsed;
 
@@ -174,9 +230,9 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
       minChildSize: 0.5,
       maxChildSize: 0.95,
       builder: (_, scrollController) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        decoration: BoxDecoration(
+          color: AppColors.surface(context),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: Form(
           key: _formKey,
@@ -189,7 +245,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
+                    color: AppColors.dragHandle(context),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -197,21 +253,21 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
               const SizedBox(height: 16),
               Text(
                 isEdit ? l10n.editExpenseTitle : l10n.addExpenseTitle,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF1E293B),
+                  color: AppColors.textPrimary(context),
                 ),
               ),
               const SizedBox(height: 20),
 
-              // Category picker
+              // --- Tier 1: Expense Item picker ---
               Text(
-                l10n.addExpenseCategory,
-                style: const TextStyle(
+                l10n.addExpenseItem,
+                style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF64748B),
+                  color: AppColors.textSecondary(context),
                   letterSpacing: 0.8,
                 ),
               ),
@@ -220,89 +276,143 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  ...budgetCats.map((cat) => ChoiceChip(
-                        avatar: Icon(_categoryIcon(cat), size: 16),
-                        label: Text(_localizedCategory(cat, l10n)),
-                        selected: !_isCustom && _selectedCategory == cat,
-                        onSelected: (_) => setState(() {
-                          _selectedCategory = cat;
-                          _isCustom = false;
-                        }),
-                        selectedColor: const Color(0xFFDBEAFE),
-                        labelStyle: TextStyle(
-                          fontSize: 13,
-                          fontWeight: !_isCustom && _selectedCategory == cat
-                              ? FontWeight.w600
-                              : FontWeight.w400,
-                          color: !_isCustom && _selectedCategory == cat
-                              ? const Color(0xFF3B82F6)
-                              : const Color(0xFF64748B),
-                        ),
-                      )),
-                  ...customCats.map((cat) => ChoiceChip(
-                        avatar: const Icon(Icons.label_outline, size: 16),
-                        label: Text(cat),
-                        selected: _isCustom &&
-                            _customCategoryController.text == cat,
-                        onSelected: (_) => setState(() {
-                          _isCustom = true;
-                          _customCategoryController.text = cat;
-                        }),
-                        selectedColor: const Color(0xFFDBEAFE),
-                        labelStyle: TextStyle(
-                          fontSize: 13,
-                          fontWeight: _isCustom &&
-                                  _customCategoryController.text == cat
-                              ? FontWeight.w600
-                              : FontWeight.w400,
-                          color: _isCustom &&
-                                  _customCategoryController.text == cat
-                              ? const Color(0xFF3B82F6)
-                              : const Color(0xFF64748B),
-                        ),
-                      )),
+                  ...enabledItems.map((item) {
+                    final selected =
+                        !_isOthers && _selectedExpenseItem?.id == item.id;
+                    return ChoiceChip(
+                      avatar: Icon(_categoryIcon(item.category.name), size: 16),
+                      label: Text(item.label),
+                      selected: selected,
+                      onSelected: (_) => _selectExpenseItem(item),
+                      selectedColor: AppColors.primaryLight(context),
+                      labelStyle: TextStyle(
+                        fontSize: 13,
+                        fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                        color: selected
+                            ? AppColors.primary(context)
+                            : AppColors.textSecondary(context),
+                      ),
+                    );
+                  }),
                   ChoiceChip(
-                    avatar: const Icon(Icons.add, size: 16),
-                    label: Text(l10n.addExpenseCustomCategory),
-                    selected: _isCustom &&
-                        !customCats.contains(
-                            _customCategoryController.text),
-                    onSelected: (_) => setState(() {
-                      _isCustom = true;
-                      _customCategoryController.clear();
-                      _selectedCategory = null;
-                    }),
-                    selectedColor: const Color(0xFFDBEAFE),
-                    labelStyle: const TextStyle(fontSize: 13),
+                    avatar: const Icon(Icons.more_horiz, size: 16),
+                    label: Text(l10n.addExpenseOthers),
+                    selected: _isOthers,
+                    onSelected: (_) => _selectOthers(),
+                    selectedColor: AppColors.primaryLight(context),
+                    labelStyle: TextStyle(
+                      fontSize: 13,
+                      fontWeight: _isOthers ? FontWeight.w600 : FontWeight.w400,
+                      color: _isOthers
+                          ? AppColors.primary(context)
+                          : AppColors.textSecondary(context),
+                    ),
                   ),
                 ],
               ),
-              if (_isCustom &&
-                  !customCats
-                      .contains(_customCategoryController.text)) ...[
-                const SizedBox(height: 8),
-                TextFormField(
-                  controller: _customCategoryController,
-                  decoration: InputDecoration(
-                    hintText: l10n.addExpenseCustomCategory,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 12),
-                  ),
-                  textCapitalization: TextCapitalization.sentences,
-                ),
-              ],
               const SizedBox(height: 20),
+
+              // --- Tier 2: Category picker (only when "Outros" selected) ---
+              if (_isOthers) ...[
+                Text(
+                  l10n.addExpenseCategory,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textSecondary(context),
+                    letterSpacing: 0.8,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    ...budgetCats.map((cat) => ChoiceChip(
+                          avatar: Icon(_categoryIcon(cat), size: 16),
+                          label: Text(_localizedCategory(cat, l10n)),
+                          selected: !_isCustom && _selectedCategory == cat,
+                          onSelected: (_) => setState(() {
+                            _selectedCategory = cat;
+                            _isCustom = false;
+                          }),
+                          selectedColor: AppColors.primaryLight(context),
+                          labelStyle: TextStyle(
+                            fontSize: 13,
+                            fontWeight:
+                                !_isCustom && _selectedCategory == cat
+                                    ? FontWeight.w600
+                                    : FontWeight.w400,
+                            color: !_isCustom && _selectedCategory == cat
+                                ? AppColors.primary(context)
+                                : AppColors.textSecondary(context),
+                          ),
+                        )),
+                    ...customCats.map((cat) => ChoiceChip(
+                          avatar: const Icon(Icons.label_outline, size: 16),
+                          label: Text(cat),
+                          selected: _isCustom &&
+                              _customCategoryController.text == cat,
+                          onSelected: (_) => setState(() {
+                            _isCustom = true;
+                            _customCategoryController.text = cat;
+                          }),
+                          selectedColor: AppColors.primaryLight(context),
+                          labelStyle: TextStyle(
+                            fontSize: 13,
+                            fontWeight: _isCustom &&
+                                    _customCategoryController.text == cat
+                                ? FontWeight.w600
+                                : FontWeight.w400,
+                            color: _isCustom &&
+                                    _customCategoryController.text == cat
+                                ? AppColors.primary(context)
+                                : AppColors.textSecondary(context),
+                          ),
+                        )),
+                    ChoiceChip(
+                      avatar: const Icon(Icons.add, size: 16),
+                      label: Text(l10n.addExpenseCustomCategory),
+                      selected: _isCustom &&
+                          !customCats
+                              .contains(_customCategoryController.text),
+                      onSelected: (_) => setState(() {
+                        _isCustom = true;
+                        _customCategoryController.clear();
+                        _selectedCategory = null;
+                      }),
+                      selectedColor: AppColors.primaryLight(context),
+                      labelStyle: const TextStyle(fontSize: 13),
+                    ),
+                  ],
+                ),
+                if (_isCustom &&
+                    !customCats
+                        .contains(_customCategoryController.text)) ...[
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    controller: _customCategoryController,
+                    decoration: InputDecoration(
+                      hintText: l10n.addExpenseCustomCategory,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 12),
+                    ),
+                    textCapitalization: TextCapitalization.sentences,
+                  ),
+                ],
+                const SizedBox(height: 20),
+              ],
 
               // Amount
               Text(
                 l10n.addExpenseAmount,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF64748B),
+                  color: AppColors.textSecondary(context),
                   letterSpacing: 0.8,
                 ),
               ),
@@ -333,10 +443,10 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
               // Date
               Text(
                 l10n.addExpenseDate,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF64748B),
+                  color: AppColors.textSecondary(context),
                   letterSpacing: 0.8,
                 ),
               ),
@@ -359,18 +469,18 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 12, vertical: 14),
                   decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0xFFCBD5E1)),
+                    border: Border.all(color: AppColors.borderMuted(context)),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.calendar_today,
-                          size: 18, color: Color(0xFF64748B)),
+                      Icon(Icons.calendar_today,
+                          size: 18, color: AppColors.textSecondary(context)),
                       const SizedBox(width: 8),
                       Text(
                         '${_selectedDate.day.toString().padLeft(2, '0')}/${_selectedDate.month.toString().padLeft(2, '0')}/${_selectedDate.year}',
-                        style: const TextStyle(
-                            fontSize: 14, color: Color(0xFF1E293B)),
+                        style: TextStyle(
+                            fontSize: 14, color: AppColors.textPrimary(context)),
                       ),
                     ],
                   ),
@@ -381,10 +491,10 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
               // Description
               Text(
                 l10n.addExpenseDescription,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF64748B),
+                  color: AppColors.textSecondary(context),
                   letterSpacing: 0.8,
                 ),
               ),
@@ -410,8 +520,8 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                 child: ElevatedButton(
                   onPressed: _save,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF3B82F6),
-                    foregroundColor: Colors.white,
+                    backgroundColor: AppColors.primary(context),
+                    foregroundColor: AppColors.onPrimary(context),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                     elevation: 0,
@@ -423,6 +533,51 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                   ),
                 ),
               ),
+
+              // Delete button (edit mode only)
+              if (isEdit && widget.onDelete != null) ...[
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: OutlinedButton.icon(
+                    onPressed: () async {
+                      final confirmed = await showDialog<bool>(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: Text(l10n.delete),
+                          content: Text(l10n.expenseTrackerDeleteConfirm),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(ctx, false),
+                              child: Text(l10n.cancel),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(ctx, true),
+                              child: Text(l10n.delete,
+                                  style: TextStyle(
+                                      color: AppColors.error(context))),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (confirmed == true && context.mounted) {
+                        await widget.onDelete!(widget.existing!);
+                        if (context.mounted) Navigator.of(context).pop();
+                      }
+                    },
+                    icon: Icon(Icons.delete_outline,
+                        size: 18, color: AppColors.error(context)),
+                    label: Text(l10n.delete),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.error(context),
+                      side: BorderSide(color: AppColors.error(context)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ),

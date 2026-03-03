@@ -10,6 +10,9 @@ import '../services/household_service.dart';
 import '../models/meal_settings.dart';
 import '../models/local_dashboard_config.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../theme/app_colors.dart';
+import '../main.dart';
+import '../services/local_config_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   final AppSettings settings;
@@ -24,6 +27,9 @@ class SettingsScreen extends StatefulWidget {
   final String? initialSection;
   final LocalDashboardConfig? dashboardConfig;
   final ValueChanged<LocalDashboardConfig>? onSaveDashboardConfig;
+  final VoidCallback? onOpenNotificationSettings;
+  final Map<String, double> monthlyBudgets;
+  final ValueChanged<Map<String, double>>? onSaveMonthlyBudgets;
 
   const SettingsScreen({
     super.key,
@@ -39,6 +45,9 @@ class SettingsScreen extends StatefulWidget {
     this.initialSection,
     this.dashboardConfig,
     this.onSaveDashboardConfig,
+    this.onOpenNotificationSettings,
+    this.monthlyBudgets = const {},
+    this.onSaveMonthlyBudgets,
   });
 
   @override
@@ -52,6 +61,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String? _openSection = 'salaries';
   late LocalDashboardConfig _localDashboard;
   String? _inviteCode;
+  late Map<String, double> _monthlyBudgetsDraft;
 
   String _favSearch = '';
 
@@ -65,6 +75,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _openSection = widget.initialSection;
     }
     _localDashboard = widget.dashboardConfig ?? const LocalDashboardConfig();
+    _monthlyBudgetsDraft = Map<String, double>.from(widget.monthlyBudgets);
   }
 
   @override
@@ -95,6 +106,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     widget.onSaveFavorites(_favorites);
     widget.onSaveApiKey(_apiKeyController.text.trim());
     widget.onSaveDashboardConfig?.call(_localDashboard);
+    widget.onSaveMonthlyBudgets?.call(_monthlyBudgetsDraft);
     Navigator.of(context).pop();
   }
 
@@ -163,24 +175,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background(context),
       body: SafeArea(
         child: Column(
           children: [
             // Header
             Container(
-              color: Colors.white,
+              color: AppColors.surface(context),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Row(
                 children: [
                   IconButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.arrow_back, color: Color(0xFF475569)),
+                    icon: Icon(Icons.arrow_back, color: AppColors.textLabel(context)),
                   ),
                   Expanded(
                     child: Text(
                       l10n.settingsTitle,
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xFF1E293B), letterSpacing: -0.3),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.textPrimary(context), letterSpacing: -0.3),
                     ),
                   ),
                   ElevatedButton.icon(
@@ -188,8 +200,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     icon: const Icon(Icons.check, size: 16),
                     label: Text(l10n.save),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF3B82F6),
-                      foregroundColor: Colors.white,
+                      backgroundColor: AppColors.primary(context),
+                      foregroundColor: AppColors.onPrimary(context),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       elevation: 0,
                       textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
@@ -198,7 +210,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ],
               ),
             ),
-            const Divider(height: 1, color: Color(0xFFF1F5F9)),
+            Divider(height: 1, color: AppColors.surfaceVariant(context)),
             // Body
             Expanded(
               child: SingleChildScrollView(
@@ -239,6 +251,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       onTap: () => _toggleSection('favorites'),
                     ),
                     if (_openSection == 'favorites') _buildFavoritesSection(),
+                    // Appearance section
+                    _SectionHeader(
+                      icon: Icons.palette_outlined,
+                      title: l10n.settingsAppearance,
+                      isOpen: _openSection == 'appearance',
+                      onTap: () => _toggleSection('appearance'),
+                    ),
+                    if (_openSection == 'appearance') _buildAppearanceSection(),
                     _SectionHeader(
                       icon: Icons.dashboard,
                       title: l10n.settingsDashboard,
@@ -267,6 +287,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       onTap: () => _toggleSection('household'),
                     ),
                     if (_openSection == 'household') _buildHouseholdSection(),
+                    // Notifications navigation
+                    ListTile(
+                      leading: Icon(Icons.notifications_outlined,
+                          color: AppColors.textSecondary(context)),
+                      title: Text(l10n.notifications,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textPrimary(context))),
+                      trailing: Icon(Icons.chevron_right,
+                          color: AppColors.textMuted(context)),
+                      onTap: () {
+                        if (widget.onOpenNotificationSettings != null) {
+                          widget.onOpenNotificationSettings!();
+                        }
+                      },
+                    ),
                     const SizedBox(height: 24),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -283,7 +319,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           icon: const Icon(Icons.logout, size: 18),
                           label: Text(l10n.settingsLogout),
                           style: OutlinedButton.styleFrom(
-                            foregroundColor: const Color(0xFFEF4444),
+                            foregroundColor: AppColors.error(context),
                             side: const BorderSide(color: Color(0xFFFECACA)),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12)),
@@ -324,10 +360,142 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  Widget _buildAppearanceSection() {
+    final l10n = S.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      color: AppColors.surface(context),
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ValueListenableBuilder<ThemeMode>(
+            valueListenable: appThemeModeNotifier,
+            builder: (context, currentMode, _) {
+              return SegmentedButton<ThemeMode>(
+                segments: [
+                  ButtonSegment<ThemeMode>(
+                    value: ThemeMode.system,
+                    label: Text(l10n.themeSystem),
+                    icon: const Icon(Icons.brightness_auto),
+                  ),
+                  ButtonSegment<ThemeMode>(
+                    value: ThemeMode.light,
+                    label: Text(l10n.themeLight),
+                    icon: const Icon(Icons.light_mode),
+                  ),
+                  ButtonSegment<ThemeMode>(
+                    value: ThemeMode.dark,
+                    label: Text(l10n.themeDark),
+                    icon: const Icon(Icons.dark_mode),
+                  ),
+                ],
+                selected: {currentMode},
+                onSelectionChanged: (newSelection) {
+                  final newMode = newSelection.first;
+                  appThemeModeNotifier.value = newMode;
+                  LocalConfigService().saveThemeMode(newMode);
+                },
+              );
+            },
+          ),
+          const SizedBox(height: 24),
+          Text(
+            l10n.settingsColorPalette.toUpperCase(),
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textSecondary(context),
+              letterSpacing: 0.5,
+            ),
+          ),
+          const SizedBox(height: 12),
+          ValueListenableBuilder<AppColorPalette>(
+            valueListenable: appColorPaletteNotifier,
+            builder: (context, currentPalette, _) {
+              return Wrap(
+                spacing: 16,
+                runSpacing: 12,
+                children: AppColorPalette.values.map((p) {
+                  final isSelected = p == currentPalette;
+                  final color = AppColors.primaryStatic(p, isDark);
+                  return GestureDetector(
+                    onTap: () {
+                      appColorPaletteNotifier.value = p;
+                      LocalConfigService().saveColorPalette(p);
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: color,
+                            shape: BoxShape.circle,
+                            border: isSelected
+                                ? Border.all(
+                                    color: AppColors.textPrimary(context),
+                                    width: 2.5,
+                                  )
+                                : Border.all(
+                                    color: AppColors.border(context),
+                                    width: 1,
+                                  ),
+                          ),
+                          child: isSelected
+                              ? Icon(
+                                  Icons.check,
+                                  size: 20,
+                                  color: AppColors.primaryStatic(
+                                    p,
+                                    isDark,
+                                  ).computeLuminance() > 0.5
+                                      ? Colors.black
+                                      : Colors.white,
+                                )
+                              : null,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          _paletteLabel(p, l10n),
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: isSelected
+                                ? FontWeight.w600
+                                : FontWeight.w400,
+                            color: isSelected
+                                ? AppColors.textPrimary(context)
+                                : AppColors.textSecondary(context),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _paletteLabel(AppColorPalette palette, S l10n) {
+    return switch (palette) {
+      AppColorPalette.ocean => l10n.paletteOcean,
+      AppColorPalette.emerald => l10n.paletteEmerald,
+      AppColorPalette.violet => l10n.paletteViolet,
+      AppColorPalette.teal => l10n.paletteTeal,
+      AppColorPalette.sunset => l10n.paletteSunset,
+    };
+  }
+
   Widget _buildProfileSection() {
     final l10n = S.of(context);
     return Container(
-      color: Colors.white,
+      color: AppColors.surface(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,14 +506,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFFE2E8F0)),
+              border: Border.all(color: AppColors.border(context)),
               borderRadius: BorderRadius.circular(12),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<Country>(
                 value: _draft.country,
                 isExpanded: true,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF475569)),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
                 items: Country.values.map((c) => DropdownMenuItem(
                   value: c,
                   child: Text('${_countryLabel(c, l10n)} (${c.currencySymbol})'),
@@ -364,14 +532,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFFE2E8F0)),
+              border: Border.all(color: AppColors.border(context)),
               borderRadius: BorderRadius.circular(12),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String?>(
                 value: _draft.localeOverride,
                 isExpanded: true,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF475569)),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
                 items: [null, 'pt', 'en', 'fr', 'es'].map((code) => DropdownMenuItem(
                   value: code,
                   child: Text(_languageLabel(code, l10n)),
@@ -384,7 +552,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           // Divider between region and personal
           const SizedBox(height: 16),
-          const Divider(color: Color(0xFFE2E8F0)),
+          Divider(color: AppColors.border(context)),
           const SizedBox(height: 16),
           // Personal content
           _label(l10n.settingsMaritalStatusLabel),
@@ -392,14 +560,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFFE2E8F0)),
+              border: Border.all(color: AppColors.border(context)),
               borderRadius: BorderRadius.circular(12),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<MaritalStatus>(
                 value: _draft.personalInfo.maritalStatus,
                 isExpanded: true,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF475569)),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
                 items: MaritalStatus.values.map((s) => DropdownMenuItem(value: s, child: Text(s.localizedLabel(l10n)))).toList(),
                 onChanged: (v) {
                   if (v != null) {
@@ -429,7 +597,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
                   '${_draft.personalInfo.dependentes}',
-                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: Color(0xFF1E293B)),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: AppColors.textPrimary(context)),
                 ),
               ),
               _counterButton('+', () {
@@ -445,13 +613,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFFEFF6FF),
+              color: AppColors.infoBackground(context),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFDBEAFE)),
+              border: Border.all(color: AppColors.primaryLight(context)),
             ),
             child: Text(
               l10n.settingsSocialSecurityRate(formatPercentage(getTaxSystem(_draft.country).socialContributionRate)),
-              style: const TextStyle(fontSize: 12, color: Color(0xFF3B82F6)),
+              style: TextStyle(fontSize: 12, color: AppColors.primary(context)),
             ),
           ),
         ],
@@ -478,7 +646,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildSalariesSection() {
     final l10n = S.of(context);
     return Container(
-      color: Colors.white,
+      color: AppColors.surface(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
@@ -488,10 +656,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               margin: EdgeInsets.only(bottom: idx < _draft.salaries.length - 1 ? 16 : 0),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: salary.enabled ? Colors.white : const Color(0xFFF8FAFC),
+                color: salary.enabled ? AppColors.surface(context) : AppColors.background(context),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: salary.enabled ? const Color(0xFFE2E8F0) : const Color(0xFFF1F5F9),
+                  color: salary.enabled ? AppColors.border(context) : AppColors.surfaceVariant(context),
                   width: 2,
                 ),
               ),
@@ -507,7 +675,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             controller: TextEditingController(text: salary.label)
                               ..selection = TextSelection.collapsed(offset: salary.label.length),
                             onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(label: v)),
-                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF475569)),
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textLabel(context)),
                             decoration: InputDecoration(
                               hintText: l10n.settingsSalaryN(idx + 1),
                               border: InputBorder.none,
@@ -519,7 +687,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         if (_draft.salaries.length > 1)
                           IconButton(
                             onPressed: () => _removeSalary(idx),
-                            icon: const Icon(Icons.remove_circle_outline, size: 18, color: Color(0xFFCBD5E1)),
+                            icon: Icon(Icons.remove_circle_outline, size: 18, color: AppColors.borderMuted(context)),
                             visualDensity: VisualDensity.compact,
                             padding: EdgeInsets.zero,
                           ),
@@ -530,7 +698,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             Switch(
                               value: salary.enabled,
                               onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(enabled: v)),
-                              activeTrackColor: const Color(0xFF3B82F6),
+                              activeTrackColor: AppColors.primary(context),
                             ),
                           ],
                         ),
@@ -558,9 +726,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               child: OutlinedButton(
                                 onPressed: () => _updateSalary(idx, (s) => s.copyWith(subsidyMode: mode)),
                                 style: OutlinedButton.styleFrom(
-                                  backgroundColor: isSelected ? const Color(0xFF3B82F6) : Colors.white,
-                                  foregroundColor: isSelected ? Colors.white : const Color(0xFF64748B),
-                                  side: BorderSide(color: isSelected ? const Color(0xFF3B82F6) : const Color(0xFFE2E8F0), width: 2),
+                                  backgroundColor: isSelected ? AppColors.primary(context) : AppColors.surface(context),
+                                  foregroundColor: isSelected ? AppColors.onPrimary(context) : AppColors.textSecondary(context),
+                                  side: BorderSide(color: isSelected ? AppColors.primary(context) : AppColors.border(context), width: 2),
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                   padding: const EdgeInsets.symmetric(vertical: 8),
                                   textStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
@@ -594,9 +762,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               child: OutlinedButton(
                                 onPressed: () => _updateSalary(idx, (s) => s.copyWith(mealAllowanceType: type)),
                                 style: OutlinedButton.styleFrom(
-                                  backgroundColor: isSelected ? const Color(0xFF3B82F6) : Colors.white,
-                                  foregroundColor: isSelected ? Colors.white : const Color(0xFF64748B),
-                                  side: BorderSide(color: isSelected ? const Color(0xFF3B82F6) : const Color(0xFFE2E8F0), width: 2),
+                                  backgroundColor: isSelected ? AppColors.primary(context) : AppColors.surface(context),
+                                  foregroundColor: isSelected ? AppColors.onPrimary(context) : AppColors.textSecondary(context),
+                                  side: BorderSide(color: isSelected ? AppColors.primary(context) : AppColors.border(context), width: 2),
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                   padding: const EdgeInsets.symmetric(vertical: 8),
                                   textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
@@ -660,9 +828,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               child: OutlinedButton(
                                 onPressed: () => _updateSalary(idx, (s) => s.copyWith(titulares: n)),
                                 style: OutlinedButton.styleFrom(
-                                  backgroundColor: isSelected ? const Color(0xFF3B82F6) : Colors.white,
-                                  foregroundColor: isSelected ? Colors.white : const Color(0xFF64748B),
-                                  side: BorderSide(color: isSelected ? const Color(0xFF3B82F6) : const Color(0xFFE2E8F0), width: 2),
+                                  backgroundColor: isSelected ? AppColors.primary(context) : AppColors.surface(context),
+                                  foregroundColor: isSelected ? AppColors.onPrimary(context) : AppColors.textSecondary(context),
+                                  side: BorderSide(color: isSelected ? AppColors.primary(context) : AppColors.border(context), width: 2),
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                   padding: const EdgeInsets.symmetric(vertical: 8),
                                   textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
@@ -685,7 +853,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         return Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF8FAFC),
+                            color: AppColors.background(context),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -708,8 +876,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               icon: const Icon(Icons.add, size: 16),
               label: Text(l10n.settingsAddSalaryButton),
               style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF3B82F6),
-                side: const BorderSide(color: Color(0xFF3B82F6)),
+                foregroundColor: AppColors.primary(context),
+                side: BorderSide(color: AppColors.primary(context)),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
@@ -724,7 +892,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildExpensesSection() {
     final l10n = S.of(context);
     return Container(
-      color: Colors.white,
+      color: AppColors.surface(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
@@ -733,10 +901,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               margin: const EdgeInsets.only(bottom: 12),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: expense.enabled ? Colors.white : const Color(0xFFF8FAFC),
+                color: expense.enabled ? AppColors.surface(context) : AppColors.background(context),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: expense.enabled ? const Color(0xFFE2E8F0) : const Color(0xFFF1F5F9),
+                  color: expense.enabled ? AppColors.border(context) : AppColors.surfaceVariant(context),
                   width: 2,
                 ),
               ),
@@ -749,14 +917,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Switch(
                           value: expense.enabled,
                           onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(enabled: v)),
-                          activeTrackColor: const Color(0xFF3B82F6),
+                          activeTrackColor: AppColors.primary(context),
                         ),
                         Expanded(
                           child: TextField(
                             controller: TextEditingController(text: expense.label)
                               ..selection = TextSelection.collapsed(offset: expense.label.length),
                             onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(label: v)),
-                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF475569)),
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textLabel(context)),
                             decoration: InputDecoration(
                               hintText: l10n.settingsExpenseName,
                               border: InputBorder.none,
@@ -768,7 +936,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         IconButton(
                           onPressed: () => _removeExpense(expense.id),
                           icon: const Icon(Icons.delete_outline, size: 18),
-                          color: Colors.grey.shade300,
+                          color: AppColors.dragHandle(context),
                         ),
                       ],
                     ),
@@ -779,14 +947,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12),
                             decoration: BoxDecoration(
-                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                              border: Border.all(color: AppColors.border(context)),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: DropdownButtonHideUnderline(
                               child: DropdownButton<ExpenseCategory>(
                                 value: expense.category,
                                 isExpanded: true,
-                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Color(0xFF475569)),
+                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
                                 items: ExpenseCategory.values
                                     .map((c) => DropdownMenuItem(value: c, child: Text(c.localizedLabel(l10n))))
                                     .toList(),
@@ -800,17 +968,65 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                         ),
                         const SizedBox(width: 12),
-                        SizedBox(
-                          width: 112,
-                          child: TextFormField(
-                            initialValue: expense.amount > 0 ? expense.amount.toString() : '',
-                            onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(amount: double.tryParse(v) ?? 0)),
-                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                            decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: AppColors.border(context)),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              _fixedVariableChip(
+                                label: l10n.expenseFixed,
+                                selected: expense.isFixed,
+                                onTap: () => _updateExpense(expense.id, (e) => e.copyWith(isFixed: true)),
+                              ),
+                              _fixedVariableChip(
+                                label: l10n.expenseVariable,
+                                selected: !expense.isFixed,
+                                onTap: () => _updateExpense(expense.id, (e) => e.copyWith(isFixed: false)),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
+                    const SizedBox(height: 8),
+                    if (expense.isFixed)
+                      SizedBox(
+                        width: double.infinity,
+                        child: TextFormField(
+                          initialValue: expense.amount > 0 ? expense.amount.toString() : '',
+                          onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(amount: double.tryParse(v) ?? 0)),
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode),
+                        ),
+                      )
+                    else ...[
+                      Text(
+                        l10n.monthlyBudgetHint(_currentMonthLabel(l10n)),
+                        style: TextStyle(fontSize: 11, color: AppColors.textMuted(context)),
+                      ),
+                      const SizedBox(height: 4),
+                      SizedBox(
+                        width: double.infinity,
+                        child: TextFormField(
+                          initialValue: _monthlyBudgetsDraft[expense.category.name]?.toString() ?? '',
+                          onChanged: (v) {
+                            final amount = double.tryParse(v) ?? 0;
+                            setState(() {
+                              if (amount > 0) {
+                                _monthlyBudgetsDraft[expense.category.name] = amount;
+                              } else {
+                                _monthlyBudgetsDraft.remove(expense.category.name);
+                              }
+                            });
+                          },
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -837,7 +1053,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildDashboardSection() {
     final l10n = S.of(context);
     return Container(
-      color: Colors.white,
+      color: AppColors.surface(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -845,7 +1061,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFFEFF6FF),
+              color: AppColors.infoBackground(context),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
@@ -870,8 +1086,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: OutlinedButton(
                   onPressed: () => setState(() => _localDashboard = LocalDashboardConfig.minimalist()),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF64748B),
-                    side: const BorderSide(color: Color(0xFFE2E8F0)),
+                    foregroundColor: AppColors.textSecondary(context),
+                    side: BorderSide(color: AppColors.border(context)),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     padding: const EdgeInsets.symmetric(vertical: 10),
                   ),
@@ -883,8 +1099,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: OutlinedButton(
                   onPressed: () => setState(() => _localDashboard = LocalDashboardConfig.full()),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF64748B),
-                    side: const BorderSide(color: Color(0xFFE2E8F0)),
+                    foregroundColor: AppColors.textSecondary(context),
+                    side: BorderSide(color: AppColors.border(context)),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     padding: const EdgeInsets.symmetric(vertical: 10),
                   ),
@@ -894,29 +1110,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
           const SizedBox(height: 12),
-          _groupLabel('VISÃO GERAL'),
+          _groupLabel(l10n.dashGroupOverview),
           _dashToggle(l10n.settingsDashMonthlyLiquidity, _localDashboard.showHeroCard,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showHeroCard: v))),
           _dashToggle(l10n.settingsDashStressIndex, _localDashboard.showStressIndex,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showStressIndex: v))),
+          _dashToggle(l10n.settingsDashMonthReview, _localDashboard.showMonthReview,
+              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showMonthReview: v))),
           _dashToggle(l10n.settingsDashSummaryCards, _localDashboard.showSummaryCards,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showSummaryCards: v))),
           const SizedBox(height: 8),
-          _groupLabel('DETALHE FINANCEIRO'),
+          _groupLabel(l10n.dashGroupFinancialDetail),
           _dashToggle(l10n.settingsDashSalaryBreakdown, _localDashboard.showSalaryBreakdown,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showSalaryBreakdown: v))),
           _dashToggle(l10n.settingsDashBudgetVsActual, _localDashboard.showBudgetVsActual,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showBudgetVsActual: v))),
           _dashToggle(l10n.settingsDashExpensesBreakdown, _localDashboard.showExpensesBreakdown,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showExpensesBreakdown: v))),
+          _dashToggle(l10n.savingsGoals, _localDashboard.showSavingsGoals,
+              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showSavingsGoals: v))),
           const SizedBox(height: 8),
-          _groupLabel('ALIMENTAÇÃO E HISTÓRICO'),
-          _dashToggle(l10n.settingsDashFood, _localDashboard.showFoodSpending,
-              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showFoodSpending: v))),
+          _groupLabel(l10n.dashGroupHistory),
           _dashToggle(l10n.settingsDashPurchaseHistory, _localDashboard.showPurchaseHistory,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showPurchaseHistory: v))),
           const SizedBox(height: 8),
-          _groupLabel('GRÁFICOS'),
+          _groupLabel(l10n.dashGroupCharts),
           _dashToggle(l10n.settingsDashCharts, _localDashboard.showCharts,
               (v) => setState(() => _localDashboard = _localDashboard.copyWith(showCharts: v))),
           if (_localDashboard.showCharts) ...[
@@ -925,9 +1143,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SizedBox(height: 8),
             ...ChartType.values.map((chart) => CheckboxListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: Text(chart.localizedLabel(l10n), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF475569))),
+                  title: Text(chart.localizedLabel(l10n), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textLabel(context))),
                   value: _localDashboard.enabledCharts.contains(chart),
-                  activeColor: const Color(0xFF3B82F6),
+                  activeColor: AppColors.primary(context),
                   controlAffinity: ListTileControlAffinity.leading,
                   onChanged: (_) {
                     final enabled = List<ChartType>.from(_localDashboard.enabledCharts);
@@ -948,10 +1166,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _dashToggle(String label, bool value, ValueChanged<bool> onChanged) {
     return SwitchListTile(
       contentPadding: EdgeInsets.zero,
-      title: Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF475569))),
+      title: Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textLabel(context))),
       value: value,
-      activeTrackColor: const Color(0xFF3B82F6),
+      activeTrackColor: AppColors.primary(context),
       onChanged: onChanged,
+    );
+  }
+
+  String _currentMonthLabel(S l10n) {
+    final now = DateTime.now();
+    return '${localizedMonthFull(l10n, now.month)} ${now.year}';
+  }
+
+  Widget _fixedVariableChip({required String label, required bool selected, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: selected ? AppColors.primary(context).withValues(alpha: 0.1) : Colors.transparent,
+          borderRadius: BorderRadius.circular(11),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+            color: selected ? AppColors.primary(context) : AppColors.textMuted(context),
+          ),
+        ),
+      ),
     );
   }
 
@@ -967,7 +1211,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             .toList();
 
     return Container(
-      color: Colors.white,
+      color: AppColors.surface(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1014,8 +1258,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           TextField(
             onChanged: (v) => setState(() => _favSearch = v),
             decoration: _inputDecoration(l10n.settingsSearchProduct).copyWith(
-              prefixIcon: const Icon(Icons.search,
-                  size: 18, color: Color(0xFF94A3B8)),
+              prefixIcon: Icon(Icons.search,
+                  size: 18, color: AppColors.textMuted(context)),
               contentPadding: const EdgeInsets.symmetric(vertical: 12),
             ),
           ),
@@ -1023,7 +1267,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           if (widget.products.isEmpty)
             Text(l10n.settingsLoadingProducts,
                 style:
-                    const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)))
+                    TextStyle(fontSize: 12, color: AppColors.textMuted(context)))
           else
             Wrap(
               spacing: 8,
@@ -1113,13 +1357,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Divider(color: Color(0xFFE2E8F0)),
+        Divider(color: AppColors.border(context)),
         const SizedBox(height: 8),
         Text(title,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF3B82F6),
+            color: AppColors.primary(context),
             letterSpacing: 1.0,
           ),
         ),
@@ -1131,7 +1375,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final l10n = S.of(context);
     final ms = _draft.mealSettings;
     return Container(
-      color: Colors.white,
+      color: AppColors.surface(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1145,7 +1389,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                    border: Border.all(color: AppColors.border(context)),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: TextFormField(
@@ -1171,7 +1415,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               if (ms.householdSize != null) ...[
                 const SizedBox(width: 8),
                 IconButton(
-                  icon: const Icon(Icons.restart_alt, size: 20, color: Color(0xFF94A3B8)),
+                  icon: Icon(Icons.restart_alt, size: 20, color: AppColors.textMuted(context)),
                   tooltip: l10n.settingsUseAutoValue,
                   onPressed: () => setState(() => _draft = _draft.copyWith(
                       mealSettings: ms.copyWith(householdSize: null))),
@@ -1212,7 +1456,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close, size: 18, color: Color(0xFFEF4444)),
+                      icon: Icon(Icons.close, size: 18, color: AppColors.error(context)),
                       onPressed: () {
                         final updated = List<HouseholdMember>.from(ms.householdMembers)..removeAt(i);
                         setState(() => _draft = _draft.copyWith(
@@ -1227,7 +1471,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
                 l10n.settingsTotalEquivalent(ms.householdMembers.fold(0.0, (sum, m) => sum + m.portionEquivalent).toStringAsFixed(1)),
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF3B82F6)),
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.primary(context)),
               ),
             ),
           ],
@@ -1238,8 +1482,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               icon: const Icon(Icons.person_add_outlined, size: 18),
               label: Text(l10n.settingsAddMember, style: const TextStyle(fontSize: 13)),
               style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF3B82F6),
-                side: const BorderSide(color: Color(0xFFE2E8F0)),
+                foregroundColor: AppColors.primary(context),
+                side: BorderSide(color: AppColors.border(context)),
                 padding: const EdgeInsets.symmetric(vertical: 10),
               ),
             ),
@@ -1252,9 +1496,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: Text(l10n.settingsPreferSeasonal,
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
             subtitle: Text(l10n.settingsPreferSeasonalDesc,
-                style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
+                style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
             value: ms.preferSeasonal,
-            activeTrackColor: const Color(0xFF3B82F6),
+            activeTrackColor: AppColors.primary(context),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(preferSeasonal: v))),
           ),
@@ -1264,17 +1508,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFFE2E8F0)),
+              border: Border.all(color: AppColors.border(context)),
               borderRadius: BorderRadius.circular(12),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<MealObjective>(
                 value: ms.objective,
                 isExpanded: true,
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: Color(0xFF475569)),
+                    color: AppColors.textLabel(context)),
                 items: MealObjective.values
                     .map((o) =>
                         DropdownMenuItem(value: o, child: Text(o.localizedLabel(l10n))))
@@ -1300,7 +1544,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     style: const TextStyle(
                         fontSize: 14, fontWeight: FontWeight.w500)),
                 value: ms.enabledMeals.contains(mt),
-                activeTrackColor: const Color(0xFF3B82F6),
+                activeTrackColor: AppColors.primary(context),
                 onChanged: (v) {
                   final newSet = Set<MealType>.from(ms.enabledMeals);
                   if (v) {
@@ -1321,7 +1565,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             max: 7,
             divisions: 7,
             label: '${ms.veggieDaysPerWeek}',
-            activeColor: const Color(0xFF3B82F6),
+            activeColor: AppColors.primary(context),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(veggieDaysPerWeek: v.round()))),
           ),
@@ -1336,8 +1580,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 FilterChip(
                   label: Text(entry.value, style: const TextStyle(fontSize: 13)),
                   selected: ms.eatingOutWeekdays.contains(entry.key),
-                  selectedColor: const Color(0xFF3B82F6).withValues(alpha: 0.15),
-                  checkmarkColor: const Color(0xFF3B82F6),
+                  selectedColor: AppColors.primary(context).withValues(alpha: 0.15),
+                  checkmarkColor: AppColors.primary(context),
                   onSelected: (v) {
                     final updated = Set<int>.from(ms.eatingOutWeekdays);
                     if (v) { updated.add(entry.key); } else { updated.remove(entry.key); }
@@ -1356,7 +1600,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             value: ms.fishDaysPerWeek.toDouble(),
             min: 0, max: 5, divisions: 5,
             label: ms.fishDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.fishDaysPerWeek}',
-            activeColor: const Color(0xFF3B82F6),
+            activeColor: AppColors.primary(context),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(fishDaysPerWeek: v.round()))),
           ),
@@ -1366,7 +1610,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             value: ms.legumeDaysPerWeek.toDouble(),
             min: 0, max: 5, divisions: 5,
             label: ms.legumeDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.legumeDaysPerWeek}',
-            activeColor: const Color(0xFF3B82F6),
+            activeColor: AppColors.primary(context),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(legumeDaysPerWeek: v.round()))),
           ),
@@ -1376,7 +1620,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             value: ms.redMeatMaxPerWeek.toDouble(),
             min: 0, max: 7, divisions: 7,
             label: ms.redMeatMaxPerWeek >= 7 ? l10n.settingsNoLimit : '${ms.redMeatMaxPerWeek}',
-            activeColor: const Color(0xFF3B82F6),
+            activeColor: AppColors.primary(context),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(redMeatMaxPerWeek: v.round()))),
           ),
@@ -1406,7 +1650,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     style: const TextStyle(
                         fontSize: 14, fontWeight: FontWeight.w500)),
                 value: item.$2,
-                activeColor: const Color(0xFF3B82F6),
+                activeColor: AppColors.primary(context),
                 controlAffinity: ListTileControlAffinity.leading,
                 onChanged: (v) => item.$3(v ?? false),
               )),
@@ -1416,14 +1660,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFFE2E8F0)),
+              border: Border.all(color: AppColors.border(context)),
               borderRadius: BorderRadius.circular(12),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<SodiumPreference>(
                 value: ms.sodiumPreference,
                 isExpanded: true,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF475569)),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
                 items: SodiumPreference.values
                     .map((s) => DropdownMenuItem(value: s, child: Text(s.localizedLabel(l10n))))
                     .toList(),
@@ -1476,7 +1720,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     style: const TextStyle(
                         fontSize: 14, fontWeight: FontWeight.w500)),
                 value: ms.excludedProteins.contains(entry.key),
-                activeColor: const Color(0xFF3B82F6),
+                activeColor: AppColors.primary(context),
                 controlAffinity: ListTileControlAffinity.leading,
                 onChanged: (v) {
                   final updated = List<String>.from(ms.excludedProteins);
@@ -1500,7 +1744,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             decoration: _inputDecoration(l10n.settingsCalorieHint, suffix: l10n.settingsKcalPerDay).copyWith(
               suffixIcon: ms.dailyCalorieTarget != null
                   ? IconButton(
-                      icon: const Icon(Icons.close, size: 18, color: Color(0xFF94A3B8)),
+                      icon: Icon(Icons.close, size: 18, color: AppColors.textMuted(context)),
                       onPressed: () => setState(() => _draft = _draft.copyWith(
                           mealSettings: ms.copyWith(dailyCalorieTarget: null))),
                     )
@@ -1522,7 +1766,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               labelStyle: TextStyle(fontSize: 13, color: Colors.grey.shade500),
               suffixIcon: ms.dailyProteinTargetG != null
                   ? IconButton(
-                      icon: const Icon(Icons.close, size: 18, color: Color(0xFF94A3B8)),
+                      icon: Icon(Icons.close, size: 18, color: AppColors.textMuted(context)),
                       onPressed: () => setState(() => _draft = _draft.copyWith(
                           mealSettings: ms.copyWith(dailyProteinTargetG: null))),
                     )
@@ -1544,7 +1788,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               labelStyle: TextStyle(fontSize: 13, color: Colors.grey.shade500),
               suffixIcon: ms.dailyFiberTargetG != null
                   ? IconButton(
-                      icon: const Icon(Icons.close, size: 18, color: Color(0xFF94A3B8)),
+                      icon: Icon(Icons.close, size: 18, color: AppColors.textMuted(context)),
                       onPressed: () => setState(() => _draft = _draft.copyWith(
                           mealSettings: ms.copyWith(dailyFiberTargetG: null))),
                     )
@@ -1566,7 +1810,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     style: const TextStyle(
                         fontSize: 14, fontWeight: FontWeight.w500)),
                 value: ms.medicalConditions.contains(mc),
-                activeColor: const Color(0xFF3B82F6),
+                activeColor: AppColors.primary(context),
                 controlAffinity: ListTileControlAffinity.leading,
                 onChanged: (v) {
                   final updated = Set<MedicalCondition>.from(ms.medicalConditions);
@@ -1589,7 +1833,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             max: 60,
             divisions: 3,
             label: ms.maxPrepMinutes == 60 ? '60+' : '${ms.maxPrepMinutes}',
-            activeColor: const Color(0xFF3B82F6),
+            activeColor: AppColors.primary(context),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(maxPrepMinutes: v.round()))),
           ),
@@ -1600,7 +1844,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             max: 5,
             divisions: 4,
             label: '${ms.maxComplexity}',
-            activeColor: const Color(0xFF3B82F6),
+            activeColor: AppColors.primary(context),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(maxComplexity: v.round()))),
           ),
@@ -1612,7 +1856,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             max: 120,
             divisions: 7,
             label: ms.maxPrepMinutesWeekend >= 120 ? '120+' : '${ms.maxPrepMinutesWeekend}',
-            activeColor: const Color(0xFF3B82F6),
+            activeColor: AppColors.primary(context),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(maxPrepMinutesWeekend: v.round()))),
           ),
@@ -1623,7 +1867,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             max: 5,
             divisions: 4,
             label: '${ms.maxComplexityWeekend}',
-            activeColor: const Color(0xFF3B82F6),
+            activeColor: AppColors.primary(context),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(maxComplexityWeekend: v.round()))),
           ),
@@ -1635,7 +1879,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     style: const TextStyle(
                         fontSize: 14, fontWeight: FontWeight.w500)),
                 value: ms.availableEquipment.contains(eq),
-                activeColor: const Color(0xFF3B82F6),
+                activeColor: AppColors.primary(context),
                 controlAffinity: ListTileControlAffinity.leading,
                 onChanged: (v) {
                   final updated =
@@ -1658,7 +1902,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 style:
                     const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
             value: ms.batchCookingEnabled,
-            activeTrackColor: const Color(0xFF3B82F6),
+            activeTrackColor: AppColors.primary(context),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(batchCookingEnabled: v))),
           ),
@@ -1670,7 +1914,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               max: 4,
               divisions: 3,
               label: '${ms.maxBatchDays}',
-              activeColor: const Color(0xFF3B82F6),
+              activeColor: AppColors.primary(context),
               onChanged: (v) => setState(() => _draft = _draft.copyWith(
                   mealSettings: ms.copyWith(maxBatchDays: v.round()))),
             ),
@@ -1681,7 +1925,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 style:
                     const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
             value: ms.reuseLeftovers,
-            activeTrackColor: const Color(0xFF3B82F6),
+            activeTrackColor: AppColors.primary(context),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(reuseLeftovers: v))),
           ),
@@ -1691,7 +1935,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 style:
                     const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
             value: ms.minimizeWaste,
-            activeTrackColor: const Color(0xFF3B82F6),
+            activeTrackColor: AppColors.primary(context),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(minimizeWaste: v))),
           ),
@@ -1703,7 +1947,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               max: 10,
               divisions: 7,
               label: ms.maxNewIngredientsPerWeek == 10 ? l10n.settingsNoLimit : '${ms.maxNewIngredientsPerWeek}',
-              activeColor: const Color(0xFF3B82F6),
+              activeColor: AppColors.primary(context),
               onChanged: (v) => setState(() => _draft = _draft.copyWith(
                   mealSettings: ms.copyWith(maxNewIngredientsPerWeek: v.round()))),
             ),
@@ -1713,9 +1957,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: Text(l10n.settingsPrioritizeLowCost,
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
             subtitle: Text(l10n.settingsPrioritizeLowCostDesc,
-                style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
+                style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
             value: ms.prioritizeLowCost,
-            activeTrackColor: const Color(0xFF3B82F6),
+            activeTrackColor: AppColors.primary(context),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(prioritizeLowCost: v))),
           ),
@@ -1724,9 +1968,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: Text(l10n.settingsLunchboxLunches,
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
             subtitle: Text(l10n.settingsLunchboxLunchesDesc,
-                style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
+                style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
             value: ms.lunchboxLunches,
-            activeTrackColor: const Color(0xFF3B82F6),
+            activeTrackColor: AppColors.primary(context),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(lunchboxLunches: v))),
           ),
@@ -1764,8 +2008,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               icon: const Icon(Icons.restart_alt, size: 18),
               label: Text(l10n.settingsResetWizard),
               style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF64748B),
-                side: const BorderSide(color: Color(0xFFE2E8F0)),
+                foregroundColor: AppColors.textSecondary(context),
+                side: BorderSide(color: AppColors.border(context)),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
                 padding: const EdgeInsets.symmetric(vertical: 12),
@@ -1781,7 +2025,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final l10n = S.of(context);
     final hasKey = _apiKeyController.text.trim().isNotEmpty;
     return Container(
-      color: Colors.white,
+      color: AppColors.surface(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1795,14 +2039,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             decoration: _inputDecoration('sk-...').copyWith(
               hintText: 'sk-...',
               suffixIcon: hasKey
-                  ? const Icon(Icons.check_circle, color: Color(0xFF10B981), size: 20)
-                  : const Icon(Icons.key_outlined, color: Color(0xFFCBD5E1), size: 20),
+                  ? Icon(Icons.check_circle, color: AppColors.success(context), size: 20)
+                  : Icon(Icons.key_outlined, color: AppColors.borderMuted(context), size: 20),
             ),
           ),
           const SizedBox(height: 10),
           Text(
             l10n.settingsApiKeyInfo,
-            style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8), height: 1.5),
+            style: TextStyle(fontSize: 11, color: AppColors.textMuted(context), height: 1.5),
           ),
         ],
       ),
@@ -1815,7 +2059,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       button: true,
       label: isSelected ? l10n.wizardSelected(label) : label,
       child: Material(
-      color: isSelected ? const Color(0xFFEF4444).withValues(alpha: 0.08) : Colors.white,
+      color: isSelected ? AppColors.error(context).withValues(alpha: 0.08) : AppColors.surface(context),
       borderRadius: BorderRadius.circular(20),
       child: InkWell(
       onTap: () => _toggleFavorite(label),
@@ -1826,7 +2070,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? const Color(0xFFEF4444).withValues(alpha: 0.4) : const Color(0xFFE2E8F0),
+            color: isSelected ? AppColors.error(context).withValues(alpha: 0.4) : AppColors.border(context),
             width: isSelected ? 1.5 : 1,
           ),
         ),
@@ -1836,7 +2080,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Icon(
               isSelected ? Icons.favorite : Icons.favorite_border,
               size: 14,
-              color: isSelected ? const Color(0xFFEF4444) : const Color(0xFFCBD5E1),
+              color: isSelected ? AppColors.error(context) : AppColors.borderMuted(context),
             ),
             const SizedBox(width: 6),
             Text(
@@ -1844,7 +2088,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                color: isSelected ? const Color(0xFFEF4444) : const Color(0xFF64748B),
+                color: isSelected ? AppColors.error(context) : AppColors.textSecondary(context),
               ),
             ),
           ],
@@ -1858,7 +2102,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildHouseholdSection() {
     final l10n = S.of(context);
     return Container(
-      color: Colors.white,
+      color: AppColors.surface(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1867,16 +2111,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 8),
           ListTile(
             contentPadding: EdgeInsets.zero,
-            leading: const Icon(Icons.link, color: Color(0xFF3B82F6)),
+            leading: Icon(Icons.link, color: AppColors.primary(context)),
             title: Text(l10n.settingsGenerateInvite),
             subtitle: _inviteCode != null
                 ? SelectableText(
                     _inviteCode!,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 6,
-                        color: Color(0xFF1E293B)),
+                        color: AppColors.textPrimary(context)),
                   )
                 : Text(l10n.settingsShareWithMembers),
             trailing: IconButton(
@@ -1888,7 +2132,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 4),
           Text(
             l10n.settingsCodeValidInfo,
-            style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8), height: 1.5),
+            style: TextStyle(fontSize: 11, color: AppColors.textMuted(context), height: 1.5),
           ),
         ],
       ),
@@ -1966,10 +2210,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             height: 44,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFE2E8F0), width: 2),
+              border: Border.all(color: AppColors.border(context), width: 2),
             ),
             child: Center(
-              child: Text(text, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xFF64748B))),
+              child: Text(text, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.textSecondary(context))),
             ),
           ),
         ),
@@ -1977,12 +2221,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   InputDecoration _inputDecoration(String hint, {String? suffix}) => InputDecoration(
         hintText: hint,
-        hintStyle: TextStyle(color: Colors.grey.shade300),
+        hintStyle: TextStyle(color: AppColors.dragHandle(context)),
         suffixText: suffix,
         suffixStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey.shade400),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE2E8F0))),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFF3B82F6), width: 2)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: AppColors.border(context))),
+        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: AppColors.border(context))),
+        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: AppColors.primary(context), width: 2)),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         isDense: true,
       );
@@ -2006,37 +2250,37 @@ class _SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: isOpen ? const Color(0xFFF8FAFC) : Colors.white,
+      color: isOpen ? AppColors.background(context) : AppColors.surface(context),
       child: InkWell(
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           margin: const EdgeInsets.only(top: 8),
-          decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFF1F5F9)))),
+          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.surfaceVariant(context)))),
           child: Row(
             children: [
-              Icon(icon, size: 20, color: const Color(0xFF3B82F6)),
+              Icon(icon, size: 20, color: AppColors.primary(context)),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF475569))),
+                    Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textLabel(context))),
                     if (subtitle != null)
-                      Text(subtitle!, style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
+                      Text(subtitle!, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
                   ],
                 ),
               ),
               Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: isOpen ? const Color(0xFFEFF6FF) : Colors.transparent,
+                  color: isOpen ? AppColors.infoBackground(context) : Colors.transparent,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
                   isOpen ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                   size: 16,
-                  color: isOpen ? const Color(0xFF3B82F6) : Colors.grey.shade300,
+                  color: isOpen ? AppColors.primary(context) : AppColors.dragHandle(context),
                 ),
               ),
             ],

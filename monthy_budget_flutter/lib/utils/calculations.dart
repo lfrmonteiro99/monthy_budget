@@ -118,8 +118,9 @@ BudgetSummary calculateBudgetSummary(
   List<SalaryInfo> salaries,
   PersonalInfo personalInfo,
   List<ExpenseItem> expenses,
-  TaxSystem taxSystem,
-) {
+  TaxSystem taxSystem, {
+  Map<String, double> monthlyBudgets = const {},
+}) {
   final calcs = salaries.map((s) {
     if (!s.enabled) return const SalaryCalculation();
     return calculateNetSalary(s, personalInfo, taxSystem);
@@ -135,7 +136,10 @@ BudgetSummary calculateBudgetSummary(
 
   final totalExpenses = expenses
       .where((e) => e.enabled)
-      .fold(0.0, (sum, e) => sum + e.amount);
+      .fold(0.0, (sum, e) {
+    if (e.isFixed) return sum + e.amount;
+    return sum + (monthlyBudgets[e.category.name] ?? 0);
+  });
 
   final netLiquidity = _round2(totalNetWithMeal - totalExpenses);
   final savingsRate = totalNetWithMeal > 0 ? netLiquidity / totalNetWithMeal : 0.0;

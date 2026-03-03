@@ -38,4 +38,28 @@ class ActualExpenseService {
   Future<void> delete(String id) async {
     await _client.from('actual_expenses').delete().eq('id', id);
   }
+
+  Future<Map<String, List<ActualExpense>>> loadHistory(
+      String householdId, {int months = 12}) async {
+    final now = DateTime.now();
+    final cutoff = DateTime(now.year, now.month - months + 1);
+    final cutoffKey = '${cutoff.year}-${cutoff.month.toString().padLeft(2, '0')}';
+
+    final rows = await _client
+        .from('actual_expenses')
+        .select()
+        .eq('household_id', householdId)
+        .gte('month_key', cutoffKey)
+        .order('expense_date', ascending: false);
+
+    final expenses = (rows as List<dynamic>)
+        .map((r) => ActualExpense.fromSupabase(r as Map<String, dynamic>))
+        .toList();
+
+    final map = <String, List<ActualExpense>>{};
+    for (final e in expenses) {
+      map.putIfAbsent(e.monthKey, () => []).add(e);
+    }
+    return map;
+  }
 }

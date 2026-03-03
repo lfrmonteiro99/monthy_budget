@@ -6,6 +6,7 @@ class PurchaseRecord {
   final double amount;
   final int itemCount;
   final List<String> items;
+  final bool isMealPurchase;
 
   const PurchaseRecord({
     required this.id,
@@ -13,6 +14,7 @@ class PurchaseRecord {
     required this.amount,
     required this.itemCount,
     this.items = const [],
+    this.isMealPurchase = false,
   });
 
   factory PurchaseRecord.fromJson(Map<String, dynamic> json) => PurchaseRecord(
@@ -24,6 +26,7 @@ class PurchaseRecord {
                 ?.map((e) => e as String)
                 .toList() ??
             [],
+        isMealPurchase: json['isMealPurchase'] as bool? ?? false,
       );
 
   Map<String, dynamic> toJson() => {
@@ -32,6 +35,7 @@ class PurchaseRecord {
         'amount': amount,
         'itemCount': itemCount,
         'items': items,
+        'isMealPurchase': isMealPurchase,
       };
 }
 
