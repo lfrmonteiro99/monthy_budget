@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #3B82F6;
+  --color-primary-dark: #2563EB;
+  --color-primary-light: #DBEAFE;
+  --color-primary-glow: rgba(59, 130, 246, 0.35);
+  --color-success: #10B981;
+  --color-error: #EF4444;
+  --color-warning: #F59E0B;
+  --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-family-sans);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light mode */
+:root {
+  --bg: #F8FAFC;
+  --surface: #FFFFFF;
+  --surface-variant: #F1F5F9;
+  --text-primary: #1E293B;
+  --text-secondary: #64748B;
+  --text-muted: #94A3B8;
+  --text-label: #475569;
+  --border: #E2E8F0;
+  --border-card: #F1F5F9;
+  --header-bg: rgba(255, 255, 255, 0.85);
+  --header-border: #F1F5F9;
+  --primary-val: #3B82F6;
+  --primary-light-val: #DBEAFE;
+  --on-primary: #FFFFFF;
+  --cta-from: #3B82F6;
+  --cta-to: #2563EB;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,.07), 0 2px 4px -2px rgba(0,0,0,.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,.08), 0 4px 6px -4px rgba(0,0,0,.04);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,.08), 0 8px 10px -6px rgba(0,0,0,.04);
+}
+
+/* Dark mode */
+.dark {
+  --bg: #0F172A;
+  --surface: #1E293B;
+  --surface-variant: #334155;
+  --text-primary: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --text-label: #CBD5E1;
+  --border: #334155;
+  --border-card: #334155;
+  --header-bg: rgba(30, 41, 59, 0.95);
+  --header-border: #475569;
+  --primary-val: #60A5FA;
+  --primary-light-val: #1E3A5F;
+  --on-primary: #0F172A;
+  --cta-from: #2563EB;
+  --cta-to: #1D4ED8;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.2);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,.3);
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text-primary);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
