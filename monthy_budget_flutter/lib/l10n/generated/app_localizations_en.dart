@@ -1160,7 +1160,7 @@ class SEn extends S {
   String get settingsSalaries => 'Salaries';
 
   @override
-  String get settingsExpenses => 'Expenses';
+  String get settingsExpenses => 'Budget & Bills';
 
   @override
   String get settingsCoachAi => 'AI Coach';
@@ -1214,10 +1214,10 @@ class SEn extends S {
   String get settingsAddSalary => 'Add salary';
 
   @override
-  String get settingsAddExpense => 'Add expense';
+  String get settingsAddExpense => 'Add category';
 
   @override
-  String get settingsExpenseName => 'Expense name';
+  String get settingsExpenseName => 'Category name';
 
   @override
   String get settingsExpenseAmount => 'Amount';
@@ -1263,7 +1263,7 @@ class SEn extends S {
   String get settingsSalariesSection => 'Income';
 
   @override
-  String get settingsExpensesMonthly => 'Monthly Expenses';
+  String get settingsExpensesMonthly => 'Budget & Bills';
 
   @override
   String get settingsFavorites => 'Favorite Products';
@@ -1319,7 +1319,7 @@ class SEn extends S {
   String get settingsAddSalaryButton => 'Add salary';
 
   @override
-  String get settingsAddExpenseButton => 'Add Expense';
+  String get settingsAddExpenseButton => 'Add Category';
 
   @override
   String get settingsDeviceLocal =>
@@ -2016,7 +2016,7 @@ class SEn extends S {
   String get addExpenseInvalidAmount => 'Enter a valid amount';
 
   @override
-  String get addExpenseTooltip => 'Add expense';
+  String get addExpenseTooltip => 'Log expense';
 
   @override
   String get addExpenseItem => 'Expense';
@@ -2043,13 +2043,13 @@ class SEn extends S {
   String get themeDark => 'Dark';
 
   @override
-  String get recurringExpenses => 'Recurring Expenses';
+  String get recurringExpenses => 'Monthly Bills';
 
   @override
-  String get recurringExpenseAdd => 'Add Recurring Expense';
+  String get recurringExpenseAdd => 'Add Bill';
 
   @override
-  String get recurringExpenseEdit => 'Edit Recurring Expense';
+  String get recurringExpenseEdit => 'Edit Bill';
 
   @override
   String get recurringExpenseCategory => 'Category';
@@ -2071,23 +2071,23 @@ class SEn extends S {
 
   @override
   String get recurringExpenseEmpty =>
-      'No recurring expenses.\nAdd one to auto-generate every month.';
+      'No monthly bills.\nAdd one to auto-generate every month.';
 
   @override
-  String get recurringExpenseDeleteConfirm => 'Delete this recurring expense?';
+  String get recurringExpenseDeleteConfirm => 'Delete this bill?';
 
   @override
   String get recurringExpenseAutoCreated => 'Auto-created';
 
   @override
-  String get recurringExpenseManage => 'Manage recurring';
+  String get recurringExpenseManage => 'Manage bills';
 
   @override
-  String get recurringExpenseMarkRecurring => 'Mark as recurring';
+  String get recurringExpenseMarkRecurring => 'Mark as monthly bill';
 
   @override
   String get recurringExpensePopulated =>
-      'Recurring expenses generated for this month';
+      'Monthly bills generated for this month';
 
   @override
   String get recurringExpenseDayHint => 'E.g. 1 for the 1st';
@@ -2096,7 +2096,46 @@ class SEn extends S {
   String get recurringExpenseNoDay => 'No fixed day';
 
   @override
-  String get recurringExpenseSaved => 'Recurring expense saved';
+  String get recurringExpenseSaved => 'Bill saved';
+
+  @override
+  String billsCount(int count) {
+    return '$count bills';
+  }
+
+  @override
+  String get billsNone => 'No bills';
+
+  @override
+  String billsPerMonth(int count, String amount) {
+    return '$count bills · $amount/mo';
+  }
+
+  @override
+  String billsExceedBudget(String amount) {
+    return 'Bills ($amount) exceed budget';
+  }
+
+  @override
+  String get billsAddBill => 'Add Bill';
+
+  @override
+  String get billsBudgetSettings => 'Budget Settings';
+
+  @override
+  String get billsRecurringBills => 'Recurring Bills';
+
+  @override
+  String get billsDescription => 'Description';
+
+  @override
+  String get billsAmount => 'Amount';
+
+  @override
+  String get billsDueDay => 'Due day';
+
+  @override
+  String get billsActive => 'Active';
 
   @override
   String get expenseTrends => 'Expense Trends';

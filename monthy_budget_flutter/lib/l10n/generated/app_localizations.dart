@@ -2192,7 +2192,7 @@ abstract class S {
   /// Settings section: expenses
   ///
   /// In pt, this message translates to:
-  /// **'Despesas'**
+  /// **'Orçamento e Contas'**
   String get settingsExpenses;
 
   /// Settings section: AI coach
@@ -2300,13 +2300,13 @@ abstract class S {
   /// Settings add expense button
   ///
   /// In pt, this message translates to:
-  /// **'Adicionar despesa'**
+  /// **'Adicionar categoria'**
   String get settingsAddExpense;
 
   /// Settings field: expense name
   ///
   /// In pt, this message translates to:
-  /// **'Nome da despesa'**
+  /// **'Nome da categoria'**
   String get settingsExpenseName;
 
   /// Settings field: expense amount
@@ -2396,7 +2396,7 @@ abstract class S {
   /// Settings section header: monthly expenses
   ///
   /// In pt, this message translates to:
-  /// **'Despesas Mensais'**
+  /// **'Orçamento e Contas'**
   String get settingsExpensesMonthly;
 
   /// Settings section header: favorite products
@@ -2498,7 +2498,7 @@ abstract class S {
   /// Settings add expense button
   ///
   /// In pt, this message translates to:
-  /// **'Adicionar Despesa'**
+  /// **'Adicionar Categoria'**
   String get settingsAddExpenseButton;
 
   /// Settings device local storage info
@@ -3788,7 +3788,7 @@ abstract class S {
   /// FAB tooltip
   ///
   /// In pt, this message translates to:
-  /// **'Adicionar despesa'**
+  /// **'Registar despesa'**
   String get addExpenseTooltip;
 
   /// Expense item section label
@@ -3842,19 +3842,19 @@ abstract class S {
   /// Recurring expenses title
   ///
   /// In pt, this message translates to:
-  /// **'Despesas Recorrentes'**
+  /// **'Contas Mensais'**
   String get recurringExpenses;
 
   /// Add recurring expense
   ///
   /// In pt, this message translates to:
-  /// **'Adicionar Despesa Recorrente'**
+  /// **'Adicionar Conta'**
   String get recurringExpenseAdd;
 
   /// Edit recurring expense
   ///
   /// In pt, this message translates to:
-  /// **'Editar Despesa Recorrente'**
+  /// **'Editar Conta'**
   String get recurringExpenseEdit;
 
   /// Category field
@@ -3896,13 +3896,13 @@ abstract class S {
   /// Empty state message
   ///
   /// In pt, this message translates to:
-  /// **'Sem despesas recorrentes.\nAdicione para gerar automaticamente todos os meses.'**
+  /// **'Sem contas mensais.\nAdicione para gerar automaticamente todos os meses.'**
   String get recurringExpenseEmpty;
 
   /// Delete confirmation
   ///
   /// In pt, this message translates to:
-  /// **'Eliminar esta despesa recorrente?'**
+  /// **'Eliminar esta conta?'**
   String get recurringExpenseDeleteConfirm;
 
   /// Badge for auto-created expenses
@@ -3914,19 +3914,19 @@ abstract class S {
   /// Manage recurring button
   ///
   /// In pt, this message translates to:
-  /// **'Gerir recorrentes'**
+  /// **'Gerir contas'**
   String get recurringExpenseManage;
 
   /// Toggle to mark expense as recurring
   ///
   /// In pt, this message translates to:
-  /// **'Marcar como recorrente'**
+  /// **'Marcar como conta mensal'**
   String get recurringExpenseMarkRecurring;
 
   /// Snackbar when recurring populated
   ///
   /// In pt, this message translates to:
-  /// **'Despesas recorrentes geradas para este mês'**
+  /// **'Contas mensais geradas para este mês'**
   String get recurringExpensePopulated;
 
   /// Hint for day of month field
@@ -3944,8 +3944,74 @@ abstract class S {
   /// Snackbar on save
   ///
   /// In pt, this message translates to:
-  /// **'Despesa recorrente guardada'**
+  /// **'Conta guardada'**
   String get recurringExpenseSaved;
+
+  /// No description provided for @billsCount.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} contas'**
+  String billsCount(int count);
+
+  /// No description provided for @billsNone.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem contas'**
+  String get billsNone;
+
+  /// No description provided for @billsPerMonth.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} contas · {amount}/mês'**
+  String billsPerMonth(int count, String amount);
+
+  /// No description provided for @billsExceedBudget.
+  ///
+  /// In pt, this message translates to:
+  /// **'Contas ({amount}) excedem orçamento'**
+  String billsExceedBudget(String amount);
+
+  /// No description provided for @billsAddBill.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar Conta'**
+  String get billsAddBill;
+
+  /// No description provided for @billsBudgetSettings.
+  ///
+  /// In pt, this message translates to:
+  /// **'Configuração do Orçamento'**
+  String get billsBudgetSettings;
+
+  /// No description provided for @billsRecurringBills.
+  ///
+  /// In pt, this message translates to:
+  /// **'Contas Recorrentes'**
+  String get billsRecurringBills;
+
+  /// No description provided for @billsDescription.
+  ///
+  /// In pt, this message translates to:
+  /// **'Descrição'**
+  String get billsDescription;
+
+  /// No description provided for @billsAmount.
+  ///
+  /// In pt, this message translates to:
+  /// **'Montante'**
+  String get billsAmount;
+
+  /// No description provided for @billsDueDay.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dia de vencimento'**
+  String get billsDueDay;
+
+  /// No description provided for @billsActive.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ativa'**
+  String get billsActive;
 
   /// Expense trends screen title
   ///

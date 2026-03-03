@@ -129,6 +129,37 @@
   background: linear-gradient(135deg, #60A5FA, #3B82F6);
 }
 
+/* ── Light mode overrides (system-dark + manual light toggle) ── */
+[data-theme="light"] .site-header {
+  background: rgba(255, 255, 255, 0.85);
+  border-bottom-color: var(--border-card);
+}
+
+[data-theme="light"] .nav-brand {
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .nav-brand-icon {
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+}
+
+[data-theme="light"] .locale-select {
+  background: var(--surface-variant);
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+
+[data-theme="light"] .cta-box {
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+}
+
+[data-theme="light"] .hero h1 span {
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 /* ── Reset & Base ───────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1138,8 +1169,16 @@ img { max-width: 100%; height: auto; display: block; }
 .theme-toggle .icon-moon { display: none; }
 .theme-toggle .icon-sun { display: block; }
 
+@media (prefers-color-scheme: dark) {
+  .theme-toggle .icon-moon { display: block; }
+  .theme-toggle .icon-sun { display: none; }
+}
+
 [data-theme="dark"] .theme-toggle .icon-moon { display: block; }
 [data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+
+[data-theme="light"] .theme-toggle .icon-moon { display: none; }
+[data-theme="light"] .theme-toggle .icon-sun { display: block; }
 
 /* ── Hero Stats ────────────────────────────────────────────── */
 .hero-stats {
@@ -1180,4 +1219,134 @@ img { max-width: 100%; height: auto; display: block; }
 @media (max-width: 480px) {
   .hero-stat { padding: 0 20px; }
   .hero-stat-value { font-size: 1.25rem; }
+}
+
+/* ── Persona Timeline ──────────────────────────────────────── */
+.timeline {
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 0;
+}
+
+.timeline-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  background: var(--border);
+  transform: translateX(-50%);
+}
+
+.timeline-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 48px;
+  width: 50%;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Left items: positioned on left half, content flows right-to-left */
+.timeline-item.timeline-left {
+  left: 0;
+  padding-right: 48px;
+  justify-content: flex-end;
+}
+
+/* Right items: positioned on right half, content flows left-to-right */
+.timeline-item.timeline-right {
+  left: 50%;
+  padding-left: 48px;
+  justify-content: flex-start;
+}
+
+/* Day badge on the timeline line */
+.timeline-badge {
+  position: absolute;
+  top: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--on-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  z-index: 2;
+  box-shadow: 0 0 0 4px var(--background);
+}
+
+.timeline-left .timeline-badge {
+  right: -20px;
+}
+
+.timeline-right .timeline-badge {
+  left: -20px;
+}
+
+/* Card */
+.timeline-card {
+  background: var(--surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  width: 100%;
+  transition: all var(--transition);
+}
+
+.timeline-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.timeline-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  color: var(--primary);
+}
+
+.timeline-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.timeline-card p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ── Timeline Mobile (<768px) ──────────────────────────────── */
+@media (max-width: 768px) {
+  .timeline-line {
+    left: 20px;
+    transform: none;
+  }
+
+  .timeline-item {
+    width: 100%;
+    left: 0 !important;
+    padding-left: 56px !important;
+    padding-right: 0 !important;
+    justify-content: flex-start !important;
+  }
+
+  .timeline-badge {
+    left: 0 !important;
+    right: auto !important;
+  }
 }

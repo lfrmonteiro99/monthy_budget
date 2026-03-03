@@ -35,7 +35,6 @@ import 'screens/settings_screen.dart';
 import 'screens/grocery_screen.dart';
 import 'screens/auth/auth_gate.dart';
 import 'screens/setup_wizard_screen.dart';
-import 'screens/recurring_expenses_screen.dart';
 import 'screens/expense_trends_screen.dart';
 import 'screens/notification_settings_screen.dart';
 import 'models/recurring_expense.dart';
@@ -268,12 +267,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   void _openRecurringExpenses() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => RecurringExpensesScreen(
-          householdId: widget.householdId,
-          expenses: _recurringExpenses,
-          onChanged: (updated) =>
-              setState(() => _recurringExpenses = updated),
-        ),
+        builder: (_) => _buildSettingsScreen(initialSection: 'expenses'),
       ),
     );
   }
@@ -598,6 +592,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         await _monthlyBudgetService.saveAll(budgets, widget.householdId);
         _loadMonthlyBudgets();
       },
+      recurringExpenses: _recurringExpenses,
+      onRecurringChanged: (updated) => setState(() => _recurringExpenses = updated),
       initialSection: initialSection,
     );
   }

@@ -1165,7 +1165,7 @@ class SFr extends S {
   String get settingsSalaries => 'Salaires';
 
   @override
-  String get settingsExpenses => 'Dépenses';
+  String get settingsExpenses => 'Budget et Factures';
 
   @override
   String get settingsCoachAi => 'Coach IA';
@@ -1219,10 +1219,10 @@ class SFr extends S {
   String get settingsAddSalary => 'Ajouter un salaire';
 
   @override
-  String get settingsAddExpense => 'Ajouter une dépense';
+  String get settingsAddExpense => 'Ajouter une catégorie';
 
   @override
-  String get settingsExpenseName => 'Nom de la dépense';
+  String get settingsExpenseName => 'Nom de catégorie';
 
   @override
   String get settingsExpenseAmount => 'Montant';
@@ -1269,7 +1269,7 @@ class SFr extends S {
   String get settingsSalariesSection => 'Revenus';
 
   @override
-  String get settingsExpensesMonthly => 'Dépenses Mensuelles';
+  String get settingsExpensesMonthly => 'Budget et Factures';
 
   @override
   String get settingsFavorites => 'Produits Favoris';
@@ -1324,7 +1324,7 @@ class SFr extends S {
   String get settingsAddSalaryButton => 'Ajouter un salaire';
 
   @override
-  String get settingsAddExpenseButton => 'Ajouter une Dépense';
+  String get settingsAddExpenseButton => 'Ajouter une Catégorie';
 
   @override
   String get settingsDeviceLocal =>
@@ -2024,7 +2024,7 @@ class SFr extends S {
   String get addExpenseInvalidAmount => 'Entrez un montant valide';
 
   @override
-  String get addExpenseTooltip => 'Ajouter une dépense';
+  String get addExpenseTooltip => 'Saisir une dépense';
 
   @override
   String get addExpenseItem => 'Dépense';
@@ -2051,13 +2051,13 @@ class SFr extends S {
   String get themeDark => 'Sombre';
 
   @override
-  String get recurringExpenses => 'Dépenses Récurrentes';
+  String get recurringExpenses => 'Factures Mensuelles';
 
   @override
-  String get recurringExpenseAdd => 'Ajouter une Dépense Récurrente';
+  String get recurringExpenseAdd => 'Ajouter une Facture';
 
   @override
-  String get recurringExpenseEdit => 'Modifier la Dépense Récurrente';
+  String get recurringExpenseEdit => 'Modifier la Facture';
 
   @override
   String get recurringExpenseCategory => 'Catégorie';
@@ -2079,24 +2079,23 @@ class SFr extends S {
 
   @override
   String get recurringExpenseEmpty =>
-      'Aucune dépense récurrente.\nAjoutez-en pour générer automatiquement chaque mois.';
+      'Aucune facture mensuelle.\nAjoutez-en une pour la générer automatiquement chaque mois.';
 
   @override
-  String get recurringExpenseDeleteConfirm =>
-      'Supprimer cette dépense récurrente ?';
+  String get recurringExpenseDeleteConfirm => 'Supprimer cette facture ?';
 
   @override
   String get recurringExpenseAutoCreated => 'Créée automatiquement';
 
   @override
-  String get recurringExpenseManage => 'Gérer récurrentes';
+  String get recurringExpenseManage => 'Gérer les factures';
 
   @override
-  String get recurringExpenseMarkRecurring => 'Marquer comme récurrente';
+  String get recurringExpenseMarkRecurring => 'Marquer comme facture mensuelle';
 
   @override
   String get recurringExpensePopulated =>
-      'Dépenses récurrentes générées pour ce mois';
+      'Factures mensuelles générées pour ce mois';
 
   @override
   String get recurringExpenseDayHint => 'Ex : 1 pour le 1er';
@@ -2105,7 +2104,46 @@ class SFr extends S {
   String get recurringExpenseNoDay => 'Pas de jour fixe';
 
   @override
-  String get recurringExpenseSaved => 'Dépense récurrente enregistrée';
+  String get recurringExpenseSaved => 'Facture enregistrée';
+
+  @override
+  String billsCount(int count) {
+    return '$count factures';
+  }
+
+  @override
+  String get billsNone => 'Aucune facture';
+
+  @override
+  String billsPerMonth(int count, String amount) {
+    return '$count factures · $amount/mois';
+  }
+
+  @override
+  String billsExceedBudget(String amount) {
+    return 'Factures ($amount) dépassent le budget';
+  }
+
+  @override
+  String get billsAddBill => 'Ajouter une Facture';
+
+  @override
+  String get billsBudgetSettings => 'Paramètres du Budget';
+
+  @override
+  String get billsRecurringBills => 'Factures Récurrentes';
+
+  @override
+  String get billsDescription => 'Description';
+
+  @override
+  String get billsAmount => 'Montant';
+
+  @override
+  String get billsDueDay => 'Jour d\'échéance';
+
+  @override
+  String get billsActive => 'Active';
 
   @override
   String get expenseTrends => 'Tendances des Dépenses';
