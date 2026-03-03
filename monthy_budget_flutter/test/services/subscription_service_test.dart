@@ -333,6 +333,116 @@ void main() {
       });
     });
 
+    group('upgradeTo() edge cases', () {
+      test('upgrading to free tier still marks trialUsed', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+        );
+
+        final updated =
+            await service.upgradeTo(state, SubscriptionTier.free);
+
+        expect(updated.tier, SubscriptionTier.free);
+        expect(updated.trialUsed, true);
+        expect(updated.isTrialActive, false);
+      });
+
+      test('upgrade from premium to family', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime.now(),
+          trialUsed: true,
+        );
+
+        final updated =
+            await service.upgradeTo(state, SubscriptionTier.family);
+
+        expect(updated.tier, SubscriptionTier.family);
+        expect(updated.hasFamilyAccess, true);
+      });
+
+      test('upgrade from family to premium (downgrade tier but still via upgradeTo)', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.family,
+          trialStartDate: DateTime.now(),
+          trialUsed: true,
+        );
+
+        final updated =
+            await service.upgradeTo(state, SubscriptionTier.premium);
+
+        expect(updated.tier, SubscriptionTier.premium);
+        expect(updated.hasPremiumAccess, true);
+        expect(updated.hasFamilyAccess, false);
+      });
+    });
+
+    group('markFeatureExplored() accumulation', () {
+      test('multiple calls accumulate explored features', () async {
+        SharedPreferences.setMockInitialValues({});
+        var state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+        );
+
+        state = await service.markFeatureExplored(state, 'dashboard');
+        state = await service.markFeatureExplored(state, 'ai_coach');
+        state = await service.markFeatureExplored(state, 'export');
+
+        expect(state.featuresExplored, {'dashboard', 'ai_coach', 'export'});
+        expect(state.featuresExploredCount, 3);
+      });
+
+      test('accumulated state persists correctly', () async {
+        SharedPreferences.setMockInitialValues({});
+        var state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+        );
+
+        state = await service.markFeatureExplored(state, 'dashboard');
+        state = await service.markFeatureExplored(state, 'meal_planner');
+
+        final prefs = await SharedPreferences.getInstance();
+        final restored = SubscriptionState.fromJsonString(
+          prefs.getString('subscription_state')!,
+        );
+        expect(restored.featuresExplored, {'dashboard', 'meal_planner'});
+      });
+    });
+
+    group('downgrade() edge cases', () {
+      test('downgrade from family tier', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.family,
+          trialStartDate: DateTime.now(),
+          trialUsed: true,
+        );
+
+        final updated = await service.downgrade(state);
+
+        expect(updated.tier, SubscriptionTier.free);
+        expect(updated.hasFamilyAccess, false);
+        expect(updated.hasPremiumAccess, false);
+      });
+
+      test('downgrade from free tier (no-op on tier but still marks trialUsed)', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.free,
+          trialStartDate: DateTime.now(),
+        );
+
+        final updated = await service.downgrade(state);
+
+        expect(updated.tier, SubscriptionTier.free);
+        expect(updated.trialUsed, true);
+        expect(updated.isTrialActive, false);
+      });
+    });
+
     group('full lifecycle', () {
       test('load → explore → upgrade → downgrade', () async {
         SharedPreferences.setMockInitialValues({});

@@ -38,9 +38,24 @@ void main() {
       expect(featureTierRequirements[PremiumFeature.aiCoach], SubscriptionTier.premium);
       expect(featureTierRequirements[PremiumFeature.mealPlanner], SubscriptionTier.premium);
       expect(featureTierRequirements[PremiumFeature.exportData], SubscriptionTier.premium);
+      expect(featureTierRequirements[PremiumFeature.unlimitedCategories], SubscriptionTier.premium);
+      expect(featureTierRequirements[PremiumFeature.billReminders], SubscriptionTier.premium);
+      expect(featureTierRequirements[PremiumFeature.shoppingListSync], SubscriptionTier.premium);
       expect(featureTierRequirements[PremiumFeature.noAds], SubscriptionTier.premium);
       expect(featureTierRequirements[PremiumFeature.expenseTrends], SubscriptionTier.premium);
       expect(featureTierRequirements[PremiumFeature.unlimitedSavingsGoals], SubscriptionTier.premium);
+    });
+
+    test('has exactly 9 premium and 6 family features', () {
+      final premiumCount = featureTierRequirements.values
+          .where((t) => t == SubscriptionTier.premium)
+          .length;
+      final familyCount = featureTierRequirements.values
+          .where((t) => t == SubscriptionTier.family)
+          .length;
+      expect(premiumCount, 9);
+      expect(familyCount, 6);
+      expect(premiumCount + familyCount, PremiumFeature.values.length);
     });
 
     test('family features map to family tier', () {
@@ -50,6 +65,26 @@ void main() {
       expect(featureTierRequirements[PremiumFeature.monthReview], SubscriptionTier.family);
       expect(featureTierRequirements[PremiumFeature.dashboardCustomization], SubscriptionTier.family);
       expect(featureTierRequirements[PremiumFeature.allThemes], SubscriptionTier.family);
+    });
+  });
+
+  group('constants', () {
+    test('trialDays is 14', () {
+      expect(SubscriptionState.trialDays, 14);
+    });
+
+    test('discoverableFeatures has 9 entries in expected order', () {
+      expect(SubscriptionState.discoverableFeatures, [
+        'dashboard',
+        'ai_coach',
+        'meal_planner',
+        'expense_tracker',
+        'savings_goals',
+        'shopping_list',
+        'grocery_browser',
+        'export',
+        'tax_simulator',
+      ]);
     });
   });
 
@@ -88,11 +123,27 @@ void main() {
         expect(state.isTrialActive, false);
       });
 
+      test('true on day 13 (last active day)', () {
+        final state = makeState(
+          trialStartDate: DateTime.now().subtract(const Duration(days: 13)),
+        );
+        expect(state.isTrialActive, true);
+      });
+
       test('false exactly at 14 days', () {
         final state = makeState(
           trialStartDate: DateTime.now().subtract(const Duration(days: 14)),
         );
         expect(state.isTrialActive, false);
+      });
+
+      test('true for paid tier with active trial window', () {
+        final state = makeState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime.now(),
+        );
+        // isTrialActive doesn't care about tier, only trialUsed and date
+        expect(state.isTrialActive, true);
       });
 
       test('false when trialUsed is true regardless of date', () {
@@ -131,6 +182,21 @@ void main() {
         );
         expect(state.trialDaysRemaining, 0);
       });
+
+      test('clamps to max 14 even with future trialStartDate', () {
+        final state = makeState(
+          trialStartDate: DateTime.now().add(const Duration(days: 5)),
+        );
+        // remaining = 14 - (-5) = 19, clamped to 14
+        expect(state.trialDaysRemaining, 14);
+      });
+
+      test('returns 1 on day 13', () {
+        final state = makeState(
+          trialStartDate: DateTime.now().subtract(const Duration(days: 13)),
+        );
+        expect(state.trialDaysRemaining, 1);
+      });
     });
 
     group('hasPremiumAccess', () {
@@ -165,6 +231,24 @@ void main() {
         );
         expect(state.hasPremiumAccess, false);
       });
+
+      test('true for premium tier even when trialUsed', () {
+        final state = makeState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
+          trialUsed: true,
+        );
+        expect(state.hasPremiumAccess, true);
+      });
+
+      test('true for family tier even when trialUsed', () {
+        final state = makeState(
+          tier: SubscriptionTier.family,
+          trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
+          trialUsed: true,
+        );
+        expect(state.hasPremiumAccess, true);
+      });
     });
 
     group('hasFamilyAccess', () {
@@ -196,6 +280,24 @@ void main() {
         final state = makeState(
           tier: SubscriptionTier.free,
           trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
+        );
+        expect(state.hasFamilyAccess, false);
+      });
+
+      test('true for family tier even when trialUsed', () {
+        final state = makeState(
+          tier: SubscriptionTier.family,
+          trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
+          trialUsed: true,
+        );
+        expect(state.hasFamilyAccess, true);
+      });
+
+      test('false for premium tier even when trialUsed', () {
+        final state = makeState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
+          trialUsed: true,
         );
         expect(state.hasFamilyAccess, false);
       });
@@ -269,6 +371,49 @@ void main() {
               reason: '${feature.name} should be accessible for family tier');
         }
       });
+
+      test('exhaustive: premium tier accesses all premium but no family features', () {
+        final state = makeState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
+        );
+
+        for (final feature in PremiumFeature.values) {
+          final required = featureTierRequirements[feature]!;
+          if (required == SubscriptionTier.premium) {
+            expect(state.canAccess(feature), true,
+                reason: '${feature.name} should be accessible for premium tier');
+          } else if (required == SubscriptionTier.family) {
+            expect(state.canAccess(feature), false,
+                reason: '${feature.name} should NOT be accessible for premium tier');
+          }
+        }
+      });
+
+      test('exhaustive: free tier (no trial) accesses no premium/family features', () {
+        final state = makeState(
+          tier: SubscriptionTier.free,
+          trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
+        );
+
+        for (final feature in PremiumFeature.values) {
+          expect(state.canAccess(feature), false,
+              reason: '${feature.name} should NOT be accessible for free tier without trial');
+        }
+      });
+
+      test('canAccess with trialUsed still allows paid tier features', () {
+        final state = makeState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime.now(),
+          trialUsed: true,
+        );
+
+        expect(state.canAccess(PremiumFeature.aiCoach), true);
+        expect(state.canAccess(PremiumFeature.exportData), true);
+        // But not family features
+        expect(state.canAccess(PremiumFeature.householdSharing), false);
+      });
     });
 
     group('feature exploration', () {
@@ -320,6 +465,25 @@ void main() {
         final state = makeState();
         expect(state.nextFeatureToDiscover, 'dashboard');
       });
+
+      test('nextFeatureToDiscover skips explored and returns first gap', () {
+        // Explored dashboard and meal_planner but NOT ai_coach
+        final state = makeState(
+          featuresExplored: {'dashboard', 'meal_planner'},
+        );
+        expect(state.nextFeatureToDiscover, 'ai_coach');
+      });
+
+      test('features outside discoverableFeatures do not affect progress', () {
+        final state = makeState(
+          featuresExplored: {'unknown_feature', 'another_unknown'},
+        );
+        // Count includes unknown features but progress is capped by discoverableFeatures.length
+        expect(state.featuresExploredCount, 2);
+        expect(state.explorationProgress, 2 / SubscriptionState.discoverableFeatures.length);
+        // nextFeatureToDiscover still returns first discoverable
+        expect(state.nextFeatureToDiscover, 'dashboard');
+      });
     });
 
     group('copyWith', () {
@@ -348,6 +512,36 @@ void main() {
         final original = makeState(featuresExplored: {'a'});
         final copy = original.copyWith(featuresExplored: {'a', 'b', 'c'});
         expect(copy.featuresExplored, {'a', 'b', 'c'});
+      });
+
+      test('updates trialStartDate only', () {
+        final original = makeState(
+          trialStartDate: DateTime(2026, 1, 1),
+          tier: SubscriptionTier.premium,
+        );
+        final copy = original.copyWith(trialStartDate: DateTime(2026, 6, 15));
+        expect(copy.trialStartDate, DateTime(2026, 6, 15));
+        expect(copy.tier, SubscriptionTier.premium);
+      });
+
+      test('updates trialUsed only', () {
+        final original = makeState(trialUsed: false);
+        final copy = original.copyWith(trialUsed: true);
+        expect(copy.trialUsed, true);
+        expect(copy.tier, original.tier);
+      });
+
+      test('does not mutate original', () {
+        final original = makeState(
+          tier: SubscriptionTier.free,
+          featuresExplored: {'dashboard'},
+        );
+        original.copyWith(
+          tier: SubscriptionTier.family,
+          featuresExplored: {'dashboard', 'ai_coach', 'export'},
+        );
+        expect(original.tier, SubscriptionTier.free);
+        expect(original.featuresExplored, {'dashboard'});
       });
     });
 
@@ -385,6 +579,67 @@ void main() {
         };
         final state = SubscriptionState.fromJson(json);
         expect(state.tier, SubscriptionTier.free);
+      });
+
+      test('toJson produces expected keys and types', () {
+        final state = SubscriptionState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime(2026, 3, 1),
+          trialUsed: true,
+          featuresExplored: {'dashboard'},
+        );
+
+        final json = state.toJson();
+
+        expect(json['tier'], 'premium');
+        expect(json['trialStartDate'], isA<String>());
+        expect(json['trialUsed'], true);
+        expect(json['featuresExplored'], isA<List>());
+        expect(json['featuresExplored'], contains('dashboard'));
+        expect(json.keys.length, 4);
+      });
+
+      test('fromJson with empty featuresExplored list', () {
+        final json = {
+          'tier': 'free',
+          'trialStartDate': DateTime.now().toIso8601String(),
+          'trialUsed': false,
+          'featuresExplored': <dynamic>[],
+        };
+        final state = SubscriptionState.fromJson(json);
+        expect(state.featuresExplored, isEmpty);
+      });
+
+      test('fromJson with null featuresExplored', () {
+        final json = {
+          'tier': 'premium',
+          'trialStartDate': DateTime.now().toIso8601String(),
+          'trialUsed': true,
+          'featuresExplored': null,
+        };
+        final state = SubscriptionState.fromJson(json);
+        expect(state.featuresExplored, isEmpty);
+      });
+
+      test('fromJson with null trialUsed defaults to false', () {
+        final json = {
+          'tier': 'free',
+          'trialStartDate': DateTime.now().toIso8601String(),
+          'trialUsed': null,
+        };
+        final state = SubscriptionState.fromJson(json);
+        expect(state.trialUsed, false);
+      });
+
+      test('roundtrips all three tiers correctly', () {
+        for (final tier in SubscriptionTier.values) {
+          final original = SubscriptionState(
+            tier: tier,
+            trialStartDate: DateTime(2026, 1, 1),
+          );
+          final restored = SubscriptionState.fromJson(original.toJson());
+          expect(restored.tier, tier, reason: '${tier.name} should roundtrip');
+        }
       });
     });
 
