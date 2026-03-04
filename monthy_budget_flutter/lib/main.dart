@@ -55,6 +55,7 @@ import 'screens/paywall_screen.dart';
 import 'widgets/trial_banner.dart';
 import 'widgets/feature_discovery_card.dart';
 import 'services/ad_service.dart';
+import 'services/revenuecat_service.dart';
 import 'widgets/ad_banner_widget.dart';
 
 /// Global notifier for reactive locale changes from settings.
@@ -78,6 +79,7 @@ Future<void> main() async {
   AppColors.palette = savedPalette;
   await NotificationService().init();
   await AdService.initialize();
+  await RevenueCatService.initialize();
   runApp(const OrcamentoMensalApp());
 }
 
@@ -191,12 +193,16 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _shoppingListSub.cancel();
+    RevenueCatService.logout();
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) _refreshData();
+    if (state == AppLifecycleState.resumed) {
+      _refreshData();
+      _syncRevenueCat();
+    }
   }
 
   /// Lightweight refresh of household-synced data — called on app resume.
@@ -252,6 +258,23 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     _loadMonthlyBudgets();
     _loadNotificationPrefs();
     _loadSavingsGoals();
+    _syncRevenueCat();
+  }
+
+  /// Login to RevenueCat and sync the remote subscription tier.
+  Future<void> _syncRevenueCat() async {
+    try {
+      final user = Supabase.instance.client.auth.currentUser;
+      await RevenueCatService.login(user?.id);
+      final remoteTier = await RevenueCatService.getCurrentTier();
+      final updated = await _subscriptionService.syncFromRemoteTier(
+          _subscription, remoteTier);
+      if (mounted && updated != _subscription) {
+        setState(() => _subscription = updated);
+      }
+    } catch (e) {
+      debugPrint('RevenueCat sync error: $e');
+    }
   }
 
   String get _currentMonthKey {
@@ -262,13 +285,19 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   Future<void> _loadActualExpenses() async {
     final expenses = await _actualExpenseService.loadMonth(
         widget.householdId, _currentMonthKey);
-    if (mounted) setState(() => _actualExpenses = expenses);
+    if (mounted) {
+      setState(() => _actualExpenses = expenses);
+      _refreshNotificationSchedules();
+    }
   }
 
   Future<void> _loadRecurringExpenses() async {
     final recurring =
         await _recurringExpenseService.load(widget.householdId);
-    if (mounted) setState(() => _recurringExpenses = recurring);
+    if (mounted) {
+      setState(() => _recurringExpenses = recurring);
+      _refreshNotificationSchedules();
+    }
     // Auto-populate recurring expenses for the current month
     final created = await _recurringExpenseService.populateMonthIfNeeded(
         widget.householdId, _currentMonthKey);
@@ -306,16 +335,61 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         await _localConfigService.loadNotificationPreferences();
     if (mounted) {
       setState(() => _notificationPrefs = prefs);
-      // Schedule bill reminders on app start if enabled
-      if (prefs.billReminders) {
-        NotificationService().refreshAllSchedules(
-          prefs: prefs,
-          recurringExpenses: _recurringExpenses,
-          budgetUsagePercent: 0,
-          hasMealPlan: true,
-        );
+      _refreshNotificationSchedules();
+    }
+  }
+
+  double _currentBudgetUsagePercent() {
+    final totalBudget = _settings.expenses
+        .where((e) => e.enabled)
+        .fold<double>(0, (sum, e) => sum + e.amount);
+    if (totalBudget <= 0) return 0;
+
+    final spent = _actualExpenses.fold<double>(
+      0,
+      (sum, e) => sum + e.amount,
+    );
+    return (spent / totalBudget) * 100;
+  }
+
+  ({String category, double percent})? _topCategoryUsage() {
+    final budgetByCategory = <String, double>{};
+    for (final item in _settings.expenses.where((e) => e.enabled && e.amount > 0)) {
+      budgetByCategory.update(item.category.name, (v) => v + item.amount,
+          ifAbsent: () => item.amount);
+    }
+    if (budgetByCategory.isEmpty) return null;
+
+    final spentByCategory = <String, double>{};
+    for (final expense in _actualExpenses) {
+      spentByCategory.update(expense.category, (v) => v + expense.amount,
+          ifAbsent: () => expense.amount);
+    }
+
+    String? topCategory;
+    double topPercent = 0;
+    for (final entry in budgetByCategory.entries) {
+      final spent = spentByCategory[entry.key] ?? 0;
+      final percent = entry.value > 0 ? (spent / entry.value) * 100 : 0;
+      if (topCategory == null || percent > topPercent) {
+        topCategory = entry.key;
+        topPercent = percent;
       }
     }
+    if (topCategory == null) return null;
+    return (category: topCategory, percent: topPercent);
+  }
+
+  void _refreshNotificationSchedules() {
+    final topCategory = _topCategoryUsage();
+    unawaited(NotificationService().refreshAllSchedules(
+      prefs: _notificationPrefs,
+      recurringExpenses: _recurringExpenses,
+      budgetUsagePercent: _currentBudgetUsagePercent(),
+      hasMealPlan: true, // TODO: wire with generated meal plan state.
+      topCategoryName: topCategory?.category,
+      topCategoryUsagePercent: topCategory?.percent,
+    ));
   }
 
   void _openExpenseTrends() {
@@ -366,12 +440,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           preferences: _notificationPrefs,
           onSave: (prefs) {
             setState(() => _notificationPrefs = prefs);
-            NotificationService().refreshAllSchedules(
-              prefs: prefs,
-              recurringExpenses: _recurringExpenses,
-              budgetUsagePercent: 0, // Calculated on demand
-              hasMealPlan: true, // Simplified
-            );
+            _refreshNotificationSchedules();
           },
         ),
       ),
@@ -387,16 +456,26 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     if (mounted) setState(() => _subscription = updated);
   }
 
-  /// Open the paywall screen.
-  void _openPaywall({PremiumFeature? blockedFeature}) {
+  /// Open the paywall — tries RevenueCat's hosted paywall first, falls back
+  /// to the custom PaywallScreen (e.g. in simulate mode).
+  void _openPaywall({PremiumFeature? blockedFeature}) async {
+    // Try the RevenueCat-hosted paywall first.
+    final result = await RevenueCatService.presentPaywall();
+    if (result != null) {
+      // RC paywall was shown. Sync tier regardless of outcome — the user
+      // may have purchased, restored, or dismissed.
+      await _syncRevenueCat();
+      return;
+    }
+
+    // Fallback: custom paywall (simulate mode or RC not configured).
+    if (!mounted) return;
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => PaywallScreen(
           subscription: _subscription,
           blockedFeature: blockedFeature,
           onSelectTier: (tier) async {
-            // TODO: Integrate with real payment (RevenueCat / in_app_purchase)
-            // For now, simulate upgrade
             final updated =
                 await _subscriptionService.upgradeTo(_subscription, tier);
             if (mounted) {
@@ -406,7 +485,37 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                 SnackBar(
                   content: Text(tier == SubscriptionTier.free
                       ? 'Continuing with Free plan'
-                      : 'Upgraded to ${tier.name} — thank you!'),
+                      : 'Upgraded to Pro — thank you!'),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            }
+          },
+          onPurchaseComplete: (tier) async {
+            final updated =
+                await _subscriptionService.upgradeTo(_subscription, tier);
+            if (mounted) {
+              setState(() => _subscription = updated);
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Upgraded to Pro — thank you!'),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            }
+          },
+          onRestoreComplete: (tier) async {
+            final updated = await _subscriptionService.syncFromRemoteTier(
+                _subscription, tier);
+            if (mounted) {
+              setState(() => _subscription = updated);
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(tier == SubscriptionTier.free
+                      ? 'No previous purchases found'
+                      : 'Restored Pro subscription!'),
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -415,6 +524,13 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         ),
       ),
     );
+  }
+
+  /// Open the RevenueCat Customer Center for subscription management.
+  void _openCustomerCenter() async {
+    await RevenueCatService.presentCustomerCenter();
+    // Sync after Customer Center closes — user may have changed subscription.
+    await _syncRevenueCat();
   }
 
   /// Check if a feature is accessible; if not, show paywall.
@@ -475,6 +591,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     setState(() => _settings = settings);
     _syncLocaleAndFormatter(settings);
     _settingsService.save(settings, widget.householdId);
+    _refreshNotificationSchedules();
   }
 
   void _saveDashboardConfig(LocalDashboardConfig config) {
@@ -601,6 +718,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
   Future<void> _addActualExpense(ActualExpense expense) async {
     setState(() => _actualExpenses = [expense, ..._actualExpenses]);
+    _refreshNotificationSchedules();
     try {
       await _actualExpenseService.add(expense, widget.householdId);
     } catch (e) {
@@ -615,6 +733,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       _actualExpenses =
           _actualExpenses.map((e) => e.id == expense.id ? expense : e).toList();
     });
+    _refreshNotificationSchedules();
     await _actualExpenseService.update(expense);
   }
 
@@ -622,6 +741,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     setState(() {
       _actualExpenses = _actualExpenses.where((e) => e.id != id).toList();
     });
+    _refreshNotificationSchedules();
     await _actualExpenseService.delete(id);
   }
 
@@ -671,11 +791,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       onSaveDashboardConfig: _saveDashboardConfig,
       onOpenNotificationSettings: _openNotificationSettings,
       onOpenSubscription: _openPaywall,
+      onOpenCustomerCenter: _openCustomerCenter,
       subscriptionLabel: _subscription.isTrialActive
           ? 'Trial (${_subscription.trialDaysRemaining} days left)'
           : _subscription.tier == SubscriptionTier.free
               ? 'Free'
-              : '${_subscription.tier.name[0].toUpperCase()}${_subscription.tier.name.substring(1)}',
+              : 'Pro',
       monthlyBudgets: _monthlyBudgets,
       onSaveMonthlyBudgets: (budgetMap) async {
         final budgets = budgetMap.entries
@@ -689,7 +810,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         _loadMonthlyBudgets();
       },
       recurringExpenses: _recurringExpenses,
-      onRecurringChanged: (updated) => setState(() => _recurringExpenses = updated),
+      onRecurringChanged: (updated) {
+        setState(() => _recurringExpenses = updated);
+        _refreshNotificationSchedules();
+      },
       initialSection: initialSection,
     );
   }

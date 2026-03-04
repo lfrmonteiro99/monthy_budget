@@ -1,12 +1,13 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/meal_planner.dart';
 
 class MealPlannerAiService {
-  static const _endpoint = 'https://api.openai.com/v1/chat/completions';
+  static const _edgeFunctionName = 'openai-chat';
   static const _model = 'gpt-4o-mini';
   static const _cacheKey = 'ai_recipe_cache';
+  final _client = Supabase.instance.client;
 
   // In-memory cache: recipeId -> content
   final Map<String, RecipeAiContent> _cache = {};
@@ -62,7 +63,6 @@ class MealPlannerAiService {
     required int nPessoas,
     String locale = 'pt',
   }) async {
-    if (apiKey.isEmpty) return null;
     final cacheKey = '${recipe.id}_$locale';
     if (_cache.containsKey(cacheKey)) return _cache[cacheKey];
 
@@ -90,40 +90,20 @@ Respond ONLY with valid JSON matching this schema:
 ''';
 
     try {
-      final response = await http
-          .post(
-            Uri.parse(_endpoint),
-            headers: {
-              'Authorization': 'Bearer $apiKey',
-              'Content-Type': 'application/json; charset=utf-8',
-            },
-            body: jsonEncode({
-              'model': _model,
-              'messages': [
-                {
-                  'role': 'system',
-                  'content': _systemPrompt(locale),
-                },
-                {'role': 'user', 'content': prompt},
-              ],
-              'max_tokens': 600,
-              'temperature': 0.7,
-            }),
-          )
-          .timeout(const Duration(seconds: 20));
-
-      if (response.statusCode == 200) {
-        final data =
-            jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-        final content =
-            (data['choices'] as List).first['message']['content'] as String;
-        final clean = content.replaceAll(RegExp(r'```json|```'), '').trim();
-        final parsed = jsonDecode(clean) as Map<String, dynamic>;
-        final result = RecipeAiContent.fromJson(parsed);
-        _cache[cacheKey] = result;
-        _persistCache(); // fire-and-forget
-        return result;
-      }
+      final content = await _requestChatCompletion(
+        messages: [
+          {'role': 'system', 'content': _systemPrompt(locale)},
+          {'role': 'user', 'content': prompt},
+        ],
+        maxTokens: 600,
+        temperature: 0.7,
+      );
+      final clean = content.replaceAll(RegExp(r'```json|```'), '').trim();
+      final parsed = jsonDecode(clean) as Map<String, dynamic>;
+      final result = RecipeAiContent.fromJson(parsed);
+      _cache[cacheKey] = result;
+      _persistCache(); // fire-and-forget
+      return result;
     } catch (_) {
       // Enrichment is best-effort; fail silently
     }
@@ -140,7 +120,7 @@ Respond ONLY with valid JSON matching this schema:
     int? targetFiberG,
     String locale = 'pt',
   }) async {
-    if (apiKey.isEmpty || weekRecipes.isEmpty) return null;
+    if (weekRecipes.isEmpty) return null;
 
     int totalKcal = 0;
     double totalProtein = 0;
@@ -190,34 +170,17 @@ Score 1-10 where 10 is excellent balance. Max 3 highlights, max 3 concerns. Be s
 ''';
 
     try {
-      final response = await http
-          .post(
-            Uri.parse(_endpoint),
-            headers: {
-              'Authorization': 'Bearer $apiKey',
-              'Content-Type': 'application/json; charset=utf-8',
-            },
-            body: jsonEncode({
-              'model': _model,
-              'messages': [
-                {'role': 'system', 'content': _systemPrompt(locale)},
-                {'role': 'user', 'content': prompt},
-              ],
-              'max_tokens': 400,
-              'temperature': 0.5,
-            }),
-          )
-          .timeout(const Duration(seconds: 20));
-
-      if (response.statusCode == 200) {
-        final data =
-            jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-        final content =
-            (data['choices'] as List).first['message']['content'] as String;
-        final clean = content.replaceAll(RegExp(r'```json|```'), '').trim();
-        final parsed = jsonDecode(clean) as Map<String, dynamic>;
-        return WeeklyNutritionSummary.fromJson(parsed);
-      }
+      final content = await _requestChatCompletion(
+        messages: [
+          {'role': 'system', 'content': _systemPrompt(locale)},
+          {'role': 'user', 'content': prompt},
+        ],
+        maxTokens: 400,
+        temperature: 0.5,
+      );
+      final clean = content.replaceAll(RegExp(r'```json|```'), '').trim();
+      final parsed = jsonDecode(clean) as Map<String, dynamic>;
+      return WeeklyNutritionSummary.fromJson(parsed);
     } catch (_) {
       // Best-effort
     }
@@ -231,7 +194,7 @@ Score 1-10 where 10 is excellent balance. Max 3 highlights, max 3 concerns. Be s
     required int nPessoas,
     String locale = 'pt',
   }) async {
-    if (apiKey.isEmpty || batchRecipes.isEmpty) return null;
+    if (batchRecipes.isEmpty) return null;
 
     final recipeList = batchRecipes
         .map((r) =>
@@ -253,37 +216,45 @@ Optimize for parallel cooking (e.g. while rice cooks, prep vegetables). Be speci
 ''';
 
     try {
-      final response = await http
-          .post(
-            Uri.parse(_endpoint),
-            headers: {
-              'Authorization': 'Bearer $apiKey',
-              'Content-Type': 'application/json; charset=utf-8',
-            },
-            body: jsonEncode({
-              'model': _model,
-              'messages': [
-                {'role': 'system', 'content': _systemPrompt(locale)},
-                {'role': 'user', 'content': prompt},
-              ],
-              'max_tokens': 600,
-              'temperature': 0.6,
-            }),
-          )
-          .timeout(const Duration(seconds: 25));
-
-      if (response.statusCode == 200) {
-        final data =
-            jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-        final content =
-            (data['choices'] as List).first['message']['content'] as String;
-        final clean = content.replaceAll(RegExp(r'```json|```'), '').trim();
-        final parsed = jsonDecode(clean) as Map<String, dynamic>;
-        return BatchCookingPlan.fromJson(parsed);
-      }
+      final content = await _requestChatCompletion(
+        messages: [
+          {'role': 'system', 'content': _systemPrompt(locale)},
+          {'role': 'user', 'content': prompt},
+        ],
+        maxTokens: 600,
+        temperature: 0.6,
+      );
+      final clean = content.replaceAll(RegExp(r'```json|```'), '').trim();
+      final parsed = jsonDecode(clean) as Map<String, dynamic>;
+      return BatchCookingPlan.fromJson(parsed);
     } catch (_) {
       // Best-effort
     }
     return null;
+  }
+
+  Future<String> _requestChatCompletion({
+    required List<Map<String, String>> messages,
+    int maxTokens = 600,
+    double temperature = 0.6,
+  }) async {
+    final response = await _client.functions.invoke(
+      _edgeFunctionName,
+      body: {
+        'model': _model,
+        'messages': messages,
+        'max_tokens': maxTokens,
+        'temperature': temperature,
+      },
+    );
+    final data = response.data;
+    if (response.status != 200 || data is! Map<String, dynamic>) {
+      throw Exception('Falha ao processar pedido de IA');
+    }
+    final content = data['content']?.toString().trim() ?? '';
+    if (content.isEmpty) {
+      throw Exception('Resposta vazia da IA');
+    }
+    return content;
   }
 }

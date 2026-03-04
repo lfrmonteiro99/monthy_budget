@@ -12,6 +12,8 @@ class NotificationService {
 
   final _plugin = FlutterLocalNotificationsPlugin();
   bool _initialized = false;
+  Future<void> _refreshChain = Future.value();
+  bool _budgetAlertTriggered = false;
 
   static const _channelId = 'budget_notifications';
   static const _channelName = 'Budget Notifications';
@@ -57,6 +59,31 @@ class NotificationService {
     required List<RecurringExpense> recurringExpenses,
     required double budgetUsagePercent,
     required bool hasMealPlan,
+    String? topCategoryName,
+    double? topCategoryUsagePercent,
+  }) async {
+    _refreshChain = _refreshChain.then((_) async {
+      await _refreshAllSchedulesImpl(
+        prefs: prefs,
+        recurringExpenses: recurringExpenses,
+        budgetUsagePercent: budgetUsagePercent,
+        hasMealPlan: hasMealPlan,
+        topCategoryName: topCategoryName,
+        topCategoryUsagePercent: topCategoryUsagePercent,
+      );
+    }).catchError((e) {
+      debugPrint('Failed to refresh notification schedules: $e');
+    });
+    await _refreshChain;
+  }
+
+  Future<void> _refreshAllSchedulesImpl({
+    required NotificationPreferences prefs,
+    required List<RecurringExpense> recurringExpenses,
+    required double budgetUsagePercent,
+    required bool hasMealPlan,
+    String? topCategoryName,
+    double? topCategoryUsagePercent,
   }) async {
     await cancelAll();
 
@@ -67,11 +94,22 @@ class NotificationService {
       );
     }
 
-    if (prefs.budgetAlerts &&
-        budgetUsagePercent >= prefs.budgetAlertThreshold) {
+    final threshold = prefs.budgetAlertThreshold;
+    final categoryExceeded =
+        (topCategoryUsagePercent ?? 0) >= threshold;
+    final overallExceeded = budgetUsagePercent >= threshold;
+    final shouldAlert = prefs.budgetAlerts && (overallExceeded || categoryExceeded);
+
+    if (!shouldAlert) {
+      _budgetAlertTriggered = false;
+    } else if (!_budgetAlertTriggered) {
       await _showBudgetAlert(
-        usagePercent: budgetUsagePercent.round(),
+        usagePercent: overallExceeded
+            ? budgetUsagePercent.round()
+            : (topCategoryUsagePercent ?? budgetUsagePercent).round(),
+        categoryName: categoryExceeded ? topCategoryName : null,
       );
+      _budgetAlertTriggered = true;
     }
 
     if (prefs.mealPlanReminders && !hasMealPlan) {
@@ -94,47 +132,60 @@ class NotificationService {
     for (int i = 0; i < active.length; i++) {
       final expense = active[i];
       final now = DateTime.now();
-      final dueDay = expense.dayOfMonth!.clamp(1, 28);
-      var dueDate = DateTime(now.year, now.month, dueDay);
+      final dueDay = expense.dayOfMonth!.clamp(1, 31);
+      var dueDate = DateTime(now.year, now.month, dueDay, 9);
 
       // If due date already passed this month, schedule for next month
       if (dueDate.isBefore(now)) {
-        dueDate = DateTime(now.year, now.month + 1, dueDay);
+        dueDate = DateTime(now.year, now.month + 1, dueDay, 9);
       }
 
-      final reminderDate =
-          dueDate.subtract(Duration(days: daysBefore));
+      var reminderDate = dueDate.subtract(Duration(days: daysBefore));
 
-      if (reminderDate.isAfter(now)) {
-        try {
-          await _plugin.zonedSchedule(
-            _billBaseId + i,
-            expense.description ?? expense.category,
-            '${expense.amount.toStringAsFixed(2)} due in $daysBefore days',
-            tz.TZDateTime.from(reminderDate, tz.local),
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                _channelId,
-                _channelName,
-                importance: Importance.high,
-                priority: Priority.high,
-              ),
+      // If we're already inside the reminder window (e.g. tomorrow is due and
+      // today has already started), schedule a near-future notification so the
+      // user still gets warned.
+      if (!reminderDate.isAfter(now) && dueDate.isAfter(now)) {
+        reminderDate = now.add(const Duration(minutes: 1));
+      }
+
+      if (!reminderDate.isAfter(now)) continue;
+
+      try {
+        await _plugin.zonedSchedule(
+          _billBaseId + i,
+          expense.description ?? expense.category,
+          '${expense.amount.toStringAsFixed(2)} due in $daysBefore days',
+          tz.TZDateTime.from(reminderDate, tz.local),
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              _channelId,
+              _channelName,
+              importance: Importance.high,
+              priority: Priority.high,
             ),
-            androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-          );
-        } catch (e) {
-          debugPrint('Failed to schedule bill reminder: $e');
-        }
+          ),
+          androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+          matchDateTimeComponents: DateTimeComponents.dayOfMonthAndTime,
+        );
+      } catch (e) {
+        debugPrint('Failed to schedule bill reminder: $e');
       }
     }
   }
 
-  Future<void> _showBudgetAlert({required int usagePercent}) async {
+  Future<void> _showBudgetAlert({
+    required int usagePercent,
+    String? categoryName,
+  }) async {
+    final body = categoryName == null
+        ? 'You\'ve spent $usagePercent% of your monthly budget'
+        : 'Category "$categoryName" reached $usagePercent% of budget';
     try {
       await _plugin.show(
         _budgetAlertId,
         'Budget alert',
-        'You\'ve spent $usagePercent% of your monthly budget',
+        body,
         NotificationDetails(
           android: AndroidNotificationDetails(
             _channelId,

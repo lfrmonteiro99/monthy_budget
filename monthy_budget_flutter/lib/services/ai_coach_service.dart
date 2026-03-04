@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/app_settings.dart';
@@ -10,7 +9,7 @@ import '../utils/stress_index.dart';
 
 class AiCoachService {
   static const _apiKeyPref = 'openai_api_key';
-  static const _endpoint = 'https://api.openai.com/v1/chat/completions';
+  static const _edgeFunctionName = 'openai-chat';
   static const _model = 'gpt-4o-mini';
   static const _maxInsights = 20;
 
@@ -31,8 +30,7 @@ class AiCoachService {
   /// Gate for AI features. Currently checks API key existence.
   /// Future: replace with subscription tier check.
   Future<bool> canUseAI() async {
-    final key = await loadApiKey();
-    return key.isNotEmpty;
+    return true;
   }
 
   // ── Insight history (household-shared via Supabase) ────────────────────────
@@ -101,44 +99,22 @@ class AiCoachService {
     );
     final prompt = _buildPrompt(settings, summary, purchaseHistory, stress);
 
-    final response = await http
-        .post(
-          Uri.parse(_endpoint),
-          headers: {
-            'Authorization': 'Bearer $apiKey',
-            'Content-Type': 'application/json; charset=utf-8',
-          },
-          body: jsonEncode({
-            'model': _model,
-            'messages': [
-              {
-                'role': 'system',
-                'content':
-                    'És um analista financeiro pessoal para utilizadores portugueses. '
-                    'Responde sempre em português europeu. Sê directo e analítico — '
-                    'usa sempre números concretos do contexto fornecido. '
-                    'Estrutura a resposta exactamente nas 3 partes pedidas. '
-                    'Não introduzas dados, benchmarks ou referências externas que não foram fornecidos.',
-              },
-              {'role': 'user', 'content': prompt},
-            ],
-            'max_tokens': 1000,
-            'temperature': 0.5,
-          }),
-        )
-        .timeout(const Duration(seconds: 30));
-
-    if (response.statusCode != 200) {
-      if (response.statusCode == 401) {
-        throw Exception('API key inválida. Verifica nas Definições.');
-      }
-      final body = jsonDecode(response.body) as Map<String, dynamic>;
-      final msg = (body['error'] as Map?)?['message'] ?? 'Erro ${response.statusCode}';
-      throw Exception(msg);
-    }
-
-    final data = jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-    final content = (data['choices'] as List).first['message']['content'] as String;
+    final content = await _requestChatCompletion(
+      messages: [
+        {
+          'role': 'system',
+          'content':
+              'És um analista financeiro pessoal para utilizadores portugueses. '
+              'Responde sempre em português europeu. Sê directo e analítico — '
+              'usa sempre números concretos do contexto fornecido. '
+              'Estrutura a resposta exactamente nas 3 partes pedidas. '
+              'Não introduzas dados, benchmarks ou referências externas que não foram fornecidos.',
+        },
+        {'role': 'user', 'content': prompt},
+      ],
+      maxTokens: 1000,
+      temperature: 0.5,
+    );
 
     final insight = CoachInsight(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -180,40 +156,18 @@ class AiCoachService {
         'nos restantes ${pace.daysRemaining} dias. Cada sugestão deve incluir a poupança estimada em €. '
         'Sê directo e específico. Sem introdução nem conclusão.');
 
-    final response = await http
-        .post(
-          Uri.parse(_endpoint),
-          headers: {
-            'Authorization': 'Bearer $apiKey',
-            'Content-Type': 'application/json; charset=utf-8',
-          },
-          body: jsonEncode({
-            'model': _model,
-            'messages': [
-              {
-                'role': 'system',
-                'content': 'És um consultor de orçamento doméstico português. '
-                    'Responde sempre em português europeu. Sê prático e directo.',
-              },
-              {'role': 'user', 'content': prompt.toString()},
-            ],
-            'max_tokens': 500,
-            'temperature': 0.5,
-          }),
-        )
-        .timeout(const Duration(seconds: 30));
-
-    if (response.statusCode != 200) {
-      if (response.statusCode == 401) {
-        throw Exception('API key inválida. Verifica nas Definições.');
-      }
-      final body = jsonDecode(response.body) as Map<String, dynamic>;
-      final msg = (body['error'] as Map?)?['message'] ?? 'Erro ${response.statusCode}';
-      throw Exception(msg);
-    }
-
-    final data = jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-    final content = (data['choices'] as List).first['message']['content'] as String;
+    final content = await _requestChatCompletion(
+      messages: [
+        {
+          'role': 'system',
+          'content': 'És um consultor de orçamento doméstico português. '
+              'Responde sempre em português europeu. Sê prático e directo.',
+        },
+        {'role': 'user', 'content': prompt.toString()},
+      ],
+      maxTokens: 500,
+      temperature: 0.5,
+    );
 
     final insight = CoachInsight(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -223,6 +177,40 @@ class AiCoachService {
     );
     final history = await _persistInsight(insight, householdId);
     return (insight: insight, history: history);
+  }
+
+  Future<String> _requestChatCompletion({
+    required List<Map<String, String>> messages,
+    int maxTokens = 800,
+    double temperature = 0.5,
+  }) async {
+    try {
+      final response = await _client.functions.invoke(
+        _edgeFunctionName,
+        body: {
+          'model': _model,
+          'messages': messages,
+          'max_tokens': maxTokens,
+          'temperature': temperature,
+        },
+      );
+
+      final data = response.data;
+      if (response.status != 200 || data is! Map<String, dynamic>) {
+        final msg = data is Map<String, dynamic>
+            ? (data['error']?.toString() ?? 'Falha ao processar pedido de IA')
+            : 'Falha ao processar pedido de IA';
+        throw Exception(msg);
+      }
+
+      final content = data['content']?.toString().trim() ?? '';
+      if (content.isEmpty) {
+        throw Exception('Resposta vazia da IA.');
+      }
+      return content;
+    } catch (e) {
+      throw Exception(e.toString().replaceFirst('Exception: ', ''));
+    }
   }
 
   // ── Prompt ─────────────────────────────────────────────────────────────────
