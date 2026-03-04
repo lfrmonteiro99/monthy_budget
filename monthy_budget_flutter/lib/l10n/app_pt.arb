@@ -1780,6 +1780,30 @@
   "mealCostUnder": "Abaixo do orçamento",
   "@mealCostUnder": { "description": "Under budget message" },
 
+  "mealVariation": "Variação",
+  "@mealVariation": { "description": "Variation label for AI recipe content" },
+  "mealPairing": "Acompanhamento",
+  "@mealPairing": { "description": "Pairing suggestion label" },
+  "mealStorage": "Conservação",
+  "@mealStorage": { "description": "Storage info label" },
+  "mealLeftover": "Sobras",
+  "@mealLeftover": { "description": "Leftover badge label" },
+  "mealLeftoverIdea": "Ideia de reaproveitamento",
+  "@mealLeftoverIdea": { "description": "Leftover transformation idea label" },
+  "mealWeeklySummary": "Nutrição Semanal",
+  "@mealWeeklySummary": { "description": "Weekly nutrition summary header" },
+  "mealBatchPrepGuide": "Guia de Preparação",
+  "@mealBatchPrepGuide": { "description": "Batch cooking prep guide button" },
+  "mealBatchTotalTime": "Tempo estimado: {time}",
+  "@mealBatchTotalTime": {
+    "description": "Batch cooking total time estimate",
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "mealBatchParallelTips": "Dicas de cozinha paralela",
+  "@mealBatchParallelTips": { "description": "Parallel cooking tips header" },
+
   "notifications": "Notificações",
   "@notifications": { "description": "Notifications title" },
   "notificationSettings": "Definições de Notificações",

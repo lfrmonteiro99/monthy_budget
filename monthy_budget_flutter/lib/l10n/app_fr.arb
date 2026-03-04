@@ -1156,6 +1156,23 @@
   "mealCostOver": "Au-dessus du budget",
   "mealCostUnder": "En dessous du budget",
 
+  "mealVariation": "Variante",
+  "mealPairing": "Accompagnement",
+  "mealStorage": "Conservation",
+  "mealLeftover": "Restes",
+  "mealLeftoverIdea": "Idée de transformation",
+  "mealWeeklySummary": "Nutrition Hebdomadaire",
+  "mealBatchPrepGuide": "Guide de Préparation",
+  "mealBatchTotalTime": "Temps estimé: {time}",
+  "@mealBatchTotalTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "mealBatchParallelTips": "Astuces de cuisson parallèle",
+
   "notifications": "Notifications",
   "notificationSettings": "Paramètres de Notifications",
   "notificationBillReminders": "Rappels de factures",

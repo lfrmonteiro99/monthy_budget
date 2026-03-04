@@ -2317,6 +2317,35 @@ class SEn extends S {
   String get mealCostUnder => 'Under budget';
 
   @override
+  String get mealVariation => 'Variation';
+
+  @override
+  String get mealPairing => 'Pairing';
+
+  @override
+  String get mealStorage => 'Storage';
+
+  @override
+  String get mealLeftover => 'Leftover';
+
+  @override
+  String get mealLeftoverIdea => 'Transform idea';
+
+  @override
+  String get mealWeeklySummary => 'Weekly Nutrition';
+
+  @override
+  String get mealBatchPrepGuide => 'Prep Guide';
+
+  @override
+  String mealBatchTotalTime(String time) {
+    return 'Estimated time: $time';
+  }
+
+  @override
+  String get mealBatchParallelTips => 'Parallel cooking tips';
+
+  @override
   String get notifications => 'Notifications';
 
   @override

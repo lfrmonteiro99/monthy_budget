@@ -57,6 +57,10 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   final Set<String> _expanded = {};
   bool _tourShown = false;
 
+  final Map<int, WeeklyNutritionSummary> _weeklySummaries = {};
+  final Set<int> _weeklySummaryPending = {};
+  bool _batchPlanLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -65,13 +69,26 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
   Future<void> _init() async {
     await _service.loadCatalog();
+    await _aiService.loadCache();
     final now = DateTime.now();
     final saved = await _service.load(widget.householdId, now.month, now.year);
+    if (!mounted) return;
+    if (saved != null && widget.apiKey.isNotEmpty) {
+      // Pre-populate AI content from persisted cache for immediate render
+      final locale = Localizations.localeOf(context).languageCode;
+      for (final recipeId in saved.days.map((d) => d.recipeId).toSet()) {
+        final cached = _aiService.getCached(recipeId, locale: locale);
+        if (cached != null) _aiContent[recipeId] = cached;
+      }
+    }
     setState(() {
       _plan = saved;
       _catalogReady = true;
     });
-    if (saved != null) _enrichPlan(saved);
+    if (saved != null) {
+      _enrichPlan(saved);
+      _loadWeeklySummary(0, saved);
+    }
     _tryShowTour();
   }
 
@@ -115,13 +132,17 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       _loading = false;
       _selectedWeek = 0;
       _expanded.clear();
+      _weeklySummaries.clear();
+      _weeklySummaryPending.clear();
     });
     _enrichPlan(plan);
+    _loadWeeklySummary(0, plan);
   }
 
   void _enrichPlan(MealPlan plan) {
     if (widget.apiKey.isEmpty) return;
     final iMap = _service.ingredientMap;
+    final locale = Localizations.localeOf(context).languageCode;
     final uniqueRecipeIds = plan.days.map((d) => d.recipeId).toSet();
     for (final recipeId in uniqueRecipeIds) {
       if (_aiContent.containsKey(recipeId) || _aiPending.contains(recipeId)) continue;
@@ -133,6 +154,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         recipe: recipe,
         ingredientMap: iMap,
         nPessoas: plan.nPessoas,
+        locale: locale,
       ).then((content) {
         if (content != null && mounted) {
           setState(() => _aiContent[recipeId] = content);
@@ -140,6 +162,148 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         _aiPending.remove(recipeId);
       });
     }
+  }
+
+  void _loadWeeklySummary(int weekIndex, MealPlan plan) {
+    if (widget.apiKey.isEmpty) return;
+    if (_weeklySummaries.containsKey(weekIndex) || _weeklySummaryPending.contains(weekIndex)) return;
+    _weeklySummaryPending.add(weekIndex);
+    final weekDays = _getWeekDays(plan, weekIndex);
+    final recipes = weekDays
+        .map((d) => _service.recipeMap[d.recipeId])
+        .whereType<Recipe>()
+        .toList();
+    final locale = Localizations.localeOf(context).languageCode;
+    _aiService.analyzeWeeklyNutrition(
+      apiKey: widget.apiKey,
+      weekRecipes: recipes,
+      nPessoas: plan.nPessoas,
+      locale: locale,
+    ).then((summary) {
+      _weeklySummaryPending.remove(weekIndex);
+      if (summary != null && mounted) {
+        setState(() => _weeklySummaries[weekIndex] = summary);
+      }
+    });
+  }
+
+  bool _weekHasBatchCooking(MealPlan plan, int weekIndex) {
+    final weekDays = _getWeekDays(plan, weekIndex);
+    return weekDays.any((d) {
+      final recipe = _service.recipeMap[d.recipeId];
+      return recipe != null && recipe.batchCookable;
+    });
+  }
+
+  void _showBatchPrepGuide(MealPlan plan, int weekIndex) {
+    if (widget.apiKey.isEmpty) return;
+    final weekDays = _getWeekDays(plan, weekIndex);
+    final batchRecipes = weekDays
+        .map((d) => _service.recipeMap[d.recipeId])
+        .whereType<Recipe>()
+        .where((r) => r.batchCookable)
+        .toSet()
+        .toList();
+    if (batchRecipes.isEmpty) return;
+
+    setState(() => _batchPlanLoading = true);
+    final locale = Localizations.localeOf(context).languageCode;
+    _aiService.generateBatchPlan(
+      apiKey: widget.apiKey,
+      batchRecipes: batchRecipes,
+      nPessoas: plan.nPessoas,
+      locale: locale,
+    ).then((result) {
+      if (!mounted) return;
+      setState(() => _batchPlanLoading = false);
+      if (result != null) _showBatchPlanSheet(result);
+    });
+  }
+
+  void _showBatchPlanSheet(BatchCookingPlan plan) {
+    final l10n = S.of(context);
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => DraggableScrollableSheet(
+        initialChildSize: 0.65,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (_, controller) => Column(
+          children: [
+            Container(
+              width: 40, height: 4,
+              margin: const EdgeInsets.symmetric(vertical: 12),
+              decoration: BoxDecoration(
+                color: AppColors.borderMuted(context),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.mealBatchPrepGuide,
+                      style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+                  if (plan.totalTimeEstimate.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(l10n.mealBatchTotalTime(plan.totalTimeEstimate),
+                        style: TextStyle(fontSize: 13, color: AppColors.textSecondary(context))),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            Expanded(
+              child: ListView(
+                controller: controller,
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                children: [
+                  ...plan.prepOrder.asMap().entries.map((e) => Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 24, height: 24,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary(context),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text('${e.key + 1}',
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.onPrimary(context))),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(child: Text(e.value, style: const TextStyle(fontSize: 13))),
+                      ],
+                    ),
+                  )),
+                  if (plan.parallelTips.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    Text(l10n.mealBatchParallelTips,
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondary(context))),
+                    const SizedBox(height: 8),
+                    ...plan.parallelTips.map((tip) => Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.tips_and_updates_outlined, size: 16, color: AppColors.warning(context)),
+                          const SizedBox(width: 8),
+                          Expanded(child: Text(tip, style: const TextStyle(fontSize: 13))),
+                        ],
+                      ),
+                    )),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _setFeedback(int dayIndex, MealType mealType, MealFeedback feedback) {
@@ -410,7 +574,10 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                       color: selected ? AppColors.primary(context) : AppColors.surfaceVariant(context),
                       borderRadius: BorderRadius.circular(8),
                       child: InkWell(
-                      onTap: () => setState(() => _selectedWeek = i),
+                      onTap: () {
+                        setState(() => _selectedWeek = i);
+                        if (_plan != null) _loadWeeklySummary(i, _plan!);
+                      },
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
                         margin: const EdgeInsets.only(right: 4),
@@ -436,22 +603,47 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             ],
           ),
         ),
+        // Weekly Nutrition Summary
+        if (_weeklySummaries.containsKey(_selectedWeek))
+          _WeeklySummaryCard(summary: _weeklySummaries[_selectedWeek]!),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: SizedBox(
-            key: MealsTourKeys.addToListButton,
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: () => _addWeekToShoppingList(_selectedWeek),
-              icon: const Icon(Icons.add_shopping_cart, size: 18),
-              label: Text(l10n.mealAddWeekToList),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.primary(context),
-                side: BorderSide(color: AppColors.primary(context)),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Row(
+            children: [
+              Expanded(
+                child: SizedBox(
+                  key: MealsTourKeys.addToListButton,
+                  child: OutlinedButton.icon(
+                    onPressed: () => _addWeekToShoppingList(_selectedWeek),
+                    icon: const Icon(Icons.add_shopping_cart, size: 18),
+                    label: Text(l10n.mealAddWeekToList),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.primary(context),
+                      side: BorderSide(color: AppColors.primary(context)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                  ),
+                ),
               ),
-            ),
+              if (_weekHasBatchCooking(plan, _selectedWeek) && widget.apiKey.isNotEmpty) ...[
+                const SizedBox(width: 8),
+                OutlinedButton.icon(
+                  onPressed: _batchPlanLoading ? null : () => _showBatchPrepGuide(plan, _selectedWeek),
+                  icon: _batchPlanLoading
+                      ? SizedBox(width: 16, height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary(context)))
+                      : const Icon(Icons.kitchen, size: 18),
+                  label: Text(l10n.mealBatchPrepGuide),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.primary(context),
+                    side: BorderSide(color: AppColors.primary(context)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                  ),
+                ),
+              ],
+            ],
           ),
         ),
         Expanded(
@@ -589,6 +781,30 @@ class _DayCard extends StatelessWidget {
                             color: Color(0xFF16A34A)),
                       ),
                     ),
+                    if (mealDay.isLeftover) ...[
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFEF3C7),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.recycling, size: 12, color: Color(0xFF92400E)),
+                            const SizedBox(width: 4),
+                            Text(
+                              l10n.mealLeftover,
+                              style: const TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF92400E)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                     const Spacer(),
                     Text(
                       '${mealDay.costEstimate.toStringAsFixed(2)}\u20AC',
@@ -805,6 +1021,118 @@ class _DayCard extends StatelessWidget {
                                 aiContent!.tip,
                                 style: const TextStyle(
                                     fontSize: 12, color: Color(0xFF92400E)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    // Variation
+                    if (aiContent!.variation.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: AppColors.infoBackground(context),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.shuffle, size: 16, color: AppColors.primary(context)),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(l10n.mealVariation,
+                                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.primary(context))),
+                                  const SizedBox(height: 2),
+                                  Text(aiContent!.variation, style: const TextStyle(fontSize: 12)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    // Pairing suggestion
+                    if (aiContent!.pairingSuggestion.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: AppColors.successBackground(context),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.restaurant, size: 16, color: AppColors.success(context)),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(l10n.mealPairing,
+                                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.success(context))),
+                                  const SizedBox(height: 2),
+                                  Text(aiContent!.pairingSuggestion, style: const TextStyle(fontSize: 12)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    // Storage info
+                    if (aiContent!.storageInfo.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceVariant(context),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.kitchen, size: 16, color: AppColors.textSecondary(context)),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(l10n.mealStorage,
+                                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textSecondary(context))),
+                                  const SizedBox(height: 2),
+                                  Text(aiContent!.storageInfo, style: const TextStyle(fontSize: 12)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    // Leftover transformation idea
+                    if (mealDay.isLeftover && aiContent!.leftoverIdea.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFEF3C7),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.auto_fix_high, size: 16, color: Color(0xFF92400E)),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(l10n.mealLeftoverIdea,
+                                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF92400E))),
+                                  const SizedBox(height: 2),
+                                  Text(aiContent!.leftoverIdea, style: const TextStyle(fontSize: 12, color: Color(0xFF92400E))),
+                                ],
                               ),
                             ),
                           ],
@@ -1144,6 +1472,89 @@ class _NutriBadge extends StatelessWidget {
       child: Text(
         '$value $label',
         style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: color),
+      ),
+    );
+  }
+}
+
+class _WeeklySummaryCard extends StatelessWidget {
+  final WeeklyNutritionSummary summary;
+  const _WeeklySummaryCard({required this.summary});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = S.of(context);
+    final scoreColor = summary.overallScore >= 7
+        ? AppColors.success(context)
+        : summary.overallScore >= 4
+            ? AppColors.warning(context)
+            : AppColors.error(context);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+      child: Card(
+        elevation: 0,
+        color: AppColors.surface(context),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: AppColors.border(context)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.analytics_outlined, size: 18, color: AppColors.textSecondary(context)),
+                  const SizedBox(width: 8),
+                  Text(l10n.mealWeeklySummary,
+                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                  const Spacer(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: scoreColor.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      '${summary.overallScore}/10',
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: scoreColor),
+                    ),
+                  ),
+                ],
+              ),
+              if (summary.highlights.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                ...summary.highlights.map((h) => Padding(
+                  padding: const EdgeInsets.only(bottom: 3),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(Icons.check_circle_outline, size: 14, color: AppColors.success(context)),
+                      const SizedBox(width: 6),
+                      Expanded(child: Text(h, style: const TextStyle(fontSize: 12))),
+                    ],
+                  ),
+                )),
+              ],
+              if (summary.concerns.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                ...summary.concerns.map((c) => Padding(
+                  padding: const EdgeInsets.only(bottom: 3),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(Icons.warning_amber_outlined, size: 14, color: AppColors.warning(context)),
+                      const SizedBox(width: 6),
+                      Expanded(child: Text(c, style: const TextStyle(fontSize: 12))),
+                    ],
+                  ),
+                )),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }

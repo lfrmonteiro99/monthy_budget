@@ -251,17 +251,72 @@ class RecipeAiContent {
   final List<String> steps;
   final String tip;
   final String variation;
+  final String leftoverIdea;
+  final String pairingSuggestion;
+  final String storageInfo;
 
   const RecipeAiContent({
     required this.steps,
     required this.tip,
     required this.variation,
+    this.leftoverIdea = '',
+    this.pairingSuggestion = '',
+    this.storageInfo = '',
   });
 
   factory RecipeAiContent.fromJson(Map<String, dynamic> json) => RecipeAiContent(
-        steps: (json['steps'] as List<dynamic>).map((e) => e as String).toList(),
+        steps: (json['steps'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
         tip: json['tip'] as String? ?? '',
         variation: json['variation'] as String? ?? '',
+        leftoverIdea: json['leftoverIdea'] as String? ?? '',
+        pairingSuggestion: json['pairingSuggestion'] as String? ?? '',
+        storageInfo: json['storageInfo'] as String? ?? '',
+      );
+
+  Map<String, dynamic> toJson() => {
+        'steps': steps,
+        'tip': tip,
+        'variation': variation,
+        'leftoverIdea': leftoverIdea,
+        'pairingSuggestion': pairingSuggestion,
+        'storageInfo': storageInfo,
+      };
+}
+
+class WeeklyNutritionSummary {
+  final List<String> highlights;
+  final List<String> concerns;
+  final int overallScore;
+
+  const WeeklyNutritionSummary({
+    required this.highlights,
+    required this.concerns,
+    required this.overallScore,
+  });
+
+  factory WeeklyNutritionSummary.fromJson(Map<String, dynamic> json) =>
+      WeeklyNutritionSummary(
+        highlights: (json['highlights'] as List<dynamic>?)?.cast<String>() ?? [],
+        concerns: (json['concerns'] as List<dynamic>?)?.cast<String>() ?? [],
+        overallScore: (json['overallScore'] as int?) ?? 5,
+      );
+}
+
+class BatchCookingPlan {
+  final List<String> prepOrder;
+  final String totalTimeEstimate;
+  final List<String> parallelTips;
+
+  const BatchCookingPlan({
+    required this.prepOrder,
+    required this.totalTimeEstimate,
+    required this.parallelTips,
+  });
+
+  factory BatchCookingPlan.fromJson(Map<String, dynamic> json) => BatchCookingPlan(
+        prepOrder: (json['prepOrder'] as List<dynamic>?)?.cast<String>() ?? [],
+        totalTimeEstimate: json['totalTimeEstimate'] as String? ?? '',
+        parallelTips: (json['parallelTips'] as List<dynamic>?)?.cast<String>() ?? [],
       );
 }
 

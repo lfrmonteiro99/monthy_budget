@@ -4349,6 +4349,60 @@ abstract class S {
   /// **'Abaixo do orçamento'**
   String get mealCostUnder;
 
+  /// Variation label for AI recipe content
+  ///
+  /// In pt, this message translates to:
+  /// **'Variação'**
+  String get mealVariation;
+
+  /// Pairing suggestion label
+  ///
+  /// In pt, this message translates to:
+  /// **'Acompanhamento'**
+  String get mealPairing;
+
+  /// Storage info label
+  ///
+  /// In pt, this message translates to:
+  /// **'Conservação'**
+  String get mealStorage;
+
+  /// Leftover badge label
+  ///
+  /// In pt, this message translates to:
+  /// **'Sobras'**
+  String get mealLeftover;
+
+  /// Leftover transformation idea label
+  ///
+  /// In pt, this message translates to:
+  /// **'Ideia de reaproveitamento'**
+  String get mealLeftoverIdea;
+
+  /// Weekly nutrition summary header
+  ///
+  /// In pt, this message translates to:
+  /// **'Nutrição Semanal'**
+  String get mealWeeklySummary;
+
+  /// Batch cooking prep guide button
+  ///
+  /// In pt, this message translates to:
+  /// **'Guia de Preparação'**
+  String get mealBatchPrepGuide;
+
+  /// Batch cooking total time estimate
+  ///
+  /// In pt, this message translates to:
+  /// **'Tempo estimado: {time}'**
+  String mealBatchTotalTime(String time);
+
+  /// Parallel cooking tips header
+  ///
+  /// In pt, this message translates to:
+  /// **'Dicas de cozinha paralela'**
+  String get mealBatchParallelTips;
+
   /// Notifications title
   ///
   /// In pt, this message translates to:
