@@ -242,7 +242,7 @@ void main() {
         PremiumLockOverlay(
           isLocked: true,
           onTapLocked: () {},
-          child: const Text('Locked Content'),
+          child: const SizedBox(width: 200, height: 200, child: Text('Locked Content')),
         ),
       ));
 
@@ -255,7 +255,7 @@ void main() {
         PremiumLockOverlay(
           isLocked: true,
           onTapLocked: () {},
-          child: const Text('Content'),
+          child: const SizedBox(width: 200, height: 200, child: Text('Content')),
         ),
       ));
 
@@ -268,7 +268,7 @@ void main() {
           isLocked: true,
           onTapLocked: () {},
           featureName: 'AI Coach',
-          child: const Text('Content'),
+          child: const SizedBox(width: 200, height: 200, child: Text('Content')),
         ),
       ));
 
@@ -295,7 +295,7 @@ void main() {
         PremiumLockOverlay(
           isLocked: true,
           onTapLocked: () {},
-          child: const Text('Dimmed'),
+          child: const SizedBox(width: 200, height: 200, child: Text('Dimmed')),
         ),
       ));
 
@@ -308,11 +308,14 @@ void main() {
         PremiumLockOverlay(
           isLocked: true,
           onTapLocked: () {},
-          child: const Text('Locked'),
+          child: const SizedBox(width: 200, height: 200, child: Text('Locked')),
         ),
       ));
 
-      final absorber = tester.widget<AbsorbPointer>(find.byType(AbsorbPointer));
+      final absorber = tester.widget<AbsorbPointer>(find.descendant(
+        of: find.byType(PremiumLockOverlay),
+        matching: find.byType(AbsorbPointer),
+      ));
       expect(absorber.absorbing, true);
     });
   });

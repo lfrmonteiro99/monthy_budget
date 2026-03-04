@@ -52,21 +52,21 @@ AllStreaks calculateStreaks({
 
   if (monthKeys.isEmpty) return const AllStreaks();
 
-  // Calculate total budget from expense items
-  final totalBudget = expenses
-      .where((e) => e.enabled)
-      .fold(0.0, (sum, e) {
-    return sum + (monthlyBudgets[e.category.name] ?? e.amount);
-  });
-
-  // Per-category budgets
-  final budgetByCategory = <String, double>{};
+  // Sum per-category default amounts from expense items
+  final defaultByCategory = <String, double>{};
   for (final item in expenses) {
     if (!item.enabled) continue;
     final catName = item.category.name;
-    final effectiveAmount = monthlyBudgets[catName] ?? item.amount;
-    budgetByCategory[catName] = (budgetByCategory[catName] ?? 0) + effectiveAmount;
+    defaultByCategory[catName] = (defaultByCategory[catName] ?? 0) + item.amount;
   }
+
+  // Apply monthly overrides at category level
+  final budgetByCategory = <String, double>{};
+  for (final entry in defaultByCategory.entries) {
+    budgetByCategory[entry.key] = monthlyBudgets[entry.key] ?? entry.value;
+  }
+
+  final totalBudget = budgetByCategory.values.fold(0.0, (sum, v) => sum + v);
 
   int bronzeCount = 0;
   int silverCount = 0;

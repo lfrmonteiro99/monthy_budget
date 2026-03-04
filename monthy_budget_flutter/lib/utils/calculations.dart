@@ -134,10 +134,14 @@ BudgetSummary calculateBudgetSummary(
   final totalSS = calcs.fold(0.0, (sum, s) => sum + s.socialSecurity + s.mealAllowance.ssTaxOnMeal);
   final totalDeductions = totalIRS + totalSS;
 
-  final totalExpenses = expenses
-      .where((e) => e.enabled)
-      .fold(0.0, (sum, e) {
-    return sum + (monthlyBudgets[e.category.name] ?? e.amount);
+  // Sum per-category default amounts, then apply monthly overrides
+  final defaultByCategory = <String, double>{};
+  for (final e in expenses.where((e) => e.enabled)) {
+    defaultByCategory[e.category.name] =
+        (defaultByCategory[e.category.name] ?? 0) + e.amount;
+  }
+  final totalExpenses = defaultByCategory.entries.fold(0.0, (sum, entry) {
+    return sum + (monthlyBudgets[entry.key] ?? entry.value);
   });
 
   final netLiquidity = _round2(totalNetWithMeal - totalExpenses);
