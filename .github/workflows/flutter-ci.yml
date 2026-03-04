@@ -16,6 +16,7 @@ on:
 
 jobs:
   test:
+    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     timeout-minutes: 15
     defaults:
@@ -51,9 +52,12 @@ jobs:
       - name: Run tests
         run: flutter test
 
-  build-apk:
+  build:
     needs: test
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    if: |
+      always() &&
+      (needs.test.result == 'success' || needs.test.result == 'skipped') &&
+      (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:
@@ -94,18 +98,18 @@ jobs:
       - name: Decode keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/keystore.jks
 
-      - name: Build APK
+      - name: Build AAB
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: flutter build apk --release
+        run: flutter build appbundle --release
 
-      - name: Upload APK artifact
+      - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: gestao-mensal-apk
-          path: monthy_budget_flutter/build/app/outputs/flutter-apk/*.apk
+          name: gestao-mensal-aab
+          path: monthy_budget_flutter/build/app/outputs/bundle/release/*.aab
           retention-days: 30
 
       # Tagged releases -> formal GitHub Release
@@ -113,7 +117,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: monthy_budget_flutter/build/app/outputs/flutter-apk/*.apk
+          files: monthy_budget_flutter/build/app/outputs/bundle/release/*.aab
           generate_release_notes: true
 
       # Push to main -> prerelease with commit SHA
@@ -123,6 +127,6 @@ jobs:
         with:
           tag_name: dev-${{ github.sha }}
           name: Dev build (${{ github.sha }})
-          files: monthy_budget_flutter/build/app/outputs/flutter-apk/*.apk
+          files: monthy_budget_flutter/build/app/outputs/bundle/release/*.aab
           prerelease: true
           make_latest: false
