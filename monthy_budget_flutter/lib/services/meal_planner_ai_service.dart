@@ -52,7 +52,8 @@ class MealPlannerAiService {
   }
 
   /// Public getter for pre-populating UI from persisted cache.
-  RecipeAiContent? getCached(String recipeId) => _cache[recipeId];
+  RecipeAiContent? getCached(String recipeId, {String locale = 'pt'}) =>
+      _cache['${recipeId}_$locale'];
 
   Future<RecipeAiContent?> enrichRecipe({
     required String apiKey,
@@ -62,7 +63,8 @@ class MealPlannerAiService {
     String locale = 'pt',
   }) async {
     if (apiKey.isEmpty) return null;
-    if (_cache.containsKey(recipe.id)) return _cache[recipe.id];
+    final cacheKey = '${recipe.id}_$locale';
+    if (_cache.containsKey(cacheKey)) return _cache[cacheKey];
 
     final ingList = recipe.ingredients.map((ri) {
       final ing = ingredientMap[ri.ingredientId];
@@ -118,7 +120,7 @@ Respond ONLY with valid JSON matching this schema:
         final clean = content.replaceAll(RegExp(r'```json|```'), '').trim();
         final parsed = jsonDecode(clean) as Map<String, dynamic>;
         final result = RecipeAiContent.fromJson(parsed);
-        _cache[recipe.id] = result;
+        _cache[cacheKey] = result;
         _persistCache(); // fire-and-forget
         return result;
       }

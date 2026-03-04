@@ -72,10 +72,12 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     await _aiService.loadCache();
     final now = DateTime.now();
     final saved = await _service.load(widget.householdId, now.month, now.year);
-    if (saved != null) {
+    if (!mounted) return;
+    if (saved != null && widget.apiKey.isNotEmpty) {
       // Pre-populate AI content from persisted cache for immediate render
+      final locale = Localizations.localeOf(context).languageCode;
       for (final recipeId in saved.days.map((d) => d.recipeId).toSet()) {
-        final cached = _aiService.getCached(recipeId);
+        final cached = _aiService.getCached(recipeId, locale: locale);
         if (cached != null) _aiContent[recipeId] = cached;
       }
     }
@@ -131,6 +133,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       _selectedWeek = 0;
       _expanded.clear();
       _weeklySummaries.clear();
+      _weeklySummaryPending.clear();
     });
     _enrichPlan(plan);
     _loadWeeklySummary(0, plan);

@@ -31,6 +31,14 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Create Supabase config stub
+        run: |
+          mkdir -p lib/config
+          cat > lib/config/supabase_config.dart << 'DART'
+          const supabaseUrl = 'https://placeholder.supabase.co';
+          const supabaseAnonKey = 'placeholder';
+          DART
+
       - name: Install dependencies
         run: flutter pub get
 
@@ -66,6 +74,17 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Create Supabase config
+        run: |
+          mkdir -p lib/config
+          cat > lib/config/supabase_config.dart << DART
+          const supabaseUrl = '${SUPABASE_URL}';
+          const supabaseAnonKey = '${SUPABASE_ANON_KEY}';
+          DART
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://placeholder.supabase.co' }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY || 'placeholder' }}
+
       - name: Install dependencies
         run: flutter pub get
 
@@ -89,7 +108,7 @@ jobs:
           path: monthy_budget_flutter/build/app/outputs/flutter-apk/*.apk
           retention-days: 30
 
-      # Tagged releases → formal GitHub Release
+      # Tagged releases -> formal GitHub Release
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
@@ -97,7 +116,7 @@ jobs:
           files: monthy_budget_flutter/build/app/outputs/flutter-apk/*.apk
           generate_release_notes: true
 
-      # Push to main → prerelease with commit SHA
+      # Push to main -> prerelease with commit SHA
       - name: Create prerelease
         if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
