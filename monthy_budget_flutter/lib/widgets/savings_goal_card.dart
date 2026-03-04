@@ -37,7 +37,19 @@ class SavingsGoalCard extends StatelessWidget {
           ],
         );
       }
-      return const SizedBox.shrink();
+      return _wrapper(
+        context,
+        l10n,
+        children: [
+          Text(
+            l10n.savingsGoalEmpty,
+            style: TextStyle(
+              fontSize: 13,
+              color: AppColors.textMuted(context),
+            ),
+          ),
+        ],
+      );
     }
 
     return _wrapper(
