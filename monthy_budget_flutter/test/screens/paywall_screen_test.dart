@@ -87,8 +87,9 @@ void main() {
       });
 
       testWidgets('shows CTA labels for each tier', (tester) async {
+        // Use active trial so Free card is not "Current Plan"
         final state = SubscriptionState(
-          trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
+          trialStartDate: DateTime.now(),
         );
 
         await tester.pumpWidget(_wrap(
@@ -316,6 +317,8 @@ void main() {
           ),
         ));
 
+        await tester.scrollUntilVisible(find.text('Start Premium'), 200);
+        await tester.pumpAndSettle();
         await tester.tap(find.text('Start Premium'));
         expect(selectedTier, SubscriptionTier.premium);
       });
@@ -334,6 +337,8 @@ void main() {
           ),
         ));
 
+        await tester.scrollUntilVisible(find.text('Start Family'), 200);
+        await tester.pumpAndSettle();
         await tester.tap(find.text('Start Family'));
         expect(selectedTier, SubscriptionTier.family);
       });
@@ -341,8 +346,9 @@ void main() {
       testWidgets('calls onSelectTier with free when "Continue Free" tapped',
           (tester) async {
         SubscriptionTier? selectedTier;
+        // Use active trial so Free card shows "Continue Free" (not "Current Plan")
         final state = SubscriptionState(
-          trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
+          trialStartDate: DateTime.now(),
         );
 
         await tester.pumpWidget(_wrap(

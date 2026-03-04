@@ -390,9 +390,14 @@ function unitFromName(name) {
   return 'un';
 }
 
-function bestMatchesForProduct(productName, scrapedItems) {
+function bestMatchesForProduct(productName, scrapedItems, productUnit) {
   const byStore = new Map();
   for (const it of scrapedItems) {
+    // Filter by unit compatibility when product unit is known
+    if (productUnit) {
+      const scrapedUnit = unitFromName(it.name);
+      if (scrapedUnit !== productUnit) continue;
+    }
     const score = similarity(productName, it.name);
     if (score < MATCH_MIN_SCORE) continue;
     if (tokenIntersectionCount(productName, it.name) < 1) continue;
@@ -498,7 +503,7 @@ async function main() {
 
   const updates = [];
   for (const p of existingProducts) {
-    const matches = bestMatchesForProduct(p.name, cleaned);
+    const matches = bestMatchesForProduct(p.name, cleaned, p.unit);
     if (matches.length < UPDATE_MIN_STORES) continue;
     const avgScore = matches.reduce((acc, x) => acc + x.score, 0) / matches.length;
     if (avgScore < UPDATE_MIN_AVG_SCORE) continue;

@@ -149,13 +149,17 @@ class CategoryBudgetSummary {
           (actualsByCategory['alimentacao'] ?? 0) + foodPurchaseSpent;
     }
 
-    final budgetByCategory = <String, double>{};
+    // Sum per-category default amounts, then apply monthly overrides
+    final defaultByCategory = <String, double>{};
     for (final item in budgetItems) {
       if (!item.enabled) continue;
       final catName = item.category.name;
-      final effectiveAmount = monthlyBudgets[catName] ?? item.amount;
-      budgetByCategory[catName] =
-          (budgetByCategory[catName] ?? 0) + effectiveAmount;
+      defaultByCategory[catName] =
+          (defaultByCategory[catName] ?? 0) + item.amount;
+    }
+    final budgetByCategory = <String, double>{};
+    for (final entry in defaultByCategory.entries) {
+      budgetByCategory[entry.key] = monthlyBudgets[entry.key] ?? entry.value;
     }
 
     final allCategories = <String>{
