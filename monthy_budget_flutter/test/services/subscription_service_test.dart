@@ -1,0 +1,479 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:orcamento_mensal/models/subscription_state.dart';
+import 'package:orcamento_mensal/services/subscription_service.dart';
+
+void main() {
+  late SubscriptionService service;
+
+  setUp(() {
+    service = SubscriptionService();
+  });
+
+  group('SubscriptionService', () {
+    group('load()', () {
+      test('first launch creates new trial with trialStartDate ≈ now', () async {
+        SharedPreferences.setMockInitialValues({});
+
+        final state = await service.load();
+
+        expect(state.tier, SubscriptionTier.free);
+        expect(state.trialUsed, false);
+        expect(state.featuresExplored, isEmpty);
+        expect(state.isTrialActive, true);
+        // trialStartDate should be within a few seconds of now
+        expect(
+          DateTime.now().difference(state.trialStartDate).inSeconds.abs(),
+          lessThan(5),
+        );
+      });
+
+      test('first launch persists the initial state', () async {
+        SharedPreferences.setMockInitialValues({});
+
+        await service.load();
+
+        final prefs = await SharedPreferences.getInstance();
+        final stored = prefs.getString('subscription_state');
+        expect(stored, isNotNull);
+
+        final restored = SubscriptionState.fromJsonString(stored!);
+        expect(restored.tier, SubscriptionTier.free);
+        expect(restored.isTrialActive, true);
+      });
+
+      test('subsequent launch deserializes existing state', () async {
+        final existing = SubscriptionState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime(2026, 1, 1),
+          trialUsed: true,
+          featuresExplored: {'dashboard', 'ai_coach'},
+        );
+        SharedPreferences.setMockInitialValues({
+          'subscription_state': existing.toJsonString(),
+        });
+
+        final state = await service.load();
+
+        expect(state.tier, SubscriptionTier.premium);
+        expect(state.trialUsed, true);
+        expect(state.trialStartDate, DateTime(2026, 1, 1));
+        expect(state.featuresExplored, {'dashboard', 'ai_coach'});
+      });
+    });
+
+    group('save()', () {
+      test('persists state to SharedPreferences', () async {
+        SharedPreferences.setMockInitialValues({});
+
+        final state = SubscriptionState(
+          tier: SubscriptionTier.family,
+          trialStartDate: DateTime(2026, 2, 15),
+          trialUsed: true,
+          featuresExplored: {'export', 'tax_simulator'},
+        );
+
+        await service.save(state);
+
+        final prefs = await SharedPreferences.getInstance();
+        final stored = prefs.getString('subscription_state');
+        expect(stored, isNotNull);
+
+        final restored = SubscriptionState.fromJsonString(stored!);
+        expect(restored.tier, SubscriptionTier.family);
+        expect(restored.trialUsed, true);
+        expect(restored.trialStartDate, DateTime(2026, 2, 15));
+        expect(restored.featuresExplored, {'export', 'tax_simulator'});
+      });
+
+      test('overwrites previous state', () async {
+        final first = SubscriptionState(
+          tier: SubscriptionTier.free,
+          trialStartDate: DateTime(2026, 1, 1),
+        );
+        SharedPreferences.setMockInitialValues({
+          'subscription_state': first.toJsonString(),
+        });
+
+        final updated = first.copyWith(tier: SubscriptionTier.premium);
+        await service.save(updated);
+
+        final prefs = await SharedPreferences.getInstance();
+        final restored = SubscriptionState.fromJsonString(
+          prefs.getString('subscription_state')!,
+        );
+        expect(restored.tier, SubscriptionTier.premium);
+      });
+    });
+
+    group('markFeatureExplored()', () {
+      test('adds new feature to explored set', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          featuresExplored: {'dashboard'},
+        );
+
+        final updated = await service.markFeatureExplored(state, 'ai_coach');
+
+        expect(updated.featuresExplored, {'dashboard', 'ai_coach'});
+      });
+
+      test('returns same state if feature already explored', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          featuresExplored: {'dashboard', 'ai_coach'},
+        );
+
+        final updated = await service.markFeatureExplored(state, 'ai_coach');
+
+        expect(identical(updated, state), true);
+      });
+
+      test('persists updated explored set', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          featuresExplored: {},
+        );
+
+        await service.markFeatureExplored(state, 'meal_planner');
+
+        final prefs = await SharedPreferences.getInstance();
+        final restored = SubscriptionState.fromJsonString(
+          prefs.getString('subscription_state')!,
+        );
+        expect(restored.featuresExplored, contains('meal_planner'));
+      });
+
+      test('preserves all other fields', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime(2026, 2, 1),
+          trialUsed: true,
+          featuresExplored: {'dashboard'},
+        );
+
+        final updated = await service.markFeatureExplored(state, 'export');
+
+        expect(updated.tier, SubscriptionTier.premium);
+        expect(updated.trialStartDate, DateTime(2026, 2, 1));
+        expect(updated.trialUsed, true);
+      });
+    });
+
+    group('upgradeTo()', () {
+      test('sets tier to premium and marks trialUsed', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+        );
+
+        final updated =
+            await service.upgradeTo(state, SubscriptionTier.premium);
+
+        expect(updated.tier, SubscriptionTier.premium);
+        expect(updated.trialUsed, true);
+      });
+
+      test('sets tier to family and marks trialUsed', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+        );
+
+        final updated =
+            await service.upgradeTo(state, SubscriptionTier.family);
+
+        expect(updated.tier, SubscriptionTier.family);
+        expect(updated.trialUsed, true);
+      });
+
+      test('persists upgraded state', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+        );
+
+        await service.upgradeTo(state, SubscriptionTier.premium);
+
+        final prefs = await SharedPreferences.getInstance();
+        final restored = SubscriptionState.fromJsonString(
+          prefs.getString('subscription_state')!,
+        );
+        expect(restored.tier, SubscriptionTier.premium);
+        expect(restored.trialUsed, true);
+      });
+
+      test('preserves featuresExplored and trialStartDate', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime(2026, 2, 1),
+          featuresExplored: {'dashboard', 'ai_coach'},
+        );
+
+        final updated =
+            await service.upgradeTo(state, SubscriptionTier.premium);
+
+        expect(updated.trialStartDate, DateTime(2026, 2, 1));
+        expect(updated.featuresExplored, {'dashboard', 'ai_coach'});
+      });
+    });
+
+    group('downgrade()', () {
+      test('sets tier to free and marks trialUsed', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime.now(),
+          trialUsed: true,
+        );
+
+        final updated = await service.downgrade(state);
+
+        expect(updated.tier, SubscriptionTier.free);
+        expect(updated.trialUsed, true);
+      });
+
+      test('persists downgraded state', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.family,
+          trialStartDate: DateTime.now(),
+          trialUsed: true,
+        );
+
+        await service.downgrade(state);
+
+        final prefs = await SharedPreferences.getInstance();
+        final restored = SubscriptionState.fromJsonString(
+          prefs.getString('subscription_state')!,
+        );
+        expect(restored.tier, SubscriptionTier.free);
+        expect(restored.trialUsed, true);
+      });
+
+      test('trial remains used after downgrade (no re-trial)', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime.now(),
+          trialUsed: true,
+        );
+
+        final updated = await service.downgrade(state);
+
+        expect(updated.isTrialActive, false);
+        expect(updated.hasPremiumAccess, false);
+      });
+
+      test('preserves featuresExplored', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime.now(),
+          trialUsed: true,
+          featuresExplored: {'dashboard', 'export', 'ai_coach'},
+        );
+
+        final updated = await service.downgrade(state);
+
+        expect(updated.featuresExplored, {'dashboard', 'export', 'ai_coach'});
+      });
+    });
+
+    group('featureLabel()', () {
+      test('returns correct labels for all known features', () {
+        expect(SubscriptionService.featureLabel('dashboard'),
+            'Budget Dashboard');
+        expect(SubscriptionService.featureLabel('ai_coach'),
+            'AI Financial Coach');
+        expect(
+            SubscriptionService.featureLabel('meal_planner'), 'Meal Planner');
+        expect(SubscriptionService.featureLabel('expense_tracker'),
+            'Expense Tracker');
+        expect(
+            SubscriptionService.featureLabel('savings_goals'), 'Savings Goals');
+        expect(
+            SubscriptionService.featureLabel('shopping_list'), 'Shopping List');
+        expect(SubscriptionService.featureLabel('grocery_browser'),
+            'Grocery Browser');
+        expect(SubscriptionService.featureLabel('export'), 'Export Reports');
+        expect(SubscriptionService.featureLabel('tax_simulator'),
+            'Tax Simulator');
+      });
+
+      test('returns key as fallback for unknown feature', () {
+        expect(
+            SubscriptionService.featureLabel('unknown_feature'),
+            'unknown_feature');
+      });
+    });
+
+    group('featureIcon()', () {
+      test('returns correct icons for all known features', () {
+        expect(SubscriptionService.featureIcon('dashboard'), 'dashboard');
+        expect(SubscriptionService.featureIcon('ai_coach'), 'psychology');
+        expect(SubscriptionService.featureIcon('meal_planner'), 'restaurant');
+        expect(
+            SubscriptionService.featureIcon('expense_tracker'), 'receipt_long');
+        expect(SubscriptionService.featureIcon('savings_goals'), 'savings');
+        expect(SubscriptionService.featureIcon('shopping_list'),
+            'shopping_basket');
+        expect(SubscriptionService.featureIcon('grocery_browser'),
+            'shopping_cart');
+        expect(SubscriptionService.featureIcon('export'), 'download');
+        expect(SubscriptionService.featureIcon('tax_simulator'), 'calculate');
+      });
+
+      test('returns star as fallback for unknown feature', () {
+        expect(SubscriptionService.featureIcon('unknown_feature'), 'star');
+      });
+    });
+
+    group('upgradeTo() edge cases', () {
+      test('upgrading to free tier still marks trialUsed', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+        );
+
+        final updated =
+            await service.upgradeTo(state, SubscriptionTier.free);
+
+        expect(updated.tier, SubscriptionTier.free);
+        expect(updated.trialUsed, true);
+        expect(updated.isTrialActive, false);
+      });
+
+      test('upgrade from premium to family', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime.now(),
+          trialUsed: true,
+        );
+
+        final updated =
+            await service.upgradeTo(state, SubscriptionTier.family);
+
+        expect(updated.tier, SubscriptionTier.family);
+        expect(updated.hasFamilyAccess, true);
+      });
+
+      test('upgrade from family to premium (downgrade tier but still via upgradeTo)', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.family,
+          trialStartDate: DateTime.now(),
+          trialUsed: true,
+        );
+
+        final updated =
+            await service.upgradeTo(state, SubscriptionTier.premium);
+
+        expect(updated.tier, SubscriptionTier.premium);
+        expect(updated.hasPremiumAccess, true);
+        expect(updated.hasFamilyAccess, false);
+      });
+    });
+
+    group('markFeatureExplored() accumulation', () {
+      test('multiple calls accumulate explored features', () async {
+        SharedPreferences.setMockInitialValues({});
+        var state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+        );
+
+        state = await service.markFeatureExplored(state, 'dashboard');
+        state = await service.markFeatureExplored(state, 'ai_coach');
+        state = await service.markFeatureExplored(state, 'export');
+
+        expect(state.featuresExplored, {'dashboard', 'ai_coach', 'export'});
+        expect(state.featuresExploredCount, 3);
+      });
+
+      test('accumulated state persists correctly', () async {
+        SharedPreferences.setMockInitialValues({});
+        var state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+        );
+
+        state = await service.markFeatureExplored(state, 'dashboard');
+        state = await service.markFeatureExplored(state, 'meal_planner');
+
+        final prefs = await SharedPreferences.getInstance();
+        final restored = SubscriptionState.fromJsonString(
+          prefs.getString('subscription_state')!,
+        );
+        expect(restored.featuresExplored, {'dashboard', 'meal_planner'});
+      });
+    });
+
+    group('downgrade() edge cases', () {
+      test('downgrade from family tier', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.family,
+          trialStartDate: DateTime.now(),
+          trialUsed: true,
+        );
+
+        final updated = await service.downgrade(state);
+
+        expect(updated.tier, SubscriptionTier.free);
+        expect(updated.hasFamilyAccess, false);
+        expect(updated.hasPremiumAccess, false);
+      });
+
+      test('downgrade from free tier (no-op on tier but still marks trialUsed)', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.free,
+          trialStartDate: DateTime.now(),
+        );
+
+        final updated = await service.downgrade(state);
+
+        expect(updated.tier, SubscriptionTier.free);
+        expect(updated.trialUsed, true);
+        expect(updated.isTrialActive, false);
+      });
+    });
+
+    group('full lifecycle', () {
+      test('load → explore → upgrade → downgrade', () async {
+        SharedPreferences.setMockInitialValues({});
+
+        // First launch: trial active
+        var state = await service.load();
+        expect(state.isTrialActive, true);
+        expect(state.tier, SubscriptionTier.free);
+
+        // Explore a feature
+        state = await service.markFeatureExplored(state, 'dashboard');
+        expect(state.featuresExplored, {'dashboard'});
+
+        // Upgrade to premium
+        state = await service.upgradeTo(state, SubscriptionTier.premium);
+        expect(state.tier, SubscriptionTier.premium);
+        expect(state.trialUsed, true);
+        expect(state.isTrialActive, false);
+
+        // Reload from storage — should match
+        final reloaded = await service.load();
+        expect(reloaded.tier, SubscriptionTier.premium);
+        expect(reloaded.trialUsed, true);
+        expect(reloaded.featuresExplored, {'dashboard'});
+
+        // Downgrade
+        state = await service.downgrade(reloaded);
+        expect(state.tier, SubscriptionTier.free);
+        expect(state.trialUsed, true);
+        expect(state.hasPremiumAccess, false);
+      });
+    });
+  });
+}

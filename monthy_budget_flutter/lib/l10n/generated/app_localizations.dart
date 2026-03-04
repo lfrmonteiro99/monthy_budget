@@ -5386,6 +5386,110 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Convide membros da família para partilhar dados do orçamento entre dispositivos. Todos veem as mesmas despesas e orçamentos.'**
   String get settingsHouseholdTip;
+  /// No description provided for @subscriptionTitle.
+  String get subscriptionTitle;
+
+  /// No description provided for @subscriptionFree.
+  String get subscriptionFree;
+
+  /// No description provided for @subscriptionPremium.
+  String get subscriptionPremium;
+
+  /// No description provided for @subscriptionFamily.
+  String get subscriptionFamily;
+
+  /// No description provided for @subscriptionTrialActive.
+  String get subscriptionTrialActive;
+
+  /// No description provided for @subscriptionTrialDaysLeft.
+  String subscriptionTrialDaysLeft(int count);
+
+  /// No description provided for @subscriptionTrialExpired.
+  String get subscriptionTrialExpired;
+
+  /// No description provided for @subscriptionUpgrade.
+  String get subscriptionUpgrade;
+
+  /// No description provided for @subscriptionSeePlans.
+  String get subscriptionSeePlans;
+
+  /// No description provided for @subscriptionCurrentPlan.
+  String get subscriptionCurrentPlan;
+
+  /// No description provided for @subscriptionManage.
+  String get subscriptionManage;
+
+  /// No description provided for @subscriptionFeatureExplored.
+  String subscriptionFeatureExplored(int count, int total);
+
+  /// No description provided for @subscriptionTrialBannerTitle.
+  String get subscriptionTrialBannerTitle;
+
+  /// No description provided for @subscriptionTrialEndingSoon.
+  String subscriptionTrialEndingSoon(int count);
+
+  /// No description provided for @subscriptionTrialLastDay.
+  String get subscriptionTrialLastDay;
+
+  /// No description provided for @subscriptionUpgradeNow.
+  String get subscriptionUpgradeNow;
+
+  /// No description provided for @subscriptionKeepData.
+  String get subscriptionKeepData;
+
+  /// No description provided for @subscriptionCancelAnytime.
+  String get subscriptionCancelAnytime;
+
+  /// No description provided for @subscriptionNoHiddenFees.
+  String get subscriptionNoHiddenFees;
+
+  /// No description provided for @subscriptionMostPopular.
+  String get subscriptionMostPopular;
+
+  /// No description provided for @subscriptionYearlySave.
+  String subscriptionYearlySave(int percent);
+
+  /// No description provided for @subscriptionMonthly.
+  String get subscriptionMonthly;
+
+  /// No description provided for @subscriptionYearly.
+  String get subscriptionYearly;
+
+  /// No description provided for @subscriptionPerMonth.
+  String get subscriptionPerMonth;
+
+  /// No description provided for @subscriptionPerYear.
+  String get subscriptionPerYear;
+
+  /// No description provided for @subscriptionBilledYearly.
+  String get subscriptionBilledYearly;
+
+  /// No description provided for @subscriptionStartPremium.
+  String get subscriptionStartPremium;
+
+  /// No description provided for @subscriptionStartFamily.
+  String get subscriptionStartFamily;
+
+  /// No description provided for @subscriptionContinueFree.
+  String get subscriptionContinueFree;
+
+  /// No description provided for @subscriptionTrialEnded.
+  String get subscriptionTrialEnded;
+
+  /// No description provided for @subscriptionChoosePlan.
+  String get subscriptionChoosePlan;
+
+  /// No description provided for @subscriptionUnlockPower.
+  String get subscriptionUnlockPower;
+
+  /// No description provided for @subscriptionRequiresPaid.
+  String subscriptionRequiresPaid(String feature);
+
+  /// No description provided for @subscriptionTryFeature.
+  String subscriptionTryFeature(String feature);
+
+  /// No description provided for @subscriptionExplore.
+  String subscriptionExplore(String feature);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

@@ -48,7 +48,12 @@ import 'utils/savings_projections.dart';
 import 'theme/app_theme.dart';
 import 'theme/app_colors.dart';
 import 'models/onboarding_state.dart';
+import 'models/subscription_state.dart';
+import 'services/subscription_service.dart';
 import 'screens/welcome_slideshow_screen.dart';
+import 'screens/paywall_screen.dart';
+import 'widgets/trial_banner.dart';
+import 'widgets/feature_discovery_card.dart';
 
 /// Global notifier for reactive locale changes from settings.
 final appLocaleNotifier = ValueNotifier<Locale?>(null);
@@ -141,7 +146,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   final _recurringExpenseService = RecurringExpenseService();
   final _savingsGoalService = SavingsGoalService();
   final _monthlyBudgetService = MonthlyBudgetService();
+  final _subscriptionService = SubscriptionService();
 
+  SubscriptionState _subscription =
+      SubscriptionState(trialStartDate: DateTime.now());
   OnboardingState _onboardingState = const OnboardingState();
   final _fabKey = GlobalKey(debugLabel: 'tour_fab');
   final _navBarKey = GlobalKey(debugLabel: 'tour_nav_bar');
@@ -218,6 +226,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       _productsService.load(),
       _localConfigService.load(),
       _localConfigService.loadOnboardingState(),
+      _subscriptionService.load(),
     ]);
     setState(() {
       _settings = results[0] as AppSettings;
@@ -227,6 +236,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       _products = results[4] as List<Product>;
       _dashboardConfig = results[5] as LocalDashboardConfig;
       _onboardingState = results[6] as OnboardingState;
+      _subscription = results[7] as SubscriptionState;
       _loaded = true;
     });
     _syncLocaleAndFormatter(_settings);
@@ -306,6 +316,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   void _openExpenseTrends() {
+    if (!_gateFeature(PremiumFeature.expenseTrends)) return;
+    _trackFeature('expense_tracker');
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => ExpenseTrendsScreen(
@@ -361,6 +373,81 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         ),
       ),
     );
+  }
+
+  // ── Subscription helpers ──────────────────────────────────────────
+
+  /// Track that a feature was explored during trial.
+  void _trackFeature(String featureKey) async {
+    final updated =
+        await _subscriptionService.markFeatureExplored(_subscription, featureKey);
+    if (mounted) setState(() => _subscription = updated);
+  }
+
+  /// Open the paywall screen.
+  void _openPaywall({PremiumFeature? blockedFeature}) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => PaywallScreen(
+          subscription: _subscription,
+          blockedFeature: blockedFeature,
+          onSelectTier: (tier) async {
+            // TODO: Integrate with real payment (RevenueCat / in_app_purchase)
+            // For now, simulate upgrade
+            final updated =
+                await _subscriptionService.upgradeTo(_subscription, tier);
+            if (mounted) {
+              setState(() => _subscription = updated);
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(tier == SubscriptionTier.free
+                      ? 'Continuing with Free plan'
+                      : 'Upgraded to ${tier.name} — thank you!'),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  /// Check if a feature is accessible; if not, show paywall.
+  bool _gateFeature(PremiumFeature feature) {
+    if (_subscription.canAccess(feature)) return true;
+    _openPaywall(blockedFeature: feature);
+    return false;
+  }
+
+  /// Navigate to a feature from the discovery card.
+  void _navigateToFeature(String featureKey) {
+    _trackFeature(featureKey);
+    switch (featureKey) {
+      case 'ai_coach':
+        setState(() => _currentIndex = 3);
+      case 'meal_planner':
+        setState(() => _currentIndex = 4);
+      case 'expense_tracker':
+        _openExpenseTracker();
+      case 'savings_goals':
+        _openSavingsGoals();
+      case 'shopping_list':
+        setState(() => _currentIndex = 2);
+      case 'grocery_browser':
+        setState(() => _currentIndex = 1);
+      case 'export':
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
+        );
+      case 'tax_simulator':
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
+        );
+      default:
+        setState(() => _currentIndex = 0);
+    }
   }
 
   void _markTourDone(String key) {
@@ -580,6 +667,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       dashboardConfig: _dashboardConfig,
       onSaveDashboardConfig: _saveDashboardConfig,
       onOpenNotificationSettings: _openNotificationSettings,
+      onOpenSubscription: _openPaywall,
+      subscriptionLabel: _subscription.isTrialActive
+          ? 'Trial (${_subscription.trialDaysRemaining} days left)'
+          : _subscription.tier == SubscriptionTier.free
+              ? 'Free'
+              : '${_subscription.tier.name[0].toUpperCase()}${_subscription.tier.name.substring(1)}',
       monthlyBudgets: _monthlyBudgets,
       onSaveMonthlyBudgets: (budgetMap) async {
         final budgets = budgetMap.entries
@@ -733,7 +826,31 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     ];
 
     return Scaffold(
-      body: screens[_currentIndex],
+      body: _currentIndex == 0
+          ? Column(
+              children: [
+                // Trial banner on dashboard
+                if (_subscription.isTrialActive)
+                  TrialBanner(
+                    subscription: _subscription,
+                    onUpgrade: _openPaywall,
+                  ),
+                // Feature discovery nudge
+                if (_subscription.isTrialActive &&
+                    _subscription.nextFeatureToDiscover != null)
+                  FeatureDiscoveryCard(
+                    subscription: _subscription,
+                    onExploreFeature: _navigateToFeature,
+                    onDismiss: () {
+                      // Skip this feature in discovery
+                      final next = _subscription.nextFeatureToDiscover;
+                      if (next != null) _trackFeature(next);
+                    },
+                  ),
+                Expanded(child: screens[0]),
+              ],
+            )
+          : screens[_currentIndex],
       floatingActionButton: _currentIndex == 0
           ? FloatingActionButton(
               key: _fabKey,
@@ -746,7 +863,23 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       bottomNavigationBar: NavigationBar(
         key: _navBarKey,
         selectedIndex: _currentIndex,
-        onDestinationSelected: (i) => setState(() => _currentIndex = i),
+        onDestinationSelected: (i) {
+          // Track feature exploration on tab switch
+          const tabFeatures = [
+            'dashboard',
+            'grocery_browser',
+            'shopping_list',
+            'ai_coach',
+            'meal_planner',
+          ];
+          if (i < tabFeatures.length) _trackFeature(tabFeatures[i]);
+
+          // Gate premium tabs when trial expired
+          if (i == 3 && !_gateFeature(PremiumFeature.aiCoach)) return;
+          if (i == 4 && !_gateFeature(PremiumFeature.mealPlanner)) return;
+
+          setState(() => _currentIndex = i);
+        },
         backgroundColor: AppColors.surface(context),
         indicatorColor: AppColors.navIndicator(context),
         height: 72,

@@ -32,6 +32,8 @@ class SettingsScreen extends StatefulWidget {
   final LocalDashboardConfig? dashboardConfig;
   final ValueChanged<LocalDashboardConfig>? onSaveDashboardConfig;
   final VoidCallback? onOpenNotificationSettings;
+  final VoidCallback? onOpenSubscription;
+  final String? subscriptionLabel;
   final Map<String, double> monthlyBudgets;
   final ValueChanged<Map<String, double>>? onSaveMonthlyBudgets;
   final List<RecurringExpense> recurringExpenses;
@@ -52,6 +54,8 @@ class SettingsScreen extends StatefulWidget {
     this.dashboardConfig,
     this.onSaveDashboardConfig,
     this.onOpenNotificationSettings,
+    this.onOpenSubscription,
+    this.subscriptionLabel,
     this.monthlyBudgets = const {},
     this.onSaveMonthlyBudgets,
     this.recurringExpenses = const [],
@@ -124,6 +128,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final code =
         await HouseholdService().generateInviteCode(widget.householdId);
     setState(() => _inviteCode = code);
+  }
+
+  String _subscriptionSubtitle() {
+    return widget.subscriptionLabel ?? 'Free';
   }
 
   void _toggleFavorite(String product) {
@@ -297,6 +305,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       onTap: () => _toggleSection('household'),
                     ),
                     if (_openSection == 'household') _buildHouseholdSection(),
+                    // Subscription management
+                    if (widget.onOpenSubscription != null)
+                      ListTile(
+                        leading: Icon(Icons.workspace_premium_rounded,
+                            color: AppColors.primary(context)),
+                        title: Text('Subscription',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textPrimary(context))),
+                        subtitle: Text(
+                          _subscriptionSubtitle(),
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.textSecondary(context)),
+                        ),
+                        trailing: Icon(Icons.chevron_right,
+                            color: AppColors.textMuted(context)),
+                        onTap: widget.onOpenSubscription,
+                      ),
                     // Notifications navigation
                     ListTile(
                       leading: Icon(Icons.notifications_outlined,
