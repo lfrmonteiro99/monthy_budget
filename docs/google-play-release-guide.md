@@ -25,23 +25,28 @@ Este documento explica **todo** o processo de como o código chega à Google Pla
 ## 1. Visão Geral do Pipeline
 
 ```
-Feature branch → PR → main → Tag v1.2.0 → CI → AAB assinado → Google Play
+git push feature branch → Auto-PR → Tests passam → Auto-merge → main → Tag v1.2.0 → AAB → Google Play
 ```
 
-O pipeline tem 4 fases:
+O pipeline tem 5 fases:
 
-| Fase | Trigger | O que faz |
-|------|---------|-----------|
-| **Test** | PR para `main` ou push para `main` | `flutter analyze` + `flutter test` |
-| **Build** | Push para `main` (após test passar) ou tag `v*` (sem test) | Constrói AAB assinado com keystore |
-| **GitHub Release** | Apenas tags `v*` | Cria Release no GitHub com o AAB anexado |
-| **Deploy Play Store** | Apenas tags `v*` | Faz upload do AAB para Google Play |
+| Fase | Trigger | O que faz | Workflow |
+|------|---------|-----------|----------|
+| **Auto-PR** | Push para qualquer branch (exceto `main`) | Cria PR para `main` + ativa auto-merge | `auto-pr.yml` |
+| **Test** | PR para `main` ou push para `main` | `flutter analyze` + `flutter test` | `flutter-ci.yml` |
+| **Auto-merge** | Tests passam no PR | Squash merge automático para `main` | GitHub auto-merge |
+| **Build** | Push para `main` (após test passar) ou tag `v*` (sem test) | Constrói AAB assinado com keystore | `flutter-ci.yml` |
+| **GitHub Release** | Apenas tags `v*` | Cria Release no GitHub com o AAB anexado | `flutter-ci.yml` |
+| **Deploy Play Store** | Apenas tags `v*` | Faz upload do AAB para Google Play | `flutter-ci.yml` |
 
 **Porquê esta separação?**
-- PRs só correm testes — não perdes tempo a construir builds para código que pode nem ser aprovado.
-- Push para `main` corre testes e, se passarem, constrói o AAB — é um "dev build" para testes internos.
-- Tags `v*` saltam os testes e constroem diretamente o AAB — a tag é sempre criada a partir de `main` que já foi testado. Se os testes falhassem na tag, ficarias com uma release bloqueada por código que já foi validado.
+- Push para uma branch cria PR automaticamente — não precisas de ir ao GitHub criar manualmente.
+- PRs correm testes. Se passam, o auto-merge faz squash merge para `main` sem intervenção.
+- Push para `main` (resultado do auto-merge) constrói o AAB — é um "dev build" para testes internos.
+- Tags `v*` saltam os testes e constroem diretamente o AAB — a tag é sempre criada a partir de `main` que já foi testado.
 - Tags `v*` são releases oficiais — são as únicas que vão para o Google Play.
+
+**Branch protection em `main`:** O merge só acontece se o job `test` passar. Configurado via GitHub branch protection rules com `strict: true` (branch tem de estar up-to-date com `main`).
 
 ---
 
@@ -77,10 +82,23 @@ version: 1.0.0+1
 
 ## 3. O Que Acontece em Cada Evento Git
 
-### Pull Request para `main`
+### Push para uma feature branch
+
+```
+Trigger: push → branches-ignore: [main]
+Workflow: auto-pr.yml
+```
+
+1. Verifica se já existe um PR para esta branch → se não, cria um PR para `main`
+2. Ativa **auto-merge** (squash) no PR
+
+**Não precisas de ir ao GitHub criar o PR manualmente.** Basta fazer `git push origin minha-branch` e o PR é criado automaticamente.
+
+### Pull Request para `main` (testes)
 
 ```
 Trigger: pull_request → branches: [main]
+Workflow: flutter-ci.yml (job: test)
 ```
 
 1. Checkout do código da branch
@@ -91,10 +109,10 @@ Trigger: pull_request → branches: [main]
 6. `flutter analyze --no-fatal-infos` (análise estática — erros bloqueiam, warnings não)
 7. `flutter test` (corre todos os testes unitários e de widget)
 
-**Se falhar**: PR mostra ❌ e não pode ser merged (se branch protection estiver ativa).
-**Se passar**: PR mostra ✅.
+**Se falhar**: PR mostra ❌, auto-merge fica à espera. Corriges o código, fazes push, e os testes correm de novo.
+**Se passar**: Auto-merge faz squash merge para `main` automaticamente.
 
-**Não constrói AAB/APK** — seria desperdício de CI minutes para código em revisão.
+**Não constrói AAB** — seria desperdício de CI minutes para código em revisão.
 
 ### Push para `main` (merge do PR)
 
@@ -327,40 +345,17 @@ gh secret set PLAY_STORE_SERVICE_ACCOUNT_JSON < path/to/service-account.json
 
 ---
 
-## 8. Alterar o CI para Construir AAB (em vez de APK)
+## 8. AAB vs APK
 
 O Google Play **exige AAB** (Android App Bundle) para novas apps desde 2021. O AAB permite ao Google optimizar o APK para cada dispositivo (menos tamanho de download).
 
-### Alterações necessárias no `flutter-ci.yml`
+O CI já está configurado para construir AAB (`flutter build appbundle --release`). O output fica em:
 
-O job `build-apk` passa a construir AAB para releases (tags), e mantém APK para dev builds:
-
-```yaml
-- name: Build release AAB
-  if: startsWith(github.ref, 'refs/tags/v')
-  env:
-    KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-    KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-    KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-  run: flutter build appbundle --release
-
-- name: Build dev APK
-  if: github.ref == 'refs/heads/main'
-  env:
-    KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-    KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-    KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-  run: flutter build apk --release
+```
+build/app/outputs/bundle/release/app-release.aab
 ```
 
-### Alteração no `build.gradle.kts`
-
-Para que o AAB tenha um nome descritivo (como já fazes para o APK):
-
-```kotlin
-// O nome do AAB é controlado pelo Gradle automaticamente
-// Não precisa de override — o AAB chama-se sempre app-release.aab
-```
+O nome do AAB é controlado pelo Gradle automaticamente — chama-se sempre `app-release.aab`.
 
 ---
 
@@ -409,70 +404,76 @@ deploy-play-store:
 1. Desenvolves na feature branch (ex: claude/nova-feature-xyz)
          │
          ▼
-2. Abres PR para main
+2. git push origin claude/nova-feature-xyz
          │
          ▼
-3. CI corre: analyze + test ──── Se falha: corriges e push novamente
+3. CI cria PR automaticamente + ativa auto-merge
+         │
+         ▼
+4. CI corre: analyze + test ──── Se falha: corriges, push, testes correm de novo
          │
          ▼ (passa)
-4. Merge PR para main
+5. Auto-merge: squash merge para main (automático)
          │
          ▼
-5. CI corre: analyze + test + build APK → prerelease no GitHub
+6. CI corre: build AAB → prerelease no GitHub
    (este é um dev build para testar internamente)
          │
          ▼
-6. Testas o APK do dev build. Tudo OK?
+7. Testas o AAB do dev build. Tudo OK?
          │
          ▼ (sim)
-7. Atualizas pubspec.yaml:
+8. Atualizas pubspec.yaml:
    version: 1.1.0+2  (incrementa versionCode!)
          │
          ▼
-8. Commit + push para main
+9. Commit + push → auto-PR → auto-merge para main
          │
          ▼
-9. Crias a tag:
-   git tag v1.1.0
-   git push origin v1.1.0
+10. Crias a tag:
+    git tag v1.1.0
+    git push origin v1.1.0
          │
          ▼
-10. CI corre: test → build AAB → GitHub Release → Upload Play Store
+11. CI corre: build AAB → GitHub Release → Upload Play Store
          │
          ▼
-11. App disponível no track "internal" do Google Play
+12. App disponível no track "internal" do Google Play
          │
          ▼
-12. Testas no Play Console → Promoves para production
+13. Testas no Play Console → Promoves para production
          │
          ▼
-13. App live na Google Play Store
+14. App live na Google Play Store
 ```
 
 ### Comandos concretos
 
 ```bash
-# 1-4: Desenvolvimento normal
+# 1-5: Desenvolvimento normal (tudo automático após o push)
 git checkout -b claude/nova-feature
 # ... desenvolve ...
 git add -A && git commit -m "claude/nova-feature: add X"
 git push origin claude/nova-feature
-# Abre PR no GitHub, espera CI, merge
+# PR criado automaticamente, testes correm, auto-merge se passam
 
-# 6: Testa o dev build
-# Vai a GitHub → Actions → último run → Artifacts → download APK
+# 7: Testa o dev build
+# Vai a GitHub → Actions → último run → Artifacts → download AAB
 
-# 7-8: Prepara release
+# 8-9: Prepara release (numa nova branch)
+git checkout -b claude/bump-version
 # Edita pubspec.yaml → version: 1.1.0+2
 git add pubspec.yaml
-git commit -m "claude/budget-calculator-app: bump version to 1.1.0+2"
-git push origin main
+git commit -m "claude/bump-version: bump version to 1.1.0+2"
+git push origin claude/bump-version
+# Auto-PR + auto-merge levam isto para main
 
-# 9: Cria tag
+# 10: Cria tag (após o merge para main)
+git checkout main && git pull
 git tag v1.1.0
 git push origin v1.1.0
 
-# 10-13: Automático!
+# 11-14: Automático!
 ```
 
 ---
@@ -595,7 +596,8 @@ O Google rejeitou a app por violar políticas. Lê o email com os motivos, corri
 ```
 monthy_budget/
 ├── .github/workflows/
-│   └── flutter-ci.yml           ← Pipeline CI/CD
+│   ├── flutter-ci.yml           ← Pipeline CI/CD (test + build + release)
+│   └── auto-pr.yml              ← Auto-criação de PR + auto-merge
 ├── monthy_budget_flutter/
 │   ├── pubspec.yaml             ← version: X.Y.Z+N
 │   ├── android/

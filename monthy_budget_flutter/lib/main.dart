@@ -54,6 +54,8 @@ import 'screens/welcome_slideshow_screen.dart';
 import 'screens/paywall_screen.dart';
 import 'widgets/trial_banner.dart';
 import 'widgets/feature_discovery_card.dart';
+import 'services/ad_service.dart';
+import 'widgets/ad_banner_widget.dart';
 
 /// Global notifier for reactive locale changes from settings.
 final appLocaleNotifier = ValueNotifier<Locale?>(null);
@@ -75,6 +77,7 @@ Future<void> main() async {
   appColorPaletteNotifier.value = savedPalette;
   AppColors.palette = savedPalette;
   await NotificationService().init();
+  await AdService.initialize();
   runApp(const OrcamentoMensalApp());
 }
 
@@ -848,6 +851,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                     },
                   ),
                 Expanded(child: screens[0]),
+                AdBannerWidget(
+                  showAd: AdService.shouldShowAds(_subscription),
+                ),
               ],
             )
           : screens[_currentIndex],
