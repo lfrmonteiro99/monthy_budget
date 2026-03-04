@@ -1,0 +1,2668 @@
+{
+  "generated_at": "2026-03-04T00:05:14.589Z",
+  "search_terms": [
+    "arroz",
+    "massa",
+    "esparguete",
+    "pao",
+    "leite",
+    "iogurte",
+    "queijo",
+    "manteiga",
+    "ovos",
+    "frango",
+    "carne",
+    "bife",
+    "porco",
+    "pescada",
+    "salmao",
+    "atum",
+    "camarao",
+    "banana",
+    "maca",
+    "pera",
+    "laranja",
+    "morango",
+    "uva",
+    "tomate",
+    "cebola",
+    "alho",
+    "batata",
+    "cenoura",
+    "alface",
+    "pepino",
+    "brocolos",
+    "couve",
+    "azeite",
+    "oleo",
+    "acucar",
+    "sal",
+    "vinagre",
+    "ketchup",
+    "maionese",
+    "agua",
+    "sumo",
+    "cerveja",
+    "vinho",
+    "cafe",
+    "cha",
+    "detergente",
+    "sabonete",
+    "champo",
+    "pasta dentes",
+    "papel higienico",
+    "toalhas papel"
+  ],
+  "stores_targeted": [
+    "Continente",
+    "Auchan",
+    "Pingo Doce",
+    "Minipreco",
+    "Lidl",
+    "Aldi"
+  ],
+  "scraped_items_total": 4578,
+  "scraped_items_deduped": 3898,
+  "updates_count": 83,
+  "new_products_count": 80,
+  "errors": [],
+  "updates": [
+    {
+      "name": "Maca",
+      "oldPrice": 0.89,
+      "newPrice": 1.93,
+      "matchedStores": [
+        {
+          "store": "Pingo Doce",
+          "price": 3.79,
+          "sourceName": "Tarte de Maca",
+          "score": 0.75
+        },
+        {
+          "store": "Continente",
+          "price": 0.75,
+          "sourceName": "Folhado de Maca",
+          "score": 0.75
+        },
+        {
+          "store": "Minipreco",
+          "price": 1.49,
+          "sourceName": "Maçã Golden Embalada 1 kg",
+          "score": 0.583
+        },
+        {
+          "store": "Lidl",
+          "price": 1.69,
+          "sourceName": "Maçã Golden da Beira Alta IGP",
+          "score": 0.45
+        }
+      ]
+    },
+    {
+      "name": "Pera",
+      "oldPrice": 0.99,
+      "newPrice": 2.12,
+      "matchedStores": [
+        {
+          "store": "Minipreco",
+          "price": 0.95,
+          "sourceName": "AUCHAN Néctar Pera 3x200 ml",
+          "score": 0.5
+        },
+        {
+          "store": "Continente",
+          "price": 1.79,
+          "sourceName": "Pera Edengold",
+          "score": 0.75
+        },
+        {
+          "store": "Auchan",
+          "price": 4.99,
+          "sourceName": "PERA NASHI AUCHAN KG",
+          "score": 0.583
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 1.59,
+          "sourceName": "Pera Rocha DOP Oeste Embalada",
+          "score": 0.45
+        },
+        {
+          "store": "Lidl",
+          "price": 1.26,
+          "sourceName": "Compal Clássico Néctar de Pera Rocha",
+          "score": 0.45
+        }
+      ]
+    },
+    {
+      "name": "Banana",
+      "oldPrice": 1.29,
+      "newPrice": 1.91,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 1.29,
+          "sourceName": "Banana Continente",
+          "score": 0.75
+        },
+        {
+          "store": "Auchan",
+          "price": 3.19,
+          "sourceName": "BANANA DA MADEIRA KG",
+          "score": 0.75
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 1.09,
+          "sourceName": "Banana Chips",
+          "score": 0.75
+        },
+        {
+          "store": "Lidl",
+          "price": 0.99,
+          "sourceName": "Banana Rainforest Alliance",
+          "score": 0.583
+        },
+        {
+          "store": "Minipreco",
+          "price": 2.99,
+          "sourceName": "YOGOLINO Banana 4x100 g",
+          "score": 0.583
+        }
+      ]
+    },
+    {
+      "name": "Laranja",
+      "oldPrice": 0.79,
+      "newPrice": 2.34,
+      "matchedStores": [
+        {
+          "store": "Pingo Doce",
+          "price": 4.99,
+          "sourceName": "Torta de Laranja",
+          "score": 0.75
+        },
+        {
+          "store": "Continente",
+          "price": 2.49,
+          "sourceName": "Laranja Sanguinelli",
+          "score": 0.75
+        },
+        {
+          "store": "Auchan",
+          "price": 2.39,
+          "sourceName": "BATATA DOCE LARANJA KG",
+          "score": 0.583
+        },
+        {
+          "store": "Minipreco",
+          "price": 0.54,
+          "sourceName": "Laranja (1 un = 320 g aprox)",
+          "score": 0.583
+        },
+        {
+          "store": "Lidl",
+          "price": 1.29,
+          "sourceName": "Joi Refrigerante Laranja/Maracujá",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Limao",
+      "oldPrice": 0.79,
+      "newPrice": 1.69,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 2.49,
+          "sourceName": "Limao Continente",
+          "score": 0.75
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 2.19,
+          "sourceName": "&Aacute;gua com Gas Limao Pack 4",
+          "score": 0.5
+        },
+        {
+          "store": "Minipreco",
+          "price": 1.39,
+          "sourceName": "AUCHAN Refrigerante Laranja Limão Cenoura 1,5 l",
+          "score": 0.45
+        },
+        {
+          "store": "Lidl",
+          "price": 0.69,
+          "sourceName": "Freeway Refrigerante de Lima Limão 0%",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Morango",
+      "oldPrice": 2.49,
+      "newPrice": 3.09,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 2.99,
+          "sourceName": "Morango Continente",
+          "score": 0.75
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 2.79,
+          "sourceName": "Morango Embalado",
+          "score": 0.75
+        },
+        {
+          "store": "Minipreco",
+          "price": 3.71,
+          "sourceName": "ACTIMEL Morango 6x100 g",
+          "score": 0.583
+        },
+        {
+          "store": "Lidl",
+          "price": 2.99,
+          "sourceName": "Mimosa Iogurte sem Lactose de Morango",
+          "score": 0.5
+        },
+        {
+          "store": "Auchan",
+          "price": 2.99,
+          "sourceName": "MORANGO AUCHAN 500 G",
+          "score": 0.583
+        }
+      ]
+    },
+    {
+      "name": "Uva",
+      "oldPrice": 2.99,
+      "newPrice": 2.97,
+      "matchedStores": [
+        {
+          "store": "Minipreco",
+          "price": 2.39,
+          "sourceName": "AUCHAN Uva Branca sem Grainha 500 g",
+          "score": 0.45
+        },
+        {
+          "store": "Continente",
+          "price": 3.49,
+          "sourceName": "Uva Branca sem Grainha Continente",
+          "score": 0.5
+        },
+        {
+          "store": "Auchan",
+          "price": 3.99,
+          "sourceName": "UVA RED GLOBE AUCHAN KG",
+          "score": 0.5
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 3.99,
+          "sourceName": "Uva Branca",
+          "score": 0.75
+        },
+        {
+          "store": "Lidl",
+          "price": 0.99,
+          "sourceName": "Fanta Refrigerante Uva sem Açúcar",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Kiwi",
+      "oldPrice": 1.99,
+      "newPrice": 6.69,
+      "matchedStores": [
+        {
+          "store": "Minipreco",
+          "price": 0.38,
+          "sourceName": "Kiwi (1 un = 95 g aprox)",
+          "score": 0.583
+        },
+        {
+          "store": "Auchan",
+          "price": 12.99,
+          "sourceName": "MORANGO E KIWI PEDA&Ccedil;OS KG",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Pessego",
+      "oldPrice": 2.49,
+      "newPrice": 1.27,
+      "matchedStores": [
+        {
+          "store": "Pingo Doce",
+          "price": 1.49,
+          "sourceName": "Sumo de 100% Pessego",
+          "score": 0.583
+        },
+        {
+          "store": "Continente",
+          "price": 1.3,
+          "sourceName": "Sumo Laranja e Pessego Capri-Sun",
+          "score": 0.45
+        },
+        {
+          "store": "Minipreco",
+          "price": 1.01,
+          "sourceName": "COMPAL Néctar Clássico Pêssego 1 L",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Manga",
+      "oldPrice": 1.49,
+      "newPrice": 1.03,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 1.09,
+          "sourceName": "Iogurte Liquido +Proteina Manga Continente",
+          "score": 0.45
+        },
+        {
+          "store": "Minipreco",
+          "price": 1.01,
+          "sourceName": "COMPAL Néctar Clássico de Manga 1 L",
+          "score": 0.5
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 0.99,
+          "sourceName": "Sumo de Manga e Maracuja",
+          "score": 0.583
+        }
+      ]
+    },
+    {
+      "name": "Tomate",
+      "oldPrice": 1.49,
+      "newPrice": 1.35,
+      "matchedStores": [
+        {
+          "store": "Auchan",
+          "price": 1.69,
+          "sourceName": "TOMATE KG",
+          "score": 1
+        },
+        {
+          "store": "Continente",
+          "price": 1.99,
+          "sourceName": "Tomate em Cacho Continente",
+          "score": 0.583
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 1.19,
+          "sourceName": "Polpa de Tomate",
+          "score": 0.75
+        },
+        {
+          "store": "Minipreco",
+          "price": 0.4,
+          "sourceName": "Tomate (1 un = 235 g aprox)",
+          "score": 0.583
+        },
+        {
+          "store": "Lidl",
+          "price": 1.49,
+          "sourceName": "Combino Molho de Tomate Italiano",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Cebola",
+      "oldPrice": 0.89,
+      "newPrice": 2.04,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 1.35,
+          "sourceName": "Cebola Continente",
+          "score": 0.75
+        },
+        {
+          "store": "Auchan",
+          "price": 1.39,
+          "sourceName": "CEBOLA KG",
+          "score": 1
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 2.99,
+          "sourceName": "Maionese Cebola e Alho",
+          "score": 0.583
+        },
+        {
+          "store": "Minipreco",
+          "price": 2.45,
+          "sourceName": "AUCHAN Cebola 2 kg",
+          "score": 0.75
+        }
+      ]
+    },
+    {
+      "name": "Alho",
+      "oldPrice": 1.99,
+      "newPrice": 2.62,
+      "matchedStores": [
+        {
+          "store": "Minipreco",
+          "price": 0.64,
+          "sourceName": "Alho (1 un = 95 g aprox)",
+          "score": 0.583
+        },
+        {
+          "store": "Continente",
+          "price": 0.99,
+          "sourceName": "Baguete de Alho",
+          "score": 0.75
+        },
+        {
+          "store": "Lidl",
+          "price": 1.79,
+          "sourceName": "Alho-francês Nacional",
+          "score": 0.583
+        },
+        {
+          "store": "Auchan",
+          "price": 6.69,
+          "sourceName": "ALHO SECO AUCHAN KG",
+          "score": 0.583
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 2.99,
+          "sourceName": "Maionese Cebola e Alho",
+          "score": 0.583
+        }
+      ]
+    },
+    {
+      "name": "Batata",
+      "oldPrice": 0.79,
+      "newPrice": 2.62,
+      "matchedStores": [
+        {
+          "store": "Lidl",
+          "price": 2.49,
+          "sourceName": "Batata Branca",
+          "score": 0.75
+        },
+        {
+          "store": "Auchan",
+          "price": 2.39,
+          "sourceName": "BATATA DOCE KG",
+          "score": 0.75
+        },
+        {
+          "store": "Continente",
+          "price": 1.85,
+          "sourceName": "Batata Palitos Continente",
+          "score": 0.583
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 3.99,
+          "sourceName": "Batata Branca",
+          "score": 0.75
+        },
+        {
+          "store": "Minipreco",
+          "price": 2.39,
+          "sourceName": "AUCHAN Puré de Batata 1 kg",
+          "score": 0.583
+        }
+      ]
+    },
+    {
+      "name": "Cenoura",
+      "oldPrice": 0.99,
+      "newPrice": 0.97,
+      "matchedStores": [
+        {
+          "store": "Minipreco",
+          "price": 0.19,
+          "sourceName": "AUCHAN Cenoura (1 un = 170 g aprox)",
+          "score": 0.5
+        },
+        {
+          "store": "Continente",
+          "price": 0.89,
+          "sourceName": "Cenoura Continente",
+          "score": 0.75
+        },
+        {
+          "store": "Auchan",
+          "price": 2.1,
+          "sourceName": "CENOURA BIO KG",
+          "score": 0.75
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 0.69,
+          "sourceName": "Bolsa de Fruta Maca, Cenoura e Manga",
+          "score": 0.45
+        }
+      ]
+    },
+    {
+      "name": "Alface",
+      "oldPrice": 0.89,
+      "newPrice": 2.28,
+      "matchedStores": [
+        {
+          "store": "Auchan",
+          "price": 3.49,
+          "sourceName": "ALFACE ICEBERG KG",
+          "score": 0.75
+        },
+        {
+          "store": "Continente",
+          "price": 2.69,
+          "sourceName": "Alface Frisada Continente",
+          "score": 0.583
+        },
+        {
+          "store": "Minipreco",
+          "price": 0.65,
+          "sourceName": "AUCHAN Alface Iceberg 200 g",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Pepino",
+      "oldPrice": 0.79,
+      "newPrice": 2.64,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 3.29,
+          "sourceName": "Pepino Continente",
+          "score": 0.75
+        },
+        {
+          "store": "Auchan",
+          "price": 3.29,
+          "sourceName": "PEPINO KG",
+          "score": 1
+        },
+        {
+          "store": "Minipreco",
+          "price": 1.33,
+          "sourceName": "Pepino (1 un = 405 g aprox)",
+          "score": 0.583
+        }
+      ]
+    },
+    {
+      "name": "Pimento",
+      "oldPrice": 1.99,
+      "newPrice": 3.29,
+      "matchedStores": [
+        {
+          "store": "Auchan",
+          "price": 3.29,
+          "sourceName": "PIMENTO VERMELHO KG",
+          "score": 0.75
+        }
+      ]
+    },
+    {
+      "name": "Broculos",
+      "oldPrice": 1.49,
+      "newPrice": 3.29,
+      "matchedStores": [
+        {
+          "store": "Auchan",
+          "price": 3.29,
+          "sourceName": "CREME DE BROCULOS DOZZ 310 ML",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Couve",
+      "oldPrice": 0.99,
+      "newPrice": 2.07,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 2.09,
+          "sourceName": "Couve Brocolo Continente",
+          "score": 0.583
+        },
+        {
+          "store": "Auchan",
+          "price": 1.75,
+          "sourceName": "COUVE FLOR KG",
+          "score": 0.75
+        },
+        {
+          "store": "Minipreco",
+          "price": 2.36,
+          "sourceName": "Couve Flor (1 un = 1350 g aprox)",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Alho frances",
+      "oldPrice": 1.29,
+      "newPrice": 2.16,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 2.69,
+          "sourceName": "Alho Frances Continente",
+          "score": 0.917
+        },
+        {
+          "store": "Auchan",
+          "price": 1.99,
+          "sourceName": "ALHO FRANCES KG PRODUTO LOCAL",
+          "score": 0.75
+        },
+        {
+          "store": "Lidl",
+          "price": 1.79,
+          "sourceName": "Alho-francês Nacional",
+          "score": 0.917
+        }
+      ]
+    },
+    {
+      "name": "Feijao verde",
+      "oldPrice": 1.49,
+      "newPrice": 1.69,
+      "matchedStores": [
+        {
+          "store": "Lidl",
+          "price": 1.99,
+          "sourceName": "Chef Select Sopa de Agrião/ Feijão Verde com Batata/Sopas Cremosas",
+          "score": 0.472
+        },
+        {
+          "store": "Continente",
+          "price": 1.39,
+          "sourceName": "Mistura de Feijao Verde e Cenoura Continente",
+          "score": 0.65
+        }
+      ]
+    },
+    {
+      "name": "Ervilhas",
+      "oldPrice": 1.29,
+      "newPrice": 2.03,
+      "matchedStores": [
+        {
+          "store": "Minipreco",
+          "price": 1.95,
+          "sourceName": "AUCHAN Almôndegas com Ervilhas 415 g",
+          "score": 0.5
+        },
+        {
+          "store": "Continente",
+          "price": 1.49,
+          "sourceName": "Mistura de Ervilhas e Cenoura Continente",
+          "score": 0.5
+        },
+        {
+          "store": "Auchan",
+          "price": 2.65,
+          "sourceName": "ERVILHAS AUCHAN COM CENOURAS 850(530)G",
+          "score": 0.45
+        }
+      ]
+    },
+    {
+      "name": "Frango inteiro",
+      "oldPrice": 4.99,
+      "newPrice": 2.62,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 2.49,
+          "sourceName": "Frango Inteiro com Miudos Continente",
+          "score": 0.75
+        },
+        {
+          "store": "Auchan",
+          "price": 2.75,
+          "sourceName": "FRANGO INTEIRO AUCHAN SEM MIUDOS KG",
+          "score": 0.75
+        }
+      ]
+    },
+    {
+      "name": "Peito de frango",
+      "oldPrice": 6.99,
+      "newPrice": 5.26,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 6.49,
+          "sourceName": "Peito de Frango Continente",
+          "score": 0.917
+        },
+        {
+          "store": "Auchan",
+          "price": 6.29,
+          "sourceName": "PEITO DE FRANGO GRANEL KG",
+          "score": 0.917
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 2.39,
+          "sourceName": "Fiambre Peito de Frango Fatias Finas Cuida-t+",
+          "score": 0.583
+        },
+        {
+          "store": "Minipreco",
+          "price": 5.85,
+          "sourceName": "AUCHAN Nuggets de Peito de Frango 1 kg",
+          "score": 0.75
+        }
+      ]
+    },
+    {
+      "name": "Carne picada",
+      "oldPrice": 5.99,
+      "newPrice": 6.49,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 6.49,
+          "sourceName": "Preparado de Carne Picada de Bovino Continente",
+          "score": 0.65
+        },
+        {
+          "store": "Auchan",
+          "price": 6.49,
+          "sourceName": "PREPARADO DE CARNE PICADA BOVINO 500GR",
+          "score": 0.65
+        }
+      ]
+    },
+    {
+      "name": "Costeletas de porco",
+      "oldPrice": 4.99,
+      "newPrice": 4.99,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 4.99,
+          "sourceName": "Costeletas de Porco Continente",
+          "score": 0.917
+        },
+        {
+          "store": "Auchan",
+          "price": 4.99,
+          "sourceName": "PORCO COSTELETAS CACHACO KG",
+          "score": 0.667
+        }
+      ]
+    },
+    {
+      "name": "Lombo de porco",
+      "oldPrice": 5.99,
+      "newPrice": 6.16,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 9.49,
+          "sourceName": "Lombo de Porco Selecta",
+          "score": 0.917
+        },
+        {
+          "store": "Auchan",
+          "price": 5.29,
+          "sourceName": "LOMBO DE PORCO SEM OSSO VACUO AUCHAN KG",
+          "score": 0.65
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 3.69,
+          "sourceName": "Lombo de Porco Duroc Fatiado",
+          "score": 0.75
+        }
+      ]
+    },
+    {
+      "name": "Entrecosto",
+      "oldPrice": 5.49,
+      "newPrice": 6.64,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 6.99,
+          "sourceName": "Tiras de Entrecosto de Porco Continente",
+          "score": 0.5
+        },
+        {
+          "store": "Auchan",
+          "price": 6.29,
+          "sourceName": "PORCO ENTRECOSTO KG",
+          "score": 0.75
+        }
+      ]
+    },
+    {
+      "name": "Chourico",
+      "oldPrice": 3.49,
+      "newPrice": 1.37,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 0.99,
+          "sourceName": "Pao com Chourico",
+          "score": 0.75
+        },
+        {
+          "store": "Minipreco",
+          "price": 1.75,
+          "sourceName": "AUCHAN Chouriço Carne Extra 250 g",
+          "score": 0.45
+        }
+      ]
+    },
+    {
+      "name": "Fiambre",
+      "oldPrice": 2.49,
+      "newPrice": 5.54,
+      "matchedStores": [
+        {
+          "store": "Pingo Doce",
+          "price": 3.49,
+          "sourceName": "Mini Pizzas de Queijo e Fiambre",
+          "score": 0.5
+        },
+        {
+          "store": "Auchan",
+          "price": 7.59,
+          "sourceName": "ROLO DE CARNE DE PORCO COM QUEIJO E FIAMBRE KG",
+          "score": 0.45
+        }
+      ]
+    },
+    {
+      "name": "Pescada",
+      "oldPrice": 4.99,
+      "newPrice": 7.09,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 6.99,
+          "sourceName": "Filetes de Pescada Congelada",
+          "score": 0.583
+        },
+        {
+          "store": "Auchan",
+          "price": 10.99,
+          "sourceName": "PESCADA REDE KG",
+          "score": 0.75
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 6.39,
+          "sourceName": "Medalhoes de Pescada Congelados",
+          "score": 0.583
+        },
+        {
+          "store": "Minipreco",
+          "price": 6.39,
+          "sourceName": "PESCANOVA Medalhões de Pescada 400 g",
+          "score": 0.5
+        },
+        {
+          "store": "Lidl",
+          "price": 4.69,
+          "sourceName": "Pescanova Mimos de Pescada do Cabo",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Bacalhau",
+      "oldPrice": 12.99,
+      "newPrice": 3.09,
+      "matchedStores": [
+        {
+          "store": "Minipreco",
+          "price": 2.29,
+          "sourceName": "RAMIREZ Bacalhau com Grão 120 g",
+          "score": 0.5
+        },
+        {
+          "store": "Continente",
+          "price": 4.49,
+          "sourceName": "Bacalhau Fumado Continente",
+          "score": 0.583
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 2.49,
+          "sourceName": "Bacalhau em Azeite e Alho",
+          "score": 0.583
+        }
+      ]
+    },
+    {
+      "name": "Salmao",
+      "oldPrice": 9.99,
+      "newPrice": 10.24,
+      "matchedStores": [
+        {
+          "store": "Pingo Doce",
+          "price": 12.99,
+          "sourceName": "Posta de Salmao Fresco",
+          "score": 0.583
+        },
+        {
+          "store": "Lidl",
+          "price": 6.99,
+          "sourceName": "Nautica Salmão Fumado",
+          "score": 0.583
+        },
+        {
+          "store": "Minipreco",
+          "price": 7.99,
+          "sourceName": "PESCANOVA Lombos De Salmão 250 g",
+          "score": 0.5
+        },
+        {
+          "store": "Continente",
+          "price": 12.99,
+          "sourceName": "Posta de Salmao Fresca",
+          "score": 0.583
+        }
+      ]
+    },
+    {
+      "name": "Camarao",
+      "oldPrice": 9.99,
+      "newPrice": 4.12,
+      "matchedStores": [
+        {
+          "store": "Minipreco",
+          "price": 0.99,
+          "sourceName": "KOKA Noodles Camarão 85 g",
+          "score": 0.5
+        },
+        {
+          "store": "Continente",
+          "price": 0.99,
+          "sourceName": "Noodles de Camarao Koka",
+          "score": 0.583
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 8.99,
+          "sourceName": "Camarao 20/30 Vannamei Congelado",
+          "score": 0.45
+        },
+        {
+          "store": "Lidl",
+          "price": 5.49,
+          "sourceName": "Camarão Cozido 50/70",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Polvo",
+      "oldPrice": 5.99,
+      "newPrice": 6.92,
+      "matchedStores": [
+        {
+          "store": "Minipreco",
+          "price": 12.25,
+          "sourceName": "AUCHAN Polvo Limpo Nacional 1 kg",
+          "score": 0.5
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 1.59,
+          "sourceName": "Polvo e Pota em Alho",
+          "score": 0.583
+        }
+      ]
+    },
+    {
+      "name": "Pota",
+      "oldPrice": 3.99,
+      "newPrice": 1.94,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 2.54,
+          "sourceName": "Pota com Alho Piteu",
+          "score": 0.583
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 1.59,
+          "sourceName": "Polvo e Pota em Alho",
+          "score": 0.583
+        },
+        {
+          "store": "Minipreco",
+          "price": 1.69,
+          "sourceName": "AUCHAN Tentáculos de Pota com Alho 115 g",
+          "score": 0.45
+        }
+      ]
+    },
+    {
+      "name": "Dourada",
+      "oldPrice": 7.99,
+      "newPrice": 2.19,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 2.19,
+          "sourceName": "Uva Passa Dourada Continente",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Leite",
+      "oldPrice": 0.79,
+      "newPrice": 1.76,
+      "matchedStores": [
+        {
+          "store": "Auchan",
+          "price": 1.59,
+          "sourceName": "P&Atilde;O AUCHAN DE LEITE 10UN 350G",
+          "score": 0.45
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 1.59,
+          "sourceName": "Pao de Leite",
+          "score": 0.75
+        },
+        {
+          "store": "Continente",
+          "price": 1.6,
+          "sourceName": "Leite Achocolatado Gresso",
+          "score": 0.583
+        },
+        {
+          "store": "Minipreco",
+          "price": 0.9,
+          "sourceName": "MIMOSA Leite Magro 1 L",
+          "score": 0.583
+        },
+        {
+          "store": "Lidl",
+          "price": 3.12,
+          "sourceName": "Mimosa Leite com Chocolate",
+          "score": 0.583
+        }
+      ]
+    },
+    {
+      "name": "Iogurte natural",
+      "oldPrice": 0.49,
+      "newPrice": 1.27,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 1.39,
+          "sourceName": "Iogurte Natural Continente",
+          "score": 0.917
+        },
+        {
+          "store": "Auchan",
+          "price": 1.15,
+          "sourceName": "IOGURTE NATURAL A&Ccedil;UCARADO COM BOLITAS CHOCO AUCHAN 2X122G",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Queijo flamengo",
+      "oldPrice": 2.99,
+      "newPrice": 4.04,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 1.89,
+          "sourceName": "Queijo Flamengo Fatiado Continente",
+          "score": 0.75
+        },
+        {
+          "store": "Auchan",
+          "price": 1.79,
+          "sourceName": "QUEIJO FLAMENGO POLEGAR FATIAS 200G",
+          "score": 0.65
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 9.29,
+          "sourceName": "Queijo Flamengo",
+          "score": 1
+        },
+        {
+          "store": "Minipreco",
+          "price": 3.99,
+          "sourceName": "AGROS Queijo Flamengo 350 g",
+          "score": 0.75
+        },
+        {
+          "store": "Lidl",
+          "price": 3.25,
+          "sourceName": "Milbona Queijo Flamengo Ralado XXL",
+          "score": 0.65
+        }
+      ]
+    },
+    {
+      "name": "Manteiga",
+      "oldPrice": 1.99,
+      "newPrice": 2.94,
+      "matchedStores": [
+        {
+          "store": "Lidl",
+          "price": 2.34,
+          "sourceName": "Croissant de Manteiga",
+          "score": 0.75
+        },
+        {
+          "store": "Continente",
+          "price": 5.49,
+          "sourceName": "Manteiga Magra President",
+          "score": 0.583
+        },
+        {
+          "store": "Auchan",
+          "price": 2.19,
+          "sourceName": "MANTEIGA MILHAFRE COM SAL 250G",
+          "score": 0.5
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 2.49,
+          "sourceName": "Manteiga Magra",
+          "score": 0.75
+        },
+        {
+          "store": "Minipreco",
+          "price": 2.19,
+          "sourceName": "MIMOSA Manteiga Com Sal 250 g",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Natas",
+      "oldPrice": 0.99,
+      "newPrice": 1.81,
+      "matchedStores": [
+        {
+          "store": "Minipreco",
+          "price": 1.24,
+          "sourceName": "MIMOSA Natas para Massas 200 ml",
+          "score": 0.5
+        },
+        {
+          "store": "Continente",
+          "price": 2.39,
+          "sourceName": "Snacks Batata Natas & Cebola Pringles",
+          "score": 0.45
+        }
+      ]
+    },
+    {
+      "name": "Mozzarella",
+      "oldPrice": 2.49,
+      "newPrice": 1.52,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 0.99,
+          "sourceName": "Queijo Mozzarella Continente",
+          "score": 0.583
+        },
+        {
+          "store": "Auchan",
+          "price": 1.89,
+          "sourceName": "QUEIJO MOZZARELLA AUCHAN FATIAS 200 G",
+          "score": 0.45
+        },
+        {
+          "store": "Lidl",
+          "price": 1.69,
+          "sourceName": "Milbona Mozzarella XXL",
+          "score": 0.583
+        }
+      ]
+    },
+    {
+      "name": "Requeijao",
+      "oldPrice": 1.49,
+      "newPrice": 1.79,
+      "matchedStores": [
+        {
+          "store": "Minipreco",
+          "price": 1.79,
+          "sourceName": "SANTIAGO Requeijao Original 170 g",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Pao de forma",
+      "oldPrice": 1.29,
+      "newPrice": 1.72,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 1.49,
+          "sourceName": "Pao de Forma Rio Maior",
+          "score": 0.75
+        },
+        {
+          "store": "Auchan",
+          "price": 1.48,
+          "sourceName": "PAO DE FORMA DE RIO MAIOR 500G",
+          "score": 0.65
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 2.79,
+          "sourceName": "Pao de Forma",
+          "score": 1
+        },
+        {
+          "store": "Minipreco",
+          "price": 1.89,
+          "sourceName": "PANETTO Pão de Forma Multicereais 400 g",
+          "score": 0.65
+        },
+        {
+          "store": "Lidl",
+          "price": 0.95,
+          "sourceName": "Pão de Forma 5 Sementes",
+          "score": 0.917
+        }
+      ]
+    },
+    {
+      "name": "Pao de mistura",
+      "oldPrice": 0.89,
+      "newPrice": 1.49,
+      "matchedStores": [
+        {
+          "store": "Minipreco",
+          "price": 1.49,
+          "sourceName": "Pão de Mistura com Sementes 400 g",
+          "score": 0.75
+        }
+      ]
+    },
+    {
+      "name": "Baguete",
+      "oldPrice": 0.29,
+      "newPrice": 0.74,
+      "matchedStores": [
+        {
+          "store": "Minipreco",
+          "price": 0.49,
+          "sourceName": "Baguete de Trigo 210 g",
+          "score": 0.583
+        },
+        {
+          "store": "Continente",
+          "price": 0.99,
+          "sourceName": "Baguete de Alho",
+          "score": 0.75
+        }
+      ]
+    },
+    {
+      "name": "Arroz",
+      "oldPrice": 1.29,
+      "newPrice": 1.38,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 0.99,
+          "sourceName": "Arroz Tradicao",
+          "score": 0.75
+        },
+        {
+          "store": "Auchan",
+          "price": 1.17,
+          "sourceName": "ARROZ AGULHA CIGALA 1KG",
+          "score": 0.5
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 1.38,
+          "sourceName": "Arroz Agulha",
+          "score": 0.75
+        },
+        {
+          "store": "Minipreco",
+          "price": 0.59,
+          "sourceName": "Bolo de Arroz",
+          "score": 0.75
+        },
+        {
+          "store": "Lidl",
+          "price": 2.75,
+          "sourceName": "Cigala Arroz Agulha",
+          "score": 0.583
+        }
+      ]
+    },
+    {
+      "name": "Massa esparguete",
+      "oldPrice": 0.89,
+      "newPrice": 0.88,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 0.87,
+          "sourceName": "Massa Esparguete",
+          "score": 1
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 0.88,
+          "sourceName": "Massa Esparguete",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "name": "Massa penne",
+      "oldPrice": 0.99,
+      "newPrice": 1.49,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 2.19,
+          "sourceName": "Massa Penne Rigatoni",
+          "score": 0.917
+        },
+        {
+          "store": "Auchan",
+          "price": 0.79,
+          "sourceName": "MASSA PENNE AUCHAN 500G",
+          "score": 0.75
+        }
+      ]
+    },
+    {
+      "name": "Farinha",
+      "oldPrice": 0.89,
+      "newPrice": 0.55,
+      "matchedStores": [
+        {
+          "store": "Lidl",
+          "price": 0.55,
+          "sourceName": "Belbake Farinha com fermento",
+          "score": 0.583
+        }
+      ]
+    },
+    {
+      "name": "Aveia",
+      "oldPrice": 1.49,
+      "newPrice": 1.94,
+      "matchedStores": [
+        {
+          "store": "Auchan",
+          "price": 1.88,
+          "sourceName": "ESPARGUETE MILANEZA INTEGRAL AVEIA 500G",
+          "score": 0.45
+        },
+        {
+          "store": "Minipreco",
+          "price": 1.69,
+          "sourceName": "MUSEU DO PÃO - Pão de Aveia Fatiado 350 g",
+          "score": 0.45
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 2.24,
+          "sourceName": "Nestum de Espelta e Aveia Zero Acucar",
+          "score": 0.45
+        }
+      ]
+    },
+    {
+      "name": "Tomate pelado lata",
+      "oldPrice": 0.79,
+      "newPrice": 1.29,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 1.29,
+          "sourceName": "Tomate Pelado Continente",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Azeite 750ml",
+      "oldPrice": 4.99,
+      "newPrice": 3.59,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 3.59,
+          "sourceName": "Azeite",
+          "score": 0.75
+        },
+        {
+          "store": "Auchan",
+          "price": 3.6,
+          "sourceName": "AZEITE POLEGAR 750ML",
+          "score": 0.667
+        }
+      ]
+    },
+    {
+      "name": "Oleo alimentar 1L",
+      "oldPrice": 2.49,
+      "newPrice": 3.83,
+      "matchedStores": [
+        {
+          "store": "Minipreco",
+          "price": 1.82,
+          "sourceName": "FULA Óleo Alimentar 1 L",
+          "score": 0.5
+        },
+        {
+          "store": "Lidl",
+          "price": 5.85,
+          "sourceName": "Fula Óleo Alimentar",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Sal",
+      "oldPrice": 0.49,
+      "newPrice": 1.3,
+      "matchedStores": [
+        {
+          "store": "Auchan",
+          "price": 0.29,
+          "sourceName": "SAL MARINHO POLEGAR 1 KG",
+          "score": 0.583
+        },
+        {
+          "store": "Lidl",
+          "price": 2.19,
+          "sourceName": "Milhafre Manteiga com Sal",
+          "score": 0.583
+        },
+        {
+          "store": "Continente",
+          "price": 1.59,
+          "sourceName": "Manteiga com Sal Mimosa",
+          "score": 0.583
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 2.14,
+          "sourceName": "Manteiga com Sal",
+          "score": 0.75
+        },
+        {
+          "store": "Minipreco",
+          "price": 0.29,
+          "sourceName": "POLEGAR Sal Marinho 1 kg",
+          "score": 0.583
+        }
+      ]
+    },
+    {
+      "name": "Acucar",
+      "oldPrice": 0.89,
+      "newPrice": 1.86,
+      "matchedStores": [
+        {
+          "store": "Pingo Doce",
+          "price": 0.89,
+          "sourceName": "Acucar Branco Granulado",
+          "score": 0.583
+        },
+        {
+          "store": "Minipreco",
+          "price": 1.19,
+          "sourceName": "SIDUL Açúcar Branco 1 kg",
+          "score": 0.583
+        },
+        {
+          "store": "Continente",
+          "price": 4.39,
+          "sourceName": "Acucar de Coco",
+          "score": 0.75
+        },
+        {
+          "store": "Lidl",
+          "price": 0.99,
+          "sourceName": "Fanta Refrigerante Uva sem Açúcar",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Molho de tomate",
+      "oldPrice": 1.29,
+      "newPrice": 1.59,
+      "matchedStores": [
+        {
+          "store": "Auchan",
+          "price": 1.69,
+          "sourceName": "TOMATE KG",
+          "score": 0.5
+        },
+        {
+          "store": "Lidl",
+          "price": 1.49,
+          "sourceName": "Combino Molho de Tomate Italiano",
+          "score": 0.75
+        }
+      ]
+    },
+    {
+      "name": "Ketchup",
+      "oldPrice": 1.49,
+      "newPrice": 2.87,
+      "matchedStores": [
+        {
+          "store": "Minipreco",
+          "price": 4.69,
+          "sourceName": "HEINZ Tomato Ketchup 460 g",
+          "score": 0.5
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 1.99,
+          "sourceName": "Ketchup Top Down",
+          "score": 0.583
+        },
+        {
+          "store": "Continente",
+          "price": 2.99,
+          "sourceName": "Ketchup Pickle Heinz",
+          "score": 0.583
+        },
+        {
+          "store": "Auchan",
+          "price": 1.79,
+          "sourceName": "KETCHUP TORCHIN 250G",
+          "score": 0.583
+        }
+      ]
+    },
+    {
+      "name": "Maionese",
+      "oldPrice": 1.99,
+      "newPrice": 2.88,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 2.18,
+          "sourceName": "Maionese Hellmanns",
+          "score": 0.75
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 2.99,
+          "sourceName": "Maionese Cebola e Alho",
+          "score": 0.583
+        },
+        {
+          "store": "Auchan",
+          "price": 2.95,
+          "sourceName": "MAIONESE HELLMANN'S 416G",
+          "score": 0.583
+        },
+        {
+          "store": "Minipreco",
+          "price": 3.39,
+          "sourceName": "CALVÉ Maionese Magra 447 g",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Mostarda",
+      "oldPrice": 1.29,
+      "newPrice": 4.39,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 4.39,
+          "sourceName": "Molho de Mostarda e Endro Skandia",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Vinagre",
+      "oldPrice": 0.79,
+      "newPrice": 1.41,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 1.59,
+          "sourceName": "Pepino em Vinagre Continente",
+          "score": 0.583
+        },
+        {
+          "store": "Minipreco",
+          "price": 1.89,
+          "sourceName": "CRISTAL Vinagre de Sidra 500 ml",
+          "score": 0.5
+        },
+        {
+          "store": "Auchan",
+          "price": 0.75,
+          "sourceName": "VINAGRE AUCHAN DE FRUTA 5% 1L",
+          "score": 0.5
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 1.39,
+          "sourceName": "Vinagre Branco",
+          "score": 0.75
+        }
+      ]
+    },
+    {
+      "name": "Oregaos",
+      "oldPrice": 0.89,
+      "newPrice": 0.79,
+      "matchedStores": [
+        {
+          "store": "Pingo Doce",
+          "price": 0.79,
+          "sourceName": "Passata de Tomate com Majericao e Oregaos",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Sumo laranja 1L",
+      "oldPrice": 1.29,
+      "newPrice": 1.65,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 1.49,
+          "sourceName": "Sumo Laranja Andros",
+          "score": 0.5
+        },
+        {
+          "store": "Auchan",
+          "price": 2.29,
+          "sourceName": "SUMO COMPAL 100% LARANJA 1L",
+          "score": 0.6
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 1.16,
+          "sourceName": "Sumo de Laranja e Tangerina",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Vinho tinto 750ml",
+      "oldPrice": 4.99,
+      "newPrice": 1.29,
+      "matchedStores": [
+        {
+          "store": "Pingo Doce",
+          "price": 1.29,
+          "sourceName": "Vinagre de Vinho Tinto",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Vinho branco 750ml",
+      "oldPrice": 4.99,
+      "newPrice": 1.06,
+      "matchedStores": [
+        {
+          "store": "Pingo Doce",
+          "price": 1.14,
+          "sourceName": "Vinagre de Vinho Branco",
+          "score": 0.5
+        },
+        {
+          "store": "Continente",
+          "price": 0.99,
+          "sourceName": "Continente Vinho Branco",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Cha 20 saquetas",
+      "oldPrice": 1.49,
+      "newPrice": 1.29,
+      "matchedStores": [
+        {
+          "store": "Pingo Doce",
+          "price": 1.29,
+          "sourceName": "Cha Preto Saquetas",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Batatas fritas congeladas",
+      "oldPrice": 2.49,
+      "newPrice": 1.39,
+      "matchedStores": [
+        {
+          "store": "Pingo Doce",
+          "price": 1.39,
+          "sourceName": "Batatas Fritas Palha",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Gelado",
+      "oldPrice": 2.99,
+      "newPrice": 2.79,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 2.79,
+          "sourceName": "Gelado Banana Split Continente",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Frango congelado",
+      "oldPrice": 3.99,
+      "newPrice": 3.99,
+      "matchedStores": [
+        {
+          "store": "Pingo Doce",
+          "price": 3.99,
+          "sourceName": "Crocantes de Frango Congelados",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Bolachas manteiga",
+      "oldPrice": 1.29,
+      "newPrice": 5.49,
+      "matchedStores": [
+        {
+          "store": "Lidl",
+          "price": 5.49,
+          "sourceName": "Favorina Bolachas de Manteiga",
+          "score": 0.667
+        }
+      ]
+    },
+    {
+      "name": "Batatas fritas pack",
+      "oldPrice": 1.49,
+      "newPrice": 1.39,
+      "matchedStores": [
+        {
+          "store": "Pingo Doce",
+          "price": 1.39,
+          "sourceName": "Batatas Fritas Palha",
+          "score": 0.667
+        }
+      ]
+    },
+    {
+      "name": "Chocolate tablete",
+      "oldPrice": 1.49,
+      "newPrice": 1.99,
+      "matchedStores": [
+        {
+          "store": "Lidl",
+          "price": 1.99,
+          "sourceName": "Milka Tablete de Chocolate Sortido",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Barras de cereais",
+      "oldPrice": 2.49,
+      "newPrice": 1.99,
+      "matchedStores": [
+        {
+          "store": "Pingo Doce",
+          "price": 1.99,
+          "sourceName": "Barras de Cereais com Morango",
+          "score": 0.917
+        }
+      ]
+    },
+    {
+      "name": "Frutos secos",
+      "oldPrice": 3.49,
+      "newPrice": 1.99,
+      "matchedStores": [
+        {
+          "store": "Auchan",
+          "price": 1.99,
+          "sourceName": "BARRA ALFACE DO MAR WISSI COM FRUTOS SECOS BIO 30G",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Detergente roupa",
+      "oldPrice": 6.99,
+      "newPrice": 5.26,
+      "matchedStores": [
+        {
+          "store": "Auchan",
+          "price": 5.49,
+          "sourceName": "DETERGENTE ROUPA M&Aacute;QUINA L&Iacute;QUIDO AUCHAN FRESCURA 74 DOSES",
+          "score": 0.45
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 8.99,
+          "sourceName": "Detergente Maquina Roupa Liquido",
+          "score": 0.5
+        },
+        {
+          "store": "Minipreco",
+          "price": 1.29,
+          "sourceName": "AUCHAN Detergente Roupa Manual em Pó Clássico 650 g",
+          "score": 0.536
+        }
+      ]
+    },
+    {
+      "name": "Desinfetante",
+      "oldPrice": 2.49,
+      "newPrice": 4.19,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 4.19,
+          "sourceName": "Sabonete Liquido Desinfetante Hidratante Sanytol",
+          "score": 0.45
+        }
+      ]
+    },
+    {
+      "name": "Pastilhas maquina louca",
+      "oldPrice": 5.99,
+      "newPrice": 1.99,
+      "matchedStores": [
+        {
+          "store": "Pingo Doce",
+          "price": 1.99,
+          "sourceName": "Sal Maquina de Louca",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Sabonete",
+      "oldPrice": 0.99,
+      "newPrice": 2.24,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 0.83,
+          "sourceName": "Sabonete Solido Feno",
+          "score": 0.583
+        },
+        {
+          "store": "Auchan",
+          "price": 5.49,
+          "sourceName": "SABONETE DOVE REGULAR 4X90GR",
+          "score": 0.5
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 1.24,
+          "sourceName": "Sabonete Solido Original ",
+          "score": 0.583
+        },
+        {
+          "store": "Minipreco",
+          "price": 1.39,
+          "sourceName": "DOVE Sabonete Regular 90 g",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Champo",
+      "oldPrice": 2.99,
+      "newPrice": 3.99,
+      "matchedStores": [
+        {
+          "store": "Minipreco",
+          "price": 3.99,
+          "sourceName": "FRUCTIS Champô Anticaspa 250 ml",
+          "score": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Gel de banho",
+      "oldPrice": 2.49,
+      "newPrice": 2.24,
+      "matchedStores": [
+        {
+          "store": "Pingo Doce",
+          "price": 3.09,
+          "sourceName": "Gel de Banho Morango",
+          "score": 0.917
+        },
+        {
+          "store": "Minipreco",
+          "price": 1.39,
+          "sourceName": "COSMIA Gel de Banho Aloé Vera e Pepino 750 ml",
+          "score": 0.536
+        }
+      ]
+    },
+    {
+      "name": "Pasta de dentes",
+      "oldPrice": 1.99,
+      "newPrice": 3.32,
+      "matchedStores": [
+        {
+          "store": "Continente",
+          "price": 2.49,
+          "sourceName": "Pasta de Dentes Branqueamento Jordan",
+          "score": 0.75
+        },
+        {
+          "store": "Auchan",
+          "price": 3,
+          "sourceName": "PASTA DE DENTES BRANQUEADORA SENSODYNE 75ML",
+          "score": 0.65
+        },
+        {
+          "store": "Pingo Doce",
+          "price": 4.79,
+          "sourceName": "Pasta de Dentes Branqueadora",
+          "score": 0.917
+        },
+        {
+          "store": "Minipreco",
+          "price": 2.99,
+          "sourceName": "COUTO Pasta de Dentes 60 g",
+          "score": 0.75
+        }
+      ]
+    }
+  ],
+  "new_products": [
+    {
+      "store": "Continente",
+      "name": "Arroz Basmati Continente",
+      "price": 1.99,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "4949515",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Agulha Continente",
+      "price": 1.09,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "6927230",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Agulha Cigala",
+      "price": 1.69,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "2305902",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Vaporizado Continente",
+      "price": 1.35,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "4954144",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Carolino Cacarola",
+      "price": 1.19,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "2203031",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Carolino Continente",
+      "price": 1.15,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "4738050",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Carolino Bom Sucesso",
+      "price": 1.59,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "2769753",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Thai Jasmim Continente",
+      "price": 1.99,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "4949517",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Vaporizado Estufado",
+      "price": 1.35,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "2203136",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Agulha Saludaes",
+      "price": 1.59,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "4837858",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Basmati Saludaes",
+      "price": 2.89,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "4905373",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Agulha Bom Sucesso",
+      "price": 1.59,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "2769747",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Agulha Selecionado Continente",
+      "price": 1.45,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "4954132",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Thai Jasmim",
+      "price": 1.71,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "4883021",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Integral Oriente",
+      "price": 1.54,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "8504817",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Agulha Extra Longo Cacarola",
+      "price": 1.28,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "2203036",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Basmati Cacarola",
+      "price": 1.23,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "2735673",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Longo Comum Casarao",
+      "price": 0.99,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "6119213",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Pink Cacarola",
+      "price": 2.99,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "8186670",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Risotto Continente",
+      "price": 0.99,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "8457480",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Basmati Continente Poupanca",
+      "price": 8.69,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "8488866",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Vaporizado Cigala",
+      "price": 1.63,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "2005617",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Vaporizado Carolino Cacarola",
+      "price": 1.4,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "6581986",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Risotto Arborio Scotti",
+      "price": 1.89,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "5498832",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Agulha Pato Real",
+      "price": 1.33,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "2003658",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Longo Tio Joao",
+      "price": 1.99,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "7820811",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Integral Extra Longo",
+      "price": 1.26,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "6580640",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Risotto Bom Sucesso",
+      "price": 3.09,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "6097423",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Carolino Caravela Continente",
+      "price": 1.15,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "8385342",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Basmati Premium",
+      "price": 12.95,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "8118613",
+      "query": "arroz"
+    },
+    {
+      "store": "Continente",
+      "name": "Arroz Carolino Extra Longo Saludaes",
+      "price": 1.54,
+      "sourceCategory": "Mercearia/Arroz, Massa e Farinha/Arroz",
+      "sourceId": "4837862",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ BASMATI AUCHAN EXTRA LONGO 1KG",
+      "price": 1.99,
+      "sourceCategory": "alimentacao/mercearia/arroz-e-massa/arroz",
+      "sourceId": "548510",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ AGULHA CIGALA 1KG",
+      "price": 1.17,
+      "sourceCategory": "alimentacao/mercearia/arroz-e-massa/arroz",
+      "sourceId": "40299",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ AGULHA AUCHAN EXTRA LONGO BRANQUEADO 1KG",
+      "price": 1.25,
+      "sourceCategory": "alimentacao/mercearia/arroz-e-massa/arroz",
+      "sourceId": "1193801",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ CAROLINO AUCHAN EXTRA LONGO 1KG",
+      "price": 1.15,
+      "sourceCategory": "alimentacao/mercearia/arroz-e-massa/arroz",
+      "sourceId": "56832",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ AGULHA BOM SUCESSO 1KG",
+      "price": 1.24,
+      "sourceCategory": "alimentacao/mercearia/arroz-e-massa/arroz",
+      "sourceId": "708884",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ CAROLINO BOM SUCESSO 1KG",
+      "price": 1.24,
+      "sourceCategory": "alimentacao/mercearia/arroz-e-massa/arroz",
+      "sourceId": "708886",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ ESTUFADO AUCHAN EXTRA LONGO 1KG",
+      "price": 1.35,
+      "sourceCategory": "alimentacao/mercearia/arroz-e-massa/arroz",
+      "sourceId": "556565",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ AGULHITA EXTRA LONGO 1KG",
+      "price": 1.19,
+      "sourceCategory": "alimentacao/mercearia/arroz-e-massa/arroz",
+      "sourceId": "3245289",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ LONGO COMUM POLEGAR 1KG",
+      "price": 0.99,
+      "sourceCategory": "alimentacao/mercearia/arroz-e-massa/arroz",
+      "sourceId": "3962270",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ VAPORIZADO CIGALA EXTRA LONGO 1KG",
+      "price": 1.22,
+      "sourceCategory": "alimentacao/mercearia/arroz-e-massa/arroz",
+      "sourceId": "732951",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ BASMATI CA&Ccedil;AROLA 500G",
+      "price": 1.56,
+      "sourceCategory": "alimentacao/mercearia/arroz-e-massa/arroz",
+      "sourceId": "557819",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ JASMIM AUCHAN EXTRA LONGO 1KG",
+      "price": 1.99,
+      "sourceCategory": "alimentacao/mercearia/arroz-e-massa/arroz",
+      "sourceId": "598340",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ BASMATI ORIENTE 2KG",
+      "price": 3.99,
+      "sourceCategory": "alimentacao/mercearia/arroz-e-massa/arroz",
+      "sourceId": "3711297",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ BASMATI AUCHAN EXTRA LONGO 500G",
+      "price": 1.39,
+      "sourceCategory": "alimentacao/mercearia/arroz-e-massa/arroz",
+      "sourceId": "936049",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "TORTITAS AUCHAN ARROZ SEM SAL 130G",
+      "price": 0.79,
+      "sourceCategory": "alimentacao/mercearia/bolachas-e-bolos/tortitas",
+      "sourceId": "2894190",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ CAROLINO SALUD&Atilde;ES 1KG",
+      "price": 1.54,
+      "sourceCategory": "alimentacao/mercearia/arroz-e-massa/arroz",
+      "sourceId": "3358",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "TORTITAS AUCHAN ARROZ COM SAL 130G",
+      "price": 0.79,
+      "sourceCategory": "alimentacao/mercearia/bolachas-e-bolos/tortitas",
+      "sourceId": "2894192",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ RISOTTO AUCHAN 500G",
+      "price": 0.99,
+      "sourceCategory": "alimentacao/mercearia/arroz-e-massa/arroz",
+      "sourceId": "3037588",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ CAROLINO CIGALA 1KG",
+      "price": 1.54,
+      "sourceCategory": "alimentacao/mercearia/arroz-e-massa/arroz",
+      "sourceId": "40305",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "BEBIDA AUCHAN ARROZ SEM GL&Uacute;TEN 1L",
+      "price": 0.99,
+      "sourceCategory": "alimentacao/produtos-lacteos/bebidas-vegetais/arroz",
+      "sourceId": "3009153",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ THAI CIGALA 1KG",
+      "price": 1.78,
+      "sourceCategory": "alimentacao/mercearia/arroz-e-massa/arroz",
+      "sourceId": "3366307",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ CIGALA BASMATI PRONTO A COMER BRAJMA 2X125G",
+      "price": 1.55,
+      "sourceCategory": "alimentacao/mercearia/refeicoes,-sopas-e-pure/refeicoes-pre-preparadas",
+      "sourceId": "536931",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ VAPORIZADO COZINHA VELHA 1KG",
+      "price": 1.35,
+      "sourceCategory": "alimentacao/mercearia/arroz-e-massa/arroz",
+      "sourceId": "410499",
+      "query": "arroz"
+    },
+    {
+      "store": "Auchan",
+      "name": "ARROZ AGULHA COZINHA VELHA 1KG",
+      "price": 1.23,
+      "sourceCategory": "alimentacao/mercearia/arroz-e-massa/arroz",
+      "sourceId": "8972",
+      "query": "arroz"
+    },
+    {
+      "store": "Pingo Doce",
+      "name": "Arroz Thai Jasmine",
+      "price": 1.69,
+      "sourceCategory": "Arroz",
+      "sourceId": "622555",
+      "query": "arroz"
+    },
+    {
+      "store": "Pingo Doce",
+      "name": "Bebida Vegetal de Arroz",
+      "price": 1.99,
+      "sourceCategory": "Bebida de Arroz e Outras​",
+      "sourceId": "755549",
+      "query": "arroz"
+    },
+    {
+      "store": "Pingo Doce",
+      "name": "Nestum de Arroz Zero Acucar",
+      "price": 2.79,
+      "sourceCategory": "Infantis e Juvenis",
+      "sourceId": "893148",
+      "query": "arroz"
+    },
+    {
+      "store": "Pingo Doce",
+      "name": "Preparado Arroz de Tamboril Congelado",
+      "price": 5.99,
+      "sourceCategory": "Refeicoes",
+      "sourceId": "962941",
+      "query": "arroz"
+    },
+    {
+      "store": "Pingo Doce",
+      "name": "Comida Seca para Gato com Frango e Arroz",
+      "price": 2.34,
+      "sourceCategory": "Comida Seca",
+      "sourceId": "968744",
+      "query": "arroz"
+    },
+    {
+      "store": "Pingo Doce",
+      "name": "Comida Seca para Gato com Salmao e Arroz",
+      "price": 2.34,
+      "sourceCategory": "Comida Seca",
+      "sourceId": "968745",
+      "query": "arroz"
+    },
+    {
+      "store": "Pingo Doce",
+      "name": "Comida Seca para Gato Senior com Frango e Arroz",
+      "price": 2.34,
+      "sourceCategory": "Comida Seca",
+      "sourceId": "968737",
+      "query": "arroz"
+    },
+    {
+      "store": "Minipreco",
+      "name": "CAÇAROLA Arroz Basmati 1 kg",
+      "price": 2.99,
+      "sourceCategory": "",
+      "sourceId": "20178",
+      "query": "arroz"
+    },
+    {
+      "store": "Minipreco",
+      "name": "CAÇAROLA Arroz Risotto 500 g",
+      "price": 1.7,
+      "sourceCategory": "",
+      "sourceId": "70728",
+      "query": "arroz"
+    },
+    {
+      "store": "Minipreco",
+      "name": "CIGALA Arroz Pronto a Comer Basmati 2x125 g",
+      "price": 1.55,
+      "sourceCategory": "",
+      "sourceId": "135849",
+      "query": "arroz"
+    },
+    {
+      "store": "Minipreco",
+      "name": "CAÇAROLA Arroz Estufado 1 kg",
+      "price": 1.61,
+      "sourceCategory": "",
+      "sourceId": "2002",
+      "query": "arroz"
+    },
+    {
+      "store": "Minipreco",
+      "name": "CAÇAROLA Arroz Agulha 1 kg",
+      "price": 1.66,
+      "sourceCategory": "",
+      "sourceId": "65661",
+      "query": "arroz"
+    },
+    {
+      "store": "Minipreco",
+      "name": "CIGALA Arroz Extra Longo Agulha 1 kg",
+      "price": 1.69,
+      "sourceCategory": "",
+      "sourceId": "89349",
+      "query": "arroz"
+    },
+    {
+      "store": "Minipreco",
+      "name": "BOM SUCESSO Arroz Carolino 1 kg",
+      "price": 1.59,
+      "sourceCategory": "",
+      "sourceId": "218708",
+      "query": "arroz"
+    },
+    {
+      "store": "Minipreco",
+      "name": "AUCHAN Arroz Estufado Extra Longo 1 kg",
+      "price": 1.35,
+      "sourceCategory": "",
+      "sourceId": "901604",
+      "query": "arroz"
+    },
+    {
+      "store": "Minipreco",
+      "name": "AUCHAN Arroz Carolino 1 kg",
+      "price": 1.15,
+      "sourceCategory": "",
+      "sourceId": "901603",
+      "query": "arroz"
+    },
+    {
+      "store": "Minipreco",
+      "name": "AUCHAN Arroz Basmati Extra Longo 1 kg",
+      "price": 1.99,
+      "sourceCategory": "",
+      "sourceId": "901577",
+      "query": "arroz"
+    },
+    {
+      "store": "Minipreco",
+      "name": "AUCHAN Cultivamos o Bom Arroz Carolino Extra Longo Branqueado Vida 1 kg",
+      "price": 1.59,
+      "sourceCategory": "",
+      "sourceId": "901579",
+      "query": "arroz"
+    },
+    {
+      "store": "Minipreco",
+      "name": "AUCHAN Arroz Jasmim Extra Longo 1 kg",
+      "price": 1.99,
+      "sourceCategory": "",
+      "sourceId": "901582",
+      "query": "arroz"
+    },
+    {
+      "store": "Minipreco",
+      "name": "AUCHAN Arroz Agulha Extra Longo Branqueado 1 kg",
+      "price": 1.25,
+      "sourceCategory": "",
+      "sourceId": "901605",
+      "query": "arroz"
+    },
+    {
+      "store": "Minipreco",
+      "name": "AUCHAN Arroz Agulha Suriname 1 kg",
+      "price": 1.45,
+      "sourceCategory": "",
+      "sourceId": "901606",
+      "query": "arroz"
+    },
+    {
+      "store": "Minipreco",
+      "name": "AUCHAN Arroz Risotto 500 g",
+      "price": 0.99,
+      "sourceCategory": "",
+      "sourceId": "902107",
+      "query": "arroz"
+    },
+    {
+      "store": "Minipreco",
+      "name": "KNORR Massa Noodles Queijo e Ervas 61 g",
+      "price": 1.18,
+      "sourceCategory": "",
+      "sourceId": "6248",
+      "query": "arroz"
+    },
+    {
+      "store": "Minipreco",
+      "name": "KNORR Massa Noodles de Galinha 61 g",
+      "price": 1.18,
+      "sourceCategory": "",
+      "sourceId": "6247",
+      "query": "arroz"
+    },
+    {
+      "store": "Minipreco",
+      "name": "AUCHAN Trinca de Arroz 1 kg",
+      "price": 0.9,
+      "sourceCategory": "",
+      "sourceId": "901574",
+      "query": "arroz"
+    }
+  ]
+}

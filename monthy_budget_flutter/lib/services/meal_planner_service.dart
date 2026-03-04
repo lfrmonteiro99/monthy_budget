@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/meal_planner.dart';
 import '../models/app_settings.dart';
@@ -11,17 +12,26 @@ class MealPlannerService {
   List<Ingredient> _ingredients = [];
   List<Recipe> _recipes = [];
   bool _catalogLoaded = false;
+  Map<String, Ingredient>? _ingredientMapCache;
+  Map<String, Recipe>? _recipeMapCache;
 
   Future<void> loadCatalog() async {
     if (_catalogLoaded) return;
     final ingJson = await rootBundle.loadString('assets/meal_planner/ingredients.json');
     final recJson = await rootBundle.loadString('assets/meal_planner/recipes.json');
-    _ingredients = (jsonDecode(ingJson) as List<dynamic>)
+    loadCatalogFromJson(ingJson, recJson);
+  }
+
+  @visibleForTesting
+  void loadCatalogFromJson(String ingredientsJson, String recipesJson) {
+    _ingredients = (jsonDecode(ingredientsJson) as List<dynamic>)
         .map((e) => Ingredient.fromJson(e as Map<String, dynamic>))
         .toList();
-    _recipes = (jsonDecode(recJson) as List<dynamic>)
+    _recipes = (jsonDecode(recipesJson) as List<dynamic>)
         .map((e) => Recipe.fromJson(e as Map<String, dynamic>))
         .toList();
+    _ingredientMapCache = null;
+    _recipeMapCache = null;
     _catalogLoaded = true;
   }
 
@@ -29,10 +39,10 @@ class MealPlannerService {
   List<Recipe> get recipes => _recipes;
 
   Map<String, Ingredient> get ingredientMap =>
-      {for (final i in _ingredients) i.id: i};
+      _ingredientMapCache ??= {for (final i in _ingredients) i.id: i};
 
   Map<String, Recipe> get recipeMap =>
-      {for (final r in _recipes) r.id: r};
+      _recipeMapCache ??= {for (final r in _recipes) r.id: r};
 
   // --- Settings helpers ---
 
@@ -76,61 +86,97 @@ class MealPlannerService {
     final np = nPessoas(settings);
     final totalBudget = monthlyFoodBudget(settings);
     final iMap = ingredientMap;
+    final rMap = recipeMap;
     final daysInMonth = DateTime(forMonth.year, forMonth.month + 1, 0).day;
 
     final rng = Random();
 
-    // Base filtered pool (eliminatory)
-    List<Recipe> basePool(MealType mealType, int weekday) {
-      final isWeekend = weekday == 6 || weekday == 7;
+    // Pre-compute cost cache: recipeId -> cost for this np
+    final costCache = <String, double>{};
+    double cachedCost(Recipe recipe) {
+      return costCache.putIfAbsent(recipe.id, () => recipeCost(recipe, np, iMap));
+    }
+
+    // Pre-lowercase disliked ingredients for O(1) lookup
+    final dislikedLower = ms.dislikedIngredients.map((d) => d.toLowerCase()).toSet();
+
+    // Pre-build ingredient name lookup (lowercased)
+    final ingredientNameLower = <String, String>{};
+    for (final ing in _ingredients) {
+      ingredientNameLower[ing.id] = ing.name.toLowerCase();
+    }
+
+    // Pre-build equipment name→enum map
+    final equipmentByName = <String, KitchenEquipment>{
+      for (final k in KitchenEquipment.values) k.name: k,
+    };
+
+    // Pre-compute excludedProteins as a Set for O(1) lookup
+    final excludedProteinsSet = ms.excludedProteins.toSet();
+
+    // Helper: check if recipe has disliked ingredients
+    bool hasDislikedIngredient(Recipe r) {
+      if (dislikedLower.isEmpty) return false;
+      for (final ri in r.ingredients) {
+        final name = ingredientNameLower[ri.ingredientId];
+        if (name != null && dislikedLower.contains(name)) return true;
+      }
+      return false;
+    }
+
+    // Helper: check equipment requirements
+    bool hasRequiredEquipment(Recipe r) {
+      for (final eq in r.requiresEquipment) {
+        final mapped = equipmentByName[eq] ?? KitchenEquipment.oven;
+        if (!ms.availableEquipment.contains(mapped)) return false;
+      }
+      return true;
+    }
+
+    // Pre-compute hard-filter flags per recipe (settings-only, day-independent)
+    final hasDiabetes = ms.medicalConditions.contains(MedicalCondition.diabetes);
+    final hasHypertension = ms.medicalConditions.contains(MedicalCondition.hypertension);
+    final hasCholesterol = ms.medicalConditions.contains(MedicalCondition.highCholesterol);
+    final hasGout = ms.medicalConditions.contains(MedicalCondition.gout);
+    final isLowSodium = ms.sodiumPreference == SodiumPreference.lowSodium;
+    const highSodiumIds = {'bacalhau', 'chourico', 'fiambre', 'sardinha'};
+    const highPurineProteins = {'sardinha', 'porco'};
+
+    // Core eliminatory filter (day-independent parts)
+    bool passesHardFilters(Recipe r) {
+      if (ms.glutenFree && !r.glutenFree) return false;
+      if (ms.lactoseFree && !r.lactoseFree) return false;
+      if (ms.nutFree && !r.nutFree) return false;
+      if (ms.shellfishFree && !r.shellfishFree) return false;
+      if (ms.eggFree && r.ingredients.any((ri) => ri.ingredientId == 'ovo')) return false;
+      if (excludedProteinsSet.contains(r.proteinId)) return false;
+      if (hasDislikedIngredient(r)) return false;
+      if (!hasRequiredEquipment(r)) return false;
+      if (isLowSodium && r.ingredients.any((ri) => highSodiumIds.contains(ri.ingredientId))) return false;
+      if (hasDiabetes && r.nutrition != null && r.nutrition!.carbsG > 55) return false;
+      if (hasHypertension && r.nutrition != null && r.nutrition!.sodiumMg > 500) return false;
+      if (hasCholesterol && r.nutrition != null && r.nutrition!.fatG > 25) return false;
+      if (hasGout && highPurineProteins.contains(r.proteinId)) return false;
+      return true;
+    }
+
+    // Cache base pools by (mealType, isWeekend) — only 2×N_mealTypes combos
+    final poolCache = <(MealType, bool), List<Recipe>>{};
+
+    List<Recipe> basePool(MealType mealType, bool isWeekend) {
+      final key = (mealType, isWeekend);
+      final cached = poolCache[key];
+      if (cached != null) return List.of(cached);
+
       final effectiveMaxPrep = isWeekend ? ms.maxPrepMinutesWeekend : ms.maxPrepMinutes;
       final effectiveMaxComplexity = isWeekend ? ms.maxComplexityWeekend : ms.maxComplexity;
+      final mealTypeName = mealType.name;
 
       var pool = _recipes.where((r) {
-        if (!r.suitableMealTypes.contains(mealType.name)) return false;
-        if (ms.glutenFree && !r.glutenFree) return false;
-        if (ms.lactoseFree && !r.lactoseFree) return false;
-        if (ms.nutFree && !r.nutFree) return false;
-        if (ms.shellfishFree && !r.shellfishFree) return false;
-        if (ms.eggFree) {
-          if (r.ingredients.any((ri) => ri.ingredientId == 'ovo')) return false;
-        }
-        if (ms.sodiumPreference == SodiumPreference.lowSodium) {
-          const highSodium = {'bacalhau', 'chourico', 'fiambre', 'sardinha'};
-          if (r.ingredients.any((ri) => highSodium.contains(ri.ingredientId))) return false;
-        }
-        // Medical condition filtering
-        if (ms.medicalConditions.contains(MedicalCondition.diabetes)) {
-          if (r.nutrition != null && r.nutrition!.carbsG > 55) return false;
-        }
-        if (ms.medicalConditions.contains(MedicalCondition.hypertension)) {
-          if (r.nutrition != null && r.nutrition!.sodiumMg > 500) return false;
-        }
-        if (ms.medicalConditions.contains(MedicalCondition.highCholesterol)) {
-          if (r.nutrition != null && r.nutrition!.fatG > 25) return false;
-        }
-        if (ms.medicalConditions.contains(MedicalCondition.gout)) {
-          const highPurine = {'sardinha', 'porco'};
-          if (highPurine.contains(r.proteinId)) return false;
-        }
+        if (!r.suitableMealTypes.contains(mealTypeName)) return false;
+        if (!passesHardFilters(r)) return false;
         if (r.complexity > effectiveMaxComplexity) return false;
         if (r.prepMinutes > effectiveMaxPrep) return false;
-        if (ms.excludedProteins.contains(r.proteinId)) return false;
-        // Equipment check
-        for (final eq in r.requiresEquipment) {
-          final mapped = KitchenEquipment.values.firstWhere(
-            (k) => k.name == eq, orElse: () => KitchenEquipment.oven);
-          if (!ms.availableEquipment.contains(mapped)) return false;
-        }
-        // Disliked ingredients
-        for (final ri in r.ingredients) {
-          final ing = iMap[ri.ingredientId];
-          if (ing == null) continue;
-          if (ms.dislikedIngredients.any((d) =>
-              d.toLowerCase() == ing.name.toLowerCase())) {
-            return false;
-          }
-        }
         return true;
       }).toList();
 
@@ -153,35 +199,26 @@ class MealPlannerService {
       }
 
       if (pool.isEmpty) {
-        // Fallback: keep allergy/dietary hard filters, drop soft filters
+        // Fallback: keep allergy/dietary hard filters, drop soft filters (complexity/prep)
         pool = _recipes.where((r) {
-          if (!r.suitableMealTypes.contains(mealType.name)) return false;
+          if (!r.suitableMealTypes.contains(mealTypeName)) return false;
           if (ms.glutenFree && !r.glutenFree) return false;
           if (ms.lactoseFree && !r.lactoseFree) return false;
           if (ms.nutFree && !r.nutFree) return false;
           if (ms.shellfishFree && !r.shellfishFree) return false;
-          if (ms.eggFree) {
-            if (r.ingredients.any((ri) => ri.ingredientId == 'ovo')) return false;
-          }
-          if (ms.excludedProteins.contains(r.proteinId)) return false;
-          for (final ri in r.ingredients) {
-            final ing = iMap[ri.ingredientId];
-            if (ing == null) continue;
-            if (ms.dislikedIngredients.any((d) =>
-                d.toLowerCase() == ing.name.toLowerCase())) {
-              return false;
-            }
-          }
+          if (ms.eggFree && r.ingredients.any((ri) => ri.ingredientId == 'ovo')) return false;
+          if (excludedProteinsSet.contains(r.proteinId)) return false;
+          if (hasDislikedIngredient(r)) return false;
           return true;
         }).toList();
       }
-      // Ultimate fallback: if still empty after allergy filters, at least respect mealType
       if (pool.isEmpty) {
-        pool = _recipes.where((r) => r.suitableMealTypes.contains(mealType.name)).toList();
+        pool = _recipes.where((r) => r.suitableMealTypes.contains(mealTypeName)).toList();
       }
-      // Absolute last resort: if no recipes match even by mealType, use all
       if (pool.isEmpty) pool = _recipes.toList();
-      return pool;
+
+      poolCache[key] = pool;
+      return List.of(pool);
     }
 
     // Determine veggie day indices (distributed evenly across month)
@@ -216,6 +253,7 @@ class MealPlannerService {
       usedRecipesPerDay[day] = {};
       // Reset weekly tracking on Mondays (weekday 1)
       final weekday = DateTime(forMonth.year, forMonth.month, day).weekday;
+      final isWeekend = weekday == 6 || weekday == 7;
       // Skip eating-out days
       if (ms.eatingOutWeekdays.contains(weekday)) continue;
       if (weekday == 1) {
@@ -232,8 +270,8 @@ class MealPlannerService {
         if (ms.batchCookingEnabled && batchState.containsKey(mealType)) {
           final state = batchState[mealType]!;
           if (state.daysLeft > 0) {
-            final recipe = recipeMap[state.recipeId]!;
-            final cost = recipeCost(recipe, np, iMap);
+            final recipe = rMap[state.recipeId]!;
+            final cost = cachedCost(recipe);
             days.add(MealDay(
               dayIndex: day,
               recipeId: state.recipeId,
@@ -273,9 +311,9 @@ class MealPlannerService {
         final pinnedRecipeId = ms.pinnedMeals[pinKey];
         if (pinnedRecipeId != null) {
           if (pinnedRecipeId == 'skip') continue;
-          final pinnedRecipe = recipeMap[pinnedRecipeId];
+          final pinnedRecipe = rMap[pinnedRecipeId];
           if (pinnedRecipe != null) {
-            final cost = recipeCost(pinnedRecipe, np, iMap);
+            final cost = cachedCost(pinnedRecipe);
             days.add(MealDay(
               dayIndex: day,
               recipeId: pinnedRecipeId,
@@ -286,7 +324,7 @@ class MealPlannerService {
           }
         }
 
-        var pool = basePool(mealType, weekday);
+        var pool = basePool(mealType, isWeekend);
 
         // Lunchbox filter: only portable recipes for lunch
         if (ms.lunchboxLunches && mealType == MealType.lunch) {
@@ -302,7 +340,7 @@ class MealPlannerService {
 
         // Sort by objective
         if (ms.objective == MealObjective.minimizeCost || ms.prioritizeLowCost) {
-          pool.sort((a, b) => recipeCost(a, np, iMap).compareTo(recipeCost(b, np, iMap)));
+          pool.sort((a, b) => cachedCost(a).compareTo(cachedCost(b)));
         }
 
         // Waste minimization: prefer recipes sharing ingredients (any, not all)
@@ -398,7 +436,10 @@ class MealPlannerService {
         }
 
         // Shuffle then partition: favorites first, rest after (boost, don't eliminate)
-        available.shuffle(rng);
+        // Skip shuffle when minimizing cost to preserve cost-sorted order
+        if (ms.objective != MealObjective.minimizeCost) {
+          available.shuffle(rng);
+        }
         if (favorites.isNotEmpty) {
           final favs = <Recipe>[];
           final rest = <Recipe>[];
@@ -474,12 +515,10 @@ class MealPlannerService {
           weeklyRedMeatCount[weekNum] = (weeklyRedMeatCount[weekNum] ?? 0) + 1;
         }
 
-        final cost = recipeCost(recipe, np, iMap);
-
         days.add(MealDay(
           dayIndex: day,
           recipeId: recipe.id,
-          costEstimate: cost,
+          costEstimate: cachedCost(recipe),
           mealType: mealType,
         ));
 
@@ -525,51 +564,87 @@ class MealPlannerService {
     var days = List<MealDay>.from(plan.days);
     var total = days.fold(0.0, (s, d) => s + d.costEstimate);
 
+    if (total <= plan.monthlyBudget) {
+      return _fixLeftoverRefs(plan, days);
+    }
+
+    // Pre-lowercase disliked ingredients once
+    final dislikedLower = ms.dislikedIngredients.map((d) => d.toLowerCase()).toSet();
+    final ingredientNameLower = <String, String>{};
+    for (final ing in _ingredients) {
+      ingredientNameLower[ing.id] = ing.name.toLowerCase();
+    }
+    final excludedSet = ms.excludedProteins.toSet();
+
+    // Pre-compute eligible recipes per meal type (hard filters only, day-independent)
+    final eligibleByMealType = <MealType, List<(Recipe, double)>>{};
+    for (final mt in MealType.values) {
+      final mtName = mt.name;
+      final eligible = <(Recipe, double)>[];
+      for (final r in _recipes) {
+        if (!r.suitableMealTypes.contains(mtName)) continue;
+        if (ms.glutenFree && !r.glutenFree) continue;
+        if (ms.lactoseFree && !r.lactoseFree) continue;
+        if (ms.nutFree && !r.nutFree) continue;
+        if (ms.shellfishFree && !r.shellfishFree) continue;
+        if (excludedSet.contains(r.proteinId)) continue;
+        bool disliked = false;
+        if (dislikedLower.isNotEmpty) {
+          for (final ri in r.ingredients) {
+            final name = ingredientNameLower[ri.ingredientId];
+            if (name != null && dislikedLower.contains(name)) {
+              disliked = true;
+              break;
+            }
+          }
+        }
+        if (disliked) continue;
+        eligible.add((r, recipeCost(r, np, iMap)));
+      }
+      // Pre-sort by cost ascending
+      eligible.sort((a, b) => a.$2.compareTo(b.$2));
+      eligibleByMealType[mt] = eligible;
+    }
+
     int iterations = 0;
     while (total > plan.monthlyBudget && iterations < 100) {
       iterations++;
-      days.sort((a, b) => b.costEstimate.compareTo(a.costEstimate));
-      final expensive = days.first;
-      final currentRecipe = recipeMap[expensive.recipeId]!;
 
-      final cheaper = _recipes.where((r) {
-        if (r.id == currentRecipe.id) return false;
-        if (ms.glutenFree && !r.glutenFree) return false;
-        if (ms.lactoseFree && !r.lactoseFree) return false;
-        if (ms.nutFree && !r.nutFree) return false;
-        if (ms.shellfishFree && !r.shellfishFree) return false;
-        if (ms.excludedProteins.contains(r.proteinId)) return false;
-        if (!r.suitableMealTypes.contains(expensive.mealType.name)) return false;
-        // Disliked ingredients check
-        for (final ri in r.ingredients) {
-          final ing = iMap[ri.ingredientId];
-          if (ing == null) continue;
-          if (ms.dislikedIngredients.any((d) =>
-              d.toLowerCase() == ing.name.toLowerCase())) {
-            return false;
-          }
+      // Find most expensive day in O(n) instead of sorting
+      int expensiveIdx = 0;
+      for (int i = 1; i < days.length; i++) {
+        if (days[i].costEstimate > days[expensiveIdx].costEstimate) {
+          expensiveIdx = i;
         }
-        return true;
-      })
-          .map((r) => (recipe: r, cost: recipeCost(r, np, iMap)))
-          .where((e) => e.cost < expensive.costEstimate)
-          .toList()
-        ..sort((a, b) => a.cost.compareTo(b.cost));
+      }
+      final expensive = days[expensiveIdx];
 
-      if (cheaper.isEmpty) break;
+      // Find cheapest eligible replacement from pre-sorted list
+      final eligible = eligibleByMealType[expensive.mealType] ?? [];
+      (Recipe, double)? replacement;
+      for (final entry in eligible) {
+        if (entry.$1.id != expensive.recipeId && entry.$2 < expensive.costEstimate) {
+          replacement = entry;
+          break; // already sorted by cost, first match is cheapest
+        }
+      }
 
-      final replacement = cheaper.first;
-      final idx = days.indexWhere((d) => d.dayIndex == expensive.dayIndex && d.mealType == expensive.mealType);
-      days[idx] = expensive.copyWith(
-        recipeId: replacement.recipe.id,
-        costEstimate: replacement.cost,
+      if (replacement == null) break;
+
+      final oldCost = expensive.costEstimate;
+      days[expensiveIdx] = expensive.copyWith(
+        recipeId: replacement.$1.id,
+        costEstimate: replacement.$2,
       );
-      total = days.fold(0.0, (s, d) => s + d.costEstimate);
+      total += replacement.$2 - oldCost; // Incremental update
     }
 
     days.sort((a, b) => a.dayIndex.compareTo(b.dayIndex));
+    return _fixLeftoverRefs(plan, days);
+  }
 
-    // Fix stale leftover references
+  MealPlan _fixLeftoverRefs(MealPlan plan, List<MealDay> days) {
+    days.sort((a, b) => a.dayIndex.compareTo(b.dayIndex));
     for (int i = 0; i < days.length; i++) {
       if (!days[i].isLeftover) continue;
       final dinnerDay = days[i].dayIndex - 1;
@@ -580,7 +655,6 @@ class MealPlannerService {
         days[i] = days[i].copyWith(recipeId: dinner.recipeId, costEstimate: 0);
       }
     }
-
     return plan.copyWithDays(days);
   }
 
@@ -590,6 +664,7 @@ class MealPlannerService {
     final current = recipeMap[recipeId];
     if (current == null) return [];
     final iMap = ingredientMap;
+    final excludedSet = ms?.excludedProteins.toSet();
     var pool = _recipes.where((r) => r.id != recipeId).toList();
     if (ms != null) {
       pool = pool.where((r) {
@@ -597,15 +672,21 @@ class MealPlannerService {
         if (ms.lactoseFree && !r.lactoseFree) return false;
         if (ms.nutFree && !r.nutFree) return false;
         if (ms.shellfishFree && !r.shellfishFree) return false;
-        if (ms.excludedProteins.contains(r.proteinId)) return false;
+        if (excludedSet != null && excludedSet.contains(r.proteinId)) return false;
         return true;
       }).toList();
     }
+    // Pre-compute costs for sorting
+    final costs = <String, double>{};
+    for (final r in pool) {
+      costs[r.id] = recipeCost(r, np, iMap);
+    }
+    final currentProtein = current.proteinId;
     pool.sort((a, b) {
-      final aMatch = a.proteinId == current.proteinId ? 0 : 1;
-      final bMatch = b.proteinId == current.proteinId ? 0 : 1;
+      final aMatch = a.proteinId == currentProtein ? 0 : 1;
+      final bMatch = b.proteinId == currentProtein ? 0 : 1;
       if (aMatch != bMatch) return aMatch.compareTo(bMatch);
-      return recipeCost(a, np, iMap).compareTo(recipeCost(b, np, iMap));
+      return costs[a.id]!.compareTo(costs[b.id]!);
     });
     return pool;
   }
