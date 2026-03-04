@@ -173,6 +173,40 @@ export interface TranslationKeys {
   pricing_family_feat6: string;
   pricing_family_feat7: string;
   footer_pricing_link: string;
+  nav_delete_account: string;
+  delete_title: string;
+  delete_last_updated: string;
+  delete_intro: string;
+  delete_steps_title: string;
+  delete_step1: string;
+  delete_step2: string;
+  delete_step3: string;
+  delete_step4: string;
+  delete_alt_title: string;
+  delete_alt_desc: string;
+  delete_data_title: string;
+  delete_data_deleted_title: string;
+  delete_data_deleted1: string;
+  delete_data_deleted2: string;
+  delete_data_deleted3: string;
+  delete_data_deleted4: string;
+  delete_data_deleted5: string;
+  delete_data_deleted6: string;
+  delete_data_retained_title: string;
+  delete_data_retained1: string;
+  delete_data_retained2: string;
+  delete_timeline_title: string;
+  delete_timeline1: string;
+  delete_timeline2: string;
+  delete_timeline3: string;
+  delete_subscription_title: string;
+  delete_subscription_desc: string;
+  delete_important_title: string;
+  delete_important_desc: string;
+  delete_contact_title: string;
+  delete_contact_desc: string;
+  delete_see_also: string;
+  delete_privacy_link: string;
   privacy_title: string;
   privacy_last_updated: string;
   terms_title: string;
@@ -353,6 +387,40 @@ export const translations: Record<Locale, TranslationKeys> = {
     pricing_family_feat6: "Dashboard personalizável",
     pricing_family_feat7: "Todos os temas de cores",
     footer_pricing_link: "Preços",
+    nav_delete_account: "Eliminar Conta",
+    delete_title: "Eliminar Conta e Dados",
+    delete_last_updated: "Última atualização: 4 de março de 2026",
+    delete_intro: "Na Gestão Mensal, respeitamos o seu direito a controlar os seus dados pessoais. Esta página explica como pode solicitar a eliminação da sua conta e de todos os dados associados.",
+    delete_steps_title: "Como eliminar a sua conta",
+    delete_step1: "Abra a app Gestão Mensal no seu dispositivo Android.",
+    delete_step2: "Vá a Definições (ícone de engrenagem no canto superior).",
+    delete_step3: "Deslize até ao fundo e toque em \"Eliminar conta e dados\".",
+    delete_step4: "Confirme a eliminação. A sua conta e todos os dados serão removidos permanentemente.",
+    delete_alt_title: "Método alternativo: por email",
+    delete_alt_desc: "Se não conseguir aceder à app, pode solicitar a eliminação enviando um email a partir do endereço associado à sua conta:",
+    delete_data_title: "Dados que são eliminados vs. retidos",
+    delete_data_deleted_title: "Dados eliminados permanentemente (no prazo de 30 dias):",
+    delete_data_deleted1: "Dados da conta (email, nome, preferências)",
+    delete_data_deleted2: "Dados financeiros (rendimentos, despesas, orçamentos, metas de poupança)",
+    delete_data_deleted3: "Listas de compras e histórico de preços",
+    delete_data_deleted4: "Planos de refeições e preferências alimentares",
+    delete_data_deleted5: "Histórico de interações com o Coach Financeiro IA",
+    delete_data_deleted6: "Dados de sincronização e partilha familiar",
+    delete_data_retained_title: "Dados que podem ser retidos:",
+    delete_data_retained1: "Registos de transações de pagamento (processados pela Google Play) — retidos pela Google de acordo com as suas obrigações legais e fiscais. A Gestão Mensal não tem acesso a estes dados.",
+    delete_data_retained2: "Dados anonimizados e agregados que já não permitam a identificação do utilizador, utilizados para melhorar o serviço.",
+    delete_timeline_title: "Prazos de eliminação",
+    delete_timeline1: "A conta é desativada imediatamente após o pedido.",
+    delete_timeline2: "Todos os dados pessoais são eliminados dos nossos servidores no prazo de 30 dias.",
+    delete_timeline3: "Os dados locais no seu dispositivo são removidos quando desinstala a app.",
+    delete_subscription_title: "Subscrições ativas",
+    delete_subscription_desc: "A eliminação da conta não cancela automaticamente a sua subscrição na Google Play. Para evitar cobranças futuras, cancele a subscrição antes de eliminar a conta: Google Play > Subscrições > Gestão Mensal > Cancelar.",
+    delete_important_title: "Importante",
+    delete_important_desc: "A eliminação da conta é permanente e irreversível. Todos os dados serão perdidos e não poderão ser recuperados. Se tiver um plano Premium ou Família, recomendamos que exporte os seus dados (PDF/CSV) antes de proceder à eliminação.",
+    delete_contact_title: "Questões?",
+    delete_contact_desc: "Se tiver dúvidas sobre a eliminação da sua conta ou dos seus dados, contacte-nos:",
+    delete_see_also: "Consulte também a nossa",
+    delete_privacy_link: "Política de Privacidade",
     privacy_title: "Política de Privacidade",
     privacy_last_updated: "Última atualização: 4 de março de 2026",
     terms_title: "Termos de Utilização",
@@ -532,6 +600,40 @@ export const translations: Record<Locale, TranslationKeys> = {
     pricing_family_feat6: "Dashboard customization",
     pricing_family_feat7: "All color themes",
     footer_pricing_link: "Pricing",
+    nav_delete_account: "Delete Account",
+    delete_title: "Delete Account & Data",
+    delete_last_updated: "Last updated: March 4, 2026",
+    delete_intro: "At Gestão Mensal, we respect your right to control your personal data. This page explains how you can request the deletion of your account and all associated data.",
+    delete_steps_title: "How to delete your account",
+    delete_step1: "Open the Gestão Mensal app on your Android device.",
+    delete_step2: "Go to Settings (gear icon in the top corner).",
+    delete_step3: "Scroll to the bottom and tap \"Delete account and data\".",
+    delete_step4: "Confirm the deletion. Your account and all data will be permanently removed.",
+    delete_alt_title: "Alternative method: by email",
+    delete_alt_desc: "If you can\u2019t access the app, you can request deletion by sending an email from the address associated with your account:",
+    delete_data_title: "Data that is deleted vs. retained",
+    delete_data_deleted_title: "Data permanently deleted (within 30 days):",
+    delete_data_deleted1: "Account data (email, name, preferences)",
+    delete_data_deleted2: "Financial data (income, expenses, budgets, savings goals)",
+    delete_data_deleted3: "Shopping lists and price history",
+    delete_data_deleted4: "Meal plans and dietary preferences",
+    delete_data_deleted5: "AI Financial Coach interaction history",
+    delete_data_deleted6: "Sync and family sharing data",
+    delete_data_retained_title: "Data that may be retained:",
+    delete_data_retained1: "Payment transaction records (processed by Google Play) \u2014 retained by Google in accordance with their legal and tax obligations. Gestão Mensal does not have access to this data.",
+    delete_data_retained2: "Anonymized and aggregated data that can no longer identify the user, used to improve the service.",
+    delete_timeline_title: "Deletion timeline",
+    delete_timeline1: "The account is deactivated immediately after the request.",
+    delete_timeline2: "All personal data is deleted from our servers within 30 days.",
+    delete_timeline3: "Local data on your device is removed when you uninstall the app.",
+    delete_subscription_title: "Active subscriptions",
+    delete_subscription_desc: "Deleting your account does not automatically cancel your Google Play subscription. To avoid future charges, cancel your subscription before deleting your account: Google Play > Subscriptions > Gestão Mensal > Cancel.",
+    delete_important_title: "Important",
+    delete_important_desc: "Account deletion is permanent and irreversible. All data will be lost and cannot be recovered. If you have a Premium or Family plan, we recommend exporting your data (PDF/CSV) before proceeding.",
+    delete_contact_title: "Questions?",
+    delete_contact_desc: "If you have questions about deleting your account or data, contact us:",
+    delete_see_also: "See also our",
+    delete_privacy_link: "Privacy Policy",
     privacy_title: "Privacy Policy",
     privacy_last_updated: "Last updated: March 4, 2026",
     terms_title: "Terms of Use",
@@ -711,6 +813,40 @@ export const translations: Record<Locale, TranslationKeys> = {
     pricing_family_feat6: "Dashboard personalizable",
     pricing_family_feat7: "Todos los temas de colores",
     footer_pricing_link: "Precios",
+    nav_delete_account: "Eliminar Cuenta",
+    delete_title: "Eliminar Cuenta y Datos",
+    delete_last_updated: "Última actualización: 4 de marzo de 2026",
+    delete_intro: "En Gestão Mensal, respetamos tu derecho a controlar tus datos personales. Esta página explica cómo puedes solicitar la eliminación de tu cuenta y todos los datos asociados.",
+    delete_steps_title: "Cómo eliminar tu cuenta",
+    delete_step1: "Abre la app Gestão Mensal en tu dispositivo Android.",
+    delete_step2: "Ve a Ajustes (icono de engranaje en la esquina superior).",
+    delete_step3: "Desplázate hasta abajo y pulsa \"Eliminar cuenta y datos\".",
+    delete_step4: "Confirma la eliminación. Tu cuenta y todos los datos serán eliminados permanentemente.",
+    delete_alt_title: "Método alternativo: por email",
+    delete_alt_desc: "Si no puedes acceder a la app, puedes solicitar la eliminación enviando un email desde la dirección asociada a tu cuenta:",
+    delete_data_title: "Datos que se eliminan vs. se retienen",
+    delete_data_deleted_title: "Datos eliminados permanentemente (en un plazo de 30 días):",
+    delete_data_deleted1: "Datos de la cuenta (email, nombre, preferencias)",
+    delete_data_deleted2: "Datos financieros (ingresos, gastos, presupuestos, objetivos de ahorro)",
+    delete_data_deleted3: "Listas de compras e historial de precios",
+    delete_data_deleted4: "Planes de comidas y preferencias alimentarias",
+    delete_data_deleted5: "Historial de interacciones con el Coach Financiero IA",
+    delete_data_deleted6: "Datos de sincronización y compartición familiar",
+    delete_data_retained_title: "Datos que pueden retenerse:",
+    delete_data_retained1: "Registros de transacciones de pago (procesados por Google Play) — retenidos por Google según sus obligaciones legales y fiscales. Gestão Mensal no tiene acceso a estos datos.",
+    delete_data_retained2: "Datos anonimizados y agregados que ya no permiten identificar al usuario, utilizados para mejorar el servicio.",
+    delete_timeline_title: "Plazos de eliminación",
+    delete_timeline1: "La cuenta se desactiva inmediatamente tras la solicitud.",
+    delete_timeline2: "Todos los datos personales se eliminan de nuestros servidores en un plazo de 30 días.",
+    delete_timeline3: "Los datos locales en tu dispositivo se eliminan al desinstalar la app.",
+    delete_subscription_title: "Suscripciones activas",
+    delete_subscription_desc: "Eliminar tu cuenta no cancela automáticamente tu suscripción en Google Play. Para evitar cargos futuros, cancela la suscripción antes de eliminar la cuenta: Google Play > Suscripciones > Gestão Mensal > Cancelar.",
+    delete_important_title: "Importante",
+    delete_important_desc: "La eliminación de la cuenta es permanente e irreversible. Todos los datos se perderán y no podrán recuperarse. Si tienes un plan Premium o Familia, te recomendamos exportar tus datos (PDF/CSV) antes de proceder.",
+    delete_contact_title: "¿Preguntas?",
+    delete_contact_desc: "Si tienes dudas sobre la eliminación de tu cuenta o tus datos, contáctanos:",
+    delete_see_also: "Consulta también nuestra",
+    delete_privacy_link: "Política de Privacidad",
     privacy_title: "Política de Privacidad",
     privacy_last_updated: "Última actualización: 4 de marzo de 2026",
     terms_title: "Términos de Uso",
@@ -890,6 +1026,40 @@ export const translations: Record<Locale, TranslationKeys> = {
     pricing_family_feat6: "Tableau de bord personnalisable",
     pricing_family_feat7: "Tous les thèmes de couleurs",
     footer_pricing_link: "Tarifs",
+    nav_delete_account: "Supprimer le Compte",
+    delete_title: "Supprimer le Compte et les Données",
+    delete_last_updated: "Dernière mise à jour : 4 mars 2026",
+    delete_intro: "Chez Gestão Mensal, nous respectons votre droit de contrôler vos données personnelles. Cette page explique comment demander la suppression de votre compte et de toutes les données associées.",
+    delete_steps_title: "Comment supprimer votre compte",
+    delete_step1: "Ouvrez l\u2019app Gestão Mensal sur votre appareil Android.",
+    delete_step2: "Allez dans Paramètres (icône d\u2019engrenage en haut).",
+    delete_step3: "Faites défiler vers le bas et appuyez sur \u00ab Supprimer le compte et les données \u00bb.",
+    delete_step4: "Confirmez la suppression. Votre compte et toutes les données seront définitivement supprimés.",
+    delete_alt_title: "Méthode alternative : par email",
+    delete_alt_desc: "Si vous ne pouvez pas accéder à l\u2019app, vous pouvez demander la suppression en envoyant un email depuis l\u2019adresse associée à votre compte :",
+    delete_data_title: "Données supprimées vs. conservées",
+    delete_data_deleted_title: "Données supprimées définitivement (sous 30 jours) :",
+    delete_data_deleted1: "Données du compte (email, nom, préférences)",
+    delete_data_deleted2: "Données financières (revenus, dépenses, budgets, objectifs d\u2019épargne)",
+    delete_data_deleted3: "Listes de courses et historique des prix",
+    delete_data_deleted4: "Plans de repas et préférences alimentaires",
+    delete_data_deleted5: "Historique des interactions avec le Coach Financier IA",
+    delete_data_deleted6: "Données de synchronisation et de partage familial",
+    delete_data_retained_title: "Données pouvant être conservées :",
+    delete_data_retained1: "Enregistrements de transactions de paiement (traités par Google Play) — conservés par Google conformément à leurs obligations légales et fiscales. Gestão Mensal n\u2019a pas accès à ces données.",
+    delete_data_retained2: "Données anonymisées et agrégées ne permettant plus l\u2019identification de l\u2019utilisateur, utilisées pour améliorer le service.",
+    delete_timeline_title: "Délais de suppression",
+    delete_timeline1: "Le compte est désactivé immédiatement après la demande.",
+    delete_timeline2: "Toutes les données personnelles sont supprimées de nos serveurs sous 30 jours.",
+    delete_timeline3: "Les données locales sur votre appareil sont supprimées lorsque vous désinstallez l\u2019app.",
+    delete_subscription_title: "Abonnements actifs",
+    delete_subscription_desc: "La suppression de votre compte n\u2019annule pas automatiquement votre abonnement Google Play. Pour éviter des frais futurs, annulez votre abonnement avant de supprimer votre compte : Google Play > Abonnements > Gestão Mensal > Annuler.",
+    delete_important_title: "Important",
+    delete_important_desc: "La suppression du compte est permanente et irréversible. Toutes les données seront perdues et ne pourront pas être récupérées. Si vous avez un plan Premium ou Famille, nous vous recommandons d\u2019exporter vos données (PDF/CSV) avant de procéder.",
+    delete_contact_title: "Des questions ?",
+    delete_contact_desc: "Si vous avez des questions sur la suppression de votre compte ou de vos données, contactez-nous :",
+    delete_see_also: "Consultez également notre",
+    delete_privacy_link: "Politique de Confidentialité",
     privacy_title: "Politique de Confidentialité",
     privacy_last_updated: "Dernière mise à jour : 4 mars 2026",
     terms_title: "Conditions d'Utilisation",

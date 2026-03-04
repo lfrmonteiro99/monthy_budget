@@ -80,6 +80,11 @@ export default function Footer() {
                   {t.footer_terms_link}
                 </Link>
               </li>
+              <li>
+                <Link to="/delete-account" className="text-sm no-underline hover:underline" style={{ color: "var(--text-secondary)" }}>
+                  {t.nav_delete_account}
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
