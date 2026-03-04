@@ -354,9 +354,9 @@ export const translations: Record<Locale, TranslationKeys> = {
     pricing_family_feat7: "Todos os temas de cores",
     footer_pricing_link: "Preços",
     privacy_title: "Política de Privacidade",
-    privacy_last_updated: "Última atualização: 3 de março de 2026",
+    privacy_last_updated: "Última atualização: 4 de março de 2026",
     terms_title: "Termos de Utilização",
-    terms_last_updated: "Última atualização: 3 de março de 2026",
+    terms_last_updated: "Última atualização: 4 de março de 2026",
   },
 
   en: {
@@ -533,9 +533,9 @@ export const translations: Record<Locale, TranslationKeys> = {
     pricing_family_feat7: "All color themes",
     footer_pricing_link: "Pricing",
     privacy_title: "Privacy Policy",
-    privacy_last_updated: "Last updated: March 3, 2026",
+    privacy_last_updated: "Last updated: March 4, 2026",
     terms_title: "Terms of Use",
-    terms_last_updated: "Last updated: March 3, 2026",
+    terms_last_updated: "Last updated: March 4, 2026",
   },
 
   es: {
@@ -712,9 +712,9 @@ export const translations: Record<Locale, TranslationKeys> = {
     pricing_family_feat7: "Todos los temas de colores",
     footer_pricing_link: "Precios",
     privacy_title: "Política de Privacidad",
-    privacy_last_updated: "Última actualización: 3 de marzo de 2026",
+    privacy_last_updated: "Última actualización: 4 de marzo de 2026",
     terms_title: "Términos de Uso",
-    terms_last_updated: "Última actualización: 3 de marzo de 2026",
+    terms_last_updated: "Última actualización: 4 de marzo de 2026",
   },
 
   fr: {
@@ -891,8 +891,8 @@ export const translations: Record<Locale, TranslationKeys> = {
     pricing_family_feat7: "Tous les thèmes de couleurs",
     footer_pricing_link: "Tarifs",
     privacy_title: "Politique de Confidentialité",
-    privacy_last_updated: "Dernière mise à jour : 3 mars 2026",
+    privacy_last_updated: "Dernière mise à jour : 4 mars 2026",
     terms_title: "Conditions d'Utilisation",
-    terms_last_updated: "Dernière mise à jour : 3 mars 2026",
+    terms_last_updated: "Dernière mise à jour : 4 mars 2026",
   },
 };

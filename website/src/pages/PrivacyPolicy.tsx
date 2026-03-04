@@ -25,11 +25,13 @@ export default function PrivacyPolicy() {
           <li><a href="#pp-3" className="no-underline hover:underline" style={{ color: "var(--text-secondary)" }}>Armazenamento e Segurança dos Dados</a></li>
           <li><a href="#pp-4" className="no-underline hover:underline" style={{ color: "var(--text-secondary)" }}>Partilha de Dados</a></li>
           <li><a href="#pp-5" className="no-underline hover:underline" style={{ color: "var(--text-secondary)" }}>Coach Financeiro com IA</a></li>
-          <li><a href="#pp-6" className="no-underline hover:underline" style={{ color: "var(--text-secondary)" }}>Os Seus Direitos (RGPD)</a></li>
-          <li><a href="#pp-7" className="no-underline hover:underline" style={{ color: "var(--text-secondary)" }}>Retenção de Dados</a></li>
-          <li><a href="#pp-8" className="no-underline hover:underline" style={{ color: "var(--text-secondary)" }}>Crianças</a></li>
-          <li><a href="#pp-9" className="no-underline hover:underline" style={{ color: "var(--text-secondary)" }}>Alterações a Esta Política</a></li>
-          <li><a href="#pp-10" className="no-underline hover:underline" style={{ color: "var(--text-secondary)" }}>Contacto</a></li>
+          <li><a href="#pp-6" className="no-underline hover:underline" style={{ color: "var(--text-secondary)" }}>Publicidade e Plano Gratuito</a></li>
+          <li><a href="#pp-7" className="no-underline hover:underline" style={{ color: "var(--text-secondary)" }}>Dados de Subscrição e Pagamentos</a></li>
+          <li><a href="#pp-8" className="no-underline hover:underline" style={{ color: "var(--text-secondary)" }}>Os Seus Direitos (RGPD)</a></li>
+          <li><a href="#pp-9" className="no-underline hover:underline" style={{ color: "var(--text-secondary)" }}>Retenção de Dados</a></li>
+          <li><a href="#pp-10" className="no-underline hover:underline" style={{ color: "var(--text-secondary)" }}>Crianças</a></li>
+          <li><a href="#pp-11" className="no-underline hover:underline" style={{ color: "var(--text-secondary)" }}>Alterações a Esta Política</a></li>
+          <li><a href="#pp-12" className="no-underline hover:underline" style={{ color: "var(--text-secondary)" }}>Contacto</a></li>
         </ol>
       </nav>
 
@@ -100,7 +102,23 @@ export default function PrivacyPolicy() {
           <li>Os dados processados pela IA não são retidos pelo fornecedor do serviço após o processamento.</li>
         </ul>
 
-        <h2 id="pp-6" className="text-xl font-bold mt-8 mb-3" style={{ color: "var(--text-primary)" }}>6. Os Seus Direitos (RGPD)</h2>
+        <h2 id="pp-6" className="text-xl font-bold mt-8 mb-3" style={{ color: "var(--text-primary)" }}>6. Publicidade e Plano Gratuito</h2>
+        <p>Os utilizadores do plano Gratuito visualizam anúncios <em>banner</em> na App. Para apresentar anúncios relevantes, poderemos partilhar informações limitadas com parceiros de publicidade:</p>
+        <ul className="list-disc pl-6 space-y-1.5">
+          <li><strong style={{ color: "var(--text-primary)" }}>Dados partilhados:</strong> identificador publicitário do dispositivo (GAID/IDFA), tipo de dispositivo, idioma e país. <strong style={{ color: "var(--text-primary)" }}>Nunca</strong> partilhamos dados financeiros, nomes ou emails com redes de publicidade.</li>
+          <li><strong style={{ color: "var(--text-primary)" }}>Parceiros:</strong> utilizamos o Google AdMob para a exibição de anúncios, sujeito à <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: "var(--primary-val)" }}>Política de Privacidade da Google</a>.</li>
+          <li><strong style={{ color: "var(--text-primary)" }}>Desativação:</strong> pode limitar a personalização de anúncios nas definições do seu dispositivo Android (Definições &gt; Google &gt; Anúncios). Os planos Premium e Família não incluem publicidade.</li>
+        </ul>
+
+        <h2 id="pp-7" className="text-xl font-bold mt-8 mb-3" style={{ color: "var(--text-primary)" }}>7. Dados de Subscrição e Pagamentos</h2>
+        <p>A App oferece planos de subscrição (Premium e Família) processados integralmente pela Google Play Store.</p>
+        <ul className="list-disc pl-6 space-y-1.5">
+          <li><strong style={{ color: "var(--text-primary)" }}>Dados de pagamento:</strong> todos os pagamentos são processados pela Google. <strong style={{ color: "var(--text-primary)" }}>Não temos acesso</strong> ao número do seu cartão de crédito, conta bancária ou outros dados de pagamento.</li>
+          <li><strong style={{ color: "var(--text-primary)" }}>Dados que recebemos:</strong> a Google notifica-nos apenas sobre o estado da subscrição (ativa, expirada, cancelada), o tipo de plano e a data de renovação — informações necessárias para ativar as funcionalidades correspondentes.</li>
+          <li><strong style={{ color: "var(--text-primary)" }}>Período de teste:</strong> ao iniciar um teste gratuito de 14 dias, registamos a data de início para gerir o acesso às funcionalidades. Não são recolhidos dados de pagamento durante o período de teste.</li>
+        </ul>
+
+        <h2 id="pp-8" className="text-xl font-bold mt-8 mb-3" style={{ color: "var(--text-primary)" }}>8. Os Seus Direitos (RGPD)</h2>
         <p>Enquanto residente na União Europeia, tem os seguintes direitos relativamente aos seus dados pessoais:</p>
         <ul className="list-disc pl-6 space-y-1.5">
           <li><strong style={{ color: "var(--text-primary)" }}>Direito de acesso:</strong> solicitar uma cópia dos seus dados pessoais.</li>
@@ -112,20 +130,20 @@ export default function PrivacyPolicy() {
         </ul>
         <p>Para exercer qualquer destes direitos, contacte-nos através do email indicado na secção de contacto.</p>
 
-        <h2 id="pp-7" className="text-xl font-bold mt-8 mb-3" style={{ color: "var(--text-primary)" }}>7. Retenção de Dados</h2>
+        <h2 id="pp-9" className="text-xl font-bold mt-8 mb-3" style={{ color: "var(--text-primary)" }}>9. Retenção de Dados</h2>
         <ul className="list-disc pl-6 space-y-1.5">
           <li>Os dados locais permanecem no dispositivo até que desinstale a App ou os elimine manualmente.</li>
           <li>Os dados sincronizados na nuvem são retidos enquanto mantiver a sua conta ativa.</li>
           <li>Após eliminação da conta, os seus dados são removidos dos nossos servidores no prazo de 30 dias.</li>
         </ul>
 
-        <h2 id="pp-8" className="text-xl font-bold mt-8 mb-3" style={{ color: "var(--text-primary)" }}>8. Crianças</h2>
+        <h2 id="pp-10" className="text-xl font-bold mt-8 mb-3" style={{ color: "var(--text-primary)" }}>10. Crianças</h2>
         <p>A App não é direcionada a crianças com idade inferior a 16 anos. Não recolhemos intencionalmente informações pessoais de crianças. Se tomarmos conhecimento de que recolhemos dados de uma criança menor de 16 anos, tomaremos medidas para eliminar essas informações.</p>
 
-        <h2 id="pp-9" className="text-xl font-bold mt-8 mb-3" style={{ color: "var(--text-primary)" }}>9. Alterações a Esta Política</h2>
+        <h2 id="pp-11" className="text-xl font-bold mt-8 mb-3" style={{ color: "var(--text-primary)" }}>11. Alterações a Esta Política</h2>
         <p>Poderemos atualizar esta Política de Privacidade periodicamente. Notificaremos os utilizadores de quaisquer alterações significativas através da App ou por email. A data de "última atualização" no topo desta página indica quando a política foi revista pela última vez.</p>
 
-        <h2 id="pp-10" className="text-xl font-bold mt-8 mb-3" style={{ color: "var(--text-primary)" }}>10. Contacto</h2>
+        <h2 id="pp-12" className="text-xl font-bold mt-8 mb-3" style={{ color: "var(--text-primary)" }}>12. Contacto</h2>
         <p>Para questões sobre esta Política de Privacidade ou sobre os seus dados pessoais, contacte-nos:</p>
         <ul className="list-disc pl-6 space-y-1.5">
           <li><strong style={{ color: "var(--text-primary)" }}>Email:</strong> suporte@gestaomensal.app</li>
