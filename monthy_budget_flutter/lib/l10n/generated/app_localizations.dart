@@ -5333,6 +5333,59 @@ abstract class S {
   /// **'{count} meses'**
   String streakMonths(int count);
 
+  /// No description provided for @expenseDefaultBudget.
+  ///
+  /// In pt, this message translates to:
+  /// **'ORÇAMENTO BASE'**
+  String get expenseDefaultBudget;
+
+  /// No description provided for @expenseOverrideActive.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ajustado para {month}: {amount}'**
+  String expenseOverrideActive(String month, String amount);
+
+  /// No description provided for @expenseAdjustMonth.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ajustar para {month}'**
+  String expenseAdjustMonth(String month);
+
+  /// No description provided for @expenseAdjustMonthHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Deixe vazio para usar o orçamento base'**
+  String get expenseAdjustMonthHint;
+
+  /// No description provided for @settingsPersonalTip.
+  ///
+  /// In pt, this message translates to:
+  /// **'O estado civil e dependentes afetam o escalão de IRS, que determina o imposto retido no salário.'**
+  String get settingsPersonalTip;
+
+  /// No description provided for @settingsSalariesTip.
+  ///
+  /// In pt, this message translates to:
+  /// **'O salário bruto é usado para calcular o rendimento líquido após impostos e segurança social. Adicione vários salários se o agregado tiver mais que um rendimento.'**
+  String get settingsSalariesTip;
+
+  /// No description provided for @settingsExpensesTip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Defina o orçamento mensal para cada categoria. Pode ajustar para meses específicos na vista de detalhe da categoria.'**
+  String get settingsExpensesTip;
+
+  /// No description provided for @settingsMealHouseholdTip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Número de pessoas que fazem refeições em casa. Isto ajusta receitas e porções no plano alimentar.'**
+  String get settingsMealHouseholdTip;
+
+  /// No description provided for @settingsHouseholdTip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Convide membros da família para partilhar dados do orçamento entre dispositivos. Todos veem as mesmas despesas e orçamentos.'**
+  String get settingsHouseholdTip;
   /// No description provided for @subscriptionTitle.
   String get subscriptionTitle;
 

@@ -153,20 +153,9 @@ class CategoryBudgetSummary {
     for (final item in budgetItems) {
       if (!item.enabled) continue;
       final catName = item.category.name;
-      if (item.isFixed) {
-        budgetByCategory[catName] =
-            (budgetByCategory[catName] ?? 0) + item.amount;
-      } else {
-        // Variable: use monthly budget if set, otherwise 0
-        final monthlyAmount = monthlyBudgets[catName];
-        if (monthlyAmount != null) {
-          budgetByCategory[catName] =
-              (budgetByCategory[catName] ?? 0) + monthlyAmount;
-        }
-        // If not set, we still include the category with 0 budget
-        // so it shows up as "unset" in the UI
-        budgetByCategory.putIfAbsent(catName, () => 0);
-      }
+      final effectiveAmount = monthlyBudgets[catName] ?? item.amount;
+      budgetByCategory[catName] =
+          (budgetByCategory[catName] ?? 0) + effectiveAmount;
     }
 
     final allCategories = <String>{

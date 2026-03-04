@@ -1,6 +1,9 @@
 name: Supabase Price Sync
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
   schedule:
     - cron: '30 5 * * *'
@@ -14,6 +17,7 @@ concurrency:
 
 jobs:
   scrape-and-apply:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:

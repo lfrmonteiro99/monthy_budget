@@ -537,6 +537,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          _helpTip(l10n.settingsPersonalTip),
           // Region content
           _label(l10n.settingsCountry),
           const SizedBox(height: 8),
@@ -687,6 +688,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
+          _helpTip(l10n.settingsSalariesTip),
           ...List.generate(_draft.salaries.length, (idx) {
             final salary = _draft.salaries[idx];
             return Container(
@@ -934,6 +936,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
+          _helpTip(l10n.settingsExpensesTip),
           ..._draft.expenses.map((expense) {
             // Find matching category view for bill info
             final view = categoryViews.firstWhere(
@@ -1037,64 +1040,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(width: 12),
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(color: AppColors.border(context)),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                _fixedVariableChip(
-                                  label: l10n.expenseFixed,
-                                  selected: expense.isFixed,
-                                  onTap: () => _updateExpense(expense.id, (e) => e.copyWith(isFixed: true)),
-                                ),
-                                _fixedVariableChip(
-                                  label: l10n.expenseVariable,
-                                  selected: !expense.isFixed,
-                                  onTap: () => _updateExpense(expense.id, (e) => e.copyWith(isFixed: false)),
-                                ),
-                              ],
-                            ),
-                          ),
                         ],
                       ),
                       const SizedBox(height: 8),
-                      if (expense.isFixed)
-                        SizedBox(
-                          width: double.infinity,
-                          child: TextFormField(
-                            initialValue: expense.amount > 0 ? expense.amount.toString() : '',
-                            onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(amount: double.tryParse(v) ?? 0)),
-                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                            decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode),
-                          ),
-                        )
-                      else ...[
-                        Text(
-                          l10n.monthlyBudgetHint(_currentMonthLabel(l10n)),
-                          style: TextStyle(fontSize: 11, color: AppColors.textMuted(context)),
+                      SizedBox(
+                        width: double.infinity,
+                        child: TextFormField(
+                          initialValue: expense.amount > 0 ? expense.amount.toString() : '',
+                          onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(amount: double.tryParse(v) ?? 0)),
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode),
                         ),
+                      ),
+                      if (_monthlyBudgetsDraft.containsKey(expense.category.name)) ...[
                         const SizedBox(height: 4),
-                        SizedBox(
-                          width: double.infinity,
-                          child: TextFormField(
-                            initialValue: _monthlyBudgetsDraft[expense.category.name]?.toString() ?? '',
-                            onChanged: (v) {
-                              final amount = double.tryParse(v) ?? 0;
-                              setState(() {
-                                if (amount > 0) {
-                                  _monthlyBudgetsDraft[expense.category.name] = amount;
-                                } else {
-                                  _monthlyBudgetsDraft.remove(expense.category.name);
-                                }
-                              });
-                            },
-                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                            decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode),
-                          ),
+                        Row(
+                          children: [
+                            Icon(Icons.edit_calendar, size: 14, color: AppColors.textMuted(context)),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                l10n.expenseOverrideActive(_currentMonthLabel(l10n),
+                                  _monthlyBudgetsDraft[expense.category.name]!.toStringAsFixed(2)),
+                                style: TextStyle(fontSize: 11, color: AppColors.primary(context)),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () => setState(() => _monthlyBudgetsDraft.remove(expense.category.name)),
+                              child: Icon(Icons.close, size: 14, color: AppColors.textMuted(context)),
+                            ),
+                          ],
                         ),
                       ],
                     ],
@@ -1132,6 +1107,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
         currencyCode: _draft.country.currencyCode,
         householdId: widget.householdId,
         inputDecoration: _inputDecoration,
+        initialMonthlyOverride: _monthlyBudgetsDraft[expense.category.name],
+        onMonthlyBudgetChanged: (category, amount) {
+          setState(() {
+            if (amount != null) {
+              _monthlyBudgetsDraft[category] = amount;
+            } else {
+              _monthlyBudgetsDraft.remove(category);
+            }
+          });
+        },
         onBillsChanged: (updatedBills) {
           setState(() {
             // Remove old bills for this category, add updated ones
@@ -1281,23 +1266,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return '${localizedMonthFull(l10n, now.month)} ${now.year}';
   }
 
-  Widget _fixedVariableChip({required String label, required bool selected, required VoidCallback onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: selected ? AppColors.primary(context).withValues(alpha: 0.1) : Colors.transparent,
-          borderRadius: BorderRadius.circular(11),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 11,
-            fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-            color: selected ? AppColors.primary(context) : AppColors.textMuted(context),
+  Widget _helpTip(String text, {IconData icon = Icons.lightbulb_outline}) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.infoBackground(context),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 16, color: Colors.blue.shade600),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(text, style: TextStyle(fontSize: 12, color: Colors.blue.shade700, height: 1.4)),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -1484,6 +1469,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ── Group A: AGREGADO (no divider, first group) ──
+          _helpTip(l10n.settingsMealHouseholdTip),
           _label(l10n.settingsHouseholdPeople),
           const SizedBox(height: 8),
           Row(
@@ -2210,6 +2196,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          _helpTip(l10n.settingsHouseholdTip),
           _label(l10n.settingsInviteCodeLabel),
           const SizedBox(height: 8),
           ListTile(
@@ -2401,6 +2388,8 @@ class _CategoryDetailSheet extends StatefulWidget {
   final String householdId;
   final InputDecoration Function(String hint, {String? suffix}) inputDecoration;
   final ValueChanged<List<RecurringExpense>> onBillsChanged;
+  final double? initialMonthlyOverride;
+  final void Function(String category, double? amount) onMonthlyBudgetChanged;
 
   const _CategoryDetailSheet({
     required this.expense,
@@ -2409,6 +2398,8 @@ class _CategoryDetailSheet extends StatefulWidget {
     required this.householdId,
     required this.inputDecoration,
     required this.onBillsChanged,
+    required this.onMonthlyBudgetChanged,
+    this.initialMonthlyOverride,
   });
 
   @override
@@ -2418,11 +2409,18 @@ class _CategoryDetailSheet extends StatefulWidget {
 class _CategoryDetailSheetState extends State<_CategoryDetailSheet> {
   final _recurringService = RecurringExpenseService();
   late List<RecurringExpense> _bills;
+  double? _monthlyOverride;
 
   @override
   void initState() {
     super.initState();
     _bills = List.from(widget.bills);
+    _monthlyOverride = widget.initialMonthlyOverride;
+  }
+
+  String _currentMonthLabel(S l10n) {
+    final now = DateTime.now();
+    return '${localizedMonthFull(l10n, now.month)} ${now.year}';
   }
 
   void _notifyParent() => widget.onBillsChanged(_bills);
@@ -2575,7 +2573,7 @@ class _CategoryDetailSheetState extends State<_CategoryDetailSheet> {
               ),
             ),
             const SizedBox(height: 12),
-            // Fixed/Variable display
+            // Default budget display
             Row(
               children: [
                 Container(
@@ -2585,7 +2583,7 @@ class _CategoryDetailSheetState extends State<_CategoryDetailSheet> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    widget.expense.isFixed ? l10n.expenseFixed : l10n.expenseVariable,
+                    l10n.expenseDefaultBudget,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -2603,6 +2601,40 @@ class _CategoryDetailSheetState extends State<_CategoryDetailSheet> {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 16),
+            // Monthly override field
+            Text(
+              l10n.expenseAdjustMonth(_currentMonthLabel(l10n)),
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary(context),
+                letterSpacing: 0.8,
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextFormField(
+              initialValue: _monthlyOverride?.toString() ?? '',
+              onChanged: (v) {
+                final amount = double.tryParse(v);
+                setState(() {
+                  _monthlyOverride = amount != null && amount > 0 ? amount : null;
+                });
+                widget.onMonthlyBudgetChanged(
+                  widget.expense.category.name,
+                  amount != null && amount > 0 ? amount : null,
+                );
+              },
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              decoration: InputDecoration(
+                hintText: l10n.expenseAdjustMonthHint,
+                hintStyle: TextStyle(fontSize: 13, color: AppColors.textMuted(context)),
+                suffixText: widget.currencyCode,
+                suffixStyle: TextStyle(fontSize: 13, color: AppColors.textMuted(context)),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              ),
             ),
             const SizedBox(height: 24),
 

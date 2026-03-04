@@ -2070,6 +2070,18 @@
   "streakMonths": "{count} meses",
   "@streakMonths": { "placeholders": { "count": { "type": "int" } } },
 
+  "expenseDefaultBudget": "ORÇAMENTO BASE",
+  "expenseOverrideActive": "Ajustado para {month}: {amount}",
+  "@expenseOverrideActive": { "placeholders": { "month": { "type": "String" }, "amount": { "type": "String" } } },
+  "expenseAdjustMonth": "Ajustar para {month}",
+  "@expenseAdjustMonth": { "placeholders": { "month": { "type": "String" } } },
+  "expenseAdjustMonthHint": "Deixe vazio para usar o orçamento base",
+
+  "settingsPersonalTip": "O estado civil e dependentes afetam o escalão de IRS, que determina o imposto retido no salário.",
+  "settingsSalariesTip": "O salário bruto é usado para calcular o rendimento líquido após impostos e segurança social. Adicione vários salários se o agregado tiver mais que um rendimento.",
+  "settingsExpensesTip": "Defina o orçamento mensal para cada categoria. Pode ajustar para meses específicos na vista de detalhe da categoria.",
+  "settingsMealHouseholdTip": "Número de pessoas que fazem refeições em casa. Isto ajusta receitas e porções no plano alimentar.",
+  "settingsHouseholdTip": "Convide membros da família para partilhar dados do orçamento entre dispositivos. Todos veem as mesmas despesas e orçamentos."
   "subscriptionTitle": "Subscrição",
   "@subscriptionTitle": { "description": "Subscription section title" },
   "subscriptionFree": "Gratuito",

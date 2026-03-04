@@ -1384,6 +1384,18 @@
   "streakMonths": "{count} months",
   "@streakMonths": { "placeholders": { "count": { "type": "int" } } },
 
+  "expenseDefaultBudget": "DEFAULT BUDGET",
+  "expenseOverrideActive": "Adjusted for {month}: {amount}",
+  "@expenseOverrideActive": { "placeholders": { "month": { "type": "String" }, "amount": { "type": "String" } } },
+  "expenseAdjustMonth": "Adjust for {month}",
+  "@expenseAdjustMonth": { "placeholders": { "month": { "type": "String" } } },
+  "expenseAdjustMonthHint": "Leave empty to use default budget",
+
+  "settingsPersonalTip": "Marital status and dependents affect your IRS tax bracket, which determines how much tax is withheld from your salary.",
+  "settingsSalariesTip": "Your gross salary is used to calculate net income after taxes and social security. Add multiple salaries for households with more than one income.",
+  "settingsExpensesTip": "Set your monthly budget for each category. You can override any category for a specific month in the category detail view.",
+  "settingsMealHouseholdTip": "Number of people eating meals at home. This scales recipes and portions in your meal plan.",
+  "settingsHouseholdTip": "Invite family members to share budget data across devices. All members see the same expenses and budgets."
   "subscriptionTitle": "Subscription",
   "subscriptionFree": "Free",
   "subscriptionPremium": "Premium",

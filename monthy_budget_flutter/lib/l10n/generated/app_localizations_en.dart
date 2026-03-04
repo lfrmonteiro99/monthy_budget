@@ -2862,6 +2862,40 @@ class SEn extends S {
   }
 
   @override
+  String get expenseDefaultBudget => 'DEFAULT BUDGET';
+
+  @override
+  String expenseOverrideActive(String month, String amount) {
+    return 'Adjusted for $month: $amount';
+  }
+
+  @override
+  String expenseAdjustMonth(String month) {
+    return 'Adjust for $month';
+  }
+
+  @override
+  String get expenseAdjustMonthHint => 'Leave empty to use default budget';
+
+  @override
+  String get settingsPersonalTip =>
+      'Marital status and dependents affect your IRS tax bracket, which determines how much tax is withheld from your salary.';
+
+  @override
+  String get settingsSalariesTip =>
+      'Your gross salary is used to calculate net income after taxes and social security. Add multiple salaries for households with more than one income.';
+
+  @override
+  String get settingsExpensesTip =>
+      'Set your monthly budget for each category. You can override any category for a specific month in the category detail view.';
+
+  @override
+  String get settingsMealHouseholdTip =>
+      'Number of people eating meals at home. This scales recipes and portions in your meal plan.';
+
+  @override
+  String get settingsHouseholdTip =>
+      'Invite family members to share budget data across devices. All members see the same expenses and budgets.';
   String get subscriptionTitle => 'Subscription';
 
   @override

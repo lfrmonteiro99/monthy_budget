@@ -2875,6 +2875,40 @@ class SPt extends S {
   }
 
   @override
+  String get expenseDefaultBudget => 'ORÇAMENTO BASE';
+
+  @override
+  String expenseOverrideActive(String month, String amount) {
+    return 'Ajustado para $month: $amount';
+  }
+
+  @override
+  String expenseAdjustMonth(String month) {
+    return 'Ajustar para $month';
+  }
+
+  @override
+  String get expenseAdjustMonthHint => 'Deixe vazio para usar o orçamento base';
+
+  @override
+  String get settingsPersonalTip =>
+      'O estado civil e dependentes afetam o escalão de IRS, que determina o imposto retido no salário.';
+
+  @override
+  String get settingsSalariesTip =>
+      'O salário bruto é usado para calcular o rendimento líquido após impostos e segurança social. Adicione vários salários se o agregado tiver mais que um rendimento.';
+
+  @override
+  String get settingsExpensesTip =>
+      'Defina o orçamento mensal para cada categoria. Pode ajustar para meses específicos na vista de detalhe da categoria.';
+
+  @override
+  String get settingsMealHouseholdTip =>
+      'Número de pessoas que fazem refeições em casa. Isto ajusta receitas e porções no plano alimentar.';
+
+  @override
+  String get settingsHouseholdTip =>
+      'Convide membros da família para partilhar dados do orçamento entre dispositivos. Todos veem as mesmas despesas e orçamentos.';
   String get subscriptionTitle => 'Subscrição';
 
   @override

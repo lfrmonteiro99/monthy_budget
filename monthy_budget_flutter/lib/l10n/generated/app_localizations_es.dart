@@ -2874,6 +2874,41 @@ class SEs extends S {
   }
 
   @override
+  String get expenseDefaultBudget => 'PRESUPUESTO BASE';
+
+  @override
+  String expenseOverrideActive(String month, String amount) {
+    return 'Ajustado para $month: $amount';
+  }
+
+  @override
+  String expenseAdjustMonth(String month) {
+    return 'Ajustar para $month';
+  }
+
+  @override
+  String get expenseAdjustMonthHint =>
+      'Deje vacío para usar el presupuesto base';
+
+  @override
+  String get settingsPersonalTip =>
+      'El estado civil y los dependientes afectan su tramo de IRPF, lo que determina cuánto impuesto se retiene de su salario.';
+
+  @override
+  String get settingsSalariesTip =>
+      'El salario bruto se usa para calcular el ingreso neto después de impuestos y seguridad social. Añada varios salarios si el hogar tiene más de un ingreso.';
+
+  @override
+  String get settingsExpensesTip =>
+      'Defina el presupuesto mensual para cada categoría. Puede ajustarlo para meses específicos en la vista de detalle.';
+
+  @override
+  String get settingsMealHouseholdTip =>
+      'Número de personas que comen en casa. Esto ajusta recetas y porciones en el plan de comidas.';
+
+  @override
+  String get settingsHouseholdTip =>
+      'Invite a familiares para compartir datos del presupuesto entre dispositivos. Todos los miembros ven los mismos gastos y presupuestos.';
   String get subscriptionTitle => 'Suscripción';
 
   @override

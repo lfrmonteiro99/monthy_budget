@@ -56,8 +56,7 @@ AllStreaks calculateStreaks({
   final totalBudget = expenses
       .where((e) => e.enabled)
       .fold(0.0, (sum, e) {
-    if (e.isFixed) return sum + e.amount;
-    return sum + (monthlyBudgets[e.category.name] ?? 0);
+    return sum + (monthlyBudgets[e.category.name] ?? e.amount);
   });
 
   // Per-category budgets
@@ -65,14 +64,8 @@ AllStreaks calculateStreaks({
   for (final item in expenses) {
     if (!item.enabled) continue;
     final catName = item.category.name;
-    if (item.isFixed) {
-      budgetByCategory[catName] = (budgetByCategory[catName] ?? 0) + item.amount;
-    } else {
-      final monthlyAmount = monthlyBudgets[catName];
-      if (monthlyAmount != null) {
-        budgetByCategory[catName] = (budgetByCategory[catName] ?? 0) + monthlyAmount;
-      }
-    }
+    final effectiveAmount = monthlyBudgets[catName] ?? item.amount;
+    budgetByCategory[catName] = (budgetByCategory[catName] ?? 0) + effectiveAmount;
   }
 
   int bronzeCount = 0;

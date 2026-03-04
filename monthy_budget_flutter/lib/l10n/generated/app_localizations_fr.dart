@@ -2877,6 +2877,41 @@ class SFr extends S {
   }
 
   @override
+  String get expenseDefaultBudget => 'BUDGET DE BASE';
+
+  @override
+  String expenseOverrideActive(String month, String amount) {
+    return 'Ajusté pour $month: $amount';
+  }
+
+  @override
+  String expenseAdjustMonth(String month) {
+    return 'Ajuster pour $month';
+  }
+
+  @override
+  String get expenseAdjustMonthHint =>
+      'Laissez vide pour utiliser le budget de base';
+
+  @override
+  String get settingsPersonalTip =>
+      'Le statut matrimonial et les personnes à charge affectent votre tranche d\'imposition, ce qui détermine le montant d\'impôt retenu sur votre salaire.';
+
+  @override
+  String get settingsSalariesTip =>
+      'Le salaire brut est utilisé pour calculer le revenu net après impôts et sécurité sociale. Ajoutez plusieurs salaires si le ménage a plus d\'un revenu.';
+
+  @override
+  String get settingsExpensesTip =>
+      'Définissez le budget mensuel pour chaque catégorie. Vous pouvez le modifier pour des mois spécifiques dans la vue détaillée.';
+
+  @override
+  String get settingsMealHouseholdTip =>
+      'Nombre de personnes qui mangent à la maison. Cela adapte les recettes et les portions dans votre plan de repas.';
+
+  @override
+  String get settingsHouseholdTip =>
+      'Invitez des membres de la famille à partager les données budgétaires entre appareils. Tous les membres voient les mêmes dépenses et budgets.';
   String get subscriptionTitle => 'Abonnement';
 
   @override
