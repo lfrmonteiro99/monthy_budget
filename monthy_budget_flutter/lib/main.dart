@@ -367,10 +367,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     }
 
     String? topCategory;
-    double topPercent = 0;
+    double topPercent = 0.0;
     for (final entry in budgetByCategory.entries) {
-      final spent = spentByCategory[entry.key] ?? 0;
-      final percent = entry.value > 0 ? (spent / entry.value) * 100 : 0;
+      final spent = spentByCategory[entry.key] ?? 0.0;
+      final percent = entry.value > 0 ? (spent / entry.value) * 100 : 0.0;
       if (topCategory == null || percent > topPercent) {
         topCategory = entry.key;
         topPercent = percent;
@@ -546,24 +546,32 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     switch (featureKey) {
       case 'ai_coach':
         setState(() => _currentIndex = 3);
+        break;
       case 'meal_planner':
         setState(() => _currentIndex = 4);
+        break;
       case 'expense_tracker':
         _openExpenseTracker();
+        break;
       case 'savings_goals':
         _openSavingsGoals();
+        break;
       case 'shopping_list':
         setState(() => _currentIndex = 2);
+        break;
       case 'grocery_browser':
         setState(() => _currentIndex = 1);
+        break;
       case 'export':
         Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
         );
+        break;
       case 'tax_simulator':
         Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
         );
+        break;
       default:
         setState(() => _currentIndex = 0);
     }
