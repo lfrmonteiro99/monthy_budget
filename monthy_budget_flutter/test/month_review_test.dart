@@ -12,7 +12,7 @@ void main() {
         currentExpenses: const [],
         purchaseHistory: const PurchaseHistory(),
         now: DateTime(2026, 3, 8),
-        monthLabelBuilder: (_, __) => 'x',
+        monthLabelBuilder: (_, _) => 'x',
       );
 
       expect(result, isNull);
