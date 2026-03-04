@@ -2844,4 +2844,123 @@ class SPt extends S {
   String streakMonths(int count) {
     return '$count meses';
   }
+
+  @override
+  String get subscriptionTitle => 'Subscrição';
+
+  @override
+  String get subscriptionFree => 'Gratuito';
+
+  @override
+  String get subscriptionPremium => 'Premium';
+
+  @override
+  String get subscriptionFamily => 'Família';
+
+  @override
+  String get subscriptionTrialActive => 'Período de teste ativo';
+
+  @override
+  String subscriptionTrialDaysLeft(int count) {
+    return '$count dias restantes';
+  }
+
+  @override
+  String get subscriptionTrialExpired => 'Período de teste expirado';
+
+  @override
+  String get subscriptionUpgrade => 'Atualizar';
+
+  @override
+  String get subscriptionSeePlans => 'Ver Planos';
+
+  @override
+  String get subscriptionCurrentPlan => 'Plano Atual';
+
+  @override
+  String get subscriptionManage => 'Gerir Subscrição';
+
+  @override
+  String subscriptionFeatureExplored(int count, int total) {
+    return '$count/$total funcionalidades exploradas';
+  }
+
+  @override
+  String get subscriptionTrialBannerTitle => 'Teste Premium Ativo';
+
+  @override
+  String subscriptionTrialEndingSoon(int count) {
+    return '$count dias restantes no seu teste!';
+  }
+
+  @override
+  String get subscriptionTrialLastDay => 'Último dia do seu teste gratuito!';
+
+  @override
+  String get subscriptionUpgradeNow => 'Atualizar Agora';
+
+  @override
+  String get subscriptionKeepData => 'Manter os Seus Dados';
+
+  @override
+  String get subscriptionCancelAnytime => 'Cancele a qualquer momento';
+
+  @override
+  String get subscriptionNoHiddenFees => 'Sem taxas ocultas';
+
+  @override
+  String get subscriptionMostPopular => 'Mais Popular';
+
+  @override
+  String subscriptionYearlySave(int percent) {
+    return 'poupe $percent%';
+  }
+
+  @override
+  String get subscriptionMonthly => 'Mensal';
+
+  @override
+  String get subscriptionYearly => 'Anual';
+
+  @override
+  String get subscriptionPerMonth => '/mês';
+
+  @override
+  String get subscriptionPerYear => '/ano';
+
+  @override
+  String get subscriptionBilledYearly => 'faturado anualmente';
+
+  @override
+  String get subscriptionStartPremium => 'Começar Premium';
+
+  @override
+  String get subscriptionStartFamily => 'Começar Família';
+
+  @override
+  String get subscriptionContinueFree => 'Continuar Gratuito';
+
+  @override
+  String get subscriptionTrialEnded => 'O seu período de teste terminou';
+
+  @override
+  String get subscriptionChoosePlan => 'Escolha um plano para manter todos os seus dados e funcionalidades';
+
+  @override
+  String get subscriptionUnlockPower => 'Desbloqueie todo o poder do seu orçamento';
+
+  @override
+  String subscriptionRequiresPaid(String feature) {
+    return '$feature requer uma subscrição paga';
+  }
+
+  @override
+  String subscriptionTryFeature(String feature) {
+    return 'Experimente $feature';
+  }
+
+  @override
+  String subscriptionExplore(String feature) {
+    return 'Explorar $feature';
+  }
 }
