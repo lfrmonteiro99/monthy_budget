@@ -36,6 +36,16 @@ const STOPWORDS = new Set([
   'kg', 'g', 'gr', 'ml', 'l', 'lt', 'un', 'pack', 'pacote', 'unidade', 'ud'
 ]);
 
+// Stricter matching profile:
+// - higher similarity threshold for matches
+// - existing product updates require at least 2 stores
+// - new products require multi-store consensus
+const MATCH_MIN_SCORE = 0.6;
+const UPDATE_MIN_STORES = 2;
+const UPDATE_MIN_AVG_SCORE = 0.68;
+const NEW_PRODUCT_EXISTING_MAX_SIM = 0.52;
+const NEW_PRODUCT_MIN_STORES = 2;
+
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -57,9 +67,20 @@ function decodeHtmlEntities(input) {
     .replace(/&ecirc;/g, 'e')
     .replace(/&iacute;/g, 'i')
     .replace(/&oacute;/g, 'o')
+    .replace(/&Oacute;/g, 'O')
     .replace(/&otilde;/g, 'o')
+    .replace(/&Ocirc;/g, 'O')
     .replace(/&uacute;/g, 'u')
+    .replace(/&Uacute;/g, 'U')
+    .replace(/&Aacute;/g, 'A')
+    .replace(/&Acirc;/g, 'A')
+    .replace(/&Eacute;/g, 'E')
+    .replace(/&Ecirc;/g, 'E')
+    .replace(/&Iacute;/g, 'I')
+    .replace(/&atilde;/g, 'a')
     .replace(/&uuml;/g, 'u')
+    .replace(/&Atilde;/g, 'A')
+    .replace(/&auml;/g, 'a')
     .replace(/&#(\d+);/g, (_, d) => String.fromCharCode(Number(d)));
 }
 
@@ -79,6 +100,14 @@ function tokens(text) {
     .filter((t) => t.length > 1 && !STOPWORDS.has(t));
 }
 
+function tokenIntersectionCount(a, b) {
+  const sa = new Set(tokens(a));
+  const sb = new Set(tokens(b));
+  let inter = 0;
+  for (const t of sa) if (sb.has(t)) inter++;
+  return inter;
+}
+
 function similarity(a, b) {
   const ta = tokens(a);
   const tb = tokens(b);
@@ -96,6 +125,11 @@ function similarity(a, b) {
   const contains = na.includes(nb) || nb.includes(na) ? 0.25 : 0;
 
   return Math.min(1, jaccard + contains);
+}
+
+function canonicalKey(name) {
+  const t = tokens(name).filter((x) => x.length >= 3);
+  return t.slice(0, 4).join(' ');
 }
 
 function parseProductsSql(sqlText) {
@@ -333,17 +367,18 @@ function dedupeItems(items) {
 }
 
 function categoryFromSource(name, sourceCategory) {
-  const text = `${name} ${sourceCategory}`.toLowerCase();
-  if (/maca|banana|laranja|pera|uva|morango|kiwi|manga|abacate/.test(text)) return 'Frutas';
-  if (/tomate|cebola|alho|batata|cenoura|alface|pepino|brocolo|couve|espinafre/.test(text)) return 'Legumes';
-  if (/frango|carne|porco|bife|chourico|fiambre|peru/.test(text)) return 'Carnes';
-  if (/peixe|atum|bacalhau|salmao|camarao|sardinha|pescada/.test(text)) return 'Peixe';
-  if (/leite|iogurte|queijo|manteiga|requeijao|mozzarella/.test(text)) return 'Laticinios';
-  if (/arroz|massa|pao|farinha|aveia|cereal|granola/.test(text)) return 'Pao e Cereais';
-  if (/azeite|oleo|sal|acucar|ketchup|maionese|mostarda|oregao|vinagre/.test(text)) return 'Azeite e Condimentos';
-  if (/agua|sumo|refrigerante|cerveja|vinho|cafe|cha/.test(text)) return 'Bebidas';
-  if (/detergente|amaciador|papel higienico|toalhas|sacos|esponjas|desinfetante/.test(text)) return 'Limpeza';
-  if (/sabonete|champo|gel de banho|pasta de dentes|desodorizante|creme/.test(text)) return 'Higiene';
+  const t = new Set(tokens(`${name} ${sourceCategory}`));
+  const hasAny = (words) => words.some((w) => t.has(w));
+  if (hasAny(['detergente', 'amaciador', 'papel', 'higienico', 'toalhas', 'sacos', 'esponjas', 'desinfetante'])) return 'Limpeza';
+  if (hasAny(['sabonete', 'champo', 'champ', 'champoo', 'condicionador', 'gel', 'banho', 'pasta', 'dentes', 'desodorizante'])) return 'Higiene';
+  if (hasAny(['maca', 'banana', 'laranja', 'pera', 'uva', 'morango', 'kiwi', 'manga', 'abacate'])) return 'Frutas';
+  if (hasAny(['tomate', 'cebola', 'alho', 'batata', 'cenoura', 'alface', 'pepino', 'brocolo', 'brocolos', 'couve', 'espinafre'])) return 'Legumes';
+  if (hasAny(['frango', 'carne', 'porco', 'bife', 'chourico', 'fiambre', 'peru'])) return 'Carnes';
+  if (hasAny(['peixe', 'atum', 'bacalhau', 'salmao', 'camarao', 'sardinha', 'pescada'])) return 'Peixe';
+  if (hasAny(['leite', 'iogurte', 'queijo', 'manteiga', 'requeijao', 'mozzarella'])) return 'Laticinios';
+  if (hasAny(['arroz', 'massa', 'pao', 'farinha', 'aveia', 'cereal', 'granola'])) return 'Pao e Cereais';
+  if (hasAny(['azeite', 'oleo', 'sal', 'acucar', 'ketchup', 'maionese', 'mostarda', 'oregao', 'vinagre'])) return 'Azeite e Condimentos';
+  if (hasAny(['agua', 'sumo', 'refrigerante', 'cerveja', 'vinho', 'cafe', 'cha'])) return 'Bebidas';
   return 'Mercearia';
 }
 
@@ -359,7 +394,8 @@ function bestMatchesForProduct(productName, scrapedItems) {
   const byStore = new Map();
   for (const it of scrapedItems) {
     const score = similarity(productName, it.name);
-    if (score < 0.45) continue;
+    if (score < MATCH_MIN_SCORE) continue;
+    if (tokenIntersectionCount(productName, it.name) < 1) continue;
     const current = byStore.get(it.store);
     if (!current || score > current.score) byStore.set(it.store, { ...it, score });
   }
@@ -368,26 +404,51 @@ function bestMatchesForProduct(productName, scrapedItems) {
 
 function pickNewProducts(existingProducts, scrapedItems) {
   const existingNames = existingProducts.map((p) => p.name);
-  const out = [];
+
+  const grouped = new Map();
   for (const it of scrapedItems) {
-    let best = 0;
-    for (const name of existingNames) {
-      const s = similarity(name, it.name);
-      if (s > best) best = s;
-      if (best >= 0.78) break;
+    const key = canonicalKey(it.name);
+    if (!key || key.length < 6) continue;
+    const g = grouped.get(key) || { items: [], stores: new Set() };
+    g.items.push(it);
+    g.stores.add(it.store);
+    grouped.set(key, g);
+  }
+
+  const candidates = [];
+  for (const [, g] of grouped) {
+    if (g.stores.size < NEW_PRODUCT_MIN_STORES) continue;
+    const rep = g.items[0];
+    const name = rep.name;
+    const tok = tokens(name);
+    if (tok.length < 2) continue;
+
+    let bestExisting = 0;
+    for (const existing of existingNames) {
+      const s = similarity(existing, name);
+      if (s > bestExisting) bestExisting = s;
+      if (bestExisting >= 0.8) break;
     }
-    if (best < 0.62) out.push(it);
+    if (bestExisting >= NEW_PRODUCT_EXISTING_MAX_SIM) continue;
+
+    const avg = g.items.reduce((acc, x) => acc + x.price, 0) / g.items.length;
+    candidates.push({
+      ...rep,
+      price: Number(avg.toFixed(2)),
+      support_stores: [...g.stores],
+      support_count: g.stores.size,
+    });
   }
 
   const seen = new Set();
   const deduped = [];
-  for (const it of out) {
+  for (const it of candidates.sort((a, b) => b.support_count - a.support_count)) {
     const key = normalize(it.name);
-    if (key.length < 4 || seen.has(key)) continue;
+    if (seen.has(key)) continue;
     seen.add(key);
     deduped.push(it);
   }
-  return deduped.slice(0, 80);
+  return deduped.slice(0, 60);
 }
 
 function sqlEscape(v) {
@@ -438,12 +499,15 @@ async function main() {
   const updates = [];
   for (const p of existingProducts) {
     const matches = bestMatchesForProduct(p.name, cleaned);
-    if (!matches.length) continue;
+    if (matches.length < UPDATE_MIN_STORES) continue;
+    const avgScore = matches.reduce((acc, x) => acc + x.score, 0) / matches.length;
+    if (avgScore < UPDATE_MIN_AVG_SCORE) continue;
     const avg = matches.reduce((acc, x) => acc + x.price, 0) / matches.length;
     updates.push({
       name: p.name,
       oldPrice: p.avgPrice,
       newPrice: Number(avg.toFixed(2)),
+      avgScore: Number(avgScore.toFixed(3)),
       matchedStores: matches.map((m) => ({ store: m.store, price: m.price, sourceName: m.name, score: Number(m.score.toFixed(3)) })),
     });
   }
@@ -488,6 +552,13 @@ async function main() {
     scraped_items_deduped: cleaned.length,
     updates_count: updates.length,
     new_products_count: newProductCandidates.length,
+    strict_profile: {
+      match_min_score: MATCH_MIN_SCORE,
+      update_min_stores: UPDATE_MIN_STORES,
+      update_min_avg_score: UPDATE_MIN_AVG_SCORE,
+      new_product_existing_max_similarity: NEW_PRODUCT_EXISTING_MAX_SIM,
+      new_product_min_stores: NEW_PRODUCT_MIN_STORES,
+    },
     errors,
     updates,
     new_products: newProductCandidates,

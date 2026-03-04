@@ -1,0 +1,56 @@
+name: Supabase Price Sync
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 5 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supabase-price-sync
+  cancel-in-progress: false
+
+jobs:
+  scrape-and-apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL || secrets.DATABASE_URL || secrets.POSTGRES_URL || secrets.SUPABASE_DATABASE_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Validate DB secret is configured
+        run: |
+          if [ -z "${SUPABASE_DB_URL}" ]; then
+            echo "No database URL secret found. Expected one of: SUPABASE_DB_URL, DATABASE_URL, POSTGRES_URL, SUPABASE_DATABASE_URL"
+            exit 1
+          fi
+
+      - name: Run supermarket scraper
+        run: node scripts/scrape_supermarkets_and_generate_updates.cjs
+
+      - name: Apply generated SQL to Supabase
+        run: psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -f generated/product_price_updates.sql
+
+      - name: Upload generated outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: supabase-price-sync-${{ github.run_id }}
+          if-no-files-found: warn
+          path: |
+            generated/product_price_updates.sql
+            generated/product_price_updates_report.json
