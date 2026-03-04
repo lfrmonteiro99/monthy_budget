@@ -50,7 +50,29 @@ jobs:
         run: node scripts/scrape_supermarkets_and_generate_updates.cjs
 
       - name: Apply generated SQL to Supabase
-        run: psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -f generated/product_price_updates.sql
+        run: |
+          DB_URL="$SUPABASE_DB_URL"
+          DB_HOST="$(python3 - <<'PY'
+          import os, urllib.parse
+          u = urllib.parse.urlparse(os.environ["SUPABASE_DB_URL"])
+          print(u.hostname or "")
+          PY
+          )"
+
+          DB_IPV4="$(getent ahostsv4 "$DB_HOST" | awk 'NR==1 {print $1}')"
+          if [ -n "$DB_IPV4" ]; then
+            if [[ "$DB_URL" == *"?"* ]]; then
+              DB_URL="${DB_URL}&hostaddr=${DB_IPV4}"
+            else
+              DB_URL="${DB_URL}?hostaddr=${DB_IPV4}"
+            fi
+            echo "Using IPv4 hostaddr for $DB_HOST"
+          else
+            echo "No IPv4 address found for $DB_HOST."
+            echo "If this fails, use Supabase Session Pooler URL (IPv4) in SUPABASE_DB_URL."
+          fi
+
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f generated/product_price_updates.sql
 
       - name: Upload generated outputs
         if: always()
