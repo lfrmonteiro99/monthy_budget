@@ -1,8 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:orcamento_mensal/models/shopping_item.dart';
 
-import '../helpers/test_helpers.dart';
-
 void main() {
   group('ShoppingItem', () {
     group('fromJson', () {

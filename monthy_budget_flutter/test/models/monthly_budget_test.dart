@@ -1,8 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:orcamento_mensal/models/monthly_budget.dart';
 
-import '../helpers/test_helpers.dart';
-
 void main() {
   group('MonthlyBudget', () {
     test('constructor assigns all fields', () {
