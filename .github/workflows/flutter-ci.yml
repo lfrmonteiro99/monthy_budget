@@ -2,21 +2,16 @@ name: Flutter CI
 
 on:
   push:
-    branches: [main]
-    paths:
-      - 'monthy_budget_flutter/**'
-      - '.github/workflows/flutter-ci.yml'
-    tags:
-      - 'v*'
-  pull_request:
-    branches: [main]
     paths:
       - 'monthy_budget_flutter/**'
       - '.github/workflows/flutter-ci.yml'
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   test:
-    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     timeout-minutes: 15
     defaults:
@@ -52,12 +47,43 @@ jobs:
       - name: Run tests
         run: flutter test
 
+  auto-pr:
+    needs: test
+    if: github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create PR if none exists
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          EXISTING=$(gh pr list --head "$GITHUB_REF_NAME" --base main --json number --jq '.[0].number')
+
+          if [ -n "$EXISTING" ]; then
+            echo "PR #$EXISTING already exists"
+            echo "pr_number=$EXISTING" >> "$GITHUB_OUTPUT"
+          else
+            PR_URL=$(gh pr create \
+              --base main \
+              --head "$GITHUB_REF_NAME" \
+              --title "$GITHUB_REF_NAME" \
+              --body "Auto-created PR from push to \`$GITHUB_REF_NAME\`.")
+            PR_NUMBER=$(echo "$PR_URL" | grep -oE '[0-9]+$')
+            echo "Created PR #$PR_NUMBER"
+            echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Enable auto-merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr merge ${{ steps.pr.outputs.pr_number }} --auto --squash
+
   build:
     needs: test
-    if: |
-      always() &&
-      (needs.test.result == 'success' || needs.test.result == 'skipped') &&
-      (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:

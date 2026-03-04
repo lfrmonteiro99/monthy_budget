@@ -299,7 +299,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         const SizedBox(height: 16),
                         _buildViewTrendsButton(context, l10n),
                       ],
-                      if (dashboardConfig.showSavingsGoals && savingsGoals.isNotEmpty && onOpenSavingsGoals != null) ...[
+                      if (dashboardConfig.showSavingsGoals && onOpenSavingsGoals != null) ...[
                         const SizedBox(height: 16),
                         SavingsGoalCard(
                           goals: savingsGoals,
