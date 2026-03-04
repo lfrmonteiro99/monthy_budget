@@ -137,8 +137,7 @@ BudgetSummary calculateBudgetSummary(
   final totalExpenses = expenses
       .where((e) => e.enabled)
       .fold(0.0, (sum, e) {
-    if (e.isFixed) return sum + e.amount;
-    return sum + (monthlyBudgets[e.category.name] ?? 0);
+    return sum + (monthlyBudgets[e.category.name] ?? e.amount);
   });
 
   final netLiquidity = _round2(totalNetWithMeal - totalExpenses);

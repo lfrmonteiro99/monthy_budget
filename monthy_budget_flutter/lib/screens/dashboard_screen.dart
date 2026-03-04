@@ -671,9 +671,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final totalBudgeted = summaries.fold(0.0, (s, e) => s + e.budgeted);
     final totalActual = summaries.fold(0.0, (s, e) => s + e.actual);
 
-    // Count unset variable budgets
+    // Count expenses with zero default and no monthly override
     final unsetCount = settings.expenses
-        .where((e) => e.enabled && !e.isFixed && !monthlyBudgets.containsKey(e.category.name))
+        .where((e) => e.enabled && e.amount == 0 && !monthlyBudgets.containsKey(e.category.name))
         .map((e) => e.category.name)
         .toSet()
         .length;

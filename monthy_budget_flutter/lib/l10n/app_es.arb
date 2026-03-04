@@ -1382,5 +1382,18 @@
   "streakSilverDesc": "Dentro del presupuesto",
   "streakGoldDesc": "Todas las categorías",
   "streakMonths": "{count} meses",
-  "@streakMonths": { "placeholders": { "count": { "type": "int" } } }
+  "@streakMonths": { "placeholders": { "count": { "type": "int" } } },
+
+  "expenseDefaultBudget": "PRESUPUESTO BASE",
+  "expenseOverrideActive": "Ajustado para {month}: {amount}",
+  "@expenseOverrideActive": { "placeholders": { "month": { "type": "String" }, "amount": { "type": "String" } } },
+  "expenseAdjustMonth": "Ajustar para {month}",
+  "@expenseAdjustMonth": { "placeholders": { "month": { "type": "String" } } },
+  "expenseAdjustMonthHint": "Deje vacío para usar el presupuesto base",
+
+  "settingsPersonalTip": "El estado civil y los dependientes afectan su tramo de IRPF, lo que determina cuánto impuesto se retiene de su salario.",
+  "settingsSalariesTip": "El salario bruto se usa para calcular el ingreso neto después de impuestos y seguridad social. Añada varios salarios si el hogar tiene más de un ingreso.",
+  "settingsExpensesTip": "Defina el presupuesto mensual para cada categoría. Puede ajustarlo para meses específicos en la vista de detalle.",
+  "settingsMealHouseholdTip": "Número de personas que comen en casa. Esto ajusta recetas y porciones en el plan de comidas.",
+  "settingsHouseholdTip": "Invite a familiares para compartir datos del presupuesto entre dispositivos. Todos los miembros ven los mismos gastos y presupuestos."
 }
