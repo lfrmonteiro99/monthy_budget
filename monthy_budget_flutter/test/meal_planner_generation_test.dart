@@ -857,7 +857,9 @@ void main() {
       );
       expect(updated.recipeId, 'frango_grelhado');
       expect(updated.costEstimate, greaterThan(0));
-      expect(newPlan.totalEstimatedCost, isNot(plan.totalEstimatedCost));
+      // Verify total was recalculated as sum of all day costs
+      final expectedTotal = newPlan.days.fold(0.0, (s, d) => s + d.costEstimate);
+      expect(newPlan.totalEstimatedCost, closeTo(expectedTotal, 0.001));
     });
   });
 
