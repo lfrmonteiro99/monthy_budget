@@ -1,4 +1,4 @@
-{
+﻿{
   "@@locale": "es",
 
   "navBudget": "Presupuesto",
@@ -7,14 +7,14 @@
   "navCoach": "Coach",
   "navMeals": "Comidas",
   "navBudgetTooltip": "Resumen del presupuesto mensual",
-  "navGroceryTooltip": "Catálogo de productos",
+  "navGroceryTooltip": "CatÃ¡logo de productos",
   "navListTooltip": "Lista de la compra",
   "navCoachTooltip": "Coach financiero con IA",
   "navMealsTooltip": "Planificador de comidas",
 
   "appTitle": "Presupuesto Mensual",
   "loading": "Cargando...",
-  "loadingApp": "Cargando la aplicación",
+  "loadingApp": "Cargando la aplicaciÃ³n",
   "cancel": "Cancelar",
   "confirm": "Confirmar",
   "close": "Cerrar",
@@ -37,7 +37,7 @@
       }
     }
   },
-  "addToList": "Añadir {name} a la lista",
+  "addToList": "AÃ±adir {name} a la lista",
   "@addToList": {
     "placeholders": {
       "name": {
@@ -64,17 +64,17 @@
   "enumMealAllowanceCash": "Efectivo",
 
   "enumCatTelecomunicacoes": "Telecomunicaciones",
-  "enumCatEnergia": "Energía",
+  "enumCatEnergia": "EnergÃ­a",
   "enumCatAgua": "Agua",
-  "enumCatAlimentacao": "Alimentación",
-  "enumCatEducacao": "Educación",
+  "enumCatAlimentacao": "AlimentaciÃ³n",
+  "enumCatEducacao": "EducaciÃ³n",
   "enumCatHabitacao": "Vivienda",
   "enumCatTransportes": "Transporte",
   "enumCatSaude": "Salud",
   "enumCatLazer": "Ocio",
   "enumCatOutros": "Otros",
 
-  "enumChartExpensesPie": "Gastos por Categoría",
+  "enumChartExpensesPie": "Gastos por CategorÃ­a",
   "enumChartIncomeVsExpenses": "Ingresos vs Gastos",
   "enumChartNetIncome": "Ingreso Neto",
   "enumChartDeductions": "Deducciones (IRPF + SS)",
@@ -87,23 +87,23 @@
 
   "enumObjMinimizeCost": "Minimizar coste",
   "enumObjBalancedHealth": "Equilibrio coste/salud",
-  "enumObjHighProtein": "Alta proteína",
+  "enumObjHighProtein": "Alta proteÃ­na",
   "enumObjLowCarb": "Bajo en carbohidratos",
   "enumObjVegetarian": "Vegetariano",
 
   "enumEquipOven": "Horno",
   "enumEquipAirFryer": "Freidora de aire",
   "enumEquipFoodProcessor": "Robot de cocina",
-  "enumEquipPressureCooker": "Olla a presión",
+  "enumEquipPressureCooker": "Olla a presiÃ³n",
   "enumEquipMicrowave": "Microondas",
   "enumEquipBimby": "Bimby / Thermomix",
 
-  "enumSodiumNoRestriction": "Sin restricción",
+  "enumSodiumNoRestriction": "Sin restricciÃ³n",
   "enumSodiumReduced": "Sodio reducido",
   "enumSodiumLow": "Bajo en sodio",
 
-  "enumAge0to3": "0–3 años",
-  "enumAge4to10": "4–10 años",
+  "enumAge0to3": "0â€“3 aÃ±os",
+  "enumAge4to10": "4â€“10 aÃ±os",
   "enumAgeTeen": "Adolescente",
   "enumAgeAdult": "Adulto",
   "enumAgeSenior": "Senior (65+)",
@@ -114,18 +114,18 @@
   "enumActivityVeryActive": "Muy activo",
 
   "enumMedDiabetes": "Diabetes",
-  "enumMedHypertension": "Hipertensión",
+  "enumMedHypertension": "HipertensiÃ³n",
   "enumMedHighCholesterol": "Colesterol alto",
   "enumMedGout": "Gota",
-  "enumMedIbs": "Síndrome del intestino irritable",
+  "enumMedIbs": "SÃ­ndrome del intestino irritable",
 
   "stressExcellent": "Excelente",
   "stressGood": "Bueno",
-  "stressWarning": "Atención",
-  "stressCritical": "Crítico",
+  "stressWarning": "AtenciÃ³n",
+  "stressCritical": "CrÃ­tico",
   "stressFactorSavings": "Tasa de ahorro",
   "stressFactorSafety": "Margen de seguridad",
-  "stressFactorFood": "Presupuesto alimentación",
+  "stressFactorFood": "Presupuesto alimentaciÃ³n",
   "stressFactorStability": "Estabilidad gastos",
   "stressStable": "Estable",
   "stressHigh": "Elevada",
@@ -139,7 +139,7 @@
   },
   "stressNA": "N/D",
 
-  "monthReviewFoodExceeded": "La alimentación superó el presupuesto en {percent}% — considere revisar porciones o frecuencia de compras.",
+  "monthReviewFoodExceeded": "La alimentaciÃ³n superÃ³ el presupuesto en {percent}% â€” considere revisar porciones o frecuencia de compras.",
   "@monthReviewFoodExceeded": {
     "placeholders": {
       "percent": {
@@ -147,7 +147,7 @@
       }
     }
   },
-  "monthReviewExpensesExceeded": "Los gastos reales superaron lo planificado en {amount}€ — ¿ajustar valores en configuración?",
+  "monthReviewExpensesExceeded": "Los gastos reales superaron lo planificado en {amount}â‚¬ â€” Â¿ajustar valores en configuraciÃ³n?",
   "@monthReviewExpensesExceeded": {
     "placeholders": {
       "amount": {
@@ -155,7 +155,7 @@
       }
     }
   },
-  "monthReviewSavedMore": "Ahorró {amount}€ más de lo previsto — puede reforzar el fondo de emergencia.",
+  "monthReviewSavedMore": "AhorrÃ³ {amount}â‚¬ mÃ¡s de lo previsto â€” puede reforzar el fondo de emergencia.",
   "@monthReviewSavedMore": {
     "placeholders": {
       "amount": {
@@ -166,19 +166,19 @@
   "monthReviewOnTrack": "Gastos dentro de lo previsto. Buen control presupuestario.",
 
   "dashboardTitle": "Presupuesto Mensual",
-  "dashboardStressIndex": "Índice de Tranquilidad",
-  "dashboardTension": "Tensión",
+  "dashboardStressIndex": "Ãndice de Tranquilidad",
+  "dashboardTension": "TensiÃ³n",
   "dashboardLiquidity": "Liquidez",
-  "dashboardFinalPosition": "Posición Final",
+  "dashboardFinalPosition": "PosiciÃ³n Final",
   "dashboardMonth": "Mes",
   "dashboardGross": "Bruto",
   "dashboardNet": "Neto",
   "dashboardExpenses": "Gastos",
   "dashboardSavingsRate": "Tasa Ahorro",
-  "dashboardViewTrends": "Ver evolución",
-  "dashboardViewProjection": "Ver proyección",
+  "dashboardViewTrends": "Ver evoluciÃ³n",
+  "dashboardViewProjection": "Ver proyecciÃ³n",
   "dashboardFinancialSummary": "RESUMEN FINANCIERO",
-  "dashboardOpenSettings": "Abrir configuración",
+  "dashboardOpenSettings": "Abrir configuraciÃ³n",
   "dashboardMonthlyLiquidity": "LIQUIDEZ MENSUAL",
   "dashboardPositiveBalance": "Saldo positivo",
   "dashboardNegativeBalance": "Saldo negativo",
@@ -190,7 +190,7 @@
     }
   },
   "dashboardConfigureData": "Configure sus datos para ver el resumen.",
-  "dashboardOpenSettingsButton": "Abrir Configuración",
+  "dashboardOpenSettingsButton": "Abrir ConfiguraciÃ³n",
   "dashboardGrossIncome": "Ingreso Bruto",
   "dashboardNetIncome": "Ingreso Neto",
   "dashboardInclMealAllowance": "Incl. dieta comida: {amount}",
@@ -220,7 +220,7 @@
       "n": { "type": "int" }
     }
   },
-  "dashboardFood": "ALIMENTACIÓN",
+  "dashboardFood": "ALIMENTACIÃ“N",
   "dashboardSimulate": "Simular",
   "dashboardBudgeted": "Presupuestado",
   "dashboardSpent": "Gastado",
@@ -261,36 +261,36 @@
       "delta": { "type": "String" }
     }
   },
-  "dashboardPaceWarning": "Gastando más rápido de lo previsto",
+  "dashboardPaceWarning": "Gastando mÃ¡s rÃ¡pido de lo previsto",
   "dashboardPaceCritical": "Riesgo de superar presupuesto alimentario",
   "dashboardPace": "Ritmo",
-  "dashboardProjection": "Proyección",
-  "dashboardPaceValue": "{actual}\u20ac/día vs {expected}\u20ac/día",
+  "dashboardProjection": "ProyecciÃ³n",
+  "dashboardPaceValue": "{actual}\u20ac/dÃ­a vs {expected}\u20ac/dÃ­a",
   "@dashboardPaceValue": {
     "placeholders": {
       "actual": { "type": "String" },
       "expected": { "type": "String" }
     }
   },
-  "dashboardSummaryLabel": "— RESUMEN",
+  "dashboardSummaryLabel": "â€” RESUMEN",
   "dashboardViewMonthSummary": "Ver resumen del mes",
 
   "coachTitle": "Coach Financiero",
-  "coachSubtitle": "IA · GPT-4o mini",
-  "coachApiKeyRequired": "Añade tu API key de OpenAI en Configuración para usar esta funcionalidad.",
-  "coachAnalysisTitle": "Análisis financiero en 3 partes",
-  "coachAnalysisDescription": "Posicionamiento general · Factores críticos del Índice de Tranquilidad · Oportunidad inmediata. Basado en tus datos reales de presupuesto, gastos e historial de compras.",
+  "coachSubtitle": "IA Â· GPT-4o mini",
+  "coachApiKeyRequired": "AÃ±ade tu API key de OpenAI en ConfiguraciÃ³n para usar esta funcionalidad.",
+  "coachAnalysisTitle": "AnÃ¡lisis financiero en 3 partes",
+  "coachAnalysisDescription": "Posicionamiento general Â· Factores crÃ­ticos del Ãndice de Tranquilidad Â· Oportunidad inmediata. Basado en tus datos reales de presupuesto, gastos e historial de compras.",
   "coachConfigureApiKey": "Configurar API key en Ajustes",
   "coachApiKeyConfigured": "API key configurada",
   "coachAnalyzeButton": "Analizar mi presupuesto",
   "coachAnalyzing": "Analizando...",
-  "coachCustomAnalysis": "Análisis personalizado",
-  "coachNewAnalysis": "Generar nuevo análisis",
+  "coachCustomAnalysis": "AnÃ¡lisis personalizado",
+  "coachNewAnalysis": "Generar nuevo anÃ¡lisis",
   "coachHistory": "HISTORIAL",
   "coachClearAll": "Limpiar todo",
   "coachClearTitle": "Limpiar historial",
-  "coachClearContent": "¿Estás seguro de que quieres eliminar todos los análisis guardados?",
-  "coachDeleteLabel": "Eliminar análisis",
+  "coachClearContent": "Â¿EstÃ¡s seguro de que quieres eliminar todos los anÃ¡lisis guardados?",
+  "coachDeleteLabel": "Eliminar anÃ¡lisis",
   "coachDeleteTooltip": "Eliminar",
 
   "groceryTitle": "Supermercado",
@@ -306,7 +306,7 @@
       }
     }
   },
-  "groceryAddedToList": "{name} añadido a la lista",
+  "groceryAddedToList": "{name} aÃ±adido a la lista",
   "@groceryAddedToList": {
     "placeholders": {
       "name": {
@@ -314,7 +314,7 @@
       }
     }
   },
-  "groceryAvgPrice": "{unit} · precio medio",
+  "groceryAvgPrice": "{unit} Â· precio medio",
   "@groceryAvgPrice": {
     "placeholders": {
       "unit": {
@@ -324,9 +324,9 @@
   },
 
   "shoppingTitle": "Lista de la Compra",
-  "shoppingEmpty": "Lista vacía",
-  "shoppingEmptyMessage": "Añade productos desde la\npantalla Supermercado.",
-  "shoppingItemsRemaining": "{count} por comprar · {total}",
+  "shoppingEmpty": "Lista vacÃ­a",
+  "shoppingEmptyMessage": "AÃ±ade productos desde la\npantalla Supermercado.",
+  "shoppingItemsRemaining": "{count} por comprar Â· {total}",
   "@shoppingItemsRemaining": {
     "placeholders": {
       "count": {
@@ -340,7 +340,7 @@
   "shoppingClear": "Limpiar",
   "shoppingFinalize": "Finalizar Compra",
   "shoppingEstimatedTotal": "Total estimado",
-  "shoppingHowMuchSpent": "¿CUÁNTO GASTÉ EN TOTAL? (opcional)",
+  "shoppingHowMuchSpent": "Â¿CUÃNTO GASTÃ‰ EN TOTAL? (opcional)",
   "shoppingConfirm": "Confirmar",
   "shoppingHistoryTooltip": "Historial de compras",
   "shoppingHistoryTitle": "Historial de Compras",
@@ -369,28 +369,28 @@
     }
   },
 
-  "authLogin": "Iniciar sesión",
+  "authLogin": "Iniciar sesiÃ³n",
   "authRegister": "Crear cuenta",
   "authEmail": "Email",
   "authEmailHint": "ejemplo@email.com",
-  "authPassword": "Contraseña",
+  "authPassword": "ContraseÃ±a",
   "authLoginButton": "Entrar",
   "authRegisterButton": "Registrarse",
   "authSwitchToRegister": "Crear cuenta nueva",
   "authSwitchToLogin": "Ya tengo cuenta",
-  "authRegistrationSuccess": "¡Cuenta creada! Revisa tu email para verificar la cuenta antes de iniciar sesión.",
+  "authRegistrationSuccess": "Â¡Cuenta creada! Revisa tu email para verificar la cuenta antes de iniciar sesiÃ³n.",
   "householdSetupTitle": "Configurar Hogar",
   "householdCreate": "Crear",
-  "householdJoinWithCode": "Unirse con código",
+  "householdJoinWithCode": "Unirse con cÃ³digo",
   "householdNameLabel": "Nombre del hogar",
-  "householdNameHint": "ej: Familia García",
-  "householdCodeLabel": "Código de invitación",
+  "householdNameHint": "ej: Familia GarcÃ­a",
+  "householdCodeLabel": "CÃ³digo de invitaciÃ³n",
   "householdCodeHint": "XXXXXX",
   "householdCreateButton": "Crear Hogar",
   "householdJoinButton": "Unirse al Hogar",
   "householdNameRequired": "Indica el nombre del hogar.",
 
-  "chartExpensesByCategory": "Gastos por Categoría",
+  "chartExpensesByCategory": "Gastos por CategorÃ­a",
   "chartIncomeVsExpenses": "Ingresos vs Gastos",
   "chartDeductions": "Deducciones (IRPF + Seg. Social)",
   "chartGrossVsNet": "Ingreso Bruto vs Neto",
@@ -413,7 +413,7 @@
   "chartSocialSecurity": "Seg. Social",
   "chartSavings": "ahorro",
 
-  "projectionTitle": "Proyección — {month} {year}",
+  "projectionTitle": "ProyecciÃ³n â€” {month} {year}",
   "@projectionTitle": {
     "placeholders": {
       "month": {
@@ -424,7 +424,7 @@
       }
     }
   },
-  "projectionSubtitle": "Gastó {spent} de {budget} en {days} días",
+  "projectionSubtitle": "GastÃ³ {spent} de {budget} en {days} dÃ­as",
   "@projectionSubtitle": {
     "placeholders": {
       "spent": {
@@ -438,11 +438,11 @@
       }
     }
   },
-  "projectionFood": "ALIMENTACIÓN",
+  "projectionFood": "ALIMENTACIÃ“N",
   "projectionCurrentPace": "Ritmo actual",
   "projectionNoShopping": "Sin compras",
   "projectionReduce20": "-20%",
-  "projectionDailySpend": "Gasto diario estimado: {amount}/día",
+  "projectionDailySpend": "Gasto diario estimado: {amount}/dÃ­a",
   "@projectionDailySpend": {
     "placeholders": {
       "amount": {
@@ -450,21 +450,21 @@
       }
     }
   },
-  "projectionEndOfMonth": "Proyección fin de mes",
+  "projectionEndOfMonth": "ProyecciÃ³n fin de mes",
   "projectionRemaining": "Restante proyectado",
-  "projectionStressImpact": "Impacto en el Índice",
+  "projectionStressImpact": "Impacto en el Ãndice",
   "projectionExpenses": "GASTOS",
-  "projectionSimulation": "Simulación — no guardado",
+  "projectionSimulation": "SimulaciÃ³n â€” no guardado",
   "projectionReduceAll": "Reducir todas en ",
   "projectionSimLiquidity": "Liquidez simulada",
   "projectionDelta": "Delta",
   "projectionSimSavingsRate": "Tasa ahorro simulada",
-  "projectionSimIndex": "Índice simulado",
+  "projectionSimIndex": "Ãndice simulado",
 
-  "trendTitle": "Evolución",
-  "trendStressIndex": "ÍNDICE DE TRANQUILIDAD",
+  "trendTitle": "EvoluciÃ³n",
+  "trendStressIndex": "ÃNDICE DE TRANQUILIDAD",
   "trendTotalExpenses": "GASTOS TOTALES",
-  "trendExpensesByCategory": "GASTOS POR CATEGORÍA",
+  "trendExpensesByCategory": "GASTOS POR CATEGORÃA",
   "trendCurrent": "Actual: {amount}",
   "@trendCurrent": {
     "placeholders": {
@@ -475,17 +475,17 @@
   },
 
   "trendCatTelecom": "Telecom",
-  "trendCatEnergy": "Energía",
+  "trendCatEnergy": "EnergÃ­a",
   "trendCatWater": "Agua",
-  "trendCatFood": "Alimentación",
-  "trendCatEducation": "Educación",
+  "trendCatFood": "AlimentaciÃ³n",
+  "trendCatEducation": "EducaciÃ³n",
   "trendCatHousing": "Vivienda",
   "trendCatTransport": "Transporte",
   "trendCatHealth": "Salud",
   "trendCatLeisure": "Ocio",
   "trendCatOther": "Otros",
 
-  "monthReviewTitle": "Resumen — {month}",
+  "monthReviewTitle": "Resumen â€” {month}",
   "@monthReviewTitle": {
     "placeholders": {
       "month": {
@@ -496,7 +496,7 @@
   "monthReviewPlanned": "Planificado",
   "monthReviewActual": "Real",
   "monthReviewDifference": "Diferencia",
-  "monthReviewFood": "Alimentación",
+  "monthReviewFood": "AlimentaciÃ³n",
   "monthReviewFoodValue": "{actual} de {budget}",
   "@monthReviewFoodValue": {
     "placeholders": {
@@ -510,15 +510,15 @@
   },
   "monthReviewTopDeviations": "MAYORES DESVIACIONES",
   "monthReviewSuggestions": "SUGERENCIAS",
-  "monthReviewAiAnalysis": "Análisis IA detallado",
+  "monthReviewAiAnalysis": "AnÃ¡lisis IA detallado",
 
   "mealPlannerTitle": "Planificador de Comidas",
-  "mealBudgetLabel": "Presupuesto alimentación",
+  "mealBudgetLabel": "Presupuesto alimentaciÃ³n",
   "mealPeopleLabel": "Personas en el hogar",
   "mealGeneratePlan": "Generar Plan Mensual",
   "mealGenerating": "Generando...",
-  "mealRegenerateTitle": "¿Regenerar plan?",
-  "mealRegenerateContent": "El plan actual será sustituido.",
+  "mealRegenerateTitle": "Â¿Regenerar plan?",
+  "mealRegenerateContent": "El plan actual serÃ¡ sustituido.",
   "mealRegenerate": "Regenerar",
   "mealWeekLabel": "Semana {n}",
   "@mealWeekLabel": {
@@ -536,8 +536,8 @@
       }
     }
   },
-  "mealAddWeekToList": "Añadir semana a la lista",
-  "mealIngredientsAdded": "{count} ingredientes añadidos a la lista",
+  "mealAddWeekToList": "AÃ±adir semana a la lista",
+  "mealIngredientsAdded": "{count} ingredientes aÃ±adidos a la lista",
   "@mealIngredientsAdded": {
     "placeholders": {
       "count": {
@@ -545,7 +545,7 @@
       }
     }
   },
-  "mealDayLabel": "Día {n}",
+  "mealDayLabel": "DÃ­a {n}",
   "@mealDayLabel": {
     "placeholders": {
       "n": {
@@ -554,12 +554,12 @@
     }
   },
   "mealIngredients": "Ingredientes",
-  "mealPreparation": "Preparación",
+  "mealPreparation": "PreparaciÃ³n",
   "mealSwap": "Cambiar",
   "mealConsolidatedList": "Ver lista consolidada",
   "mealConsolidatedTitle": "Lista Consolidada",
   "mealAlternatives": "Alternativas",
-  "mealTotalCost": "{cost}€ total",
+  "mealTotalCost": "{cost}â‚¬ total",
   "@mealTotalCost": {
     "placeholders": {
       "cost": {
@@ -567,7 +567,7 @@
       }
     }
   },
-  "mealCatProteins": "Proteínas",
+  "mealCatProteins": "ProteÃ­nas",
   "mealCatVegetables": "Verduras",
   "mealCatCarbs": "Carbohidratos",
   "mealCatFats": "Grasas",
@@ -588,7 +588,7 @@
   "wizardStepRestrictions": "Restricciones",
   "wizardStepKitchen": "Cocina",
   "wizardStepStrategy": "Estrategia",
-  "wizardMealsQuestion": "¿Qué comidas quieres incluir en el plan diario?",
+  "wizardMealsQuestion": "Â¿QuÃ© comidas quieres incluir en el plan diario?",
   "wizardBudgetWeight": "{weight} del presupuesto",
   "@wizardBudgetWeight": {
     "placeholders": {
@@ -597,7 +597,7 @@
       }
     }
   },
-  "wizardObjectiveQuestion": "¿Cuál es el objetivo principal de tu plan alimentario?",
+  "wizardObjectiveQuestion": "Â¿CuÃ¡l es el objetivo principal de tu plan alimentario?",
   "wizardSelected": "{label}, seleccionado",
   "@wizardSelected": {
     "placeholders": {
@@ -606,23 +606,23 @@
       }
     }
   },
-  "wizardDietaryRestrictions": "RESTRICCIONES DIETÉTICAS",
+  "wizardDietaryRestrictions": "RESTRICCIONES DIETÃ‰TICAS",
   "wizardGlutenFree": "Sin gluten",
   "wizardLactoseFree": "Sin lactosa",
   "wizardNutFree": "Sin frutos secos",
   "wizardShellfishFree": "Sin marisco",
   "wizardDislikedIngredients": "INGREDIENTES QUE NO TE GUSTAN",
-  "wizardDislikedHint": "ej: atún, brócoli",
-  "wizardMaxPrepTime": "TIEMPO MÁXIMO POR COMIDA",
-  "wizardMaxComplexity": "COMPLEJIDAD MÁXIMA",
-  "wizardComplexityEasy": "Fácil",
+  "wizardDislikedHint": "ej: atÃºn, brÃ³coli",
+  "wizardMaxPrepTime": "TIEMPO MÃXIMO POR COMIDA",
+  "wizardMaxComplexity": "COMPLEJIDAD MÃXIMA",
+  "wizardComplexityEasy": "FÃ¡cil",
   "wizardComplexityMedium": "Medio",
   "wizardComplexityAdvanced": "Avanzado",
   "wizardEquipment": "EQUIPAMIENTO DISPONIBLE",
   "wizardBatchCooking": "Batch cooking",
-  "wizardBatchCookingDesc": "Cocinar para varios días a la vez",
-  "wizardMaxBatchDays": "MÁXIMO DE DÍAS POR RECETA",
-  "wizardBatchDays": "{days} días",
+  "wizardBatchCookingDesc": "Cocinar para varios dÃ­as a la vez",
+  "wizardMaxBatchDays": "MÃXIMO DE DÃAS POR RECETA",
+  "wizardBatchDays": "{days} dÃ­as",
   "@wizardBatchDays": {
     "placeholders": {
       "days": {
@@ -630,14 +630,14 @@
       }
     }
   },
-  "wizardPreferredCookingDay": "DÍA PREFERIDO PARA COCINAR",
+  "wizardPreferredCookingDay": "DÃA PREFERIDO PARA COCINAR",
   "wizardReuseLeftovers": "Reutilizar sobras",
   "wizardReuseLeftoversDesc": "La cena de ayer = almuerzo de hoy (coste 0)",
-  "wizardMaxNewIngredients": "MÁXIMO DE INGREDIENTES NUEVOS POR SEMANA",
-  "wizardNoLimit": "Sin límite",
+  "wizardMaxNewIngredients": "MÃXIMO DE INGREDIENTES NUEVOS POR SEMANA",
+  "wizardNoLimit": "Sin lÃ­mite",
   "wizardMinimizeWaste": "Minimizar desperdicio",
   "wizardMinimizeWasteDesc": "Preferir recetas que reutilicen ingredientes ya usados",
-  "wizardSettingsInfo": "Puedes cambiar la configuración del planificador en cualquier momento en Ajustes → Comidas.",
+  "wizardSettingsInfo": "Puedes cambiar la configuraciÃ³n del planificador en cualquier momento en Ajustes â†’ Comidas.",
   "wizardContinue": "Continuar",
   "wizardGeneratePlan": "Generar Plan",
   "wizardStepOf": "Paso {current} de {total}",
@@ -653,10 +653,10 @@
   },
   "wizardWeekdayMon": "Lun",
   "wizardWeekdayTue": "Mar",
-  "wizardWeekdayWed": "Mié",
+  "wizardWeekdayWed": "MiÃ©",
   "wizardWeekdayThu": "Jue",
   "wizardWeekdayFri": "Vie",
-  "wizardWeekdaySat": "Sáb",
+  "wizardWeekdaySat": "SÃ¡b",
   "wizardWeekdaySun": "Dom",
   "wizardPrepMin": "{mins}min",
   "@wizardPrepMin": {
@@ -668,15 +668,15 @@
   },
   "wizardPrepMin60Plus": "60+",
 
-  "settingsTitle": "Configuración",
+  "settingsTitle": "ConfiguraciÃ³n",
   "settingsPersonal": "Datos Personales",
   "settingsSalaries": "Salarios",
   "settingsExpenses": "Presupuesto y Facturas",
   "settingsCoachAi": "Coach IA",
   "settingsDashboard": "Panel",
   "settingsMeals": "Comidas",
-  "settingsRegion": "Región e Idioma",
-  "settingsCountry": "País",
+  "settingsRegion": "RegiÃ³n e Idioma",
+  "settingsCountry": "PaÃ­s",
   "settingsLanguage": "Idioma",
   "settingsMaritalStatus": "Estado civil",
   "settingsDependents": "Dependientes",
@@ -685,25 +685,25 @@
   "settingsTitulares": "Titulares",
   "settingsSubsidyMode": "Pagas extras",
   "settingsMealAllowance": "Dieta de comida",
-  "settingsMealAllowancePerDay": "Importe/día",
-  "settingsWorkingDays": "Días laborables/mes",
+  "settingsMealAllowancePerDay": "Importe/dÃ­a",
+  "settingsWorkingDays": "DÃ­as laborables/mes",
   "settingsOtherExemptIncome": "Otros ingresos exentos",
-  "settingsAddSalary": "Añadir salario",
-  "settingsAddExpense": "Añadir categoría",
-  "settingsExpenseName": "Nombre de categoría",
+  "settingsAddSalary": "AÃ±adir salario",
+  "settingsAddExpense": "AÃ±adir categorÃ­a",
+  "settingsExpenseName": "Nombre de categorÃ­a",
   "settingsExpenseAmount": "Importe",
-  "settingsExpenseCategory": "Categoría",
+  "settingsExpenseCategory": "CategorÃ­a",
   "settingsApiKey": "API Key OpenAI",
-  "settingsInviteCode": "Código de invitación",
+  "settingsInviteCode": "CÃ³digo de invitaciÃ³n",
   "settingsCopyCode": "Copiar",
-  "settingsCodeCopied": "¡Código copiado!",
-  "settingsAdminOnly": "Solo el administrador puede editar la configuración.",
+  "settingsCodeCopied": "Â¡CÃ³digo copiado!",
+  "settingsAdminOnly": "Solo el administrador puede editar la configuraciÃ³n.",
   "settingsShowSummaryCards": "Mostrar tarjetas resumen",
-  "settingsEnabledCharts": "Gráficos activos",
-  "settingsLogout": "Cerrar sesión",
-  "settingsLogoutConfirmTitle": "Cerrar sesión",
-  "settingsLogoutConfirmContent": "¿Estás seguro de que quieres cerrar sesión?",
-  "settingsLogoutConfirmButton": "Cerrar sesión",
+  "settingsEnabledCharts": "GrÃ¡ficos activos",
+  "settingsLogout": "Cerrar sesiÃ³n",
+  "settingsLogoutConfirmTitle": "Cerrar sesiÃ³n",
+  "settingsLogoutConfirmContent": "Â¿EstÃ¡s seguro de que quieres cerrar sesiÃ³n?",
+  "settingsLogoutConfirmButton": "Cerrar sesiÃ³n",
 
   "settingsSalariesSection": "Ingresos",
   "settingsExpensesMonthly": "Presupuesto y Facturas",
@@ -711,7 +711,7 @@
   "settingsCoachOpenAi": "Coach IA (OpenAI)",
   "settingsHousehold": "Hogar",
   "settingsMaritalStatusLabel": "ESTADO CIVIL",
-  "settingsDependentsLabel": "NÚMERO DE DEPENDIENTES",
+  "settingsDependentsLabel": "NÃšMERO DE DEPENDIENTES",
   "settingsSocialSecurityRate": "Seguridad Social: {rate}",
   "@settingsSocialSecurityRate": {
     "placeholders": {
@@ -723,8 +723,8 @@
   "settingsSubsidyHoliday": "PAGAS EXTRAS DE VACACIONES Y NAVIDAD",
   "settingsOtherExemptLabel": "OTROS INGRESOS EXENTOS DE IMPUESTOS",
   "settingsMealAllowanceLabel": "DIETA DE COMIDA",
-  "settingsAmountPerDay": "IMPORTE/DÍA",
-  "settingsDaysPerMonth": "DÍAS/MES",
+  "settingsAmountPerDay": "IMPORTE/DÃA",
+  "settingsDaysPerMonth": "DÃAS/MES",
   "settingsTitularesLabel": "N. TITULARES",
   "settingsTitularCount": "{n} Titular{suffix}",
   "@settingsTitularCount": {
@@ -733,45 +733,45 @@
       "suffix": { "type": "String" }
     }
   },
-  "settingsAddSalaryButton": "Añadir salario",
-  "settingsAddExpenseButton": "Añadir Categoría",
+  "settingsAddSalaryButton": "AÃ±adir salario",
+  "settingsAddExpenseButton": "AÃ±adir CategorÃ­a",
   "settingsDeviceLocal": "Estos ajustes se guardan localmente en este dispositivo.",
   "settingsVisibleSections": "SECCIONES VISIBLES",
   "settingsMinimalist": "Minimalista",
   "settingsFull": "Completo",
   "settingsDashMonthlyLiquidity": "Liquidez mensual",
-  "settingsDashStressIndex": "Índice de Tranquilidad",
+  "settingsDashStressIndex": "Ãndice de Tranquilidad",
   "settingsDashSummaryCards": "Tarjetas resumen",
   "settingsDashSalaryBreakdown": "Detalle por salario",
-  "settingsDashFood": "Alimentación",
+  "settingsDashFood": "AlimentaciÃ³n",
   "settingsDashPurchaseHistory": "Historial de compras",
   "settingsDashExpensesBreakdown": "Desglose de gastos",
-  "settingsDashMonthReview": "Revisión del mes",
-  "settingsDashCharts": "Gráficos",
+  "settingsDashMonthReview": "RevisiÃ³n del mes",
+  "settingsDashCharts": "GrÃ¡ficos",
   "dashGroupOverview": "RESUMEN",
   "dashGroupFinancialDetail": "DETALLE FINANCIERO",
   "dashGroupHistory": "HISTORIAL",
-  "dashGroupCharts": "GRÁFICOS",
-  "settingsVisibleCharts": "GRÁFICOS VISIBLES",
+  "dashGroupCharts": "GRÃFICOS",
+  "settingsVisibleCharts": "GRÃFICOS VISIBLES",
   "settingsFavTip": "Los productos favoritos influyen en el plan de comidas \u2014 las recetas con esos ingredientes tienen prioridad.",
   "settingsMyFavorites": "MIS FAVORITOS",
-  "settingsProductCatalog": "CATÁLOGO DE PRODUCTOS",
+  "settingsProductCatalog": "CATÃLOGO DE PRODUCTOS",
   "settingsSearchProduct": "Buscar producto...",
   "settingsLoadingProducts": "Cargando productos...",
-  "settingsAddIngredient": "Añadir ingrediente",
+  "settingsAddIngredient": "AÃ±adir ingrediente",
   "settingsIngredientName": "Nombre del ingrediente",
-  "settingsAddButton": "Añadir",
-  "settingsAddToPantry": "Añadir a la despensa",
+  "settingsAddButton": "AÃ±adir",
+  "settingsAddToPantry": "AÃ±adir a la despensa",
   "settingsHouseholdPeople": "HOGAR (PERSONAS)",
   "settingsAutomatic": "(auto)",
-  "settingsUseAutoValue": "Usar valor automático",
+  "settingsUseAutoValue": "Usar valor automÃ¡tico",
   "settingsManualValue": "Valor manual: {count} personas",
   "@settingsManualValue": {
     "placeholders": {
       "count": { "type": "int" }
     }
   },
-  "settingsAutoValue": "Calculado automáticamente: {count} (titulares + dependientes)",
+  "settingsAutoValue": "Calculado automÃ¡ticamente: {count} (titulares + dependientes)",
   "@settingsAutoValue": {
     "placeholders": {
       "count": { "type": "int" }
@@ -785,36 +785,36 @@
       "total": { "type": "String" }
     }
   },
-  "settingsAddMember": "Añadir miembro",
+  "settingsAddMember": "AÃ±adir miembro",
   "settingsPreferSeasonal": "Preferir recetas de temporada",
   "settingsPreferSeasonalDesc": "Prioriza recetas de la temporada actual",
   "settingsNutritionalGoals": "OBJETIVOS NUTRICIONALES",
   "settingsCalorieHint": "ej: 2000",
-  "settingsKcalPerDay": "kcal/día",
+  "settingsKcalPerDay": "kcal/dÃ­a",
   "settingsProteinHint": "ej: 60",
-  "settingsGramsPerDay": "g/día",
+  "settingsGramsPerDay": "g/dÃ­a",
   "settingsFiberHint": "ej: 25",
-  "settingsDailyProtein": "Proteína diaria",
+  "settingsDailyProtein": "ProteÃ­na diaria",
   "settingsDailyFiber": "Fibra diaria",
-  "settingsMedicalConditions": "CONDICIONES MÉDICAS",
+  "settingsMedicalConditions": "CONDICIONES MÃ‰DICAS",
   "settingsActiveMeals": "COMIDAS ACTIVAS",
   "settingsObjective": "OBJETIVO",
-  "settingsVeggieDays": "DÍAS VEGETARIANOS POR SEMANA",
-  "settingsDietaryRestrictions": "RESTRICCIONES DIETÉTICAS",
+  "settingsVeggieDays": "DÃAS VEGETARIANOS POR SEMANA",
+  "settingsDietaryRestrictions": "RESTRICCIONES DIETÃ‰TICAS",
   "settingsEggFree": "Sin huevos",
   "settingsSodiumPref": "PREFERENCIA DE SODIO",
   "settingsDislikedIngredients": "INGREDIENTES NO DESEADOS",
-  "settingsExcludedProteins": "PROTEÍNAS EXCLUIDAS",
+  "settingsExcludedProteins": "PROTEÃNAS EXCLUIDAS",
   "settingsProteinChicken": "Pollo",
   "settingsProteinGroundMeat": "Carne Picada",
   "settingsProteinPork": "Cerdo",
   "settingsProteinHake": "Merluza",
   "settingsProteinCod": "Bacalao",
   "settingsProteinSardine": "Sardina",
-  "settingsProteinTuna": "Atún",
+  "settingsProteinTuna": "AtÃºn",
   "settingsProteinEgg": "Huevos",
-  "settingsMaxPrepTime": "TIEMPO MÁXIMO (MINUTOS)",
-  "settingsMaxComplexity": "COMPLEJIDAD MÁXIMA ({value}/5)",
+  "settingsMaxPrepTime": "TIEMPO MÃXIMO (MINUTOS)",
+  "settingsMaxComplexity": "COMPLEJIDAD MÃXIMA ({value}/5)",
   "@settingsMaxComplexity": {
     "placeholders": {
       "value": { "type": "int" }
@@ -827,35 +827,35 @@
       "value": { "type": "int" }
     }
   },
-  "settingsEatingOutDays": "DÍAS DE COMER FUERA",
-  "settingsWeeklyDistribution": "DISTRIBUCIÓN SEMANAL",
+  "settingsEatingOutDays": "DÃAS DE COMER FUERA",
+  "settingsWeeklyDistribution": "DISTRIBUCIÃ“N SEMANAL",
   "settingsFishPerWeek": "Pescado por semana: {count}",
   "@settingsFishPerWeek": {
     "placeholders": {
       "count": { "type": "String" }
     }
   },
-  "settingsNoMinimum": "sin mínimo",
+  "settingsNoMinimum": "sin mÃ­nimo",
   "settingsLegumePerWeek": "Legumbres por semana: {count}",
   "@settingsLegumePerWeek": {
     "placeholders": {
       "count": { "type": "String" }
     }
   },
-  "settingsRedMeatPerWeek": "Carne roja máx/semana: {count}",
+  "settingsRedMeatPerWeek": "Carne roja mÃ¡x/semana: {count}",
   "@settingsRedMeatPerWeek": {
     "placeholders": {
       "count": { "type": "String" }
     }
   },
-  "settingsNoLimit": "sin límite",
+  "settingsNoLimit": "sin lÃ­mite",
   "settingsAvailableEquipment": "EQUIPAMIENTO DISPONIBLE",
   "settingsBatchCooking": "Batch cooking",
-  "settingsMaxBatchDays": "MÁXIMO DE DÍAS POR RECETA",
+  "settingsMaxBatchDays": "MÃXIMO DE DÃAS POR RECETA",
   "settingsReuseLeftovers": "Reutilizar sobras",
   "settingsMinimizeWaste": "Minimizar desperdicio",
   "settingsPrioritizeLowCost": "Priorizar bajo coste",
-  "settingsPrioritizeLowCostDesc": "Preferir recetas más económicas",
+  "settingsPrioritizeLowCostDesc": "Preferir recetas mÃ¡s econÃ³micas",
   "settingsNewIngredientsPerWeek": "INGREDIENTES NUEVOS POR SEMANA ({count})",
   "@settingsNewIngredientsPerWeek": {
     "placeholders": {
@@ -866,12 +866,12 @@
   "settingsLunchboxLunchesDesc": "Solo recetas transportables para el almuerzo",
   "settingsPantry": "DESPENSA (SIEMPRE EN STOCK)",
   "settingsResetWizard": "Restablecer Asistente",
-  "settingsApiKeyInfo": "La clave se guarda localmente en el dispositivo y nunca se comparte. Usa el modelo GPT-4o mini (~\u20ac0,00008 por análisis).",
-  "settingsInviteCodeLabel": "CÓDIGO DE INVITACIÓN",
-  "settingsGenerateInvite": "Generar código de invitación",
+  "settingsApiKeyInfo": "La clave se guarda localmente en el dispositivo y nunca se comparte. Usa el modelo GPT-4o mini (~\u20ac0,00008 por anÃ¡lisis).",
+  "settingsInviteCodeLabel": "CÃ“DIGO DE INVITACIÃ“N",
+  "settingsGenerateInvite": "Generar cÃ³digo de invitaciÃ³n",
   "settingsShareWithMembers": "Compartir con miembros del hogar",
-  "settingsNewCode": "Nuevo código",
-  "settingsCodeValidInfo": "El código es válido por 7 días. Compártelo con quien quieras añadir al hogar.",
+  "settingsNewCode": "Nuevo cÃ³digo",
+  "settingsCodeValidInfo": "El cÃ³digo es vÃ¡lido por 7 dÃ­as. CompÃ¡rtelo con quien quieras aÃ±adir al hogar.",
   "settingsName": "Nombre",
   "settingsAgeGroup": "Grupo de edad",
   "settingsActivityLevel": "Nivel de actividad",
@@ -883,23 +883,23 @@
   },
 
   "countryPT": "Portugal",
-  "countryES": "España",
+  "countryES": "EspaÃ±a",
   "countryFR": "Francia",
   "countryUK": "Reino Unido",
 
-  "langPT": "Português",
+  "langPT": "PortuguÃªs",
   "langEN": "English",
-  "langFR": "Français",
-  "langES": "Español",
+  "langFR": "FranÃ§ais",
+  "langES": "EspaÃ±ol",
   "langSystem": "Sistema",
 
   "taxIncomeTax": "Impuesto sobre la renta",
-  "taxSocialContribution": "Contribución social",
+  "taxSocialContribution": "ContribuciÃ³n social",
   "taxIRS": "IRS",
   "taxSS": "Seguridad Social",
   "taxIRPF": "IRPF",
   "taxSSSpain": "Seguridad Social",
-  "taxIR": "Impôt sur le Revenu",
+  "taxIR": "ImpÃ´t sur le Revenu",
   "taxCSG": "CSG + CRDS",
   "taxPAYE": "Income Tax",
   "taxNI": "National Insurance",
@@ -907,10 +907,10 @@
   "enumSubsidyEsFull": "Con pagas extras",
   "enumSubsidyEsHalf": "50% pagas extras",
 
-  "aiCoachSystemPrompt": "Eres un analista financiero personal para usuarios portugueses. Responde siempre en portugués europeo. Sé directo y analítico — usa siempre números concretos del contexto proporcionado. Estructura la respuesta exactamente en las 3 partes pedidas. No introduzcas datos, benchmarks o referencias externas no proporcionados.",
-  "aiCoachInvalidApiKey": "API key inválida. Verifica en Configuración.",
-  "aiCoachMidMonthSystem": "Eres un consultor de presupuesto doméstico portugués. Responde siempre en portugués europeo. Sé práctico y directo.",
-  "aiMealPlannerSystem": "Eres un chef portugués. Responde siempre en portugués europeo. Responde SOLO con JSON válido, sin texto adicional.",
+  "aiCoachSystemPrompt": "Eres un analista financiero personal para usuarios portugueses. Responde siempre en portuguÃ©s europeo. SÃ© directo y analÃ­tico â€” usa siempre nÃºmeros concretos del contexto proporcionado. Estructura la respuesta exactamente en las 3 partes pedidas. No introduzcas datos, benchmarks o referencias externas no proporcionados.",
+  "aiCoachInvalidApiKey": "API key invÃ¡lida. Verifica en ConfiguraciÃ³n.",
+  "aiCoachMidMonthSystem": "Eres un consultor de presupuesto domÃ©stico portuguÃ©s. Responde siempre en portuguÃ©s europeo. SÃ© prÃ¡ctico y directo.",
+  "aiMealPlannerSystem": "Eres un chef portuguÃ©s. Responde siempre en portuguÃ©s europeo. Responde SOLO con JSON vÃ¡lido, sin texto adicional.",
 
   "monthAbbrJan": "Ene",
   "monthAbbrFeb": "Feb",
@@ -939,13 +939,13 @@
   "monthFullDec": "Diciembre",
 
   "setupWizardWelcomeTitle": "Bienvenido a tu presupuesto",
-  "setupWizardWelcomeSubtitle": "Vamos a configurar lo esencial para que tu panel esté listo.",
+  "setupWizardWelcomeSubtitle": "Vamos a configurar lo esencial para que tu panel estÃ© listo.",
   "setupWizardBullet1": "Calcular tu salario neto",
   "setupWizardBullet2": "Organizar tus gastos",
-  "setupWizardBullet3": "Ver cuánto te queda cada mes",
-  "setupWizardReassurance": "Puedes cambiarlo todo más tarde en ajustes.",
+  "setupWizardBullet3": "Ver cuÃ¡nto te queda cada mes",
+  "setupWizardReassurance": "Puedes cambiarlo todo mÃ¡s tarde en ajustes.",
   "setupWizardStart": "Empezar",
-  "setupWizardSkipAll": "Saltar configuración",
+  "setupWizardSkipAll": "Saltar configuraciÃ³n",
   "setupWizardStepOf": "Paso {step} de {total}",
   "@setupWizardStepOf": {
     "placeholders": {
@@ -954,23 +954,23 @@
     }
   },
   "setupWizardContinue": "Continuar",
-  "setupWizardCountryTitle": "¿Dónde vives?",
+  "setupWizardCountryTitle": "Â¿DÃ³nde vives?",
   "setupWizardCountrySubtitle": "Esto define el sistema fiscal, la moneda y los valores por defecto.",
   "setupWizardLanguage": "Idioma",
   "setupWizardLangSystem": "Predeterminado del sistema",
   "setupWizardCountryPT": "Portugal",
-  "setupWizardCountryES": "España",
+  "setupWizardCountryES": "EspaÃ±a",
   "setupWizardCountryFR": "Francia",
   "setupWizardCountryUK": "Reino Unido",
-  "setupWizardPersonalTitle": "Información personal",
-  "setupWizardPersonalSubtitle": "Usamos esto para calcular tus impuestos con más precisión.",
+  "setupWizardPersonalTitle": "InformaciÃ³n personal",
+  "setupWizardPersonalSubtitle": "Usamos esto para calcular tus impuestos con mÃ¡s precisiÃ³n.",
   "setupWizardPrivacyNote": "Tus datos se quedan en tu cuenta y nunca se comparten.",
   "setupWizardSingle": "Soltero/a",
   "setupWizardMarried": "Casado/a",
   "setupWizardDependents": "Dependientes",
   "setupWizardTitulares": "Titulares fiscales",
-  "setupWizardSalaryTitle": "¿Cuál es tu salario?",
-  "setupWizardSalarySubtitle": "Introduce el importe bruto mensual. Calculamos el neto automáticamente.",
+  "setupWizardSalaryTitle": "Â¿CuÃ¡l es tu salario?",
+  "setupWizardSalarySubtitle": "Introduce el importe bruto mensual. Calculamos el neto automÃ¡ticamente.",
   "setupWizardSalaryGross": "Salario bruto mensual",
   "setupWizardNetEstimate": "Neto estimado: {amount}",
   "@setupWizardNetEstimate": {
@@ -978,11 +978,11 @@
       "amount": { "type": "String" }
     }
   },
-  "setupWizardSalaryMoreLater": "Puedes añadir más fuentes de ingreso más tarde.",
+  "setupWizardSalaryMoreLater": "Puedes aÃ±adir mÃ¡s fuentes de ingreso mÃ¡s tarde.",
   "setupWizardSalarySkip": "Saltar este paso",
   "setupWizardExpensesTitle": "Tus gastos mensuales",
-  "setupWizardExpensesSubtitle": "Valores sugeridos para tu país. Ajusta según necesites.",
-  "setupWizardExpensesMoreLater": "Puedes añadir más categorías más tarde.",
+  "setupWizardExpensesSubtitle": "Valores sugeridos para tu paÃ­s. Ajusta segÃºn necesites.",
+  "setupWizardExpensesMoreLater": "Puedes aÃ±adir mÃ¡s categorÃ­as mÃ¡s tarde.",
   "setupWizardNetLabel": "Neto: {amount}",
   "@setupWizardNetLabel": {
     "placeholders": {
@@ -1002,12 +1002,12 @@
     }
   },
   "setupWizardFinish": "Finalizar",
-  "setupWizardCompleteTitle": "¡Todo listo!",
-  "setupWizardCompleteReassurance": "Tu presupuesto está configurado. Puedes ajustarlo todo en ajustes en cualquier momento.",
+  "setupWizardCompleteTitle": "Â¡Todo listo!",
+  "setupWizardCompleteReassurance": "Tu presupuesto estÃ¡ configurado. Puedes ajustarlo todo en ajustes en cualquier momento.",
   "setupWizardGoToDashboard": "Ver mi presupuesto",
-  "setupWizardConfigureSalaryHint": "Configura tu salario en ajustes para ver el cálculo completo.",
+  "setupWizardConfigureSalaryHint": "Configura tu salario en ajustes para ver el cÃ¡lculo completo.",
   "setupWizardExpRent": "Alquiler / Hipoteca",
-  "setupWizardExpGroceries": "Alimentación",
+  "setupWizardExpGroceries": "AlimentaciÃ³n",
   "setupWizardExpTransport": "Transporte",
   "setupWizardExpUtilities": "Suministros (luz, agua, gas)",
   "setupWizardExpTelecom": "Telecomunicaciones",
@@ -1028,16 +1028,16 @@
       "amount": { "type": "String" }
     }
   },
-  "expenseTrackerDeleteConfirm": "¿Eliminar este gasto?",
-  "expenseTrackerEmpty": "Sin gastos este mes.\nToca + para añadir el primero.",
-  "addExpenseTitle": "Añadir Gasto",
+  "expenseTrackerDeleteConfirm": "Â¿Eliminar este gasto?",
+  "expenseTrackerEmpty": "Sin gastos este mes.\nToca + para aÃ±adir el primero.",
+  "addExpenseTitle": "AÃ±adir Gasto",
   "editExpenseTitle": "Editar Gasto",
-  "addExpenseCategory": "Categoría",
+  "addExpenseCategory": "CategorÃ­a",
   "addExpenseAmount": "Importe",
   "addExpenseDate": "Fecha",
-  "addExpenseDescription": "Descripción (opcional)",
-  "addExpenseCustomCategory": "Categoría personalizada",
-  "addExpenseInvalidAmount": "Introduce un importe válido",
+  "addExpenseDescription": "DescripciÃ³n (opcional)",
+  "addExpenseCustomCategory": "CategorÃ­a personalizada",
+  "addExpenseInvalidAmount": "Introduce un importe vÃ¡lido",
   "addExpenseTooltip": "Registrar gasto",
   "addExpenseItem": "Gasto",
   "addExpenseOthers": "Otros",
@@ -1050,36 +1050,36 @@
   "themeDark": "Oscuro",
 
   "recurringExpenses": "Facturas Mensuales",
-  "recurringExpenseAdd": "Añadir Factura",
+  "recurringExpenseAdd": "AÃ±adir Factura",
   "recurringExpenseEdit": "Editar Factura",
-  "recurringExpenseCategory": "Categoría",
+  "recurringExpenseCategory": "CategorÃ­a",
   "recurringExpenseAmount": "Importe",
-  "recurringExpenseDescription": "Descripción (opcional)",
-  "recurringExpenseDayOfMonth": "Día de vencimiento",
+  "recurringExpenseDescription": "DescripciÃ³n (opcional)",
+  "recurringExpenseDayOfMonth": "DÃ­a de vencimiento",
   "recurringExpenseActive": "Activo",
   "recurringExpenseInactive": "Inactivo",
-  "recurringExpenseEmpty": "Sin facturas mensuales.\nAñade una para generarla automáticamente cada mes.",
-  "recurringExpenseDeleteConfirm": "¿Eliminar esta factura?",
-  "recurringExpenseAutoCreated": "Creado automáticamente",
+  "recurringExpenseEmpty": "Sin facturas mensuales.\nAÃ±ade una para generarla automÃ¡ticamente cada mes.",
+  "recurringExpenseDeleteConfirm": "Â¿Eliminar esta factura?",
+  "recurringExpenseAutoCreated": "Creado automÃ¡ticamente",
   "recurringExpenseManage": "Gestionar facturas",
   "recurringExpenseMarkRecurring": "Marcar como factura mensual",
   "recurringExpensePopulated": "Facturas mensuales generadas para este mes",
-  "recurringExpenseDayHint": "Ej: 1 para el día 1",
-  "recurringExpenseNoDay": "Sin día fijo",
+  "recurringExpenseDayHint": "Ej: 1 para el dÃ­a 1",
+  "recurringExpenseNoDay": "Sin dÃ­a fijo",
   "recurringExpenseSaved": "Factura guardada",
   "billsCount": "{count} facturas",
   "@billsCount": { "placeholders": { "count": { "type": "int" } } },
   "billsNone": "Sin facturas",
-  "billsPerMonth": "{count} facturas · {amount}/mes",
+  "billsPerMonth": "{count} facturas Â· {amount}/mes",
   "@billsPerMonth": { "placeholders": { "count": { "type": "int" }, "amount": { "type": "String" } } },
   "billsExceedBudget": "Facturas ({amount}) superan presupuesto",
   "@billsExceedBudget": { "placeholders": { "amount": { "type": "String" } } },
-  "billsAddBill": "Añadir Factura",
-  "billsBudgetSettings": "Configuración del Presupuesto",
+  "billsAddBill": "AÃ±adir Factura",
+  "billsBudgetSettings": "ConfiguraciÃ³n del Presupuesto",
   "billsRecurringBills": "Facturas Recurrentes",
-  "billsDescription": "Descripción",
+  "billsDescription": "DescripciÃ³n",
   "billsAmount": "Importe",
-  "billsDueDay": "Día de vencimiento",
+  "billsDueDay": "DÃ­a de vencimiento",
   "billsActive": "Activa",
 
   "expenseTrends": "Tendencias de Gastos",
@@ -1089,7 +1089,7 @@
   "expenseTrends12Months": "12M",
   "expenseTrendsBudgeted": "Presupuestado",
   "expenseTrendsActual": "Real",
-  "expenseTrendsByCategory": "Por Categoría",
+  "expenseTrendsByCategory": "Por CategorÃ­a",
   "expenseTrendsNoData": "Datos insuficientes para mostrar tendencias.",
   "expenseTrendsTotal": "Total",
   "expenseTrendsAverage": "Media",
@@ -1102,8 +1102,8 @@
   "savingsGoalName": "Nombre del objetivo",
   "savingsGoalTarget": "Importe objetivo",
   "savingsGoalCurrent": "Importe actual",
-  "savingsGoalDeadline": "Fecha límite",
-  "savingsGoalNoDeadline": "Sin fecha límite",
+  "savingsGoalDeadline": "Fecha lÃ­mite",
+  "savingsGoalNoDeadline": "Sin fecha lÃ­mite",
   "savingsGoalColor": "Color",
   "savingsGoalProgress": "{percent}% alcanzado",
   "@savingsGoalProgress": {
@@ -1113,26 +1113,26 @@
   "@savingsGoalRemaining": {
     "placeholders": { "amount": { "type": "String" } }
   },
-  "savingsGoalCompleted": "¡Objetivo alcanzado!",
+  "savingsGoalCompleted": "Â¡Objetivo alcanzado!",
   "savingsGoalEmpty": "Sin objetivos de ahorro.\nCrea uno para seguir tu progreso.",
-  "savingsGoalDeleteConfirm": "¿Eliminar este objetivo?",
+  "savingsGoalDeleteConfirm": "Â¿Eliminar este objetivo?",
   "savingsGoalContribute": "Contribuir",
-  "savingsGoalContributionAmount": "Importe de contribución",
+  "savingsGoalContributionAmount": "Importe de contribuciÃ³n",
   "savingsGoalContributionNote": "Nota (opcional)",
   "savingsGoalContributionDate": "Fecha",
   "savingsGoalContributionHistory": "Historial de Contribuciones",
   "savingsGoalSeeAll": "Ver todos",
-  "savingsGoalSurplusSuggestion": "Tuviste {amount} de excedente el mes pasado — ¿quieres asignar a un objetivo?",
+  "savingsGoalSurplusSuggestion": "Tuviste {amount} de excedente el mes pasado â€” Â¿quieres asignar a un objetivo?",
   "@savingsGoalSurplusSuggestion": {
     "placeholders": { "amount": { "type": "String" } }
   },
   "savingsGoalAllocate": "Asignar",
   "savingsGoalSaved": "Objetivo guardado",
-  "savingsGoalContributionSaved": "Contribución registrada",
+  "savingsGoalContributionSaved": "ContribuciÃ³n registrada",
   "settingsDashSavingsGoals": "Objetivos de Ahorro",
   "savingsGoalActive": "Activo",
   "savingsGoalInactive": "Inactivo",
-  "savingsGoalDaysLeft": "{days} días restantes",
+  "savingsGoalDaysLeft": "{days} dÃ­as restantes",
   "@savingsGoalDaysLeft": {
     "placeholders": { "days": { "type": "String" } }
   },
@@ -1156,13 +1156,13 @@
   "mealCostOver": "Por encima del presupuesto",
   "mealCostUnder": "Por debajo del presupuesto",
 
-  "mealVariation": "Variación",
+  "mealVariation": "VariaciÃ³n",
   "mealPairing": "Maridaje",
-  "mealStorage": "Conservación",
+  "mealStorage": "ConservaciÃ³n",
   "mealLeftover": "Sobras",
-  "mealLeftoverIdea": "Idea de transformación",
-  "mealWeeklySummary": "Nutrición Semanal",
-  "mealBatchPrepGuide": "Guía de Preparación",
+  "mealLeftoverIdea": "Idea de transformaciÃ³n",
+  "mealWeeklySummary": "NutriciÃ³n Semanal",
+  "mealBatchPrepGuide": "GuÃ­a de PreparaciÃ³n",
   "mealBatchTotalTime": "Tiempo estimado: {time}",
   "@mealBatchTotalTime": {
     "placeholders": {
@@ -1176,17 +1176,17 @@
   "notifications": "Notificaciones",
   "notificationSettings": "Ajustes de Notificaciones",
   "notificationBillReminders": "Recordatorios de facturas",
-  "notificationBillReminderDays": "Días antes del vencimiento",
+  "notificationBillReminderDays": "DÃ­as antes del vencimiento",
   "notificationBudgetAlerts": "Alertas de presupuesto",
-  "notificationBudgetThreshold": "Límite de alerta ({percent}%)",
+  "notificationBudgetThreshold": "LÃ­mite de alerta ({percent}%)",
   "@notificationBudgetThreshold": {
     "placeholders": { "percent": { "type": "String" } }
   },
   "notificationMealPlanReminder": "Recordatorio de plan de comidas",
   "notificationMealPlanReminderDesc": "Notifica si no hay plan para el mes actual",
   "notificationCustomReminders": "Recordatorios Personalizados",
-  "notificationAddCustom": "Añadir Recordatorio",
-  "notificationCustomTitle": "Título",
+  "notificationAddCustom": "AÃ±adir Recordatorio",
+  "notificationCustomTitle": "TÃ­tulo",
   "notificationCustomBody": "Mensaje",
   "notificationCustomTime": "Hora",
   "notificationCustomRepeat": "Repetir",
@@ -1195,13 +1195,13 @@
   "notificationCustomRepeatMonthly": "Mensual",
   "notificationCustomRepeatNone": "No repetir",
   "notificationCustomSaved": "Recordatorio guardado",
-  "notificationCustomDeleteConfirm": "¿Eliminar este recordatorio?",
+  "notificationCustomDeleteConfirm": "Â¿Eliminar este recordatorio?",
   "notificationEmpty": "Sin recordatorios personalizados.",
   "notificationBillTitle": "Factura pendiente: {name}",
   "@notificationBillTitle": {
     "placeholders": { "name": { "type": "String" } }
   },
-  "notificationBillBody": "{amount} vence en {days} días",
+  "notificationBillBody": "{amount} vence en {days} dÃ­as",
   "@notificationBillBody": {
     "placeholders": { "amount": { "type": "String" }, "days": { "type": "String" } }
   },
@@ -1211,12 +1211,12 @@
     "placeholders": { "percent": { "type": "String" } }
   },
   "notificationMealPlanTitle": "Plan de comidas",
-  "notificationMealPlanBody": "Aún no has generado el plan de comidas de este mes",
+  "notificationMealPlanBody": "AÃºn no has generado el plan de comidas de este mes",
   "notificationPermissionRequired": "Permiso de notificaciones requerido",
-  "notificationSelectDays": "Seleccionar días",
+  "notificationSelectDays": "Seleccionar dÃ­as",
 
   "settingsColorPalette": "Paleta de colores",
-  "paletteOcean": "Océano",
+  "paletteOcean": "OcÃ©ano",
   "paletteEmerald": "Esmeralda",
   "paletteViolet": "Violeta",
   "paletteTeal": "Verde azulado",
@@ -1227,13 +1227,13 @@
   "exportPdf": "Informe PDF",
   "exportPdfDesc": "Informe con presupuesto vs real",
   "exportCsv": "Datos CSV",
-  "exportCsvDesc": "Datos para hoja de cálculo",
+  "exportCsvDesc": "Datos para hoja de cÃ¡lculo",
   "exportReportTitle": "Informe Mensual de Gastos",
   "exportBudgetVsActual": "Presupuesto vs Real",
   "exportExpenseDetail": "Detalle de Gastos",
   "searchExpenses": "Buscar",
-  "searchExpensesHint": "Buscar por descripción...",
-  "searchDateRange": "Período",
+  "searchExpensesHint": "Buscar por descripciÃ³n...",
+  "searchDateRange": "PerÃ­odo",
   "searchNoResults": "No se encontraron gastos",
   "searchResultCount": "{count} resultados",
   "@searchResultCount": {
@@ -1257,7 +1257,7 @@
     }
   },
   "unsetBudgetsCta": "Definir en ajustes",
-  "paceProjected": "Proyección: {amount}",
+  "paceProjected": "ProyecciÃ³n: {amount}",
   "@paceProjected": {
     "placeholders": {
       "amount": { "type": "String" }
@@ -1268,15 +1268,15 @@
   "onbNext": "Siguiente",
   "onbGetStarted": "Empezar",
   "onbSlide0Title": "Tu presupuesto, de un vistazo",
-  "onbSlide0Body": "El panel muestra tu liquidez mensual, gastos e Índice de Serenidad.",
+  "onbSlide0Body": "El panel muestra tu liquidez mensual, gastos e Ãndice de Serenidad.",
   "onbSlide1Title": "Registra cada gasto",
-  "onbSlide1Body": "Toca + para registrar una compra. Asigna una categoría y observa las barras actualizarse.",
+  "onbSlide1Body": "Toca + para registrar una compra. Asigna una categorÃ­a y observa las barras actualizarse.",
   "onbSlide2Title": "Compra con lista",
-  "onbSlide2Body": "Explora productos, crea una lista y finaliza para registrar el gasto automáticamente.",
+  "onbSlide2Body": "Explora productos, crea una lista y finaliza para registrar el gasto automÃ¡ticamente.",
   "onbSlide3Title": "Tu coach financiero IA",
-  "onbSlide3Body": "Obtén un análisis en 3 partes basado en tu presupuesto real \u2014 no consejos genéricos.",
+  "onbSlide3Body": "ObtÃ©n un anÃ¡lisis en 3 partes basado en tu presupuesto real \u2014 no consejos genÃ©ricos.",
   "onbSlide4Title": "Planifica comidas en presupuesto",
-  "onbSlide4Body": "Genera un plan mensual ajustado a tu presupuesto alimentario y tamaño del hogar.",
+  "onbSlide4Body": "Genera un plan mensual ajustado a tu presupuesto alimentario y tamaÃ±o del hogar.",
 
   "onbTourSkip": "Saltar tour",
   "onbTourNext": "Siguiente",
@@ -1284,50 +1284,50 @@
 
   "onbTourDash1Title": "Liquidez mensual",
   "onbTourDash1Body": "Ingresos menos todos los gastos. Verde significa saldo positivo.",
-  "onbTourDash2Title": "Índice de Serenidad",
-  "onbTourDash2Body": "Puntuación de salud financiera 0\u2013100. Toca para ver los factores.",
+  "onbTourDash2Title": "Ãndice de Serenidad",
+  "onbTourDash2Body": "PuntuaciÃ³n de salud financiera 0\u2013100. Toca para ver los factores.",
   "onbTourDash3Title": "Presupuesto vs real",
-  "onbTourDash3Body": "Gastos planificados vs reales por categoría.",
-  "onbTourDash4Title": "Añadir gasto",
+  "onbTourDash3Body": "Gastos planificados vs reales por categorÃ­a.",
+  "onbTourDash4Title": "AÃ±adir gasto",
   "onbTourDash4Body": "Toca + en cualquier momento para registrar un gasto.",
-  "onbTourDash5Title": "Navegación",
+  "onbTourDash5Title": "NavegaciÃ³n",
   "onbTourDash5Body": "5 secciones: Presupuesto, Supermercado, Lista, Coach, Comidas.",
 
   "onbTourGrocery1Title": "Buscar y filtrar",
-  "onbTourGrocery1Body": "Busca por nombre o filtra por categoría.",
-  "onbTourGrocery2Title": "Añadir a la lista",
-  "onbTourGrocery2Body": "Toca + en cualquier producto para añadirlo a tu lista de compras.",
-  "onbTourGrocery3Title": "Categorías",
-  "onbTourGrocery3Body": "Desplaza los filtros de categoría para acotar productos.",
+  "onbTourGrocery1Body": "Busca por nombre o filtra por categorÃ­a.",
+  "onbTourGrocery2Title": "AÃ±adir a la lista",
+  "onbTourGrocery2Body": "Toca + en cualquier producto para aÃ±adirlo a tu lista de compras.",
+  "onbTourGrocery3Title": "CategorÃ­as",
+  "onbTourGrocery3Body": "Desplaza los filtros de categorÃ­a para acotar productos.",
 
-  "onbTourShopping1Title": "Marcar ítems",
-  "onbTourShopping1Body": "Toca un ítem para marcarlo como recogido.",
+  "onbTourShopping1Title": "Marcar Ã­tems",
+  "onbTourShopping1Body": "Toca un Ã­tem para marcarlo como recogido.",
   "onbTourShopping2Title": "Finalizar compra",
-  "onbTourShopping2Body": "Registra el gasto y limpia los ítems marcados.",
+  "onbTourShopping2Body": "Registra el gasto y limpia los Ã­tems marcados.",
   "onbTourShopping3Title": "Historial de compras",
-  "onbTourShopping3Body": "Consulta todas las sesiones de compras anteriores aquí.",
+  "onbTourShopping3Body": "Consulta todas las sesiones de compras anteriores aquÃ­.",
 
   "onbTourCoach1Title": "Analizar mi presupuesto",
-  "onbTourCoach1Body": "Toca para generar un análisis basado en tus datos reales.",
-  "onbTourCoach2Title": "Historial de análisis",
-  "onbTourCoach2Body": "Los análisis guardados aparecen aquí, más recientes primero.",
+  "onbTourCoach1Body": "Toca para generar un anÃ¡lisis basado en tus datos reales.",
+  "onbTourCoach2Title": "Historial de anÃ¡lisis",
+  "onbTourCoach2Body": "Los anÃ¡lisis guardados aparecen aquÃ­, mÃ¡s recientes primero.",
 
   "onbTourMeals1Title": "Generar plan",
   "onbTourMeals1Body": "Crea un mes completo de comidas dentro del presupuesto alimentario.",
   "onbTourMeals2Title": "Vista semanal",
-  "onbTourMeals2Body": "Navega comidas por semana. Toca un día para ver la receta.",
-  "onbTourMeals3Title": "Añadir a la lista de compras",
-  "onbTourMeals3Body": "Envía los ingredientes de la semana a tu lista con un toque.",
+  "onbTourMeals2Body": "Navega comidas por semana. Toca un dÃ­a para ver la receta.",
+  "onbTourMeals3Title": "AÃ±adir a la lista de compras",
+  "onbTourMeals3Body": "EnvÃ­a los ingredientes de la semana a tu lista con un toque.",
 
   "taxDeductionTitle": "Deducciones Fiscales",
   "taxDeductionSeeDetail": "Ver detalle",
-  "taxDeductionEstimated": "deducción estimada",
-  "taxDeductionMaxOf": "Máx. de {amount}",
+  "taxDeductionEstimated": "deducciÃ³n estimada",
+  "taxDeductionMaxOf": "MÃ¡x. de {amount}",
   "@taxDeductionMaxOf": { "placeholders": { "amount": { "type": "String" } } },
-  "taxDeductionDetailTitle": "Deducciones Fiscales — Detalle",
-  "taxDeductionDeductibleTitle": "CATEGORÍAS DEDUCIBLES",
-  "taxDeductionNonDeductibleTitle": "CATEGORÍAS NO DEDUCIBLES",
-  "taxDeductionTotalLabel": "DEDUCCIÓN ESTIMADA",
+  "taxDeductionDetailTitle": "Deducciones Fiscales â€” Detalle",
+  "taxDeductionDeductibleTitle": "CATEGORÃAS DEDUCIBLES",
+  "taxDeductionNonDeductibleTitle": "CATEGORÃAS NO DEDUCIBLES",
+  "taxDeductionTotalLabel": "DEDUCCIÃ“N ESTIMADA",
   "taxDeductionSpent": "Gastado: {amount}",
   "@taxDeductionSpent": { "placeholders": { "amount": { "type": "String" } } },
   "taxDeductionCapUsed": "{percent} de {cap} utilizado",
@@ -1341,8 +1341,8 @@
   "upcomingBillsTitle": "Facturas Pendientes",
   "upcomingBillsManage": "Gestionar",
   "billDueToday": "Hoy",
-  "billDueTomorrow": "Mañana",
-  "billDueInDays": "En {days} días",
+  "billDueTomorrow": "MaÃ±ana",
+  "billDueInDays": "En {days} dÃ­as",
   "@billDueInDays": { "placeholders": { "days": { "type": "int" } } },
 
   "savingsProjectionReachedBy": "Alcanzado para {date}",
@@ -1351,25 +1351,25 @@
   "@savingsProjectionNeedPerMonth": { "placeholders": { "amount": { "type": "String" } } },
   "savingsProjectionOnTrack": "En camino",
   "savingsProjectionBehind": "Retrasado",
-  "savingsProjectionNoData": "Añade contribuciones para ver proyección",
+  "savingsProjectionNoData": "AÃ±ade contribuciones para ver proyecciÃ³n",
   "savingsProjectionAvgContribution": "Media {amount}/mes",
   "@savingsProjectionAvgContribution": { "placeholders": { "amount": { "type": "String" } } },
 
   "taxSimTitle": "Simulador Fiscal",
-  "taxSimPresets": "ESCENARIOS RÁPIDOS",
-  "taxSimPresetRaise": "+€200 aumento",
+  "taxSimPresets": "ESCENARIOS RÃPIDOS",
+  "taxSimPresetRaise": "+â‚¬200 aumento",
   "taxSimPresetMeal": "Tarjeta vs efectivo",
   "taxSimPresetTitular": "Conjunto vs separado",
-  "taxSimParameters": "PARÁMETROS",
+  "taxSimParameters": "PARÃMETROS",
   "taxSimGross": "Salario bruto",
   "taxSimMarital": "Estado civil",
   "taxSimTitulares": "Titulares",
   "taxSimDependentes": "Dependientes",
   "taxSimMealType": "Tipo de subsidio de comida",
-  "taxSimMealAmount": "Subsidio comida/día",
+  "taxSimMealAmount": "Subsidio comida/dÃ­a",
   "taxSimComparison": "ACTUAL VS SIMULADO",
   "taxSimNetTakeHome": "Neto a recibir",
-  "taxSimIRS": "Retención IRPF",
+  "taxSimIRS": "RetenciÃ³n IRPF",
   "taxSimSS": "Seguridad social",
   "taxSimDelta": "Diferencia mensual:",
   "taxSimButton": "Simulador Fiscal",
@@ -1380,7 +1380,7 @@
   "streakGold": "Oro",
   "streakBronzeDesc": "Liquidez positiva",
   "streakSilverDesc": "Dentro del presupuesto",
-  "streakGoldDesc": "Todas las categorías",
+  "streakGoldDesc": "Todas las categorÃ­as",
   "streakMonths": "{count} meses",
   "@streakMonths": { "placeholders": { "count": { "type": "int" } } },
 
@@ -1389,42 +1389,42 @@
   "@expenseOverrideActive": { "placeholders": { "month": { "type": "String" }, "amount": { "type": "String" } } },
   "expenseAdjustMonth": "Ajustar para {month}",
   "@expenseAdjustMonth": { "placeholders": { "month": { "type": "String" } } },
-  "expenseAdjustMonthHint": "Deje vacío para usar el presupuesto base",
+  "expenseAdjustMonthHint": "Deje vacÃ­o para usar el presupuesto base",
 
-  "settingsPersonalTip": "El estado civil y los dependientes afectan su tramo de IRPF, lo que determina cuánto impuesto se retiene de su salario.",
-  "settingsSalariesTip": "El salario bruto se usa para calcular el ingreso neto después de impuestos y seguridad social. Añada varios salarios si el hogar tiene más de un ingreso.",
-  "settingsExpensesTip": "Defina el presupuesto mensual para cada categoría. Puede ajustarlo para meses específicos en la vista de detalle.",
-  "settingsMealHouseholdTip": "Número de personas que comen en casa. Esto ajusta recetas y porciones en el plan de comidas.",
-  "settingsHouseholdTip": "Invite a familiares para compartir datos del presupuesto entre dispositivos. Todos los miembros ven los mismos gastos y presupuestos."
-  "subscriptionTitle": "Suscripción",
+  "settingsPersonalTip": "El estado civil y los dependientes afectan su tramo de IRPF, lo que determina cuÃ¡nto impuesto se retiene de su salario.",
+  "settingsSalariesTip": "El salario bruto se usa para calcular el ingreso neto despuÃ©s de impuestos y seguridad social. AÃ±ada varios salarios si el hogar tiene mÃ¡s de un ingreso.",
+  "settingsExpensesTip": "Defina el presupuesto mensual para cada categorÃ­a. Puede ajustarlo para meses especÃ­ficos en la vista de detalle.",
+  "settingsMealHouseholdTip": "NÃºmero de personas que comen en casa. Esto ajusta recetas y porciones en el plan de comidas.",
+  "settingsHouseholdTip": "Invite a familiares para compartir datos del presupuesto entre dispositivos. Todos los miembros ven los mismos gastos y presupuestos.",
+  "subscriptionTitle": "SuscripciÃ³n",
   "subscriptionFree": "Gratuito",
   "subscriptionPremium": "Premium",
   "subscriptionFamily": "Familia",
   "subscriptionTrialActive": "Prueba activa",
-  "subscriptionTrialDaysLeft": "{count} días restantes",
+  "subscriptionTrialDaysLeft": "{count} dÃ­as restantes",
   "@subscriptionTrialDaysLeft": { "placeholders": { "count": { "type": "int" } } },
   "subscriptionTrialExpired": "Prueba expirada",
   "subscriptionUpgrade": "Actualizar",
   "subscriptionSeePlans": "Ver Planes",
   "subscriptionCurrentPlan": "Plan Actual",
-  "subscriptionManage": "Gestionar Suscripción",
+  "subscriptionManage": "Gestionar SuscripciÃ³n",
   "subscriptionFeatureExplored": "{count}/{total} funciones exploradas",
   "@subscriptionFeatureExplored": { "placeholders": { "count": { "type": "int" }, "total": { "type": "int" } } },
   "subscriptionTrialBannerTitle": "Prueba Premium Activa",
-  "subscriptionTrialEndingSoon": "¡{count} días restantes en tu prueba!",
+  "subscriptionTrialEndingSoon": "Â¡{count} dÃ­as restantes en tu prueba!",
   "@subscriptionTrialEndingSoon": { "placeholders": { "count": { "type": "int" } } },
-  "subscriptionTrialLastDay": "¡Último día de tu prueba gratuita!",
+  "subscriptionTrialLastDay": "Â¡Ãšltimo dÃ­a de tu prueba gratuita!",
   "subscriptionUpgradeNow": "Actualizar Ahora",
   "subscriptionKeepData": "Mantener Tus Datos",
   "subscriptionCancelAnytime": "Cancela en cualquier momento",
   "subscriptionNoHiddenFees": "Sin cargos ocultos",
-  "subscriptionMostPopular": "Más Popular",
+  "subscriptionMostPopular": "MÃ¡s Popular",
   "subscriptionYearlySave": "ahorra {percent}%",
   "@subscriptionYearlySave": { "placeholders": { "percent": { "type": "int" } } },
   "subscriptionMonthly": "Mensual",
   "subscriptionYearly": "Anual",
   "subscriptionPerMonth": "/mes",
-  "subscriptionPerYear": "/año",
+  "subscriptionPerYear": "/aÃ±o",
   "subscriptionBilledYearly": "facturado anualmente",
   "subscriptionStartPremium": "Empezar Premium",
   "subscriptionStartFamily": "Empezar Familia",
@@ -1432,7 +1432,7 @@
   "subscriptionTrialEnded": "Tu periodo de prueba ha terminado",
   "subscriptionChoosePlan": "Elige un plan para conservar todos tus datos y funciones",
   "subscriptionUnlockPower": "Desbloquea todo el poder de tu presupuesto",
-  "subscriptionRequiresPaid": "{feature} requiere una suscripción de pago",
+  "subscriptionRequiresPaid": "{feature} requiere una suscripciÃ³n de pago",
   "@subscriptionRequiresPaid": { "placeholders": { "feature": { "type": "String" } } },
   "subscriptionTryFeature": "Prueba {feature}",
   "@subscriptionTryFeature": { "placeholders": { "feature": { "type": "String" } } },
