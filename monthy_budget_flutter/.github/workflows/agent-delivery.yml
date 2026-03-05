@@ -83,12 +83,7 @@ jobs:
               git log $COMMITS_RANGE --pretty='- %h %s' || true
             } > "$BODY_FILE"
 
-            if gh issue create --help | grep -q -- '--json'; then
-              ISSUE="$(gh issue create --title "$TITLE" --body-file "$BODY_FILE" --label chore --json number --jq .number)"
-            else
-              ISSUE_URL="$(gh issue create --title "$TITLE" --body-file "$BODY_FILE" --label chore)"
-              ISSUE="$(printf '%s\n' "$ISSUE_URL" | grep -Eo '[0-9]+$' | head -n1)"
-            fi
+            ISSUE="$(gh issue create --title "$TITLE" --body-file "$BODY_FILE" --label chore --json number --jq .number)"
           fi
 
           RELEASE_LABEL="release:patch"
@@ -134,8 +129,6 @@ jobs:
       RELEASE_NOTES: ${{ needs.prepare.outputs.release_notes }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Create or update PR and merge
         shell: bash
@@ -144,8 +137,6 @@ jobs:
           BRANCH='${{ needs.prepare.outputs.branch_name }}'
           ISSUE='${{ needs.prepare.outputs.issue_number }}'
           LABEL='${{ needs.prepare.outputs.release_label }}'
-
-          git fetch origin "$DEFAULT_BRANCH" --depth=1 || true
 
           BODY_FILE="pr_body.md"
           {
@@ -171,12 +162,6 @@ jobs:
             PR_NUMBER="$(gh pr list --head "$BRANCH" --base "$DEFAULT_BRANCH" --json number --jq '.[0].number')"
           else
             gh pr edit "$PR_NUMBER" --body-file "$BODY_FILE"
-          fi
-
-          PR_STATE="$(gh pr view "$PR_NUMBER" --json state --jq .state)"
-          if [[ "$PR_STATE" != "OPEN" ]]; then
-            echo "PR #$PR_NUMBER is $PR_STATE; skipping merge."
-            exit 0
           fi
 
           gh pr edit "$PR_NUMBER" --add-label "$LABEL" || true
