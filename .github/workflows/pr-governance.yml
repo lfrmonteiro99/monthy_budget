@@ -31,8 +31,8 @@ jobs:
           PR_LABELS=""
 
           if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
-            PR_BODY='${{ github.event.pull_request.body }}'
-            PR_LABELS='${{ join(github.event.pull_request.labels.*.name, ",") }}'
+            PR_BODY="${{ github.event.pull_request.body }}"
+            PR_LABELS="${{ join(github.event.pull_request.labels.*.name, ',') }}"
           else
             PR_NUMBER='${{ inputs.pr_number }}'
             BRANCH='${{ inputs.branch }}'
