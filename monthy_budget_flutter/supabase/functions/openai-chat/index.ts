@@ -15,6 +15,9 @@ type CoachMode = 'eco' | 'plus' | 'pro';
 
 type CoachMemoryRequest = {
   mode?: CoachMode;
+  requested_mode?: CoachMode;
+  used_fallback?: boolean;
+  fallback_reason?: string;
   thread_id?: string;
   context_window?: number;
   user_message?: string;
@@ -303,32 +306,113 @@ async function maybeStoreMemoryFacts(
   const text = userMessage.trim();
   if (text.length < 12) return;
 
-  const lower = text.toLowerCase();
-  const isCandidate = lower.includes('objetivo')
-      || lower.includes('quero')
-      || lower.includes('meta')
-      || lower.includes('costumo')
-      || lower.includes('salario')
-      || lower.includes('renda');
-  if (!isCandidate) return;
+  const extractionUpstream = await fetch(
+    'https://api.openai.com/v1/chat/completions',
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${openAiApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        temperature: 0.1,
+        max_tokens: 240,
+        response_format: { type: 'json_object' },
+        messages: [
+          {
+            role: 'system',
+            content:
+              'Extrai apenas memorias de alto sinal para um coach financeiro. '
+              + 'Responde APENAS JSON com formato {"memories":[{"type":"goal|habit|fact|preference|event|insight","content":"...","importance":1-5}]}. '
+              + 'Se nao houver memorias, usa {"memories":[]}.',
+          },
+          {
+            role: 'user',
+            content: text,
+          },
+        ],
+      }),
+    },
+  );
+  if (!extractionUpstream.ok) return;
+  const extractionJson = await extractionUpstream.json();
+  const extractionContent = extractionJson?.choices?.[0]?.message?.content
+    ?.toString()
+    ?.trim() ?? '';
+  if (extractionContent.length === 0) return;
 
-  const embedding = await getEmbedding(openAiApiKey, text);
-  if (!embedding) return;
+  let parsed: unknown = null;
+  try {
+    parsed = JSON.parse(extractionContent);
+  } catch (_) {
+    return;
+  }
+  const memories = (parsed as { memories?: unknown })?.memories;
+  if (!Array.isArray(memories) || memories.length === 0) return;
 
-  const type: string = lower.includes('objetivo') || lower.includes('meta')
-    ? 'goal'
-    : lower.includes('costumo')
-    ? 'habit'
-    : 'fact';
+  const allowedTypes = new Set(['goal', 'habit', 'fact', 'preference', 'event', 'insight']);
+  const rows: Array<Record<string, unknown>> = [];
 
-  await supabase.from('coach_memories').insert({
-    household_id: context.householdId,
-    user_id: context.userId,
-    type,
-    content: text,
-    importance: context.modeUsed === 'pro' ? 4 : 3,
-    embedding,
-  });
+  for (const rawMemory of memories.slice(0, context.modeUsed === 'pro' ? 4 : 2)) {
+    if (!rawMemory || typeof rawMemory !== 'object') continue;
+    const item = rawMemory as {
+      type?: unknown;
+      content?: unknown;
+      importance?: unknown;
+    };
+    const type = typeof item.type === 'string' ? item.type : '';
+    const content = typeof item.content === 'string' ? item.content.trim() : '';
+    if (!allowedTypes.has(type) || content.length < 8) continue;
+
+    const embedding = await getEmbedding(openAiApiKey, content);
+    if (!embedding) continue;
+
+    const rawImportance = typeof item.importance === 'number'
+      ? Math.round(item.importance)
+      : (context.modeUsed === 'pro' ? 4 : 3);
+    const importance = Math.max(1, Math.min(rawImportance, 5));
+
+    rows.push({
+      household_id: context.householdId,
+      user_id: context.userId,
+      type,
+      content,
+      importance,
+      embedding,
+    });
+  }
+
+  if (rows.length > 0) {
+    await supabase.from('coach_memories').insert(rows);
+  }
+}
+
+async function logCoachUsageEvent(
+  supabase: ReturnType<typeof createClient>,
+  context: CoachContextResult,
+  memoryReq: CoachMemoryRequest | null,
+  responseLength: number,
+): Promise<void> {
+  if (!context.userId || !context.householdId) return;
+  try {
+    const requestedMode = toCoachMode(memoryReq?.requested_mode ?? memoryReq?.mode);
+    const usedFallback = memoryReq?.used_fallback === true;
+    const fallbackReason = memoryReq?.fallback_reason?.toString() ?? null;
+
+    await supabase.from('coach_usage_events').insert({
+      household_id: context.householdId,
+      user_id: context.userId,
+      thread_id: context.threadId,
+      requested_mode: requestedMode,
+      effective_mode: context.modeUsed,
+      used_fallback: usedFallback,
+      fallback_reason: fallbackReason,
+      response_length_chars: responseLength,
+    });
+  } catch (_) {
+    // Usage logging must not break chat responses.
+  }
 }
 
 Deno.serve(async (req: Request) => {
@@ -442,14 +526,19 @@ Deno.serve(async (req: Request) => {
 
     const userMessage = coachMemory?.user_message?.toString() ?? null;
     if (supabase) {
-      await persistCoachMessages(supabase, coachContext, userMessage, content);
-      await maybeStoreMemoryFacts(
-        supabase,
-        openAiApiKey,
-        coachContext,
-        userMessage,
-      );
-      await maybeCreateSummary(supabase, openAiApiKey, coachContext);
+      try {
+        await persistCoachMessages(supabase, coachContext, userMessage, content);
+        await maybeStoreMemoryFacts(
+          supabase,
+          openAiApiKey,
+          coachContext,
+          userMessage,
+        );
+        await maybeCreateSummary(supabase, openAiApiKey, coachContext);
+        await logCoachUsageEvent(supabase, coachContext, coachMemory, content.length);
+      } catch (_) {
+        // Memory pipeline must not break core chat completion delivery.
+      }
     }
 
     return new Response(

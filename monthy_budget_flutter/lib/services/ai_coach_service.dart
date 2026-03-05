@@ -143,6 +143,9 @@ class AiCoachService {
     CoachMode? coachMode,
     String? coachThreadId,
     int? coachContextWindow,
+    CoachMode? requestedCoachMode,
+    bool coachUsedFallback = false,
+    String? coachFallbackReason,
   }) async {
     final stress = calculateStressIndex(
       summary: summary,
@@ -169,6 +172,9 @@ class AiCoachService {
       temperature: 0.5,
       coachMemory: {
         'mode': (coachMode ?? CoachMode.eco).name,
+        'requested_mode': (requestedCoachMode ?? coachMode ?? CoachMode.eco).name,
+        'used_fallback': coachUsedFallback,
+        'fallback_reason': coachFallbackReason,
         'thread_id': coachThreadId,
         'context_window': coachContextWindow,
         'user_message': prompt,
@@ -220,7 +226,7 @@ class AiCoachService {
         'nos restantes ${pace.daysRemaining} dias. Cada sugestão deve incluir a poupança estimada em €. '
         'Sê directo e específico. Sem introdução nem conclusão.');
 
-    final content = await _requestChatCompletion(
+    final completion = await _requestChatCompletion(
       apiKey: apiKey,
       messages: [
         {
@@ -237,7 +243,7 @@ class AiCoachService {
     final insight = CoachInsight(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       timestamp: DateTime.now(),
-      content: content,
+      content: completion.content,
       stressScore: stress.score,
     );
     final history = await _persistInsight(insight, householdId);
@@ -269,12 +275,13 @@ class AiCoachService {
       final data = response.data;
       if (response.status != 200 || data is! Map<String, dynamic>) {
         if (response.status == 404 && hasApiKey) {
-          return _requestDirectOpenAiCompletion(
+          final direct = await _requestDirectOpenAiCompletion(
             apiKey: apiKey,
             messages: messages,
             maxTokens: maxTokens,
             temperature: temperature,
           );
+          return (content: direct, threadId: null);
         }
         final msg = data is Map<String, dynamic>
             ? (data['error']?.toString() ?? 'Falha ao processar pedido de IA')

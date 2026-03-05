@@ -36,10 +36,11 @@ This document defines the first implementation step for Coach memory with:
   - retrieval context from summaries + recent messages (+ memory match via RPC in `plus/pro`)
   - persistence of user/assistant turns in `coach_messages`
   - summary generation cadence for long threads
-  - lightweight memory fact capture for high-signal user statements
+  - structured memory extraction (JSON) for high-signal user statements
+  - usage event logging (`coach_usage_events`) with requested/effective mode and fallback reason
 
 ## Next implementation steps
 
-1. Harden memory extraction quality (structured extractor instead of keyword heuristic).
-2. Add explicit usage/analytics events for fallback and credit consumption.
-3. Add retention/privacy controls (expiry and user delete flows) for persisted memories.
+1. Add explicit credit debit audit events (client-side debit + server-side usage correlation).
+2. Add retention/privacy controls (expiry and user delete flows) for persisted memories.
+3. Improve deduplication/ranking of extracted memories over time.

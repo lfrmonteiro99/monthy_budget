@@ -60,10 +60,27 @@ create table if not exists coach_memory_summaries (
 create index if not exists idx_coach_summaries_thread_created
   on coach_memory_summaries(thread_id, created_at desc);
 
+create table if not exists coach_usage_events (
+  id                     uuid primary key default gen_random_uuid(),
+  household_id           uuid not null references households(id) on delete cascade,
+  user_id                uuid not null references profiles(id) on delete cascade,
+  thread_id              uuid references coach_threads(id) on delete set null,
+  requested_mode         text not null check (requested_mode in ('eco', 'plus', 'pro')),
+  effective_mode         text not null check (effective_mode in ('eco', 'plus', 'pro')),
+  used_fallback          boolean not null default false,
+  fallback_reason        text,
+  response_length_chars  int,
+  created_at             timestamptz not null default now()
+);
+
+create index if not exists idx_coach_usage_events_user_created
+  on coach_usage_events(user_id, created_at desc);
+
 alter table coach_threads enable row level security;
 alter table coach_messages enable row level security;
 alter table coach_memories enable row level security;
 alter table coach_memory_summaries enable row level security;
+alter table coach_usage_events enable row level security;
 
 create policy "read coach_threads" on coach_threads
   for select using (household_id = my_household_id());
@@ -87,6 +104,11 @@ create policy "update own coach_memories" on coach_memories
 create policy "read coach_memory_summaries" on coach_memory_summaries
   for select using (household_id = my_household_id());
 create policy "insert coach_memory_summaries" on coach_memory_summaries
+  for insert with check (household_id = my_household_id() and user_id = auth.uid());
+
+create policy "read coach_usage_events" on coach_usage_events
+  for select using (household_id = my_household_id());
+create policy "insert coach_usage_events" on coach_usage_events
   for insert with check (household_id = my_household_id() and user_id = auth.uid());
 
 create or replace function match_coach_memories(
