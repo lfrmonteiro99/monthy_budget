@@ -166,6 +166,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return widget.subscriptionLabel ?? 'Free';
   }
 
+  String? _currentUserIdSafe() {
+    try {
+      return Supabase.instance.client.auth.currentUser?.id;
+    } catch (_) {
+      return null;
+    }
+  }
+
   void _toggleFavorite(String product) {
     setState(() {
       final lower = product.toLowerCase();
@@ -2284,7 +2292,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildHouseholdSection() {
     final l10n = S.of(context);
-    final myUserId = Supabase.instance.client.auth.currentUser?.id;
+    final myUserId = _currentUserIdSafe();
     return Container(
       color: AppColors.surface(context),
       padding: const EdgeInsets.all(20),
