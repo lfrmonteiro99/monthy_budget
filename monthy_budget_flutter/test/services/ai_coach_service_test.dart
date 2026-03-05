@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:orcamento_mensal/services/ai_coach_service.dart';
 
@@ -52,6 +54,27 @@ void main() {
       );
       expect(message, contains('Sessao expirada'));
       expect(message, contains('Inicie sessao novamente'));
+    });
+  });
+
+  group('buildCoachMemoryExportJson', () {
+    test('builds valid json with expected top-level fields', () {
+      final jsonText = buildCoachMemoryExportJson(
+        householdId: 'hh_1',
+        memories: [
+          {'type': 'goal', 'content': 'Reduzir restaurantes', 'importance': 4}
+        ],
+        summaries: [
+          {'summary': 'Resumo semanal', 'window_start': '2026-03-01'}
+        ],
+        generatedAt: DateTime.utc(2026, 3, 5, 12),
+      );
+
+      final decoded = jsonDecode(jsonText) as Map<String, dynamic>;
+      expect(decoded['household_id'], 'hh_1');
+      expect(decoded['generated_at'], '2026-03-05T12:00:00.000Z');
+      expect(decoded['memories'], isA<List<dynamic>>());
+      expect(decoded['summaries'], isA<List<dynamic>>());
     });
   });
 }

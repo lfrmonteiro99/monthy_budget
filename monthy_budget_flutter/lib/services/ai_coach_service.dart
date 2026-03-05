@@ -48,6 +48,21 @@ String buildAiCoachRequestErrorMessage(
   return raw;
 }
 
+String buildCoachMemoryExportJson({
+  required String householdId,
+  required List<Map<String, dynamic>> memories,
+  required List<Map<String, dynamic>> summaries,
+  DateTime? generatedAt,
+}) {
+  final export = <String, dynamic>{
+    'generated_at': (generatedAt ?? DateTime.now()).toIso8601String(),
+    'household_id': householdId,
+    'memories': memories,
+    'summaries': summaries,
+  };
+  return const JsonEncoder.withIndent('  ').convert(export);
+}
+
 class AiCoachService {
   static const _apiKeyPref = 'openai_api_key';
   static const _edgeFunctionName = 'openai-chat';
@@ -128,6 +143,68 @@ class AiCoachService {
         .from('household_coach_insights')
         .delete()
         .eq('household_id', householdId);
+  }
+
+  Future<List<Map<String, dynamic>>> loadCoachMemories(String householdId) async {
+    try {
+      final rows = await _client
+          .from('coach_memories')
+          .select('type, content, importance, created_at, expires_at')
+          .eq('household_id', householdId)
+          .order('created_at', ascending: false)
+          .limit(200);
+      return (rows as List<dynamic>)
+          .whereType<Map<String, dynamic>>()
+          .toList(growable: false);
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> loadCoachMemorySummaries(
+      String householdId) async {
+    try {
+      final rows = await _client
+          .from('coach_memory_summaries')
+          .select('summary, window_start, window_end, created_at')
+          .eq('household_id', householdId)
+          .order('created_at', ascending: false)
+          .limit(100);
+      return (rows as List<dynamic>)
+          .whereType<Map<String, dynamic>>()
+          .toList(growable: false);
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  Future<void> clearCoachMemories(String householdId) async {
+    await _client
+        .from('coach_memories')
+        .delete()
+        .eq('household_id', householdId);
+    await _client
+        .from('coach_memory_summaries')
+        .delete()
+        .eq('household_id', householdId);
+    await _client
+        .from('coach_messages')
+        .delete()
+        .eq('household_id', householdId);
+    await _client
+        .from('coach_threads')
+        .delete()
+        .eq('household_id', householdId);
+  }
+
+  Future<String> exportCoachMemoryJson(String householdId) async {
+    final memories = await loadCoachMemories(householdId);
+    final summaries = await loadCoachMemorySummaries(householdId);
+    return buildCoachMemoryExportJson(
+      householdId: householdId,
+      memories: memories,
+      summaries: summaries,
+    );
   }
 
   // ── Analysis ───────────────────────────────────────────────────────────────

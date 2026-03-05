@@ -91,11 +91,15 @@ create policy "insert coach_threads" on coach_threads
   for insert with check (household_id = my_household_id() and user_id = auth.uid());
 create policy "update own coach_threads" on coach_threads
   for update using (household_id = my_household_id() and user_id = auth.uid());
+create policy "delete own coach_threads" on coach_threads
+  for delete using (household_id = my_household_id() and user_id = auth.uid());
 
 create policy "read coach_messages" on coach_messages
   for select using (household_id = my_household_id());
 create policy "insert coach_messages" on coach_messages
   for insert with check (household_id = my_household_id() and user_id = auth.uid());
+create policy "delete own coach_messages" on coach_messages
+  for delete using (household_id = my_household_id() and user_id = auth.uid());
 
 create policy "read coach_memories" on coach_memories
   for select using (household_id = my_household_id());
@@ -103,11 +107,15 @@ create policy "insert coach_memories" on coach_memories
   for insert with check (household_id = my_household_id() and user_id = auth.uid());
 create policy "update own coach_memories" on coach_memories
   for update using (household_id = my_household_id() and user_id = auth.uid());
+create policy "delete own coach_memories" on coach_memories
+  for delete using (household_id = my_household_id() and user_id = auth.uid());
 
 create policy "read coach_memory_summaries" on coach_memory_summaries
   for select using (household_id = my_household_id());
 create policy "insert coach_memory_summaries" on coach_memory_summaries
   for insert with check (household_id = my_household_id() and user_id = auth.uid());
+create policy "delete own coach_memory_summaries" on coach_memory_summaries
+  for delete using (household_id = my_household_id() and user_id = auth.uid());
 
 create policy "read coach_usage_events" on coach_usage_events
   for select using (household_id = my_household_id());

@@ -30,6 +30,7 @@ This document defines the first implementation step for Coach memory with:
   - credit balance visibility
   - fallback notice + `Restaurar memoria` CTA
   - mode-based token budget (`AiCoachService.analyze(maxTokens: ...)`)
+  - privacy actions: `Exportar memoria` and `Limpar memoria`
 - Integrated Coach payload into `openai-chat` function:
   - optional `coach_memory` request block (`mode`, `thread_id`, `context_window`, `user_message`, `household_id`)
   - thread bootstrap in `coach_threads`
@@ -41,9 +42,10 @@ This document defines the first implementation step for Coach memory with:
   - semantic dedup before memory insert (skip near-duplicate memories)
   - retention assignment on insert (`expires_at`) by mode/type
   - DB maintenance function `purge_expired_coach_memories()`
+  - delete policies for own memory rows across thread/message/memory/summary tables
 
 ## Next implementation steps
 
 1. Add explicit credit debit audit events (client-side debit + server-side usage correlation).
-2. Add user-facing delete/export flows for Coach memories.
-3. Improve ranking/decay policy (importance aging by recency and reuse).
+2. Improve ranking/decay policy (importance aging by recency and reuse).
+3. Add downloadable file export (JSON/CSV) in addition to clipboard export.

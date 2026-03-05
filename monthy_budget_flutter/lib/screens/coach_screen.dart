@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/coach_insight.dart';
@@ -222,6 +223,98 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     }
   }
 
+  Future<void> _exportCoachMemory() async {
+    setState(() => _loading = true);
+    try {
+      final json = await _service.exportCoachMemoryJson(widget.householdId);
+      if (!mounted) return;
+      await showDialog<void>(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Exportar memoria do Coach'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: SingleChildScrollView(
+              child: SelectableText(
+                json,
+                style: const TextStyle(fontSize: 12, height: 1.4),
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                await Clipboard.setData(ClipboardData(text: json));
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Memoria copiada para a area de transferencia'),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              },
+              child: const Text('Copiar'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Fechar'),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _clearCoachMemory() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Limpar memoria do Coach?'),
+        content: const Text(
+          'Isto remove memorias, resumos e contexto do chat do Coach para este utilizador.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(
+              'Limpar',
+              style: TextStyle(color: AppColors.error(context)),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (confirm != true) return;
+
+    setState(() => _loading = true);
+    try {
+      await _service.clearCoachMemories(widget.householdId);
+      if (!mounted) return;
+      setState(() => _coachThreadId = null);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Memoria do Coach limpa com sucesso'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
@@ -370,6 +463,24 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                   fontWeight: FontWeight.w600,
                   color: AppColors.textSecondary(context),
                 ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: [
+              TextButton(
+                onPressed: _loading ? null : _exportCoachMemory,
+                child: const Text('Exportar memoria'),
+              ),
+              TextButton(
+                onPressed: _loading ? null : _clearCoachMemory,
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.error(context),
+                ),
+                child: const Text('Limpar memoria'),
               ),
             ],
           ),
