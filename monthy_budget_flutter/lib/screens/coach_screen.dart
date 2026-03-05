@@ -114,12 +114,17 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
       _currentInsight = null;
     });
     try {
+      final creditsBefore = _subscription.aiCredits;
       final modeResult = await _subscriptionService.resolveAndConsumeCoachMode(
         _subscription,
         requestedMode: _selectedMode,
       );
       final nextSubscription = modeResult.state;
       final resolution = modeResult.resolution;
+      final creditsAfter = nextSubscription.aiCredits;
+      final debitedCredits = (creditsBefore - creditsAfter).clamp(0, 999999);
+      final clientAuditId =
+          'coach_${DateTime.now().millisecondsSinceEpoch}_${resolution.requestedMode.name}_${resolution.effectiveMode.name}';
       if (mounted) {
         setState(() {
           _subscription = nextSubscription;
@@ -146,6 +151,10 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         requestedCoachMode: _selectedMode,
         coachUsedFallback: resolution.usedFallback,
         coachFallbackReason: resolution.reason,
+        coachClientAuditId: clientAuditId,
+        coachDebitedCredits: debitedCredits,
+        coachCreditsBefore: creditsBefore,
+        coachCreditsAfter: creditsAfter,
         coachThreadId: _coachThreadId,
         coachContextWindow: _subscription.contextWindowForMode(effectiveMode),
         maxTokens: _maxTokensForMode(effectiveMode),

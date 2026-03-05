@@ -223,6 +223,10 @@ class AiCoachService {
     CoachMode? requestedCoachMode,
     bool coachUsedFallback = false,
     String? coachFallbackReason,
+    String? coachClientAuditId,
+    int coachDebitedCredits = 0,
+    int? coachCreditsBefore,
+    int? coachCreditsAfter,
   }) async {
     final stress = calculateStressIndex(
       summary: summary,
@@ -252,6 +256,10 @@ class AiCoachService {
         'requested_mode': (requestedCoachMode ?? coachMode ?? CoachMode.eco).name,
         'used_fallback': coachUsedFallback,
         'fallback_reason': coachFallbackReason,
+        'client_audit_id': coachClientAuditId,
+        'debited_credits': coachDebitedCredits,
+        'client_credit_before': coachCreditsBefore,
+        'client_credit_after': coachCreditsAfter,
         'thread_id': coachThreadId,
         'context_window': coachContextWindow,
         'user_message': prompt,

@@ -18,6 +18,10 @@ type CoachMemoryRequest = {
   requested_mode?: CoachMode;
   used_fallback?: boolean;
   fallback_reason?: string;
+  client_audit_id?: string;
+  debited_credits?: number;
+  client_credit_before?: number;
+  client_credit_after?: number;
   thread_id?: string;
   context_window?: number;
   user_message?: string;
@@ -437,8 +441,18 @@ async function logCoachUsageEvent(
       household_id: context.householdId,
       user_id: context.userId,
       thread_id: context.threadId,
+      client_audit_id: memoryReq?.client_audit_id?.toString() ?? null,
       requested_mode: requestedMode,
       effective_mode: context.modeUsed,
+      debited_credits: typeof memoryReq?.debited_credits === 'number'
+        ? Math.max(0, Math.round(memoryReq.debited_credits))
+        : 0,
+      client_credit_before: typeof memoryReq?.client_credit_before === 'number'
+        ? Math.max(0, Math.round(memoryReq.client_credit_before))
+        : null,
+      client_credit_after: typeof memoryReq?.client_credit_after === 'number'
+        ? Math.max(0, Math.round(memoryReq.client_credit_after))
+        : null,
       used_fallback: usedFallback,
       fallback_reason: fallbackReason,
       response_length_chars: responseLength,
