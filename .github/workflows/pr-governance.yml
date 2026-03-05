@@ -33,11 +33,8 @@ jobs:
           PR_LABELS=""
 
           if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
-            PR_BODY="$(cat <<'EOF'
-${{ github.event.pull_request.body }}
-EOF
-)"
-            PR_LABELS="${{ join(github.event.pull_request.labels.*.name, ',') }}"
+            PR_BODY="$(jq -r '.pull_request.body // ""' "$GITHUB_EVENT_PATH")"
+            PR_LABELS="$(jq -r '.pull_request.labels[].name // empty' "$GITHUB_EVENT_PATH" | paste -sd, -)"
           else
             PR_NUMBER='${{ inputs.pr_number }}'
             BRANCH='${{ inputs.branch }}'
