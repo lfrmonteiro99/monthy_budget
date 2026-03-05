@@ -79,7 +79,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   late AppSettings _draft;
   late List<String> _favorites;
   late TextEditingController _apiKeyController;
-  final HouseholdService _householdService = HouseholdService();
   String? _openSection = 'salaries';
   late LocalDashboardConfig _localDashboard;
   String? _inviteCode;
@@ -139,7 +138,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _generateInvite() async {
     try {
       final generator =
-          widget.generateInviteCode ?? _householdService.generateInviteCode;
+          widget.generateInviteCode ?? HouseholdService().generateInviteCode;
       final code = await generator(widget.householdId);
       if (!mounted) return;
       setState(() => _inviteCode = code);
@@ -150,7 +149,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() => _loadingAssociatedMembers = true);
     try {
       final loader =
-          widget.loadAssociatedMembers ?? _householdService.getAssociatedMembers;
+          widget.loadAssociatedMembers ?? HouseholdService().getAssociatedMembers;
       final members = await loader(widget.householdId);
       if (!mounted) return;
       setState(() {
