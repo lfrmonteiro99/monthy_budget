@@ -25,10 +25,14 @@ This document defines the first implementation step for Coach memory with:
   - `coach_memories` + vector index
   - `coach_memory_summaries`
   - `match_coach_memories(...)` RPC for retrieval
+- Integrated mode selection and fallback UX in `CoachScreen`:
+  - mode chips (`Eco/Plus/Pro`)
+  - credit balance visibility
+  - fallback notice + `Restaurar memoria` CTA
+  - mode-based token budget (`AiCoachService.analyze(maxTokens: ...)`)
 
 ## Next implementation steps
 
-1. Integrate mode resolution into Coach request flow.
-2. Add in-chat fallback UI notice and "Restaurar memoria" CTA.
-3. Add embedding + memory extraction pipeline in Edge Function.
-4. Add periodic summary generation to bound context growth.
+1. Add embedding + memory extraction pipeline in Edge Function.
+2. Add periodic summary generation to bound context growth.
+3. Connect retrieval RPC (`match_coach_memories`) to Coach prompt assembly.
