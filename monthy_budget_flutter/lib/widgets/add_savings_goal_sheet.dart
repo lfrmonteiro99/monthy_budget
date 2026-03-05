@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/savings_goal.dart';
 import '../theme/app_colors.dart';
@@ -82,7 +83,7 @@ class _AddSavingsGoalSheetState extends State<_AddSavingsGoalSheet> {
             isActive: _isActive,
           )
         : SavingsGoal(
-            id: 'sg_${DateTime.now().millisecondsSinceEpoch}',
+            id: const Uuid().v4(),
             name: name,
             targetAmount: target,
             deadline: _deadline,

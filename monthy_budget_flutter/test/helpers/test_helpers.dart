@@ -125,7 +125,7 @@ RecurringExpense makeRecurringExpense({
 // ─── Savings Factories ─────────────────────────────────────
 
 SavingsGoal makeSavingsGoal({
-  String id = 'sg_1',
+  String id = '00000000-0000-0000-0000-000000000001',
   String name = 'Emergency Fund',
   double targetAmount = 5000,
   double currentAmount = 1000,
@@ -144,8 +144,8 @@ SavingsGoal makeSavingsGoal({
     );
 
 SavingsContribution makeContribution({
-  String id = 'sc_1',
-  String goalId = 'sg_1',
+  String id = '00000000-0000-0000-0000-000000000010',
+  String goalId = '00000000-0000-0000-0000-000000000001',
   double amount = 200,
   DateTime? contributionDate,
   String? note,

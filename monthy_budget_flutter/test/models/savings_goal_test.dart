@@ -94,7 +94,7 @@ void main() {
     group('fromSupabase', () {
       test('with all fields', () {
         final map = {
-          'id': 'sg_100',
+          'id': '00000000-0000-0000-0000-000000000100',
           'name': 'Car Fund',
           'target_amount': 15000,
           'current_amount': 5000,
@@ -105,7 +105,7 @@ void main() {
 
         final goal = SavingsGoal.fromSupabase(map);
 
-        expect(goal.id, 'sg_100');
+        expect(goal.id, '00000000-0000-0000-0000-000000000100');
         expect(goal.name, 'Car Fund');
         expect(goal.targetAmount, 15000.0);
         expect(goal.currentAmount, 5000.0);
@@ -116,7 +116,7 @@ void main() {
 
       test('with null deadline and color', () {
         final map = {
-          'id': 'sg_200',
+          'id': '00000000-0000-0000-0000-000000000200',
           'name': 'Savings',
           'target_amount': 1000.0,
           'current_amount': null,
@@ -135,7 +135,7 @@ void main() {
 
       test('parses amount from int to double', () {
         final map = {
-          'id': 'sg_300',
+          'id': '00000000-0000-0000-0000-000000000300',
           'name': 'Fund',
           'target_amount': 5000,
           'current_amount': 2000,
@@ -150,7 +150,7 @@ void main() {
     group('toSupabase', () {
       test('date formatting', () {
         final goal = SavingsGoal(
-          id: 'sg_fmt',
+          id: '00000000-0000-0000-0000-00000000000f',
           name: 'Test',
           targetAmount: 1000,
           currentAmount: 100,
@@ -161,7 +161,7 @@ void main() {
 
         final map = goal.toSupabase('hh_1');
 
-        expect(map['id'], 'sg_fmt');
+        expect(map['id'], '00000000-0000-0000-0000-00000000000f');
         expect(map['household_id'], 'hh_1');
         expect(map['name'], 'Test');
         expect(map['target_amount'], 1000.0);
@@ -182,8 +182,8 @@ void main() {
   group('SavingsContribution', () {
     test('fromSupabase parses all fields', () {
       final map = {
-        'id': 'sc_1',
-        'goal_id': 'sg_1',
+        'id': '00000000-0000-0000-0000-000000000010',
+        'goal_id': '00000000-0000-0000-0000-000000000001',
         'amount': 250.0,
         'contribution_date': '2026-03-15',
         'note': 'Monthly deposit',
@@ -191,8 +191,8 @@ void main() {
 
       final contrib = SavingsContribution.fromSupabase(map);
 
-      expect(contrib.id, 'sc_1');
-      expect(contrib.goalId, 'sg_1');
+      expect(contrib.id, '00000000-0000-0000-0000-000000000010');
+      expect(contrib.goalId, '00000000-0000-0000-0000-000000000001');
       expect(contrib.amount, 250.0);
       expect(contrib.contributionDate, DateTime(2026, 3, 15));
       expect(contrib.note, 'Monthly deposit');
@@ -200,8 +200,8 @@ void main() {
 
     test('fromSupabase with null note', () {
       final map = {
-        'id': 'sc_2',
-        'goal_id': 'sg_2',
+        'id': '00000000-0000-0000-0000-000000000020',
+        'goal_id': '00000000-0000-0000-0000-000000000002',
         'amount': 100,
         'contribution_date': '2026-01-01',
         'note': null,
@@ -221,7 +221,7 @@ void main() {
       final map = contrib.toSupabase('hh_abc');
 
       expect(map['household_id'], 'hh_abc');
-      expect(map['goal_id'], 'sg_1');
+      expect(map['goal_id'], '00000000-0000-0000-0000-000000000001');
       expect(map['contribution_date'], '2026-02-14');
       expect(map['note'], 'Valentine deposit');
     });

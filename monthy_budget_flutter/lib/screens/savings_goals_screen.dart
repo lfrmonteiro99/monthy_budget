@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/savings_goal.dart';
 import '../services/savings_goal_service.dart';
@@ -476,7 +477,7 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
     );
     if (confirmed != true) return;
 
-    await widget.service.deleteContribution(c);
+    await widget.service.deleteContribution(c, widget.householdId);
     if (mounted) {
       setState(() {
         _contributions = _contributions.where((x) => x.id != c.id).toList();
@@ -866,7 +867,7 @@ class _AddContributionSheetState extends State<_AddContributionSheet> {
 
     final note = _noteController.text.trim();
     final result = SavingsContribution(
-      id: 'sc_${DateTime.now().millisecondsSinceEpoch}',
+      id: const Uuid().v4(),
       goalId: widget.goalId,
       amount: amount,
       contributionDate: _selectedDate,

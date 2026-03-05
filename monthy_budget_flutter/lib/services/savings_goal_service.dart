@@ -47,32 +47,22 @@ class SavingsGoalService {
   }
 
   /// Inserts a contribution and updates the goal's current_amount atomically
-  /// (read-modify-write since we don't have a Supabase RPC for this).
+  /// via a server-side RPC function (single transaction).
   Future<SavingsGoal> addContribution(
     SavingsContribution contribution,
     String householdId,
   ) async {
-    // Insert contribution
-    await _client
-        .from('savings_contributions')
-        .insert(contribution.toSupabase(householdId));
+    final result = await _client.rpc('add_savings_contribution', params: {
+      'p_id': contribution.id,
+      'p_household_id': householdId,
+      'p_goal_id': contribution.goalId,
+      'p_amount': contribution.amount,
+      'p_contribution_date':
+          '${contribution.contributionDate.year}-${contribution.contributionDate.month.toString().padLeft(2, '0')}-${contribution.contributionDate.day.toString().padLeft(2, '0')}',
+      'p_note': contribution.note,
+    });
 
-    // Read current goal
-    final goalRow = await _client
-        .from('savings_goals')
-        .select()
-        .eq('id', contribution.goalId)
-        .single();
-
-    final goal = SavingsGoal.fromSupabase(goalRow);
-    final updatedAmount = goal.currentAmount + contribution.amount;
-
-    // Update goal's current_amount
-    await _client.from('savings_goals').update({
-      'current_amount': updatedAmount,
-    }).eq('id', goal.id);
-
-    return goal.copyWith(currentAmount: updatedAmount);
+    return SavingsGoal.fromSupabase(result as Map<String, dynamic>);
   }
 
   /// Load contributions for all goals in a household, optionally limited to recent months.
@@ -101,24 +91,12 @@ class SavingsGoalService {
 
   Future<void> deleteContribution(
     SavingsContribution contribution,
+    String householdId,
   ) async {
-    await _client
-        .from('savings_contributions')
-        .delete()
-        .eq('id', contribution.id);
-
-    // Subtract from goal's current_amount
-    final goalRow = await _client
-        .from('savings_goals')
-        .select()
-        .eq('id', contribution.goalId)
-        .single();
-
-    final goal = SavingsGoal.fromSupabase(goalRow);
-    final updatedAmount = (goal.currentAmount - contribution.amount).clamp(0.0, double.infinity);
-
-    await _client.from('savings_goals').update({
-      'current_amount': updatedAmount,
-    }).eq('id', goal.id);
+    await _client.rpc('delete_savings_contribution', params: {
+      'p_contribution_id': contribution.id,
+      'p_goal_id': contribution.goalId,
+      'p_household_id': householdId,
+    });
   }
 }
