@@ -38,5 +38,20 @@ void main() {
 
       expect(message, rawError);
     });
+
+    test('detects auth errors from edge-function responses', () {
+      const error = 'FunctionException(status: 401, details: unauthorized)';
+      expect(isEdgeFunctionAuthError(error), isTrue);
+    });
+
+    test('builds actionable message for auth errors', () {
+      const error = 'FunctionException(status: 403, details: invalid jwt)';
+      final message = buildAiCoachRequestErrorMessage(
+        error,
+        hasApiKey: false,
+      );
+      expect(message, contains('Sessao expirada'));
+      expect(message, contains('Inicie sessao novamente'));
+    });
   });
 }
