@@ -17,11 +17,24 @@ bool shouldFallbackFromEdgeFunctionError(Object error) {
           raw.contains('404'));
 }
 
+bool isEdgeFunctionAuthError(Object error) {
+  final raw = error.toString().toLowerCase();
+  return raw.contains('status: 401') ||
+      raw.contains('status: 403') ||
+      raw.contains('unauthorized') ||
+      raw.contains('jwt') ||
+      raw.contains('invalid token');
+}
+
 String buildAiCoachRequestErrorMessage(
   Object error, {
   required bool hasApiKey,
 }) {
   final raw = error.toString().replaceFirst('Exception: ', '').trim();
+  if (isEdgeFunctionAuthError(error)) {
+    return 'Sessao expirada ou utilizador nao autenticado. '
+        'Inicie sessao novamente para usar o AI Coach.';
+  }
   if (shouldFallbackFromEdgeFunctionError(error)) {
     if (hasApiKey) {
       return 'Serviço de IA indisponível no servidor. Verifique se a Edge Function '
@@ -223,8 +236,10 @@ class AiCoachService {
   }) async {
     final hasApiKey = apiKey.trim().isNotEmpty;
     try {
+      final authHeaders = _buildEdgeAuthHeaders();
       final response = await _client.functions.invoke(
         _edgeFunctionName,
+        headers: authHeaders,
         body: {
           'model': _model,
           'messages': messages,
@@ -274,6 +289,17 @@ class AiCoachService {
       }
       throw Exception(buildAiCoachRequestErrorMessage(e, hasApiKey: hasApiKey));
     }
+  }
+
+  Map<String, String> _buildEdgeAuthHeaders() {
+    final accessToken = _client.auth.currentSession?.accessToken;
+    if (accessToken == null || accessToken.trim().isEmpty) {
+      throw Exception(
+        'Sessao expirada ou utilizador nao autenticado. '
+        'Inicie sessao novamente para usar o AI Coach.',
+      );
+    }
+    return {'Authorization': 'Bearer $accessToken'};
   }
 
   Future<String> _requestDirectOpenAiCompletion({
