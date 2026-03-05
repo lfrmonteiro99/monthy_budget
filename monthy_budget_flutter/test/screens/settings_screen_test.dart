@@ -70,7 +70,9 @@ void main() {
     );
 
     await tester.pumpAndSettle();
-    await tester.tap(find.byIcon(Icons.refresh));
+    final refreshButton = find.byIcon(Icons.refresh);
+    await tester.ensureVisible(refreshButton);
+    await tester.tap(refreshButton, warnIfMissed: false);
     await tester.pumpAndSettle();
 
     expect(calls, 1);
