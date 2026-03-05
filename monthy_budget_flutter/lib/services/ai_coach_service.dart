@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/app_settings.dart';
@@ -6,13 +9,45 @@ import '../models/coach_insight.dart';
 import '../models/purchase_record.dart';
 import '../utils/stress_index.dart';
 
+bool shouldFallbackFromEdgeFunctionError(Object error) {
+  final raw = error.toString().toLowerCase();
+  return raw.contains('functionexception') &&
+      (raw.contains('status: 404') ||
+          raw.contains('not_found') ||
+          raw.contains('404'));
+}
+
+String buildAiCoachRequestErrorMessage(
+  Object error, {
+  required bool hasApiKey,
+}) {
+  final raw = error.toString().replaceFirst('Exception: ', '').trim();
+  if (shouldFallbackFromEdgeFunctionError(error)) {
+    if (hasApiKey) {
+      return 'Serviço de IA indisponível no servidor. Verifique se a Edge Function '
+          '"openai-chat" está publicada no projeto Supabase.';
+    }
+    return 'Serviço de IA indisponível no servidor. Adicione uma API key OpenAI '
+        'em Definições > AI Coach ou publique a Edge Function "openai-chat".';
+  }
+  if (raw.isEmpty) return 'Falha ao processar pedido de IA.';
+  return raw;
+}
+
 class AiCoachService {
   static const _apiKeyPref = 'openai_api_key';
   static const _edgeFunctionName = 'openai-chat';
   static const _model = 'gpt-4o-mini';
   static const _maxInsights = 20;
 
-  final _client = Supabase.instance.client;
+  final SupabaseClient _client;
+  final http.Client _httpClient;
+
+  AiCoachService({
+    SupabaseClient? client,
+    http.Client? httpClient,
+  })  : _client = client ?? Supabase.instance.client,
+        _httpClient = httpClient ?? http.Client();
 
   // ── API key (device-local) ─────────────────────────────────────────────────
 
@@ -99,6 +134,7 @@ class AiCoachService {
     final prompt = _buildPrompt(settings, summary, purchaseHistory, stress);
 
     final content = await _requestChatCompletion(
+      apiKey: apiKey,
       messages: [
         {
           'role': 'system',
@@ -156,6 +192,7 @@ class AiCoachService {
         'Sê directo e específico. Sem introdução nem conclusão.');
 
     final content = await _requestChatCompletion(
+      apiKey: apiKey,
       messages: [
         {
           'role': 'system',
@@ -179,10 +216,12 @@ class AiCoachService {
   }
 
   Future<String> _requestChatCompletion({
+    required String apiKey,
     required List<Map<String, String>> messages,
     int maxTokens = 800,
     double temperature = 0.5,
   }) async {
+    final hasApiKey = apiKey.trim().isNotEmpty;
     try {
       final response = await _client.functions.invoke(
         _edgeFunctionName,
@@ -196,6 +235,14 @@ class AiCoachService {
 
       final data = response.data;
       if (response.status != 200 || data is! Map<String, dynamic>) {
+        if (response.status == 404 && hasApiKey) {
+          return _requestDirectOpenAiCompletion(
+            apiKey: apiKey,
+            messages: messages,
+            maxTokens: maxTokens,
+            temperature: temperature,
+          );
+        }
         final msg = data is Map<String, dynamic>
             ? (data['error']?.toString() ?? 'Falha ao processar pedido de IA')
             : 'Falha ao processar pedido de IA';
@@ -208,8 +255,85 @@ class AiCoachService {
       }
       return content;
     } catch (e) {
-      throw Exception(e.toString().replaceFirst('Exception: ', ''));
+      if (hasApiKey && shouldFallbackFromEdgeFunctionError(e)) {
+        try {
+          return await _requestDirectOpenAiCompletion(
+            apiKey: apiKey,
+            messages: messages,
+            maxTokens: maxTokens,
+            temperature: temperature,
+          );
+        } catch (fallbackError) {
+          throw Exception(
+            buildAiCoachRequestErrorMessage(
+              fallbackError,
+              hasApiKey: hasApiKey,
+            ),
+          );
+        }
+      }
+      throw Exception(buildAiCoachRequestErrorMessage(e, hasApiKey: hasApiKey));
     }
+  }
+
+  Future<String> _requestDirectOpenAiCompletion({
+    required String apiKey,
+    required List<Map<String, String>> messages,
+    required int maxTokens,
+    required double temperature,
+  }) async {
+    final response = await _httpClient.post(
+      Uri.parse('https://api.openai.com/v1/chat/completions'),
+      headers: {
+        'Authorization': 'Bearer ${apiKey.trim()}',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'model': _model,
+        'messages': messages,
+        'max_tokens': maxTokens,
+        'temperature': temperature,
+      }),
+    );
+
+    Map<String, dynamic>? data;
+    try {
+      final decoded = jsonDecode(response.body);
+      if (decoded is Map<String, dynamic>) data = decoded;
+    } catch (_) {
+      data = null;
+    }
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      final errorMessage = data?['error'] is Map<String, dynamic>
+          ? (data!['error']['message']?.toString() ??
+              'Falha ao processar pedido de IA')
+          : 'Falha ao processar pedido de IA';
+      throw Exception(errorMessage);
+    }
+
+    final choices = data?['choices'];
+    if (choices is! List || choices.isEmpty) {
+      throw Exception('Resposta vazia da IA.');
+    }
+    final message = choices.first['message'];
+    if (message is! Map<String, dynamic>) {
+      throw Exception('Resposta vazia da IA.');
+    }
+    final content = message['content'];
+    if (content is String && content.trim().isNotEmpty) {
+      return content.trim();
+    }
+    if (content is List) {
+      final textParts = content
+          .whereType<Map<String, dynamic>>()
+          .map((e) => e['text']?.toString() ?? '')
+          .where((s) => s.trim().isNotEmpty)
+          .join('\n')
+          .trim();
+      if (textParts.isNotEmpty) return textParts;
+    }
+    throw Exception('Resposta vazia da IA.');
   }
 
   // ── Prompt ─────────────────────────────────────────────────────────────────
