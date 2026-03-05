@@ -133,12 +133,15 @@ jobs:
         run: |
           TAG="${GITHUB_REF_NAME}"
           BODY_FILE="release_notes.md"
-          awk -v tag="$TAG" '
-            BEGIN { capture=0 }
-            $0 ~ "^## "tag"( |$)" { capture=1; print; next }
-            /^## / && capture==1 { exit }
-            capture==1 { print }
-          ' monthy_budget_flutter/CHANGELOG.md > "$BODY_FILE"
+
+          if [ -f monthy_budget_flutter/CHANGELOG.md ]; then
+            awk -v tag="$TAG" '
+              BEGIN { capture=0 }
+              $0 ~ "^## "tag"( |$)" { capture=1; print; next }
+              /^## / && capture==1 { exit }
+              capture==1 { print }
+            ' monthy_budget_flutter/CHANGELOG.md > "$BODY_FILE"
+          fi
 
           if [ -s "$BODY_FILE" ]; then
             echo "has_notes=true" >> "$GITHUB_OUTPUT"
