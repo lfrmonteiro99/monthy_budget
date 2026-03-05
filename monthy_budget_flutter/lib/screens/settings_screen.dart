@@ -40,6 +40,9 @@ class SettingsScreen extends StatefulWidget {
   final ValueChanged<Map<String, double>>? onSaveMonthlyBudgets;
   final List<RecurringExpense> recurringExpenses;
   final ValueChanged<List<RecurringExpense>>? onRecurringChanged;
+  final Future<List<AssociatedHouseholdMember>> Function(String householdId)?
+      loadAssociatedMembers;
+  final Future<String> Function(String householdId)? generateInviteCode;
 
   const SettingsScreen({
     super.key,
@@ -64,6 +67,8 @@ class SettingsScreen extends StatefulWidget {
     this.onSaveMonthlyBudgets,
     this.recurringExpenses = const [],
     this.onRecurringChanged,
+    this.loadAssociatedMembers,
+    this.generateInviteCode,
   });
 
   @override
@@ -74,9 +79,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   late AppSettings _draft;
   late List<String> _favorites;
   late TextEditingController _apiKeyController;
+  final HouseholdService _householdService = HouseholdService();
   String? _openSection = 'salaries';
   late LocalDashboardConfig _localDashboard;
   String? _inviteCode;
+  List<AssociatedHouseholdMember> _associatedMembers = const [];
+  bool _loadingAssociatedMembers = false;
   late Map<String, double> _monthlyBudgetsDraft;
   late List<RecurringExpense> _recurringDraft;
 
@@ -94,6 +102,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _localDashboard = widget.dashboardConfig ?? const LocalDashboardConfig();
     _monthlyBudgetsDraft = Map<String, double>.from(widget.monthlyBudgets);
     _recurringDraft = List.from(widget.recurringExpenses);
+    _loadAssociatedMembers();
   }
 
   @override
@@ -128,9 +137,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _generateInvite() async {
-    final code =
-        await HouseholdService().generateInviteCode(widget.householdId);
-    setState(() => _inviteCode = code);
+    try {
+      final generator =
+          widget.generateInviteCode ?? _householdService.generateInviteCode;
+      final code = await generator(widget.householdId);
+      if (!mounted) return;
+      setState(() => _inviteCode = code);
+    } catch (_) {}
+  }
+
+  Future<void> _loadAssociatedMembers() async {
+    setState(() => _loadingAssociatedMembers = true);
+    try {
+      final loader =
+          widget.loadAssociatedMembers ?? _householdService.getAssociatedMembers;
+      final members = await loader(widget.householdId);
+      if (!mounted) return;
+      setState(() {
+        _associatedMembers = members;
+        _loadingAssociatedMembers = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _loadingAssociatedMembers = false);
+    }
   }
 
   String _subscriptionSubtitle() {
@@ -2255,6 +2285,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildHouseholdSection() {
     final l10n = S.of(context);
+    final myUserId = Supabase.instance.client.auth.currentUser?.id;
     return Container(
       color: AppColors.surface(context),
       padding: const EdgeInsets.all(20),
@@ -2262,6 +2293,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _helpTip(l10n.settingsHouseholdTip),
+          if (_loadingAssociatedMembers) ...[
+            const SizedBox(height: 8),
+            const LinearProgressIndicator(minHeight: 2),
+            const SizedBox(height: 12),
+          ],
+          if (_associatedMembers.isNotEmpty) ...[
+            _label(l10n.settingsHouseholdMembers),
+            const SizedBox(height: 8),
+            ..._associatedMembers.map((member) {
+              final isMe = member.id == myUserId;
+              final roleLabel = member.role.toUpperCase();
+              return ListTile(
+                contentPadding: EdgeInsets.zero,
+                dense: true,
+                leading: Icon(Icons.person_outline, color: AppColors.primary(context)),
+                title: Text(
+                  member.email,
+                  style: TextStyle(color: AppColors.textPrimary(context)),
+                ),
+                subtitle: Text(
+                  isMe ? '$roleLabel - ME' : roleLabel,
+                  style: TextStyle(color: AppColors.textMuted(context)),
+                ),
+              );
+            }),
+            const SizedBox(height: 12),
+          ],
           _label(l10n.settingsInviteCodeLabel),
           const SizedBox(height: 8),
           ListTile(
@@ -2278,9 +2336,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         color: AppColors.textPrimary(context)),
                   )
                 : Text(l10n.settingsShareWithMembers),
-            trailing: IconButton(
-              icon: const Icon(Icons.refresh),
-              tooltip: l10n.settingsNewCode,
+            trailing: FilledButton.icon(
+              icon: const Icon(Icons.refresh, size: 18),
+              label: Text(_inviteCode == null
+                  ? l10n.settingsGenerateInvite
+                  : l10n.settingsNewCode),
               onPressed: _generateInvite,
             ),
           ),
