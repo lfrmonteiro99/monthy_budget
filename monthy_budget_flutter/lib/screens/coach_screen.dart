@@ -367,6 +367,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildComposer() {
+    final costNow = _subscription.creditCostForMode(_selectedMode);
     return Container(
       key: CoachTourKeys.analyzeButton,
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
@@ -374,34 +375,50 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         color: AppColors.surface(context),
         border: Border(top: BorderSide(color: AppColors.border(context))),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: TextField(
-              controller: _composerController,
-              minLines: 1,
-              maxLines: 4,
-              textInputAction: TextInputAction.send,
-              onSubmitted: (_) => _sendCurrentMessage(),
-              decoration: InputDecoration(
-                hintText: 'Escreve uma mensagem...',
-                isDense: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _composerController,
+                  minLines: 1,
+                  maxLines: 4,
+                  textInputAction: TextInputAction.send,
+                  onSubmitted: (_) => _sendCurrentMessage(),
+                  decoration: InputDecoration(
+                    hintText: 'Escreve uma mensagem...',
+                    isDense: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                 ),
+              ),
+              const SizedBox(width: 8),
+              FilledButton(
+                onPressed: _loading ? null : _sendCurrentMessage,
+                style: FilledButton.styleFrom(
+                  padding: const EdgeInsets.all(14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Icon(Icons.send_rounded, size: 18),
               ),
             ),
           ),
-          const SizedBox(width: 8),
-          FilledButton(
-            onPressed: _loading ? null : _sendCurrentMessage,
-            style: FilledButton.styleFrom(
-              padding: const EdgeInsets.all(14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+          const SizedBox(height: 6),
+          Text(
+            costNow == 0
+                ? 'Esta mensagem nao consome creditos (modo Eco).'
+                : 'Esta mensagem vai consumir $costNow creditos. A resposta nao consome creditos.',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textMuted(context),
             ),
-            child: const Icon(Icons.send_rounded, size: 18),
           ),
         ],
       ),
@@ -457,6 +474,15 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           const SizedBox(height: 8),
           Text(
             'Memoria ativa: ${effectiveMode.name.toUpperCase()} ($usagePct%)',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textMuted(context),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Custo por mensagem enviada. A resposta do coach nao consome creditos.',
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
