@@ -41,6 +41,23 @@ class SubscriptionService {
     return updated;
   }
 
+  /// Sync local state with a remote tier from RevenueCat.
+  ///
+  /// If tiers match, returns [current] unchanged.
+  /// If different, updates the tier (and marks trial as used for paid tiers).
+  Future<SubscriptionState> syncFromRemoteTier(
+      SubscriptionState current, SubscriptionTier remoteTier) async {
+    if (current.tier == remoteTier) return current;
+    final updated = current.copyWith(
+      tier: remoteTier,
+      trialUsed: remoteTier != SubscriptionTier.free
+          ? true
+          : current.trialUsed,
+    );
+    await save(updated);
+    return updated;
+  }
+
   /// Downgrade to free tier (e.g., subscription cancelled).
   Future<SubscriptionState> downgrade(SubscriptionState current) async {
     final updated =

@@ -52,6 +52,8 @@ class DashboardScreen extends StatefulWidget {
   final VoidCallback? onTourComplete;
   final GlobalKey? fabKey;
   final GlobalKey? navBarKey;
+  final bool focusedMode;
+  final VoidCallback? onOpenInsights;
 
   const DashboardScreen({
     super.key,
@@ -79,6 +81,8 @@ class DashboardScreen extends StatefulWidget {
     this.onTourComplete,
     this.fabKey,
     this.navBarKey,
+    this.focusedMode = false,
+    this.onOpenInsights,
   });
 
   @override
@@ -233,7 +237,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ],
                 ),
               ),
-              if (hasData) ...[
+              if (hasData && widget.focusedMode) ...[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                  child: _buildFocusedDashboardBody(context, stressResult, monthReview, l10n),
+                ),
+              ],
+              if (hasData && !widget.focusedMode) ...[
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                   child: Column(
@@ -336,6 +346,122 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildFocusedDashboardBody(
+    BuildContext context,
+    StressIndexResult stressResult,
+    MonthReviewResult? monthReview,
+    S l10n,
+  ) {
+    return Column(
+      children: [
+        _StressIndexCard(
+          key: DashboardTourKeys.stressIndex,
+          result: stressResult,
+          onShowTrend: stressResult.score > 0
+              ? () {
+                  showTrendSheet(
+                    context: context,
+                    stressHistory: settings.stressHistory,
+                    expenseHistory: expenseHistory,
+                    currentTotalExpenses: summary.totalExpenses,
+                  );
+                }
+              : null,
+        ),
+        const SizedBox(height: 16),
+        if (monthReview != null) ...[
+          _MonthReviewCard(
+            review: monthReview,
+            onTap: () => showMonthReviewSheet(
+              context: context,
+              review: monthReview,
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
+        if (dashboardConfig.showUpcomingBills &&
+            recurringExpenses.any((r) => r.isActive && r.dayOfMonth != null)) ...[
+          UpcomingBillsCard(
+            recurringExpenses: recurringExpenses,
+            reminderDaysBefore: widget.billReminderDaysBefore,
+            onOpenRecurring: widget.onOpenRecurringExpenses,
+          ),
+          const SizedBox(height: 16),
+        ],
+        _buildNextActionsCard(context, l10n),
+      ],
+    );
+  }
+
+  Widget _buildNextActionsCard(BuildContext context, S l10n) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border(context)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Quick actions',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary(context),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _actionButton(
+                context,
+                icon: Icons.add_circle_outline,
+                label: l10n.addExpenseTooltip,
+                onTap: onAddExpense,
+              ),
+              _actionButton(
+                context,
+                icon: Icons.receipt_long_outlined,
+                label: l10n.expenseTrackerScreenTitle,
+                onTap: onOpenExpenseTracker,
+              ),
+              if (widget.onOpenInsights != null)
+                _actionButton(
+                  context,
+                  icon: Icons.insights_outlined,
+                  label: l10n.trendTitle,
+                  onTap: widget.onOpenInsights!,
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _actionButton(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return OutlinedButton.icon(
+      onPressed: onTap,
+      icon: Icon(icon, size: 16),
+      label: Text(label, overflow: TextOverflow.ellipsis),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: AppColors.textPrimary(context),
+        side: BorderSide(color: AppColors.border(context)),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }

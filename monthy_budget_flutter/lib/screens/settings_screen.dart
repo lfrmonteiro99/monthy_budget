@@ -31,8 +31,10 @@ class SettingsScreen extends StatefulWidget {
   final String? initialSection;
   final LocalDashboardConfig? dashboardConfig;
   final ValueChanged<LocalDashboardConfig>? onSaveDashboardConfig;
+  final VoidCallback? onOpenDetailedDashboard;
   final VoidCallback? onOpenNotificationSettings;
   final VoidCallback? onOpenSubscription;
+  final VoidCallback? onOpenCustomerCenter;
   final String? subscriptionLabel;
   final Map<String, double> monthlyBudgets;
   final ValueChanged<Map<String, double>>? onSaveMonthlyBudgets;
@@ -53,8 +55,10 @@ class SettingsScreen extends StatefulWidget {
     this.initialSection,
     this.dashboardConfig,
     this.onSaveDashboardConfig,
+    this.onOpenDetailedDashboard,
     this.onOpenNotificationSettings,
     this.onOpenSubscription,
+    this.onOpenCustomerCenter,
     this.subscriptionLabel,
     this.monthlyBudgets = const {},
     this.onSaveMonthlyBudgets,
@@ -118,7 +122,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
     widget.onSave(_draft);
     widget.onSaveFavorites(_favorites);
-    widget.onSaveApiKey(_apiKeyController.text.trim());
     widget.onSaveDashboardConfig?.call(_localDashboard);
     widget.onSaveMonthlyBudgets?.call(_monthlyBudgetsDraft);
     Navigator.of(context).pop();
@@ -323,6 +326,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         trailing: Icon(Icons.chevron_right,
                             color: AppColors.textMuted(context)),
                         onTap: widget.onOpenSubscription,
+                      ),
+                    // Customer Center — manage existing subscription
+                    if (widget.onOpenCustomerCenter != null)
+                      ListTile(
+                        leading: Icon(Icons.manage_accounts_outlined,
+                            color: AppColors.textSecondary(context)),
+                        title: Text('Manage Subscription',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textPrimary(context))),
+                        subtitle: Text(
+                          'Cancel, change plan, or restore purchases',
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.textSecondary(context)),
+                        ),
+                        trailing: Icon(Icons.chevron_right,
+                            color: AppColors.textMuted(context)),
+                        onTap: widget.onOpenCustomerCenter,
                       ),
                     // Notifications navigation
                     ListTile(
@@ -1160,6 +1182,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           const SizedBox(height: 16),
+          if (widget.onOpenDetailedDashboard != null) ...[
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.background(context),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppColors.border(context)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Home uses a focused dashboard. Open the detailed dashboard to see every card.',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary(context),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  OutlinedButton.icon(
+                    onPressed: widget.onOpenDetailedDashboard,
+                    icon: const Icon(Icons.dashboard_customize_outlined, size: 16),
+                    label: const Text('Open Detailed Dashboard'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.textPrimary(context),
+                      side: BorderSide(color: AppColors.border(context)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
           _label(l10n.settingsVisibleSections),
           const SizedBox(height: 8),
           Row(
@@ -2111,31 +2169,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildCoachSection() {
-    final l10n = S.of(context);
-    final hasKey = _apiKeyController.text.trim().isNotEmpty;
     return Container(
       color: AppColors.surface(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _label(l10n.settingsApiKey),
+          _label('AI Coach'),
           const SizedBox(height: 8),
-          TextField(
-            controller: _apiKeyController,
-            obscureText: true,
-            onChanged: (_) => setState(() {}),
-            decoration: _inputDecoration('sk-...').copyWith(
-              hintText: 'sk-...',
-              suffixIcon: hasKey
-                  ? Icon(Icons.check_circle, color: AppColors.success(context), size: 20)
-                  : Icon(Icons.key_outlined, color: AppColors.borderMuted(context), size: 20),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.successBackground(context),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.success(context).withValues(alpha: 0.25)),
             ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            l10n.settingsApiKeyInfo,
-            style: TextStyle(fontSize: 11, color: AppColors.textMuted(context), height: 1.5),
+            child: Row(
+              children: [
+                Icon(Icons.verified_user_outlined, size: 18, color: AppColors.success(context)),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'OpenAI API key protegida no Supabase (Edge Function).',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textPrimary(context),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

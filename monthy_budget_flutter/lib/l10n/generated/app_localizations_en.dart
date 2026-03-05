@@ -2108,7 +2108,7 @@ class SEn extends S {
 
   @override
   String billsPerMonth(int count, String amount) {
-    return '$count bills · $amount/mo';
+    return '$count bills Â· $amount/mo';
   }
 
   @override
@@ -2243,7 +2243,7 @@ class SEn extends S {
 
   @override
   String savingsGoalSurplusSuggestion(String amount) {
-    return 'You had $amount surplus last month — allocate to a goal?';
+    return 'You had $amount surplus last month â€” allocate to a goal?';
   }
 
   @override
@@ -2788,7 +2788,7 @@ class SEn extends S {
   String get taxSimPresets => 'QUICK PRESETS';
 
   @override
-  String get taxSimPresetRaise => '+€200 raise';
+  String get taxSimPresetRaise => '+â‚¬200 raise';
 
   @override
   String get taxSimPresetMeal => 'Card vs cash meal';
@@ -2896,6 +2896,8 @@ class SEn extends S {
   @override
   String get settingsHouseholdTip =>
       'Invite family members to share budget data across devices. All members see the same expenses and budgets.';
+
+  @override
   String get subscriptionTitle => 'Subscription';
 
   @override
@@ -2994,7 +2996,8 @@ class SEn extends S {
   String get subscriptionTrialEnded => 'Your trial has ended';
 
   @override
-  String get subscriptionChoosePlan => 'Choose a plan to keep all your data and features';
+  String get subscriptionChoosePlan =>
+      'Choose a plan to keep all your data and features';
 
   @override
   String get subscriptionUnlockPower => 'Unlock the full power of your budget';

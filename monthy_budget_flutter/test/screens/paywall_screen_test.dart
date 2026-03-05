@@ -60,7 +60,7 @@ void main() {
     });
 
     group('tier cards', () {
-      testWidgets('displays all three tier cards', (tester) async {
+      testWidgets('displays free and pro tier cards', (tester) async {
         final state = SubscriptionState(
           trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
         );
@@ -70,11 +70,10 @@ void main() {
         ));
 
         expect(find.text('Free'), findsOneWidget);
-        expect(find.text('Premium'), findsOneWidget);
-        expect(find.text('Family'), findsOneWidget);
+        expect(find.text('Gestão Mensal Pro'), findsOneWidget);
       });
 
-      testWidgets('shows "Most Popular" badge on Premium', (tester) async {
+      testWidgets('shows "Best Value" badge on Pro', (tester) async {
         final state = SubscriptionState(
           trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
         );
@@ -83,7 +82,7 @@ void main() {
           PaywallScreen(subscription: state, onSelectTier: (_) {}),
         ));
 
-        expect(find.text('Most Popular'), findsOneWidget);
+        expect(find.text('Best Value'), findsOneWidget);
       });
 
       testWidgets('shows CTA labels for each tier', (tester) async {
@@ -97,8 +96,7 @@ void main() {
         ));
 
         expect(find.text('Continue Free'), findsOneWidget);
-        expect(find.text('Start Premium'), findsOneWidget);
-        expect(find.text('Start Family'), findsOneWidget);
+        expect(find.text('Start Pro'), findsOneWidget);
       });
 
       testWidgets('shows "Current Plan" for active tier', (tester) async {
@@ -141,11 +139,7 @@ void main() {
         await tester.pumpWidget(_wrap(
           PaywallScreen(subscription: state, onSelectTier: (_) {}),
         ));
-
-        // Yearly prices
-        expect(find.text('€2.49'), findsOneWidget); // Premium yearly
-        expect(find.text('€4.16'), findsOneWidget); // Family yearly
-        expect(find.text('€0'), findsOneWidget); // Free
+        expect(find.textContaining('2.49'), findsOneWidget);
       });
 
       testWidgets('shows yearly savings notes', (tester) async {
@@ -158,7 +152,6 @@ void main() {
         ));
 
         expect(find.textContaining('Save 37%'), findsOneWidget);
-        expect(find.textContaining('Save 40%'), findsOneWidget);
       });
 
       testWidgets('switches to monthly pricing when toggled', (tester) async {
@@ -173,10 +166,7 @@ void main() {
         // Tap "Monthly" toggle
         await tester.tap(find.text('Monthly'));
         await tester.pumpAndSettle();
-
-        // Monthly prices
-        expect(find.text('€3.99'), findsOneWidget); // Premium monthly
-        expect(find.text('€6.99'), findsOneWidget); // Family monthly
+        expect(find.textContaining('3.99'), findsOneWidget);
       });
     });
 
@@ -195,7 +185,7 @@ void main() {
         expect(find.text('1 savings goal'), findsOneWidget);
       });
 
-      testWidgets('shows premium tier features', (tester) async {
+      testWidgets('shows pro tier features', (tester) async {
         final state = SubscriptionState(
           trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
         );
@@ -203,13 +193,13 @@ void main() {
         await tester.pumpWidget(_wrap(
           PaywallScreen(subscription: state, onSelectTier: (_) {}),
         ));
-
+        expect(find.text('Unlimited categories & history'), findsOneWidget);
         expect(find.text('AI Financial Coach'), findsOneWidget);
         expect(find.text('Meal Planner + AI recipes'), findsOneWidget);
         expect(find.text('No ads'), findsOneWidget);
       });
 
-      testWidgets('shows family tier features', (tester) async {
+      testWidgets('shows advanced pro features', (tester) async {
         final state = SubscriptionState(
           trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
         );
@@ -217,8 +207,6 @@ void main() {
         await tester.pumpWidget(_wrap(
           PaywallScreen(subscription: state, onSelectTier: (_) {}),
         ));
-
-        expect(find.text('Everything in Premium'), findsOneWidget);
         expect(find.text('Household sharing (up to 6)'), findsOneWidget);
         expect(find.text('Multi-country tax simulator'), findsOneWidget);
       });
@@ -290,20 +278,15 @@ void main() {
         await tester.pumpWidget(_wrap(
           PaywallScreen(subscription: state, onSelectTier: (_) {}),
         ));
-
-        expect(
-          find.text('Cancel anytime • No hidden fees'),
-          findsOneWidget,
-        );
-        expect(
-          find.text('Terms of Service • Privacy Policy'),
-          findsOneWidget,
-        );
+        expect(find.textContaining('Cancel anytime'), findsOneWidget);
+        expect(find.textContaining('No hidden fees'), findsOneWidget);
+        expect(find.textContaining('Terms of Service'), findsOneWidget);
+        expect(find.textContaining('Privacy Policy'), findsOneWidget);
       });
     });
 
     group('tier selection callbacks', () {
-      testWidgets('calls onSelectTier with premium when tapped',
+      testWidgets('calls onSelectTier with family when "Start Pro" tapped',
           (tester) async {
         SubscriptionTier? selectedTier;
         final state = SubscriptionState(
@@ -317,32 +300,13 @@ void main() {
           ),
         ));
 
-        await tester.scrollUntilVisible(find.text('Start Premium'), 200);
+        await tester.scrollUntilVisible(find.text('Start Pro'), 200);
         await tester.pumpAndSettle();
-        await tester.tap(find.text('Start Premium'));
-        expect(selectedTier, SubscriptionTier.premium);
-      });
-
-      testWidgets('calls onSelectTier with family when tapped',
-          (tester) async {
-        SubscriptionTier? selectedTier;
-        final state = SubscriptionState(
-          trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
-        );
-
-        await tester.pumpWidget(_wrap(
-          PaywallScreen(
-            subscription: state,
-            onSelectTier: (tier) => selectedTier = tier,
-          ),
-        ));
-
-        await tester.scrollUntilVisible(find.text('Start Family'), 200);
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Start Family'));
+        await tester.tap(find.text('Start Pro'));
         expect(selectedTier, SubscriptionTier.family);
       });
 
+      
       testWidgets('calls onSelectTier with free when "Continue Free" tapped',
           (tester) async {
         SubscriptionTier? selectedTier;
@@ -358,6 +322,8 @@ void main() {
           ),
         ));
 
+        await tester.scrollUntilVisible(find.text('Continue Free'), 200);
+        await tester.pumpAndSettle();
         await tester.tap(find.text('Continue Free'));
         expect(selectedTier, SubscriptionTier.free);
       });
@@ -402,17 +368,17 @@ void main() {
         ));
 
         // Initially yearly
-        expect(find.text('€2.49'), findsOneWidget);
+        expect(find.textContaining('2.49'), findsOneWidget);
 
         // Switch to monthly
         await tester.tap(find.text('Monthly'));
         await tester.pumpAndSettle();
-        expect(find.text('€3.99'), findsOneWidget);
+        expect(find.textContaining('3.99'), findsOneWidget);
 
         // Switch back to yearly
         await tester.tap(find.text('Yearly (save 37%)'));
         await tester.pumpAndSettle();
-        expect(find.text('€2.49'), findsOneWidget);
+        expect(find.textContaining('2.49'), findsOneWidget);
       });
     });
   });

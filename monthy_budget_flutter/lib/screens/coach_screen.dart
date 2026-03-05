@@ -83,11 +83,6 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 
   Future<void> _analyze() async {
-    final l10n = S.of(context);
-    if (widget.apiKey.isEmpty) {
-      setState(() => _error = l10n.coachApiKeyRequired);
-      return;
-    }
     setState(() {
       _loading = true;
       _error = null;
@@ -236,42 +231,25 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                   style: TextStyle(
                       fontSize: 12, color: AppColors.textSecondary(context), height: 1.5),
                 ),
-                if (widget.apiKey.isEmpty) ...[
-                  const SizedBox(height: 10),
-                  TextButton.icon(
-                    onPressed: widget.onOpenSettings,
-                    icon: const Icon(Icons.settings_outlined, size: 14),
-                    label: Text(
-                      l10n.coachConfigureApiKey,
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                          color: AppColors.success(context), shape: BoxShape.circle),
                     ),
-                    style: TextButton.styleFrom(
-                      foregroundColor: AppColors.primary(context),
-                      padding: EdgeInsets.zero,
-                      minimumSize: const Size(48, 40),
+                    const SizedBox(width: 6),
+                    Text(
+                      'IA segura via servidor',
+                      style: TextStyle(
+                          fontSize: 11,
+                          color: AppColors.success(context),
+                          fontWeight: FontWeight.w500),
                     ),
-                  ),
-                ] else ...[
-                  const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      Container(
-                        width: 6,
-                        height: 6,
-                        decoration: BoxDecoration(
-                            color: AppColors.success(context), shape: BoxShape.circle),
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        l10n.coachApiKeyConfigured,
-                        style: TextStyle(
-                            fontSize: 11,
-                            color: AppColors.success(context),
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ],
             ),
           ),

@@ -73,7 +73,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final now = DateTime.now();
     final saved = await _service.load(widget.householdId, now.month, now.year);
     if (!mounted) return;
-    if (saved != null && widget.apiKey.isNotEmpty) {
+    if (saved != null) {
       // Pre-populate AI content from persisted cache for immediate render
       final locale = Localizations.localeOf(context).languageCode;
       for (final recipeId in saved.days.map((d) => d.recipeId).toSet()) {
@@ -140,7 +140,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   }
 
   void _enrichPlan(MealPlan plan) {
-    if (widget.apiKey.isEmpty) return;
     final iMap = _service.ingredientMap;
     final locale = Localizations.localeOf(context).languageCode;
     final uniqueRecipeIds = plan.days.map((d) => d.recipeId).toSet();
@@ -165,7 +164,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   }
 
   void _loadWeeklySummary(int weekIndex, MealPlan plan) {
-    if (widget.apiKey.isEmpty) return;
     if (_weeklySummaries.containsKey(weekIndex) || _weeklySummaryPending.contains(weekIndex)) return;
     _weeklySummaryPending.add(weekIndex);
     final weekDays = _getWeekDays(plan, weekIndex);
@@ -196,7 +194,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   }
 
   void _showBatchPrepGuide(MealPlan plan, int weekIndex) {
-    if (widget.apiKey.isEmpty) return;
     final weekDays = _getWeekDays(plan, weekIndex);
     final batchRecipes = weekDays
         .map((d) => _service.recipeMap[d.recipeId])
@@ -626,7 +623,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   ),
                 ),
               ),
-              if (_weekHasBatchCooking(plan, _selectedWeek) && widget.apiKey.isNotEmpty) ...[
+              if (_weekHasBatchCooking(plan, _selectedWeek)) ...[
                 const SizedBox(width: 8),
                 OutlinedButton.icon(
                   onPressed: _batchPlanLoading ? null : () => _showBatchPrepGuide(plan, _selectedWeek),
