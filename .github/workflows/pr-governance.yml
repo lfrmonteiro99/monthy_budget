@@ -18,12 +18,12 @@ jobs:
         run: |
           echo "Labels: $PR_LABELS"
 
-          if ! echo "$PR_BODY" | grep -Eiq '(Fixes|Closes|Resolves)\s+#\d+'; then
+          if ! echo "$PR_BODY" | grep -Eiq '(Fixes|Closes|Resolves)[[:space:]]+#[0-9]+'; then
             echo "PR body must include: Fixes #<issue-number>"
             exit 1
           fi
 
-          if ! echo "$PR_BODY" | grep -Eiq '^##\s+Release Notes'; then
+          if ! echo "$PR_BODY" | grep -Eiq '^##[[:space:]]+Release Notes'; then
             echo "PR body must include a '## Release Notes' section"
             exit 1
           fi

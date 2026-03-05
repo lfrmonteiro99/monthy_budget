@@ -6,12 +6,6 @@ on:
       - main
     tags-ignore:
       - 'v*'
-    paths:
-      - 'monthy_budget_flutter/**'
-      - '.github/workflows/agent-delivery.yml'
-      - '.github/workflows/pr-governance.yml'
-      - '.github/PULL_REQUEST_TEMPLATE.md'
-      - '.github/ISSUE_TEMPLATE/**'
 
 permissions:
   contents: write
