@@ -76,12 +76,14 @@ const featureTierRequirements = <PremiumFeature, SubscriptionTier>{
 
 /// Persistent state for the user's subscription.
 class SubscriptionState {
+  static const trialStarterCredits = 20;
   final SubscriptionTier tier;
   final DateTime trialStartDate;
   final bool trialUsed;
   final Set<String> featuresExplored;
   final int aiCredits;
   final CoachMode preferredCoachMode;
+  final bool trialStarterCreditsGranted;
 
   static const trialDays = 14;
 
@@ -92,6 +94,7 @@ class SubscriptionState {
     this.featuresExplored = const {},
     this.aiCredits = 0,
     this.preferredCoachMode = CoachMode.plus,
+    this.trialStarterCreditsGranted = false,
   });
 
   /// Whether the trial is currently active.
@@ -205,6 +208,7 @@ class SubscriptionState {
     Set<String>? featuresExplored,
     int? aiCredits,
     CoachMode? preferredCoachMode,
+    bool? trialStarterCreditsGranted,
   }) {
     return SubscriptionState(
       tier: tier ?? this.tier,
@@ -213,6 +217,8 @@ class SubscriptionState {
       featuresExplored: featuresExplored ?? this.featuresExplored,
       aiCredits: aiCredits ?? this.aiCredits,
       preferredCoachMode: preferredCoachMode ?? this.preferredCoachMode,
+      trialStarterCreditsGranted:
+          trialStarterCreditsGranted ?? this.trialStarterCreditsGranted,
     );
   }
 
@@ -223,6 +229,7 @@ class SubscriptionState {
         'featuresExplored': featuresExplored.toList(),
         'aiCredits': aiCredits,
         'preferredCoachMode': preferredCoachMode.name,
+        'trialStarterCreditsGranted': trialStarterCreditsGranted,
       };
 
   factory SubscriptionState.fromJson(Map<String, dynamic> json) {
@@ -244,6 +251,8 @@ class SubscriptionState {
         (m) => m.name == json['preferredCoachMode'],
         orElse: () => CoachMode.plus,
       ),
+      trialStarterCreditsGranted:
+          json['trialStarterCreditsGranted'] as bool? ?? false,
     );
   }
 

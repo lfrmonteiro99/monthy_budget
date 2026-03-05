@@ -568,6 +568,12 @@ class _MessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final isUser = message.role == 'user';
     final align = isUser ? Alignment.centerRight : Alignment.centerLeft;
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final maxWidth = screenWidth >= 1200
+        ? (isUser ? 560.0 : 840.0)
+        : screenWidth >= 700
+            ? (isUser ? 460.0 : 640.0)
+            : screenWidth * (isUser ? 0.78 : 0.9);
     final bubbleColor = isUser
         ? AppColors.primary(context)
         : AppColors.surfaceVariant(context);
@@ -575,20 +581,20 @@ class _MessageBubble extends StatelessWidget {
         isUser ? AppColors.onPrimary(context) : AppColors.textPrimary(context);
 
     return Align(
-      alignment: align,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        constraints: const BoxConstraints(maxWidth: 320),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        decoration: BoxDecoration(
-          color: bubbleColor,
-          borderRadius: BorderRadius.circular(12),
+        alignment: align,
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 8),
+          constraints: BoxConstraints(maxWidth: maxWidth),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: bubbleColor,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: SelectableText(
+            message.content,
+            style: TextStyle(fontSize: 14, color: textColor, height: 1.4),
+          ),
         ),
-        child: Text(
-          message.content,
-          style: TextStyle(fontSize: 14, color: textColor, height: 1.4),
-        ),
-      ),
-    );
+      );
   }
 }

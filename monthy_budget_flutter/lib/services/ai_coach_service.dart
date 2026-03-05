@@ -53,7 +53,7 @@ class AiCoachService {
   static const _edgeFunctionName = 'openai-chat';
   static const _model = 'gpt-4o-mini';
   static const _maxInsights = 20;
-  static const _chatPrefKeyPrefix = 'coach_chat_messages_';
+  static const _chatPrefKeyPrefix = 'coach_chat_v2_messages_';
 
   final SupabaseClient _client;
   final http.Client _httpClient;
@@ -601,17 +601,28 @@ class AiCoachService {
       purchaseHistory: purchaseHistory,
       settings: settings,
     );
-    final contextSnapshot = _buildPrompt(
-      settings,
-      summary,
-      purchaseHistory,
-      stress,
-    );
+    final now = DateTime.now();
+    final foodBudget = settings.expenses
+        .where((e) => e.category == ExpenseCategory.alimentacao && e.enabled)
+        .fold(0.0, (s, e) => s + e.amount);
+    final foodSpent = purchaseHistory.spentInMonth(now.year, now.month);
+    final fixedExpenseRatio = summary.totalNetWithMeal > 0
+        ? (summary.totalExpenses / summary.totalNetWithMeal * 100)
+        : 0.0;
+    final savingsRate = summary.savingsRate * 100;
     return 'Es um coach financeiro pessoal para utilizadores portugueses. '
-        'Responde sempre em portugues europeu, de forma direta e pratica. '
+        'Responde sempre em portugues europeu, de forma direta e pratica, '
+        'respondendo primeiro a pergunta exata do utilizador. '
+        'Evita formatos fixos (nao responder em "3 partes" a menos que seja pedido). '
         'Mantem continuidade da conversa e usa o historico para responder. '
         'Nunca inventes dados externos; usa apenas o contexto e o que o utilizador disser. '
-        'Contexto financeiro atualizado:\n\n$contextSnapshot';
+        'Contexto financeiro atual:\n'
+        '- Liquido mensal: ${summary.totalNetWithMeal.toStringAsFixed(2)} EUR\n'
+        '- Despesas fixas: ${summary.totalExpenses.toStringAsFixed(2)} EUR (${fixedExpenseRatio.toStringAsFixed(1)}%)\n'
+        '- Poupanca mensal: ${summary.netLiquidity.toStringAsFixed(2)} EUR (${savingsRate.toStringAsFixed(1)}%)\n'
+        '- Orcamento alimentar: ${foodBudget.toStringAsFixed(2)} EUR\n'
+        '- Gasto alimentar atual: ${foodSpent.toStringAsFixed(2)} EUR\n'
+        '- Indice de tranquilidade: ${stress.score}/100';
   }
 
   static List<Map<String, String>> buildBoundedChatMessages({

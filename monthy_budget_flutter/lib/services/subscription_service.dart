@@ -10,11 +10,24 @@ class SubscriptionService {
     final json = prefs.getString(_key);
     if (json == null) {
       // First launch: start trial now
-      final initial = SubscriptionState(trialStartDate: DateTime.now());
+      final initial = SubscriptionState(
+        trialStartDate: DateTime.now(),
+        aiCredits: SubscriptionState.trialStarterCredits,
+        trialStarterCreditsGranted: true,
+      );
       await save(initial);
       return initial;
     }
-    return SubscriptionState.fromJsonString(json);
+    final loaded = SubscriptionState.fromJsonString(json);
+    if (!loaded.trialStarterCreditsGranted && loaded.isTrialActive) {
+      final upgraded = loaded.copyWith(
+        aiCredits: loaded.aiCredits + SubscriptionState.trialStarterCredits,
+        trialStarterCreditsGranted: true,
+      );
+      await save(upgraded);
+      return upgraded;
+    }
+    return loaded;
   }
 
   Future<void> save(SubscriptionState state) async {
