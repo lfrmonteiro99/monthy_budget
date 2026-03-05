@@ -138,6 +138,7 @@ class AiCoachService {
     required AppSettings settings,
     required BudgetSummary summary,
     required PurchaseHistory purchaseHistory,
+    int maxTokens = 1000,
   }) async {
     final stress = calculateStressIndex(
       summary: summary,
@@ -160,7 +161,7 @@ class AiCoachService {
         },
         {'role': 'user', 'content': prompt},
       ],
-      maxTokens: 1000,
+      maxTokens: maxTokens,
       temperature: 0.5,
     );
 
