@@ -43,6 +43,9 @@ create table if not exists coach_memories (
 create index if not exists idx_coach_memories_user_created
   on coach_memories(user_id, created_at desc);
 
+create index if not exists idx_coach_memories_expires_at
+  on coach_memories(expires_at);
+
 create index if not exists idx_coach_memories_embedding
   on coach_memories using ivfflat (embedding vector_cosine_ops) with (lists = 100);
 
@@ -142,4 +145,22 @@ as $$
     and (m.expires_at is null or m.expires_at > now())
   order by m.embedding <=> p_query_embedding, m.importance desc
   limit greatest(1, least(coalesce(p_limit, 6), 20));
+$$;
+
+create or replace function purge_expired_coach_memories()
+returns int
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  deleted_count int := 0;
+begin
+  delete from coach_memories
+  where expires_at is not null
+    and expires_at <= now();
+
+  get diagnostics deleted_count = row_count;
+  return deleted_count;
+end;
 $$;

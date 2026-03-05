@@ -352,6 +352,7 @@ async function maybeStoreMemoryFacts(
   if (!Array.isArray(memories) || memories.length === 0) return;
 
   const allowedTypes = new Set(['goal', 'habit', 'fact', 'preference', 'event', 'insight']);
+  const seenInBatch = new Set<string>();
   const rows: Array<Record<string, unknown>> = [];
 
   for (const rawMemory of memories.slice(0, context.modeUsed === 'pro' ? 4 : 2)) {
@@ -364,14 +365,31 @@ async function maybeStoreMemoryFacts(
     const type = typeof item.type === 'string' ? item.type : '';
     const content = typeof item.content === 'string' ? item.content.trim() : '';
     if (!allowedTypes.has(type) || content.length < 8) continue;
+    const dedupKey = `${type}:${content.toLowerCase()}`;
+    if (seenInBatch.has(dedupKey)) continue;
+    seenInBatch.add(dedupKey);
 
     const embedding = await getEmbedding(openAiApiKey, content);
     if (!embedding) continue;
+
+    const { data: matched } = await supabase.rpc('match_coach_memories', {
+      p_household_id: context.householdId,
+      p_user_id: context.userId,
+      p_query_embedding: embedding,
+      p_limit: 1,
+    });
+    const topScore = Array.isArray(matched) && matched.length > 0
+      ? Number(matched[0]?.score ?? 0)
+      : 0;
+    if (Number.isFinite(topScore) && topScore >= 0.93) {
+      continue;
+    }
 
     const rawImportance = typeof item.importance === 'number'
       ? Math.round(item.importance)
       : (context.modeUsed === 'pro' ? 4 : 3);
     const importance = Math.max(1, Math.min(rawImportance, 5));
+    const expiresAt = computeMemoryExpiry(context.modeUsed, type);
 
     rows.push({
       household_id: context.householdId,
@@ -380,12 +398,27 @@ async function maybeStoreMemoryFacts(
       content,
       importance,
       embedding,
+      expires_at: expiresAt,
     });
   }
 
   if (rows.length > 0) {
     await supabase.from('coach_memories').insert(rows);
   }
+}
+
+function computeMemoryExpiry(mode: CoachMode, type: string): string | null {
+  const now = new Date();
+  const days = (() => {
+    if (mode === 'plus') return 30;
+    if (mode === 'pro') {
+      if (type === 'goal' || type === 'preference') return 365;
+      return 180;
+    }
+    return 14;
+  })();
+  now.setUTCDate(now.getUTCDate() + days);
+  return now.toISOString();
 }
 
 async function logCoachUsageEvent(

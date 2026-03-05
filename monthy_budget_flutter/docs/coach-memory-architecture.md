@@ -38,9 +38,12 @@ This document defines the first implementation step for Coach memory with:
   - summary generation cadence for long threads
   - structured memory extraction (JSON) for high-signal user statements
   - usage event logging (`coach_usage_events`) with requested/effective mode and fallback reason
+  - semantic dedup before memory insert (skip near-duplicate memories)
+  - retention assignment on insert (`expires_at`) by mode/type
+  - DB maintenance function `purge_expired_coach_memories()`
 
 ## Next implementation steps
 
 1. Add explicit credit debit audit events (client-side debit + server-side usage correlation).
-2. Add retention/privacy controls (expiry and user delete flows) for persisted memories.
-3. Improve deduplication/ranking of extracted memories over time.
+2. Add user-facing delete/export flows for Coach memories.
+3. Improve ranking/decay policy (importance aging by recency and reuse).
