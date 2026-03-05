@@ -443,6 +443,83 @@ void main() {
       });
     });
 
+    group('syncFromRemoteTier()', () {
+      test('updates tier when remote differs', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.free,
+          trialStartDate: DateTime.now(),
+          trialUsed: true,
+        );
+
+        final updated = await service.syncFromRemoteTier(
+            state, SubscriptionTier.premium);
+
+        expect(updated.tier, SubscriptionTier.premium);
+        expect(updated.trialUsed, true);
+      });
+
+      test('returns same state when tiers match', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime.now(),
+          trialUsed: true,
+        );
+
+        final updated = await service.syncFromRemoteTier(
+            state, SubscriptionTier.premium);
+
+        expect(identical(updated, state), true);
+      });
+
+      test('preserves trialUsed when remote is free', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime.now(),
+          trialUsed: true,
+        );
+
+        final updated = await service.syncFromRemoteTier(
+            state, SubscriptionTier.free);
+
+        expect(updated.tier, SubscriptionTier.free);
+        expect(updated.trialUsed, true);
+      });
+
+      test('sets trialUsed when remote is paid tier', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.free,
+          trialStartDate: DateTime.now(),
+          trialUsed: false,
+        );
+
+        final updated = await service.syncFromRemoteTier(
+            state, SubscriptionTier.family);
+
+        expect(updated.tier, SubscriptionTier.family);
+        expect(updated.trialUsed, true);
+      });
+
+      test('persists synced state', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.free,
+          trialStartDate: DateTime.now(),
+        );
+
+        await service.syncFromRemoteTier(state, SubscriptionTier.premium);
+
+        final prefs = await SharedPreferences.getInstance();
+        final restored = SubscriptionState.fromJsonString(
+          prefs.getString('subscription_state')!,
+        );
+        expect(restored.tier, SubscriptionTier.premium);
+      });
+    });
+
     group('full lifecycle', () {
       test('load → explore → upgrade → downgrade', () async {
         SharedPreferences.setMockInitialValues({});

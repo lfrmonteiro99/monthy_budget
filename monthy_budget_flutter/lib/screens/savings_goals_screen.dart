@@ -31,9 +31,21 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
   void initState() {
     super.initState();
     _goals = List.from(widget.goals);
+    _reloadGoals();
   }
 
   void _notify() => widget.onChanged(_goals);
+
+  Future<void> _reloadGoals({bool notify = true}) async {
+    try {
+      final latest = await _service.loadGoals(widget.householdId);
+      if (!mounted) return;
+      setState(() => _goals = latest);
+      if (notify) _notify();
+    } catch (_) {
+      // Keep local state if remote refresh fails.
+    }
+  }
 
   // ── Goal CRUD ──────────────────────────────────────────────────────────
 
@@ -44,19 +56,20 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
     );
     if (result == null) return;
 
-    await _service.saveGoal(result, widget.householdId);
-    setState(() {
-      if (existing != null) {
-        _goals = _goals.map((g) => g.id == result.id ? result : g).toList();
-      } else {
-        _goals = [result, ..._goals];
+    try {
+      await _service.saveGoal(result, widget.householdId);
+      await _reloadGoals();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(S.of(context).savingsGoalSaved)),
+        );
       }
-    });
-    _notify();
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(S.of(context).savingsGoalSaved)),
-      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to save goal: $e')),
+        );
+      }
     }
   }
 
@@ -82,20 +95,30 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
     );
     if (confirmed != true) return;
 
-    await _service.deleteGoal(goal.id);
-    setState(() {
-      _goals = _goals.where((g) => g.id != goal.id).toList();
-    });
-    _notify();
+    try {
+      await _service.deleteGoal(goal.id);
+      await _reloadGoals();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to delete goal: $e')),
+        );
+      }
+    }
   }
 
   Future<void> _toggleActive(SavingsGoal goal) async {
     final updated = goal.copyWith(isActive: !goal.isActive);
-    await _service.saveGoal(updated, widget.householdId);
-    setState(() {
-      _goals = _goals.map((g) => g.id == goal.id ? updated : g).toList();
-    });
-    _notify();
+    try {
+      await _service.saveGoal(updated, widget.householdId);
+      await _reloadGoals();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update goal: $e')),
+        );
+      }
+    }
   }
 
   // ── Contribution detail ────────────────────────────────────────────────
@@ -116,6 +139,7 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
             _goals.map((g) => g.id == updatedGoal.id ? updatedGoal : g).toList();
       });
       _notify();
+      await _reloadGoals();
     }
   }
 

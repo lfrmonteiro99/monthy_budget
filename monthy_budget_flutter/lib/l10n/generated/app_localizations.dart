@@ -5386,109 +5386,215 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Convide membros da família para partilhar dados do orçamento entre dispositivos. Todos veem as mesmas despesas e orçamentos.'**
   String get settingsHouseholdTip;
-  /// No description provided for @subscriptionTitle.
+
+  /// Subscription section title
+  ///
+  /// In pt, this message translates to:
+  /// **'Subscrição'**
   String get subscriptionTitle;
 
-  /// No description provided for @subscriptionFree.
+  /// Free tier label
+  ///
+  /// In pt, this message translates to:
+  /// **'Gratuito'**
   String get subscriptionFree;
 
-  /// No description provided for @subscriptionPremium.
+  /// Premium tier label
+  ///
+  /// In pt, this message translates to:
+  /// **'Premium'**
   String get subscriptionPremium;
 
-  /// No description provided for @subscriptionFamily.
+  /// Family tier label
+  ///
+  /// In pt, this message translates to:
+  /// **'Família'**
   String get subscriptionFamily;
 
-  /// No description provided for @subscriptionTrialActive.
+  /// Trial active label
+  ///
+  /// In pt, this message translates to:
+  /// **'Período de teste ativo'**
   String get subscriptionTrialActive;
 
   /// No description provided for @subscriptionTrialDaysLeft.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} dias restantes'**
   String subscriptionTrialDaysLeft(int count);
 
-  /// No description provided for @subscriptionTrialExpired.
+  /// Trial expired label
+  ///
+  /// In pt, this message translates to:
+  /// **'Período de teste expirado'**
   String get subscriptionTrialExpired;
 
-  /// No description provided for @subscriptionUpgrade.
+  /// Upgrade button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Atualizar'**
   String get subscriptionUpgrade;
 
-  /// No description provided for @subscriptionSeePlans.
+  /// See plans button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver Planos'**
   String get subscriptionSeePlans;
 
-  /// No description provided for @subscriptionCurrentPlan.
+  /// Current plan label
+  ///
+  /// In pt, this message translates to:
+  /// **'Plano Atual'**
   String get subscriptionCurrentPlan;
 
-  /// No description provided for @subscriptionManage.
+  /// Manage subscription label
+  ///
+  /// In pt, this message translates to:
+  /// **'Gerir Subscrição'**
   String get subscriptionManage;
 
   /// No description provided for @subscriptionFeatureExplored.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count}/{total} funcionalidades exploradas'**
   String subscriptionFeatureExplored(int count, int total);
 
-  /// No description provided for @subscriptionTrialBannerTitle.
+  /// Trial banner title
+  ///
+  /// In pt, this message translates to:
+  /// **'Teste Premium Ativo'**
   String get subscriptionTrialBannerTitle;
 
   /// No description provided for @subscriptionTrialEndingSoon.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} dias restantes no seu teste!'**
   String subscriptionTrialEndingSoon(int count);
 
-  /// No description provided for @subscriptionTrialLastDay.
+  /// Last day of trial message
+  ///
+  /// In pt, this message translates to:
+  /// **'Último dia do seu teste gratuito!'**
   String get subscriptionTrialLastDay;
 
-  /// No description provided for @subscriptionUpgradeNow.
+  /// Upgrade now button
+  ///
+  /// In pt, this message translates to:
+  /// **'Atualizar Agora'**
   String get subscriptionUpgradeNow;
 
-  /// No description provided for @subscriptionKeepData.
+  /// Keep data message
+  ///
+  /// In pt, this message translates to:
+  /// **'Manter os Seus Dados'**
   String get subscriptionKeepData;
 
-  /// No description provided for @subscriptionCancelAnytime.
+  /// Cancel anytime text
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancele a qualquer momento'**
   String get subscriptionCancelAnytime;
 
-  /// No description provided for @subscriptionNoHiddenFees.
+  /// No hidden fees text
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem taxas ocultas'**
   String get subscriptionNoHiddenFees;
 
-  /// No description provided for @subscriptionMostPopular.
+  /// Most popular badge
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais Popular'**
   String get subscriptionMostPopular;
 
   /// No description provided for @subscriptionYearlySave.
+  ///
+  /// In pt, this message translates to:
+  /// **'poupe {percent}%'**
   String subscriptionYearlySave(int percent);
 
-  /// No description provided for @subscriptionMonthly.
+  /// Monthly billing label
+  ///
+  /// In pt, this message translates to:
+  /// **'Mensal'**
   String get subscriptionMonthly;
 
-  /// No description provided for @subscriptionYearly.
+  /// Yearly billing label
+  ///
+  /// In pt, this message translates to:
+  /// **'Anual'**
   String get subscriptionYearly;
 
-  /// No description provided for @subscriptionPerMonth.
+  /// Per month label
+  ///
+  /// In pt, this message translates to:
+  /// **'/mês'**
   String get subscriptionPerMonth;
 
-  /// No description provided for @subscriptionPerYear.
+  /// Per year label
+  ///
+  /// In pt, this message translates to:
+  /// **'/ano'**
   String get subscriptionPerYear;
 
-  /// No description provided for @subscriptionBilledYearly.
+  /// Billed yearly label
+  ///
+  /// In pt, this message translates to:
+  /// **'faturado anualmente'**
   String get subscriptionBilledYearly;
 
-  /// No description provided for @subscriptionStartPremium.
+  /// Start premium button
+  ///
+  /// In pt, this message translates to:
+  /// **'Começar Premium'**
   String get subscriptionStartPremium;
 
-  /// No description provided for @subscriptionStartFamily.
+  /// Start family button
+  ///
+  /// In pt, this message translates to:
+  /// **'Começar Família'**
   String get subscriptionStartFamily;
 
-  /// No description provided for @subscriptionContinueFree.
+  /// Continue free button
+  ///
+  /// In pt, this message translates to:
+  /// **'Continuar Gratuito'**
   String get subscriptionContinueFree;
 
-  /// No description provided for @subscriptionTrialEnded.
+  /// Trial ended title
+  ///
+  /// In pt, this message translates to:
+  /// **'O seu período de teste terminou'**
   String get subscriptionTrialEnded;
 
-  /// No description provided for @subscriptionChoosePlan.
+  /// Choose plan subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolha um plano para manter todos os seus dados e funcionalidades'**
   String get subscriptionChoosePlan;
 
-  /// No description provided for @subscriptionUnlockPower.
+  /// Unlock subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Desbloqueie todo o poder do seu orçamento'**
   String get subscriptionUnlockPower;
 
   /// No description provided for @subscriptionRequiresPaid.
+  ///
+  /// In pt, this message translates to:
+  /// **'{feature} requer uma subscrição paga'**
   String subscriptionRequiresPaid(String feature);
 
   /// No description provided for @subscriptionTryFeature.
+  ///
+  /// In pt, this message translates to:
+  /// **'Experimente {feature}'**
   String subscriptionTryFeature(String feature);
 
   /// No description provided for @subscriptionExplore.
+  ///
+  /// In pt, this message translates to:
+  /// **'Explorar {feature}'**
   String subscriptionExplore(String feature);
 }
 

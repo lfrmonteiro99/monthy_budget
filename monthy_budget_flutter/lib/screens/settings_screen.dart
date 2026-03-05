@@ -31,6 +31,7 @@ class SettingsScreen extends StatefulWidget {
   final String? initialSection;
   final LocalDashboardConfig? dashboardConfig;
   final ValueChanged<LocalDashboardConfig>? onSaveDashboardConfig;
+  final VoidCallback? onOpenDetailedDashboard;
   final VoidCallback? onOpenNotificationSettings;
   final VoidCallback? onOpenSubscription;
   final VoidCallback? onOpenCustomerCenter;
@@ -54,6 +55,7 @@ class SettingsScreen extends StatefulWidget {
     this.initialSection,
     this.dashboardConfig,
     this.onSaveDashboardConfig,
+    this.onOpenDetailedDashboard,
     this.onOpenNotificationSettings,
     this.onOpenSubscription,
     this.onOpenCustomerCenter,
@@ -1180,6 +1182,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           const SizedBox(height: 16),
+          if (widget.onOpenDetailedDashboard != null) ...[
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.background(context),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppColors.border(context)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Home uses a focused dashboard. Open the detailed dashboard to see every card.',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary(context),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  OutlinedButton.icon(
+                    onPressed: widget.onOpenDetailedDashboard,
+                    icon: const Icon(Icons.dashboard_customize_outlined, size: 16),
+                    label: const Text('Open Detailed Dashboard'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.textPrimary(context),
+                      side: BorderSide(color: AppColors.border(context)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
           _label(l10n.settingsVisibleSections),
           const SizedBox(height: 8),
           Row(

@@ -4,6 +4,16 @@ import 'package:orcamento_mensal/models/local_dashboard_config.dart';
 
 void main() {
   group('LocalDashboardConfig', () {
+    test('default config is focused for cleaner home experience', () {
+      const config = LocalDashboardConfig();
+
+      expect(config.showHeroCard, isTrue);
+      expect(config.showStressIndex, isTrue);
+      expect(config.showSummaryCards, isFalse);
+      expect(config.showCharts, isFalse);
+      expect(config.showPurchaseHistory, isFalse);
+    });
+
     test('minimalist preset disables most widgets', () {
       final config = LocalDashboardConfig.minimalist();
 
@@ -45,6 +55,15 @@ void main() {
       final decoded = LocalDashboardConfig.fromJsonString('not-json');
       expect(decoded.showHeroCard, isTrue);
       expect(decoded.showStressIndex, isTrue);
+      expect(decoded.showCharts, isFalse);
+    });
+
+    test('full preset enables full analytics dashboard', () {
+      final config = LocalDashboardConfig.full();
+      expect(config.showSummaryCards, isTrue);
+      expect(config.showSalaryBreakdown, isTrue);
+      expect(config.showPurchaseHistory, isTrue);
+      expect(config.showCharts, isTrue);
     });
   });
 }

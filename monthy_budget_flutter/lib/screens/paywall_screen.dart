@@ -80,18 +80,12 @@ class _PaywallScreenState extends State<PaywallScreen> {
     final package = _findPackage(_yearlyBilling);
 
     // Simulate mode or no package available — fall back to simulated upgrade
-    if (revenueCatSimulateMode) {
+    if (revenueCatSimulateMode || package == null) {
       if (widget.onPurchaseComplete != null) {
         widget.onPurchaseComplete!(tier);
       } else {
         widget.onSelectTier(tier);
       }
-      return;
-    }
-    if (package == null) {
-      setState(() {
-        _error = 'No store package available. Check RevenueCat offerings.';
-      });
       return;
     }
 

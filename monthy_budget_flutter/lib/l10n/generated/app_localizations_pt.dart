@@ -2909,6 +2909,8 @@ class SPt extends S {
   @override
   String get settingsHouseholdTip =>
       'Convide membros da família para partilhar dados do orçamento entre dispositivos. Todos veem as mesmas despesas e orçamentos.';
+
+  @override
   String get subscriptionTitle => 'Subscrição';
 
   @override
@@ -3007,10 +3009,12 @@ class SPt extends S {
   String get subscriptionTrialEnded => 'O seu período de teste terminou';
 
   @override
-  String get subscriptionChoosePlan => 'Escolha um plano para manter todos os seus dados e funcionalidades';
+  String get subscriptionChoosePlan =>
+      'Escolha um plano para manter todos os seus dados e funcionalidades';
 
   @override
-  String get subscriptionUnlockPower => 'Desbloqueie todo o poder do seu orçamento';
+  String get subscriptionUnlockPower =>
+      'Desbloqueie todo o poder do seu orçamento';
 
   @override
   String subscriptionRequiresPaid(String feature) {

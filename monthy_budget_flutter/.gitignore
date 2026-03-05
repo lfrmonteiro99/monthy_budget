@@ -46,3 +46,7 @@ app.*.map.json
 
 # Supabase credentials — never commit the real config
 lib/config/supabase_config.dart
+
+# Local agent/tooling config (machine-specific)
+.claude/
+.mcp.json

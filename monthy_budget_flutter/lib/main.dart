@@ -36,6 +36,9 @@ import 'screens/grocery_screen.dart';
 import 'screens/auth/auth_gate.dart';
 import 'screens/setup_wizard_screen.dart';
 import 'screens/expense_trends_screen.dart';
+import 'screens/insights_screen.dart';
+import 'screens/more_screen.dart';
+import 'screens/plan_hub_screen.dart';
 import 'screens/notification_settings_screen.dart';
 import 'models/recurring_expense.dart';
 import 'models/notification_preferences.dart';
@@ -44,6 +47,7 @@ import 'services/notification_service.dart';
 import 'services/savings_goal_service.dart';
 import 'models/savings_goal.dart';
 import 'screens/savings_goals_screen.dart';
+import 'screens/tax_simulator_screen.dart';
 import 'utils/savings_projections.dart';
 import 'theme/app_theme.dart';
 import 'theme/app_colors.dart';
@@ -427,7 +431,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         builder: (_) => SavingsGoalsScreen(
           householdId: widget.householdId,
           goals: _savingsGoals,
-          onChanged: (updated) => setState(() => _savingsGoals = updated),
+          onChanged: (updated) {
+            setState(() => _savingsGoals = updated);
+            _loadSavingsGoals();
+          },
         ),
       ),
     );
@@ -545,22 +552,22 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     _trackFeature(featureKey);
     switch (featureKey) {
       case 'ai_coach':
-        setState(() => _currentIndex = 3);
+        _openCoach();
         break;
       case 'meal_planner':
-        setState(() => _currentIndex = 4);
+        _openMealPlanner();
         break;
       case 'expense_tracker':
-        _openExpenseTracker();
+        setState(() => _currentIndex = 1);
         break;
       case 'savings_goals':
         _openSavingsGoals();
         break;
       case 'shopping_list':
-        setState(() => _currentIndex = 2);
+        _openShoppingList();
         break;
       case 'grocery_browser':
-        setState(() => _currentIndex = 1);
+        _openGrocery();
         break;
       case 'export':
         Navigator.of(context).push(
@@ -575,6 +582,164 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       default:
         setState(() => _currentIndex = 0);
     }
+  }
+
+  void _openInsights() {
+    final taxSystem = getTaxSystem(_settings.country);
+    final summary = calculateBudgetSummary(
+      _settings.salaries,
+      _settings.personalInfo,
+      _settings.expenses,
+      taxSystem,
+      monthlyBudgets: _monthlyBudgets,
+    );
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => InsightsScreen(
+          settings: _settings,
+          summary: summary,
+          onOpenExpenseTrends: _openExpenseTrends,
+          onOpenSavingsGoals: _openSavingsGoals,
+          onOpenTaxSimulator: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => TaxSimulatorScreen(settings: _settings),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _openDetailedDashboard() {
+    final taxSystem = getTaxSystem(_settings.country);
+    final summary = calculateBudgetSummary(
+      _settings.salaries,
+      _settings.personalInfo,
+      _settings.expenses,
+      taxSystem,
+      monthlyBudgets: _monthlyBudgets,
+    );
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => DashboardScreen(
+          settings: _settings,
+          summary: summary,
+          purchaseHistory: _purchaseHistory,
+          onSaveSettings: _saveSettings,
+          dashboardConfig: LocalDashboardConfig.full(),
+          expenseHistory: _expenseHistory,
+          onSnapshotExpenses: _snapshotExpenses,
+          actualExpenses: _actualExpenses,
+          onAddExpense: _openAddExpenseSheet,
+          monthlyBudgets: _monthlyBudgets,
+          onOpenExpenseTracker: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => ExpenseTrackerScreen(
+                settings: _settings,
+                expenses: _actualExpenses,
+                householdId: widget.householdId,
+                onAdd: _addActualExpense,
+                onUpdate: _updateActualExpense,
+                onDelete: _deleteActualExpense,
+                onLoadMonth: (monthKey) =>
+                    _actualExpenseService.loadMonth(widget.householdId, monthKey),
+                onLoadHistory: () =>
+                    _actualExpenseService.loadHistory(widget.householdId),
+                onOpenRecurring: _openRecurringExpenses,
+              ),
+            ),
+          ),
+          onViewTrends: _openExpenseTrends,
+          savingsGoals: _savingsGoals,
+          savingsProjections: _savingsProjections,
+          onOpenSavingsGoals: _openSavingsGoals,
+          recurringExpenses: _recurringExpenses,
+          actualExpenseHistory: _actualExpenseHistory,
+          billReminderDaysBefore: _notificationPrefs.billReminderDaysBefore,
+          onOpenRecurringExpenses: _openRecurringExpenses,
+          onOpenSettings: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  void _openGrocery() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => GroceryScreen(
+          products: _products,
+          onAddToShoppingList: _addToShoppingList,
+          showTour: !_onboardingState.isTourDone('grocery'),
+          onTourComplete: () => _markTourDone('grocery'),
+        ),
+      ),
+    );
+  }
+
+  void _openShoppingList() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ShoppingListScreen(
+          items: _shoppingList,
+          onToggleChecked: _toggleShoppingItem,
+          onRemove: _removeShoppingItem,
+          onClearChecked: _clearCheckedItems,
+          onFinalize: _finalizeShopping,
+          purchaseHistory: _purchaseHistory,
+          showTour: !_onboardingState.isTourDone('shopping'),
+          onTourComplete: () => _markTourDone('shopping'),
+        ),
+      ),
+    );
+  }
+
+  void _openCoach() {
+    if (!_gateFeature(PremiumFeature.aiCoach)) return;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => CoachScreen(
+          settings: _settings,
+          purchaseHistory: _purchaseHistory,
+          apiKey: _openAiApiKey,
+          householdId: widget.householdId,
+          onOpenSettings: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
+            );
+          },
+          showTour: !_onboardingState.isTourDone('coach'),
+          onTourComplete: () => _markTourDone('coach'),
+        ),
+      ),
+    );
+  }
+
+  void _openMealPlanner() {
+    if (!_gateFeature(PremiumFeature.mealPlanner)) return;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => MealPlannerScreen(
+          settings: _settings,
+          apiKey: _openAiApiKey,
+          favorites: _favorites,
+          onAddToShoppingList: _addToShoppingList,
+          householdId: widget.householdId,
+          onSaveSettings: _saveSettings,
+          purchaseHistory: _purchaseHistory,
+          onOpenMealSettings: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => _buildSettingsScreen(initialSection: 'meals'),
+            ),
+          ),
+          showTour: !_onboardingState.isTourDone('meals'),
+          onTourComplete: () => _markTourDone('meals'),
+        ),
+      ),
+    );
   }
 
   void _markTourDone(String key) {
@@ -764,25 +929,6 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     }
   }
 
-  void _openExpenseTracker() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => ExpenseTrackerScreen(
-          settings: _settings,
-          expenses: _actualExpenses,
-          householdId: widget.householdId,
-          onAdd: _addActualExpense,
-          onUpdate: _updateActualExpense,
-          onDelete: _deleteActualExpense,
-          onLoadMonth: (monthKey) =>
-              _actualExpenseService.loadMonth(widget.householdId, monthKey),
-          onLoadHistory: () =>
-              _actualExpenseService.loadHistory(widget.householdId),
-          onOpenRecurring: _openRecurringExpenses,
-        ),
-      ),
-    );
-  }
 
   SettingsScreen _buildSettingsScreen({String? initialSection}) {
     return SettingsScreen(
@@ -797,6 +943,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       products: _products,
       dashboardConfig: _dashboardConfig,
       onSaveDashboardConfig: _saveDashboardConfig,
+      onOpenDetailedDashboard: _openDetailedDashboard,
       onOpenNotificationSettings: _openNotificationSettings,
       onOpenSubscription: _openPaywall,
       onOpenCustomerCenter: _openCustomerCenter,
@@ -882,19 +1029,30 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       monthlyBudgets: _monthlyBudgets,
     );
 
+    final focusedDashboardConfig = _dashboardConfig.copyWith(
+      showSummaryCards: false,
+      showSalaryBreakdown: false,
+      showPurchaseHistory: false,
+      showExpensesBreakdown: false,
+      showCharts: false,
+      showBudgetVsActual: false,
+      showSavingsGoals: false,
+      showTaxDeductions: false,
+    );
+
     final screens = [
       DashboardScreen(
         settings: _settings,
         summary: summary,
         purchaseHistory: _purchaseHistory,
         onSaveSettings: _saveSettings,
-        dashboardConfig: _dashboardConfig,
+        dashboardConfig: focusedDashboardConfig,
         expenseHistory: _expenseHistory,
         onSnapshotExpenses: _snapshotExpenses,
         actualExpenses: _actualExpenses,
         onAddExpense: _openAddExpenseSheet,
         monthlyBudgets: _monthlyBudgets,
-        onOpenExpenseTracker: _openExpenseTracker,
+        onOpenExpenseTracker: () => setState(() => _currentIndex = 1),
         onViewTrends: _openExpenseTrends,
         savingsGoals: _savingsGoals,
         savingsProjections: _savingsProjections,
@@ -912,51 +1070,39 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         onTourComplete: () => _markTourDone('dashboard'),
         fabKey: _fabKey,
         navBarKey: _navBarKey,
+        focusedMode: true,
+        onOpenInsights: _openInsights,
       ),
-      GroceryScreen(
-        products: _products,
-        onAddToShoppingList: _addToShoppingList,
-        showTour: !_onboardingState.isTourDone('grocery'),
-        onTourComplete: () => _markTourDone('grocery'),
-      ),
-      ShoppingListScreen(
-        items: _shoppingList,
-        onToggleChecked: _toggleShoppingItem,
-        onRemove: _removeShoppingItem,
-        onClearChecked: _clearCheckedItems,
-        onFinalize: _finalizeShopping,
-        purchaseHistory: _purchaseHistory,
-        showTour: !_onboardingState.isTourDone('shopping'),
-        onTourComplete: () => _markTourDone('shopping'),
-      ),
-      CoachScreen(
+      ExpenseTrackerScreen(
         settings: _settings,
-        purchaseHistory: _purchaseHistory,
-        apiKey: _openAiApiKey,
+        expenses: _actualExpenses,
         householdId: widget.householdId,
+        onAdd: _addActualExpense,
+        onUpdate: _updateActualExpense,
+        onDelete: _deleteActualExpense,
+        onLoadMonth: (monthKey) =>
+            _actualExpenseService.loadMonth(widget.householdId, monthKey),
+        onLoadHistory: () =>
+            _actualExpenseService.loadHistory(widget.householdId),
+        onOpenRecurring: _openRecurringExpenses,
+      ),
+      PlanHubScreen(
+        onOpenGrocery: _openGrocery,
+        onOpenShoppingList: _openShoppingList,
+        onOpenMealPlanner: _openMealPlanner,
+        onOpenCoach: _openCoach,
+      ),
+      MoreScreen(
+        onOpenDetailedDashboard: _openDetailedDashboard,
+        onOpenInsights: _openInsights,
+        onOpenSavingsGoals: _openSavingsGoals,
         onOpenSettings: () {
           Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
           );
         },
-        showTour: !_onboardingState.isTourDone('coach'),
-        onTourComplete: () => _markTourDone('coach'),
-      ),
-      MealPlannerScreen(
-        settings: _settings,
-        apiKey: _openAiApiKey,
-        favorites: _favorites,
-        onAddToShoppingList: _addToShoppingList,
-        householdId: widget.householdId,
-        onSaveSettings: _saveSettings,
-        purchaseHistory: _purchaseHistory,
-        onOpenMealSettings: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => _buildSettingsScreen(initialSection: 'meals'),
-          ),
-        ),
-        showTour: !_onboardingState.isTourDone('meals'),
-        onTourComplete: () => _markTourDone('meals'),
+        onOpenNotifications: _openNotificationSettings,
+        onOpenSubscription: _openPaywall,
       ),
     ];
 
@@ -1002,19 +1148,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         key: _navBarKey,
         selectedIndex: _currentIndex,
         onDestinationSelected: (i) {
-          // Track feature exploration on tab switch
-          const tabFeatures = [
-            'dashboard',
-            'grocery_browser',
-            'shopping_list',
-            'ai_coach',
-            'meal_planner',
-          ];
+          const tabFeatures = ['dashboard', 'expense_tracker', 'planning', 'more'];
           if (i < tabFeatures.length) _trackFeature(tabFeatures[i]);
-
-          // Gate premium tabs when trial expired
-          if (i == 3 && !_gateFeature(PremiumFeature.aiCoach)) return;
-          if (i == 4 && !_gateFeature(PremiumFeature.mealPlanner)) return;
 
           setState(() => _currentIndex = i);
         },
@@ -1026,15 +1161,15 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           NavigationDestination(
             icon: const Icon(Icons.dashboard_outlined),
             selectedIcon: Icon(Icons.dashboard, color: AppColors.primary(context)),
-            label: 'Orçamento',
-            tooltip: 'Resumo do orçamento mensal',
+            label: 'Home',
+            tooltip: 'Monthly overview',
           ),
           NavigationDestination(
-            icon: const Icon(Icons.shopping_cart_outlined),
+            icon: const Icon(Icons.receipt_long_outlined),
             selectedIcon:
-                Icon(Icons.shopping_cart, color: AppColors.primary(context)),
-            label: 'Supermercado',
-            tooltip: 'Catálogo de produtos',
+                Icon(Icons.receipt_long, color: AppColors.primary(context)),
+            label: 'Track',
+            tooltip: 'Track monthly expenses',
           ),
           NavigationDestination(
             icon: Badge(
@@ -1043,7 +1178,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                 '${_shoppingList.where((i) => !i.checked).length}',
                 style: const TextStyle(fontSize: 10),
               ),
-              child: const Icon(Icons.shopping_basket_outlined),
+              child: const Icon(Icons.event_note_outlined),
             ),
             selectedIcon: Badge(
               isLabelVisible: _shoppingList.any((i) => !i.checked),
@@ -1051,27 +1186,21 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                 '${_shoppingList.where((i) => !i.checked).length}',
                 style: const TextStyle(fontSize: 10),
               ),
-              child: Icon(Icons.shopping_basket,
-                  color: AppColors.primary(context)),
+              child: Icon(Icons.event_note, color: AppColors.primary(context)),
             ),
-            label: 'Lista',
-            tooltip: 'Lista de compras',
+            label: 'Plan',
+            tooltip: 'Groceries, list and meal plan',
           ),
           NavigationDestination(
-            icon: const Icon(Icons.psychology_outlined),
-            selectedIcon: Icon(Icons.psychology, color: AppColors.primary(context)),
-            label: 'Coach',
-            tooltip: 'Coach financeiro com IA',
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.restaurant_outlined),
+            icon: const Icon(Icons.more_horiz),
             selectedIcon:
-                Icon(Icons.restaurant, color: AppColors.primary(context)),
-            label: 'Refeições',
-            tooltip: 'Planeador de refeições',
+                Icon(Icons.more_horiz, color: AppColors.primary(context)),
+            label: 'More',
+            tooltip: 'Settings and insights',
           ),
         ],
       ),
     );
   }
 }
+

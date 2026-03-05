@@ -12,6 +12,7 @@ import '../models/subscription_state.dart';
 /// the app to run without a configured RevenueCat project.
 class RevenueCatService {
   static bool _initialized = false;
+  static bool _available = true;
 
   // ── Lifecycle ──────────────────────────────────────────────────────
 
@@ -19,25 +20,33 @@ class RevenueCatService {
   static Future<void> initialize() async {
     if (revenueCatSimulateMode) return;
     if (_initialized) return;
-
-    await Purchases.setLogLevel(
-      revenueCatDebugLogsEnabled ? LogLevel.debug : LogLevel.info,
-    );
-    final config = PurchasesConfiguration(revenueCatApiKey);
-    await Purchases.configure(config);
     _initialized = true;
+
+    try {
+      await Purchases.setLogLevel(
+        revenueCatDebugLogsEnabled ? LogLevel.debug : LogLevel.info,
+      );
+      final config = PurchasesConfiguration(revenueCatApiKey);
+      await Purchases.configure(config);
+      _available = true;
+    } on MissingPluginException {
+      _available = false;
+    } catch (e) {
+      _available = false;
+      debugPrint('RevenueCat initialize error: $e');
+    }
   }
 
   /// Identify the user so purchases are tied to their account.
   static Future<void> login(String? userId) async {
-    if (revenueCatSimulateMode || !_initialized) return;
+    if (revenueCatSimulateMode || !_initialized || !_available) return;
     if (userId == null || userId.isEmpty) return;
     await Purchases.logIn(userId);
   }
 
   /// Reset to anonymous user (e.g. on sign-out).
   static Future<void> logout() async {
-    if (revenueCatSimulateMode || !_initialized) return;
+    if (revenueCatSimulateMode || !_initialized || !_available) return;
     try {
       await Purchases.logOut();
     } catch (e) {
@@ -52,7 +61,7 @@ class RevenueCatService {
   /// The single entitlement "Gestão Mensal Pro" maps to [SubscriptionTier.family]
   /// (the highest tier) so all features are unlocked when subscribed.
   static Future<SubscriptionTier> getCurrentTier() async {
-    if (revenueCatSimulateMode || !_initialized) {
+    if (revenueCatSimulateMode || !_initialized || !_available) {
       return SubscriptionTier.free;
     }
     try {
@@ -77,7 +86,7 @@ class RevenueCatService {
   /// Fetch available offerings (packages with real store prices).
   /// Returns `null` in simulate mode or on error.
   static Future<Offerings?> getOfferings() async {
-    if (revenueCatSimulateMode || !_initialized) return null;
+    if (revenueCatSimulateMode || !_initialized || !_available) return null;
     try {
       return await Purchases.getOfferings();
     } catch (e) {
@@ -96,7 +105,7 @@ class RevenueCatService {
   /// Returns the [PaywallResult] indicating what happened, or `null` if in
   /// simulate mode or not initialized.
   static Future<PaywallResult?> presentPaywall() async {
-    if (revenueCatSimulateMode || !_initialized) return null;
+    if (revenueCatSimulateMode || !_initialized || !_available) return null;
     try {
       return await RevenueCatUI.presentPaywallIfNeeded(
         revenueCatEntitlementId,
@@ -114,7 +123,7 @@ class RevenueCatService {
   /// Allows users to manage, cancel, or change their subscription without
   /// custom UI. No-op in simulate mode.
   static Future<void> presentCustomerCenter() async {
-    if (revenueCatSimulateMode || !_initialized) {
+    if (revenueCatSimulateMode || !_initialized || !_available) {
       debugPrint('Customer Center not available in simulate mode');
       return;
     }
@@ -138,7 +147,7 @@ class RevenueCatService {
 
   /// Restore previous purchases and return the resulting tier.
   static Future<SubscriptionTier> restorePurchases() async {
-    if (revenueCatSimulateMode || !_initialized) {
+    if (revenueCatSimulateMode || !_initialized || !_available) {
       return SubscriptionTier.free;
     }
     try {
