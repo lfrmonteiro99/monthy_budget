@@ -51,6 +51,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   CoachModeResolution? _lastModeResolution;
   late SubscriptionState _subscription;
   late CoachMode _selectedMode;
+  String? _coachThreadId;
 
   bool _tourShown = false;
 
@@ -140,12 +141,16 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         settings: widget.settings,
         summary: summary,
         purchaseHistory: widget.purchaseHistory,
+        coachMode: effectiveMode,
+        coachThreadId: _coachThreadId,
+        coachContextWindow: _subscription.contextWindowForMode(effectiveMode),
         maxTokens: _maxTokensForMode(effectiveMode),
       );
       if (mounted) {
         setState(() {
           _currentInsight = result.insight;
           _insights = result.history;
+          _coachThreadId = result.threadId ?? _coachThreadId;
         });
       }
     } catch (e) {

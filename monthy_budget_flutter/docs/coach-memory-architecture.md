@@ -30,9 +30,16 @@ This document defines the first implementation step for Coach memory with:
   - credit balance visibility
   - fallback notice + `Restaurar memoria` CTA
   - mode-based token budget (`AiCoachService.analyze(maxTokens: ...)`)
+- Integrated Coach payload into `openai-chat` function:
+  - optional `coach_memory` request block (`mode`, `thread_id`, `context_window`, `user_message`, `household_id`)
+  - thread bootstrap in `coach_threads`
+  - retrieval context from summaries + recent messages (+ memory match via RPC in `plus/pro`)
+  - persistence of user/assistant turns in `coach_messages`
+  - summary generation cadence for long threads
+  - lightweight memory fact capture for high-signal user statements
 
 ## Next implementation steps
 
-1. Add embedding + memory extraction pipeline in Edge Function.
-2. Add periodic summary generation to bound context growth.
-3. Connect retrieval RPC (`match_coach_memories`) to Coach prompt assembly.
+1. Harden memory extraction quality (structured extractor instead of keyword heuristic).
+2. Add explicit usage/analytics events for fallback and credit consumption.
+3. Add retention/privacy controls (expiry and user delete flows) for persisted memories.

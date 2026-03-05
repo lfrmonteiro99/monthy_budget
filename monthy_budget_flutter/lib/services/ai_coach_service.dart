@@ -7,6 +7,7 @@ import '../models/app_settings.dart';
 import '../models/budget_summary.dart';
 import '../models/coach_insight.dart';
 import '../models/purchase_record.dart';
+import '../models/subscription_state.dart';
 import '../utils/stress_index.dart';
 
 bool shouldFallbackFromEdgeFunctionError(Object error) {
@@ -132,13 +133,16 @@ class AiCoachService {
   // ── Analysis ───────────────────────────────────────────────────────────────
 
   /// Returns the new [CoachInsight] and the updated full list.
-  Future<({CoachInsight insight, List<CoachInsight> history})> analyze({
+  Future<({CoachInsight insight, List<CoachInsight> history, String? threadId})> analyze({
     required String apiKey,
     required String householdId,
     required AppSettings settings,
     required BudgetSummary summary,
     required PurchaseHistory purchaseHistory,
     int maxTokens = 1000,
+    CoachMode? coachMode,
+    String? coachThreadId,
+    int? coachContextWindow,
   }) async {
     final stress = calculateStressIndex(
       summary: summary,
@@ -147,7 +151,7 @@ class AiCoachService {
     );
     final prompt = _buildPrompt(settings, summary, purchaseHistory, stress);
 
-    final content = await _requestChatCompletion(
+    final completion = await _requestChatCompletion(
       apiKey: apiKey,
       messages: [
         {
@@ -163,16 +167,27 @@ class AiCoachService {
       ],
       maxTokens: maxTokens,
       temperature: 0.5,
+      coachMemory: {
+        'mode': (coachMode ?? CoachMode.eco).name,
+        'thread_id': coachThreadId,
+        'context_window': coachContextWindow,
+        'user_message': prompt,
+        'household_id': householdId,
+      },
     );
 
     final insight = CoachInsight(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       timestamp: DateTime.now(),
-      content: content,
+      content: completion.content,
       stressScore: stress.score,
     );
     final history = await _persistInsight(insight, householdId);
-    return (insight: insight, history: history);
+    return (
+      insight: insight,
+      history: history,
+      threadId: completion.threadId,
+    );
   }
 
   Future<({CoachInsight insight, List<CoachInsight> history})> analyzeMidMonth({
@@ -229,11 +244,12 @@ class AiCoachService {
     return (insight: insight, history: history);
   }
 
-  Future<String> _requestChatCompletion({
+  Future<({String content, String? threadId})> _requestChatCompletion({
     required String apiKey,
     required List<Map<String, String>> messages,
     int maxTokens = 800,
     double temperature = 0.5,
+    Map<String, dynamic>? coachMemory,
   }) async {
     final hasApiKey = apiKey.trim().isNotEmpty;
     try {
@@ -246,6 +262,7 @@ class AiCoachService {
           'messages': messages,
           'max_tokens': maxTokens,
           'temperature': temperature,
+          if (coachMemory != null) 'coach_memory': coachMemory,
         },
       );
 
@@ -269,16 +286,20 @@ class AiCoachService {
       if (content.isEmpty) {
         throw Exception('Resposta vazia da IA.');
       }
-      return content;
+      return (
+        content: content,
+        threadId: data['thread_id']?.toString(),
+      );
     } catch (e) {
       if (hasApiKey && shouldFallbackFromEdgeFunctionError(e)) {
         try {
-          return await _requestDirectOpenAiCompletion(
+          final direct = await _requestDirectOpenAiCompletion(
             apiKey: apiKey,
             messages: messages,
             maxTokens: maxTokens,
             temperature: temperature,
           );
+          return (content: direct, threadId: null);
         } catch (fallbackError) {
           throw Exception(
             buildAiCoachRequestErrorMessage(
