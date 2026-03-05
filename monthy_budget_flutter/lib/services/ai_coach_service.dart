@@ -302,10 +302,7 @@ class AiCoachService {
   }) async {
     final hasApiKey = apiKey.trim().isNotEmpty;
     try {
-      final authHeaders = _buildEdgeAuthHeaders();
-      final response = await _client.functions.invoke(
-        _edgeFunctionName,
-        headers: authHeaders,
+      final response = await _invokeEdgeFunctionDirect(
         body: {
           'model': _model,
           'messages': messages,
@@ -357,11 +354,29 @@ class AiCoachService {
     }
   }
 
+  Future<({int status, Object? data})> _invokeEdgeFunctionDirect({
+    required Map<String, dynamic> body,
+  }) async {
+    final headers = _buildEdgeAuthHeaders();
+    final response = await _httpClient.post(
+      Uri.parse('$supabaseUrl/functions/v1/$_edgeFunctionName'),
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(body),
+    );
+    Object? data;
+    try {
+      data = jsonDecode(response.body);
+    } catch (_) {
+      data = {'error': response.body};
+    }
+    return (status: response.statusCode, data: data);
+  }
+
   Map<String, String> _buildEdgeAuthHeaders() {
-    final accessToken = _client.auth.currentSession?.accessToken?.trim();
-    final jwt = (accessToken != null && accessToken.isNotEmpty)
-        ? accessToken
-        : supabaseAnonKey.trim();
+    final jwt = supabaseAnonKey.trim();
     if (jwt.isEmpty) {
       throw Exception('JWT indisponivel para autenticar chamada ao AI Coach.');
     }
