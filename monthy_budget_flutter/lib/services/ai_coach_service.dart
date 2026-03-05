@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../config/supabase_config.dart';
 import '../models/app_settings.dart';
 import '../models/budget_summary.dart';
 import '../models/coach_insight.dart';
@@ -357,14 +358,17 @@ class AiCoachService {
   }
 
   Map<String, String> _buildEdgeAuthHeaders() {
-    final accessToken = _client.auth.currentSession?.accessToken;
-    if (accessToken == null || accessToken.trim().isEmpty) {
-      throw Exception(
-        'Sessao expirada ou utilizador nao autenticado. '
-        'Inicie sessao novamente para usar o AI Coach.',
-      );
+    final accessToken = _client.auth.currentSession?.accessToken?.trim();
+    final jwt = (accessToken != null && accessToken.isNotEmpty)
+        ? accessToken
+        : supabaseAnonKey.trim();
+    if (jwt.isEmpty) {
+      throw Exception('JWT indisponivel para autenticar chamada ao AI Coach.');
     }
-    return {'Authorization': 'Bearer $accessToken'};
+    return {
+      'Authorization': 'Bearer $jwt',
+      'apikey': supabaseAnonKey,
+    };
   }
 
   Future<String> _requestDirectOpenAiCompletion({
