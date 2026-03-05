@@ -8,6 +8,7 @@ on:
       - 'v*'
 
 permissions:
+  actions: write
   contents: write
   pull-requests: write
   issues: write
@@ -190,4 +191,6 @@ jobs:
           fi
 
           gh pr edit "$PR_NUMBER" --add-label "$LABEL" || true
+
+          gh workflow run "PR Governance" --ref "$BRANCH" -f pr_number="$PR_NUMBER" -f branch="$BRANCH" || true
           gh pr merge "$PR_NUMBER" --auto --squash --delete-branch
