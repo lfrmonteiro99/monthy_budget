@@ -138,7 +138,7 @@ jobs:
             $0 ~ "^## "tag"( |$)" { capture=1; print; next }
             /^## / && capture==1 { exit }
             capture==1 { print }
-          ' monthy_budget_flutter/CHANGELOG.md > "$BODY_FILE"
+          ' CHANGELOG.md > "$BODY_FILE"
 
           if [ -s "$BODY_FILE" ]; then
             echo "has_notes=true" >> "$GITHUB_OUTPUT"
