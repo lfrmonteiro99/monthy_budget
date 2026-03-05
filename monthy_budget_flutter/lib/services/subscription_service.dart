@@ -66,6 +66,44 @@ class SubscriptionService {
     return updated;
   }
 
+  Future<SubscriptionState> setPreferredCoachMode(
+      SubscriptionState current, CoachMode mode) async {
+    final updated = current.copyWith(preferredCoachMode: mode);
+    await save(updated);
+    return updated;
+  }
+
+  Future<SubscriptionState> addAiCredits(
+      SubscriptionState current, int amount) async {
+    if (amount <= 0) return current;
+    final updated = current.copyWith(aiCredits: current.aiCredits + amount);
+    await save(updated);
+    return updated;
+  }
+
+  Future<SubscriptionState> consumeAiCredits(
+      SubscriptionState current, int amount) async {
+    if (amount <= 0) return current;
+    final next = current.aiCredits - amount;
+    final updated = current.copyWith(aiCredits: next < 0 ? 0 : next);
+    await save(updated);
+    return updated;
+  }
+
+  Future<({SubscriptionState state, CoachModeResolution resolution})>
+      resolveAndConsumeCoachMode(
+    SubscriptionState current, {
+    CoachMode? requestedMode,
+  }) async {
+    final resolution = current.resolveCoachMode(requestedMode: requestedMode);
+    if (resolution.estimatedCreditCost <= 0) {
+      return (state: current, resolution: resolution);
+    }
+
+    final updated = await consumeAiCredits(current, resolution.estimatedCreditCost);
+    return (state: updated, resolution: resolution);
+  }
+
   /// Returns a human-readable label for a feature key.
   static String featureLabel(String featureKey) {
     switch (featureKey) {

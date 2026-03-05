@@ -3,6 +3,37 @@ import 'dart:convert';
 /// Available subscription tiers.
 enum SubscriptionTier { free, premium, family }
 
+/// Coach response mode and memory depth.
+enum CoachMode { eco, plus, pro }
+
+const coachModeCreditCost = <CoachMode, int>{
+  CoachMode.eco: 0,
+  CoachMode.plus: 2,
+  CoachMode.pro: 5,
+};
+
+const coachModeMessageWindow = <CoachMode, int>{
+  CoachMode.eco: 6,
+  CoachMode.plus: 20,
+  CoachMode.pro: 40,
+};
+
+class CoachModeResolution {
+  final CoachMode requestedMode;
+  final CoachMode effectiveMode;
+  final int estimatedCreditCost;
+  final bool usedFallback;
+  final String? reason;
+
+  const CoachModeResolution({
+    required this.requestedMode,
+    required this.effectiveMode,
+    required this.estimatedCreditCost,
+    required this.usedFallback,
+    this.reason,
+  });
+}
+
 /// Features that can be gated behind a subscription tier.
 enum PremiumFeature {
   aiCoach,
@@ -49,6 +80,8 @@ class SubscriptionState {
   final DateTime trialStartDate;
   final bool trialUsed;
   final Set<String> featuresExplored;
+  final int aiCredits;
+  final CoachMode preferredCoachMode;
 
   static const trialDays = 14;
 
@@ -57,6 +90,8 @@ class SubscriptionState {
     required this.trialStartDate,
     this.trialUsed = false,
     this.featuresExplored = const {},
+    this.aiCredits = 0,
+    this.preferredCoachMode = CoachMode.plus,
   });
 
   /// Whether the trial is currently active.
@@ -82,6 +117,42 @@ class SubscriptionState {
   /// Whether the user currently has family-level access (paid or trial).
   bool get hasFamilyAccess =>
       tier == SubscriptionTier.family || isTrialActive;
+
+  bool get hasAiCredits => aiCredits > 0;
+
+  int creditCostForMode(CoachMode mode) => coachModeCreditCost[mode] ?? 0;
+
+  int contextWindowForMode(CoachMode mode) => coachModeMessageWindow[mode] ?? 6;
+
+  CoachModeResolution resolveCoachMode({CoachMode? requestedMode}) {
+    final requested = requestedMode ?? preferredCoachMode;
+    final requestedCost = creditCostForMode(requested);
+    if (requested == CoachMode.eco || requestedCost == 0) {
+      return CoachModeResolution(
+        requestedMode: requested,
+        effectiveMode: CoachMode.eco,
+        estimatedCreditCost: 0,
+        usedFallback: false,
+      );
+    }
+
+    if (aiCredits >= requestedCost) {
+      return CoachModeResolution(
+        requestedMode: requested,
+        effectiveMode: requested,
+        estimatedCreditCost: requestedCost,
+        usedFallback: false,
+      );
+    }
+
+    return CoachModeResolution(
+      requestedMode: requested,
+      effectiveMode: CoachMode.eco,
+      estimatedCreditCost: 0,
+      usedFallback: true,
+      reason: 'insufficient_credits',
+    );
+  }
 
   /// Check if a specific feature is accessible.
   bool canAccess(PremiumFeature feature) {
@@ -132,12 +203,16 @@ class SubscriptionState {
     DateTime? trialStartDate,
     bool? trialUsed,
     Set<String>? featuresExplored,
+    int? aiCredits,
+    CoachMode? preferredCoachMode,
   }) {
     return SubscriptionState(
       tier: tier ?? this.tier,
       trialStartDate: trialStartDate ?? this.trialStartDate,
       trialUsed: trialUsed ?? this.trialUsed,
       featuresExplored: featuresExplored ?? this.featuresExplored,
+      aiCredits: aiCredits ?? this.aiCredits,
+      preferredCoachMode: preferredCoachMode ?? this.preferredCoachMode,
     );
   }
 
@@ -146,6 +221,8 @@ class SubscriptionState {
         'trialStartDate': trialStartDate.toIso8601String(),
         'trialUsed': trialUsed,
         'featuresExplored': featuresExplored.toList(),
+        'aiCredits': aiCredits,
+        'preferredCoachMode': preferredCoachMode.name,
       };
 
   factory SubscriptionState.fromJson(Map<String, dynamic> json) {
@@ -162,6 +239,11 @@ class SubscriptionState {
               ?.map((e) => e as String)
               .toSet() ??
           const {},
+      aiCredits: (json['aiCredits'] as num?)?.toInt() ?? 0,
+      preferredCoachMode: CoachMode.values.firstWhere(
+        (m) => m.name == json['preferredCoachMode'],
+        orElse: () => CoachMode.plus,
+      ),
     );
   }
 
