@@ -555,8 +555,9 @@ Deno.serve(async (req: Request) => {
     }
 
     if (!upstream.ok) {
+      const upstreamError = upstreamJson.error as Record<string, unknown> | undefined;
       const apiError =
-          (upstreamJson.error as Record<string, unknown>?)?.message?.toString() ??
+          upstreamError?.message?.toString() ??
           `OpenAI request failed with status ${upstream.status}`;
       return new Response(
         JSON.stringify({ error: apiError }),
@@ -567,8 +568,8 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const choices = upstreamJson.choices as Array<Record<string, unknown>>?;
-    const message = choices?.[0]?.message as Record<string, unknown>?;
+    const choices = upstreamJson.choices as Array<Record<string, unknown>> | undefined;
+    const message = choices?.[0]?.message as Record<string, unknown> | undefined;
     const content = message?.content?.toString() ?? '';
 
     const userMessage = coachMemory?.user_message?.toString() ?? null;
