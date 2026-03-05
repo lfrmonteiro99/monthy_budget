@@ -2,7 +2,7 @@ name: orcamento_mensal
 description: "Calculadora de Orcamento Mensal - Portuguese monthly budget calculator with IRS tax tables"
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 2026.3.0+260300000
 
 environment:
   sdk: ^3.11.0
@@ -44,3 +44,4 @@ flutter:
     - assets/grocery_prices.json
     - assets/meal_planner/ingredients.json
     - assets/meal_planner/recipes.json
+
