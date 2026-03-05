@@ -70,7 +70,7 @@ void main() {
     );
 
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(FilledButton, 'Generate invite code'));
+    await tester.tap(find.byIcon(Icons.refresh));
     await tester.pumpAndSettle();
 
     expect(calls, 1);
