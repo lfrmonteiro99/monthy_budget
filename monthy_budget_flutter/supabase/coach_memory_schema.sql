@@ -95,8 +95,6 @@ create policy "insert coach_threads" on coach_threads
   for insert with check (household_id = my_household_id() and user_id = auth.uid());
 create policy "update own coach_threads" on coach_threads
   for update using (household_id = my_household_id() and user_id = auth.uid());
-create policy "delete own coach_threads" on coach_threads
-  for delete using (household_id = my_household_id() and user_id = auth.uid());
 
 create policy "read coach_messages" on coach_messages
   for select using (household_id = my_household_id());
