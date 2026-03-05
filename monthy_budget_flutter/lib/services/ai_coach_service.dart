@@ -52,6 +52,7 @@ class AiCoachService {
   static const _edgeFunctionName = 'openai-chat';
   static const _model = 'gpt-4o-mini';
   static const _maxInsights = 20;
+  static const _chatPrefKeyPrefix = 'coach_chat_messages_';
 
   final SupabaseClient _client;
   final http.Client _httpClient;
@@ -127,6 +128,69 @@ class AiCoachService {
         .from('household_coach_insights')
         .delete()
         .eq('household_id', householdId);
+  }
+
+  Future<List<CoachChatMessage>> loadConversation(String householdId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString('$_chatPrefKeyPrefix$householdId');
+    if (raw == null || raw.trim().isEmpty) return [];
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is! List) return [];
+      return decoded
+          .whereType<Map>()
+          .map((item) => CoachChatMessage.fromJson(
+                item.map((key, value) => MapEntry(key.toString(), value)),
+              ))
+          .toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<void> saveConversation(
+    String householdId,
+    List<CoachChatMessage> messages,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    final payload = messages.map((m) => m.toJson()).toList();
+    await prefs.setString(
+      '$_chatPrefKeyPrefix$householdId',
+      jsonEncode(payload),
+    );
+  }
+
+  Future<void> clearConversation(String householdId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('$_chatPrefKeyPrefix$householdId');
+  }
+
+  Future<String> sendChatMessage({
+    required String apiKey,
+    required String userMessage,
+    required List<CoachChatMessage> history,
+    required int contextWindow,
+    required AppSettings settings,
+    required BudgetSummary summary,
+    required PurchaseHistory purchaseHistory,
+    int maxTokens = 1000,
+  }) async {
+    final messages = buildBoundedChatMessages(
+      history: history,
+      userMessage: userMessage,
+      contextWindow: contextWindow,
+      systemPrompt: _buildChatSystemPrompt(
+        settings: settings,
+        summary: summary,
+        purchaseHistory: purchaseHistory,
+      ),
+    );
+    return _requestChatCompletion(
+      apiKey: apiKey,
+      messages: messages,
+      maxTokens: maxTokens,
+      temperature: 0.5,
+    );
   }
 
   // ── Analysis ───────────────────────────────────────────────────────────────
@@ -506,5 +570,76 @@ class AiCoachService {
         '\n'
         'Sê cirúrgico. Zero conselhos genéricos. Usa EXCLUSIVAMENTE os números fornecidos.');
     return buf.toString();
+  }
+
+  String _buildChatSystemPrompt({
+    required AppSettings settings,
+    required BudgetSummary summary,
+    required PurchaseHistory purchaseHistory,
+  }) {
+    final stress = calculateStressIndex(
+      summary: summary,
+      purchaseHistory: purchaseHistory,
+      settings: settings,
+    );
+    final contextSnapshot = _buildPrompt(
+      settings,
+      summary,
+      purchaseHistory,
+      stress,
+    );
+    return 'Es um coach financeiro pessoal para utilizadores portugueses. '
+        'Responde sempre em portugues europeu, de forma direta e pratica. '
+        'Mantem continuidade da conversa e usa o historico para responder. '
+        'Nunca inventes dados externos; usa apenas o contexto e o que o utilizador disser. '
+        'Contexto financeiro atualizado:\n\n$contextSnapshot';
+  }
+
+  static List<Map<String, String>> buildBoundedChatMessages({
+    required List<CoachChatMessage> history,
+    required String userMessage,
+    required int contextWindow,
+    required String systemPrompt,
+  }) {
+    final cleanHistory = history
+        .where((m) => m.content.trim().isNotEmpty)
+        .toList(growable: false);
+    final safeWindow = contextWindow < 0 ? 0 : contextWindow;
+    final bounded = cleanHistory.length > safeWindow
+        ? cleanHistory.sublist(cleanHistory.length - safeWindow)
+        : cleanHistory;
+
+    return [
+      {'role': 'system', 'content': systemPrompt},
+      ...bounded.map((m) => {'role': m.role, 'content': m.content}),
+      {'role': 'user', 'content': userMessage.trim()},
+    ];
+  }
+}
+
+class CoachChatMessage {
+  final String role;
+  final String content;
+  final DateTime timestamp;
+
+  const CoachChatMessage({
+    required this.role,
+    required this.content,
+    required this.timestamp,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'role': role,
+        'content': content,
+        'timestamp': timestamp.toIso8601String(),
+      };
+
+  factory CoachChatMessage.fromJson(Map<String, dynamic> json) {
+    return CoachChatMessage(
+      role: json['role']?.toString() ?? 'assistant',
+      content: json['content']?.toString() ?? '',
+      timestamp: DateTime.tryParse(json['timestamp']?.toString() ?? '') ??
+          DateTime.now(),
+    );
   }
 }
