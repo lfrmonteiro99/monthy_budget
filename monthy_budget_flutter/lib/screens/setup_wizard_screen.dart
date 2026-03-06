@@ -795,6 +795,8 @@ class _SalaryStep extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: l10n.setupWizardSalaryGross,
                   prefixText: '${country.currencySymbol} ',
+                  helperText: l10n.helperWizardGrossSalary,
+                  helperStyle: TextStyle(fontSize: 11, color: AppColors.textMuted(context)),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10)),
                   enabledBorder: OutlineInputBorder(
@@ -914,6 +916,8 @@ class _SalaryStep extends StatelessWidget {
                     ],
                     decoration: InputDecoration(
                       labelText: '${country.currencySymbol}/dia',
+                      helperText: l10n.helperWizardMealAllowance,
+                      helperStyle: TextStyle(fontSize: 11, color: AppColors.textMuted(context)),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10)),
                       enabledBorder: OutlineInputBorder(
@@ -1064,6 +1068,17 @@ class _ExpensesStep extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
 
+    String? expenseHelperText(String key) {
+      switch (key) {
+        case 'rent': return l10n.helperWizardRent;
+        case 'groceries': return l10n.helperWizardGroceries;
+        case 'transport': return l10n.helperWizardTransport;
+        case 'utilities': return l10n.helperWizardUtilities;
+        case 'telecom': return l10n.helperWizardTelecom;
+        default: return null;
+      }
+    }
+
     // Calculate totals for summary line
     double totalExpenses = 0;
     for (final key in expenseKeyOrder) {
@@ -1147,6 +1162,8 @@ class _ExpensesStep extends StatelessWidget {
                             decoration: InputDecoration(
                               prefixText: '${draft.country.currencySymbol} ',
                               isDense: true,
+                              helperText: expenseHelperText(key),
+                              helperStyle: TextStyle(fontSize: 11, color: AppColors.textMuted(context)),
                               contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 10),
                               border: OutlineInputBorder(

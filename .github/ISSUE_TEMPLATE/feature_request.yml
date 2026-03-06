@@ -1,0 +1,36 @@
+name: "Feature Request"
+description: Request a new feature or enhancement
+labels: ["enhancement", "release:minor", "type:feature"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to Solve
+      description: What user problem are we solving?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Solution
+      description: Describe expected behavior and UX.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: What must be delivered for this issue to be done?
+    validations:
+      required: true
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Release Impact
+      options:
+        - patch
+        - minor
+        - major
+      default: 1
+    validations:
+      required: true

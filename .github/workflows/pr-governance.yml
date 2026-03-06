@@ -1,0 +1,96 @@
+name: PR Governance
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, labeled, unlabeled]
+  push:
+    branches-ignore:
+      - main
+    tags-ignore:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to validate'
+        required: false
+        type: string
+      branch:
+        description: 'Head branch to resolve PR from'
+        required: false
+        type: string
+
+jobs:
+  validate-pr:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate issue link, release notes, and release label
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          PR_BODY=""
+          PR_LABELS=""
+          PR_NUMBER=""
+
+          if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+            PR_BODY="$(jq -r '.pull_request.body // ""' "$GITHUB_EVENT_PATH")"
+            PR_LABELS="$(jq -r '.pull_request.labels[].name // empty' "$GITHUB_EVENT_PATH" | paste -sd, -)"
+          elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
+            BRANCH="${GITHUB_REF_NAME}"
+
+            # PR may be created shortly after push by Agent Delivery; wait briefly.
+            for _ in $(seq 1 20); do
+              PR_NUMBER="$(gh pr list --head "$BRANCH" --base "$DEFAULT_BRANCH" --state open --json number --jq '.[0].number // empty')"
+              if [[ -n "$PR_NUMBER" ]]; then
+                break
+              fi
+              sleep 15
+            done
+
+            if [[ -z "$PR_NUMBER" ]]; then
+              echo "No open PR found for branch $BRANCH; skipping validation."
+              exit 0
+            fi
+
+            PR_BODY="$(gh pr view "$PR_NUMBER" --json body --jq .body)"
+            PR_LABELS="$(gh pr view "$PR_NUMBER" --json labels --jq '.labels[].name' | paste -sd, -)"
+          else
+            PR_NUMBER='${{ inputs.pr_number }}'
+            BRANCH='${{ inputs.branch }}'
+
+            if [[ -z "$PR_NUMBER" && -n "$BRANCH" ]]; then
+              PR_NUMBER="$(gh pr list --head "$BRANCH" --base "$DEFAULT_BRANCH" --json number --jq '.[0].number // empty')"
+            fi
+
+            if [[ -z "$PR_NUMBER" ]]; then
+              echo "No PR resolved for workflow_dispatch; skipping validation."
+              exit 0
+            fi
+
+            PR_BODY="$(gh pr view "$PR_NUMBER" --json body --jq .body)"
+            PR_LABELS="$(gh pr view "$PR_NUMBER" --json labels --jq '.labels[].name' | paste -sd, -)"
+          fi
+
+          echo "Labels: $PR_LABELS"
+
+          if ! echo "$PR_BODY" | grep -Eiq '(Fixes|Closes|Resolves)[[:space:]]+#[0-9]+'; then
+            echo "PR body must include: Fixes #<issue-number>"
+            exit 1
+          fi
+
+          if ! echo "$PR_BODY" | grep -Eiq '^##[[:space:]]+Release Notes'; then
+            echo "PR body must include a '## Release Notes' section"
+            exit 1
+          fi
+
+          if ! echo "$PR_LABELS" | grep -Eq '(^|,)(release:patch|release:minor|release:major)(,|$)'; then
+            echo "PR must include one release label: release:patch | release:minor | release:major"
+            exit 1
+          fi

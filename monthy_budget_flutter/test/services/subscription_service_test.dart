@@ -284,6 +284,79 @@ void main() {
       });
     });
 
+    group('coach credits and mode', () {
+      test('setPreferredCoachMode persists selected mode', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          preferredCoachMode: CoachMode.plus,
+        );
+
+        final updated = await service.setPreferredCoachMode(state, CoachMode.pro);
+        expect(updated.preferredCoachMode, CoachMode.pro);
+
+        final prefs = await SharedPreferences.getInstance();
+        final restored = SubscriptionState.fromJsonString(
+          prefs.getString('subscription_state')!,
+        );
+        expect(restored.preferredCoachMode, CoachMode.pro);
+      });
+
+      test('addAiCredits increases balance', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          aiCredits: 3,
+        );
+
+        final updated = await service.addAiCredits(state, 10);
+        expect(updated.aiCredits, 13);
+      });
+
+      test('consumeAiCredits never goes below zero', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          aiCredits: 2,
+        );
+
+        final updated = await service.consumeAiCredits(state, 10);
+        expect(updated.aiCredits, 0);
+      });
+
+      test('resolveAndConsumeCoachMode falls back to eco without debiting', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          aiCredits: 1,
+          preferredCoachMode: CoachMode.pro,
+        );
+
+        final result = await service.resolveAndConsumeCoachMode(
+          state,
+          requestedMode: CoachMode.pro,
+        );
+        expect(result.resolution.effectiveMode, CoachMode.eco);
+        expect(result.state.aiCredits, 1);
+      });
+
+      test('resolveAndConsumeCoachMode debits credits in plus/pro', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          aiCredits: 10,
+          preferredCoachMode: CoachMode.plus,
+        );
+
+        final result = await service.resolveAndConsumeCoachMode(
+          state,
+          requestedMode: CoachMode.plus,
+        );
+        expect(result.resolution.effectiveMode, CoachMode.plus);
+        expect(result.state.aiCredits, 8);
+      });
+    });
+
     group('featureLabel()', () {
       test('returns correct labels for all known features', () {
         expect(SubscriptionService.featureLabel('dashboard'),

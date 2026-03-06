@@ -106,10 +106,8 @@ void main() {
         ),
       );
 
-      final detectors = tester.widgetList<GestureDetector>(find.byType(GestureDetector));
-      final tappable = detectors.where((d) => d.onTap != null).toList(growable: false);
-      expect(tappable, isNotEmpty);
-      tappable.first.onTap!.call();
+      await tester.tap(find.text('See all'));
+      await tester.pumpAndSettle();
       expect(tapped, isTrue);
     });
   });
