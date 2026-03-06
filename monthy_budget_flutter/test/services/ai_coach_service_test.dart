@@ -54,4 +54,50 @@ void main() {
       expect(message, contains('Inicie sessao novamente'));
     });
   });
+
+  group('AiCoachService bounded chat context', () {
+    test('keeps only the latest N history messages', () {
+      final history = List.generate(
+        5,
+        (i) => CoachChatMessage(
+          role: i.isEven ? 'user' : 'assistant',
+          content: 'msg_$i',
+          timestamp: DateTime(2026, 1, 1, 10, i),
+        ),
+      );
+
+      final messages = AiCoachService.buildBoundedChatMessages(
+        history: history,
+        userMessage: 'new_question',
+        contextWindow: 2,
+        systemPrompt: 'system',
+      );
+
+      expect(messages.length, 4);
+      expect(messages[0]['role'], 'system');
+      expect(messages[1]['content'], 'msg_3');
+      expect(messages[2]['content'], 'msg_4');
+      expect(messages[3]['content'], 'new_question');
+    });
+
+    test('always includes system + new user when context window is zero', () {
+      final messages = AiCoachService.buildBoundedChatMessages(
+        history: [
+          CoachChatMessage(
+            role: 'assistant',
+            content: 'old',
+            timestamp: DateTime(2026, 1, 1),
+          ),
+        ],
+        userMessage: 'hello',
+        contextWindow: 0,
+        systemPrompt: 'system',
+      );
+
+      expect(messages.length, 2);
+      expect(messages[0]['role'], 'system');
+      expect(messages[1]['role'], 'user');
+      expect(messages[1]['content'], 'hello');
+    });
+  });
 }
