@@ -176,9 +176,15 @@ class AiCoachService {
     required PurchaseHistory purchaseHistory,
     int maxTokens = 1000,
   }) async {
+    final groundedUserMessage = _buildGroundedUserMessage(
+      userMessage: userMessage,
+      settings: settings,
+      summary: summary,
+      purchaseHistory: purchaseHistory,
+    );
     final messages = buildBoundedChatMessages(
       history: history,
-      userMessage: userMessage,
+      userMessage: groundedUserMessage,
       contextWindow: contextWindow,
       systemPrompt: _buildChatSystemPrompt(
         settings: settings,
@@ -192,6 +198,53 @@ class AiCoachService {
       maxTokens: maxTokens,
       temperature: 0.5,
     );
+  }
+
+  String _buildGroundedUserMessage({
+    required String userMessage,
+    required AppSettings settings,
+    required BudgetSummary summary,
+    required PurchaseHistory purchaseHistory,
+  }) {
+    final now = DateTime.now();
+    final monthRecords = purchaseHistory.records
+        .where((r) => r.date.year == now.year && r.date.month == now.month)
+        .toList()
+      ..sort((a, b) => b.date.compareTo(a.date));
+
+    final topExpenses = settings.expenses
+        .where((e) => e.enabled && e.amount > 0)
+        .toList()
+      ..sort((a, b) => b.amount.compareTo(a.amount));
+    final topExpensesText = topExpenses
+        .take(6)
+        .map((e) => '- ${e.category.label}: ${e.amount.toStringAsFixed(2)} EUR')
+        .join('\n');
+
+    final recentPurchasesText = monthRecords
+        .take(8)
+        .map(
+          (r) =>
+              '- ${r.date.day.toString().padLeft(2, '0')}/${r.date.month.toString().padLeft(2, '0')}: '
+              '${r.amount.toStringAsFixed(2)} EUR (${r.itemCount} itens)',
+        )
+        .join('\n');
+
+    return '''
+Pergunta do utilizador:
+$userMessage
+
+Dados reais da app (usar estes valores na resposta):
+- Liquido mensal: ${summary.totalNetWithMeal.toStringAsFixed(2)} EUR
+- Despesas fixas: ${summary.totalExpenses.toStringAsFixed(2)} EUR
+- Poupanca mensal: ${summary.netLiquidity.toStringAsFixed(2)} EUR
+
+Top categorias de despesa:
+${topExpensesText.isEmpty ? '- sem dados' : topExpensesText}
+
+Compras recentes deste mes:
+${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText}
+''';
   }
 
   // ── Analysis ───────────────────────────────────────────────────────────────
@@ -616,6 +669,8 @@ class AiCoachService {
         'Evita formatos fixos (nao responder em "3 partes" a menos que seja pedido). '
         'Mantem continuidade da conversa e usa o historico para responder. '
         'Nunca inventes dados externos; usa apenas o contexto e o que o utilizador disser. '
+        'Quando houver dados numericos no pedido, cita esses numeros na resposta. '
+        'Se faltar dado para algo pedido, diz explicitamente que nao tens esse dado. '
         'Contexto financeiro atual:\n'
         '- Liquido mensal: ${summary.totalNetWithMeal.toStringAsFixed(2)} EUR\n'
         '- Despesas fixas: ${summary.totalExpenses.toStringAsFixed(2)} EUR (${fixedExpenseRatio.toStringAsFixed(1)}%)\n'
