@@ -373,6 +373,16 @@ class SalaryInfo {
         ),
         otherExemptIncome: (json['otherExemptIncome'] ?? 0).toDouble(),
       );
+
+  String localizedDisplayLabel(S l10n, {int? fallbackIndex}) {
+    final normalized = label.trim().toLowerCase();
+    if (normalized == 'vencimento 1') return l10n.settingsSalaryN(1);
+    if (normalized == 'vencimento 2') return l10n.settingsSalaryN(2);
+    if (fallbackIndex != null && label.trim().isEmpty) {
+      return l10n.settingsSalaryN(fallbackIndex + 1);
+    }
+    return label;
+  }
 }
 
 class ExpenseItem {
@@ -427,6 +437,23 @@ class ExpenseItem {
         enabled: json['enabled'] ?? true,
         isFixed: json['isFixed'] ?? true,
       );
+
+  String localizedDisplayLabel(S l10n) {
+    switch (id) {
+      case 'vodafone':
+        return l10n.enumCatTelecomunicacoes;
+      case 'eletricidade':
+        return l10n.enumCatEnergia;
+      case 'agua':
+        return l10n.enumCatAgua;
+      case 'compras':
+        return l10n.enumCatAlimentacao;
+      case 'escola':
+        return l10n.enumCatEducacao;
+      default:
+        return label;
+    }
+  }
 }
 
 class DashboardConfig {

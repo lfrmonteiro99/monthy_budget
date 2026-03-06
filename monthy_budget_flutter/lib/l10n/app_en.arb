@@ -1620,5 +1620,11 @@
   "discoveryFeatureDashboardTagline": "Your financial overview",
   "discoveryFeatureDashboardDescription": "See your complete budget breakdown, charts, and financial health at a glance.",
   "discoveryGenericFeatureName": "This feature",
-  "discoveryTapToUpgrade": "Tap to upgrade"
+  "discoveryTapToUpgrade": "Tap to upgrade",
+  "taxTableI": "Table I",
+  "taxTableII": "Table II",
+  "taxTableIII": "Table III",
+  "taxTableIDescription": "Single without dependents / Married with two earners",
+  "taxTableIIDescription": "Single with one or more dependents",
+  "taxTableIIIDescription": "Married, single earner"
 }

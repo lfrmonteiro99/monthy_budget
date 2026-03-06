@@ -3517,4 +3517,23 @@ class SPt extends S {
 
   @override
   String get discoveryTapToUpgrade => 'Toca para fazer upgrade';
+
+  @override
+  String get taxTableI => 'Tabela I';
+
+  @override
+  String get taxTableII => 'Tabela II';
+
+  @override
+  String get taxTableIII => 'Tabela III';
+
+  @override
+  String get taxTableIDescription =>
+      'Nao casado sem dependentes / Casado dois titulares';
+
+  @override
+  String get taxTableIIDescription => 'Nao casado com um ou mais dependentes';
+
+  @override
+  String get taxTableIIIDescription => 'Casado, unico titular';
 }

@@ -1603,5 +1603,11 @@
   "discoveryFeatureDashboardTagline": "Tu vision financiera",
   "discoveryFeatureDashboardDescription": "Ve el desglose completo de tu presupuesto, graficos y salud financiera de un vistazo.",
   "discoveryGenericFeatureName": "Esta funcion",
-  "discoveryTapToUpgrade": "Toca para mejorar"
+  "discoveryTapToUpgrade": "Toca para mejorar",
+  "taxTableI": "Tabla I",
+  "taxTableII": "Tabla II",
+  "taxTableIII": "Tabla III",
+  "taxTableIDescription": "No casado sin dependientes / Casado con dos titulares",
+  "taxTableIIDescription": "No casado con uno o mas dependientes",
+  "taxTableIIIDescription": "Casado, un solo titular"
 }

@@ -281,7 +281,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                         !_isOthers && _selectedExpenseItem?.id == item.id;
                     return ChoiceChip(
                       avatar: Icon(_categoryIcon(item.category.name), size: 16),
-                      label: Text(item.label),
+                      label: Text(item.localizedDisplayLabel(S.of(context))),
                       selected: selected,
                       onSelected: (_) => _selectExpenseItem(item),
                       selectedColor: AppColors.primaryLight(context),

@@ -6448,6 +6448,42 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Toca para fazer upgrade'**
   String get discoveryTapToUpgrade;
+
+  /// No description provided for @taxTableI.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tabela I'**
+  String get taxTableI;
+
+  /// No description provided for @taxTableII.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tabela II'**
+  String get taxTableII;
+
+  /// No description provided for @taxTableIII.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tabela III'**
+  String get taxTableIII;
+
+  /// No description provided for @taxTableIDescription.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nao casado sem dependentes / Casado dois titulares'**
+  String get taxTableIDescription;
+
+  /// No description provided for @taxTableIIDescription.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nao casado com um ou mais dependentes'**
+  String get taxTableIIDescription;
+
+  /// No description provided for @taxTableIIIDescription.
+  ///
+  /// In pt, this message translates to:
+  /// **'Casado, unico titular'**
+  String get taxTableIIIDescription;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

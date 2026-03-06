@@ -3498,4 +3498,23 @@ class SEn extends S {
 
   @override
   String get discoveryTapToUpgrade => 'Tap to upgrade';
+
+  @override
+  String get taxTableI => 'Table I';
+
+  @override
+  String get taxTableII => 'Table II';
+
+  @override
+  String get taxTableIII => 'Table III';
+
+  @override
+  String get taxTableIDescription =>
+      'Single without dependents / Married with two earners';
+
+  @override
+  String get taxTableIIDescription => 'Single with one or more dependents';
+
+  @override
+  String get taxTableIIIDescription => 'Married, single earner';
 }

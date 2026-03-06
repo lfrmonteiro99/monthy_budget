@@ -770,8 +770,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       children: [
                         Expanded(
                           child: TextField(
-                            controller: TextEditingController(text: salary.label)
-                              ..selection = TextSelection.collapsed(offset: salary.label.length),
+                            controller: TextEditingController(
+                                text: salary.localizedDisplayLabel(l10n,
+                                    fallbackIndex: idx))
+                              ..selection = TextSelection.collapsed(
+                                  offset: salary
+                                      .localizedDisplayLabel(l10n,
+                                          fallbackIndex: idx)
+                                      .length),
                             onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(label: v)),
                             style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textLabel(context)),
                             decoration: InputDecoration(
@@ -955,7 +961,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            '${table.label} — ${table.description}',
+                            '${table.localizedLabel(l10n)} - ${table.localizedDescription(l10n)}',
                             style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
                           ),
                         );
@@ -1029,8 +1035,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           Expanded(
                             child: TextField(
-                              controller: TextEditingController(text: expense.label)
-                                ..selection = TextSelection.collapsed(offset: expense.label.length),
+                              controller: TextEditingController(
+                                  text: expense.localizedDisplayLabel(l10n))
+                                ..selection = TextSelection.collapsed(
+                                    offset: expense.localizedDisplayLabel(l10n).length),
                               onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(label: v)),
                               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textLabel(context)),
                               decoration: InputDecoration(
@@ -2655,7 +2663,7 @@ class _CategoryDetailSheetState extends State<_CategoryDetailSheet> {
                 Expanded(
                   child: Text(
                     widget.expense.label.isNotEmpty
-                        ? widget.expense.label
+                        ? widget.expense.localizedDisplayLabel(l10n)
                         : widget.expense.category.localizedLabel(l10n),
                     style: TextStyle(
                       fontSize: 18,
@@ -3159,5 +3167,6 @@ class _BillFormSheetState extends State<_BillFormSheet> {
     );
   }
 }
+
 
 

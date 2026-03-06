@@ -3519,4 +3519,23 @@ class SEs extends S {
 
   @override
   String get discoveryTapToUpgrade => 'Toca para mejorar';
+
+  @override
+  String get taxTableI => 'Tabla I';
+
+  @override
+  String get taxTableII => 'Tabla II';
+
+  @override
+  String get taxTableIII => 'Tabla III';
+
+  @override
+  String get taxTableIDescription =>
+      'No casado sin dependientes / Casado con dos titulares';
+
+  @override
+  String get taxTableIIDescription => 'No casado con uno o mas dependientes';
+
+  @override
+  String get taxTableIIIDescription => 'Casado, un solo titular';
 }

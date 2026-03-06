@@ -3528,4 +3528,24 @@ class SFr extends S {
 
   @override
   String get discoveryTapToUpgrade => 'Touchez pour passer en premium';
+
+  @override
+  String get taxTableI => 'Tableau I';
+
+  @override
+  String get taxTableII => 'Tableau II';
+
+  @override
+  String get taxTableIII => 'Tableau III';
+
+  @override
+  String get taxTableIDescription =>
+      'Celibataire sans personnes a charge / Marie avec deux titulaires';
+
+  @override
+  String get taxTableIIDescription =>
+      'Celibataire avec une ou plusieurs personnes a charge';
+
+  @override
+  String get taxTableIIIDescription => 'Marie, titulaire unique';
 }

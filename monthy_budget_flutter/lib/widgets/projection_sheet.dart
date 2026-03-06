@@ -380,7 +380,7 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              expense.label,
+              expense.localizedDisplayLabel(l10n),
               style: TextStyle(
                 fontSize: 13,
                 color: enabled ? AppColors.textLabel(context) : AppColors.borderMuted(context),

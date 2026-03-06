@@ -4,6 +4,8 @@
 //
 // Segurança Social: 11% para trabalhadores por conta de outrem
 
+import '../l10n/generated/app_localizations.dart';
+
 const double socialSecurityRate = 0.11;
 const double mealCardExemptLimit = 10.20;
 const double mealCashExemptLimit = 6.00;
@@ -35,6 +37,32 @@ class IRSTable {
     required this.description,
     required this.brackets,
   });
+
+  String localizedLabel(S l10n) {
+    switch (id) {
+      case 'table_I':
+        return l10n.taxTableI;
+      case 'table_II':
+        return l10n.taxTableII;
+      case 'table_III':
+        return l10n.taxTableIII;
+      default:
+        return label;
+    }
+  }
+
+  String localizedDescription(S l10n) {
+    switch (id) {
+      case 'table_I':
+        return l10n.taxTableIDescription;
+      case 'table_II':
+        return l10n.taxTableIIDescription;
+      case 'table_III':
+        return l10n.taxTableIIIDescription;
+      default:
+        return description;
+    }
+  }
 }
 
 /// Tabela I — Trabalho dependente: Não casado sem dependentes OU Casado dois titulares

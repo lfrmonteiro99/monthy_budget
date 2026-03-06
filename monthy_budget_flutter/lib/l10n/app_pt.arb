@@ -2334,6 +2334,12 @@
   "discoveryFeatureDashboardTagline": "A tua visao financeira",
   "discoveryFeatureDashboardDescription": "Vê o detalhe completo do teu orçamento, graficos e saude financeira num relance.",
   "discoveryGenericFeatureName": "Esta funcionalidade",
-  "discoveryTapToUpgrade": "Toca para fazer upgrade"
+  "discoveryTapToUpgrade": "Toca para fazer upgrade",
+  "taxTableI": "Tabela I",
+  "taxTableII": "Tabela II",
+  "taxTableIII": "Tabela III",
+  "taxTableIDescription": "Nao casado sem dependentes / Casado dois titulares",
+  "taxTableIIDescription": "Nao casado com um ou mais dependentes",
+  "taxTableIIIDescription": "Casado, unico titular"
 }
 

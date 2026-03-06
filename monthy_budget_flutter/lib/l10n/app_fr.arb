@@ -1603,5 +1603,11 @@
   "discoveryFeatureDashboardTagline": "Votre vue financiere",
   "discoveryFeatureDashboardDescription": "Consultez en un coup d'oeil le detail complet de votre budget, les graphiques et votre sante financiere.",
   "discoveryGenericFeatureName": "Cette fonctionnalite",
-  "discoveryTapToUpgrade": "Touchez pour passer en premium"
+  "discoveryTapToUpgrade": "Touchez pour passer en premium",
+  "taxTableI": "Tableau I",
+  "taxTableII": "Tableau II",
+  "taxTableIII": "Tableau III",
+  "taxTableIDescription": "Celibataire sans personnes a charge / Marie avec deux titulaires",
+  "taxTableIIDescription": "Celibataire avec une ou plusieurs personnes a charge",
+  "taxTableIIIDescription": "Marie, titulaire unique"
 }

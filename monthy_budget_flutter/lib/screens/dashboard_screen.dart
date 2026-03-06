@@ -1300,7 +1300,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       Expanded(
                         child: Row(
                           children: [
-                            Text(expense.label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textLabel(context))),
+                            Text(expense.localizedDisplayLabel(l10n), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textLabel(context))),
                             const SizedBox(width: 8),
                             Text(expense.category.label, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
                           ],
