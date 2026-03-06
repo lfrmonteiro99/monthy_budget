@@ -83,6 +83,26 @@ void main() {
       expect(result.params?['name'], 'leite');
     });
 
+    test('parses toggle_shopping_item_checked as checked', () {
+      final result = CommandChatService.regexParse(
+        'marca leite na lista de compras',
+      );
+      expect(result, isNotNull);
+      expect(result!.action, 'toggle_shopping_item_checked');
+      expect(result.params?['name'], 'leite');
+      expect(result.params?['checked'], isTrue);
+    });
+
+    test('parses toggle_shopping_item_checked as unchecked', () {
+      final result = CommandChatService.regexParse(
+        'uncheck milk from shopping list',
+      );
+      expect(result, isNotNull);
+      expect(result!.action, 'toggle_shopping_item_checked');
+      expect(result.params?['name'], 'milk');
+      expect(result.params?['checked'], isFalse);
+    });
+
     test('parses set_language', () {
       final result = CommandChatService.regexParse('idioma ingles');
       expect(result, isNotNull);
@@ -119,6 +139,13 @@ void main() {
       expect(result.params?['amount'], 50.0);
     });
 
+    test('parses delete_expense', () {
+      final result = CommandChatService.regexParse('apaga a despesa netflix');
+      expect(result, isNotNull);
+      expect(result!.action, 'delete_expense');
+      expect(result.params?['description'], 'netflix');
+    });
+
     test('parses navigate_to from Portuguese', () {
       final result = CommandChatService.regexParse('abre as definicoes');
       expect(result, isNotNull);
@@ -152,9 +179,11 @@ void main() {
       expect(prompt, contains('set_theme_mode'));
       expect(prompt, contains('add_shopping_item'));
       expect(prompt, contains('remove_shopping_item'));
+      expect(prompt, contains('toggle_shopping_item_checked'));
       expect(prompt, contains('add_savings_goal'));
       expect(prompt, contains('add_savings_contribution'));
       expect(prompt, contains('add_recurring_expense'));
+      expect(prompt, contains('delete_expense'));
       expect(prompt, contains('set_language'));
       expect(prompt, contains('navigate_to'));
       expect(prompt, contains('clear_checked_items'));

@@ -700,6 +700,14 @@ class SEs extends S {
       'Quita [articulo] de la lista de compras';
 
   @override
+  String get cmdCapabilityToggleShoppingItemChecked =>
+      'Marcar o desmarcar de la lista';
+
+  @override
+  String get cmdCapabilityToggleShoppingItemCheckedExample =>
+      'Marca [articulo] en la lista de compras';
+
+  @override
   String get cmdCapabilityAddSavingsGoal => 'Crear objetivo de ahorro';
 
   @override
@@ -720,6 +728,13 @@ class SEs extends S {
   @override
   String get cmdCapabilityAddRecurringExpenseExample =>
       'Anade gasto recurrente [cantidad] en [categoria] dia [dia]';
+
+  @override
+  String get cmdCapabilityDeleteExpense => 'Eliminar un gasto';
+
+  @override
+  String get cmdCapabilityDeleteExpenseExample =>
+      'Elimina el gasto [descripcion]';
 
   @override
   String get cmdCapabilityChangeTheme => 'Cambiar tema';

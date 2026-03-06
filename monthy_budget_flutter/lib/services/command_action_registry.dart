@@ -14,8 +14,12 @@ class CommandActionRegistry {
   final Future<void> Function(SavingsGoal goal) onAddSavingsGoal;
   final Future<void> Function(RecurringExpense expense) onAddRecurringExpense;
   final Future<bool> Function(String itemName) onRemoveShoppingItemByName;
+  final Future<bool> Function(String itemName, bool checked)
+      onToggleShoppingItemCheckedByName;
   final Future<bool> Function(String goalName, double amount)
       onAddSavingsContributionByGoalName;
+  final Future<bool> Function(String description, {String? category})
+      onDeleteExpenseByDescription;
   final Future<void> Function(String id) onDeleteExpense;
   final void Function(ThemeMode mode) onSetThemeMode;
   final void Function(AppColorPalette palette) onSetColorPalette;
@@ -29,7 +33,9 @@ class CommandActionRegistry {
     required this.onAddSavingsGoal,
     required this.onAddRecurringExpense,
     required this.onRemoveShoppingItemByName,
+    required this.onToggleShoppingItemCheckedByName,
     required this.onAddSavingsContributionByGoalName,
+    required this.onDeleteExpenseByDescription,
     required this.onDeleteExpense,
     required this.onSetThemeMode,
     required this.onSetColorPalette,
@@ -130,6 +136,10 @@ class CommandActionRegistry {
         return _validateRemoveShoppingItem(params);
       case 'add_savings_contribution':
         return _validateAddSavingsContribution(params);
+      case 'toggle_shopping_item_checked':
+        return _validateToggleShoppingItemChecked(params);
+      case 'delete_expense':
+        return _validateDeleteExpense(params);
       case 'set_theme_mode':
         return _validateSetThemeMode(params);
       case 'set_color_palette':
@@ -168,6 +178,10 @@ class CommandActionRegistry {
         return _executeRemoveShoppingItem(params);
       case 'add_savings_contribution':
         return _executeAddSavingsContribution(params);
+      case 'toggle_shopping_item_checked':
+        return _executeToggleShoppingItemChecked(params);
+      case 'delete_expense':
+        return _executeDeleteExpense(params);
       case 'set_theme_mode':
         return _executeSetThemeMode(params);
       case 'set_color_palette':
@@ -236,6 +250,22 @@ class CommandActionRegistry {
         goalName.trim().isNotEmpty &&
         amount != null &&
         amount > 0;
+  }
+
+  bool _validateToggleShoppingItemChecked(Map<String, dynamic> params) {
+    final name = params['name'] as String?;
+    final checked = params['checked'];
+    return name != null &&
+        name.trim().isNotEmpty &&
+        checked is bool;
+  }
+
+  bool _validateDeleteExpense(Map<String, dynamic> params) {
+    final description = params['description'] as String?;
+    final category = params['category'] as String?;
+    if (description == null || description.trim().isEmpty) return false;
+    if (category != null && !_validCategories.contains(category)) return false;
+    return true;
   }
 
   bool _validateSetThemeMode(Map<String, dynamic> params) {
@@ -357,6 +387,41 @@ class CommandActionRegistry {
     return CommandResult.success(
       message: 'Contribution added: $amount to $goalName',
     );
+  }
+
+  Future<CommandResult> _executeToggleShoppingItemChecked(
+    Map<String, dynamic> params,
+  ) async {
+    final name = (params['name'] as String).trim();
+    final checked = params['checked'] as bool;
+    final updated = await onToggleShoppingItemCheckedByName(name, checked);
+    if (!updated) {
+      return CommandResult.failure(
+        message: 'Could not find shopping item: $name',
+      );
+    }
+    return CommandResult.success(
+      message: checked
+          ? 'Shopping item checked: $name'
+          : 'Shopping item unchecked: $name',
+    );
+  }
+
+  Future<CommandResult> _executeDeleteExpense(
+    Map<String, dynamic> params,
+  ) async {
+    final description = (params['description'] as String).trim();
+    final category = params['category'] as String?;
+    final deleted = await onDeleteExpenseByDescription(
+      description,
+      category: category,
+    );
+    if (!deleted) {
+      return CommandResult.failure(
+        message: 'Could not find expense: $description',
+      );
+    }
+    return CommandResult.success(message: 'Expense deleted: $description');
   }
 
   Future<CommandResult> _executeSetThemeMode(

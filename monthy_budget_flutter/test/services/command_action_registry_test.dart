@@ -15,7 +15,9 @@ void main() {
   late List<SavingsGoal> addedSavingsGoals;
   late List<RecurringExpense> addedRecurringExpenses;
   late List<String> removedShoppingItemNames;
+  late List<Map<String, dynamic>> toggledShoppingItems;
   late List<Map<String, dynamic>> savingsContributions;
+  late List<Map<String, dynamic>> deletedExpensesByDescription;
   late List<ThemeMode> themeModes;
   late List<AppColorPalette> palettes;
   late List<String?> locales;
@@ -29,7 +31,9 @@ void main() {
     addedSavingsGoals = [];
     addedRecurringExpenses = [];
     removedShoppingItemNames = [];
+    toggledShoppingItems = [];
     savingsContributions = [];
+    deletedExpensesByDescription = [];
     themeModes = [];
     palettes = [];
     locales = [];
@@ -46,8 +50,19 @@ void main() {
         removedShoppingItemNames.add(name);
         return true;
       },
+      onToggleShoppingItemCheckedByName: (name, checked) async {
+        toggledShoppingItems.add({'name': name, 'checked': checked});
+        return true;
+      },
       onAddSavingsContributionByGoalName: (goalName, amount) async {
         savingsContributions.add({'goal_name': goalName, 'amount': amount});
+        return true;
+      },
+      onDeleteExpenseByDescription: (description, {category}) async {
+        deletedExpensesByDescription.add({
+          'description': description,
+          'category': category,
+        });
         return true;
       },
       onDeleteExpense: (id) async => deletedExpenseIds.add(id),
@@ -200,6 +215,45 @@ void main() {
           'amount': 50,
         }),
         isTrue,
+      );
+    });
+
+    test('validates toggle_shopping_item_checked with name and bool', () {
+      expect(
+        registry.validate('toggle_shopping_item_checked', {
+          'name': 'leite',
+          'checked': true,
+        }),
+        isTrue,
+      );
+    });
+
+    test('rejects toggle_shopping_item_checked without bool checked', () {
+      expect(
+        registry.validate('toggle_shopping_item_checked', {
+          'name': 'leite',
+          'checked': 'yes',
+        }),
+        isFalse,
+      );
+    });
+
+    test('validates delete_expense with description', () {
+      expect(
+        registry.validate('delete_expense', {
+          'description': 'netflix',
+        }),
+        isTrue,
+      );
+    });
+
+    test('rejects delete_expense with invalid category', () {
+      expect(
+        registry.validate('delete_expense', {
+          'description': 'netflix',
+          'category': 'streaming',
+        }),
+        isFalse,
       );
     });
 
@@ -396,6 +450,30 @@ void main() {
       expect(result.succeeded, isTrue);
       expect(savingsContributions, [
         {'goal_name': 'ferias', 'amount': 75.0},
+      ]);
+    });
+
+    test('toggle_shopping_item_checked calls callback with name and state', () async {
+      final result = await registry.execute('toggle_shopping_item_checked', {
+        'name': 'leite',
+        'checked': true,
+      });
+
+      expect(result.succeeded, isTrue);
+      expect(toggledShoppingItems, [
+        {'name': 'leite', 'checked': true},
+      ]);
+    });
+
+    test('delete_expense calls callback with description and category', () async {
+      final result = await registry.execute('delete_expense', {
+        'description': 'netflix',
+        'category': 'lazer',
+      });
+
+      expect(result.succeeded, isTrue);
+      expect(deletedExpensesByDescription, [
+        {'description': 'netflix', 'category': 'lazer'},
       ]);
     });
 

@@ -158,6 +158,11 @@ class _CommandChatPanelState extends State<CommandChatPanel> {
         immediate: false,
       ),
       (
+        label: l10n.cmdCapabilityToggleShoppingItemChecked,
+        example: l10n.cmdCapabilityToggleShoppingItemCheckedExample,
+        immediate: false,
+      ),
+      (
         label: l10n.cmdCapabilityAddSavingsGoal,
         example: l10n.cmdCapabilityAddSavingsGoalExample,
         immediate: false,
@@ -170,6 +175,11 @@ class _CommandChatPanelState extends State<CommandChatPanel> {
       (
         label: l10n.cmdCapabilityAddRecurringExpense,
         example: l10n.cmdCapabilityAddRecurringExpenseExample,
+        immediate: false,
+      ),
+      (
+        label: l10n.cmdCapabilityDeleteExpense,
+        example: l10n.cmdCapabilityDeleteExpenseExample,
         immediate: false,
       ),
       (

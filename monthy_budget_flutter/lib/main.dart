@@ -878,8 +878,11 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       onAddSavingsGoal: _addSavingsGoalFromCommand,
       onAddRecurringExpense: _addRecurringExpenseFromCommand,
       onRemoveShoppingItemByName: _removeShoppingItemByNameFromCommand,
+      onToggleShoppingItemCheckedByName:
+          _toggleShoppingItemCheckedByNameFromCommand,
       onAddSavingsContributionByGoalName:
           _addSavingsContributionByGoalNameFromCommand,
+      onDeleteExpenseByDescription: _deleteExpenseByDescriptionFromCommand,
       onDeleteExpense: _deleteActualExpense,
       onSetThemeMode: (mode) => appThemeModeNotifier.value = mode,
       onSetColorPalette: (palette) {
@@ -1035,6 +1038,45 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     }
   }
 
+  Future<bool> _toggleShoppingItemCheckedByNameFromCommand(
+    String itemName,
+    bool checked,
+  ) async {
+    final query = itemName.trim().toLowerCase();
+    final exact = _shoppingList
+        .where((item) => item.productName.trim().toLowerCase() == query)
+        .cast<ShoppingItem?>()
+        .firstWhere((item) => item != null, orElse: () => null);
+    final item = exact ??
+        _shoppingList
+            .where((i) => i.productName.trim().toLowerCase().contains(query))
+            .cast<ShoppingItem?>()
+            .firstWhere((i) => i != null, orElse: () => null);
+    if (item == null || item.id.isEmpty) return false;
+    final previousItems = List<ShoppingItem>.from(_shoppingList);
+    setState(() {
+      _shoppingList = _shoppingList.map((i) {
+        if (i.id != item.id) return i;
+        return ShoppingItem(
+          id: i.id,
+          productName: i.productName,
+          store: i.store,
+          price: i.price,
+          unitPrice: i.unitPrice,
+          checked: checked,
+        );
+      }).toList();
+    });
+    try {
+      await _shoppingListService.toggle(item.id, checked);
+      return true;
+    } catch (e) {
+      debugPrint('Failed to toggle shopping item: $e');
+      setState(() => _shoppingList = previousItems);
+      return false;
+    }
+  }
+
   Future<bool> _addSavingsContributionByGoalNameFromCommand(
     String goalName,
     double amount,
@@ -1072,6 +1114,45 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     } catch (e) {
       debugPrint('Failed to add savings contribution: $e');
       _loadSavingsGoals();
+      return false;
+    }
+  }
+
+  Future<bool> _deleteExpenseByDescriptionFromCommand(
+    String description, {
+    String? category,
+  }) async {
+    final query = description.trim().toLowerCase();
+    final exact = _actualExpenses
+        .where((expense) {
+          final desc = (expense.description ?? '').trim().toLowerCase();
+          if (desc != query) return false;
+          return category == null || expense.category == category;
+        })
+        .cast<ActualExpense?>()
+        .firstWhere((expense) => expense != null, orElse: () => null);
+    final expense = exact ??
+        _actualExpenses
+            .where((e) {
+              final desc = (e.description ?? '').trim().toLowerCase();
+              if (!desc.contains(query)) return false;
+              return category == null || e.category == category;
+            })
+            .cast<ActualExpense?>()
+            .firstWhere((e) => e != null, orElse: () => null);
+    if (expense == null) return false;
+    final previousExpenses = List<ActualExpense>.from(_actualExpenses);
+    setState(() {
+      _actualExpenses = _actualExpenses.where((e) => e.id != expense.id).toList();
+    });
+    _refreshNotificationSchedules();
+    try {
+      await _actualExpenseService.delete(expense.id);
+      return true;
+    } catch (e) {
+      debugPrint('Failed to delete expense by description: $e');
+      setState(() => _actualExpenses = previousExpenses);
+      _refreshNotificationSchedules();
       return false;
     }
   }

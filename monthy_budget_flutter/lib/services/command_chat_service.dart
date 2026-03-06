@@ -167,6 +167,26 @@ class CommandChatService {
       }
     }
 
+    // toggle_shopping_item_checked
+    final toggleShoppingMatch = RegExp(
+      r'(?:marca|mark|check|desmarca|uncheck)\s+'
+      r'(.+?)\s+'
+      r'(?:na|no|from|on|da|de)\s+'
+      r'(?:lista(?:\s+de\s+compras)?|shopping\s+list|liste\s+de\s+courses)',
+      caseSensitive: false,
+    ).firstMatch(text);
+    if (toggleShoppingMatch != null) {
+      final name = toggleShoppingMatch.group(1)!.trim();
+      final checked = !text.contains('desmarca') && !text.contains('uncheck');
+      if (name.isNotEmpty) {
+        return CommandAction.withAction(
+          action: 'toggle_shopping_item_checked',
+          params: {'name': name, 'checked': checked},
+          message: '',
+        );
+      }
+    }
+
     // add_savings_goal
     final savingsGoalMatch = RegExp(
       r'(?:cria|create|add|adiciona|ajoute)\s+'
@@ -208,6 +228,24 @@ class CommandChatService {
         return CommandAction.withAction(
           action: 'add_savings_contribution',
           params: {'amount': amount, 'goal_name': goalName},
+          message: '',
+        );
+      }
+    }
+
+    // delete_expense
+    final deleteExpenseMatch = RegExp(
+      r'(?:apaga|delete|remove|remover)\s+'
+      r'(?:a\s+)?(?:despesa|expense)\s+'
+      r'(.+)',
+      caseSensitive: false,
+    ).firstMatch(text);
+    if (deleteExpenseMatch != null) {
+      final description = deleteExpenseMatch.group(1)!.trim();
+      if (description.isNotEmpty) {
+        return CommandAction.withAction(
+          action: 'delete_expense',
+          params: {'description': description},
           message: '',
         );
       }
@@ -390,10 +428,12 @@ class CommandChatService {
         '- add_shopping_item: {name: string, store?: string, price?: number, '
         'unitPrice?: string}\n'
         '- remove_shopping_item: {name: string}\n'
+        '- toggle_shopping_item_checked: {name: string, checked: boolean}\n'
         '- add_savings_goal: {name: string, target_amount: number}\n'
         '- add_savings_contribution: {goal_name: string, amount: number}\n'
         '- add_recurring_expense: {amount: number, category: string, '
         'description?: string, day_of_month?: number}\n'
+        '- delete_expense: {description: string, category?: string}\n'
         '- set_theme_mode: {mode: "light" | "dark" | "system"}\n'
         '- set_color_palette: {palette: "ocean" | "emerald" | "violet" | '
         '"teal" | "sunset"}\n'

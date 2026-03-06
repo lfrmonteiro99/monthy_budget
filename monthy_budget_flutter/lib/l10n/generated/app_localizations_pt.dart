@@ -700,6 +700,14 @@ class SPt extends S {
       'Remove [item] da lista de compras';
 
   @override
+  String get cmdCapabilityToggleShoppingItemChecked =>
+      'Marcar ou desmarcar item da lista';
+
+  @override
+  String get cmdCapabilityToggleShoppingItemCheckedExample =>
+      'Marca [item] na lista de compras';
+
+  @override
   String get cmdCapabilityAddSavingsGoal => 'Criar objetivo de poupanca';
 
   @override
@@ -720,6 +728,13 @@ class SPt extends S {
   @override
   String get cmdCapabilityAddRecurringExpenseExample =>
       'Adiciona despesa recorrente [valor] em [categoria] dia [dia]';
+
+  @override
+  String get cmdCapabilityDeleteExpense => 'Apagar uma despesa';
+
+  @override
+  String get cmdCapabilityDeleteExpenseExample =>
+      'Apaga a despesa [descricao]';
 
   @override
   String get cmdCapabilityChangeTheme => 'Mudar tema';

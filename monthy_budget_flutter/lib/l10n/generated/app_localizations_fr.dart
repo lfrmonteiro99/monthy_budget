@@ -703,6 +703,14 @@ class SFr extends S {
       'Retire [article] de la liste de courses';
 
   @override
+  String get cmdCapabilityToggleShoppingItemChecked =>
+      'Cocher ou decocher un article';
+
+  @override
+  String get cmdCapabilityToggleShoppingItemCheckedExample =>
+      'Coche [article] dans la liste de courses';
+
+  @override
   String get cmdCapabilityAddSavingsGoal => 'Creer un objectif d\'epargne';
 
   @override
@@ -724,6 +732,13 @@ class SFr extends S {
   @override
   String get cmdCapabilityAddRecurringExpenseExample =>
       'Ajoute depense recurrente [montant] en [categorie] jour [jour]';
+
+  @override
+  String get cmdCapabilityDeleteExpense => 'Supprimer une depense';
+
+  @override
+  String get cmdCapabilityDeleteExpenseExample =>
+      'Supprime la depense [description]';
 
   @override
   String get cmdCapabilityChangeTheme => 'Changer le theme';

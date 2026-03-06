@@ -29,6 +29,20 @@ void main() {
     expect(find.text('Available actions'), findsOneWidget);
     expect(find.text('Add an expense'), findsOneWidget);
     expect(find.text('Add a shopping item'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Delete an expense', skipOffstage: false),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.text('Check or uncheck a shopping item', skipOffstage: false),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Delete an expense', skipOffstage: false),
+      findsOneWidget,
+    );
     expect(
       find.text("We're still adding more. If it isn't listed here yet, it may not work."),
       findsOneWidget,

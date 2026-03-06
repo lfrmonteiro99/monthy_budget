@@ -1361,6 +1361,18 @@ abstract class S {
   /// **'Remove [item] da lista de compras'**
   String get cmdCapabilityRemoveShoppingItemExample;
 
+  /// No description provided for @cmdCapabilityToggleShoppingItemChecked.
+  ///
+  /// In pt, this message translates to:
+  /// **'Marcar ou desmarcar item da lista'**
+  String get cmdCapabilityToggleShoppingItemChecked;
+
+  /// No description provided for @cmdCapabilityToggleShoppingItemCheckedExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Marca [item] na lista de compras'**
+  String get cmdCapabilityToggleShoppingItemCheckedExample;
+
   /// No description provided for @cmdCapabilityAddSavingsGoal.
   ///
   /// In pt, this message translates to:
@@ -1396,6 +1408,18 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Adiciona despesa recorrente [valor] em [categoria] dia [dia]'**
   String get cmdCapabilityAddRecurringExpenseExample;
+
+  /// No description provided for @cmdCapabilityDeleteExpense.
+  ///
+  /// In pt, this message translates to:
+  /// **'Apagar uma despesa'**
+  String get cmdCapabilityDeleteExpense;
+
+  /// No description provided for @cmdCapabilityDeleteExpenseExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Apaga a despesa [descricao]'**
+  String get cmdCapabilityDeleteExpenseExample;
 
   /// No description provided for @cmdCapabilityChangeTheme.
   ///

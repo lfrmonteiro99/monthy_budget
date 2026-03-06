@@ -698,6 +698,14 @@ class SEn extends S {
       'Remove [item] from shopping list';
 
   @override
+  String get cmdCapabilityToggleShoppingItemChecked =>
+      'Check or uncheck a shopping item';
+
+  @override
+  String get cmdCapabilityToggleShoppingItemCheckedExample =>
+      'Mark [item] on shopping list';
+
+  @override
   String get cmdCapabilityAddSavingsGoal => 'Create a savings goal';
 
   @override
@@ -717,6 +725,13 @@ class SEn extends S {
   @override
   String get cmdCapabilityAddRecurringExpenseExample =>
       'Add recurring expense [amount] in [category] day [day]';
+
+  @override
+  String get cmdCapabilityDeleteExpense => 'Delete an expense';
+
+  @override
+  String get cmdCapabilityDeleteExpenseExample =>
+      'Delete expense [description]';
 
   @override
   String get cmdCapabilityChangeTheme => 'Change theme';
