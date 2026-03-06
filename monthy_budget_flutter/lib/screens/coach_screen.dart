@@ -57,12 +57,6 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   bool _tourShown = false;
   bool _ecoBannerCollapsed = false;
 
-  final List<String> _quickPrompts = const [
-    'Onde posso cortar despesas este mes?',
-    'Como melhoro a minha poupanca sem perder qualidade de vida?',
-    'Ajuda-me a definir um plano para os proximos 30 dias.',
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -324,6 +318,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
 
   Widget _buildMessagesList() {
     if (_messages.isEmpty) {
+      final l10n = S.of(context);
       return Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -331,8 +326,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Faz uma pergunta sobre o teu orcamento. '
-                'Vou manter o contexto conforme a memoria ativa.',
+                l10n.coachEmptyPrompt,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: AppColors.textSecondary(context),
@@ -345,7 +339,11 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                 spacing: 8,
                 runSpacing: 8,
                 alignment: WrapAlignment.center,
-                children: _quickPrompts
+                children: [
+                  l10n.coachQuickPrompt1,
+                  l10n.coachQuickPrompt2,
+                  l10n.coachQuickPrompt3,
+                ]
                     .map(
                       (prompt) => ActionChip(
                         label: Text(prompt),
@@ -412,6 +410,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildComposer() {
+    final l10n = S.of(context);
     final costNow = _subscription.creditCostForMode(_selectedMode);
     return Container(
       key: CoachTourKeys.analyzeButton,
@@ -440,7 +439,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                   textInputAction: TextInputAction.send,
                   onSubmitted: (_) => _sendCurrentMessage(),
                   decoration: InputDecoration(
-                    hintText: 'Escreve uma mensagem...',
+                    hintText: l10n.coachComposerHint,
                     isDense: true,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -470,8 +469,8 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           const SizedBox(height: 6),
           Text(
             costNow == 0
-                ? 'Esta mensagem nao consome creditos (modo Eco).'
-                : 'Esta mensagem vai consumir $costNow creditos. A resposta nao consome creditos.',
+                ? l10n.coachCostFree
+                : l10n.coachCostPaid(costNow),
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
@@ -484,6 +483,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildModeCard() {
+    final l10n = S.of(context);
     final activeResolution = _lastModeResolution;
     final effectiveMode = activeResolution?.effectiveMode ?? _selectedMode;
     final window = _subscription.contextWindowForMode(effectiveMode);
@@ -502,7 +502,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           Row(
             children: [
               Text(
-                'Memoria do Coach',
+                l10n.coachMemoryTitle,
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -511,7 +511,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
               ),
               const Spacer(),
               Text(
-                '${_subscription.aiCredits} creditos',
+                l10n.coachCreditsLabel(_subscription.aiCredits),
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -524,14 +524,17 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           Wrap(
             spacing: 8,
             children: [
-              _modeChip(CoachMode.eco, 'Eco'),
-              _modeChip(CoachMode.plus, 'Plus'),
-              _modeChip(CoachMode.pro, 'Pro'),
+              _modeChip(CoachMode.eco, l10n.coachModeEco),
+              _modeChip(CoachMode.plus, l10n.coachModePlus),
+              _modeChip(CoachMode.pro, l10n.coachModePro),
             ],
           ),
           const SizedBox(height: 8),
           Text(
-            'Memoria ativa: ${effectiveMode.name.toUpperCase()} ($usagePct%)',
+            l10n.coachMemoryActive(
+              effectiveMode.name.toUpperCase(),
+              '$usagePct%',
+            ),
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
@@ -540,7 +543,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           ),
           const SizedBox(height: 4),
           Text(
-            'Custo por mensagem enviada. A resposta do coach nao consome creditos.',
+            l10n.coachCostFootnote,
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
@@ -553,9 +556,10 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 
   Widget _modeChip(CoachMode mode, String label) {
+    final l10n = S.of(context);
     final selected = _selectedMode == mode;
     final cost = _subscription.creditCostForMode(mode);
-    final subtitle = cost == 0 ? 'Gratis' : '$cost/msg';
+    final subtitle = cost == 0 ? l10n.coachModeFree : l10n.coachModeCost(cost);
     return ChoiceChip(
       label: Text('$label - $subtitle'),
       selected: selected,
@@ -576,6 +580,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildFallbackCard() {
+    final l10n = S.of(context);
     final compact = _ecoBannerCollapsed;
     return Container(
       padding: const EdgeInsets.all(10),
@@ -591,7 +596,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
             children: [
               Expanded(
                 child: Text(
-                  'Modo Eco ativo (sem creditos).',
+                  l10n.coachEcoBannerTitle,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
@@ -605,7 +610,8 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                 },
                 iconSize: 18,
                 visualDensity: VisualDensity.compact,
-                tooltip: compact ? 'Expandir aviso' : 'Minimizar aviso',
+                tooltip:
+                    compact ? l10n.coachExpandWarning : l10n.coachCollapseWarning,
                 icon: Icon(
                   compact ? Icons.expand_more : Icons.expand_less,
                   color: AppColors.warning(context),
@@ -616,7 +622,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           if (!compact) ...[
             const SizedBox(height: 2),
             Text(
-              'Podes continuar a conversar, mas com memoria reduzida.',
+              l10n.coachEcoBannerBody,
               style: TextStyle(
                 fontSize: 12,
                 color: AppColors.warning(context),
@@ -627,7 +633,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
               alignment: Alignment.centerLeft,
               child: OutlinedButton(
                 onPressed: widget.onRestoreMemory ?? widget.onOpenSettings,
-                child: const Text('Restaurar memoria'),
+                child: Text(l10n.coachRestoreMemory),
               ),
             ),
           ],
@@ -721,7 +727,7 @@ class _MessageBubble extends StatelessWidget {
                   ),
                 if (!isUser) const SizedBox(width: 6),
                 Text(
-                  isUser ? 'Tu' : 'Coach',
+                  isUser ? S.of(context).coachYou : S.of(context).coachAssistant,
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w700,

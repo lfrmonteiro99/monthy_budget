@@ -111,7 +111,7 @@ class OrcamentoMensalApp extends StatelessWidget {
           return ValueListenableBuilder<Locale?>(
             valueListenable: appLocaleNotifier,
             builder: (_, locale, _) => MaterialApp(
-              title: 'Orçamento Mensal',
+              onGenerateTitle: (context) => S.of(context).appTitle,
               debugShowCheckedModeBanner: false,
               locale: locale,
               localizationsDelegates: const [
@@ -500,13 +500,14 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
             final updated =
                 await _subscriptionService.upgradeTo(_subscription, tier);
             if (mounted) {
+              final l10n = S.of(context);
               setState(() => _subscription = updated);
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(tier == SubscriptionTier.free
-                      ? 'Continuing with Free plan'
-                      : 'Upgraded to Pro — thank you!'),
+                      ? l10n.subscriptionContinueFreeMessage
+                      : l10n.subscriptionUpgradeThankYou),
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -516,11 +517,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
             final updated =
                 await _subscriptionService.upgradeTo(_subscription, tier);
             if (mounted) {
+              final l10n = S.of(context);
               setState(() => _subscription = updated);
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Upgraded to Pro — thank you!'),
+                SnackBar(
+                  content: Text(l10n.subscriptionUpgradeThankYou),
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -530,13 +532,14 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
             final updated = await _subscriptionService.syncFromRemoteTier(
                 _subscription, tier);
             if (mounted) {
+              final l10n = S.of(context);
               setState(() => _subscription = updated);
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(tier == SubscriptionTier.free
-                      ? 'No previous purchases found'
-                      : 'Restored Pro subscription!'),
+                      ? l10n.subscriptionNoPreviousPurchases
+                      : l10n.subscriptionRestoreSuccess),
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -955,9 +958,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       }
     } catch (e) {
       if (mounted) {
+        final l10n = S.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Erro ao guardar compra: $e'),
+            content: Text(l10n.shoppingSaveError(e.toString())),
             backgroundColor: AppColors.error(context),
             behavior: SnackBarBehavior.floating,
           ),
@@ -1204,10 +1208,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       onOpenSubscription: _openPaywall,
       onOpenCustomerCenter: _openCustomerCenter,
       subscriptionLabel: _subscription.isTrialActive
-          ? 'Trial (${_subscription.trialDaysRemaining} days left)'
+          ? l10n.subscriptionTrialLabel(_subscription.trialDaysRemaining)
           : _subscription.tier == SubscriptionTier.free
-              ? 'Free'
-              : 'Pro',
+              ? l10n.subscriptionFree
+              : l10n.subscriptionPro,
       monthlyBudgets: _monthlyBudgets,
       onSaveMonthlyBudgets: (budgetMap) async {
         final budgets = budgetMap.entries
@@ -1230,8 +1234,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   @override
-  Widget build(BuildContext context) {
-    if (!_loaded) {
+  Widget build(BuildContext context) {    if (!_loaded) {
       return const BrandedLoading();
     }
 
@@ -1398,15 +1401,15 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           NavigationDestination(
             icon: const Icon(Icons.dashboard_outlined),
             selectedIcon: Icon(Icons.dashboard, color: AppColors.primary(context)),
-            label: 'Home',
-            tooltip: 'Monthly overview',
+            label: l10n.navHome,
+            tooltip: l10n.navHomeTooltip,
           ),
           NavigationDestination(
             icon: const Icon(Icons.receipt_long_outlined),
             selectedIcon:
                 Icon(Icons.receipt_long, color: AppColors.primary(context)),
-            label: 'Track',
-            tooltip: 'Track monthly expenses',
+            label: l10n.navTrack,
+            tooltip: l10n.navTrackTooltip,
           ),
           NavigationDestination(
             icon: Badge(
@@ -1425,15 +1428,15 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
               ),
               child: Icon(Icons.event_note, color: AppColors.primary(context)),
             ),
-            label: 'Plan',
-            tooltip: 'Groceries, list and meal plan',
+            label: l10n.navPlan,
+            tooltip: l10n.navPlanTooltip,
           ),
           NavigationDestination(
             icon: const Icon(Icons.more_horiz),
             selectedIcon:
                 Icon(Icons.more_horiz, color: AppColors.primary(context)),
-            label: 'More',
-            tooltip: 'Settings and insights',
+            label: l10n.navMore,
+            tooltip: l10n.navMoreTooltip,
           ),
         ],
       ),
@@ -1484,4 +1487,6 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     );
   }
 }
+
+
 

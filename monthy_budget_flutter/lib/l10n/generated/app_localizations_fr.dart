@@ -570,13 +570,74 @@ class SFr extends S {
   String get coachDeleteTooltip => 'Supprimer';
 
   @override
+  String get coachEmptyTitle => 'Votre coach financier';
+
+  @override
+  String get coachEmptyBody =>
+      'Posez toute question sur votre budget, depenses ou epargne. J\'utiliserai vos donnees reelles pour des conseils personnalises.';
+
+  @override
+  String get coachQuickPrompt1 =>
+      'Ou puis-je reduire mes depenses ce mois-ci ?';
+
+  @override
+  String get coachQuickPrompt2 => 'Comment ameliorer mon epargne ?';
+
+  @override
+  String get coachQuickPrompt3 => 'Aidez-moi a creer un plan sur 30 jours.';
+
+  @override
+  String get coachComposerHint => 'Ecris un message...';
+
+  @override
+  String get coachYou => 'Vous';
+
+  @override
+  String get coachAssistant => 'Coach';
+
+  @override
+  String coachCreditsCount(int count) {
+    return '$count credits';
+  }
+
+  @override
+  String get coachMemory => 'Memoire';
+
+  @override
+  String get coachCostFree =>
+      'Ce message ne consomme pas de credits (mode Eco).';
+
+  @override
+  String coachCostCredits(int cost) {
+    return 'Ce message coute $cost credits.';
+  }
+
+  @override
+  String get coachFree => 'Gratuit';
+
+  @override
+  String coachPerMsg(int cost) {
+    return '$cost/msg';
+  }
+
+  @override
+  String get coachEcoFallbackTitle => 'Mode Eco actif (sans credits)';
+
+  @override
+  String get coachEcoFallbackBody =>
+      'Vous pouvez continuer a discuter avec une memoire reduite.';
+
+  @override
+  String get coachRestoreMemory => 'Restaurer la memoire';
+
+  @override
   String get cmdAssistantTitle => 'Assistant';
 
   @override
-  String get cmdAssistantHint => 'De quoi as-tu besoin ?';
+  String get cmdAssistantHint => 'De quoi avez-vous besoin ?';
 
   @override
-  String get cmdAssistantTooltip => 'Besoin d\'aide ? Appuie ici';
+  String get cmdAssistantTooltip => 'Besoin d\'aide ? Appuyez ici';
 
   @override
   String get cmdSuggestionAddExpense => 'Ajouter une depense';
@@ -588,7 +649,7 @@ class SFr extends S {
   String get cmdSuggestionChangeTheme => 'Changer le theme';
 
   @override
-  String get cmdSuggestionOpenSettings => 'Aller aux reglages';
+  String get cmdSuggestionOpenSettings => 'Aller aux parametres';
 
   @override
   String get cmdTemplateAddExpense => 'Ajoute [montant] euros en [categorie]';
@@ -598,10 +659,11 @@ class SFr extends S {
 
   @override
   String get cmdExecutionFailed =>
-      'J\'ai compris la demande, mais je n\'ai pas pu l\'executer. Reessaie.';
+      'J\'ai compris la demande, mais je n\'ai pas pu l\'executer. Reessayez.';
 
   @override
-  String get cmdNotUnderstood => 'Je n\'ai pas compris. Peux-tu reformuler ?';
+  String get cmdNotUnderstood =>
+      'Je n\'ai pas compris. Pouvez-vous reformuler ?';
 
   @override
   String get cmdUndo => 'Annuler';
@@ -3188,4 +3250,282 @@ class SFr extends S {
   String subscriptionExplore(String feature) {
     return 'Explorer $feature';
   }
+
+  @override
+  String get subscriptionPro => 'Pro';
+
+  @override
+  String get subscriptionContinueFreeMessage =>
+      'Continuer avec le forfait Gratuit';
+
+  @override
+  String get subscriptionUpgradeThankYou => 'Passe a Pro - merci !';
+
+  @override
+  String get subscriptionNoPreviousPurchases => 'Aucun achat precedent trouve';
+
+  @override
+  String get subscriptionRestoreSuccess => 'Abonnement Pro restaure !';
+
+  @override
+  String subscriptionTrialLabel(int days) {
+    return 'Trial ($days jours restants)';
+  }
+
+  @override
+  String get navHome => 'Accueil';
+
+  @override
+  String get navHomeTooltip => 'Vue mensuelle';
+
+  @override
+  String get navTrack => 'Suivi';
+
+  @override
+  String get navTrackTooltip => 'Suivre les depenses mensuelles';
+
+  @override
+  String get navPlan => 'Plan';
+
+  @override
+  String get navPlanTooltip => 'Courses, liste et plan de repas';
+
+  @override
+  String get navMore => 'Plus';
+
+  @override
+  String get navMoreTooltip => 'Reglages et insights';
+
+  @override
+  String shoppingSaveError(String error) {
+    return 'Erreur lors de l\'enregistrement de l\'achat : $error';
+  }
+
+  @override
+  String get coachEmptyPrompt =>
+      'Pose une question sur ton budget. Je garderai le contexte selon la memoire active.';
+
+  @override
+  String coachCostPaid(int credits) {
+    return 'Ce message consommera $credits credits. La reponse ne consomme pas de credits.';
+  }
+
+  @override
+  String get coachMemoryTitle => 'Memoire du Coach';
+
+  @override
+  String coachCreditsLabel(int credits) {
+    return '$credits credits';
+  }
+
+  @override
+  String get coachModeEco => 'Eco';
+
+  @override
+  String get coachModePlus => 'Plus';
+
+  @override
+  String get coachModePro => 'Pro';
+
+  @override
+  String coachMemoryActive(String mode, String usage) {
+    return 'Memoire active : $mode ($usage)';
+  }
+
+  @override
+  String get coachCostFootnote =>
+      'Le cout s\'applique a chaque message envoye. La reponse du coach ne consomme pas de credits.';
+
+  @override
+  String get coachModeFree => 'Gratuit';
+
+  @override
+  String coachModeCost(int credits) {
+    return '$credits/msg';
+  }
+
+  @override
+  String get coachEcoBannerTitle => 'Mode Eco actif (sans credits).';
+
+  @override
+  String get coachExpandWarning => 'Developper l\'avertissement';
+
+  @override
+  String get coachCollapseWarning => 'Reduire l\'avertissement';
+
+  @override
+  String get coachEcoBannerBody =>
+      'Tu peux continuer a discuter, mais avec une memoire reduite.';
+
+  @override
+  String savingsGoalSaveError(String error) {
+    return 'Echec de l\'enregistrement de l\'objectif : $error';
+  }
+
+  @override
+  String savingsGoalDeleteError(String error) {
+    return 'Echec de la suppression de l\'objectif : $error';
+  }
+
+  @override
+  String savingsGoalUpdateError(String error) {
+    return 'Echec de la mise a jour de l\'objectif : $error';
+  }
+
+  @override
+  String get shoppingAmountHint => '0.00';
+
+  @override
+  String get languagePortuguese => 'Portugais';
+
+  @override
+  String get languageEnglish => 'Anglais';
+
+  @override
+  String get languageFrench => 'Francais';
+
+  @override
+  String get languageSpanish => 'Espagnol';
+
+  @override
+  String get setupWizardMealAllowanceHeading => 'INDEMNITE REPAS';
+
+  @override
+  String get setupWizardSubsidyHeading => 'DUODECIMES';
+
+  @override
+  String get settingsSubscriptionManageHint =>
+      'Annuler, changer de forfait ou restaurer les achats';
+
+  @override
+  String get settingsDetailedDashboardHint =>
+      'L\'accueil utilise un tableau de bord cible. Ouvrez le tableau detaille pour voir toutes les cartes.';
+
+  @override
+  String get settingsOpenDetailedDashboard => 'Ouvrir le Tableau Detaille';
+
+  @override
+  String get settingsSectionObjectiveMeals => 'OBJECTIF ET REPAS';
+
+  @override
+  String get settingsSectionRestrictions => 'RESTRICTIONS ET PREFERENCES';
+
+  @override
+  String get settingsSectionNutrition => 'NUTRITION ET SANTE';
+
+  @override
+  String get settingsSectionPreparation => 'PREPARATION ET CUISINE';
+
+  @override
+  String get settingsSectionEfficiency => 'EFFICACITE ET COUTS';
+
+  @override
+  String get settingsSectionAssistant => 'ASSISTANT';
+
+  @override
+  String get settingsCoachSecurityHint =>
+      'Cle OpenAI protegee dans Supabase (Edge Function).';
+
+  @override
+  String get billsDayRangeHint => '1-31';
+
+  @override
+  String get discoveryFeatureCoachName => 'Coach IA';
+
+  @override
+  String get discoveryFeatureCoachTagline =>
+      'Votre conseiller financier personnel';
+
+  @override
+  String get discoveryFeatureCoachDescription =>
+      'Recevez des conseils personnalises sur vos habitudes de depense, vos economies et l\'optimisation de votre budget grace a l\'IA.';
+
+  @override
+  String get discoveryFeatureMealsName => 'Planificateur de Repas';
+
+  @override
+  String get discoveryFeatureMealsTagline => 'Economisez sur l\'alimentation';
+
+  @override
+  String get discoveryFeatureMealsDescription =>
+      'Planifiez des repas hebdomadaires dans votre budget. L\'IA genere des recettes selon vos preferences et besoins alimentaires.';
+
+  @override
+  String get discoveryFeatureExpensesName => 'Suivi des Depenses';
+
+  @override
+  String get discoveryFeatureExpensesTagline => 'Sachez ou va chaque euro';
+
+  @override
+  String get discoveryFeatureExpensesDescription =>
+      'Suivez vos depenses reelles par rapport au budget en temps reel. Voyez ou vous depensez trop et ou vous pouvez economiser.';
+
+  @override
+  String get discoveryFeatureSavingsName => 'Objectifs d\'Epargne';
+
+  @override
+  String get discoveryFeatureSavingsTagline =>
+      'Transformez vos objectifs en resultats';
+
+  @override
+  String get discoveryFeatureSavingsDescription =>
+      'Creez des objectifs d\'epargne avec echeance, suivez les contributions et voyez quand vous atteindrez vos cibles.';
+
+  @override
+  String get discoveryFeatureShoppingName => 'Liste de Courses';
+
+  @override
+  String get discoveryFeatureShoppingTagline => 'Achetez mieux ensemble';
+
+  @override
+  String get discoveryFeatureShoppingDescription =>
+      'Creez des listes partagees synchronisees en temps reel. Cochez les articles, finalisez les achats et suivez les depenses.';
+
+  @override
+  String get discoveryFeatureGroceryName => 'Explorateur de Produits';
+
+  @override
+  String get discoveryFeatureGroceryTagline =>
+      'Comparez les prix instantanement';
+
+  @override
+  String get discoveryFeatureGroceryDescription =>
+      'Parcourez les produits de plusieurs magasins, comparez les prix et ajoutez les meilleures offres directement a votre liste.';
+
+  @override
+  String get discoveryFeatureExportName => 'Exporter des Rapports';
+
+  @override
+  String get discoveryFeatureExportTagline =>
+      'Rapports budgetaires professionnels';
+
+  @override
+  String get discoveryFeatureExportDescription =>
+      'Exportez votre budget, vos depenses et vos resumes financiers en PDF ou CSV pour vos archives ou votre comptable.';
+
+  @override
+  String get discoveryFeatureTaxName => 'Simulateur Fiscal';
+
+  @override
+  String get discoveryFeatureTaxTagline => 'Planification fiscale multi-pays';
+
+  @override
+  String get discoveryFeatureTaxDescription =>
+      'Comparez les obligations fiscales entre pays. Ideal pour les expatriés ou pour ceux qui envisagent un demenagement.';
+
+  @override
+  String get discoveryFeatureDashboardName => 'Tableau de Bord';
+
+  @override
+  String get discoveryFeatureDashboardTagline => 'Votre vue financiere';
+
+  @override
+  String get discoveryFeatureDashboardDescription =>
+      'Consultez en un coup d\'oeil le detail complet de votre budget, les graphiques et votre sante financiere.';
+
+  @override
+  String get discoveryGenericFeatureName => 'Cette fonctionnalite';
+
+  @override
+  String get discoveryTapToUpgrade => 'Touchez pour passer en premium';
 }

@@ -163,7 +163,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   String _subscriptionSubtitle() {
-    return widget.subscriptionLabel ?? 'Free';
+    return widget.subscriptionLabel ?? S.of(context).subscriptionFree;
   }
 
   String? _currentUserIdSafe() {
@@ -350,7 +350,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ListTile(
                         leading: Icon(Icons.workspace_premium_rounded,
                             color: AppColors.primary(context)),
-                        title: Text('Subscription',
+                        title: Text(l10n.subscriptionTitle,
                             style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 color: AppColors.textPrimary(context))),
@@ -369,12 +369,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ListTile(
                         leading: Icon(Icons.manage_accounts_outlined,
                             color: AppColors.textSecondary(context)),
-                        title: Text('Manage Subscription',
+                        title: Text(l10n.subscriptionManage,
                             style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 color: AppColors.textPrimary(context))),
                         subtitle: Text(
-                          'Cancel, change plan, or restore purchases',
+                          l10n.settingsSubscriptionManageHint,
                           style: TextStyle(
                               fontSize: 12,
                               color: AppColors.textSecondary(context)),
@@ -1231,7 +1231,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Home uses a focused dashboard. Open the detailed dashboard to see every card.',
+                    l10n.settingsDetailedDashboardHint,
                     style: TextStyle(
                       fontSize: 12,
                       color: AppColors.textSecondary(context),
@@ -1241,7 +1241,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   OutlinedButton.icon(
                     onPressed: widget.onOpenDetailedDashboard,
                     icon: const Icon(Icons.dashboard_customize_outlined, size: 16),
-                    label: const Text('Open Detailed Dashboard'),
+                    label: Text(l10n.settingsOpenDetailedDashboard),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.textPrimary(context),
                       side: BorderSide(color: AppColors.border(context)),
@@ -1674,7 +1674,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
 
           // ── Group B: OBJETIVO E REFEICOES ──
-          _groupLabel('OBJETIVO E REFEIÇÕES'),
+          _groupLabel(l10n.settingsSectionObjectiveMeals),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(l10n.settingsPreferSeasonal,
@@ -1810,7 +1810,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
 
           // ── Group C: RESTRICOES E PREFERENCIAS ──
-          _groupLabel('RESTRIÇÕES E PREFERÊNCIAS'),
+          _groupLabel(l10n.settingsSectionRestrictions),
           _label(l10n.settingsDietaryRestrictions),
           ...[
             (l10n.wizardGlutenFree, ms.glutenFree,
@@ -1919,7 +1919,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               )),
 
           // ── Group D: NUTRICAO E SAUDE ──
-          _groupLabel('NUTRIÇÃO E SAÚDE'),
+          _groupLabel(l10n.settingsSectionNutrition),
           _label(l10n.settingsNutritionalGoals),
           const SizedBox(height: 8),
           TextFormField(
@@ -2009,7 +2009,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               )),
 
           // ── Group E: PREPARACAO E COZINHA ──
-          _groupLabel('PREPARAÇÃO E COZINHA'),
+          _groupLabel(l10n.settingsSectionPreparation),
           _label(l10n.settingsMaxPrepTime),
           Slider(
             value: ms.maxPrepMinutes.toDouble(),
@@ -2079,7 +2079,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               )),
 
           // ── Group F: EFICIENCIA E CUSTOS ──
-          _groupLabel('EFICIÊNCIA E CUSTOS'),
+          _groupLabel(l10n.settingsSectionEfficiency),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(l10n.settingsBatchCooking,
@@ -2183,7 +2183,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
 
           // ── Group G: ASSISTENTE ──
-          _groupLabel('ASSISTENTE'),
+          _groupLabel(l10n.settingsSectionAssistant),
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
@@ -2206,13 +2206,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildCoachSection() {
+    final l10n = S.of(context);
     return Container(
       color: AppColors.surface(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _label('AI Coach'),
+          _label(l10n.settingsCoachAi),
           const SizedBox(height: 8),
           Container(
             width: double.infinity,
@@ -2228,7 +2229,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'OpenAI API key protegida no Supabase (Edge Function).',
+                    l10n.settingsCoachSecurityHint,
                     style: TextStyle(
                       fontSize: 12,
                       color: AppColors.textPrimary(context),
@@ -3100,7 +3101,7 @@ class _BillFormSheetState extends State<_BillFormSheet> {
                 controller: _dayController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  hintText: '1-31',
+                  hintText: l10n.billsDayRangeHint,
                   prefixIcon: Icon(Icons.calendar_today,
                       size: 18, color: AppColors.textMuted(context)),
                   border: OutlineInputBorder(
@@ -3112,7 +3113,7 @@ class _BillFormSheetState extends State<_BillFormSheet> {
                 validator: (v) {
                   if (v == null || v.trim().isEmpty) return null;
                   final val = int.tryParse(v.trim());
-                  if (val == null || val < 1 || val > 31) return '1-31';
+                  if (val == null || val < 1 || val > 31) return l10n.billsDayRangeHint;
                   return null;
                 },
               ),
@@ -3158,3 +3159,5 @@ class _BillFormSheetState extends State<_BillFormSheet> {
     );
   }
 }
+
+

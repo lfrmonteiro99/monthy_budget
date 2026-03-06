@@ -1127,6 +1127,108 @@ abstract class S {
   /// **'Eliminar'**
   String get coachDeleteTooltip;
 
+  /// Empty state title in coach chat
+  ///
+  /// In pt, this message translates to:
+  /// **'O teu coach financeiro'**
+  String get coachEmptyTitle;
+
+  /// Empty state body in coach chat
+  ///
+  /// In pt, this message translates to:
+  /// **'Pergunta o que quiseres sobre o teu orcamento, despesas ou poupancas. Vou usar os teus dados reais para dar conselhos personalizados.'**
+  String get coachEmptyBody;
+
+  /// Quick prompt suggestion 1
+  ///
+  /// In pt, this message translates to:
+  /// **'Onde posso cortar despesas este mes?'**
+  String get coachQuickPrompt1;
+
+  /// Quick prompt suggestion 2
+  ///
+  /// In pt, this message translates to:
+  /// **'Como melhoro a minha poupanca?'**
+  String get coachQuickPrompt2;
+
+  /// Quick prompt suggestion 3
+  ///
+  /// In pt, this message translates to:
+  /// **'Ajuda-me a definir um plano para 30 dias.'**
+  String get coachQuickPrompt3;
+
+  /// Composer text field hint
+  ///
+  /// In pt, this message translates to:
+  /// **'Escreve uma mensagem...'**
+  String get coachComposerHint;
+
+  /// Label for user messages
+  ///
+  /// In pt, this message translates to:
+  /// **'Tu'**
+  String get coachYou;
+
+  /// Label for assistant messages
+  ///
+  /// In pt, this message translates to:
+  /// **'Coach'**
+  String get coachAssistant;
+
+  /// Credits pill label
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} creditos'**
+  String coachCreditsCount(int count);
+
+  /// Memory section header
+  ///
+  /// In pt, this message translates to:
+  /// **'Memoria'**
+  String get coachMemory;
+
+  /// Cost info when mode is free
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta mensagem nao consome creditos (modo Eco).'**
+  String get coachCostFree;
+
+  /// Cost info per message
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta mensagem custa {cost} creditos.'**
+  String coachCostCredits(int cost);
+
+  /// Free label on mode chip
+  ///
+  /// In pt, this message translates to:
+  /// **'Gratis'**
+  String get coachFree;
+
+  /// Cost per message on mode chip
+  ///
+  /// In pt, this message translates to:
+  /// **'{cost}/msg'**
+  String coachPerMsg(int cost);
+
+  /// Eco fallback banner title
+  ///
+  /// In pt, this message translates to:
+  /// **'Modo Eco ativo (sem creditos)'**
+  String get coachEcoFallbackTitle;
+
+  /// Eco fallback banner body
+  ///
+  /// In pt, this message translates to:
+  /// **'Podes continuar a conversar, mas com memoria reduzida.'**
+  String get coachEcoFallbackBody;
+
+  /// Button to restore memory/credits
+  ///
+  /// In pt, this message translates to:
+  /// **'Restaurar memoria'**
+  String get coachRestoreMemory;
+
   /// No description provided for @cmdAssistantTitle.
   ///
   /// In pt, this message translates to:
@@ -5866,6 +5968,486 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Explorar {feature}'**
   String subscriptionExplore(String feature);
+
+  /// No description provided for @subscriptionPro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pro'**
+  String get subscriptionPro;
+
+  /// No description provided for @subscriptionContinueFreeMessage.
+  ///
+  /// In pt, this message translates to:
+  /// **'A continuar com o plano Gratuito'**
+  String get subscriptionContinueFreeMessage;
+
+  /// No description provided for @subscriptionUpgradeThankYou.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atualizado para Pro - obrigado!'**
+  String get subscriptionUpgradeThankYou;
+
+  /// No description provided for @subscriptionNoPreviousPurchases.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nao foram encontradas compras anteriores'**
+  String get subscriptionNoPreviousPurchases;
+
+  /// No description provided for @subscriptionRestoreSuccess.
+  ///
+  /// In pt, this message translates to:
+  /// **'Subscricao Pro restaurada!'**
+  String get subscriptionRestoreSuccess;
+
+  /// No description provided for @subscriptionTrialLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Trial ({days} dias restantes)'**
+  String subscriptionTrialLabel(int days);
+
+  /// No description provided for @navHome.
+  ///
+  /// In pt, this message translates to:
+  /// **'Home'**
+  String get navHome;
+
+  /// No description provided for @navHomeTooltip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Visao geral mensal'**
+  String get navHomeTooltip;
+
+  /// No description provided for @navTrack.
+  ///
+  /// In pt, this message translates to:
+  /// **'Registar'**
+  String get navTrack;
+
+  /// No description provided for @navTrackTooltip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Registar despesas mensais'**
+  String get navTrackTooltip;
+
+  /// No description provided for @navPlan.
+  ///
+  /// In pt, this message translates to:
+  /// **'Planear'**
+  String get navPlan;
+
+  /// No description provided for @navPlanTooltip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Supermercado, lista e plano de refeicoes'**
+  String get navPlanTooltip;
+
+  /// No description provided for @navMore.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais'**
+  String get navMore;
+
+  /// No description provided for @navMoreTooltip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Definicoes e insights'**
+  String get navMoreTooltip;
+
+  /// No description provided for @shoppingSaveError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao guardar compra: {error}'**
+  String shoppingSaveError(String error);
+
+  /// No description provided for @coachEmptyPrompt.
+  ///
+  /// In pt, this message translates to:
+  /// **'Faz uma pergunta sobre o teu orcamento. Vou manter o contexto conforme a memoria ativa.'**
+  String get coachEmptyPrompt;
+
+  /// No description provided for @coachCostPaid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta mensagem vai consumir {credits} creditos. A resposta nao consome creditos.'**
+  String coachCostPaid(int credits);
+
+  /// No description provided for @coachMemoryTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Memoria do Coach'**
+  String get coachMemoryTitle;
+
+  /// No description provided for @coachCreditsLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'{credits} creditos'**
+  String coachCreditsLabel(int credits);
+
+  /// No description provided for @coachModeEco.
+  ///
+  /// In pt, this message translates to:
+  /// **'Eco'**
+  String get coachModeEco;
+
+  /// No description provided for @coachModePlus.
+  ///
+  /// In pt, this message translates to:
+  /// **'Plus'**
+  String get coachModePlus;
+
+  /// No description provided for @coachModePro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pro'**
+  String get coachModePro;
+
+  /// No description provided for @coachMemoryActive.
+  ///
+  /// In pt, this message translates to:
+  /// **'Memoria ativa: {mode} ({usage})'**
+  String coachMemoryActive(String mode, String usage);
+
+  /// No description provided for @coachCostFootnote.
+  ///
+  /// In pt, this message translates to:
+  /// **'Custo por mensagem enviada. A resposta do coach nao consome creditos.'**
+  String get coachCostFootnote;
+
+  /// No description provided for @coachModeFree.
+  ///
+  /// In pt, this message translates to:
+  /// **'Gratis'**
+  String get coachModeFree;
+
+  /// No description provided for @coachModeCost.
+  ///
+  /// In pt, this message translates to:
+  /// **'{credits}/msg'**
+  String coachModeCost(int credits);
+
+  /// No description provided for @coachEcoBannerTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Modo Eco ativo (sem creditos).'**
+  String get coachEcoBannerTitle;
+
+  /// No description provided for @coachExpandWarning.
+  ///
+  /// In pt, this message translates to:
+  /// **'Expandir aviso'**
+  String get coachExpandWarning;
+
+  /// No description provided for @coachCollapseWarning.
+  ///
+  /// In pt, this message translates to:
+  /// **'Minimizar aviso'**
+  String get coachCollapseWarning;
+
+  /// No description provided for @coachEcoBannerBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'Podes continuar a conversar, mas com memoria reduzida.'**
+  String get coachEcoBannerBody;
+
+  /// No description provided for @savingsGoalSaveError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falha ao guardar objetivo: {error}'**
+  String savingsGoalSaveError(String error);
+
+  /// No description provided for @savingsGoalDeleteError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falha ao apagar objetivo: {error}'**
+  String savingsGoalDeleteError(String error);
+
+  /// No description provided for @savingsGoalUpdateError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falha ao atualizar objetivo: {error}'**
+  String savingsGoalUpdateError(String error);
+
+  /// No description provided for @shoppingAmountHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'0.00'**
+  String get shoppingAmountHint;
+
+  /// No description provided for @languagePortuguese.
+  ///
+  /// In pt, this message translates to:
+  /// **'Portugues'**
+  String get languagePortuguese;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In pt, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @languageFrench.
+  ///
+  /// In pt, this message translates to:
+  /// **'Frances'**
+  String get languageFrench;
+
+  /// No description provided for @languageSpanish.
+  ///
+  /// In pt, this message translates to:
+  /// **'Espanhol'**
+  String get languageSpanish;
+
+  /// No description provided for @setupWizardMealAllowanceHeading.
+  ///
+  /// In pt, this message translates to:
+  /// **'SUBSIDIO DE ALIMENTACAO'**
+  String get setupWizardMealAllowanceHeading;
+
+  /// No description provided for @setupWizardSubsidyHeading.
+  ///
+  /// In pt, this message translates to:
+  /// **'DUODECIMOS'**
+  String get setupWizardSubsidyHeading;
+
+  /// No description provided for @settingsSubscriptionManageHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar, mudar plano ou restaurar compras'**
+  String get settingsSubscriptionManageHint;
+
+  /// No description provided for @settingsDetailedDashboardHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'A Home usa um dashboard focado. Abre o dashboard detalhado para ver todos os cartoes.'**
+  String get settingsDetailedDashboardHint;
+
+  /// No description provided for @settingsOpenDetailedDashboard.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir Dashboard Detalhado'**
+  String get settingsOpenDetailedDashboard;
+
+  /// No description provided for @settingsSectionObjectiveMeals.
+  ///
+  /// In pt, this message translates to:
+  /// **'OBJETIVO E REFEICOES'**
+  String get settingsSectionObjectiveMeals;
+
+  /// No description provided for @settingsSectionRestrictions.
+  ///
+  /// In pt, this message translates to:
+  /// **'RESTRICOES E PREFERENCIAS'**
+  String get settingsSectionRestrictions;
+
+  /// No description provided for @settingsSectionNutrition.
+  ///
+  /// In pt, this message translates to:
+  /// **'NUTRICAO E SAUDE'**
+  String get settingsSectionNutrition;
+
+  /// No description provided for @settingsSectionPreparation.
+  ///
+  /// In pt, this message translates to:
+  /// **'PREPARACAO E COZINHA'**
+  String get settingsSectionPreparation;
+
+  /// No description provided for @settingsSectionEfficiency.
+  ///
+  /// In pt, this message translates to:
+  /// **'EFICIENCIA E CUSTOS'**
+  String get settingsSectionEfficiency;
+
+  /// No description provided for @settingsSectionAssistant.
+  ///
+  /// In pt, this message translates to:
+  /// **'ASSISTENTE'**
+  String get settingsSectionAssistant;
+
+  /// No description provided for @settingsCoachSecurityHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Chave da OpenAI protegida no Supabase (Edge Function).'**
+  String get settingsCoachSecurityHint;
+
+  /// No description provided for @billsDayRangeHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'1-31'**
+  String get billsDayRangeHint;
+
+  /// No description provided for @discoveryFeatureCoachName.
+  ///
+  /// In pt, this message translates to:
+  /// **'AI Coach'**
+  String get discoveryFeatureCoachName;
+
+  /// No description provided for @discoveryFeatureCoachTagline.
+  ///
+  /// In pt, this message translates to:
+  /// **'O teu conselheiro financeiro pessoal'**
+  String get discoveryFeatureCoachTagline;
+
+  /// No description provided for @discoveryFeatureCoachDescription.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recebe insights personalizados sobre os teus habitos de despesa, dicas de poupanca e otimização do orçamento com IA.'**
+  String get discoveryFeatureCoachDescription;
+
+  /// No description provided for @discoveryFeatureMealsName.
+  ///
+  /// In pt, this message translates to:
+  /// **'Planeador de Refeicoes'**
+  String get discoveryFeatureMealsName;
+
+  /// No description provided for @discoveryFeatureMealsTagline.
+  ///
+  /// In pt, this message translates to:
+  /// **'Poupa dinheiro na alimentacao'**
+  String get discoveryFeatureMealsTagline;
+
+  /// No description provided for @discoveryFeatureMealsDescription.
+  ///
+  /// In pt, this message translates to:
+  /// **'Planeia refeicoes semanais dentro do teu orçamento. A IA gera receitas com base nas tuas preferencias e restricoes alimentares.'**
+  String get discoveryFeatureMealsDescription;
+
+  /// No description provided for @discoveryFeatureExpensesName.
+  ///
+  /// In pt, this message translates to:
+  /// **'Registo de Despesas'**
+  String get discoveryFeatureExpensesName;
+
+  /// No description provided for @discoveryFeatureExpensesTagline.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sabe para onde vai cada euro'**
+  String get discoveryFeatureExpensesTagline;
+
+  /// No description provided for @discoveryFeatureExpensesDescription.
+  ///
+  /// In pt, this message translates to:
+  /// **'Acompanha as despesas reais face ao orçamento em tempo real. Vê onde estás a gastar demais e onde podes poupar.'**
+  String get discoveryFeatureExpensesDescription;
+
+  /// No description provided for @discoveryFeatureSavingsName.
+  ///
+  /// In pt, this message translates to:
+  /// **'Objetivos de Poupanca'**
+  String get discoveryFeatureSavingsName;
+
+  /// No description provided for @discoveryFeatureSavingsTagline.
+  ///
+  /// In pt, this message translates to:
+  /// **'Transforma objetivos em resultados'**
+  String get discoveryFeatureSavingsTagline;
+
+  /// No description provided for @discoveryFeatureSavingsDescription.
+  ///
+  /// In pt, this message translates to:
+  /// **'Define objetivos de poupanca com prazo, regista contribuicoes e vê projeções de quando vais atingir cada meta.'**
+  String get discoveryFeatureSavingsDescription;
+
+  /// No description provided for @discoveryFeatureShoppingName.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista de Compras'**
+  String get discoveryFeatureShoppingName;
+
+  /// No description provided for @discoveryFeatureShoppingTagline.
+  ///
+  /// In pt, this message translates to:
+  /// **'Compra melhor em conjunto'**
+  String get discoveryFeatureShoppingTagline;
+
+  /// No description provided for @discoveryFeatureShoppingDescription.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cria listas partilhadas que sincronizam em tempo real. Marca itens, finaliza compras e acompanha o gasto.'**
+  String get discoveryFeatureShoppingDescription;
+
+  /// No description provided for @discoveryFeatureGroceryName.
+  ///
+  /// In pt, this message translates to:
+  /// **'Explorador de Produtos'**
+  String get discoveryFeatureGroceryName;
+
+  /// No description provided for @discoveryFeatureGroceryTagline.
+  ///
+  /// In pt, this message translates to:
+  /// **'Compara precos de imediato'**
+  String get discoveryFeatureGroceryTagline;
+
+  /// No description provided for @discoveryFeatureGroceryDescription.
+  ///
+  /// In pt, this message translates to:
+  /// **'Explora produtos de varias lojas, compara precos e adiciona as melhores oportunidades diretamente a lista de compras.'**
+  String get discoveryFeatureGroceryDescription;
+
+  /// No description provided for @discoveryFeatureExportName.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar Relatorios'**
+  String get discoveryFeatureExportName;
+
+  /// No description provided for @discoveryFeatureExportTagline.
+  ///
+  /// In pt, this message translates to:
+  /// **'Relatorios financeiros profissionais'**
+  String get discoveryFeatureExportTagline;
+
+  /// No description provided for @discoveryFeatureExportDescription.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exporta o teu orçamento, despesas e resumos financeiros em PDF ou CSV para arquivo ou contabilista.'**
+  String get discoveryFeatureExportDescription;
+
+  /// No description provided for @discoveryFeatureTaxName.
+  ///
+  /// In pt, this message translates to:
+  /// **'Simulador de Impostos'**
+  String get discoveryFeatureTaxName;
+
+  /// No description provided for @discoveryFeatureTaxTagline.
+  ///
+  /// In pt, this message translates to:
+  /// **'Planeamento fiscal multi-pais'**
+  String get discoveryFeatureTaxTagline;
+
+  /// No description provided for @discoveryFeatureTaxDescription.
+  ///
+  /// In pt, this message translates to:
+  /// **'Compara obrigacoes fiscais entre paises. Ideal para expatriados e para quem pondera mudar de pais.'**
+  String get discoveryFeatureTaxDescription;
+
+  /// No description provided for @discoveryFeatureDashboardName.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dashboard'**
+  String get discoveryFeatureDashboardName;
+
+  /// No description provided for @discoveryFeatureDashboardTagline.
+  ///
+  /// In pt, this message translates to:
+  /// **'A tua visao financeira'**
+  String get discoveryFeatureDashboardTagline;
+
+  /// No description provided for @discoveryFeatureDashboardDescription.
+  ///
+  /// In pt, this message translates to:
+  /// **'Vê o detalhe completo do teu orçamento, graficos e saude financeira num relance.'**
+  String get discoveryFeatureDashboardDescription;
+
+  /// No description provided for @discoveryGenericFeatureName.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta funcionalidade'**
+  String get discoveryGenericFeatureName;
+
+  /// No description provided for @discoveryTapToUpgrade.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toca para fazer upgrade'**
+  String get discoveryTapToUpgrade;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

@@ -176,7 +176,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     keyboardType:
                         const TextInputType.numberWithOptions(decimal: true),
                     decoration: InputDecoration(
-                      hintText: '0.00',
+                      hintText: l10n.shoppingAmountHint,
                       suffixText: activeCurrencyCode,
                       contentPadding: const EdgeInsets.symmetric(
                           horizontal: 14, vertical: 12),

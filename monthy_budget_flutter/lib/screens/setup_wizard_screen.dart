@@ -519,10 +519,10 @@ class _CountryStep extends StatelessWidget {
                     value: null,
                     child: Text(l10n.setupWizardLangSystem),
                   ),
-                  const DropdownMenuItem(value: 'pt', child: Text('Português')),
-                  const DropdownMenuItem(value: 'en', child: Text('English')),
-                  const DropdownMenuItem(value: 'fr', child: Text('Français')),
-                  const DropdownMenuItem(value: 'es', child: Text('Español')),
+                  DropdownMenuItem(value: 'pt', child: Text(l10n.languagePortuguese)),
+                  DropdownMenuItem(value: 'en', child: Text(l10n.languageEnglish)),
+                  DropdownMenuItem(value: 'fr', child: Text(l10n.languageFrench)),
+                  DropdownMenuItem(value: 'es', child: Text(l10n.languageSpanish)),
                 ],
                 onChanged: (value) {
                   onChanged(draft.copyWith(localeOverride: value));
@@ -841,7 +841,7 @@ class _SalaryStep extends StatelessWidget {
               ],
               if (showMealAllowance) ...[
                 const SizedBox(height: 20),
-                Text(l10n.enumMealAllowanceCard.isNotEmpty ? 'SUBSÍDIO DE ALIMENTAÇÃO' : 'MEAL ALLOWANCE',
+                Text(l10n.setupWizardMealAllowanceHeading,
                     style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
@@ -913,7 +913,8 @@ class _SalaryStep extends StatelessWidget {
                       FilteringTextInputFormatter.allow(RegExp(r'[\d.,]')),
                     ],
                     decoration: InputDecoration(
-                      labelText: '${country.currencySymbol}/dia',
+                      labelText:
+                          '${country.currencySymbol} ${l10n.settingsMealAllowancePerDay}',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10)),
                       enabledBorder: OutlineInputBorder(
@@ -941,7 +942,7 @@ class _SalaryStep extends StatelessWidget {
               ],
               if (showSubsidies) ...[
                 const SizedBox(height: 20),
-                Text('DUODÉCIMOS',
+                Text(l10n.setupWizardSubsidyHeading,
                     style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,

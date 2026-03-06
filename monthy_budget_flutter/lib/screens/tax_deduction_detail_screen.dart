@@ -231,7 +231,7 @@ class _CategoryRow extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            '${result.irsCategory} Â· ${l10n.taxDeductionSpent(formatCurrency(result.spent))}',
+            '${result.irsCategory} · ${l10n.taxDeductionSpent(formatCurrency(result.spent))}',
             style: TextStyle(
               fontSize: 11,
               color: AppColors.textMuted(context),
@@ -328,3 +328,4 @@ class _NonDeductibleRow extends StatelessWidget {
     }
   }
 }
+
