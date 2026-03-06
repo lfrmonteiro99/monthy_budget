@@ -877,6 +877,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       onAddShoppingItem: (item) async => _addToShoppingList(item),
       onAddSavingsGoal: _addSavingsGoalFromCommand,
       onAddRecurringExpense: _addRecurringExpenseFromCommand,
+      onRemoveShoppingItemByName: _removeShoppingItemByNameFromCommand,
+      onAddSavingsContributionByGoalName:
+          _addSavingsContributionByGoalNameFromCommand,
       onDeleteExpense: _deleteActualExpense,
       onSetThemeMode: (mode) => appThemeModeNotifier.value = mode,
       onSetColorPalette: (palette) {
@@ -1002,6 +1005,74 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     } catch (e) {
       debugPrint('Failed to add recurring expense: $e');
       _loadRecurringExpenses();
+    }
+  }
+
+  Future<bool> _removeShoppingItemByNameFromCommand(String itemName) async {
+    final query = itemName.trim().toLowerCase();
+    final match = _shoppingList
+        .where((item) => item.productName.trim().toLowerCase() == query)
+        .cast<ShoppingItem?>()
+        .firstWhere((item) => item != null, orElse: () => null);
+    final fallback = match ??
+        _shoppingList
+            .where((item) => item.productName.trim().toLowerCase().contains(query))
+            .cast<ShoppingItem?>()
+            .firstWhere((item) => item != null, orElse: () => null);
+    final item = fallback;
+    if (item == null || item.id.isEmpty) return false;
+    final previousItems = List<ShoppingItem>.from(_shoppingList);
+    setState(() {
+      _shoppingList = _shoppingList.where((i) => i.id != item.id).toList();
+    });
+    try {
+      await _shoppingListService.remove(item.id);
+      return true;
+    } catch (e) {
+      debugPrint('Failed to remove shopping item: $e');
+      setState(() => _shoppingList = previousItems);
+      return false;
+    }
+  }
+
+  Future<bool> _addSavingsContributionByGoalNameFromCommand(
+    String goalName,
+    double amount,
+  ) async {
+    final query = goalName.trim().toLowerCase();
+    final exact = _savingsGoals
+        .where((goal) => goal.name.trim().toLowerCase() == query)
+        .cast<SavingsGoal?>()
+        .firstWhere((goal) => goal != null, orElse: () => null);
+    final goal = exact ??
+        _savingsGoals
+            .where((g) => g.name.trim().toLowerCase().contains(query))
+            .cast<SavingsGoal?>()
+            .firstWhere((g) => g != null, orElse: () => null);
+    if (goal == null) return false;
+
+    final contribution = SavingsContribution(
+      id: 'contrib_${DateTime.now().millisecondsSinceEpoch}',
+      goalId: goal.id,
+      amount: amount,
+      contributionDate: DateTime.now(),
+    );
+
+    try {
+      final updatedGoal = await _savingsGoalService.addContribution(
+        contribution,
+        widget.householdId,
+      );
+      setState(() {
+        _savingsGoals = _savingsGoals
+            .map((g) => g.id == updatedGoal.id ? updatedGoal : g)
+            .toList();
+      });
+      return true;
+    } catch (e) {
+      debugPrint('Failed to add savings contribution: $e');
+      _loadSavingsGoals();
+      return false;
     }
   }
 

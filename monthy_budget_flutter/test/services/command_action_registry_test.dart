@@ -14,6 +14,8 @@ void main() {
   late List<ShoppingItem> addedShoppingItems;
   late List<SavingsGoal> addedSavingsGoals;
   late List<RecurringExpense> addedRecurringExpenses;
+  late List<String> removedShoppingItemNames;
+  late List<Map<String, dynamic>> savingsContributions;
   late List<ThemeMode> themeModes;
   late List<AppColorPalette> palettes;
   late List<String?> locales;
@@ -26,6 +28,8 @@ void main() {
     addedShoppingItems = [];
     addedSavingsGoals = [];
     addedRecurringExpenses = [];
+    removedShoppingItemNames = [];
+    savingsContributions = [];
     themeModes = [];
     palettes = [];
     locales = [];
@@ -38,6 +42,14 @@ void main() {
       onAddSavingsGoal: (goal) async => addedSavingsGoals.add(goal),
       onAddRecurringExpense: (expense) async =>
           addedRecurringExpenses.add(expense),
+      onRemoveShoppingItemByName: (name) async {
+        removedShoppingItemNames.add(name);
+        return true;
+      },
+      onAddSavingsContributionByGoalName: (goalName, amount) async {
+        savingsContributions.add({'goal_name': goalName, 'amount': amount});
+        return true;
+      },
       onDeleteExpense: (id) async => deletedExpenseIds.add(id),
       onSetThemeMode: (mode) => themeModes.add(mode),
       onSetColorPalette: (palette) => palettes.add(palette),
@@ -171,6 +183,23 @@ void main() {
           'day_of_month': 40,
         }),
         isFalse,
+      );
+    });
+
+    test('validates remove_shopping_item with name', () {
+      expect(
+        registry.validate('remove_shopping_item', {'name': 'leite'}),
+        isTrue,
+      );
+    });
+
+    test('validates add_savings_contribution with goal and amount', () {
+      expect(
+        registry.validate('add_savings_contribution', {
+          'goal_name': 'ferias',
+          'amount': 50,
+        }),
+        isTrue,
       );
     });
 
@@ -347,6 +376,27 @@ void main() {
       expect(addedRecurringExpenses.first.category, 'telecomunicacoes');
       expect(addedRecurringExpenses.first.amount, 29.9);
       expect(addedRecurringExpenses.first.dayOfMonth, 5);
+    });
+
+    test('remove_shopping_item calls callback with item name', () async {
+      final result = await registry.execute('remove_shopping_item', {
+        'name': 'leite',
+      });
+
+      expect(result.succeeded, isTrue);
+      expect(removedShoppingItemNames, ['leite']);
+    });
+
+    test('add_savings_contribution calls callback with goal name and amount', () async {
+      final result = await registry.execute('add_savings_contribution', {
+        'goal_name': 'ferias',
+        'amount': 75,
+      });
+
+      expect(result.succeeded, isTrue);
+      expect(savingsContributions, [
+        {'goal_name': 'ferias', 'amount': 75.0},
+      ]);
     });
 
     test('set_language updates locale via callback', () async {

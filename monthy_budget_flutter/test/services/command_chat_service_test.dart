@@ -74,6 +74,15 @@ void main() {
       expect(result.params?['name'], 'bread');
     });
 
+    test('parses remove_shopping_item', () {
+      final result = CommandChatService.regexParse(
+        'remove leite from shopping list',
+      );
+      expect(result, isNotNull);
+      expect(result!.action, 'remove_shopping_item');
+      expect(result.params?['name'], 'leite');
+    });
+
     test('parses set_language', () {
       final result = CommandChatService.regexParse('idioma ingles');
       expect(result, isNotNull);
@@ -100,6 +109,14 @@ void main() {
       expect(result.params?['amount'], 29.9);
       expect(result.params?['category'], 'telecomunicacoes');
       expect(result.params?['day_of_month'], 5);
+    });
+
+    test('parses add_savings_contribution', () {
+      final result = CommandChatService.regexParse('add 50 to goal ferias');
+      expect(result, isNotNull);
+      expect(result!.action, 'add_savings_contribution');
+      expect(result.params?['goal_name'], 'ferias');
+      expect(result.params?['amount'], 50.0);
     });
 
     test('parses navigate_to from Portuguese', () {
@@ -134,7 +151,9 @@ void main() {
       expect(prompt, contains('add_expense'));
       expect(prompt, contains('set_theme_mode'));
       expect(prompt, contains('add_shopping_item'));
+      expect(prompt, contains('remove_shopping_item'));
       expect(prompt, contains('add_savings_goal'));
+      expect(prompt, contains('add_savings_contribution'));
       expect(prompt, contains('add_recurring_expense'));
       expect(prompt, contains('set_language'));
       expect(prompt, contains('navigate_to'));

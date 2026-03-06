@@ -13,6 +13,9 @@ class CommandActionRegistry {
   final Future<void> Function(ShoppingItem item) onAddShoppingItem;
   final Future<void> Function(SavingsGoal goal) onAddSavingsGoal;
   final Future<void> Function(RecurringExpense expense) onAddRecurringExpense;
+  final Future<bool> Function(String itemName) onRemoveShoppingItemByName;
+  final Future<bool> Function(String goalName, double amount)
+      onAddSavingsContributionByGoalName;
   final Future<void> Function(String id) onDeleteExpense;
   final void Function(ThemeMode mode) onSetThemeMode;
   final void Function(AppColorPalette palette) onSetColorPalette;
@@ -25,6 +28,8 @@ class CommandActionRegistry {
     required this.onAddShoppingItem,
     required this.onAddSavingsGoal,
     required this.onAddRecurringExpense,
+    required this.onRemoveShoppingItemByName,
+    required this.onAddSavingsContributionByGoalName,
     required this.onDeleteExpense,
     required this.onSetThemeMode,
     required this.onSetColorPalette,
@@ -121,6 +126,10 @@ class CommandActionRegistry {
         return _validateAddSavingsGoal(params);
       case 'add_recurring_expense':
         return _validateAddRecurringExpense(params);
+      case 'remove_shopping_item':
+        return _validateRemoveShoppingItem(params);
+      case 'add_savings_contribution':
+        return _validateAddSavingsContribution(params);
       case 'set_theme_mode':
         return _validateSetThemeMode(params);
       case 'set_color_palette':
@@ -155,6 +164,10 @@ class CommandActionRegistry {
         return _executeAddSavingsGoal(params);
       case 'add_recurring_expense':
         return _executeAddRecurringExpense(params);
+      case 'remove_shopping_item':
+        return _executeRemoveShoppingItem(params);
+      case 'add_savings_contribution':
+        return _executeAddSavingsContribution(params);
       case 'set_theme_mode':
         return _executeSetThemeMode(params);
       case 'set_color_palette':
@@ -209,6 +222,20 @@ class CommandActionRegistry {
     if (amount == null || amount <= 0) return false;
     if (parsedDay != null && (parsedDay < 1 || parsedDay > 31)) return false;
     return true;
+  }
+
+  bool _validateRemoveShoppingItem(Map<String, dynamic> params) {
+    final name = params['name'] as String?;
+    return name != null && name.trim().isNotEmpty;
+  }
+
+  bool _validateAddSavingsContribution(Map<String, dynamic> params) {
+    final goalName = params['goal_name'] as String?;
+    final amount = _parseDouble(params['amount']);
+    return goalName != null &&
+        goalName.trim().isNotEmpty &&
+        amount != null &&
+        amount > 0;
   }
 
   bool _validateSetThemeMode(Map<String, dynamic> params) {
@@ -300,6 +327,35 @@ class CommandActionRegistry {
     await onAddRecurringExpense(expense);
     return CommandResult.success(
       message: 'Recurring expense added: ${expense.amount} in ${expense.category}',
+    );
+  }
+
+  Future<CommandResult> _executeRemoveShoppingItem(
+    Map<String, dynamic> params,
+  ) async {
+    final name = (params['name'] as String).trim();
+    final removed = await onRemoveShoppingItemByName(name);
+    if (!removed) {
+      return CommandResult.failure(
+        message: 'Could not find shopping item: $name',
+      );
+    }
+    return CommandResult.success(message: 'Shopping item removed: $name');
+  }
+
+  Future<CommandResult> _executeAddSavingsContribution(
+    Map<String, dynamic> params,
+  ) async {
+    final goalName = (params['goal_name'] as String).trim();
+    final amount = _parseDouble(params['amount'])!;
+    final applied = await onAddSavingsContributionByGoalName(goalName, amount);
+    if (!applied) {
+      return CommandResult.failure(
+        message: 'Could not find savings goal: $goalName',
+      );
+    }
+    return CommandResult.success(
+      message: 'Contribution added: $amount to $goalName',
     );
   }
 

@@ -148,6 +148,25 @@ class CommandChatService {
       }
     }
 
+    // remove_shopping_item
+    final removeShoppingMatch = RegExp(
+      r'(?:remove|remover|apaga|delete|tira)\s+'
+      r'(.+?)\s+'
+      r'(?:da|de|from)\s+'
+      r'(?:lista(?:\s+de\s+compras)?|shopping\s+list|liste\s+de\s+courses)',
+      caseSensitive: false,
+    ).firstMatch(text);
+    if (removeShoppingMatch != null) {
+      final name = removeShoppingMatch.group(1)!.trim();
+      if (name.isNotEmpty) {
+        return CommandAction.withAction(
+          action: 'remove_shopping_item',
+          params: {'name': name},
+          message: '',
+        );
+      }
+    }
+
     // add_savings_goal
     final savingsGoalMatch = RegExp(
       r'(?:cria|create|add|adiciona|ajoute)\s+'
@@ -166,6 +185,29 @@ class CommandChatService {
         return CommandAction.withAction(
           action: 'add_savings_goal',
           params: {'name': name, 'target_amount': targetAmount},
+          message: '',
+        );
+      }
+    }
+
+    // add_savings_contribution
+    final savingsContributionMatch = RegExp(
+      r'(?:adiciona|add|mete|ajoute)\s+'
+      r'(\d+(?:[.,]\d+)?)\s*(?:euros?|eur|€)?\s+'
+      r'(?:ao|a|to)\s+'
+      r'(?:objetivo|goal|objectif)\s+'
+      r'(.+)',
+      caseSensitive: false,
+    ).firstMatch(text);
+    if (savingsContributionMatch != null) {
+      final amount = double.tryParse(
+        savingsContributionMatch.group(1)!.replaceAll(',', '.'),
+      );
+      final goalName = savingsContributionMatch.group(2)!.trim();
+      if (amount != null && amount > 0 && goalName.isNotEmpty) {
+        return CommandAction.withAction(
+          action: 'add_savings_contribution',
+          params: {'amount': amount, 'goal_name': goalName},
           message: '',
         );
       }
@@ -347,7 +389,9 @@ class CommandChatService {
         'lazer, energia, agua, telecomunicacoes, outros]\n'
         '- add_shopping_item: {name: string, store?: string, price?: number, '
         'unitPrice?: string}\n'
+        '- remove_shopping_item: {name: string}\n'
         '- add_savings_goal: {name: string, target_amount: number}\n'
+        '- add_savings_contribution: {goal_name: string, amount: number}\n'
         '- add_recurring_expense: {amount: number, category: string, '
         'description?: string, day_of_month?: number}\n'
         '- set_theme_mode: {mode: "light" | "dark" | "system"}\n'
