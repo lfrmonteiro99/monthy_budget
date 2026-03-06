@@ -567,6 +567,65 @@ class SEn extends S {
   String get coachDeleteTooltip => 'Delete';
 
   @override
+  String get coachEmptyTitle => 'Your financial coach';
+
+  @override
+  String get coachEmptyBody =>
+      'Ask anything about your budget, expenses, or savings. I\'ll use your real data to give personalized advice.';
+
+  @override
+  String get coachQuickPrompt1 => 'Where can I cut expenses this month?';
+
+  @override
+  String get coachQuickPrompt2 => 'How can I improve my savings?';
+
+  @override
+  String get coachQuickPrompt3 => 'Help me build a 30-day plan.';
+
+  @override
+  String get coachComposerHint => 'Ask your coach...';
+
+  @override
+  String get coachYou => 'You';
+
+  @override
+  String get coachAssistant => 'Coach';
+
+  @override
+  String coachCreditsCount(int count) {
+    return '$count credits';
+  }
+
+  @override
+  String get coachMemory => 'Memory';
+
+  @override
+  String get coachCostFree => 'Eco mode — no credits used.';
+
+  @override
+  String coachCostCredits(int cost) {
+    return 'This message costs $cost credits.';
+  }
+
+  @override
+  String get coachFree => 'Free';
+
+  @override
+  String coachPerMsg(int cost) {
+    return '$cost/msg';
+  }
+
+  @override
+  String get coachEcoFallbackTitle => 'Eco mode active (no credits)';
+
+  @override
+  String get coachEcoFallbackBody =>
+      'You can keep chatting with reduced memory.';
+
+  @override
+  String get coachRestoreMemory => 'Restore memory';
+
+  @override
   String get cmdAssistantTitle => 'Assistant';
 
   @override
@@ -3165,4 +3224,274 @@ class SEn extends S {
   String subscriptionExplore(String feature) {
     return 'Explore $feature';
   }
+
+  @override
+  String get subtitleBatchCooking =>
+      'Suggests recipes that can be prepped in advance for multiple meals';
+
+  @override
+  String get subtitleReuseLeftovers =>
+      'Plans meals that use leftover ingredients from previous days';
+
+  @override
+  String get subtitleMinimizeWaste =>
+      'Prioritizes using all purchased ingredients before they expire';
+
+  @override
+  String get subtitleMealTypeInclude => 'Include this meal in your weekly plan';
+
+  @override
+  String get subtitleShowHeroCard => 'Your net liquidity summary at the top';
+
+  @override
+  String get subtitleShowStressIndex =>
+      'Score (0-100) measuring spending pressure vs income';
+
+  @override
+  String get subtitleShowMonthReview =>
+      'Summary comparing this month to previous months';
+
+  @override
+  String get subtitleShowUpcomingBills =>
+      'Recurring expenses due in the next 30 days';
+
+  @override
+  String get subtitleShowSummaryCards =>
+      'Income, deductions, expenses, and savings rate';
+
+  @override
+  String get subtitleShowBudgetVsActual =>
+      'Side-by-side comparison per expense category';
+
+  @override
+  String get subtitleShowExpensesBreakdown =>
+      'Pie chart of spending by category';
+
+  @override
+  String get subtitleShowSavingsGoals => 'Progress toward your savings targets';
+
+  @override
+  String get subtitleShowTaxDeductions =>
+      'Estimated eligible tax deductions this year';
+
+  @override
+  String get subtitleShowBudgetStreaks =>
+      'How many consecutive months you stayed within budget';
+
+  @override
+  String get subtitleShowPurchaseHistory =>
+      'Recent shopping list purchases and costs';
+
+  @override
+  String get subtitleShowCharts =>
+      'Trend charts for budget, expenses, and income';
+
+  @override
+  String get subtitleChartExpensesPie =>
+      'Spending distribution across categories';
+
+  @override
+  String get subtitleChartIncomeVsExpenses =>
+      'Monthly income compared to total spending';
+
+  @override
+  String get subtitleChartDeductions => 'Tax-deductible expenses breakdown';
+
+  @override
+  String get subtitleChartNetIncome => 'Net income trend over time';
+
+  @override
+  String get subtitleChartSavingsRate =>
+      'Percentage of income saved each month';
+
+  @override
+  String get helperCountry =>
+      'Determines tax system, currency, and social security rates';
+
+  @override
+  String get helperLanguage =>
+      'Override system language. \"System\" follows your device setting';
+
+  @override
+  String get helperMaritalStatus => 'Affects IRS tax bracket calculation';
+
+  @override
+  String get helperMealObjective =>
+      'Sets dietary pattern: omnivore, vegetarian, pescatarian, etc.';
+
+  @override
+  String get helperSodiumPreference =>
+      'Filters recipes by sodium content level';
+
+  @override
+  String subtitleDietaryRestriction(String ingredient) {
+    return 'Excludes recipes containing $ingredient';
+  }
+
+  @override
+  String subtitleExcludedProtein(String protein) {
+    return 'Remove $protein from all meal suggestions';
+  }
+
+  @override
+  String subtitleKitchenEquipment(String equipment) {
+    return 'Enable recipes that require $equipment';
+  }
+
+  @override
+  String get helperVeggieDays => 'Number of fully vegetarian days per week';
+
+  @override
+  String get helperFishDays => 'Recommended: 2-3 times per week';
+
+  @override
+  String get helperLegumeDays => 'Recommended: 2-3 times per week';
+
+  @override
+  String get helperRedMeatDays => 'Recommended: max 2 times per week';
+
+  @override
+  String get helperMaxPrepTime =>
+      'Maximum cooking time for weekday meals (minutes)';
+
+  @override
+  String get helperMaxComplexity => 'Recipe difficulty level for weekday meals';
+
+  @override
+  String get helperWeekendPrepTime =>
+      'Maximum cooking time for weekend meals (minutes)';
+
+  @override
+  String get helperWeekendComplexity =>
+      'Recipe difficulty level for weekend meals';
+
+  @override
+  String get helperMaxBatchDays =>
+      'How many days a batch-cooked meal can be reused';
+
+  @override
+  String get helperNewIngredients =>
+      'Limits how many new ingredients appear each week';
+
+  @override
+  String get helperGrossSalary => 'Total salary before taxes and deductions';
+
+  @override
+  String get helperExemptIncome =>
+      'Additional income not subject to IRS (e.g., subsidies)';
+
+  @override
+  String get helperMealAllowance => 'Daily meal subsidy from your employer';
+
+  @override
+  String get helperWorkingDays =>
+      'Typical: 22. Affects meal allowance calculation';
+
+  @override
+  String get helperSalaryLabel => 'A name to identify this income source';
+
+  @override
+  String get helperExpenseAmount => 'Monthly budgeted amount for this category';
+
+  @override
+  String get helperCalorieTarget => 'Recommended: 2000-2500 kcal for adults';
+
+  @override
+  String get helperProteinTarget => 'Recommended: 50-70g for adults';
+
+  @override
+  String get helperFiberTarget => 'Recommended: 25-30g for adults';
+
+  @override
+  String get infoStressIndex =>
+      'Compares actual spending to your budget. Score ranges:\n\n0-30: Comfortable - spending well within budget\n30-60: Moderate - approaching budget limits\n60-100: Critical - spending exceeds budget significantly';
+
+  @override
+  String get infoBudgetStreak =>
+      'Consecutive months where your total spending stayed within your total budget.';
+
+  @override
+  String get infoUpcomingBills =>
+      'Shows recurring expenses due in the next 30 days based on your monthly expenses.';
+
+  @override
+  String get infoSalaryBreakdown =>
+      'Shows how your gross salary is split into IRS tax, social security contributions, net income, and meal allowance.';
+
+  @override
+  String get infoBudgetVsActual =>
+      'Compares what you budgeted per category vs what you actually spent. Green means under budget, red means over budget.';
+
+  @override
+  String get infoSavingsGoals =>
+      'Progress toward each savings goal based on contributions you have made.';
+
+  @override
+  String get infoTaxDeductions =>
+      'Estimated tax-deductible expenses (health, education, housing). These are estimates only - consult a tax professional for precise values.';
+
+  @override
+  String get infoPurchaseHistory =>
+      'Total spent on shopping list purchases this month.';
+
+  @override
+  String get infoExpensesBreakdown =>
+      'Visual breakdown of your spending by category for the current month.';
+
+  @override
+  String get infoCharts =>
+      'Trend data over time. Tap any chart for a detailed view.';
+
+  @override
+  String get infoExpenseTrackerSummary =>
+      'Budgeted = your planned monthly spending. Actual = what you have spent so far. Remaining = budget minus actual.';
+
+  @override
+  String get infoExpenseTrackerProgress =>
+      'Green: under 75% of budget. Yellow: 75-100%. Red: over budget.';
+
+  @override
+  String get infoExpenseTrackerFilter =>
+      'Filter expenses by text, category, or date range.';
+
+  @override
+  String get infoSavingsProjection =>
+      'Based on your average monthly contributions. \"On track\" means your current pace reaches the goal by deadline. \"Behind\" means you need to increase contributions.';
+
+  @override
+  String get infoSavingsRequired =>
+      'The amount you need to save each month from now to reach your goal by the deadline.';
+
+  @override
+  String get infoCoachModes =>
+      'Eco: free, no conversation memory.\nPlus: 1 credit per message, remembers last 5 messages.\nPro: 2 credits per message, full conversation memory.';
+
+  @override
+  String get infoCoachCredits =>
+      'Credits are used for Plus and Pro modes. You receive starter credits on signup. Eco mode is always free.';
+
+  @override
+  String get helperWizardGrossSalary =>
+      'Your total monthly salary before taxes';
+
+  @override
+  String get helperWizardMealAllowance =>
+      'Daily meal subsidy from employer (if any)';
+
+  @override
+  String get helperWizardRent => 'Monthly housing payment';
+
+  @override
+  String get helperWizardGroceries =>
+      'Monthly food and household supplies budget';
+
+  @override
+  String get helperWizardTransport =>
+      'Monthly transport costs (fuel, public transit, etc.)';
+
+  @override
+  String get helperWizardUtilities => 'Monthly electricity, water, gas';
+
+  @override
+  String get helperWizardTelecom => 'Monthly internet, phone, TV';
 }

@@ -4,6 +4,7 @@ import '../models/savings_goal.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 import '../utils/savings_projections.dart';
+import 'info_icon_button.dart';
 
 /// Compact dashboard card showing top 1-2 active savings goals with progress bars
 /// and projection info when available.
@@ -95,6 +96,7 @@ class SavingsGoalCard extends StatelessWidget {
                   ),
                 ),
               ),
+              InfoIconButton(title: l10n.savingsGoals, body: l10n.infoSavingsGoals),
               GestureDetector(
                 onTap: onSeeAll,
                 child: Text(

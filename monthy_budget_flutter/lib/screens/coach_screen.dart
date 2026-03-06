@@ -11,6 +11,7 @@ import '../services/ai_coach_service.dart';
 import '../services/subscription_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/calculations.dart';
+import '../widgets/info_icon_button.dart';
 
 class CoachScreen extends StatefulWidget {
   final AppSettings settings;
@@ -284,6 +285,10 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           ],
         ),
         actions: [
+          InfoIconButton(
+            title: l10n.coachTitle,
+            body: l10n.infoCoachModes,
+          ),
           IconButton(
             onPressed: _clearConversation,
             tooltip: l10n.coachClearAll,
@@ -412,6 +417,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildComposer() {
+    final l10n = S.of(context);
     final costNow = _subscription.creditCostForMode(_selectedMode);
     return Container(
       key: CoachTourKeys.analyzeButton,
@@ -468,15 +474,27 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
             ],
           ),
           const SizedBox(height: 6),
-          Text(
-            costNow == 0
-                ? 'Esta mensagem nao consome creditos (modo Eco).'
-                : 'Esta mensagem vai consumir $costNow creditos. A resposta nao consome creditos.',
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textMuted(context),
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  costNow == 0
+                      ? 'Esta mensagem nao consome creditos (modo Eco).'
+                      : 'Esta mensagem vai consumir $costNow creditos. A resposta nao consome creditos.',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textMuted(context),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 6),
+              InfoIconButton(
+                title: l10n.coachTitle,
+                body: l10n.infoCoachCredits,
+              ),
+            ],
           ),
         ],
       ),
@@ -484,6 +502,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildModeCard() {
+    final l10n = S.of(context);
     final activeResolution = _lastModeResolution;
     final effectiveMode = activeResolution?.effectiveMode ?? _selectedMode;
     final window = _subscription.contextWindowForMode(effectiveMode);
@@ -508,6 +527,11 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary(context),
                 ),
+              ),
+              const SizedBox(width: 6),
+              InfoIconButton(
+                title: l10n.coachTitle,
+                body: l10n.infoCoachModes,
               ),
               const Spacer(),
               Text(
