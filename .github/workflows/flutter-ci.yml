@@ -106,14 +106,18 @@ jobs:
 
       - name: Create Supabase config
         run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "::error::SUPABASE_URL and SUPABASE_ANON_KEY secrets must be set for release builds"
+            exit 1
+          fi
           mkdir -p lib/config
           cat > lib/config/supabase_config.dart << DART
           const supabaseUrl = '${SUPABASE_URL}';
           const supabaseAnonKey = '${SUPABASE_ANON_KEY}';
           DART
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://placeholder.supabase.co' }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY || 'placeholder' }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
 
       - name: Install dependencies
         run: flutter pub get
