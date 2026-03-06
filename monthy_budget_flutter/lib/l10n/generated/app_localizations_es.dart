@@ -886,6 +886,26 @@ class SEs extends S {
   @override
   String get authRegistrationSuccess =>
       'Â¡Cuenta creada! Revisa tu email para verificar la cuenta antes de iniciar sesiÃ³n.';
+  @override
+  String get authErrorNetwork =>
+      'No se pudo conectar al servidor. Comprueba tu conexión a internet e inténtalo de nuevo.';
+
+  @override
+  String get authErrorInvalidCredentials =>
+      'Email o contraseña incorrectos. Inténtalo de nuevo.';
+
+  @override
+  String get authErrorEmailNotConfirmed =>
+      'Verifica tu email antes de iniciar sesión.';
+
+  @override
+  String get authErrorTooManyRequests =>
+      'Demasiados intentos. Espera un momento e inténtalo de nuevo.';
+
+  @override
+  String get authErrorGeneric =>
+      'Algo salió mal. Inténtalo de nuevo más tarde.';
+
 
   @override
   String get householdSetupTitle => 'Configurar Hogar';

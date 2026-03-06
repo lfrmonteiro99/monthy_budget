@@ -885,6 +885,26 @@ class SPt extends S {
   @override
   String get authRegistrationSuccess =>
       'Conta criada! Verifique o seu email para confirmar a conta antes de iniciar sessão.';
+  @override
+  String get authErrorNetwork =>
+      'Não foi possível ligar ao servidor. Verifique a sua ligação à internet e tente novamente.';
+
+  @override
+  String get authErrorInvalidCredentials =>
+      'Email ou palavra-passe inválidos. Tente novamente.';
+
+  @override
+  String get authErrorEmailNotConfirmed =>
+      'Verifique o seu email antes de iniciar sessão.';
+
+  @override
+  String get authErrorTooManyRequests =>
+      'Demasiadas tentativas. Aguarde um momento e tente novamente.';
+
+  @override
+  String get authErrorGeneric =>
+      'Ocorreu um erro. Tente novamente mais tarde.';
+
 
   @override
   String get householdSetupTitle => 'Configurar Agregado';
