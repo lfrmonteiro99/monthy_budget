@@ -3,7 +3,9 @@ import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/coach_insight.dart';
 import '../models/purchase_record.dart';
+import '../models/subscription_state.dart';
 import '../services/ai_coach_service.dart';
+import '../services/subscription_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/calculations.dart';
 import '../data/tax/tax_factory.dart';
@@ -16,6 +18,9 @@ class CoachScreen extends StatefulWidget {
   final String apiKey;
   final String householdId;
   final VoidCallback onOpenSettings;
+  final SubscriptionState subscription;
+  final ValueChanged<SubscriptionState> onSubscriptionChanged;
+  final VoidCallback? onRestoreMemory;
   final bool showTour;
   final VoidCallback? onTourComplete;
 
@@ -26,6 +31,9 @@ class CoachScreen extends StatefulWidget {
     required this.apiKey,
     required this.householdId,
     required this.onOpenSettings,
+    required this.subscription,
+    required this.onSubscriptionChanged,
+    this.onRestoreMemory,
     this.showTour = false,
     this.onTourComplete,
   });
@@ -36,10 +44,14 @@ class CoachScreen extends StatefulWidget {
 
 class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   final _service = AiCoachService();
+  final _subscriptionService = SubscriptionService();
   CoachInsight? _currentInsight;
   List<CoachInsight> _insights = [];
   bool _loading = false;
   String? _error;
+  CoachModeResolution? _lastModeResolution;
+  late SubscriptionState _subscription;
+  late CoachMode _selectedMode;
 
   bool _tourShown = false;
 
@@ -47,6 +59,8 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _subscription = widget.subscription;
+    _selectedMode = _subscription.preferredCoachMode;
     _loadHistory();
     if (widget.showTour) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -62,6 +76,15 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           });
         }
       });
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant CoachScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.subscription != oldWidget.subscription) {
+      _subscription = widget.subscription;
+      _selectedMode = _subscription.preferredCoachMode;
     }
   }
 
@@ -90,6 +113,21 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
       _currentInsight = null;
     });
     try {
+      final modeResult = await _subscriptionService.resolveAndConsumeCoachMode(
+        _subscription,
+        requestedMode: _selectedMode,
+      );
+      final nextSubscription = modeResult.state;
+      final resolution = modeResult.resolution;
+      if (mounted) {
+        setState(() {
+          _subscription = nextSubscription;
+          _lastModeResolution = resolution;
+        });
+      }
+      widget.onSubscriptionChanged(nextSubscription);
+
+      final effectiveMode = resolution.effectiveMode;
       final taxSystem = getTaxSystem(widget.settings.country);
       final summary = calculateBudgetSummary(
         widget.settings.salaries,
@@ -103,6 +141,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         settings: widget.settings,
         summary: summary,
         purchaseHistory: widget.purchaseHistory,
+        maxTokens: _maxTokensForMode(effectiveMode),
       );
       if (mounted) {
         setState(() {
@@ -117,6 +156,31 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     } finally {
       if (mounted) setState(() => _loading = false);
     }
+  }
+
+  int _maxTokensForMode(CoachMode mode) {
+    switch (mode) {
+      case CoachMode.eco:
+        return 600;
+      case CoachMode.plus:
+        return 1000;
+      case CoachMode.pro:
+        return 1400;
+    }
+  }
+
+  Future<void> _setPreferredMode(CoachMode mode) async {
+    final updated = await _subscriptionService.setPreferredCoachMode(
+      _subscription,
+      mode,
+    );
+    if (mounted) {
+      setState(() {
+        _subscription = updated;
+        _selectedMode = mode;
+      });
+    }
+    widget.onSubscriptionChanged(updated);
   }
 
   Future<void> _deleteInsight(String id) async {
@@ -183,6 +247,12 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         children: [
           _buildInfoCard(),
           const SizedBox(height: 16),
+          _buildModeCard(),
+          const SizedBox(height: 12),
+          if (_lastModeResolution?.usedFallback == true) ...[
+            _buildFallbackCard(),
+            const SizedBox(height: 12),
+          ],
           Row(
             children: [
               Expanded(child: _buildAnalyzeButton()),
@@ -271,6 +341,128 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                   ],
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildModeCard() {
+    final activeResolution = _lastModeResolution;
+    final effectiveMode = activeResolution?.effectiveMode ?? _selectedMode;
+    final window = _subscription.contextWindowForMode(effectiveMode);
+    final usagePct = ((_insights.length / window) * 100).clamp(0, 100).round();
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.border(context)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                'Memoria do Coach',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary(context),
+                ),
+              ),
+              const Spacer(),
+              Text(
+                '${_subscription.aiCredits} creditos',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textSecondary(context),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 8,
+            children: [
+              _modeChip(CoachMode.eco, 'Eco'),
+              _modeChip(CoachMode.plus, 'Plus'),
+              _modeChip(CoachMode.pro, 'Pro'),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'Memoria ativa: ${effectiveMode.name.toUpperCase()} ($usagePct%)',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textMuted(context),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _modeChip(CoachMode mode, String label) {
+    final selected = _selectedMode == mode;
+    final cost = _subscription.creditCostForMode(mode);
+    final subtitle = cost == 0 ? 'Gratis' : '$cost/msg';
+    return ChoiceChip(
+      label: Text('$label · $subtitle'),
+      selected: selected,
+      onSelected: _loading ? null : (_) => _setPreferredMode(mode),
+      labelStyle: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: selected ? AppColors.onPrimary(context) : AppColors.textPrimary(context),
+      ),
+      selectedColor: AppColors.primary(context),
+      backgroundColor: AppColors.surfaceVariant(context),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: BorderSide(color: AppColors.border(context)),
+      ),
+    );
+  }
+
+  Widget _buildFallbackCard() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.warningBackground(context),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.warning(context).withValues(alpha: 0.35)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Modo Eco ativo (sem creditos).',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: AppColors.warning(context),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Posso nao lembrar conversas anteriores. Restaura memoria para maior continuidade.',
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColors.warning(context),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: OutlinedButton(
+              onPressed: widget.onRestoreMemory ?? widget.onOpenSettings,
+              child: const Text('Restaurar memoria'),
             ),
           ),
         ],

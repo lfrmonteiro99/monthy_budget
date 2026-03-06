@@ -706,6 +706,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           purchaseHistory: _purchaseHistory,
           apiKey: _openAiApiKey,
           householdId: widget.householdId,
+          subscription: _subscription,
+          onSubscriptionChanged: (next) {
+            if (!mounted) return;
+            setState(() => _subscription = next);
+          },
+          onRestoreMemory: _openPaywall,
           onOpenSettings: () {
             Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => _buildSettingsScreen()),

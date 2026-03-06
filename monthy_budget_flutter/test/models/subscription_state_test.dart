@@ -33,6 +33,15 @@ void main() {
     });
   });
 
+  group('CoachMode enum', () {
+    test('contains eco, plus, pro', () {
+      expect(
+        CoachMode.values,
+        containsAll([CoachMode.eco, CoachMode.plus, CoachMode.pro]),
+      );
+    });
+  });
+
   group('featureTierRequirements', () {
     test('map has entry for every PremiumFeature', () {
       for (final feature in PremiumFeature.values) {
@@ -101,12 +110,16 @@ void main() {
       DateTime? trialStartDate,
       bool trialUsed = false,
       Set<String> featuresExplored = const {},
+      int aiCredits = 0,
+      CoachMode preferredCoachMode = CoachMode.plus,
     }) {
       return SubscriptionState(
         tier: tier,
         trialStartDate: trialStartDate ?? DateTime.now(),
         trialUsed: trialUsed,
         featuresExplored: featuresExplored,
+        aiCredits: aiCredits,
+        preferredCoachMode: preferredCoachMode,
       );
     }
 
@@ -655,6 +668,8 @@ void main() {
           trialStartDate: DateTime(2026, 3, 1),
           trialUsed: true,
           featuresExplored: {'dashboard'},
+          aiCredits: 120,
+          preferredCoachMode: CoachMode.pro,
         );
 
         final json = state.toJson();
@@ -664,7 +679,9 @@ void main() {
         expect(json['trialUsed'], true);
         expect(json['featuresExplored'], isA<List>());
         expect(json['featuresExplored'], contains('dashboard'));
-        expect(json.keys.length, 4);
+        expect(json['aiCredits'], 120);
+        expect(json['preferredCoachMode'], 'pro');
+        expect(json.keys.length, 6);
       });
 
       test('fromJson with empty featuresExplored list', () {
@@ -676,6 +693,8 @@ void main() {
         };
         final state = SubscriptionState.fromJson(json);
         expect(state.featuresExplored, isEmpty);
+        expect(state.aiCredits, 0);
+        expect(state.preferredCoachMode, CoachMode.plus);
       });
 
       test('fromJson with null featuresExplored', () {
@@ -687,6 +706,8 @@ void main() {
         };
         final state = SubscriptionState.fromJson(json);
         expect(state.featuresExplored, isEmpty);
+        expect(state.aiCredits, 0);
+        expect(state.preferredCoachMode, CoachMode.plus);
       });
 
       test('fromJson with null trialUsed defaults to false', () {
@@ -840,6 +861,37 @@ void main() {
         expect(first, true);
         expect(second, true);
         expect(third, true);
+      });
+    });
+
+    group('coach mode resolution', () {
+      test('uses requested premium mode when credits are sufficient', () {
+        final state = makeState(aiCredits: 10, preferredCoachMode: CoachMode.plus);
+        final resolution = state.resolveCoachMode(requestedMode: CoachMode.pro);
+
+        expect(resolution.requestedMode, CoachMode.pro);
+        expect(resolution.effectiveMode, CoachMode.pro);
+        expect(resolution.usedFallback, false);
+        expect(resolution.estimatedCreditCost, 5);
+      });
+
+      test('falls back to eco when credits are insufficient', () {
+        final state = makeState(aiCredits: 1, preferredCoachMode: CoachMode.pro);
+        final resolution = state.resolveCoachMode(requestedMode: CoachMode.pro);
+
+        expect(resolution.effectiveMode, CoachMode.eco);
+        expect(resolution.usedFallback, true);
+        expect(resolution.reason, 'insufficient_credits');
+        expect(resolution.estimatedCreditCost, 0);
+      });
+
+      test('eco always costs zero', () {
+        final state = makeState(aiCredits: 0, preferredCoachMode: CoachMode.pro);
+        final resolution = state.resolveCoachMode(requestedMode: CoachMode.eco);
+
+        expect(resolution.effectiveMode, CoachMode.eco);
+        expect(resolution.usedFallback, false);
+        expect(resolution.estimatedCreditCost, 0);
       });
     });
   });

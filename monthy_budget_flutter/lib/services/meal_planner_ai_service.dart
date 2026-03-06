@@ -238,8 +238,10 @@ Optimize for parallel cooking (e.g. while rice cooks, prep vegetables). Be speci
     int maxTokens = 600,
     double temperature = 0.6,
   }) async {
+    final authHeaders = _buildEdgeAuthHeaders();
     final response = await _client.functions.invoke(
       _edgeFunctionName,
+      headers: authHeaders,
       body: {
         'model': _model,
         'messages': messages,
@@ -256,5 +258,16 @@ Optimize for parallel cooking (e.g. while rice cooks, prep vegetables). Be speci
       throw Exception('Resposta vazia da IA');
     }
     return content;
+  }
+
+  Map<String, String> _buildEdgeAuthHeaders() {
+    final accessToken = _client.auth.currentSession?.accessToken;
+    if (accessToken == null || accessToken.trim().isEmpty) {
+      throw Exception(
+        'Sessao expirada ou utilizador nao autenticado. '
+        'Inicie sessao novamente para usar o Planeador de Refeicoes.',
+      );
+    }
+    return {'Authorization': 'Bearer $accessToken'};
   }
 }

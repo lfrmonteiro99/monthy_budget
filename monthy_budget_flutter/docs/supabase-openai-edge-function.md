@@ -16,6 +16,10 @@ supabase secrets set OPENAI_API_KEY=sk-... --project-ref YOUR_PROJECT_REF
 supabase functions deploy openai-chat --project-ref YOUR_PROJECT_REF
 ```
 
+Security note:
+- Keep JWT verification enabled (`verify_jwt=true`).
+- Do not deploy with `--no-verify-jwt`.
+
 ## 3) (Optional) Local serve
 
 ```bash
@@ -32,3 +36,4 @@ OPENAI_API_KEY=sk-...
 
 - The mobile app no longer needs to store/use OpenAI API keys for these features.
 - Function name expected by the app: `openai-chat`.
+- Calls require an authenticated Supabase session (Authorization Bearer JWT).
