@@ -567,6 +567,102 @@ class SEn extends S {
   String get coachDeleteTooltip => 'Delete';
 
   @override
+  String get coachEmptyTitle => 'Your financial coach';
+
+  @override
+  String get coachEmptyBody =>
+      'Ask anything about your budget, expenses, or savings. I\'ll use your real data to give personalized advice.';
+
+  @override
+  String get coachQuickPrompt1 => 'Where can I cut expenses this month?';
+
+  @override
+  String get coachQuickPrompt2 => 'How can I improve my savings?';
+
+  @override
+  String get coachQuickPrompt3 => 'Help me build a 30-day plan.';
+
+  @override
+  String get coachComposerHint => 'Ask your coach...';
+
+  @override
+  String get coachYou => 'You';
+
+  @override
+  String get coachAssistant => 'Coach';
+
+  @override
+  String coachCreditsCount(int count) {
+    return '$count credits';
+  }
+
+  @override
+  String get coachMemory => 'Memory';
+
+  @override
+  String get coachCostFree => 'Eco mode — no credits used.';
+
+  @override
+  String coachCostCredits(int cost) {
+    return 'This message costs $cost credits.';
+  }
+
+  @override
+  String get coachFree => 'Free';
+
+  @override
+  String coachPerMsg(int cost) {
+    return '$cost/msg';
+  }
+
+  @override
+  String get coachEcoFallbackTitle => 'Eco mode active (no credits)';
+
+  @override
+  String get coachEcoFallbackBody =>
+      'You can keep chatting with reduced memory.';
+
+  @override
+  String get coachRestoreMemory => 'Restore memory';
+
+  @override
+  String get cmdAssistantTitle => 'Assistant';
+
+  @override
+  String get cmdAssistantHint => 'What do you need?';
+
+  @override
+  String get cmdAssistantTooltip => 'Need help? Tap here';
+
+  @override
+  String get cmdSuggestionAddExpense => 'Add expense';
+
+  @override
+  String get cmdSuggestionOpenList => 'Open shopping list';
+
+  @override
+  String get cmdSuggestionChangeTheme => 'Change theme';
+
+  @override
+  String get cmdSuggestionOpenSettings => 'Go to settings';
+
+  @override
+  String get cmdTemplateAddExpense => 'Add [amount] euros in [category]';
+
+  @override
+  String get cmdTemplateChangeTheme => 'Change theme to [light/dark]';
+
+  @override
+  String get cmdExecutionFailed =>
+      'I understood the request, but couldn\'t execute it. Try again.';
+
+  @override
+  String get cmdNotUnderstood => 'I didn\'t understand. Can you rephrase?';
+
+  @override
+  String get cmdUndo => 'Undo';
+
+  @override
   String get groceryTitle => 'Grocery';
 
   @override

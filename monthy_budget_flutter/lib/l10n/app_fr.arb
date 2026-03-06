@@ -292,6 +292,48 @@
   "coachClearContent": "ÃŠtes-vous sÃ»r de vouloir supprimer toutes les analyses enregistrÃ©es ?",
   "coachDeleteLabel": "Supprimer l'analyse",
   "coachDeleteTooltip": "Supprimer",
+  "coachEmptyTitle": "Votre coach financier",
+  "coachEmptyBody": "Posez toute question sur votre budget, depenses ou epargne. J'utiliserai vos donnees reelles pour des conseils personnalises.",
+  "coachQuickPrompt1": "Ou puis-je reduire mes depenses ce mois-ci ?",
+  "coachQuickPrompt2": "Comment ameliorer mon epargne ?",
+  "coachQuickPrompt3": "Aidez-moi a creer un plan sur 30 jours.",
+  "coachComposerHint": "Demandez a votre coach...",
+  "coachYou": "Vous",
+  "coachAssistant": "Coach",
+  "coachCreditsCount": "{count} credits",
+  "@coachCreditsCount": {
+    "description": "Credits pill label",
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "coachMemory": "Memoire",
+  "coachCostFree": "Mode Eco \u2014 sans cout de credits.",
+  "coachCostCredits": "Ce message coute {cost} credits.",
+  "@coachCostCredits": {
+    "description": "Cost info per message",
+    "placeholders": { "cost": { "type": "int" } }
+  },
+  "coachFree": "Gratuit",
+  "coachPerMsg": "{cost}/msg",
+  "@coachPerMsg": {
+    "description": "Cost per message on mode chip",
+    "placeholders": { "cost": { "type": "int" } }
+  },
+  "coachEcoFallbackTitle": "Mode Eco actif (sans credits)",
+  "coachEcoFallbackBody": "Vous pouvez continuer a discuter avec une memoire reduite.",
+  "coachRestoreMemory": "Restaurer la memoire",
+
+  "cmdAssistantTitle": "Assistant",
+  "cmdAssistantHint": "De quoi avez-vous besoin ?",
+  "cmdAssistantTooltip": "Besoin d'aide ? Appuyez ici",
+  "cmdSuggestionAddExpense": "Ajouter une depense",
+  "cmdSuggestionOpenList": "Ouvrir la liste de courses",
+  "cmdSuggestionChangeTheme": "Changer le theme",
+  "cmdSuggestionOpenSettings": "Aller aux parametres",
+  "cmdTemplateAddExpense": "Ajoute [montant] euros en [categorie]",
+  "cmdTemplateChangeTheme": "Change le theme en [clair/sombre]",
+  "cmdExecutionFailed": "J'ai compris la demande, mais je n'ai pas pu l'executer. Reessayez.",
+  "cmdNotUnderstood": "Je n'ai pas compris. Pouvez-vous reformuler ?",
+  "cmdUndo": "Annuler",
 
   "groceryTitle": "Courses",
   "grocerySearchHint": "Rechercher un produit...",

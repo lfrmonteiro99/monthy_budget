@@ -1127,6 +1127,180 @@ abstract class S {
   /// **'Eliminar'**
   String get coachDeleteTooltip;
 
+  /// Empty state title in coach chat
+  ///
+  /// In pt, this message translates to:
+  /// **'O teu coach financeiro'**
+  String get coachEmptyTitle;
+
+  /// Empty state body in coach chat
+  ///
+  /// In pt, this message translates to:
+  /// **'Pergunta o que quiseres sobre o teu orcamento, despesas ou poupancas. Vou usar os teus dados reais para dar conselhos personalizados.'**
+  String get coachEmptyBody;
+
+  /// Quick prompt suggestion 1
+  ///
+  /// In pt, this message translates to:
+  /// **'Onde posso cortar despesas este mes?'**
+  String get coachQuickPrompt1;
+
+  /// Quick prompt suggestion 2
+  ///
+  /// In pt, this message translates to:
+  /// **'Como melhoro a minha poupanca?'**
+  String get coachQuickPrompt2;
+
+  /// Quick prompt suggestion 3
+  ///
+  /// In pt, this message translates to:
+  /// **'Ajuda-me a definir um plano para 30 dias.'**
+  String get coachQuickPrompt3;
+
+  /// Composer text field hint
+  ///
+  /// In pt, this message translates to:
+  /// **'Pergunta ao coach...'**
+  String get coachComposerHint;
+
+  /// Label for user messages
+  ///
+  /// In pt, this message translates to:
+  /// **'Tu'**
+  String get coachYou;
+
+  /// Label for assistant messages
+  ///
+  /// In pt, this message translates to:
+  /// **'Coach'**
+  String get coachAssistant;
+
+  /// Credits pill label
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} creditos'**
+  String coachCreditsCount(int count);
+
+  /// Memory section header
+  ///
+  /// In pt, this message translates to:
+  /// **'Memoria'**
+  String get coachMemory;
+
+  /// Cost info when mode is free
+  ///
+  /// In pt, this message translates to:
+  /// **'Modo Eco — sem custos de creditos.'**
+  String get coachCostFree;
+
+  /// Cost info per message
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta mensagem custa {cost} creditos.'**
+  String coachCostCredits(int cost);
+
+  /// Free label on mode chip
+  ///
+  /// In pt, this message translates to:
+  /// **'Gratis'**
+  String get coachFree;
+
+  /// Cost per message on mode chip
+  ///
+  /// In pt, this message translates to:
+  /// **'{cost}/msg'**
+  String coachPerMsg(int cost);
+
+  /// Eco fallback banner title
+  ///
+  /// In pt, this message translates to:
+  /// **'Modo Eco ativo (sem creditos)'**
+  String get coachEcoFallbackTitle;
+
+  /// Eco fallback banner body
+  ///
+  /// In pt, this message translates to:
+  /// **'Podes continuar a conversar, mas com memoria reduzida.'**
+  String get coachEcoFallbackBody;
+
+  /// Button to restore memory/credits
+  ///
+  /// In pt, this message translates to:
+  /// **'Restaurar memoria'**
+  String get coachRestoreMemory;
+
+  /// No description provided for @cmdAssistantTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Assistente'**
+  String get cmdAssistantTitle;
+
+  /// No description provided for @cmdAssistantHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'O que precisas?'**
+  String get cmdAssistantHint;
+
+  /// No description provided for @cmdAssistantTooltip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Precisa de ajuda? Toca aqui'**
+  String get cmdAssistantTooltip;
+
+  /// No description provided for @cmdSuggestionAddExpense.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar despesa'**
+  String get cmdSuggestionAddExpense;
+
+  /// No description provided for @cmdSuggestionOpenList.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir lista de compras'**
+  String get cmdSuggestionOpenList;
+
+  /// No description provided for @cmdSuggestionChangeTheme.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mudar tema'**
+  String get cmdSuggestionChangeTheme;
+
+  /// No description provided for @cmdSuggestionOpenSettings.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ir para definicoes'**
+  String get cmdSuggestionOpenSettings;
+
+  /// No description provided for @cmdTemplateAddExpense.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adiciona [valor] euros em [categoria]'**
+  String get cmdTemplateAddExpense;
+
+  /// No description provided for @cmdTemplateChangeTheme.
+  ///
+  /// In pt, this message translates to:
+  /// **'Muda o tema para [claro/escuro]'**
+  String get cmdTemplateChangeTheme;
+
+  /// No description provided for @cmdExecutionFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Percebi o pedido, mas nao consegui executar. Tenta novamente.'**
+  String get cmdExecutionFailed;
+
+  /// No description provided for @cmdNotUnderstood.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nao percebi. Podes reformular?'**
+  String get cmdNotUnderstood;
+
+  /// No description provided for @cmdUndo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Desfazer'**
+  String get cmdUndo;
+
   /// Grocery screen title
   ///
   /// In pt, this message translates to:

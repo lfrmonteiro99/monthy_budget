@@ -569,6 +569,102 @@ class SPt extends S {
   String get coachDeleteTooltip => 'Eliminar';
 
   @override
+  String get coachEmptyTitle => 'O teu coach financeiro';
+
+  @override
+  String get coachEmptyBody =>
+      'Pergunta o que quiseres sobre o teu orcamento, despesas ou poupancas. Vou usar os teus dados reais para dar conselhos personalizados.';
+
+  @override
+  String get coachQuickPrompt1 => 'Onde posso cortar despesas este mes?';
+
+  @override
+  String get coachQuickPrompt2 => 'Como melhoro a minha poupanca?';
+
+  @override
+  String get coachQuickPrompt3 => 'Ajuda-me a definir um plano para 30 dias.';
+
+  @override
+  String get coachComposerHint => 'Pergunta ao coach...';
+
+  @override
+  String get coachYou => 'Tu';
+
+  @override
+  String get coachAssistant => 'Coach';
+
+  @override
+  String coachCreditsCount(int count) {
+    return '$count creditos';
+  }
+
+  @override
+  String get coachMemory => 'Memoria';
+
+  @override
+  String get coachCostFree => 'Modo Eco — sem custos de creditos.';
+
+  @override
+  String coachCostCredits(int cost) {
+    return 'Esta mensagem custa $cost creditos.';
+  }
+
+  @override
+  String get coachFree => 'Gratis';
+
+  @override
+  String coachPerMsg(int cost) {
+    return '$cost/msg';
+  }
+
+  @override
+  String get coachEcoFallbackTitle => 'Modo Eco ativo (sem creditos)';
+
+  @override
+  String get coachEcoFallbackBody =>
+      'Podes continuar a conversar, mas com memoria reduzida.';
+
+  @override
+  String get coachRestoreMemory => 'Restaurar memoria';
+
+  @override
+  String get cmdAssistantTitle => 'Assistente';
+
+  @override
+  String get cmdAssistantHint => 'O que precisas?';
+
+  @override
+  String get cmdAssistantTooltip => 'Precisa de ajuda? Toca aqui';
+
+  @override
+  String get cmdSuggestionAddExpense => 'Adicionar despesa';
+
+  @override
+  String get cmdSuggestionOpenList => 'Abrir lista de compras';
+
+  @override
+  String get cmdSuggestionChangeTheme => 'Mudar tema';
+
+  @override
+  String get cmdSuggestionOpenSettings => 'Ir para definicoes';
+
+  @override
+  String get cmdTemplateAddExpense => 'Adiciona [valor] euros em [categoria]';
+
+  @override
+  String get cmdTemplateChangeTheme => 'Muda o tema para [claro/escuro]';
+
+  @override
+  String get cmdExecutionFailed =>
+      'Percebi o pedido, mas nao consegui executar. Tenta novamente.';
+
+  @override
+  String get cmdNotUnderstood => 'Nao percebi. Podes reformular?';
+
+  @override
+  String get cmdUndo => 'Desfazer';
+
+  @override
   String get groceryTitle => 'Supermercado';
 
   @override

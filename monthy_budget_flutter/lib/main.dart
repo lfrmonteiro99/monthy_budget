@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -61,6 +62,13 @@ import 'widgets/feature_discovery_card.dart';
 import 'services/ad_service.dart';
 import 'services/revenuecat_service.dart';
 import 'widgets/ad_banner_widget.dart';
+import 'widgets/branded_loading.dart';
+import 'services/command_chat_service.dart';
+import 'services/command_pattern_cache.dart';
+import 'services/command_action_registry.dart';
+import 'models/command_action.dart';
+import 'widgets/command_chat_fab.dart';
+import 'widgets/command_chat_panel.dart';
 
 /// Global notifier for reactive locale changes from settings.
 final appLocaleNotifier = ValueNotifier<Locale?>(null);
@@ -73,7 +81,8 @@ final appColorPaletteNotifier =
     ValueNotifier<AppColorPalette>(AppColorPalette.ocean);
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  final binding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: binding);
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
   final configService = LocalConfigService();
   final savedTheme = await configService.loadThemeMode();
@@ -84,6 +93,7 @@ Future<void> main() async {
   await NotificationService().init();
   await AdService.initialize();
   await RevenueCatService.initialize();
+  FlutterNativeSplash.remove();
   runApp(const OrcamentoMensalApp());
 }
 
@@ -156,6 +166,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   final _savingsGoalService = SavingsGoalService();
   final _monthlyBudgetService = MonthlyBudgetService();
   final _subscriptionService = SubscriptionService();
+  final _commandChatService = CommandChatService();
+  final _commandPatternCache = CommandPatternCache();
+  bool _commandPanelOpen = false;
 
   SubscriptionState _subscription =
       SubscriptionState(trialStartDate: DateTime.now());
@@ -191,6 +204,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         .stream(widget.householdId)
         .listen((items) => setState(() => _shoppingList = items));
     _loadAll();
+    _commandPatternCache.load();
   }
 
   @override
@@ -857,6 +871,51 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     await _shoppingListService.clearChecked(widget.householdId);
   }
 
+  CommandActionRegistry _buildCommandRegistry() {
+    return CommandActionRegistry(
+      onAddExpense: _addActualExpense,
+      onDeleteExpense: _deleteActualExpense,
+      onSetThemeMode: (mode) => appThemeModeNotifier.value = mode,
+      onSetColorPalette: (palette) {
+        AppColors.palette = palette;
+        appColorPaletteNotifier.value = palette;
+        _localConfigService.saveColorPalette(palette);
+      },
+      onNavigateTo: _handleCommandNavigation,
+      onClearCheckedItems: _clearCheckedItems,
+    );
+  }
+
+  void _handleCommandNavigation(String screen) {
+    switch (screen) {
+      case 'dashboard':
+        setState(() => _currentIndex = 0);
+      case 'expenses':
+        setState(() => _currentIndex = 1);
+      case 'plan':
+        setState(() => _currentIndex = 2);
+      case 'more':
+        setState(() => _currentIndex = 3);
+      case 'coach':
+        _openCoach();
+      case 'grocery':
+        _openGrocery();
+      case 'shopping_list':
+        _openShoppingList();
+      case 'meals':
+        _openMealPlanner();
+      case 'settings':
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
+        );
+      case 'insights':
+        _openInsights();
+      case 'savings_goals':
+        _openSavingsGoals();
+    }
+    setState(() => _commandPanelOpen = false);
+  }
+
   Future<void> _finalizeShopping(
       double? amount, List<ShoppingItem> checkedItems, {bool isMealPurchase = false}) async {
     if (checkedItems.isEmpty) return;
@@ -982,28 +1041,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     if (!_loaded) {
-      return Scaffold(
-        backgroundColor: AppColors.background(context),
-        body: Center(
-          child: Semantics(
-            label: 'A carregar a aplicação',
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(color: AppColors.primary(context)),
-                const SizedBox(height: 16),
-                Text(
-                  'A carregar...',
-                  style: TextStyle(
-                      color: AppColors.textSecondary(context),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
+      return const BrandedLoading();
     }
 
     if (!_settings.setupWizardCompleted) {
@@ -1112,7 +1150,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       ),
     ];
 
-    return Scaffold(
+    return Stack(
+      children: [
+        Scaffold(
       body: _currentIndex == 0
           ? Column(
               children: [
@@ -1206,6 +1246,50 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           ),
         ],
       ),
+        ),
+        // Command assistant scrim
+        if (_commandPanelOpen)
+          GestureDetector(
+            onTap: () => setState(() => _commandPanelOpen = false),
+            child: Container(color: Colors.black.withValues(alpha: 0.3)),
+          ),
+        // Command assistant panel
+        if (_commandPanelOpen)
+          CommandChatPanel(
+            onMinimize: () => setState(() => _commandPanelOpen = false),
+            onSendCommand: (input) async {
+              final cached = _commandPatternCache.match(input);
+              if (cached != null) {
+                return CommandAction.withAction(
+                  action: cached.action,
+                  params: cached.params,
+                  message: '',
+                );
+              }
+              return _commandChatService.parseCommand(input);
+            },
+            onExecuteAction: (action) async {
+              final registry = _buildCommandRegistry();
+              return registry.execute(
+                action.action!,
+                action.params ?? {},
+              );
+            },
+            onCachePattern: (input, action, params) {
+              _commandPatternCache.store(
+                input: input,
+                action: action,
+                params: params,
+              );
+            },
+          ),
+        // Command assistant FAB
+        CommandChatFab(
+          onTap: () => setState(() => _commandPanelOpen = !_commandPanelOpen),
+          isDashboard: _currentIndex == 0,
+          isExpanded: _commandPanelOpen,
+        ),
+      ],
     );
   }
 }
