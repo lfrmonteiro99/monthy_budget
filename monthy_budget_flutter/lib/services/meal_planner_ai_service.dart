@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../models/meal_planner.dart';
 
 class MealPlannerAiService {
@@ -256,11 +257,11 @@ Optimize for parallel cooking (e.g. while rice cooks, prep vegetables). Be speci
     );
     final data = response.data;
     if (response.status != 200 || data is! Map<String, dynamic>) {
-      throw Exception('Falha ao processar pedido de IA');
+      throw Exception(S.current.mealAiRequestFailed);
     }
     final content = data['content']?.toString().trim() ?? '';
     if (content.isEmpty) {
-      throw Exception('Resposta vazia da IA');
+      throw Exception(S.current.mealAiEmptyResponse);
     }
     return content;
   }
@@ -268,10 +269,7 @@ Optimize for parallel cooking (e.g. while rice cooks, prep vegetables). Be speci
   Map<String, String> _buildEdgeAuthHeaders() {
     final accessToken = _client.auth.currentSession?.accessToken;
     if (accessToken == null || accessToken.trim().isEmpty) {
-      throw Exception(
-        'Sessao expirada ou utilizador nao autenticado. '
-        'Inicie sessao novamente para usar o Planeador de Refeicoes.',
-      );
+      throw Exception(S.current.mealAiAuthExpired);
     }
     return {'Authorization': 'Bearer $accessToken'};
   }

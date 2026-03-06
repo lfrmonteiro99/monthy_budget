@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../config/supabase_public_config.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/budget_summary.dart';
 import '../models/coach_insight.dart';
@@ -31,20 +32,18 @@ String buildAiCoachRequestErrorMessage(
   Object error, {
   required bool hasApiKey,
 }) {
+  final l10n = S.current;
   final raw = error.toString().replaceFirst('Exception: ', '').trim();
   if (isEdgeFunctionAuthError(error)) {
-    return 'Sessao expirada ou utilizador nao autenticado. '
-        'Inicie sessao novamente para usar o AI Coach.';
+    return l10n.aiCoachAuthExpired;
   }
   if (shouldFallbackFromEdgeFunctionError(error)) {
     if (hasApiKey) {
-      return 'Serviço de IA indisponível no servidor. Verifique se a Edge Function '
-          '"openai-chat" está publicada no projeto Supabase.';
+      return l10n.aiCoachServerUnavailableWithKey;
     }
-    return 'Serviço de IA indisponível no servidor. Adicione uma API key OpenAI '
-        'em Definições > AI Coach ou publique a Edge Function "openai-chat".';
+    return l10n.aiCoachServerUnavailableWithoutKey;
   }
-  if (raw.isEmpty) return 'Falha ao processar pedido de IA.';
+  if (raw.isEmpty) return l10n.aiCoachRequestFailed;
   return raw;
 }
 
@@ -375,14 +374,14 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
           );
         }
         final msg = data is Map<String, dynamic>
-            ? (data['error']?.toString() ?? 'Falha ao processar pedido de IA')
-            : 'Falha ao processar pedido de IA';
+            ? (data['error']?.toString() ?? S.current.aiCoachRequestFailed)
+            : S.current.aiCoachRequestFailed;
         throw Exception(msg);
       }
 
       final content = data['content']?.toString().trim() ?? '';
       if (content.isEmpty) {
-        throw Exception('Resposta vazia da IA.');
+        throw Exception(S.current.aiCoachEmptyResponse);
       }
       return content;
     } catch (e) {
@@ -431,7 +430,7 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
   Map<String, String> _buildEdgeAuthHeaders() {
     final jwt = supabaseAnonKey.trim();
     if (jwt.isEmpty) {
-      throw Exception('JWT indisponivel para autenticar chamada ao AI Coach.');
+      throw Exception(S.current.aiCoachMissingJwt);
     }
     return {
       'Authorization': 'Bearer $jwt',
@@ -470,18 +469,18 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
     if (response.statusCode < 200 || response.statusCode >= 300) {
       final errorMessage = data?['error'] is Map<String, dynamic>
           ? (data!['error']['message']?.toString() ??
-              'Falha ao processar pedido de IA')
-          : 'Falha ao processar pedido de IA';
+              S.current.aiCoachRequestFailed)
+          : S.current.aiCoachRequestFailed;
       throw Exception(errorMessage);
     }
 
     final choices = data?['choices'];
     if (choices is! List || choices.isEmpty) {
-      throw Exception('Resposta vazia da IA.');
+      throw Exception(S.current.aiCoachEmptyResponse);
     }
     final message = choices.first['message'];
     if (message is! Map<String, dynamic>) {
-      throw Exception('Resposta vazia da IA.');
+      throw Exception(S.current.aiCoachEmptyResponse);
     }
     final content = message['content'];
     if (content is String && content.trim().isNotEmpty) {
@@ -496,7 +495,7 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
           .trim();
       if (textParts.isNotEmpty) return textParts;
     }
-    throw Exception('Resposta vazia da IA.');
+    throw Exception(S.current.aiCoachEmptyResponse);
   }
 
   // ── Prompt ─────────────────────────────────────────────────────────────────
@@ -728,3 +727,5 @@ class CoachChatMessage {
     );
   }
 }
+
+

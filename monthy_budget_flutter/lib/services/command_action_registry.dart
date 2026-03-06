@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/generated/app_localizations.dart';
 import '../models/actual_expense.dart';
 import '../models/command_action.dart';
 import '../models/recurring_expense.dart';
@@ -161,7 +162,7 @@ class CommandActionRegistry {
   ) async {
     if (!validate(action, params)) {
       return CommandResult.failure(
-        message: 'Invalid action or parameters: $action',
+        message: S.current.cmdInvalidAction(action),
       );
     }
 
@@ -193,7 +194,7 @@ class CommandActionRegistry {
       case 'clear_checked_items':
         return _executeClearCheckedItems();
       default:
-        return CommandResult.failure(message: 'Unknown action: $action');
+        return CommandResult.failure(message: S.current.cmdUnknownAction(action));
     }
   }
 
@@ -305,7 +306,10 @@ class CommandActionRegistry {
     await onAddExpense(expense);
 
     return CommandResult.success(
-      message: 'Expense added: $amount in $category',
+      message: S.current.cmdExpenseAdded(
+        '$amount',
+        _localizedCategory(category),
+      ),
       undoAction: () => onDeleteExpense(expense.id),
     );
   }
@@ -321,7 +325,7 @@ class CommandActionRegistry {
       unitPrice: params['unitPrice'] as String?,
     );
     await onAddShoppingItem(item);
-    return CommandResult.success(message: 'Shopping item added: $name');
+    return CommandResult.success(message: S.current.cmdShoppingAdded(name));
   }
 
   Future<CommandResult> _executeAddSavingsGoal(
@@ -334,7 +338,7 @@ class CommandActionRegistry {
       targetAmount: _parseDouble(params['target_amount'])!,
     );
     await onAddSavingsGoal(goal);
-    return CommandResult.success(message: 'Savings goal added: $name');
+    return CommandResult.success(message: S.current.cmdSavingsGoalAdded(name));
   }
 
   Future<CommandResult> _executeAddRecurringExpense(
@@ -356,7 +360,10 @@ class CommandActionRegistry {
     );
     await onAddRecurringExpense(expense);
     return CommandResult.success(
-      message: 'Recurring expense added: ${expense.amount} in ${expense.category}',
+      message: S.current.cmdRecurringExpenseAdded(
+        '${expense.amount}',
+        _localizedCategory(expense.category),
+      ),
     );
   }
 
@@ -367,10 +374,10 @@ class CommandActionRegistry {
     final removed = await onRemoveShoppingItemByName(name);
     if (!removed) {
       return CommandResult.failure(
-        message: 'Could not find shopping item: $name',
+        message: S.current.cmdShoppingNotFound(name),
       );
     }
-    return CommandResult.success(message: 'Shopping item removed: $name');
+    return CommandResult.success(message: S.current.cmdShoppingRemoved(name));
   }
 
   Future<CommandResult> _executeAddSavingsContribution(
@@ -381,11 +388,11 @@ class CommandActionRegistry {
     final applied = await onAddSavingsContributionByGoalName(goalName, amount);
     if (!applied) {
       return CommandResult.failure(
-        message: 'Could not find savings goal: $goalName',
+        message: S.current.cmdSavingsGoalNotFound(goalName),
       );
     }
     return CommandResult.success(
-      message: 'Contribution added: $amount to $goalName',
+      message: S.current.cmdContributionAdded('$amount', goalName),
     );
   }
 
@@ -397,13 +404,13 @@ class CommandActionRegistry {
     final updated = await onToggleShoppingItemCheckedByName(name, checked);
     if (!updated) {
       return CommandResult.failure(
-        message: 'Could not find shopping item: $name',
+        message: S.current.cmdShoppingNotFound(name),
       );
     }
     return CommandResult.success(
       message: checked
-          ? 'Shopping item checked: $name'
-          : 'Shopping item unchecked: $name',
+          ? S.current.cmdShoppingChecked(name)
+          : S.current.cmdShoppingUnchecked(name),
     );
   }
 
@@ -418,10 +425,10 @@ class CommandActionRegistry {
     );
     if (!deleted) {
       return CommandResult.failure(
-        message: 'Could not find expense: $description',
+        message: S.current.cmdExpenseNotFound(description),
       );
     }
-    return CommandResult.success(message: 'Expense deleted: $description');
+    return CommandResult.success(message: S.current.cmdExpenseDeleted(description));
   }
 
   Future<CommandResult> _executeSetThemeMode(
@@ -429,7 +436,9 @@ class CommandActionRegistry {
   ) async {
     final mode = _validThemeModes[params['mode'] as String]!;
     onSetThemeMode(mode);
-    return CommandResult.success(message: 'Theme set to ${params['mode']}');
+    return CommandResult.success(
+      message: S.current.cmdThemeSet(params['mode'] as String),
+    );
   }
 
   Future<CommandResult> _executeSetColorPalette(
@@ -438,7 +447,7 @@ class CommandActionRegistry {
     final palette = _validPalettes[params['palette'] as String]!;
     onSetColorPalette(palette);
     return CommandResult.success(
-      message: 'Color palette set to ${params['palette']}',
+      message: S.current.cmdPaletteSet(params['palette'] as String),
     );
   }
 
@@ -447,7 +456,7 @@ class CommandActionRegistry {
   ) async {
     final locale = params['locale'] as String;
     onSetLanguage(locale == 'system' ? null : locale);
-    return CommandResult.success(message: 'Language set to $locale');
+    return CommandResult.success(message: S.current.cmdLanguageSet(locale));
   }
 
   Future<CommandResult> _executeNavigateTo(
@@ -455,12 +464,12 @@ class CommandActionRegistry {
   ) async {
     final canonical = resolveScreenAlias(params['screen'] as String)!;
     onNavigateTo(canonical);
-    return CommandResult.success(message: 'Navigated to $canonical');
+    return CommandResult.success(message: S.current.cmdNavigatedTo(canonical));
   }
 
   Future<CommandResult> _executeClearCheckedItems() async {
     onClearCheckedItems();
-    return CommandResult.success(message: 'Checked items cleared');
+    return CommandResult.success(message: S.current.cmdCheckedItemsCleared);
   }
 
   // ── Parsing ────────────────────────────────────────────────────────
@@ -473,5 +482,30 @@ class CommandActionRegistry {
       return double.tryParse(normalized);
     }
     return null;
+  }
+
+  String _localizedCategory(String category) {
+    switch (category) {
+      case 'telecomunicacoes':
+        return S.current.enumCatTelecomunicacoes;
+      case 'energia':
+        return S.current.enumCatEnergia;
+      case 'agua':
+        return S.current.enumCatAgua;
+      case 'alimentacao':
+        return S.current.enumCatAlimentacao;
+      case 'educacao':
+        return S.current.enumCatEducacao;
+      case 'habitacao':
+        return S.current.enumCatHabitacao;
+      case 'transportes':
+        return S.current.enumCatTransportes;
+      case 'saude':
+        return S.current.enumCatSaude;
+      case 'lazer':
+        return S.current.enumCatLazer;
+      default:
+        return S.current.enumCatOutros;
+    }
   }
 }

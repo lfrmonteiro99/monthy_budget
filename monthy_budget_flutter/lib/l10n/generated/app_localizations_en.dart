@@ -3517,4 +3517,134 @@ class SEn extends S {
 
   @override
   String get taxTableIIIDescription => 'Married, single earner';
+
+  @override
+  String notificationBudgetCategoryBody(String category, String percent) {
+    return 'Category \"$category\" reached $percent% of budget';
+  }
+
+  @override
+  String get aiCoachAuthExpired =>
+      'Session expired or unauthenticated user. Sign in again to use AI Coach.';
+
+  @override
+  String get aiCoachServerUnavailableWithKey =>
+      'AI service unavailable on the server. Verify that the \"openai-chat\" Edge Function is deployed in Supabase.';
+
+  @override
+  String get aiCoachServerUnavailableWithoutKey =>
+      'AI service unavailable on the server. Add an OpenAI API key in Settings > AI Coach or deploy the \"openai-chat\" Edge Function.';
+
+  @override
+  String get aiCoachRequestFailed => 'Failed to process AI request.';
+
+  @override
+  String get aiCoachEmptyResponse => 'Empty AI response.';
+
+  @override
+  String get aiCoachMissingJwt =>
+      'Missing JWT to authenticate the AI Coach request.';
+
+  @override
+  String get mealAiRequestFailed => 'Failed to process AI request.';
+
+  @override
+  String get mealAiEmptyResponse => 'Empty AI response.';
+
+  @override
+  String get mealAiAuthExpired =>
+      'Session expired or unauthenticated user. Sign in again to use Meal Planner.';
+
+  @override
+  String cmdInvalidAction(String action) {
+    return 'Invalid action or parameters: $action';
+  }
+
+  @override
+  String cmdUnknownAction(String action) {
+    return 'Unknown action: $action';
+  }
+
+  @override
+  String cmdExpenseAdded(String amount, String category) {
+    return 'Expense added: $amount in $category';
+  }
+
+  @override
+  String cmdShoppingAdded(String name) {
+    return 'Shopping item added: $name';
+  }
+
+  @override
+  String cmdSavingsGoalAdded(String name) {
+    return 'Savings goal added: $name';
+  }
+
+  @override
+  String cmdRecurringExpenseAdded(String amount, String category) {
+    return 'Recurring expense added: $amount in $category';
+  }
+
+  @override
+  String cmdShoppingNotFound(String name) {
+    return 'Could not find shopping item: $name';
+  }
+
+  @override
+  String cmdShoppingRemoved(String name) {
+    return 'Shopping item removed: $name';
+  }
+
+  @override
+  String cmdSavingsGoalNotFound(String name) {
+    return 'Could not find savings goal: $name';
+  }
+
+  @override
+  String cmdContributionAdded(String amount, String goal) {
+    return 'Contribution added: $amount to $goal';
+  }
+
+  @override
+  String cmdShoppingChecked(String name) {
+    return 'Shopping item checked: $name';
+  }
+
+  @override
+  String cmdShoppingUnchecked(String name) {
+    return 'Shopping item unchecked: $name';
+  }
+
+  @override
+  String cmdExpenseNotFound(String description) {
+    return 'Could not find expense: $description';
+  }
+
+  @override
+  String cmdExpenseDeleted(String description) {
+    return 'Expense deleted: $description';
+  }
+
+  @override
+  String cmdThemeSet(String mode) {
+    return 'Theme set to $mode';
+  }
+
+  @override
+  String cmdPaletteSet(String palette) {
+    return 'Color palette set to $palette';
+  }
+
+  @override
+  String cmdLanguageSet(String locale) {
+    return 'Language set to $locale';
+  }
+
+  @override
+  String cmdNavigatedTo(String screen) {
+    return 'Navigated to $screen';
+  }
+
+  @override
+  String get cmdCheckedItemsCleared => 'Checked items cleared';
 }

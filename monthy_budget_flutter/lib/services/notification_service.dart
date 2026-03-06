@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import '../l10n/generated/app_localizations.dart';
 import '../models/notification_preferences.dart';
 import '../models/recurring_expense.dart';
 
@@ -131,6 +132,7 @@ class NotificationService {
 
     for (int i = 0; i < active.length; i++) {
       final expense = active[i];
+      final l10n = S.current;
       final now = DateTime.now();
       final dueDay = expense.dayOfMonth!.clamp(1, 31);
       var dueDate = DateTime(now.year, now.month, dueDay, 9);
@@ -154,8 +156,11 @@ class NotificationService {
       try {
         await _plugin.zonedSchedule(
           _billBaseId + i,
-          expense.description ?? expense.category,
-          '${expense.amount.toStringAsFixed(2)} due in $daysBefore days',
+          l10n.notificationBillTitle(expense.description ?? expense.category),
+          l10n.notificationBillBody(
+            expense.amount.toStringAsFixed(2),
+            '$daysBefore',
+          ),
           tz.TZDateTime.from(reminderDate, tz.local),
           NotificationDetails(
             android: AndroidNotificationDetails(
@@ -178,13 +183,14 @@ class NotificationService {
     required int usagePercent,
     String? categoryName,
   }) async {
+    final l10n = S.current;
     final body = categoryName == null
-        ? 'You\'ve spent $usagePercent% of your monthly budget'
-        : 'Category "$categoryName" reached $usagePercent% of budget';
+        ? l10n.notificationBudgetBody('$usagePercent')
+        : l10n.notificationBudgetCategoryBody(categoryName, '$usagePercent');
     try {
       await _plugin.show(
         _budgetAlertId,
-        'Budget alert',
+        l10n.notificationBudgetTitle,
         body,
         NotificationDetails(
           android: AndroidNotificationDetails(
@@ -212,10 +218,11 @@ class NotificationService {
         DateTime(nextMonday.year, nextMonday.month, nextMonday.day, 9);
 
     try {
+      final l10n = S.current;
       await _plugin.zonedSchedule(
         _mealPlanId,
-        'Meal plan',
-        'You haven\'t generated this month\'s meal plan yet',
+        l10n.notificationMealPlanTitle,
+        l10n.notificationMealPlanBody,
         tz.TZDateTime.from(scheduledDate, tz.local),
         NotificationDetails(
           android: AndroidNotificationDetails(

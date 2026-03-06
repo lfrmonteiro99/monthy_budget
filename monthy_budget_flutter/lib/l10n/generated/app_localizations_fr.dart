@@ -3548,4 +3548,134 @@ class SFr extends S {
 
   @override
   String get taxTableIIIDescription => 'Marie, titulaire unique';
+
+  @override
+  String notificationBudgetCategoryBody(String category, String percent) {
+    return 'La categorie \"$category\" a atteint $percent% du budget';
+  }
+
+  @override
+  String get aiCoachAuthExpired =>
+      'Session expiree ou utilisateur non authentifie. Reconnectez-vous pour utiliser AI Coach.';
+
+  @override
+  String get aiCoachServerUnavailableWithKey =>
+      'Service IA indisponible sur le serveur. Verifiez que la Edge Function \"openai-chat\" est deployee dans Supabase.';
+
+  @override
+  String get aiCoachServerUnavailableWithoutKey =>
+      'Service IA indisponible sur le serveur. Ajoutez une API key OpenAI dans Parametres > AI Coach ou deployeez la Edge Function \"openai-chat\".';
+
+  @override
+  String get aiCoachRequestFailed => 'Echec du traitement de la requete IA.';
+
+  @override
+  String get aiCoachEmptyResponse => 'Reponse IA vide.';
+
+  @override
+  String get aiCoachMissingJwt =>
+      'JWT manquant pour authentifier la requete AI Coach.';
+
+  @override
+  String get mealAiRequestFailed => 'Echec du traitement de la requete IA.';
+
+  @override
+  String get mealAiEmptyResponse => 'Reponse IA vide.';
+
+  @override
+  String get mealAiAuthExpired =>
+      'Session expiree ou utilisateur non authentifie. Reconnectez-vous pour utiliser le Planificateur de Repas.';
+
+  @override
+  String cmdInvalidAction(String action) {
+    return 'Action ou parametres invalides : $action';
+  }
+
+  @override
+  String cmdUnknownAction(String action) {
+    return 'Action inconnue : $action';
+  }
+
+  @override
+  String cmdExpenseAdded(String amount, String category) {
+    return 'Depense ajoutee : $amount dans $category';
+  }
+
+  @override
+  String cmdShoppingAdded(String name) {
+    return 'Article ajoute a la liste : $name';
+  }
+
+  @override
+  String cmdSavingsGoalAdded(String name) {
+    return 'Objectif d\'epargne ajoute : $name';
+  }
+
+  @override
+  String cmdRecurringExpenseAdded(String amount, String category) {
+    return 'Depense recurrente ajoutee : $amount dans $category';
+  }
+
+  @override
+  String cmdShoppingNotFound(String name) {
+    return 'Article introuvable dans la liste : $name';
+  }
+
+  @override
+  String cmdShoppingRemoved(String name) {
+    return 'Article retire de la liste : $name';
+  }
+
+  @override
+  String cmdSavingsGoalNotFound(String name) {
+    return 'Objectif d\'epargne introuvable : $name';
+  }
+
+  @override
+  String cmdContributionAdded(String amount, String goal) {
+    return 'Contribution ajoutee : $amount a $goal';
+  }
+
+  @override
+  String cmdShoppingChecked(String name) {
+    return 'Article coche : $name';
+  }
+
+  @override
+  String cmdShoppingUnchecked(String name) {
+    return 'Article decoche : $name';
+  }
+
+  @override
+  String cmdExpenseNotFound(String description) {
+    return 'Depense introuvable : $description';
+  }
+
+  @override
+  String cmdExpenseDeleted(String description) {
+    return 'Depense supprimee : $description';
+  }
+
+  @override
+  String cmdThemeSet(String mode) {
+    return 'Theme defini sur $mode';
+  }
+
+  @override
+  String cmdPaletteSet(String palette) {
+    return 'Palette definie sur $palette';
+  }
+
+  @override
+  String cmdLanguageSet(String locale) {
+    return 'Langue definie sur $locale';
+  }
+
+  @override
+  String cmdNavigatedTo(String screen) {
+    return 'Navigation vers $screen';
+  }
+
+  @override
+  String get cmdCheckedItemsCleared => 'Elements coches effaces';
 }

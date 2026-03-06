@@ -6484,6 +6484,180 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Casado, unico titular'**
   String get taxTableIIIDescription;
+
+  /// No description provided for @notificationBudgetCategoryBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'A categoria \"{category}\" atingiu {percent}% do orcamento'**
+  String notificationBudgetCategoryBody(String category, String percent);
+
+  /// No description provided for @aiCoachAuthExpired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sessao expirada ou utilizador nao autenticado. Inicia sessao novamente para usar o AI Coach.'**
+  String get aiCoachAuthExpired;
+
+  /// No description provided for @aiCoachServerUnavailableWithKey.
+  ///
+  /// In pt, this message translates to:
+  /// **'Servico de IA indisponivel no servidor. Verifica se a Edge Function \"openai-chat\" esta publicada no projeto Supabase.'**
+  String get aiCoachServerUnavailableWithKey;
+
+  /// No description provided for @aiCoachServerUnavailableWithoutKey.
+  ///
+  /// In pt, this message translates to:
+  /// **'Servico de IA indisponivel no servidor. Adiciona uma API key OpenAI em Definicoes > AI Coach ou publica a Edge Function \"openai-chat\".'**
+  String get aiCoachServerUnavailableWithoutKey;
+
+  /// No description provided for @aiCoachRequestFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falha ao processar pedido de IA.'**
+  String get aiCoachRequestFailed;
+
+  /// No description provided for @aiCoachEmptyResponse.
+  ///
+  /// In pt, this message translates to:
+  /// **'Resposta vazia da IA.'**
+  String get aiCoachEmptyResponse;
+
+  /// No description provided for @aiCoachMissingJwt.
+  ///
+  /// In pt, this message translates to:
+  /// **'JWT indisponivel para autenticar chamada ao AI Coach.'**
+  String get aiCoachMissingJwt;
+
+  /// No description provided for @mealAiRequestFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falha ao processar pedido de IA.'**
+  String get mealAiRequestFailed;
+
+  /// No description provided for @mealAiEmptyResponse.
+  ///
+  /// In pt, this message translates to:
+  /// **'Resposta vazia da IA.'**
+  String get mealAiEmptyResponse;
+
+  /// No description provided for @mealAiAuthExpired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sessao expirada ou utilizador nao autenticado. Inicia sessao novamente para usar o Planeador de Refeicoes.'**
+  String get mealAiAuthExpired;
+
+  /// No description provided for @cmdInvalidAction.
+  ///
+  /// In pt, this message translates to:
+  /// **'Acao ou parametros invalidos: {action}'**
+  String cmdInvalidAction(String action);
+
+  /// No description provided for @cmdUnknownAction.
+  ///
+  /// In pt, this message translates to:
+  /// **'Acao desconhecida: {action}'**
+  String cmdUnknownAction(String action);
+
+  /// No description provided for @cmdExpenseAdded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesa adicionada: {amount} em {category}'**
+  String cmdExpenseAdded(String amount, String category);
+
+  /// No description provided for @cmdShoppingAdded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Item adicionado a lista: {name}'**
+  String cmdShoppingAdded(String name);
+
+  /// No description provided for @cmdSavingsGoalAdded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Objetivo de poupanca adicionado: {name}'**
+  String cmdSavingsGoalAdded(String name);
+
+  /// No description provided for @cmdRecurringExpenseAdded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesa recorrente adicionada: {amount} em {category}'**
+  String cmdRecurringExpenseAdded(String amount, String category);
+
+  /// No description provided for @cmdShoppingNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nao foi encontrado o item da lista: {name}'**
+  String cmdShoppingNotFound(String name);
+
+  /// No description provided for @cmdShoppingRemoved.
+  ///
+  /// In pt, this message translates to:
+  /// **'Item removido da lista: {name}'**
+  String cmdShoppingRemoved(String name);
+
+  /// No description provided for @cmdSavingsGoalNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nao foi encontrado o objetivo de poupanca: {name}'**
+  String cmdSavingsGoalNotFound(String name);
+
+  /// No description provided for @cmdContributionAdded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Contribuicao adicionada: {amount} para {goal}'**
+  String cmdContributionAdded(String amount, String goal);
+
+  /// No description provided for @cmdShoppingChecked.
+  ///
+  /// In pt, this message translates to:
+  /// **'Item marcado: {name}'**
+  String cmdShoppingChecked(String name);
+
+  /// No description provided for @cmdShoppingUnchecked.
+  ///
+  /// In pt, this message translates to:
+  /// **'Item desmarcado: {name}'**
+  String cmdShoppingUnchecked(String name);
+
+  /// No description provided for @cmdExpenseNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nao foi encontrada a despesa: {description}'**
+  String cmdExpenseNotFound(String description);
+
+  /// No description provided for @cmdExpenseDeleted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesa apagada: {description}'**
+  String cmdExpenseDeleted(String description);
+
+  /// No description provided for @cmdThemeSet.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tema definido para {mode}'**
+  String cmdThemeSet(String mode);
+
+  /// No description provided for @cmdPaletteSet.
+  ///
+  /// In pt, this message translates to:
+  /// **'Paleta de cor definida para {palette}'**
+  String cmdPaletteSet(String palette);
+
+  /// No description provided for @cmdLanguageSet.
+  ///
+  /// In pt, this message translates to:
+  /// **'Idioma definido para {locale}'**
+  String cmdLanguageSet(String locale);
+
+  /// No description provided for @cmdNavigatedTo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Navegaste para {screen}'**
+  String cmdNavigatedTo(String screen);
+
+  /// No description provided for @cmdCheckedItemsCleared.
+  ///
+  /// In pt, this message translates to:
+  /// **'Itens marcados limpos'**
+  String get cmdCheckedItemsCleared;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
