@@ -6,6 +6,7 @@ import '../../models/app_settings.dart';
 import '../../models/budget_summary.dart';
 import '../../theme/app_colors.dart';
 import '../../utils/formatters.dart';
+import '../info_icon_button.dart';
 
 const _categoryColors = {
   ExpenseCategory.telecomunicacoes: Color(0xFF818CF8),
@@ -64,7 +65,8 @@ class BudgetCharts extends StatelessWidget {
 class _ChartCard extends StatelessWidget {
   final String title;
   final Widget child;
-  const _ChartCard({required this.title, required this.child});
+  final String? infoBody;
+  const _ChartCard({required this.title, required this.child, this.infoBody});
 
   @override
   Widget build(BuildContext context) {
@@ -81,9 +83,16 @@ class _ChartCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title.toUpperCase(),
-            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.textMuted(context), letterSpacing: 1.2),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  title.toUpperCase(),
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.textMuted(context), letterSpacing: 1.2),
+                ),
+              ),
+              if (infoBody != null) InfoIconButton(title: title, body: infoBody!),
+            ],
           ),
           const SizedBox(height: 16),
           child,
@@ -109,6 +118,7 @@ class _ExpensesPieChart extends StatelessWidget {
     final l10n = S.of(context);
     return _ChartCard(
       title: l10n.chartExpensesByCategory,
+      infoBody: l10n.infoCharts,
       child: Column(
         children: [
           SizedBox(
@@ -173,6 +183,7 @@ class _IncomeVsExpensesChart extends StatelessWidget {
     final l10n = S.of(context);
     return _ChartCard(
       title: l10n.chartIncomeVsExpenses,
+      infoBody: l10n.infoCharts,
       child: SizedBox(
         height: 200,
         child: BarChart(
@@ -242,6 +253,7 @@ class _DeductionsChart extends StatelessWidget {
     final l10n = S.of(context);
     return _ChartCard(
       title: l10n.chartDeductions,
+      infoBody: l10n.infoCharts,
       child: Column(
         children: [
           SizedBox(
@@ -328,6 +340,7 @@ class _NetIncomeChart extends StatelessWidget {
 
     return _ChartCard(
       title: l10n.chartGrossVsNet,
+      infoBody: l10n.infoCharts,
       child: Column(
         children: [
           SizedBox(
@@ -414,6 +427,7 @@ class _SavingsRateChart extends StatelessWidget {
     final l10n = S.of(context);
     return _ChartCard(
       title: l10n.chartSavingsRate,
+      infoBody: l10n.infoCharts,
       child: SizedBox(
         height: 180,
         child: Stack(

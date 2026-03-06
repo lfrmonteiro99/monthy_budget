@@ -11,6 +11,7 @@ import '../services/ai_coach_service.dart';
 import '../services/subscription_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/calculations.dart';
+import '../widgets/info_icon_button.dart';
 
 class CoachScreen extends StatefulWidget {
   final AppSettings settings;
@@ -278,6 +279,10 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           ],
         ),
         actions: [
+          InfoIconButton(
+            title: l10n.coachTitle,
+            body: l10n.infoCoachModes,
+          ),
           IconButton(
             onPressed: _clearConversation,
             tooltip: l10n.coachClearAll,
@@ -467,15 +472,27 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
             ],
           ),
           const SizedBox(height: 6),
-          Text(
-            costNow == 0
-                ? l10n.coachCostFree
-                : l10n.coachCostPaid(costNow),
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textMuted(context),
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  costNow == 0
+                      ? l10n.coachCostFree
+                      : l10n.coachCostPaid(costNow),
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textMuted(context),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 6),
+              InfoIconButton(
+                title: l10n.coachTitle,
+                body: l10n.infoCoachCredits,
+              ),
+            ],
           ),
         ],
       ),
@@ -508,6 +525,11 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary(context),
                 ),
+              ),
+              const SizedBox(width: 6),
+              InfoIconButton(
+                title: l10n.coachTitle,
+                body: l10n.infoCoachModes,
               ),
               const Spacer(),
               Text(
