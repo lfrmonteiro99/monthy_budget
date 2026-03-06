@@ -881,6 +881,7 @@ class SEn extends S {
   @override
   String get authRegistrationSuccess =>
       'Account created! Check your email to verify your account before signing in.';
+
   @override
   String get authErrorNetwork =>
       'Could not connect to the server. Check your internet connection and try again.';
@@ -900,7 +901,6 @@ class SEn extends S {
   @override
   String get authErrorGeneric =>
       'Something went wrong. Please try again later.';
-
 
   @override
   String get householdSetupTitle => 'Set Up Household';
@@ -2915,6 +2915,69 @@ class SEn extends S {
   @override
   String get onbTourMeals3Body =>
       'Send a week\'s ingredients to your list in one tap.';
+
+  @override
+  String get onbTourExpenseTracker1Title => 'Month navigation';
+
+  @override
+  String get onbTourExpenseTracker1Body =>
+      'Switch between months to view or add expenses for any period.';
+
+  @override
+  String get onbTourExpenseTracker2Title => 'Budget summary';
+
+  @override
+  String get onbTourExpenseTracker2Body =>
+      'See your budgeted vs actual spending and remaining balance at a glance.';
+
+  @override
+  String get onbTourExpenseTracker3Title => 'Category breakdown';
+
+  @override
+  String get onbTourExpenseTracker3Body =>
+      'Each category shows a progress bar. Tap to expand and see individual expenses.';
+
+  @override
+  String get onbTourExpenseTracker4Title => 'Add expense';
+
+  @override
+  String get onbTourExpenseTracker4Body =>
+      'Tap + to log a new expense. Pick the category and amount.';
+
+  @override
+  String get onbTourSavings1Title => 'Your goals';
+
+  @override
+  String get onbTourSavings1Body =>
+      'Each card shows progress toward your target. Tap to see details and add contributions.';
+
+  @override
+  String get onbTourSavings2Title => 'Create a goal';
+
+  @override
+  String get onbTourSavings2Body =>
+      'Tap + to set a new savings goal with a target amount and optional deadline.';
+
+  @override
+  String get onbTourRecurring1Title => 'Recurring expenses';
+
+  @override
+  String get onbTourRecurring1Body =>
+      'Fixed monthly bills like rent, subscriptions, and utilities. These are auto-included in your budget.';
+
+  @override
+  String get onbTourRecurring2Title => 'Add recurring';
+
+  @override
+  String get onbTourRecurring2Body =>
+      'Tap + to register a new recurring expense with amount and due day.';
+
+  @override
+  String get onbTourAssistant1Title => 'Command assistant';
+
+  @override
+  String get onbTourAssistant1Body =>
+      'Your shortcut to quick actions. Tap to add expenses, change settings, navigate, and more — just type what you need.';
 
   @override
   String get taxDeductionTitle => 'IRS Tax Deductions';

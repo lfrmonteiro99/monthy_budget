@@ -449,6 +449,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
             setState(() => _savingsGoals = updated);
             _loadSavingsGoals();
           },
+          showTour: !_onboardingState.isTourDone('savings_goals'),
+          onTourComplete: () => _markTourDone('savings_goals'),
         ),
       ),
     );
@@ -660,6 +662,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                 onLoadHistory: () =>
                     _actualExpenseService.loadHistory(widget.householdId),
                 onOpenRecurring: _openRecurringExpenses,
+                showTour: !_onboardingState.isTourDone('expense_tracker'),
+                onTourComplete: () => _markTourDone('expense_tracker'),
               ),
             ),
           ),
@@ -1320,6 +1324,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         onLoadHistory: () =>
             _actualExpenseService.loadHistory(widget.householdId),
         onOpenRecurring: _openRecurringExpenses,
+        showTour: !_onboardingState.isTourDone('expense_tracker'),
+        onTourComplete: () => _markTourDone('expense_tracker'),
       ),
       PlanHubScreen(
         onOpenGrocery: _openGrocery,
@@ -1479,6 +1485,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           onTap: () => setState(() => _commandPanelOpen = !_commandPanelOpen),
           isDashboard: _currentIndex == 0,
           isExpanded: _commandPanelOpen,
+          showTour: !_onboardingState.isTourDone('command_assistant'),
+          onTourComplete: () => _markTourDone('command_assistant'),
         ),
       ],
     );
