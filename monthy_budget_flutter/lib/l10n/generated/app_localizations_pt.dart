@@ -569,12 +569,63 @@ class SPt extends S {
   String get coachDeleteTooltip => 'Eliminar';
 
   @override
-  String get infoCoachModes =>
-      'Eco: gratuito, sem memória de conversa.\nPlus: 1 crédito por mensagem, lembra as últimas 5 mensagens.\nPro: 2 créditos por mensagem, memória de conversa completa.';
+  String get coachEmptyTitle => 'O teu coach financeiro';
 
   @override
-  String get infoCoachCredits =>
-      'Os créditos são usados nos modos Plus e Pro. Recebe créditos iniciais ao registar-se. O modo Eco é sempre gratuito.';
+  String get coachEmptyBody =>
+      'Pergunta o que quiseres sobre o teu orcamento, despesas ou poupancas. Vou usar os teus dados reais para dar conselhos personalizados.';
+
+  @override
+  String get coachQuickPrompt1 => 'Onde posso cortar despesas este mes?';
+
+  @override
+  String get coachQuickPrompt2 => 'Como melhoro a minha poupanca?';
+
+  @override
+  String get coachQuickPrompt3 => 'Ajuda-me a definir um plano para 30 dias.';
+
+  @override
+  String get coachComposerHint => 'Pergunta ao coach...';
+
+  @override
+  String get coachYou => 'Tu';
+
+  @override
+  String get coachAssistant => 'Coach';
+
+  @override
+  String coachCreditsCount(int count) {
+    return '$count creditos';
+  }
+
+  @override
+  String get coachMemory => 'Memoria';
+
+  @override
+  String get coachCostFree => 'Modo Eco — sem custos de creditos.';
+
+  @override
+  String coachCostCredits(int cost) {
+    return 'Esta mensagem custa $cost creditos.';
+  }
+
+  @override
+  String get coachFree => 'Gratis';
+
+  @override
+  String coachPerMsg(int cost) {
+    return '$cost/msg';
+  }
+
+  @override
+  String get coachEcoFallbackTitle => 'Modo Eco ativo (sem creditos)';
+
+  @override
+  String get coachEcoFallbackBody =>
+      'Podes continuar a conversar, mas com memoria reduzida.';
+
+  @override
+  String get coachRestoreMemory => 'Restaurar memoria';
 
   @override
   String get cmdAssistantTitle => 'Assistente';
@@ -682,8 +733,7 @@ class SPt extends S {
   String get cmdCapabilityDeleteExpense => 'Apagar uma despesa';
 
   @override
-  String get cmdCapabilityDeleteExpenseExample =>
-      'Apaga a despesa [descricao]';
+  String get cmdCapabilityDeleteExpenseExample => 'Apaga a despesa [descricao]';
 
   @override
   String get cmdCapabilityChangeTheme => 'Mudar tema';
@@ -3189,4 +3239,282 @@ class SPt extends S {
   String subscriptionExplore(String feature) {
     return 'Explorar $feature';
   }
+
+  @override
+  String get subtitleBatchCooking =>
+      'Sugere receitas que podem ser preparadas com antecedência para várias refeições';
+
+  @override
+  String get subtitleReuseLeftovers =>
+      'Planeia refeições que reutilizam ingredientes de dias anteriores';
+
+  @override
+  String get subtitleMinimizeWaste =>
+      'Prioriza o uso de todos os ingredientes comprados antes de expirarem';
+
+  @override
+  String get subtitleMealTypeInclude =>
+      'Incluir esta refeição no plano semanal';
+
+  @override
+  String get subtitleShowHeroCard => 'Resumo da liquidez líquida no topo';
+
+  @override
+  String get subtitleShowStressIndex =>
+      'Pontuação (0-100) que mede a pressão de despesas vs rendimento';
+
+  @override
+  String get subtitleShowMonthReview =>
+      'Resumo comparativo deste mês com os anteriores';
+
+  @override
+  String get subtitleShowUpcomingBills =>
+      'Despesas recorrentes nos próximos 30 dias';
+
+  @override
+  String get subtitleShowSummaryCards =>
+      'Rendimento, deduções, despesas e taxa de poupança';
+
+  @override
+  String get subtitleShowBudgetVsActual =>
+      'Comparação lado a lado por categoria de despesa';
+
+  @override
+  String get subtitleShowExpensesBreakdown =>
+      'Gráfico circular de despesas por categoria';
+
+  @override
+  String get subtitleShowSavingsGoals =>
+      'Progresso em relação aos seus objetivos de poupança';
+
+  @override
+  String get subtitleShowTaxDeductions =>
+      'Deduções fiscais elegíveis estimadas este ano';
+
+  @override
+  String get subtitleShowBudgetStreaks =>
+      'Quantos meses consecutivos ficou dentro do orçamento';
+
+  @override
+  String get subtitleShowPurchaseHistory =>
+      'Compras recentes da lista de compras e custos';
+
+  @override
+  String get subtitleShowCharts =>
+      'Gráficos de tendência de orçamento, despesas e rendimento';
+
+  @override
+  String get subtitleChartExpensesPie =>
+      'Distribuição de despesas por categoria';
+
+  @override
+  String get subtitleChartIncomeVsExpenses =>
+      'Rendimento mensal comparado com despesas totais';
+
+  @override
+  String get subtitleChartDeductions =>
+      'Discriminação de despesas dedutíveis nos impostos';
+
+  @override
+  String get subtitleChartNetIncome =>
+      'Tendência do rendimento líquido ao longo do tempo';
+
+  @override
+  String get subtitleChartSavingsRate =>
+      'Percentagem de rendimento poupado por mês';
+
+  @override
+  String get helperCountry =>
+      'Determina o sistema fiscal, moeda e taxas de segurança social';
+
+  @override
+  String get helperLanguage =>
+      'Substituir o idioma do sistema. \"Sistema\" segue a definição do dispositivo';
+
+  @override
+  String get helperMaritalStatus => 'Afeta o cálculo do escalão de IRS';
+
+  @override
+  String get helperMealObjective =>
+      'Define o padrão alimentar: omnívoro, vegetariano, pescatariano, etc.';
+
+  @override
+  String get helperSodiumPreference =>
+      'Filtra receitas pelo nível de teor de sódio';
+
+  @override
+  String subtitleDietaryRestriction(String ingredient) {
+    return 'Exclui receitas que contêm $ingredient';
+  }
+
+  @override
+  String subtitleExcludedProtein(String protein) {
+    return 'Remove $protein de todas as sugestões de refeições';
+  }
+
+  @override
+  String subtitleKitchenEquipment(String equipment) {
+    return 'Ativa receitas que requerem $equipment';
+  }
+
+  @override
+  String get helperVeggieDays =>
+      'Número de dias totalmente vegetarianos por semana';
+
+  @override
+  String get helperFishDays => 'Recomendado: 2-3 vezes por semana';
+
+  @override
+  String get helperLegumeDays => 'Recomendado: 2-3 vezes por semana';
+
+  @override
+  String get helperRedMeatDays => 'Recomendado: máximo 2 vezes por semana';
+
+  @override
+  String get helperMaxPrepTime =>
+      'Tempo máximo de confeção para refeições de semana (minutos)';
+
+  @override
+  String get helperMaxComplexity =>
+      'Nível de dificuldade das receitas para dias de semana';
+
+  @override
+  String get helperWeekendPrepTime =>
+      'Tempo máximo de confeção para refeições de fim de semana (minutos)';
+
+  @override
+  String get helperWeekendComplexity =>
+      'Nível de dificuldade das receitas para fins de semana';
+
+  @override
+  String get helperMaxBatchDays =>
+      'Quantos dias uma refeição preparada em lote pode ser reutilizada';
+
+  @override
+  String get helperNewIngredients =>
+      'Limita quantos ingredientes novos aparecem por semana';
+
+  @override
+  String get helperGrossSalary => 'Salário total antes de impostos e deduções';
+
+  @override
+  String get helperExemptIncome =>
+      'Rendimento adicional não sujeito a IRS (ex.: subsídios)';
+
+  @override
+  String get helperMealAllowance => 'Subsídio de refeição diário do empregador';
+
+  @override
+  String get helperWorkingDays =>
+      'Típico: 22. Afeta o cálculo do subsídio de refeição';
+
+  @override
+  String get helperSalaryLabel =>
+      'Um nome para identificar esta fonte de rendimento';
+
+  @override
+  String get helperExpenseAmount =>
+      'Montante mensal orçamentado para esta categoria';
+
+  @override
+  String get helperCalorieTarget => 'Recomendado: 2000-2500 kcal para adultos';
+
+  @override
+  String get helperProteinTarget => 'Recomendado: 50-70g para adultos';
+
+  @override
+  String get helperFiberTarget => 'Recomendado: 25-30g para adultos';
+
+  @override
+  String get infoStressIndex =>
+      'Compara os gastos reais com o seu orçamento. Intervalos de pontuação:\n\n0-30: Confortável - gastos bem dentro do orçamento\n30-60: Moderado - a aproximar-se dos limites do orçamento\n60-100: Crítico - gastos excedem significativamente o orçamento';
+
+  @override
+  String get infoBudgetStreak =>
+      'Meses consecutivos em que a despesa total ficou dentro do orçamento total.';
+
+  @override
+  String get infoUpcomingBills =>
+      'Mostra despesas recorrentes nos próximos 30 dias com base nas suas despesas mensais.';
+
+  @override
+  String get infoSalaryBreakdown =>
+      'Mostra como o salário bruto é dividido em imposto IRS, contribuições para a segurança social, rendimento líquido e subsídio de refeição.';
+
+  @override
+  String get infoBudgetVsActual =>
+      'Compara o que orçamentou por categoria com o que realmente gastou. Verde significa abaixo do orçamento, vermelho significa acima do orçamento.';
+
+  @override
+  String get infoSavingsGoals =>
+      'Progresso em relação a cada objetivo de poupança com base nas contribuições efetuadas.';
+
+  @override
+  String get infoTaxDeductions =>
+      'Despesas dedutíveis estimadas (saúde, educação, habitação). Estas são apenas estimativas - consulte um profissional fiscal para valores precisos.';
+
+  @override
+  String get infoPurchaseHistory =>
+      'Total gasto em compras da lista de compras este mês.';
+
+  @override
+  String get infoExpensesBreakdown =>
+      'Discriminação visual das suas despesas por categoria no mês atual.';
+
+  @override
+  String get infoCharts =>
+      'Dados de tendência ao longo do tempo. Toque em qualquer gráfico para uma vista detalhada.';
+
+  @override
+  String get infoExpenseTrackerSummary =>
+      'Orçamentado = despesa mensal planeada. Real = o que gastou até agora. Restante = orçamento menos real.';
+
+  @override
+  String get infoExpenseTrackerProgress =>
+      'Verde: abaixo de 75% do orçamento. Amarelo: 75-100%. Vermelho: acima do orçamento.';
+
+  @override
+  String get infoExpenseTrackerFilter =>
+      'Filtre despesas por texto, categoria ou intervalo de datas.';
+
+  @override
+  String get infoSavingsProjection =>
+      'Baseado nas suas contribuições mensais médias. \"No caminho certo\" significa que o ritmo atual atinge o objetivo no prazo. \"Atrasado\" significa que precisa de aumentar as contribuições.';
+
+  @override
+  String get infoSavingsRequired =>
+      'O montante que precisa de poupar por mês a partir de agora para atingir o objetivo no prazo.';
+
+  @override
+  String get infoCoachModes =>
+      'Eco: gratuito, sem memória de conversa.\nPlus: 1 crédito por mensagem, lembra as últimas 5 mensagens.\nPro: 2 créditos por mensagem, memória de conversa completa.';
+
+  @override
+  String get infoCoachCredits =>
+      'Os créditos são usados nos modos Plus e Pro. Recebe créditos iniciais ao registar-se. O modo Eco é sempre gratuito.';
+
+  @override
+  String get helperWizardGrossSalary =>
+      'O seu salário mensal total antes de impostos';
+
+  @override
+  String get helperWizardMealAllowance =>
+      'Subsídio de refeição diário do empregador (se aplicável)';
+
+  @override
+  String get helperWizardRent => 'Pagamento mensal de habitação';
+
+  @override
+  String get helperWizardGroceries =>
+      'Orçamento mensal de alimentação e produtos domésticos';
+
+  @override
+  String get helperWizardTransport =>
+      'Custos mensais de transporte (combustível, transportes públicos, etc.)';
+
+  @override
+  String get helperWizardUtilities => 'Eletricidade, água e gás mensais';
+
+  @override
+  String get helperWizardTelecom => 'Internet, telefone e TV mensais';
 }

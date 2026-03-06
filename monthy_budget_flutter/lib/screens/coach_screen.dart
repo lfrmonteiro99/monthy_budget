@@ -417,6 +417,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildComposer() {
+    final l10n = S.of(context);
     final costNow = _subscription.creditCostForMode(_selectedMode);
     return Container(
       key: CoachTourKeys.analyzeButton,
@@ -501,6 +502,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildModeCard() {
+    final l10n = S.of(context);
     final activeResolution = _lastModeResolution;
     final effectiveMode = activeResolution?.effectiveMode ?? _selectedMode;
     final window = _subscription.contextWindowForMode(effectiveMode);
