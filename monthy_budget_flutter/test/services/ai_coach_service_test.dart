@@ -82,7 +82,7 @@ void main() {
 
     test('always includes system + new user when context window is zero', () {
       final messages = AiCoachService.buildBoundedChatMessages(
-        history: const [
+        history: [
           CoachChatMessage(
             role: 'assistant',
             content: 'old',

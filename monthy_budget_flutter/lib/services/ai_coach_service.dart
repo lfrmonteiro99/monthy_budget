@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../config/supabase_config.dart';
+import '../config/supabase_public_config.dart';
 import '../models/app_settings.dart';
 import '../models/budget_summary.dart';
 import '../models/coach_insight.dart';

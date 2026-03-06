@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'config/supabase_config.dart';
+import 'config/supabase_public_config.dart';
 import 'models/app_settings.dart';
 import 'models/product.dart';
 import 'models/shopping_item.dart';
