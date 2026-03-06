@@ -120,6 +120,180 @@ class _CommandChatPanelState extends State<CommandChatPanel> {
     }
   }
 
+  void _applyTemplate(String template, {bool immediate = false}) {
+    if (immediate) {
+      _send(template);
+      return;
+    }
+    _controller.text = template;
+    final bracketIdx = template.indexOf('[');
+    if (bracketIdx >= 0) {
+      final endIdx = template.indexOf(']', bracketIdx);
+      _controller.selection = TextSelection(
+        baseOffset: bracketIdx,
+        extentOffset: endIdx + 1,
+      );
+    } else {
+      _controller.selection = TextSelection.collapsed(
+        offset: template.length,
+      );
+    }
+  }
+
+  List<({String label, String example, bool immediate})> _capabilities(S l10n) {
+    return [
+      (
+        label: l10n.cmdCapabilityAddExpense,
+        example: l10n.cmdCapabilityAddExpenseExample,
+        immediate: false,
+      ),
+      (
+        label: l10n.cmdCapabilityAddShoppingItem,
+        example: l10n.cmdCapabilityAddShoppingItemExample,
+        immediate: false,
+      ),
+      (
+        label: l10n.cmdCapabilityRemoveShoppingItem,
+        example: l10n.cmdCapabilityRemoveShoppingItemExample,
+        immediate: false,
+      ),
+      (
+        label: l10n.cmdCapabilityAddSavingsGoal,
+        example: l10n.cmdCapabilityAddSavingsGoalExample,
+        immediate: false,
+      ),
+      (
+        label: l10n.cmdCapabilityAddSavingsContribution,
+        example: l10n.cmdCapabilityAddSavingsContributionExample,
+        immediate: false,
+      ),
+      (
+        label: l10n.cmdCapabilityAddRecurringExpense,
+        example: l10n.cmdCapabilityAddRecurringExpenseExample,
+        immediate: false,
+      ),
+      (
+        label: l10n.cmdCapabilityChangeTheme,
+        example: l10n.cmdCapabilityChangeThemeExample,
+        immediate: false,
+      ),
+      (
+        label: l10n.cmdCapabilityChangePalette,
+        example: l10n.cmdCapabilityChangePaletteExample,
+        immediate: false,
+      ),
+      (
+        label: l10n.cmdCapabilityChangeLanguage,
+        example: l10n.cmdCapabilityChangeLanguageExample,
+        immediate: false,
+      ),
+      (
+        label: l10n.cmdCapabilityNavigate,
+        example: l10n.cmdCapabilityNavigateExample,
+        immediate: true,
+      ),
+      (
+        label: l10n.cmdCapabilityClearChecked,
+        example: l10n.cmdCapabilityClearCheckedExample,
+        immediate: true,
+      ),
+    ];
+  }
+
+  void _showCapabilitiesSheet(S l10n) {
+    final capabilities = _capabilities(l10n);
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.cmdCapabilitiesTitle,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary(context),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  l10n.cmdCapabilitiesSubtitle,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textSecondary(context),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Flexible(
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    itemCount: capabilities.length,
+                    separatorBuilder: (_, _) => Divider(
+                      height: 1,
+                      color: AppColors.border(context),
+                    ),
+                    itemBuilder: (context, index) {
+                      final item = capabilities[index];
+                      return ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(
+                          item.label,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textPrimary(context),
+                          ),
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            item.example,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: AppColors.textSecondary(context),
+                            ),
+                          ),
+                        ),
+                        trailing: Icon(
+                          item.immediate
+                              ? Icons.rocket_launch_outlined
+                              : Icons.edit_outlined,
+                          size: 18,
+                          color: AppColors.textMuted(context),
+                        ),
+                        onTap: () {
+                          Navigator.of(sheetContext).pop();
+                          _applyTemplate(
+                            item.example,
+                            immediate: item.immediate,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  l10n.cmdCapabilitiesFooter,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textMuted(context),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
@@ -180,6 +354,16 @@ class _CommandChatPanelState extends State<CommandChatPanel> {
             ),
           ),
           const Spacer(),
+          TextButton.icon(
+            onPressed: () => _showCapabilitiesSheet(l10n),
+            icon: const Icon(Icons.auto_awesome_outlined, size: 16),
+            label: Text(l10n.cmdCapabilitiesCta),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.textSecondary(context),
+              visualDensity: VisualDensity.compact,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            ),
+          ),
           IconButton(
             onPressed: widget.onMinimize,
             icon: Icon(
@@ -221,6 +405,12 @@ class _CommandChatPanelState extends State<CommandChatPanel> {
                 color: AppColors.textSecondary(context),
               ),
             ),
+            const SizedBox(height: 10),
+            TextButton.icon(
+              onPressed: () => _showCapabilitiesSheet(l10n),
+              icon: const Icon(Icons.menu_book_outlined, size: 18),
+              label: Text(l10n.cmdCapabilitiesCta),
+            ),
             const SizedBox(height: 20),
             Wrap(
               spacing: 8,
@@ -231,19 +421,7 @@ class _CommandChatPanelState extends State<CommandChatPanel> {
                 return ActionChip(
                   label: Text(label),
                   onPressed: () {
-                    if (immediate) {
-                      _send(template);
-                    } else {
-                      _controller.text = template;
-                      final bracketIdx = template.indexOf('[');
-                      if (bracketIdx >= 0) {
-                        final endIdx = template.indexOf(']', bracketIdx);
-                        _controller.selection = TextSelection(
-                          baseOffset: bracketIdx,
-                          extentOffset: endIdx + 1,
-                        );
-                      }
-                    }
+                    _applyTemplate(template, immediate: immediate);
                   },
                   backgroundColor: AppColors.surfaceVariant(context),
                   shape: RoundedRectangleBorder(

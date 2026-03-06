@@ -663,6 +663,94 @@ class SEn extends S {
   String get cmdUndo => 'Undo';
 
   @override
+  String get cmdCapabilitiesCta => 'What can I do?';
+
+  @override
+  String get cmdCapabilitiesTitle => 'Available actions';
+
+  @override
+  String get cmdCapabilitiesSubtitle =>
+      'These are the assistant actions supported right now.';
+
+  @override
+  String get cmdCapabilitiesFooter =>
+      'We\'re still adding more. If it isn\'t listed here yet, it may not work.';
+
+  @override
+  String get cmdCapabilityAddExpense => 'Add an expense';
+
+  @override
+  String get cmdCapabilityAddExpenseExample =>
+      'Add [amount] euros in [category]';
+
+  @override
+  String get cmdCapabilityAddShoppingItem => 'Add a shopping item';
+
+  @override
+  String get cmdCapabilityAddShoppingItemExample =>
+      'Add [item] to shopping list';
+
+  @override
+  String get cmdCapabilityRemoveShoppingItem => 'Remove a shopping item';
+
+  @override
+  String get cmdCapabilityRemoveShoppingItemExample =>
+      'Remove [item] from shopping list';
+
+  @override
+  String get cmdCapabilityAddSavingsGoal => 'Create a savings goal';
+
+  @override
+  String get cmdCapabilityAddSavingsGoalExample =>
+      'Create savings goal [name] with [amount]';
+
+  @override
+  String get cmdCapabilityAddSavingsContribution => 'Add to a savings goal';
+
+  @override
+  String get cmdCapabilityAddSavingsContributionExample =>
+      'Add [amount] to goal [name]';
+
+  @override
+  String get cmdCapabilityAddRecurringExpense => 'Add a recurring expense';
+
+  @override
+  String get cmdCapabilityAddRecurringExpenseExample =>
+      'Add recurring expense [amount] in [category] day [day]';
+
+  @override
+  String get cmdCapabilityChangeTheme => 'Change theme';
+
+  @override
+  String get cmdCapabilityChangeThemeExample => 'Change theme to [light/dark]';
+
+  @override
+  String get cmdCapabilityChangePalette => 'Change color palette';
+
+  @override
+  String get cmdCapabilityChangePaletteExample =>
+      'Color [ocean/emerald/violet/teal/sunset]';
+
+  @override
+  String get cmdCapabilityChangeLanguage => 'Change language';
+
+  @override
+  String get cmdCapabilityChangeLanguageExample =>
+      'Language [english/portuguese/spanish/french]';
+
+  @override
+  String get cmdCapabilityNavigate => 'Open a screen';
+
+  @override
+  String get cmdCapabilityNavigateExample => 'Open shopping list';
+
+  @override
+  String get cmdCapabilityClearChecked => 'Clear checked items';
+
+  @override
+  String get cmdCapabilityClearCheckedExample => 'Clear checked items';
+
+  @override
   String get groceryTitle => 'Grocery';
 
   @override

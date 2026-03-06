@@ -1301,6 +1301,162 @@ abstract class S {
   /// **'Desfazer'**
   String get cmdUndo;
 
+  /// No description provided for @cmdCapabilitiesCta.
+  ///
+  /// In pt, this message translates to:
+  /// **'O que posso fazer?'**
+  String get cmdCapabilitiesCta;
+
+  /// No description provided for @cmdCapabilitiesTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Acoes disponiveis'**
+  String get cmdCapabilitiesTitle;
+
+  /// No description provided for @cmdCapabilitiesSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estas sao as acoes que o assistente suporta neste momento.'**
+  String get cmdCapabilitiesSubtitle;
+
+  /// No description provided for @cmdCapabilitiesFooter.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estamos a adicionar mais. Se ainda nao estiver aqui, pode nao funcionar.'**
+  String get cmdCapabilitiesFooter;
+
+  /// No description provided for @cmdCapabilityAddExpense.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar uma despesa'**
+  String get cmdCapabilityAddExpense;
+
+  /// No description provided for @cmdCapabilityAddExpenseExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adiciona [valor] euros em [categoria]'**
+  String get cmdCapabilityAddExpenseExample;
+
+  /// No description provided for @cmdCapabilityAddShoppingItem.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar item a lista'**
+  String get cmdCapabilityAddShoppingItem;
+
+  /// No description provided for @cmdCapabilityAddShoppingItemExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adiciona [item] a lista de compras'**
+  String get cmdCapabilityAddShoppingItemExample;
+
+  /// No description provided for @cmdCapabilityRemoveShoppingItem.
+  ///
+  /// In pt, this message translates to:
+  /// **'Remover item da lista'**
+  String get cmdCapabilityRemoveShoppingItem;
+
+  /// No description provided for @cmdCapabilityRemoveShoppingItemExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Remove [item] da lista de compras'**
+  String get cmdCapabilityRemoveShoppingItemExample;
+
+  /// No description provided for @cmdCapabilityAddSavingsGoal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Criar objetivo de poupanca'**
+  String get cmdCapabilityAddSavingsGoal;
+
+  /// No description provided for @cmdCapabilityAddSavingsGoalExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cria objetivo de poupanca [nome] de [valor]'**
+  String get cmdCapabilityAddSavingsGoalExample;
+
+  /// No description provided for @cmdCapabilityAddSavingsContribution.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar ao objetivo de poupanca'**
+  String get cmdCapabilityAddSavingsContribution;
+
+  /// No description provided for @cmdCapabilityAddSavingsContributionExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adiciona [valor] ao objetivo [nome]'**
+  String get cmdCapabilityAddSavingsContributionExample;
+
+  /// No description provided for @cmdCapabilityAddRecurringExpense.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar despesa recorrente'**
+  String get cmdCapabilityAddRecurringExpense;
+
+  /// No description provided for @cmdCapabilityAddRecurringExpenseExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adiciona despesa recorrente [valor] em [categoria] dia [dia]'**
+  String get cmdCapabilityAddRecurringExpenseExample;
+
+  /// No description provided for @cmdCapabilityChangeTheme.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mudar tema'**
+  String get cmdCapabilityChangeTheme;
+
+  /// No description provided for @cmdCapabilityChangeThemeExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Muda o tema para [claro/escuro]'**
+  String get cmdCapabilityChangeThemeExample;
+
+  /// No description provided for @cmdCapabilityChangePalette.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mudar paleta de cor'**
+  String get cmdCapabilityChangePalette;
+
+  /// No description provided for @cmdCapabilityChangePaletteExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cor [ocean/emerald/violet/teal/sunset]'**
+  String get cmdCapabilityChangePaletteExample;
+
+  /// No description provided for @cmdCapabilityChangeLanguage.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mudar idioma'**
+  String get cmdCapabilityChangeLanguage;
+
+  /// No description provided for @cmdCapabilityChangeLanguageExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Idioma [ingles/portugues/espanhol/frances]'**
+  String get cmdCapabilityChangeLanguageExample;
+
+  /// No description provided for @cmdCapabilityNavigate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir ecra'**
+  String get cmdCapabilityNavigate;
+
+  /// No description provided for @cmdCapabilityNavigateExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abre a lista de compras'**
+  String get cmdCapabilityNavigateExample;
+
+  /// No description provided for @cmdCapabilityClearChecked.
+  ///
+  /// In pt, this message translates to:
+  /// **'Limpar itens marcados'**
+  String get cmdCapabilityClearChecked;
+
+  /// No description provided for @cmdCapabilityClearCheckedExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Limpa os itens marcados'**
+  String get cmdCapabilityClearCheckedExample;
+
   /// Grocery screen title
   ///
   /// In pt, this message translates to:

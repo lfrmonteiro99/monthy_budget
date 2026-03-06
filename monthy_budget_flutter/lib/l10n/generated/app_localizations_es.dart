@@ -665,6 +665,96 @@ class SEs extends S {
   String get cmdUndo => 'Deshacer';
 
   @override
+  String get cmdCapabilitiesCta => 'Que puedo hacer?';
+
+  @override
+  String get cmdCapabilitiesTitle => 'Acciones disponibles';
+
+  @override
+  String get cmdCapabilitiesSubtitle =>
+      'Estas son las acciones que el asistente soporta ahora mismo.';
+
+  @override
+  String get cmdCapabilitiesFooter =>
+      'Seguimos anadiendo mas. Si no aparece aqui, puede que aun no funcione.';
+
+  @override
+  String get cmdCapabilityAddExpense => 'Anadir un gasto';
+
+  @override
+  String get cmdCapabilityAddExpenseExample =>
+      'Anade [cantidad] euros en [categoria]';
+
+  @override
+  String get cmdCapabilityAddShoppingItem => 'Anadir a la lista';
+
+  @override
+  String get cmdCapabilityAddShoppingItemExample =>
+      'Anade [articulo] a la lista de compras';
+
+  @override
+  String get cmdCapabilityRemoveShoppingItem => 'Quitar de la lista';
+
+  @override
+  String get cmdCapabilityRemoveShoppingItemExample =>
+      'Quita [articulo] de la lista de compras';
+
+  @override
+  String get cmdCapabilityAddSavingsGoal => 'Crear objetivo de ahorro';
+
+  @override
+  String get cmdCapabilityAddSavingsGoalExample =>
+      'Crea objetivo de ahorro [nombre] de [cantidad]';
+
+  @override
+  String get cmdCapabilityAddSavingsContribution =>
+      'Anadir al objetivo de ahorro';
+
+  @override
+  String get cmdCapabilityAddSavingsContributionExample =>
+      'Anade [cantidad] al objetivo [nombre]';
+
+  @override
+  String get cmdCapabilityAddRecurringExpense => 'Anadir gasto recurrente';
+
+  @override
+  String get cmdCapabilityAddRecurringExpenseExample =>
+      'Anade gasto recurrente [cantidad] en [categoria] dia [dia]';
+
+  @override
+  String get cmdCapabilityChangeTheme => 'Cambiar tema';
+
+  @override
+  String get cmdCapabilityChangeThemeExample =>
+      'Cambia el tema a [claro/oscuro]';
+
+  @override
+  String get cmdCapabilityChangePalette => 'Cambiar paleta';
+
+  @override
+  String get cmdCapabilityChangePaletteExample =>
+      'Color [ocean/emerald/violet/teal/sunset]';
+
+  @override
+  String get cmdCapabilityChangeLanguage => 'Cambiar idioma';
+
+  @override
+  String get cmdCapabilityChangeLanguageExample =>
+      'Idioma [ingles/portugues/espanol/frances]';
+
+  @override
+  String get cmdCapabilityNavigate => 'Abrir pantalla';
+
+  @override
+  String get cmdCapabilityNavigateExample => 'Abrir lista de compras';
+
+  @override
+  String get cmdCapabilityClearChecked => 'Limpiar marcados';
+
+  @override
+  String get cmdCapabilityClearCheckedExample => 'Limpiar elementos marcados';
+
+  @override
   String get groceryTitle => 'Supermercado';
 
   @override
