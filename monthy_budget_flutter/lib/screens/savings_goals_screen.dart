@@ -7,6 +7,7 @@ import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 import '../utils/savings_projections.dart';
 import '../widgets/add_savings_goal_sheet.dart';
+import '../widgets/info_icon_button.dart';
 
 class SavingsGoalsScreen extends StatefulWidget {
   final String householdId;
@@ -520,14 +521,20 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
             children: [
               Icon(Icons.trending_up, size: 14, color: goalColor),
               const SizedBox(width: 6),
-              Text(
-                l10n.savingsProjectionAvgContribution(
-                    formatCurrency(p.averageMonthlyContribution)),
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textPrimary(context),
+              Expanded(
+                child: Text(
+                  l10n.savingsProjectionAvgContribution(
+                      formatCurrency(p.averageMonthlyContribution)),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textPrimary(context),
+                  ),
                 ),
+              ),
+              InfoIconButton(
+                title: l10n.savingsProjectionAvgContribution(''),
+                body: l10n.infoSavingsProjection,
               ),
             ],
           ),
@@ -587,13 +594,19 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
                 Icon(Icons.flag_outlined, size: 14,
                     color: AppColors.textSecondary(context)),
                 const SizedBox(width: 6),
-                Text(
-                  l10n.savingsProjectionNeedPerMonth(
-                      formatCurrency(p.requiredMonthlyContribution!)),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textSecondary(context),
+                Expanded(
+                  child: Text(
+                    l10n.savingsProjectionNeedPerMonth(
+                        formatCurrency(p.requiredMonthlyContribution!)),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary(context),
+                    ),
                   ),
+                ),
+                InfoIconButton(
+                  title: l10n.savingsProjectionNeedPerMonth(''),
+                  body: l10n.infoSavingsRequired,
                 ),
               ],
             ),

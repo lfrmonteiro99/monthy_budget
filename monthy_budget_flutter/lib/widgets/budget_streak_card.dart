@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
 import '../utils/budget_streaks.dart';
+import 'info_icon_button.dart';
 
 /// Dashboard card showing 3-tier budget streak badges.
 class BudgetStreakCard extends StatelessWidget {
@@ -31,14 +32,17 @@ class BudgetStreakCard extends StatelessWidget {
               Icon(Icons.local_fire_department,
                   size: 18, color: AppColors.warning(context)),
               const SizedBox(width: 8),
-              Text(
-                l10n.streakTitle,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary(context),
+              Expanded(
+                child: Text(
+                  l10n.streakTitle,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary(context),
+                  ),
                 ),
               ),
+              InfoIconButton(title: l10n.streakTitle, body: l10n.infoBudgetStreak),
             ],
           ),
           const SizedBox(height: 14),

@@ -8,6 +8,7 @@ import '../theme/app_colors.dart';
 import '../utils/calculations.dart';
 import '../data/tax/tax_factory.dart';
 import '../onboarding/coach_tour.dart';
+import '../widgets/info_icon_button.dart';
 
 class CoachScreen extends StatefulWidget {
   final AppSettings settings;
@@ -182,7 +183,16 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         children: [
           _buildInfoCard(),
           const SizedBox(height: 16),
-          _buildAnalyzeButton(),
+          Row(
+            children: [
+              Expanded(child: _buildAnalyzeButton()),
+              const SizedBox(width: 4),
+              InfoIconButton(
+                title: l10n.coachTitle,
+                body: l10n.infoCoachCredits,
+              ),
+            ],
+          ),
           const SizedBox(height: 16),
           if (_error != null) _buildErrorCard(),
           if (_currentInsight != null) _buildAdviceCard(_currentInsight!),
@@ -218,12 +228,22 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  l10n.coachAnalysisTitle,
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary(context)),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.coachAnalysisTitle,
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textPrimary(context)),
+                      ),
+                    ),
+                    InfoIconButton(
+                      title: l10n.coachTitle,
+                      body: l10n.infoCoachModes,
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 4),
                 Text(

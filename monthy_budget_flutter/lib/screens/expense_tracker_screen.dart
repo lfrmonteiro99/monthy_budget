@@ -8,6 +8,7 @@ import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 import '../widgets/add_expense_sheet.dart';
 import '../widgets/export_bottom_sheet.dart';
+import '../widgets/info_icon_button.dart';
 import '../services/export_service.dart';
 
 class ExpenseTrackerScreen extends StatefulWidget {
@@ -454,11 +455,38 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                         : AppColors.success(context),
                   ),
                 ),
+                InfoIconButton(
+                  title: l10n.expenseTrackerScreenTitle,
+                  body: l10n.infoExpenseTrackerSummary,
+                ),
               ],
             ),
           ),
 
           const Divider(height: 1),
+
+          // Category progress info
+          if (_expenses.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              child: Row(
+                children: [
+                  Text(
+                    l10n.expenseTrackerBudgeted,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textMuted(context),
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                  InfoIconButton(
+                    title: l10n.expenseTrackerBudgeted,
+                    body: l10n.infoExpenseTrackerProgress,
+                  ),
+                ],
+              ),
+            ),
 
           // Content
           Expanded(
@@ -561,7 +589,16 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
           : Column(
               children: [
                 // Category chips + date range
-                _buildFilterBar(l10n),
+                Row(
+                  children: [
+                    Expanded(child: _buildFilterBar(l10n)),
+                    InfoIconButton(
+                      title: 'Filter',
+                      body: l10n.infoExpenseTrackerFilter,
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                ),
                 const Divider(height: 1),
 
                 // Result count
