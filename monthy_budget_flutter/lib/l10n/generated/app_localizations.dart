@@ -1319,6 +1319,21 @@ abstract class S {
   /// **'Conta criada! Verifique o seu email para confirmar a conta antes de iniciar sessão.'**
   String get authRegistrationSuccess;
 
+  /// No additional description provided.
+  String get authErrorNetwork;
+
+  /// No additional description provided.
+  String get authErrorInvalidCredentials;
+
+  /// No additional description provided.
+  String get authErrorEmailNotConfirmed;
+
+  /// No additional description provided.
+  String get authErrorTooManyRequests;
+
+  /// No additional description provided.
+  String get authErrorGeneric;
+
   /// Household setup screen title
   ///
   /// In pt, this message translates to:

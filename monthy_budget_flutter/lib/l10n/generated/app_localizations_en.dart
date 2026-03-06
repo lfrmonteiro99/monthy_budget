@@ -684,6 +684,26 @@ class SEn extends S {
       'Account created! Check your email to verify your account before signing in.';
 
   @override
+  String get authErrorNetwork =>
+      'Could not connect to the server. Check your internet connection and try again.';
+
+  @override
+  String get authErrorInvalidCredentials =>
+      'Invalid email or password. Please try again.';
+
+  @override
+  String get authErrorEmailNotConfirmed =>
+      'Please verify your email before signing in.';
+
+  @override
+  String get authErrorTooManyRequests =>
+      'Too many attempts. Please wait a moment and try again.';
+
+  @override
+  String get authErrorGeneric =>
+      'Something went wrong. Please try again later.';
+
+  @override
   String get householdSetupTitle => 'Set Up Household';
 
   @override

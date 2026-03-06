@@ -688,6 +688,26 @@ class SFr extends S {
       'Compte crÃ©Ã© ! VÃ©rifiez votre email pour confirmer votre compte avant de vous connecter.';
 
   @override
+  String get authErrorNetwork =>
+      'Impossible de se connecter au serveur. Vérifiez votre connexion internet et réessayez.';
+
+  @override
+  String get authErrorInvalidCredentials =>
+      'Email ou mot de passe incorrect. Veuillez réessayer.';
+
+  @override
+  String get authErrorEmailNotConfirmed =>
+      'Veuillez vérifier votre email avant de vous connecter.';
+
+  @override
+  String get authErrorTooManyRequests =>
+      'Trop de tentatives. Veuillez patienter et réessayer.';
+
+  @override
+  String get authErrorGeneric =>
+      'Une erreur est survenue. Veuillez réessayer plus tard.';
+
+  @override
   String get householdSetupTitle => 'Configurer le Foyer';
 
   @override
