@@ -39,9 +39,15 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
       - name: Build APK
-        run: flutter build apk --release
+        run: |
+          flutter build apk --release \
+            --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+            --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
       - name: Build AAB
-        run: flutter build appbundle --release
+        run: |
+          flutter build appbundle --release \
+            --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+            --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
       - name: Build release notes from CHANGELOG
         id: notes
         shell: bash
