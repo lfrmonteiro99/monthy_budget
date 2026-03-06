@@ -570,6 +570,149 @@ class SFr extends S {
   String get coachDeleteTooltip => 'Supprimer';
 
   @override
+  String get cmdAssistantTitle => 'Assistant';
+
+  @override
+  String get cmdAssistantHint => 'De quoi as-tu besoin ?';
+
+  @override
+  String get cmdAssistantTooltip => 'Besoin d\'aide ? Appuie ici';
+
+  @override
+  String get cmdSuggestionAddExpense => 'Ajouter une depense';
+
+  @override
+  String get cmdSuggestionOpenList => 'Ouvrir la liste de courses';
+
+  @override
+  String get cmdSuggestionChangeTheme => 'Changer le theme';
+
+  @override
+  String get cmdSuggestionOpenSettings => 'Aller aux reglages';
+
+  @override
+  String get cmdTemplateAddExpense => 'Ajoute [montant] euros en [categorie]';
+
+  @override
+  String get cmdTemplateChangeTheme => 'Change le theme en [clair/sombre]';
+
+  @override
+  String get cmdExecutionFailed =>
+      'J\'ai compris la demande, mais je n\'ai pas pu l\'executer. Reessaie.';
+
+  @override
+  String get cmdNotUnderstood => 'Je n\'ai pas compris. Peux-tu reformuler ?';
+
+  @override
+  String get cmdUndo => 'Annuler';
+
+  @override
+  String get cmdCapabilitiesCta => 'Que puis-je faire ?';
+
+  @override
+  String get cmdCapabilitiesTitle => 'Actions disponibles';
+
+  @override
+  String get cmdCapabilitiesSubtitle =>
+      'Voici les actions que l\'assistant prend en charge pour le moment.';
+
+  @override
+  String get cmdCapabilitiesFooter =>
+      'Nous en ajoutons encore. Si ce n\'est pas liste ici, cela peut ne pas encore fonctionner.';
+
+  @override
+  String get cmdCapabilityAddExpense => 'Ajouter une depense';
+
+  @override
+  String get cmdCapabilityAddExpenseExample =>
+      'Ajoute [montant] euros en [categorie]';
+
+  @override
+  String get cmdCapabilityAddShoppingItem => 'Ajouter a la liste';
+
+  @override
+  String get cmdCapabilityAddShoppingItemExample =>
+      'Ajoute [article] a la liste de courses';
+
+  @override
+  String get cmdCapabilityRemoveShoppingItem => 'Retirer de la liste';
+
+  @override
+  String get cmdCapabilityRemoveShoppingItemExample =>
+      'Retire [article] de la liste de courses';
+
+  @override
+  String get cmdCapabilityToggleShoppingItemChecked =>
+      'Cocher ou decocher un article';
+
+  @override
+  String get cmdCapabilityToggleShoppingItemCheckedExample =>
+      'Coche [article] dans la liste de courses';
+
+  @override
+  String get cmdCapabilityAddSavingsGoal => 'Creer un objectif d\'epargne';
+
+  @override
+  String get cmdCapabilityAddSavingsGoalExample =>
+      'Cree objectif d\'epargne [nom] de [montant]';
+
+  @override
+  String get cmdCapabilityAddSavingsContribution =>
+      'Ajouter a l\'objectif d\'epargne';
+
+  @override
+  String get cmdCapabilityAddSavingsContributionExample =>
+      'Ajoute [montant] a l\'objectif [nom]';
+
+  @override
+  String get cmdCapabilityAddRecurringExpense =>
+      'Ajouter une depense recurrente';
+
+  @override
+  String get cmdCapabilityAddRecurringExpenseExample =>
+      'Ajoute depense recurrente [montant] en [categorie] jour [jour]';
+
+  @override
+  String get cmdCapabilityDeleteExpense => 'Supprimer une depense';
+
+  @override
+  String get cmdCapabilityDeleteExpenseExample =>
+      'Supprime la depense [description]';
+
+  @override
+  String get cmdCapabilityChangeTheme => 'Changer le theme';
+
+  @override
+  String get cmdCapabilityChangeThemeExample =>
+      'Change le theme en [clair/sombre]';
+
+  @override
+  String get cmdCapabilityChangePalette => 'Changer la palette';
+
+  @override
+  String get cmdCapabilityChangePaletteExample =>
+      'Couleur [ocean/emerald/violet/teal/sunset]';
+
+  @override
+  String get cmdCapabilityChangeLanguage => 'Changer la langue';
+
+  @override
+  String get cmdCapabilityChangeLanguageExample =>
+      'Langue [anglais/portugais/espagnol/francais]';
+
+  @override
+  String get cmdCapabilityNavigate => 'Ouvrir un ecran';
+
+  @override
+  String get cmdCapabilityNavigateExample => 'Ouvre la liste de courses';
+
+  @override
+  String get cmdCapabilityClearChecked => 'Vider les coches';
+
+  @override
+  String get cmdCapabilityClearCheckedExample => 'Effacer les elements coches';
+
+  @override
   String get groceryTitle => 'Courses';
 
   @override

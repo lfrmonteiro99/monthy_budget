@@ -569,6 +569,148 @@ class SPt extends S {
   String get coachDeleteTooltip => 'Eliminar';
 
   @override
+  String get cmdAssistantTitle => 'Assistente';
+
+  @override
+  String get cmdAssistantHint => 'O que precisas?';
+
+  @override
+  String get cmdAssistantTooltip => 'Precisa de ajuda? Toca aqui';
+
+  @override
+  String get cmdSuggestionAddExpense => 'Adicionar despesa';
+
+  @override
+  String get cmdSuggestionOpenList => 'Abrir lista de compras';
+
+  @override
+  String get cmdSuggestionChangeTheme => 'Mudar tema';
+
+  @override
+  String get cmdSuggestionOpenSettings => 'Ir para definicoes';
+
+  @override
+  String get cmdTemplateAddExpense => 'Adiciona [valor] euros em [categoria]';
+
+  @override
+  String get cmdTemplateChangeTheme => 'Muda o tema para [claro/escuro]';
+
+  @override
+  String get cmdExecutionFailed =>
+      'Percebi o pedido, mas nao consegui executar. Tenta novamente.';
+
+  @override
+  String get cmdNotUnderstood => 'Nao percebi. Podes reformular?';
+
+  @override
+  String get cmdUndo => 'Desfazer';
+
+  @override
+  String get cmdCapabilitiesCta => 'O que posso fazer?';
+
+  @override
+  String get cmdCapabilitiesTitle => 'Acoes disponiveis';
+
+  @override
+  String get cmdCapabilitiesSubtitle =>
+      'Estas sao as acoes que o assistente suporta neste momento.';
+
+  @override
+  String get cmdCapabilitiesFooter =>
+      'Estamos a adicionar mais. Se ainda nao estiver aqui, pode nao funcionar.';
+
+  @override
+  String get cmdCapabilityAddExpense => 'Adicionar uma despesa';
+
+  @override
+  String get cmdCapabilityAddExpenseExample =>
+      'Adiciona [valor] euros em [categoria]';
+
+  @override
+  String get cmdCapabilityAddShoppingItem => 'Adicionar item a lista';
+
+  @override
+  String get cmdCapabilityAddShoppingItemExample =>
+      'Adiciona [item] a lista de compras';
+
+  @override
+  String get cmdCapabilityRemoveShoppingItem => 'Remover item da lista';
+
+  @override
+  String get cmdCapabilityRemoveShoppingItemExample =>
+      'Remove [item] da lista de compras';
+
+  @override
+  String get cmdCapabilityToggleShoppingItemChecked =>
+      'Marcar ou desmarcar item da lista';
+
+  @override
+  String get cmdCapabilityToggleShoppingItemCheckedExample =>
+      'Marca [item] na lista de compras';
+
+  @override
+  String get cmdCapabilityAddSavingsGoal => 'Criar objetivo de poupanca';
+
+  @override
+  String get cmdCapabilityAddSavingsGoalExample =>
+      'Cria objetivo de poupanca [nome] de [valor]';
+
+  @override
+  String get cmdCapabilityAddSavingsContribution =>
+      'Adicionar ao objetivo de poupanca';
+
+  @override
+  String get cmdCapabilityAddSavingsContributionExample =>
+      'Adiciona [valor] ao objetivo [nome]';
+
+  @override
+  String get cmdCapabilityAddRecurringExpense => 'Adicionar despesa recorrente';
+
+  @override
+  String get cmdCapabilityAddRecurringExpenseExample =>
+      'Adiciona despesa recorrente [valor] em [categoria] dia [dia]';
+
+  @override
+  String get cmdCapabilityDeleteExpense => 'Apagar uma despesa';
+
+  @override
+  String get cmdCapabilityDeleteExpenseExample =>
+      'Apaga a despesa [descricao]';
+
+  @override
+  String get cmdCapabilityChangeTheme => 'Mudar tema';
+
+  @override
+  String get cmdCapabilityChangeThemeExample =>
+      'Muda o tema para [claro/escuro]';
+
+  @override
+  String get cmdCapabilityChangePalette => 'Mudar paleta de cor';
+
+  @override
+  String get cmdCapabilityChangePaletteExample =>
+      'Cor [ocean/emerald/violet/teal/sunset]';
+
+  @override
+  String get cmdCapabilityChangeLanguage => 'Mudar idioma';
+
+  @override
+  String get cmdCapabilityChangeLanguageExample =>
+      'Idioma [ingles/portugues/espanhol/frances]';
+
+  @override
+  String get cmdCapabilityNavigate => 'Abrir ecra';
+
+  @override
+  String get cmdCapabilityNavigateExample => 'Abre a lista de compras';
+
+  @override
+  String get cmdCapabilityClearChecked => 'Limpar itens marcados';
+
+  @override
+  String get cmdCapabilityClearCheckedExample => 'Limpa os itens marcados';
+
+  @override
   String get groceryTitle => 'Supermercado';
 
   @override
