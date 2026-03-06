@@ -2,20 +2,46 @@
 
 All notable changes to this project will be documented in this file.
 
-## v2026.3.2 - 2026-03-05
+## v2026.3.5 - 2026-03-06
 
-- fix(ci): enforce validate-pr on push with PR-aware resolution (#60) (#63)
-- chore(ci): trigger non-interference pipeline status run (#60) (#62)
-- fix(ci): read PR metadata from event payload in governance check (#58) (#61)
-- chore(ci): run end-to-end automation smoke test (#58) (#59)
-- fix(ci): harden agent delivery merge flow for stale pipelines (#54) (#56)
-- feat(coach): wire eco/plus/pro fallback UX (#53)
-- feat(coach): add memory/credits architecture foundation (#52)
-- fix(ai): enforce jwt auth for openai-chat invocations (#49)
 
-## v2026.3.0 - 2026-03-05
 
-### Migration
-- Start CalVer-based releases from `v2026.3.0`.
-- Previous tags from `v0.0.x` are retained for historical reference.
-- Versioning now follows `YYYY.M.PATCH` with Play Store-compatible `versionCode`.
+### Bug Fixes
+
+- Align release build with Supabase dart-defines (#77) (#85) ([object], [object], [object], [object])
+
+
+### Other Changes
+
+- Claude/new-session-HsuIN (#79)
+
+* fix: show user-friendly auth error messages instead of raw exceptions
+
+Map Supabase auth exceptions (network errors, invalid credentials,
+unconfirmed email, rate limits) to localized user-facing messages
+in EN, PT, ES, and FR.
+
+https://claude.ai/code/session_01B5gGgK1EpvMvLPgMR1Qt2o
+
+* fix: fail CI build when Supabase secrets are missing
+
+Instead of silently falling back to placeholder values when
+SUPABASE_URL or SUPABASE_ANON_KEY secrets are not configured,
+the build job now fails immediately with a clear error message.
+This prevents releasing APKs with broken Supabase configuration.
+
+https://claude.ai/code/session_01B5gGgK1EpvMvLPgMR1Qt2o
+
+* fix: restore authError getters dropped during merge
+
+The merge from origin/main overwrote the generated l10n files,
+dropping 5 authError* getters that were added on this branch.
+Re-added them to all locale files.
+
+https://claude.ai/code/session_01B5gGgK1EpvMvLPgMR1Qt2o
+
+---------
+
+Co-authored-by: lfrmonteiro99 <lfrmonteiro99@gmail.com>
+Co-authored-by: Claude <noreply@anthropic.com> ([object])
+
