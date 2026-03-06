@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 import '../data/tax/tax_factory.dart';
 import '../l10n/generated/app_localizations.dart';
@@ -54,6 +55,13 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   late SubscriptionState _subscription;
   late CoachMode _selectedMode;
   bool _tourShown = false;
+  bool _ecoBannerCollapsed = false;
+
+  final List<String> _quickPrompts = const [
+    'Onde posso cortar despesas este mes?',
+    'Como melhoro a minha poupanca sem perder qualidade de vida?',
+    'Ajuda-me a definir um plano para os proximos 30 dias.',
+  ];
 
   @override
   void initState() {
@@ -112,11 +120,10 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     if (text.isEmpty || _loading) return;
 
     final previousMessages = List<CoachChatMessage>.from(_messages);
-    final now = DateTime.now();
     final userMessage = CoachChatMessage(
       role: 'user',
       content: text,
-      timestamp: now,
+      timestamp: DateTime.now(),
     );
 
     _composerController.clear();
@@ -319,16 +326,38 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     if (_messages.isEmpty) {
       return Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 22),
-          child: Text(
-            'Faz uma pergunta sobre o teu orcamento. '
-            'Vou manter o contexto conforme a memoria ativa.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: AppColors.textSecondary(context),
-              fontSize: 14,
-              height: 1.4,
-            ),
+          padding: const EdgeInsets.symmetric(horizontal: 18),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Faz uma pergunta sobre o teu orcamento. '
+                'Vou manter o contexto conforme a memoria ativa.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppColors.textSecondary(context),
+                  fontSize: 15,
+                  height: 1.6,
+                ),
+              ),
+              const SizedBox(height: 14),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                alignment: WrapAlignment.center,
+                children: _quickPrompts
+                    .map(
+                      (prompt) => ActionChip(
+                        label: Text(prompt),
+                        onPressed: () {
+                          _composerController.text = prompt;
+                          _sendCurrentMessage();
+                        },
+                      ),
+                    )
+                    .toList(),
+              ),
+            ],
           ),
         ),
       );
@@ -349,13 +378,29 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                 color: AppColors.surfaceVariant(context),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: SizedBox(
-                width: 16,
-                height: 16,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: AppColors.primary(context),
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircleAvatar(
+                    radius: 10,
+                    backgroundColor:
+                        AppColors.primary(context).withValues(alpha: 0.2),
+                    child: Icon(
+                      Icons.psychology_alt_rounded,
+                      size: 12,
+                      color: AppColors.primary(context),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.primary(context),
+                    ),
+                  ),
+                ],
               ),
             ),
           );
@@ -373,6 +418,13 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
       decoration: BoxDecoration(
         color: AppColors.surface(context),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.18),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
+          ),
+        ],
         border: Border(top: BorderSide(color: AppColors.border(context))),
       ),
       child: Column(
@@ -405,9 +457,15 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Icon(Icons.send_rounded, size: 18),
+                child: _loading
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.send_rounded, size: 18),
               ),
-            ),
+            ],
           ),
           const SizedBox(height: 6),
           Text(
@@ -432,10 +490,10 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     final usagePct = ((_messages.length / window) * 100).clamp(0, 100).round();
 
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.surface(context),
-        borderRadius: BorderRadius.circular(14),
+        color: AppColors.surfaceVariant(context).withValues(alpha: 0.6),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border(context)),
       ),
       child: Column(
@@ -518,8 +576,9 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildFallbackCard() {
+    final compact = _ecoBannerCollapsed;
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: AppColors.warningBackground(context),
         borderRadius: BorderRadius.circular(12),
@@ -528,30 +587,50 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Modo Eco ativo (sem creditos).',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: AppColors.warning(context),
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Modo Eco ativo (sem creditos).',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.warning(context),
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  setState(() => _ecoBannerCollapsed = !_ecoBannerCollapsed);
+                },
+                iconSize: 18,
+                visualDensity: VisualDensity.compact,
+                tooltip: compact ? 'Expandir aviso' : 'Minimizar aviso',
+                icon: Icon(
+                  compact ? Icons.expand_more : Icons.expand_less,
+                  color: AppColors.warning(context),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            'Podes continuar a conversar, mas com memoria reduzida.',
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.warning(context),
+          if (!compact) ...[
+            const SizedBox(height: 2),
+            Text(
+              'Podes continuar a conversar, mas com memoria reduzida.',
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.warning(context),
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: OutlinedButton(
-              onPressed: widget.onRestoreMemory ?? widget.onOpenSettings,
-              child: const Text('Restaurar memoria'),
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: OutlinedButton(
+                onPressed: widget.onRestoreMemory ?? widget.onOpenSettings,
+                child: const Text('Restaurar memoria'),
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );
@@ -590,6 +669,12 @@ class _MessageBubble extends StatelessWidget {
   final CoachChatMessage message;
   const _MessageBubble({required this.message});
 
+  String _formatTime(DateTime value) {
+    final h = value.hour.toString().padLeft(2, '0');
+    final m = value.minute.toString().padLeft(2, '0');
+    return '$h:$m';
+  }
+
   @override
   Widget build(BuildContext context) {
     final isUser = message.role == 'user';
@@ -605,22 +690,121 @@ class _MessageBubble extends StatelessWidget {
         : AppColors.surfaceVariant(context);
     final textColor =
         isUser ? AppColors.onPrimary(context) : AppColors.textPrimary(context);
+    final labelColor =
+        isUser ? AppColors.textSecondary(context) : AppColors.textMuted(context);
+    final avatarBg = isUser
+        ? AppColors.primary(context).withValues(alpha: 0.2)
+        : AppColors.surfaceVariant(context);
+    final avatarIconColor =
+        isUser ? AppColors.primary(context) : AppColors.textSecondary(context);
 
     return Align(
-        alignment: align,
-        child: Container(
-          margin: const EdgeInsets.only(bottom: 8),
-          constraints: BoxConstraints(maxWidth: maxWidth),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          decoration: BoxDecoration(
-            color: bubbleColor,
-            borderRadius: BorderRadius.circular(12),
+      alignment: align,
+      child: Column(
+        crossAxisAlignment:
+            isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (!isUser)
+                  CircleAvatar(
+                    radius: 10,
+                    backgroundColor: avatarBg,
+                    child: Icon(
+                      Icons.psychology_alt_rounded,
+                      size: 12,
+                      color: avatarIconColor,
+                    ),
+                  ),
+                if (!isUser) const SizedBox(width: 6),
+                Text(
+                  isUser ? 'Tu' : 'Coach',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: labelColor,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  _formatTime(message.timestamp),
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    color: labelColor,
+                  ),
+                ),
+                if (isUser) const SizedBox(width: 6),
+                if (isUser)
+                  CircleAvatar(
+                    radius: 10,
+                    backgroundColor: avatarBg,
+                    child: Icon(
+                      Icons.person_rounded,
+                      size: 12,
+                      color: avatarIconColor,
+                    ),
+                  ),
+              ],
+            ),
           ),
-          child: SelectableText(
-            message.content,
-            style: TextStyle(fontSize: 14, color: textColor, height: 1.4),
+          Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            constraints: BoxConstraints(maxWidth: maxWidth),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: bubbleColor,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: isUser
+                ? SelectableText(
+                    message.content,
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: textColor,
+                      height: 1.6,
+                    ),
+                  )
+                : MarkdownBody(
+                    data: message.content,
+                    selectable: true,
+                    styleSheet: MarkdownStyleSheet(
+                      p: TextStyle(
+                        fontSize: 15,
+                        color: textColor,
+                        height: 1.6,
+                      ),
+                      strong: TextStyle(
+                        fontSize: 15,
+                        color: textColor,
+                        fontWeight: FontWeight.w700,
+                        height: 1.6,
+                      ),
+                      listBullet: TextStyle(
+                        fontSize: 15,
+                        color: textColor,
+                        height: 1.6,
+                      ),
+                      h1: TextStyle(
+                        fontSize: 17,
+                        color: textColor,
+                        fontWeight: FontWeight.w800,
+                        height: 1.5,
+                      ),
+                      h2: TextStyle(
+                        fontSize: 16,
+                        color: textColor,
+                        fontWeight: FontWeight.w700,
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
           ),
-        ),
-      );
+        ],
+      ),
+    );
   }
 }
