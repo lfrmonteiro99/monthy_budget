@@ -10,6 +10,7 @@ import '../services/meal_planner_ai_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 import '../widgets/meal_cost_reconciliation_sheet.dart';
+import '../widgets/meal_feedback_button.dart';
 import '../onboarding/meals_tour.dart';
 import 'meal_wizard_screen.dart';
 
@@ -892,27 +893,30 @@ class _DayCard extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _FeedbackButton(
+                      MealFeedbackButton(
                         icon: Icons.thumb_up_outlined,
                         activeIcon: Icons.thumb_up,
                         isActive: mealDay.feedback == MealFeedback.liked,
                         color: const Color(0xFF16A34A),
+                        label: l10n.mealFeedbackLike,
                         onTap: () => onFeedback(MealFeedback.liked),
                       ),
-                      const SizedBox(width: 16),
-                      _FeedbackButton(
+                      const SizedBox(width: 10),
+                      MealFeedbackButton(
                         icon: Icons.thumb_down_outlined,
                         activeIcon: Icons.thumb_down,
                         isActive: mealDay.feedback == MealFeedback.disliked,
                         color: AppColors.error(context),
+                        label: l10n.mealFeedbackDislike,
                         onTap: () => onFeedback(MealFeedback.disliked),
                       ),
-                      const SizedBox(width: 16),
-                      _FeedbackButton(
+                      const SizedBox(width: 10),
+                      MealFeedbackButton(
                         icon: Icons.skip_next_outlined,
                         activeIcon: Icons.skip_next,
                         isActive: mealDay.feedback == MealFeedback.skipped,
                         color: AppColors.textMuted(context),
+                        label: l10n.mealFeedbackSkip,
                         onTap: () => onFeedback(MealFeedback.skipped),
                       ),
                     ],
@@ -1421,31 +1425,6 @@ class _Stars extends StatelessWidget {
           i < complexity ? Icons.star : Icons.star_border,
           size: 13,
           color: AppColors.warning(context),
-        ),
-      ),
-    );
-  }
-}
-
-class _FeedbackButton extends StatelessWidget {
-  final IconData icon;
-  final IconData activeIcon;
-  final bool isActive;
-  final Color color;
-  final VoidCallback onTap;
-  const _FeedbackButton({required this.icon, required this.activeIcon, required this.isActive, required this.color, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: isActive ? color.withValues(alpha: 0.1) : Colors.transparent,
-      borderRadius: BorderRadius.circular(20),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Icon(isActive ? activeIcon : icon, size: 20, color: isActive ? color : AppColors.borderMuted(context)),
         ),
       ),
     );

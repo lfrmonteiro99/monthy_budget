@@ -2354,6 +2354,15 @@ class SEs extends S {
   String get mealBatchParallelTips => 'Consejos de cocina paralela';
 
   @override
+  String get mealFeedbackLike => 'Me gusta';
+
+  @override
+  String get mealFeedbackDislike => 'No me gusta';
+
+  @override
+  String get mealFeedbackSkip => 'Saltar';
+
+  @override
   String get notifications => 'Notificaciones';
 
   @override

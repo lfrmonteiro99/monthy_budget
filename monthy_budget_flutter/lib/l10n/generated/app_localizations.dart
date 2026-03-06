@@ -4403,6 +4403,24 @@ abstract class S {
   /// **'Dicas de cozinha paralela'**
   String get mealBatchParallelTips;
 
+  /// Label for liked meal feedback button
+  ///
+  /// In pt, this message translates to:
+  /// **'Gostei'**
+  String get mealFeedbackLike;
+
+  /// Label for disliked meal feedback button
+  ///
+  /// In pt, this message translates to:
+  /// **'Não gostei'**
+  String get mealFeedbackDislike;
+
+  /// Label for skipped meal feedback button
+  ///
+  /// In pt, this message translates to:
+  /// **'Saltar'**
+  String get mealFeedbackSkip;
+
   /// Notifications title
   ///
   /// In pt, this message translates to:

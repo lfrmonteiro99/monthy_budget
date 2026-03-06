@@ -2356,6 +2356,15 @@ class SFr extends S {
   String get mealBatchParallelTips => 'Astuces de cuisson parallÃ¨le';
 
   @override
+  String get mealFeedbackLike => 'J\'aime';
+
+  @override
+  String get mealFeedbackDislike => 'Je n\'aime pas';
+
+  @override
+  String get mealFeedbackSkip => 'Passer';
+
+  @override
   String get notifications => 'Notifications';
 
   @override
