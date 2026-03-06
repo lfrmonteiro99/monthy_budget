@@ -886,6 +886,7 @@ class SEs extends S {
   @override
   String get authRegistrationSuccess =>
       'Â¡Cuenta creada! Revisa tu email para verificar la cuenta antes de iniciar sesiÃ³n.';
+
   @override
   String get authErrorNetwork =>
       'No se pudo conectar al servidor. Comprueba tu conexión a internet e inténtalo de nuevo.';
@@ -905,7 +906,6 @@ class SEs extends S {
   @override
   String get authErrorGeneric =>
       'Algo salió mal. Inténtalo de nuevo más tarde.';
-
 
   @override
   String get householdSetupTitle => 'Configurar Hogar';
@@ -2930,6 +2930,69 @@ class SEs extends S {
   @override
   String get onbTourMeals3Body =>
       'EnvÃ­a los ingredientes de la semana a tu lista con un toque.';
+
+  @override
+  String get onbTourExpenseTracker1Title => 'Navegación mensual';
+
+  @override
+  String get onbTourExpenseTracker1Body =>
+      'Cambia entre meses para ver o añadir gastos de cualquier período.';
+
+  @override
+  String get onbTourExpenseTracker2Title => 'Resumen del presupuesto';
+
+  @override
+  String get onbTourExpenseTracker2Body =>
+      'Ve tu presupuesto vs gasto real y el saldo restante de un vistazo.';
+
+  @override
+  String get onbTourExpenseTracker3Title => 'Por categoría';
+
+  @override
+  String get onbTourExpenseTracker3Body =>
+      'Cada categoría muestra una barra de progreso. Toca para expandir y ver gastos individuales.';
+
+  @override
+  String get onbTourExpenseTracker4Title => 'Añadir gasto';
+
+  @override
+  String get onbTourExpenseTracker4Body =>
+      'Toca + para registrar un nuevo gasto. Elige la categoría y el importe.';
+
+  @override
+  String get onbTourSavings1Title => 'Tus objetivos';
+
+  @override
+  String get onbTourSavings1Body =>
+      'Cada tarjeta muestra el progreso hacia tu meta. Toca para ver detalles y añadir contribuciones.';
+
+  @override
+  String get onbTourSavings2Title => 'Crear objetivo';
+
+  @override
+  String get onbTourSavings2Body =>
+      'Toca + para definir un nuevo objetivo de ahorro con importe meta y fecha límite opcional.';
+
+  @override
+  String get onbTourRecurring1Title => 'Gastos recurrentes';
+
+  @override
+  String get onbTourRecurring1Body =>
+      'Facturas fijas mensuales como alquiler, suscripciones y servicios. Se incluyen automáticamente en tu presupuesto.';
+
+  @override
+  String get onbTourRecurring2Title => 'Añadir recurrente';
+
+  @override
+  String get onbTourRecurring2Body =>
+      'Toca + para registrar un nuevo gasto recurrente con importe y día de vencimiento.';
+
+  @override
+  String get onbTourAssistant1Title => 'Asistente de comandos';
+
+  @override
+  String get onbTourAssistant1Body =>
+      'Tu atajo para acciones rápidas. Toca para añadir gastos, cambiar ajustes, navegar y más u2014 solo escribe lo que necesitas.';
 
   @override
   String get taxDeductionTitle => 'Deducciones Fiscales';

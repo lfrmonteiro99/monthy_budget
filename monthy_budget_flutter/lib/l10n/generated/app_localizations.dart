@@ -1673,19 +1673,34 @@ abstract class S {
   /// **'Conta criada! Verifique o seu email para confirmar a conta antes de iniciar sessão.'**
   String get authRegistrationSuccess;
 
-  /// No additional description provided.
+  /// No description provided for @authErrorNetwork.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível ligar ao servidor. Verifique a sua ligação à internet e tente novamente.'**
   String get authErrorNetwork;
 
-  /// No additional description provided.
+  /// No description provided for @authErrorInvalidCredentials.
+  ///
+  /// In pt, this message translates to:
+  /// **'Email ou palavra-passe inválidos. Tente novamente.'**
   String get authErrorInvalidCredentials;
 
-  /// No additional description provided.
+  /// No description provided for @authErrorEmailNotConfirmed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Verifique o seu email antes de iniciar sessão.'**
   String get authErrorEmailNotConfirmed;
 
-  /// No additional description provided.
+  /// No description provided for @authErrorTooManyRequests.
+  ///
+  /// In pt, this message translates to:
+  /// **'Demasiadas tentativas. Aguarde um momento e tente novamente.'**
   String get authErrorTooManyRequests;
 
-  /// No additional description provided.
+  /// No description provided for @authErrorGeneric.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ocorreu um erro. Tente novamente mais tarde.'**
   String get authErrorGeneric;
 
   /// Household setup screen title
@@ -5407,6 +5422,114 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Envie os ingredientes da semana para a lista com um toque.'**
   String get onbTourMeals3Body;
+
+  /// No description provided for @onbTourExpenseTracker1Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Navegação mensal'**
+  String get onbTourExpenseTracker1Title;
+
+  /// No description provided for @onbTourExpenseTracker1Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alterne entre meses para ver ou adicionar despesas de qualquer período.'**
+  String get onbTourExpenseTracker1Body;
+
+  /// No description provided for @onbTourExpenseTracker2Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Resumo do orçamento'**
+  String get onbTourExpenseTracker2Title;
+
+  /// No description provided for @onbTourExpenseTracker2Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Veja o orçado vs real e o saldo restante de relance.'**
+  String get onbTourExpenseTracker2Body;
+
+  /// No description provided for @onbTourExpenseTracker3Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Por categoria'**
+  String get onbTourExpenseTracker3Title;
+
+  /// No description provided for @onbTourExpenseTracker3Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cada categoria mostra uma barra de progresso. Toque para expandir e ver despesas individuais.'**
+  String get onbTourExpenseTracker3Body;
+
+  /// No description provided for @onbTourExpenseTracker4Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar despesa'**
+  String get onbTourExpenseTracker4Title;
+
+  /// No description provided for @onbTourExpenseTracker4Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque + para registar uma nova despesa. Escolha a categoria e o valor.'**
+  String get onbTourExpenseTracker4Body;
+
+  /// No description provided for @onbTourSavings1Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Os seus objetivos'**
+  String get onbTourSavings1Title;
+
+  /// No description provided for @onbTourSavings1Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cada cartão mostra o progresso em direção ao objetivo. Toque para ver detalhes e adicionar contribuições.'**
+  String get onbTourSavings1Body;
+
+  /// No description provided for @onbTourSavings2Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Criar objetivo'**
+  String get onbTourSavings2Title;
+
+  /// No description provided for @onbTourSavings2Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque + para definir um novo objetivo de poupança com valor alvo e prazo opcional.'**
+  String get onbTourSavings2Body;
+
+  /// No description provided for @onbTourRecurring1Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas recorrentes'**
+  String get onbTourRecurring1Title;
+
+  /// No description provided for @onbTourRecurring1Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Contas fixas mensais como renda, subscrições e serviços. São incluídas automaticamente no orçamento.'**
+  String get onbTourRecurring1Body;
+
+  /// No description provided for @onbTourRecurring2Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar recorrente'**
+  String get onbTourRecurring2Title;
+
+  /// No description provided for @onbTourRecurring2Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque + para registar uma nova despesa recorrente com valor e dia de vencimento.'**
+  String get onbTourRecurring2Body;
+
+  /// No description provided for @onbTourAssistant1Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Assistente de comandos'**
+  String get onbTourAssistant1Title;
+
+  /// No description provided for @onbTourAssistant1Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'O seu atalho para ações rápidas. Toque para adicionar despesas, mudar definições, navegar e mais u2014 basta escrever o que precisa.'**
+  String get onbTourAssistant1Body;
 
   /// No description provided for @taxDeductionTitle.
   ///

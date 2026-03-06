@@ -8,17 +8,22 @@ import '../utils/formatters.dart';
 import '../utils/savings_projections.dart';
 import '../widgets/add_savings_goal_sheet.dart';
 import '../widgets/info_icon_button.dart';
+import '../onboarding/savings_goals_tour.dart';
 
 class SavingsGoalsScreen extends StatefulWidget {
   final String householdId;
   final List<SavingsGoal> goals;
   final ValueChanged<List<SavingsGoal>> onChanged;
+  final bool showTour;
+  final VoidCallback? onTourComplete;
 
   const SavingsGoalsScreen({
     super.key,
     required this.householdId,
     required this.goals,
     required this.onChanged,
+    this.showTour = false,
+    this.onTourComplete,
   });
 
   @override
@@ -29,11 +34,26 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
   final _service = SavingsGoalService();
   late List<SavingsGoal> _goals;
 
+  bool _tourShown = false;
+
   @override
   void initState() {
     super.initState();
     _goals = List.from(widget.goals);
     _reloadGoals();
+    if (widget.showTour) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _tryShowTour());
+    }
+  }
+
+  void _tryShowTour() {
+    if (_tourShown || !mounted) return;
+    _tourShown = true;
+    buildSavingsGoalsTour(
+      context: context,
+      onFinish: () => widget.onTourComplete?.call(),
+      onSkip: () => widget.onTourComplete?.call(),
+    ).show(context: context);
   }
 
   void _notify() => widget.onChanged(_goals);
@@ -160,6 +180,7 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
         elevation: 0,
       ),
       floatingActionButton: FloatingActionButton(
+        key: SavingsGoalsTourKeys.addFab,
         onPressed: () => _addOrEditGoal(),
         backgroundColor: AppColors.primary(context),
         child: Icon(Icons.add, color: AppColors.onPrimary(context)),
@@ -183,6 +204,7 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
               itemCount: _goals.length,
               separatorBuilder: (_, _) => const SizedBox(height: 8),
               itemBuilder: (_, i) => _GoalCard(
+                key: i == 0 ? SavingsGoalsTourKeys.goalCard : null,
                 goal: _goals[i],
                 onTap: () => _openGoalDetail(_goals[i]),
                 onEdit: () => _addOrEditGoal(_goals[i]),
@@ -204,6 +226,7 @@ class _GoalCard extends StatelessWidget {
   final VoidCallback onDelete;
 
   const _GoalCard({
+    super.key,
     required this.goal,
     required this.onTap,
     required this.onEdit,

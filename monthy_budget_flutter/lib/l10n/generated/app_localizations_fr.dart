@@ -890,6 +890,7 @@ class SFr extends S {
   @override
   String get authRegistrationSuccess =>
       'Compte crÃ©Ã© ! VÃ©rifiez votre email pour confirmer votre compte avant de vous connecter.';
+
   @override
   String get authErrorNetwork =>
       'Impossible de se connecter au serveur. Vérifiez votre connexion internet et réessayez.';
@@ -909,7 +910,6 @@ class SFr extends S {
   @override
   String get authErrorGeneric =>
       'Une erreur est survenue. Veuillez réessayer plus tard.';
-
 
   @override
   String get householdSetupTitle => 'Configurer le Foyer';
@@ -2936,6 +2936,69 @@ class SFr extends S {
   @override
   String get onbTourMeals3Body =>
       'Envoyez les ingrÃ©dients de la semaine Ã  votre liste en un seul appui.';
+
+  @override
+  String get onbTourExpenseTracker1Title => 'Navigation mensuelle';
+
+  @override
+  String get onbTourExpenseTracker1Body =>
+      'Changez de mois pour voir ou ajouter des dépenses pour n\'importe quelle période.';
+
+  @override
+  String get onbTourExpenseTracker2Title => 'Résumé du budget';
+
+  @override
+  String get onbTourExpenseTracker2Body =>
+      'Voyez votre budget vs dépenses réelles et le solde restant en un coup d\'œil.';
+
+  @override
+  String get onbTourExpenseTracker3Title => 'Par catégorie';
+
+  @override
+  String get onbTourExpenseTracker3Body =>
+      'Chaque catégorie affiche une barre de progression. Touchez pour développer et voir les dépenses individuelles.';
+
+  @override
+  String get onbTourExpenseTracker4Title => 'Ajouter une dépense';
+
+  @override
+  String get onbTourExpenseTracker4Body =>
+      'Touchez + pour enregistrer une nouvelle dépense. Choisissez la catégorie et le montant.';
+
+  @override
+  String get onbTourSavings1Title => 'Vos objectifs';
+
+  @override
+  String get onbTourSavings1Body =>
+      'Chaque carte montre la progression vers votre objectif. Touchez pour voir les détails et ajouter des contributions.';
+
+  @override
+  String get onbTourSavings2Title => 'Créer un objectif';
+
+  @override
+  String get onbTourSavings2Body =>
+      'Touchez + pour définir un nouvel objectif d\'épargne avec un montant cible et une date limite optionnelle.';
+
+  @override
+  String get onbTourRecurring1Title => 'Dépenses récurrentes';
+
+  @override
+  String get onbTourRecurring1Body =>
+      'Factures fixes mensuelles comme le loyer, abonnements et services. Incluses automatiquement dans votre budget.';
+
+  @override
+  String get onbTourRecurring2Title => 'Ajouter récurrente';
+
+  @override
+  String get onbTourRecurring2Body =>
+      'Touchez + pour enregistrer une nouvelle dépense récurrente avec montant et jour d\'échéance.';
+
+  @override
+  String get onbTourAssistant1Title => 'Assistant de commandes';
+
+  @override
+  String get onbTourAssistant1Body =>
+      'Votre raccourci pour les actions rapides. Touchez pour ajouter des dépenses, changer les paramètres, naviguer et plus u2014 tapez simplement ce dont vous avez besoin.';
 
   @override
   String get taxDeductionTitle => 'DÃ©ductions Fiscales';
