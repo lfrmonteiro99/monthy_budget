@@ -226,11 +226,16 @@ Optimize for parallel cooking (e.g. while rice cooks, prep vegetables). Be speci
       );
       final clean = content.replaceAll(RegExp(r'```json|```'), '').trim();
       final parsed = jsonDecode(clean) as Map<String, dynamic>;
-      return BatchCookingPlan.fromJson(parsed);
+      final plan = BatchCookingPlan.fromJson(parsed);
+      if (plan.prepOrder.isNotEmpty) return plan;
     } catch (_) {
-      // Best-effort
+      // Fall back to a deterministic local guide when AI is unavailable.
     }
-    return null;
+    return buildLocalBatchPlan(
+      batchRecipes: batchRecipes,
+      nPessoas: nPessoas,
+      locale: locale,
+    );
   }
 
   Future<String> _requestChatCompletion({
@@ -269,5 +274,242 @@ Optimize for parallel cooking (e.g. while rice cooks, prep vegetables). Be speci
       );
     }
     return {'Authorization': 'Bearer $accessToken'};
+  }
+
+  static BatchCookingPlan buildLocalBatchPlan({
+    required List<Recipe> batchRecipes,
+    required int nPessoas,
+    String locale = 'pt',
+  }) {
+    final recipes = batchRecipes.toSet().toList()
+      ..sort((a, b) {
+        final prepDiff = b.prepMinutes.compareTo(a.prepMinutes);
+        if (prepDiff != 0) return prepDiff;
+        return a.name.compareTo(b.name);
+      });
+
+    final recipeNames = recipes.map((r) => r.name).toList(growable: false);
+    final sharedIngredients = _sharedIngredientIds(recipes);
+    final hasOven = recipes.any((r) => r.requiresEquipment.contains('oven'));
+    final activeMinutes = recipes.fold<int>(0, (sum, r) => sum + r.prepMinutes);
+    final longestRecipeMinutes = recipes.fold<int>(
+      0,
+      (max, r) => r.prepMinutes > max ? r.prepMinutes : max,
+    );
+    final estimatedMinutes = recipes.length == 1
+        ? activeMinutes
+        : longestRecipeMinutes +
+            ((activeMinutes - longestRecipeMinutes) * 0.6).round();
+
+    final prepOrder = <String>[
+      if (hasOven)
+        _batchText(
+          locale,
+          pt:
+              'Aquece o forno e prepara recipientes para ${recipeNames.join(', ')}.',
+          en:
+              'Preheat the oven and set out containers for ${recipeNames.join(', ')}.',
+          es:
+              'Precalienta el horno y prepara recipientes para ${recipeNames.join(', ')}.',
+          fr:
+              'Préchauffe le four et prépare des boîtes pour ${recipeNames.join(', ')}.',
+        ),
+      _batchText(
+        locale,
+        pt:
+            'Separa todos os ingredientes e ajusta as quantidades para $nPessoas pessoas antes de começares.',
+        en:
+            'Measure all ingredients and scale the quantities for $nPessoas people before starting.',
+        es:
+            'Separa todos los ingredientes y ajusta las cantidades para $nPessoas personas antes de empezar.',
+        fr:
+            'Prépare tous les ingrédients et ajuste les quantités pour $nPessoas personnes avant de commencer.',
+      ),
+      if (sharedIngredients.isNotEmpty)
+        _batchText(
+          locale,
+          pt:
+              'Prepara primeiro os ingredientes repetidos (${sharedIngredients.join(', ')}) para os usares em várias receitas.',
+          en:
+              'Prep the repeated ingredients first (${sharedIngredients.join(', ')}) so you can reuse them across recipes.',
+          es:
+              'Prepara primero los ingredientes repetidos (${sharedIngredients.join(', ')}) para reutilizarlos en varias recetas.',
+          fr:
+              'Prépare d\'abord les ingrédients communs (${sharedIngredients.join(', ')}) pour les réutiliser dans plusieurs recettes.',
+        ),
+      ...recipes.map((recipe) => _recipePrepStep(recipe, locale, nPessoas)),
+      _batchText(
+        locale,
+        pt:
+            'Divide as porções em caixas, deixa arrefecer e guarda no frigorífico para os próximos dias.',
+        en:
+            'Portion everything into containers, let it cool, and refrigerate it for the next few days.',
+        es:
+            'Reparte las porciones en recipientes, deja enfriar y guarda en la nevera para los próximos días.',
+        fr:
+            'Répartis les portions en boîtes, laisse refroidir et garde au réfrigérateur pour les prochains jours.',
+      ),
+    ];
+
+    final parallelTips = <String>[
+      if (recipes.length > 1)
+        _batchText(
+          locale,
+          pt:
+              'Enquanto a receita mais demorada cozinha, avança com os cortes e bases das restantes.',
+          en:
+              'While the longest recipe cooks, use that time to prep the remaining dishes.',
+          es:
+              'Mientras se cocina la receta más larga, adelanta los cortes y bases de las demás.',
+          fr:
+              'Pendant que la recette la plus longue cuit, avance sur les découpes et bases des autres.',
+        ),
+      if (hasOven)
+        _batchText(
+          locale,
+          pt:
+              'Agrupa tudo o que vai ao forno na mesma fase para evitar pré-aquecimentos repetidos.',
+          en:
+              'Group all oven work together to avoid repeated preheating cycles.',
+          es:
+              'Agrupa todo lo que va al horno en la misma fase para evitar precalentados repetidos.',
+          fr:
+              'Regroupe tout ce qui va au four dans la même phase pour éviter plusieurs préchauffages.',
+        ),
+      if (sharedIngredients.isNotEmpty)
+        _batchText(
+          locale,
+          pt:
+              'Guarda parte dos aromáticos e legumes já preparados para acelerar os reaquecimentos durante a semana.',
+          en:
+              'Keep part of the prepped aromatics and vegetables ready to speed up reheating later in the week.',
+          es:
+              'Guarda parte de los aromáticos y verduras ya preparados para acelerar el recalentado durante la semana.',
+          fr:
+              'Garde une partie des aromatiques et légumes déjà prêts pour accélérer les réchauffages pendant la semaine.',
+        ),
+    ];
+
+    return BatchCookingPlan(
+      prepOrder: prepOrder,
+      totalTimeEstimate: _formatDuration(estimatedMinutes),
+      parallelTips: parallelTips,
+    );
+  }
+
+  static List<String> _sharedIngredientIds(List<Recipe> recipes) {
+    final counts = <String, int>{};
+    for (final recipe in recipes) {
+      for (final ingredient in recipe.ingredients
+          .map((ri) => ri.ingredientId)
+          .toSet()) {
+        counts.update(ingredient, (value) => value + 1, ifAbsent: () => 1);
+      }
+    }
+    final shared = counts.entries
+        .where((entry) => entry.value > 1)
+        .map((entry) => entry.key.replaceAll('_', ' '))
+        .toList()
+      ..sort();
+    return shared.take(3).toList(growable: false);
+  }
+
+  static String _recipePrepStep(Recipe recipe, String locale, int nPessoas) {
+    final equipment = recipe.requiresEquipment.isEmpty
+        ? _batchText(
+            locale,
+            pt: 'no fogão ou bancada',
+            en: 'on the hob or main workstation',
+            es: 'en los fuegos o en la encimera',
+            fr: 'sur les plaques ou le plan de travail',
+          )
+        : _equipmentText(recipe.requiresEquipment, locale);
+    return _batchText(
+      locale,
+      pt:
+          'Cozinha ${recipe.name} ($equipment) e deixa $nPessoas porções prontas. Tempo base: ${recipe.prepMinutes} min.',
+      en:
+          'Cook ${recipe.name} ($equipment) and portion it for $nPessoas servings. Base prep time: ${recipe.prepMinutes} min.',
+      es:
+          'Cocina ${recipe.name} ($equipment) y deja $nPessoas raciones listas. Tiempo base: ${recipe.prepMinutes} min.',
+      fr:
+          'Prépare ${recipe.name} ($equipment) et laisse $nPessoas portions prêtes. Temps de base : ${recipe.prepMinutes} min.',
+    );
+  }
+
+  static String _equipmentText(List<String> equipment, String locale) {
+    return equipment.map((item) {
+      switch (item) {
+        case 'oven':
+          return _batchText(
+            locale,
+            pt: 'forno',
+            en: 'oven',
+            es: 'horno',
+            fr: 'four',
+          );
+        case 'airFryer':
+          return _batchText(
+            locale,
+            pt: 'air fryer',
+            en: 'air fryer',
+            es: 'freidora de aire',
+            fr: 'air fryer',
+          );
+        case 'pressureCooker':
+          return _batchText(
+            locale,
+            pt: 'panela de pressão',
+            en: 'pressure cooker',
+            es: 'olla a presión',
+            fr: 'cocotte-minute',
+          );
+        case 'microwave':
+          return _batchText(
+            locale,
+            pt: 'micro-ondas',
+            en: 'microwave',
+            es: 'microondas',
+            fr: 'micro-ondes',
+          );
+        case 'foodProcessor':
+          return _batchText(
+            locale,
+            pt: 'robot de cozinha',
+            en: 'food processor',
+            es: 'robot de cocina',
+            fr: 'robot culinaire',
+          );
+        default:
+          return item;
+      }
+    }).join(', ');
+  }
+
+  static String _formatDuration(int minutes) {
+    if (minutes <= 60) return '${minutes}min';
+    final hours = minutes ~/ 60;
+    final remainder = minutes % 60;
+    if (remainder == 0) return '${hours}h';
+    return '${hours}h${remainder.toString().padLeft(2, '0')}';
+  }
+
+  static String _batchText(
+    String locale, {
+    required String pt,
+    required String en,
+    required String es,
+    required String fr,
+  }) {
+    switch (locale) {
+      case 'pt':
+        return pt;
+      case 'es':
+        return es;
+      case 'fr':
+        return fr;
+      default:
+        return en;
+    }
   }
 }

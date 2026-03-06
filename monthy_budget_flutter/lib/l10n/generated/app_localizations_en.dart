@@ -567,65 +567,6 @@ class SEn extends S {
   String get coachDeleteTooltip => 'Delete';
 
   @override
-  String get coachEmptyTitle => 'Your financial coach';
-
-  @override
-  String get coachEmptyBody =>
-      'Ask anything about your budget, expenses, or savings. I\'ll use your real data to give personalized advice.';
-
-  @override
-  String get coachQuickPrompt1 => 'Where can I cut expenses this month?';
-
-  @override
-  String get coachQuickPrompt2 => 'How can I improve my savings?';
-
-  @override
-  String get coachQuickPrompt3 => 'Help me build a 30-day plan.';
-
-  @override
-  String get coachComposerHint => 'Ask your coach...';
-
-  @override
-  String get coachYou => 'You';
-
-  @override
-  String get coachAssistant => 'Coach';
-
-  @override
-  String coachCreditsCount(int count) {
-    return '$count credits';
-  }
-
-  @override
-  String get coachMemory => 'Memory';
-
-  @override
-  String get coachCostFree => 'Eco mode — no credits used.';
-
-  @override
-  String coachCostCredits(int cost) {
-    return 'This message costs $cost credits.';
-  }
-
-  @override
-  String get coachFree => 'Free';
-
-  @override
-  String coachPerMsg(int cost) {
-    return '$cost/msg';
-  }
-
-  @override
-  String get coachEcoFallbackTitle => 'Eco mode active (no credits)';
-
-  @override
-  String get coachEcoFallbackBody =>
-      'You can keep chatting with reduced memory.';
-
-  @override
-  String get coachRestoreMemory => 'Restore memory';
-
-  @override
   String get cmdAssistantTitle => 'Assistant';
 
   @override
@@ -2543,6 +2484,15 @@ class SEn extends S {
 
   @override
   String get mealBatchParallelTips => 'Parallel cooking tips';
+
+  @override
+  String get mealFeedbackLike => 'Liked';
+
+  @override
+  String get mealFeedbackDislike => 'Dislike';
+
+  @override
+  String get mealFeedbackSkip => 'Skip';
 
   @override
   String get notifications => 'Notifications';

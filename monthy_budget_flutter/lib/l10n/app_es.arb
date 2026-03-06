@@ -1244,6 +1244,9 @@
     }
   },
   "mealBatchParallelTips": "Consejos de cocina paralela",
+  "mealFeedbackLike": "Me gusta",
+  "mealFeedbackDislike": "No me gusta",
+  "mealFeedbackSkip": "Saltar",
 
   "notifications": "Notificaciones",
   "notificationSettings": "Ajustes de Notificaciones",

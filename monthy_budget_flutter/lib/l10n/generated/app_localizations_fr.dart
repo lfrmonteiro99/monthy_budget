@@ -570,73 +570,13 @@ class SFr extends S {
   String get coachDeleteTooltip => 'Supprimer';
 
   @override
-  String get coachEmptyTitle => 'Votre coach financier';
-
-  @override
-  String get coachEmptyBody =>
-      'Posez toute question sur votre budget, depenses ou epargne. J\'utiliserai vos donnees reelles pour des conseils personnalises.';
-
-  @override
-  String get coachQuickPrompt1 =>
-      'Ou puis-je reduire mes depenses ce mois-ci ?';
-
-  @override
-  String get coachQuickPrompt2 => 'Comment ameliorer mon epargne ?';
-
-  @override
-  String get coachQuickPrompt3 => 'Aidez-moi a creer un plan sur 30 jours.';
-
-  @override
-  String get coachComposerHint => 'Demandez a votre coach...';
-
-  @override
-  String get coachYou => 'Vous';
-
-  @override
-  String get coachAssistant => 'Coach';
-
-  @override
-  String coachCreditsCount(int count) {
-    return '$count credits';
-  }
-
-  @override
-  String get coachMemory => 'Memoire';
-
-  @override
-  String get coachCostFree => 'Mode Eco — sans cout de credits.';
-
-  @override
-  String coachCostCredits(int cost) {
-    return 'Ce message coute $cost credits.';
-  }
-
-  @override
-  String get coachFree => 'Gratuit';
-
-  @override
-  String coachPerMsg(int cost) {
-    return '$cost/msg';
-  }
-
-  @override
-  String get coachEcoFallbackTitle => 'Mode Eco actif (sans credits)';
-
-  @override
-  String get coachEcoFallbackBody =>
-      'Vous pouvez continuer a discuter avec une memoire reduite.';
-
-  @override
-  String get coachRestoreMemory => 'Restaurer la memoire';
-
-  @override
   String get cmdAssistantTitle => 'Assistant';
 
   @override
-  String get cmdAssistantHint => 'De quoi avez-vous besoin ?';
+  String get cmdAssistantHint => 'De quoi as-tu besoin ?';
 
   @override
-  String get cmdAssistantTooltip => 'Besoin d\'aide ? Appuyez ici';
+  String get cmdAssistantTooltip => 'Besoin d\'aide ? Appuie ici';
 
   @override
   String get cmdSuggestionAddExpense => 'Ajouter une depense';
@@ -648,7 +588,7 @@ class SFr extends S {
   String get cmdSuggestionChangeTheme => 'Changer le theme';
 
   @override
-  String get cmdSuggestionOpenSettings => 'Aller aux parametres';
+  String get cmdSuggestionOpenSettings => 'Aller aux reglages';
 
   @override
   String get cmdTemplateAddExpense => 'Ajoute [montant] euros en [categorie]';
@@ -658,11 +598,10 @@ class SFr extends S {
 
   @override
   String get cmdExecutionFailed =>
-      'J\'ai compris la demande, mais je n\'ai pas pu l\'executer. Reessayez.';
+      'J\'ai compris la demande, mais je n\'ai pas pu l\'executer. Reessaie.';
 
   @override
-  String get cmdNotUnderstood =>
-      'Je n\'ai pas compris. Pouvez-vous reformuler ?';
+  String get cmdNotUnderstood => 'Je n\'ai pas compris. Peux-tu reformuler ?';
 
   @override
   String get cmdUndo => 'Annuler';
@@ -2558,6 +2497,15 @@ class SFr extends S {
 
   @override
   String get mealBatchParallelTips => 'Astuces de cuisson parallÃ¨le';
+
+  @override
+  String get mealFeedbackLike => 'J\'aime';
+
+  @override
+  String get mealFeedbackDislike => 'Je n\'aime pas';
+
+  @override
+  String get mealFeedbackSkip => 'Passer';
 
   @override
   String get notifications => 'Notifications';

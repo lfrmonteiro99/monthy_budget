@@ -1127,108 +1127,6 @@ abstract class S {
   /// **'Eliminar'**
   String get coachDeleteTooltip;
 
-  /// Empty state title in coach chat
-  ///
-  /// In pt, this message translates to:
-  /// **'O teu coach financeiro'**
-  String get coachEmptyTitle;
-
-  /// Empty state body in coach chat
-  ///
-  /// In pt, this message translates to:
-  /// **'Pergunta o que quiseres sobre o teu orcamento, despesas ou poupancas. Vou usar os teus dados reais para dar conselhos personalizados.'**
-  String get coachEmptyBody;
-
-  /// Quick prompt suggestion 1
-  ///
-  /// In pt, this message translates to:
-  /// **'Onde posso cortar despesas este mes?'**
-  String get coachQuickPrompt1;
-
-  /// Quick prompt suggestion 2
-  ///
-  /// In pt, this message translates to:
-  /// **'Como melhoro a minha poupanca?'**
-  String get coachQuickPrompt2;
-
-  /// Quick prompt suggestion 3
-  ///
-  /// In pt, this message translates to:
-  /// **'Ajuda-me a definir um plano para 30 dias.'**
-  String get coachQuickPrompt3;
-
-  /// Composer text field hint
-  ///
-  /// In pt, this message translates to:
-  /// **'Pergunta ao coach...'**
-  String get coachComposerHint;
-
-  /// Label for user messages
-  ///
-  /// In pt, this message translates to:
-  /// **'Tu'**
-  String get coachYou;
-
-  /// Label for assistant messages
-  ///
-  /// In pt, this message translates to:
-  /// **'Coach'**
-  String get coachAssistant;
-
-  /// Credits pill label
-  ///
-  /// In pt, this message translates to:
-  /// **'{count} creditos'**
-  String coachCreditsCount(int count);
-
-  /// Memory section header
-  ///
-  /// In pt, this message translates to:
-  /// **'Memoria'**
-  String get coachMemory;
-
-  /// Cost info when mode is free
-  ///
-  /// In pt, this message translates to:
-  /// **'Modo Eco — sem custos de creditos.'**
-  String get coachCostFree;
-
-  /// Cost info per message
-  ///
-  /// In pt, this message translates to:
-  /// **'Esta mensagem custa {cost} creditos.'**
-  String coachCostCredits(int cost);
-
-  /// Free label on mode chip
-  ///
-  /// In pt, this message translates to:
-  /// **'Gratis'**
-  String get coachFree;
-
-  /// Cost per message on mode chip
-  ///
-  /// In pt, this message translates to:
-  /// **'{cost}/msg'**
-  String coachPerMsg(int cost);
-
-  /// Eco fallback banner title
-  ///
-  /// In pt, this message translates to:
-  /// **'Modo Eco ativo (sem creditos)'**
-  String get coachEcoFallbackTitle;
-
-  /// Eco fallback banner body
-  ///
-  /// In pt, this message translates to:
-  /// **'Podes continuar a conversar, mas com memoria reduzida.'**
-  String get coachEcoFallbackBody;
-
-  /// Button to restore memory/credits
-  ///
-  /// In pt, this message translates to:
-  /// **'Restaurar memoria'**
-  String get coachRestoreMemory;
-
   /// No description provided for @cmdAssistantTitle.
   ///
   /// In pt, this message translates to:
@@ -4756,6 +4654,24 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Dicas de cozinha paralela'**
   String get mealBatchParallelTips;
+
+  /// Label for liked meal feedback button
+  ///
+  /// In pt, this message translates to:
+  /// **'Gostei'**
+  String get mealFeedbackLike;
+
+  /// Label for disliked meal feedback button
+  ///
+  /// In pt, this message translates to:
+  /// **'Não gostei'**
+  String get mealFeedbackDislike;
+
+  /// Label for skipped meal feedback button
+  ///
+  /// In pt, this message translates to:
+  /// **'Saltar'**
+  String get mealFeedbackSkip;
 
   /// Notifications title
   ///

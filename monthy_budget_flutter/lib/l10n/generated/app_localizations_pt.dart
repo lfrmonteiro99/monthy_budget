@@ -569,65 +569,6 @@ class SPt extends S {
   String get coachDeleteTooltip => 'Eliminar';
 
   @override
-  String get coachEmptyTitle => 'O teu coach financeiro';
-
-  @override
-  String get coachEmptyBody =>
-      'Pergunta o que quiseres sobre o teu orcamento, despesas ou poupancas. Vou usar os teus dados reais para dar conselhos personalizados.';
-
-  @override
-  String get coachQuickPrompt1 => 'Onde posso cortar despesas este mes?';
-
-  @override
-  String get coachQuickPrompt2 => 'Como melhoro a minha poupanca?';
-
-  @override
-  String get coachQuickPrompt3 => 'Ajuda-me a definir um plano para 30 dias.';
-
-  @override
-  String get coachComposerHint => 'Pergunta ao coach...';
-
-  @override
-  String get coachYou => 'Tu';
-
-  @override
-  String get coachAssistant => 'Coach';
-
-  @override
-  String coachCreditsCount(int count) {
-    return '$count creditos';
-  }
-
-  @override
-  String get coachMemory => 'Memoria';
-
-  @override
-  String get coachCostFree => 'Modo Eco — sem custos de creditos.';
-
-  @override
-  String coachCostCredits(int cost) {
-    return 'Esta mensagem custa $cost creditos.';
-  }
-
-  @override
-  String get coachFree => 'Gratis';
-
-  @override
-  String coachPerMsg(int cost) {
-    return '$cost/msg';
-  }
-
-  @override
-  String get coachEcoFallbackTitle => 'Modo Eco ativo (sem creditos)';
-
-  @override
-  String get coachEcoFallbackBody =>
-      'Podes continuar a conversar, mas com memoria reduzida.';
-
-  @override
-  String get coachRestoreMemory => 'Restaurar memoria';
-
-  @override
   String get cmdAssistantTitle => 'Assistente';
 
   @override
@@ -2552,6 +2493,15 @@ class SPt extends S {
 
   @override
   String get mealBatchParallelTips => 'Dicas de cozinha paralela';
+
+  @override
+  String get mealFeedbackLike => 'Gostei';
+
+  @override
+  String get mealFeedbackDislike => 'Não gostei';
+
+  @override
+  String get mealFeedbackSkip => 'Saltar';
 
   @override
   String get notifications => 'Notificações';
