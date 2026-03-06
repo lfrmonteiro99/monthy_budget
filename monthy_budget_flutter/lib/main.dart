@@ -1234,7 +1234,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   @override
-  Widget build(BuildContext context) {    if (!_loaded) {
+  Widget build(BuildContext context) {
+    final l10n = S.of(context);
+    if (!_loaded) {
       return const BrandedLoading();
     }
 

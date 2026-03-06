@@ -143,6 +143,7 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return ListView(
       controller: widget.scrollController,
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),

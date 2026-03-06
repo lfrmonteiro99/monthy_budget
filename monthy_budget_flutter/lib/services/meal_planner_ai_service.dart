@@ -1,8 +1,15 @@
 import 'dart:convert';
+import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/meal_planner.dart';
+
+S _l10n() {
+  final code = intl.Intl.getCurrentLocale().split('_').first;
+  return lookupS(Locale(code));
+}
 
 class MealPlannerAiService {
   static const _edgeFunctionName = 'openai-chat';
@@ -257,11 +264,11 @@ Optimize for parallel cooking (e.g. while rice cooks, prep vegetables). Be speci
     );
     final data = response.data;
     if (response.status != 200 || data is! Map<String, dynamic>) {
-      throw Exception(S.current.mealAiRequestFailed);
+      throw Exception(_l10n().mealAiRequestFailed);
     }
     final content = data['content']?.toString().trim() ?? '';
     if (content.isEmpty) {
-      throw Exception(S.current.mealAiEmptyResponse);
+      throw Exception(_l10n().mealAiEmptyResponse);
     }
     return content;
   }
@@ -269,7 +276,7 @@ Optimize for parallel cooking (e.g. while rice cooks, prep vegetables). Be speci
   Map<String, String> _buildEdgeAuthHeaders() {
     final accessToken = _client.auth.currentSession?.accessToken;
     if (accessToken == null || accessToken.trim().isEmpty) {
-      throw Exception(S.current.mealAiAuthExpired);
+      throw Exception(_l10n().mealAiAuthExpired);
     }
     return {'Authorization': 'Bearer $accessToken'};
   }

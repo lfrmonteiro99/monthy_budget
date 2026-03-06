@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart' as intl;
 
 import '../l10n/generated/app_localizations.dart';
 import '../models/actual_expense.dart';
@@ -8,6 +10,11 @@ import '../models/savings_goal.dart';
 import '../models/shopping_item.dart';
 import '../theme/app_colors.dart';
 import 'package:uuid/uuid.dart';
+
+S _l10n() {
+  final code = intl.Intl.getCurrentLocale().split('_').first;
+  return lookupS(Locale(code));
+}
 
 class CommandActionRegistry {
   final Future<void> Function(ActualExpense expense) onAddExpense;
@@ -162,7 +169,7 @@ class CommandActionRegistry {
   ) async {
     if (!validate(action, params)) {
       return CommandResult.failure(
-        message: S.current.cmdInvalidAction(action),
+        message: _l10n().cmdInvalidAction(action),
       );
     }
 
@@ -194,7 +201,7 @@ class CommandActionRegistry {
       case 'clear_checked_items':
         return _executeClearCheckedItems();
       default:
-        return CommandResult.failure(message: S.current.cmdUnknownAction(action));
+        return CommandResult.failure(message: _l10n().cmdUnknownAction(action));
     }
   }
 
@@ -306,7 +313,7 @@ class CommandActionRegistry {
     await onAddExpense(expense);
 
     return CommandResult.success(
-      message: S.current.cmdExpenseAdded(
+      message: _l10n().cmdExpenseAdded(
         '$amount',
         _localizedCategory(category),
       ),
@@ -325,7 +332,7 @@ class CommandActionRegistry {
       unitPrice: params['unitPrice'] as String?,
     );
     await onAddShoppingItem(item);
-    return CommandResult.success(message: S.current.cmdShoppingAdded(name));
+    return CommandResult.success(message: _l10n().cmdShoppingAdded(name));
   }
 
   Future<CommandResult> _executeAddSavingsGoal(
@@ -338,7 +345,7 @@ class CommandActionRegistry {
       targetAmount: _parseDouble(params['target_amount'])!,
     );
     await onAddSavingsGoal(goal);
-    return CommandResult.success(message: S.current.cmdSavingsGoalAdded(name));
+    return CommandResult.success(message: _l10n().cmdSavingsGoalAdded(name));
   }
 
   Future<CommandResult> _executeAddRecurringExpense(
@@ -360,7 +367,7 @@ class CommandActionRegistry {
     );
     await onAddRecurringExpense(expense);
     return CommandResult.success(
-      message: S.current.cmdRecurringExpenseAdded(
+      message: _l10n().cmdRecurringExpenseAdded(
         '${expense.amount}',
         _localizedCategory(expense.category),
       ),
@@ -374,10 +381,10 @@ class CommandActionRegistry {
     final removed = await onRemoveShoppingItemByName(name);
     if (!removed) {
       return CommandResult.failure(
-        message: S.current.cmdShoppingNotFound(name),
+        message: _l10n().cmdShoppingNotFound(name),
       );
     }
-    return CommandResult.success(message: S.current.cmdShoppingRemoved(name));
+    return CommandResult.success(message: _l10n().cmdShoppingRemoved(name));
   }
 
   Future<CommandResult> _executeAddSavingsContribution(
@@ -388,11 +395,11 @@ class CommandActionRegistry {
     final applied = await onAddSavingsContributionByGoalName(goalName, amount);
     if (!applied) {
       return CommandResult.failure(
-        message: S.current.cmdSavingsGoalNotFound(goalName),
+        message: _l10n().cmdSavingsGoalNotFound(goalName),
       );
     }
     return CommandResult.success(
-      message: S.current.cmdContributionAdded('$amount', goalName),
+      message: _l10n().cmdContributionAdded('$amount', goalName),
     );
   }
 
@@ -404,13 +411,13 @@ class CommandActionRegistry {
     final updated = await onToggleShoppingItemCheckedByName(name, checked);
     if (!updated) {
       return CommandResult.failure(
-        message: S.current.cmdShoppingNotFound(name),
+        message: _l10n().cmdShoppingNotFound(name),
       );
     }
     return CommandResult.success(
       message: checked
-          ? S.current.cmdShoppingChecked(name)
-          : S.current.cmdShoppingUnchecked(name),
+          ? _l10n().cmdShoppingChecked(name)
+          : _l10n().cmdShoppingUnchecked(name),
     );
   }
 
@@ -425,10 +432,10 @@ class CommandActionRegistry {
     );
     if (!deleted) {
       return CommandResult.failure(
-        message: S.current.cmdExpenseNotFound(description),
+        message: _l10n().cmdExpenseNotFound(description),
       );
     }
-    return CommandResult.success(message: S.current.cmdExpenseDeleted(description));
+    return CommandResult.success(message: _l10n().cmdExpenseDeleted(description));
   }
 
   Future<CommandResult> _executeSetThemeMode(
@@ -437,7 +444,7 @@ class CommandActionRegistry {
     final mode = _validThemeModes[params['mode'] as String]!;
     onSetThemeMode(mode);
     return CommandResult.success(
-      message: S.current.cmdThemeSet(params['mode'] as String),
+      message: _l10n().cmdThemeSet(params['mode'] as String),
     );
   }
 
@@ -447,7 +454,7 @@ class CommandActionRegistry {
     final palette = _validPalettes[params['palette'] as String]!;
     onSetColorPalette(palette);
     return CommandResult.success(
-      message: S.current.cmdPaletteSet(params['palette'] as String),
+      message: _l10n().cmdPaletteSet(params['palette'] as String),
     );
   }
 
@@ -456,7 +463,7 @@ class CommandActionRegistry {
   ) async {
     final locale = params['locale'] as String;
     onSetLanguage(locale == 'system' ? null : locale);
-    return CommandResult.success(message: S.current.cmdLanguageSet(locale));
+    return CommandResult.success(message: _l10n().cmdLanguageSet(locale));
   }
 
   Future<CommandResult> _executeNavigateTo(
@@ -464,12 +471,12 @@ class CommandActionRegistry {
   ) async {
     final canonical = resolveScreenAlias(params['screen'] as String)!;
     onNavigateTo(canonical);
-    return CommandResult.success(message: S.current.cmdNavigatedTo(canonical));
+    return CommandResult.success(message: _l10n().cmdNavigatedTo(canonical));
   }
 
   Future<CommandResult> _executeClearCheckedItems() async {
     onClearCheckedItems();
-    return CommandResult.success(message: S.current.cmdCheckedItemsCleared);
+    return CommandResult.success(message: _l10n().cmdCheckedItemsCleared);
   }
 
   // ── Parsing ────────────────────────────────────────────────────────
@@ -487,25 +494,25 @@ class CommandActionRegistry {
   String _localizedCategory(String category) {
     switch (category) {
       case 'telecomunicacoes':
-        return S.current.enumCatTelecomunicacoes;
+        return _l10n().enumCatTelecomunicacoes;
       case 'energia':
-        return S.current.enumCatEnergia;
+        return _l10n().enumCatEnergia;
       case 'agua':
-        return S.current.enumCatAgua;
+        return _l10n().enumCatAgua;
       case 'alimentacao':
-        return S.current.enumCatAlimentacao;
+        return _l10n().enumCatAlimentacao;
       case 'educacao':
-        return S.current.enumCatEducacao;
+        return _l10n().enumCatEducacao;
       case 'habitacao':
-        return S.current.enumCatHabitacao;
+        return _l10n().enumCatHabitacao;
       case 'transportes':
-        return S.current.enumCatTransportes;
+        return _l10n().enumCatTransportes;
       case 'saude':
-        return S.current.enumCatSaude;
+        return _l10n().enumCatSaude;
       case 'lazer':
-        return S.current.enumCatLazer;
+        return _l10n().enumCatLazer;
       default:
-        return S.current.enumCatOutros;
+        return _l10n().enumCatOutros;
     }
   }
 }

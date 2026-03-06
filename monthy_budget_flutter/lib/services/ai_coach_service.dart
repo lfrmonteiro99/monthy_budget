@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart' as intl;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/widgets.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../config/supabase_public_config.dart';
 import '../l10n/generated/app_localizations.dart';
@@ -10,6 +12,11 @@ import '../models/budget_summary.dart';
 import '../models/coach_insight.dart';
 import '../models/purchase_record.dart';
 import '../utils/stress_index.dart';
+
+S _l10n() {
+  final code = intl.Intl.getCurrentLocale().split('_').first;
+  return lookupS(Locale(code));
+}
 
 bool shouldFallbackFromEdgeFunctionError(Object error) {
   final raw = error.toString().toLowerCase();
@@ -32,7 +39,7 @@ String buildAiCoachRequestErrorMessage(
   Object error, {
   required bool hasApiKey,
 }) {
-  final l10n = S.current;
+  final l10n = _l10n();
   final raw = error.toString().replaceFirst('Exception: ', '').trim();
   if (isEdgeFunctionAuthError(error)) {
     return l10n.aiCoachAuthExpired;
@@ -374,14 +381,14 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
           );
         }
         final msg = data is Map<String, dynamic>
-            ? (data['error']?.toString() ?? S.current.aiCoachRequestFailed)
-            : S.current.aiCoachRequestFailed;
+            ? (data['error']?.toString() ?? _l10n().aiCoachRequestFailed)
+            : _l10n().aiCoachRequestFailed;
         throw Exception(msg);
       }
 
       final content = data['content']?.toString().trim() ?? '';
       if (content.isEmpty) {
-        throw Exception(S.current.aiCoachEmptyResponse);
+        throw Exception(_l10n().aiCoachEmptyResponse);
       }
       return content;
     } catch (e) {
@@ -430,7 +437,7 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
   Map<String, String> _buildEdgeAuthHeaders() {
     final jwt = supabaseAnonKey.trim();
     if (jwt.isEmpty) {
-      throw Exception(S.current.aiCoachMissingJwt);
+      throw Exception(_l10n().aiCoachMissingJwt);
     }
     return {
       'Authorization': 'Bearer $jwt',
@@ -469,18 +476,18 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
     if (response.statusCode < 200 || response.statusCode >= 300) {
       final errorMessage = data?['error'] is Map<String, dynamic>
           ? (data!['error']['message']?.toString() ??
-              S.current.aiCoachRequestFailed)
-          : S.current.aiCoachRequestFailed;
+              _l10n().aiCoachRequestFailed)
+          : _l10n().aiCoachRequestFailed;
       throw Exception(errorMessage);
     }
 
     final choices = data?['choices'];
     if (choices is! List || choices.isEmpty) {
-      throw Exception(S.current.aiCoachEmptyResponse);
+      throw Exception(_l10n().aiCoachEmptyResponse);
     }
     final message = choices.first['message'];
     if (message is! Map<String, dynamic>) {
-      throw Exception(S.current.aiCoachEmptyResponse);
+      throw Exception(_l10n().aiCoachEmptyResponse);
     }
     final content = message['content'];
     if (content is String && content.trim().isNotEmpty) {
@@ -495,7 +502,7 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
           .trim();
       if (textParts.isNotEmpty) return textParts;
     }
-    throw Exception(S.current.aiCoachEmptyResponse);
+    throw Exception(_l10n().aiCoachEmptyResponse);
   }
 
   // ── Prompt ─────────────────────────────────────────────────────────────────
