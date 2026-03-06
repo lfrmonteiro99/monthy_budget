@@ -4,7 +4,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'config/supabase_config.dart';
+import 'config/supabase_public_config.dart';
 import 'models/app_settings.dart';
 import 'models/product.dart';
 import 'models/shopping_item.dart';
@@ -874,12 +874,16 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   CommandActionRegistry _buildCommandRegistry() {
     return CommandActionRegistry(
       onAddExpense: _addActualExpense,
+      onAddShoppingItem: (item) async => _addToShoppingList(item),
       onDeleteExpense: _deleteActualExpense,
       onSetThemeMode: (mode) => appThemeModeNotifier.value = mode,
       onSetColorPalette: (palette) {
         AppColors.palette = palette;
         appColorPaletteNotifier.value = palette;
         _localConfigService.saveColorPalette(palette);
+      },
+      onSetLanguage: (localeCode) {
+        _saveSettings(_settings.copyWith(localeOverride: localeCode));
       },
       onNavigateTo: _handleCommandNavigation,
       onClearCheckedItems: _clearCheckedItems,

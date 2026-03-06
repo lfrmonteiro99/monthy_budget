@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
-import '../config/supabase_config.dart';
+import '../config/supabase_public_config.dart';
 import '../models/command_action.dart';
 import 'command_action_registry.dart';
 
@@ -129,6 +129,25 @@ class CommandChatService {
       }
     }
 
+    // add_shopping_item
+    final shoppingMatch = RegExp(
+      r'(?:adiciona|add|anade|ajoute|mete|poe|coloca)\s+'
+      r'(.+?)\s+'
+      r'(?:na|no|to|a|à|ao)\s+'
+      r'(?:lista(?:\s+de\s+compras)?|shopping\s+list|liste\s+de\s+courses)',
+      caseSensitive: false,
+    ).firstMatch(text);
+    if (shoppingMatch != null) {
+      final name = shoppingMatch.group(1)!.trim();
+      if (name.isNotEmpty) {
+        return CommandAction.withAction(
+          action: 'add_shopping_item',
+          params: {'name': name},
+          message: '',
+        );
+      }
+    }
+
     // set_theme_mode
     final themeMatch = RegExp(
       r'(?:tema|theme|modo|thème)\s*(?:para\s+)?(?:o\s+|le\s+|el\s+)?'
@@ -159,6 +178,29 @@ class CommandChatService {
       return CommandAction.withAction(
         action: 'set_color_palette',
         params: {'palette': paletteMatch.group(1)!.toLowerCase()},
+        message: '',
+      );
+    }
+
+    // set_language
+    final languageMatch = RegExp(
+      r'(?:idioma|language|langue|lengua)\s+'
+      r'(?:para|to|a|en)?\s*'
+      r'(portugues|portuguese|pt|ingles|english|en|espanhol|spanish|es|frances|french|fr|sistema|system)',
+      caseSensitive: false,
+    ).firstMatch(text);
+    if (languageMatch != null) {
+      final raw = languageMatch.group(1)!.toLowerCase();
+      final locale = switch (raw) {
+        'portugues' || 'portuguese' || 'pt' => 'pt',
+        'ingles' || 'english' || 'en' => 'en',
+        'espanhol' || 'spanish' || 'es' => 'es',
+        'frances' || 'french' || 'fr' => 'fr',
+        _ => 'system',
+      };
+      return CommandAction.withAction(
+        action: 'set_language',
+        params: {'locale': locale},
         message: '',
       );
     }
@@ -250,9 +292,12 @@ class CommandChatService {
         'description?: string}\n'
         '  Categories: [alimentacao, habitacao, transportes, saude, educacao, '
         'lazer, energia, agua, telecomunicacoes, outros]\n'
+        '- add_shopping_item: {name: string, store?: string, price?: number, '
+        'unitPrice?: string}\n'
         '- set_theme_mode: {mode: "light" | "dark" | "system"}\n'
         '- set_color_palette: {palette: "ocean" | "emerald" | "violet" | '
         '"teal" | "sunset"}\n'
+        '- set_language: {locale: "system" | "pt" | "en" | "es" | "fr"}\n'
         '- navigate_to: {screen: "dashboard" | "expenses" | "coach" | '
         '"grocery" | "shopping_list" | "meals" | "settings" | "insights" | '
         '"savings_goals"}\n'

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:orcamento_mensal/models/actual_expense.dart';
-import 'package:orcamento_mensal/models/command_action.dart';
+import 'package:orcamento_mensal/models/shopping_item.dart';
 import 'package:orcamento_mensal/services/command_action_registry.dart';
 import 'package:orcamento_mensal/theme/app_colors.dart';
 
@@ -9,24 +9,30 @@ void main() {
   late CommandActionRegistry registry;
   late List<ActualExpense> addedExpenses;
   late List<String> deletedExpenseIds;
+  late List<ShoppingItem> addedShoppingItems;
   late List<ThemeMode> themeModes;
   late List<AppColorPalette> palettes;
+  late List<String?> locales;
   late List<String> navigations;
   late int clearCheckedCount;
 
   setUp(() {
     addedExpenses = [];
     deletedExpenseIds = [];
+    addedShoppingItems = [];
     themeModes = [];
     palettes = [];
+    locales = [];
     navigations = [];
     clearCheckedCount = 0;
 
     registry = CommandActionRegistry(
       onAddExpense: (expense) async => addedExpenses.add(expense),
+      onAddShoppingItem: (item) async => addedShoppingItems.add(item),
       onDeleteExpense: (id) async => deletedExpenseIds.add(id),
       onSetThemeMode: (mode) => themeModes.add(mode),
       onSetColorPalette: (palette) => palettes.add(palette),
+      onSetLanguage: (locale) => locales.add(locale),
       onNavigateTo: (screen) => navigations.add(screen),
       onClearCheckedItems: () => clearCheckedCount++,
     );
@@ -110,6 +116,20 @@ void main() {
       expect(registry.validate('set_theme_mode', {'mode': 'system'}), isTrue);
     });
 
+    test('validates add_shopping_item with name', () {
+      expect(
+        registry.validate('add_shopping_item', {'name': 'leite'}),
+        isTrue,
+      );
+    });
+
+    test('rejects add_shopping_item without name', () {
+      expect(
+        registry.validate('add_shopping_item', {'name': '   '}),
+        isFalse,
+      );
+    });
+
     test('rejects set_theme_mode with unknown mode', () {
       expect(registry.validate('set_theme_mode', {'mode': 'auto'}), isFalse);
     });
@@ -130,6 +150,15 @@ void main() {
         registry.validate('set_color_palette', {'palette': 'rainbow'}),
         isFalse,
       );
+    });
+
+    test('validates set_language with known locale', () {
+      expect(registry.validate('set_language', {'locale': 'pt'}), isTrue);
+      expect(registry.validate('set_language', {'locale': 'system'}), isTrue);
+    });
+
+    test('rejects set_language with unknown locale', () {
+      expect(registry.validate('set_language', {'locale': 'de'}), isFalse);
     });
 
     test('validates navigate_to with known screen', () {
@@ -227,6 +256,27 @@ void main() {
     test('set_color_palette calls callback with correct palette', () async {
       await registry.execute('set_color_palette', {'palette': 'emerald'});
       expect(palettes, [AppColorPalette.emerald]);
+    });
+
+    test('add_shopping_item calls callback with correct ShoppingItem', () async {
+      final result = await registry.execute('add_shopping_item', {
+        'name': 'leite',
+        'store': 'Continente',
+        'price': 1.99,
+      });
+
+      expect(result.succeeded, isTrue);
+      expect(addedShoppingItems, hasLength(1));
+      expect(addedShoppingItems.first.productName, 'leite');
+      expect(addedShoppingItems.first.store, 'Continente');
+      expect(addedShoppingItems.first.price, 1.99);
+    });
+
+    test('set_language updates locale via callback', () async {
+      final result = await registry.execute('set_language', {'locale': 'fr'});
+
+      expect(result.succeeded, isTrue);
+      expect(locales, ['fr']);
     });
 
     test('navigate_to resolves alias and calls callback', () async {

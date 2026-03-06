@@ -2,21 +2,26 @@ import 'package:flutter/material.dart';
 
 import '../models/actual_expense.dart';
 import '../models/command_action.dart';
+import '../models/shopping_item.dart';
 import '../theme/app_colors.dart';
 
 class CommandActionRegistry {
   final Future<void> Function(ActualExpense expense) onAddExpense;
+  final Future<void> Function(ShoppingItem item) onAddShoppingItem;
   final Future<void> Function(String id) onDeleteExpense;
   final void Function(ThemeMode mode) onSetThemeMode;
   final void Function(AppColorPalette palette) onSetColorPalette;
+  final void Function(String? localeCode) onSetLanguage;
   final void Function(String screen) onNavigateTo;
   final void Function() onClearCheckedItems;
 
   CommandActionRegistry({
     required this.onAddExpense,
+    required this.onAddShoppingItem,
     required this.onDeleteExpense,
     required this.onSetThemeMode,
     required this.onSetColorPalette,
+    required this.onSetLanguage,
     required this.onNavigateTo,
     required this.onClearCheckedItems,
   });
@@ -84,6 +89,14 @@ class CommandActionRegistry {
     'sunset': AppColorPalette.sunset,
   };
 
+  static const _validLanguages = <String>{
+    'system',
+    'pt',
+    'en',
+    'es',
+    'fr',
+  };
+
   // ── Public API ─────────────────────────────────────────────────────
 
   static String? resolveScreenAlias(String input) {
@@ -95,10 +108,14 @@ class CommandActionRegistry {
     switch (action) {
       case 'add_expense':
         return _validateAddExpense(params);
+      case 'add_shopping_item':
+        return _validateAddShoppingItem(params);
       case 'set_theme_mode':
         return _validateSetThemeMode(params);
       case 'set_color_palette':
         return _validateSetColorPalette(params);
+      case 'set_language':
+        return _validateSetLanguage(params);
       case 'navigate_to':
         return _validateNavigateTo(params);
       case 'clear_checked_items':
@@ -121,10 +138,14 @@ class CommandActionRegistry {
     switch (action) {
       case 'add_expense':
         return _executeAddExpense(params);
+      case 'add_shopping_item':
+        return _executeAddShoppingItem(params);
       case 'set_theme_mode':
         return _executeSetThemeMode(params);
       case 'set_color_palette':
         return _executeSetColorPalette(params);
+      case 'set_language':
+        return _executeSetLanguage(params);
       case 'navigate_to':
         return _executeNavigateTo(params);
       case 'clear_checked_items':
@@ -146,6 +167,11 @@ class CommandActionRegistry {
     return true;
   }
 
+  bool _validateAddShoppingItem(Map<String, dynamic> params) {
+    final name = params['name'] as String?;
+    return name != null && name.trim().isNotEmpty;
+  }
+
   bool _validateSetThemeMode(Map<String, dynamic> params) {
     final mode = params['mode'] as String?;
     return mode != null && _validThemeModes.containsKey(mode);
@@ -154,6 +180,11 @@ class CommandActionRegistry {
   bool _validateSetColorPalette(Map<String, dynamic> params) {
     final palette = params['palette'] as String?;
     return palette != null && _validPalettes.containsKey(palette);
+  }
+
+  bool _validateSetLanguage(Map<String, dynamic> params) {
+    final locale = params['locale'] as String?;
+    return locale != null && _validLanguages.contains(locale);
   }
 
   bool _validateNavigateTo(Map<String, dynamic> params) {
@@ -183,6 +214,20 @@ class CommandActionRegistry {
     );
   }
 
+  Future<CommandResult> _executeAddShoppingItem(
+    Map<String, dynamic> params,
+  ) async {
+    final name = (params['name'] as String).trim();
+    final item = ShoppingItem(
+      productName: name,
+      store: params['store'] as String? ?? '',
+      price: _parseDouble(params['price']) ?? 0,
+      unitPrice: params['unitPrice'] as String?,
+    );
+    await onAddShoppingItem(item);
+    return CommandResult.success(message: 'Shopping item added: $name');
+  }
+
   Future<CommandResult> _executeSetThemeMode(
     Map<String, dynamic> params,
   ) async {
@@ -199,6 +244,14 @@ class CommandActionRegistry {
     return CommandResult.success(
       message: 'Color palette set to ${params['palette']}',
     );
+  }
+
+  Future<CommandResult> _executeSetLanguage(
+    Map<String, dynamic> params,
+  ) async {
+    final locale = params['locale'] as String;
+    onSetLanguage(locale == 'system' ? null : locale);
+    return CommandResult.success(message: 'Language set to $locale');
   }
 
   Future<CommandResult> _executeNavigateTo(

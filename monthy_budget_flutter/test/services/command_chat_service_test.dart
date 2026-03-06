@@ -56,6 +56,31 @@ void main() {
       expect(result.params?['palette'], 'emerald');
     });
 
+    test('parses add_shopping_item from Portuguese', () {
+      final result = CommandChatService.regexParse(
+        'adiciona leite na lista de compras',
+      );
+      expect(result, isNotNull);
+      expect(result!.action, 'add_shopping_item');
+      expect(result.params?['name'], 'leite');
+    });
+
+    test('parses add_shopping_item from English', () {
+      final result = CommandChatService.regexParse(
+        'add bread to shopping list',
+      );
+      expect(result, isNotNull);
+      expect(result!.action, 'add_shopping_item');
+      expect(result.params?['name'], 'bread');
+    });
+
+    test('parses set_language', () {
+      final result = CommandChatService.regexParse('idioma ingles');
+      expect(result, isNotNull);
+      expect(result!.action, 'set_language');
+      expect(result.params?['locale'], 'en');
+    });
+
     test('parses navigate_to from Portuguese', () {
       final result = CommandChatService.regexParse('abre as definicoes');
       expect(result, isNotNull);
@@ -87,6 +112,8 @@ void main() {
       final prompt = CommandChatService.buildSystemPrompt();
       expect(prompt, contains('add_expense'));
       expect(prompt, contains('set_theme_mode'));
+      expect(prompt, contains('add_shopping_item'));
+      expect(prompt, contains('set_language'));
       expect(prompt, contains('navigate_to'));
       expect(prompt, contains('clear_checked_items'));
       expect(prompt, contains('EXACTLY ONE action'));
