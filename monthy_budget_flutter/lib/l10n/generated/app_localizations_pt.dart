@@ -2353,6 +2353,15 @@ class SPt extends S {
   String get mealBatchParallelTips => 'Dicas de cozinha paralela';
 
   @override
+  String get mealFeedbackLike => 'Gostei';
+
+  @override
+  String get mealFeedbackDislike => 'Não gostei';
+
+  @override
+  String get mealFeedbackSkip => 'Saltar';
+
+  @override
   String get notifications => 'Notificações';
 
   @override

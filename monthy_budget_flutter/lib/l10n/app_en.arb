@@ -1172,6 +1172,12 @@
     }
   },
   "mealBatchParallelTips": "Parallel cooking tips",
+  "mealFeedbackLike": "Liked",
+  "@mealFeedbackLike": { "description": "Label for liked meal feedback button" },
+  "mealFeedbackDislike": "Dislike",
+  "@mealFeedbackDislike": { "description": "Label for disliked meal feedback button" },
+  "mealFeedbackSkip": "Skip",
+  "@mealFeedbackSkip": { "description": "Label for skipped meal feedback button" },
 
   "notifications": "Notifications",
   "notificationSettings": "Notification Settings",

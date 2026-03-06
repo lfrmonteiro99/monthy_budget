@@ -1803,6 +1803,12 @@
   },
   "mealBatchParallelTips": "Dicas de cozinha paralela",
   "@mealBatchParallelTips": { "description": "Parallel cooking tips header" },
+  "mealFeedbackLike": "Gostei",
+  "@mealFeedbackLike": { "description": "Label for liked meal feedback button" },
+  "mealFeedbackDislike": "Não gostei",
+  "@mealFeedbackDislike": { "description": "Label for disliked meal feedback button" },
+  "mealFeedbackSkip": "Saltar",
+  "@mealFeedbackSkip": { "description": "Label for skipped meal feedback button" },
 
   "notifications": "Notificações",
   "@notifications": { "description": "Notifications title" },

@@ -681,7 +681,8 @@ void main() {
         expect(json['featuresExplored'], contains('dashboard'));
         expect(json['aiCredits'], 120);
         expect(json['preferredCoachMode'], 'pro');
-        expect(json.keys.length, 6);
+        expect(json['trialStarterCreditsGranted'], false);
+        expect(json.keys.length, 7);
       });
 
       test('fromJson with empty featuresExplored list', () {
@@ -695,6 +696,7 @@ void main() {
         expect(state.featuresExplored, isEmpty);
         expect(state.aiCredits, 0);
         expect(state.preferredCoachMode, CoachMode.plus);
+        expect(state.trialStarterCreditsGranted, false);
       });
 
       test('fromJson with null featuresExplored', () {
@@ -708,6 +710,7 @@ void main() {
         expect(state.featuresExplored, isEmpty);
         expect(state.aiCredits, 0);
         expect(state.preferredCoachMode, CoachMode.plus);
+        expect(state.trialStarterCreditsGranted, false);
       });
 
       test('fromJson with null trialUsed defaults to false', () {

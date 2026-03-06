@@ -2346,6 +2346,15 @@ class SEn extends S {
   String get mealBatchParallelTips => 'Parallel cooking tips';
 
   @override
+  String get mealFeedbackLike => 'Liked';
+
+  @override
+  String get mealFeedbackDislike => 'Dislike';
+
+  @override
+  String get mealFeedbackSkip => 'Skip';
+
+  @override
   String get notifications => 'Notifications';
 
   @override

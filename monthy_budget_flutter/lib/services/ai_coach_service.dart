@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../config/supabase_public_config.dart';
 import '../models/app_settings.dart';
 import '../models/budget_summary.dart';
 import '../models/coach_insight.dart';
@@ -52,6 +53,7 @@ class AiCoachService {
   static const _edgeFunctionName = 'openai-chat';
   static const _model = 'gpt-4o-mini';
   static const _maxInsights = 20;
+  static const _chatPrefKeyPrefix = 'coach_chat_v2_messages_';
 
   final SupabaseClient _client;
   final http.Client _httpClient;
@@ -127,6 +129,122 @@ class AiCoachService {
         .from('household_coach_insights')
         .delete()
         .eq('household_id', householdId);
+  }
+
+  Future<List<CoachChatMessage>> loadConversation(String householdId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString('$_chatPrefKeyPrefix$householdId');
+    if (raw == null || raw.trim().isEmpty) return [];
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is! List) return [];
+      return decoded
+          .whereType<Map>()
+          .map((item) => CoachChatMessage.fromJson(
+                item.map((key, value) => MapEntry(key.toString(), value)),
+              ))
+          .toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<void> saveConversation(
+    String householdId,
+    List<CoachChatMessage> messages,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    final payload = messages.map((m) => m.toJson()).toList();
+    await prefs.setString(
+      '$_chatPrefKeyPrefix$householdId',
+      jsonEncode(payload),
+    );
+  }
+
+  Future<void> clearConversation(String householdId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('$_chatPrefKeyPrefix$householdId');
+  }
+
+  Future<String> sendChatMessage({
+    required String apiKey,
+    required String userMessage,
+    required List<CoachChatMessage> history,
+    required int contextWindow,
+    required AppSettings settings,
+    required BudgetSummary summary,
+    required PurchaseHistory purchaseHistory,
+    int maxTokens = 1000,
+  }) async {
+    final groundedUserMessage = _buildGroundedUserMessage(
+      userMessage: userMessage,
+      settings: settings,
+      summary: summary,
+      purchaseHistory: purchaseHistory,
+    );
+    final messages = buildBoundedChatMessages(
+      history: history,
+      userMessage: groundedUserMessage,
+      contextWindow: contextWindow,
+      systemPrompt: _buildChatSystemPrompt(
+        settings: settings,
+        summary: summary,
+        purchaseHistory: purchaseHistory,
+      ),
+    );
+    return _requestChatCompletion(
+      apiKey: apiKey,
+      messages: messages,
+      maxTokens: maxTokens,
+      temperature: 0.5,
+    );
+  }
+
+  String _buildGroundedUserMessage({
+    required String userMessage,
+    required AppSettings settings,
+    required BudgetSummary summary,
+    required PurchaseHistory purchaseHistory,
+  }) {
+    final now = DateTime.now();
+    final monthRecords = purchaseHistory.records
+        .where((r) => r.date.year == now.year && r.date.month == now.month)
+        .toList()
+      ..sort((a, b) => b.date.compareTo(a.date));
+
+    final topExpenses = settings.expenses
+        .where((e) => e.enabled && e.amount > 0)
+        .toList()
+      ..sort((a, b) => b.amount.compareTo(a.amount));
+    final topExpensesText = topExpenses
+        .take(6)
+        .map((e) => '- ${e.category.label}: ${e.amount.toStringAsFixed(2)} EUR')
+        .join('\n');
+
+    final recentPurchasesText = monthRecords
+        .take(8)
+        .map(
+          (r) =>
+              '- ${r.date.day.toString().padLeft(2, '0')}/${r.date.month.toString().padLeft(2, '0')}: '
+              '${r.amount.toStringAsFixed(2)} EUR (${r.itemCount} itens)',
+        )
+        .join('\n');
+
+    return '''
+Pergunta do utilizador:
+$userMessage
+
+Dados reais da app (usar estes valores na resposta):
+- Liquido mensal: ${summary.totalNetWithMeal.toStringAsFixed(2)} EUR
+- Despesas fixas: ${summary.totalExpenses.toStringAsFixed(2)} EUR
+- Poupanca mensal: ${summary.netLiquidity.toStringAsFixed(2)} EUR
+
+Top categorias de despesa:
+${topExpensesText.isEmpty ? '- sem dados' : topExpensesText}
+
+Compras recentes deste mes:
+${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText}
+''';
   }
 
   // ── Analysis ───────────────────────────────────────────────────────────────
@@ -237,10 +355,7 @@ class AiCoachService {
   }) async {
     final hasApiKey = apiKey.trim().isNotEmpty;
     try {
-      final authHeaders = _buildEdgeAuthHeaders();
-      final response = await _client.functions.invoke(
-        _edgeFunctionName,
-        headers: authHeaders,
+      final response = await _invokeEdgeFunctionDirect(
         body: {
           'model': _model,
           'messages': messages,
@@ -292,15 +407,36 @@ class AiCoachService {
     }
   }
 
-  Map<String, String> _buildEdgeAuthHeaders() {
-    final accessToken = _client.auth.currentSession?.accessToken;
-    if (accessToken == null || accessToken.trim().isEmpty) {
-      throw Exception(
-        'Sessao expirada ou utilizador nao autenticado. '
-        'Inicie sessao novamente para usar o AI Coach.',
-      );
+  Future<({int status, Object? data})> _invokeEdgeFunctionDirect({
+    required Map<String, dynamic> body,
+  }) async {
+    final headers = _buildEdgeAuthHeaders();
+    final response = await _httpClient.post(
+      Uri.parse('$supabaseUrl/functions/v1/$_edgeFunctionName'),
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(body),
+    );
+    Object? data;
+    try {
+      data = jsonDecode(response.body);
+    } catch (_) {
+      data = {'error': response.body};
     }
-    return {'Authorization': 'Bearer $accessToken'};
+    return (status: response.statusCode, data: data);
+  }
+
+  Map<String, String> _buildEdgeAuthHeaders() {
+    final jwt = supabaseAnonKey.trim();
+    if (jwt.isEmpty) {
+      throw Exception('JWT indisponivel para autenticar chamada ao AI Coach.');
+    }
+    return {
+      'Authorization': 'Bearer $jwt',
+      'apikey': supabaseAnonKey,
+    };
   }
 
   Future<String> _requestDirectOpenAiCompletion({
@@ -506,5 +642,89 @@ class AiCoachService {
         '\n'
         'Sê cirúrgico. Zero conselhos genéricos. Usa EXCLUSIVAMENTE os números fornecidos.');
     return buf.toString();
+  }
+
+  String _buildChatSystemPrompt({
+    required AppSettings settings,
+    required BudgetSummary summary,
+    required PurchaseHistory purchaseHistory,
+  }) {
+    final stress = calculateStressIndex(
+      summary: summary,
+      purchaseHistory: purchaseHistory,
+      settings: settings,
+    );
+    final now = DateTime.now();
+    final foodBudget = settings.expenses
+        .where((e) => e.category == ExpenseCategory.alimentacao && e.enabled)
+        .fold(0.0, (s, e) => s + e.amount);
+    final foodSpent = purchaseHistory.spentInMonth(now.year, now.month);
+    final fixedExpenseRatio = summary.totalNetWithMeal > 0
+        ? (summary.totalExpenses / summary.totalNetWithMeal * 100)
+        : 0.0;
+    final savingsRate = summary.savingsRate * 100;
+    return 'Es um coach financeiro pessoal para utilizadores portugueses. '
+        'Responde sempre em portugues europeu, de forma direta e pratica, '
+        'respondendo primeiro a pergunta exata do utilizador. '
+        'Evita formatos fixos (nao responder em "3 partes" a menos que seja pedido). '
+        'Mantem continuidade da conversa e usa o historico para responder. '
+        'Nunca inventes dados externos; usa apenas o contexto e o que o utilizador disser. '
+        'Quando houver dados numericos no pedido, cita esses numeros na resposta. '
+        'Se faltar dado para algo pedido, diz explicitamente que nao tens esse dado. '
+        'Contexto financeiro atual:\n'
+        '- Liquido mensal: ${summary.totalNetWithMeal.toStringAsFixed(2)} EUR\n'
+        '- Despesas fixas: ${summary.totalExpenses.toStringAsFixed(2)} EUR (${fixedExpenseRatio.toStringAsFixed(1)}%)\n'
+        '- Poupanca mensal: ${summary.netLiquidity.toStringAsFixed(2)} EUR (${savingsRate.toStringAsFixed(1)}%)\n'
+        '- Orcamento alimentar: ${foodBudget.toStringAsFixed(2)} EUR\n'
+        '- Gasto alimentar atual: ${foodSpent.toStringAsFixed(2)} EUR\n'
+        '- Indice de tranquilidade: ${stress.score}/100';
+  }
+
+  static List<Map<String, String>> buildBoundedChatMessages({
+    required List<CoachChatMessage> history,
+    required String userMessage,
+    required int contextWindow,
+    required String systemPrompt,
+  }) {
+    final cleanHistory = history
+        .where((m) => m.content.trim().isNotEmpty)
+        .toList(growable: false);
+    final safeWindow = contextWindow < 0 ? 0 : contextWindow;
+    final bounded = cleanHistory.length > safeWindow
+        ? cleanHistory.sublist(cleanHistory.length - safeWindow)
+        : cleanHistory;
+
+    return [
+      {'role': 'system', 'content': systemPrompt},
+      ...bounded.map((m) => {'role': m.role, 'content': m.content}),
+      {'role': 'user', 'content': userMessage.trim()},
+    ];
+  }
+}
+
+class CoachChatMessage {
+  final String role;
+  final String content;
+  final DateTime timestamp;
+
+  const CoachChatMessage({
+    required this.role,
+    required this.content,
+    required this.timestamp,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'role': role,
+        'content': content,
+        'timestamp': timestamp.toIso8601String(),
+      };
+
+  factory CoachChatMessage.fromJson(Map<String, dynamic> json) {
+    return CoachChatMessage(
+      role: json['role']?.toString() ?? 'assistant',
+      content: json['content']?.toString() ?? '',
+      timestamp: DateTime.tryParse(json['timestamp']?.toString() ?? '') ??
+          DateTime.now(),
+    );
   }
 }
