@@ -875,6 +875,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     return CommandActionRegistry(
       onAddExpense: _addActualExpense,
       onAddShoppingItem: (item) async => _addToShoppingList(item),
+      onAddSavingsGoal: _addSavingsGoalFromCommand,
+      onAddRecurringExpense: _addRecurringExpenseFromCommand,
       onDeleteExpense: _deleteActualExpense,
       onSetThemeMode: (mode) => appThemeModeNotifier.value = mode,
       onSetColorPalette: (palette) {
@@ -967,6 +969,39 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       debugPrint('Failed to add expense: $e');
       // Reload from Supabase to get the real state
       _loadActualExpenses();
+    }
+  }
+
+  Future<void> _addSavingsGoalFromCommand(SavingsGoal goal) async {
+    setState(() {
+      _savingsGoals = [..._savingsGoals, goal]
+        ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    });
+    try {
+      await _savingsGoalService.saveGoal(goal, widget.householdId);
+    } catch (e) {
+      debugPrint('Failed to add savings goal: $e');
+      _loadSavingsGoals();
+    }
+  }
+
+  Future<void> _addRecurringExpenseFromCommand(
+    RecurringExpense expense,
+  ) async {
+    setState(() {
+      _recurringExpenses = [..._recurringExpenses, expense]
+        ..sort((a, b) {
+          final dayA = a.dayOfMonth ?? 99;
+          final dayB = b.dayOfMonth ?? 99;
+          return dayA.compareTo(dayB);
+        });
+    });
+    _refreshNotificationSchedules();
+    try {
+      await _recurringExpenseService.save(expense, widget.householdId);
+    } catch (e) {
+      debugPrint('Failed to add recurring expense: $e');
+      _loadRecurringExpenses();
     }
   }
 

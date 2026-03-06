@@ -148,6 +148,59 @@ class CommandChatService {
       }
     }
 
+    // add_savings_goal
+    final savingsGoalMatch = RegExp(
+      r'(?:cria|create|add|adiciona|ajoute)\s+'
+      r"(?:um\s+)?(?:objetivo\s+de\s+poupanca|savings\s+goal|objectif\s+d'epargne)\s+"
+      r'(.+?)\s+'
+      r'(?:de|with|com)\s+'
+      r'(\d+(?:[.,]\d+)?)',
+      caseSensitive: false,
+    ).firstMatch(text);
+    if (savingsGoalMatch != null) {
+      final name = savingsGoalMatch.group(1)!.trim();
+      final targetAmount = double.tryParse(
+        savingsGoalMatch.group(2)!.replaceAll(',', '.'),
+      );
+      if (name.isNotEmpty && targetAmount != null && targetAmount > 0) {
+        return CommandAction.withAction(
+          action: 'add_savings_goal',
+          params: {'name': name, 'target_amount': targetAmount},
+          message: '',
+        );
+      }
+    }
+
+    // add_recurring_expense
+    final recurringMatch = RegExp(
+      r'(?:adiciona|add|ajoute|cria|create)\s+'
+      r'(?:uma\s+)?(?:despesa\s+recorrente|recurring\s+expense|depense\s+recurrente)\s+'
+      r'(\d+(?:[.,]\d+)?)\s*(?:euros?|eur|€)?\s*'
+      r'(?:em|in|en|de)?\s*(\w+)(?:.*?(?:dia|day)\s+(\d{1,2}))?',
+      caseSensitive: false,
+    ).firstMatch(text);
+    if (recurringMatch != null) {
+      final amount = double.tryParse(
+        recurringMatch.group(1)!.replaceAll(',', '.'),
+      );
+      final category = _resolveCategory(recurringMatch.group(2)!.trim());
+      final day = recurringMatch.group(3) != null
+          ? int.tryParse(recurringMatch.group(3)!)
+          : null;
+      if (amount != null && amount > 0 && category != null) {
+        final params = <String, dynamic>{
+          'amount': amount,
+          'category': category,
+        };
+        if (day != null) params['day_of_month'] = day;
+        return CommandAction.withAction(
+          action: 'add_recurring_expense',
+          params: params,
+          message: '',
+        );
+      }
+    }
+
     // set_theme_mode
     final themeMatch = RegExp(
       r'(?:tema|theme|modo|thème)\s*(?:para\s+)?(?:o\s+|le\s+|el\s+)?'
@@ -294,6 +347,9 @@ class CommandChatService {
         'lazer, energia, agua, telecomunicacoes, outros]\n'
         '- add_shopping_item: {name: string, store?: string, price?: number, '
         'unitPrice?: string}\n'
+        '- add_savings_goal: {name: string, target_amount: number}\n'
+        '- add_recurring_expense: {amount: number, category: string, '
+        'description?: string, day_of_month?: number}\n'
         '- set_theme_mode: {mode: "light" | "dark" | "system"}\n'
         '- set_color_palette: {palette: "ocean" | "emerald" | "violet" | '
         '"teal" | "sunset"}\n'

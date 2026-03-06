@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:orcamento_mensal/models/actual_expense.dart';
+import 'package:orcamento_mensal/models/recurring_expense.dart';
+import 'package:orcamento_mensal/models/savings_goal.dart';
 import 'package:orcamento_mensal/models/shopping_item.dart';
 import 'package:orcamento_mensal/services/command_action_registry.dart';
 import 'package:orcamento_mensal/theme/app_colors.dart';
@@ -10,6 +12,8 @@ void main() {
   late List<ActualExpense> addedExpenses;
   late List<String> deletedExpenseIds;
   late List<ShoppingItem> addedShoppingItems;
+  late List<SavingsGoal> addedSavingsGoals;
+  late List<RecurringExpense> addedRecurringExpenses;
   late List<ThemeMode> themeModes;
   late List<AppColorPalette> palettes;
   late List<String?> locales;
@@ -20,6 +24,8 @@ void main() {
     addedExpenses = [];
     deletedExpenseIds = [];
     addedShoppingItems = [];
+    addedSavingsGoals = [];
+    addedRecurringExpenses = [];
     themeModes = [];
     palettes = [];
     locales = [];
@@ -29,6 +35,9 @@ void main() {
     registry = CommandActionRegistry(
       onAddExpense: (expense) async => addedExpenses.add(expense),
       onAddShoppingItem: (item) async => addedShoppingItems.add(item),
+      onAddSavingsGoal: (goal) async => addedSavingsGoals.add(goal),
+      onAddRecurringExpense: (expense) async =>
+          addedRecurringExpenses.add(expense),
       onDeleteExpense: (id) async => deletedExpenseIds.add(id),
       onSetThemeMode: (mode) => themeModes.add(mode),
       onSetColorPalette: (palette) => palettes.add(palette),
@@ -120,6 +129,48 @@ void main() {
       expect(
         registry.validate('add_shopping_item', {'name': 'leite'}),
         isTrue,
+      );
+    });
+
+    test('validates add_savings_goal with name and target amount', () {
+      expect(
+        registry.validate('add_savings_goal', {
+          'name': 'ferias',
+          'target_amount': 1200,
+        }),
+        isTrue,
+      );
+    });
+
+    test('rejects add_savings_goal without valid target amount', () {
+      expect(
+        registry.validate('add_savings_goal', {
+          'name': 'ferias',
+          'target_amount': 0,
+        }),
+        isFalse,
+      );
+    });
+
+    test('validates add_recurring_expense with valid params', () {
+      expect(
+        registry.validate('add_recurring_expense', {
+          'category': 'telecomunicacoes',
+          'amount': 29.9,
+          'day_of_month': 5,
+        }),
+        isTrue,
+      );
+    });
+
+    test('rejects add_recurring_expense with invalid day', () {
+      expect(
+        registry.validate('add_recurring_expense', {
+          'category': 'telecomunicacoes',
+          'amount': 29.9,
+          'day_of_month': 40,
+        }),
+        isFalse,
       );
     });
 
@@ -270,6 +321,32 @@ void main() {
       expect(addedShoppingItems.first.productName, 'leite');
       expect(addedShoppingItems.first.store, 'Continente');
       expect(addedShoppingItems.first.price, 1.99);
+    });
+
+    test('add_savings_goal calls callback with correct SavingsGoal', () async {
+      final result = await registry.execute('add_savings_goal', {
+        'name': 'ferias',
+        'target_amount': 1500,
+      });
+
+      expect(result.succeeded, isTrue);
+      expect(addedSavingsGoals, hasLength(1));
+      expect(addedSavingsGoals.first.name, 'ferias');
+      expect(addedSavingsGoals.first.targetAmount, 1500);
+    });
+
+    test('add_recurring_expense calls callback with correct RecurringExpense', () async {
+      final result = await registry.execute('add_recurring_expense', {
+        'category': 'telecomunicacoes',
+        'amount': 29.9,
+        'day_of_month': 5,
+      });
+
+      expect(result.succeeded, isTrue);
+      expect(addedRecurringExpenses, hasLength(1));
+      expect(addedRecurringExpenses.first.category, 'telecomunicacoes');
+      expect(addedRecurringExpenses.first.amount, 29.9);
+      expect(addedRecurringExpenses.first.dayOfMonth, 5);
     });
 
     test('set_language updates locale via callback', () async {

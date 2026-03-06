@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 
 import '../models/actual_expense.dart';
 import '../models/command_action.dart';
+import '../models/recurring_expense.dart';
+import '../models/savings_goal.dart';
 import '../models/shopping_item.dart';
 import '../theme/app_colors.dart';
+import 'package:uuid/uuid.dart';
 
 class CommandActionRegistry {
   final Future<void> Function(ActualExpense expense) onAddExpense;
   final Future<void> Function(ShoppingItem item) onAddShoppingItem;
+  final Future<void> Function(SavingsGoal goal) onAddSavingsGoal;
+  final Future<void> Function(RecurringExpense expense) onAddRecurringExpense;
   final Future<void> Function(String id) onDeleteExpense;
   final void Function(ThemeMode mode) onSetThemeMode;
   final void Function(AppColorPalette palette) onSetColorPalette;
@@ -18,6 +23,8 @@ class CommandActionRegistry {
   CommandActionRegistry({
     required this.onAddExpense,
     required this.onAddShoppingItem,
+    required this.onAddSavingsGoal,
+    required this.onAddRecurringExpense,
     required this.onDeleteExpense,
     required this.onSetThemeMode,
     required this.onSetColorPalette,
@@ -110,6 +117,10 @@ class CommandActionRegistry {
         return _validateAddExpense(params);
       case 'add_shopping_item':
         return _validateAddShoppingItem(params);
+      case 'add_savings_goal':
+        return _validateAddSavingsGoal(params);
+      case 'add_recurring_expense':
+        return _validateAddRecurringExpense(params);
       case 'set_theme_mode':
         return _validateSetThemeMode(params);
       case 'set_color_palette':
@@ -140,6 +151,10 @@ class CommandActionRegistry {
         return _executeAddExpense(params);
       case 'add_shopping_item':
         return _executeAddShoppingItem(params);
+      case 'add_savings_goal':
+        return _executeAddSavingsGoal(params);
+      case 'add_recurring_expense':
+        return _executeAddRecurringExpense(params);
       case 'set_theme_mode':
         return _executeSetThemeMode(params);
       case 'set_color_palette':
@@ -170,6 +185,30 @@ class CommandActionRegistry {
   bool _validateAddShoppingItem(Map<String, dynamic> params) {
     final name = params['name'] as String?;
     return name != null && name.trim().isNotEmpty;
+  }
+
+  bool _validateAddSavingsGoal(Map<String, dynamic> params) {
+    final name = params['name'] as String?;
+    final targetAmount = _parseDouble(params['target_amount']);
+    return name != null &&
+        name.trim().isNotEmpty &&
+        targetAmount != null &&
+        targetAmount > 0;
+  }
+
+  bool _validateAddRecurringExpense(Map<String, dynamic> params) {
+    final category = params['category'] as String?;
+    final amount = _parseDouble(params['amount']);
+    final day = params['day_of_month'];
+    final parsedDay = day is int
+        ? day
+        : day is String
+            ? int.tryParse(day)
+            : null;
+    if (category == null || !_validCategories.contains(category)) return false;
+    if (amount == null || amount <= 0) return false;
+    if (parsedDay != null && (parsedDay < 1 || parsedDay > 31)) return false;
+    return true;
   }
 
   bool _validateSetThemeMode(Map<String, dynamic> params) {
@@ -226,6 +265,42 @@ class CommandActionRegistry {
     );
     await onAddShoppingItem(item);
     return CommandResult.success(message: 'Shopping item added: $name');
+  }
+
+  Future<CommandResult> _executeAddSavingsGoal(
+    Map<String, dynamic> params,
+  ) async {
+    final name = (params['name'] as String).trim();
+    final goal = SavingsGoal(
+      id: const Uuid().v4(),
+      name: name,
+      targetAmount: _parseDouble(params['target_amount'])!,
+    );
+    await onAddSavingsGoal(goal);
+    return CommandResult.success(message: 'Savings goal added: $name');
+  }
+
+  Future<CommandResult> _executeAddRecurringExpense(
+    Map<String, dynamic> params,
+  ) async {
+    final day = params['day_of_month'];
+    final parsedDay = day is int
+        ? day
+        : day is String
+            ? int.tryParse(day)
+            : null;
+    final expense = RecurringExpense(
+      id: 'rec_${DateTime.now().millisecondsSinceEpoch}',
+      category: params['category'] as String,
+      amount: _parseDouble(params['amount'])!,
+      description: params['description'] as String?,
+      dayOfMonth: parsedDay,
+      isActive: true,
+    );
+    await onAddRecurringExpense(expense);
+    return CommandResult.success(
+      message: 'Recurring expense added: ${expense.amount} in ${expense.category}',
+    );
   }
 
   Future<CommandResult> _executeSetThemeMode(

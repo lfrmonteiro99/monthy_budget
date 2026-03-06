@@ -81,6 +81,27 @@ void main() {
       expect(result.params?['locale'], 'en');
     });
 
+    test('parses add_savings_goal', () {
+      final result = CommandChatService.regexParse(
+        'cria objetivo de poupanca ferias de 1200',
+      );
+      expect(result, isNotNull);
+      expect(result!.action, 'add_savings_goal');
+      expect(result.params?['name'], 'ferias');
+      expect(result.params?['target_amount'], 1200.0);
+    });
+
+    test('parses add_recurring_expense', () {
+      final result = CommandChatService.regexParse(
+        'adiciona despesa recorrente 29.9 em telecomunicacoes dia 5',
+      );
+      expect(result, isNotNull);
+      expect(result!.action, 'add_recurring_expense');
+      expect(result.params?['amount'], 29.9);
+      expect(result.params?['category'], 'telecomunicacoes');
+      expect(result.params?['day_of_month'], 5);
+    });
+
     test('parses navigate_to from Portuguese', () {
       final result = CommandChatService.regexParse('abre as definicoes');
       expect(result, isNotNull);
@@ -113,6 +134,8 @@ void main() {
       expect(prompt, contains('add_expense'));
       expect(prompt, contains('set_theme_mode'));
       expect(prompt, contains('add_shopping_item'));
+      expect(prompt, contains('add_savings_goal'));
+      expect(prompt, contains('add_recurring_expense'));
       expect(prompt, contains('set_language'));
       expect(prompt, contains('navigate_to'));
       expect(prompt, contains('clear_checked_items'));
