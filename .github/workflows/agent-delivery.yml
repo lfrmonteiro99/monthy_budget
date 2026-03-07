@@ -1,0 +1,196 @@
+name: Agent Delivery
+
+on:
+  push:
+    branches-ignore:
+      - main
+    tags-ignore:
+      - 'v*'
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: agent-delivery-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    env:
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+    outputs:
+      issue_number: ${{ steps.meta.outputs.issue_number }}
+      release_label: ${{ steps.meta.outputs.release_label }}
+      release_notes: ${{ steps.meta.outputs.release_notes }}
+      branch_name: ${{ steps.meta.outputs.branch_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Derive issue, release label, and notes
+        id: meta
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          BRANCH="${GITHUB_REF_NAME}"
+          echo "branch_name=$BRANCH" >> "$GITHUB_OUTPUT"
+
+          git fetch origin "$DEFAULT_BRANCH" --depth=1 || true
+
+          COMMITS_RANGE="origin/$DEFAULT_BRANCH..HEAD"
+          if ! git rev-parse "origin/$DEFAULT_BRANCH" >/dev/null 2>&1; then
+            COMMITS_RANGE="HEAD~20..HEAD"
+          fi
+
+          COMMIT_TEXT="$(git log $COMMITS_RANGE --pretty=format:'%s%n%b' || true)"
+          if [[ -z "${COMMIT_TEXT// }" ]]; then
+            COMMIT_TEXT="$(git log -n 20 --pretty=format:'%s%n%b' || true)"
+          fi
+
+          ISSUE=""
+          ISSUE="$(printf '%s\n' "$COMMIT_TEXT" | grep -Eo '#[0-9]+' | head -n1 | tr -d '#' || true)"
+          if [[ -z "$ISSUE" ]]; then
+            ISSUE="$(printf '%s\n' "$BRANCH" | grep -Eo '[0-9]+' | head -n1 || true)"
+          fi
+
+          if [[ -n "$ISSUE" ]]; then
+            if ! gh issue view "$ISSUE" >/dev/null 2>&1; then
+              ISSUE=""
+            fi
+          fi
+
+          if [[ -z "$ISSUE" ]]; then
+            TITLE="$(git log -1 --pretty=%s)"
+            BODY_FILE="issue_body.md"
+            {
+              echo "Auto-created from branch: \`$BRANCH\`"
+              echo
+              echo "## Scope"
+              echo "- Implement requested code changes from this branch."
+              echo
+              echo "## Acceptance Criteria"
+              echo "- CI tests pass."
+              echo "- PR includes release notes."
+              echo "- Merge to main completes successfully."
+              echo
+              echo "## Related Commits"
+              git log $COMMITS_RANGE --pretty='- %h %s' || true
+            } > "$BODY_FILE"
+
+            ISSUE_URL="$(gh issue create --title "$TITLE" --body-file "$BODY_FILE" --label chore)"
+            ISSUE="$(printf '%s\n' "$ISSUE_URL" | sed -E 's#.*/issues/([0-9]+).*#\1#')"
+          fi
+
+          RELEASE_LABEL="release:patch"
+          if printf '%s\n' "$COMMIT_TEXT" | grep -Eiq 'BREAKING CHANGE|^[a-zA-Z]+!:'; then
+            RELEASE_LABEL="release:major"
+          elif printf '%s\n' "$COMMIT_TEXT" | grep -Eiq '(^|\n)feat(\(|:)|feature'; then
+            RELEASE_LABEL="release:minor"
+          fi
+
+          NOTES_FILE="release_notes.md"
+          {
+            echo "- Automated delivery for branch \`$BRANCH\`."
+            git log $COMMITS_RANGE --pretty='- %s' || true
+          } > "$NOTES_FILE"
+
+          echo "issue_number=$ISSUE" >> "$GITHUB_OUTPUT"
+          echo "release_label=$RELEASE_LABEL" >> "$GITHUB_OUTPUT"
+          echo "release_notes<<EOF" >> "$GITHUB_OUTPUT"
+          cat "$NOTES_FILE" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+  test:
+    runs-on: ubuntu-latest
+    needs: prepare
+    defaults:
+      run:
+        working-directory: monthy_budget_flutter
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.2'
+          channel: stable
+          cache: true
+      - name: Create Supabase config stub
+        run: |
+          mkdir -p lib/config
+          cat > lib/config/supabase_config.dart << 'DART'
+          const supabaseUrl = 'https://placeholder.supabase.co';
+          const supabaseAnonKey = 'placeholder';
+          DART
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Generate l10n
+        run: flutter gen-l10n
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+      - name: Test
+        run: flutter test
+
+  open-pr-and-merge:
+    runs-on: ubuntu-latest
+    needs: [prepare, test]
+    env:
+      GH_TOKEN: ${{ github.token }}
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+      RELEASE_NOTES: ${{ needs.prepare.outputs.release_notes }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create or update PR and merge
+        shell: bash
+        run: |
+          set -euo pipefail
+          BRANCH='${{ needs.prepare.outputs.branch_name }}'
+          ISSUE='${{ needs.prepare.outputs.issue_number }}'
+          LABEL='${{ needs.prepare.outputs.release_label }}'
+
+          git fetch origin "$DEFAULT_BRANCH" --depth=1 || true
+
+          BODY_FILE="pr_body.md"
+          {
+            echo "## Summary"
+            echo "Automated delivery from branch \`$BRANCH\`."
+            echo
+            echo "## Linked Issue"
+            echo "Fixes #$ISSUE"
+            echo
+            echo "## Release Notes"
+            printf "%s\n" "$RELEASE_NOTES"
+          } > "$BODY_FILE"
+
+          PR_NUMBER="$(gh pr list --head "$BRANCH" --base "$DEFAULT_BRANCH" --json number --jq '.[0].number // empty')"
+
+          if [[ -z "$PR_NUMBER" ]]; then
+            TITLE="$(git log -1 --pretty=%s)"
+            gh pr create \
+              --base "$DEFAULT_BRANCH" \
+              --head "$BRANCH" \
+              --title "$TITLE" \
+              --body-file "$BODY_FILE"
+            PR_NUMBER="$(gh pr list --head "$BRANCH" --base "$DEFAULT_BRANCH" --json number --jq '.[0].number')"
+          else
+            gh pr edit "$PR_NUMBER" --body-file "$BODY_FILE"
+          fi
+
+          PR_STATE="$(gh pr view "$PR_NUMBER" --json state --jq .state)"
+          if [[ "$PR_STATE" != "OPEN" ]]; then
+            echo "PR #$PR_NUMBER is $PR_STATE; skipping merge."
+            exit 0
+          fi
+
+          gh pr edit "$PR_NUMBER" --add-label "$LABEL" || true
+
+          gh workflow run "PR Governance" --ref "$BRANCH" -f pr_number="$PR_NUMBER" -f branch="$BRANCH" || true
+          gh pr merge "$PR_NUMBER" --auto --squash --delete-branch

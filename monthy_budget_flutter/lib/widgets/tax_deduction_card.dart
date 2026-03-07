@@ -3,6 +3,7 @@ import '../data/tax/tax_deductions.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
+import 'info_icon_button.dart';
 
 /// Compact dashboard card showing total estimated IRS deduction
 /// and top 3 deductible categories.
@@ -45,6 +46,7 @@ class TaxDeductionCard extends StatelessWidget {
                   ),
                 ),
               ),
+              InfoIconButton(title: l10n.taxDeductionTitle, body: l10n.infoTaxDeductions),
               GestureDetector(
                 onTap: onSeeDetail,
                 child: Text(

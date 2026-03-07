@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'config/supabase_config.dart';
+import 'config/supabase_public_config.dart';
 import 'models/app_settings.dart';
 import 'models/product.dart';
 import 'models/shopping_item.dart';
@@ -63,6 +64,13 @@ import 'services/downgrade_service.dart';
 import 'services/revenuecat_service.dart';
 import 'widgets/ad_banner_widget.dart';
 import 'widgets/trial_expired_bottom_sheet.dart';
+import 'widgets/branded_loading.dart';
+import 'services/command_chat_service.dart';
+import 'services/command_pattern_cache.dart';
+import 'services/command_action_registry.dart';
+import 'models/command_action.dart';
+import 'widgets/command_chat_fab.dart';
+import 'widgets/command_chat_panel.dart';
 
 /// Global notifier for reactive locale changes from settings.
 final appLocaleNotifier = ValueNotifier<Locale?>(null);
@@ -75,7 +83,8 @@ final appColorPaletteNotifier =
     ValueNotifier<AppColorPalette>(AppColorPalette.ocean);
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  final binding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: binding);
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
   final configService = LocalConfigService();
   final savedTheme = await configService.loadThemeMode();
@@ -86,6 +95,7 @@ Future<void> main() async {
   await NotificationService().init();
   await AdService.initialize();
   await RevenueCatService.initialize();
+  FlutterNativeSplash.remove();
   runApp(const OrcamentoMensalApp());
 }
 
@@ -159,6 +169,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   final _monthlyBudgetService = MonthlyBudgetService();
   final _subscriptionService = SubscriptionService();
   final _downgradeService = DowngradeService();
+  final _commandChatService = CommandChatService();
+  final _commandPatternCache = CommandPatternCache();
+  bool _commandPanelOpen = false;
 
   SubscriptionState _subscription =
       SubscriptionState(trialStartDate: DateTime.now());
@@ -194,6 +207,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         .stream(widget.householdId)
         .listen((items) => setState(() => _shoppingList = items));
     _loadAll();
+    _commandPatternCache.load();
   }
 
   @override
@@ -234,6 +248,13 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   Future<void> _loadAll() async {
+    // Detect user change and clear stale per-user local data
+    final userId = Supabase.instance.client.auth.currentUser?.id;
+    if (userId != null) {
+      final changed = await _localConfigService.checkUserChanged(userId);
+      if (changed) await _subscriptionService.clear();
+    }
+
     final results = await Future.wait([
       _settingsService.load(widget.householdId),
       _favoritesService.load(widget.householdId),
@@ -300,6 +321,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           savingsGoals: _savingsGoals,
         );
         await _subscriptionService.markTrialEndNoticeSeen();
+        if (!mounted) return;
         if (action == TrialExpiredAction.upgrade) {
           _openPaywall();
         } else if (action == TrialExpiredAction.manageCategories) {
@@ -485,6 +507,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           },
           subscription: _subscription,
           onUpgrade: _openPaywall,
+          showTour: !_onboardingState.isTourDone('savings_goals'),
+          onTourComplete: () => _markTourDone('savings_goals'),
         ),
       ),
     );
@@ -700,6 +724,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                 onLoadHistory: () =>
                     _actualExpenseService.loadHistory(widget.householdId),
                 onOpenRecurring: _openRecurringExpenses,
+                showTour: !_onboardingState.isTourDone('expense_tracker'),
+                onTourComplete: () => _markTourDone('expense_tracker'),
               ),
             ),
           ),
@@ -760,6 +786,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           purchaseHistory: _purchaseHistory,
           apiKey: _openAiApiKey,
           householdId: widget.householdId,
+          subscription: _subscription,
+          onSubscriptionChanged: (next) {
+            if (!mounted) return;
+            setState(() => _subscription = next);
+          },
+          onRestoreMemory: _openPaywall,
           onOpenSettings: () {
             Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
@@ -905,6 +937,63 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     await _shoppingListService.clearChecked(widget.householdId);
   }
 
+  CommandActionRegistry _buildCommandRegistry() {
+    return CommandActionRegistry(
+      onAddExpense: _addActualExpense,
+      onAddShoppingItem: (item) async => _addToShoppingList(item),
+      onAddSavingsGoal: _addSavingsGoalFromCommand,
+      onAddRecurringExpense: _addRecurringExpenseFromCommand,
+      onRemoveShoppingItemByName: _removeShoppingItemByNameFromCommand,
+      onToggleShoppingItemCheckedByName:
+          _toggleShoppingItemCheckedByNameFromCommand,
+      onAddSavingsContributionByGoalName:
+          _addSavingsContributionByGoalNameFromCommand,
+      onDeleteExpenseByDescription: _deleteExpenseByDescriptionFromCommand,
+      onDeleteExpense: _deleteActualExpense,
+      onSetThemeMode: (mode) => appThemeModeNotifier.value = mode,
+      onSetColorPalette: (palette) {
+        AppColors.palette = palette;
+        appColorPaletteNotifier.value = palette;
+        _localConfigService.saveColorPalette(palette);
+      },
+      onSetLanguage: (localeCode) {
+        _saveSettings(_settings.copyWith(localeOverride: localeCode));
+      },
+      onNavigateTo: _handleCommandNavigation,
+      onClearCheckedItems: _clearCheckedItems,
+    );
+  }
+
+  void _handleCommandNavigation(String screen) {
+    switch (screen) {
+      case 'dashboard':
+        setState(() => _currentIndex = 0);
+      case 'expenses':
+        setState(() => _currentIndex = 1);
+      case 'plan':
+        setState(() => _currentIndex = 2);
+      case 'more':
+        setState(() => _currentIndex = 3);
+      case 'coach':
+        _openCoach();
+      case 'grocery':
+        _openGrocery();
+      case 'shopping_list':
+        _openShoppingList();
+      case 'meals':
+        _openMealPlanner();
+      case 'settings':
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
+        );
+      case 'insights':
+        _openInsights();
+      case 'savings_goals':
+        _openSavingsGoals();
+    }
+    setState(() => _commandPanelOpen = false);
+  }
+
   Future<void> _finalizeShopping(
       double? amount, List<ShoppingItem> checkedItems, {bool isMealPurchase = false}) async {
     if (checkedItems.isEmpty) return;
@@ -952,6 +1041,185 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       debugPrint('Failed to add expense: $e');
       // Reload from Supabase to get the real state
       _loadActualExpenses();
+    }
+  }
+
+  Future<void> _addSavingsGoalFromCommand(SavingsGoal goal) async {
+    setState(() {
+      _savingsGoals = [..._savingsGoals, goal]
+        ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    });
+    try {
+      await _savingsGoalService.saveGoal(goal, widget.householdId);
+    } catch (e) {
+      debugPrint('Failed to add savings goal: $e');
+      _loadSavingsGoals();
+    }
+  }
+
+  Future<void> _addRecurringExpenseFromCommand(
+    RecurringExpense expense,
+  ) async {
+    setState(() {
+      _recurringExpenses = [..._recurringExpenses, expense]
+        ..sort((a, b) {
+          final dayA = a.dayOfMonth ?? 99;
+          final dayB = b.dayOfMonth ?? 99;
+          return dayA.compareTo(dayB);
+        });
+    });
+    _refreshNotificationSchedules();
+    try {
+      await _recurringExpenseService.save(expense, widget.householdId);
+    } catch (e) {
+      debugPrint('Failed to add recurring expense: $e');
+      _loadRecurringExpenses();
+    }
+  }
+
+  Future<bool> _removeShoppingItemByNameFromCommand(String itemName) async {
+    final query = itemName.trim().toLowerCase();
+    final match = _shoppingList
+        .where((item) => item.productName.trim().toLowerCase() == query)
+        .cast<ShoppingItem?>()
+        .firstWhere((item) => item != null, orElse: () => null);
+    final fallback = match ??
+        _shoppingList
+            .where((item) => item.productName.trim().toLowerCase().contains(query))
+            .cast<ShoppingItem?>()
+            .firstWhere((item) => item != null, orElse: () => null);
+    final item = fallback;
+    if (item == null || item.id.isEmpty) return false;
+    final previousItems = List<ShoppingItem>.from(_shoppingList);
+    setState(() {
+      _shoppingList = _shoppingList.where((i) => i.id != item.id).toList();
+    });
+    try {
+      await _shoppingListService.remove(item.id);
+      return true;
+    } catch (e) {
+      debugPrint('Failed to remove shopping item: $e');
+      setState(() => _shoppingList = previousItems);
+      return false;
+    }
+  }
+
+  Future<bool> _toggleShoppingItemCheckedByNameFromCommand(
+    String itemName,
+    bool checked,
+  ) async {
+    final query = itemName.trim().toLowerCase();
+    final exact = _shoppingList
+        .where((item) => item.productName.trim().toLowerCase() == query)
+        .cast<ShoppingItem?>()
+        .firstWhere((item) => item != null, orElse: () => null);
+    final item = exact ??
+        _shoppingList
+            .where((i) => i.productName.trim().toLowerCase().contains(query))
+            .cast<ShoppingItem?>()
+            .firstWhere((i) => i != null, orElse: () => null);
+    if (item == null || item.id.isEmpty) return false;
+    final previousItems = List<ShoppingItem>.from(_shoppingList);
+    setState(() {
+      _shoppingList = _shoppingList.map((i) {
+        if (i.id != item.id) return i;
+        return ShoppingItem(
+          id: i.id,
+          productName: i.productName,
+          store: i.store,
+          price: i.price,
+          unitPrice: i.unitPrice,
+          checked: checked,
+        );
+      }).toList();
+    });
+    try {
+      await _shoppingListService.toggle(item.id, checked);
+      return true;
+    } catch (e) {
+      debugPrint('Failed to toggle shopping item: $e');
+      setState(() => _shoppingList = previousItems);
+      return false;
+    }
+  }
+
+  Future<bool> _addSavingsContributionByGoalNameFromCommand(
+    String goalName,
+    double amount,
+  ) async {
+    final query = goalName.trim().toLowerCase();
+    final exact = _savingsGoals
+        .where((goal) => goal.name.trim().toLowerCase() == query)
+        .cast<SavingsGoal?>()
+        .firstWhere((goal) => goal != null, orElse: () => null);
+    final goal = exact ??
+        _savingsGoals
+            .where((g) => g.name.trim().toLowerCase().contains(query))
+            .cast<SavingsGoal?>()
+            .firstWhere((g) => g != null, orElse: () => null);
+    if (goal == null) return false;
+
+    final contribution = SavingsContribution(
+      id: 'contrib_${DateTime.now().millisecondsSinceEpoch}',
+      goalId: goal.id,
+      amount: amount,
+      contributionDate: DateTime.now(),
+    );
+
+    try {
+      final updatedGoal = await _savingsGoalService.addContribution(
+        contribution,
+        widget.householdId,
+      );
+      setState(() {
+        _savingsGoals = _savingsGoals
+            .map((g) => g.id == updatedGoal.id ? updatedGoal : g)
+            .toList();
+      });
+      return true;
+    } catch (e) {
+      debugPrint('Failed to add savings contribution: $e');
+      _loadSavingsGoals();
+      return false;
+    }
+  }
+
+  Future<bool> _deleteExpenseByDescriptionFromCommand(
+    String description, {
+    String? category,
+  }) async {
+    final query = description.trim().toLowerCase();
+    final exact = _actualExpenses
+        .where((expense) {
+          final desc = (expense.description ?? '').trim().toLowerCase();
+          if (desc != query) return false;
+          return category == null || expense.category == category;
+        })
+        .cast<ActualExpense?>()
+        .firstWhere((expense) => expense != null, orElse: () => null);
+    final expense = exact ??
+        _actualExpenses
+            .where((e) {
+              final desc = (e.description ?? '').trim().toLowerCase();
+              if (!desc.contains(query)) return false;
+              return category == null || e.category == category;
+            })
+            .cast<ActualExpense?>()
+            .firstWhere((e) => e != null, orElse: () => null);
+    if (expense == null) return false;
+    final previousExpenses = List<ActualExpense>.from(_actualExpenses);
+    setState(() {
+      _actualExpenses = _actualExpenses.where((e) => e.id != expense.id).toList();
+    });
+    _refreshNotificationSchedules();
+    try {
+      await _actualExpenseService.delete(expense.id);
+      return true;
+    } catch (e) {
+      debugPrint('Failed to delete expense by description: $e');
+      setState(() => _actualExpenses = previousExpenses);
+      _refreshNotificationSchedules();
+      return false;
     }
   }
 
@@ -1031,28 +1299,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     if (!_loaded) {
-      return Scaffold(
-        backgroundColor: AppColors.background(context),
-        body: Center(
-          child: Semantics(
-            label: 'A carregar a aplicação',
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(color: AppColors.primary(context)),
-                const SizedBox(height: 16),
-                Text(
-                  'A carregar...',
-                  style: TextStyle(
-                      color: AppColors.textSecondary(context),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
+      return const BrandedLoading();
     }
 
     if (!_settings.setupWizardCompleted) {
@@ -1140,6 +1387,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         onLoadHistory: () =>
             _actualExpenseService.loadHistory(widget.householdId),
         onOpenRecurring: _openRecurringExpenses,
+        showTour: !_onboardingState.isTourDone('expense_tracker'),
+        onTourComplete: () => _markTourDone('expense_tracker'),
       ),
       PlanHubScreen(
         onOpenGrocery: _openGrocery,
@@ -1165,7 +1414,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       ),
     ];
 
-    return Scaffold(
+    return Stack(
+      children: [
+        Scaffold(
       body: _currentIndex == 0
           ? Column(
               children: [
@@ -1259,6 +1510,52 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           ),
         ],
       ),
+        ),
+        // Command assistant scrim
+        if (_commandPanelOpen)
+          GestureDetector(
+            onTap: () => setState(() => _commandPanelOpen = false),
+            child: Container(color: Colors.black.withValues(alpha: 0.3)),
+          ),
+        // Command assistant panel
+        if (_commandPanelOpen)
+          CommandChatPanel(
+            onMinimize: () => setState(() => _commandPanelOpen = false),
+            onSendCommand: (input) async {
+              final cached = _commandPatternCache.match(input);
+              if (cached != null) {
+                return CommandAction.withAction(
+                  action: cached.action,
+                  params: cached.params,
+                  message: '',
+                );
+              }
+              return _commandChatService.parseCommand(input);
+            },
+            onExecuteAction: (action) async {
+              final registry = _buildCommandRegistry();
+              return registry.execute(
+                action.action!,
+                action.params ?? {},
+              );
+            },
+            onCachePattern: (input, action, params) {
+              _commandPatternCache.store(
+                input: input,
+                action: action,
+                params: params,
+              );
+            },
+          ),
+        // Command assistant FAB
+        CommandChatFab(
+          onTap: () => setState(() => _commandPanelOpen = !_commandPanelOpen),
+          isDashboard: _currentIndex == 0,
+          isExpanded: _commandPanelOpen,
+          showTour: !_onboardingState.isTourDone('command_assistant'),
+          onTourComplete: () => _markTourDone('command_assistant'),
+        ),
+      ],
     );
   }
 }

@@ -5,17 +5,22 @@ import '../models/app_settings.dart';
 import '../services/recurring_expense_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
+import '../onboarding/recurring_expenses_tour.dart';
 
 class RecurringExpensesScreen extends StatefulWidget {
   final String householdId;
   final List<RecurringExpense> expenses;
   final ValueChanged<List<RecurringExpense>> onChanged;
+  final bool showTour;
+  final VoidCallback? onTourComplete;
 
   const RecurringExpensesScreen({
     super.key,
     required this.householdId,
     required this.expenses,
     required this.onChanged,
+    this.showTour = false,
+    this.onTourComplete,
   });
 
   @override
@@ -27,10 +32,25 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
   final _service = RecurringExpenseService();
   late List<RecurringExpense> _expenses;
 
+  bool _tourShown = false;
+
   @override
   void initState() {
     super.initState();
     _expenses = List.from(widget.expenses);
+    if (widget.showTour) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _tryShowTour());
+    }
+  }
+
+  void _tryShowTour() {
+    if (_tourShown || !mounted || _expenses.isEmpty) return;
+    _tourShown = true;
+    buildRecurringExpensesTour(
+      context: context,
+      onFinish: () => widget.onTourComplete?.call(),
+      onSkip: () => widget.onTourComplete?.call(),
+    ).show(context: context);
   }
 
   void _notify() => widget.onChanged(_expenses);
@@ -125,6 +145,7 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
         elevation: 0,
       ),
       floatingActionButton: FloatingActionButton(
+        key: RecurringExpensesTourKeys.addFab,
         onPressed: () => _addOrEdit(),
         backgroundColor: AppColors.primary(context),
         child: Icon(Icons.add, color: AppColors.onPrimary(context)),
@@ -150,6 +171,7 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
               itemBuilder: (_, i) {
                 final e = _expenses[i];
                 return Container(
+                  key: i == 0 ? RecurringExpensesTourKeys.expenseItem : null,
                   decoration: BoxDecoration(
                     color: AppColors.surface(context),
                     borderRadius: BorderRadius.circular(12),

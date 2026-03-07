@@ -10,6 +10,8 @@ import '../utils/formatters.dart';
 import '../utils/savings_projections.dart';
 import '../widgets/add_savings_goal_sheet.dart';
 import '../widgets/limit_reached_dialog.dart';
+import '../widgets/info_icon_button.dart';
+import '../onboarding/savings_goals_tour.dart';
 
 class SavingsGoalsScreen extends StatefulWidget {
   final String householdId;
@@ -17,6 +19,8 @@ class SavingsGoalsScreen extends StatefulWidget {
   final ValueChanged<List<SavingsGoal>> onChanged;
   final SubscriptionState? subscription;
   final VoidCallback? onUpgrade;
+  final bool showTour;
+  final VoidCallback? onTourComplete;
 
   const SavingsGoalsScreen({
     super.key,
@@ -25,6 +29,8 @@ class SavingsGoalsScreen extends StatefulWidget {
     required this.onChanged,
     this.subscription,
     this.onUpgrade,
+    this.showTour = false,
+    this.onTourComplete,
   });
 
   @override
@@ -34,12 +40,27 @@ class SavingsGoalsScreen extends StatefulWidget {
 class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
   final _service = SavingsGoalService();
   late List<SavingsGoal> _goals;
+  bool _showHelp = false;
+  bool _tourShown = false;
 
   @override
   void initState() {
     super.initState();
     _goals = List.from(widget.goals);
     _reloadGoals();
+    if (widget.showTour) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _tryShowTour());
+    }
+  }
+
+  void _tryShowTour() {
+    if (_tourShown || !mounted) return;
+    _tourShown = true;
+    buildSavingsGoalsTour(
+      context: context,
+      onFinish: () => widget.onTourComplete?.call(),
+      onSkip: () => widget.onTourComplete?.call(),
+    ).show(context: context);
   }
 
   void _notify() => widget.onChanged(_goals);
@@ -69,6 +90,7 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
     if (existing == null && _isFreeUser) {
       final activeCount = _goals.where((g) => g.isActive).length;
       if (activeCount >= DowngradeService.maxFreeSavingsGoals) {
+        if (!mounted) return;
         final action = await showGoalCreateLimitDialog(context);
         if (action == LimitReachedAction.upgrade) {
           widget.onUpgrade?.call();
@@ -140,6 +162,7 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
     if (!goal.isActive && _isFreeUser) {
       final activeCount = _goals.where((g) => g.isActive).length;
       if (activeCount >= DowngradeService.maxFreeSavingsGoals) {
+        if (!mounted) return;
         final action = await showGoalLimitDialog(context, goal.name);
         if (action == LimitReachedAction.upgrade) {
           widget.onUpgrade?.call();
@@ -197,47 +220,185 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
         backgroundColor: AppColors.surface(context),
         foregroundColor: AppColors.textPrimary(context),
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(
+              _showHelp ? Icons.help : Icons.help_outline,
+              color: AppColors.primary(context),
+            ),
+            onPressed: () => setState(() => _showHelp = !_showHelp),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
+        key: SavingsGoalsTourKeys.addFab,
         onPressed: () => _addOrEditGoal(),
         backgroundColor: AppColors.primary(context),
         child: Icon(Icons.add, color: AppColors.onPrimary(context)),
       ),
-      body: _goals.isEmpty
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
+      body: Column(
+        children: [
+          // Collapsible "How it works" explanation
+          if (_showHelp)
+            _HowItWorksCard(onClose: () => setState(() => _showHelp = false)),
+
+          // Goals list or empty state
+          Expanded(
+            child: _goals.isEmpty
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(32),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.savings_outlined,
+                              size: 48,
+                              color: AppColors.textMuted(context)),
+                          const SizedBox(height: 16),
+                          Text(
+                            l10n.savingsGoalEmpty,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: AppColors.textMuted(context),
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          TextButton.icon(
+                            onPressed: () => setState(() => _showHelp = true),
+                            icon: Icon(Icons.help_outline,
+                                size: 18,
+                                color: AppColors.primary(context)),
+                            label: Text(
+                              l10n.savingsGoalHowItWorksTitle,
+                              style: TextStyle(
+                                  color: AppColors.primary(context)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : Builder(builder: (_) {
+                    // Sort: active first, then paused
+                    final sorted = List<SavingsGoal>.from(_goals)
+                      ..sort((a, b) {
+                        if (a.isActive == b.isActive) return 0;
+                        return a.isActive ? -1 : 1;
+                      });
+                    return ListView.separated(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: sorted.length,
+                      separatorBuilder: (_, _) => const SizedBox(height: 8),
+                      itemBuilder: (_, i) => _GoalCard(
+                        key: i == 0 ? SavingsGoalsTourKeys.goalCard : null,
+                        goal: sorted[i],
+                        isFreeUser: _isFreeUser,
+                        onTap: () => _openGoalDetail(sorted[i]),
+                        onEdit: () => _addOrEditGoal(sorted[i]),
+                        onToggle: () => _toggleActive(sorted[i]),
+                        onDelete: () => _deleteGoal(sorted[i]),
+                      ),
+                    );
+                  }),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── How It Works Card ─────────────────────────────────────────────────────
+
+class _HowItWorksCard extends StatelessWidget {
+  final VoidCallback onClose;
+  const _HowItWorksCard({required this.onClose});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = S.of(context);
+    final steps = [
+      l10n.savingsGoalHowItWorksStep1,
+      l10n.savingsGoalHowItWorksStep2,
+      l10n.savingsGoalHowItWorksStep3,
+      l10n.savingsGoalHowItWorksStep4,
+    ];
+    final icons = [
+      Icons.flag_outlined,
+      Icons.calendar_today,
+      Icons.add_circle_outline,
+      Icons.trending_up,
+    ];
+
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.primary(context).withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.primary(context).withValues(alpha: 0.2),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.lightbulb_outline,
+                  size: 18, color: AppColors.primary(context)),
+              const SizedBox(width: 8),
+              Expanded(
                 child: Text(
-                  l10n.savingsGoalEmpty,
-                  textAlign: TextAlign.center,
+                  l10n.savingsGoalHowItWorksTitle,
                   style: TextStyle(
-                    color: AppColors.textMuted(context),
-                    fontSize: 14,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary(context),
                   ),
                 ),
               ),
-            )
-          : Builder(builder: (_) {
-              // Sort: active first, then paused
-              final sorted = List<SavingsGoal>.from(_goals)
-                ..sort((a, b) {
-                  if (a.isActive == b.isActive) return 0;
-                  return a.isActive ? -1 : 1;
-                });
-              return ListView.separated(
-                padding: const EdgeInsets.all(16),
-                itemCount: sorted.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 8),
-                itemBuilder: (_, i) => _GoalCard(
-                  goal: sorted[i],
-                  isFreeUser: _isFreeUser,
-                  onTap: () => _openGoalDetail(sorted[i]),
-                  onEdit: () => _addOrEditGoal(sorted[i]),
-                  onToggle: () => _toggleActive(sorted[i]),
-                  onDelete: () => _deleteGoal(sorted[i]),
-                ),
-              );
-            }),
+              GestureDetector(
+                onTap: onClose,
+                child: Icon(Icons.close,
+                    size: 18, color: AppColors.textMuted(context)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ...List.generate(steps.length, (i) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary(context).withValues(alpha: 0.12),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(icons[i],
+                        size: 14, color: AppColors.primary(context)),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      steps[i],
+                      style: TextStyle(
+                        fontSize: 13,
+                        height: 1.4,
+                        color: AppColors.textSecondary(context),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ],
+      ),
     );
   }
 }
@@ -253,6 +414,7 @@ class _GoalCard extends StatelessWidget {
   final VoidCallback onDelete;
 
   const _GoalCard({
+    super.key,
     required this.goal,
     this.isFreeUser = false,
     required this.onTap,
@@ -614,14 +776,20 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
             children: [
               Icon(Icons.trending_up, size: 14, color: goalColor),
               const SizedBox(width: 6),
-              Text(
-                l10n.savingsProjectionAvgContribution(
-                    formatCurrency(p.averageMonthlyContribution)),
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textPrimary(context),
+              Expanded(
+                child: Text(
+                  l10n.savingsProjectionAvgContribution(
+                      formatCurrency(p.averageMonthlyContribution)),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textPrimary(context),
+                  ),
                 ),
+              ),
+              InfoIconButton(
+                title: l10n.savingsProjectionAvgContribution(''),
+                body: l10n.infoSavingsProjection,
               ),
             ],
           ),
@@ -681,13 +849,19 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
                 Icon(Icons.flag_outlined, size: 14,
                     color: AppColors.textSecondary(context)),
                 const SizedBox(width: 6),
-                Text(
-                  l10n.savingsProjectionNeedPerMonth(
-                      formatCurrency(p.requiredMonthlyContribution!)),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textSecondary(context),
+                Expanded(
+                  child: Text(
+                    l10n.savingsProjectionNeedPerMonth(
+                        formatCurrency(p.requiredMonthlyContribution!)),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary(context),
+                    ),
                   ),
+                ),
+                InfoIconButton(
+                  title: l10n.savingsProjectionNeedPerMonth(''),
+                  body: l10n.infoSavingsRequired,
                 ),
               ],
             ),

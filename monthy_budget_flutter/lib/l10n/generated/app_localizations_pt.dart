@@ -569,6 +569,206 @@ class SPt extends S {
   String get coachDeleteTooltip => 'Eliminar';
 
   @override
+  String get coachEmptyTitle => 'O teu coach financeiro';
+
+  @override
+  String get coachEmptyBody =>
+      'Pergunta o que quiseres sobre o teu orcamento, despesas ou poupancas. Vou usar os teus dados reais para dar conselhos personalizados.';
+
+  @override
+  String get coachQuickPrompt1 => 'Onde posso cortar despesas este mes?';
+
+  @override
+  String get coachQuickPrompt2 => 'Como melhoro a minha poupanca?';
+
+  @override
+  String get coachQuickPrompt3 => 'Ajuda-me a definir um plano para 30 dias.';
+
+  @override
+  String get coachComposerHint => 'Pergunta ao coach...';
+
+  @override
+  String get coachYou => 'Tu';
+
+  @override
+  String get coachAssistant => 'Coach';
+
+  @override
+  String coachCreditsCount(int count) {
+    return '$count creditos';
+  }
+
+  @override
+  String get coachMemory => 'Memoria';
+
+  @override
+  String get coachCostFree => 'Modo Eco — sem custos de creditos.';
+
+  @override
+  String coachCostCredits(int cost) {
+    return 'Esta mensagem custa $cost creditos.';
+  }
+
+  @override
+  String get coachFree => 'Gratis';
+
+  @override
+  String coachPerMsg(int cost) {
+    return '$cost/msg';
+  }
+
+  @override
+  String get coachEcoFallbackTitle => 'Modo Eco ativo (sem creditos)';
+
+  @override
+  String get coachEcoFallbackBody =>
+      'Podes continuar a conversar, mas com memoria reduzida.';
+
+  @override
+  String get coachRestoreMemory => 'Restaurar memoria';
+
+  @override
+  String get cmdAssistantTitle => 'Assistente';
+
+  @override
+  String get cmdAssistantHint => 'O que precisas?';
+
+  @override
+  String get cmdAssistantTooltip => 'Precisa de ajuda? Toca aqui';
+
+  @override
+  String get cmdSuggestionAddExpense => 'Adicionar despesa';
+
+  @override
+  String get cmdSuggestionOpenList => 'Abrir lista de compras';
+
+  @override
+  String get cmdSuggestionChangeTheme => 'Mudar tema';
+
+  @override
+  String get cmdSuggestionOpenSettings => 'Ir para definicoes';
+
+  @override
+  String get cmdTemplateAddExpense => 'Adiciona [valor] euros em [categoria]';
+
+  @override
+  String get cmdTemplateChangeTheme => 'Muda o tema para [claro/escuro]';
+
+  @override
+  String get cmdExecutionFailed =>
+      'Percebi o pedido, mas nao consegui executar. Tenta novamente.';
+
+  @override
+  String get cmdNotUnderstood => 'Nao percebi. Podes reformular?';
+
+  @override
+  String get cmdUndo => 'Desfazer';
+
+  @override
+  String get cmdCapabilitiesCta => 'O que posso fazer?';
+
+  @override
+  String get cmdCapabilitiesTitle => 'Acoes disponiveis';
+
+  @override
+  String get cmdCapabilitiesSubtitle =>
+      'Estas sao as acoes que o assistente suporta neste momento.';
+
+  @override
+  String get cmdCapabilitiesFooter =>
+      'Estamos a adicionar mais. Se ainda nao estiver aqui, pode nao funcionar.';
+
+  @override
+  String get cmdCapabilityAddExpense => 'Adicionar uma despesa';
+
+  @override
+  String get cmdCapabilityAddExpenseExample =>
+      'Adiciona [valor] euros em [categoria]';
+
+  @override
+  String get cmdCapabilityAddShoppingItem => 'Adicionar item a lista';
+
+  @override
+  String get cmdCapabilityAddShoppingItemExample =>
+      'Adiciona [item] a lista de compras';
+
+  @override
+  String get cmdCapabilityRemoveShoppingItem => 'Remover item da lista';
+
+  @override
+  String get cmdCapabilityRemoveShoppingItemExample =>
+      'Remove [item] da lista de compras';
+
+  @override
+  String get cmdCapabilityToggleShoppingItemChecked =>
+      'Marcar ou desmarcar item da lista';
+
+  @override
+  String get cmdCapabilityToggleShoppingItemCheckedExample =>
+      'Marca [item] na lista de compras';
+
+  @override
+  String get cmdCapabilityAddSavingsGoal => 'Criar objetivo de poupanca';
+
+  @override
+  String get cmdCapabilityAddSavingsGoalExample =>
+      'Cria objetivo de poupanca [nome] de [valor]';
+
+  @override
+  String get cmdCapabilityAddSavingsContribution =>
+      'Adicionar ao objetivo de poupanca';
+
+  @override
+  String get cmdCapabilityAddSavingsContributionExample =>
+      'Adiciona [valor] ao objetivo [nome]';
+
+  @override
+  String get cmdCapabilityAddRecurringExpense => 'Adicionar despesa recorrente';
+
+  @override
+  String get cmdCapabilityAddRecurringExpenseExample =>
+      'Adiciona despesa recorrente [valor] em [categoria] dia [dia]';
+
+  @override
+  String get cmdCapabilityDeleteExpense => 'Apagar uma despesa';
+
+  @override
+  String get cmdCapabilityDeleteExpenseExample => 'Apaga a despesa [descricao]';
+
+  @override
+  String get cmdCapabilityChangeTheme => 'Mudar tema';
+
+  @override
+  String get cmdCapabilityChangeThemeExample =>
+      'Muda o tema para [claro/escuro]';
+
+  @override
+  String get cmdCapabilityChangePalette => 'Mudar paleta de cor';
+
+  @override
+  String get cmdCapabilityChangePaletteExample =>
+      'Cor [ocean/emerald/violet/teal/sunset]';
+
+  @override
+  String get cmdCapabilityChangeLanguage => 'Mudar idioma';
+
+  @override
+  String get cmdCapabilityChangeLanguageExample =>
+      'Idioma [ingles/portugues/espanhol/frances]';
+
+  @override
+  String get cmdCapabilityNavigate => 'Abrir ecra';
+
+  @override
+  String get cmdCapabilityNavigateExample => 'Abre a lista de compras';
+
+  @override
+  String get cmdCapabilityClearChecked => 'Limpar itens marcados';
+
+  @override
+  String get cmdCapabilityClearCheckedExample => 'Limpa os itens marcados';
+
+  @override
   String get groceryTitle => 'Supermercado';
 
   @override
@@ -685,6 +885,25 @@ class SPt extends S {
   @override
   String get authRegistrationSuccess =>
       'Conta criada! Verifique o seu email para confirmar a conta antes de iniciar sessão.';
+
+  @override
+  String get authErrorNetwork =>
+      'Não foi possível ligar ao servidor. Verifique a sua ligação à internet e tente novamente.';
+
+  @override
+  String get authErrorInvalidCredentials =>
+      'Email ou palavra-passe inválidos. Tente novamente.';
+
+  @override
+  String get authErrorEmailNotConfirmed =>
+      'Verifique o seu email antes de iniciar sessão.';
+
+  @override
+  String get authErrorTooManyRequests =>
+      'Demasiadas tentativas. Aguarde um momento e tente novamente.';
+
+  @override
+  String get authErrorGeneric => 'Ocorreu um erro. Tente novamente mais tarde.';
 
   @override
   String get householdSetupTitle => 'Configurar Agregado';
@@ -2280,6 +2499,24 @@ class SPt extends S {
   String get savingsGoalOverdue => 'Prazo ultrapassado';
 
   @override
+  String get savingsGoalHowItWorksTitle => 'Como funciona?';
+
+  @override
+  String get savingsGoalHowItWorksStep1 => 'Crie um objetivo com um nome e o valor que pretende atingir (ex: \"Férias — 2 000 €\").';
+
+  @override
+  String get savingsGoalHowItWorksStep2 => 'Opcionalmente defina uma data limite para ter um prazo de referência.';
+
+  @override
+  String get savingsGoalHowItWorksStep3 => 'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.';
+
+  @override
+  String get savingsGoalHowItWorksStep4 => 'Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.';
+
+  @override
+  String get savingsGoalDashboardHint => 'Toque num objetivo para ver detalhes e registar contribuições.';
+
+  @override
   String get mealCostReconciliation => 'Custos de Refeições';
 
   @override
@@ -2351,6 +2588,15 @@ class SPt extends S {
 
   @override
   String get mealBatchParallelTips => 'Dicas de cozinha paralela';
+
+  @override
+  String get mealFeedbackLike => 'Gostei';
+
+  @override
+  String get mealFeedbackDislike => 'Não gostei';
+
+  @override
+  String get mealFeedbackSkip => 'Saltar';
 
   @override
   String get notifications => 'Notificações';
@@ -2701,6 +2947,69 @@ class SPt extends S {
       'Envie os ingredientes da semana para a lista com um toque.';
 
   @override
+  String get onbTourExpenseTracker1Title => 'Navegação mensal';
+
+  @override
+  String get onbTourExpenseTracker1Body =>
+      'Alterne entre meses para ver ou adicionar despesas de qualquer período.';
+
+  @override
+  String get onbTourExpenseTracker2Title => 'Resumo do orçamento';
+
+  @override
+  String get onbTourExpenseTracker2Body =>
+      'Veja o orçado vs real e o saldo restante de relance.';
+
+  @override
+  String get onbTourExpenseTracker3Title => 'Por categoria';
+
+  @override
+  String get onbTourExpenseTracker3Body =>
+      'Cada categoria mostra uma barra de progresso. Toque para expandir e ver despesas individuais.';
+
+  @override
+  String get onbTourExpenseTracker4Title => 'Adicionar despesa';
+
+  @override
+  String get onbTourExpenseTracker4Body =>
+      'Toque + para registar uma nova despesa. Escolha a categoria e o valor.';
+
+  @override
+  String get onbTourSavings1Title => 'Os seus objetivos';
+
+  @override
+  String get onbTourSavings1Body =>
+      'Cada cartão mostra o progresso em direção ao objetivo. Toque para ver detalhes e adicionar contribuições.';
+
+  @override
+  String get onbTourSavings2Title => 'Criar objetivo';
+
+  @override
+  String get onbTourSavings2Body =>
+      'Toque + para definir um novo objetivo de poupança com valor alvo e prazo opcional.';
+
+  @override
+  String get onbTourRecurring1Title => 'Despesas recorrentes';
+
+  @override
+  String get onbTourRecurring1Body =>
+      'Contas fixas mensais como renda, subscrições e serviços. São incluídas automaticamente no orçamento.';
+
+  @override
+  String get onbTourRecurring2Title => 'Adicionar recorrente';
+
+  @override
+  String get onbTourRecurring2Body =>
+      'Toque + para registar uma nova despesa recorrente com valor e dia de vencimento.';
+
+  @override
+  String get onbTourAssistant1Title => 'Assistente de comandos';
+
+  @override
+  String get onbTourAssistant1Body =>
+      'O seu atalho para ações rápidas. Toque para adicionar despesas, mudar definições, navegar e mais u2014 basta escrever o que precisa.';
+
+  @override
   String get taxDeductionTitle => 'Deduções IRS';
 
   @override
@@ -3030,4 +3339,282 @@ class SPt extends S {
   String subscriptionExplore(String feature) {
     return 'Explorar $feature';
   }
+
+  @override
+  String get subtitleBatchCooking =>
+      'Sugere receitas que podem ser preparadas com antecedência para várias refeições';
+
+  @override
+  String get subtitleReuseLeftovers =>
+      'Planeia refeições que reutilizam ingredientes de dias anteriores';
+
+  @override
+  String get subtitleMinimizeWaste =>
+      'Prioriza o uso de todos os ingredientes comprados antes de expirarem';
+
+  @override
+  String get subtitleMealTypeInclude =>
+      'Incluir esta refeição no plano semanal';
+
+  @override
+  String get subtitleShowHeroCard => 'Resumo da liquidez líquida no topo';
+
+  @override
+  String get subtitleShowStressIndex =>
+      'Pontuação (0-100) que mede a pressão de despesas vs rendimento';
+
+  @override
+  String get subtitleShowMonthReview =>
+      'Resumo comparativo deste mês com os anteriores';
+
+  @override
+  String get subtitleShowUpcomingBills =>
+      'Despesas recorrentes nos próximos 30 dias';
+
+  @override
+  String get subtitleShowSummaryCards =>
+      'Rendimento, deduções, despesas e taxa de poupança';
+
+  @override
+  String get subtitleShowBudgetVsActual =>
+      'Comparação lado a lado por categoria de despesa';
+
+  @override
+  String get subtitleShowExpensesBreakdown =>
+      'Gráfico circular de despesas por categoria';
+
+  @override
+  String get subtitleShowSavingsGoals =>
+      'Progresso em relação aos seus objetivos de poupança';
+
+  @override
+  String get subtitleShowTaxDeductions =>
+      'Deduções fiscais elegíveis estimadas este ano';
+
+  @override
+  String get subtitleShowBudgetStreaks =>
+      'Quantos meses consecutivos ficou dentro do orçamento';
+
+  @override
+  String get subtitleShowPurchaseHistory =>
+      'Compras recentes da lista de compras e custos';
+
+  @override
+  String get subtitleShowCharts =>
+      'Gráficos de tendência de orçamento, despesas e rendimento';
+
+  @override
+  String get subtitleChartExpensesPie =>
+      'Distribuição de despesas por categoria';
+
+  @override
+  String get subtitleChartIncomeVsExpenses =>
+      'Rendimento mensal comparado com despesas totais';
+
+  @override
+  String get subtitleChartDeductions =>
+      'Discriminação de despesas dedutíveis nos impostos';
+
+  @override
+  String get subtitleChartNetIncome =>
+      'Tendência do rendimento líquido ao longo do tempo';
+
+  @override
+  String get subtitleChartSavingsRate =>
+      'Percentagem de rendimento poupado por mês';
+
+  @override
+  String get helperCountry =>
+      'Determina o sistema fiscal, moeda e taxas de segurança social';
+
+  @override
+  String get helperLanguage =>
+      'Substituir o idioma do sistema. \"Sistema\" segue a definição do dispositivo';
+
+  @override
+  String get helperMaritalStatus => 'Afeta o cálculo do escalão de IRS';
+
+  @override
+  String get helperMealObjective =>
+      'Define o padrão alimentar: omnívoro, vegetariano, pescatariano, etc.';
+
+  @override
+  String get helperSodiumPreference =>
+      'Filtra receitas pelo nível de teor de sódio';
+
+  @override
+  String subtitleDietaryRestriction(String ingredient) {
+    return 'Exclui receitas que contêm $ingredient';
+  }
+
+  @override
+  String subtitleExcludedProtein(String protein) {
+    return 'Remove $protein de todas as sugestões de refeições';
+  }
+
+  @override
+  String subtitleKitchenEquipment(String equipment) {
+    return 'Ativa receitas que requerem $equipment';
+  }
+
+  @override
+  String get helperVeggieDays =>
+      'Número de dias totalmente vegetarianos por semana';
+
+  @override
+  String get helperFishDays => 'Recomendado: 2-3 vezes por semana';
+
+  @override
+  String get helperLegumeDays => 'Recomendado: 2-3 vezes por semana';
+
+  @override
+  String get helperRedMeatDays => 'Recomendado: máximo 2 vezes por semana';
+
+  @override
+  String get helperMaxPrepTime =>
+      'Tempo máximo de confeção para refeições de semana (minutos)';
+
+  @override
+  String get helperMaxComplexity =>
+      'Nível de dificuldade das receitas para dias de semana';
+
+  @override
+  String get helperWeekendPrepTime =>
+      'Tempo máximo de confeção para refeições de fim de semana (minutos)';
+
+  @override
+  String get helperWeekendComplexity =>
+      'Nível de dificuldade das receitas para fins de semana';
+
+  @override
+  String get helperMaxBatchDays =>
+      'Quantos dias uma refeição preparada em lote pode ser reutilizada';
+
+  @override
+  String get helperNewIngredients =>
+      'Limita quantos ingredientes novos aparecem por semana';
+
+  @override
+  String get helperGrossSalary => 'Salário total antes de impostos e deduções';
+
+  @override
+  String get helperExemptIncome =>
+      'Rendimento adicional não sujeito a IRS (ex.: subsídios)';
+
+  @override
+  String get helperMealAllowance => 'Subsídio de refeição diário do empregador';
+
+  @override
+  String get helperWorkingDays =>
+      'Típico: 22. Afeta o cálculo do subsídio de refeição';
+
+  @override
+  String get helperSalaryLabel =>
+      'Um nome para identificar esta fonte de rendimento';
+
+  @override
+  String get helperExpenseAmount =>
+      'Montante mensal orçamentado para esta categoria';
+
+  @override
+  String get helperCalorieTarget => 'Recomendado: 2000-2500 kcal para adultos';
+
+  @override
+  String get helperProteinTarget => 'Recomendado: 50-70g para adultos';
+
+  @override
+  String get helperFiberTarget => 'Recomendado: 25-30g para adultos';
+
+  @override
+  String get infoStressIndex =>
+      'Compara os gastos reais com o seu orçamento. Intervalos de pontuação:\n\n0-30: Confortável - gastos bem dentro do orçamento\n30-60: Moderado - a aproximar-se dos limites do orçamento\n60-100: Crítico - gastos excedem significativamente o orçamento';
+
+  @override
+  String get infoBudgetStreak =>
+      'Meses consecutivos em que a despesa total ficou dentro do orçamento total.';
+
+  @override
+  String get infoUpcomingBills =>
+      'Mostra despesas recorrentes nos próximos 30 dias com base nas suas despesas mensais.';
+
+  @override
+  String get infoSalaryBreakdown =>
+      'Mostra como o salário bruto é dividido em imposto IRS, contribuições para a segurança social, rendimento líquido e subsídio de refeição.';
+
+  @override
+  String get infoBudgetVsActual =>
+      'Compara o que orçamentou por categoria com o que realmente gastou. Verde significa abaixo do orçamento, vermelho significa acima do orçamento.';
+
+  @override
+  String get infoSavingsGoals =>
+      'Progresso em relação a cada objetivo de poupança com base nas contribuições efetuadas.';
+
+  @override
+  String get infoTaxDeductions =>
+      'Despesas dedutíveis estimadas (saúde, educação, habitação). Estas são apenas estimativas - consulte um profissional fiscal para valores precisos.';
+
+  @override
+  String get infoPurchaseHistory =>
+      'Total gasto em compras da lista de compras este mês.';
+
+  @override
+  String get infoExpensesBreakdown =>
+      'Discriminação visual das suas despesas por categoria no mês atual.';
+
+  @override
+  String get infoCharts =>
+      'Dados de tendência ao longo do tempo. Toque em qualquer gráfico para uma vista detalhada.';
+
+  @override
+  String get infoExpenseTrackerSummary =>
+      'Orçamentado = despesa mensal planeada. Real = o que gastou até agora. Restante = orçamento menos real.';
+
+  @override
+  String get infoExpenseTrackerProgress =>
+      'Verde: abaixo de 75% do orçamento. Amarelo: 75-100%. Vermelho: acima do orçamento.';
+
+  @override
+  String get infoExpenseTrackerFilter =>
+      'Filtre despesas por texto, categoria ou intervalo de datas.';
+
+  @override
+  String get infoSavingsProjection =>
+      'Baseado nas suas contribuições mensais médias. \"No caminho certo\" significa que o ritmo atual atinge o objetivo no prazo. \"Atrasado\" significa que precisa de aumentar as contribuições.';
+
+  @override
+  String get infoSavingsRequired =>
+      'O montante que precisa de poupar por mês a partir de agora para atingir o objetivo no prazo.';
+
+  @override
+  String get infoCoachModes =>
+      'Eco: gratuito, sem memória de conversa.\nPlus: 1 crédito por mensagem, lembra as últimas 5 mensagens.\nPro: 2 créditos por mensagem, memória de conversa completa.';
+
+  @override
+  String get infoCoachCredits =>
+      'Os créditos são usados nos modos Plus e Pro. Recebe créditos iniciais ao registar-se. O modo Eco é sempre gratuito.';
+
+  @override
+  String get helperWizardGrossSalary =>
+      'O seu salário mensal total antes de impostos';
+
+  @override
+  String get helperWizardMealAllowance =>
+      'Subsídio de refeição diário do empregador (se aplicável)';
+
+  @override
+  String get helperWizardRent => 'Pagamento mensal de habitação';
+
+  @override
+  String get helperWizardGroceries =>
+      'Orçamento mensal de alimentação e produtos domésticos';
+
+  @override
+  String get helperWizardTransport =>
+      'Custos mensais de transporte (combustível, transportes públicos, etc.)';
+
+  @override
+  String get helperWizardUtilities => 'Eletricidade, água e gás mensais';
+
+  @override
+  String get helperWizardTelecom => 'Internet, telefone e TV mensais';
 }

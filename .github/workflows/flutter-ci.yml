@@ -1,7 +1,15 @@
 name: Flutter CI
 
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'monthy_budget_flutter/**'
+      - '.github/workflows/flutter-ci.yml'
   push:
+    branches: [main]
+    tags:
+      - 'v*'
     paths:
       - 'monthy_budget_flutter/**'
       - '.github/workflows/flutter-ci.yml'
@@ -12,6 +20,7 @@ permissions:
 
 jobs:
   test:
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     defaults:
@@ -47,43 +56,8 @@ jobs:
       - name: Run tests
         run: flutter test
 
-  auto-pr:
-    needs: test
-    if: github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Create PR if none exists
-        id: pr
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          EXISTING=$(gh pr list --head "$GITHUB_REF_NAME" --base main --json number --jq '.[0].number')
-
-          if [ -n "$EXISTING" ]; then
-            echo "PR #$EXISTING already exists"
-            echo "pr_number=$EXISTING" >> "$GITHUB_OUTPUT"
-          else
-            PR_URL=$(gh pr create \
-              --base main \
-              --head "$GITHUB_REF_NAME" \
-              --title "$GITHUB_REF_NAME" \
-              --body "Auto-created PR from push to \`$GITHUB_REF_NAME\`.")
-            PR_NUMBER=$(echo "$PR_URL" | grep -oE '[0-9]+$')
-            echo "Created PR #$PR_NUMBER"
-            echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Enable auto-merge
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh pr merge ${{ steps.pr.outputs.pr_number }} --auto --squash
-
   build:
-    needs: test
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:
@@ -104,16 +78,15 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Create Supabase config
+      - name: Validate Supabase secrets
         run: |
-          mkdir -p lib/config
-          cat > lib/config/supabase_config.dart << DART
-          const supabaseUrl = '${SUPABASE_URL}';
-          const supabaseAnonKey = '${SUPABASE_ANON_KEY}';
-          DART
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "::error::SUPABASE_URL and SUPABASE_ANON_KEY secrets must be set for release builds"
+            exit 1
+          fi
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://placeholder.supabase.co' }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY || 'placeholder' }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
 
       - name: Install dependencies
         run: flutter pub get
@@ -129,14 +102,20 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: flutter build apk --release
+        run: |
+          flutter build apk --release \
+            --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+            --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
 
       - name: Build AAB
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: flutter build appbundle --release
+        run: |
+          flutter build appbundle --release \
+            --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+            --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
@@ -152,9 +131,37 @@ jobs:
           path: monthy_budget_flutter/build/app/outputs/bundle/release/*.aab
           retention-days: 30
 
-      # Tagged releases -> formal GitHub Release
-      - name: Create GitHub Release
+      - name: Build release notes from CHANGELOG
         if: startsWith(github.ref, 'refs/tags/v')
+        id: notes
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          BODY_FILE="release_notes.md"
+          awk -v tag="$TAG" '
+            BEGIN { capture=0 }
+            $0 ~ "^## "tag"( |$)" { capture=1; print; next }
+            /^## / && capture==1 { exit }
+            capture==1 { print }
+          ' CHANGELOG.md > "$BODY_FILE"
+
+          if [ -s "$BODY_FILE" ]; then
+            echo "has_notes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_notes=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create GitHub Release from CHANGELOG
+        if: startsWith(github.ref, 'refs/tags/v') && steps.notes.outputs.has_notes == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            monthy_budget_flutter/build/app/outputs/flutter-apk/app-release.apk
+            monthy_budget_flutter/build/app/outputs/bundle/release/*.aab
+          body_path: monthy_budget_flutter/release_notes.md
+
+      - name: Create GitHub Release (fallback autogenerated)
+        if: startsWith(github.ref, 'refs/tags/v') && steps.notes.outputs.has_notes != 'true'
         uses: softprops/action-gh-release@v2
         with:
           files: |
@@ -162,7 +169,6 @@ jobs:
             monthy_budget_flutter/build/app/outputs/bundle/release/*.aab
           generate_release_notes: true
 
-      # Push to main -> prerelease with commit SHA
       - name: Create prerelease
         if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2

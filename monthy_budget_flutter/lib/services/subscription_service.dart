@@ -12,16 +12,34 @@ class SubscriptionService {
     final json = prefs.getString(_key);
     if (json == null) {
       // First launch: start trial now
-      final initial = SubscriptionState(trialStartDate: DateTime.now());
+      final initial = SubscriptionState(
+        trialStartDate: DateTime.now(),
+        aiCredits: SubscriptionState.trialStarterCredits,
+        trialStarterCreditsGranted: true,
+      );
       await save(initial);
       return initial;
     }
-    return SubscriptionState.fromJsonString(json);
+    final loaded = SubscriptionState.fromJsonString(json);
+    if (!loaded.trialStarterCreditsGranted && loaded.isTrialActive) {
+      final upgraded = loaded.copyWith(
+        aiCredits: loaded.aiCredits + SubscriptionState.trialStarterCredits,
+        trialStarterCreditsGranted: true,
+      );
+      await save(upgraded);
+      return upgraded;
+    }
+    return loaded;
   }
 
   Future<void> save(SubscriptionState state) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_key, state.toJsonString());
+  }
+
+  Future<void> clear() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_key);
   }
 
   /// Record that the user explored a feature (for discovery tracking).
@@ -97,6 +115,44 @@ class SubscriptionService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_downgradeAppliedKey, false);
     await prefs.setBool(_trialEndNoticeKey, false);
+  }
+
+  Future<SubscriptionState> setPreferredCoachMode(
+      SubscriptionState current, CoachMode mode) async {
+    final updated = current.copyWith(preferredCoachMode: mode);
+    await save(updated);
+    return updated;
+  }
+
+  Future<SubscriptionState> addAiCredits(
+      SubscriptionState current, int amount) async {
+    if (amount <= 0) return current;
+    final updated = current.copyWith(aiCredits: current.aiCredits + amount);
+    await save(updated);
+    return updated;
+  }
+
+  Future<SubscriptionState> consumeAiCredits(
+      SubscriptionState current, int amount) async {
+    if (amount <= 0) return current;
+    final next = current.aiCredits - amount;
+    final updated = current.copyWith(aiCredits: next < 0 ? 0 : next);
+    await save(updated);
+    return updated;
+  }
+
+  Future<({SubscriptionState state, CoachModeResolution resolution})>
+      resolveAndConsumeCoachMode(
+    SubscriptionState current, {
+    CoachMode? requestedMode,
+  }) async {
+    final resolution = current.resolveCoachMode(requestedMode: requestedMode);
+    if (resolution.estimatedCreditCost <= 0) {
+      return (state: current, resolution: resolution);
+    }
+
+    final updated = await consumeAiCredits(current, resolution.estimatedCreditCost);
+    return (state: updated, resolution: resolution);
   }
 
   /// Returns a human-readable label for a feature key.

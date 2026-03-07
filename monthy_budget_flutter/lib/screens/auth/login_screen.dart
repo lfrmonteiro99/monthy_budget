@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../services/auth_service.dart';
 import '../../theme/app_colors.dart';
@@ -46,10 +48,40 @@ class _LoginScreenState extends State<LoginScreen> {
         });
       }
     } catch (e) {
-      setState(() => _error = e.toString());
+      setState(() => _error = _friendlyError(e));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
+  }
+
+  String _friendlyError(Object e) {
+    final l10n = S.of(context);
+
+    // Network / DNS errors
+    if (e is SocketException ||
+        e.toString().contains('SocketException') ||
+        e.toString().contains('Failed host lookup') ||
+        e.toString().contains('Connection refused') ||
+        e.toString().contains('AuthRetryableFetchException')) {
+      return l10n.authErrorNetwork;
+    }
+
+    // Supabase auth errors
+    if (e is AuthException) {
+      final msg = e.message.toLowerCase();
+      if (msg.contains('invalid login credentials') ||
+          msg.contains('invalid email or password')) {
+        return l10n.authErrorInvalidCredentials;
+      }
+      if (msg.contains('email not confirmed')) {
+        return l10n.authErrorEmailNotConfirmed;
+      }
+      if (msg.contains('rate limit') || msg.contains('too many requests')) {
+        return l10n.authErrorTooManyRequests;
+      }
+    }
+
+    return l10n.authErrorGeneric;
   }
 
   @override
