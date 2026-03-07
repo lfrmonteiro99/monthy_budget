@@ -9,6 +9,8 @@ import '../models/budget_summary.dart';
 import '../models/coach_insight.dart';
 import '../models/purchase_record.dart';
 import '../utils/stress_index.dart';
+import 'revenuecat_service.dart';
+import '../models/subscription_state.dart';
 
 bool shouldFallbackFromEdgeFunctionError(Object error) {
   final raw = error.toString().toLowerCase();
@@ -76,10 +78,18 @@ class AiCoachService {
     await prefs.setString(_apiKeyPref, key.trim());
   }
 
-  /// Gate for AI features. Currently checks API key existence.
-  /// Future: replace with subscription tier check.
+  /// Gate for AI features.
+  ///
+  /// Returns `true` if the user has an active trial or a premium/family
+  /// subscription via RevenueCat. Free-tier users without a trial are blocked.
   Future<bool> canUseAI() async {
-    return true;
+    final tier = await RevenueCatService.getCurrentTier();
+    if (tier == SubscriptionTier.premium || tier == SubscriptionTier.family) {
+      return true;
+    }
+    // Free tier — allow only if the user has a local API key configured
+    final key = await loadApiKey();
+    return key.trim().isNotEmpty;
   }
 
   // ── Insight history (household-shared via Supabase) ────────────────────────
