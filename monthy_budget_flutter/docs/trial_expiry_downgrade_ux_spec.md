@@ -4,7 +4,7 @@
 
 When the 14-day free trial expires, users are downgraded from full premium access to the free tier. During trial, they may have created data that exceeds free-tier limits:
 
-- **Expense categories**: Max 5 active on free tier (user may have 10+)
+- **Expense categories**: Max 8 active on free tier (user may have 10+)
 - **Savings goals**: Max 1 active on free tier (user may have multiple)
 - **Premium features**: AI Coach, Meal Planner, Export, Bill Reminders, Expense Trends, etc. become inaccessible
 
@@ -37,7 +37,7 @@ Show **once**, the first time the app is opened after `isTrialActive` transition
 │   some limits for the free plan:        │
 │                                         │
 │   ┌─────────────────────────────────┐   │
-│   │ ● 5 of 12 categories active    │   │  ← warning background
+│   │ ● 8 of 12 categories active    │   │  ← warning background
 │   │   7 categories paused           │   │
 │   │ ● 1 of 4 savings goals active  │   │
 │   │   3 savings goals paused        │   │
@@ -63,8 +63,8 @@ Show **once**, the first time the app is opened after `isTrialActive` transition
 - **DraggableScrollableSheet**: `initialChildSize: 0.55`, `minChildSize: 0.3`, `maxChildSize: 0.8`
 - **Dismiss**: Swipe down or tap "Continue with Free Plan". Both mark `trialEndNoticeSeen = true`.
 - **"Upgrade to Pro"**: Navigates to `PaywallScreen` (existing).
-- **"Manage My Categories"**: Navigates to Settings screen with `initialSection: 'expenses'` (existing pattern), where the user can choose which 5 categories to keep active.
-- **Conditional content**: Only show the affected-items box if the user actually exceeded limits. If the user had 5 or fewer categories AND 1 or fewer savings goals, simplify the message to just mention premium features becoming unavailable and skip the "Manage" button entirely.
+- **"Manage My Categories"**: Navigates to Settings screen with `initialSection: 'expenses'` (existing pattern), where the user can choose which 8 categories to keep active.
+- **Conditional content**: Only show the affected-items box if the user actually exceeded limits. If the user had 8 or fewer categories AND 1 or fewer savings goals, simplify the message to just mention premium features becoming unavailable and skip the "Manage" button entirely.
 - **Icon**: `Icons.info_outline` in `AppColors.primary(context)`, not warning/error. The tone is informational, not alarming.
 
 ### Copy Guidelines
@@ -81,12 +81,12 @@ Show **once**, the first time the app is opened after `isTrialActive` transition
 
 Categories are `ExpenseItem` objects in `AppSettings.expenses`. They already have an `enabled` field. The settings screen already renders them in an expandable section.
 
-**Active categories** (first 5, or user-selected 5): Render as they currently do -- no changes.
+**Active categories** (first 8, or user-selected 8): Render as they currently do -- no changes.
 
 **Paused categories** (beyond the limit): Render in a separate sub-group below active categories, with the following visual treatment:
 
 ```
-── Active Categories (5 of 12) ─────────
+── Active Categories (8 of 12) ─────────
 
   [normal expense item row]
   [normal expense item row]
@@ -110,7 +110,7 @@ Categories are `ExpenseItem` objects in `AppSettings.expenses`. They already hav
 - A `Switch` widget in the OFF state. Tapping it triggers the "attempt to activate beyond limit" flow (see section 3).
 - The entire row has reduced opacity is NOT recommended (accessibility issue). Instead, use the muted color treatment above.
 
-**Section header**: Show a count — "Active Categories (5 of 12)" — making the limit tangible.
+**Section header**: Show a count — "Active Categories (8 of 12)" — making the limit tangible.
 
 **No badge on the Settings nav item**. The settings icon in the bottom nav / more screen should NOT have a persistent badge. This would be too aggressive and create upgrade-spam anxiety.
 
@@ -151,7 +151,7 @@ Both lists should sort: **active items first, then paused items**. Within each g
 
 ### Trigger
 
-User taps the toggle/switch on a paused category, or selects "Set Active" on a paused savings goal, while already at the free-tier limit (5 categories or 1 savings goal active).
+User taps the toggle/switch on a paused category, or selects "Set Active" on a paused savings goal, while already at the free-tier limit (8 categories or 1 savings goal active).
 
 ### Format: Dialog (AlertDialog)
 
@@ -164,7 +164,7 @@ User taps the toggle/switch on a paused category, or selects "Set Active" on a p
 │                                         │
 │   Category limit reached                │  ← title, 16px, w700
 │                                         │
-│   The free plan allows 5 active         │  ← 14px, textSecondary
+│   The free plan allows 8 active         │  ← 14px, textSecondary
 │   categories. To activate "Vodafone",   │
 │   deactivate another category first,    │
 │   or upgrade to Pro for unlimited       │
@@ -207,7 +207,7 @@ The "Swap Active" button label becomes "Choose Active Goal" and it should presen
 
 ### For Categories (Create New Expense Item)
 
-When the user taps "Add Expense" in settings and they already have 5 active categories:
+When the user taps "Add Expense" in settings and they already have 8 active categories:
 
 **Format**: Same AlertDialog pattern as #3.
 
@@ -216,7 +216,7 @@ When the user taps "Add Expense" in settings and they already have 5 active cate
 │                                         │
 │   Category limit reached                │
 │                                         │
-│   You have 5 active categories, the     │
+│   You have 8 active categories, the     │
 │   maximum for the free plan. To add a   │
 │   new category, deactivate an existing  │
 │   one first, or upgrade to Pro.         │
@@ -232,9 +232,9 @@ When the user taps "Add Expense" in settings and they already have 5 active cate
 └─────────────────────────────────────────┘
 ```
 
-**Key difference from #3**: The user is NOT blocked from creating the item if they have fewer than 5 active but may have many total (active + paused). The limit is on *active* items, not total items. So the check is: `activeCategories.length >= 5`. If the user has 3 active and 7 paused, they CAN create a new one (it becomes active, bringing them to 4).
+**Key difference from #3**: The user is NOT blocked from creating the item if they have fewer than 8 active but may have many total (active + paused). The limit is on *active* items, not total items. So the check is: `activeCategories.length >= 8`. If the user has 3 active and 7 paused, they CAN create a new one (it becomes active, bringing them to 4).
 
-However, if they are at the limit of 5 active, they must either:
+However, if they are at the limit of 8 active, they must either:
 1. Deactivate one first, then create the new one (it will be active by default)
 2. Create the new one as paused (offer this as an option): "Create as Paused" -- allowing them to save the data without it counting against the limit
 
@@ -297,10 +297,10 @@ The "+3 paused goals" text is tappable and navigates to the savings goals screen
 When the expenses section is expanded, show the limit in the section header:
 
 ```
-  Expenses  (5/5 active)                    ← "5/5" in textMuted
+  Expenses  (8/8 active)                    ← "8/8" in textMuted
 ```
 
-If under the limit: `(3/5 active)` -- still show it, so the user always knows the constraint exists. Only show this count on the free tier.
+If under the limit: `(3/8 active)` -- still show it, so the user always knows the constraint exists. Only show this count on the free tier.
 
 #### 5c. "More" / Profile Screen
 
@@ -309,7 +309,7 @@ If the app has a "More" or profile screen where subscription status is shown (th
 ```
   ┌─────────────────────────────────────┐
   │  Free Plan                          │
-  │  5 categories • 1 savings goal      │  ← textSecondary
+  │  8 categories • 1 savings goal      │  ← textSecondary
   │  7 items paused                     │  ← textMuted, only if >0 paused
   │                    Upgrade →        │
   └─────────────────────────────────────┘
@@ -329,7 +329,7 @@ The deactivation should happen in the service layer, not the UI. Add a method to
 
 ```dart
 class DowngradeService {
-  static const maxFreeCategories = 5;
+  static const maxFreeCategories = 8;
   static const maxFreeSavingsGoals = 1;
 
   /// Called once when trial expires. Returns true if any items were paused.
@@ -416,7 +416,7 @@ The deactivation logic runs locally (it modifies `AppSettings` and local `Saving
 
 ### User deletes items to get under the limit
 
-If the user proactively deletes categories/goals to stay under the limit before trial expiry, the deactivation logic should detect this (`activeCount <= maxFreeCategories`) and skip deactivation. The bottom sheet would then only mention premium features.
+If the user proactively deletes categories/goals to stay under the limit before trial expiry, the deactivation logic should detect this (`activeCount <= maxFreeCategories`, i.e. 8) and skip deactivation. The bottom sheet would then only mention premium features.
 
 ---
 

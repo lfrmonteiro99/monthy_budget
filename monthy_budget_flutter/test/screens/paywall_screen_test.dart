@@ -180,7 +180,7 @@ void main() {
           PaywallScreen(subscription: state, onSelectTier: (_) {}),
         ));
 
-        expect(find.text('Budget calculator (5 categories)'), findsOneWidget);
+        expect(find.text('Budget calculator (8 categories)'), findsOneWidget);
         expect(find.text('Basic expense tracking'), findsOneWidget);
         expect(find.text('1 savings goal'), findsOneWidget);
       });

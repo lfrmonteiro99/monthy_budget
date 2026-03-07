@@ -87,7 +87,7 @@ If you were to hire a team to rebuild this app from scratch:
 Users get a fully functional budgeting experience:
 
 - ✅ Monthly budget calculator
-- ✅ Up to 5 budget categories
+- ✅ Up to 8 budget categories
 - ✅ Basic expense tracking (current month only)
 - ✅ 1 savings goal
 - ✅ Shopping list (no real-time sync — local only)
@@ -166,7 +166,7 @@ Households and power users:
 - [ ] Gate expense history/trends behind Premium tier
 - [ ] Gate household features behind Family tier
 - [ ] Gate multi-country tax behind Family tier
-- [ ] Limit free tier to 5 categories, 1 savings goal
+- [ ] Limit free tier to 8 categories, 1 savings goal
 - [ ] Gate PDF/CSV export behind Premium tier
 - [ ] Show upgrade prompts at gate points
 
@@ -227,7 +227,7 @@ class SubscriptionService {
   bool canExport(SubscriptionTier tier);            // Premium+
   bool shouldShowAds(SubscriptionTier tier);        // Free only
   int maxSavingsGoals(SubscriptionTier tier);       // Free=1, Premium+=unlimited
-  int maxCategories(SubscriptionTier tier);         // Free=5, Premium+=unlimited
+  int maxCategories(SubscriptionTier tier);         // Free=8, Premium+=unlimited
 
   // Purchase flow
   Future<void> purchaseSubscription(String productId);
