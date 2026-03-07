@@ -60,8 +60,10 @@ import 'screens/paywall_screen.dart';
 import 'widgets/trial_banner.dart';
 import 'widgets/feature_discovery_card.dart';
 import 'services/ad_service.dart';
+import 'services/downgrade_service.dart';
 import 'services/revenuecat_service.dart';
 import 'widgets/ad_banner_widget.dart';
+import 'widgets/trial_expired_bottom_sheet.dart';
 import 'widgets/branded_loading.dart';
 import 'services/command_chat_service.dart';
 import 'services/command_pattern_cache.dart';
@@ -166,6 +168,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   final _savingsGoalService = SavingsGoalService();
   final _monthlyBudgetService = MonthlyBudgetService();
   final _subscriptionService = SubscriptionService();
+  final _downgradeService = DowngradeService();
   final _commandChatService = CommandChatService();
   final _commandPatternCache = CommandPatternCache();
   bool _commandPanelOpen = false;
@@ -282,8 +285,54 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     _loadActualExpenseHistory();
     _loadMonthlyBudgets();
     _loadNotificationPrefs();
-    _loadSavingsGoals();
+    await _loadSavingsGoals();
     _syncRevenueCat();
+    _checkDowngrade();
+  }
+
+  /// Check if the user needs downgrade handling (trial expired or subscription cancelled).
+  Future<void> _checkDowngrade() async {
+    if (!_subscription.justDowngraded) return;
+
+    // Apply free-tier limits if not already done
+    final alreadyApplied = await _subscriptionService.isDowngradeApplied();
+    if (!alreadyApplied) {
+      await _downgradeService.applyFreeTierLimits(
+        settings: _settings,
+        goals: _savingsGoals,
+        onSaveSettings: _saveSettings,
+        householdId: widget.householdId,
+        savingsGoalService: _savingsGoalService,
+      );
+      await _subscriptionService.markDowngradeApplied();
+      // Reload goals after deactivation
+      await _loadSavingsGoals();
+    }
+
+    // Show the trial-expired bottom sheet once
+    final noticeSeen = await _subscriptionService.isTrialEndNoticeSeen();
+    if (!noticeSeen && mounted) {
+      // Wait for the next frame so the UI is fully built
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (!mounted) return;
+        final action = await showTrialExpiredBottomSheet(
+          context: context,
+          expenses: _settings.expenses,
+          savingsGoals: _savingsGoals,
+        );
+        await _subscriptionService.markTrialEndNoticeSeen();
+        if (!mounted) return;
+        if (action == TrialExpiredAction.upgrade) {
+          _openPaywall();
+        } else if (action == TrialExpiredAction.manageCategories) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => _buildSettingsScreen(initialSection: 'expenses'),
+            ),
+          );
+        }
+      });
+    }
   }
 
   /// Login to RevenueCat and sync the remote subscription tier.
@@ -456,6 +505,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
             setState(() => _savingsGoals = updated);
             _loadSavingsGoals();
           },
+          subscription: _subscription,
+          onUpgrade: _openPaywall,
           showTour: !_onboardingState.isTourDone('savings_goals'),
           onTourComplete: () => _markTourDone('savings_goals'),
         ),
@@ -508,6 +559,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           onSelectTier: (tier) async {
             final updated =
                 await _subscriptionService.upgradeTo(_subscription, tier);
+            if (tier != SubscriptionTier.free) {
+              await _subscriptionService.resetDowngradeTracking();
+            }
             if (mounted) {
               setState(() => _subscription = updated);
               Navigator.of(context).pop();
@@ -524,6 +578,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           onPurchaseComplete: (tier) async {
             final updated =
                 await _subscriptionService.upgradeTo(_subscription, tier);
+            await _subscriptionService.resetDowngradeTracking();
             if (mounted) {
               setState(() => _subscription = updated);
               Navigator.of(context).pop();
@@ -1214,6 +1269,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       onOpenNotificationSettings: _openNotificationSettings,
       onOpenSubscription: _openPaywall,
       onOpenCustomerCenter: _openCustomerCenter,
+      subscription: _subscription,
       subscriptionLabel: _subscription.isTrialActive
           ? 'Trial (${_subscription.trialDaysRemaining} days left)'
           : _subscription.tier == SubscriptionTier.free
@@ -1351,6 +1407,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         },
         onOpenNotifications: _openNotificationSettings,
         onOpenSubscription: _openPaywall,
+        subscription: _subscription,
+        pausedItemCount:
+            DowngradeService.pausedCategories(_settings.expenses) +
+                DowngradeService.pausedSavingsGoals(_savingsGoals),
       ),
     ];
 

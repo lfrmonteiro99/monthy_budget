@@ -252,7 +252,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
                     price: '0',
                     period: 'forever',
                     features: const [
-                      'Budget calculator (5 categories)',
+                      'Budget calculator (8 categories)',
                       'Basic expense tracking',
                       '1 savings goal',
                       'Shopping list (local only)',

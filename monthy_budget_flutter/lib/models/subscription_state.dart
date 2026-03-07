@@ -111,6 +111,9 @@ class SubscriptionState {
     return remaining.clamp(0, trialDays);
   }
 
+  /// Whether the user just transitioned from trial to free (needs downgrade handling).
+  bool get justDowngraded => trialUsed && tier == SubscriptionTier.free;
+
   /// Whether the user currently has premium-level access (paid or trial).
   bool get hasPremiumAccess =>
       tier == SubscriptionTier.premium ||
