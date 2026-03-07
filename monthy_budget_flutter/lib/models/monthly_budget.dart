@@ -4,12 +4,24 @@ class MonthlyBudget {
   final double amount;
   final String monthKey;
 
-  const MonthlyBudget({
+  MonthlyBudget({
     required this.id,
     required this.category,
     required this.amount,
     required this.monthKey,
-  });
+  }) : assert(amount >= 0, 'amount must be non-negative');
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MonthlyBudget &&
+          id == other.id &&
+          category == other.category &&
+          amount == other.amount &&
+          monthKey == other.monthKey;
+
+  @override
+  int get hashCode => Object.hash(id, category, amount, monthKey);
 
   factory MonthlyBudget.create({
     required String category,

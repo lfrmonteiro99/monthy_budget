@@ -6,7 +6,7 @@ void main() {
   group('calculateProjection', () {
     test('returns immediate completion projection when goal is completed', () {
       final projection = calculateProjection(
-        goal: const SavingsGoal(
+        goal: SavingsGoal(
           id: 'g1',
           name: 'Emergency',
           targetAmount: 1000,

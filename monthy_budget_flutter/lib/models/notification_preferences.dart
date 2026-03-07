@@ -21,6 +21,20 @@ class CustomReminder {
     this.repeatDays = const [],
   });
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CustomReminder &&
+          id == other.id &&
+          title == other.title &&
+          body == other.body &&
+          hour == other.hour &&
+          minute == other.minute &&
+          repeat == other.repeat;
+
+  @override
+  int get hashCode => Object.hash(id, title, body, hour, minute, repeat);
+
   Map<String, dynamic> toJson() => {
         'id': id,
         'title': title,
@@ -57,14 +71,33 @@ class NotificationPreferences {
   final bool mealPlanReminders;
   final List<CustomReminder> customReminders;
 
-  const NotificationPreferences({
+  NotificationPreferences({
     this.billReminders = false,
     this.billReminderDaysBefore = 1,
     this.budgetAlerts = false,
     this.budgetAlertThreshold = 80,
     this.mealPlanReminders = false,
     this.customReminders = const [],
-  });
+  }) : assert(
+         budgetAlertThreshold >= 0 && budgetAlertThreshold <= 100,
+         'budgetAlertThreshold must be between 0 and 100',
+       );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is NotificationPreferences &&
+          billReminders == other.billReminders &&
+          billReminderDaysBefore == other.billReminderDaysBefore &&
+          budgetAlerts == other.budgetAlerts &&
+          budgetAlertThreshold == other.budgetAlertThreshold &&
+          mealPlanReminders == other.mealPlanReminders;
+
+  @override
+  int get hashCode => Object.hash(
+        billReminders, billReminderDaysBefore,
+        budgetAlerts, budgetAlertThreshold, mealPlanReminders,
+      );
 
   NotificationPreferences copyWith({
     bool? billReminders,

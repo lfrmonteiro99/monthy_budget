@@ -4,7 +4,7 @@ import 'package:orcamento_mensal/models/notification_preferences.dart';
 void main() {
   group('NotificationPreferences', () {
     test('copyWith updates only provided fields', () {
-      const prefs = NotificationPreferences(
+      final prefs = NotificationPreferences(
         billReminders: false,
         billReminderDaysBefore: 1,
         budgetAlerts: false,
@@ -22,7 +22,7 @@ void main() {
     });
 
     test('serializes and deserializes custom reminders', () {
-      const prefs = NotificationPreferences(
+      final prefs = NotificationPreferences(
         billReminders: true,
         customReminders: [
           CustomReminder(

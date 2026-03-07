@@ -7,7 +7,7 @@ class SavingsGoal {
   final String? color;
   final bool isActive;
 
-  const SavingsGoal({
+  SavingsGoal({
     required this.id,
     required this.name,
     required this.targetAmount,
@@ -15,7 +15,26 @@ class SavingsGoal {
     this.deadline,
     this.color,
     this.isActive = true,
-  });
+  })  : assert(targetAmount >= 0, 'targetAmount must be non-negative'),
+        assert(currentAmount >= 0, 'currentAmount must be non-negative');
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SavingsGoal &&
+          id == other.id &&
+          name == other.name &&
+          targetAmount == other.targetAmount &&
+          currentAmount == other.currentAmount &&
+          deadline == other.deadline &&
+          color == other.color &&
+          isActive == other.isActive;
+
+  @override
+  int get hashCode => Object.hash(
+        id, name, targetAmount, currentAmount,
+        deadline, color, isActive,
+      );
 
   double get progress =>
       targetAmount > 0 ? (currentAmount / targetAmount).clamp(0.0, 1.0) : 0;
@@ -81,13 +100,27 @@ class SavingsContribution {
   final DateTime contributionDate;
   final String? note;
 
-  const SavingsContribution({
+  SavingsContribution({
     required this.id,
     required this.goalId,
     required this.amount,
     required this.contributionDate,
     this.note,
-  });
+  }) : assert(amount >= 0, 'amount must be non-negative');
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SavingsContribution &&
+          id == other.id &&
+          goalId == other.goalId &&
+          amount == other.amount &&
+          contributionDate == other.contributionDate &&
+          note == other.note;
+
+  @override
+  int get hashCode =>
+      Object.hash(id, goalId, amount, contributionDate, note);
 
   factory SavingsContribution.fromSupabase(Map<String, dynamic> map) {
     return SavingsContribution(

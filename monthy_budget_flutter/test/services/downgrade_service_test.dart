@@ -37,18 +37,18 @@ void main() {
 
     test('activeSavingsGoals counts active goals', () {
       final goals = [
-        const SavingsGoal(id: '1', name: 'A', targetAmount: 100, isActive: true),
-        const SavingsGoal(id: '2', name: 'B', targetAmount: 200, isActive: false),
-        const SavingsGoal(id: '3', name: 'C', targetAmount: 300, isActive: true),
+        SavingsGoal(id: '1', name: 'A', targetAmount: 100, isActive: true),
+        SavingsGoal(id: '2', name: 'B', targetAmount: 200, isActive: false),
+        SavingsGoal(id: '3', name: 'C', targetAmount: 300, isActive: true),
       ];
       expect(DowngradeService.activeSavingsGoals(goals), 2);
     });
 
     test('excessSavingsGoals returns correct count', () {
       final goals = [
-        const SavingsGoal(id: '1', name: 'A', targetAmount: 100, isActive: true),
-        const SavingsGoal(id: '2', name: 'B', targetAmount: 200, isActive: true),
-        const SavingsGoal(id: '3', name: 'C', targetAmount: 300, isActive: true),
+        SavingsGoal(id: '1', name: 'A', targetAmount: 100, isActive: true),
+        SavingsGoal(id: '2', name: 'B', targetAmount: 200, isActive: true),
+        SavingsGoal(id: '3', name: 'C', targetAmount: 300, isActive: true),
       ];
       expect(DowngradeService.excessSavingsGoals(goals), 2);
     });
@@ -64,7 +64,7 @@ void main() {
       final expenses = List.generate(
           8, (i) => ExpenseItem(id: '$i', enabled: true));
       final goals = [
-        const SavingsGoal(id: '1', name: 'A', targetAmount: 100, isActive: true),
+        SavingsGoal(id: '1', name: 'A', targetAmount: 100, isActive: true),
       ];
       expect(DowngradeService.hasExcessItems(expenses, goals), false);
     });

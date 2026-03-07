@@ -10,9 +10,9 @@ void main() {
   group('SavingsGoalCard', () {
     testWidgets('shows at most two active goals', (tester) async {
       final goals = [
-        const SavingsGoal(id: 'g1', name: 'Trip', targetAmount: 1000, currentAmount: 100),
-        const SavingsGoal(id: 'g2', name: 'Laptop', targetAmount: 1500, currentAmount: 300),
-        const SavingsGoal(id: 'g3', name: 'Bike', targetAmount: 800, currentAmount: 200),
+        SavingsGoal(id: 'g1', name: 'Trip', targetAmount: 1000, currentAmount: 100),
+        SavingsGoal(id: 'g2', name: 'Laptop', targetAmount: 1500, currentAmount: 300),
+        SavingsGoal(id: 'g3', name: 'Bike', targetAmount: 800, currentAmount: 200),
       ];
 
       await tester.pumpWidget(
@@ -34,7 +34,7 @@ void main() {
 
     testWidgets('shows completed fallback when no active goals', (tester) async {
       final goals = [
-        const SavingsGoal(
+        SavingsGoal(
           id: 'g1',
           name: 'Emergency Fund',
           targetAmount: 500,
@@ -59,7 +59,7 @@ void main() {
     });
 
     testWidgets('shows projection warning icon when off-track', (tester) async {
-      final goal = const SavingsGoal(
+      final goal = SavingsGoal(
         id: 'g1',
         name: 'Vacation',
         targetAmount: 2000,
@@ -92,7 +92,7 @@ void main() {
     testWidgets('see all action is tappable', (tester) async {
       var tapped = false;
       final goals = [
-        const SavingsGoal(id: 'g1', name: 'Trip', targetAmount: 1000, currentAmount: 100),
+        SavingsGoal(id: 'g1', name: 'Trip', targetAmount: 1000, currentAmount: 100),
       ];
 
       await tester.pumpWidget(

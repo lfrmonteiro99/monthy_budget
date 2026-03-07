@@ -13,7 +13,22 @@ class ShoppingItem {
     required this.price,
     this.unitPrice,
     this.checked = false,
-  });
+  }) : assert(price >= 0, 'price must be non-negative');
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ShoppingItem &&
+          id == other.id &&
+          productName == other.productName &&
+          store == other.store &&
+          price == other.price &&
+          unitPrice == other.unitPrice &&
+          checked == other.checked;
+
+  @override
+  int get hashCode =>
+      Object.hash(id, productName, store, price, unitPrice, checked);
 
   factory ShoppingItem.fromJson(Map<String, dynamic> json) => ShoppingItem(
         id: json['id'] as String? ?? '',
