@@ -11,6 +11,7 @@ class LocalConfigService {
   static const _notifKey = 'notification_prefs';
   static const _paletteKey = 'color_palette';
   static const _onboardingKey = 'onboarding_state';
+  static const _lastUserKey = 'last_user_id';
 
   Future<LocalDashboardConfig> load() async {
     final prefs = await SharedPreferences.getInstance();
@@ -75,6 +76,17 @@ class LocalConfigService {
   Future<void> clearOnboardingState() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_onboardingKey);
+  }
+
+  /// Returns true if the user changed (and local data was cleared).
+  Future<bool> checkUserChanged(String currentUserId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final lastUserId = prefs.getString(_lastUserKey);
+    if (lastUserId == currentUserId) return false;
+    // New user on this device — clear per-user local data
+    await prefs.remove(_onboardingKey);
+    await prefs.setString(_lastUserKey, currentUserId);
+    return true;
   }
 
   Future<NotificationPreferences> loadNotificationPreferences() async {

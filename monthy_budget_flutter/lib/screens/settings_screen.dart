@@ -17,7 +17,6 @@ import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
 import '../main.dart';
 import '../services/local_config_service.dart';
-import '../services/subscription_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   final AppSettings settings;
@@ -370,10 +369,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         width: double.infinity,
                         child: OutlinedButton.icon(
                           onPressed: () async {
-                            await Future.wait([
-                              LocalConfigService().clearOnboardingState(),
-                              SubscriptionService().clear(),
-                            ]);
                             await Supabase.instance.client.auth.signOut();
                             if (context.mounted) {
                               Navigator.of(context)
