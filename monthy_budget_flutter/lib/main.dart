@@ -184,7 +184,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   List<RecurringExpense> _recurringExpenses = [];
   Map<String, List<ActualExpense>> _actualExpenseHistory = {};
   Map<String, double> _monthlyBudgets = {};
-  NotificationPreferences _notificationPrefs = const NotificationPreferences();
+  NotificationPreferences _notificationPrefs = NotificationPreferences();
   List<SavingsGoal> _savingsGoals = [];
   Map<String, SavingsProjection> _savingsProjections = {};
   List<Product> _products = [];

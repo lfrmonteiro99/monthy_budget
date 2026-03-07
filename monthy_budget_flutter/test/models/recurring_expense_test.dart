@@ -6,7 +6,7 @@ import '../helpers/test_helpers.dart';
 void main() {
   group('RecurringExpense', () {
     test('constructor defaults', () {
-      const expense = RecurringExpense(
+      final expense = RecurringExpense(
         id: 're_1',
         category: 'energia',
         amount: 80.0,
@@ -21,7 +21,7 @@ void main() {
     });
 
     test('constructor with all fields', () {
-      const expense = RecurringExpense(
+      final expense = RecurringExpense(
         id: 're_full',
         category: 'habitacao',
         amount: 700,
@@ -109,7 +109,7 @@ void main() {
       });
 
       test('includes null fields', () {
-        const expense = RecurringExpense(
+        final expense = RecurringExpense(
           id: 're_nil',
           category: 'outros',
           amount: 10,

@@ -10,7 +10,7 @@ void main() {
     await tester.pumpWidget(
       wrapWithTestApp(
         NotificationSettingsScreen(
-          preferences: const NotificationPreferences(),
+          preferences: NotificationPreferences(),
           onSave: (_) {},
         ),
       ),
@@ -26,7 +26,7 @@ void main() {
     await tester.pumpWidget(
       wrapWithTestApp(
         NotificationSettingsScreen(
-          preferences: const NotificationPreferences(billReminders: true),
+          preferences: NotificationPreferences(billReminders: true),
           onSave: (p) => saved = p,
         ),
       ),

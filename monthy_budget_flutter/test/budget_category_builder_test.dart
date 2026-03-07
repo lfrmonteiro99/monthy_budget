@@ -19,7 +19,7 @@ void main() {
             amount: 700,
           ),
         ],
-        const [
+        [
           RecurringExpense(
             id: 'r1',
             category: 'alimentacao',
@@ -57,7 +57,7 @@ void main() {
             amount: 100,
           ),
         ],
-        const [
+        [
           RecurringExpense(
             id: 'r1',
             category: 'categoria_inexistente',
@@ -82,7 +82,7 @@ void main() {
             amount: 300,
           ),
         ],
-        const [
+        [
           RecurringExpense(
             id: 'r1',
             category: 'unknown',

@@ -92,7 +92,7 @@ class LocalConfigService {
   Future<NotificationPreferences> loadNotificationPreferences() async {
     final prefs = await SharedPreferences.getInstance();
     final json = prefs.getString(_notifKey);
-    if (json == null) return const NotificationPreferences();
+    if (json == null) return NotificationPreferences();
     return NotificationPreferences.fromJsonString(json);
   }
 

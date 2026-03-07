@@ -87,7 +87,7 @@ void main() {
 
   group('SavingsGoal and SavingsContribution mapping', () {
     test('computes goal progress helpers', () {
-      const goal = SavingsGoal(
+      final goal = SavingsGoal(
         id: 'g1',
         name: 'Emergency',
         targetAmount: 1000,
