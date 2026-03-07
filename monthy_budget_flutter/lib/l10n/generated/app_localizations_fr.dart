@@ -2283,6 +2283,24 @@ class SFr extends S {
   String get savingsGoalOverdue => 'En retard';
 
   @override
+  String get savingsGoalHowItWorksTitle => 'Comment ça marche ?';
+
+  @override
+  String get savingsGoalHowItWorksStep1 => 'Créez un objectif avec un nom et le montant à atteindre (ex : \"Vacances — 2 000 €\").';
+
+  @override
+  String get savingsGoalHowItWorksStep2 => 'Définissez éventuellement une date limite comme référence.';
+
+  @override
+  String get savingsGoalHowItWorksStep3 => 'Chaque fois que vous économisez, touchez l\'objectif et enregistrez une contribution avec le montant et la date.';
+
+  @override
+  String get savingsGoalHowItWorksStep4 => 'Suivez votre progression : la barre montre combien vous avez épargné et la projection estime quand vous atteindrez votre objectif.';
+
+  @override
+  String get savingsGoalDashboardHint => 'Touchez un objectif pour voir les détails et enregistrer des contributions.';
+
+  @override
   String get mealCostReconciliation => 'CoÃ»ts des Repas';
 
   @override

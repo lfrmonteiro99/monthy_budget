@@ -55,12 +55,23 @@ class SavingsGoalCard extends StatelessWidget {
     return _wrapper(
       context,
       l10n,
-      children: display
-          .map((g) => _GoalRow(
-                goal: g,
-                projection: projections[g.id],
-              ))
-          .toList(),
+      children: [
+        ...display.map((g) => _GoalRow(
+              goal: g,
+              projection: projections[g.id],
+            )),
+        Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Text(
+            l10n.savingsGoalDashboardHint,
+            style: TextStyle(
+              fontSize: 11,
+              fontStyle: FontStyle.italic,
+              color: AppColors.textMuted(context),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
