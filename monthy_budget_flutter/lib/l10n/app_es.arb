@@ -1041,6 +1041,12 @@
   "addExpenseTooltip": "Registrar gasto",
   "addExpenseItem": "Gasto",
   "addExpenseOthers": "Otros",
+  "qrScannerTitle": "Leer QR Code",
+  "qrScanHint": "Apunte la cámara al código QR del recibo",
+  "qrExpenseConfirmTitle": "Confirmar Gasto",
+  "qrScanAgain": "Leer de nuevo",
+  "speedDialManual": "Manual",
+  "speedDialQrCode": "QR Code",
   "settingsDashBudgetVsActual": "Presupuesto vs Real",
 
   "settingsAppearance": "Apariencia",

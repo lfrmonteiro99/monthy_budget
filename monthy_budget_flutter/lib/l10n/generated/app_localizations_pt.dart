@@ -2031,6 +2031,24 @@ class SPt extends S {
   String get addExpenseOthers => 'Outros';
 
   @override
+  String get qrScannerTitle => 'Ler QR Code';
+
+  @override
+  String get qrScanHint => 'Aponte a câmara para o QR code do recibo';
+
+  @override
+  String get qrExpenseConfirmTitle => 'Confirmar Despesa';
+
+  @override
+  String get qrScanAgain => 'Ler novamente';
+
+  @override
+  String get speedDialManual => 'Manual';
+
+  @override
+  String get speedDialQrCode => 'QR Code';
+
+  @override
   String get settingsDashBudgetVsActual => 'Orçamento vs Real';
 
   @override

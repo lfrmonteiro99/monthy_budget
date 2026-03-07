@@ -1040,6 +1040,12 @@
   "addExpenseTooltip": "Log expense",
   "addExpenseItem": "Expense",
   "addExpenseOthers": "Others",
+  "qrScannerTitle": "Scan QR Code",
+  "qrScanHint": "Point the camera at the receipt QR code",
+  "qrExpenseConfirmTitle": "Confirm Expense",
+  "qrScanAgain": "Scan again",
+  "speedDialManual": "Manual",
+  "speedDialQrCode": "QR Code",
   "settingsDashBudgetVsActual": "Budget vs Actual",
 
   "settingsAppearance": "Appearance",

@@ -2032,6 +2032,24 @@ class SEs extends S {
   String get addExpenseOthers => 'Otros';
 
   @override
+  String get qrScannerTitle => 'Leer QR Code';
+
+  @override
+  String get qrScanHint => 'Apunte la cámara al código QR del recibo';
+
+  @override
+  String get qrExpenseConfirmTitle => 'Confirmar Gasto';
+
+  @override
+  String get qrScanAgain => 'Leer de nuevo';
+
+  @override
+  String get speedDialManual => 'Manual';
+
+  @override
+  String get speedDialQrCode => 'QR Code';
+
+  @override
   String get settingsDashBudgetVsActual => 'Presupuesto vs Real';
 
   @override

@@ -1041,6 +1041,12 @@
   "addExpenseTooltip": "Saisir une dÃ©pense",
   "addExpenseItem": "DÃ©pense",
   "addExpenseOthers": "Autres",
+  "qrScannerTitle": "Scanner QR Code",
+  "qrScanHint": "Pointez la caméra vers le QR code du reçu",
+  "qrExpenseConfirmTitle": "Confirmer la dépense",
+  "qrScanAgain": "Scanner à nouveau",
+  "speedDialManual": "Manuel",
+  "speedDialQrCode": "QR Code",
   "settingsDashBudgetVsActual": "Budget vs RÃ©el",
 
   "settingsAppearance": "Apparence",

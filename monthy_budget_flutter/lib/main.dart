@@ -58,6 +58,8 @@ import 'screens/welcome_slideshow_screen.dart';
 import 'screens/paywall_screen.dart';
 import 'widgets/trial_banner.dart';
 import 'widgets/feature_discovery_card.dart';
+import 'widgets/speed_dial_fab.dart';
+import 'screens/qr_scanner_screen.dart';
 import 'services/ad_service.dart';
 import 'services/revenuecat_service.dart';
 import 'widgets/ad_banner_widget.dart';
@@ -929,6 +931,18 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     }
   }
 
+  void _openQrScanner() async {
+    final result = await Navigator.of(context).push<ActualExpense>(
+      MaterialPageRoute(
+        builder: (_) => QrScannerScreen(
+          budgetExpenses: _settings.expenses,
+        ),
+      ),
+    );
+    if (result != null) {
+      _addActualExpense(result);
+    }
+  }
 
   SettingsScreen _buildSettingsScreen({String? initialSection}) {
     return SettingsScreen(
@@ -1136,12 +1150,20 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
             )
           : screens[_currentIndex],
       floatingActionButton: _currentIndex == 0
-          ? FloatingActionButton(
-              key: _fabKey,
-              onPressed: _openAddExpenseSheet,
-              backgroundColor: AppColors.primary(context),
-              tooltip: S.of(context).addExpenseTooltip,
-              child: Icon(Icons.add, color: AppColors.onPrimary(context)),
+          ? SpeedDialFab(
+              fabKey: _fabKey,
+              options: [
+                SpeedDialOption(
+                  icon: Icons.edit_outlined,
+                  label: S.of(context).speedDialManual,
+                  onTap: _openAddExpenseSheet,
+                ),
+                SpeedDialOption(
+                  icon: Icons.qr_code_scanner,
+                  label: S.of(context).speedDialQrCode,
+                  onTap: _openQrScanner,
+                ),
+              ],
             )
           : null,
       bottomNavigationBar: NavigationBar(

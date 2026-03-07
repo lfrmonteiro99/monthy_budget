@@ -3803,6 +3803,24 @@ abstract class S {
   /// **'Outros'**
   String get addExpenseOthers;
 
+  /// QR scanner screen title
+  String get qrScannerTitle;
+
+  /// Hint text shown on QR scanner
+  String get qrScanHint;
+
+  /// Title of QR expense confirm sheet
+  String get qrExpenseConfirmTitle;
+
+  /// Button to re-scan QR code
+  String get qrScanAgain;
+
+  /// Speed dial option: manual expense
+  String get speedDialManual;
+
+  /// Speed dial option: QR code scan
+  String get speedDialQrCode;
+
   /// Settings dashboard toggle: budget vs actual
   ///
   /// In pt, this message translates to:

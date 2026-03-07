@@ -2025,6 +2025,24 @@ class SEn extends S {
   String get addExpenseOthers => 'Others';
 
   @override
+  String get qrScannerTitle => 'Scan QR Code';
+
+  @override
+  String get qrScanHint => 'Point the camera at the receipt QR code';
+
+  @override
+  String get qrExpenseConfirmTitle => 'Confirm Expense';
+
+  @override
+  String get qrScanAgain => 'Scan again';
+
+  @override
+  String get speedDialManual => 'Manual';
+
+  @override
+  String get speedDialQrCode => 'QR Code';
+
+  @override
   String get settingsDashBudgetVsActual => 'Budget vs Actual';
 
   @override

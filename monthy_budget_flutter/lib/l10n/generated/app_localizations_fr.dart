@@ -2034,6 +2034,24 @@ class SFr extends S {
   String get addExpenseOthers => 'Autres';
 
   @override
+  String get qrScannerTitle => 'Scanner QR Code';
+
+  @override
+  String get qrScanHint => 'Pointez la caméra vers le QR code du reçu';
+
+  @override
+  String get qrExpenseConfirmTitle => 'Confirmer la dépense';
+
+  @override
+  String get qrScanAgain => 'Scanner à nouveau';
+
+  @override
+  String get speedDialManual => 'Manuel';
+
+  @override
+  String get speedDialQrCode => 'QR Code';
+
+  @override
   String get settingsDashBudgetVsActual => 'Budget vs RÃ©el';
 
   @override
