@@ -4649,6 +4649,42 @@ abstract class S {
   /// **'Prazo ultrapassado'**
   String get savingsGoalOverdue;
 
+  /// How it works section title
+  ///
+  /// In pt, this message translates to:
+  /// **'Como funciona?'**
+  String get savingsGoalHowItWorksTitle;
+
+  /// How it works step 1
+  ///
+  /// In pt, this message translates to:
+  /// **'Crie um objetivo com um nome e o valor que pretende atingir (ex: "Férias — 2 000 €").'**
+  String get savingsGoalHowItWorksStep1;
+
+  /// How it works step 2
+  ///
+  /// In pt, this message translates to:
+  /// **'Opcionalmente defina uma data limite para ter um prazo de referência.'**
+  String get savingsGoalHowItWorksStep2;
+
+  /// How it works step 3
+  ///
+  /// In pt, this message translates to:
+  /// **'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.'**
+  String get savingsGoalHowItWorksStep3;
+
+  /// How it works step 4
+  ///
+  /// In pt, this message translates to:
+  /// **'Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.'**
+  String get savingsGoalHowItWorksStep4;
+
+  /// Dashboard hint text
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque num objetivo para ver detalhes e registar contribuições.'**
+  String get savingsGoalDashboardHint;
+
   /// Meal cost reconciliation title
   ///
   /// In pt, this message translates to:

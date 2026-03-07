@@ -2499,6 +2499,24 @@ class SPt extends S {
   String get savingsGoalOverdue => 'Prazo ultrapassado';
 
   @override
+  String get savingsGoalHowItWorksTitle => 'Como funciona?';
+
+  @override
+  String get savingsGoalHowItWorksStep1 => 'Crie um objetivo com um nome e o valor que pretende atingir (ex: \"Férias — 2 000 €\").';
+
+  @override
+  String get savingsGoalHowItWorksStep2 => 'Opcionalmente defina uma data limite para ter um prazo de referência.';
+
+  @override
+  String get savingsGoalHowItWorksStep3 => 'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.';
+
+  @override
+  String get savingsGoalHowItWorksStep4 => 'Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.';
+
+  @override
+  String get savingsGoalDashboardHint => 'Toque num objetivo para ver detalhes e registar contribuições.';
+
+  @override
   String get mealCostReconciliation => 'Custos de Refeições';
 
   @override

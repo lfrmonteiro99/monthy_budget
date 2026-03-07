@@ -2333,6 +2333,18 @@
   "helperWizardGroceries": "Orçamento mensal de alimentação e produtos domésticos",
   "helperWizardTransport": "Custos mensais de transporte (combustível, transportes públicos, etc.)",
   "helperWizardUtilities": "Eletricidade, água e gás mensais",
-  "helperWizardTelecom": "Internet, telefone e TV mensais"
+  "helperWizardTelecom": "Internet, telefone e TV mensais",
+  "savingsGoalHowItWorksTitle": "Como funciona?",
+  "@savingsGoalHowItWorksTitle": { "description": "How it works section title" },
+  "savingsGoalHowItWorksStep1": "Crie um objetivo com um nome e o valor que pretende atingir (ex: \"Férias — 2 000 €\").",
+  "@savingsGoalHowItWorksStep1": { "description": "How it works step 1" },
+  "savingsGoalHowItWorksStep2": "Opcionalmente defina uma data limite para ter um prazo de referência.",
+  "@savingsGoalHowItWorksStep2": { "description": "How it works step 2" },
+  "savingsGoalHowItWorksStep3": "Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.",
+  "@savingsGoalHowItWorksStep3": { "description": "How it works step 3" },
+  "savingsGoalHowItWorksStep4": "Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.",
+  "@savingsGoalHowItWorksStep4": { "description": "How it works step 4" },
+  "savingsGoalDashboardHint": "Toque num objetivo para ver detalhes e registar contribuições.",
+  "@savingsGoalDashboardHint": { "description": "Dashboard hint text" }
 }
 

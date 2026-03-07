@@ -33,7 +33,7 @@ class SavingsGoalsScreen extends StatefulWidget {
 class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
   final _service = SavingsGoalService();
   late List<SavingsGoal> _goals;
-
+  bool _showHelp = false;
   bool _tourShown = false;
 
   @override
@@ -178,6 +178,15 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
         backgroundColor: AppColors.surface(context),
         foregroundColor: AppColors.textPrimary(context),
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(
+              _showHelp ? Icons.help : Icons.help_outline,
+              color: AppColors.primary(context),
+            ),
+            onPressed: () => setState(() => _showHelp = !_showHelp),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         key: SavingsGoalsTourKeys.addFab,
@@ -185,33 +194,160 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
         backgroundColor: AppColors.primary(context),
         child: Icon(Icons.add, color: AppColors.onPrimary(context)),
       ),
-      body: _goals.isEmpty
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
+      body: Column(
+        children: [
+          // Collapsible "How it works" explanation
+          if (_showHelp)
+            _HowItWorksCard(onClose: () => setState(() => _showHelp = false)),
+
+          // Goals list or empty state
+          Expanded(
+            child: _goals.isEmpty
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(32),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.savings_outlined,
+                              size: 48,
+                              color: AppColors.textMuted(context)),
+                          const SizedBox(height: 16),
+                          Text(
+                            l10n.savingsGoalEmpty,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: AppColors.textMuted(context),
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          TextButton.icon(
+                            onPressed: () => setState(() => _showHelp = true),
+                            icon: Icon(Icons.help_outline,
+                                size: 18,
+                                color: AppColors.primary(context)),
+                            label: Text(
+                              l10n.savingsGoalHowItWorksTitle,
+                              style: TextStyle(
+                                  color: AppColors.primary(context)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : ListView.separated(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: _goals.length,
+                    separatorBuilder: (_, _) => const SizedBox(height: 8),
+                    itemBuilder: (_, i) => _GoalCard(
+                      key: i == 0 ? SavingsGoalsTourKeys.goalCard : null,
+                      goal: _goals[i],
+                      onTap: () => _openGoalDetail(_goals[i]),
+                      onEdit: () => _addOrEditGoal(_goals[i]),
+                      onToggle: () => _toggleActive(_goals[i]),
+                      onDelete: () => _deleteGoal(_goals[i]),
+                    ),
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── How It Works Card ─────────────────────────────────────────────────────
+
+class _HowItWorksCard extends StatelessWidget {
+  final VoidCallback onClose;
+  const _HowItWorksCard({required this.onClose});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = S.of(context);
+    final steps = [
+      l10n.savingsGoalHowItWorksStep1,
+      l10n.savingsGoalHowItWorksStep2,
+      l10n.savingsGoalHowItWorksStep3,
+      l10n.savingsGoalHowItWorksStep4,
+    ];
+    final icons = [
+      Icons.flag_outlined,
+      Icons.calendar_today,
+      Icons.add_circle_outline,
+      Icons.trending_up,
+    ];
+
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.primary(context).withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.primary(context).withValues(alpha: 0.2),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.lightbulb_outline,
+                  size: 18, color: AppColors.primary(context)),
+              const SizedBox(width: 8),
+              Expanded(
                 child: Text(
-                  l10n.savingsGoalEmpty,
-                  textAlign: TextAlign.center,
+                  l10n.savingsGoalHowItWorksTitle,
                   style: TextStyle(
-                    color: AppColors.textMuted(context),
-                    fontSize: 14,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary(context),
                   ),
                 ),
               ),
-            )
-          : ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: _goals.length,
-              separatorBuilder: (_, _) => const SizedBox(height: 8),
-              itemBuilder: (_, i) => _GoalCard(
-                key: i == 0 ? SavingsGoalsTourKeys.goalCard : null,
-                goal: _goals[i],
-                onTap: () => _openGoalDetail(_goals[i]),
-                onEdit: () => _addOrEditGoal(_goals[i]),
-                onToggle: () => _toggleActive(_goals[i]),
-                onDelete: () => _deleteGoal(_goals[i]),
+              GestureDetector(
+                onTap: onClose,
+                child: Icon(Icons.close,
+                    size: 18, color: AppColors.textMuted(context)),
               ),
-            ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ...List.generate(steps.length, (i) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary(context).withValues(alpha: 0.12),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(icons[i],
+                        size: 14, color: AppColors.primary(context)),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      steps[i],
+                      style: TextStyle(
+                        fontSize: 13,
+                        height: 1.4,
+                        color: AppColors.textSecondary(context),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ],
+      ),
     );
   }
 }

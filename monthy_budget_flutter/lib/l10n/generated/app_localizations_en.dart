@@ -2492,6 +2492,24 @@ class SEn extends S {
   String get savingsGoalOverdue => 'Overdue';
 
   @override
+  String get savingsGoalHowItWorksTitle => 'How does it work?';
+
+  @override
+  String get savingsGoalHowItWorksStep1 => 'Create a goal with a name and the amount you want to save (e.g. \"Vacation — €2,000\").';
+
+  @override
+  String get savingsGoalHowItWorksStep2 => 'Optionally set a deadline to have a target date.';
+
+  @override
+  String get savingsGoalHowItWorksStep3 => 'Whenever you save money, tap the goal and record a contribution with the amount and date.';
+
+  @override
+  String get savingsGoalHowItWorksStep4 => 'Track your progress: the bar shows how much you\'ve saved and the projection estimates when you\'ll reach your goal.';
+
+  @override
+  String get savingsGoalDashboardHint => 'Tap a goal to see details and record contributions.';
+
+  @override
   String get mealCostReconciliation => 'Meal Costs';
 
   @override
