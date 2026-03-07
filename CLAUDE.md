@@ -14,5 +14,15 @@
 5. Pipeline checks
 6. PR auto-created and auto-merged after checks
 
-## Hard rule
+## Branch management rules
+- **Always** create new branches from `origin/main`:
+  ```bash
+  git fetch origin main && git checkout -b <branch-name> origin/main
+  ```
+- **Before pushing**, always update the branch with the latest `origin/main`:
+  ```bash
+  git fetch origin main && git rebase origin/main
+  ```
+- If rebase causes conflicts, resolve them before pushing.
 - Never push code directly to `main`.
+- Include `#<issue-number>` in commit messages so the pipeline can link the PR.
