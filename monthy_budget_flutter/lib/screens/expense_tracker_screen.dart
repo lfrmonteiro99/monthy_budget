@@ -8,7 +8,9 @@ import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 import '../widgets/add_expense_sheet.dart';
 import '../widgets/export_bottom_sheet.dart';
+import '../widgets/info_icon_button.dart';
 import '../services/export_service.dart';
+import '../onboarding/expense_tracker_tour.dart';
 
 class ExpenseTrackerScreen extends StatefulWidget {
   final AppSettings settings;
@@ -20,6 +22,8 @@ class ExpenseTrackerScreen extends StatefulWidget {
   final Future<List<ActualExpense>> Function(String monthKey) onLoadMonth;
   final Future<Map<String, List<ActualExpense>>> Function()? onLoadHistory;
   final VoidCallback? onOpenRecurring;
+  final bool showTour;
+  final VoidCallback? onTourComplete;
 
   const ExpenseTrackerScreen({
     super.key,
@@ -32,6 +36,8 @@ class ExpenseTrackerScreen extends StatefulWidget {
     required this.onLoadMonth,
     this.onLoadHistory,
     this.onOpenRecurring,
+    this.showTour = false,
+    this.onTourComplete,
   });
 
   @override
@@ -55,6 +61,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
 
   final _searchController = TextEditingController();
   final _exportService = ExportService();
+  bool _tourShown = false;
 
   @override
   void initState() {
@@ -62,6 +69,19 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
     final now = DateTime.now();
     _currentMonth = DateTime(now.year, now.month);
     _expenses = List.of(widget.expenses);
+    if (widget.showTour) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _tryShowTour());
+    }
+  }
+
+  void _tryShowTour() {
+    if (_tourShown || !mounted) return;
+    _tourShown = true;
+    buildExpenseTrackerTour(
+      context: context,
+      onFinish: () => widget.onTourComplete?.call(),
+      onSkip: () => widget.onTourComplete?.call(),
+    ).show(context: context);
   }
 
   @override
@@ -396,6 +416,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
         children: [
           // Month navigator
           Container(
+            key: ExpenseTrackerTourKeys.monthNav,
             color: AppColors.surface(context),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
@@ -423,6 +444,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
 
           // Summary header
           Container(
+            key: ExpenseTrackerTourKeys.summary,
             color: AppColors.surface(context),
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: Row(
@@ -454,11 +476,38 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                         : AppColors.success(context),
                   ),
                 ),
+                InfoIconButton(
+                  title: l10n.expenseTrackerScreenTitle,
+                  body: l10n.infoExpenseTrackerSummary,
+                ),
               ],
             ),
           ),
 
           const Divider(height: 1),
+
+          // Category progress info
+          if (_expenses.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              child: Row(
+                children: [
+                  Text(
+                    l10n.expenseTrackerBudgeted,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textMuted(context),
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                  InfoIconButton(
+                    title: l10n.expenseTrackerBudgeted,
+                    body: l10n.infoExpenseTrackerProgress,
+                  ),
+                ],
+              ),
+            ),
 
           // Content
           Expanded(
@@ -482,6 +531,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                         ),
                       )
                     : ListView.builder(
+                        key: ExpenseTrackerTourKeys.categoryList,
                         padding: const EdgeInsets.all(16),
                         itemCount: summaries.length,
                         itemBuilder: (_, i) => _CategorySection(
@@ -502,6 +552,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        key: ExpenseTrackerTourKeys.addFab,
         onPressed: _addExpense,
         backgroundColor: AppColors.primary(context),
         tooltip: l10n.addExpenseTooltip,
@@ -561,7 +612,16 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
           : Column(
               children: [
                 // Category chips + date range
-                _buildFilterBar(l10n),
+                Row(
+                  children: [
+                    Expanded(child: _buildFilterBar(l10n)),
+                    InfoIconButton(
+                      title: 'Filter',
+                      body: l10n.infoExpenseTrackerFilter,
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                ),
                 const Divider(height: 1),
 
                 // Result count

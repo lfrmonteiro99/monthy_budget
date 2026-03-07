@@ -22,6 +22,7 @@ import '../utils/month_review.dart';
 import '../widgets/month_review_sheet.dart';
 import '../models/savings_goal.dart';
 import '../widgets/savings_goal_card.dart';
+import '../widgets/info_icon_button.dart';
 import '../utils/savings_projections.dart';
 import '../onboarding/dashboard_tour.dart';
 import 'tax_deduction_detail_screen.dart';
@@ -636,9 +637,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            l10n.dashboardSalaryDetail,
-            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.textMuted(context), letterSpacing: 1.2),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.dashboardSalaryDetail,
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.textMuted(context), letterSpacing: 1.2),
+                ),
+              ),
+              InfoIconButton(title: l10n.dashboardSalaryDetail, body: l10n.infoSalaryBreakdown),
+            ],
           ),
           const SizedBox(height: 16),
           ...List.generate(summary.salaries.length, (i) {
@@ -830,6 +838,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       letterSpacing: 0.8),
                 ),
               ),
+              InfoIconButton(title: l10n.expenseTrackerTitle, body: l10n.infoBudgetVsActual),
               TextButton(
                 onPressed: onOpenExpenseTracker,
                 style: TextButton.styleFrom(
@@ -1276,9 +1285,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            l10n.dashboardMonthlyExpenses,
-            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.textMuted(context), letterSpacing: 1.2),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.dashboardMonthlyExpenses,
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.textMuted(context), letterSpacing: 1.2),
+                ),
+              ),
+              InfoIconButton(title: l10n.dashboardMonthlyExpenses, body: l10n.infoExpensesBreakdown),
+            ],
           ),
           const SizedBox(height: 16),
           ...activeExpenses.map((expense) => Padding(
@@ -1450,15 +1466,18 @@ class _StressIndexCardState extends State<_StressIndexCard> {
                 decoration: BoxDecoration(color: color, shape: BoxShape.circle),
               ),
               const SizedBox(width: 8),
-              Text(
-                l10n.dashboardStressIndex.toUpperCase(),
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textMuted(context),
-                  letterSpacing: 0.8,
+              Expanded(
+                child: Text(
+                  l10n.dashboardStressIndex.toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textMuted(context),
+                    letterSpacing: 0.8,
+                  ),
                 ),
               ),
+              InfoIconButton(title: l10n.dashboardStressIndex, body: l10n.infoStressIndex),
             ],
           ),
           const SizedBox(height: 12),
@@ -1809,6 +1828,7 @@ class _MonthReviewCard extends StatelessWidget {
                     ),
                   ),
                 ),
+                InfoIconButton(title: 'Month Review', body: l10n.infoCharts),
                 Icon(Icons.chevron_right, size: 18, color: AppColors.textMuted(context)),
               ],
             ),

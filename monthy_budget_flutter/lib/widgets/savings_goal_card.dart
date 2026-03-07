@@ -4,6 +4,7 @@ import '../models/savings_goal.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 import '../utils/savings_projections.dart';
+import 'info_icon_button.dart';
 
 /// Compact dashboard card showing top 1-2 active savings goals with progress bars
 /// and projection info when available.
@@ -55,12 +56,23 @@ class SavingsGoalCard extends StatelessWidget {
     return _wrapper(
       context,
       l10n,
-      children: display
-          .map((g) => _GoalRow(
-                goal: g,
-                projection: projections[g.id],
-              ))
-          .toList(),
+      children: [
+        ...display.map((g) => _GoalRow(
+              goal: g,
+              projection: projections[g.id],
+            )),
+        Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Text(
+            l10n.savingsGoalDashboardHint,
+            style: TextStyle(
+              fontSize: 11,
+              fontStyle: FontStyle.italic,
+              color: AppColors.textMuted(context),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -95,6 +107,7 @@ class SavingsGoalCard extends StatelessWidget {
                   ),
                 ),
               ),
+              InfoIconButton(title: l10n.savingsGoals, body: l10n.infoSavingsGoals),
               GestureDetector(
                 onTap: onSeeAll,
                 child: Text(
