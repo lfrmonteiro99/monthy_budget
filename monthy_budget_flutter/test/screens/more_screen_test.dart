@@ -34,7 +34,7 @@ void main() {
     await tester.pump();
     await tester.tap(find.text('Notifications'));
     await tester.pump();
-    await tester.tap(find.text('Subscription'));
+    await tester.tap(find.text('Free Plan'));
     await tester.pump();
     await tester.tap(find.text('Settings'));
     await tester.pump();
