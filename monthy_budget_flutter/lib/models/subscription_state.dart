@@ -84,8 +84,10 @@ class SubscriptionState {
   final int aiCredits;
   final CoachMode preferredCoachMode;
   final bool trialStarterCreditsGranted;
+  final bool trialExtensionUsed;
 
-  static const trialDays = 14;
+  static const trialDays = 21;
+  static const trialExtensionDays = 7;
 
   const SubscriptionState({
     this.tier = SubscriptionTier.free,
@@ -95,21 +97,30 @@ class SubscriptionState {
     this.aiCredits = 0,
     this.preferredCoachMode = CoachMode.plus,
     this.trialStarterCreditsGranted = false,
+    this.trialExtensionUsed = false,
   });
+
+  /// Total trial days including any extension.
+  int get effectiveTrialDays =>
+      trialDays + (trialExtensionUsed ? trialExtensionDays : 0);
 
   /// Whether the trial is currently active.
   bool get isTrialActive {
     if (trialUsed) return false;
-    return DateTime.now().difference(trialStartDate).inDays < trialDays;
+    return DateTime.now().difference(trialStartDate).inDays < effectiveTrialDays;
   }
 
   /// Days remaining in trial. 0 if expired.
   int get trialDaysRemaining {
     if (trialUsed) return 0;
     final remaining =
-        trialDays - DateTime.now().difference(trialStartDate).inDays;
-    return remaining.clamp(0, trialDays);
+        effectiveTrialDays - DateTime.now().difference(trialStartDate).inDays;
+    return remaining.clamp(0, effectiveTrialDays);
   }
+
+  /// Whether a trial extension can be offered (trial expired, extension not yet used).
+  bool get canExtendTrial =>
+      !trialExtensionUsed && !isTrialActive && !trialUsed;
 
   /// Whether the user just transitioned from trial to free (needs downgrade handling).
   bool get justDowngraded => trialUsed && tier == SubscriptionTier.free;
@@ -212,6 +223,7 @@ class SubscriptionState {
     int? aiCredits,
     CoachMode? preferredCoachMode,
     bool? trialStarterCreditsGranted,
+    bool? trialExtensionUsed,
   }) {
     return SubscriptionState(
       tier: tier ?? this.tier,
@@ -222,6 +234,7 @@ class SubscriptionState {
       preferredCoachMode: preferredCoachMode ?? this.preferredCoachMode,
       trialStarterCreditsGranted:
           trialStarterCreditsGranted ?? this.trialStarterCreditsGranted,
+      trialExtensionUsed: trialExtensionUsed ?? this.trialExtensionUsed,
     );
   }
 
@@ -233,6 +246,7 @@ class SubscriptionState {
         'aiCredits': aiCredits,
         'preferredCoachMode': preferredCoachMode.name,
         'trialStarterCreditsGranted': trialStarterCreditsGranted,
+        'trialExtensionUsed': trialExtensionUsed,
       };
 
   factory SubscriptionState.fromJson(Map<String, dynamic> json) {
@@ -256,6 +270,8 @@ class SubscriptionState {
       ),
       trialStarterCreditsGranted:
           json['trialStarterCreditsGranted'] as bool? ?? false,
+      trialExtensionUsed:
+          json['trialExtensionUsed'] as bool? ?? false,
     );
   }
 

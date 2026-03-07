@@ -593,6 +593,62 @@ void main() {
       });
     });
 
+    group('extendTrial()', () {
+      test('sets trialExtensionUsed and clears trialUsed', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now().subtract(const Duration(days: 22)),
+        );
+
+        final updated = await service.extendTrial(state);
+
+        expect(updated.trialExtensionUsed, true);
+        expect(updated.trialUsed, false);
+        expect(updated.isTrialActive, true);
+      });
+
+      test('returns same state if extension already used', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now().subtract(const Duration(days: 29)),
+          trialExtensionUsed: true,
+        );
+
+        final updated = await service.extendTrial(state);
+
+        expect(identical(updated, state), true);
+      });
+
+      test('persists extended state', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now().subtract(const Duration(days: 22)),
+        );
+
+        await service.extendTrial(state);
+
+        final prefs = await SharedPreferences.getInstance();
+        final restored = SubscriptionState.fromJsonString(
+          prefs.getString('subscription_state')!,
+        );
+        expect(restored.trialExtensionUsed, true);
+      });
+
+      test('extended trial gives 7 more days of access', () async {
+        SharedPreferences.setMockInitialValues({});
+        // Trial expired 1 day ago (day 22 of 21-day trial)
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now().subtract(const Duration(days: 22)),
+        );
+        expect(state.isTrialActive, false);
+
+        final updated = await service.extendTrial(state);
+        // Now effective trial is 28 days, day 22 < 28 so active
+        expect(updated.isTrialActive, true);
+        expect(updated.trialDaysRemaining, 6);
+      });
+    });
+
     group('full lifecycle', () {
       test('load → explore → upgrade → downgrade', () async {
         SharedPreferences.setMockInitialValues({});

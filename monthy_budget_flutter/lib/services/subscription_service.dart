@@ -110,6 +110,20 @@ class SubscriptionService {
     await prefs.setBool(_downgradeAppliedKey, true);
   }
 
+  /// Extend the trial by [SubscriptionState.trialExtensionDays] days (one-time).
+  ///
+  /// Returns the updated state with `trialExtensionUsed = true`.
+  /// If the extension has already been used, returns [current] unchanged.
+  Future<SubscriptionState> extendTrial(SubscriptionState current) async {
+    if (current.trialExtensionUsed) return current;
+    final updated = current.copyWith(
+      trialExtensionUsed: true,
+      trialUsed: false,
+    );
+    await save(updated);
+    return updated;
+  }
+
   /// Reset downgrade tracking (called when user upgrades to premium).
   Future<void> resetDowngradeTracking() async {
     final prefs = await SharedPreferences.getInstance();
