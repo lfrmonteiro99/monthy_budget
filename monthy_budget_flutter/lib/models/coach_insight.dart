@@ -13,6 +13,18 @@ class CoachInsight {
     required this.stressScore,
   });
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CoachInsight &&
+          id == other.id &&
+          timestamp == other.timestamp &&
+          content == other.content &&
+          stressScore == other.stressScore;
+
+  @override
+  int get hashCode => Object.hash(id, timestamp, content, stressScore);
+
   Map<String, dynamic> toJson() => {
         'id': id,
         'timestamp': timestamp.toIso8601String(),

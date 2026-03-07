@@ -9,6 +9,16 @@ class CommandAction {
     required this.message,
   });
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CommandAction &&
+          action == other.action &&
+          message == other.message;
+
+  @override
+  int get hashCode => Object.hash(action, message);
+
   bool get hasAction => action != null && action!.isNotEmpty;
 
   factory CommandAction.fromJson(Map<String, dynamic> json) {

@@ -10,7 +10,7 @@ class ActualExpense {
   final String? recurringExpenseId;
   final bool isFromRecurring;
 
-  const ActualExpense({
+  ActualExpense({
     required this.id,
     required this.category,
     required this.amount,
@@ -19,7 +19,26 @@ class ActualExpense {
     required this.monthKey,
     this.recurringExpenseId,
     this.isFromRecurring = false,
-  });
+  }) : assert(amount >= 0, 'amount must be non-negative');
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ActualExpense &&
+          id == other.id &&
+          category == other.category &&
+          amount == other.amount &&
+          date == other.date &&
+          description == other.description &&
+          monthKey == other.monthKey &&
+          recurringExpenseId == other.recurringExpenseId &&
+          isFromRecurring == other.isFromRecurring;
+
+  @override
+  int get hashCode => Object.hash(
+        id, category, amount, date, description,
+        monthKey, recurringExpenseId, isFromRecurring,
+      );
 
   factory ActualExpense.create({
     required String category,
@@ -119,6 +138,22 @@ class CategoryBudgetSummary {
     this.isOverPace = false,
     this.paceSeverity = 'ok',
   });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CategoryBudgetSummary &&
+          category == other.category &&
+          budgeted == other.budgeted &&
+          actual == other.actual &&
+          projectedTotal == other.projectedTotal &&
+          isOverPace == other.isOverPace &&
+          paceSeverity == other.paceSeverity;
+
+  @override
+  int get hashCode => Object.hash(
+        category, budgeted, actual, projectedTotal, isOverPace, paceSeverity,
+      );
 
   double get remaining => budgeted - actual;
   double get progress =>

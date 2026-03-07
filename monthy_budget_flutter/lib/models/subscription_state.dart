@@ -100,6 +100,24 @@ class SubscriptionState {
     this.trialExtensionUsed = false,
   });
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SubscriptionState &&
+          tier == other.tier &&
+          trialStartDate == other.trialStartDate &&
+          trialUsed == other.trialUsed &&
+          aiCredits == other.aiCredits &&
+          preferredCoachMode == other.preferredCoachMode &&
+          trialStarterCreditsGranted == other.trialStarterCreditsGranted &&
+          trialExtensionUsed == other.trialExtensionUsed;
+
+  @override
+  int get hashCode => Object.hash(
+        tier, trialStartDate, trialUsed, aiCredits,
+        preferredCoachMode, trialStarterCreditsGranted, trialExtensionUsed,
+      );
+
   /// Total trial days including any extension.
   int get effectiveTrialDays =>
       trialDays + (trialExtensionUsed ? trialExtensionDays : 0);

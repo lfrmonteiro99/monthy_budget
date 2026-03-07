@@ -9,6 +9,24 @@ class OnboardingState {
     this.toursCompleted = const {},
   });
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is OnboardingState &&
+          welcomeSeen == other.welcomeSeen &&
+          _mapsEqual(toursCompleted, other.toursCompleted);
+
+  @override
+  int get hashCode => Object.hash(welcomeSeen, Object.hashAll(toursCompleted.entries));
+
+  static bool _mapsEqual(Map<String, bool> a, Map<String, bool> b) {
+    if (a.length != b.length) return false;
+    for (final key in a.keys) {
+      if (a[key] != b[key]) return false;
+    }
+    return true;
+  }
+
   bool isTourDone(String key) => toursCompleted[key] ?? false;
 
   OnboardingState copyWith({

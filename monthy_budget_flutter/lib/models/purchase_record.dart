@@ -17,6 +17,20 @@ class PurchaseRecord {
     this.isMealPurchase = false,
   });
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PurchaseRecord &&
+          id == other.id &&
+          date == other.date &&
+          amount == other.amount &&
+          itemCount == other.itemCount &&
+          isMealPurchase == other.isMealPurchase;
+
+  @override
+  int get hashCode =>
+      Object.hash(id, date, amount, itemCount, isMealPurchase);
+
   factory PurchaseRecord.fromJson(Map<String, dynamic> json) => PurchaseRecord(
         id: json['id'] as String,
         date: DateTime.parse(json['date'] as String),

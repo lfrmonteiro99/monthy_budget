@@ -6,14 +6,29 @@ class RecurringExpense {
   final int? dayOfMonth;
   final bool isActive;
 
-  const RecurringExpense({
+  RecurringExpense({
     required this.id,
     required this.category,
     required this.amount,
     this.description,
     this.dayOfMonth,
     this.isActive = true,
-  });
+  }) : assert(amount >= 0, 'amount must be non-negative');
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RecurringExpense &&
+          id == other.id &&
+          category == other.category &&
+          amount == other.amount &&
+          description == other.description &&
+          dayOfMonth == other.dayOfMonth &&
+          isActive == other.isActive;
+
+  @override
+  int get hashCode =>
+      Object.hash(id, category, amount, description, dayOfMonth, isActive);
 
   RecurringExpense copyWith({
     String? id,

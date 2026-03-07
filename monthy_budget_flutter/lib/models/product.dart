@@ -13,6 +13,27 @@ class Product {
     required this.unit,
   });
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Product &&
+          id == other.id &&
+          name == other.name &&
+          category == other.category &&
+          avgPrice == other.avgPrice &&
+          unit == other.unit;
+
+  @override
+  int get hashCode => Object.hash(id, name, category, avgPrice, unit);
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'category': category,
+        'avg_price': avgPrice,
+        'unit': unit,
+      };
+
   factory Product.fromJson(Map<String, dynamic> json) => Product(
         id: json['id'] as String,
         name: json['name'] as String,

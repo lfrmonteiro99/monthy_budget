@@ -10,6 +10,16 @@ class BudgetCategoryView {
     this.recurringBills = const [],
   });
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BudgetCategoryView &&
+          budgetItem == other.budgetItem &&
+          recurringBills.length == other.recurringBills.length;
+
+  @override
+  int get hashCode => Object.hash(budgetItem, recurringBills.length);
+
   double get totalRecurringAmount => recurringBills
       .where((b) => b.isActive)
       .fold(0.0, (sum, b) => sum + b.amount);

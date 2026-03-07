@@ -13,6 +13,27 @@ class ExpenseSnapshot {
     required this.enabled,
   });
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ExpenseSnapshot &&
+          expenseId == other.expenseId &&
+          label == other.label &&
+          category == other.category &&
+          amount == other.amount &&
+          enabled == other.enabled;
+
+  @override
+  int get hashCode => Object.hash(expenseId, label, category, amount, enabled);
+
+  Map<String, dynamic> toJson() => {
+        'expense_id': expenseId,
+        'label': label,
+        'category': category,
+        'amount': amount,
+        'enabled': enabled,
+      };
+
   factory ExpenseSnapshot.fromJson(Map<String, dynamic> json) => ExpenseSnapshot(
         expenseId: json['expense_id'] as String,
         label: json['label'] as String,
