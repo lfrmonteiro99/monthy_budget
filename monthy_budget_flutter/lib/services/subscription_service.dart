@@ -35,6 +35,11 @@ class SubscriptionService {
     await prefs.setString(_key, state.toJsonString());
   }
 
+  Future<void> clear() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_key);
+  }
+
   /// Record that the user explored a feature (for discovery tracking).
   Future<SubscriptionState> markFeatureExplored(
       SubscriptionState current, String featureKey) async {

@@ -245,6 +245,13 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   Future<void> _loadAll() async {
+    // Detect user change and clear stale per-user local data
+    final userId = Supabase.instance.client.auth.currentUser?.id;
+    if (userId != null) {
+      final changed = await _localConfigService.checkUserChanged(userId);
+      if (changed) await _subscriptionService.clear();
+    }
+
     final results = await Future.wait([
       _settingsService.load(widget.householdId),
       _favoritesService.load(widget.householdId),
