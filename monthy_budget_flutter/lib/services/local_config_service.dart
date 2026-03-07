@@ -72,6 +72,11 @@ class LocalConfigService {
     await prefs.setString(_onboardingKey, state.toJsonString());
   }
 
+  Future<void> clearOnboardingState() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_onboardingKey);
+  }
+
   Future<NotificationPreferences> loadNotificationPreferences() async {
     final prefs = await SharedPreferences.getInstance();
     final json = prefs.getString(_notifKey);
