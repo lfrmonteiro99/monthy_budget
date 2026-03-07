@@ -171,6 +171,41 @@ void main() {
       });
     });
 
+    group('justDowngraded', () {
+      test('true when trialUsed and free tier', () {
+        final state = makeState(
+          tier: SubscriptionTier.free,
+          trialUsed: true,
+        );
+        expect(state.justDowngraded, true);
+      });
+
+      test('false when trialUsed but premium tier', () {
+        final state = makeState(
+          tier: SubscriptionTier.premium,
+          trialUsed: true,
+        );
+        expect(state.justDowngraded, false);
+      });
+
+      test('false when trial not used', () {
+        final state = makeState(
+          tier: SubscriptionTier.free,
+          trialUsed: false,
+        );
+        expect(state.justDowngraded, false);
+      });
+
+      test('false during active trial', () {
+        final state = makeState(
+          tier: SubscriptionTier.free,
+          trialStartDate: DateTime.now(),
+          trialUsed: false,
+        );
+        expect(state.justDowngraded, false);
+      });
+    });
+
     group('isTrialActive', () {
       test('true within 14 days of trial start', () {
         final state = makeState(

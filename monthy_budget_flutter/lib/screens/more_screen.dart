@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../models/subscription_state.dart';
+import '../services/downgrade_service.dart';
 import '../theme/app_colors.dart';
 
 class MoreScreen extends StatelessWidget {
@@ -9,6 +11,8 @@ class MoreScreen extends StatelessWidget {
   final VoidCallback onOpenSettings;
   final VoidCallback onOpenNotifications;
   final VoidCallback onOpenSubscription;
+  final SubscriptionState? subscription;
+  final int pausedItemCount;
 
   const MoreScreen({
     super.key,
@@ -18,6 +22,8 @@ class MoreScreen extends StatelessWidget {
     required this.onOpenSettings,
     required this.onOpenNotifications,
     required this.onOpenSubscription,
+    this.subscription,
+    this.pausedItemCount = 0,
   });
 
   @override
@@ -68,10 +74,9 @@ class MoreScreen extends StatelessWidget {
             onTap: onOpenNotifications,
           ),
           const SizedBox(height: 8),
-          _Tile(
-            icon: Icons.workspace_premium_outlined,
-            title: 'Subscription',
-            subtitle: 'Manage your plan and billing',
+          _SubscriptionTile(
+            subscription: subscription,
+            pausedItemCount: pausedItemCount,
             onTap: onOpenSubscription,
           ),
           const SizedBox(height: 8),
@@ -83,6 +88,93 @@ class MoreScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _SubscriptionTile extends StatelessWidget {
+  final SubscriptionState? subscription;
+  final int pausedItemCount;
+  final VoidCallback onTap;
+
+  const _SubscriptionTile({
+    required this.subscription,
+    required this.pausedItemCount,
+    required this.onTap,
+  });
+
+  String _planLabel() {
+    if (subscription == null) return 'Free Plan';
+    if (subscription!.isTrialActive) return 'Trial Active';
+    switch (subscription!.tier) {
+      case SubscriptionTier.premium:
+        return 'Pro Plan';
+      case SubscriptionTier.family:
+        return 'Family Plan';
+      case SubscriptionTier.free:
+        return 'Free Plan';
+    }
+  }
+
+  String _planDetails() {
+    if (subscription == null || subscription!.hasPremiumAccess) {
+      return 'Manage your plan and billing';
+    }
+    final details = <String>[
+      '${DowngradeService.maxFreeCategories} categories',
+      '${DowngradeService.maxFreeSavingsGoals} savings goal',
+    ];
+    return details.join(' \u2022 ');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      tileColor: AppColors.surface(context),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(color: AppColors.border(context)),
+      ),
+      leading:
+          Icon(Icons.workspace_premium_outlined, color: AppColors.primary(context)),
+      title: Text(
+        _planLabel(),
+        style: TextStyle(
+          fontWeight: FontWeight.w700,
+          color: AppColors.textPrimary(context),
+        ),
+      ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            _planDetails(),
+            style: TextStyle(color: AppColors.textSecondary(context)),
+          ),
+          if (pausedItemCount > 0)
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Text(
+                '$pausedItemCount items paused',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.textMuted(context),
+                ),
+              ),
+            ),
+        ],
+      ),
+      trailing: subscription != null && !subscription!.hasPremiumAccess
+          ? Text(
+              'Upgrade \u2192',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary(context),
+              ),
+            )
+          : Icon(Icons.chevron_right, color: AppColors.textMuted(context)),
+      onTap: onTap,
     );
   }
 }

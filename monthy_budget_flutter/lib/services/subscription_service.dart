@@ -4,6 +4,8 @@ import '../models/subscription_state.dart';
 /// Manages subscription state, trial tracking, and feature discovery.
 class SubscriptionService {
   static const _key = 'subscription_state';
+  static const _trialEndNoticeKey = 'trial_end_notice_seen';
+  static const _downgradeAppliedKey = 'downgrade_applied';
 
   Future<SubscriptionState> load() async {
     final prefs = await SharedPreferences.getInstance();
@@ -64,6 +66,37 @@ class SubscriptionService {
         current.copyWith(tier: SubscriptionTier.free, trialUsed: true);
     await save(updated);
     return updated;
+  }
+
+  /// Whether the trial-end notice bottom sheet has been shown.
+  Future<bool> isTrialEndNoticeSeen() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_trialEndNoticeKey) ?? false;
+  }
+
+  /// Mark the trial-end notice as shown.
+  Future<void> markTrialEndNoticeSeen() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_trialEndNoticeKey, true);
+  }
+
+  /// Whether the downgrade limits have already been applied for this cycle.
+  Future<bool> isDowngradeApplied() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_downgradeAppliedKey) ?? false;
+  }
+
+  /// Mark that downgrade limits have been applied.
+  Future<void> markDowngradeApplied() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_downgradeAppliedKey, true);
+  }
+
+  /// Reset downgrade tracking (called when user upgrades to premium).
+  Future<void> resetDowngradeTracking() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_downgradeAppliedKey, false);
+    await prefs.setBool(_trialEndNoticeKey, false);
   }
 
   /// Returns a human-readable label for a feature key.

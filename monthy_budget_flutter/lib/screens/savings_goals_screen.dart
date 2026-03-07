@@ -2,22 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/savings_goal.dart';
+import '../models/subscription_state.dart';
+import '../services/downgrade_service.dart';
 import '../services/savings_goal_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 import '../utils/savings_projections.dart';
 import '../widgets/add_savings_goal_sheet.dart';
+import '../widgets/limit_reached_dialog.dart';
 
 class SavingsGoalsScreen extends StatefulWidget {
   final String householdId;
   final List<SavingsGoal> goals;
   final ValueChanged<List<SavingsGoal>> onChanged;
+  final SubscriptionState? subscription;
+  final VoidCallback? onUpgrade;
 
   const SavingsGoalsScreen({
     super.key,
     required this.householdId,
     required this.goals,
     required this.onChanged,
+    this.subscription,
+    this.onUpgrade,
   });
 
   @override
@@ -57,8 +64,25 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
     );
     if (result == null) return;
 
+    // If creating a new goal on free tier, check limits
+    var goalToSave = result;
+    if (existing == null && _isFreeUser) {
+      final activeCount = _goals.where((g) => g.isActive).length;
+      if (activeCount >= DowngradeService.maxFreeSavingsGoals) {
+        final action = await showGoalCreateLimitDialog(context);
+        if (action == LimitReachedAction.upgrade) {
+          widget.onUpgrade?.call();
+          return;
+        } else if (action == LimitReachedAction.createPaused) {
+          goalToSave = result.copyWith(isActive: false);
+        } else {
+          return; // cancelled
+        }
+      }
+    }
+
     try {
-      await _service.saveGoal(result, widget.householdId);
+      await _service.saveGoal(goalToSave, widget.householdId);
       await _reloadGoals();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -108,7 +132,23 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
     }
   }
 
+  bool get _isFreeUser =>
+      widget.subscription != null && !widget.subscription!.hasPremiumAccess;
+
   Future<void> _toggleActive(SavingsGoal goal) async {
+    // If trying to activate a goal and on free tier, check limits
+    if (!goal.isActive && _isFreeUser) {
+      final activeCount = _goals.where((g) => g.isActive).length;
+      if (activeCount >= DowngradeService.maxFreeSavingsGoals) {
+        final action = await showGoalLimitDialog(context, goal.name);
+        if (action == LimitReachedAction.upgrade) {
+          widget.onUpgrade?.call();
+        }
+        // For 'Choose Active Goal' the user stays on this screen to deactivate first
+        return;
+      }
+    }
+
     final updated = goal.copyWith(isActive: !goal.isActive);
     try {
       await _service.saveGoal(updated, widget.householdId);
@@ -177,18 +217,27 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
                 ),
               ),
             )
-          : ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: _goals.length,
-              separatorBuilder: (_, _) => const SizedBox(height: 8),
-              itemBuilder: (_, i) => _GoalCard(
-                goal: _goals[i],
-                onTap: () => _openGoalDetail(_goals[i]),
-                onEdit: () => _addOrEditGoal(_goals[i]),
-                onToggle: () => _toggleActive(_goals[i]),
-                onDelete: () => _deleteGoal(_goals[i]),
-              ),
-            ),
+          : Builder(builder: (_) {
+              // Sort: active first, then paused
+              final sorted = List<SavingsGoal>.from(_goals)
+                ..sort((a, b) {
+                  if (a.isActive == b.isActive) return 0;
+                  return a.isActive ? -1 : 1;
+                });
+              return ListView.separated(
+                padding: const EdgeInsets.all(16),
+                itemCount: sorted.length,
+                separatorBuilder: (_, _) => const SizedBox(height: 8),
+                itemBuilder: (_, i) => _GoalCard(
+                  goal: sorted[i],
+                  isFreeUser: _isFreeUser,
+                  onTap: () => _openGoalDetail(sorted[i]),
+                  onEdit: () => _addOrEditGoal(sorted[i]),
+                  onToggle: () => _toggleActive(sorted[i]),
+                  onDelete: () => _deleteGoal(sorted[i]),
+                ),
+              );
+            }),
     );
   }
 }
@@ -197,6 +246,7 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
 
 class _GoalCard extends StatelessWidget {
   final SavingsGoal goal;
+  final bool isFreeUser;
   final VoidCallback onTap;
   final VoidCallback onEdit;
   final VoidCallback onToggle;
@@ -204,6 +254,7 @@ class _GoalCard extends StatelessWidget {
 
   const _GoalCard({
     required this.goal,
+    this.isFreeUser = false,
     required this.onTap,
     required this.onEdit,
     required this.onToggle,
@@ -217,166 +268,209 @@ class _GoalCard extends StatelessWidget {
         ? _hexToColor(goal.color!)
         : AppColors.primary(context);
     final deadlineInfo = _deadlineLabel(goal, l10n);
+    final isPaused = !goal.isActive;
+    final showProBadge = isPaused && isFreeUser;
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.surface(context),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.border(context)),
-        ),
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 12,
-                  height: 12,
-                  decoration: BoxDecoration(
-                    color: goalColor,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    goal.name,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: goal.isActive
-                          ? AppColors.textPrimary(context)
-                          : AppColors.textMuted(context),
+    return Semantics(
+      label: isPaused ? 'Paused - requires Pro subscription' : null,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.surface(context),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.border(context)),
+          ),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  if (isPaused && isFreeUser)
+                    Icon(Icons.lock_outline,
+                        size: 12, color: AppColors.textMuted(context))
+                  else
+                    Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: goalColor,
+                        shape: BoxShape.circle,
+                      ),
                     ),
-                  ),
-                ),
-                if (goal.isCompleted)
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: AppColors.successBackground(context),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                  const SizedBox(width: 8),
+                  Expanded(
                     child: Text(
-                      l10n.savingsGoalCompleted,
+                      goal.name,
                       style: TextStyle(
-                        fontSize: 11,
+                        fontSize: 15,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.success(context),
+                        color: isPaused
+                            ? AppColors.textMuted(context)
+                            : AppColors.textPrimary(context),
                       ),
                     ),
                   ),
-                PopupMenuButton<String>(
-                  onSelected: (action) {
-                    switch (action) {
-                      case 'edit':
-                        onEdit();
-                      case 'toggle':
-                        onToggle();
-                      case 'delete':
-                        onDelete();
-                    }
-                  },
-                  itemBuilder: (_) => [
-                    PopupMenuItem(
-                      value: 'edit',
-                      child: Text(l10n.savingsGoalEdit),
+                  if (showProBadge)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary(context),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: const Text(
+                        'PRO',
+                        style: TextStyle(
+                          fontSize: 8,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
-                    PopupMenuItem(
-                      value: 'toggle',
-                      child: Text(goal.isActive
-                          ? l10n.savingsGoalInactive
-                          : l10n.savingsGoalActive),
+                  if (!showProBadge && goal.isCompleted)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: AppColors.successBackground(context),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        l10n.savingsGoalCompleted,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.success(context),
+                        ),
+                      ),
                     ),
-                    PopupMenuItem(
-                      value: 'delete',
-                      child: Text(l10n.delete,
-                          style: TextStyle(color: AppColors.error(context))),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-
-            // Progress bar
-            ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: LinearProgressIndicator(
-                value: goal.progress,
-                backgroundColor: AppColors.border(context),
-                color: goal.isCompleted
-                    ? AppColors.success(context)
-                    : goalColor,
-                minHeight: 6,
-              ),
-            ),
-            const SizedBox(height: 8),
-
-            // Amount row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${formatCurrency(goal.currentAmount)} / ${formatCurrency(goal.targetAmount)}',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textSecondary(context),
+                  PopupMenuButton<String>(
+                    onSelected: (action) {
+                      switch (action) {
+                        case 'edit':
+                          onEdit();
+                        case 'toggle':
+                          onToggle();
+                        case 'delete':
+                          onDelete();
+                      }
+                    },
+                    itemBuilder: (_) => [
+                      PopupMenuItem(
+                        value: 'edit',
+                        child: Text(l10n.savingsGoalEdit),
+                      ),
+                      PopupMenuItem(
+                        value: 'toggle',
+                        child: Text(goal.isActive
+                            ? l10n.savingsGoalInactive
+                            : l10n.savingsGoalActive),
+                      ),
+                      PopupMenuItem(
+                        value: 'delete',
+                        child: Text(l10n.delete,
+                            style:
+                                TextStyle(color: AppColors.error(context))),
+                      ),
+                    ],
                   ),
+                ],
+              ),
+              const SizedBox(height: 12),
+
+              // Progress bar
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: LinearProgressIndicator(
+                  value: goal.progress,
+                  backgroundColor: AppColors.border(context),
+                  color: goal.isCompleted
+                      ? AppColors.success(context)
+                      : (isPaused && isFreeUser)
+                          ? AppColors.border(context)
+                          : goalColor,
+                  minHeight: 6,
                 ),
+              ),
+              const SizedBox(height: 8),
+
+              // Amount row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '${formatCurrency(goal.currentAmount)} / ${formatCurrency(goal.targetAmount)}',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: isPaused
+                          ? AppColors.textMuted(context)
+                          : AppColors.textSecondary(context),
+                    ),
+                  ),
+                  Text(
+                    l10n.savingsGoalProgress(
+                        '${(goal.progress * 100).toStringAsFixed(0)}%'),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: isPaused
+                          ? AppColors.textMuted(context)
+                          : goalColor,
+                    ),
+                  ),
+                ],
+              ),
+
+              if (!goal.isCompleted) ...[
+                const SizedBox(height: 4),
                 Text(
-                  l10n.savingsGoalProgress(
-                      '${(goal.progress * 100).toStringAsFixed(0)}%'),
+                  l10n.savingsGoalRemaining(formatCurrency(goal.remaining)),
                   style: TextStyle(
                     fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: goalColor,
+                    color: AppColors.textMuted(context),
                   ),
                 ),
               ],
-            ),
 
-            if (!goal.isCompleted) ...[
-              const SizedBox(height: 4),
-              Text(
-                l10n.savingsGoalRemaining(formatCurrency(goal.remaining)),
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textMuted(context),
+              if (deadlineInfo != null) ...[
+                const SizedBox(height: 4),
+                Text(
+                  deadlineInfo,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: _isOverdue(goal)
+                        ? AppColors.error(context)
+                        : AppColors.textMuted(context),
+                  ),
                 ),
-              ),
-            ],
+              ],
 
-            if (deadlineInfo != null) ...[
-              const SizedBox(height: 4),
-              Text(
-                deadlineInfo,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: _isOverdue(goal)
-                      ? AppColors.error(context)
-                      : AppColors.textMuted(context),
+              if (isPaused && isFreeUser) ...[
+                const SizedBox(height: 4),
+                Text(
+                  'Paused \u2014 Free plan allows 1 goal',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontStyle: FontStyle.italic,
+                    color: AppColors.textMuted(context),
+                  ),
                 ),
-              ),
-            ],
-
-            if (!goal.isActive) ...[
-              const SizedBox(height: 4),
-              Text(
-                l10n.savingsGoalInactive,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontStyle: FontStyle.italic,
-                  color: AppColors.textMuted(context),
+              ] else if (isPaused) ...[
+                const SizedBox(height: 4),
+                Text(
+                  l10n.savingsGoalInactive,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontStyle: FontStyle.italic,
+                    color: AppColors.textMuted(context),
+                  ),
                 ),
-              ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

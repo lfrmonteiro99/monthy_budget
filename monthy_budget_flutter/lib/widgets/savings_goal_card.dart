@@ -52,15 +52,30 @@ class SavingsGoalCard extends StatelessWidget {
       );
     }
 
+    final pausedCount = goals.where((g) => !g.isActive).length;
     return _wrapper(
       context,
       l10n,
-      children: display
-          .map((g) => _GoalRow(
-                goal: g,
-                projection: projections[g.id],
-              ))
-          .toList(),
+      children: [
+        ...display.map((g) => _GoalRow(
+              goal: g,
+              projection: projections[g.id],
+            )),
+        if (pausedCount > 0)
+          GestureDetector(
+            onTap: onSeeAll,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(
+                '+$pausedCount paused goals',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: AppColors.textMuted(context),
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 

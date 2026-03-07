@@ -16,7 +16,10 @@ import '../models/local_dashboard_config.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
 import '../main.dart';
+import '../models/subscription_state.dart';
+import '../services/downgrade_service.dart';
 import '../services/local_config_service.dart';
+import '../widgets/limit_reached_dialog.dart';
 
 class SettingsScreen extends StatefulWidget {
   final AppSettings settings;
@@ -40,6 +43,7 @@ class SettingsScreen extends StatefulWidget {
   final ValueChanged<Map<String, double>>? onSaveMonthlyBudgets;
   final List<RecurringExpense> recurringExpenses;
   final ValueChanged<List<RecurringExpense>>? onRecurringChanged;
+  final SubscriptionState? subscription;
 
   const SettingsScreen({
     super.key,
@@ -64,6 +68,7 @@ class SettingsScreen extends StatefulWidget {
     this.onSaveMonthlyBudgets,
     this.recurringExpenses = const [],
     this.onRecurringChanged,
+    this.subscription,
   });
 
   @override
@@ -81,6 +86,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   late List<RecurringExpense> _recurringDraft;
 
   String _favSearch = '';
+
+  bool get _isFreeUser =>
+      widget.subscription != null && !widget.subscription!.hasPremiumAccess;
 
   @override
   void initState() {
@@ -150,7 +158,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
 
-  void _addExpense() {
+  void _addExpense() async {
+    if (_isFreeUser) {
+      final activeCount = _draft.expenses.where((e) => e.enabled).length;
+      if (activeCount >= DowngradeService.maxFreeCategories) {
+        final action = await showCategoryCreateLimitDialog(context);
+        if (action == LimitReachedAction.upgrade) {
+          widget.onOpenSubscription?.call();
+          return;
+        } else if (action == LimitReachedAction.createPaused) {
+          setState(() {
+            _draft = _draft.copyWith(
+              expenses: [
+                ..._draft.expenses,
+                ExpenseItem(
+                  id: 'expense_${DateTime.now().millisecondsSinceEpoch}',
+                  enabled: false,
+                ),
+              ],
+            );
+          });
+          return;
+        } else {
+          return; // cancelled
+        }
+      }
+    }
     setState(() {
       _draft = _draft.copyWith(
         expenses: [
@@ -252,7 +285,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     _SectionHeader(
                       icon: Icons.receipt_long,
                       title: l10n.settingsExpensesMonthly,
-                      subtitle: '(${_draft.expenses.where((e) => e.enabled).length})',
+                      subtitle: _isFreeUser
+                          ? '(${_draft.expenses.where((e) => e.enabled).length}/${DowngradeService.maxFreeCategories} active)'
+                          : '(${_draft.expenses.where((e) => e.enabled).length})',
                       isOpen: _openSection == 'expenses',
                       onTap: () => _toggleSection('expenses'),
                     ),
@@ -953,13 +988,54 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildExpensesSection() {
     final l10n = S.of(context);
     final categoryViews = buildCategoryViews(_draft.expenses, _recurringDraft);
+
+    // Sort: active first, then paused
+    final sortedExpenses = List<ExpenseItem>.from(_draft.expenses)
+      ..sort((a, b) {
+        if (a.enabled == b.enabled) return 0;
+        return a.enabled ? -1 : 1;
+      });
+
+    final activeExpenses = sortedExpenses.where((e) => e.enabled).toList();
+    final pausedExpenses = sortedExpenses.where((e) => !e.enabled).toList();
+
     return Container(
       color: AppColors.surface(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
           _helpTip(l10n.settingsExpensesTip),
-          ..._draft.expenses.map((expense) {
+          if (_isFreeUser && pausedExpenses.isNotEmpty) ...[
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Text(
+                'Active Categories (${activeExpenses.length} of ${_draft.expenses.length})',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textMuted(context),
+                  letterSpacing: 0.8,
+                ),
+              ),
+            ),
+          ],
+          // Render expenses: active first, then paused with section header
+          for (int _ei = 0; _ei < sortedExpenses.length; _ei++) ...[
+            if (_isFreeUser && _ei == activeExpenses.length && pausedExpenses.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 8, bottom: 12),
+                child: Text(
+                  'Paused Categories',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textMuted(context),
+                    letterSpacing: 0.8,
+                  ),
+                ),
+              ),
+            Builder(builder: (_) {
+            final expense = sortedExpenses[_ei];
             // Find matching category view for bill info
             final view = categoryViews.firstWhere(
               (v) => v.budgetItem.id == expense.id,
@@ -987,7 +1063,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         children: [
                           Switch(
                             value: expense.enabled,
-                            onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(enabled: v)),
+                            onChanged: (v) async {
+                              if (v && _isFreeUser) {
+                                final activeCount = _draft.expenses.where((e) => e.enabled).length;
+                                if (activeCount >= DowngradeService.maxFreeCategories) {
+                                  final action = await showCategoryLimitDialog(context, expense.label);
+                                  if (action == LimitReachedAction.upgrade) {
+                                    widget.onOpenSubscription?.call();
+                                  }
+                                  return;
+                                }
+                              }
+                              _updateExpense(expense.id, (e) => e.copyWith(enabled: v));
+                            },
                             activeTrackColor: AppColors.primary(context),
                           ),
                           Expanded(
@@ -1100,6 +1188,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             );
           }),
+          ],
           OutlinedButton.icon(
             onPressed: _addExpense,
             icon: const Icon(Icons.add, size: 18),
