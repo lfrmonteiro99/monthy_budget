@@ -92,13 +92,8 @@ void main() {
       expect(find.text('custom_unknown'), findsOneWidget);
       expect(find.textContaining('210'), findsWidgets);
 
-      final detectors = tester.widgetList<GestureDetector>(
-        find.byType(GestureDetector),
-      );
-      final tappable =
-          detectors.where((d) => d.onTap != null).toList(growable: false);
-      expect(tappable, isNotEmpty);
-      tappable.first.onTap!.call();
+      await tester.tap(find.text('See detail'));
+      await tester.pumpAndSettle();
       expect(detailTapped, isTrue);
     });
   });
@@ -179,13 +174,8 @@ void main() {
       expect(find.text('Gym'), findsOneWidget);
       expect(find.text('Inactive'), findsNothing);
 
-      final detectors = tester.widgetList<GestureDetector>(
-        find.byType(GestureDetector),
-      );
-      final tappable =
-          detectors.where((d) => d.onTap != null).toList(growable: false);
-      expect(tappable, isNotEmpty);
-      tappable.first.onTap!.call();
+      await tester.tap(find.text('Manage'));
+      await tester.pumpAndSettle();
       expect(manageTapped, isTrue);
     });
   });

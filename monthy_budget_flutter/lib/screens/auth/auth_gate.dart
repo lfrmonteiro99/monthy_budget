@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../services/household_service.dart';
-import '../../theme/app_colors.dart';
+import '../../widgets/branded_loading.dart';
 import 'login_screen.dart';
 import 'household_setup_screen.dart';
 
@@ -84,9 +84,6 @@ class _Loading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
-      body: const Center(child: CircularProgressIndicator()),
-    );
+    return const BrandedLoading();
   }
 }

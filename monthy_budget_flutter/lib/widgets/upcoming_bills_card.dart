@@ -4,6 +4,7 @@ import '../models/recurring_expense.dart';
 import '../models/app_settings.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
+import 'info_icon_button.dart';
 
 /// Dashboard card showing bills due in the next N days.
 class UpcomingBillsCard extends StatelessWidget {
@@ -48,6 +49,7 @@ class UpcomingBillsCard extends StatelessWidget {
                   ),
                 ),
               ),
+              InfoIconButton(title: l10n.upcomingBillsTitle, body: l10n.infoUpcomingBills),
               if (onOpenRecurring != null)
                 GestureDetector(
                   onTap: onOpenRecurring,

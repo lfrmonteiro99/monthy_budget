@@ -1127,6 +1127,360 @@ abstract class S {
   /// **'Eliminar'**
   String get coachDeleteTooltip;
 
+  /// Empty state title in coach chat
+  ///
+  /// In pt, this message translates to:
+  /// **'O teu coach financeiro'**
+  String get coachEmptyTitle;
+
+  /// Empty state body in coach chat
+  ///
+  /// In pt, this message translates to:
+  /// **'Pergunta o que quiseres sobre o teu orcamento, despesas ou poupancas. Vou usar os teus dados reais para dar conselhos personalizados.'**
+  String get coachEmptyBody;
+
+  /// Quick prompt suggestion 1
+  ///
+  /// In pt, this message translates to:
+  /// **'Onde posso cortar despesas este mes?'**
+  String get coachQuickPrompt1;
+
+  /// Quick prompt suggestion 2
+  ///
+  /// In pt, this message translates to:
+  /// **'Como melhoro a minha poupanca?'**
+  String get coachQuickPrompt2;
+
+  /// Quick prompt suggestion 3
+  ///
+  /// In pt, this message translates to:
+  /// **'Ajuda-me a definir um plano para 30 dias.'**
+  String get coachQuickPrompt3;
+
+  /// Composer text field hint
+  ///
+  /// In pt, this message translates to:
+  /// **'Pergunta ao coach...'**
+  String get coachComposerHint;
+
+  /// Label for user messages
+  ///
+  /// In pt, this message translates to:
+  /// **'Tu'**
+  String get coachYou;
+
+  /// Label for assistant messages
+  ///
+  /// In pt, this message translates to:
+  /// **'Coach'**
+  String get coachAssistant;
+
+  /// Credits pill label
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} creditos'**
+  String coachCreditsCount(int count);
+
+  /// Memory section header
+  ///
+  /// In pt, this message translates to:
+  /// **'Memoria'**
+  String get coachMemory;
+
+  /// Cost info when mode is free
+  ///
+  /// In pt, this message translates to:
+  /// **'Modo Eco — sem custos de creditos.'**
+  String get coachCostFree;
+
+  /// Cost info per message
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta mensagem custa {cost} creditos.'**
+  String coachCostCredits(int cost);
+
+  /// Free label on mode chip
+  ///
+  /// In pt, this message translates to:
+  /// **'Gratis'**
+  String get coachFree;
+
+  /// Cost per message on mode chip
+  ///
+  /// In pt, this message translates to:
+  /// **'{cost}/msg'**
+  String coachPerMsg(int cost);
+
+  /// Eco fallback banner title
+  ///
+  /// In pt, this message translates to:
+  /// **'Modo Eco ativo (sem creditos)'**
+  String get coachEcoFallbackTitle;
+
+  /// Eco fallback banner body
+  ///
+  /// In pt, this message translates to:
+  /// **'Podes continuar a conversar, mas com memoria reduzida.'**
+  String get coachEcoFallbackBody;
+
+  /// Button to restore memory/credits
+  ///
+  /// In pt, this message translates to:
+  /// **'Restaurar memoria'**
+  String get coachRestoreMemory;
+
+  /// No description provided for @cmdAssistantTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Assistente'**
+  String get cmdAssistantTitle;
+
+  /// No description provided for @cmdAssistantHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'O que precisas?'**
+  String get cmdAssistantHint;
+
+  /// No description provided for @cmdAssistantTooltip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Precisa de ajuda? Toca aqui'**
+  String get cmdAssistantTooltip;
+
+  /// No description provided for @cmdSuggestionAddExpense.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar despesa'**
+  String get cmdSuggestionAddExpense;
+
+  /// No description provided for @cmdSuggestionOpenList.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir lista de compras'**
+  String get cmdSuggestionOpenList;
+
+  /// No description provided for @cmdSuggestionChangeTheme.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mudar tema'**
+  String get cmdSuggestionChangeTheme;
+
+  /// No description provided for @cmdSuggestionOpenSettings.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ir para definicoes'**
+  String get cmdSuggestionOpenSettings;
+
+  /// No description provided for @cmdTemplateAddExpense.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adiciona [valor] euros em [categoria]'**
+  String get cmdTemplateAddExpense;
+
+  /// No description provided for @cmdTemplateChangeTheme.
+  ///
+  /// In pt, this message translates to:
+  /// **'Muda o tema para [claro/escuro]'**
+  String get cmdTemplateChangeTheme;
+
+  /// No description provided for @cmdExecutionFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Percebi o pedido, mas nao consegui executar. Tenta novamente.'**
+  String get cmdExecutionFailed;
+
+  /// No description provided for @cmdNotUnderstood.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nao percebi. Podes reformular?'**
+  String get cmdNotUnderstood;
+
+  /// No description provided for @cmdUndo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Desfazer'**
+  String get cmdUndo;
+
+  /// No description provided for @cmdCapabilitiesCta.
+  ///
+  /// In pt, this message translates to:
+  /// **'O que posso fazer?'**
+  String get cmdCapabilitiesCta;
+
+  /// No description provided for @cmdCapabilitiesTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Acoes disponiveis'**
+  String get cmdCapabilitiesTitle;
+
+  /// No description provided for @cmdCapabilitiesSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estas sao as acoes que o assistente suporta neste momento.'**
+  String get cmdCapabilitiesSubtitle;
+
+  /// No description provided for @cmdCapabilitiesFooter.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estamos a adicionar mais. Se ainda nao estiver aqui, pode nao funcionar.'**
+  String get cmdCapabilitiesFooter;
+
+  /// No description provided for @cmdCapabilityAddExpense.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar uma despesa'**
+  String get cmdCapabilityAddExpense;
+
+  /// No description provided for @cmdCapabilityAddExpenseExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adiciona [valor] euros em [categoria]'**
+  String get cmdCapabilityAddExpenseExample;
+
+  /// No description provided for @cmdCapabilityAddShoppingItem.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar item a lista'**
+  String get cmdCapabilityAddShoppingItem;
+
+  /// No description provided for @cmdCapabilityAddShoppingItemExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adiciona [item] a lista de compras'**
+  String get cmdCapabilityAddShoppingItemExample;
+
+  /// No description provided for @cmdCapabilityRemoveShoppingItem.
+  ///
+  /// In pt, this message translates to:
+  /// **'Remover item da lista'**
+  String get cmdCapabilityRemoveShoppingItem;
+
+  /// No description provided for @cmdCapabilityRemoveShoppingItemExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Remove [item] da lista de compras'**
+  String get cmdCapabilityRemoveShoppingItemExample;
+
+  /// No description provided for @cmdCapabilityToggleShoppingItemChecked.
+  ///
+  /// In pt, this message translates to:
+  /// **'Marcar ou desmarcar item da lista'**
+  String get cmdCapabilityToggleShoppingItemChecked;
+
+  /// No description provided for @cmdCapabilityToggleShoppingItemCheckedExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Marca [item] na lista de compras'**
+  String get cmdCapabilityToggleShoppingItemCheckedExample;
+
+  /// No description provided for @cmdCapabilityAddSavingsGoal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Criar objetivo de poupanca'**
+  String get cmdCapabilityAddSavingsGoal;
+
+  /// No description provided for @cmdCapabilityAddSavingsGoalExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cria objetivo de poupanca [nome] de [valor]'**
+  String get cmdCapabilityAddSavingsGoalExample;
+
+  /// No description provided for @cmdCapabilityAddSavingsContribution.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar ao objetivo de poupanca'**
+  String get cmdCapabilityAddSavingsContribution;
+
+  /// No description provided for @cmdCapabilityAddSavingsContributionExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adiciona [valor] ao objetivo [nome]'**
+  String get cmdCapabilityAddSavingsContributionExample;
+
+  /// No description provided for @cmdCapabilityAddRecurringExpense.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar despesa recorrente'**
+  String get cmdCapabilityAddRecurringExpense;
+
+  /// No description provided for @cmdCapabilityAddRecurringExpenseExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adiciona despesa recorrente [valor] em [categoria] dia [dia]'**
+  String get cmdCapabilityAddRecurringExpenseExample;
+
+  /// No description provided for @cmdCapabilityDeleteExpense.
+  ///
+  /// In pt, this message translates to:
+  /// **'Apagar uma despesa'**
+  String get cmdCapabilityDeleteExpense;
+
+  /// No description provided for @cmdCapabilityDeleteExpenseExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Apaga a despesa [descricao]'**
+  String get cmdCapabilityDeleteExpenseExample;
+
+  /// No description provided for @cmdCapabilityChangeTheme.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mudar tema'**
+  String get cmdCapabilityChangeTheme;
+
+  /// No description provided for @cmdCapabilityChangeThemeExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Muda o tema para [claro/escuro]'**
+  String get cmdCapabilityChangeThemeExample;
+
+  /// No description provided for @cmdCapabilityChangePalette.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mudar paleta de cor'**
+  String get cmdCapabilityChangePalette;
+
+  /// No description provided for @cmdCapabilityChangePaletteExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cor [ocean/emerald/violet/teal/sunset]'**
+  String get cmdCapabilityChangePaletteExample;
+
+  /// No description provided for @cmdCapabilityChangeLanguage.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mudar idioma'**
+  String get cmdCapabilityChangeLanguage;
+
+  /// No description provided for @cmdCapabilityChangeLanguageExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Idioma [ingles/portugues/espanhol/frances]'**
+  String get cmdCapabilityChangeLanguageExample;
+
+  /// No description provided for @cmdCapabilityNavigate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir ecra'**
+  String get cmdCapabilityNavigate;
+
+  /// No description provided for @cmdCapabilityNavigateExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abre a lista de compras'**
+  String get cmdCapabilityNavigateExample;
+
+  /// No description provided for @cmdCapabilityClearChecked.
+  ///
+  /// In pt, this message translates to:
+  /// **'Limpar itens marcados'**
+  String get cmdCapabilityClearChecked;
+
+  /// No description provided for @cmdCapabilityClearCheckedExample.
+  ///
+  /// In pt, this message translates to:
+  /// **'Limpa os itens marcados'**
+  String get cmdCapabilityClearCheckedExample;
+
   /// Grocery screen title
   ///
   /// In pt, this message translates to:
@@ -1318,6 +1672,36 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Conta criada! Verifique o seu email para confirmar a conta antes de iniciar sessão.'**
   String get authRegistrationSuccess;
+
+  /// No description provided for @authErrorNetwork.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível ligar ao servidor. Verifique a sua ligação à internet e tente novamente.'**
+  String get authErrorNetwork;
+
+  /// No description provided for @authErrorInvalidCredentials.
+  ///
+  /// In pt, this message translates to:
+  /// **'Email ou palavra-passe inválidos. Tente novamente.'**
+  String get authErrorInvalidCredentials;
+
+  /// No description provided for @authErrorEmailNotConfirmed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Verifique o seu email antes de iniciar sessão.'**
+  String get authErrorEmailNotConfirmed;
+
+  /// No description provided for @authErrorTooManyRequests.
+  ///
+  /// In pt, this message translates to:
+  /// **'Demasiadas tentativas. Aguarde um momento e tente novamente.'**
+  String get authErrorTooManyRequests;
+
+  /// No description provided for @authErrorGeneric.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ocorreu um erro. Tente novamente mais tarde.'**
+  String get authErrorGeneric;
 
   /// Household setup screen title
   ///
@@ -4439,6 +4823,24 @@ abstract class S {
   /// **'Dicas de cozinha paralela'**
   String get mealBatchParallelTips;
 
+  /// Label for liked meal feedback button
+  ///
+  /// In pt, this message translates to:
+  /// **'Gostei'**
+  String get mealFeedbackLike;
+
+  /// Label for disliked meal feedback button
+  ///
+  /// In pt, this message translates to:
+  /// **'Não gostei'**
+  String get mealFeedbackDislike;
+
+  /// Label for skipped meal feedback button
+  ///
+  /// In pt, this message translates to:
+  /// **'Saltar'**
+  String get mealFeedbackSkip;
+
   /// Notifications title
   ///
   /// In pt, this message translates to:
@@ -5057,6 +5459,114 @@ abstract class S {
   /// **'Envie os ingredientes da semana para a lista com um toque.'**
   String get onbTourMeals3Body;
 
+  /// No description provided for @onbTourExpenseTracker1Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Navegação mensal'**
+  String get onbTourExpenseTracker1Title;
+
+  /// No description provided for @onbTourExpenseTracker1Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alterne entre meses para ver ou adicionar despesas de qualquer período.'**
+  String get onbTourExpenseTracker1Body;
+
+  /// No description provided for @onbTourExpenseTracker2Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Resumo do orçamento'**
+  String get onbTourExpenseTracker2Title;
+
+  /// No description provided for @onbTourExpenseTracker2Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Veja o orçado vs real e o saldo restante de relance.'**
+  String get onbTourExpenseTracker2Body;
+
+  /// No description provided for @onbTourExpenseTracker3Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Por categoria'**
+  String get onbTourExpenseTracker3Title;
+
+  /// No description provided for @onbTourExpenseTracker3Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cada categoria mostra uma barra de progresso. Toque para expandir e ver despesas individuais.'**
+  String get onbTourExpenseTracker3Body;
+
+  /// No description provided for @onbTourExpenseTracker4Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar despesa'**
+  String get onbTourExpenseTracker4Title;
+
+  /// No description provided for @onbTourExpenseTracker4Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque + para registar uma nova despesa. Escolha a categoria e o valor.'**
+  String get onbTourExpenseTracker4Body;
+
+  /// No description provided for @onbTourSavings1Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Os seus objetivos'**
+  String get onbTourSavings1Title;
+
+  /// No description provided for @onbTourSavings1Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cada cartão mostra o progresso em direção ao objetivo. Toque para ver detalhes e adicionar contribuições.'**
+  String get onbTourSavings1Body;
+
+  /// No description provided for @onbTourSavings2Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Criar objetivo'**
+  String get onbTourSavings2Title;
+
+  /// No description provided for @onbTourSavings2Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque + para definir um novo objetivo de poupança com valor alvo e prazo opcional.'**
+  String get onbTourSavings2Body;
+
+  /// No description provided for @onbTourRecurring1Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas recorrentes'**
+  String get onbTourRecurring1Title;
+
+  /// No description provided for @onbTourRecurring1Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Contas fixas mensais como renda, subscrições e serviços. São incluídas automaticamente no orçamento.'**
+  String get onbTourRecurring1Body;
+
+  /// No description provided for @onbTourRecurring2Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar recorrente'**
+  String get onbTourRecurring2Title;
+
+  /// No description provided for @onbTourRecurring2Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque + para registar uma nova despesa recorrente com valor e dia de vencimento.'**
+  String get onbTourRecurring2Body;
+
+  /// No description provided for @onbTourAssistant1Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Assistente de comandos'**
+  String get onbTourAssistant1Title;
+
+  /// No description provided for @onbTourAssistant1Body.
+  ///
+  /// In pt, this message translates to:
+  /// **'O seu atalho para ações rápidas. Toque para adicionar despesas, mudar definições, navegar e mais u2014 basta escrever o que precisa.'**
+  String get onbTourAssistant1Body;
+
   /// No description provided for @taxDeductionTitle.
   ///
   /// In pt, this message translates to:
@@ -5632,6 +6142,438 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Explorar {feature}'**
   String subscriptionExplore(String feature);
+
+  /// No description provided for @subtitleBatchCooking.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sugere receitas que podem ser preparadas com antecedência para várias refeições'**
+  String get subtitleBatchCooking;
+
+  /// No description provided for @subtitleReuseLeftovers.
+  ///
+  /// In pt, this message translates to:
+  /// **'Planeia refeições que reutilizam ingredientes de dias anteriores'**
+  String get subtitleReuseLeftovers;
+
+  /// No description provided for @subtitleMinimizeWaste.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prioriza o uso de todos os ingredientes comprados antes de expirarem'**
+  String get subtitleMinimizeWaste;
+
+  /// No description provided for @subtitleMealTypeInclude.
+  ///
+  /// In pt, this message translates to:
+  /// **'Incluir esta refeição no plano semanal'**
+  String get subtitleMealTypeInclude;
+
+  /// No description provided for @subtitleShowHeroCard.
+  ///
+  /// In pt, this message translates to:
+  /// **'Resumo da liquidez líquida no topo'**
+  String get subtitleShowHeroCard;
+
+  /// No description provided for @subtitleShowStressIndex.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pontuação (0-100) que mede a pressão de despesas vs rendimento'**
+  String get subtitleShowStressIndex;
+
+  /// No description provided for @subtitleShowMonthReview.
+  ///
+  /// In pt, this message translates to:
+  /// **'Resumo comparativo deste mês com os anteriores'**
+  String get subtitleShowMonthReview;
+
+  /// No description provided for @subtitleShowUpcomingBills.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas recorrentes nos próximos 30 dias'**
+  String get subtitleShowUpcomingBills;
+
+  /// No description provided for @subtitleShowSummaryCards.
+  ///
+  /// In pt, this message translates to:
+  /// **'Rendimento, deduções, despesas e taxa de poupança'**
+  String get subtitleShowSummaryCards;
+
+  /// No description provided for @subtitleShowBudgetVsActual.
+  ///
+  /// In pt, this message translates to:
+  /// **'Comparação lado a lado por categoria de despesa'**
+  String get subtitleShowBudgetVsActual;
+
+  /// No description provided for @subtitleShowExpensesBreakdown.
+  ///
+  /// In pt, this message translates to:
+  /// **'Gráfico circular de despesas por categoria'**
+  String get subtitleShowExpensesBreakdown;
+
+  /// No description provided for @subtitleShowSavingsGoals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Progresso em relação aos seus objetivos de poupança'**
+  String get subtitleShowSavingsGoals;
+
+  /// No description provided for @subtitleShowTaxDeductions.
+  ///
+  /// In pt, this message translates to:
+  /// **'Deduções fiscais elegíveis estimadas este ano'**
+  String get subtitleShowTaxDeductions;
+
+  /// No description provided for @subtitleShowBudgetStreaks.
+  ///
+  /// In pt, this message translates to:
+  /// **'Quantos meses consecutivos ficou dentro do orçamento'**
+  String get subtitleShowBudgetStreaks;
+
+  /// No description provided for @subtitleShowPurchaseHistory.
+  ///
+  /// In pt, this message translates to:
+  /// **'Compras recentes da lista de compras e custos'**
+  String get subtitleShowPurchaseHistory;
+
+  /// No description provided for @subtitleShowCharts.
+  ///
+  /// In pt, this message translates to:
+  /// **'Gráficos de tendência de orçamento, despesas e rendimento'**
+  String get subtitleShowCharts;
+
+  /// No description provided for @subtitleChartExpensesPie.
+  ///
+  /// In pt, this message translates to:
+  /// **'Distribuição de despesas por categoria'**
+  String get subtitleChartExpensesPie;
+
+  /// No description provided for @subtitleChartIncomeVsExpenses.
+  ///
+  /// In pt, this message translates to:
+  /// **'Rendimento mensal comparado com despesas totais'**
+  String get subtitleChartIncomeVsExpenses;
+
+  /// No description provided for @subtitleChartDeductions.
+  ///
+  /// In pt, this message translates to:
+  /// **'Discriminação de despesas dedutíveis nos impostos'**
+  String get subtitleChartDeductions;
+
+  /// No description provided for @subtitleChartNetIncome.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tendência do rendimento líquido ao longo do tempo'**
+  String get subtitleChartNetIncome;
+
+  /// No description provided for @subtitleChartSavingsRate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Percentagem de rendimento poupado por mês'**
+  String get subtitleChartSavingsRate;
+
+  /// No description provided for @helperCountry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Determina o sistema fiscal, moeda e taxas de segurança social'**
+  String get helperCountry;
+
+  /// No description provided for @helperLanguage.
+  ///
+  /// In pt, this message translates to:
+  /// **'Substituir o idioma do sistema. \"Sistema\" segue a definição do dispositivo'**
+  String get helperLanguage;
+
+  /// No description provided for @helperMaritalStatus.
+  ///
+  /// In pt, this message translates to:
+  /// **'Afeta o cálculo do escalão de IRS'**
+  String get helperMaritalStatus;
+
+  /// No description provided for @helperMealObjective.
+  ///
+  /// In pt, this message translates to:
+  /// **'Define o padrão alimentar: omnívoro, vegetariano, pescatariano, etc.'**
+  String get helperMealObjective;
+
+  /// No description provided for @helperSodiumPreference.
+  ///
+  /// In pt, this message translates to:
+  /// **'Filtra receitas pelo nível de teor de sódio'**
+  String get helperSodiumPreference;
+
+  /// No description provided for @subtitleDietaryRestriction.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exclui receitas que contêm {ingredient}'**
+  String subtitleDietaryRestriction(String ingredient);
+
+  /// No description provided for @subtitleExcludedProtein.
+  ///
+  /// In pt, this message translates to:
+  /// **'Remove {protein} de todas as sugestões de refeições'**
+  String subtitleExcludedProtein(String protein);
+
+  /// No description provided for @subtitleKitchenEquipment.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ativa receitas que requerem {equipment}'**
+  String subtitleKitchenEquipment(String equipment);
+
+  /// No description provided for @helperVeggieDays.
+  ///
+  /// In pt, this message translates to:
+  /// **'Número de dias totalmente vegetarianos por semana'**
+  String get helperVeggieDays;
+
+  /// No description provided for @helperFishDays.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recomendado: 2-3 vezes por semana'**
+  String get helperFishDays;
+
+  /// No description provided for @helperLegumeDays.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recomendado: 2-3 vezes por semana'**
+  String get helperLegumeDays;
+
+  /// No description provided for @helperRedMeatDays.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recomendado: máximo 2 vezes por semana'**
+  String get helperRedMeatDays;
+
+  /// No description provided for @helperMaxPrepTime.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tempo máximo de confeção para refeições de semana (minutos)'**
+  String get helperMaxPrepTime;
+
+  /// No description provided for @helperMaxComplexity.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nível de dificuldade das receitas para dias de semana'**
+  String get helperMaxComplexity;
+
+  /// No description provided for @helperWeekendPrepTime.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tempo máximo de confeção para refeições de fim de semana (minutos)'**
+  String get helperWeekendPrepTime;
+
+  /// No description provided for @helperWeekendComplexity.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nível de dificuldade das receitas para fins de semana'**
+  String get helperWeekendComplexity;
+
+  /// No description provided for @helperMaxBatchDays.
+  ///
+  /// In pt, this message translates to:
+  /// **'Quantos dias uma refeição preparada em lote pode ser reutilizada'**
+  String get helperMaxBatchDays;
+
+  /// No description provided for @helperNewIngredients.
+  ///
+  /// In pt, this message translates to:
+  /// **'Limita quantos ingredientes novos aparecem por semana'**
+  String get helperNewIngredients;
+
+  /// No description provided for @helperGrossSalary.
+  ///
+  /// In pt, this message translates to:
+  /// **'Salário total antes de impostos e deduções'**
+  String get helperGrossSalary;
+
+  /// No description provided for @helperExemptIncome.
+  ///
+  /// In pt, this message translates to:
+  /// **'Rendimento adicional não sujeito a IRS (ex.: subsídios)'**
+  String get helperExemptIncome;
+
+  /// No description provided for @helperMealAllowance.
+  ///
+  /// In pt, this message translates to:
+  /// **'Subsídio de refeição diário do empregador'**
+  String get helperMealAllowance;
+
+  /// No description provided for @helperWorkingDays.
+  ///
+  /// In pt, this message translates to:
+  /// **'Típico: 22. Afeta o cálculo do subsídio de refeição'**
+  String get helperWorkingDays;
+
+  /// No description provided for @helperSalaryLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Um nome para identificar esta fonte de rendimento'**
+  String get helperSalaryLabel;
+
+  /// No description provided for @helperExpenseAmount.
+  ///
+  /// In pt, this message translates to:
+  /// **'Montante mensal orçamentado para esta categoria'**
+  String get helperExpenseAmount;
+
+  /// No description provided for @helperCalorieTarget.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recomendado: 2000-2500 kcal para adultos'**
+  String get helperCalorieTarget;
+
+  /// No description provided for @helperProteinTarget.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recomendado: 50-70g para adultos'**
+  String get helperProteinTarget;
+
+  /// No description provided for @helperFiberTarget.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recomendado: 25-30g para adultos'**
+  String get helperFiberTarget;
+
+  /// No description provided for @infoStressIndex.
+  ///
+  /// In pt, this message translates to:
+  /// **'Compara os gastos reais com o seu orçamento. Intervalos de pontuação:\n\n0-30: Confortável - gastos bem dentro do orçamento\n30-60: Moderado - a aproximar-se dos limites do orçamento\n60-100: Crítico - gastos excedem significativamente o orçamento'**
+  String get infoStressIndex;
+
+  /// No description provided for @infoBudgetStreak.
+  ///
+  /// In pt, this message translates to:
+  /// **'Meses consecutivos em que a despesa total ficou dentro do orçamento total.'**
+  String get infoBudgetStreak;
+
+  /// No description provided for @infoUpcomingBills.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mostra despesas recorrentes nos próximos 30 dias com base nas suas despesas mensais.'**
+  String get infoUpcomingBills;
+
+  /// No description provided for @infoSalaryBreakdown.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mostra como o salário bruto é dividido em imposto IRS, contribuições para a segurança social, rendimento líquido e subsídio de refeição.'**
+  String get infoSalaryBreakdown;
+
+  /// No description provided for @infoBudgetVsActual.
+  ///
+  /// In pt, this message translates to:
+  /// **'Compara o que orçamentou por categoria com o que realmente gastou. Verde significa abaixo do orçamento, vermelho significa acima do orçamento.'**
+  String get infoBudgetVsActual;
+
+  /// No description provided for @infoSavingsGoals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Progresso em relação a cada objetivo de poupança com base nas contribuições efetuadas.'**
+  String get infoSavingsGoals;
+
+  /// No description provided for @infoTaxDeductions.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas dedutíveis estimadas (saúde, educação, habitação). Estas são apenas estimativas - consulte um profissional fiscal para valores precisos.'**
+  String get infoTaxDeductions;
+
+  /// No description provided for @infoPurchaseHistory.
+  ///
+  /// In pt, this message translates to:
+  /// **'Total gasto em compras da lista de compras este mês.'**
+  String get infoPurchaseHistory;
+
+  /// No description provided for @infoExpensesBreakdown.
+  ///
+  /// In pt, this message translates to:
+  /// **'Discriminação visual das suas despesas por categoria no mês atual.'**
+  String get infoExpensesBreakdown;
+
+  /// No description provided for @infoCharts.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dados de tendência ao longo do tempo. Toque em qualquer gráfico para uma vista detalhada.'**
+  String get infoCharts;
+
+  /// No description provided for @infoExpenseTrackerSummary.
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamentado = despesa mensal planeada. Real = o que gastou até agora. Restante = orçamento menos real.'**
+  String get infoExpenseTrackerSummary;
+
+  /// No description provided for @infoExpenseTrackerProgress.
+  ///
+  /// In pt, this message translates to:
+  /// **'Verde: abaixo de 75% do orçamento. Amarelo: 75-100%. Vermelho: acima do orçamento.'**
+  String get infoExpenseTrackerProgress;
+
+  /// No description provided for @infoExpenseTrackerFilter.
+  ///
+  /// In pt, this message translates to:
+  /// **'Filtre despesas por texto, categoria ou intervalo de datas.'**
+  String get infoExpenseTrackerFilter;
+
+  /// No description provided for @infoSavingsProjection.
+  ///
+  /// In pt, this message translates to:
+  /// **'Baseado nas suas contribuições mensais médias. \"No caminho certo\" significa que o ritmo atual atinge o objetivo no prazo. \"Atrasado\" significa que precisa de aumentar as contribuições.'**
+  String get infoSavingsProjection;
+
+  /// No description provided for @infoSavingsRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'O montante que precisa de poupar por mês a partir de agora para atingir o objetivo no prazo.'**
+  String get infoSavingsRequired;
+
+  /// No description provided for @infoCoachModes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Eco: gratuito, sem memória de conversa.\nPlus: 1 crédito por mensagem, lembra as últimas 5 mensagens.\nPro: 2 créditos por mensagem, memória de conversa completa.'**
+  String get infoCoachModes;
+
+  /// No description provided for @infoCoachCredits.
+  ///
+  /// In pt, this message translates to:
+  /// **'Os créditos são usados nos modos Plus e Pro. Recebe créditos iniciais ao registar-se. O modo Eco é sempre gratuito.'**
+  String get infoCoachCredits;
+
+  /// No description provided for @helperWizardGrossSalary.
+  ///
+  /// In pt, this message translates to:
+  /// **'O seu salário mensal total antes de impostos'**
+  String get helperWizardGrossSalary;
+
+  /// No description provided for @helperWizardMealAllowance.
+  ///
+  /// In pt, this message translates to:
+  /// **'Subsídio de refeição diário do empregador (se aplicável)'**
+  String get helperWizardMealAllowance;
+
+  /// No description provided for @helperWizardRent.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pagamento mensal de habitação'**
+  String get helperWizardRent;
+
+  /// No description provided for @helperWizardGroceries.
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamento mensal de alimentação e produtos domésticos'**
+  String get helperWizardGroceries;
+
+  /// No description provided for @helperWizardTransport.
+  ///
+  /// In pt, this message translates to:
+  /// **'Custos mensais de transporte (combustível, transportes públicos, etc.)'**
+  String get helperWizardTransport;
+
+  /// No description provided for @helperWizardUtilities.
+  ///
+  /// In pt, this message translates to:
+  /// **'Eletricidade, água e gás mensais'**
+  String get helperWizardUtilities;
+
+  /// No description provided for @helperWizardTelecom.
+  ///
+  /// In pt, this message translates to:
+  /// **'Internet, telefone e TV mensais'**
+  String get helperWizardTelecom;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

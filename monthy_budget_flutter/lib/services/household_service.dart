@@ -12,6 +12,18 @@ class HouseholdProfile {
   });
 }
 
+class AssociatedHouseholdMember {
+  final String id;
+  final String email;
+  final String role; // 'admin' | 'member'
+
+  const AssociatedHouseholdMember({
+    required this.id,
+    required this.email,
+    required this.role,
+  });
+}
+
 class HouseholdService {
   final _client = Supabase.instance.client;
 
@@ -34,6 +46,26 @@ class HouseholdService {
           (row['households'] as Map<String, dynamic>)['name'] as String,
       role: row['role'] as String,
     );
+  }
+
+  /// Lists all profiles associated with a household.
+  Future<List<AssociatedHouseholdMember>> getAssociatedMembers(
+      String householdId) async {
+    final rows = await _client
+        .from('profiles')
+        .select('id, email, role')
+        .eq('household_id', householdId)
+        .order('created_at', ascending: true);
+
+    return (rows as List<dynamic>)
+        .map((row) => AssociatedHouseholdMember(
+              id: row['id'] as String,
+              email: (row['email'] as String?)?.trim().isNotEmpty == true
+                  ? row['email'] as String
+                  : '-',
+              role: (row['role'] as String?) ?? 'member',
+            ))
+        .toList();
   }
 
   /// Creates a new household; assigns current user as admin.
