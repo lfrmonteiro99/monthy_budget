@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -85,16 +86,38 @@ final appColorPaletteNotifier =
 Future<void> main() async {
   final binding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: binding);
-  await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
+
+  try {
+    await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
+  } catch (e) {
+    debugPrint('Supabase initialization failed: $e');
+  }
+
   final configService = LocalConfigService();
   final savedTheme = await configService.loadThemeMode();
   final savedPalette = await configService.loadColorPalette();
   appThemeModeNotifier.value = savedTheme;
   appColorPaletteNotifier.value = savedPalette;
   AppColors.palette = savedPalette;
-  await NotificationService().init();
-  await AdService.initialize();
-  await RevenueCatService.initialize();
+
+  try {
+    await NotificationService().init();
+  } catch (e) {
+    debugPrint('NotificationService initialization failed: $e');
+  }
+
+  try {
+    await AdService.initialize();
+  } catch (e) {
+    debugPrint('AdService initialization failed: $e');
+  }
+
+  try {
+    await RevenueCatService.initialize();
+  } catch (e) {
+    debugPrint('RevenueCatService initialization failed: $e');
+  }
+
   FlutterNativeSplash.remove();
   runApp(const OrcamentoMensalApp());
 }
