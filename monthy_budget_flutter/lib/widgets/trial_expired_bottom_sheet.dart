@@ -5,7 +5,7 @@ import '../services/downgrade_service.dart';
 import '../theme/app_colors.dart';
 
 /// Result of the trial-expired bottom sheet interaction.
-enum TrialExpiredAction { upgrade, manageCategories, dismiss }
+enum TrialExpiredAction { upgrade, manageCategories, extendTrial, dismiss }
 
 /// Bottom sheet shown once when trial expires and user is downgraded to free.
 ///
@@ -15,12 +15,14 @@ class TrialExpiredBottomSheet extends StatelessWidget {
   final List<ExpenseItem> expenses;
   final List<SavingsGoal> savingsGoals;
   final bool isSubscriptionEnd;
+  final bool canExtendTrial;
 
   const TrialExpiredBottomSheet({
     super.key,
     required this.expenses,
     required this.savingsGoals,
     this.isSubscriptionEnd = false,
+    this.canExtendTrial = false,
   });
 
   @override
@@ -197,6 +199,32 @@ class TrialExpiredBottomSheet extends StatelessWidget {
               ),
             ],
 
+            // Extend trial button (only if eligible)
+            if (canExtendTrial && !isSubscriptionEnd) ...[
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: OutlinedButton.icon(
+                  onPressed: () => Navigator.of(context)
+                      .pop(TrialExpiredAction.extendTrial),
+                  icon: const Icon(Icons.access_time_rounded, size: 18),
+                  label: const Text(
+                    'Extend 7 more days',
+                    style:
+                        TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.primary(context),
+                    side: BorderSide(
+                        color: AppColors.primary(context).withValues(alpha: 0.5)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
+                ),
+              ),
+            ],
+
             const SizedBox(height: 10),
 
             // Continue with free plan
@@ -258,6 +286,7 @@ Future<TrialExpiredAction?> showTrialExpiredBottomSheet({
   required List<ExpenseItem> expenses,
   required List<SavingsGoal> savingsGoals,
   bool isSubscriptionEnd = false,
+  bool canExtendTrial = false,
 }) {
   return showModalBottomSheet<TrialExpiredAction>(
     context: context,
@@ -267,6 +296,7 @@ Future<TrialExpiredAction?> showTrialExpiredBottomSheet({
       expenses: expenses,
       savingsGoals: savingsGoals,
       isSubscriptionEnd: isSubscriptionEnd,
+      canExtendTrial: canExtendTrial,
     ),
   );
 }

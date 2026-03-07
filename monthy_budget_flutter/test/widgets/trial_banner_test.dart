@@ -40,7 +40,7 @@ void main() {
       });
     });
 
-    group('early phase (>7 days left)', () {
+    group('early phase (>10 days left)', () {
       testWidgets('shows "Premium Trial Active" headline', (tester) async {
         final state = SubscriptionState(
           trialStartDate: DateTime.now().subtract(const Duration(days: 2)),
@@ -90,7 +90,7 @@ void main() {
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
-        expect(find.text('10 days left'), findsOneWidget);
+        expect(find.text('17 days left'), findsOneWidget);
       });
 
       testWidgets('shows progress bar', (tester) async {
@@ -118,10 +118,11 @@ void main() {
       });
     });
 
-    group('mid phase (4-7 days left)', () {
+    group('mid phase (4-10 days left)', () {
       testWidgets('shows "halfway through" headline', (tester) async {
+        // Day 14 of 21 = 7 days left → mid phase
         final state = SubscriptionState(
-          trialStartDate: DateTime.now().subtract(const Duration(days: 8)),
+          trialStartDate: DateTime.now().subtract(const Duration(days: 14)),
         );
 
         await tester.pumpWidget(_wrap(
@@ -133,7 +134,7 @@ void main() {
 
       testWidgets('suggests next feature to discover', (tester) async {
         final state = SubscriptionState(
-          trialStartDate: DateTime.now().subtract(const Duration(days: 8)),
+          trialStartDate: DateTime.now().subtract(const Duration(days: 14)),
           featuresExplored: {'dashboard'},
         );
 
@@ -151,7 +152,7 @@ void main() {
       testWidgets('shows progress message when all features explored',
           (tester) async {
         final state = SubscriptionState(
-          trialStartDate: DateTime.now().subtract(const Duration(days: 9)),
+          trialStartDate: DateTime.now().subtract(const Duration(days: 15)),
           featuresExplored: SubscriptionState.discoverableFeatures.toSet(),
         );
 
@@ -167,7 +168,7 @@ void main() {
 
       testWidgets('still shows progress bar in mid phase', (tester) async {
         final state = SubscriptionState(
-          trialStartDate: DateTime.now().subtract(const Duration(days: 8)),
+          trialStartDate: DateTime.now().subtract(const Duration(days: 14)),
         );
 
         await tester.pumpWidget(_wrap(
@@ -181,8 +182,9 @@ void main() {
     group('urgent phase (<=3 days left)', () {
       testWidgets('shows "X days left in your trial!" headline',
           (tester) async {
+        // Day 18 of 21 = 3 days left → urgent
         final state = SubscriptionState(
-          trialStartDate: DateTime.now().subtract(const Duration(days: 11)),
+          trialStartDate: DateTime.now().subtract(const Duration(days: 18)),
         );
 
         await tester.pumpWidget(_wrap(
@@ -193,8 +195,9 @@ void main() {
       });
 
       testWidgets('shows "Last day" when 1 day left', (tester) async {
+        // Day 20 of 21 = 1 day left
         final state = SubscriptionState(
-          trialStartDate: DateTime.now().subtract(const Duration(days: 13)),
+          trialStartDate: DateTime.now().subtract(const Duration(days: 20)),
         );
 
         await tester.pumpWidget(_wrap(
@@ -205,8 +208,9 @@ void main() {
       });
 
       testWidgets('shows urgent CTA text', (tester) async {
+        // Day 19 of 21 = 2 days left → urgent
         final state = SubscriptionState(
-          trialStartDate: DateTime.now().subtract(const Duration(days: 12)),
+          trialStartDate: DateTime.now().subtract(const Duration(days: 19)),
         );
 
         await tester.pumpWidget(_wrap(
@@ -219,7 +223,7 @@ void main() {
 
       testWidgets('shows timer icon in urgent phase', (tester) async {
         final state = SubscriptionState(
-          trialStartDate: DateTime.now().subtract(const Duration(days: 12)),
+          trialStartDate: DateTime.now().subtract(const Duration(days: 19)),
         );
 
         await tester.pumpWidget(_wrap(
@@ -232,7 +236,7 @@ void main() {
       testWidgets('does NOT show progress bar in urgent phase',
           (tester) async {
         final state = SubscriptionState(
-          trialStartDate: DateTime.now().subtract(const Duration(days: 12)),
+          trialStartDate: DateTime.now().subtract(const Duration(days: 19)),
         );
 
         await tester.pumpWidget(_wrap(
@@ -245,7 +249,7 @@ void main() {
       testWidgets('shows urgency subtitle about premium access ending',
           (tester) async {
         final state = SubscriptionState(
-          trialStartDate: DateTime.now().subtract(const Duration(days: 12)),
+          trialStartDate: DateTime.now().subtract(const Duration(days: 19)),
         );
 
         await tester.pumpWidget(_wrap(
@@ -279,7 +283,7 @@ void main() {
 
       testWidgets('hides dismiss button in urgent phase', (tester) async {
         final state = SubscriptionState(
-          trialStartDate: DateTime.now().subtract(const Duration(days: 12)),
+          trialStartDate: DateTime.now().subtract(const Duration(days: 19)),
         );
 
         await tester.pumpWidget(_wrap(
@@ -347,7 +351,7 @@ void main() {
       testWidgets('calls onUpgrade when urgent CTA tapped', (tester) async {
         var upgraded = false;
         final state = SubscriptionState(
-          trialStartDate: DateTime.now().subtract(const Duration(days: 12)),
+          trialStartDate: DateTime.now().subtract(const Duration(days: 19)),
         );
 
         await tester.pumpWidget(_wrap(

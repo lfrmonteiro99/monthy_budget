@@ -22,6 +22,7 @@ class NotificationService {
   static const _billBaseId = 1000;
   static const _budgetAlertId = 2000;
   static const _mealPlanId = 2001;
+  static const _trialExpiryId = 2002;
   static const _customBaseId = 3000;
 
   Future<void> init() async {
@@ -230,6 +231,83 @@ class NotificationService {
     } catch (e) {
       debugPrint('Failed to schedule meal plan reminder: $e');
     }
+  }
+
+  /// Schedule a pre-expiry notification for trial users.
+  ///
+  /// Fires when there are [daysBeforeExpiry] days left, showing the user
+  /// how many categories and savings goals will be paused on downgrade.
+  Future<void> scheduleTrialExpiryReminder({
+    required DateTime trialEndDate,
+    required int activeCategories,
+    required int activeSavingsGoals,
+    required int maxFreeCategories,
+    required int maxFreeSavingsGoals,
+    int daysBeforeExpiry = 10,
+  }) async {
+    final reminderDate = trialEndDate.subtract(Duration(days: daysBeforeExpiry));
+    final now = DateTime.now();
+
+    if (!reminderDate.isAfter(now)) return;
+
+    final excessCats = (activeCategories - maxFreeCategories).clamp(0, activeCategories);
+    final excessGoals = (activeSavingsGoals - maxFreeSavingsGoals).clamp(0, activeSavingsGoals);
+
+    final parts = <String>[];
+    if (excessCats > 0) parts.add('$excessCats categories');
+    if (excessGoals > 0) parts.add('$excessGoals savings goals');
+
+    final body = parts.isEmpty
+        ? 'Your trial ends in $daysBeforeExpiry days. Upgrade to keep all premium features.'
+        : 'Your trial ends in $daysBeforeExpiry days. ${parts.join(' and ')} will be paused on the free plan.';
+
+    try {
+      await _plugin.zonedSchedule(
+        _trialExpiryId,
+        'Trial ending soon',
+        body,
+        tz.TZDateTime.from(
+          DateTime(reminderDate.year, reminderDate.month, reminderDate.day, 10),
+          tz.local,
+        ),
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            _channelId,
+            _channelName,
+            importance: Importance.high,
+            priority: Priority.high,
+          ),
+        ),
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      );
+    } catch (e) {
+      debugPrint('Failed to schedule trial expiry reminder: $e');
+    }
+  }
+
+  /// Build the body text for the trial expiry reminder notification.
+  ///
+  /// Exposed for testing since notification scheduling requires platform setup.
+  static String buildTrialExpiryBody({
+    required int daysBeforeExpiry,
+    required int activeCategories,
+    required int activeSavingsGoals,
+    required int maxFreeCategories,
+    required int maxFreeSavingsGoals,
+  }) {
+    final excessCats =
+        (activeCategories - maxFreeCategories).clamp(0, activeCategories);
+    final excessGoals =
+        (activeSavingsGoals - maxFreeSavingsGoals).clamp(0, activeSavingsGoals);
+
+    final parts = <String>[];
+    if (excessCats > 0) parts.add('$excessCats categories');
+    if (excessGoals > 0) parts.add('$excessGoals savings goals');
+
+    if (parts.isEmpty) {
+      return 'Your trial ends in $daysBeforeExpiry days. Upgrade to keep all premium features.';
+    }
+    return 'Your trial ends in $daysBeforeExpiry days. ${parts.join(' and ')} will be paused on the free plan.';
   }
 
   Future<void> _scheduleCustomReminder(

@@ -5,9 +5,9 @@ import '../theme/app_colors.dart';
 /// A banner shown during the trial period with countdown and progress.
 ///
 /// Adapts its message based on trial phase:
-/// - Days 1-7: Welcoming, highlights features to try
-/// - Days 8-12: Shows exploration progress, nudges premium features
-/// - Days 13-14: Urgency — trial ending soon
+/// - Days 1-11: Welcoming, highlights features to try
+/// - Days 12-18: Shows exploration progress, nudges premium features
+/// - Days 19-21: Urgency — trial ending soon
 class TrialBanner extends StatelessWidget {
   final SubscriptionState subscription;
   final VoidCallback onUpgrade;
@@ -26,7 +26,7 @@ class TrialBanner extends StatelessWidget {
 
     final daysLeft = subscription.trialDaysRemaining;
     final isUrgent = daysLeft <= 3;
-    final isMidTrial = daysLeft <= 7 && daysLeft > 3;
+    final isMidTrial = daysLeft <= 10 && daysLeft > 3;
 
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),

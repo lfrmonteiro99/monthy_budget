@@ -85,8 +85,12 @@ void main() {
   });
 
   group('constants', () {
-    test('trialDays is 14', () {
-      expect(SubscriptionState.trialDays, 14);
+    test('trialDays is 21', () {
+      expect(SubscriptionState.trialDays, 21);
+    });
+
+    test('trialExtensionDays is 7', () {
+      expect(SubscriptionState.trialExtensionDays, 7);
     });
 
     test('discoverableFeatures has 9 entries in expected order', () {
@@ -220,7 +224,7 @@ void main() {
     });
 
     group('isTrialActive', () {
-      test('true within 14 days of trial start', () {
+      test('true within 21 days of trial start', () {
         final state = makeState(
           trialStartDate: DateTime.now().subtract(const Duration(days: 5)),
         );
@@ -232,23 +236,23 @@ void main() {
         expect(state.isTrialActive, true);
       });
 
-      test('false after 14 days', () {
+      test('false after 21 days', () {
         final state = makeState(
-          trialStartDate: DateTime.now().subtract(const Duration(days: 15)),
+          trialStartDate: DateTime.now().subtract(const Duration(days: 22)),
         );
         expect(state.isTrialActive, false);
       });
 
-      test('true on day 13 (last active day)', () {
+      test('true on day 20 (last active day)', () {
         final state = makeState(
-          trialStartDate: DateTime.now().subtract(const Duration(days: 13)),
+          trialStartDate: DateTime.now().subtract(const Duration(days: 20)),
         );
         expect(state.isTrialActive, true);
       });
 
-      test('false exactly at 14 days', () {
+      test('false exactly at 21 days', () {
         final state = makeState(
-          trialStartDate: DateTime.now().subtract(const Duration(days: 14)),
+          trialStartDate: DateTime.now().subtract(const Duration(days: 21)),
         );
         expect(state.isTrialActive, false);
       });
@@ -258,7 +262,6 @@ void main() {
           tier: SubscriptionTier.premium,
           trialStartDate: DateTime.now(),
         );
-        // isTrialActive doesn't care about tier, only trialUsed and date
         expect(state.isTrialActive, true);
       });
 
@@ -276,19 +279,19 @@ void main() {
         final state = makeState(
           trialStartDate: DateTime.now().subtract(const Duration(days: 5)),
         );
-        expect(state.trialDaysRemaining, 9);
+        expect(state.trialDaysRemaining, 16);
       });
 
       test('returns 0 when expired', () {
         final state = makeState(
-          trialStartDate: DateTime.now().subtract(const Duration(days: 20)),
+          trialStartDate: DateTime.now().subtract(const Duration(days: 25)),
         );
         expect(state.trialDaysRemaining, 0);
       });
 
-      test('returns 14 on day 0', () {
+      test('returns 21 on day 0', () {
         final state = makeState(trialStartDate: DateTime.now());
-        expect(state.trialDaysRemaining, 14);
+        expect(state.trialDaysRemaining, 21);
       });
 
       test('returns 0 when trialUsed', () {
@@ -299,17 +302,17 @@ void main() {
         expect(state.trialDaysRemaining, 0);
       });
 
-      test('clamps to max 14 even with future trialStartDate', () {
+      test('clamps to max 21 even with future trialStartDate', () {
         final state = makeState(
           trialStartDate: DateTime.now().add(const Duration(days: 5)),
         );
-        // remaining = 14 - (-5) = 19, clamped to 14
-        expect(state.trialDaysRemaining, 14);
+        // remaining = 21 - (-5) = 26, clamped to 21
+        expect(state.trialDaysRemaining, 21);
       });
 
-      test('returns 1 on day 13', () {
+      test('returns 1 on day 20', () {
         final state = makeState(
-          trialStartDate: DateTime.now().subtract(const Duration(days: 13)),
+          trialStartDate: DateTime.now().subtract(const Duration(days: 20)),
         );
         expect(state.trialDaysRemaining, 1);
       });
@@ -717,7 +720,8 @@ void main() {
         expect(json['aiCredits'], 120);
         expect(json['preferredCoachMode'], 'pro');
         expect(json['trialStarterCreditsGranted'], false);
-        expect(json.keys.length, 7);
+        expect(json['trialExtensionUsed'], false);
+        expect(json.keys.length, 8);
       });
 
       test('fromJson with empty featuresExplored list', () {
@@ -899,6 +903,93 @@ void main() {
         expect(first, true);
         expect(second, true);
         expect(third, true);
+      });
+    });
+
+    group('trial extension', () {
+      test('effectiveTrialDays is 21 without extension', () {
+        final state = makeState();
+        expect(state.effectiveTrialDays, 21);
+      });
+
+      test('effectiveTrialDays is 28 with extension', () {
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now().subtract(const Duration(days: 21)),
+          trialExtensionUsed: true,
+        );
+        expect(state.effectiveTrialDays, 28);
+      });
+
+      test('isTrialActive true during extension period', () {
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now().subtract(const Duration(days: 23)),
+          trialExtensionUsed: true,
+        );
+        expect(state.isTrialActive, true);
+      });
+
+      test('isTrialActive false after extension period', () {
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now().subtract(const Duration(days: 29)),
+          trialExtensionUsed: true,
+        );
+        expect(state.isTrialActive, false);
+      });
+
+      test('trialDaysRemaining accounts for extension', () {
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now().subtract(const Duration(days: 23)),
+          trialExtensionUsed: true,
+        );
+        expect(state.trialDaysRemaining, 5);
+      });
+
+      test('canExtendTrial true when trial expired and extension not used', () {
+        final state = makeState(
+          trialStartDate: DateTime.now().subtract(const Duration(days: 22)),
+        );
+        expect(state.canExtendTrial, true);
+      });
+
+      test('canExtendTrial false when extension already used', () {
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now().subtract(const Duration(days: 22)),
+          trialExtensionUsed: true,
+        );
+        expect(state.canExtendTrial, false);
+      });
+
+      test('canExtendTrial false when trial still active', () {
+        final state = makeState(
+          trialStartDate: DateTime.now(),
+        );
+        expect(state.canExtendTrial, false);
+      });
+
+      test('canExtendTrial false when trialUsed', () {
+        final state = makeState(
+          trialStartDate: DateTime.now().subtract(const Duration(days: 22)),
+          trialUsed: true,
+        );
+        expect(state.canExtendTrial, false);
+      });
+
+      test('trialExtensionUsed roundtrips through JSON', () {
+        final original = SubscriptionState(
+          trialStartDate: DateTime(2026, 1, 1),
+          trialExtensionUsed: true,
+        );
+        final restored = SubscriptionState.fromJson(original.toJson());
+        expect(restored.trialExtensionUsed, true);
+      });
+
+      test('trialExtensionUsed defaults to false in fromJson', () {
+        final json = {
+          'tier': 'free',
+          'trialStartDate': DateTime.now().toIso8601String(),
+        };
+        final state = SubscriptionState.fromJson(json);
+        expect(state.trialExtensionUsed, false);
       });
     });
 
