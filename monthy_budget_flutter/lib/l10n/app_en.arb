@@ -1416,6 +1416,28 @@
   "onbTourMeals3Title": "Add to shopping list",
   "onbTourMeals3Body": "Send a week's ingredients to your list in one tap.",
 
+  "onbTourExpenseTracker1Title": "Month navigation",
+  "onbTourExpenseTracker1Body": "Switch between months to view or add expenses for any period.",
+  "onbTourExpenseTracker2Title": "Budget summary",
+  "onbTourExpenseTracker2Body": "See your budgeted vs actual spending and remaining balance at a glance.",
+  "onbTourExpenseTracker3Title": "Category breakdown",
+  "onbTourExpenseTracker3Body": "Each category shows a progress bar. Tap to expand and see individual expenses.",
+  "onbTourExpenseTracker4Title": "Add expense",
+  "onbTourExpenseTracker4Body": "Tap + to log a new expense. Pick the category and amount.",
+
+  "onbTourSavings1Title": "Your goals",
+  "onbTourSavings1Body": "Each card shows progress toward your target. Tap to see details and add contributions.",
+  "onbTourSavings2Title": "Create a goal",
+  "onbTourSavings2Body": "Tap + to set a new savings goal with a target amount and optional deadline.",
+
+  "onbTourRecurring1Title": "Recurring expenses",
+  "onbTourRecurring1Body": "Fixed monthly bills like rent, subscriptions, and utilities. These are auto-included in your budget.",
+  "onbTourRecurring2Title": "Add recurring",
+  "onbTourRecurring2Body": "Tap + to register a new recurring expense with amount and due day.",
+
+  "onbTourAssistant1Title": "Command assistant",
+  "onbTourAssistant1Body": "Your shortcut to quick actions. Tap to add expenses, change settings, navigate, and more \u2014 just type what you need.",
+
   "taxDeductionTitle": "IRS Tax Deductions",
   "taxDeductionSeeDetail": "See detail",
   "taxDeductionEstimated": "estimated deduction",

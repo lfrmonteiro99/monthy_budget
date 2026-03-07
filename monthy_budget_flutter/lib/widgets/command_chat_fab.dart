@@ -2,17 +2,22 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/app_colors.dart';
+import '../onboarding/command_assistant_tour.dart';
 
 class CommandChatFab extends StatefulWidget {
   final VoidCallback onTap;
   final bool isDashboard;
   final bool isExpanded;
+  final bool showTour;
+  final VoidCallback? onTourComplete;
 
   const CommandChatFab({
     super.key,
     required this.onTap,
     this.isDashboard = false,
     this.isExpanded = false,
+    this.showTour = false,
+    this.onTourComplete,
   });
 
   @override
@@ -70,6 +75,9 @@ class _CommandChatFabState extends State<CommandChatFab>
       });
     }
     if (mounted) setState(() {});
+    if (widget.showTour) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _tryShowTour());
+    }
   }
 
   Future<void> _savePosition() async {
@@ -86,6 +94,22 @@ class _CommandChatFabState extends State<CommandChatFab>
     _firstUseDone = true;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_prefKeyFirstUse, true);
+  }
+
+  bool _tourShown = false;
+
+  void _tryShowTour() {
+    if (_tourShown || !mounted) return;
+    _tourShown = true;
+    // Delay slightly so the FAB is positioned on screen
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (!mounted) return;
+      buildCommandAssistantTour(
+        context: context,
+        onFinish: () => widget.onTourComplete?.call(),
+        onSkip: () => widget.onTourComplete?.call(),
+      ).show(context: context);
+    });
   }
 
   Offset _defaultPosition(Size screenSize) {
@@ -170,6 +194,7 @@ class _CommandChatFabState extends State<CommandChatFab>
             return Transform.scale(scale: scale, child: child);
           },
           child: Container(
+            key: CommandAssistantTourKeys.fab,
             width: _fabSize,
             height: _fabSize,
             decoration: BoxDecoration(
