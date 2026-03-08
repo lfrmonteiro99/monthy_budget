@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/command_action.dart';
 import '../theme/app_colors.dart';
+import '../utils/rate_limiter.dart';
 
 class CommandChatMessage {
   final String role; // 'user' or 'assistant'
@@ -41,6 +42,7 @@ class _CommandChatPanelState extends State<CommandChatPanel> {
   final _scrollController = ScrollController();
   final _messages = <CommandChatMessage>[];
   bool _loading = false;
+  final _rateLimiter = RateLimiter(minInterval: const Duration(seconds: 3));
 
   @override
   void dispose() {
@@ -63,6 +65,18 @@ class _CommandChatPanelState extends State<CommandChatPanel> {
   Future<void> _send(String text) async {
     final input = text.trim();
     if (input.isEmpty || _loading) return;
+
+    if (!_rateLimiter.tryCall()) {
+      setState(() {
+        _messages.add(CommandChatMessage(
+          role: 'assistant',
+          content: S.of(context).rateLimitMessage,
+        ));
+      });
+      _scrollToBottom();
+      return;
+    }
+
     _controller.clear();
 
     setState(() {
