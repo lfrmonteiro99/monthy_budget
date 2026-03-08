@@ -1,0 +1,44 @@
+[
+  {
+    "id": "roadmap-receipt-scan",
+    "lane": "now",
+    "title": "Receipt Scanning",
+    "body": "Snap a photo of your receipt and automatically extract expenses.",
+    "isHighlighted": true
+  },
+  {
+    "id": "roadmap-budget-templates",
+    "lane": "now",
+    "title": "Budget Templates",
+    "body": "Pre-built budget templates for common scenarios (student, family, freelancer).",
+    "isHighlighted": false
+  },
+  {
+    "id": "roadmap-recurring-insights",
+    "lane": "next",
+    "title": "Recurring Expense Insights",
+    "body": "Smart detection and optimization suggestions for your subscriptions and recurring bills.",
+    "isHighlighted": true
+  },
+  {
+    "id": "roadmap-multi-currency",
+    "lane": "next",
+    "title": "Multi-Currency Support",
+    "body": "Track expenses in multiple currencies with automatic conversion.",
+    "isHighlighted": false
+  },
+  {
+    "id": "roadmap-family-budgets",
+    "lane": "later",
+    "title": "Shared Family Budgets",
+    "body": "Collaborate with family members on shared budgets and expense tracking.",
+    "isHighlighted": false
+  },
+  {
+    "id": "roadmap-investment-tracking",
+    "lane": "later",
+    "title": "Investment Tracking",
+    "body": "Connect and monitor your investment portfolio alongside your budget.",
+    "isHighlighted": false
+  }
+]

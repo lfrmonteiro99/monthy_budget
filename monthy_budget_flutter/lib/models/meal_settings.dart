@@ -278,6 +278,9 @@ class MealSettings {
   final Set<int> eatingOutWeekdays;
   final Map<String, String> pinnedMeals;
   final List<String> pantryIngredients;
+  final List<String> stapleIngredients;
+  final List<String> weeklyPantryIngredients;
+  final DateTime? weeklyPantryUpdatedAt;
   final bool lunchboxLunches;
   final int fishDaysPerWeek;
   final int legumeDaysPerWeek;
@@ -321,6 +324,9 @@ class MealSettings {
     this.eatingOutWeekdays = const {},
     this.pinnedMeals = const {},
     this.pantryIngredients = const [],
+    this.stapleIngredients = const [],
+    this.weeklyPantryIngredients = const [],
+    this.weeklyPantryUpdatedAt,
     this.lunchboxLunches = false,
     this.fishDaysPerWeek = 0,
     this.legumeDaysPerWeek = 0,
@@ -364,6 +370,9 @@ class MealSettings {
     Set<int>? eatingOutWeekdays,
     Map<String, String>? pinnedMeals,
     List<String>? pantryIngredients,
+    List<String>? stapleIngredients,
+    List<String>? weeklyPantryIngredients,
+    Object? weeklyPantryUpdatedAt = _sentinel,
     bool? lunchboxLunches,
     int? fishDaysPerWeek,
     int? legumeDaysPerWeek,
@@ -408,6 +417,11 @@ class MealSettings {
       eatingOutWeekdays: eatingOutWeekdays ?? this.eatingOutWeekdays,
       pinnedMeals: pinnedMeals ?? this.pinnedMeals,
       pantryIngredients: pantryIngredients ?? this.pantryIngredients,
+      stapleIngredients: stapleIngredients ?? this.stapleIngredients,
+      weeklyPantryIngredients: weeklyPantryIngredients ?? this.weeklyPantryIngredients,
+      weeklyPantryUpdatedAt: weeklyPantryUpdatedAt == _sentinel
+          ? this.weeklyPantryUpdatedAt
+          : weeklyPantryUpdatedAt as DateTime?,
       lunchboxLunches: lunchboxLunches ?? this.lunchboxLunches,
       fishDaysPerWeek: fishDaysPerWeek ?? this.fishDaysPerWeek,
       legumeDaysPerWeek: legumeDaysPerWeek ?? this.legumeDaysPerWeek,
@@ -450,6 +464,9 @@ class MealSettings {
     'eatingOutWeekdays': eatingOutWeekdays.toList(),
     'pinnedMeals': pinnedMeals,
     'pantryIngredients': pantryIngredients,
+    'stapleIngredients': stapleIngredients,
+    'weeklyPantryIngredients': weeklyPantryIngredients,
+    'weeklyPantryUpdatedAt': weeklyPantryUpdatedAt?.toIso8601String(),
     'lunchboxLunches': lunchboxLunches,
     'fishDaysPerWeek': fishDaysPerWeek,
     'legumeDaysPerWeek': legumeDaysPerWeek,
@@ -522,6 +539,11 @@ class MealSettings {
           ? Map<String, String>.from(json['pinnedMeals'] as Map)
           : const {},
       pantryIngredients: List<String>.from(json['pantryIngredients'] ?? []),
+      stapleIngredients: List<String>.from(json['stapleIngredients'] ?? []),
+      weeklyPantryIngredients: List<String>.from(json['weeklyPantryIngredients'] ?? []),
+      weeklyPantryUpdatedAt: json['weeklyPantryUpdatedAt'] != null
+          ? DateTime.tryParse(json['weeklyPantryUpdatedAt'] as String)
+          : null,
       lunchboxLunches: json['lunchboxLunches'] ?? false,
       fishDaysPerWeek: json['fishDaysPerWeek'] ?? 0,
       legumeDaysPerWeek: json['legumeDaysPerWeek'] ?? 0,

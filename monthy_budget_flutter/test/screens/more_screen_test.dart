@@ -12,6 +12,7 @@ void main() {
     var settings = 0;
     var notifications = 0;
     var subscription = 0;
+    var productUpdates = 0;
 
     await tester.pumpWidget(
       wrapWithTestApp(
@@ -22,6 +23,7 @@ void main() {
           onOpenSettings: () => settings++,
           onOpenNotifications: () => notifications++,
           onOpenSubscription: () => subscription++,
+          onOpenProductUpdates: () => productUpdates++,
         ),
       ),
     );
@@ -39,11 +41,15 @@ void main() {
     await tester.tap(find.text('Settings'));
     await tester.pump();
 
+    await tester.tap(find.text('Product Updates'));
+    await tester.pump();
+
     expect(detailedDashboard, 1);
     expect(insights, 1);
     expect(savings, 1);
     expect(settings, 1);
     expect(notifications, 1);
     expect(subscription, 1);
+    expect(productUpdates, 1);
   });
 }

@@ -859,6 +859,34 @@ class SPt extends S {
   }
 
   @override
+  String get shoppingViewItems => 'Itens';
+
+  @override
+  String get shoppingViewMeals => 'Refeicoes';
+
+  @override
+  String get shoppingViewStores => 'Lojas';
+
+  @override
+  String get shoppingGroupOther => 'Outros';
+
+  @override
+  String shoppingGroupCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count itens',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String shoppingCheapestAt(String store, String price) {
+    return 'Mais barato em $store ($price)';
+  }
+
+  @override
   String get authLogin => 'Entrar na conta';
 
   @override
@@ -3638,6 +3666,226 @@ class SPt extends S {
       'Por favor, aguarde um momento antes de tentar novamente';
 
   @override
+  String get planningExportTitle => 'Exportar';
+
+  @override
+  String get planningImportTitle => 'Importar';
+
+  @override
+  String get planningExportShoppingList => 'Exportar lista de compras';
+
+  @override
+  String get planningImportShoppingList => 'Importar lista de compras';
+
+  @override
+  String get planningExportMealPlan => 'Exportar plano de refeições';
+
+  @override
+  String get planningImportMealPlan => 'Importar plano de refeições';
+
+  @override
+  String get planningExportPantry => 'Exportar despensa';
+
+  @override
+  String get planningImportPantry => 'Importar despensa';
+
+  @override
+  String get planningExportFreeformMeals => 'Exportar refeições livres';
+
+  @override
+  String get planningImportFreeformMeals => 'Importar refeições livres';
+
+  @override
+  String get planningFormatCsv => 'CSV';
+
+  @override
+  String get planningFormatJson => 'JSON';
+
+  @override
+  String get planningImportSuccess => 'Importado com sucesso';
+
+  @override
+  String planningImportError(String error) {
+    return 'Importação falhou: $error';
+  }
+
+  @override
+  String get planningExportSuccess => 'Exportado com sucesso';
+
+  @override
+  String get planningDataPortability => 'Portabilidade de dados';
+
+  @override
+  String get planningDataPortabilityDesc =>
+      'Importar e exportar artefactos de planeamento';
+
+  @override
+  String get mealBudgetInsightTitle => 'Visão do Orçamento';
+
+  @override
+  String get mealBudgetStatusSafe => 'No caminho';
+
+  @override
+  String get mealBudgetStatusWatch => 'Atenção';
+
+  @override
+  String get mealBudgetStatusOver => 'Acima do orçamento';
+
+  @override
+  String get mealBudgetWeeklyCost => 'Custo semanal estimado';
+
+  @override
+  String get mealBudgetProjectedMonthly => 'Projeção mensal';
+
+  @override
+  String get mealBudgetMonthlyBudget => 'Orçamento mensal de alimentação';
+
+  @override
+  String get mealBudgetRemaining => 'Orçamento restante';
+
+  @override
+  String get mealBudgetTopExpensive => 'Refeições mais caras';
+
+  @override
+  String get mealBudgetSuggestedSwaps => 'Trocas mais baratas sugeridas';
+
+  @override
+  String get mealBudgetViewDetails => 'Ver detalhes';
+
+  @override
+  String get mealBudgetApplySwap => 'Aplicar';
+
+  @override
+  String mealBudgetSwapSavings(String amount) {
+    return 'Poupa $amount';
+  }
+
+  @override
+  String get mealBudgetDailyBreakdown => 'Custo diário detalhado';
+
+  @override
+  String get mealBudgetShoppingImpact => 'Impacto nas compras';
+
+  @override
+  String get mealBudgetUniqueIngredients => 'Ingredientes únicos';
+
+  @override
+  String get mealBudgetEstShoppingCost => 'Custo estimado de compras';
+
+  @override
+  String get productUpdatesTitle => 'Novidades do Produto';
+
+  @override
+  String get whatsNewTab => 'Novidades';
+
+  @override
+  String get roadmapTab => 'Roteiro';
+
+  @override
+  String get noUpdatesYet => 'Sem novidades ainda';
+
+  @override
+  String get noRoadmapItems => 'Sem itens no roteiro ainda';
+
+  @override
+  String get roadmapNow => 'Agora';
+
+  @override
+  String get roadmapNext => 'Em breve';
+
+  @override
+  String get roadmapLater => 'Mais tarde';
+
+  @override
+  String get productUpdatesSubtitle => 'Changelog e funcionalidades futuras';
+
+  @override
+  String get whatsNewDialogTitle => 'Novidades';
+
+  @override
+  String get whatsNewDialogDismiss => 'Entendi';
+
+  @override
+  String get confidenceCenterTitle => 'Centro de Confiança';
+
+  @override
+  String get confidenceSyncHealth => 'Estado de Sincronização';
+
+  @override
+  String get confidenceDataAlerts => 'Alertas de Qualidade dos Dados';
+
+  @override
+  String get confidenceRecommendedActions => 'Ações Recomendadas';
+
+  @override
+  String get confidenceCenterSubtitle =>
+      'Frescura dos dados e saúde do sistema';
+
+  @override
+  String get confidenceCenterTile => 'Centro de Confiança';
+
+  @override
+  String get pantryPickerTitle => 'Selecionar Despensa';
+
+  @override
+  String get pantrySearchHint => 'Pesquisar ingredientes...';
+
+  @override
+  String get pantryTabAlwaysHave => 'Sempre Tenho';
+
+  @override
+  String get pantryTabThisWeek => 'Esta Semana';
+
+  @override
+  String pantrySummaryLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count itens na despensa',
+      one: '1 item na despensa',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pantryEdit => 'Editar';
+
+  @override
+  String get pantryUseWhatWeHave => 'Usar o Que Temos';
+
+  @override
+  String get pantryMarkAtHome => 'Já tenho em casa';
+
+  @override
+  String get pantryHaveIt => 'Tenho';
+
+  @override
+  String pantryCoverageLabel(int pct) {
+    return '$pct% coberto pela despensa';
+  }
+
+  @override
+  String get pantryStaples => 'ESSENCIAIS (SEMPRE EM STOCK)';
+
+  @override
+  String get pantryWeekly => 'DESPENSA DESTA SEMANA';
+
+  @override
+  String pantryAddedToWeekly(String name) {
+    return '$name adicionado à despensa semanal';
+  }
+
+  @override
+  String pantryRemovedFromList(String name) {
+    return '$name removido da lista (já em casa)';
+  }
+
+  @override
+  String pantryMarkedAtHome(String name) {
+    return '$name marcado como já em casa';
+  }
+
+  @override
   String get householdActivityTitle => 'Atividade do Agregado';
 
   @override
@@ -3719,55 +3967,4 @@ class SPt extends S {
   String householdActivityCheckedBy(String name) {
     return 'Marcado por $name';
   }
-  String get mealBudgetInsightTitle => 'Visão do Orçamento';
-
-  @override
-  String get mealBudgetStatusSafe => 'No caminho';
-
-  @override
-  String get mealBudgetStatusWatch => 'Atenção';
-
-  @override
-  String get mealBudgetStatusOver => 'Acima do orçamento';
-
-  @override
-  String get mealBudgetWeeklyCost => 'Custo semanal estimado';
-
-  @override
-  String get mealBudgetProjectedMonthly => 'Projeção mensal';
-
-  @override
-  String get mealBudgetMonthlyBudget => 'Orçamento mensal de alimentação';
-
-  @override
-  String get mealBudgetRemaining => 'Orçamento restante';
-
-  @override
-  String get mealBudgetTopExpensive => 'Refeições mais caras';
-
-  @override
-  String get mealBudgetSuggestedSwaps => 'Trocas mais baratas sugeridas';
-
-  @override
-  String get mealBudgetViewDetails => 'Ver detalhes';
-
-  @override
-  String get mealBudgetApplySwap => 'Aplicar';
-
-  @override
-  String mealBudgetSwapSavings(String amount) {
-    return 'Poupa $amount';
-  }
-
-  @override
-  String get mealBudgetDailyBreakdown => 'Custo diário detalhado';
-
-  @override
-  String get mealBudgetShoppingImpact => 'Impacto nas compras';
-
-  @override
-  String get mealBudgetUniqueIngredients => 'Ingredientes únicos';
-
-  @override
-  String get mealBudgetEstShoppingCost => 'Custo estimado de compras';
 }

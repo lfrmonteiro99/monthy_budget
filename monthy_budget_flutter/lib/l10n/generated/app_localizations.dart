@@ -1619,6 +1619,42 @@ abstract class S {
   /// **'{count, plural, =1{1 produto} other{{count} produtos}}'**
   String shoppingProductCount(int count);
 
+  /// No description provided for @shoppingViewItems.
+  ///
+  /// In pt, this message translates to:
+  /// **'Itens'**
+  String get shoppingViewItems;
+
+  /// No description provided for @shoppingViewMeals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Refeicoes'**
+  String get shoppingViewMeals;
+
+  /// No description provided for @shoppingViewStores.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lojas'**
+  String get shoppingViewStores;
+
+  /// No description provided for @shoppingGroupOther.
+  ///
+  /// In pt, this message translates to:
+  /// **'Outros'**
+  String get shoppingGroupOther;
+
+  /// Pluralized item count in group header
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 item} other{{count} itens}}'**
+  String shoppingGroupCount(int count);
+
+  /// Cheapest known store hint
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais barato em {store} ({price})'**
+  String shoppingCheapestAt(String store, String price);
+
   /// Auth login screen title
   ///
   /// In pt, this message translates to:
@@ -6599,6 +6635,402 @@ abstract class S {
   /// **'Por favor, aguarde um momento antes de tentar novamente'**
   String get rateLimitMessage;
 
+  /// No description provided for @planningExportTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar'**
+  String get planningExportTitle;
+
+  /// No description provided for @planningImportTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar'**
+  String get planningImportTitle;
+
+  /// No description provided for @planningExportShoppingList.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar lista de compras'**
+  String get planningExportShoppingList;
+
+  /// No description provided for @planningImportShoppingList.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar lista de compras'**
+  String get planningImportShoppingList;
+
+  /// No description provided for @planningExportMealPlan.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar plano de refeições'**
+  String get planningExportMealPlan;
+
+  /// No description provided for @planningImportMealPlan.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar plano de refeições'**
+  String get planningImportMealPlan;
+
+  /// No description provided for @planningExportPantry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar despensa'**
+  String get planningExportPantry;
+
+  /// No description provided for @planningImportPantry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar despensa'**
+  String get planningImportPantry;
+
+  /// No description provided for @planningExportFreeformMeals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar refeições livres'**
+  String get planningExportFreeformMeals;
+
+  /// No description provided for @planningImportFreeformMeals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar refeições livres'**
+  String get planningImportFreeformMeals;
+
+  /// No description provided for @planningFormatCsv.
+  ///
+  /// In pt, this message translates to:
+  /// **'CSV'**
+  String get planningFormatCsv;
+
+  /// No description provided for @planningFormatJson.
+  ///
+  /// In pt, this message translates to:
+  /// **'JSON'**
+  String get planningFormatJson;
+
+  /// No description provided for @planningImportSuccess.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importado com sucesso'**
+  String get planningImportSuccess;
+
+  /// No description provided for @planningImportError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importação falhou: {error}'**
+  String planningImportError(String error);
+
+  /// No description provided for @planningExportSuccess.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportado com sucesso'**
+  String get planningExportSuccess;
+
+  /// No description provided for @planningDataPortability.
+  ///
+  /// In pt, this message translates to:
+  /// **'Portabilidade de dados'**
+  String get planningDataPortability;
+
+  /// No description provided for @planningDataPortabilityDesc.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar e exportar artefactos de planeamento'**
+  String get planningDataPortabilityDesc;
+
+  /// No description provided for @mealBudgetInsightTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Visão do Orçamento'**
+  String get mealBudgetInsightTitle;
+
+  /// No description provided for @mealBudgetStatusSafe.
+  ///
+  /// In pt, this message translates to:
+  /// **'No caminho'**
+  String get mealBudgetStatusSafe;
+
+  /// No description provided for @mealBudgetStatusWatch.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atenção'**
+  String get mealBudgetStatusWatch;
+
+  /// No description provided for @mealBudgetStatusOver.
+  ///
+  /// In pt, this message translates to:
+  /// **'Acima do orçamento'**
+  String get mealBudgetStatusOver;
+
+  /// No description provided for @mealBudgetWeeklyCost.
+  ///
+  /// In pt, this message translates to:
+  /// **'Custo semanal estimado'**
+  String get mealBudgetWeeklyCost;
+
+  /// No description provided for @mealBudgetProjectedMonthly.
+  ///
+  /// In pt, this message translates to:
+  /// **'Projeção mensal'**
+  String get mealBudgetProjectedMonthly;
+
+  /// No description provided for @mealBudgetMonthlyBudget.
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamento mensal de alimentação'**
+  String get mealBudgetMonthlyBudget;
+
+  /// No description provided for @mealBudgetRemaining.
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamento restante'**
+  String get mealBudgetRemaining;
+
+  /// No description provided for @mealBudgetTopExpensive.
+  ///
+  /// In pt, this message translates to:
+  /// **'Refeições mais caras'**
+  String get mealBudgetTopExpensive;
+
+  /// No description provided for @mealBudgetSuggestedSwaps.
+  ///
+  /// In pt, this message translates to:
+  /// **'Trocas mais baratas sugeridas'**
+  String get mealBudgetSuggestedSwaps;
+
+  /// No description provided for @mealBudgetViewDetails.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver detalhes'**
+  String get mealBudgetViewDetails;
+
+  /// No description provided for @mealBudgetApplySwap.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aplicar'**
+  String get mealBudgetApplySwap;
+
+  /// No description provided for @mealBudgetSwapSavings.
+  ///
+  /// In pt, this message translates to:
+  /// **'Poupa {amount}'**
+  String mealBudgetSwapSavings(String amount);
+
+  /// No description provided for @mealBudgetDailyBreakdown.
+  ///
+  /// In pt, this message translates to:
+  /// **'Custo diário detalhado'**
+  String get mealBudgetDailyBreakdown;
+
+  /// No description provided for @mealBudgetShoppingImpact.
+  ///
+  /// In pt, this message translates to:
+  /// **'Impacto nas compras'**
+  String get mealBudgetShoppingImpact;
+
+  /// No description provided for @mealBudgetUniqueIngredients.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ingredientes únicos'**
+  String get mealBudgetUniqueIngredients;
+
+  /// No description provided for @mealBudgetEstShoppingCost.
+  ///
+  /// In pt, this message translates to:
+  /// **'Custo estimado de compras'**
+  String get mealBudgetEstShoppingCost;
+
+  /// No description provided for @productUpdatesTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Novidades do Produto'**
+  String get productUpdatesTitle;
+
+  /// No description provided for @whatsNewTab.
+  ///
+  /// In pt, this message translates to:
+  /// **'Novidades'**
+  String get whatsNewTab;
+
+  /// No description provided for @roadmapTab.
+  ///
+  /// In pt, this message translates to:
+  /// **'Roteiro'**
+  String get roadmapTab;
+
+  /// No description provided for @noUpdatesYet.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem novidades ainda'**
+  String get noUpdatesYet;
+
+  /// No description provided for @noRoadmapItems.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem itens no roteiro ainda'**
+  String get noRoadmapItems;
+
+  /// No description provided for @roadmapNow.
+  ///
+  /// In pt, this message translates to:
+  /// **'Agora'**
+  String get roadmapNow;
+
+  /// No description provided for @roadmapNext.
+  ///
+  /// In pt, this message translates to:
+  /// **'Em breve'**
+  String get roadmapNext;
+
+  /// No description provided for @roadmapLater.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais tarde'**
+  String get roadmapLater;
+
+  /// No description provided for @productUpdatesSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Changelog e funcionalidades futuras'**
+  String get productUpdatesSubtitle;
+
+  /// No description provided for @whatsNewDialogTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Novidades'**
+  String get whatsNewDialogTitle;
+
+  /// No description provided for @whatsNewDialogDismiss.
+  ///
+  /// In pt, this message translates to:
+  /// **'Entendi'**
+  String get whatsNewDialogDismiss;
+
+  /// No description provided for @confidenceCenterTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Centro de Confiança'**
+  String get confidenceCenterTitle;
+
+  /// No description provided for @confidenceSyncHealth.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estado de Sincronização'**
+  String get confidenceSyncHealth;
+
+  /// No description provided for @confidenceDataAlerts.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alertas de Qualidade dos Dados'**
+  String get confidenceDataAlerts;
+
+  /// No description provided for @confidenceRecommendedActions.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ações Recomendadas'**
+  String get confidenceRecommendedActions;
+
+  /// No description provided for @confidenceCenterSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Frescura dos dados e saúde do sistema'**
+  String get confidenceCenterSubtitle;
+
+  /// No description provided for @confidenceCenterTile.
+  ///
+  /// In pt, this message translates to:
+  /// **'Centro de Confiança'**
+  String get confidenceCenterTile;
+
+  /// No description provided for @pantryPickerTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecionar Despensa'**
+  String get pantryPickerTitle;
+
+  /// No description provided for @pantrySearchHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pesquisar ingredientes...'**
+  String get pantrySearchHint;
+
+  /// No description provided for @pantryTabAlwaysHave.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sempre Tenho'**
+  String get pantryTabAlwaysHave;
+
+  /// No description provided for @pantryTabThisWeek.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta Semana'**
+  String get pantryTabThisWeek;
+
+  /// No description provided for @pantrySummaryLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 item na despensa} other{{count} itens na despensa}}'**
+  String pantrySummaryLabel(int count);
+
+  /// No description provided for @pantryEdit.
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar'**
+  String get pantryEdit;
+
+  /// No description provided for @pantryUseWhatWeHave.
+  ///
+  /// In pt, this message translates to:
+  /// **'Usar o Que Temos'**
+  String get pantryUseWhatWeHave;
+
+  /// No description provided for @pantryMarkAtHome.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já tenho em casa'**
+  String get pantryMarkAtHome;
+
+  /// No description provided for @pantryHaveIt.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tenho'**
+  String get pantryHaveIt;
+
+  /// No description provided for @pantryCoverageLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'{pct}% coberto pela despensa'**
+  String pantryCoverageLabel(int pct);
+
+  /// No description provided for @pantryStaples.
+  ///
+  /// In pt, this message translates to:
+  /// **'ESSENCIAIS (SEMPRE EM STOCK)'**
+  String get pantryStaples;
+
+  /// No description provided for @pantryWeekly.
+  ///
+  /// In pt, this message translates to:
+  /// **'DESPENSA DESTA SEMANA'**
+  String get pantryWeekly;
+
+  /// No description provided for @pantryAddedToWeekly.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} adicionado à despensa semanal'**
+  String pantryAddedToWeekly(String name);
+
+  /// No description provided for @pantryRemovedFromList.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} removido da lista (já em casa)'**
+  String pantryRemovedFromList(String name);
+
+  /// No description provided for @pantryMarkedAtHome.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} marcado como já em casa'**
+  String pantryMarkedAtHome(String name);
+
   /// No description provided for @householdActivityTitle.
   ///
   /// In pt, this message translates to:
@@ -6730,107 +7162,6 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Marcado por {name}'**
   String householdActivityCheckedBy(String name);
-  /// No description provided for @mealBudgetInsightTitle.
-  ///
-  /// In pt, this message translates to:
-  /// **'Visão do Orçamento'**
-  String get mealBudgetInsightTitle;
-
-  /// No description provided for @mealBudgetStatusSafe.
-  ///
-  /// In pt, this message translates to:
-  /// **'No caminho'**
-  String get mealBudgetStatusSafe;
-
-  /// No description provided for @mealBudgetStatusWatch.
-  ///
-  /// In pt, this message translates to:
-  /// **'Atenção'**
-  String get mealBudgetStatusWatch;
-
-  /// No description provided for @mealBudgetStatusOver.
-  ///
-  /// In pt, this message translates to:
-  /// **'Acima do orçamento'**
-  String get mealBudgetStatusOver;
-
-  /// No description provided for @mealBudgetWeeklyCost.
-  ///
-  /// In pt, this message translates to:
-  /// **'Custo semanal estimado'**
-  String get mealBudgetWeeklyCost;
-
-  /// No description provided for @mealBudgetProjectedMonthly.
-  ///
-  /// In pt, this message translates to:
-  /// **'Projeção mensal'**
-  String get mealBudgetProjectedMonthly;
-
-  /// No description provided for @mealBudgetMonthlyBudget.
-  ///
-  /// In pt, this message translates to:
-  /// **'Orçamento mensal de alimentação'**
-  String get mealBudgetMonthlyBudget;
-
-  /// No description provided for @mealBudgetRemaining.
-  ///
-  /// In pt, this message translates to:
-  /// **'Orçamento restante'**
-  String get mealBudgetRemaining;
-
-  /// No description provided for @mealBudgetTopExpensive.
-  ///
-  /// In pt, this message translates to:
-  /// **'Refeições mais caras'**
-  String get mealBudgetTopExpensive;
-
-  /// No description provided for @mealBudgetSuggestedSwaps.
-  ///
-  /// In pt, this message translates to:
-  /// **'Trocas mais baratas sugeridas'**
-  String get mealBudgetSuggestedSwaps;
-
-  /// No description provided for @mealBudgetViewDetails.
-  ///
-  /// In pt, this message translates to:
-  /// **'Ver detalhes'**
-  String get mealBudgetViewDetails;
-
-  /// No description provided for @mealBudgetApplySwap.
-  ///
-  /// In pt, this message translates to:
-  /// **'Aplicar'**
-  String get mealBudgetApplySwap;
-
-  /// No description provided for @mealBudgetSwapSavings.
-  ///
-  /// In pt, this message translates to:
-  /// **'Poupa {amount}'**
-  String mealBudgetSwapSavings(String amount);
-
-  /// No description provided for @mealBudgetDailyBreakdown.
-  ///
-  /// In pt, this message translates to:
-  /// **'Custo diário detalhado'**
-  String get mealBudgetDailyBreakdown;
-
-  /// No description provided for @mealBudgetShoppingImpact.
-  ///
-  /// In pt, this message translates to:
-  /// **'Impacto nas compras'**
-  String get mealBudgetShoppingImpact;
-
-  /// No description provided for @mealBudgetUniqueIngredients.
-  ///
-  /// In pt, this message translates to:
-  /// **'Ingredientes únicos'**
-  String get mealBudgetUniqueIngredients;
-
-  /// No description provided for @mealBudgetEstShoppingCost.
-  ///
-  /// In pt, this message translates to:
-  /// **'Custo estimado de compras'**
-  String get mealBudgetEstShoppingCost;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
