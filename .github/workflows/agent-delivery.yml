@@ -131,10 +131,38 @@ jobs:
         run: flutter pub get
       - name: Generate l10n
         run: flutter gen-l10n
+      - name: Validate ARB key consistency
+        run: |
+          echo "Checking ARB key consistency across locales..."
+          EN_KEYS=$(grep -oP '^\s*"(?!@@|@)[^"]+' lib/l10n/app_en.arb | sed 's/^[[:space:]]*"//g' | sort)
+          FAIL=0
+          for LOCALE in pt es fr; do
+            LOCALE_KEYS=$(grep -oP '^\s*"(?!@@|@)[^"]+' "lib/l10n/app_${LOCALE}.arb" | sed 's/^[[:space:]]*"//g' | sort)
+            MISSING=$(comm -23 <(echo "$EN_KEYS") <(echo "$LOCALE_KEYS"))
+            if [ -n "$MISSING" ]; then
+              echo "::warning::Missing keys in app_${LOCALE}.arb:"
+              echo "$MISSING" | while read -r key; do echo "  - $key"; done
+              FAIL=1
+            fi
+          done
+          if [ "$FAIL" -eq 1 ]; then
+            echo "::warning::Some locales have missing keys (non-blocking)"
+          fi
+          echo "ARB validation complete."
+      - name: Validate ARB file encoding
+        run: |
+          FAIL=0
+          for f in lib/l10n/app_*.arb; do
+            if grep -Pq 'Ã[¡©³ºñ§£µ¢ª´¨¯¼¶®]|â€"|â€™|â‚¬' "$f"; then
+              echo "::error::Mojibake detected in $f"
+              FAIL=1
+            fi
+          done
+          if [ "$FAIL" -eq 1 ]; then exit 1; fi
       - name: Analyze
         run: flutter analyze --no-fatal-infos
-      - name: Test
-        run: flutter test
+      - name: Test with coverage
+        run: flutter test --coverage
 
   open-pr-and-merge:
     runs-on: ubuntu-latest

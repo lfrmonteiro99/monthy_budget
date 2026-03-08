@@ -50,11 +50,66 @@ jobs:
       - name: Generate l10n
         run: flutter gen-l10n
 
+      - name: Validate ARB key consistency
+        run: |
+          echo "Checking ARB key consistency across locales..."
+          EN_KEYS=$(grep -oP '^\s*"(?!@@|@)[^"]+' lib/l10n/app_en.arb | sed 's/^[[:space:]]*"//g' | sort)
+          FAIL=0
+          for LOCALE in pt es fr; do
+            LOCALE_KEYS=$(grep -oP '^\s*"(?!@@|@)[^"]+' "lib/l10n/app_${LOCALE}.arb" | sed 's/^[[:space:]]*"//g' | sort)
+            MISSING=$(comm -23 <(echo "$EN_KEYS") <(echo "$LOCALE_KEYS"))
+            if [ -n "$MISSING" ]; then
+              echo "::error::Missing keys in app_${LOCALE}.arb:"
+              echo "$MISSING" | while read -r key; do echo "  - $key"; done
+              FAIL=1
+            fi
+          done
+          if [ "$FAIL" -eq 1 ]; then
+            exit 1
+          fi
+          echo "All locales have consistent keys."
+
+      - name: Validate ARB file encoding
+        run: |
+          echo "Checking ARB files for encoding issues..."
+          FAIL=0
+          for f in lib/l10n/app_*.arb; do
+            if grep -Pq 'Ã[¡©³ºñ§£µ¢ª´¨¯¼¶®]|â€"|â€™|â‚¬' "$f"; then
+              echo "::error::Mojibake detected in $f"
+              FAIL=1
+            fi
+          done
+          if [ "$FAIL" -eq 1 ]; then
+            exit 1
+          fi
+          echo "All ARB files have correct encoding."
+
       - name: Analyze
         run: flutter analyze --no-fatal-infos
 
-      - name: Run tests
-        run: flutter test
+      - name: Run tests with coverage
+        run: flutter test --coverage
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: monthy_budget_flutter/coverage/lcov.info
+          retention-days: 14
+
+  secrets-scan:
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
   build:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
