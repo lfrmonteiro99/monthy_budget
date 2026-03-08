@@ -1301,6 +1301,12 @@ abstract class S {
   /// **'Desfazer'**
   String get cmdUndo;
 
+  /// No description provided for @expenseDeleted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesa eliminada'**
+  String get expenseDeleted;
+
   /// No description provided for @cmdCapabilitiesCta.
   ///
   /// In pt, this message translates to:
@@ -3941,6 +3947,18 @@ abstract class S {
   /// **'Pode adicionar mais fontes de rendimento mais tarde.'**
   String get setupWizardSalaryMoreLater;
 
+  /// No description provided for @setupWizardSalaryRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Por favor insira o seu salário'**
+  String get setupWizardSalaryRequired;
+
+  /// No description provided for @setupWizardSalaryPositive.
+  ///
+  /// In pt, this message translates to:
+  /// **'O salário deve ser um número positivo'**
+  String get setupWizardSalaryPositive;
+
   /// Skip button on salary step
   ///
   /// In pt, this message translates to:
@@ -4648,42 +4666,6 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Prazo ultrapassado'**
   String get savingsGoalOverdue;
-
-  /// How it works section title
-  ///
-  /// In pt, this message translates to:
-  /// **'Como funciona?'**
-  String get savingsGoalHowItWorksTitle;
-
-  /// How it works step 1
-  ///
-  /// In pt, this message translates to:
-  /// **'Crie um objetivo com um nome e o valor que pretende atingir (ex: "Férias — 2 000 €").'**
-  String get savingsGoalHowItWorksStep1;
-
-  /// How it works step 2
-  ///
-  /// In pt, this message translates to:
-  /// **'Opcionalmente defina uma data limite para ter um prazo de referência.'**
-  String get savingsGoalHowItWorksStep2;
-
-  /// How it works step 3
-  ///
-  /// In pt, this message translates to:
-  /// **'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.'**
-  String get savingsGoalHowItWorksStep3;
-
-  /// How it works step 4
-  ///
-  /// In pt, this message translates to:
-  /// **'Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.'**
-  String get savingsGoalHowItWorksStep4;
-
-  /// Dashboard hint text
-  ///
-  /// In pt, this message translates to:
-  /// **'Toque num objetivo para ver detalhes e registar contribuições.'**
-  String get savingsGoalDashboardHint;
 
   /// Meal cost reconciliation title
   ///
@@ -6574,6 +6556,186 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Internet, telefone e TV mensais'**
   String get helperWizardTelecom;
+
+  /// How it works section title
+  ///
+  /// In pt, this message translates to:
+  /// **'Como funciona?'**
+  String get savingsGoalHowItWorksTitle;
+
+  /// How it works step 1
+  ///
+  /// In pt, this message translates to:
+  /// **'Crie um objetivo com um nome e o valor que pretende atingir (ex: \"Férias — 2 000 €\").'**
+  String get savingsGoalHowItWorksStep1;
+
+  /// How it works step 2
+  ///
+  /// In pt, this message translates to:
+  /// **'Opcionalmente defina uma data limite para ter um prazo de referência.'**
+  String get savingsGoalHowItWorksStep2;
+
+  /// How it works step 3
+  ///
+  /// In pt, this message translates to:
+  /// **'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.'**
+  String get savingsGoalHowItWorksStep3;
+
+  /// How it works step 4
+  ///
+  /// In pt, this message translates to:
+  /// **'Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.'**
+  String get savingsGoalHowItWorksStep4;
+
+  /// Dashboard hint text
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque num objetivo para ver detalhes e registar contribuições.'**
+  String get savingsGoalDashboardHint;
+
+  /// No description provided for @rateLimitMessage.
+  ///
+  /// In pt, this message translates to:
+  /// **'Por favor, aguarde um momento antes de tentar novamente'**
+  String get rateLimitMessage;
+
+  /// No description provided for @freeformBadge.
+  ///
+  /// In pt, this message translates to:
+  /// **'Livre'**
+  String get freeformBadge;
+
+  /// No description provided for @freeformCreateTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar refeição livre'**
+  String get freeformCreateTitle;
+
+  /// No description provided for @freeformEditTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar refeição livre'**
+  String get freeformEditTitle;
+
+  /// No description provided for @freeformTitleLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Título da refeição'**
+  String get freeformTitleLabel;
+
+  /// No description provided for @freeformTitleHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'ex. Sobras, Pizza de takeaway'**
+  String get freeformTitleHint;
+
+  /// No description provided for @freeformNoteLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nota (opcional)'**
+  String get freeformNoteLabel;
+
+  /// No description provided for @freeformNoteHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Detalhes sobre esta refeição'**
+  String get freeformNoteHint;
+
+  /// No description provided for @freeformCostLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Custo estimado (opcional)'**
+  String get freeformCostLabel;
+
+  /// No description provided for @freeformTagsLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Etiquetas'**
+  String get freeformTagsLabel;
+
+  /// No description provided for @freeformTagLeftovers.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sobras'**
+  String get freeformTagLeftovers;
+
+  /// No description provided for @freeformTagPantryMeal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despensa'**
+  String get freeformTagPantryMeal;
+
+  /// No description provided for @freeformTagTakeout.
+  ///
+  /// In pt, this message translates to:
+  /// **'Takeaway'**
+  String get freeformTagTakeout;
+
+  /// No description provided for @freeformTagQuickMeal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Refeição rápida'**
+  String get freeformTagQuickMeal;
+
+  /// No description provided for @freeformShoppingItemsLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Itens de compras'**
+  String get freeformShoppingItemsLabel;
+
+  /// No description provided for @freeformAddItem.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar item'**
+  String get freeformAddItem;
+
+  /// No description provided for @freeformItemName.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome do item'**
+  String get freeformItemName;
+
+  /// No description provided for @freeformItemQuantity.
+  ///
+  /// In pt, this message translates to:
+  /// **'Quantidade'**
+  String get freeformItemQuantity;
+
+  /// No description provided for @freeformItemUnit.
+  ///
+  /// In pt, this message translates to:
+  /// **'Unidade'**
+  String get freeformItemUnit;
+
+  /// No description provided for @freeformItemPrice.
+  ///
+  /// In pt, this message translates to:
+  /// **'Preço est.'**
+  String get freeformItemPrice;
+
+  /// No description provided for @freeformItemStore.
+  ///
+  /// In pt, this message translates to:
+  /// **'Loja'**
+  String get freeformItemStore;
+
+  /// No description provided for @freeformShoppingItemCount.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} itens de compras'**
+  String freeformShoppingItemCount(int count);
+
+  /// No description provided for @freeformAddToSlot.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar refeição livre'**
+  String get freeformAddToSlot;
+
+  /// No description provided for @freeformReplace.
+  ///
+  /// In pt, this message translates to:
+  /// **'Substituir por refeição livre'**
+  String get freeformReplace;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

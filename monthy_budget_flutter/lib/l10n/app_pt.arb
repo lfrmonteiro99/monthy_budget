@@ -2349,6 +2349,37 @@
   "@savingsGoalHowItWorksStep4": { "description": "How it works step 4" },
   "savingsGoalDashboardHint": "Toque num objetivo para ver detalhes e registar contribuições.",
   "@savingsGoalDashboardHint": { "description": "Dashboard hint text" },
-  "rateLimitMessage": "Por favor, aguarde um momento antes de tentar novamente"
+  "rateLimitMessage": "Por favor, aguarde um momento antes de tentar novamente",
+
+  "freeformBadge": "Livre",
+  "freeformCreateTitle": "Adicionar refeição livre",
+  "freeformEditTitle": "Editar refeição livre",
+  "freeformTitleLabel": "Título da refeição",
+  "freeformTitleHint": "ex. Sobras, Pizza de takeaway",
+  "freeformNoteLabel": "Nota (opcional)",
+  "freeformNoteHint": "Detalhes sobre esta refeição",
+  "freeformCostLabel": "Custo estimado (opcional)",
+  "freeformTagsLabel": "Etiquetas",
+  "freeformTagLeftovers": "Sobras",
+  "freeformTagPantryMeal": "Despensa",
+  "freeformTagTakeout": "Takeaway",
+  "freeformTagQuickMeal": "Refeição rápida",
+  "freeformShoppingItemsLabel": "Itens de compras",
+  "freeformAddItem": "Adicionar item",
+  "freeformItemName": "Nome do item",
+  "freeformItemQuantity": "Quantidade",
+  "freeformItemUnit": "Unidade",
+  "freeformItemPrice": "Preço est.",
+  "freeformItemStore": "Loja",
+  "freeformShoppingItemCount": "{count} itens de compras",
+  "@freeformShoppingItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "freeformAddToSlot": "Adicionar refeição livre",
+  "freeformReplace": "Substituir por refeição livre"
 }
 

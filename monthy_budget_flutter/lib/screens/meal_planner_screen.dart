@@ -9,6 +9,8 @@ import '../services/meal_planner_service.dart';
 import '../services/meal_planner_ai_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
+import '../widgets/freeform_meal_card.dart';
+import '../widgets/freeform_meal_sheet.dart';
 import '../widgets/meal_cost_reconciliation_sheet.dart';
 import '../widgets/meal_feedback_button.dart';
 import '../onboarding/meals_tour.dart';
@@ -79,7 +81,10 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     if (saved != null) {
       // Pre-populate AI content from persisted cache for immediate render
       final locale = Localizations.localeOf(context).languageCode;
-      for (final recipeId in saved.days.map((d) => d.recipeId).toSet()) {
+      for (final recipeId in saved.days
+          .where((d) => !d.isFreeform && d.recipeId.isNotEmpty)
+          .map((d) => d.recipeId)
+          .toSet()) {
         final cached = _aiService.getCached(recipeId, locale: locale);
         if (cached != null) _aiContent[recipeId] = cached;
       }
@@ -156,7 +161,10 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   void _enrichPlan(MealPlan plan) {
     final iMap = _service.ingredientMap;
     final locale = Localizations.localeOf(context).languageCode;
-    final uniqueRecipeIds = plan.days.map((d) => d.recipeId).toSet();
+    final uniqueRecipeIds = plan.days
+        .where((d) => !d.isFreeform && d.recipeId.isNotEmpty)
+        .map((d) => d.recipeId)
+        .toSet();
     for (final recipeId in uniqueRecipeIds) {
       if (_aiContent.containsKey(recipeId) || _aiPending.contains(recipeId)) continue;
       _aiPending.add(recipeId);
@@ -182,6 +190,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     _weeklySummaryPending.add(weekIndex);
     final weekDays = _getWeekDays(plan, weekIndex);
     final recipes = weekDays
+        .where((d) => !d.isFreeform && d.recipeId.isNotEmpty)
         .map((d) => _service.recipeMap[d.recipeId])
         .whereType<Recipe>()
         .toList();
@@ -202,6 +211,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   bool _weekHasBatchCooking(MealPlan plan, int weekIndex) {
     final weekDays = _getWeekDays(plan, weekIndex);
     return weekDays.any((d) {
+      if (d.isFreeform) return false;
       final recipe = _service.recipeMap[d.recipeId];
       return recipe != null && recipe.batchCookable;
     });
@@ -220,6 +230,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     }
     final weekDays = _getWeekDays(plan, weekIndex);
     final batchRecipes = weekDays
+        .where((d) => !d.isFreeform && d.recipeId.isNotEmpty)
         .map((d) => _service.recipeMap[d.recipeId])
         .whereType<Recipe>()
         .where((r) => r.batchCookable)
@@ -370,7 +381,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final iMap = _service.ingredientMap;
     final totals = <String, double>{};
     for (final day in weekDays) {
-      if (day.isLeftover) continue;
+      if (day.isLeftover || day.isFreeform) continue;
       final recipe = _service.recipeMap[day.recipeId];
       if (recipe == null) continue;
       final scale = plan.nPessoas / recipe.servings;
@@ -390,6 +401,16 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         store: '',
         price: cost,
         unitPrice: '${ing.avgPricePerUnit.toStringAsFixed(2)}\u20AC/${ing.unit}',
+      ));
+      count++;
+    }
+    // Add freeform shopping items
+    final freeformItems = _service.freeformShoppingItemsForWeek(plan, weekDays);
+    for (final item in freeformItems) {
+      widget.onAddToShoppingList(ShoppingItem(
+        productName: item.name,
+        store: item.store ?? '',
+        price: item.estimatedPrice ?? 0,
       ));
       count++;
     }
@@ -414,6 +435,104 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         onAddToShoppingList: widget.onAddToShoppingList,
       ),
     );
+  }
+
+  void _showFreeformDayPicker(MealPlan plan) {
+    final weekDays = _getWeekDays(plan, _selectedWeek);
+    final dayIndices = weekDays.map((d) => d.dayIndex).toSet().toList()..sort();
+    if (dayIndices.isEmpty) return;
+    // Default to first day of the week, dinner
+    _addFreeformMeal(dayIndices.first, MealType.dinner);
+  }
+
+  void _addFreeformMeal(int dayIndex, MealType mealType) {
+    showModalBottomSheet<dynamic>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => FreeformMealSheet(
+        dayIndex: dayIndex,
+        mealType: mealType,
+      ),
+    ).then((result) {
+      if (result is MealDay && _plan != null) {
+        final updatedDays = [..._plan!.days, result];
+        final updated = _plan!.copyWithDays(updatedDays);
+        _service.save(updated, widget.householdId);
+        setState(() => _plan = updated);
+      }
+    });
+  }
+
+  void _editFreeformMeal(MealDay mealDay) {
+    showModalBottomSheet<dynamic>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => FreeformMealSheet(
+        dayIndex: mealDay.dayIndex,
+        mealType: mealDay.mealType,
+        existing: mealDay,
+      ),
+    ).then((result) {
+      if (_plan == null) return;
+      if (result == 'delete') {
+        final updatedDays = _plan!.days
+            .where((d) => !(d.dayIndex == mealDay.dayIndex &&
+                d.mealType == mealDay.mealType &&
+                d.isFreeform))
+            .toList();
+        final updated = _plan!.copyWithDays(updatedDays);
+        _service.save(updated, widget.householdId);
+        setState(() => _plan = updated);
+      } else if (result is MealDay) {
+        final updatedDays = _plan!.days.map((d) {
+          if (d.dayIndex == mealDay.dayIndex &&
+              d.mealType == mealDay.mealType &&
+              d.isFreeform) {
+            return result;
+          }
+          return d;
+        }).toList();
+        final updated = _plan!.copyWithDays(updatedDays);
+        _service.save(updated, widget.householdId);
+        setState(() => _plan = updated);
+      }
+    });
+  }
+
+  void _replaceMealWithFreeform(MealDay existing) {
+    showModalBottomSheet<dynamic>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => FreeformMealSheet(
+        dayIndex: existing.dayIndex,
+        mealType: existing.mealType,
+      ),
+    ).then((result) {
+      if (result is MealDay && _plan != null) {
+        final updatedDays = _plan!.days.map((d) {
+          if (d.dayIndex == existing.dayIndex && d.mealType == existing.mealType) {
+            return result;
+          }
+          return d;
+        }).toList();
+        final updated = _plan!.copyWithDays(updatedDays);
+        _service.save(updated, widget.householdId);
+        setState(() => _plan = updated);
+      }
+    });
+  }
+
+  void _setFreeformFeedback(int dayIndex, MealType mealType, MealFeedback feedback) {
+    final plan = _plan!;
+    final updatedDays = plan.days.map((d) {
+      if (d.dayIndex == dayIndex && d.mealType == mealType && d.isFreeform) {
+        return d.copyWith(feedback: d.feedback == feedback ? MealFeedback.none : feedback);
+      }
+      return d;
+    }).toList();
+    final updated = plan.copyWithDays(updatedDays);
+    _service.save(updated, widget.householdId);
+    setState(() => _plan = updated);
   }
 
   @override
@@ -673,37 +792,62 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               ListView.builder(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
                 itemCount: weekDays.length,
-                itemBuilder: (_, i) => _DayCard(
-                  mealDay: weekDays[i],
-                  plan: plan,
-                  service: _service,
-                  aiContent: _aiContent[weekDays[i].recipeId],
-                  isExpanded: _expanded.contains('${weekDays[i].dayIndex}_${weekDays[i].mealType.name}'),
-                  onToggleExpand: () => setState(() {
-                    final key = '${weekDays[i].dayIndex}_${weekDays[i].mealType.name}';
-                    if (_expanded.contains(key)) {
-                      _expanded.remove(key);
-                    } else {
-                      _expanded.add(key);
-                    }
-                  }),
-                  onSwap: () => _swapRecipe(weekDays[i].dayIndex, weekDays[i].mealType, weekDays[i].recipeId),
-                  onAddIngredientToList: widget.onAddToShoppingList,
-                  onFeedback: (fb) => _setFeedback(weekDays[i].dayIndex, weekDays[i].mealType, fb),
-                ),
+                itemBuilder: (_, i) {
+                  final day = weekDays[i];
+                  if (day.isFreeform) {
+                    return FreeformMealCard(
+                      mealDay: day,
+                      onEdit: () => _editFreeformMeal(day),
+                      onAddToShoppingList: widget.onAddToShoppingList,
+                      onFeedback: (fb) => _setFreeformFeedback(day.dayIndex, day.mealType, fb),
+                    );
+                  }
+                  return _DayCard(
+                    mealDay: day,
+                    plan: plan,
+                    service: _service,
+                    aiContent: _aiContent[day.recipeId],
+                    isExpanded: _expanded.contains('${day.dayIndex}_${day.mealType.name}'),
+                    onToggleExpand: () => setState(() {
+                      final key = '${day.dayIndex}_${day.mealType.name}';
+                      if (_expanded.contains(key)) {
+                        _expanded.remove(key);
+                      } else {
+                        _expanded.add(key);
+                      }
+                    }),
+                    onSwap: () => _swapRecipe(day.dayIndex, day.mealType, day.recipeId),
+                    onReplaceFreeform: () => _replaceMealWithFreeform(day),
+                    onAddIngredientToList: widget.onAddToShoppingList,
+                    onFeedback: (fb) => _setFeedback(day.dayIndex, day.mealType, fb),
+                  );
+                },
               ),
               Positioned(
                 bottom: 16,
                 left: 16,
                 right: 16,
-                child: FilledButton.icon(
-                  onPressed: _showConsolidatedList,
-                  icon: const Icon(Icons.list_alt),
-                  label: Text(l10n.mealConsolidatedList),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.textPrimary(context),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                  ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: FilledButton.icon(
+                        onPressed: _showConsolidatedList,
+                        icon: const Icon(Icons.list_alt),
+                        label: Text(l10n.mealConsolidatedList),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: AppColors.textPrimary(context),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    FloatingActionButton.small(
+                      heroTag: 'addFreeform',
+                      onPressed: () => _showFreeformDayPicker(plan),
+                      backgroundColor: AppColors.primary(context),
+                      child: Icon(Icons.edit_note, color: AppColors.onPrimary(context)),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -731,6 +875,7 @@ class _DayCard extends StatelessWidget {
   final bool isExpanded;
   final VoidCallback onToggleExpand;
   final VoidCallback onSwap;
+  final VoidCallback onReplaceFreeform;
   final void Function(ShoppingItem) onAddIngredientToList;
   final ValueChanged<MealFeedback> onFeedback;
 
@@ -742,6 +887,7 @@ class _DayCard extends StatelessWidget {
     required this.isExpanded,
     required this.onToggleExpand,
     required this.onSwap,
+    required this.onReplaceFreeform,
     required this.onAddIngredientToList,
     required this.onFeedback,
   });
@@ -833,6 +979,19 @@ class _DayCard extends StatelessWidget {
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
                           color: AppColors.textPrimary(context)),
+                    ),
+                    PopupMenuButton<String>(
+                      icon: Icon(Icons.more_vert, size: 18, color: AppColors.textMuted(context)),
+                      padding: EdgeInsets.zero,
+                      itemBuilder: (_) => [
+                        PopupMenuItem(
+                          value: 'freeform',
+                          child: Text(l10n.freeformReplace),
+                        ),
+                      ],
+                      onSelected: (value) {
+                        if (value == 'freeform') onReplaceFreeform();
+                      },
                     ),
                   ],
                 ),

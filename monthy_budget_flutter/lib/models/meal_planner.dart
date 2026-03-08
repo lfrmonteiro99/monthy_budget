@@ -2,9 +2,43 @@ import 'dart:convert';
 import 'meal_settings.dart';
 
 enum MealFeedback { none, liked, disliked, skipped }
+enum MealKind { recipe, freeform }
 
 enum IngredientCategory { proteina, carbo, vegetal, gordura, condimento }
 enum RecipeType { carne, peixe, vegetariano, ovos, leguminosas }
+
+class FreeformMealItem {
+  final String name;
+  final double? quantity;
+  final String? unit;
+  final double? estimatedPrice;
+  final String? store;
+
+  const FreeformMealItem({
+    required this.name,
+    this.quantity,
+    this.unit,
+    this.estimatedPrice,
+    this.store,
+  });
+
+  factory FreeformMealItem.fromJson(Map<String, dynamic> json) =>
+      FreeformMealItem(
+        name: json['name'] as String,
+        quantity: (json['quantity'] as num?)?.toDouble(),
+        unit: json['unit'] as String?,
+        estimatedPrice: (json['estimatedPrice'] as num?)?.toDouble(),
+        store: json['store'] as String?,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        if (quantity != null) 'quantity': quantity,
+        if (unit != null) 'unit': unit,
+        if (estimatedPrice != null) 'estimatedPrice': estimatedPrice,
+        if (store != null) 'store': store,
+      };
+}
 
 class Ingredient {
   final String id;
@@ -198,52 +232,120 @@ class Recipe {
 
 class MealDay {
   final int dayIndex;
+  final MealKind mealKind;
   final String recipeId;
   final bool isLeftover;
   final double costEstimate;
   final MealType mealType;
   final MealFeedback feedback;
+  final String? freeformTitle;
+  final String? freeformNote;
+  final double? freeformEstimatedCost;
+  final List<String> freeformTags;
+  final List<FreeformMealItem> freeformShoppingItems;
 
   const MealDay({
     required this.dayIndex,
-    required this.recipeId,
+    this.mealKind = MealKind.recipe,
+    this.recipeId = '',
     this.isLeftover = false,
     required this.costEstimate,
     this.mealType = MealType.dinner,
     this.feedback = MealFeedback.none,
+    this.freeformTitle,
+    this.freeformNote,
+    this.freeformEstimatedCost,
+    this.freeformTags = const [],
+    this.freeformShoppingItems = const [],
   });
 
-  MealDay copyWith({String? recipeId, double? costEstimate, MealType? mealType, MealFeedback? feedback}) => MealDay(
+  bool get isFreeform => mealKind == MealKind.freeform;
+
+  /// Display name: recipe name must be resolved externally; freeform uses title.
+  String get displayTitle => isFreeform ? (freeformTitle ?? '') : '';
+
+  MealDay copyWith({
+    MealKind? mealKind,
+    String? recipeId,
+    double? costEstimate,
+    MealType? mealType,
+    MealFeedback? feedback,
+    String? freeformTitle,
+    String? freeformNote,
+    double? freeformEstimatedCost,
+    List<String>? freeformTags,
+    List<FreeformMealItem>? freeformShoppingItems,
+  }) =>
+      MealDay(
         dayIndex: dayIndex,
+        mealKind: mealKind ?? this.mealKind,
         recipeId: recipeId ?? this.recipeId,
         isLeftover: isLeftover,
         costEstimate: costEstimate ?? this.costEstimate,
         mealType: mealType ?? this.mealType,
         feedback: feedback ?? this.feedback,
+        freeformTitle: freeformTitle ?? this.freeformTitle,
+        freeformNote: freeformNote ?? this.freeformNote,
+        freeformEstimatedCost: freeformEstimatedCost ?? this.freeformEstimatedCost,
+        freeformTags: freeformTags ?? this.freeformTags,
+        freeformShoppingItems: freeformShoppingItems ?? this.freeformShoppingItems,
       );
 
-  factory MealDay.fromJson(Map<String, dynamic> json) => MealDay(
-        dayIndex: json['dayIndex'] as int,
-        recipeId: json['recipeId'] as String,
-        isLeftover: json['isLeftover'] as bool? ?? false,
-        costEstimate: (json['costEstimate'] as num).toDouble(),
-        mealType: MealType.values.firstWhere(
-          (e) => e.name == (json['mealType'] ?? 'dinner'),
-          orElse: () => MealType.dinner,
-        ),
-        feedback: MealFeedback.values.firstWhere(
-          (e) => e.name == (json['feedback'] ?? 'none'),
-          orElse: () => MealFeedback.none,
-        ),
+  /// Backward-compatible: old plans without mealKind default to recipe when
+  /// recipeId is present. Plans without recipeId and without mealKind are
+  /// treated as recipe with empty id (harmless -- card will skip rendering).
+  factory MealDay.fromJson(Map<String, dynamic> json) {
+    final hasKind = json.containsKey('mealKind');
+    final MealKind kind;
+    if (hasKind) {
+      kind = MealKind.values.firstWhere(
+        (e) => e.name == json['mealKind'],
+        orElse: () => MealKind.recipe,
       );
+    } else {
+      // Legacy data: infer kind
+      kind = MealKind.recipe;
+    }
+
+    return MealDay(
+      dayIndex: json['dayIndex'] as int,
+      mealKind: kind,
+      recipeId: json['recipeId'] as String? ?? '',
+      isLeftover: json['isLeftover'] as bool? ?? false,
+      costEstimate: (json['costEstimate'] as num).toDouble(),
+      mealType: MealType.values.firstWhere(
+        (e) => e.name == (json['mealType'] ?? 'dinner'),
+        orElse: () => MealType.dinner,
+      ),
+      feedback: MealFeedback.values.firstWhere(
+        (e) => e.name == (json['feedback'] ?? 'none'),
+        orElse: () => MealFeedback.none,
+      ),
+      freeformTitle: json['freeformTitle'] as String?,
+      freeformNote: json['freeformNote'] as String?,
+      freeformEstimatedCost: (json['freeformEstimatedCost'] as num?)?.toDouble(),
+      freeformTags: List<String>.from(json['freeformTags'] ?? []),
+      freeformShoppingItems: (json['freeformShoppingItems'] as List<dynamic>?)
+              ?.map((e) => FreeformMealItem.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         'dayIndex': dayIndex,
+        'mealKind': mealKind.name,
         'recipeId': recipeId,
         'isLeftover': isLeftover,
         'costEstimate': costEstimate,
         'mealType': mealType.name,
         'feedback': feedback.name,
+        if (freeformTitle != null) 'freeformTitle': freeformTitle,
+        if (freeformNote != null) 'freeformNote': freeformNote,
+        if (freeformEstimatedCost != null) 'freeformEstimatedCost': freeformEstimatedCost,
+        if (freeformTags.isNotEmpty) 'freeformTags': freeformTags,
+        if (freeformShoppingItems.isNotEmpty)
+          'freeformShoppingItems': freeformShoppingItems.map((e) => e.toJson()).toList(),
       };
 }
 

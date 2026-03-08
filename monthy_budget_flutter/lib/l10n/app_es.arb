@@ -1801,5 +1801,36 @@
   "@savingsGoalHowItWorksStep4": { "description": "How it works step 4" },
   "savingsGoalDashboardHint": "Toca un objetivo para ver detalles y registrar contribuciones.",
   "@savingsGoalDashboardHint": { "description": "Dashboard hint text" },
-  "rateLimitMessage": "Por favor, espera un momento antes de intentarlo de nuevo"
+  "rateLimitMessage": "Por favor, espera un momento antes de intentarlo de nuevo",
+
+  "freeformBadge": "Libre",
+  "freeformCreateTitle": "Añadir comida libre",
+  "freeformEditTitle": "Editar comida libre",
+  "freeformTitleLabel": "Título de la comida",
+  "freeformTitleHint": "ej. Sobras, Pizza a domicilio",
+  "freeformNoteLabel": "Nota (opcional)",
+  "freeformNoteHint": "Detalles sobre esta comida",
+  "freeformCostLabel": "Coste estimado (opcional)",
+  "freeformTagsLabel": "Etiquetas",
+  "freeformTagLeftovers": "Sobras",
+  "freeformTagPantryMeal": "Despensa",
+  "freeformTagTakeout": "Comida para llevar",
+  "freeformTagQuickMeal": "Comida rápida",
+  "freeformShoppingItemsLabel": "Artículos de compra",
+  "freeformAddItem": "Añadir artículo",
+  "freeformItemName": "Nombre del artículo",
+  "freeformItemQuantity": "Cantidad",
+  "freeformItemUnit": "Unidad",
+  "freeformItemPrice": "Precio est.",
+  "freeformItemStore": "Tienda",
+  "freeformShoppingItemCount": "{count} artículos de compra",
+  "@freeformShoppingItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "freeformAddToSlot": "Añadir comida libre",
+  "freeformReplace": "Reemplazar con comida libre"
 }

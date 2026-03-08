@@ -668,6 +668,9 @@ class SFr extends S {
   String get cmdUndo => 'Annuler';
 
   @override
+  String get expenseDeleted => 'Dépense supprimée';
+
+  @override
   String get cmdCapabilitiesCta => 'Que puis-je faire ?';
 
   @override
@@ -2122,7 +2125,14 @@ class SFr extends S {
       'Vous pouvez ajouter d\'autres sources de revenus plus tard.';
 
   @override
-  String get setupWizardSalarySkip => 'Passer cette Ã©tape';
+  String get setupWizardSalaryRequired => 'Veuillez entrer votre salaire';
+
+  @override
+  String get setupWizardSalaryPositive =>
+      'Le salaire doit être un nombre positif';
+
+  @override
+  String get setupWizardSalarySkip => 'Passer cette étape';
 
   @override
   String get setupWizardExpensesTitle => 'Vos dÃ©penses mensuelles';
@@ -2505,24 +2515,6 @@ class SFr extends S {
 
   @override
   String get savingsGoalOverdue => 'En retard';
-
-  @override
-  String get savingsGoalHowItWorksTitle => 'Comment ça marche ?';
-
-  @override
-  String get savingsGoalHowItWorksStep1 => 'Créez un objectif avec un nom et le montant à atteindre (ex : \"Vacances — 2 000 €\").';
-
-  @override
-  String get savingsGoalHowItWorksStep2 => 'Définissez éventuellement une date limite comme référence.';
-
-  @override
-  String get savingsGoalHowItWorksStep3 => 'Chaque fois que vous économisez, touchez l\'objectif et enregistrez une contribution avec le montant et la date.';
-
-  @override
-  String get savingsGoalHowItWorksStep4 => 'Suivez votre progression : la barre montre combien vous avez épargné et la projection estime quand vous atteindrez votre objectif.';
-
-  @override
-  String get savingsGoalDashboardHint => 'Touchez un objectif pour voir les détails et enregistrer des contributions.';
 
   @override
   String get mealCostReconciliation => 'CoÃ»ts des Repas';
@@ -3630,4 +3622,102 @@ class SFr extends S {
 
   @override
   String get helperWizardTelecom => 'Internet, téléphone et TV mensuels';
+
+  @override
+  String get savingsGoalHowItWorksTitle => 'Comment ça marche ?';
+
+  @override
+  String get savingsGoalHowItWorksStep1 =>
+      'Créez un objectif avec un nom et le montant à atteindre (ex : \"Vacances — 2 000 €\").';
+
+  @override
+  String get savingsGoalHowItWorksStep2 =>
+      'Définissez éventuellement une date limite comme référence.';
+
+  @override
+  String get savingsGoalHowItWorksStep3 =>
+      'Chaque fois que vous économisez, touchez l\'objectif et enregistrez une contribution avec le montant et la date.';
+
+  @override
+  String get savingsGoalHowItWorksStep4 =>
+      'Suivez votre progression : la barre montre combien vous avez épargné et la projection estime quand vous atteindrez votre objectif.';
+
+  @override
+  String get savingsGoalDashboardHint =>
+      'Touchez un objectif pour voir les détails et enregistrer des contributions.';
+
+  @override
+  String get rateLimitMessage =>
+      'Veuillez patienter un moment avant de réessayer';
+
+  @override
+  String get freeformBadge => 'Libre';
+
+  @override
+  String get freeformCreateTitle => 'Ajouter repas libre';
+
+  @override
+  String get freeformEditTitle => 'Modifier repas libre';
+
+  @override
+  String get freeformTitleLabel => 'Titre du repas';
+
+  @override
+  String get freeformTitleHint => 'ex. Restes, Pizza à emporter';
+
+  @override
+  String get freeformNoteLabel => 'Note (optionnel)';
+
+  @override
+  String get freeformNoteHint => 'Détails sur ce repas';
+
+  @override
+  String get freeformCostLabel => 'Coût estimé (optionnel)';
+
+  @override
+  String get freeformTagsLabel => 'Étiquettes';
+
+  @override
+  String get freeformTagLeftovers => 'Restes';
+
+  @override
+  String get freeformTagPantryMeal => 'Garde-manger';
+
+  @override
+  String get freeformTagTakeout => 'À emporter';
+
+  @override
+  String get freeformTagQuickMeal => 'Repas rapide';
+
+  @override
+  String get freeformShoppingItemsLabel => 'Articles de courses';
+
+  @override
+  String get freeformAddItem => 'Ajouter article';
+
+  @override
+  String get freeformItemName => 'Nom de l\'article';
+
+  @override
+  String get freeformItemQuantity => 'Quantité';
+
+  @override
+  String get freeformItemUnit => 'Unité';
+
+  @override
+  String get freeformItemPrice => 'Prix est.';
+
+  @override
+  String get freeformItemStore => 'Magasin';
+
+  @override
+  String freeformShoppingItemCount(int count) {
+    return '$count articles de courses';
+  }
+
+  @override
+  String get freeformAddToSlot => 'Ajouter repas libre';
+
+  @override
+  String get freeformReplace => 'Remplacer par repas libre';
 }
