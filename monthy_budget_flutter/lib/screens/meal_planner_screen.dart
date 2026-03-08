@@ -513,7 +513,11 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       ),
     ).then((result) {
       if (result is MealDay && _plan != null) {
-        final updatedDays = [..._plan!.days, result];
+        final updatedDays = [
+          ..._plan!.days.where((d) =>
+              !(d.dayIndex == result.dayIndex && d.mealType == result.mealType)),
+          result,
+        ];
         final updated = _plan!.copyWithDays(updatedDays);
         _service.save(updated, widget.householdId);
         setState(() => _plan = updated);
