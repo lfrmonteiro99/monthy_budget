@@ -56,6 +56,7 @@ class AiCoachService {
   static const _model = 'gpt-4o-mini';
   static const _maxInsights = 20;
   static const _chatPrefKeyPrefix = 'coach_chat_v2_messages_';
+  static const _maxUserMessageLength = 2000;
 
   final SupabaseClient _client;
   final http.Client _httpClient;
@@ -65,6 +66,24 @@ class AiCoachService {
     http.Client? httpClient,
   })  : _client = client ?? Supabase.instance.client,
         _httpClient = httpClient ?? http.Client();
+
+  /// Sanitize user input before interpolating into prompts.
+  ///
+  /// Truncates to [_maxUserMessageLength] and strips sequences that could
+  /// be mistaken for prompt boundaries (e.g. system-role injections).
+  static String sanitizeUserInput(String input) {
+    var sanitized = input.trim();
+    if (sanitized.length > _maxUserMessageLength) {
+      sanitized = sanitized.substring(0, _maxUserMessageLength);
+    }
+    // Strip common prompt-injection patterns
+    sanitized = sanitized.replaceAll(RegExp(r'```system\b', caseSensitive: false), '');
+    sanitized = sanitized.replaceAll(RegExp(r'\[SYSTEM\]', caseSensitive: false), '');
+    sanitized = sanitized.replaceAll(RegExp(r'\[INST\]', caseSensitive: false), '');
+    sanitized = sanitized.replaceAll(RegExp(r'<\|im_start\|>', caseSensitive: false), '');
+    sanitized = sanitized.replaceAll(RegExp(r'<\|im_end\|>', caseSensitive: false), '');
+    return sanitized;
+  }
 
   // ── API key (device-local) ─────────────────────────────────────────────────
 
@@ -186,8 +205,9 @@ class AiCoachService {
     required PurchaseHistory purchaseHistory,
     int maxTokens = 1000,
   }) async {
+    final safeMessage = sanitizeUserInput(userMessage);
     final groundedUserMessage = _buildGroundedUserMessage(
-      userMessage: userMessage,
+      userMessage: safeMessage,
       settings: settings,
       summary: summary,
       purchaseHistory: purchaseHistory,
