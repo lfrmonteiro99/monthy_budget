@@ -200,6 +200,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       final activeCount = _draft.expenses.where((e) => e.enabled).length;
       if (activeCount >= DowngradeService.maxFreeCategories) {
         final action = await showCategoryCreateLimitDialog(context);
+        if (!mounted) return;
         if (action == LimitReachedAction.upgrade) {
           widget.onOpenSubscription?.call();
           return;
@@ -2752,6 +2753,7 @@ class _CategoryDetailSheetState extends State<_CategoryDetailSheet> {
     final result = await _showBillForm(null);
     if (result == null) return;
     await _recurringService.save(result, widget.householdId);
+    if (!mounted) return;
     setState(() => _bills = [..._bills, result]);
     _notifyParent();
   }
@@ -2760,6 +2762,7 @@ class _CategoryDetailSheetState extends State<_CategoryDetailSheet> {
     final result = await _showBillForm(bill);
     if (result == null) return;
     await _recurringService.save(result, widget.householdId);
+    if (!mounted) return;
     setState(() {
       _bills = _bills.map((b) => b.id == result.id ? result : b).toList();
     });
@@ -2788,6 +2791,7 @@ class _CategoryDetailSheetState extends State<_CategoryDetailSheet> {
     );
     if (confirmed != true) return;
     await _recurringService.delete(bill.id);
+    if (!mounted) return;
     setState(() {
       _bills = _bills.where((b) => b.id != bill.id).toList();
     });
