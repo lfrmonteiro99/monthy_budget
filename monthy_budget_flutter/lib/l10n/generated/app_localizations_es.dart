@@ -3697,4 +3697,56 @@ class SEs extends S {
   @override
   String get planningDataPortabilityDesc =>
       'Importar y exportar artefactos de planificación';
+
+  String get mealBudgetInsightTitle => 'Visión del Presupuesto';
+
+  @override
+  String get mealBudgetStatusSafe => 'En camino';
+
+  @override
+  String get mealBudgetStatusWatch => 'Atención';
+
+  @override
+  String get mealBudgetStatusOver => 'Sobre presupuesto';
+
+  @override
+  String get mealBudgetWeeklyCost => 'Coste semanal estimado';
+
+  @override
+  String get mealBudgetProjectedMonthly => 'Proyección mensual';
+
+  @override
+  String get mealBudgetMonthlyBudget => 'Presupuesto mensual de alimentación';
+
+  @override
+  String get mealBudgetRemaining => 'Presupuesto restante';
+
+  @override
+  String get mealBudgetTopExpensive => 'Comidas más caras';
+
+  @override
+  String get mealBudgetSuggestedSwaps => 'Cambios más baratos sugeridos';
+
+  @override
+  String get mealBudgetViewDetails => 'Ver detalles';
+
+  @override
+  String get mealBudgetApplySwap => 'Aplicar';
+
+  @override
+  String mealBudgetSwapSavings(String amount) {
+    return 'Ahorra $amount';
+  }
+
+  @override
+  String get mealBudgetDailyBreakdown => 'Desglose de coste diario';
+
+  @override
+  String get mealBudgetShoppingImpact => 'Impacto en las compras';
+
+  @override
+  String get mealBudgetUniqueIngredients => 'Ingredientes únicos';
+
+  @override
+  String get mealBudgetEstShoppingCost => 'Coste estimado de compras';
 }

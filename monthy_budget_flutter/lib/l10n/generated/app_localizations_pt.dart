@@ -3690,4 +3690,56 @@ class SPt extends S {
   @override
   String get planningDataPortabilityDesc =>
       'Importar e exportar artefactos de planeamento';
+
+  String get mealBudgetInsightTitle => 'Visão do Orçamento';
+
+  @override
+  String get mealBudgetStatusSafe => 'No caminho';
+
+  @override
+  String get mealBudgetStatusWatch => 'Atenção';
+
+  @override
+  String get mealBudgetStatusOver => 'Acima do orçamento';
+
+  @override
+  String get mealBudgetWeeklyCost => 'Custo semanal estimado';
+
+  @override
+  String get mealBudgetProjectedMonthly => 'Projeção mensal';
+
+  @override
+  String get mealBudgetMonthlyBudget => 'Orçamento mensal de alimentação';
+
+  @override
+  String get mealBudgetRemaining => 'Orçamento restante';
+
+  @override
+  String get mealBudgetTopExpensive => 'Refeições mais caras';
+
+  @override
+  String get mealBudgetSuggestedSwaps => 'Trocas mais baratas sugeridas';
+
+  @override
+  String get mealBudgetViewDetails => 'Ver detalhes';
+
+  @override
+  String get mealBudgetApplySwap => 'Aplicar';
+
+  @override
+  String mealBudgetSwapSavings(String amount) {
+    return 'Poupa $amount';
+  }
+
+  @override
+  String get mealBudgetDailyBreakdown => 'Custo diário detalhado';
+
+  @override
+  String get mealBudgetShoppingImpact => 'Impacto nas compras';
+
+  @override
+  String get mealBudgetUniqueIngredients => 'Ingredientes únicos';
+
+  @override
+  String get mealBudgetEstShoppingCost => 'Custo estimado de compras';
 }

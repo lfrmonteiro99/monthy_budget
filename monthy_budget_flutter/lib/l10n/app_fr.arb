@@ -1820,5 +1820,27 @@
   "@planningImportError": { "placeholders": { "error": { "type": "String" } } },
   "planningExportSuccess": "Exporté avec succès",
   "planningDataPortability": "Portabilité des données",
-  "planningDataPortabilityDesc": "Importer et exporter des artefacts de planification"
+  "planningDataPortabilityDesc": "Importer et exporter des artefacts de planification",
+  "mealBudgetInsightTitle": "Aperçu du Budget",
+  "mealBudgetStatusSafe": "En bonne voie",
+  "mealBudgetStatusWatch": "Attention",
+  "mealBudgetStatusOver": "Hors budget",
+  "mealBudgetWeeklyCost": "Coût hebdomadaire estimé",
+  "mealBudgetProjectedMonthly": "Projection mensuelle",
+  "mealBudgetMonthlyBudget": "Budget alimentaire mensuel",
+  "mealBudgetRemaining": "Budget restant",
+  "mealBudgetTopExpensive": "Repas les plus chers",
+  "mealBudgetSuggestedSwaps": "Échanges moins chers suggérés",
+  "mealBudgetViewDetails": "Voir les détails",
+  "mealBudgetApplySwap": "Appliquer",
+  "mealBudgetSwapSavings": "Économisez {amount}",
+  "@mealBudgetSwapSavings": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "mealBudgetDailyBreakdown": "Répartition quotidienne des coûts",
+  "mealBudgetShoppingImpact": "Impact sur les courses",
+  "mealBudgetUniqueIngredients": "Ingrédients uniques",
+  "mealBudgetEstShoppingCost": "Coût estimé des courses"
 }
