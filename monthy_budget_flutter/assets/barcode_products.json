@@ -1,0 +1,20 @@
+{
+  "5601234567890": {
+    "name": "Leite Meio-Gordo",
+    "category": "Laticinios",
+    "avg_price": 0.79,
+    "unit": "L"
+  },
+  "5601234567891": {
+    "name": "Pao de Forma",
+    "category": "Pao e Cereais",
+    "avg_price": 1.29,
+    "unit": "un"
+  },
+  "5601234567892": {
+    "name": "Arroz Agulha",
+    "category": "Pao e Cereais",
+    "avg_price": 1.49,
+    "unit": "kg"
+  }
+}

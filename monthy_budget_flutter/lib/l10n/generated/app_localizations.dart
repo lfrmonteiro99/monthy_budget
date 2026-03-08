@@ -1619,6 +1619,42 @@ abstract class S {
   /// **'{count, plural, =1{1 produto} other{{count} produtos}}'**
   String shoppingProductCount(int count);
 
+  /// No description provided for @shoppingViewItems.
+  ///
+  /// In pt, this message translates to:
+  /// **'Itens'**
+  String get shoppingViewItems;
+
+  /// No description provided for @shoppingViewMeals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Refeicoes'**
+  String get shoppingViewMeals;
+
+  /// No description provided for @shoppingViewStores.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lojas'**
+  String get shoppingViewStores;
+
+  /// No description provided for @shoppingGroupOther.
+  ///
+  /// In pt, this message translates to:
+  /// **'Outros'**
+  String get shoppingGroupOther;
+
+  /// Pluralized item count in group header
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 item} other{{count} itens}}'**
+  String shoppingGroupCount(int count);
+
+  /// Cheapest known store hint
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais barato em {store} ({price})'**
+  String shoppingCheapestAt(String store, String price);
+
   /// Auth login screen title
   ///
   /// In pt, this message translates to:
@@ -6599,35 +6635,107 @@ abstract class S {
   /// **'Por favor, aguarde um momento antes de tentar novamente'**
   String get rateLimitMessage;
 
-  /// No description provided for @quickAddTooltip.
+  /// No description provided for @planningExportTitle.
   ///
   /// In pt, this message translates to:
-  /// **'Ações rápidas'**
-  String get quickAddTooltip;
+  /// **'Exportar'**
+  String get planningExportTitle;
 
-  /// No description provided for @quickAddExpense.
+  /// No description provided for @planningImportTitle.
   ///
   /// In pt, this message translates to:
-  /// **'Adicionar despesa'**
-  String get quickAddExpense;
+  /// **'Importar'**
+  String get planningImportTitle;
 
-  /// No description provided for @quickAddShopping.
+  /// No description provided for @planningExportShoppingList.
   ///
   /// In pt, this message translates to:
-  /// **'Adicionar item de compras'**
-  String get quickAddShopping;
+  /// **'Exportar lista de compras'**
+  String get planningExportShoppingList;
 
-  /// No description provided for @quickOpenMeals.
+  /// No description provided for @planningImportShoppingList.
   ///
   /// In pt, this message translates to:
-  /// **'Planeador de refeições'**
-  String get quickOpenMeals;
+  /// **'Importar lista de compras'**
+  String get planningImportShoppingList;
 
-  /// No description provided for @quickOpenAssistant.
+  /// No description provided for @planningExportMealPlan.
   ///
   /// In pt, this message translates to:
-  /// **'Assistente'**
-  String get quickOpenAssistant;
+  /// **'Exportar plano de refeições'**
+  String get planningExportMealPlan;
+
+  /// No description provided for @planningImportMealPlan.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar plano de refeições'**
+  String get planningImportMealPlan;
+
+  /// No description provided for @planningExportPantry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar despensa'**
+  String get planningExportPantry;
+
+  /// No description provided for @planningImportPantry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar despensa'**
+  String get planningImportPantry;
+
+  /// No description provided for @planningExportFreeformMeals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar refeições livres'**
+  String get planningExportFreeformMeals;
+
+  /// No description provided for @planningImportFreeformMeals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar refeições livres'**
+  String get planningImportFreeformMeals;
+
+  /// No description provided for @planningFormatCsv.
+  ///
+  /// In pt, this message translates to:
+  /// **'CSV'**
+  String get planningFormatCsv;
+
+  /// No description provided for @planningFormatJson.
+  ///
+  /// In pt, this message translates to:
+  /// **'JSON'**
+  String get planningFormatJson;
+
+  /// No description provided for @planningImportSuccess.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importado com sucesso'**
+  String get planningImportSuccess;
+
+  /// No description provided for @planningImportError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importação falhou: {error}'**
+  String planningImportError(String error);
+
+  /// No description provided for @planningExportSuccess.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportado com sucesso'**
+  String get planningExportSuccess;
+
+  /// No description provided for @planningDataPortability.
+  ///
+  /// In pt, this message translates to:
+  /// **'Portabilidade de dados'**
+  String get planningDataPortability;
+
+  /// No description provided for @planningDataPortabilityDesc.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar e exportar artefactos de planeamento'**
+  String get planningDataPortabilityDesc;
 
   /// No description provided for @mealBudgetInsightTitle.
   ///
@@ -6730,6 +6838,426 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Custo estimado de compras'**
   String get mealBudgetEstShoppingCost;
+
+  /// No description provided for @productUpdatesTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Novidades do Produto'**
+  String get productUpdatesTitle;
+
+  /// No description provided for @whatsNewTab.
+  ///
+  /// In pt, this message translates to:
+  /// **'Novidades'**
+  String get whatsNewTab;
+
+  /// No description provided for @roadmapTab.
+  ///
+  /// In pt, this message translates to:
+  /// **'Roteiro'**
+  String get roadmapTab;
+
+  /// No description provided for @noUpdatesYet.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem novidades ainda'**
+  String get noUpdatesYet;
+
+  /// No description provided for @noRoadmapItems.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem itens no roteiro ainda'**
+  String get noRoadmapItems;
+
+  /// No description provided for @roadmapNow.
+  ///
+  /// In pt, this message translates to:
+  /// **'Agora'**
+  String get roadmapNow;
+
+  /// No description provided for @roadmapNext.
+  ///
+  /// In pt, this message translates to:
+  /// **'Em breve'**
+  String get roadmapNext;
+
+  /// No description provided for @roadmapLater.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais tarde'**
+  String get roadmapLater;
+
+  /// No description provided for @productUpdatesSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Changelog e funcionalidades futuras'**
+  String get productUpdatesSubtitle;
+
+  /// No description provided for @whatsNewDialogTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Novidades'**
+  String get whatsNewDialogTitle;
+
+  /// No description provided for @whatsNewDialogDismiss.
+  ///
+  /// In pt, this message translates to:
+  /// **'Entendi'**
+  String get whatsNewDialogDismiss;
+
+  /// No description provided for @confidenceCenterTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Centro de Confiança'**
+  String get confidenceCenterTitle;
+
+  /// No description provided for @confidenceSyncHealth.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estado de Sincronização'**
+  String get confidenceSyncHealth;
+
+  /// No description provided for @confidenceDataAlerts.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alertas de Qualidade dos Dados'**
+  String get confidenceDataAlerts;
+
+  /// No description provided for @confidenceRecommendedActions.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ações Recomendadas'**
+  String get confidenceRecommendedActions;
+
+  /// No description provided for @confidenceCenterSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Frescura dos dados e saúde do sistema'**
+  String get confidenceCenterSubtitle;
+
+  /// No description provided for @confidenceCenterTile.
+  ///
+  /// In pt, this message translates to:
+  /// **'Centro de Confiança'**
+  String get confidenceCenterTile;
+
+  /// No description provided for @pantryPickerTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecionar Despensa'**
+  String get pantryPickerTitle;
+
+  /// No description provided for @pantrySearchHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pesquisar ingredientes...'**
+  String get pantrySearchHint;
+
+  /// No description provided for @pantryTabAlwaysHave.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sempre Tenho'**
+  String get pantryTabAlwaysHave;
+
+  /// No description provided for @pantryTabThisWeek.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta Semana'**
+  String get pantryTabThisWeek;
+
+  /// No description provided for @pantrySummaryLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 item na despensa} other{{count} itens na despensa}}'**
+  String pantrySummaryLabel(int count);
+
+  /// No description provided for @pantryEdit.
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar'**
+  String get pantryEdit;
+
+  /// No description provided for @pantryUseWhatWeHave.
+  ///
+  /// In pt, this message translates to:
+  /// **'Usar o Que Temos'**
+  String get pantryUseWhatWeHave;
+
+  /// No description provided for @pantryMarkAtHome.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já tenho em casa'**
+  String get pantryMarkAtHome;
+
+  /// No description provided for @pantryHaveIt.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tenho'**
+  String get pantryHaveIt;
+
+  /// No description provided for @pantryCoverageLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'{pct}% coberto pela despensa'**
+  String pantryCoverageLabel(int pct);
+
+  /// No description provided for @pantryStaples.
+  ///
+  /// In pt, this message translates to:
+  /// **'ESSENCIAIS (SEMPRE EM STOCK)'**
+  String get pantryStaples;
+
+  /// No description provided for @pantryWeekly.
+  ///
+  /// In pt, this message translates to:
+  /// **'DESPENSA DESTA SEMANA'**
+  String get pantryWeekly;
+
+  /// No description provided for @pantryAddedToWeekly.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} adicionado à despensa semanal'**
+  String pantryAddedToWeekly(String name);
+
+  /// No description provided for @pantryRemovedFromList.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} removido da lista (já em casa)'**
+  String pantryRemovedFromList(String name);
+
+  /// No description provided for @pantryMarkedAtHome.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} marcado como já em casa'**
+  String pantryMarkedAtHome(String name);
+
+  /// No description provided for @householdActivityTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atividade do Agregado'**
+  String get householdActivityTitle;
+
+  /// No description provided for @householdActivityFilterAll.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tudo'**
+  String get householdActivityFilterAll;
+
+  /// No description provided for @householdActivityFilterShopping.
+  ///
+  /// In pt, this message translates to:
+  /// **'Compras'**
+  String get householdActivityFilterShopping;
+
+  /// No description provided for @householdActivityFilterMeals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Refeições'**
+  String get householdActivityFilterMeals;
+
+  /// No description provided for @householdActivityFilterExpenses.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas'**
+  String get householdActivityFilterExpenses;
+
+  /// No description provided for @householdActivityFilterPantry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despensa'**
+  String get householdActivityFilterPantry;
+
+  /// No description provided for @householdActivityFilterSettings.
+  ///
+  /// In pt, this message translates to:
+  /// **'Definições'**
+  String get householdActivityFilterSettings;
+
+  /// No description provided for @householdActivityEmpty.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem atividade'**
+  String get householdActivityEmpty;
+
+  /// No description provided for @householdActivityEmptyMessage.
+  ///
+  /// In pt, this message translates to:
+  /// **'As ações partilhadas do seu agregado aparecerão aqui.'**
+  String get householdActivityEmptyMessage;
+
+  /// No description provided for @householdActivityToday.
+  ///
+  /// In pt, this message translates to:
+  /// **'HOJE'**
+  String get householdActivityToday;
+
+  /// No description provided for @householdActivityYesterday.
+  ///
+  /// In pt, this message translates to:
+  /// **'ONTEM'**
+  String get householdActivityYesterday;
+
+  /// No description provided for @householdActivityThisWeek.
+  ///
+  /// In pt, this message translates to:
+  /// **'ESTA SEMANA'**
+  String get householdActivityThisWeek;
+
+  /// No description provided for @householdActivityOlder.
+  ///
+  /// In pt, this message translates to:
+  /// **'ANTERIORES'**
+  String get householdActivityOlder;
+
+  /// No description provided for @householdActivityJustNow.
+  ///
+  /// In pt, this message translates to:
+  /// **'Agora mesmo'**
+  String get householdActivityJustNow;
+
+  /// No description provided for @householdActivityMinutesAgo.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} min atrás'**
+  String householdActivityMinutesAgo(int count);
+
+  /// No description provided for @householdActivityHoursAgo.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count}h atrás'**
+  String householdActivityHoursAgo(int count);
+
+  /// No description provided for @householdActivityDaysAgo.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count}d atrás'**
+  String householdActivityDaysAgo(int count);
+
+  /// No description provided for @householdActivityAddedBy.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionado por {name}'**
+  String householdActivityAddedBy(String name);
+
+  /// No description provided for @householdActivityRemovedBy.
+  ///
+  /// In pt, this message translates to:
+  /// **'Removido por {name}'**
+  String householdActivityRemovedBy(String name);
+
+  /// No description provided for @householdActivitySwappedBy.
+  ///
+  /// In pt, this message translates to:
+  /// **'Trocado por {name}'**
+  String householdActivitySwappedBy(String name);
+
+  /// No description provided for @householdActivityUpdatedBy.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atualizado por {name}'**
+  String householdActivityUpdatedBy(String name);
+
+  /// No description provided for @householdActivityCheckedBy.
+  ///
+  /// In pt, this message translates to:
+  /// **'Marcado por {name}'**
+  String householdActivityCheckedBy(String name);
+
+  /// No description provided for @barcodeScanTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ler Codigo de Barras'**
+  String get barcodeScanTitle;
+
+  /// No description provided for @barcodeScanHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aponte a camera para um codigo de barras'**
+  String get barcodeScanHint;
+
+  /// No description provided for @barcodeScanTooltip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ler codigo de barras'**
+  String get barcodeScanTooltip;
+
+  /// No description provided for @barcodeProductFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Produto Encontrado'**
+  String get barcodeProductFound;
+
+  /// No description provided for @barcodeProductNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Produto Nao Encontrado'**
+  String get barcodeProductNotFound;
+
+  /// No description provided for @barcodeLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Codigo de barras'**
+  String get barcodeLabel;
+
+  /// No description provided for @barcodeAddToList.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar a Lista'**
+  String get barcodeAddToList;
+
+  /// No description provided for @barcodeManualEntry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum produto encontrado. Insira os dados manualmente:'**
+  String get barcodeManualEntry;
+
+  /// No description provided for @barcodeProductName.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome do produto'**
+  String get barcodeProductName;
+
+  /// No description provided for @barcodePrice.
+  ///
+  /// In pt, this message translates to:
+  /// **'Preco'**
+  String get barcodePrice;
+
+  /// No description provided for @barcodeAddedToList.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} adicionado a lista de compras'**
+  String barcodeAddedToList(String name);
+
+  /// No description provided for @quickAddTooltip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ações rápidas'**
+  String get quickAddTooltip;
+
+  /// No description provided for @quickAddExpense.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar despesa'**
+  String get quickAddExpense;
+
+  /// No description provided for @quickAddShopping.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar item de compras'**
+  String get quickAddShopping;
+
+  /// No description provided for @quickOpenMeals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Planeador de refeições'**
+  String get quickOpenMeals;
+
+  /// No description provided for @quickOpenAssistant.
+  ///
+  /// In pt, this message translates to:
+  /// **'Assistente'**
+  String get quickOpenAssistant;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

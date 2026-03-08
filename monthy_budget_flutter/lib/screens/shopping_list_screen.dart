@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/shopping_item.dart';
 import '../models/purchase_record.dart';
+import '../services/barcode_scan_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
+import '../widgets/barcode_result_card.dart';
+import '../widgets/barcode_scan_sheet.dart';
+import '../utils/shopping_grouping.dart';
 import '../onboarding/shopping_tour.dart';
+import '../widgets/shopping_group_toggle.dart';
+import '../widgets/shopping_list_grouped_view.dart';
 
 class ShoppingListScreen extends StatefulWidget {
   final List<ShoppingItem> items;
@@ -15,6 +21,9 @@ class ShoppingListScreen extends StatefulWidget {
   final PurchaseHistory purchaseHistory;
   final bool showTour;
   final VoidCallback? onTourComplete;
+  final ValueChanged<ShoppingItem>? onAddToShoppingList;
+  final BarcodeScanService? barcodeScanService;
+  final ValueChanged<ShoppingItem>? onMarkAtHome;
 
   const ShoppingListScreen({
     super.key,
@@ -26,6 +35,9 @@ class ShoppingListScreen extends StatefulWidget {
     required this.purchaseHistory,
     this.showTour = false,
     this.onTourComplete,
+    this.onAddToShoppingList,
+    this.barcodeScanService,
+    this.onMarkAtHome,
   });
 
   @override
@@ -34,6 +46,7 @@ class ShoppingListScreen extends StatefulWidget {
 
 class _ShoppingListScreenState extends State<ShoppingListScreen> {
   bool _tourShown = false;
+  ShoppingGroupMode _groupMode = ShoppingGroupMode.items;
 
   @override
   void initState() {
@@ -296,6 +309,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       appBar: _buildAppBar(),
       body: Column(
         children: [
+          ShoppingGroupToggle(
+            selected: _groupMode,
+            onChanged: (mode) => setState(() => _groupMode = mode),
+          ),
           Container(
             color: AppColors.surface(context),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -329,11 +346,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           ),
           Divider(height: 1, color: AppColors.surfaceVariant(context)),
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
-              itemCount: widget.items.length,
-              itemBuilder: (_, i) => _buildItemRow(widget.items[i], tourKey: i == 0 ? ShoppingTourKeys.shoppingItem : null),
-            ),
+            child: _buildListBody(l10n),
           ),
         ],
       ),
@@ -352,6 +365,67 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     );
   }
 
+  Future<void> _onScanBarcode() async {
+    final barcode = await BarcodeScanSheet.show(context);
+    if (barcode == null || !mounted) return;
+
+    final service = widget.barcodeScanService ?? BarcodeScanService();
+    final candidate = await service.lookup(barcode);
+
+    if (!mounted) return;
+
+    await BarcodeResultCard.show(
+      context,
+      candidate: candidate,
+      onAddToList: (item) {
+        widget.onAddToShoppingList?.call(item);
+        final l10n = S.of(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.barcodeAddedToList(item.productName)),
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildListBody(S l10n) {
+    switch (_groupMode) {
+      case ShoppingGroupMode.items:
+        return ListView.builder(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+          itemCount: widget.items.length,
+          itemBuilder: (_, i) => _buildItemRow(widget.items[i], tourKey: i == 0 ? ShoppingTourKeys.shoppingItem : null),
+        );
+      case ShoppingGroupMode.meals:
+        final groups = groupByMeal(
+          widget.items,
+          ungroupedLabel: l10n.shoppingGroupOther,
+        );
+        return ShoppingListGroupedView(
+          groups: groups,
+          mode: _groupMode,
+          onToggleChecked: widget.onToggleChecked,
+          onRemove: widget.onRemove,
+        );
+      case ShoppingGroupMode.stores:
+        final groups = groupByStore(
+          widget.items,
+          ungroupedLabel: l10n.shoppingGroupOther,
+        );
+        return ShoppingListGroupedView(
+          groups: groups,
+          mode: _groupMode,
+          onToggleChecked: widget.onToggleChecked,
+          onRemove: widget.onRemove,
+        );
+    }
+  }
+
   AppBar _buildAppBar() {
     final l10n = S.of(context);
     return AppBar(
@@ -365,6 +439,13 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               color: AppColors.textPrimary(context)),
         ),
         actions: [
+          if (widget.onAddToShoppingList != null)
+            IconButton(
+              icon: Icon(Icons.qr_code_scanner,
+                  color: AppColors.textSecondary(context)),
+              tooltip: l10n.barcodeScanTooltip,
+              onPressed: _onScanBarcode,
+            ),
           if (widget.purchaseHistory.records.isNotEmpty)
             IconButton(
               key: ShoppingTourKeys.historyButton,
@@ -595,6 +676,31 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     decoration:
                         item.checked ? TextDecoration.lineThrough : null,
                     decorationColor: AppColors.borderMuted(context),
+                  ),
+                ),
+              if (!item.checked && widget.onMarkAtHome != null)
+                Padding(
+                  padding: const EdgeInsets.only(left: 6),
+                  child: Tooltip(
+                    message: l10n.pantryMarkAtHome,
+                    child: InkWell(
+                      onTap: () {
+                        widget.onMarkAtHome!(item);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(l10n.pantryMarkedAtHome(item.productName)),
+                            duration: const Duration(seconds: 2),
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                        );
+                      },
+                      borderRadius: BorderRadius.circular(8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Icon(Icons.home_outlined, size: 18, color: AppColors.primary(context)),
+                      ),
+                    ),
                   ),
                 ),
             ],

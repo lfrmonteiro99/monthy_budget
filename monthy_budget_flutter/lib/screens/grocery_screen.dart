@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/product.dart';
 import '../models/shopping_item.dart';
+import '../services/barcode_scan_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
+import '../widgets/barcode_result_card.dart';
+import '../widgets/barcode_scan_sheet.dart';
 import '../onboarding/grocery_tour.dart';
 
 class GroceryScreen extends StatefulWidget {
@@ -11,6 +14,9 @@ class GroceryScreen extends StatefulWidget {
   final ValueChanged<ShoppingItem>? onAddToShoppingList;
   final bool showTour;
   final VoidCallback? onTourComplete;
+  final BarcodeScanService? barcodeScanService;
+  final Set<String> weeklyPantryIds;
+  final ValueChanged<String>? onToggleWeeklyPantry;
 
   const GroceryScreen({
     super.key,
@@ -18,6 +24,9 @@ class GroceryScreen extends StatefulWidget {
     this.onAddToShoppingList,
     this.showTour = false,
     this.onTourComplete,
+    this.barcodeScanService,
+    this.weeklyPantryIds = const {},
+    this.onToggleWeeklyPantry,
   });
 
   @override
@@ -100,6 +109,34 @@ class _GroceryScreenState extends State<GroceryScreen> {
     return map[cat] ?? Icons.category_outlined;
   }
 
+  Future<void> _onScanBarcode() async {
+    final barcode = await BarcodeScanSheet.show(context);
+    if (barcode == null || !mounted) return;
+
+    final service = widget.barcodeScanService ?? BarcodeScanService();
+    final candidate = await service.lookup(barcode);
+
+    if (!mounted) return;
+
+    await BarcodeResultCard.show(
+      context,
+      candidate: candidate,
+      onAddToList: (item) {
+        widget.onAddToShoppingList?.call(item);
+        final l10n = S.of(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.barcodeAddedToList(item.productName)),
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+        );
+      },
+    );
+  }
+
   void _addToCart(Product product) {
     if (widget.onAddToShoppingList == null) return;
     final l10n = S.of(context);
@@ -141,6 +178,15 @@ class _GroceryScreenState extends State<GroceryScreen> {
               fontWeight: FontWeight.w700,
               color: AppColors.textPrimary(context)),
         ),
+        actions: [
+          if (widget.onAddToShoppingList != null)
+            IconButton(
+              icon: Icon(Icons.qr_code_scanner,
+                  color: AppColors.textSecondary(context)),
+              tooltip: l10n.barcodeScanTooltip,
+              onPressed: _onScanBarcode,
+            ),
+        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(56),
           child: Padding(
@@ -321,6 +367,36 @@ class _GroceryScreenState extends State<GroceryScreen> {
                 color: AppColors.success(context)),
           ),
           const SizedBox(width: 10),
+          if (widget.onToggleWeeklyPantry != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: Tooltip(
+                message: l10n.pantryHaveIt,
+                child: SizedBox(
+                  width: 36,
+                  height: 36,
+                  child: Material(
+                    color: widget.weeklyPantryIds.contains(product.name.toLowerCase())
+                        ? AppColors.successBackground(context)
+                        : AppColors.surfaceVariant(context),
+                    borderRadius: BorderRadius.circular(10),
+                    child: InkWell(
+                      onTap: () => widget.onToggleWeeklyPantry!(product.name.toLowerCase()),
+                      borderRadius: BorderRadius.circular(10),
+                      child: Icon(
+                        widget.weeklyPantryIds.contains(product.name.toLowerCase())
+                            ? Icons.home
+                            : Icons.home_outlined,
+                        size: 18,
+                        color: widget.weeklyPantryIds.contains(product.name.toLowerCase())
+                            ? AppColors.success(context)
+                            : AppColors.textMuted(context),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           Semantics(
             button: true,
             label: l10n.addToList(product.name),
