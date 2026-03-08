@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:orcamento_mensal/models/meal_planner.dart';
 import 'package:orcamento_mensal/models/meal_settings.dart';
-import 'package:orcamento_mensal/models/shopping_item.dart';
 import 'package:orcamento_mensal/widgets/freeform_meal_card.dart';
 import 'package:orcamento_mensal/widgets/freeform_meal_sheet.dart';
 
