@@ -663,6 +663,9 @@ class SEn extends S {
   String get cmdUndo => 'Undo';
 
   @override
+  String get expenseDeleted => 'Expense deleted';
+
+  @override
   String get cmdCapabilitiesCta => 'What can I do?';
 
   @override
@@ -2108,6 +2111,12 @@ class SEn extends S {
       'You can add more income sources later.';
 
   @override
+  String get setupWizardSalaryRequired => 'Please enter your salary';
+
+  @override
+  String get setupWizardSalaryPositive => 'Salary must be a positive number';
+
+  @override
   String get setupWizardSalarySkip => 'Skip this step';
 
   @override
@@ -2490,24 +2499,6 @@ class SEn extends S {
 
   @override
   String get savingsGoalOverdue => 'Overdue';
-
-  @override
-  String get savingsGoalHowItWorksTitle => 'How does it work?';
-
-  @override
-  String get savingsGoalHowItWorksStep1 => 'Create a goal with a name and the amount you want to save (e.g. \"Vacation — €2,000\").';
-
-  @override
-  String get savingsGoalHowItWorksStep2 => 'Optionally set a deadline to have a target date.';
-
-  @override
-  String get savingsGoalHowItWorksStep3 => 'Whenever you save money, tap the goal and record a contribution with the amount and date.';
-
-  @override
-  String get savingsGoalHowItWorksStep4 => 'Track your progress: the bar shows how much you\'ve saved and the projection estimates when you\'ll reach your goal.';
-
-  @override
-  String get savingsGoalDashboardHint => 'Tap a goal to see details and record contributions.';
 
   @override
   String get mealCostReconciliation => 'Meal Costs';
@@ -3595,4 +3586,84 @@ class SEn extends S {
 
   @override
   String get helperWizardTelecom => 'Monthly internet, phone, TV';
+
+  @override
+  String get savingsGoalHowItWorksTitle => 'How does it work?';
+
+  @override
+  String get savingsGoalHowItWorksStep1 =>
+      'Create a goal with a name and the amount you want to save (e.g. \"Vacation — €2,000\").';
+
+  @override
+  String get savingsGoalHowItWorksStep2 =>
+      'Optionally set a deadline to have a target date.';
+
+  @override
+  String get savingsGoalHowItWorksStep3 =>
+      'Whenever you save money, tap the goal and record a contribution with the amount and date.';
+
+  @override
+  String get savingsGoalHowItWorksStep4 =>
+      'Track your progress: the bar shows how much you\'ve saved and the projection estimates when you\'ll reach your goal.';
+
+  @override
+  String get savingsGoalDashboardHint =>
+      'Tap a goal to see details and record contributions.';
+
+  @override
+  String get rateLimitMessage => 'Please wait a moment before trying again';
+
+  @override
+  String get planningExportTitle => 'Export';
+
+  @override
+  String get planningImportTitle => 'Import';
+
+  @override
+  String get planningExportShoppingList => 'Export shopping list';
+
+  @override
+  String get planningImportShoppingList => 'Import shopping list';
+
+  @override
+  String get planningExportMealPlan => 'Export meal plan';
+
+  @override
+  String get planningImportMealPlan => 'Import meal plan';
+
+  @override
+  String get planningExportPantry => 'Export pantry snapshot';
+
+  @override
+  String get planningImportPantry => 'Import pantry snapshot';
+
+  @override
+  String get planningExportFreeformMeals => 'Export freeform meals';
+
+  @override
+  String get planningImportFreeformMeals => 'Import freeform meals';
+
+  @override
+  String get planningFormatCsv => 'CSV';
+
+  @override
+  String get planningFormatJson => 'JSON';
+
+  @override
+  String get planningImportSuccess => 'Imported successfully';
+
+  @override
+  String planningImportError(String error) {
+    return 'Import failed: $error';
+  }
+
+  @override
+  String get planningExportSuccess => 'Exported successfully';
+
+  @override
+  String get planningDataPortability => 'Data portability';
+
+  @override
+  String get planningDataPortabilityDesc =>
+      'Import and export planning artifacts';
 }

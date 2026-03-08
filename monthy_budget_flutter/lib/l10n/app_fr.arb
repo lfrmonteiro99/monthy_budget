@@ -1801,5 +1801,24 @@
   "@savingsGoalHowItWorksStep4": { "description": "How it works step 4" },
   "savingsGoalDashboardHint": "Touchez un objectif pour voir les détails et enregistrer des contributions.",
   "@savingsGoalDashboardHint": { "description": "Dashboard hint text" },
-  "rateLimitMessage": "Veuillez patienter un moment avant de réessayer"
+  "rateLimitMessage": "Veuillez patienter un moment avant de réessayer",
+
+  "planningExportTitle": "Exporter",
+  "planningImportTitle": "Importer",
+  "planningExportShoppingList": "Exporter la liste de courses",
+  "planningImportShoppingList": "Importer la liste de courses",
+  "planningExportMealPlan": "Exporter le plan de repas",
+  "planningImportMealPlan": "Importer le plan de repas",
+  "planningExportPantry": "Exporter le garde-manger",
+  "planningImportPantry": "Importer le garde-manger",
+  "planningExportFreeformMeals": "Exporter les repas libres",
+  "planningImportFreeformMeals": "Importer les repas libres",
+  "planningFormatCsv": "CSV",
+  "planningFormatJson": "JSON",
+  "planningImportSuccess": "Importé avec succès",
+  "planningImportError": "Échec de l'importation : {error}",
+  "@planningImportError": { "placeholders": { "error": { "type": "String" } } },
+  "planningExportSuccess": "Exporté avec succès",
+  "planningDataPortability": "Portabilité des données",
+  "planningDataPortabilityDesc": "Importer et exporter des artefacts de planification"
 }

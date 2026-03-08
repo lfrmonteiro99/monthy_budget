@@ -1301,6 +1301,12 @@ abstract class S {
   /// **'Desfazer'**
   String get cmdUndo;
 
+  /// No description provided for @expenseDeleted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesa eliminada'**
+  String get expenseDeleted;
+
   /// No description provided for @cmdCapabilitiesCta.
   ///
   /// In pt, this message translates to:
@@ -3941,6 +3947,18 @@ abstract class S {
   /// **'Pode adicionar mais fontes de rendimento mais tarde.'**
   String get setupWizardSalaryMoreLater;
 
+  /// No description provided for @setupWizardSalaryRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Por favor insira o seu salário'**
+  String get setupWizardSalaryRequired;
+
+  /// No description provided for @setupWizardSalaryPositive.
+  ///
+  /// In pt, this message translates to:
+  /// **'O salário deve ser um número positivo'**
+  String get setupWizardSalaryPositive;
+
   /// Skip button on salary step
   ///
   /// In pt, this message translates to:
@@ -4648,42 +4666,6 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Prazo ultrapassado'**
   String get savingsGoalOverdue;
-
-  /// How it works section title
-  ///
-  /// In pt, this message translates to:
-  /// **'Como funciona?'**
-  String get savingsGoalHowItWorksTitle;
-
-  /// How it works step 1
-  ///
-  /// In pt, this message translates to:
-  /// **'Crie um objetivo com um nome e o valor que pretende atingir (ex: "Férias — 2 000 €").'**
-  String get savingsGoalHowItWorksStep1;
-
-  /// How it works step 2
-  ///
-  /// In pt, this message translates to:
-  /// **'Opcionalmente defina uma data limite para ter um prazo de referência.'**
-  String get savingsGoalHowItWorksStep2;
-
-  /// How it works step 3
-  ///
-  /// In pt, this message translates to:
-  /// **'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.'**
-  String get savingsGoalHowItWorksStep3;
-
-  /// How it works step 4
-  ///
-  /// In pt, this message translates to:
-  /// **'Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.'**
-  String get savingsGoalHowItWorksStep4;
-
-  /// Dashboard hint text
-  ///
-  /// In pt, this message translates to:
-  /// **'Toque num objetivo para ver detalhes e registar contribuições.'**
-  String get savingsGoalDashboardHint;
 
   /// Meal cost reconciliation title
   ///
@@ -6574,6 +6556,150 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Internet, telefone e TV mensais'**
   String get helperWizardTelecom;
+
+  /// How it works section title
+  ///
+  /// In pt, this message translates to:
+  /// **'Como funciona?'**
+  String get savingsGoalHowItWorksTitle;
+
+  /// How it works step 1
+  ///
+  /// In pt, this message translates to:
+  /// **'Crie um objetivo com um nome e o valor que pretende atingir (ex: \"Férias — 2 000 €\").'**
+  String get savingsGoalHowItWorksStep1;
+
+  /// How it works step 2
+  ///
+  /// In pt, this message translates to:
+  /// **'Opcionalmente defina uma data limite para ter um prazo de referência.'**
+  String get savingsGoalHowItWorksStep2;
+
+  /// How it works step 3
+  ///
+  /// In pt, this message translates to:
+  /// **'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.'**
+  String get savingsGoalHowItWorksStep3;
+
+  /// How it works step 4
+  ///
+  /// In pt, this message translates to:
+  /// **'Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.'**
+  String get savingsGoalHowItWorksStep4;
+
+  /// Dashboard hint text
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque num objetivo para ver detalhes e registar contribuições.'**
+  String get savingsGoalDashboardHint;
+
+  /// No description provided for @rateLimitMessage.
+  ///
+  /// In pt, this message translates to:
+  /// **'Por favor, aguarde um momento antes de tentar novamente'**
+  String get rateLimitMessage;
+
+  /// No description provided for @planningExportTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar'**
+  String get planningExportTitle;
+
+  /// No description provided for @planningImportTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar'**
+  String get planningImportTitle;
+
+  /// No description provided for @planningExportShoppingList.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar lista de compras'**
+  String get planningExportShoppingList;
+
+  /// No description provided for @planningImportShoppingList.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar lista de compras'**
+  String get planningImportShoppingList;
+
+  /// No description provided for @planningExportMealPlan.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar plano de refeições'**
+  String get planningExportMealPlan;
+
+  /// No description provided for @planningImportMealPlan.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar plano de refeições'**
+  String get planningImportMealPlan;
+
+  /// No description provided for @planningExportPantry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar despensa'**
+  String get planningExportPantry;
+
+  /// No description provided for @planningImportPantry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar despensa'**
+  String get planningImportPantry;
+
+  /// No description provided for @planningExportFreeformMeals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar refeições livres'**
+  String get planningExportFreeformMeals;
+
+  /// No description provided for @planningImportFreeformMeals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar refeições livres'**
+  String get planningImportFreeformMeals;
+
+  /// No description provided for @planningFormatCsv.
+  ///
+  /// In pt, this message translates to:
+  /// **'CSV'**
+  String get planningFormatCsv;
+
+  /// No description provided for @planningFormatJson.
+  ///
+  /// In pt, this message translates to:
+  /// **'JSON'**
+  String get planningFormatJson;
+
+  /// No description provided for @planningImportSuccess.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importado com sucesso'**
+  String get planningImportSuccess;
+
+  /// No description provided for @planningImportError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importação falhou: {error}'**
+  String planningImportError(String error);
+
+  /// No description provided for @planningExportSuccess.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportado com sucesso'**
+  String get planningExportSuccess;
+
+  /// No description provided for @planningDataPortability.
+  ///
+  /// In pt, this message translates to:
+  /// **'Portabilidade de dados'**
+  String get planningDataPortability;
+
+  /// No description provided for @planningDataPortabilityDesc.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar e exportar artefactos de planeamento'**
+  String get planningDataPortabilityDesc;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

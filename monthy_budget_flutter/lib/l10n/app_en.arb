@@ -1657,5 +1657,24 @@
   "helperWizardTransport": "Monthly transport costs (fuel, public transit, etc.)",
   "helperWizardUtilities": "Monthly electricity, water, gas",
   "helperWizardTelecom": "Monthly internet, phone, TV",
-  "rateLimitMessage": "Please wait a moment before trying again"
+  "rateLimitMessage": "Please wait a moment before trying again",
+
+  "planningExportTitle": "Export",
+  "planningImportTitle": "Import",
+  "planningExportShoppingList": "Export shopping list",
+  "planningImportShoppingList": "Import shopping list",
+  "planningExportMealPlan": "Export meal plan",
+  "planningImportMealPlan": "Import meal plan",
+  "planningExportPantry": "Export pantry snapshot",
+  "planningImportPantry": "Import pantry snapshot",
+  "planningExportFreeformMeals": "Export freeform meals",
+  "planningImportFreeformMeals": "Import freeform meals",
+  "planningFormatCsv": "CSV",
+  "planningFormatJson": "JSON",
+  "planningImportSuccess": "Imported successfully",
+  "planningImportError": "Import failed: {error}",
+  "@planningImportError": { "placeholders": { "error": { "type": "String" } } },
+  "planningExportSuccess": "Exported successfully",
+  "planningDataPortability": "Data portability",
+  "planningDataPortabilityDesc": "Import and export planning artifacts"
 }

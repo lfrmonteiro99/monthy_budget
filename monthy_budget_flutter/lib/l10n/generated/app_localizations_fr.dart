@@ -668,6 +668,9 @@ class SFr extends S {
   String get cmdUndo => 'Annuler';
 
   @override
+  String get expenseDeleted => 'Dépense supprimée';
+
+  @override
   String get cmdCapabilitiesCta => 'Que puis-je faire ?';
 
   @override
@@ -2122,7 +2125,14 @@ class SFr extends S {
       'Vous pouvez ajouter d\'autres sources de revenus plus tard.';
 
   @override
-  String get setupWizardSalarySkip => 'Passer cette Ã©tape';
+  String get setupWizardSalaryRequired => 'Veuillez entrer votre salaire';
+
+  @override
+  String get setupWizardSalaryPositive =>
+      'Le salaire doit être un nombre positif';
+
+  @override
+  String get setupWizardSalarySkip => 'Passer cette étape';
 
   @override
   String get setupWizardExpensesTitle => 'Vos dÃ©penses mensuelles';
@@ -2505,24 +2515,6 @@ class SFr extends S {
 
   @override
   String get savingsGoalOverdue => 'En retard';
-
-  @override
-  String get savingsGoalHowItWorksTitle => 'Comment ça marche ?';
-
-  @override
-  String get savingsGoalHowItWorksStep1 => 'Créez un objectif avec un nom et le montant à atteindre (ex : \"Vacances — 2 000 €\").';
-
-  @override
-  String get savingsGoalHowItWorksStep2 => 'Définissez éventuellement une date limite comme référence.';
-
-  @override
-  String get savingsGoalHowItWorksStep3 => 'Chaque fois que vous économisez, touchez l\'objectif et enregistrez une contribution avec le montant et la date.';
-
-  @override
-  String get savingsGoalHowItWorksStep4 => 'Suivez votre progression : la barre montre combien vous avez épargné et la projection estime quand vous atteindrez votre objectif.';
-
-  @override
-  String get savingsGoalDashboardHint => 'Touchez un objectif pour voir les détails et enregistrer des contributions.';
 
   @override
   String get mealCostReconciliation => 'CoÃ»ts des Repas';
@@ -3630,4 +3622,85 @@ class SFr extends S {
 
   @override
   String get helperWizardTelecom => 'Internet, téléphone et TV mensuels';
+
+  @override
+  String get savingsGoalHowItWorksTitle => 'Comment ça marche ?';
+
+  @override
+  String get savingsGoalHowItWorksStep1 =>
+      'Créez un objectif avec un nom et le montant à atteindre (ex : \"Vacances — 2 000 €\").';
+
+  @override
+  String get savingsGoalHowItWorksStep2 =>
+      'Définissez éventuellement une date limite comme référence.';
+
+  @override
+  String get savingsGoalHowItWorksStep3 =>
+      'Chaque fois que vous économisez, touchez l\'objectif et enregistrez une contribution avec le montant et la date.';
+
+  @override
+  String get savingsGoalHowItWorksStep4 =>
+      'Suivez votre progression : la barre montre combien vous avez épargné et la projection estime quand vous atteindrez votre objectif.';
+
+  @override
+  String get savingsGoalDashboardHint =>
+      'Touchez un objectif pour voir les détails et enregistrer des contributions.';
+
+  @override
+  String get rateLimitMessage =>
+      'Veuillez patienter un moment avant de réessayer';
+
+  @override
+  String get planningExportTitle => 'Exporter';
+
+  @override
+  String get planningImportTitle => 'Importer';
+
+  @override
+  String get planningExportShoppingList => 'Exporter la liste de courses';
+
+  @override
+  String get planningImportShoppingList => 'Importer la liste de courses';
+
+  @override
+  String get planningExportMealPlan => 'Exporter le plan de repas';
+
+  @override
+  String get planningImportMealPlan => 'Importer le plan de repas';
+
+  @override
+  String get planningExportPantry => 'Exporter le garde-manger';
+
+  @override
+  String get planningImportPantry => 'Importer le garde-manger';
+
+  @override
+  String get planningExportFreeformMeals => 'Exporter les repas libres';
+
+  @override
+  String get planningImportFreeformMeals => 'Importer les repas libres';
+
+  @override
+  String get planningFormatCsv => 'CSV';
+
+  @override
+  String get planningFormatJson => 'JSON';
+
+  @override
+  String get planningImportSuccess => 'Importé avec succès';
+
+  @override
+  String planningImportError(String error) {
+    return 'Échec de l\'importation : $error';
+  }
+
+  @override
+  String get planningExportSuccess => 'Exporté avec succès';
+
+  @override
+  String get planningDataPortability => 'Portabilité des données';
+
+  @override
+  String get planningDataPortabilityDesc =>
+      'Importer et exporter des artefacts de planification';
 }

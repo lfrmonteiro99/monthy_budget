@@ -2349,6 +2349,25 @@
   "@savingsGoalHowItWorksStep4": { "description": "How it works step 4" },
   "savingsGoalDashboardHint": "Toque num objetivo para ver detalhes e registar contribuições.",
   "@savingsGoalDashboardHint": { "description": "Dashboard hint text" },
-  "rateLimitMessage": "Por favor, aguarde um momento antes de tentar novamente"
+  "rateLimitMessage": "Por favor, aguarde um momento antes de tentar novamente",
+
+  "planningExportTitle": "Exportar",
+  "planningImportTitle": "Importar",
+  "planningExportShoppingList": "Exportar lista de compras",
+  "planningImportShoppingList": "Importar lista de compras",
+  "planningExportMealPlan": "Exportar plano de refeições",
+  "planningImportMealPlan": "Importar plano de refeições",
+  "planningExportPantry": "Exportar despensa",
+  "planningImportPantry": "Importar despensa",
+  "planningExportFreeformMeals": "Exportar refeições livres",
+  "planningImportFreeformMeals": "Importar refeições livres",
+  "planningFormatCsv": "CSV",
+  "planningFormatJson": "JSON",
+  "planningImportSuccess": "Importado com sucesso",
+  "planningImportError": "Importação falhou: {error}",
+  "@planningImportError": { "placeholders": { "error": { "type": "String" } } },
+  "planningExportSuccess": "Exportado com sucesso",
+  "planningDataPortability": "Portabilidade de dados",
+  "planningDataPortabilityDesc": "Importar e exportar artefactos de planeamento"
 }
 
