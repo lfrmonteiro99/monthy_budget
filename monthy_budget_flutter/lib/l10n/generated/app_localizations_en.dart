@@ -855,6 +855,34 @@ class SEn extends S {
   }
 
   @override
+  String get shoppingViewItems => 'Items';
+
+  @override
+  String get shoppingViewMeals => 'Meals';
+
+  @override
+  String get shoppingViewStores => 'Stores';
+
+  @override
+  String get shoppingGroupOther => 'Other';
+
+  @override
+  String shoppingGroupCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String shoppingCheapestAt(String store, String price) {
+    return 'Cheapest at $store ($price)';
+  }
+
+  @override
   String get authLogin => 'Sign in';
 
   @override
@@ -3614,6 +3642,164 @@ class SEn extends S {
   String get rateLimitMessage => 'Please wait a moment before trying again';
 
   @override
+  String get planningExportTitle => 'Export';
+
+  @override
+  String get planningImportTitle => 'Import';
+
+  @override
+  String get planningExportShoppingList => 'Export shopping list';
+
+  @override
+  String get planningImportShoppingList => 'Import shopping list';
+
+  @override
+  String get planningExportMealPlan => 'Export meal plan';
+
+  @override
+  String get planningImportMealPlan => 'Import meal plan';
+
+  @override
+  String get planningExportPantry => 'Export pantry snapshot';
+
+  @override
+  String get planningImportPantry => 'Import pantry snapshot';
+
+  @override
+  String get planningExportFreeformMeals => 'Export freeform meals';
+
+  @override
+  String get planningImportFreeformMeals => 'Import freeform meals';
+
+  @override
+  String get planningFormatCsv => 'CSV';
+
+  @override
+  String get planningFormatJson => 'JSON';
+
+  @override
+  String get planningImportSuccess => 'Imported successfully';
+
+  @override
+  String planningImportError(String error) {
+    return 'Import failed: $error';
+  }
+
+  @override
+  String get planningExportSuccess => 'Exported successfully';
+
+  @override
+  String get planningDataPortability => 'Data portability';
+
+  @override
+  String get planningDataPortabilityDesc =>
+      'Import and export planning artifacts';
+
+  @override
+  String get mealBudgetInsightTitle => 'Budget Insight';
+
+  @override
+  String get mealBudgetStatusSafe => 'On Track';
+
+  @override
+  String get mealBudgetStatusWatch => 'Watch';
+
+  @override
+  String get mealBudgetStatusOver => 'Over Budget';
+
+  @override
+  String get mealBudgetWeeklyCost => 'Weekly estimated cost';
+
+  @override
+  String get mealBudgetProjectedMonthly => 'Projected monthly spend';
+
+  @override
+  String get mealBudgetMonthlyBudget => 'Monthly food budget';
+
+  @override
+  String get mealBudgetRemaining => 'Remaining budget';
+
+  @override
+  String get mealBudgetTopExpensive => 'Most expensive meals';
+
+  @override
+  String get mealBudgetSuggestedSwaps => 'Suggested cheaper swaps';
+
+  @override
+  String get mealBudgetViewDetails => 'View details';
+
+  @override
+  String get mealBudgetApplySwap => 'Apply';
+
+  @override
+  String mealBudgetSwapSavings(String amount) {
+    return 'Save $amount';
+  }
+
+  @override
+  String get mealBudgetDailyBreakdown => 'Daily cost breakdown';
+
+  @override
+  String get mealBudgetShoppingImpact => 'Shopping impact';
+
+  @override
+  String get mealBudgetUniqueIngredients => 'Unique ingredients';
+
+  @override
+  String get mealBudgetEstShoppingCost => 'Estimated shopping cost';
+
+  @override
+  String get productUpdatesTitle => 'Product Updates';
+
+  @override
+  String get whatsNewTab => 'What\'s New';
+
+  @override
+  String get roadmapTab => 'Roadmap';
+
+  @override
+  String get noUpdatesYet => 'No updates yet';
+
+  @override
+  String get noRoadmapItems => 'No roadmap items yet';
+
+  @override
+  String get roadmapNow => 'Now';
+
+  @override
+  String get roadmapNext => 'Next';
+
+  @override
+  String get roadmapLater => 'Later';
+
+  @override
+  String get productUpdatesSubtitle => 'Changelog and upcoming features';
+
+  @override
+  String get whatsNewDialogTitle => 'What\'s New';
+
+  @override
+  String get whatsNewDialogDismiss => 'Got it';
+
+  @override
+  String get confidenceCenterTitle => 'Confidence Center';
+
+  @override
+  String get confidenceSyncHealth => 'Sync Health';
+
+  @override
+  String get confidenceDataAlerts => 'Data Quality Alerts';
+
+  @override
+  String get confidenceRecommendedActions => 'Recommended Actions';
+
+  @override
+  String get confidenceCenterSubtitle => 'Data freshness and system health';
+
+  @override
+  String get confidenceCenterTile => 'Confidence Center';
+
+  @override
   String get pantryPickerTitle => 'Pantry Picker';
 
   @override
@@ -3673,56 +3859,4 @@ class SEn extends S {
   String pantryMarkedAtHome(String name) {
     return '$name marked as already at home';
   }
-
-  String get mealBudgetInsightTitle => 'Budget Insight';
-
-  @override
-  String get mealBudgetStatusSafe => 'On Track';
-
-  @override
-  String get mealBudgetStatusWatch => 'Watch';
-
-  @override
-  String get mealBudgetStatusOver => 'Over Budget';
-
-  @override
-  String get mealBudgetWeeklyCost => 'Weekly estimated cost';
-
-  @override
-  String get mealBudgetProjectedMonthly => 'Projected monthly spend';
-
-  @override
-  String get mealBudgetMonthlyBudget => 'Monthly food budget';
-
-  @override
-  String get mealBudgetRemaining => 'Remaining budget';
-
-  @override
-  String get mealBudgetTopExpensive => 'Most expensive meals';
-
-  @override
-  String get mealBudgetSuggestedSwaps => 'Suggested cheaper swaps';
-
-  @override
-  String get mealBudgetViewDetails => 'View details';
-
-  @override
-  String get mealBudgetApplySwap => 'Apply';
-
-  @override
-  String mealBudgetSwapSavings(String amount) {
-    return 'Save $amount';
-  }
-
-  @override
-  String get mealBudgetDailyBreakdown => 'Daily cost breakdown';
-
-  @override
-  String get mealBudgetShoppingImpact => 'Shopping impact';
-
-  @override
-  String get mealBudgetUniqueIngredients => 'Unique ingredients';
-
-  @override
-  String get mealBudgetEstShoppingCost => 'Estimated shopping cost';
 }

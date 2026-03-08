@@ -6,6 +6,21 @@ class ShoppingItem {
   final String? unitPrice;
   bool checked;
 
+  /// Optional: ID of the meal that contributed this item.
+  final String? sourceMealId;
+
+  /// Optional: human-readable label of the source meal.
+  final String? sourceMealLabel;
+
+  /// Optional: user-selected preferred store for this item.
+  final String? preferredStore;
+
+  /// Optional: cheapest known store from price history.
+  final String? cheapestKnownStore;
+
+  /// Optional: cheapest known price from price history.
+  final double? cheapestKnownPrice;
+
   ShoppingItem({
     this.id = '',
     required this.productName,
@@ -13,6 +28,11 @@ class ShoppingItem {
     required this.price,
     this.unitPrice,
     this.checked = false,
+    this.sourceMealId,
+    this.sourceMealLabel,
+    this.preferredStore,
+    this.cheapestKnownStore,
+    this.cheapestKnownPrice,
   }) : assert(price >= 0, 'price must be non-negative');
 
   @override
@@ -24,11 +44,17 @@ class ShoppingItem {
           store == other.store &&
           price == other.price &&
           unitPrice == other.unitPrice &&
-          checked == other.checked;
+          checked == other.checked &&
+          sourceMealId == other.sourceMealId &&
+          sourceMealLabel == other.sourceMealLabel &&
+          preferredStore == other.preferredStore &&
+          cheapestKnownStore == other.cheapestKnownStore &&
+          cheapestKnownPrice == other.cheapestKnownPrice;
 
   @override
-  int get hashCode =>
-      Object.hash(id, productName, store, price, unitPrice, checked);
+  int get hashCode => Object.hash(id, productName, store, price, unitPrice,
+      checked, sourceMealId, sourceMealLabel, preferredStore,
+      cheapestKnownStore, cheapestKnownPrice);
 
   factory ShoppingItem.fromJson(Map<String, dynamic> json) => ShoppingItem(
         id: json['id'] as String? ?? '',
@@ -37,6 +63,12 @@ class ShoppingItem {
         price: (json['price'] as num?)?.toDouble() ?? 0,
         unitPrice: json['unitPrice'] as String?,
         checked: json['checked'] as bool? ?? false,
+        sourceMealId: json['sourceMealId'] as String?,
+        sourceMealLabel: json['sourceMealLabel'] as String?,
+        preferredStore: json['preferredStore'] as String?,
+        cheapestKnownStore: json['cheapestKnownStore'] as String?,
+        cheapestKnownPrice:
+            (json['cheapestKnownPrice'] as num?)?.toDouble(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -46,6 +78,13 @@ class ShoppingItem {
         'price': price,
         if (unitPrice != null) 'unitPrice': unitPrice,
         'checked': checked,
+        if (sourceMealId != null) 'sourceMealId': sourceMealId,
+        if (sourceMealLabel != null) 'sourceMealLabel': sourceMealLabel,
+        if (preferredStore != null) 'preferredStore': preferredStore,
+        if (cheapestKnownStore != null)
+          'cheapestKnownStore': cheapestKnownStore,
+        if (cheapestKnownPrice != null)
+          'cheapestKnownPrice': cheapestKnownPrice,
       };
 
   factory ShoppingItem.fromSupabase(Map<String, dynamic> row) => ShoppingItem(
@@ -55,6 +94,12 @@ class ShoppingItem {
         price: (row['price'] as num?)?.toDouble() ?? 0,
         unitPrice: row['unit_price'] as String?,
         checked: row['checked'] as bool? ?? false,
+        sourceMealId: row['source_meal_id'] as String?,
+        sourceMealLabel: row['source_meal_label'] as String?,
+        preferredStore: row['preferred_store'] as String?,
+        cheapestKnownStore: row['cheapest_known_store'] as String?,
+        cheapestKnownPrice:
+            (row['cheapest_known_price'] as num?)?.toDouble(),
       );
 
   Map<String, dynamic> toSupabase(String householdId) => {
@@ -64,5 +109,12 @@ class ShoppingItem {
         'price': price,
         if (unitPrice != null) 'unit_price': unitPrice,
         'checked': checked,
+        if (sourceMealId != null) 'source_meal_id': sourceMealId,
+        if (sourceMealLabel != null) 'source_meal_label': sourceMealLabel,
+        if (preferredStore != null) 'preferred_store': preferredStore,
+        if (cheapestKnownStore != null)
+          'cheapest_known_store': cheapestKnownStore,
+        if (cheapestKnownPrice != null)
+          'cheapest_known_price': cheapestKnownPrice,
       };
 }

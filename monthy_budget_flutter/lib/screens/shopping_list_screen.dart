@@ -4,7 +4,10 @@ import '../models/shopping_item.dart';
 import '../models/purchase_record.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
+import '../utils/shopping_grouping.dart';
 import '../onboarding/shopping_tour.dart';
+import '../widgets/shopping_group_toggle.dart';
+import '../widgets/shopping_list_grouped_view.dart';
 
 class ShoppingListScreen extends StatefulWidget {
   final List<ShoppingItem> items;
@@ -36,6 +39,7 @@ class ShoppingListScreen extends StatefulWidget {
 
 class _ShoppingListScreenState extends State<ShoppingListScreen> {
   bool _tourShown = false;
+  ShoppingGroupMode _groupMode = ShoppingGroupMode.items;
 
   @override
   void initState() {
@@ -298,6 +302,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       appBar: _buildAppBar(),
       body: Column(
         children: [
+          ShoppingGroupToggle(
+            selected: _groupMode,
+            onChanged: (mode) => setState(() => _groupMode = mode),
+          ),
           Container(
             color: AppColors.surface(context),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -331,11 +339,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           ),
           Divider(height: 1, color: AppColors.surfaceVariant(context)),
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
-              itemCount: widget.items.length,
-              itemBuilder: (_, i) => _buildItemRow(widget.items[i], tourKey: i == 0 ? ShoppingTourKeys.shoppingItem : null),
-            ),
+            child: _buildListBody(l10n),
           ),
         ],
       ),
@@ -352,6 +356,39 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             )
           : null,
     );
+  }
+
+  Widget _buildListBody(S l10n) {
+    switch (_groupMode) {
+      case ShoppingGroupMode.items:
+        return ListView.builder(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+          itemCount: widget.items.length,
+          itemBuilder: (_, i) => _buildItemRow(widget.items[i], tourKey: i == 0 ? ShoppingTourKeys.shoppingItem : null),
+        );
+      case ShoppingGroupMode.meals:
+        final groups = groupByMeal(
+          widget.items,
+          ungroupedLabel: l10n.shoppingGroupOther,
+        );
+        return ShoppingListGroupedView(
+          groups: groups,
+          mode: _groupMode,
+          onToggleChecked: widget.onToggleChecked,
+          onRemove: widget.onRemove,
+        );
+      case ShoppingGroupMode.stores:
+        final groups = groupByStore(
+          widget.items,
+          ungroupedLabel: l10n.shoppingGroupOther,
+        );
+        return ShoppingListGroupedView(
+          groups: groups,
+          mode: _groupMode,
+          onToggleChecked: widget.onToggleChecked,
+          onRemove: widget.onRemove,
+        );
+    }
   }
 
   AppBar _buildAppBar() {
