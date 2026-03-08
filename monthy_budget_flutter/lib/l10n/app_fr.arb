@@ -344,6 +344,7 @@
   "cmdExecutionFailed": "J'ai compris la demande, mais je n'ai pas pu l'executer. Reessayez.",
   "cmdNotUnderstood": "Je n'ai pas compris. Pouvez-vous reformuler ?",
   "cmdUndo": "Annuler",
+  "expenseDeleted": "Dépense supprimée",
   "cmdCapabilitiesCta": "Que puis-je faire ?",
   "cmdCapabilitiesTitle": "Actions disponibles",
   "cmdCapabilitiesSubtitle": "Voici les actions que l'assistant prend en charge pour le moment.",

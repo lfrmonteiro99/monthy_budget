@@ -505,6 +505,7 @@
   "cmdExecutionFailed": "Percebi o pedido, mas nao consegui executar. Tenta novamente.",
   "cmdNotUnderstood": "Nao percebi. Podes reformular?",
   "cmdUndo": "Desfazer",
+  "expenseDeleted": "Despesa eliminada",
   "cmdCapabilitiesCta": "O que posso fazer?",
   "cmdCapabilitiesTitle": "Acoes disponiveis",
   "cmdCapabilitiesSubtitle": "Estas sao as acoes que o assistente suporta neste momento.",
