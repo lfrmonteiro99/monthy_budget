@@ -668,6 +668,9 @@ class SFr extends S {
   String get cmdUndo => 'Annuler';
 
   @override
+  String get expenseDeleted => 'Dépense supprimée';
+
+  @override
   String get cmdCapabilitiesCta => 'Que puis-je faire ?';
 
   @override
@@ -2122,7 +2125,14 @@ class SFr extends S {
       'Vous pouvez ajouter d\'autres sources de revenus plus tard.';
 
   @override
-  String get setupWizardSalarySkip => 'Passer cette Ã©tape';
+  String get setupWizardSalaryRequired => 'Veuillez entrer votre salaire';
+
+  @override
+  String get setupWizardSalaryPositive =>
+      'Le salaire doit être un nombre positif';
+
+  @override
+  String get setupWizardSalarySkip => 'Passer cette étape';
 
   @override
   String get setupWizardExpensesTitle => 'Vos dÃ©penses mensuelles';
@@ -2505,24 +2515,6 @@ class SFr extends S {
 
   @override
   String get savingsGoalOverdue => 'En retard';
-
-  @override
-  String get savingsGoalHowItWorksTitle => 'Comment ça marche ?';
-
-  @override
-  String get savingsGoalHowItWorksStep1 => 'Créez un objectif avec un nom et le montant à atteindre (ex : \"Vacances — 2 000 €\").';
-
-  @override
-  String get savingsGoalHowItWorksStep2 => 'Définissez éventuellement une date limite comme référence.';
-
-  @override
-  String get savingsGoalHowItWorksStep3 => 'Chaque fois que vous économisez, touchez l\'objectif et enregistrez une contribution avec le montant et la date.';
-
-  @override
-  String get savingsGoalHowItWorksStep4 => 'Suivez votre progression : la barre montre combien vous avez épargné et la projection estime quand vous atteindrez votre objectif.';
-
-  @override
-  String get savingsGoalDashboardHint => 'Touchez un objectif pour voir les détails et enregistrer des contributions.';
 
   @override
   String get mealCostReconciliation => 'CoÃ»ts des Repas';
@@ -3630,4 +3622,92 @@ class SFr extends S {
 
   @override
   String get helperWizardTelecom => 'Internet, téléphone et TV mensuels';
+
+  @override
+  String get savingsGoalHowItWorksTitle => 'Comment ça marche ?';
+
+  @override
+  String get savingsGoalHowItWorksStep1 =>
+      'Créez un objectif avec un nom et le montant à atteindre (ex : \"Vacances — 2 000 €\").';
+
+  @override
+  String get savingsGoalHowItWorksStep2 =>
+      'Définissez éventuellement une date limite comme référence.';
+
+  @override
+  String get savingsGoalHowItWorksStep3 =>
+      'Chaque fois que vous économisez, touchez l\'objectif et enregistrez une contribution avec le montant et la date.';
+
+  @override
+  String get savingsGoalHowItWorksStep4 =>
+      'Suivez votre progression : la barre montre combien vous avez épargné et la projection estime quand vous atteindrez votre objectif.';
+
+  @override
+  String get savingsGoalDashboardHint =>
+      'Touchez un objectif pour voir les détails et enregistrer des contributions.';
+
+  @override
+  String get rateLimitMessage =>
+      'Veuillez patienter un moment avant de réessayer';
+
+  @override
+  String get pantryPickerTitle => 'Sélecteur de Garde-Manger';
+
+  @override
+  String get pantrySearchHint => 'Rechercher des ingrédients...';
+
+  @override
+  String get pantryTabAlwaysHave => 'Toujours en Stock';
+
+  @override
+  String get pantryTabThisWeek => 'Cette Semaine';
+
+  @override
+  String pantrySummaryLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count articles en garde-manger',
+      one: '1 article en garde-manger',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pantryEdit => 'Modifier';
+
+  @override
+  String get pantryUseWhatWeHave => 'Utiliser Ce Qu\'on A';
+
+  @override
+  String get pantryMarkAtHome => 'Déjà à la maison';
+
+  @override
+  String get pantryHaveIt => 'J\'en ai';
+
+  @override
+  String pantryCoverageLabel(int pct) {
+    return '$pct% couvert par le garde-manger';
+  }
+
+  @override
+  String get pantryStaples => 'ESSENTIELS (TOUJOURS EN STOCK)';
+
+  @override
+  String get pantryWeekly => 'GARDE-MANGER DE LA SEMAINE';
+
+  @override
+  String pantryAddedToWeekly(String name) {
+    return '$name ajouté au garde-manger hebdomadaire';
+  }
+
+  @override
+  String pantryRemovedFromList(String name) {
+    return '$name retiré de la liste (déjà à la maison)';
+  }
+
+  @override
+  String pantryMarkedAtHome(String name) {
+    return '$name marqué comme déjà à la maison';
+  }
 }

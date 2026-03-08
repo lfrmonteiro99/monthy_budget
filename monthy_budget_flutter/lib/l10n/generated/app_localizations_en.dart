@@ -663,6 +663,9 @@ class SEn extends S {
   String get cmdUndo => 'Undo';
 
   @override
+  String get expenseDeleted => 'Expense deleted';
+
+  @override
   String get cmdCapabilitiesCta => 'What can I do?';
 
   @override
@@ -2108,6 +2111,12 @@ class SEn extends S {
       'You can add more income sources later.';
 
   @override
+  String get setupWizardSalaryRequired => 'Please enter your salary';
+
+  @override
+  String get setupWizardSalaryPositive => 'Salary must be a positive number';
+
+  @override
   String get setupWizardSalarySkip => 'Skip this step';
 
   @override
@@ -2490,24 +2499,6 @@ class SEn extends S {
 
   @override
   String get savingsGoalOverdue => 'Overdue';
-
-  @override
-  String get savingsGoalHowItWorksTitle => 'How does it work?';
-
-  @override
-  String get savingsGoalHowItWorksStep1 => 'Create a goal with a name and the amount you want to save (e.g. \"Vacation — €2,000\").';
-
-  @override
-  String get savingsGoalHowItWorksStep2 => 'Optionally set a deadline to have a target date.';
-
-  @override
-  String get savingsGoalHowItWorksStep3 => 'Whenever you save money, tap the goal and record a contribution with the amount and date.';
-
-  @override
-  String get savingsGoalHowItWorksStep4 => 'Track your progress: the bar shows how much you\'ve saved and the projection estimates when you\'ll reach your goal.';
-
-  @override
-  String get savingsGoalDashboardHint => 'Tap a goal to see details and record contributions.';
 
   @override
   String get mealCostReconciliation => 'Meal Costs';
@@ -3595,4 +3586,91 @@ class SEn extends S {
 
   @override
   String get helperWizardTelecom => 'Monthly internet, phone, TV';
+
+  @override
+  String get savingsGoalHowItWorksTitle => 'How does it work?';
+
+  @override
+  String get savingsGoalHowItWorksStep1 =>
+      'Create a goal with a name and the amount you want to save (e.g. \"Vacation — €2,000\").';
+
+  @override
+  String get savingsGoalHowItWorksStep2 =>
+      'Optionally set a deadline to have a target date.';
+
+  @override
+  String get savingsGoalHowItWorksStep3 =>
+      'Whenever you save money, tap the goal and record a contribution with the amount and date.';
+
+  @override
+  String get savingsGoalHowItWorksStep4 =>
+      'Track your progress: the bar shows how much you\'ve saved and the projection estimates when you\'ll reach your goal.';
+
+  @override
+  String get savingsGoalDashboardHint =>
+      'Tap a goal to see details and record contributions.';
+
+  @override
+  String get rateLimitMessage => 'Please wait a moment before trying again';
+
+  @override
+  String get pantryPickerTitle => 'Pantry Picker';
+
+  @override
+  String get pantrySearchHint => 'Search ingredients...';
+
+  @override
+  String get pantryTabAlwaysHave => 'Always Have';
+
+  @override
+  String get pantryTabThisWeek => 'This Week';
+
+  @override
+  String pantrySummaryLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pantry items',
+      one: '1 pantry item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pantryEdit => 'Edit';
+
+  @override
+  String get pantryUseWhatWeHave => 'Use What We Have';
+
+  @override
+  String get pantryMarkAtHome => 'Already at home';
+
+  @override
+  String get pantryHaveIt => 'Have it';
+
+  @override
+  String pantryCoverageLabel(int pct) {
+    return '$pct% covered by pantry';
+  }
+
+  @override
+  String get pantryStaples => 'STAPLES (ALWAYS HAVE)';
+
+  @override
+  String get pantryWeekly => 'THIS WEEK\'S PANTRY';
+
+  @override
+  String pantryAddedToWeekly(String name) {
+    return '$name added to weekly pantry';
+  }
+
+  @override
+  String pantryRemovedFromList(String name) {
+    return '$name removed from shopping list (already at home)';
+  }
+
+  @override
+  String pantryMarkedAtHome(String name) {
+    return '$name marked as already at home';
+  }
 }

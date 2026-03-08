@@ -11,6 +11,8 @@ class GroceryScreen extends StatefulWidget {
   final ValueChanged<ShoppingItem>? onAddToShoppingList;
   final bool showTour;
   final VoidCallback? onTourComplete;
+  final Set<String> weeklyPantryIds;
+  final ValueChanged<String>? onToggleWeeklyPantry;
 
   const GroceryScreen({
     super.key,
@@ -18,6 +20,8 @@ class GroceryScreen extends StatefulWidget {
     this.onAddToShoppingList,
     this.showTour = false,
     this.onTourComplete,
+    this.weeklyPantryIds = const {},
+    this.onToggleWeeklyPantry,
   });
 
   @override
@@ -321,6 +325,36 @@ class _GroceryScreenState extends State<GroceryScreen> {
                 color: AppColors.success(context)),
           ),
           const SizedBox(width: 10),
+          if (widget.onToggleWeeklyPantry != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: Tooltip(
+                message: l10n.pantryHaveIt,
+                child: SizedBox(
+                  width: 36,
+                  height: 36,
+                  child: Material(
+                    color: widget.weeklyPantryIds.contains(product.name.toLowerCase())
+                        ? AppColors.successBackground(context)
+                        : AppColors.surfaceVariant(context),
+                    borderRadius: BorderRadius.circular(10),
+                    child: InkWell(
+                      onTap: () => widget.onToggleWeeklyPantry!(product.name.toLowerCase()),
+                      borderRadius: BorderRadius.circular(10),
+                      child: Icon(
+                        widget.weeklyPantryIds.contains(product.name.toLowerCase())
+                            ? Icons.home
+                            : Icons.home_outlined,
+                        size: 18,
+                        color: widget.weeklyPantryIds.contains(product.name.toLowerCase())
+                            ? AppColors.success(context)
+                            : AppColors.textMuted(context),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           Semantics(
             button: true,
             label: l10n.addToList(product.name),

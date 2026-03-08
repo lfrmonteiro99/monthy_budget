@@ -2349,6 +2349,47 @@
   "@savingsGoalHowItWorksStep4": { "description": "How it works step 4" },
   "savingsGoalDashboardHint": "Toque num objetivo para ver detalhes e registar contribuições.",
   "@savingsGoalDashboardHint": { "description": "Dashboard hint text" },
-  "rateLimitMessage": "Por favor, aguarde um momento antes de tentar novamente"
+  "rateLimitMessage": "Por favor, aguarde um momento antes de tentar novamente",
+
+  "pantryPickerTitle": "Selecionar Despensa",
+  "pantrySearchHint": "Pesquisar ingredientes...",
+  "pantryTabAlwaysHave": "Sempre Tenho",
+  "pantryTabThisWeek": "Esta Semana",
+  "pantrySummaryLabel": "{count, plural, =1{1 item na despensa} other{{count} itens na despensa}}",
+  "@pantrySummaryLabel": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "pantryEdit": "Editar",
+  "pantryUseWhatWeHave": "Usar o Que Temos",
+  "pantryMarkAtHome": "Já tenho em casa",
+  "pantryHaveIt": "Tenho",
+  "pantryCoverageLabel": "{pct}% coberto pela despensa",
+  "@pantryCoverageLabel": {
+    "placeholders": {
+      "pct": { "type": "int" }
+    }
+  },
+  "pantryStaples": "ESSENCIAIS (SEMPRE EM STOCK)",
+  "pantryWeekly": "DESPENSA DESTA SEMANA",
+  "pantryAddedToWeekly": "{name} adicionado à despensa semanal",
+  "@pantryAddedToWeekly": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "pantryRemovedFromList": "{name} removido da lista (já em casa)",
+  "@pantryRemovedFromList": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "pantryMarkedAtHome": "{name} marcado como já em casa",
+  "@pantryMarkedAtHome": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
 }
 

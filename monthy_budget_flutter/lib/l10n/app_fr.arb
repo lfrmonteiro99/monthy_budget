@@ -1801,5 +1801,46 @@
   "@savingsGoalHowItWorksStep4": { "description": "How it works step 4" },
   "savingsGoalDashboardHint": "Touchez un objectif pour voir les détails et enregistrer des contributions.",
   "@savingsGoalDashboardHint": { "description": "Dashboard hint text" },
-  "rateLimitMessage": "Veuillez patienter un moment avant de réessayer"
+  "rateLimitMessage": "Veuillez patienter un moment avant de réessayer",
+
+  "pantryPickerTitle": "Sélecteur de Garde-Manger",
+  "pantrySearchHint": "Rechercher des ingrédients...",
+  "pantryTabAlwaysHave": "Toujours en Stock",
+  "pantryTabThisWeek": "Cette Semaine",
+  "pantrySummaryLabel": "{count, plural, =1{1 article en garde-manger} other{{count} articles en garde-manger}}",
+  "@pantrySummaryLabel": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "pantryEdit": "Modifier",
+  "pantryUseWhatWeHave": "Utiliser Ce Qu'on A",
+  "pantryMarkAtHome": "Déjà à la maison",
+  "pantryHaveIt": "J'en ai",
+  "pantryCoverageLabel": "{pct}% couvert par le garde-manger",
+  "@pantryCoverageLabel": {
+    "placeholders": {
+      "pct": { "type": "int" }
+    }
+  },
+  "pantryStaples": "ESSENTIELS (TOUJOURS EN STOCK)",
+  "pantryWeekly": "GARDE-MANGER DE LA SEMAINE",
+  "pantryAddedToWeekly": "{name} ajouté au garde-manger hebdomadaire",
+  "@pantryAddedToWeekly": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "pantryRemovedFromList": "{name} retiré de la liste (déjà à la maison)",
+  "@pantryRemovedFromList": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "pantryMarkedAtHome": "{name} marqué comme déjà à la maison",
+  "@pantryMarkedAtHome": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
 }

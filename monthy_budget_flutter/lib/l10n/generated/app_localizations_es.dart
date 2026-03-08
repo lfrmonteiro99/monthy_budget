@@ -665,6 +665,9 @@ class SEs extends S {
   String get cmdUndo => 'Deshacer';
 
   @override
+  String get expenseDeleted => 'Gasto eliminado';
+
+  @override
   String get cmdCapabilitiesCta => 'Que puedo hacer?';
 
   @override
@@ -2117,6 +2120,13 @@ class SEs extends S {
       'Puedes aÃ±adir mÃ¡s fuentes de ingreso mÃ¡s tarde.';
 
   @override
+  String get setupWizardSalaryRequired => 'Por favor ingrese su salario';
+
+  @override
+  String get setupWizardSalaryPositive =>
+      'El salario debe ser un número positivo';
+
+  @override
   String get setupWizardSalarySkip => 'Saltar este paso';
 
   @override
@@ -2500,24 +2510,6 @@ class SEs extends S {
 
   @override
   String get savingsGoalOverdue => 'Vencido';
-
-  @override
-  String get savingsGoalHowItWorksTitle => '¿Cómo funciona?';
-
-  @override
-  String get savingsGoalHowItWorksStep1 => 'Crea un objetivo con un nombre y el monto que quieres ahorrar (ej: \"Vacaciones — 2 000 €\").';
-
-  @override
-  String get savingsGoalHowItWorksStep2 => 'Opcionalmente define una fecha límite como referencia.';
-
-  @override
-  String get savingsGoalHowItWorksStep3 => 'Cada vez que ahorres dinero, toca el objetivo y registra una contribución con el monto y la fecha.';
-
-  @override
-  String get savingsGoalHowItWorksStep4 => 'Sigue tu progreso: la barra muestra cuánto has ahorrado y la proyección estima cuándo alcanzarás tu objetivo.';
-
-  @override
-  String get savingsGoalDashboardHint => 'Toca un objetivo para ver detalles y registrar contribuciones.';
 
   @override
   String get mealCostReconciliation => 'Costes de Comidas';
@@ -3624,4 +3616,92 @@ class SEs extends S {
 
   @override
   String get helperWizardTelecom => 'Internet, teléfono y TV mensuales';
+
+  @override
+  String get savingsGoalHowItWorksTitle => '¿Cómo funciona?';
+
+  @override
+  String get savingsGoalHowItWorksStep1 =>
+      'Crea un objetivo con un nombre y el monto que quieres ahorrar (ej: \"Vacaciones — 2 000 €\").';
+
+  @override
+  String get savingsGoalHowItWorksStep2 =>
+      'Opcionalmente define una fecha límite como referencia.';
+
+  @override
+  String get savingsGoalHowItWorksStep3 =>
+      'Cada vez que ahorres dinero, toca el objetivo y registra una contribución con el monto y la fecha.';
+
+  @override
+  String get savingsGoalHowItWorksStep4 =>
+      'Sigue tu progreso: la barra muestra cuánto has ahorrado y la proyección estima cuándo alcanzarás tu objetivo.';
+
+  @override
+  String get savingsGoalDashboardHint =>
+      'Toca un objetivo para ver detalles y registrar contribuciones.';
+
+  @override
+  String get rateLimitMessage =>
+      'Por favor, espera un momento antes de intentarlo de nuevo';
+
+  @override
+  String get pantryPickerTitle => 'Selector de Despensa';
+
+  @override
+  String get pantrySearchHint => 'Buscar ingredientes...';
+
+  @override
+  String get pantryTabAlwaysHave => 'Siempre Tengo';
+
+  @override
+  String get pantryTabThisWeek => 'Esta Semana';
+
+  @override
+  String pantrySummaryLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count artículos en despensa',
+      one: '1 artículo en despensa',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pantryEdit => 'Editar';
+
+  @override
+  String get pantryUseWhatWeHave => 'Usar Lo Que Tenemos';
+
+  @override
+  String get pantryMarkAtHome => 'Ya lo tengo en casa';
+
+  @override
+  String get pantryHaveIt => 'Lo tengo';
+
+  @override
+  String pantryCoverageLabel(int pct) {
+    return '$pct% cubierto por la despensa';
+  }
+
+  @override
+  String get pantryStaples => 'BÁSICOS (SIEMPRE EN STOCK)';
+
+  @override
+  String get pantryWeekly => 'DESPENSA DE ESTA SEMANA';
+
+  @override
+  String pantryAddedToWeekly(String name) {
+    return '$name añadido a la despensa semanal';
+  }
+
+  @override
+  String pantryRemovedFromList(String name) {
+    return '$name eliminado de la lista (ya en casa)';
+  }
+
+  @override
+  String pantryMarkedAtHome(String name) {
+    return '$name marcado como ya en casa';
+  }
 }

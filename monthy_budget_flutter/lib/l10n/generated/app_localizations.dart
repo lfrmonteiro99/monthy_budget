@@ -1301,6 +1301,12 @@ abstract class S {
   /// **'Desfazer'**
   String get cmdUndo;
 
+  /// No description provided for @expenseDeleted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesa eliminada'**
+  String get expenseDeleted;
+
   /// No description provided for @cmdCapabilitiesCta.
   ///
   /// In pt, this message translates to:
@@ -3941,6 +3947,18 @@ abstract class S {
   /// **'Pode adicionar mais fontes de rendimento mais tarde.'**
   String get setupWizardSalaryMoreLater;
 
+  /// No description provided for @setupWizardSalaryRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Por favor insira o seu salário'**
+  String get setupWizardSalaryRequired;
+
+  /// No description provided for @setupWizardSalaryPositive.
+  ///
+  /// In pt, this message translates to:
+  /// **'O salário deve ser um número positivo'**
+  String get setupWizardSalaryPositive;
+
   /// Skip button on salary step
   ///
   /// In pt, this message translates to:
@@ -4648,42 +4666,6 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Prazo ultrapassado'**
   String get savingsGoalOverdue;
-
-  /// How it works section title
-  ///
-  /// In pt, this message translates to:
-  /// **'Como funciona?'**
-  String get savingsGoalHowItWorksTitle;
-
-  /// How it works step 1
-  ///
-  /// In pt, this message translates to:
-  /// **'Crie um objetivo com um nome e o valor que pretende atingir (ex: "Férias — 2 000 €").'**
-  String get savingsGoalHowItWorksStep1;
-
-  /// How it works step 2
-  ///
-  /// In pt, this message translates to:
-  /// **'Opcionalmente defina uma data limite para ter um prazo de referência.'**
-  String get savingsGoalHowItWorksStep2;
-
-  /// How it works step 3
-  ///
-  /// In pt, this message translates to:
-  /// **'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.'**
-  String get savingsGoalHowItWorksStep3;
-
-  /// How it works step 4
-  ///
-  /// In pt, this message translates to:
-  /// **'Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.'**
-  String get savingsGoalHowItWorksStep4;
-
-  /// Dashboard hint text
-  ///
-  /// In pt, this message translates to:
-  /// **'Toque num objetivo para ver detalhes e registar contribuições.'**
-  String get savingsGoalDashboardHint;
 
   /// Meal cost reconciliation title
   ///
@@ -6574,6 +6556,138 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Internet, telefone e TV mensais'**
   String get helperWizardTelecom;
+
+  /// How it works section title
+  ///
+  /// In pt, this message translates to:
+  /// **'Como funciona?'**
+  String get savingsGoalHowItWorksTitle;
+
+  /// How it works step 1
+  ///
+  /// In pt, this message translates to:
+  /// **'Crie um objetivo com um nome e o valor que pretende atingir (ex: \"Férias — 2 000 €\").'**
+  String get savingsGoalHowItWorksStep1;
+
+  /// How it works step 2
+  ///
+  /// In pt, this message translates to:
+  /// **'Opcionalmente defina uma data limite para ter um prazo de referência.'**
+  String get savingsGoalHowItWorksStep2;
+
+  /// How it works step 3
+  ///
+  /// In pt, this message translates to:
+  /// **'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.'**
+  String get savingsGoalHowItWorksStep3;
+
+  /// How it works step 4
+  ///
+  /// In pt, this message translates to:
+  /// **'Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.'**
+  String get savingsGoalHowItWorksStep4;
+
+  /// Dashboard hint text
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque num objetivo para ver detalhes e registar contribuições.'**
+  String get savingsGoalDashboardHint;
+
+  /// No description provided for @rateLimitMessage.
+  ///
+  /// In pt, this message translates to:
+  /// **'Por favor, aguarde um momento antes de tentar novamente'**
+  String get rateLimitMessage;
+
+  /// No description provided for @pantryPickerTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecionar Despensa'**
+  String get pantryPickerTitle;
+
+  /// No description provided for @pantrySearchHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pesquisar ingredientes...'**
+  String get pantrySearchHint;
+
+  /// No description provided for @pantryTabAlwaysHave.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sempre Tenho'**
+  String get pantryTabAlwaysHave;
+
+  /// No description provided for @pantryTabThisWeek.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta Semana'**
+  String get pantryTabThisWeek;
+
+  /// No description provided for @pantrySummaryLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 item na despensa} other{{count} itens na despensa}}'**
+  String pantrySummaryLabel(int count);
+
+  /// No description provided for @pantryEdit.
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar'**
+  String get pantryEdit;
+
+  /// No description provided for @pantryUseWhatWeHave.
+  ///
+  /// In pt, this message translates to:
+  /// **'Usar o Que Temos'**
+  String get pantryUseWhatWeHave;
+
+  /// No description provided for @pantryMarkAtHome.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já tenho em casa'**
+  String get pantryMarkAtHome;
+
+  /// No description provided for @pantryHaveIt.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tenho'**
+  String get pantryHaveIt;
+
+  /// No description provided for @pantryCoverageLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'{pct}% coberto pela despensa'**
+  String pantryCoverageLabel(int pct);
+
+  /// No description provided for @pantryStaples.
+  ///
+  /// In pt, this message translates to:
+  /// **'ESSENCIAIS (SEMPRE EM STOCK)'**
+  String get pantryStaples;
+
+  /// No description provided for @pantryWeekly.
+  ///
+  /// In pt, this message translates to:
+  /// **'DESPENSA DESTA SEMANA'**
+  String get pantryWeekly;
+
+  /// No description provided for @pantryAddedToWeekly.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} adicionado à despensa semanal'**
+  String pantryAddedToWeekly(String name);
+
+  /// No description provided for @pantryRemovedFromList.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} removido da lista (já em casa)'**
+  String pantryRemovedFromList(String name);
+
+  /// No description provided for @pantryMarkedAtHome.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} marcado como já em casa'**
+  String pantryMarkedAtHome(String name);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

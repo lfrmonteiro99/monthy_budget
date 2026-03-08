@@ -665,6 +665,9 @@ class SPt extends S {
   String get cmdUndo => 'Desfazer';
 
   @override
+  String get expenseDeleted => 'Despesa eliminada';
+
+  @override
   String get cmdCapabilitiesCta => 'O que posso fazer?';
 
   @override
@@ -2114,6 +2117,13 @@ class SPt extends S {
       'Pode adicionar mais fontes de rendimento mais tarde.';
 
   @override
+  String get setupWizardSalaryRequired => 'Por favor insira o seu salário';
+
+  @override
+  String get setupWizardSalaryPositive =>
+      'O salário deve ser um número positivo';
+
+  @override
   String get setupWizardSalarySkip => 'Saltar este passo';
 
   @override
@@ -2497,24 +2507,6 @@ class SPt extends S {
 
   @override
   String get savingsGoalOverdue => 'Prazo ultrapassado';
-
-  @override
-  String get savingsGoalHowItWorksTitle => 'Como funciona?';
-
-  @override
-  String get savingsGoalHowItWorksStep1 => 'Crie um objetivo com um nome e o valor que pretende atingir (ex: \"Férias — 2 000 €\").';
-
-  @override
-  String get savingsGoalHowItWorksStep2 => 'Opcionalmente defina uma data limite para ter um prazo de referência.';
-
-  @override
-  String get savingsGoalHowItWorksStep3 => 'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.';
-
-  @override
-  String get savingsGoalHowItWorksStep4 => 'Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.';
-
-  @override
-  String get savingsGoalDashboardHint => 'Toque num objetivo para ver detalhes e registar contribuições.';
 
   @override
   String get mealCostReconciliation => 'Custos de Refeições';
@@ -3617,4 +3609,92 @@ class SPt extends S {
 
   @override
   String get helperWizardTelecom => 'Internet, telefone e TV mensais';
+
+  @override
+  String get savingsGoalHowItWorksTitle => 'Como funciona?';
+
+  @override
+  String get savingsGoalHowItWorksStep1 =>
+      'Crie um objetivo com um nome e o valor que pretende atingir (ex: \"Férias — 2 000 €\").';
+
+  @override
+  String get savingsGoalHowItWorksStep2 =>
+      'Opcionalmente defina uma data limite para ter um prazo de referência.';
+
+  @override
+  String get savingsGoalHowItWorksStep3 =>
+      'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.';
+
+  @override
+  String get savingsGoalHowItWorksStep4 =>
+      'Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.';
+
+  @override
+  String get savingsGoalDashboardHint =>
+      'Toque num objetivo para ver detalhes e registar contribuições.';
+
+  @override
+  String get rateLimitMessage =>
+      'Por favor, aguarde um momento antes de tentar novamente';
+
+  @override
+  String get pantryPickerTitle => 'Selecionar Despensa';
+
+  @override
+  String get pantrySearchHint => 'Pesquisar ingredientes...';
+
+  @override
+  String get pantryTabAlwaysHave => 'Sempre Tenho';
+
+  @override
+  String get pantryTabThisWeek => 'Esta Semana';
+
+  @override
+  String pantrySummaryLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count itens na despensa',
+      one: '1 item na despensa',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pantryEdit => 'Editar';
+
+  @override
+  String get pantryUseWhatWeHave => 'Usar o Que Temos';
+
+  @override
+  String get pantryMarkAtHome => 'Já tenho em casa';
+
+  @override
+  String get pantryHaveIt => 'Tenho';
+
+  @override
+  String pantryCoverageLabel(int pct) {
+    return '$pct% coberto pela despensa';
+  }
+
+  @override
+  String get pantryStaples => 'ESSENCIAIS (SEMPRE EM STOCK)';
+
+  @override
+  String get pantryWeekly => 'DESPENSA DESTA SEMANA';
+
+  @override
+  String pantryAddedToWeekly(String name) {
+    return '$name adicionado à despensa semanal';
+  }
+
+  @override
+  String pantryRemovedFromList(String name) {
+    return '$name removido da lista (já em casa)';
+  }
+
+  @override
+  String pantryMarkedAtHome(String name) {
+    return '$name marcado como já em casa';
+  }
 }
