@@ -1256,11 +1256,23 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   Future<void> _deleteActualExpense(String id) async {
+    final deleted = _actualExpenses.where((e) => e.id == id).firstOrNull;
     setState(() {
       _actualExpenses = _actualExpenses.where((e) => e.id != id).toList();
     });
     _refreshNotificationSchedules();
     await _actualExpenseService.delete(id);
+    if (!mounted || deleted == null) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(S.of(context).expenseDeleted),
+        behavior: SnackBarBehavior.floating,
+        action: SnackBarAction(
+          label: S.of(context).cmdUndo,
+          onPressed: () => _addActualExpense(deleted),
+        ),
+      ),
+    );
   }
 
   void _openAddExpenseSheet() async {
