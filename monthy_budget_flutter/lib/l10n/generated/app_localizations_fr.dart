@@ -668,6 +668,9 @@ class SFr extends S {
   String get cmdUndo => 'Annuler';
 
   @override
+  String get expenseDeleted => 'Dépense supprimée';
+
+  @override
   String get cmdCapabilitiesCta => 'Que puis-je faire ?';
 
   @override
@@ -2122,7 +2125,14 @@ class SFr extends S {
       'Vous pouvez ajouter d\'autres sources de revenus plus tard.';
 
   @override
-  String get setupWizardSalarySkip => 'Passer cette Ã©tape';
+  String get setupWizardSalaryRequired => 'Veuillez entrer votre salaire';
+
+  @override
+  String get setupWizardSalaryPositive =>
+      'Le salaire doit être un nombre positif';
+
+  @override
+  String get setupWizardSalarySkip => 'Passer cette étape';
 
   @override
   String get setupWizardExpensesTitle => 'Vos dÃ©penses mensuelles';
@@ -2505,24 +2515,6 @@ class SFr extends S {
 
   @override
   String get savingsGoalOverdue => 'En retard';
-
-  @override
-  String get savingsGoalHowItWorksTitle => 'Comment ça marche ?';
-
-  @override
-  String get savingsGoalHowItWorksStep1 => 'Créez un objectif avec un nom et le montant à atteindre (ex : \"Vacances — 2 000 €\").';
-
-  @override
-  String get savingsGoalHowItWorksStep2 => 'Définissez éventuellement une date limite comme référence.';
-
-  @override
-  String get savingsGoalHowItWorksStep3 => 'Chaque fois que vous économisez, touchez l\'objectif et enregistrez une contribution avec le montant et la date.';
-
-  @override
-  String get savingsGoalHowItWorksStep4 => 'Suivez votre progression : la barre montre combien vous avez épargné et la projection estime quand vous atteindrez votre objectif.';
-
-  @override
-  String get savingsGoalDashboardHint => 'Touchez un objectif pour voir les détails et enregistrer des contributions.';
 
   @override
   String get mealCostReconciliation => 'CoÃ»ts des Repas';
@@ -3630,4 +3622,103 @@ class SFr extends S {
 
   @override
   String get helperWizardTelecom => 'Internet, téléphone et TV mensuels';
+
+  @override
+  String get savingsGoalHowItWorksTitle => 'Comment ça marche ?';
+
+  @override
+  String get savingsGoalHowItWorksStep1 =>
+      'Créez un objectif avec un nom et le montant à atteindre (ex : \"Vacances — 2 000 €\").';
+
+  @override
+  String get savingsGoalHowItWorksStep2 =>
+      'Définissez éventuellement une date limite comme référence.';
+
+  @override
+  String get savingsGoalHowItWorksStep3 =>
+      'Chaque fois que vous économisez, touchez l\'objectif et enregistrez une contribution avec le montant et la date.';
+
+  @override
+  String get savingsGoalHowItWorksStep4 =>
+      'Suivez votre progression : la barre montre combien vous avez épargné et la projection estime quand vous atteindrez votre objectif.';
+
+  @override
+  String get savingsGoalDashboardHint =>
+      'Touchez un objectif pour voir les détails et enregistrer des contributions.';
+
+  @override
+  String get rateLimitMessage =>
+      'Veuillez patienter un moment avant de réessayer';
+
+  @override
+  String get confidenceCenterTitle => 'Centre de Confiance';
+
+  @override
+  String get confidenceSyncHealth => 'État de Synchronisation';
+
+  @override
+  String get confidenceDataAlerts => 'Alertes de Qualité des Données';
+
+  @override
+  String get confidenceRecommendedActions => 'Actions Recommandées';
+
+  @override
+  String get confidenceCenterSubtitle =>
+      'Fraîcheur des données et santé du système';
+
+  @override
+  String get confidenceCenterTile => 'Centre de Confiance';
+
+  @override
+  String get mealBudgetInsightTitle => 'Aperçu du Budget';
+
+  @override
+  String get mealBudgetStatusSafe => 'En bonne voie';
+
+  @override
+  String get mealBudgetStatusWatch => 'Attention';
+
+  @override
+  String get mealBudgetStatusOver => 'Hors budget';
+
+  @override
+  String get mealBudgetWeeklyCost => 'Coût hebdomadaire estimé';
+
+  @override
+  String get mealBudgetProjectedMonthly => 'Projection mensuelle';
+
+  @override
+  String get mealBudgetMonthlyBudget => 'Budget alimentaire mensuel';
+
+  @override
+  String get mealBudgetRemaining => 'Budget restant';
+
+  @override
+  String get mealBudgetTopExpensive => 'Repas les plus chers';
+
+  @override
+  String get mealBudgetSuggestedSwaps => 'Échanges moins chers suggérés';
+
+  @override
+  String get mealBudgetViewDetails => 'Voir les détails';
+
+  @override
+  String get mealBudgetApplySwap => 'Appliquer';
+
+  @override
+  String mealBudgetSwapSavings(String amount) {
+    return 'Économisez $amount';
+  }
+
+  @override
+  String get mealBudgetDailyBreakdown => 'Répartition quotidienne des coûts';
+
+  @override
+  String get mealBudgetShoppingImpact => 'Impact sur les courses';
+
+  @override
+  String get mealBudgetUniqueIngredients => 'Ingrédients uniques';
+
+  @override
+  String get mealBudgetEstShoppingCost => 'Coût estimé des courses';
 }

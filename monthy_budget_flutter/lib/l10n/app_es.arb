@@ -1808,5 +1808,28 @@
   "confidenceDataAlerts": "Alertas de Calidad de Datos",
   "confidenceRecommendedActions": "Acciones Recomendadas",
   "confidenceCenterSubtitle": "Frescura de datos y salud del sistema",
-  "confidenceCenterTile": "Centro de Confianza"
+  "confidenceCenterTile": "Centro de Confianza",
+
+  "mealBudgetInsightTitle": "Visión del Presupuesto",
+  "mealBudgetStatusSafe": "En camino",
+  "mealBudgetStatusWatch": "Atención",
+  "mealBudgetStatusOver": "Sobre presupuesto",
+  "mealBudgetWeeklyCost": "Coste semanal estimado",
+  "mealBudgetProjectedMonthly": "Proyección mensual",
+  "mealBudgetMonthlyBudget": "Presupuesto mensual de alimentación",
+  "mealBudgetRemaining": "Presupuesto restante",
+  "mealBudgetTopExpensive": "Comidas más caras",
+  "mealBudgetSuggestedSwaps": "Cambios más baratos sugeridos",
+  "mealBudgetViewDetails": "Ver detalles",
+  "mealBudgetApplySwap": "Aplicar",
+  "mealBudgetSwapSavings": "Ahorra {amount}",
+  "@mealBudgetSwapSavings": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "mealBudgetDailyBreakdown": "Desglose de coste diario",
+  "mealBudgetShoppingImpact": "Impacto en las compras",
+  "mealBudgetUniqueIngredients": "Ingredientes únicos",
+  "mealBudgetEstShoppingCost": "Coste estimado de compras"
 }
