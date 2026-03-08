@@ -6634,6 +6634,108 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Por favor, aguarde um momento antes de tentar novamente'**
   String get rateLimitMessage;
+
+  /// No description provided for @mealBudgetInsightTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Visão do Orçamento'**
+  String get mealBudgetInsightTitle;
+
+  /// No description provided for @mealBudgetStatusSafe.
+  ///
+  /// In pt, this message translates to:
+  /// **'No caminho'**
+  String get mealBudgetStatusSafe;
+
+  /// No description provided for @mealBudgetStatusWatch.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atenção'**
+  String get mealBudgetStatusWatch;
+
+  /// No description provided for @mealBudgetStatusOver.
+  ///
+  /// In pt, this message translates to:
+  /// **'Acima do orçamento'**
+  String get mealBudgetStatusOver;
+
+  /// No description provided for @mealBudgetWeeklyCost.
+  ///
+  /// In pt, this message translates to:
+  /// **'Custo semanal estimado'**
+  String get mealBudgetWeeklyCost;
+
+  /// No description provided for @mealBudgetProjectedMonthly.
+  ///
+  /// In pt, this message translates to:
+  /// **'Projeção mensal'**
+  String get mealBudgetProjectedMonthly;
+
+  /// No description provided for @mealBudgetMonthlyBudget.
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamento mensal de alimentação'**
+  String get mealBudgetMonthlyBudget;
+
+  /// No description provided for @mealBudgetRemaining.
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamento restante'**
+  String get mealBudgetRemaining;
+
+  /// No description provided for @mealBudgetTopExpensive.
+  ///
+  /// In pt, this message translates to:
+  /// **'Refeições mais caras'**
+  String get mealBudgetTopExpensive;
+
+  /// No description provided for @mealBudgetSuggestedSwaps.
+  ///
+  /// In pt, this message translates to:
+  /// **'Trocas mais baratas sugeridas'**
+  String get mealBudgetSuggestedSwaps;
+
+  /// No description provided for @mealBudgetViewDetails.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver detalhes'**
+  String get mealBudgetViewDetails;
+
+  /// No description provided for @mealBudgetApplySwap.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aplicar'**
+  String get mealBudgetApplySwap;
+
+  /// No description provided for @mealBudgetSwapSavings.
+  ///
+  /// In pt, this message translates to:
+  /// **'Poupa {amount}'**
+  String mealBudgetSwapSavings(String amount);
+
+  /// No description provided for @mealBudgetDailyBreakdown.
+  ///
+  /// In pt, this message translates to:
+  /// **'Custo diário detalhado'**
+  String get mealBudgetDailyBreakdown;
+
+  /// No description provided for @mealBudgetShoppingImpact.
+  ///
+  /// In pt, this message translates to:
+  /// **'Impacto nas compras'**
+  String get mealBudgetShoppingImpact;
+
+  /// No description provided for @mealBudgetUniqueIngredients.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ingredientes únicos'**
+  String get mealBudgetUniqueIngredients;
+
+  /// No description provided for @mealBudgetEstShoppingCost.
+  ///
+  /// In pt, this message translates to:
+  /// **'Custo estimado de compras'**
+  String get mealBudgetEstShoppingCost;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

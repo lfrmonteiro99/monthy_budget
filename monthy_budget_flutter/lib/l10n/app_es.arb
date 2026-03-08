@@ -1824,5 +1824,28 @@
   "@savingsGoalHowItWorksStep4": { "description": "How it works step 4" },
   "savingsGoalDashboardHint": "Toca un objetivo para ver detalles y registrar contribuciones.",
   "@savingsGoalDashboardHint": { "description": "Dashboard hint text" },
-  "rateLimitMessage": "Por favor, espera un momento antes de intentarlo de nuevo"
+  "rateLimitMessage": "Por favor, espera un momento antes de intentarlo de nuevo",
+
+  "mealBudgetInsightTitle": "Visión del Presupuesto",
+  "mealBudgetStatusSafe": "En camino",
+  "mealBudgetStatusWatch": "Atención",
+  "mealBudgetStatusOver": "Sobre presupuesto",
+  "mealBudgetWeeklyCost": "Coste semanal estimado",
+  "mealBudgetProjectedMonthly": "Proyección mensual",
+  "mealBudgetMonthlyBudget": "Presupuesto mensual de alimentación",
+  "mealBudgetRemaining": "Presupuesto restante",
+  "mealBudgetTopExpensive": "Comidas más caras",
+  "mealBudgetSuggestedSwaps": "Cambios más baratos sugeridos",
+  "mealBudgetViewDetails": "Ver detalles",
+  "mealBudgetApplySwap": "Aplicar",
+  "mealBudgetSwapSavings": "Ahorra {amount}",
+  "@mealBudgetSwapSavings": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "mealBudgetDailyBreakdown": "Desglose de coste diario",
+  "mealBudgetShoppingImpact": "Impacto en las compras",
+  "mealBudgetUniqueIngredients": "Ingredientes únicos",
+  "mealBudgetEstShoppingCost": "Coste estimado de compras"
 }
