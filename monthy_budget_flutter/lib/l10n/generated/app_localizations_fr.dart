@@ -3732,6 +3732,7 @@ class SFr extends S {
   String get planningDataPortabilityDesc =>
       'Importer et exporter des artefacts de planification';
 
+  @override
   String get mealBudgetInsightTitle => 'Aperçu du Budget';
 
   @override
@@ -3783,4 +3784,38 @@ class SFr extends S {
 
   @override
   String get mealBudgetEstShoppingCost => 'Coût estimé des courses';
+
+  @override
+  String get productUpdatesTitle => 'Mises a jour';
+
+  @override
+  String get whatsNewTab => 'Nouveautes';
+
+  @override
+  String get roadmapTab => 'Feuille de Route';
+
+  @override
+  String get noUpdatesYet => 'Pas encore de nouveautes';
+
+  @override
+  String get noRoadmapItems =>
+      'Pas encore d\'elements dans la feuille de route';
+
+  @override
+  String get roadmapNow => 'Maintenant';
+
+  @override
+  String get roadmapNext => 'Ensuite';
+
+  @override
+  String get roadmapLater => 'Plus tard';
+
+  @override
+  String get productUpdatesSubtitle => 'Changelog et fonctionnalites a venir';
+
+  @override
+  String get whatsNewDialogTitle => 'Nouveautes';
+
+  @override
+  String get whatsNewDialogDismiss => 'Compris';
 }

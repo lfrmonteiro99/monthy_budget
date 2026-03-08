@@ -6838,6 +6838,72 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Custo estimado de compras'**
   String get mealBudgetEstShoppingCost;
+
+  /// No description provided for @productUpdatesTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Novidades do Produto'**
+  String get productUpdatesTitle;
+
+  /// No description provided for @whatsNewTab.
+  ///
+  /// In pt, this message translates to:
+  /// **'Novidades'**
+  String get whatsNewTab;
+
+  /// No description provided for @roadmapTab.
+  ///
+  /// In pt, this message translates to:
+  /// **'Roteiro'**
+  String get roadmapTab;
+
+  /// No description provided for @noUpdatesYet.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem novidades ainda'**
+  String get noUpdatesYet;
+
+  /// No description provided for @noRoadmapItems.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem itens no roteiro ainda'**
+  String get noRoadmapItems;
+
+  /// No description provided for @roadmapNow.
+  ///
+  /// In pt, this message translates to:
+  /// **'Agora'**
+  String get roadmapNow;
+
+  /// No description provided for @roadmapNext.
+  ///
+  /// In pt, this message translates to:
+  /// **'Em breve'**
+  String get roadmapNext;
+
+  /// No description provided for @roadmapLater.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais tarde'**
+  String get roadmapLater;
+
+  /// No description provided for @productUpdatesSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Changelog e funcionalidades futuras'**
+  String get productUpdatesSubtitle;
+
+  /// No description provided for @whatsNewDialogTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Novidades'**
+  String get whatsNewDialogTitle;
+
+  /// No description provided for @whatsNewDialogDismiss.
+  ///
+  /// In pt, this message translates to:
+  /// **'Entendi'**
+  String get whatsNewDialogDismiss;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

@@ -3726,6 +3726,7 @@ class SEs extends S {
   String get planningDataPortabilityDesc =>
       'Importar y exportar artefactos de planificación';
 
+  @override
   String get mealBudgetInsightTitle => 'Visión del Presupuesto';
 
   @override
@@ -3777,4 +3778,37 @@ class SEs extends S {
 
   @override
   String get mealBudgetEstShoppingCost => 'Coste estimado de compras';
+
+  @override
+  String get productUpdatesTitle => 'Novedades del Producto';
+
+  @override
+  String get whatsNewTab => 'Novedades';
+
+  @override
+  String get roadmapTab => 'Hoja de Ruta';
+
+  @override
+  String get noUpdatesYet => 'Sin novedades todavia';
+
+  @override
+  String get noRoadmapItems => 'Sin elementos en la hoja de ruta';
+
+  @override
+  String get roadmapNow => 'Ahora';
+
+  @override
+  String get roadmapNext => 'Siguiente';
+
+  @override
+  String get roadmapLater => 'Despues';
+
+  @override
+  String get productUpdatesSubtitle => 'Changelog y funcionalidades futuras';
+
+  @override
+  String get whatsNewDialogTitle => 'Novedades';
+
+  @override
+  String get whatsNewDialogDismiss => 'Entendido';
 }

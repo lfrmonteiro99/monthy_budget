@@ -3719,6 +3719,7 @@ class SPt extends S {
   String get planningDataPortabilityDesc =>
       'Importar e exportar artefactos de planeamento';
 
+  @override
   String get mealBudgetInsightTitle => 'Visão do Orçamento';
 
   @override
@@ -3770,4 +3771,37 @@ class SPt extends S {
 
   @override
   String get mealBudgetEstShoppingCost => 'Custo estimado de compras';
+
+  @override
+  String get productUpdatesTitle => 'Novidades do Produto';
+
+  @override
+  String get whatsNewTab => 'Novidades';
+
+  @override
+  String get roadmapTab => 'Roteiro';
+
+  @override
+  String get noUpdatesYet => 'Sem novidades ainda';
+
+  @override
+  String get noRoadmapItems => 'Sem itens no roteiro ainda';
+
+  @override
+  String get roadmapNow => 'Agora';
+
+  @override
+  String get roadmapNext => 'Em breve';
+
+  @override
+  String get roadmapLater => 'Mais tarde';
+
+  @override
+  String get productUpdatesSubtitle => 'Changelog e funcionalidades futuras';
+
+  @override
+  String get whatsNewDialogTitle => 'Novidades';
+
+  @override
+  String get whatsNewDialogDismiss => 'Entendi';
 }

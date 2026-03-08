@@ -11,6 +11,7 @@ class MoreScreen extends StatelessWidget {
   final VoidCallback onOpenSettings;
   final VoidCallback onOpenNotifications;
   final VoidCallback onOpenSubscription;
+  final VoidCallback onOpenProductUpdates;
   final SubscriptionState? subscription;
   final int pausedItemCount;
 
@@ -22,6 +23,7 @@ class MoreScreen extends StatelessWidget {
     required this.onOpenSettings,
     required this.onOpenNotifications,
     required this.onOpenSubscription,
+    required this.onOpenProductUpdates,
     this.subscription,
     this.pausedItemCount = 0,
   });
@@ -78,6 +80,13 @@ class MoreScreen extends StatelessWidget {
             subscription: subscription,
             pausedItemCount: pausedItemCount,
             onTap: onOpenSubscription,
+          ),
+          const SizedBox(height: 8),
+          _Tile(
+            icon: Icons.new_releases_outlined,
+            title: l10n.productUpdatesTitle,
+            subtitle: l10n.productUpdatesSubtitle,
+            onTap: onOpenProductUpdates,
           ),
           const SizedBox(height: 8),
           _Tile(

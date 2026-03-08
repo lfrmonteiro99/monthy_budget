@@ -3695,6 +3695,7 @@ class SEn extends S {
   String get planningDataPortabilityDesc =>
       'Import and export planning artifacts';
 
+  @override
   String get mealBudgetInsightTitle => 'Budget Insight';
 
   @override
@@ -3746,4 +3747,37 @@ class SEn extends S {
 
   @override
   String get mealBudgetEstShoppingCost => 'Estimated shopping cost';
+
+  @override
+  String get productUpdatesTitle => 'Product Updates';
+
+  @override
+  String get whatsNewTab => 'What\'s New';
+
+  @override
+  String get roadmapTab => 'Roadmap';
+
+  @override
+  String get noUpdatesYet => 'No updates yet';
+
+  @override
+  String get noRoadmapItems => 'No roadmap items yet';
+
+  @override
+  String get roadmapNow => 'Now';
+
+  @override
+  String get roadmapNext => 'Next';
+
+  @override
+  String get roadmapLater => 'Later';
+
+  @override
+  String get productUpdatesSubtitle => 'Changelog and upcoming features';
+
+  @override
+  String get whatsNewDialogTitle => 'What\'s New';
+
+  @override
+  String get whatsNewDialogDismiss => 'Got it';
 }
