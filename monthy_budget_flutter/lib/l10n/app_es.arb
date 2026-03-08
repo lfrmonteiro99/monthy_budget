@@ -1082,6 +1082,8 @@
     }
   },
   "setupWizardSalaryMoreLater": "Puedes aÃ±adir mÃ¡s fuentes de ingreso mÃ¡s tarde.",
+  "setupWizardSalaryRequired": "Por favor ingrese su salario",
+  "setupWizardSalaryPositive": "El salario debe ser un número positivo",
   "setupWizardSalarySkip": "Saltar este paso",
   "setupWizardExpensesTitle": "Tus gastos mensuales",
   "setupWizardExpensesSubtitle": "Valores sugeridos para tu paÃ­s. Ajusta segÃºn necesites.",
