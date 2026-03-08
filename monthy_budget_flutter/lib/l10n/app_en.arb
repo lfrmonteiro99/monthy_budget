@@ -348,6 +348,7 @@
   "cmdExecutionFailed": "I understood the request, but couldn't execute it. Try again.",
   "cmdNotUnderstood": "I didn't understand. Can you rephrase?",
   "cmdUndo": "Undo",
+  "expenseDeleted": "Expense deleted",
   "cmdCapabilitiesCta": "What can I do?",
   "cmdCapabilitiesTitle": "Available actions",
   "cmdCapabilitiesSubtitle": "These are the assistant actions supported right now.",
