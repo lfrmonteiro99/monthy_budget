@@ -3837,4 +3837,65 @@ class SFr extends S {
 
   @override
   String get confidenceCenterTile => 'Centre de Confiance';
+
+  @override
+  String get pantryPickerTitle => 'Sélecteur de Garde-Manger';
+
+  @override
+  String get pantrySearchHint => 'Rechercher des ingrédients...';
+
+  @override
+  String get pantryTabAlwaysHave => 'Toujours en Stock';
+
+  @override
+  String get pantryTabThisWeek => 'Cette Semaine';
+
+  @override
+  String pantrySummaryLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count articles en garde-manger',
+      one: '1 article en garde-manger',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pantryEdit => 'Modifier';
+
+  @override
+  String get pantryUseWhatWeHave => 'Utiliser Ce Qu\'on A';
+
+  @override
+  String get pantryMarkAtHome => 'Déjà à la maison';
+
+  @override
+  String get pantryHaveIt => 'J\'en ai';
+
+  @override
+  String pantryCoverageLabel(int pct) {
+    return '$pct% couvert par le garde-manger';
+  }
+
+  @override
+  String get pantryStaples => 'ESSENTIELS (TOUJOURS EN STOCK)';
+
+  @override
+  String get pantryWeekly => 'GARDE-MANGER DE LA SEMAINE';
+
+  @override
+  String pantryAddedToWeekly(String name) {
+    return '$name ajouté au garde-manger hebdomadaire';
+  }
+
+  @override
+  String pantryRemovedFromList(String name) {
+    return '$name retiré de la liste (déjà à la maison)';
+  }
+
+  @override
+  String pantryMarkedAtHome(String name) {
+    return '$name marqué comme déjà à la maison';
+  }
 }

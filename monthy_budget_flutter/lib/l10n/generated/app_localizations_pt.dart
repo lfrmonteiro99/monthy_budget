@@ -3823,4 +3823,65 @@ class SPt extends S {
 
   @override
   String get confidenceCenterTile => 'Centro de Confiança';
+
+  @override
+  String get pantryPickerTitle => 'Selecionar Despensa';
+
+  @override
+  String get pantrySearchHint => 'Pesquisar ingredientes...';
+
+  @override
+  String get pantryTabAlwaysHave => 'Sempre Tenho';
+
+  @override
+  String get pantryTabThisWeek => 'Esta Semana';
+
+  @override
+  String pantrySummaryLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count itens na despensa',
+      one: '1 item na despensa',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pantryEdit => 'Editar';
+
+  @override
+  String get pantryUseWhatWeHave => 'Usar o Que Temos';
+
+  @override
+  String get pantryMarkAtHome => 'Já tenho em casa';
+
+  @override
+  String get pantryHaveIt => 'Tenho';
+
+  @override
+  String pantryCoverageLabel(int pct) {
+    return '$pct% coberto pela despensa';
+  }
+
+  @override
+  String get pantryStaples => 'ESSENCIAIS (SEMPRE EM STOCK)';
+
+  @override
+  String get pantryWeekly => 'DESPENSA DESTA SEMANA';
+
+  @override
+  String pantryAddedToWeekly(String name) {
+    return '$name adicionado à despensa semanal';
+  }
+
+  @override
+  String pantryRemovedFromList(String name) {
+    return '$name removido da lista (já em casa)';
+  }
+
+  @override
+  String pantryMarkedAtHome(String name) {
+    return '$name marcado como já em casa';
+  }
 }

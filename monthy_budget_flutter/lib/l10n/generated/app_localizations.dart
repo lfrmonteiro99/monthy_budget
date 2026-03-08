@@ -6940,6 +6940,96 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Centro de Confiança'**
   String get confidenceCenterTile;
+
+  /// No description provided for @pantryPickerTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecionar Despensa'**
+  String get pantryPickerTitle;
+
+  /// No description provided for @pantrySearchHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pesquisar ingredientes...'**
+  String get pantrySearchHint;
+
+  /// No description provided for @pantryTabAlwaysHave.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sempre Tenho'**
+  String get pantryTabAlwaysHave;
+
+  /// No description provided for @pantryTabThisWeek.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta Semana'**
+  String get pantryTabThisWeek;
+
+  /// No description provided for @pantrySummaryLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 item na despensa} other{{count} itens na despensa}}'**
+  String pantrySummaryLabel(int count);
+
+  /// No description provided for @pantryEdit.
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar'**
+  String get pantryEdit;
+
+  /// No description provided for @pantryUseWhatWeHave.
+  ///
+  /// In pt, this message translates to:
+  /// **'Usar o Que Temos'**
+  String get pantryUseWhatWeHave;
+
+  /// No description provided for @pantryMarkAtHome.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já tenho em casa'**
+  String get pantryMarkAtHome;
+
+  /// No description provided for @pantryHaveIt.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tenho'**
+  String get pantryHaveIt;
+
+  /// No description provided for @pantryCoverageLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'{pct}% coberto pela despensa'**
+  String pantryCoverageLabel(int pct);
+
+  /// No description provided for @pantryStaples.
+  ///
+  /// In pt, this message translates to:
+  /// **'ESSENCIAIS (SEMPRE EM STOCK)'**
+  String get pantryStaples;
+
+  /// No description provided for @pantryWeekly.
+  ///
+  /// In pt, this message translates to:
+  /// **'DESPENSA DESTA SEMANA'**
+  String get pantryWeekly;
+
+  /// No description provided for @pantryAddedToWeekly.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} adicionado à despensa semanal'**
+  String pantryAddedToWeekly(String name);
+
+  /// No description provided for @pantryRemovedFromList.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} removido da lista (já em casa)'**
+  String pantryRemovedFromList(String name);
+
+  /// No description provided for @pantryMarkedAtHome.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} marcado como já em casa'**
+  String pantryMarkedAtHome(String name);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

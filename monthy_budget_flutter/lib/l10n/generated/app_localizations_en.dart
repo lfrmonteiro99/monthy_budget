@@ -3798,4 +3798,65 @@ class SEn extends S {
 
   @override
   String get confidenceCenterTile => 'Confidence Center';
+
+  @override
+  String get pantryPickerTitle => 'Pantry Picker';
+
+  @override
+  String get pantrySearchHint => 'Search ingredients...';
+
+  @override
+  String get pantryTabAlwaysHave => 'Always Have';
+
+  @override
+  String get pantryTabThisWeek => 'This Week';
+
+  @override
+  String pantrySummaryLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pantry items',
+      one: '1 pantry item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pantryEdit => 'Edit';
+
+  @override
+  String get pantryUseWhatWeHave => 'Use What We Have';
+
+  @override
+  String get pantryMarkAtHome => 'Already at home';
+
+  @override
+  String get pantryHaveIt => 'Have it';
+
+  @override
+  String pantryCoverageLabel(int pct) {
+    return '$pct% covered by pantry';
+  }
+
+  @override
+  String get pantryStaples => 'STAPLES (ALWAYS HAVE)';
+
+  @override
+  String get pantryWeekly => 'THIS WEEK\'S PANTRY';
+
+  @override
+  String pantryAddedToWeekly(String name) {
+    return '$name added to weekly pantry';
+  }
+
+  @override
+  String pantryRemovedFromList(String name) {
+    return '$name removed from shopping list (already at home)';
+  }
+
+  @override
+  String pantryMarkedAtHome(String name) {
+    return '$name marked as already at home';
+  }
 }

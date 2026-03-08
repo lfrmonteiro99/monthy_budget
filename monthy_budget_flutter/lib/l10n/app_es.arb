@@ -1942,5 +1942,55 @@
     "confidenceDataAlerts": "Alertas de Calidad de Datos",
     "confidenceRecommendedActions": "Acciones Recomendadas",
     "confidenceCenterSubtitle": "Frescura de datos y salud del sistema",
-    "confidenceCenterTile": "Centro de Confianza"
+    "confidenceCenterTile": "Centro de Confianza",
+    "pantryPickerTitle": "Selector de Despensa",
+    "pantrySearchHint": "Buscar ingredientes...",
+    "pantryTabAlwaysHave": "Siempre Tengo",
+    "pantryTabThisWeek": "Esta Semana",
+    "pantrySummaryLabel": "{count, plural, =1{1 artículo en despensa} other{{count} artículos en despensa}}",
+    "@pantrySummaryLabel": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pantryEdit": "Editar",
+    "pantryUseWhatWeHave": "Usar Lo Que Tenemos",
+    "pantryMarkAtHome": "Ya lo tengo en casa",
+    "pantryHaveIt": "Lo tengo",
+    "pantryCoverageLabel": "{pct}% cubierto por la despensa",
+    "@pantryCoverageLabel": {
+        "placeholders": {
+            "pct": {
+                "type": "int"
+            }
+        }
+    },
+    "pantryStaples": "BÁSICOS (SIEMPRE EN STOCK)",
+    "pantryWeekly": "DESPENSA DE ESTA SEMANA",
+    "pantryAddedToWeekly": "{name} añadido a la despensa semanal",
+    "@pantryAddedToWeekly": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "pantryRemovedFromList": "{name} eliminado de la lista (ya en casa)",
+    "@pantryRemovedFromList": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "pantryMarkedAtHome": "{name} marcado como ya en casa",
+    "@pantryMarkedAtHome": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    }
 }

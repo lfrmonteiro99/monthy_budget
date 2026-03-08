@@ -18,6 +18,7 @@ class ShoppingListScreen extends StatefulWidget {
   final PurchaseHistory purchaseHistory;
   final bool showTour;
   final VoidCallback? onTourComplete;
+  final ValueChanged<ShoppingItem>? onMarkAtHome;
 
   const ShoppingListScreen({
     super.key,
@@ -29,6 +30,7 @@ class ShoppingListScreen extends StatefulWidget {
     required this.purchaseHistory,
     this.showTour = false,
     this.onTourComplete,
+    this.onMarkAtHome,
   });
 
   @override
@@ -632,6 +634,31 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     decoration:
                         item.checked ? TextDecoration.lineThrough : null,
                     decorationColor: AppColors.borderMuted(context),
+                  ),
+                ),
+              if (!item.checked && widget.onMarkAtHome != null)
+                Padding(
+                  padding: const EdgeInsets.only(left: 6),
+                  child: Tooltip(
+                    message: l10n.pantryMarkAtHome,
+                    child: InkWell(
+                      onTap: () {
+                        widget.onMarkAtHome!(item);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(l10n.pantryMarkedAtHome(item.productName)),
+                            duration: const Duration(seconds: 2),
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                        );
+                      },
+                      borderRadius: BorderRadius.circular(8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Icon(Icons.home_outlined, size: 18, color: AppColors.primary(context)),
+                      ),
+                    ),
                   ),
                 ),
             ],

@@ -3830,4 +3830,65 @@ class SEs extends S {
 
   @override
   String get confidenceCenterTile => 'Centro de Confianza';
+
+  @override
+  String get pantryPickerTitle => 'Selector de Despensa';
+
+  @override
+  String get pantrySearchHint => 'Buscar ingredientes...';
+
+  @override
+  String get pantryTabAlwaysHave => 'Siempre Tengo';
+
+  @override
+  String get pantryTabThisWeek => 'Esta Semana';
+
+  @override
+  String pantrySummaryLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count artículos en despensa',
+      one: '1 artículo en despensa',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pantryEdit => 'Editar';
+
+  @override
+  String get pantryUseWhatWeHave => 'Usar Lo Que Tenemos';
+
+  @override
+  String get pantryMarkAtHome => 'Ya lo tengo en casa';
+
+  @override
+  String get pantryHaveIt => 'Lo tengo';
+
+  @override
+  String pantryCoverageLabel(int pct) {
+    return '$pct% cubierto por la despensa';
+  }
+
+  @override
+  String get pantryStaples => 'BÁSICOS (SIEMPRE EN STOCK)';
+
+  @override
+  String get pantryWeekly => 'DESPENSA DE ESTA SEMANA';
+
+  @override
+  String pantryAddedToWeekly(String name) {
+    return '$name añadido a la despensa semanal';
+  }
+
+  @override
+  String pantryRemovedFromList(String name) {
+    return '$name eliminado de la lista (ya en casa)';
+  }
+
+  @override
+  String pantryMarkedAtHome(String name) {
+    return '$name marcado como ya en casa';
+  }
 }

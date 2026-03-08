@@ -16,7 +16,11 @@ import '../widgets/meal_feedback_button.dart';
 import '../widgets/meal_plan_budget_card.dart';
 import '../widgets/meal_plan_budget_sheet.dart';
 import '../onboarding/meals_tour.dart';
+import '../utils/pantry_matching.dart';
 import '../utils/rate_limiter.dart';
+import '../widgets/pantry_coverage_badge.dart';
+import '../widgets/pantry_quick_picker_sheet.dart';
+import '../widgets/pantry_summary_chip_row.dart';
 import 'meal_wizard_screen.dart';
 
 class MealPlannerScreen extends StatefulWidget {
@@ -363,6 +367,36 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     _recomputeBudgetInsight();
   }
 
+  void _showPantryPicker() {
+    final ms = widget.settings.mealSettings;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.surface(context),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => PantryQuickPickerSheet(
+        availableIngredients: _service.ingredients,
+        stapleIds: ms.stapleIngredients.toSet(),
+        weeklyIds: ms.weeklyPantryIngredients.toSet(),
+        onStaplesChanged: (ids) {
+          final updated = ms.copyWith(stapleIngredients: ids.toList());
+          widget.onSaveSettings(
+              widget.settings.copyWith(mealSettings: updated));
+        },
+        onWeeklyChanged: (ids) {
+          final updated = ms.copyWith(
+            weeklyPantryIngredients: ids.toList(),
+            weeklyPantryUpdatedAt: DateTime.now(),
+          );
+          widget.onSaveSettings(
+              widget.settings.copyWith(mealSettings: updated));
+        },
+      ),
+    );
+  }
+
   void _swapRecipe(int dayIndex, MealType mealType, String currentRecipeId) {
     final plan = _plan!;
     final alternatives = _service.alternativesFor(currentRecipeId, plan.nPessoas, ms: widget.settings.mealSettings);
@@ -510,7 +544,19 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             _InfoRow(label: l10n.mealBudgetLabel, value: '${budget.toStringAsFixed(2)}\u20AC'),
             const SizedBox(height: 8),
             _InfoRow(label: l10n.mealPeopleLabel, value: '$np'),
-            const SizedBox(height: 32),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () => _showPantryPicker(),
+                icon: const Icon(Icons.kitchen_outlined),
+                label: Text(l10n.pantryUseWhatWeHave),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
             SizedBox(
               key: MealsTourKeys.generateButton,
               width: double.infinity,
@@ -649,6 +695,12 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             ],
           ),
         ),
+        // Pantry summary
+        PantrySummaryChipRow(
+          activePantryIds: resolveActivePantry(widget.settings.mealSettings),
+          ingredientMap: _service.ingredientMap,
+          onEditPantry: () => _showPantryPicker(),
+        ),
         // Weekly Nutrition Summary
         if (_weeklySummaries.containsKey(_selectedWeek))
           _WeeklySummaryCard(summary: _weeklySummaries[_selectedWeek]!),
@@ -740,6 +792,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   onSwap: () => _swapRecipe(weekDays[i].dayIndex, weekDays[i].mealType, weekDays[i].recipeId),
                   onAddIngredientToList: widget.onAddToShoppingList,
                   onFeedback: (fb) => _setFeedback(weekDays[i].dayIndex, weekDays[i].mealType, fb),
+                  activePantryIds: resolveActivePantry(widget.settings.mealSettings),
                 ),
               ),
               Positioned(
@@ -783,6 +836,7 @@ class _DayCard extends StatelessWidget {
   final VoidCallback onSwap;
   final void Function(ShoppingItem) onAddIngredientToList;
   final ValueChanged<MealFeedback> onFeedback;
+  final Set<String> activePantryIds;
 
   const _DayCard({
     required this.mealDay,
@@ -794,6 +848,7 @@ class _DayCard extends StatelessWidget {
     required this.onSwap,
     required this.onAddIngredientToList,
     required this.onFeedback,
+    this.activePantryIds = const {},
   });
 
   @override
@@ -874,6 +929,15 @@ class _DayCard extends StatelessWidget {
                             ),
                           ],
                         ),
+                      ),
+                    ],
+                    if (activePantryIds.isNotEmpty) ...[
+                      const SizedBox(width: 6),
+                      PantryCoverageBadge(
+                        coverageRatio: computePantryCoverage(
+                          recipe,
+                          activePantryIds,
+                        ).coverageRatio,
                       ),
                     ],
                     const Spacer(),

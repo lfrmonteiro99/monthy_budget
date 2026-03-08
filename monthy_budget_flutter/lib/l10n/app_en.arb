@@ -1993,5 +1993,55 @@
     "confidenceDataAlerts": "Data Quality Alerts",
     "confidenceRecommendedActions": "Recommended Actions",
     "confidenceCenterSubtitle": "Data freshness and system health",
-    "confidenceCenterTile": "Confidence Center"
+    "confidenceCenterTile": "Confidence Center",
+    "pantryPickerTitle": "Pantry Picker",
+    "pantrySearchHint": "Search ingredients...",
+    "pantryTabAlwaysHave": "Always Have",
+    "pantryTabThisWeek": "This Week",
+    "pantrySummaryLabel": "{count, plural, =1{1 pantry item} other{{count} pantry items}}",
+    "@pantrySummaryLabel": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pantryEdit": "Edit",
+    "pantryUseWhatWeHave": "Use What We Have",
+    "pantryMarkAtHome": "Already at home",
+    "pantryHaveIt": "Have it",
+    "pantryCoverageLabel": "{pct}% covered by pantry",
+    "@pantryCoverageLabel": {
+        "placeholders": {
+            "pct": {
+                "type": "int"
+            }
+        }
+    },
+    "pantryStaples": "STAPLES (ALWAYS HAVE)",
+    "pantryWeekly": "THIS WEEK'S PANTRY",
+    "pantryAddedToWeekly": "{name} added to weekly pantry",
+    "@pantryAddedToWeekly": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "pantryRemovedFromList": "{name} removed from shopping list (already at home)",
+    "@pantryRemovedFromList": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "pantryMarkedAtHome": "{name} marked as already at home",
+    "@pantryMarkedAtHome": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    }
 }
