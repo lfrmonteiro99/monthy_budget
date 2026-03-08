@@ -740,8 +740,9 @@ class _SalaryStep extends StatelessWidget {
   final VoidCallback onSkip;
   final TextEditingController salaryController;
   final TextEditingController mealAllowanceController;
+  final _formKey = GlobalKey<FormState>();
 
-  const _SalaryStep({
+  _SalaryStep({
     required this.draft,
     required this.onChanged,
     required this.onNext,
@@ -752,6 +753,12 @@ class _SalaryStep extends StatelessWidget {
 
   double get _grossAmount =>
       draft.salaries.isNotEmpty ? draft.salaries[0].grossAmount : 0;
+
+  void _validateAndNext() {
+    if (_formKey.currentState!.validate()) {
+      onNext();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -773,7 +780,9 @@ class _SalaryStep extends StatelessWidget {
       netEstimate = l10n.setupWizardNetEstimate(formatCurrency(result.netSalary));
     }
 
-    return Column(
+    return Form(
+      key: _formKey,
+      child: Column(
       children: [
         Expanded(
           child: ListView(
@@ -785,7 +794,7 @@ class _SalaryStep extends StatelessWidget {
               Text(l10n.setupWizardSalarySubtitle,
                   style: TextStyle(fontSize: 14, color: AppColors.textSecondary(context))),
               const SizedBox(height: 20),
-              TextField(
+              TextFormField(
                 controller: salaryController,
                 keyboardType:
                     const TextInputType.numberWithOptions(decimal: true),
@@ -807,6 +816,16 @@ class _SalaryStep extends StatelessWidget {
                       borderSide:
                           BorderSide(color: AppColors.primary(context), width: 2)),
                 ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return l10n.setupWizardSalaryRequired;
+                  }
+                  final amount = double.tryParse(value.replaceAll(',', '.'));
+                  if (amount == null || amount <= 0) {
+                    return l10n.setupWizardSalaryPositive;
+                  }
+                  return null;
+                },
                 onChanged: (value) {
                   final amount =
                       double.tryParse(value.replaceAll(',', '.')) ?? 0;
@@ -1025,7 +1044,7 @@ class _SalaryStep extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton(
-                    onPressed: onNext,
+                    onPressed: _validateAndNext,
                     style: FilledButton.styleFrom(
                       backgroundColor: AppColors.primary(context),
                       padding: const EdgeInsets.symmetric(vertical: 14),
@@ -1040,6 +1059,7 @@ class _SalaryStep extends StatelessWidget {
           ),
         ),
       ],
+    ),
     );
   }
 }

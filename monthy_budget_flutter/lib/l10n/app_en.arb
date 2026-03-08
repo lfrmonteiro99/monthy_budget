@@ -1070,6 +1070,8 @@
     }
   },
   "setupWizardSalaryMoreLater": "You can add more income sources later.",
+  "setupWizardSalaryRequired": "Please enter your salary",
+  "setupWizardSalaryPositive": "Salary must be a positive number",
   "setupWizardSalarySkip": "Skip this step",
   "setupWizardExpensesTitle": "Your monthly expenses",
   "setupWizardExpensesSubtitle": "Suggested values for your country. Adjust as needed.",

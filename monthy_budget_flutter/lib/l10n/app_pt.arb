@@ -1574,6 +1574,8 @@
   },
   "setupWizardSalaryMoreLater": "Pode adicionar mais fontes de rendimento mais tarde.",
   "@setupWizardSalaryMoreLater": { "description": "Info text on salary step" },
+  "setupWizardSalaryRequired": "Por favor insira o seu salário",
+  "setupWizardSalaryPositive": "O salário deve ser um número positivo",
   "setupWizardSalarySkip": "Saltar este passo",
   "@setupWizardSalarySkip": { "description": "Skip button on salary step" },
   "setupWizardExpensesTitle": "As suas despesas mensais",

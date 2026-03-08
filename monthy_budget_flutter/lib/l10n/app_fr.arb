@@ -1083,7 +1083,9 @@
     }
   },
   "setupWizardSalaryMoreLater": "Vous pouvez ajouter d'autres sources de revenus plus tard.",
-  "setupWizardSalarySkip": "Passer cette Ã©tape",
+  "setupWizardSalaryRequired": "Veuillez entrer votre salaire",
+  "setupWizardSalaryPositive": "Le salaire doit être un nombre positif",
+  "setupWizardSalarySkip": "Passer cette étape",
   "setupWizardExpensesTitle": "Vos dÃ©penses mensuelles",
   "setupWizardExpensesSubtitle": "Valeurs suggÃ©rÃ©es pour votre pays. Ajustez selon vos besoins.",
   "setupWizardExpensesMoreLater": "Vous pouvez ajouter d'autres catÃ©gories plus tard.",
