@@ -3,10 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:orcamento_mensal/models/subscription_state.dart';
 import 'package:orcamento_mensal/widgets/trial_banner.dart';
 
-/// Wrap widget under test in a MaterialApp for theme context.
-Widget _wrap(Widget child) {
-  return MaterialApp(home: Scaffold(body: SingleChildScrollView(child: child)));
-}
+import '../helpers/test_app.dart';
 
 void main() {
   group('TrialBanner', () {
@@ -16,7 +13,7 @@ void main() {
           trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
@@ -32,7 +29,7 @@ void main() {
           trialUsed: true,
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
@@ -46,7 +43,7 @@ void main() {
           trialStartDate: DateTime.now().subtract(const Duration(days: 2)),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
@@ -58,7 +55,7 @@ void main() {
           trialStartDate: DateTime.now().subtract(const Duration(days: 1)),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
@@ -71,7 +68,7 @@ void main() {
           featuresExplored: {'dashboard', 'ai_coach'},
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
@@ -86,7 +83,7 @@ void main() {
           trialStartDate: DateTime.now().subtract(const Duration(days: 4)),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
@@ -98,7 +95,7 @@ void main() {
           trialStartDate: DateTime.now(),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
@@ -110,7 +107,7 @@ void main() {
           trialStartDate: DateTime.now(),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
@@ -125,7 +122,7 @@ void main() {
           trialStartDate: DateTime.now().subtract(const Duration(days: 14)),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
@@ -138,7 +135,7 @@ void main() {
           featuresExplored: {'dashboard'},
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
@@ -156,7 +153,7 @@ void main() {
           featuresExplored: SubscriptionState.discoverableFeatures.toSet(),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
@@ -171,7 +168,7 @@ void main() {
           trialStartDate: DateTime.now().subtract(const Duration(days: 14)),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
@@ -187,7 +184,7 @@ void main() {
           trialStartDate: DateTime.now().subtract(const Duration(days: 18)),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
@@ -200,7 +197,7 @@ void main() {
           trialStartDate: DateTime.now().subtract(const Duration(days: 20)),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
@@ -213,12 +210,12 @@ void main() {
           trialStartDate: DateTime.now().subtract(const Duration(days: 19)),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
         expect(
-            find.text('Upgrade Now — Keep Your Data'), findsOneWidget);
+            find.text('Upgrade Now \u2014 Keep Your Data'), findsOneWidget);
       });
 
       testWidgets('shows timer icon in urgent phase', (tester) async {
@@ -226,7 +223,7 @@ void main() {
           trialStartDate: DateTime.now().subtract(const Duration(days: 19)),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
@@ -239,7 +236,7 @@ void main() {
           trialStartDate: DateTime.now().subtract(const Duration(days: 19)),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
@@ -252,7 +249,7 @@ void main() {
           trialStartDate: DateTime.now().subtract(const Duration(days: 19)),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
@@ -270,7 +267,7 @@ void main() {
           trialStartDate: DateTime.now(),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(
             subscription: state,
             onUpgrade: () {},
@@ -286,7 +283,7 @@ void main() {
           trialStartDate: DateTime.now().subtract(const Duration(days: 19)),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(
             subscription: state,
             onUpgrade: () {},
@@ -304,7 +301,7 @@ void main() {
           trialStartDate: DateTime.now(),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
@@ -317,7 +314,7 @@ void main() {
           trialStartDate: DateTime.now(),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(
             subscription: state,
             onUpgrade: () {},
@@ -337,7 +334,7 @@ void main() {
           trialStartDate: DateTime.now(),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(
             subscription: state,
             onUpgrade: () => upgraded = true,
@@ -354,14 +351,14 @@ void main() {
           trialStartDate: DateTime.now().subtract(const Duration(days: 19)),
         );
 
-        await tester.pumpWidget(_wrap(
+        await tester.pumpWidget(wrapWithTestApp(
           TrialBanner(
             subscription: state,
             onUpgrade: () => upgraded = true,
           ),
         ));
 
-        await tester.tap(find.text('Upgrade Now — Keep Your Data'));
+        await tester.tap(find.text('Upgrade Now \u2014 Keep Your Data'));
         expect(upgraded, true);
       });
     });

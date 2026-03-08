@@ -591,8 +591,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(tier == SubscriptionTier.free
-                      ? 'Continuing with Free plan'
-                      : 'Upgraded to Pro — thank you!'),
+                      ? S.of(context).continuingWithFreePlan
+                      : S.of(context).upgradedToProThankYou),
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -606,8 +606,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
               setState(() => _subscription = updated);
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Upgraded to Pro — thank you!'),
+                SnackBar(
+                  content: Text(S.of(context).upgradedToProThankYou),
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -622,8 +622,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(tier == SubscriptionTier.free
-                      ? 'No previous purchases found'
-                      : 'Restored Pro subscription!'),
+                      ? S.of(context).noPreviousPurchasesFound
+                      : S.of(context).restoredProSubscription),
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -1046,7 +1046,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Erro ao guardar compra: $e'),
+            content: Text(S.of(context).errorSavingPurchase(e.toString())),
             backgroundColor: AppColors.error(context),
             behavior: SnackBarBehavior.floating,
           ),
@@ -1294,9 +1294,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       onOpenCustomerCenter: _openCustomerCenter,
       subscription: _subscription,
       subscriptionLabel: _subscription.isTrialActive
-          ? 'Trial (${_subscription.trialDaysRemaining} days left)'
+          ? '${S.of(context).morePlanTrial} (${S.of(context).subscriptionTrialDaysLeft(_subscription.trialDaysRemaining)})'
           : _subscription.tier == SubscriptionTier.free
-              ? 'Free'
+              ? S.of(context).subscriptionFree
               : 'Pro',
       monthlyBudgets: _monthlyBudgets,
       onSaveMonthlyBudgets: (budgetMap) async {
@@ -1494,15 +1494,15 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           NavigationDestination(
             icon: const Icon(Icons.dashboard_outlined),
             selectedIcon: Icon(Icons.dashboard, color: AppColors.primary(context)),
-            label: 'Home',
-            tooltip: 'Monthly overview',
+            label: S.of(context).navHome,
+            tooltip: S.of(context).navHomeTooltip,
           ),
           NavigationDestination(
             icon: const Icon(Icons.receipt_long_outlined),
             selectedIcon:
                 Icon(Icons.receipt_long, color: AppColors.primary(context)),
-            label: 'Track',
-            tooltip: 'Track monthly expenses',
+            label: S.of(context).navTrack,
+            tooltip: S.of(context).navTrackTooltip,
           ),
           NavigationDestination(
             icon: Badge(
@@ -1521,15 +1521,15 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
               ),
               child: Icon(Icons.event_note, color: AppColors.primary(context)),
             ),
-            label: 'Plan',
-            tooltip: 'Groceries, list and meal plan',
+            label: S.of(context).navPlan,
+            tooltip: S.of(context).navPlanTooltip,
           ),
           NavigationDestination(
             icon: const Icon(Icons.more_horiz),
             selectedIcon:
                 Icon(Icons.more_horiz, color: AppColors.primary(context)),
-            label: 'More',
-            tooltip: 'Settings and insights',
+            label: S.of(context).navMore,
+            tooltip: S.of(context).navMoreTooltip,
           ),
         ],
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/savings_goal.dart';
 import '../services/downgrade_service.dart';
@@ -75,8 +76,8 @@ class TrialExpiredBottomSheet extends StatelessWidget {
             // Title
             Text(
               isSubscriptionEnd
-                  ? 'Your subscription has ended'
-                  : 'Your free trial has ended',
+                  ? S.of(context).subscriptionEndedTitle
+                  : S.of(context).trialExpiredTitle,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -87,7 +88,7 @@ class TrialExpiredBottomSheet extends StatelessWidget {
 
             // Subtitle
             Text(
-              'Your data is safe. ${hasExcess ? "We've adjusted some limits for the free plan:" : "Premium features like AI Coach, Meal Planner, and Export are now available with a subscription."}',
+              hasExcess ? S.of(context).trialExpiredSubtitleLimits : S.of(context).trialExpiredSubtitleSafe,
               style: TextStyle(
                 fontSize: 13,
                 color: AppColors.textSecondary(context),
@@ -108,13 +109,12 @@ class TrialExpiredBottomSheet extends StatelessWidget {
                   children: [
                     if (pausedCategories > 0) ...[
                       _AffectedItemRow(
-                        text:
-                            '$activeCategories of $totalCategories categories active',
+                        text: S.of(context).trialExpiredCategoriesActive(activeCategories, totalCategories),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 20),
                         child: Text(
-                          '$pausedCategories categories paused',
+                          S.of(context).trialExpiredCategoriesPaused(pausedCategories),
                           style: TextStyle(
                             fontSize: 12,
                             color: AppColors.textMuted(context),
@@ -125,13 +125,12 @@ class TrialExpiredBottomSheet extends StatelessWidget {
                     if (pausedGoals > 0) ...[
                       if (pausedCategories > 0) const SizedBox(height: 8),
                       _AffectedItemRow(
-                        text:
-                            '$activeGoals of $totalGoals savings goals active',
+                        text: S.of(context).trialExpiredGoalsActive(activeGoals, totalGoals),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 20),
                         child: Text(
-                          '$pausedGoals savings goals paused',
+                          S.of(context).trialExpiredGoalsPaused(pausedGoals),
                           style: TextStyle(
                             fontSize: 12,
                             color: AppColors.textMuted(context),
@@ -144,7 +143,7 @@ class TrialExpiredBottomSheet extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                'Premium features like AI Coach, Meal Planner, and Export are now available with a subscription.',
+                S.of(context).trialExpiredPremiumNote,
                 style: TextStyle(
                   fontSize: 12,
                   color: AppColors.textMuted(context),
@@ -168,9 +167,9 @@ class TrialExpiredBottomSheet extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12)),
                   elevation: 0,
                 ),
-                child: const Text(
-                  'Upgrade to Pro',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                child: Text(
+                  S.of(context).upgradeToPro,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
             ),
@@ -190,10 +189,10 @@ class TrialExpiredBottomSheet extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text(
-                    'Manage My Categories',
+                  child: Text(
+                    S.of(context).trialExpiredManageCategories,
                     style:
-                        TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                        const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
@@ -209,8 +208,8 @@ class TrialExpiredBottomSheet extends StatelessWidget {
                   onPressed: () => Navigator.of(context)
                       .pop(TrialExpiredAction.extendTrial),
                   icon: const Icon(Icons.access_time_rounded, size: 18),
-                  label: const Text(
-                    'Extend 7 more days',
+                  label: Text(
+                    S.of(context).trialExpiredExtend,
                     style:
                         TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                   ),
@@ -233,7 +232,7 @@ class TrialExpiredBottomSheet extends StatelessWidget {
                 onPressed: () =>
                     Navigator.of(context).pop(TrialExpiredAction.dismiss),
                 child: Text(
-                  'Continue with Free Plan',
+                  S.of(context).trialExpiredContinueFree,
                   style: TextStyle(
                     fontSize: 14,
                     color: AppColors.textSecondary(context),

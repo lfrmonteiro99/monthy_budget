@@ -171,7 +171,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   String _subscriptionSubtitle() {
-    return widget.subscriptionLabel ?? 'Free';
+    return widget.subscriptionLabel ?? S.of(context).subscriptionFree;
   }
 
   String? _currentUserIdSafe() {
@@ -385,7 +385,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ListTile(
                         leading: Icon(Icons.workspace_premium_rounded,
                             color: AppColors.primary(context)),
-                        title: Text('Subscription',
+                        title: Text(S.of(context).settingsSubscriptionTitle,
                             style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 color: AppColors.textPrimary(context))),
@@ -404,12 +404,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ListTile(
                         leading: Icon(Icons.manage_accounts_outlined,
                             color: AppColors.textSecondary(context)),
-                        title: Text('Manage Subscription',
+                        title: Text(S.of(context).settingsManageSubscription,
                             style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 color: AppColors.textPrimary(context))),
                         subtitle: Text(
-                          'Cancel, change plan, or restore purchases',
+                          S.of(context).settingsManageSubscriptionSubtitle,
                           style: TextStyle(
                               fontSize: 12,
                               color: AppColors.textSecondary(context)),
@@ -1345,7 +1345,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   OutlinedButton.icon(
                     onPressed: widget.onOpenDetailedDashboard,
                     icon: const Icon(Icons.dashboard_customize_outlined, size: 16),
-                    label: const Text('Open Detailed Dashboard'),
+                    label: Text(S.of(context).settingsOpenDetailedDashboard),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.textPrimary(context),
                       side: BorderSide(color: AppColors.border(context)),

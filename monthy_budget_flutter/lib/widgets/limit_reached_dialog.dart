@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
 
 /// Result of the limit-reached dialog interaction.
@@ -50,7 +51,7 @@ class LimitReachedDialog extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10)),
               elevation: 0,
             ),
-            child: const Text('Upgrade to Pro'),
+            child: Text(S.of(context).upgradeToPro),
           ),
         ),
         if (swapLabel != null && !showCreatePaused)
@@ -80,7 +81,7 @@ class LimitReachedDialog extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
               ),
-              child: const Text('Create as Paused'),
+              child: Text(S.of(context).createAsPaused),
             ),
           ),
         Center(
@@ -88,7 +89,7 @@ class LimitReachedDialog extends StatelessWidget {
             onPressed: () =>
                 Navigator.of(context).pop(LimitReachedAction.cancel),
             child: Text(
-              showCreatePaused ? 'Cancel' : 'Close',
+              showCreatePaused ? S.of(context).cancel : S.of(context).close,
               style: TextStyle(color: AppColors.textSecondary(context)),
             ),
           ),
@@ -103,12 +104,10 @@ Future<LimitReachedAction?> showCategoryLimitDialog(
     BuildContext context, String categoryName) {
   return showDialog<LimitReachedAction>(
     context: context,
-    builder: (_) => LimitReachedDialog(
-      title: 'Category limit reached',
-      message:
-          'The free plan allows 8 active categories. To activate "$categoryName", '
-          'deactivate another category first, or upgrade to Pro for unlimited categories.',
-      swapLabel: 'Swap Active',
+    builder: (ctx) => LimitReachedDialog(
+      title: S.of(ctx).categoryLimitTitle,
+      message: S.of(ctx).categoryLimitActivateMsg(categoryName),
+      swapLabel: S.of(ctx).swapActive,
     ),
   );
 }
@@ -118,11 +117,9 @@ Future<LimitReachedAction?> showCategoryCreateLimitDialog(
     BuildContext context) {
   return showDialog<LimitReachedAction>(
     context: context,
-    builder: (_) => LimitReachedDialog(
-      title: 'Category limit reached',
-      message:
-          'You have 8 active categories, the maximum for the free plan. '
-          'To add a new category, deactivate an existing one first, or upgrade to Pro.',
+    builder: (ctx) => LimitReachedDialog(
+      title: S.of(ctx).categoryLimitTitle,
+      message: S.of(ctx).categoryLimitCreateMsg,
       showCreatePaused: true,
     ),
   );
@@ -133,12 +130,10 @@ Future<LimitReachedAction?> showGoalLimitDialog(
     BuildContext context, String goalName) {
   return showDialog<LimitReachedAction>(
     context: context,
-    builder: (_) => LimitReachedDialog(
-      title: 'Savings goal limit reached',
-      message:
-          'The free plan allows 1 active savings goal. To activate "$goalName", '
-          'deactivate your current active goal first, or upgrade to Pro for unlimited goals.',
-      swapLabel: 'Choose Active Goal',
+    builder: (ctx) => LimitReachedDialog(
+      title: S.of(ctx).savingsGoalLimitTitle,
+      message: S.of(ctx).savingsGoalLimitActivateMsg(goalName),
+      swapLabel: S.of(ctx).chooseActiveGoal,
     ),
   );
 }
@@ -147,11 +142,9 @@ Future<LimitReachedAction?> showGoalLimitDialog(
 Future<LimitReachedAction?> showGoalCreateLimitDialog(BuildContext context) {
   return showDialog<LimitReachedAction>(
     context: context,
-    builder: (_) => LimitReachedDialog(
-      title: 'Savings goal limit reached',
-      message:
-          'The free plan allows 1 active savings goal. You can still create this '
-          'goal — it will be saved as paused until you upgrade or deactivate your current active goal.',
+    builder: (ctx) => LimitReachedDialog(
+      title: S.of(ctx).savingsGoalLimitTitle,
+      message: S.of(ctx).savingsGoalLimitCreateMsg,
       showCreatePaused: true,
     ),
   );

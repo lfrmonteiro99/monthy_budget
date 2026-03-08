@@ -640,7 +640,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           if (!compact) ...[
             const SizedBox(height: 2),
             Text(
-              'Podes continuar a conversar, mas com memoria reduzida.',
+              S.of(context).coachReducedMemoryNote,
               style: TextStyle(
                 fontSize: 12,
                 color: AppColors.warning(context),
@@ -651,7 +651,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
               alignment: Alignment.centerLeft,
               child: OutlinedButton(
                 onPressed: widget.onRestoreMemory ?? widget.onOpenSettings,
-                child: const Text('Restaurar memoria'),
+                child: Text(S.of(context).coachRestoreMemoryButton),
               ),
             ),
           ],

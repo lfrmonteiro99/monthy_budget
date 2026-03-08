@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../models/subscription_state.dart';
 import '../theme/app_colors.dart';
 
@@ -158,7 +159,7 @@ class TrialBanner extends StatelessWidget {
                   elevation: 0,
                 ),
                 child: Text(
-                  isUrgent ? 'Upgrade Now — Keep Your Data' : 'See Plans',
+                  isUrgent ? S.of(context).trialBannerUpgradeNowKeepData : S.of(context).trialBannerSeePlans,
                   style: const TextStyle(
                       fontWeight: FontWeight.w700, fontSize: 14),
                 ),

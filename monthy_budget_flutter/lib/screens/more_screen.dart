@@ -103,26 +103,26 @@ class _SubscriptionTile extends StatelessWidget {
     required this.onTap,
   });
 
-  String _planLabel() {
-    if (subscription == null) return 'Free Plan';
-    if (subscription!.isTrialActive) return 'Trial Active';
+  String _planLabel(BuildContext context) {
+    if (subscription == null) return S.of(context).morePlanFree;
+    if (subscription!.isTrialActive) return S.of(context).morePlanTrial;
     switch (subscription!.tier) {
       case SubscriptionTier.premium:
-        return 'Pro Plan';
+        return S.of(context).morePlanPro;
       case SubscriptionTier.family:
-        return 'Family Plan';
+        return S.of(context).morePlanFamily;
       case SubscriptionTier.free:
-        return 'Free Plan';
+        return S.of(context).morePlanFree;
     }
   }
 
-  String _planDetails() {
+  String _planDetails(BuildContext context) {
     if (subscription == null || subscription!.hasPremiumAccess) {
-      return 'Manage your plan and billing';
+      return S.of(context).morePlanManage;
     }
     final details = <String>[
-      '${DowngradeService.maxFreeCategories} categories',
-      '${DowngradeService.maxFreeSavingsGoals} savings goal',
+      S.of(context).morePlanCategories(DowngradeService.maxFreeCategories),
+      S.of(context).morePlanSavingsGoal(DowngradeService.maxFreeSavingsGoals),
     ];
     return details.join(' \u2022 ');
   }
@@ -138,7 +138,7 @@ class _SubscriptionTile extends StatelessWidget {
       leading:
           Icon(Icons.workspace_premium_outlined, color: AppColors.primary(context)),
       title: Text(
-        _planLabel(),
+        _planLabel(context),
         style: TextStyle(
           fontWeight: FontWeight.w700,
           color: AppColors.textPrimary(context),
@@ -148,14 +148,14 @@ class _SubscriptionTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            _planDetails(),
+            _planDetails(context),
             style: TextStyle(color: AppColors.textSecondary(context)),
           ),
           if (pausedItemCount > 0)
             Padding(
               padding: const EdgeInsets.only(top: 2),
               child: Text(
-                '$pausedItemCount items paused',
+                S.of(context).morePlanItemsPaused(pausedItemCount),
                 style: TextStyle(
                   fontSize: 12,
                   color: AppColors.textMuted(context),
@@ -166,7 +166,7 @@ class _SubscriptionTile extends StatelessWidget {
       ),
       trailing: subscription != null && !subscription!.hasPremiumAccess
           ? Text(
-              'Upgrade \u2192',
+              S.of(context).morePlanUpgrade,
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,

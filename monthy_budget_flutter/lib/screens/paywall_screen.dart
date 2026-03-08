@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import '../config/revenuecat_config.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../models/subscription_state.dart';
 import '../services/revenuecat_service.dart';
 import '../theme/app_colors.dart';
@@ -140,7 +141,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
       if (mounted) {
         setState(() {
           _purchasing = false;
-          _error = 'Restore failed. Please try again.';
+          _error = S.of(context).paywallRestoreFailed;
         });
       }
     }
@@ -177,8 +178,8 @@ class _PaywallScreenState extends State<PaywallScreen> {
                   const SizedBox(height: 12),
                   Text(
                     trialExpired
-                        ? 'Your trial has ended'
-                        : 'Upgrade to Premium',
+                        ? S.of(context).paywallTrialEnded
+                        : S.of(context).paywallUpgradePremium,
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w800,
@@ -188,8 +189,8 @@ class _PaywallScreenState extends State<PaywallScreen> {
                   const SizedBox(height: 8),
                   Text(
                     trialExpired
-                        ? 'Choose a plan to keep all your data and features'
-                        : 'Unlock the full power of your budget',
+                        ? S.of(context).paywallChoosePlan
+                        : S.of(context).paywallUnlockPower,
                     style: TextStyle(
                       fontSize: 14,
                       color: AppColors.textSecondary(context),
@@ -215,7 +216,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
 
                   // Pro card — single paid tier (maps to family internally)
                   _TierCard(
-                    title: 'Gestão Mensal Pro',
+                    title: S.of(context).paywallProTitle,
                     price: _yearlyBilling
                         ? _priceForTier(true, '€2.49')
                         : _priceForTier(false, '€3.99'),
@@ -240,17 +241,17 @@ class _PaywallScreenState extends State<PaywallScreen> {
                         widget.subscription.tier != SubscriptionTier.free,
                     // Single entitlement → maps to family (highest tier).
                     onSelect: () => _handlePurchase(SubscriptionTier.family),
-                    ctaLabel: 'Start Pro',
+                    ctaLabel: S.of(context).paywallStartPro,
                     isPrimary: true,
-                    badge: 'Best Value',
+                    badge: S.of(context).paywallBestValue,
                     showPriceAsIs: _offerings != null,
                   ),
                   const SizedBox(height: 12),
                   // Free tier card
                   _TierCard(
-                    title: 'Free',
+                    title: S.of(context).paywallFreeTitle,
                     price: '0',
-                    period: 'forever',
+                    period: S.of(context).paywallForever,
                     features: const [
                       'Budget calculator (8 categories)',
                       'Basic expense tracking',
@@ -262,7 +263,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
                         widget.subscription.tier == SubscriptionTier.free &&
                             !widget.subscription.isTrialActive,
                     onSelect: () => _handlePurchase(SubscriptionTier.free),
-                    ctaLabel: 'Continue Free',
+                    ctaLabel: S.of(context).paywallContinueFree,
                     isPrimary: false,
                   ),
 
@@ -304,7 +305,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
                           size: 14, color: AppColors.textMuted(context)),
                       const SizedBox(width: 4),
                       Text(
-                        'Cancel anytime • No hidden fees',
+                        S.of(context).paywallCancelAnytime,
                         style: TextStyle(
                           fontSize: 12,
                           color: AppColors.textMuted(context),
@@ -319,7 +320,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
                     TextButton(
                       onPressed: _purchasing ? null : _handleRestore,
                       child: Text(
-                        'Restore Purchases',
+                        S.of(context).paywallRestorePurchases,
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
