@@ -11,6 +11,7 @@ import '../services/ai_coach_service.dart';
 import '../services/subscription_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/calculations.dart';
+import '../utils/rate_limiter.dart';
 import '../widgets/info_icon_button.dart';
 
 class CoachScreen extends StatefulWidget {
@@ -57,6 +58,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   late CoachMode _selectedMode;
   bool _tourShown = false;
   bool _ecoBannerCollapsed = false;
+  final _rateLimiter = RateLimiter(minInterval: const Duration(seconds: 3));
 
   final List<String> _quickPrompts = const [
     'Onde posso cortar despesas este mes?',
@@ -119,6 +121,17 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   Future<void> _sendCurrentMessage() async {
     final text = _composerController.text.trim();
     if (text.isEmpty || _loading) return;
+
+    if (!_rateLimiter.tryCall()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(S.of(context).rateLimitMessage),
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
 
     final previousMessages = List<CoachChatMessage>.from(_messages);
     final userMessage = CoachChatMessage(

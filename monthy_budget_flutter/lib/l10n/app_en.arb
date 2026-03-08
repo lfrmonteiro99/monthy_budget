@@ -1656,5 +1656,6 @@
   "helperWizardGroceries": "Monthly food and household supplies budget",
   "helperWizardTransport": "Monthly transport costs (fuel, public transit, etc.)",
   "helperWizardUtilities": "Monthly electricity, water, gas",
-  "helperWizardTelecom": "Monthly internet, phone, TV"
+  "helperWizardTelecom": "Monthly internet, phone, TV",
+  "rateLimitMessage": "Please wait a moment before trying again"
 }

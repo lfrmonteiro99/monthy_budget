@@ -1800,5 +1800,6 @@
   "savingsGoalHowItWorksStep4": "Suivez votre progression : la barre montre combien vous avez épargné et la projection estime quand vous atteindrez votre objectif.",
   "@savingsGoalHowItWorksStep4": { "description": "How it works step 4" },
   "savingsGoalDashboardHint": "Touchez un objectif pour voir les détails et enregistrer des contributions.",
-  "@savingsGoalDashboardHint": { "description": "Dashboard hint text" }
+  "@savingsGoalDashboardHint": { "description": "Dashboard hint text" },
+  "rateLimitMessage": "Veuillez patienter un moment avant de réessayer"
 }
