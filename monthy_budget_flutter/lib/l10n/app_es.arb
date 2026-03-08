@@ -1936,5 +1936,11 @@
     "roadmapLater": "Despues",
     "productUpdatesSubtitle": "Changelog y funcionalidades futuras",
     "whatsNewDialogTitle": "Novedades",
-    "whatsNewDialogDismiss": "Entendido"
+    "whatsNewDialogDismiss": "Entendido",
+    "confidenceCenterTitle": "Centro de Confianza",
+    "confidenceSyncHealth": "Estado de Sincronización",
+    "confidenceDataAlerts": "Alertas de Calidad de Datos",
+    "confidenceRecommendedActions": "Acciones Recomendadas",
+    "confidenceCenterSubtitle": "Frescura de datos y salud del sistema",
+    "confidenceCenterTile": "Centro de Confianza"
 }

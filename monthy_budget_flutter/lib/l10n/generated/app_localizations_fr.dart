@@ -3818,4 +3818,23 @@ class SFr extends S {
 
   @override
   String get whatsNewDialogDismiss => 'Compris';
+
+  @override
+  String get confidenceCenterTitle => 'Centre de Confiance';
+
+  @override
+  String get confidenceSyncHealth => 'État de Synchronisation';
+
+  @override
+  String get confidenceDataAlerts => 'Alertes de Qualité des Données';
+
+  @override
+  String get confidenceRecommendedActions => 'Actions Recommandées';
+
+  @override
+  String get confidenceCenterSubtitle =>
+      'Fraîcheur des données et santé du système';
+
+  @override
+  String get confidenceCenterTile => 'Centre de Confiance';
 }

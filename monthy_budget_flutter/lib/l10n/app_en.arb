@@ -1987,5 +1987,11 @@
     "roadmapLater": "Later",
     "productUpdatesSubtitle": "Changelog and upcoming features",
     "whatsNewDialogTitle": "What's New",
-    "whatsNewDialogDismiss": "Got it"
+    "whatsNewDialogDismiss": "Got it",
+    "confidenceCenterTitle": "Confidence Center",
+    "confidenceSyncHealth": "Sync Health",
+    "confidenceDataAlerts": "Data Quality Alerts",
+    "confidenceRecommendedActions": "Recommended Actions",
+    "confidenceCenterSubtitle": "Data freshness and system health",
+    "confidenceCenterTile": "Confidence Center"
 }

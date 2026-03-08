@@ -6904,6 +6904,42 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Entendi'**
   String get whatsNewDialogDismiss;
+
+  /// No description provided for @confidenceCenterTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Centro de Confiança'**
+  String get confidenceCenterTitle;
+
+  /// No description provided for @confidenceSyncHealth.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estado de Sincronização'**
+  String get confidenceSyncHealth;
+
+  /// No description provided for @confidenceDataAlerts.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alertas de Qualidade dos Dados'**
+  String get confidenceDataAlerts;
+
+  /// No description provided for @confidenceRecommendedActions.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ações Recomendadas'**
+  String get confidenceRecommendedActions;
+
+  /// No description provided for @confidenceCenterSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Frescura dos dados e saúde do sistema'**
+  String get confidenceCenterSubtitle;
+
+  /// No description provided for @confidenceCenterTile.
+  ///
+  /// In pt, this message translates to:
+  /// **'Centro de Confiança'**
+  String get confidenceCenterTile;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

@@ -3804,4 +3804,23 @@ class SPt extends S {
 
   @override
   String get whatsNewDialogDismiss => 'Entendi';
+
+  @override
+  String get confidenceCenterTitle => 'Centro de Confiança';
+
+  @override
+  String get confidenceSyncHealth => 'Estado de Sincronização';
+
+  @override
+  String get confidenceDataAlerts => 'Alertas de Qualidade dos Dados';
+
+  @override
+  String get confidenceRecommendedActions => 'Ações Recomendadas';
+
+  @override
+  String get confidenceCenterSubtitle =>
+      'Frescura dos dados e saúde do sistema';
+
+  @override
+  String get confidenceCenterTile => 'Centro de Confiança';
 }

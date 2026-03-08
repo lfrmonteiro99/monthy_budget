@@ -3811,4 +3811,23 @@ class SEs extends S {
 
   @override
   String get whatsNewDialogDismiss => 'Entendido';
+
+  @override
+  String get confidenceCenterTitle => 'Centro de Confianza';
+
+  @override
+  String get confidenceSyncHealth => 'Estado de Sincronización';
+
+  @override
+  String get confidenceDataAlerts => 'Alertas de Calidad de Datos';
+
+  @override
+  String get confidenceRecommendedActions => 'Acciones Recomendadas';
+
+  @override
+  String get confidenceCenterSubtitle =>
+      'Frescura de datos y salud del sistema';
+
+  @override
+  String get confidenceCenterTile => 'Centro de Confianza';
 }

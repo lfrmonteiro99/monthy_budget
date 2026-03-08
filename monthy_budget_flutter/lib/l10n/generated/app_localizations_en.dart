@@ -3780,4 +3780,22 @@ class SEn extends S {
 
   @override
   String get whatsNewDialogDismiss => 'Got it';
+
+  @override
+  String get confidenceCenterTitle => 'Confidence Center';
+
+  @override
+  String get confidenceSyncHealth => 'Sync Health';
+
+  @override
+  String get confidenceDataAlerts => 'Data Quality Alerts';
+
+  @override
+  String get confidenceRecommendedActions => 'Recommended Actions';
+
+  @override
+  String get confidenceCenterSubtitle => 'Data freshness and system health';
+
+  @override
+  String get confidenceCenterTile => 'Confidence Center';
 }
