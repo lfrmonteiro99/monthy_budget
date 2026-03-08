@@ -80,10 +80,16 @@ jobs:
 
       - name: Validate Supabase secrets
         run: |
-          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
-            echo "::error::SUPABASE_URL and SUPABASE_ANON_KEY secrets must be set for release builds"
+          if [ -z "${SUPABASE_URL}" ]; then
+            echo "::error::SUPABASE_URL secret is not set. Go to repo Settings > Secrets and variables > Actions and add it."
             exit 1
           fi
+          if [ -z "${SUPABASE_ANON_KEY}" ]; then
+            echo "::error::SUPABASE_ANON_KEY secret is not set. Go to repo Settings > Secrets and variables > Actions and add it."
+            exit 1
+          fi
+          echo "Supabase URL: ${SUPABASE_URL:0:30}... (truncated)"
+          echo "Anon key length: ${#SUPABASE_ANON_KEY} chars"
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
@@ -94,8 +100,31 @@ jobs:
       - name: Generate l10n
         run: flutter gen-l10n
 
+      - name: Validate signing secrets
+        run: |
+          missing=""
+          [ -z "${KEYSTORE_BASE64}" ] && missing="${missing} KEYSTORE_BASE64"
+          [ -z "${KEYSTORE_PASSWORD}" ] && missing="${missing} KEYSTORE_PASSWORD"
+          [ -z "${KEY_ALIAS}" ] && missing="${missing} KEY_ALIAS"
+          [ -z "${KEY_PASSWORD}" ] && missing="${missing} KEY_PASSWORD"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing signing secrets:${missing}. Go to repo Settings > Secrets and variables > Actions and add them."
+            exit 1
+          fi
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
       - name: Decode keystore
-        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/keystore.jks
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/keystore.jks
+          if [ ! -s android/keystore.jks ]; then
+            echo "::error::Decoded keystore is empty - KEYSTORE_BASE64 secret may be invalid."
+            exit 1
+          fi
+          echo "Keystore decoded: $(wc -c < android/keystore.jks) bytes"
 
       - name: Build APK
         env:
