@@ -1801,5 +1801,28 @@
   "@savingsGoalHowItWorksStep4": { "description": "How it works step 4" },
   "savingsGoalDashboardHint": "Touchez un objectif pour voir les détails et enregistrer des contributions.",
   "@savingsGoalDashboardHint": { "description": "Dashboard hint text" },
-  "rateLimitMessage": "Veuillez patienter un moment avant de réessayer"
+  "rateLimitMessage": "Veuillez patienter un moment avant de réessayer",
+
+  "mealBudgetInsightTitle": "Aperçu du Budget",
+  "mealBudgetStatusSafe": "En bonne voie",
+  "mealBudgetStatusWatch": "Attention",
+  "mealBudgetStatusOver": "Hors budget",
+  "mealBudgetWeeklyCost": "Coût hebdomadaire estimé",
+  "mealBudgetProjectedMonthly": "Projection mensuelle",
+  "mealBudgetMonthlyBudget": "Budget alimentaire mensuel",
+  "mealBudgetRemaining": "Budget restant",
+  "mealBudgetTopExpensive": "Repas les plus chers",
+  "mealBudgetSuggestedSwaps": "Échanges moins chers suggérés",
+  "mealBudgetViewDetails": "Voir les détails",
+  "mealBudgetApplySwap": "Appliquer",
+  "mealBudgetSwapSavings": "Économisez {amount}",
+  "@mealBudgetSwapSavings": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "mealBudgetDailyBreakdown": "Répartition quotidienne des coûts",
+  "mealBudgetShoppingImpact": "Impact sur les courses",
+  "mealBudgetUniqueIngredients": "Ingrédients uniques",
+  "mealBudgetEstShoppingCost": "Coût estimé des courses"
 }
