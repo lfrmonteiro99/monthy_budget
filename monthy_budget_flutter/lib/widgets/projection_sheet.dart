@@ -77,7 +77,7 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
     _now = DateTime.now();
     _dayOfMonth = _now.day;
     _daysInMonth = DateTime(_now.year, _now.month + 1, 0).day;
-    _daysRemaining = _daysInMonth - _dayOfMonth;
+    _daysRemaining = (_daysInMonth - _dayOfMonth).clamp(0, _daysInMonth);
 
     _foodBudget = widget.settings.expenses
         .where((e) => e.category == ExpenseCategory.alimentacao && e.enabled)

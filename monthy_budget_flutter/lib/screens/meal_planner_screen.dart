@@ -140,6 +140,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       previousFeedback: previousFeedback,
     );
     await _service.save(plan, widget.householdId);
+    if (!mounted) return;
     setState(() {
       _plan = plan;
       _loading = false;

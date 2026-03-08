@@ -544,7 +544,7 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
     ];
     final monthLabel = '${monthNames[now.month]} ${now.year}';
     final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
-    final daysLeft = daysInMonth - now.day;
+    final daysLeft = (daysInMonth - now.day).clamp(0, daysInMonth);
 
     final buf = StringBuffer();
     buf.writeln('CONTEXTO: Orçamento pessoal mensal — $monthLabel');
