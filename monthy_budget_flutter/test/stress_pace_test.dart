@@ -30,6 +30,30 @@ void main() {
       expect(result.severity, 'danger');
       expect(result.projectedOverspend, greaterThan(0));
     });
+
+    test('daysRemaining is clamped to zero on last day of month', () {
+      // March 31 is the last day — daysRemaining should be 0, not negative
+      final result = checkBudgetPace(
+        budget: 300,
+        spent: 300,
+        now: DateTime(2026, 3, 31),
+      );
+
+      expect(result.daysRemaining, 0);
+      expect(result.daysElapsed, 31);
+      expect(result.projectedTotal, 300);
+    });
+
+    test('daysRemaining is zero on Feb 28 in non-leap year', () {
+      final result = checkBudgetPace(
+        budget: 200,
+        spent: 180,
+        now: DateTime(2027, 2, 28),
+      );
+
+      expect(result.daysRemaining, 0);
+      expect(result.daysElapsed, 28);
+    });
   });
 
   group('calculateStressIndex extra scenarios', () {
