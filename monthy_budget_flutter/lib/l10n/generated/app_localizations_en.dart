@@ -663,6 +663,9 @@ class SEn extends S {
   String get cmdUndo => 'Undo';
 
   @override
+  String get expenseDeleted => 'Expense deleted';
+
+  @override
   String get cmdCapabilitiesCta => 'What can I do?';
 
   @override
@@ -2108,6 +2111,12 @@ class SEn extends S {
       'You can add more income sources later.';
 
   @override
+  String get setupWizardSalaryRequired => 'Please enter your salary';
+
+  @override
+  String get setupWizardSalaryPositive => 'Salary must be a positive number';
+
+  @override
   String get setupWizardSalarySkip => 'Skip this step';
 
   @override
@@ -2490,24 +2499,6 @@ class SEn extends S {
 
   @override
   String get savingsGoalOverdue => 'Overdue';
-
-  @override
-  String get savingsGoalHowItWorksTitle => 'How does it work?';
-
-  @override
-  String get savingsGoalHowItWorksStep1 => 'Create a goal with a name and the amount you want to save (e.g. \"Vacation — €2,000\").';
-
-  @override
-  String get savingsGoalHowItWorksStep2 => 'Optionally set a deadline to have a target date.';
-
-  @override
-  String get savingsGoalHowItWorksStep3 => 'Whenever you save money, tap the goal and record a contribution with the amount and date.';
-
-  @override
-  String get savingsGoalHowItWorksStep4 => 'Track your progress: the bar shows how much you\'ve saved and the projection estimates when you\'ll reach your goal.';
-
-  @override
-  String get savingsGoalDashboardHint => 'Tap a goal to see details and record contributions.';
 
   @override
   String get mealCostReconciliation => 'Meal Costs';
@@ -3595,4 +3586,83 @@ class SEn extends S {
 
   @override
   String get helperWizardTelecom => 'Monthly internet, phone, TV';
+
+  @override
+  String get savingsGoalHowItWorksTitle => 'How does it work?';
+
+  @override
+  String get savingsGoalHowItWorksStep1 =>
+      'Create a goal with a name and the amount you want to save (e.g. \"Vacation — €2,000\").';
+
+  @override
+  String get savingsGoalHowItWorksStep2 =>
+      'Optionally set a deadline to have a target date.';
+
+  @override
+  String get savingsGoalHowItWorksStep3 =>
+      'Whenever you save money, tap the goal and record a contribution with the amount and date.';
+
+  @override
+  String get savingsGoalHowItWorksStep4 =>
+      'Track your progress: the bar shows how much you\'ve saved and the projection estimates when you\'ll reach your goal.';
+
+  @override
+  String get savingsGoalDashboardHint =>
+      'Tap a goal to see details and record contributions.';
+
+  @override
+  String get rateLimitMessage => 'Please wait a moment before trying again';
+
+  @override
+  String get mealBudgetInsightTitle => 'Budget Insight';
+
+  @override
+  String get mealBudgetStatusSafe => 'On Track';
+
+  @override
+  String get mealBudgetStatusWatch => 'Watch';
+
+  @override
+  String get mealBudgetStatusOver => 'Over Budget';
+
+  @override
+  String get mealBudgetWeeklyCost => 'Weekly estimated cost';
+
+  @override
+  String get mealBudgetProjectedMonthly => 'Projected monthly spend';
+
+  @override
+  String get mealBudgetMonthlyBudget => 'Monthly food budget';
+
+  @override
+  String get mealBudgetRemaining => 'Remaining budget';
+
+  @override
+  String get mealBudgetTopExpensive => 'Most expensive meals';
+
+  @override
+  String get mealBudgetSuggestedSwaps => 'Suggested cheaper swaps';
+
+  @override
+  String get mealBudgetViewDetails => 'View details';
+
+  @override
+  String get mealBudgetApplySwap => 'Apply';
+
+  @override
+  String mealBudgetSwapSavings(String amount) {
+    return 'Save $amount';
+  }
+
+  @override
+  String get mealBudgetDailyBreakdown => 'Daily cost breakdown';
+
+  @override
+  String get mealBudgetShoppingImpact => 'Shopping impact';
+
+  @override
+  String get mealBudgetUniqueIngredients => 'Unique ingredients';
+
+  @override
+  String get mealBudgetEstShoppingCost => 'Estimated shopping cost';
 }

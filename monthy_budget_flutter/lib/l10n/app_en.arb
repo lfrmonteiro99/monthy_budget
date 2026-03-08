@@ -1657,5 +1657,28 @@
   "helperWizardTransport": "Monthly transport costs (fuel, public transit, etc.)",
   "helperWizardUtilities": "Monthly electricity, water, gas",
   "helperWizardTelecom": "Monthly internet, phone, TV",
-  "rateLimitMessage": "Please wait a moment before trying again"
+  "rateLimitMessage": "Please wait a moment before trying again",
+
+  "mealBudgetInsightTitle": "Budget Insight",
+  "mealBudgetStatusSafe": "On Track",
+  "mealBudgetStatusWatch": "Watch",
+  "mealBudgetStatusOver": "Over Budget",
+  "mealBudgetWeeklyCost": "Weekly estimated cost",
+  "mealBudgetProjectedMonthly": "Projected monthly spend",
+  "mealBudgetMonthlyBudget": "Monthly food budget",
+  "mealBudgetRemaining": "Remaining budget",
+  "mealBudgetTopExpensive": "Most expensive meals",
+  "mealBudgetSuggestedSwaps": "Suggested cheaper swaps",
+  "mealBudgetViewDetails": "View details",
+  "mealBudgetApplySwap": "Apply",
+  "mealBudgetSwapSavings": "Save {amount}",
+  "@mealBudgetSwapSavings": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "mealBudgetDailyBreakdown": "Daily cost breakdown",
+  "mealBudgetShoppingImpact": "Shopping impact",
+  "mealBudgetUniqueIngredients": "Unique ingredients",
+  "mealBudgetEstShoppingCost": "Estimated shopping cost"
 }
