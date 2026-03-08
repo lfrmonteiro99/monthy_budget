@@ -455,6 +455,29 @@
       }
     }
   },
+  "shoppingViewItems": "Items",
+  "shoppingViewMeals": "Meals",
+  "shoppingViewStores": "Stores",
+  "shoppingGroupOther": "Other",
+  "shoppingGroupCount": "{count, plural, =1{1 item} other{{count} items}}",
+  "@shoppingGroupCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shoppingCheapestAt": "Cheapest at {store} ({price})",
+  "@shoppingCheapestAt": {
+    "placeholders": {
+      "store": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
 
   "authLogin": "Sign in",
   "authRegister": "Create account",

@@ -665,6 +665,9 @@ class SPt extends S {
   String get cmdUndo => 'Desfazer';
 
   @override
+  String get expenseDeleted => 'Despesa eliminada';
+
+  @override
   String get cmdCapabilitiesCta => 'O que posso fazer?';
 
   @override
@@ -853,6 +856,34 @@ class SPt extends S {
       one: '1 produto',
     );
     return '$_temp0';
+  }
+
+  @override
+  String get shoppingViewItems => 'Itens';
+
+  @override
+  String get shoppingViewMeals => 'Refeicoes';
+
+  @override
+  String get shoppingViewStores => 'Lojas';
+
+  @override
+  String get shoppingGroupOther => 'Outros';
+
+  @override
+  String shoppingGroupCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count itens',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String shoppingCheapestAt(String store, String price) {
+    return 'Mais barato em $store ($price)';
   }
 
   @override
@@ -2114,6 +2145,13 @@ class SPt extends S {
       'Pode adicionar mais fontes de rendimento mais tarde.';
 
   @override
+  String get setupWizardSalaryRequired => 'Por favor insira o seu salário';
+
+  @override
+  String get setupWizardSalaryPositive =>
+      'O salário deve ser um número positivo';
+
+  @override
   String get setupWizardSalarySkip => 'Saltar este passo';
 
   @override
@@ -2497,24 +2535,6 @@ class SPt extends S {
 
   @override
   String get savingsGoalOverdue => 'Prazo ultrapassado';
-
-  @override
-  String get savingsGoalHowItWorksTitle => 'Como funciona?';
-
-  @override
-  String get savingsGoalHowItWorksStep1 => 'Crie um objetivo com um nome e o valor que pretende atingir (ex: \"Férias — 2 000 €\").';
-
-  @override
-  String get savingsGoalHowItWorksStep2 => 'Opcionalmente defina uma data limite para ter um prazo de referência.';
-
-  @override
-  String get savingsGoalHowItWorksStep3 => 'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.';
-
-  @override
-  String get savingsGoalHowItWorksStep4 => 'Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.';
-
-  @override
-  String get savingsGoalDashboardHint => 'Toque num objetivo para ver detalhes e registar contribuições.';
 
   @override
   String get mealCostReconciliation => 'Custos de Refeições';
@@ -3617,4 +3637,31 @@ class SPt extends S {
 
   @override
   String get helperWizardTelecom => 'Internet, telefone e TV mensais';
+
+  @override
+  String get savingsGoalHowItWorksTitle => 'Como funciona?';
+
+  @override
+  String get savingsGoalHowItWorksStep1 =>
+      'Crie um objetivo com um nome e o valor que pretende atingir (ex: \"Férias — 2 000 €\").';
+
+  @override
+  String get savingsGoalHowItWorksStep2 =>
+      'Opcionalmente defina uma data limite para ter um prazo de referência.';
+
+  @override
+  String get savingsGoalHowItWorksStep3 =>
+      'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.';
+
+  @override
+  String get savingsGoalHowItWorksStep4 =>
+      'Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.';
+
+  @override
+  String get savingsGoalDashboardHint =>
+      'Toque num objetivo para ver detalhes e registar contribuições.';
+
+  @override
+  String get rateLimitMessage =>
+      'Por favor, aguarde um momento antes de tentar novamente';
 }

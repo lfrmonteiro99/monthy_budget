@@ -1301,6 +1301,12 @@ abstract class S {
   /// **'Desfazer'**
   String get cmdUndo;
 
+  /// No description provided for @expenseDeleted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesa eliminada'**
+  String get expenseDeleted;
+
   /// No description provided for @cmdCapabilitiesCta.
   ///
   /// In pt, this message translates to:
@@ -1612,6 +1618,42 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'{count, plural, =1{1 produto} other{{count} produtos}}'**
   String shoppingProductCount(int count);
+
+  /// No description provided for @shoppingViewItems.
+  ///
+  /// In pt, this message translates to:
+  /// **'Itens'**
+  String get shoppingViewItems;
+
+  /// No description provided for @shoppingViewMeals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Refeicoes'**
+  String get shoppingViewMeals;
+
+  /// No description provided for @shoppingViewStores.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lojas'**
+  String get shoppingViewStores;
+
+  /// No description provided for @shoppingGroupOther.
+  ///
+  /// In pt, this message translates to:
+  /// **'Outros'**
+  String get shoppingGroupOther;
+
+  /// Pluralized item count in group header
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 item} other{{count} itens}}'**
+  String shoppingGroupCount(int count);
+
+  /// Cheapest known store hint
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais barato em {store} ({price})'**
+  String shoppingCheapestAt(String store, String price);
 
   /// Auth login screen title
   ///
@@ -3941,6 +3983,18 @@ abstract class S {
   /// **'Pode adicionar mais fontes de rendimento mais tarde.'**
   String get setupWizardSalaryMoreLater;
 
+  /// No description provided for @setupWizardSalaryRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Por favor insira o seu salário'**
+  String get setupWizardSalaryRequired;
+
+  /// No description provided for @setupWizardSalaryPositive.
+  ///
+  /// In pt, this message translates to:
+  /// **'O salário deve ser um número positivo'**
+  String get setupWizardSalaryPositive;
+
   /// Skip button on salary step
   ///
   /// In pt, this message translates to:
@@ -4648,42 +4702,6 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Prazo ultrapassado'**
   String get savingsGoalOverdue;
-
-  /// How it works section title
-  ///
-  /// In pt, this message translates to:
-  /// **'Como funciona?'**
-  String get savingsGoalHowItWorksTitle;
-
-  /// How it works step 1
-  ///
-  /// In pt, this message translates to:
-  /// **'Crie um objetivo com um nome e o valor que pretende atingir (ex: "Férias — 2 000 €").'**
-  String get savingsGoalHowItWorksStep1;
-
-  /// How it works step 2
-  ///
-  /// In pt, this message translates to:
-  /// **'Opcionalmente defina uma data limite para ter um prazo de referência.'**
-  String get savingsGoalHowItWorksStep2;
-
-  /// How it works step 3
-  ///
-  /// In pt, this message translates to:
-  /// **'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.'**
-  String get savingsGoalHowItWorksStep3;
-
-  /// How it works step 4
-  ///
-  /// In pt, this message translates to:
-  /// **'Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.'**
-  String get savingsGoalHowItWorksStep4;
-
-  /// Dashboard hint text
-  ///
-  /// In pt, this message translates to:
-  /// **'Toque num objetivo para ver detalhes e registar contribuições.'**
-  String get savingsGoalDashboardHint;
 
   /// Meal cost reconciliation title
   ///
@@ -6574,6 +6592,48 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Internet, telefone e TV mensais'**
   String get helperWizardTelecom;
+
+  /// How it works section title
+  ///
+  /// In pt, this message translates to:
+  /// **'Como funciona?'**
+  String get savingsGoalHowItWorksTitle;
+
+  /// How it works step 1
+  ///
+  /// In pt, this message translates to:
+  /// **'Crie um objetivo com um nome e o valor que pretende atingir (ex: \"Férias — 2 000 €\").'**
+  String get savingsGoalHowItWorksStep1;
+
+  /// How it works step 2
+  ///
+  /// In pt, this message translates to:
+  /// **'Opcionalmente defina uma data limite para ter um prazo de referência.'**
+  String get savingsGoalHowItWorksStep2;
+
+  /// How it works step 3
+  ///
+  /// In pt, this message translates to:
+  /// **'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.'**
+  String get savingsGoalHowItWorksStep3;
+
+  /// How it works step 4
+  ///
+  /// In pt, this message translates to:
+  /// **'Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.'**
+  String get savingsGoalHowItWorksStep4;
+
+  /// Dashboard hint text
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque num objetivo para ver detalhes e registar contribuições.'**
+  String get savingsGoalDashboardHint;
+
+  /// No description provided for @rateLimitMessage.
+  ///
+  /// In pt, this message translates to:
+  /// **'Por favor, aguarde um momento antes de tentar novamente'**
+  String get rateLimitMessage;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
