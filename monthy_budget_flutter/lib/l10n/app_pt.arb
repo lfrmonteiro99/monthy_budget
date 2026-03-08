@@ -2348,6 +2348,7 @@
   "savingsGoalHowItWorksStep4": "Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.",
   "@savingsGoalHowItWorksStep4": { "description": "How it works step 4" },
   "savingsGoalDashboardHint": "Toque num objetivo para ver detalhes e registar contribuições.",
-  "@savingsGoalDashboardHint": { "description": "Dashboard hint text" }
+  "@savingsGoalDashboardHint": { "description": "Dashboard hint text" },
+  "rateLimitMessage": "Por favor, aguarde um momento antes de tentar novamente"
 }
 

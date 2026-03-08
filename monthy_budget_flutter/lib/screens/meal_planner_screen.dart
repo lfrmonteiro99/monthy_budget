@@ -12,6 +12,7 @@ import '../utils/formatters.dart';
 import '../widgets/meal_cost_reconciliation_sheet.dart';
 import '../widgets/meal_feedback_button.dart';
 import '../onboarding/meals_tour.dart';
+import '../utils/rate_limiter.dart';
 import 'meal_wizard_screen.dart';
 
 class MealPlannerScreen extends StatefulWidget {
@@ -61,6 +62,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   final Map<int, WeeklyNutritionSummary> _weeklySummaries = {};
   final Set<int> _weeklySummaryPending = {};
   bool _batchPlanLoading = false;
+  final _rateLimiter = RateLimiter(minInterval: const Duration(seconds: 3));
 
   @override
   void initState() {
@@ -110,6 +112,16 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   }
 
   Future<void> _generatePlan() async {
+    if (!_rateLimiter.tryCall()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(S.of(context).rateLimitMessage),
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
     setState(() => _loading = true);
     final now = DateTime.now();
 
@@ -128,6 +140,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       previousFeedback: previousFeedback,
     );
     await _service.save(plan, widget.householdId);
+    if (!mounted) return;
     setState(() {
       _plan = plan;
       _loading = false;
@@ -195,6 +208,16 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   }
 
   void _showBatchPrepGuide(MealPlan plan, int weekIndex) {
+    if (!_rateLimiter.tryCall()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(S.of(context).rateLimitMessage),
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
     final weekDays = _getWeekDays(plan, weekIndex);
     final batchRecipes = weekDays
         .map((d) => _service.recipeMap[d.recipeId])

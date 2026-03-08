@@ -41,6 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
         widget.onAuthenticated();
       } else {
         await _auth.signUp(_emailCtrl.text.trim(), _passCtrl.text);
+        if (!mounted) return;
         setState(() {
           _registrationSuccess = true;
           _isLogin = true;
@@ -48,6 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
         });
       }
     } catch (e) {
+      if (!mounted) return;
       setState(() => _error = _friendlyError(e));
     } finally {
       if (mounted) setState(() => _loading = false);
