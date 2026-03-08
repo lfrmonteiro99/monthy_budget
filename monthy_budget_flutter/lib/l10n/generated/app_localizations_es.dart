@@ -860,6 +860,34 @@ class SEs extends S {
   }
 
   @override
+  String get shoppingViewItems => 'Articulos';
+
+  @override
+  String get shoppingViewMeals => 'Comidas';
+
+  @override
+  String get shoppingViewStores => 'Tiendas';
+
+  @override
+  String get shoppingGroupOther => 'Otros';
+
+  @override
+  String shoppingGroupCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count articulos',
+      one: '1 articulo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String shoppingCheapestAt(String store, String price) {
+    return 'Mas barato en $store ($price)';
+  }
+
+  @override
   String get authLogin => 'Iniciar sesiÃ³n';
 
   @override
@@ -3645,37 +3673,58 @@ class SEs extends S {
       'Por favor, espera un momento antes de intentarlo de nuevo';
 
   @override
-  String get productUpdatesTitle => 'Novedades del Producto';
+  String get planningExportTitle => 'Exportar';
 
   @override
-  String get whatsNewTab => 'Novedades';
+  String get planningImportTitle => 'Importar';
 
   @override
-  String get roadmapTab => 'Hoja de Ruta';
+  String get planningExportShoppingList => 'Exportar lista de compras';
 
   @override
-  String get noUpdatesYet => 'Sin novedades todavia';
+  String get planningImportShoppingList => 'Importar lista de compras';
 
   @override
-  String get noRoadmapItems => 'Sin elementos en la hoja de ruta';
+  String get planningExportMealPlan => 'Exportar plan de comidas';
 
   @override
-  String get roadmapNow => 'Ahora';
+  String get planningImportMealPlan => 'Importar plan de comidas';
 
   @override
-  String get roadmapNext => 'Siguiente';
+  String get planningExportPantry => 'Exportar despensa';
 
   @override
-  String get roadmapLater => 'Despues';
+  String get planningImportPantry => 'Importar despensa';
 
   @override
-  String get productUpdatesSubtitle => 'Changelog y funcionalidades futuras';
+  String get planningExportFreeformMeals => 'Exportar comidas libres';
 
   @override
-  String get whatsNewDialogTitle => 'Novedades';
+  String get planningImportFreeformMeals => 'Importar comidas libres';
 
   @override
-  String get whatsNewDialogDismiss => 'Entendido';
+  String get planningFormatCsv => 'CSV';
+
+  @override
+  String get planningFormatJson => 'JSON';
+
+  @override
+  String get planningImportSuccess => 'Importado con éxito';
+
+  @override
+  String planningImportError(String error) {
+    return 'Importación fallida: $error';
+  }
+
+  @override
+  String get planningExportSuccess => 'Exportado con éxito';
+
+  @override
+  String get planningDataPortability => 'Portabilidad de datos';
+
+  @override
+  String get planningDataPortabilityDesc =>
+      'Importar y exportar artefactos de planificación';
 
   @override
   String get mealBudgetInsightTitle => 'Visión del Presupuesto';
@@ -3729,4 +3778,37 @@ class SEs extends S {
 
   @override
   String get mealBudgetEstShoppingCost => 'Coste estimado de compras';
+
+  @override
+  String get productUpdatesTitle => 'Novedades del Producto';
+
+  @override
+  String get whatsNewTab => 'Novedades';
+
+  @override
+  String get roadmapTab => 'Hoja de Ruta';
+
+  @override
+  String get noUpdatesYet => 'Sin novedades todavia';
+
+  @override
+  String get noRoadmapItems => 'Sin elementos en la hoja de ruta';
+
+  @override
+  String get roadmapNow => 'Ahora';
+
+  @override
+  String get roadmapNext => 'Siguiente';
+
+  @override
+  String get roadmapLater => 'Despues';
+
+  @override
+  String get productUpdatesSubtitle => 'Changelog y funcionalidades futuras';
+
+  @override
+  String get whatsNewDialogTitle => 'Novedades';
+
+  @override
+  String get whatsNewDialogDismiss => 'Entendido';
 }

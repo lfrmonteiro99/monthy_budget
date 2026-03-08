@@ -855,6 +855,34 @@ class SEn extends S {
   }
 
   @override
+  String get shoppingViewItems => 'Items';
+
+  @override
+  String get shoppingViewMeals => 'Meals';
+
+  @override
+  String get shoppingViewStores => 'Stores';
+
+  @override
+  String get shoppingGroupOther => 'Other';
+
+  @override
+  String shoppingGroupCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String shoppingCheapestAt(String store, String price) {
+    return 'Cheapest at $store ($price)';
+  }
+
+  @override
   String get authLogin => 'Sign in';
 
   @override
@@ -3614,37 +3642,58 @@ class SEn extends S {
   String get rateLimitMessage => 'Please wait a moment before trying again';
 
   @override
-  String get productUpdatesTitle => 'Product Updates';
+  String get planningExportTitle => 'Export';
 
   @override
-  String get whatsNewTab => 'What\'s New';
+  String get planningImportTitle => 'Import';
 
   @override
-  String get roadmapTab => 'Roadmap';
+  String get planningExportShoppingList => 'Export shopping list';
 
   @override
-  String get noUpdatesYet => 'No updates yet';
+  String get planningImportShoppingList => 'Import shopping list';
 
   @override
-  String get noRoadmapItems => 'No roadmap items yet';
+  String get planningExportMealPlan => 'Export meal plan';
 
   @override
-  String get roadmapNow => 'Now';
+  String get planningImportMealPlan => 'Import meal plan';
 
   @override
-  String get roadmapNext => 'Next';
+  String get planningExportPantry => 'Export pantry snapshot';
 
   @override
-  String get roadmapLater => 'Later';
+  String get planningImportPantry => 'Import pantry snapshot';
 
   @override
-  String get productUpdatesSubtitle => 'Changelog and upcoming features';
+  String get planningExportFreeformMeals => 'Export freeform meals';
 
   @override
-  String get whatsNewDialogTitle => 'What\'s New';
+  String get planningImportFreeformMeals => 'Import freeform meals';
 
   @override
-  String get whatsNewDialogDismiss => 'Got it';
+  String get planningFormatCsv => 'CSV';
+
+  @override
+  String get planningFormatJson => 'JSON';
+
+  @override
+  String get planningImportSuccess => 'Imported successfully';
+
+  @override
+  String planningImportError(String error) {
+    return 'Import failed: $error';
+  }
+
+  @override
+  String get planningExportSuccess => 'Exported successfully';
+
+  @override
+  String get planningDataPortability => 'Data portability';
+
+  @override
+  String get planningDataPortabilityDesc =>
+      'Import and export planning artifacts';
 
   @override
   String get mealBudgetInsightTitle => 'Budget Insight';
@@ -3698,4 +3747,37 @@ class SEn extends S {
 
   @override
   String get mealBudgetEstShoppingCost => 'Estimated shopping cost';
+
+  @override
+  String get productUpdatesTitle => 'Product Updates';
+
+  @override
+  String get whatsNewTab => 'What\'s New';
+
+  @override
+  String get roadmapTab => 'Roadmap';
+
+  @override
+  String get noUpdatesYet => 'No updates yet';
+
+  @override
+  String get noRoadmapItems => 'No roadmap items yet';
+
+  @override
+  String get roadmapNow => 'Now';
+
+  @override
+  String get roadmapNext => 'Next';
+
+  @override
+  String get roadmapLater => 'Later';
+
+  @override
+  String get productUpdatesSubtitle => 'Changelog and upcoming features';
+
+  @override
+  String get whatsNewDialogTitle => 'What\'s New';
+
+  @override
+  String get whatsNewDialogDismiss => 'Got it';
 }

@@ -864,6 +864,34 @@ class SFr extends S {
   }
 
   @override
+  String get shoppingViewItems => 'Articles';
+
+  @override
+  String get shoppingViewMeals => 'Repas';
+
+  @override
+  String get shoppingViewStores => 'Magasins';
+
+  @override
+  String get shoppingGroupOther => 'Autres';
+
+  @override
+  String shoppingGroupCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count articles',
+      one: '1 article',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String shoppingCheapestAt(String store, String price) {
+    return 'Moins cher chez $store ($price)';
+  }
+
+  @override
   String get authLogin => 'Se connecter';
 
   @override
@@ -3651,38 +3679,58 @@ class SFr extends S {
       'Veuillez patienter un moment avant de réessayer';
 
   @override
-  String get productUpdatesTitle => 'Mises a jour';
+  String get planningExportTitle => 'Exporter';
 
   @override
-  String get whatsNewTab => 'Nouveautes';
+  String get planningImportTitle => 'Importer';
 
   @override
-  String get roadmapTab => 'Feuille de Route';
+  String get planningExportShoppingList => 'Exporter la liste de courses';
 
   @override
-  String get noUpdatesYet => 'Pas encore de nouveautes';
+  String get planningImportShoppingList => 'Importer la liste de courses';
 
   @override
-  String get noRoadmapItems =>
-      'Pas encore d\'elements dans la feuille de route';
+  String get planningExportMealPlan => 'Exporter le plan de repas';
 
   @override
-  String get roadmapNow => 'Maintenant';
+  String get planningImportMealPlan => 'Importer le plan de repas';
 
   @override
-  String get roadmapNext => 'Ensuite';
+  String get planningExportPantry => 'Exporter le garde-manger';
 
   @override
-  String get roadmapLater => 'Plus tard';
+  String get planningImportPantry => 'Importer le garde-manger';
 
   @override
-  String get productUpdatesSubtitle => 'Changelog et fonctionnalites a venir';
+  String get planningExportFreeformMeals => 'Exporter les repas libres';
 
   @override
-  String get whatsNewDialogTitle => 'Nouveautes';
+  String get planningImportFreeformMeals => 'Importer les repas libres';
 
   @override
-  String get whatsNewDialogDismiss => 'Compris';
+  String get planningFormatCsv => 'CSV';
+
+  @override
+  String get planningFormatJson => 'JSON';
+
+  @override
+  String get planningImportSuccess => 'Importé avec succès';
+
+  @override
+  String planningImportError(String error) {
+    return 'Échec de l\'importation : $error';
+  }
+
+  @override
+  String get planningExportSuccess => 'Exporté avec succès';
+
+  @override
+  String get planningDataPortability => 'Portabilité des données';
+
+  @override
+  String get planningDataPortabilityDesc =>
+      'Importer et exporter des artefacts de planification';
 
   @override
   String get mealBudgetInsightTitle => 'Aperçu du Budget';
@@ -3736,4 +3784,38 @@ class SFr extends S {
 
   @override
   String get mealBudgetEstShoppingCost => 'Coût estimé des courses';
+
+  @override
+  String get productUpdatesTitle => 'Mises a jour';
+
+  @override
+  String get whatsNewTab => 'Nouveautes';
+
+  @override
+  String get roadmapTab => 'Feuille de Route';
+
+  @override
+  String get noUpdatesYet => 'Pas encore de nouveautes';
+
+  @override
+  String get noRoadmapItems =>
+      'Pas encore d\'elements dans la feuille de route';
+
+  @override
+  String get roadmapNow => 'Maintenant';
+
+  @override
+  String get roadmapNext => 'Ensuite';
+
+  @override
+  String get roadmapLater => 'Plus tard';
+
+  @override
+  String get productUpdatesSubtitle => 'Changelog et fonctionnalites a venir';
+
+  @override
+  String get whatsNewDialogTitle => 'Nouveautes';
+
+  @override
+  String get whatsNewDialogDismiss => 'Compris';
 }
