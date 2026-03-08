@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HouseholdProfile {
@@ -112,11 +114,10 @@ class HouseholdService {
 
   String _randomCode() {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    var r = DateTime.now().microsecondsSinceEpoch;
+    final rng = Random.secure();
     final buf = StringBuffer();
     for (int i = 0; i < 6; i++) {
-      buf.write(chars[r % chars.length]);
-      r = (r * 1664525 + 1013904223) & 0x7fffffff;
+      buf.write(chars[rng.nextInt(chars.length)]);
     }
     return buf.toString();
   }
