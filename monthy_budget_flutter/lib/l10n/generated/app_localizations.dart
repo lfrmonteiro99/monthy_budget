@@ -1619,6 +1619,42 @@ abstract class S {
   /// **'{count, plural, =1{1 produto} other{{count} produtos}}'**
   String shoppingProductCount(int count);
 
+  /// No description provided for @shoppingViewItems.
+  ///
+  /// In pt, this message translates to:
+  /// **'Itens'**
+  String get shoppingViewItems;
+
+  /// No description provided for @shoppingViewMeals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Refeicoes'**
+  String get shoppingViewMeals;
+
+  /// No description provided for @shoppingViewStores.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lojas'**
+  String get shoppingViewStores;
+
+  /// No description provided for @shoppingGroupOther.
+  ///
+  /// In pt, this message translates to:
+  /// **'Outros'**
+  String get shoppingGroupOther;
+
+  /// Pluralized item count in group header
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 item} other{{count} itens}}'**
+  String shoppingGroupCount(int count);
+
+  /// Cheapest known store hint
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais barato em {store} ({price})'**
+  String shoppingCheapestAt(String store, String price);
+
   /// Auth login screen title
   ///
   /// In pt, this message translates to:
@@ -6599,41 +6635,107 @@ abstract class S {
   /// **'Por favor, aguarde um momento antes de tentar novamente'**
   String get rateLimitMessage;
 
-  /// No description provided for @confidenceCenterTitle.
+  /// No description provided for @planningExportTitle.
   ///
   /// In pt, this message translates to:
-  /// **'Centro de Confiança'**
-  String get confidenceCenterTitle;
+  /// **'Exportar'**
+  String get planningExportTitle;
 
-  /// No description provided for @confidenceSyncHealth.
+  /// No description provided for @planningImportTitle.
   ///
   /// In pt, this message translates to:
-  /// **'Estado de Sincronização'**
-  String get confidenceSyncHealth;
+  /// **'Importar'**
+  String get planningImportTitle;
 
-  /// No description provided for @confidenceDataAlerts.
+  /// No description provided for @planningExportShoppingList.
   ///
   /// In pt, this message translates to:
-  /// **'Alertas de Qualidade dos Dados'**
-  String get confidenceDataAlerts;
+  /// **'Exportar lista de compras'**
+  String get planningExportShoppingList;
 
-  /// No description provided for @confidenceRecommendedActions.
+  /// No description provided for @planningImportShoppingList.
   ///
   /// In pt, this message translates to:
-  /// **'Ações Recomendadas'**
-  String get confidenceRecommendedActions;
+  /// **'Importar lista de compras'**
+  String get planningImportShoppingList;
 
-  /// No description provided for @confidenceCenterSubtitle.
+  /// No description provided for @planningExportMealPlan.
   ///
   /// In pt, this message translates to:
-  /// **'Frescura dos dados e saúde do sistema'**
-  String get confidenceCenterSubtitle;
+  /// **'Exportar plano de refeições'**
+  String get planningExportMealPlan;
 
-  /// No description provided for @confidenceCenterTile.
+  /// No description provided for @planningImportMealPlan.
   ///
   /// In pt, this message translates to:
-  /// **'Centro de Confiança'**
-  String get confidenceCenterTile;
+  /// **'Importar plano de refeições'**
+  String get planningImportMealPlan;
+
+  /// No description provided for @planningExportPantry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar despensa'**
+  String get planningExportPantry;
+
+  /// No description provided for @planningImportPantry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar despensa'**
+  String get planningImportPantry;
+
+  /// No description provided for @planningExportFreeformMeals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar refeições livres'**
+  String get planningExportFreeformMeals;
+
+  /// No description provided for @planningImportFreeformMeals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar refeições livres'**
+  String get planningImportFreeformMeals;
+
+  /// No description provided for @planningFormatCsv.
+  ///
+  /// In pt, this message translates to:
+  /// **'CSV'**
+  String get planningFormatCsv;
+
+  /// No description provided for @planningFormatJson.
+  ///
+  /// In pt, this message translates to:
+  /// **'JSON'**
+  String get planningFormatJson;
+
+  /// No description provided for @planningImportSuccess.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importado com sucesso'**
+  String get planningImportSuccess;
+
+  /// No description provided for @planningImportError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importação falhou: {error}'**
+  String planningImportError(String error);
+
+  /// No description provided for @planningExportSuccess.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportado com sucesso'**
+  String get planningExportSuccess;
+
+  /// No description provided for @planningDataPortability.
+  ///
+  /// In pt, this message translates to:
+  /// **'Portabilidade de dados'**
+  String get planningDataPortability;
+
+  /// No description provided for @planningDataPortabilityDesc.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar e exportar artefactos de planeamento'**
+  String get planningDataPortabilityDesc;
 
   /// No description provided for @mealBudgetInsightTitle.
   ///
@@ -6736,6 +6838,108 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Custo estimado de compras'**
   String get mealBudgetEstShoppingCost;
+
+  /// No description provided for @productUpdatesTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Novidades do Produto'**
+  String get productUpdatesTitle;
+
+  /// No description provided for @whatsNewTab.
+  ///
+  /// In pt, this message translates to:
+  /// **'Novidades'**
+  String get whatsNewTab;
+
+  /// No description provided for @roadmapTab.
+  ///
+  /// In pt, this message translates to:
+  /// **'Roteiro'**
+  String get roadmapTab;
+
+  /// No description provided for @noUpdatesYet.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem novidades ainda'**
+  String get noUpdatesYet;
+
+  /// No description provided for @noRoadmapItems.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem itens no roteiro ainda'**
+  String get noRoadmapItems;
+
+  /// No description provided for @roadmapNow.
+  ///
+  /// In pt, this message translates to:
+  /// **'Agora'**
+  String get roadmapNow;
+
+  /// No description provided for @roadmapNext.
+  ///
+  /// In pt, this message translates to:
+  /// **'Em breve'**
+  String get roadmapNext;
+
+  /// No description provided for @roadmapLater.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais tarde'**
+  String get roadmapLater;
+
+  /// No description provided for @productUpdatesSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Changelog e funcionalidades futuras'**
+  String get productUpdatesSubtitle;
+
+  /// No description provided for @whatsNewDialogTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Novidades'**
+  String get whatsNewDialogTitle;
+
+  /// No description provided for @whatsNewDialogDismiss.
+  ///
+  /// In pt, this message translates to:
+  /// **'Entendi'**
+  String get whatsNewDialogDismiss;
+
+  /// No description provided for @confidenceCenterTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Centro de Confiança'**
+  String get confidenceCenterTitle;
+
+  /// No description provided for @confidenceSyncHealth.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estado de Sincronização'**
+  String get confidenceSyncHealth;
+
+  /// No description provided for @confidenceDataAlerts.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alertas de Qualidade dos Dados'**
+  String get confidenceDataAlerts;
+
+  /// No description provided for @confidenceRecommendedActions.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ações Recomendadas'**
+  String get confidenceRecommendedActions;
+
+  /// No description provided for @confidenceCenterSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Frescura dos dados e saúde do sistema'**
+  String get confidenceCenterSubtitle;
+
+  /// No description provided for @confidenceCenterTile.
+  ///
+  /// In pt, this message translates to:
+  /// **'Centro de Confiança'**
+  String get confidenceCenterTile;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

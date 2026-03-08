@@ -12,6 +12,7 @@ class MoreScreen extends StatelessWidget {
   final VoidCallback onOpenNotifications;
   final VoidCallback onOpenSubscription;
   final VoidCallback? onOpenConfidenceCenter;
+  final VoidCallback onOpenProductUpdates;
   final SubscriptionState? subscription;
   final int pausedItemCount;
   final int confidenceAlertCount;
@@ -25,6 +26,7 @@ class MoreScreen extends StatelessWidget {
     required this.onOpenNotifications,
     required this.onOpenSubscription,
     this.onOpenConfidenceCenter,
+    required this.onOpenProductUpdates,
     this.subscription,
     this.pausedItemCount = 0,
     this.confidenceAlertCount = 0,
@@ -93,6 +95,13 @@ class MoreScreen extends StatelessWidget {
               badgeCount: confidenceAlertCount,
             ),
           ],
+          const SizedBox(height: 8),
+          _Tile(
+            icon: Icons.new_releases_outlined,
+            title: l10n.productUpdatesTitle,
+            subtitle: l10n.productUpdatesSubtitle,
+            onTap: onOpenProductUpdates,
+          ),
           const SizedBox(height: 8),
           _Tile(
             icon: Icons.settings_outlined,
