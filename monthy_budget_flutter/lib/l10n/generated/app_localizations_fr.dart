@@ -3720,4 +3720,57 @@ class SFr extends S {
 
   @override
   String get freeformReplace => 'Remplacer par repas libre';
+
+  @override
+  String get mealBudgetInsightTitle => 'Aperçu du Budget';
+
+  @override
+  String get mealBudgetStatusSafe => 'En bonne voie';
+
+  @override
+  String get mealBudgetStatusWatch => 'Attention';
+
+  @override
+  String get mealBudgetStatusOver => 'Hors budget';
+
+  @override
+  String get mealBudgetWeeklyCost => 'Coût hebdomadaire estimé';
+
+  @override
+  String get mealBudgetProjectedMonthly => 'Projection mensuelle';
+
+  @override
+  String get mealBudgetMonthlyBudget => 'Budget alimentaire mensuel';
+
+  @override
+  String get mealBudgetRemaining => 'Budget restant';
+
+  @override
+  String get mealBudgetTopExpensive => 'Repas les plus chers';
+
+  @override
+  String get mealBudgetSuggestedSwaps => 'Échanges moins chers suggérés';
+
+  @override
+  String get mealBudgetViewDetails => 'Voir les détails';
+
+  @override
+  String get mealBudgetApplySwap => 'Appliquer';
+
+  @override
+  String mealBudgetSwapSavings(String amount) {
+    return 'Économisez $amount';
+  }
+
+  @override
+  String get mealBudgetDailyBreakdown => 'Répartition quotidienne des coûts';
+
+  @override
+  String get mealBudgetShoppingImpact => 'Impact sur les courses';
+
+  @override
+  String get mealBudgetUniqueIngredients => 'Ingrédients uniques';
+
+  @override
+  String get mealBudgetEstShoppingCost => 'Coût estimé des courses';
 }

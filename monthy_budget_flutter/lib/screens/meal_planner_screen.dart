@@ -11,8 +11,12 @@ import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 import '../widgets/freeform_meal_card.dart';
 import '../widgets/freeform_meal_sheet.dart';
+import '../models/meal_budget_insight.dart';
+import '../utils/meal_budget_insights.dart';
 import '../widgets/meal_cost_reconciliation_sheet.dart';
 import '../widgets/meal_feedback_button.dart';
+import '../widgets/meal_plan_budget_card.dart';
+import '../widgets/meal_plan_budget_sheet.dart';
 import '../onboarding/meals_tour.dart';
 import '../utils/rate_limiter.dart';
 import 'meal_wizard_screen.dart';
@@ -65,6 +69,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   final Set<int> _weeklySummaryPending = {};
   bool _batchPlanLoading = false;
   final _rateLimiter = RateLimiter(minInterval: const Duration(seconds: 3));
+  MealPlanBudgetInsight? _budgetInsight;
 
   @override
   void initState() {
@@ -96,6 +101,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     if (saved != null) {
       _enrichPlan(saved);
       _loadWeeklySummary(0, saved);
+      _recomputeBudgetInsight();
     }
     _tryShowTour();
   }
@@ -114,6 +120,21 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         ).show(context: context);
       });
     });
+  }
+
+  void _recomputeBudgetInsight() {
+    final plan = _plan;
+    if (plan == null) {
+      setState(() => _budgetInsight = null);
+      return;
+    }
+    final calculator = MealBudgetInsightsCalculator(_service);
+    final insight = calculator.compute(
+      plan: plan,
+      selectedWeek: _selectedWeek,
+      purchaseHistory: widget.purchaseHistory,
+    );
+    setState(() => _budgetInsight = insight);
   }
 
   Future<void> _generatePlan() async {
@@ -156,6 +177,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     });
     _enrichPlan(plan);
     _loadWeeklySummary(0, plan);
+    _recomputeBudgetInsight();
   }
 
   void _enrichPlan(MealPlan plan) {
@@ -349,6 +371,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final updated = plan.copyWithDays(updatedDays);
     _service.save(updated, widget.householdId);
     setState(() => _plan = updated);
+    _recomputeBudgetInsight();
   }
 
   void _swapRecipe(int dayIndex, MealType mealType, String currentRecipeId) {
@@ -369,6 +392,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           _service.save(updated, widget.householdId);
           setState(() => _plan = updated);
           _enrichPlan(updated);
+          _recomputeBudgetInsight();
         },
       ),
     );
@@ -717,6 +741,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                       onTap: () {
                         setState(() => _selectedWeek = i);
                         if (_plan != null) _loadWeeklySummary(i, _plan!);
+                        _recomputeBudgetInsight();
                       },
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
@@ -746,6 +771,31 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         // Weekly Nutrition Summary
         if (_weeklySummaries.containsKey(_selectedWeek))
           _WeeklySummaryCard(summary: _weeklySummaries[_selectedWeek]!),
+        // Budget Insight Card
+        if (_budgetInsight != null)
+          MealPlanBudgetCard(
+            insight: _budgetInsight!,
+            onViewDetails: () => showMealPlanBudgetSheet(
+              context: context,
+              insight: _budgetInsight!,
+              onApplySwap: (swap) {
+                Navigator.of(context).pop();
+                final updated = _service.swapDay(
+                  plan,
+                  swap.original.dayIndex,
+                  MealType.values.firstWhere(
+                    (m) => m.name == swap.original.mealType,
+                    orElse: () => MealType.dinner,
+                  ),
+                  swap.alternativeRecipeId,
+                );
+                _service.save(updated, widget.householdId);
+                setState(() => _plan = updated);
+                _enrichPlan(updated);
+                _recomputeBudgetInsight();
+              },
+            ),
+          ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
