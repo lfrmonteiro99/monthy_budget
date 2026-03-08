@@ -43,14 +43,18 @@ class _FreeformMealSheetState extends State<FreeformMealSheet> {
           ? e!.freeformEstimatedCost!.toStringAsFixed(2)
           : '',
     );
+    _titleCtrl.addListener(_onTitleChanged);
     if (e != null) {
       _selectedTags.addAll(e.freeformTags);
       _shoppingItems.addAll(e.freeformShoppingItems);
     }
   }
 
+  void _onTitleChanged() => setState(() {});
+
   @override
   void dispose() {
+    _titleCtrl.removeListener(_onTitleChanged);
     _titleCtrl.dispose();
     _noteCtrl.dispose();
     _costCtrl.dispose();
