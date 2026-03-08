@@ -89,14 +89,30 @@ final appThemeModeNotifier = ValueNotifier<ThemeMode>(ThemeMode.system);
 final appColorPaletteNotifier =
     ValueNotifier<AppColorPalette>(AppColorPalette.ocean);
 
+/// Non-null when Supabase failed to initialise (bad credentials, network, etc.).
+String? supabaseInitError;
+
 Future<void> main() async {
   final binding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: binding);
 
-  try {
-    await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
-  } catch (e) {
-    debugPrint('Supabase initialization failed: $e');
+  // Validate config before attempting to connect
+  if (supabaseUrl.isEmpty ||
+      supabaseUrl.contains('example.supabase.co') ||
+      supabaseUrl.contains('placeholder') ||
+      supabaseAnonKey.isEmpty ||
+      supabaseAnonKey == 'public-anon-key-placeholder' ||
+      supabaseAnonKey == 'placeholder') {
+    supabaseInitError =
+        'Supabase credentials are missing or invalid.\n\n'
+        'URL: ${supabaseUrl.isEmpty ? "(empty)" : supabaseUrl}\n'
+        'Key length: ${supabaseAnonKey.length} chars';
+  } else {
+    try {
+      await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
+    } catch (e) {
+      supabaseInitError = 'Supabase init failed: $e';
+    }
   }
 
   final configService = LocalConfigService();
@@ -155,15 +171,50 @@ class OrcamentoMensalApp extends StatelessWidget {
               theme: lightTheme(palette),
               darkTheme: darkTheme(palette),
               themeMode: themeMode,
-              home: AuthGate(
-                appBuilder: (profile) => AppHome(
-                  householdId: profile.householdId,
-                  isAdmin: profile.role == 'admin',
-                ),
-              ),
+              home: supabaseInitError != null
+                  ? _SupabaseErrorScreen(error: supabaseInitError!)
+                  : AuthGate(
+                      appBuilder: (profile) => AppHome(
+                        householdId: profile.householdId,
+                        isAdmin: profile.role == 'admin',
+                      ),
+                    ),
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _SupabaseErrorScreen extends StatelessWidget {
+  final String error;
+  const _SupabaseErrorScreen({required this.error});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.error_outline, size: 64, color: Colors.red),
+              const SizedBox(height: 16),
+              const Text(
+                'Configuration Error',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                error,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 13, color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
