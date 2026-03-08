@@ -3974,4 +3974,40 @@ class SEs extends S {
   String householdActivityCheckedBy(String name) {
     return 'Marcado por $name';
   }
+
+  @override
+  String get barcodeScanTitle => 'Escanear Codigo de Barras';
+
+  @override
+  String get barcodeScanHint => 'Apunta la camara a un codigo de barras';
+
+  @override
+  String get barcodeScanTooltip => 'Escanear codigo de barras';
+
+  @override
+  String get barcodeProductFound => 'Producto Encontrado';
+
+  @override
+  String get barcodeProductNotFound => 'Producto No Encontrado';
+
+  @override
+  String get barcodeLabel => 'Codigo de barras';
+
+  @override
+  String get barcodeAddToList => 'Agregar a la Lista';
+
+  @override
+  String get barcodeManualEntry =>
+      'No se encontro ningún producto. Ingresa los datos manualmente:';
+
+  @override
+  String get barcodeProductName => 'Nombre del producto';
+
+  @override
+  String get barcodePrice => 'Precio';
+
+  @override
+  String barcodeAddedToList(String name) {
+    return '$name agregado a la lista de compras';
+  }
 }

@@ -2070,5 +2070,23 @@
                 "type": "String"
             }
         }
+    },
+    "barcodeScanTitle": "Scanner Code-barres",
+    "barcodeScanHint": "Pointez la camera vers un code-barres",
+    "barcodeScanTooltip": "Scanner code-barres",
+    "barcodeProductFound": "Produit Trouve",
+    "barcodeProductNotFound": "Produit Non Trouve",
+    "barcodeLabel": "Code-barres",
+    "barcodeAddToList": "Ajouter a la Liste",
+    "barcodeManualEntry": "Aucun produit trouve. Saisissez les details manuellement :",
+    "barcodeProductName": "Nom du produit",
+    "barcodePrice": "Prix",
+    "barcodeAddedToList": "{name} ajoute a la liste de courses",
+    "@barcodeAddedToList": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
     }
 }

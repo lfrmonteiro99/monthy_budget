@@ -3942,4 +3942,40 @@ class SEn extends S {
   String householdActivityCheckedBy(String name) {
     return 'Checked by $name';
   }
+
+  @override
+  String get barcodeScanTitle => 'Scan Barcode';
+
+  @override
+  String get barcodeScanHint => 'Point the camera at a barcode to scan it';
+
+  @override
+  String get barcodeScanTooltip => 'Scan barcode';
+
+  @override
+  String get barcodeProductFound => 'Product Found';
+
+  @override
+  String get barcodeProductNotFound => 'Product Not Found';
+
+  @override
+  String get barcodeLabel => 'Barcode';
+
+  @override
+  String get barcodeAddToList => 'Add to List';
+
+  @override
+  String get barcodeManualEntry =>
+      'No matching product found. Enter details manually:';
+
+  @override
+  String get barcodeProductName => 'Product name';
+
+  @override
+  String get barcodePrice => 'Price';
+
+  @override
+  String barcodeAddedToList(String name) {
+    return '$name added to shopping list';
+  }
 }

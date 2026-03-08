@@ -3981,4 +3981,40 @@ class SFr extends S {
   String householdActivityCheckedBy(String name) {
     return 'Coché par $name';
   }
+
+  @override
+  String get barcodeScanTitle => 'Scanner Code-barres';
+
+  @override
+  String get barcodeScanHint => 'Pointez la camera vers un code-barres';
+
+  @override
+  String get barcodeScanTooltip => 'Scanner code-barres';
+
+  @override
+  String get barcodeProductFound => 'Produit Trouve';
+
+  @override
+  String get barcodeProductNotFound => 'Produit Non Trouve';
+
+  @override
+  String get barcodeLabel => 'Code-barres';
+
+  @override
+  String get barcodeAddToList => 'Ajouter a la Liste';
+
+  @override
+  String get barcodeManualEntry =>
+      'Aucun produit trouve. Saisissez les details manuellement :';
+
+  @override
+  String get barcodeProductName => 'Nom du produit';
+
+  @override
+  String get barcodePrice => 'Prix';
+
+  @override
+  String barcodeAddedToList(String name) {
+    return '$name ajoute a la liste de courses';
+  }
 }

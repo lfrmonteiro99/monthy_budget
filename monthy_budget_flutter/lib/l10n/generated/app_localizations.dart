@@ -7162,6 +7162,72 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Marcado por {name}'**
   String householdActivityCheckedBy(String name);
+
+  /// No description provided for @barcodeScanTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ler Codigo de Barras'**
+  String get barcodeScanTitle;
+
+  /// No description provided for @barcodeScanHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aponte a camera para um codigo de barras'**
+  String get barcodeScanHint;
+
+  /// No description provided for @barcodeScanTooltip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ler codigo de barras'**
+  String get barcodeScanTooltip;
+
+  /// No description provided for @barcodeProductFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Produto Encontrado'**
+  String get barcodeProductFound;
+
+  /// No description provided for @barcodeProductNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Produto Nao Encontrado'**
+  String get barcodeProductNotFound;
+
+  /// No description provided for @barcodeLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Codigo de barras'**
+  String get barcodeLabel;
+
+  /// No description provided for @barcodeAddToList.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar a Lista'**
+  String get barcodeAddToList;
+
+  /// No description provided for @barcodeManualEntry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum produto encontrado. Insira os dados manualmente:'**
+  String get barcodeManualEntry;
+
+  /// No description provided for @barcodeProductName.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome do produto'**
+  String get barcodeProductName;
+
+  /// No description provided for @barcodePrice.
+  ///
+  /// In pt, this message translates to:
+  /// **'Preco'**
+  String get barcodePrice;
+
+  /// No description provided for @barcodeAddedToList.
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} adicionado a lista de compras'**
+  String barcodeAddedToList(String name);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

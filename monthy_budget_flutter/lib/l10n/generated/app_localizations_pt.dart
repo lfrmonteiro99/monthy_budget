@@ -3967,4 +3967,40 @@ class SPt extends S {
   String householdActivityCheckedBy(String name) {
     return 'Marcado por $name';
   }
+
+  @override
+  String get barcodeScanTitle => 'Ler Codigo de Barras';
+
+  @override
+  String get barcodeScanHint => 'Aponte a camera para um codigo de barras';
+
+  @override
+  String get barcodeScanTooltip => 'Ler codigo de barras';
+
+  @override
+  String get barcodeProductFound => 'Produto Encontrado';
+
+  @override
+  String get barcodeProductNotFound => 'Produto Nao Encontrado';
+
+  @override
+  String get barcodeLabel => 'Codigo de barras';
+
+  @override
+  String get barcodeAddToList => 'Adicionar a Lista';
+
+  @override
+  String get barcodeManualEntry =>
+      'Nenhum produto encontrado. Insira os dados manualmente:';
+
+  @override
+  String get barcodeProductName => 'Nome do produto';
+
+  @override
+  String get barcodePrice => 'Preco';
+
+  @override
+  String barcodeAddedToList(String name) {
+    return '$name adicionado a lista de compras';
+  }
 }
