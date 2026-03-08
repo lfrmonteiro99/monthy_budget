@@ -2349,6 +2349,25 @@
   "@savingsGoalHowItWorksStep4": { "description": "How it works step 4" },
   "savingsGoalDashboardHint": "Toque num objetivo para ver detalhes e registar contribuições.",
   "@savingsGoalDashboardHint": { "description": "Dashboard hint text" },
-  "rateLimitMessage": "Por favor, aguarde um momento antes de tentar novamente"
+  "rateLimitMessage": "Por favor, aguarde um momento antes de tentar novamente",
+
+  "barcodeScanTitle": "Ler Codigo de Barras",
+  "barcodeScanHint": "Aponte a camera para um codigo de barras",
+  "barcodeScanTooltip": "Ler codigo de barras",
+  "barcodeProductFound": "Produto Encontrado",
+  "barcodeProductNotFound": "Produto Nao Encontrado",
+  "barcodeLabel": "Codigo de barras",
+  "barcodeAddToList": "Adicionar a Lista",
+  "barcodeManualEntry": "Nenhum produto encontrado. Insira os dados manualmente:",
+  "barcodeProductName": "Nome do produto",
+  "barcodePrice": "Preco",
+  "barcodeAddedToList": "{name} adicionado a lista de compras",
+  "@barcodeAddedToList": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }
 

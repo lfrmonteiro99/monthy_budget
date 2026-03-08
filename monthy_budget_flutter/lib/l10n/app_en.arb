@@ -1657,5 +1657,24 @@
   "helperWizardTransport": "Monthly transport costs (fuel, public transit, etc.)",
   "helperWizardUtilities": "Monthly electricity, water, gas",
   "helperWizardTelecom": "Monthly internet, phone, TV",
-  "rateLimitMessage": "Please wait a moment before trying again"
+  "rateLimitMessage": "Please wait a moment before trying again",
+
+  "barcodeScanTitle": "Scan Barcode",
+  "barcodeScanHint": "Point the camera at a barcode to scan it",
+  "barcodeScanTooltip": "Scan barcode",
+  "barcodeProductFound": "Product Found",
+  "barcodeProductNotFound": "Product Not Found",
+  "barcodeLabel": "Barcode",
+  "barcodeAddToList": "Add to List",
+  "barcodeManualEntry": "No matching product found. Enter details manually:",
+  "barcodeProductName": "Product name",
+  "barcodePrice": "Price",
+  "barcodeAddedToList": "{name} added to shopping list",
+  "@barcodeAddedToList": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

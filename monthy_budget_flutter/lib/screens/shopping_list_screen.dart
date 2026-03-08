@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/shopping_item.dart';
 import '../models/purchase_record.dart';
+import '../services/barcode_scan_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
+import '../widgets/barcode_result_card.dart';
+import '../widgets/barcode_scan_sheet.dart';
 import '../onboarding/shopping_tour.dart';
 
 class ShoppingListScreen extends StatefulWidget {
@@ -15,6 +18,8 @@ class ShoppingListScreen extends StatefulWidget {
   final PurchaseHistory purchaseHistory;
   final bool showTour;
   final VoidCallback? onTourComplete;
+  final ValueChanged<ShoppingItem>? onAddToShoppingList;
+  final BarcodeScanService? barcodeScanService;
 
   const ShoppingListScreen({
     super.key,
@@ -26,6 +31,8 @@ class ShoppingListScreen extends StatefulWidget {
     required this.purchaseHistory,
     this.showTour = false,
     this.onTourComplete,
+    this.onAddToShoppingList,
+    this.barcodeScanService,
   });
 
   @override
@@ -352,6 +359,34 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     );
   }
 
+  Future<void> _onScanBarcode() async {
+    final barcode = await BarcodeScanSheet.show(context);
+    if (barcode == null || !mounted) return;
+
+    final service = widget.barcodeScanService ?? BarcodeScanService();
+    final candidate = await service.lookup(barcode);
+
+    if (!mounted) return;
+
+    await BarcodeResultCard.show(
+      context,
+      candidate: candidate,
+      onAddToList: (item) {
+        widget.onAddToShoppingList?.call(item);
+        final l10n = S.of(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.barcodeAddedToList(item.productName)),
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+        );
+      },
+    );
+  }
+
   AppBar _buildAppBar() {
     final l10n = S.of(context);
     return AppBar(
@@ -365,6 +400,13 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               color: AppColors.textPrimary(context)),
         ),
         actions: [
+          if (widget.onAddToShoppingList != null)
+            IconButton(
+              icon: Icon(Icons.qr_code_scanner,
+                  color: AppColors.textSecondary(context)),
+              tooltip: l10n.barcodeScanTooltip,
+              onPressed: _onScanBarcode,
+            ),
           if (widget.purchaseHistory.records.isNotEmpty)
             IconButton(
               key: ShoppingTourKeys.historyButton,

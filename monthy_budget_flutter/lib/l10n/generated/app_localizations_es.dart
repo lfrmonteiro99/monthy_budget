@@ -665,6 +665,9 @@ class SEs extends S {
   String get cmdUndo => 'Deshacer';
 
   @override
+  String get expenseDeleted => 'Gasto eliminado';
+
+  @override
   String get cmdCapabilitiesCta => 'Que puedo hacer?';
 
   @override
@@ -2117,6 +2120,13 @@ class SEs extends S {
       'Puedes aÃ±adir mÃ¡s fuentes de ingreso mÃ¡s tarde.';
 
   @override
+  String get setupWizardSalaryRequired => 'Por favor ingrese su salario';
+
+  @override
+  String get setupWizardSalaryPositive =>
+      'El salario debe ser un número positivo';
+
+  @override
   String get setupWizardSalarySkip => 'Saltar este paso';
 
   @override
@@ -2500,24 +2510,6 @@ class SEs extends S {
 
   @override
   String get savingsGoalOverdue => 'Vencido';
-
-  @override
-  String get savingsGoalHowItWorksTitle => '¿Cómo funciona?';
-
-  @override
-  String get savingsGoalHowItWorksStep1 => 'Crea un objetivo con un nombre y el monto que quieres ahorrar (ej: \"Vacaciones — 2 000 €\").';
-
-  @override
-  String get savingsGoalHowItWorksStep2 => 'Opcionalmente define una fecha límite como referencia.';
-
-  @override
-  String get savingsGoalHowItWorksStep3 => 'Cada vez que ahorres dinero, toca el objetivo y registra una contribución con el monto y la fecha.';
-
-  @override
-  String get savingsGoalHowItWorksStep4 => 'Sigue tu progreso: la barra muestra cuánto has ahorrado y la proyección estima cuándo alcanzarás tu objetivo.';
-
-  @override
-  String get savingsGoalDashboardHint => 'Toca un objetivo para ver detalles y registrar contribuciones.';
 
   @override
   String get mealCostReconciliation => 'Costes de Comidas';
@@ -3624,4 +3616,67 @@ class SEs extends S {
 
   @override
   String get helperWizardTelecom => 'Internet, teléfono y TV mensuales';
+
+  @override
+  String get savingsGoalHowItWorksTitle => '¿Cómo funciona?';
+
+  @override
+  String get savingsGoalHowItWorksStep1 =>
+      'Crea un objetivo con un nombre y el monto que quieres ahorrar (ej: \"Vacaciones — 2 000 €\").';
+
+  @override
+  String get savingsGoalHowItWorksStep2 =>
+      'Opcionalmente define una fecha límite como referencia.';
+
+  @override
+  String get savingsGoalHowItWorksStep3 =>
+      'Cada vez que ahorres dinero, toca el objetivo y registra una contribución con el monto y la fecha.';
+
+  @override
+  String get savingsGoalHowItWorksStep4 =>
+      'Sigue tu progreso: la barra muestra cuánto has ahorrado y la proyección estima cuándo alcanzarás tu objetivo.';
+
+  @override
+  String get savingsGoalDashboardHint =>
+      'Toca un objetivo para ver detalles y registrar contribuciones.';
+
+  @override
+  String get rateLimitMessage =>
+      'Por favor, espera un momento antes de intentarlo de nuevo';
+
+  @override
+  String get barcodeScanTitle => 'Escanear Codigo de Barras';
+
+  @override
+  String get barcodeScanHint => 'Apunta la camara a un codigo de barras';
+
+  @override
+  String get barcodeScanTooltip => 'Escanear codigo de barras';
+
+  @override
+  String get barcodeProductFound => 'Producto Encontrado';
+
+  @override
+  String get barcodeProductNotFound => 'Producto No Encontrado';
+
+  @override
+  String get barcodeLabel => 'Codigo de barras';
+
+  @override
+  String get barcodeAddToList => 'Agregar a la Lista';
+
+  @override
+  String get barcodeManualEntry =>
+      'No se encontro ningún producto. Ingresa los datos manualmente:';
+
+  @override
+  String get barcodeProductName => 'Nombre del producto';
+
+  @override
+  String get barcodePrice => 'Precio';
+
+  @override
+  String barcodeAddedToList(String name) {
+    return '$name agregado a la lista de compras';
+  }
 }

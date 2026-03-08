@@ -1801,5 +1801,24 @@
   "@savingsGoalHowItWorksStep4": { "description": "How it works step 4" },
   "savingsGoalDashboardHint": "Toca un objetivo para ver detalles y registrar contribuciones.",
   "@savingsGoalDashboardHint": { "description": "Dashboard hint text" },
-  "rateLimitMessage": "Por favor, espera un momento antes de intentarlo de nuevo"
+  "rateLimitMessage": "Por favor, espera un momento antes de intentarlo de nuevo",
+
+  "barcodeScanTitle": "Escanear Codigo de Barras",
+  "barcodeScanHint": "Apunta la camara a un codigo de barras",
+  "barcodeScanTooltip": "Escanear codigo de barras",
+  "barcodeProductFound": "Producto Encontrado",
+  "barcodeProductNotFound": "Producto No Encontrado",
+  "barcodeLabel": "Codigo de barras",
+  "barcodeAddToList": "Agregar a la Lista",
+  "barcodeManualEntry": "No se encontro ningún producto. Ingresa los datos manualmente:",
+  "barcodeProductName": "Nombre del producto",
+  "barcodePrice": "Precio",
+  "barcodeAddedToList": "{name} agregado a la lista de compras",
+  "@barcodeAddedToList": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

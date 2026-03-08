@@ -4,6 +4,7 @@ class Product {
   final String category;
   final double avgPrice;
   final String unit;
+  final String? barcode;
 
   const Product({
     required this.id,
@@ -11,6 +12,7 @@ class Product {
     required this.category,
     required this.avgPrice,
     required this.unit,
+    this.barcode,
   });
 
   @override
@@ -21,10 +23,11 @@ class Product {
           name == other.name &&
           category == other.category &&
           avgPrice == other.avgPrice &&
-          unit == other.unit;
+          unit == other.unit &&
+          barcode == other.barcode;
 
   @override
-  int get hashCode => Object.hash(id, name, category, avgPrice, unit);
+  int get hashCode => Object.hash(id, name, category, avgPrice, unit, barcode);
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -32,6 +35,7 @@ class Product {
         'category': category,
         'avg_price': avgPrice,
         'unit': unit,
+        if (barcode != null) 'barcode': barcode,
       };
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
@@ -40,5 +44,6 @@ class Product {
         category: json['category'] as String,
         avgPrice: (json['avg_price'] as num).toDouble(),
         unit: json['unit'] as String,
+        barcode: json['barcode'] as String?,
       );
 }
