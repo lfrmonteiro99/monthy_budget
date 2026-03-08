@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../config/revenuecat_config.dart';
 import '../models/subscription_state.dart';
 import '../services/revenuecat_service.dart';
 import '../theme/app_colors.dart';
+
+const _termsOfServiceUrl =
+    'https://lfrmonteiro99.github.io/monthy_budget/terms-of-service';
+const _privacyPolicyUrl =
+    'https://lfrmonteiro99.github.io/monthy_budget/privacy-policy';
 
 /// Full-screen paywall shown when trial expires or user taps "See Plans".
 ///
@@ -330,18 +336,45 @@ class _PaywallScreenState extends State<PaywallScreen> {
                   ],
 
                   const SizedBox(height: 8),
-                  TextButton(
-                    onPressed: () {
-                      // TODO: Link to Terms of Service
-                    },
-                    child: Text(
-                      'Terms of Service • Privacy Policy',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: AppColors.textMuted(context),
-                        decoration: TextDecoration.underline,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        onPressed: () => launchUrl(
+                          Uri.parse(_termsOfServiceUrl),
+                          mode: LaunchMode.externalApplication,
+                        ),
+                        child: Text(
+                          'Terms of Service',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: AppColors.textMuted(context),
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
                       ),
-                    ),
+                      Text(
+                        '•',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: AppColors.textMuted(context),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () => launchUrl(
+                          Uri.parse(_privacyPolicyUrl),
+                          mode: LaunchMode.externalApplication,
+                        ),
+                        child: Text(
+                          'Privacy Policy',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: AppColors.textMuted(context),
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
