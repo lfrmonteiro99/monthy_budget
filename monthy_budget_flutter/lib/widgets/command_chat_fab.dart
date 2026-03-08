@@ -161,7 +161,10 @@ class _CommandChatFabState extends State<CommandChatFab>
       curve: Curves.easeOut,
       left: clampedPos.dx,
       top: clampedPos.dy,
-      child: GestureDetector(
+      child: Semantics(
+        button: true,
+        label: widget.isExpanded ? 'Close command assistant' : 'Open command assistant',
+        child: GestureDetector(
         onPanStart: (_) => setState(() => _dragging = true),
         onPanUpdate: (details) {
           setState(() {
@@ -219,6 +222,7 @@ class _CommandChatFabState extends State<CommandChatFab>
             ),
           ),
         ),
+      ),
       ),
     );
   }

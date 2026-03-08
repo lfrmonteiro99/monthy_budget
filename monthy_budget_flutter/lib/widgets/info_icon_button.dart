@@ -9,14 +9,21 @@ class InfoIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _showSheet(context),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Icon(
-          Icons.info_outline_rounded,
-          size: 18,
-          color: AppColors.textMuted(context),
+    return Semantics(
+      button: true,
+      label: 'More info about $title',
+      child: InkWell(
+        onTap: () => _showSheet(context),
+        customBorder: const CircleBorder(),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+          child: Center(
+            child: Icon(
+              Icons.info_outline_rounded,
+              size: 18,
+              color: AppColors.textMuted(context),
+            ),
+          ),
         ),
       ),
     );
@@ -25,6 +32,7 @@ class InfoIconButton extends StatelessWidget {
   void _showSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),

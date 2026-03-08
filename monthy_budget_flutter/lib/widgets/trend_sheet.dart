@@ -40,6 +40,7 @@ void showTrendSheet({
   required double currentTotalExpenses,
 }) {
   showModalBottomSheet(
+    showDragHandle: true,
     context: context,
     isScrollControlled: true,
     backgroundColor: AppColors.surface(context),

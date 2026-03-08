@@ -7,6 +7,7 @@ enum ExportFormat { pdf, csv }
 Future<ExportFormat?> showExportSheet(BuildContext context) {
   final l10n = S.of(context);
   return showModalBottomSheet<ExportFormat>(
+    showDragHandle: true,
     context: context,
     backgroundColor: AppColors.surface(context),
     shape: const RoundedRectangleBorder(

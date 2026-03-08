@@ -13,6 +13,7 @@ Future<ActualExpense?> showAddExpenseSheet({
   Future<void> Function(ActualExpense)? onDelete,
 }) {
   return showModalBottomSheet<ActualExpense>(
+    showDragHandle: true,
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,

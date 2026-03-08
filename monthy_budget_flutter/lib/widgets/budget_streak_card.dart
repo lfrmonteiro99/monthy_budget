@@ -99,7 +99,9 @@ class _StreakBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final isActive = count > 0;
 
-    return Opacity(
+    return Semantics(
+      label: '$label: ${count > 0 ? count : 'none'}, $sublabel',
+      child: Opacity(
       opacity: isActive ? 1.0 : 0.4,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
@@ -148,6 +150,7 @@ class _StreakBadge extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }
