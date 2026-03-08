@@ -53,6 +53,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Create PR if none exists
         id: pr
@@ -64,12 +66,46 @@ jobs:
           if [ -n "$EXISTING" ]; then
             echo "PR #$EXISTING already exists"
             echo "pr_number=$EXISTING" >> "$GITHUB_OUTPUT"
+
+            # Update PR body with issue references from new commits
+            ISSUES=$(git log origin/main..HEAD --format="%s %b" \
+              | grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?)\s+#[0-9]+' \
+              | grep -oE '#[0-9]+' | sort -u | tr '\n' ' ')
+            if [ -n "$ISSUES" ]; then
+              CURRENT_BODY=$(gh pr view "$EXISTING" --json body --jq '.body')
+              # Only update if the issues aren't already in the body
+              MISSING=""
+              for issue in $ISSUES; do
+                if ! echo "$CURRENT_BODY" | grep -qF "$issue"; then
+                  MISSING="$MISSING $issue"
+                fi
+              done
+              if [ -n "$MISSING" ]; then
+                NEW_BODY="$CURRENT_BODY
+
+Closes$MISSING"
+                gh pr edit "$EXISTING" --body "$NEW_BODY"
+                echo "Updated PR body with issue references:$MISSING"
+              fi
+            fi
           else
+            # Extract issue references from all commits on this branch
+            ISSUES=$(git log origin/main..HEAD --format="%s %b" \
+              | grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?)\s+#[0-9]+' \
+              | grep -oE '#[0-9]+' | sort -u | tr '\n' ' ')
+
+            BODY="Auto-created PR from push to \`$GITHUB_REF_NAME\`."
+            if [ -n "$ISSUES" ]; then
+              BODY="$BODY
+
+Closes $ISSUES"
+            fi
+
             PR_URL=$(gh pr create \
               --base main \
               --head "$GITHUB_REF_NAME" \
               --title "$GITHUB_REF_NAME" \
-              --body "Auto-created PR from push to \`$GITHUB_REF_NAME\`.")
+              --body "$BODY")
             PR_NUMBER=$(echo "$PR_URL" | grep -oE '[0-9]+$')
             echo "Created PR #$PR_NUMBER"
             echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
