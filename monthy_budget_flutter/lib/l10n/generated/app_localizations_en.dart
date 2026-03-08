@@ -3978,4 +3978,19 @@ class SEn extends S {
   String barcodeAddedToList(String name) {
     return '$name added to shopping list';
   }
+
+  @override
+  String get quickAddTooltip => 'Quick actions';
+
+  @override
+  String get quickAddExpense => 'Add expense';
+
+  @override
+  String get quickAddShopping => 'Add shopping item';
+
+  @override
+  String get quickOpenMeals => 'Meal planner';
+
+  @override
+  String get quickOpenAssistant => 'Assistant';
 }

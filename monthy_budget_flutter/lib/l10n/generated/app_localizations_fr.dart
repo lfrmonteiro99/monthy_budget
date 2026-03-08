@@ -4017,4 +4017,19 @@ class SFr extends S {
   String barcodeAddedToList(String name) {
     return '$name ajoute a la liste de courses';
   }
+
+  @override
+  String get quickAddTooltip => 'Actions rapides';
+
+  @override
+  String get quickAddExpense => 'Ajouter une dépense';
+
+  @override
+  String get quickAddShopping => 'Ajouter un article';
+
+  @override
+  String get quickOpenMeals => 'Planificateur de repas';
+
+  @override
+  String get quickOpenAssistant => 'Assistant';
 }

@@ -2139,5 +2139,10 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "quickAddTooltip": "Quick actions",
+    "quickAddExpense": "Add expense",
+    "quickAddShopping": "Add shopping item",
+    "quickOpenMeals": "Meal planner",
+    "quickOpenAssistant": "Assistant"
 }

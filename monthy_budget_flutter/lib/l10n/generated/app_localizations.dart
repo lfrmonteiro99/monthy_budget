@@ -7228,6 +7228,36 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'{name} adicionado a lista de compras'**
   String barcodeAddedToList(String name);
+
+  /// No description provided for @quickAddTooltip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ações rápidas'**
+  String get quickAddTooltip;
+
+  /// No description provided for @quickAddExpense.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar despesa'**
+  String get quickAddExpense;
+
+  /// No description provided for @quickAddShopping.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar item de compras'**
+  String get quickAddShopping;
+
+  /// No description provided for @quickOpenMeals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Planeador de refeições'**
+  String get quickOpenMeals;
+
+  /// No description provided for @quickOpenAssistant.
+  ///
+  /// In pt, this message translates to:
+  /// **'Assistente'**
+  String get quickOpenAssistant;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

@@ -2088,5 +2088,10 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "quickAddTooltip": "Actions rapides",
+    "quickAddExpense": "Ajouter une dépense",
+    "quickAddShopping": "Ajouter un article",
+    "quickOpenMeals": "Planificateur de repas",
+    "quickOpenAssistant": "Assistant"
 }

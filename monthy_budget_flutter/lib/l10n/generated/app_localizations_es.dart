@@ -4010,4 +4010,19 @@ class SEs extends S {
   String barcodeAddedToList(String name) {
     return '$name agregado a la lista de compras';
   }
+
+  @override
+  String get quickAddTooltip => 'Acciones rápidas';
+
+  @override
+  String get quickAddExpense => 'Añadir gasto';
+
+  @override
+  String get quickAddShopping => 'Añadir artículo de compras';
+
+  @override
+  String get quickOpenMeals => 'Planificador de comidas';
+
+  @override
+  String get quickOpenAssistant => 'Asistente';
 }

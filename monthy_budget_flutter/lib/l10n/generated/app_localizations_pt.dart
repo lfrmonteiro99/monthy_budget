@@ -4003,4 +4003,19 @@ class SPt extends S {
   String barcodeAddedToList(String name) {
     return '$name adicionado a lista de compras';
   }
+
+  @override
+  String get quickAddTooltip => 'Ações rápidas';
+
+  @override
+  String get quickAddExpense => 'Adicionar despesa';
+
+  @override
+  String get quickAddShopping => 'Adicionar item de compras';
+
+  @override
+  String get quickOpenMeals => 'Planeador de refeições';
+
+  @override
+  String get quickOpenAssistant => 'Assistente';
 }
