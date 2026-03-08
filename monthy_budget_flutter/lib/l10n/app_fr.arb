@@ -1807,5 +1807,27 @@
   "quickAddExpense": "Ajouter une dépense",
   "quickAddShopping": "Ajouter un article",
   "quickOpenMeals": "Planificateur de repas",
-  "quickOpenAssistant": "Assistant"
+  "quickOpenAssistant": "Assistant",
+  "mealBudgetInsightTitle": "Aperçu du Budget",
+  "mealBudgetStatusSafe": "En bonne voie",
+  "mealBudgetStatusWatch": "Attention",
+  "mealBudgetStatusOver": "Hors budget",
+  "mealBudgetWeeklyCost": "Coût hebdomadaire estimé",
+  "mealBudgetProjectedMonthly": "Projection mensuelle",
+  "mealBudgetMonthlyBudget": "Budget alimentaire mensuel",
+  "mealBudgetRemaining": "Budget restant",
+  "mealBudgetTopExpensive": "Repas les plus chers",
+  "mealBudgetSuggestedSwaps": "Échanges moins chers suggérés",
+  "mealBudgetViewDetails": "Voir les détails",
+  "mealBudgetApplySwap": "Appliquer",
+  "mealBudgetSwapSavings": "Économisez {amount}",
+  "@mealBudgetSwapSavings": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "mealBudgetDailyBreakdown": "Répartition quotidienne des coûts",
+  "mealBudgetShoppingImpact": "Impact sur les courses",
+  "mealBudgetUniqueIngredients": "Ingrédients uniques",
+  "mealBudgetEstShoppingCost": "Coût estimé des courses"
 }
