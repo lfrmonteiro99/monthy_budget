@@ -42,7 +42,7 @@ class _HouseholdSetupScreenState extends State<HouseholdSetupScreen> {
       }
       widget.onSetupComplete(profile);
     } catch (e) {
-      setState(() => _error = e.toString());
+      if (mounted) setState(() => _error = e.toString());
     } finally {
       if (mounted) setState(() => _loading = false);
     }

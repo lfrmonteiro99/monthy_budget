@@ -60,6 +60,7 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
     if (result == null) return;
 
     await _service.save(result, widget.householdId);
+    if (!mounted) return;
     setState(() {
       if (existing != null) {
         _expenses = _expenses.map((e) => e.id == result.id ? result : e).toList();
@@ -97,6 +98,7 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
     );
     if (confirmed != true) return;
     await _service.delete(expense.id);
+    if (!mounted) return;
     setState(() {
       _expenses = _expenses.where((e) => e.id != expense.id).toList();
     });
@@ -106,6 +108,7 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
   Future<void> _toggleActive(RecurringExpense expense) async {
     final updated = expense.copyWith(isActive: !expense.isActive);
     await _service.save(updated, widget.householdId);
+    if (!mounted) return;
     setState(() {
       _expenses =
           _expenses.map((e) => e.id == expense.id ? updated : e).toList();
