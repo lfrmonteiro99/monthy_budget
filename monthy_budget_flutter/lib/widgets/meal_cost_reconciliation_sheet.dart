@@ -15,6 +15,7 @@ void showMealCostReconciliationSheet({
   required int month,
 }) {
   showModalBottomSheet(
+    showDragHandle: true,
     context: context,
     isScrollControlled: true,
     backgroundColor: AppColors.surface(context),

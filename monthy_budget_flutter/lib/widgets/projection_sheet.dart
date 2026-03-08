@@ -18,6 +18,7 @@ void showProjectionSheet({
   required PurchaseHistory purchaseHistory,
 }) {
   showModalBottomSheet(
+    showDragHandle: true,
     context: context,
     isScrollControlled: true,
     backgroundColor: AppColors.surface(context),

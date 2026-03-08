@@ -195,13 +195,16 @@ class _GoalRow extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 6),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(3),
-            child: LinearProgressIndicator(
-              value: goal.progress,
-              backgroundColor: AppColors.border(context),
-              color: goalColor,
-              minHeight: 4,
+          Semantics(
+            label: '${goal.name} progress ${(goal.progress * 100).round()}%',
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(3),
+              child: LinearProgressIndicator(
+                value: goal.progress,
+                backgroundColor: AppColors.border(context),
+                color: goalColor,
+                minHeight: 4,
+              ),
             ),
           ),
           const SizedBox(height: 4),

@@ -289,6 +289,7 @@ Future<TrialExpiredAction?> showTrialExpiredBottomSheet({
   bool canExtendTrial = false,
 }) {
   return showModalBottomSheet<TrialExpiredAction>(
+    showDragHandle: true,
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,

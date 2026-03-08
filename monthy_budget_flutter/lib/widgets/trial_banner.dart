@@ -127,15 +127,18 @@ class TrialBanner extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 6),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: LinearProgressIndicator(
-                  value: subscription.explorationProgress,
-                  backgroundColor: AppColors.border(context),
-                  valueColor: AlwaysStoppedAnimation(
-                    AppColors.primary(context),
+              Semantics(
+                label: 'Trial progress ${(subscription.explorationProgress * 100).round()}%',
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: subscription.explorationProgress,
+                    backgroundColor: AppColors.border(context),
+                    valueColor: AlwaysStoppedAnimation(
+                      AppColors.primary(context),
+                    ),
+                    minHeight: 6,
                   ),
-                  minHeight: 6,
                 ),
               ),
               const SizedBox(height: 12),

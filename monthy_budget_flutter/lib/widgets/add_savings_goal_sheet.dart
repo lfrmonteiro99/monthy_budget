@@ -19,6 +19,7 @@ Future<SavingsGoal?> showAddSavingsGoalSheet({
   SavingsGoal? existing,
 }) {
   return showModalBottomSheet<SavingsGoal>(
+    showDragHandle: true,
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
