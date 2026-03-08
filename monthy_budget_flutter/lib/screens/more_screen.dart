@@ -11,8 +11,10 @@ class MoreScreen extends StatelessWidget {
   final VoidCallback onOpenSettings;
   final VoidCallback onOpenNotifications;
   final VoidCallback onOpenSubscription;
+  final VoidCallback? onOpenConfidenceCenter;
   final SubscriptionState? subscription;
   final int pausedItemCount;
+  final int confidenceAlertCount;
 
   const MoreScreen({
     super.key,
@@ -22,8 +24,10 @@ class MoreScreen extends StatelessWidget {
     required this.onOpenSettings,
     required this.onOpenNotifications,
     required this.onOpenSubscription,
+    this.onOpenConfidenceCenter,
     this.subscription,
     this.pausedItemCount = 0,
+    this.confidenceAlertCount = 0,
   });
 
   @override
@@ -79,6 +83,16 @@ class MoreScreen extends StatelessWidget {
             pausedItemCount: pausedItemCount,
             onTap: onOpenSubscription,
           ),
+          if (onOpenConfidenceCenter != null) ...[
+            const SizedBox(height: 8),
+            _Tile(
+              icon: Icons.verified_outlined,
+              title: l10n.confidenceCenterTile,
+              subtitle: l10n.confidenceCenterSubtitle,
+              onTap: onOpenConfidenceCenter!,
+              badgeCount: confidenceAlertCount,
+            ),
+          ],
           const SizedBox(height: 8),
           _Tile(
             icon: Icons.settings_outlined,
@@ -184,12 +198,14 @@ class _Tile extends StatelessWidget {
   final String title;
   final String subtitle;
   final VoidCallback onTap;
+  final int badgeCount;
 
   const _Tile({
     required this.icon,
     required this.title,
     required this.subtitle,
     required this.onTap,
+    this.badgeCount = 0,
   });
 
   @override
@@ -200,7 +216,11 @@ class _Tile extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         side: BorderSide(color: AppColors.border(context)),
       ),
-      leading: Icon(icon, color: AppColors.primary(context)),
+      leading: Badge(
+        isLabelVisible: badgeCount > 0,
+        label: Text('$badgeCount', style: const TextStyle(fontSize: 10)),
+        child: Icon(icon, color: AppColors.primary(context)),
+      ),
       title: Text(
         title,
         style: TextStyle(

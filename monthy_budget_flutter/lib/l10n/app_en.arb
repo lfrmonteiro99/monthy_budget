@@ -1657,5 +1657,12 @@
   "helperWizardTransport": "Monthly transport costs (fuel, public transit, etc.)",
   "helperWizardUtilities": "Monthly electricity, water, gas",
   "helperWizardTelecom": "Monthly internet, phone, TV",
-  "rateLimitMessage": "Please wait a moment before trying again"
+  "rateLimitMessage": "Please wait a moment before trying again",
+
+  "confidenceCenterTitle": "Confidence Center",
+  "confidenceSyncHealth": "Sync Health",
+  "confidenceDataAlerts": "Data Quality Alerts",
+  "confidenceRecommendedActions": "Recommended Actions",
+  "confidenceCenterSubtitle": "Data freshness and system health",
+  "confidenceCenterTile": "Confidence Center"
 }
