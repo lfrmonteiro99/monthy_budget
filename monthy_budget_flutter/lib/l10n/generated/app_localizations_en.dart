@@ -855,6 +855,34 @@ class SEn extends S {
   }
 
   @override
+  String get shoppingViewItems => 'Items';
+
+  @override
+  String get shoppingViewMeals => 'Meals';
+
+  @override
+  String get shoppingViewStores => 'Stores';
+
+  @override
+  String get shoppingGroupOther => 'Other';
+
+  @override
+  String shoppingGroupCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String shoppingCheapestAt(String store, String price) {
+    return 'Cheapest at $store ($price)';
+  }
+
+  @override
   String get authLogin => 'Sign in';
 
   @override

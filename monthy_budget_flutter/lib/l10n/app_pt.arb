@@ -618,6 +618,25 @@
       "count": { "type": "int" }
     }
   },
+  "shoppingViewItems": "Itens",
+  "shoppingViewMeals": "Refeicoes",
+  "shoppingViewStores": "Lojas",
+  "shoppingGroupOther": "Outros",
+  "shoppingGroupCount": "{count, plural, =1{1 item} other{{count} itens}}",
+  "@shoppingGroupCount": {
+    "description": "Pluralized item count in group header",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "shoppingCheapestAt": "Mais barato em {store} ({price})",
+  "@shoppingCheapestAt": {
+    "description": "Cheapest known store hint",
+    "placeholders": {
+      "store": { "type": "String" },
+      "price": { "type": "String" }
+    }
+  },
 
   "authLogin": "Entrar na conta",
   "@authLogin": { "description": "Auth login screen title" },

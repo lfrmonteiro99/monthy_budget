@@ -450,6 +450,29 @@
       }
     }
   },
+  "shoppingViewItems": "Articulos",
+  "shoppingViewMeals": "Comidas",
+  "shoppingViewStores": "Tiendas",
+  "shoppingGroupOther": "Otros",
+  "shoppingGroupCount": "{count, plural, =1{1 articulo} other{{count} articulos}}",
+  "@shoppingGroupCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shoppingCheapestAt": "Mas barato en {store} ({price})",
+  "@shoppingCheapestAt": {
+    "placeholders": {
+      "store": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
   "authLogin": "Iniciar sesiÃ³n",
   "authRegister": "Crear cuenta",
   "authEmail": "Email",
