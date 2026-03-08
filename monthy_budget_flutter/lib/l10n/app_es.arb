@@ -344,6 +344,7 @@
   "cmdExecutionFailed": "Entendi el pedido, pero no pude ejecutarlo. Intenta de nuevo.",
   "cmdNotUnderstood": "No entendi. Puedes reformular?",
   "cmdUndo": "Deshacer",
+  "expenseDeleted": "Gasto eliminado",
   "cmdCapabilitiesCta": "Que puedo hacer?",
   "cmdCapabilitiesTitle": "Acciones disponibles",
   "cmdCapabilitiesSubtitle": "Estas son las acciones que el asistente soporta ahora mismo.",
