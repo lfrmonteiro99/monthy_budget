@@ -3673,4 +3673,56 @@ class SEn extends S {
   String pantryMarkedAtHome(String name) {
     return '$name marked as already at home';
   }
+
+  String get mealBudgetInsightTitle => 'Budget Insight';
+
+  @override
+  String get mealBudgetStatusSafe => 'On Track';
+
+  @override
+  String get mealBudgetStatusWatch => 'Watch';
+
+  @override
+  String get mealBudgetStatusOver => 'Over Budget';
+
+  @override
+  String get mealBudgetWeeklyCost => 'Weekly estimated cost';
+
+  @override
+  String get mealBudgetProjectedMonthly => 'Projected monthly spend';
+
+  @override
+  String get mealBudgetMonthlyBudget => 'Monthly food budget';
+
+  @override
+  String get mealBudgetRemaining => 'Remaining budget';
+
+  @override
+  String get mealBudgetTopExpensive => 'Most expensive meals';
+
+  @override
+  String get mealBudgetSuggestedSwaps => 'Suggested cheaper swaps';
+
+  @override
+  String get mealBudgetViewDetails => 'View details';
+
+  @override
+  String get mealBudgetApplySwap => 'Apply';
+
+  @override
+  String mealBudgetSwapSavings(String amount) {
+    return 'Save $amount';
+  }
+
+  @override
+  String get mealBudgetDailyBreakdown => 'Daily cost breakdown';
+
+  @override
+  String get mealBudgetShoppingImpact => 'Shopping impact';
+
+  @override
+  String get mealBudgetUniqueIngredients => 'Unique ingredients';
+
+  @override
+  String get mealBudgetEstShoppingCost => 'Estimated shopping cost';
 }

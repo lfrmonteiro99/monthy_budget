@@ -2390,6 +2390,28 @@
     "placeholders": {
       "name": { "type": "String" }
     }
-  }
+  },
+  "mealBudgetInsightTitle": "Visão do Orçamento",
+  "mealBudgetStatusSafe": "No caminho",
+  "mealBudgetStatusWatch": "Atenção",
+  "mealBudgetStatusOver": "Acima do orçamento",
+  "mealBudgetWeeklyCost": "Custo semanal estimado",
+  "mealBudgetProjectedMonthly": "Projeção mensal",
+  "mealBudgetMonthlyBudget": "Orçamento mensal de alimentação",
+  "mealBudgetRemaining": "Orçamento restante",
+  "mealBudgetTopExpensive": "Refeições mais caras",
+  "mealBudgetSuggestedSwaps": "Trocas mais baratas sugeridas",
+  "mealBudgetViewDetails": "Ver detalhes",
+  "mealBudgetApplySwap": "Aplicar",
+  "mealBudgetSwapSavings": "Poupa {amount}",
+  "@mealBudgetSwapSavings": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "mealBudgetDailyBreakdown": "Custo diário detalhado",
+  "mealBudgetShoppingImpact": "Impacto nas compras",
+  "mealBudgetUniqueIngredients": "Ingredientes únicos",
+  "mealBudgetEstShoppingCost": "Custo estimado de compras"
 }
 
