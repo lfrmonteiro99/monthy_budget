@@ -152,11 +152,13 @@ class NotificationService {
 
       if (!reminderDate.isAfter(now)) continue;
 
+      final daysUntilDue = dueDate.difference(now).inDays.clamp(0, 365);
+
       try {
         await _plugin.zonedSchedule(
           _billBaseId + i,
           expense.description ?? expense.category,
-          '${expense.amount.toStringAsFixed(2)} due in $daysBefore days',
+          '${expense.amount.toStringAsFixed(2)} due in $daysUntilDue days',
           tz.TZDateTime.from(reminderDate, tz.local),
           NotificationDetails(
             android: AndroidNotificationDetails(

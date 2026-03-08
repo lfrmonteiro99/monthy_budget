@@ -180,7 +180,7 @@ BudgetPaceResult checkBudgetPace({
 }) {
   final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
   final daysElapsed = now.day;
-  final daysRemaining = daysInMonth - daysElapsed;
+  final daysRemaining = (daysInMonth - daysElapsed).clamp(0, daysInMonth);
 
   final dailyPace = daysElapsed > 0 ? spent / daysElapsed : 0.0;
   final expectedPace = budget / daysInMonth;
