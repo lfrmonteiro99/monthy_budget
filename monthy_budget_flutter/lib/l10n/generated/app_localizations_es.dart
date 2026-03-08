@@ -860,6 +860,34 @@ class SEs extends S {
   }
 
   @override
+  String get shoppingViewItems => 'Articulos';
+
+  @override
+  String get shoppingViewMeals => 'Comidas';
+
+  @override
+  String get shoppingViewStores => 'Tiendas';
+
+  @override
+  String get shoppingGroupOther => 'Otros';
+
+  @override
+  String shoppingGroupCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count articulos',
+      one: '1 articulo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String shoppingCheapestAt(String store, String price) {
+    return 'Mas barato en $store ($price)';
+  }
+
+  @override
   String get authLogin => 'Iniciar sesiÃ³n';
 
   @override
@@ -3645,6 +3673,360 @@ class SEs extends S {
       'Por favor, espera un momento antes de intentarlo de nuevo';
 
   @override
+  String get planningExportTitle => 'Exportar';
+
+  @override
+  String get planningImportTitle => 'Importar';
+
+  @override
+  String get planningExportShoppingList => 'Exportar lista de compras';
+
+  @override
+  String get planningImportShoppingList => 'Importar lista de compras';
+
+  @override
+  String get planningExportMealPlan => 'Exportar plan de comidas';
+
+  @override
+  String get planningImportMealPlan => 'Importar plan de comidas';
+
+  @override
+  String get planningExportPantry => 'Exportar despensa';
+
+  @override
+  String get planningImportPantry => 'Importar despensa';
+
+  @override
+  String get planningExportFreeformMeals => 'Exportar comidas libres';
+
+  @override
+  String get planningImportFreeformMeals => 'Importar comidas libres';
+
+  @override
+  String get planningFormatCsv => 'CSV';
+
+  @override
+  String get planningFormatJson => 'JSON';
+
+  @override
+  String get planningImportSuccess => 'Importado con éxito';
+
+  @override
+  String planningImportError(String error) {
+    return 'Importación fallida: $error';
+  }
+
+  @override
+  String get planningExportSuccess => 'Exportado con éxito';
+
+  @override
+  String get planningDataPortability => 'Portabilidad de datos';
+
+  @override
+  String get planningDataPortabilityDesc =>
+      'Importar y exportar artefactos de planificación';
+
+  @override
+  String get mealBudgetInsightTitle => 'Visión del Presupuesto';
+
+  @override
+  String get mealBudgetStatusSafe => 'En camino';
+
+  @override
+  String get mealBudgetStatusWatch => 'Atención';
+
+  @override
+  String get mealBudgetStatusOver => 'Sobre presupuesto';
+
+  @override
+  String get mealBudgetWeeklyCost => 'Coste semanal estimado';
+
+  @override
+  String get mealBudgetProjectedMonthly => 'Proyección mensual';
+
+  @override
+  String get mealBudgetMonthlyBudget => 'Presupuesto mensual de alimentación';
+
+  @override
+  String get mealBudgetRemaining => 'Presupuesto restante';
+
+  @override
+  String get mealBudgetTopExpensive => 'Comidas más caras';
+
+  @override
+  String get mealBudgetSuggestedSwaps => 'Cambios más baratos sugeridos';
+
+  @override
+  String get mealBudgetViewDetails => 'Ver detalles';
+
+  @override
+  String get mealBudgetApplySwap => 'Aplicar';
+
+  @override
+  String mealBudgetSwapSavings(String amount) {
+    return 'Ahorra $amount';
+  }
+
+  @override
+  String get mealBudgetDailyBreakdown => 'Desglose de coste diario';
+
+  @override
+  String get mealBudgetShoppingImpact => 'Impacto en las compras';
+
+  @override
+  String get mealBudgetUniqueIngredients => 'Ingredientes únicos';
+
+  @override
+  String get mealBudgetEstShoppingCost => 'Coste estimado de compras';
+
+  @override
+  String get productUpdatesTitle => 'Novedades del Producto';
+
+  @override
+  String get whatsNewTab => 'Novedades';
+
+  @override
+  String get roadmapTab => 'Hoja de Ruta';
+
+  @override
+  String get noUpdatesYet => 'Sin novedades todavia';
+
+  @override
+  String get noRoadmapItems => 'Sin elementos en la hoja de ruta';
+
+  @override
+  String get roadmapNow => 'Ahora';
+
+  @override
+  String get roadmapNext => 'Siguiente';
+
+  @override
+  String get roadmapLater => 'Despues';
+
+  @override
+  String get productUpdatesSubtitle => 'Changelog y funcionalidades futuras';
+
+  @override
+  String get whatsNewDialogTitle => 'Novedades';
+
+  @override
+  String get whatsNewDialogDismiss => 'Entendido';
+
+  @override
+  String get confidenceCenterTitle => 'Centro de Confianza';
+
+  @override
+  String get confidenceSyncHealth => 'Estado de Sincronización';
+
+  @override
+  String get confidenceDataAlerts => 'Alertas de Calidad de Datos';
+
+  @override
+  String get confidenceRecommendedActions => 'Acciones Recomendadas';
+
+  @override
+  String get confidenceCenterSubtitle =>
+      'Frescura de datos y salud del sistema';
+
+  @override
+  String get confidenceCenterTile => 'Centro de Confianza';
+
+  @override
+  String get pantryPickerTitle => 'Selector de Despensa';
+
+  @override
+  String get pantrySearchHint => 'Buscar ingredientes...';
+
+  @override
+  String get pantryTabAlwaysHave => 'Siempre Tengo';
+
+  @override
+  String get pantryTabThisWeek => 'Esta Semana';
+
+  @override
+  String pantrySummaryLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count artículos en despensa',
+      one: '1 artículo en despensa',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pantryEdit => 'Editar';
+
+  @override
+  String get pantryUseWhatWeHave => 'Usar Lo Que Tenemos';
+
+  @override
+  String get pantryMarkAtHome => 'Ya lo tengo en casa';
+
+  @override
+  String get pantryHaveIt => 'Lo tengo';
+
+  @override
+  String pantryCoverageLabel(int pct) {
+    return '$pct% cubierto por la despensa';
+  }
+
+  @override
+  String get pantryStaples => 'BÁSICOS (SIEMPRE EN STOCK)';
+
+  @override
+  String get pantryWeekly => 'DESPENSA DE ESTA SEMANA';
+
+  @override
+  String pantryAddedToWeekly(String name) {
+    return '$name añadido a la despensa semanal';
+  }
+
+  @override
+  String pantryRemovedFromList(String name) {
+    return '$name eliminado de la lista (ya en casa)';
+  }
+
+  @override
+  String pantryMarkedAtHome(String name) {
+    return '$name marcado como ya en casa';
+  }
+
+  @override
+  String get householdActivityTitle => 'Actividad del Hogar';
+
+  @override
+  String get householdActivityFilterAll => 'Todo';
+
+  @override
+  String get householdActivityFilterShopping => 'Compras';
+
+  @override
+  String get householdActivityFilterMeals => 'Comidas';
+
+  @override
+  String get householdActivityFilterExpenses => 'Gastos';
+
+  @override
+  String get householdActivityFilterPantry => 'Despensa';
+
+  @override
+  String get householdActivityFilterSettings => 'Ajustes';
+
+  @override
+  String get householdActivityEmpty => 'Sin actividad';
+
+  @override
+  String get householdActivityEmptyMessage =>
+      'Las acciones compartidas de tu hogar aparecerán aquí.';
+
+  @override
+  String get householdActivityToday => 'HOY';
+
+  @override
+  String get householdActivityYesterday => 'AYER';
+
+  @override
+  String get householdActivityThisWeek => 'ESTA SEMANA';
+
+  @override
+  String get householdActivityOlder => 'ANTERIORES';
+
+  @override
+  String get householdActivityJustNow => 'Ahora mismo';
+
+  @override
+  String householdActivityMinutesAgo(int count) {
+    return 'hace $count min';
+  }
+
+  @override
+  String householdActivityHoursAgo(int count) {
+    return 'hace ${count}h';
+  }
+
+  @override
+  String householdActivityDaysAgo(int count) {
+    return 'hace ${count}d';
+  }
+
+  @override
+  String householdActivityAddedBy(String name) {
+    return 'Añadido por $name';
+  }
+
+  @override
+  String householdActivityRemovedBy(String name) {
+    return 'Eliminado por $name';
+  }
+
+  @override
+  String householdActivitySwappedBy(String name) {
+    return 'Cambiado por $name';
+  }
+
+  @override
+  String householdActivityUpdatedBy(String name) {
+    return 'Actualizado por $name';
+  }
+
+  @override
+  String householdActivityCheckedBy(String name) {
+    return 'Marcado por $name';
+  }
+
+  @override
+  String get barcodeScanTitle => 'Escanear Codigo de Barras';
+
+  @override
+  String get barcodeScanHint => 'Apunta la camara a un codigo de barras';
+
+  @override
+  String get barcodeScanTooltip => 'Escanear codigo de barras';
+
+  @override
+  String get barcodeProductFound => 'Producto Encontrado';
+
+  @override
+  String get barcodeProductNotFound => 'Producto No Encontrado';
+
+  @override
+  String get barcodeLabel => 'Codigo de barras';
+
+  @override
+  String get barcodeAddToList => 'Agregar a la Lista';
+
+  @override
+  String get barcodeManualEntry =>
+      'No se encontro ningún producto. Ingresa los datos manualmente:';
+
+  @override
+  String get barcodeProductName => 'Nombre del producto';
+
+  @override
+  String get barcodePrice => 'Precio';
+
+  @override
+  String barcodeAddedToList(String name) {
+    return '$name agregado a la lista de compras';
+  }
+
+  @override
+  String get quickAddTooltip => 'Acciones rápidas';
+
+  @override
+  String get quickAddExpense => 'Añadir gasto';
+
+  @override
+  String get quickAddShopping => 'Añadir artículo de compras';
+
+  @override
+  String get quickOpenMeals => 'Planificador de comidas';
+
+  @override
+  String get quickOpenAssistant => 'Asistente';
+
+  @override
   String get freeformBadge => 'Libre';
 
   @override
@@ -3714,57 +4096,4 @@ class SEs extends S {
 
   @override
   String get freeformReplace => 'Reemplazar con comida libre';
-
-  @override
-  String get mealBudgetInsightTitle => 'Visión del Presupuesto';
-
-  @override
-  String get mealBudgetStatusSafe => 'En camino';
-
-  @override
-  String get mealBudgetStatusWatch => 'Atención';
-
-  @override
-  String get mealBudgetStatusOver => 'Sobre presupuesto';
-
-  @override
-  String get mealBudgetWeeklyCost => 'Coste semanal estimado';
-
-  @override
-  String get mealBudgetProjectedMonthly => 'Proyección mensual';
-
-  @override
-  String get mealBudgetMonthlyBudget => 'Presupuesto mensual de alimentación';
-
-  @override
-  String get mealBudgetRemaining => 'Presupuesto restante';
-
-  @override
-  String get mealBudgetTopExpensive => 'Comidas más caras';
-
-  @override
-  String get mealBudgetSuggestedSwaps => 'Cambios más baratos sugeridos';
-
-  @override
-  String get mealBudgetViewDetails => 'Ver detalles';
-
-  @override
-  String get mealBudgetApplySwap => 'Aplicar';
-
-  @override
-  String mealBudgetSwapSavings(String amount) {
-    return 'Ahorra $amount';
-  }
-
-  @override
-  String get mealBudgetDailyBreakdown => 'Desglose de coste diario';
-
-  @override
-  String get mealBudgetShoppingImpact => 'Impacto en las compras';
-
-  @override
-  String get mealBudgetUniqueIngredients => 'Ingredientes únicos';
-
-  @override
-  String get mealBudgetEstShoppingCost => 'Coste estimado de compras';
 }

@@ -1635,7 +1635,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  void _showAddPantryDialog() {
+  void _showAddPantryDialog({bool? isStaple}) {
     final l10n = S.of(context);
     final controller = TextEditingController();
     showDialog(
@@ -1654,9 +1654,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
               final name = controller.text.trim();
               if (name.isNotEmpty) {
                 final ms = _draft.mealSettings;
-                final updated = List<String>.from(ms.pantryIngredients)..add(name);
-                setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(pantryIngredients: updated)));
+                if (isStaple == true) {
+                  final updated = List<String>.from(ms.stapleIngredients)..add(name);
+                  setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(stapleIngredients: updated)));
+                } else if (isStaple == false) {
+                  final updated = List<String>.from(ms.weeklyPantryIngredients)..add(name);
+                  setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(weeklyPantryIngredients: updated)));
+                } else {
+                  final updated = List<String>.from(ms.pantryIngredients)..add(name);
+                  setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(pantryIngredients: updated)));
+                }
               }
               Navigator.pop(ctx);
             },
@@ -2341,6 +2351,52 @@ class _SettingsScreenState extends State<SettingsScreen> {
             activeTrackColor: AppColors.primary(context),
             onChanged: (v) => setState(() => _draft = _draft.copyWith(
                 mealSettings: ms.copyWith(lunchboxLunches: v))),
+          ),
+          const SizedBox(height: 16),
+          _label(l10n.pantryStaples),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: [
+              ...ms.stapleIngredients.map((p) => Chip(
+                label: Text(p, style: const TextStyle(fontSize: 13)),
+                deleteIcon: const Icon(Icons.close, size: 16),
+                onDeleted: () {
+                  final updated = List<String>.from(ms.stapleIngredients)..remove(p);
+                  setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(stapleIngredients: updated)));
+                },
+              )),
+              ActionChip(
+                avatar: const Icon(Icons.add, size: 16),
+                label: Text(l10n.settingsAddButton, style: const TextStyle(fontSize: 13)),
+                onPressed: () => _showAddPantryDialog(isStaple: true),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _label(l10n.pantryWeekly),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: [
+              ...ms.weeklyPantryIngredients.map((p) => Chip(
+                label: Text(p, style: const TextStyle(fontSize: 13)),
+                deleteIcon: const Icon(Icons.close, size: 16),
+                onDeleted: () {
+                  final updated = List<String>.from(ms.weeklyPantryIngredients)..remove(p);
+                  setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(weeklyPantryIngredients: updated)));
+                },
+              )),
+              ActionChip(
+                avatar: const Icon(Icons.add, size: 16),
+                label: Text(l10n.settingsAddButton, style: const TextStyle(fontSize: 13)),
+                onPressed: () => _showAddPantryDialog(isStaple: false),
+              ),
+            ],
           ),
           const SizedBox(height: 16),
           _label(l10n.settingsPantry),

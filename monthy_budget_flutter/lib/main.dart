@@ -69,9 +69,16 @@ import 'widgets/branded_loading.dart';
 import 'services/command_chat_service.dart';
 import 'services/command_pattern_cache.dart';
 import 'services/command_action_registry.dart';
+import 'services/data_health_service.dart';
+import 'models/data_health_status.dart';
+import 'utils/data_alert_builder.dart';
+import 'screens/confidence_center_screen.dart';
 import 'models/command_action.dart';
 import 'widgets/command_chat_fab.dart';
 import 'widgets/command_chat_panel.dart';
+import 'services/quick_action_service.dart';
+import 'widgets/quick_add_launcher.dart';
+import 'screens/product_updates_screen.dart';
 
 /// Global notifier for reactive locale changes from settings.
 final appLocaleNotifier = ValueNotifier<Locale?>(null);
@@ -194,6 +201,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   final _downgradeService = DowngradeService();
   final _commandChatService = CommandChatService();
   final _commandPatternCache = CommandPatternCache();
+  final _dataHealthService = DataHealthService();
   bool _commandPanelOpen = false;
 
   SubscriptionState _subscription =
@@ -231,12 +239,15 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         .listen((items) => setState(() => _shoppingList = items));
     _loadAll();
     _commandPatternCache.load();
+    QuickActionService.instance.init(onAction: _handleQuickAction);
+    _dataHealthService.load();
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _shoppingListSub.cancel();
+    QuickActionService.instance.dispose();
     RevenueCatService.logout();
     super.dispose();
   }
@@ -299,6 +310,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       _subscription = results[7] as SubscriptionState;
       _loaded = true;
     });
+    _dataHealthService.recordLoad(SyncDomain.settings);
+    _dataHealthService.recordLoad(SyncDomain.purchaseHistory);
+    _dataHealthService.recordLoad(SyncDomain.shopping);
     _syncLocaleAndFormatter(_settings);
     _expenseSnapshotService.loadHistory(widget.householdId).then((history) {
       if (mounted) setState(() => _expenseHistory = history);
@@ -380,26 +394,38 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   Future<void> _loadActualExpenses() async {
-    final expenses = await _actualExpenseService.loadMonth(
-        widget.householdId, _currentMonthKey);
-    if (mounted) {
-      setState(() => _actualExpenses = expenses);
-      _refreshNotificationSchedules();
+    try {
+      final expenses = await _actualExpenseService.loadMonth(
+          widget.householdId, _currentMonthKey);
+      if (mounted) {
+        setState(() => _actualExpenses = expenses);
+        _refreshNotificationSchedules();
+      }
+      _dataHealthService.recordLoad(SyncDomain.expenses);
+    } catch (e) {
+      _dataHealthService.recordError(SyncDomain.expenses, '$e');
+      rethrow;
     }
   }
 
   Future<void> _loadRecurringExpenses() async {
-    final recurring =
-        await _recurringExpenseService.load(widget.householdId);
-    if (mounted) {
-      setState(() => _recurringExpenses = recurring);
-      _refreshNotificationSchedules();
-    }
-    // Auto-populate recurring expenses for the current month
-    final created = await _recurringExpenseService.populateMonthIfNeeded(
-        widget.householdId, _currentMonthKey);
-    if (created.isNotEmpty) {
-      _loadActualExpenses();
+    try {
+      final recurring =
+          await _recurringExpenseService.load(widget.householdId);
+      if (mounted) {
+        setState(() => _recurringExpenses = recurring);
+        _refreshNotificationSchedules();
+      }
+      _dataHealthService.recordLoad(SyncDomain.recurringExpenses);
+      // Auto-populate recurring expenses for the current month
+      final created = await _recurringExpenseService.populateMonthIfNeeded(
+          widget.householdId, _currentMonthKey);
+      if (created.isNotEmpty) {
+        _loadActualExpenses();
+      }
+    } catch (e) {
+      _dataHealthService.recordError(SyncDomain.recurringExpenses, '$e');
+      rethrow;
     }
   }
 
@@ -505,6 +531,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   Future<void> _loadSavingsGoals() async {
     final goals = await _savingsGoalService.loadGoals(widget.householdId);
     if (mounted) setState(() => _savingsGoals = goals);
+    _dataHealthService.recordLoad(SyncDomain.savingsGoals);
     // Load contributions and compute projections for dashboard card
     final allContribs = await _savingsGoalService.loadAllContributions(
         widget.householdId, recentMonths: 6);
@@ -533,6 +560,14 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           showTour: !_onboardingState.isTourDone('savings_goals'),
           onTourComplete: () => _markTourDone('savings_goals'),
         ),
+      ),
+    );
+  }
+
+  void _openProductUpdates() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const ProductUpdatesScreen(),
       ),
     );
   }
@@ -851,6 +886,20 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     );
   }
 
+  void _openConfidenceCenter() {
+    final alerts = buildAlerts(
+      statuses: _dataHealthService.statuses,
+    );
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ConfidenceCenterScreen(
+          statuses: _dataHealthService.statuses,
+          alerts: alerts,
+        ),
+      ),
+    );
+  }
+
   void _markTourDone(String key) {
     final updated = _onboardingState.copyWith(
       toursCompleted: {..._onboardingState.toursCompleted, key: true},
@@ -873,6 +922,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     setState(() => _settings = settings);
     _syncLocaleAndFormatter(settings);
     _settingsService.save(settings, widget.householdId);
+    _dataHealthService.recordSave(SyncDomain.settings);
     _refreshNotificationSchedules();
   }
 
@@ -1286,6 +1336,19 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     }
   }
 
+  void _handleQuickAction(QuickAction action) {
+    if (!_loaded) return;
+    switch (action) {
+      case QuickAction.addExpense:
+        _openAddExpenseSheet();
+      case QuickAction.addShopping:
+        _openShoppingList();
+      case QuickAction.openMeals:
+        _openMealPlanner();
+      case QuickAction.openAssistant:
+        setState(() => _commandPanelOpen = true);
+    }
+  }
 
   SettingsScreen _buildSettingsScreen({String? initialSection}) {
     return SettingsScreen(
@@ -1442,10 +1505,13 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         },
         onOpenNotifications: _openNotificationSettings,
         onOpenSubscription: _openPaywall,
+        onOpenConfidenceCenter: _openConfidenceCenter,
+        onOpenProductUpdates: _openProductUpdates,
         subscription: _subscription,
         pausedItemCount:
             DowngradeService.pausedCategories(_settings.expenses) +
                 DowngradeService.pausedSavingsGoals(_savingsGoals),
+        confidenceAlertCount: _dataHealthService.alertBadgeCount,
       ),
     ];
 
@@ -1473,6 +1539,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                       if (next != null) _trackFeature(next);
                     },
                   ),
+                CriticalAlertBanner(
+                  criticalCount: buildAlerts(
+                    statuses: _dataHealthService.statuses,
+                  ).where((a) => a.severity == AlertSeverity.critical).length,
+                  onTap: _openConfidenceCenter,
+                ),
                 Expanded(child: screens[0]),
                 AdBannerWidget(
                   showAd: AdService.shouldShowAds(_subscription),
@@ -1481,12 +1553,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
             )
           : screens[_currentIndex],
       floatingActionButton: _currentIndex == 0
-          ? FloatingActionButton(
+          ? QuickAddLauncher(
               key: _fabKey,
-              onPressed: _openAddExpenseSheet,
-              backgroundColor: AppColors.primary(context),
-              tooltip: S.of(context).addExpenseTooltip,
-              child: Icon(Icons.add, color: AppColors.onPrimary(context)),
+              onAction: _handleQuickAction,
             )
           : null,
       bottomNavigationBar: NavigationBar(
