@@ -3642,6 +3642,59 @@ class SEn extends S {
   String get rateLimitMessage => 'Please wait a moment before trying again';
 
   @override
+  String get planningExportTitle => 'Export';
+
+  @override
+  String get planningImportTitle => 'Import';
+
+  @override
+  String get planningExportShoppingList => 'Export shopping list';
+
+  @override
+  String get planningImportShoppingList => 'Import shopping list';
+
+  @override
+  String get planningExportMealPlan => 'Export meal plan';
+
+  @override
+  String get planningImportMealPlan => 'Import meal plan';
+
+  @override
+  String get planningExportPantry => 'Export pantry snapshot';
+
+  @override
+  String get planningImportPantry => 'Import pantry snapshot';
+
+  @override
+  String get planningExportFreeformMeals => 'Export freeform meals';
+
+  @override
+  String get planningImportFreeformMeals => 'Import freeform meals';
+
+  @override
+  String get planningFormatCsv => 'CSV';
+
+  @override
+  String get planningFormatJson => 'JSON';
+
+  @override
+  String get planningImportSuccess => 'Imported successfully';
+
+  @override
+  String planningImportError(String error) {
+    return 'Import failed: $error';
+  }
+
+  @override
+  String get planningExportSuccess => 'Exported successfully';
+
+  @override
+  String get planningDataPortability => 'Data portability';
+
+  @override
+  String get planningDataPortabilityDesc =>
+      'Import and export planning artifacts';
+
   String get mealBudgetInsightTitle => 'Budget Insight';
 
   @override

@@ -3666,6 +3666,59 @@ class SPt extends S {
       'Por favor, aguarde um momento antes de tentar novamente';
 
   @override
+  String get planningExportTitle => 'Exportar';
+
+  @override
+  String get planningImportTitle => 'Importar';
+
+  @override
+  String get planningExportShoppingList => 'Exportar lista de compras';
+
+  @override
+  String get planningImportShoppingList => 'Importar lista de compras';
+
+  @override
+  String get planningExportMealPlan => 'Exportar plano de refeições';
+
+  @override
+  String get planningImportMealPlan => 'Importar plano de refeições';
+
+  @override
+  String get planningExportPantry => 'Exportar despensa';
+
+  @override
+  String get planningImportPantry => 'Importar despensa';
+
+  @override
+  String get planningExportFreeformMeals => 'Exportar refeições livres';
+
+  @override
+  String get planningImportFreeformMeals => 'Importar refeições livres';
+
+  @override
+  String get planningFormatCsv => 'CSV';
+
+  @override
+  String get planningFormatJson => 'JSON';
+
+  @override
+  String get planningImportSuccess => 'Importado com sucesso';
+
+  @override
+  String planningImportError(String error) {
+    return 'Importação falhou: $error';
+  }
+
+  @override
+  String get planningExportSuccess => 'Exportado com sucesso';
+
+  @override
+  String get planningDataPortability => 'Portabilidade de dados';
+
+  @override
+  String get planningDataPortabilityDesc =>
+      'Importar e exportar artefactos de planeamento';
+
   String get mealBudgetInsightTitle => 'Visão do Orçamento';
 
   @override

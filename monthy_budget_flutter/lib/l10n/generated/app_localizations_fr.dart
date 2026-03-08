@@ -3679,6 +3679,59 @@ class SFr extends S {
       'Veuillez patienter un moment avant de réessayer';
 
   @override
+  String get planningExportTitle => 'Exporter';
+
+  @override
+  String get planningImportTitle => 'Importer';
+
+  @override
+  String get planningExportShoppingList => 'Exporter la liste de courses';
+
+  @override
+  String get planningImportShoppingList => 'Importer la liste de courses';
+
+  @override
+  String get planningExportMealPlan => 'Exporter le plan de repas';
+
+  @override
+  String get planningImportMealPlan => 'Importer le plan de repas';
+
+  @override
+  String get planningExportPantry => 'Exporter le garde-manger';
+
+  @override
+  String get planningImportPantry => 'Importer le garde-manger';
+
+  @override
+  String get planningExportFreeformMeals => 'Exporter les repas libres';
+
+  @override
+  String get planningImportFreeformMeals => 'Importer les repas libres';
+
+  @override
+  String get planningFormatCsv => 'CSV';
+
+  @override
+  String get planningFormatJson => 'JSON';
+
+  @override
+  String get planningImportSuccess => 'Importé avec succès';
+
+  @override
+  String planningImportError(String error) {
+    return 'Échec de l\'importation : $error';
+  }
+
+  @override
+  String get planningExportSuccess => 'Exporté avec succès';
+
+  @override
+  String get planningDataPortability => 'Portabilité des données';
+
+  @override
+  String get planningDataPortabilityDesc =>
+      'Importer et exporter des artefacts de planification';
+
   String get mealBudgetInsightTitle => 'Aperçu du Budget';
 
   @override

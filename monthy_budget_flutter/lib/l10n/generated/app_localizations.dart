@@ -6635,6 +6635,108 @@ abstract class S {
   /// **'Por favor, aguarde um momento antes de tentar novamente'**
   String get rateLimitMessage;
 
+  /// No description provided for @planningExportTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar'**
+  String get planningExportTitle;
+
+  /// No description provided for @planningImportTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar'**
+  String get planningImportTitle;
+
+  /// No description provided for @planningExportShoppingList.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar lista de compras'**
+  String get planningExportShoppingList;
+
+  /// No description provided for @planningImportShoppingList.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar lista de compras'**
+  String get planningImportShoppingList;
+
+  /// No description provided for @planningExportMealPlan.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar plano de refeições'**
+  String get planningExportMealPlan;
+
+  /// No description provided for @planningImportMealPlan.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar plano de refeições'**
+  String get planningImportMealPlan;
+
+  /// No description provided for @planningExportPantry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar despensa'**
+  String get planningExportPantry;
+
+  /// No description provided for @planningImportPantry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar despensa'**
+  String get planningImportPantry;
+
+  /// No description provided for @planningExportFreeformMeals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar refeições livres'**
+  String get planningExportFreeformMeals;
+
+  /// No description provided for @planningImportFreeformMeals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar refeições livres'**
+  String get planningImportFreeformMeals;
+
+  /// No description provided for @planningFormatCsv.
+  ///
+  /// In pt, this message translates to:
+  /// **'CSV'**
+  String get planningFormatCsv;
+
+  /// No description provided for @planningFormatJson.
+  ///
+  /// In pt, this message translates to:
+  /// **'JSON'**
+  String get planningFormatJson;
+
+  /// No description provided for @planningImportSuccess.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importado com sucesso'**
+  String get planningImportSuccess;
+
+  /// No description provided for @planningImportError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importação falhou: {error}'**
+  String planningImportError(String error);
+
+  /// No description provided for @planningExportSuccess.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportado com sucesso'**
+  String get planningExportSuccess;
+
+  /// No description provided for @planningDataPortability.
+  ///
+  /// In pt, this message translates to:
+  /// **'Portabilidade de dados'**
+  String get planningDataPortability;
+
+  /// No description provided for @planningDataPortabilityDesc.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar e exportar artefactos de planeamento'**
+  String get planningDataPortabilityDesc;
+
   /// No description provided for @mealBudgetInsightTitle.
   ///
   /// In pt, this message translates to:
