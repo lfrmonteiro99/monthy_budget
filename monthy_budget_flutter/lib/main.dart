@@ -72,6 +72,8 @@ import 'services/command_action_registry.dart';
 import 'models/command_action.dart';
 import 'widgets/command_chat_fab.dart';
 import 'widgets/command_chat_panel.dart';
+import 'services/quick_action_service.dart';
+import 'widgets/quick_add_launcher.dart';
 
 /// Global notifier for reactive locale changes from settings.
 final appLocaleNotifier = ValueNotifier<Locale?>(null);
@@ -231,12 +233,14 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         .listen((items) => setState(() => _shoppingList = items));
     _loadAll();
     _commandPatternCache.load();
+    QuickActionService.instance.init(onAction: _handleQuickAction);
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _shoppingListSub.cancel();
+    QuickActionService.instance.dispose();
     RevenueCatService.logout();
     super.dispose();
   }
@@ -1286,6 +1290,19 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     }
   }
 
+  void _handleQuickAction(QuickAction action) {
+    if (!_loaded) return;
+    switch (action) {
+      case QuickAction.addExpense:
+        _openAddExpenseSheet();
+      case QuickAction.addShopping:
+        _openShoppingList();
+      case QuickAction.openMeals:
+        _openMealPlanner();
+      case QuickAction.openAssistant:
+        setState(() => _commandPanelOpen = true);
+    }
+  }
 
   SettingsScreen _buildSettingsScreen({String? initialSection}) {
     return SettingsScreen(
@@ -1481,12 +1498,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
             )
           : screens[_currentIndex],
       floatingActionButton: _currentIndex == 0
-          ? FloatingActionButton(
+          ? QuickAddLauncher(
               key: _fabKey,
-              onPressed: _openAddExpenseSheet,
-              backgroundColor: AppColors.primary(context),
-              tooltip: S.of(context).addExpenseTooltip,
-              child: Icon(Icons.add, color: AppColors.onPrimary(context)),
+              onAction: _handleQuickAction,
             )
           : null,
       bottomNavigationBar: NavigationBar(

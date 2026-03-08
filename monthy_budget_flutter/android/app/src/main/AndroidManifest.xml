@@ -37,6 +37,18 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="orcamentomensal" android:host="login-callback" />
             </intent-filter>
+            <!-- Quick-action deep links -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="orcamentomensal" android:host="quick-add" />
+                <data android:scheme="orcamentomensal" android:host="meals" />
+                <data android:scheme="orcamentomensal" android:host="assistant" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">

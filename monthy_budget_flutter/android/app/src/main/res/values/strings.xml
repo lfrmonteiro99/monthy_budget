@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shortcut_add_expense">Add Expense</string>
+    <string name="shortcut_add_expense_long">Quickly log an expense</string>
+    <string name="shortcut_add_shopping">Add Shopping</string>
+    <string name="shortcut_add_shopping_long">Add item to shopping list</string>
+    <string name="shortcut_open_meals">Meal Planner</string>
+    <string name="shortcut_open_meals_long">Open meal planner</string>
+    <string name="shortcut_open_assistant">Assistant</string>
+    <string name="shortcut_open_assistant_long">Open command assistant</string>
+</resources>
