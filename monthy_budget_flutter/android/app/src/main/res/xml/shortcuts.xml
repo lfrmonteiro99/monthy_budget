@@ -3,49 +3,49 @@
     <shortcut
         android:shortcutId="quick_add_expense"
         android:enabled="true"
-        android:icon="@drawable/ic_launcher_background"
+        android:icon="@mipmap/ic_launcher"
         android:shortcutShortLabel="@string/shortcut_add_expense"
         android:shortcutLongLabel="@string/shortcut_add_expense_long">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetPackage="com.orcamentomensal.app"
-            android:targetClass="com.orcamentomensal.app.MainActivity"
+            android:targetPackage="com.orcamentomensal.orcamento_mensal"
+            android:targetClass="com.orcamentomensal.orcamento_mensal.MainActivity"
             android:data="orcamentomensal://quick-add/expense" />
     </shortcut>
     <shortcut
         android:shortcutId="quick_add_shopping"
         android:enabled="true"
-        android:icon="@drawable/ic_launcher_background"
+        android:icon="@mipmap/ic_launcher"
         android:shortcutShortLabel="@string/shortcut_add_shopping"
         android:shortcutLongLabel="@string/shortcut_add_shopping_long">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetPackage="com.orcamentomensal.app"
-            android:targetClass="com.orcamentomensal.app.MainActivity"
+            android:targetPackage="com.orcamentomensal.orcamento_mensal"
+            android:targetClass="com.orcamentomensal.orcamento_mensal.MainActivity"
             android:data="orcamentomensal://quick-add/shopping" />
     </shortcut>
     <shortcut
         android:shortcutId="open_meals"
         android:enabled="true"
-        android:icon="@drawable/ic_launcher_background"
+        android:icon="@mipmap/ic_launcher"
         android:shortcutShortLabel="@string/shortcut_open_meals"
         android:shortcutLongLabel="@string/shortcut_open_meals_long">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetPackage="com.orcamentomensal.app"
-            android:targetClass="com.orcamentomensal.app.MainActivity"
+            android:targetPackage="com.orcamentomensal.orcamento_mensal"
+            android:targetClass="com.orcamentomensal.orcamento_mensal.MainActivity"
             android:data="orcamentomensal://meals" />
     </shortcut>
     <shortcut
         android:shortcutId="open_assistant"
         android:enabled="true"
-        android:icon="@drawable/ic_launcher_background"
+        android:icon="@mipmap/ic_launcher"
         android:shortcutShortLabel="@string/shortcut_open_assistant"
         android:shortcutLongLabel="@string/shortcut_open_assistant_long">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetPackage="com.orcamentomensal.app"
-            android:targetClass="com.orcamentomensal.app.MainActivity"
+            android:targetPackage="com.orcamentomensal.orcamento_mensal"
+            android:targetClass="com.orcamentomensal.orcamento_mensal.MainActivity"
             android:data="orcamentomensal://assistant" />
     </shortcut>
 </shortcuts>
