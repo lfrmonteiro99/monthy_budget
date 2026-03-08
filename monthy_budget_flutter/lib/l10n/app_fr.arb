@@ -2093,5 +2093,35 @@
     "quickAddExpense": "Ajouter une dépense",
     "quickAddShopping": "Ajouter un article",
     "quickOpenMeals": "Planificateur de repas",
-    "quickOpenAssistant": "Assistant"
+    "quickOpenAssistant": "Assistant",
+    "freeformBadge": "Libre",
+    "freeformCreateTitle": "Ajouter repas libre",
+    "freeformEditTitle": "Modifier repas libre",
+    "freeformTitleLabel": "Titre du repas",
+    "freeformTitleHint": "ex. Restes, Pizza à emporter",
+    "freeformNoteLabel": "Note (optionnel)",
+    "freeformNoteHint": "Détails sur ce repas",
+    "freeformCostLabel": "Coût estimé (optionnel)",
+    "freeformTagsLabel": "Étiquettes",
+    "freeformTagLeftovers": "Restes",
+    "freeformTagPantryMeal": "Garde-manger",
+    "freeformTagTakeout": "À emporter",
+    "freeformTagQuickMeal": "Repas rapide",
+    "freeformShoppingItemsLabel": "Articles de courses",
+    "freeformAddItem": "Ajouter article",
+    "freeformItemName": "Nom de l'article",
+    "freeformItemQuantity": "Quantité",
+    "freeformItemUnit": "Unité",
+    "freeformItemPrice": "Prix est.",
+    "freeformItemStore": "Magasin",
+    "freeformShoppingItemCount": "{count} articles de courses",
+    "@freeformShoppingItemCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "freeformAddToSlot": "Ajouter repas libre",
+    "freeformReplace": "Remplacer par repas libre"
 }

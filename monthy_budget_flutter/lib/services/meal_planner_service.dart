@@ -710,6 +710,7 @@ class MealPlannerService {
     final totals = <String, double>{};
     for (final day in plan.days) {
       if (day.isLeftover) continue;
+      if (day.isFreeform) continue; // freeform items handled separately
       final recipe = recipeMap[day.recipeId];
       if (recipe == null) continue;
       final scale = plan.nPessoas / recipe.servings;
@@ -725,6 +726,26 @@ class MealPlannerService {
       totals.remove(id);
     }
     return totals;
+  }
+
+  /// Returns freeform shopping items from all freeform meals in the plan.
+  List<FreeformMealItem> freeformShoppingItems(MealPlan plan) {
+    final items = <FreeformMealItem>[];
+    for (final day in plan.days) {
+      if (!day.isFreeform) continue;
+      items.addAll(day.freeformShoppingItems);
+    }
+    return items;
+  }
+
+  /// Returns freeform shopping items from meals within the given week.
+  List<FreeformMealItem> freeformShoppingItemsForWeek(MealPlan plan, List<MealDay> weekDays) {
+    final items = <FreeformMealItem>[];
+    for (final day in weekDays) {
+      if (!day.isFreeform) continue;
+      items.addAll(day.freeformShoppingItems);
+    }
+    return items;
   }
 
   // --- Persistence ---

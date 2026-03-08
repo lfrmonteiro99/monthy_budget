@@ -7258,6 +7258,144 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Assistente'**
   String get quickOpenAssistant;
+
+  /// No description provided for @freeformBadge.
+  ///
+  /// In pt, this message translates to:
+  /// **'Livre'**
+  String get freeformBadge;
+
+  /// No description provided for @freeformCreateTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar refeição livre'**
+  String get freeformCreateTitle;
+
+  /// No description provided for @freeformEditTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar refeição livre'**
+  String get freeformEditTitle;
+
+  /// No description provided for @freeformTitleLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Título da refeição'**
+  String get freeformTitleLabel;
+
+  /// No description provided for @freeformTitleHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'ex. Sobras, Pizza de takeaway'**
+  String get freeformTitleHint;
+
+  /// No description provided for @freeformNoteLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nota (opcional)'**
+  String get freeformNoteLabel;
+
+  /// No description provided for @freeformNoteHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Detalhes sobre esta refeição'**
+  String get freeformNoteHint;
+
+  /// No description provided for @freeformCostLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Custo estimado (opcional)'**
+  String get freeformCostLabel;
+
+  /// No description provided for @freeformTagsLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Etiquetas'**
+  String get freeformTagsLabel;
+
+  /// No description provided for @freeformTagLeftovers.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sobras'**
+  String get freeformTagLeftovers;
+
+  /// No description provided for @freeformTagPantryMeal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despensa'**
+  String get freeformTagPantryMeal;
+
+  /// No description provided for @freeformTagTakeout.
+  ///
+  /// In pt, this message translates to:
+  /// **'Takeaway'**
+  String get freeformTagTakeout;
+
+  /// No description provided for @freeformTagQuickMeal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Refeição rápida'**
+  String get freeformTagQuickMeal;
+
+  /// No description provided for @freeformShoppingItemsLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Itens de compras'**
+  String get freeformShoppingItemsLabel;
+
+  /// No description provided for @freeformAddItem.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar item'**
+  String get freeformAddItem;
+
+  /// No description provided for @freeformItemName.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome do item'**
+  String get freeformItemName;
+
+  /// No description provided for @freeformItemQuantity.
+  ///
+  /// In pt, this message translates to:
+  /// **'Quantidade'**
+  String get freeformItemQuantity;
+
+  /// No description provided for @freeformItemUnit.
+  ///
+  /// In pt, this message translates to:
+  /// **'Unidade'**
+  String get freeformItemUnit;
+
+  /// No description provided for @freeformItemPrice.
+  ///
+  /// In pt, this message translates to:
+  /// **'Preço est.'**
+  String get freeformItemPrice;
+
+  /// No description provided for @freeformItemStore.
+  ///
+  /// In pt, this message translates to:
+  /// **'Loja'**
+  String get freeformItemStore;
+
+  /// No description provided for @freeformShoppingItemCount.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} itens de compras'**
+  String freeformShoppingItemCount(int count);
+
+  /// No description provided for @freeformAddToSlot.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar refeição livre'**
+  String get freeformAddToSlot;
+
+  /// No description provided for @freeformReplace.
+  ///
+  /// In pt, this message translates to:
+  /// **'Substituir por refeição livre'**
+  String get freeformReplace;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

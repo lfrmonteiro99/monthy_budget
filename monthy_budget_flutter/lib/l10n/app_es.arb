@@ -2093,5 +2093,35 @@
     "quickAddExpense": "Añadir gasto",
     "quickAddShopping": "Añadir artículo de compras",
     "quickOpenMeals": "Planificador de comidas",
-    "quickOpenAssistant": "Asistente"
+    "quickOpenAssistant": "Asistente",
+    "freeformBadge": "Libre",
+    "freeformCreateTitle": "Añadir comida libre",
+    "freeformEditTitle": "Editar comida libre",
+    "freeformTitleLabel": "Título de la comida",
+    "freeformTitleHint": "ej. Sobras, Pizza a domicilio",
+    "freeformNoteLabel": "Nota (opcional)",
+    "freeformNoteHint": "Detalles sobre esta comida",
+    "freeformCostLabel": "Coste estimado (opcional)",
+    "freeformTagsLabel": "Etiquetas",
+    "freeformTagLeftovers": "Sobras",
+    "freeformTagPantryMeal": "Despensa",
+    "freeformTagTakeout": "Comida para llevar",
+    "freeformTagQuickMeal": "Comida rápida",
+    "freeformShoppingItemsLabel": "Artículos de compra",
+    "freeformAddItem": "Añadir artículo",
+    "freeformItemName": "Nombre del artículo",
+    "freeformItemQuantity": "Cantidad",
+    "freeformItemUnit": "Unidad",
+    "freeformItemPrice": "Precio est.",
+    "freeformItemStore": "Tienda",
+    "freeformShoppingItemCount": "{count} artículos de compra",
+    "@freeformShoppingItemCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "freeformAddToSlot": "Añadir comida libre",
+    "freeformReplace": "Reemplazar con comida libre"
 }

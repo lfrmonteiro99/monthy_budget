@@ -2144,5 +2144,35 @@
     "quickAddExpense": "Add expense",
     "quickAddShopping": "Add shopping item",
     "quickOpenMeals": "Meal planner",
-    "quickOpenAssistant": "Assistant"
+    "quickOpenAssistant": "Assistant",
+    "freeformBadge": "Freeform",
+    "freeformCreateTitle": "Add freeform meal",
+    "freeformEditTitle": "Edit freeform meal",
+    "freeformTitleLabel": "Meal title",
+    "freeformTitleHint": "e.g. Leftovers, Takeout pizza",
+    "freeformNoteLabel": "Note (optional)",
+    "freeformNoteHint": "Any details about this meal",
+    "freeformCostLabel": "Estimated cost (optional)",
+    "freeformTagsLabel": "Tags",
+    "freeformTagLeftovers": "Leftovers",
+    "freeformTagPantryMeal": "Pantry meal",
+    "freeformTagTakeout": "Takeout",
+    "freeformTagQuickMeal": "Quick meal",
+    "freeformShoppingItemsLabel": "Shopping items",
+    "freeformAddItem": "Add item",
+    "freeformItemName": "Item name",
+    "freeformItemQuantity": "Quantity",
+    "freeformItemUnit": "Unit",
+    "freeformItemPrice": "Est. price",
+    "freeformItemStore": "Store",
+    "freeformShoppingItemCount": "{count} shopping items",
+    "@freeformShoppingItemCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "freeformAddToSlot": "Add freeform meal",
+    "freeformReplace": "Replace with freeform"
 }

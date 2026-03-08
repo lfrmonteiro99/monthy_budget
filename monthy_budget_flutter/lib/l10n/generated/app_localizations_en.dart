@@ -3993,4 +3993,75 @@ class SEn extends S {
 
   @override
   String get quickOpenAssistant => 'Assistant';
+
+  @override
+  String get freeformBadge => 'Freeform';
+
+  @override
+  String get freeformCreateTitle => 'Add freeform meal';
+
+  @override
+  String get freeformEditTitle => 'Edit freeform meal';
+
+  @override
+  String get freeformTitleLabel => 'Meal title';
+
+  @override
+  String get freeformTitleHint => 'e.g. Leftovers, Takeout pizza';
+
+  @override
+  String get freeformNoteLabel => 'Note (optional)';
+
+  @override
+  String get freeformNoteHint => 'Any details about this meal';
+
+  @override
+  String get freeformCostLabel => 'Estimated cost (optional)';
+
+  @override
+  String get freeformTagsLabel => 'Tags';
+
+  @override
+  String get freeformTagLeftovers => 'Leftovers';
+
+  @override
+  String get freeformTagPantryMeal => 'Pantry meal';
+
+  @override
+  String get freeformTagTakeout => 'Takeout';
+
+  @override
+  String get freeformTagQuickMeal => 'Quick meal';
+
+  @override
+  String get freeformShoppingItemsLabel => 'Shopping items';
+
+  @override
+  String get freeformAddItem => 'Add item';
+
+  @override
+  String get freeformItemName => 'Item name';
+
+  @override
+  String get freeformItemQuantity => 'Quantity';
+
+  @override
+  String get freeformItemUnit => 'Unit';
+
+  @override
+  String get freeformItemPrice => 'Est. price';
+
+  @override
+  String get freeformItemStore => 'Store';
+
+  @override
+  String freeformShoppingItemCount(int count) {
+    return '$count shopping items';
+  }
+
+  @override
+  String get freeformAddToSlot => 'Add freeform meal';
+
+  @override
+  String get freeformReplace => 'Replace with freeform';
 }

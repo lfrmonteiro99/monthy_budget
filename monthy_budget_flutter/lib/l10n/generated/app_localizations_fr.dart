@@ -4032,4 +4032,75 @@ class SFr extends S {
 
   @override
   String get quickOpenAssistant => 'Assistant';
+
+  @override
+  String get freeformBadge => 'Libre';
+
+  @override
+  String get freeformCreateTitle => 'Ajouter repas libre';
+
+  @override
+  String get freeformEditTitle => 'Modifier repas libre';
+
+  @override
+  String get freeformTitleLabel => 'Titre du repas';
+
+  @override
+  String get freeformTitleHint => 'ex. Restes, Pizza à emporter';
+
+  @override
+  String get freeformNoteLabel => 'Note (optionnel)';
+
+  @override
+  String get freeformNoteHint => 'Détails sur ce repas';
+
+  @override
+  String get freeformCostLabel => 'Coût estimé (optionnel)';
+
+  @override
+  String get freeformTagsLabel => 'Étiquettes';
+
+  @override
+  String get freeformTagLeftovers => 'Restes';
+
+  @override
+  String get freeformTagPantryMeal => 'Garde-manger';
+
+  @override
+  String get freeformTagTakeout => 'À emporter';
+
+  @override
+  String get freeformTagQuickMeal => 'Repas rapide';
+
+  @override
+  String get freeformShoppingItemsLabel => 'Articles de courses';
+
+  @override
+  String get freeformAddItem => 'Ajouter article';
+
+  @override
+  String get freeformItemName => 'Nom de l\'article';
+
+  @override
+  String get freeformItemQuantity => 'Quantité';
+
+  @override
+  String get freeformItemUnit => 'Unité';
+
+  @override
+  String get freeformItemPrice => 'Prix est.';
+
+  @override
+  String get freeformItemStore => 'Magasin';
+
+  @override
+  String freeformShoppingItemCount(int count) {
+    return '$count articles de courses';
+  }
+
+  @override
+  String get freeformAddToSlot => 'Ajouter repas libre';
+
+  @override
+  String get freeformReplace => 'Remplacer par repas libre';
 }

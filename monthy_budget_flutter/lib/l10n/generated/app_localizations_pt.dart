@@ -4018,4 +4018,75 @@ class SPt extends S {
 
   @override
   String get quickOpenAssistant => 'Assistente';
+
+  @override
+  String get freeformBadge => 'Livre';
+
+  @override
+  String get freeformCreateTitle => 'Adicionar refeição livre';
+
+  @override
+  String get freeformEditTitle => 'Editar refeição livre';
+
+  @override
+  String get freeformTitleLabel => 'Título da refeição';
+
+  @override
+  String get freeformTitleHint => 'ex. Sobras, Pizza de takeaway';
+
+  @override
+  String get freeformNoteLabel => 'Nota (opcional)';
+
+  @override
+  String get freeformNoteHint => 'Detalhes sobre esta refeição';
+
+  @override
+  String get freeformCostLabel => 'Custo estimado (opcional)';
+
+  @override
+  String get freeformTagsLabel => 'Etiquetas';
+
+  @override
+  String get freeformTagLeftovers => 'Sobras';
+
+  @override
+  String get freeformTagPantryMeal => 'Despensa';
+
+  @override
+  String get freeformTagTakeout => 'Takeaway';
+
+  @override
+  String get freeformTagQuickMeal => 'Refeição rápida';
+
+  @override
+  String get freeformShoppingItemsLabel => 'Itens de compras';
+
+  @override
+  String get freeformAddItem => 'Adicionar item';
+
+  @override
+  String get freeformItemName => 'Nome do item';
+
+  @override
+  String get freeformItemQuantity => 'Quantidade';
+
+  @override
+  String get freeformItemUnit => 'Unidade';
+
+  @override
+  String get freeformItemPrice => 'Preço est.';
+
+  @override
+  String get freeformItemStore => 'Loja';
+
+  @override
+  String freeformShoppingItemCount(int count) {
+    return '$count itens de compras';
+  }
+
+  @override
+  String get freeformAddToSlot => 'Adicionar refeição livre';
+
+  @override
+  String get freeformReplace => 'Substituir por refeição livre';
 }

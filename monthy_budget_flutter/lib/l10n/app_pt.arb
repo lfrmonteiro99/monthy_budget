@@ -4365,5 +4365,35 @@
     "quickAddExpense": "Adicionar despesa",
     "quickAddShopping": "Adicionar item de compras",
     "quickOpenMeals": "Planeador de refeições",
-    "quickOpenAssistant": "Assistente"
+    "quickOpenAssistant": "Assistente",
+    "freeformBadge": "Livre",
+    "freeformCreateTitle": "Adicionar refeição livre",
+    "freeformEditTitle": "Editar refeição livre",
+    "freeformTitleLabel": "Título da refeição",
+    "freeformTitleHint": "ex. Sobras, Pizza de takeaway",
+    "freeformNoteLabel": "Nota (opcional)",
+    "freeformNoteHint": "Detalhes sobre esta refeição",
+    "freeformCostLabel": "Custo estimado (opcional)",
+    "freeformTagsLabel": "Etiquetas",
+    "freeformTagLeftovers": "Sobras",
+    "freeformTagPantryMeal": "Despensa",
+    "freeformTagTakeout": "Takeaway",
+    "freeformTagQuickMeal": "Refeição rápida",
+    "freeformShoppingItemsLabel": "Itens de compras",
+    "freeformAddItem": "Adicionar item",
+    "freeformItemName": "Nome do item",
+    "freeformItemQuantity": "Quantidade",
+    "freeformItemUnit": "Unidade",
+    "freeformItemPrice": "Preço est.",
+    "freeformItemStore": "Loja",
+    "freeformShoppingItemCount": "{count} itens de compras",
+    "@freeformShoppingItemCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "freeformAddToSlot": "Adicionar refeição livre",
+    "freeformReplace": "Substituir por refeição livre"
 }
