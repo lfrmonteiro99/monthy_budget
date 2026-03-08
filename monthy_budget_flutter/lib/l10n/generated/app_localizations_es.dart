@@ -860,6 +860,34 @@ class SEs extends S {
   }
 
   @override
+  String get shoppingViewItems => 'Articulos';
+
+  @override
+  String get shoppingViewMeals => 'Comidas';
+
+  @override
+  String get shoppingViewStores => 'Tiendas';
+
+  @override
+  String get shoppingGroupOther => 'Otros';
+
+  @override
+  String shoppingGroupCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count articulos',
+      one: '1 articulo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String shoppingCheapestAt(String store, String price) {
+    return 'Mas barato en $store ($price)';
+  }
+
+  @override
   String get authLogin => 'Iniciar sesiÃ³n';
 
   @override

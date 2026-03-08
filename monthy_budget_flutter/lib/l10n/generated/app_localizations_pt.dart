@@ -859,6 +859,34 @@ class SPt extends S {
   }
 
   @override
+  String get shoppingViewItems => 'Itens';
+
+  @override
+  String get shoppingViewMeals => 'Refeicoes';
+
+  @override
+  String get shoppingViewStores => 'Lojas';
+
+  @override
+  String get shoppingGroupOther => 'Outros';
+
+  @override
+  String shoppingGroupCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count itens',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String shoppingCheapestAt(String store, String price) {
+    return 'Mais barato em $store ($price)';
+  }
+
+  @override
   String get authLogin => 'Entrar na conta';
 
   @override

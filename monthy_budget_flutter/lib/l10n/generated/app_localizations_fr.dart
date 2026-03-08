@@ -864,6 +864,34 @@ class SFr extends S {
   }
 
   @override
+  String get shoppingViewItems => 'Articles';
+
+  @override
+  String get shoppingViewMeals => 'Repas';
+
+  @override
+  String get shoppingViewStores => 'Magasins';
+
+  @override
+  String get shoppingGroupOther => 'Autres';
+
+  @override
+  String shoppingGroupCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count articles',
+      one: '1 article',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String shoppingCheapestAt(String store, String price) {
+    return 'Moins cher chez $store ($price)';
+  }
+
+  @override
   String get authLogin => 'Se connecter';
 
   @override

@@ -1619,6 +1619,42 @@ abstract class S {
   /// **'{count, plural, =1{1 produto} other{{count} produtos}}'**
   String shoppingProductCount(int count);
 
+  /// No description provided for @shoppingViewItems.
+  ///
+  /// In pt, this message translates to:
+  /// **'Itens'**
+  String get shoppingViewItems;
+
+  /// No description provided for @shoppingViewMeals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Refeicoes'**
+  String get shoppingViewMeals;
+
+  /// No description provided for @shoppingViewStores.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lojas'**
+  String get shoppingViewStores;
+
+  /// No description provided for @shoppingGroupOther.
+  ///
+  /// In pt, this message translates to:
+  /// **'Outros'**
+  String get shoppingGroupOther;
+
+  /// Pluralized item count in group header
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 item} other{{count} itens}}'**
+  String shoppingGroupCount(int count);
+
+  /// Cheapest known store hint
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais barato em {store} ({price})'**
+  String shoppingCheapestAt(String store, String price);
+
   /// Auth login screen title
   ///
   /// In pt, this message translates to:
