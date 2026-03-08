@@ -1301,6 +1301,12 @@ abstract class S {
   /// **'Desfazer'**
   String get cmdUndo;
 
+  /// No description provided for @expenseDeleted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesa eliminada'**
+  String get expenseDeleted;
+
   /// No description provided for @cmdCapabilitiesCta.
   ///
   /// In pt, this message translates to:
@@ -3941,6 +3947,18 @@ abstract class S {
   /// **'Pode adicionar mais fontes de rendimento mais tarde.'**
   String get setupWizardSalaryMoreLater;
 
+  /// No description provided for @setupWizardSalaryRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Por favor insira o seu salário'**
+  String get setupWizardSalaryRequired;
+
+  /// No description provided for @setupWizardSalaryPositive.
+  ///
+  /// In pt, this message translates to:
+  /// **'O salário deve ser um número positivo'**
+  String get setupWizardSalaryPositive;
+
   /// Skip button on salary step
   ///
   /// In pt, this message translates to:
@@ -4648,42 +4666,6 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Prazo ultrapassado'**
   String get savingsGoalOverdue;
-
-  /// How it works section title
-  ///
-  /// In pt, this message translates to:
-  /// **'Como funciona?'**
-  String get savingsGoalHowItWorksTitle;
-
-  /// How it works step 1
-  ///
-  /// In pt, this message translates to:
-  /// **'Crie um objetivo com um nome e o valor que pretende atingir (ex: "Férias — 2 000 €").'**
-  String get savingsGoalHowItWorksStep1;
-
-  /// How it works step 2
-  ///
-  /// In pt, this message translates to:
-  /// **'Opcionalmente defina uma data limite para ter um prazo de referência.'**
-  String get savingsGoalHowItWorksStep2;
-
-  /// How it works step 3
-  ///
-  /// In pt, this message translates to:
-  /// **'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.'**
-  String get savingsGoalHowItWorksStep3;
-
-  /// How it works step 4
-  ///
-  /// In pt, this message translates to:
-  /// **'Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.'**
-  String get savingsGoalHowItWorksStep4;
-
-  /// Dashboard hint text
-  ///
-  /// In pt, this message translates to:
-  /// **'Toque num objetivo para ver detalhes e registar contribuições.'**
-  String get savingsGoalDashboardHint;
 
   /// Meal cost reconciliation title
   ///
@@ -6574,6 +6556,180 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Internet, telefone e TV mensais'**
   String get helperWizardTelecom;
+
+  /// How it works section title
+  ///
+  /// In pt, this message translates to:
+  /// **'Como funciona?'**
+  String get savingsGoalHowItWorksTitle;
+
+  /// How it works step 1
+  ///
+  /// In pt, this message translates to:
+  /// **'Crie um objetivo com um nome e o valor que pretende atingir (ex: \"Férias — 2 000 €\").'**
+  String get savingsGoalHowItWorksStep1;
+
+  /// How it works step 2
+  ///
+  /// In pt, this message translates to:
+  /// **'Opcionalmente defina uma data limite para ter um prazo de referência.'**
+  String get savingsGoalHowItWorksStep2;
+
+  /// How it works step 3
+  ///
+  /// In pt, this message translates to:
+  /// **'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.'**
+  String get savingsGoalHowItWorksStep3;
+
+  /// How it works step 4
+  ///
+  /// In pt, this message translates to:
+  /// **'Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.'**
+  String get savingsGoalHowItWorksStep4;
+
+  /// Dashboard hint text
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque num objetivo para ver detalhes e registar contribuições.'**
+  String get savingsGoalDashboardHint;
+
+  /// No description provided for @rateLimitMessage.
+  ///
+  /// In pt, this message translates to:
+  /// **'Por favor, aguarde um momento antes de tentar novamente'**
+  String get rateLimitMessage;
+
+  /// No description provided for @householdActivityTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atividade do Agregado'**
+  String get householdActivityTitle;
+
+  /// No description provided for @householdActivityFilterAll.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tudo'**
+  String get householdActivityFilterAll;
+
+  /// No description provided for @householdActivityFilterShopping.
+  ///
+  /// In pt, this message translates to:
+  /// **'Compras'**
+  String get householdActivityFilterShopping;
+
+  /// No description provided for @householdActivityFilterMeals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Refeições'**
+  String get householdActivityFilterMeals;
+
+  /// No description provided for @householdActivityFilterExpenses.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas'**
+  String get householdActivityFilterExpenses;
+
+  /// No description provided for @householdActivityFilterPantry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despensa'**
+  String get householdActivityFilterPantry;
+
+  /// No description provided for @householdActivityFilterSettings.
+  ///
+  /// In pt, this message translates to:
+  /// **'Definições'**
+  String get householdActivityFilterSettings;
+
+  /// No description provided for @householdActivityEmpty.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem atividade'**
+  String get householdActivityEmpty;
+
+  /// No description provided for @householdActivityEmptyMessage.
+  ///
+  /// In pt, this message translates to:
+  /// **'As ações partilhadas do seu agregado aparecerão aqui.'**
+  String get householdActivityEmptyMessage;
+
+  /// No description provided for @householdActivityToday.
+  ///
+  /// In pt, this message translates to:
+  /// **'HOJE'**
+  String get householdActivityToday;
+
+  /// No description provided for @householdActivityYesterday.
+  ///
+  /// In pt, this message translates to:
+  /// **'ONTEM'**
+  String get householdActivityYesterday;
+
+  /// No description provided for @householdActivityThisWeek.
+  ///
+  /// In pt, this message translates to:
+  /// **'ESTA SEMANA'**
+  String get householdActivityThisWeek;
+
+  /// No description provided for @householdActivityOlder.
+  ///
+  /// In pt, this message translates to:
+  /// **'ANTERIORES'**
+  String get householdActivityOlder;
+
+  /// No description provided for @householdActivityJustNow.
+  ///
+  /// In pt, this message translates to:
+  /// **'Agora mesmo'**
+  String get householdActivityJustNow;
+
+  /// No description provided for @householdActivityMinutesAgo.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} min atrás'**
+  String householdActivityMinutesAgo(int count);
+
+  /// No description provided for @householdActivityHoursAgo.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count}h atrás'**
+  String householdActivityHoursAgo(int count);
+
+  /// No description provided for @householdActivityDaysAgo.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count}d atrás'**
+  String householdActivityDaysAgo(int count);
+
+  /// No description provided for @householdActivityAddedBy.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionado por {name}'**
+  String householdActivityAddedBy(String name);
+
+  /// No description provided for @householdActivityRemovedBy.
+  ///
+  /// In pt, this message translates to:
+  /// **'Removido por {name}'**
+  String householdActivityRemovedBy(String name);
+
+  /// No description provided for @householdActivitySwappedBy.
+  ///
+  /// In pt, this message translates to:
+  /// **'Trocado por {name}'**
+  String householdActivitySwappedBy(String name);
+
+  /// No description provided for @householdActivityUpdatedBy.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atualizado por {name}'**
+  String householdActivityUpdatedBy(String name);
+
+  /// No description provided for @householdActivityCheckedBy.
+  ///
+  /// In pt, this message translates to:
+  /// **'Marcado por {name}'**
+  String householdActivityCheckedBy(String name);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

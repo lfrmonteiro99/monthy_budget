@@ -665,6 +665,9 @@ class SPt extends S {
   String get cmdUndo => 'Desfazer';
 
   @override
+  String get expenseDeleted => 'Despesa eliminada';
+
+  @override
   String get cmdCapabilitiesCta => 'O que posso fazer?';
 
   @override
@@ -2114,6 +2117,13 @@ class SPt extends S {
       'Pode adicionar mais fontes de rendimento mais tarde.';
 
   @override
+  String get setupWizardSalaryRequired => 'Por favor insira o seu salário';
+
+  @override
+  String get setupWizardSalaryPositive =>
+      'O salário deve ser um número positivo';
+
+  @override
   String get setupWizardSalarySkip => 'Saltar este passo';
 
   @override
@@ -2497,24 +2507,6 @@ class SPt extends S {
 
   @override
   String get savingsGoalOverdue => 'Prazo ultrapassado';
-
-  @override
-  String get savingsGoalHowItWorksTitle => 'Como funciona?';
-
-  @override
-  String get savingsGoalHowItWorksStep1 => 'Crie um objetivo com um nome e o valor que pretende atingir (ex: \"Férias — 2 000 €\").';
-
-  @override
-  String get savingsGoalHowItWorksStep2 => 'Opcionalmente defina uma data limite para ter um prazo de referência.';
-
-  @override
-  String get savingsGoalHowItWorksStep3 => 'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.';
-
-  @override
-  String get savingsGoalHowItWorksStep4 => 'Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.';
-
-  @override
-  String get savingsGoalDashboardHint => 'Toque num objetivo para ver detalhes e registar contribuições.';
 
   @override
   String get mealCostReconciliation => 'Custos de Refeições';
@@ -3617,4 +3609,114 @@ class SPt extends S {
 
   @override
   String get helperWizardTelecom => 'Internet, telefone e TV mensais';
+
+  @override
+  String get savingsGoalHowItWorksTitle => 'Como funciona?';
+
+  @override
+  String get savingsGoalHowItWorksStep1 =>
+      'Crie um objetivo com um nome e o valor que pretende atingir (ex: \"Férias — 2 000 €\").';
+
+  @override
+  String get savingsGoalHowItWorksStep2 =>
+      'Opcionalmente defina uma data limite para ter um prazo de referência.';
+
+  @override
+  String get savingsGoalHowItWorksStep3 =>
+      'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.';
+
+  @override
+  String get savingsGoalHowItWorksStep4 =>
+      'Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.';
+
+  @override
+  String get savingsGoalDashboardHint =>
+      'Toque num objetivo para ver detalhes e registar contribuições.';
+
+  @override
+  String get rateLimitMessage =>
+      'Por favor, aguarde um momento antes de tentar novamente';
+
+  @override
+  String get householdActivityTitle => 'Atividade do Agregado';
+
+  @override
+  String get householdActivityFilterAll => 'Tudo';
+
+  @override
+  String get householdActivityFilterShopping => 'Compras';
+
+  @override
+  String get householdActivityFilterMeals => 'Refeições';
+
+  @override
+  String get householdActivityFilterExpenses => 'Despesas';
+
+  @override
+  String get householdActivityFilterPantry => 'Despensa';
+
+  @override
+  String get householdActivityFilterSettings => 'Definições';
+
+  @override
+  String get householdActivityEmpty => 'Sem atividade';
+
+  @override
+  String get householdActivityEmptyMessage =>
+      'As ações partilhadas do seu agregado aparecerão aqui.';
+
+  @override
+  String get householdActivityToday => 'HOJE';
+
+  @override
+  String get householdActivityYesterday => 'ONTEM';
+
+  @override
+  String get householdActivityThisWeek => 'ESTA SEMANA';
+
+  @override
+  String get householdActivityOlder => 'ANTERIORES';
+
+  @override
+  String get householdActivityJustNow => 'Agora mesmo';
+
+  @override
+  String householdActivityMinutesAgo(int count) {
+    return '$count min atrás';
+  }
+
+  @override
+  String householdActivityHoursAgo(int count) {
+    return '${count}h atrás';
+  }
+
+  @override
+  String householdActivityDaysAgo(int count) {
+    return '${count}d atrás';
+  }
+
+  @override
+  String householdActivityAddedBy(String name) {
+    return 'Adicionado por $name';
+  }
+
+  @override
+  String householdActivityRemovedBy(String name) {
+    return 'Removido por $name';
+  }
+
+  @override
+  String householdActivitySwappedBy(String name) {
+    return 'Trocado por $name';
+  }
+
+  @override
+  String householdActivityUpdatedBy(String name) {
+    return 'Atualizado por $name';
+  }
+
+  @override
+  String householdActivityCheckedBy(String name) {
+    return 'Marcado por $name';
+  }
 }

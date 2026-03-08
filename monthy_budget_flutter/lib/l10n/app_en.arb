@@ -1657,5 +1657,68 @@
   "helperWizardTransport": "Monthly transport costs (fuel, public transit, etc.)",
   "helperWizardUtilities": "Monthly electricity, water, gas",
   "helperWizardTelecom": "Monthly internet, phone, TV",
-  "rateLimitMessage": "Please wait a moment before trying again"
+  "rateLimitMessage": "Please wait a moment before trying again",
+
+  "householdActivityTitle": "Household Activity",
+  "householdActivityFilterAll": "All",
+  "householdActivityFilterShopping": "Shopping",
+  "householdActivityFilterMeals": "Meals",
+  "householdActivityFilterExpenses": "Expenses",
+  "householdActivityFilterPantry": "Pantry",
+  "householdActivityFilterSettings": "Settings",
+  "householdActivityEmpty": "No activity yet",
+  "householdActivityEmptyMessage": "Shared actions from your household will appear here.",
+  "householdActivityToday": "TODAY",
+  "householdActivityYesterday": "YESTERDAY",
+  "householdActivityThisWeek": "THIS WEEK",
+  "householdActivityOlder": "OLDER",
+  "householdActivityJustNow": "Just now",
+  "householdActivityMinutesAgo": "{count} min ago",
+  "@householdActivityMinutesAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "householdActivityHoursAgo": "{count}h ago",
+  "@householdActivityHoursAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "householdActivityDaysAgo": "{count}d ago",
+  "@householdActivityDaysAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "householdActivityAddedBy": "Added by {name}",
+  "@householdActivityAddedBy": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "householdActivityRemovedBy": "Removed by {name}",
+  "@householdActivityRemovedBy": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "householdActivitySwappedBy": "Swapped by {name}",
+  "@householdActivitySwappedBy": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "householdActivityUpdatedBy": "Updated by {name}",
+  "@householdActivityUpdatedBy": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "householdActivityCheckedBy": "Checked by {name}",
+  "@householdActivityCheckedBy": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
 }
