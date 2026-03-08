@@ -1657,5 +1657,17 @@
   "helperWizardTransport": "Monthly transport costs (fuel, public transit, etc.)",
   "helperWizardUtilities": "Monthly electricity, water, gas",
   "helperWizardTelecom": "Monthly internet, phone, TV",
-  "rateLimitMessage": "Please wait a moment before trying again"
+  "rateLimitMessage": "Please wait a moment before trying again",
+
+  "productUpdatesTitle": "Product Updates",
+  "whatsNewTab": "What's New",
+  "roadmapTab": "Roadmap",
+  "noUpdatesYet": "No updates yet",
+  "noRoadmapItems": "No roadmap items yet",
+  "roadmapNow": "Now",
+  "roadmapNext": "Next",
+  "roadmapLater": "Later",
+  "productUpdatesSubtitle": "Changelog and upcoming features",
+  "whatsNewDialogTitle": "What's New",
+  "whatsNewDialogDismiss": "Got it"
 }

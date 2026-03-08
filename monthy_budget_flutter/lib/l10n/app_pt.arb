@@ -2349,6 +2349,18 @@
   "@savingsGoalHowItWorksStep4": { "description": "How it works step 4" },
   "savingsGoalDashboardHint": "Toque num objetivo para ver detalhes e registar contribuições.",
   "@savingsGoalDashboardHint": { "description": "Dashboard hint text" },
-  "rateLimitMessage": "Por favor, aguarde um momento antes de tentar novamente"
+  "rateLimitMessage": "Por favor, aguarde um momento antes de tentar novamente",
+
+  "productUpdatesTitle": "Novidades do Produto",
+  "whatsNewTab": "Novidades",
+  "roadmapTab": "Roteiro",
+  "noUpdatesYet": "Sem novidades ainda",
+  "noRoadmapItems": "Sem itens no roteiro ainda",
+  "roadmapNow": "Agora",
+  "roadmapNext": "Em breve",
+  "roadmapLater": "Mais tarde",
+  "productUpdatesSubtitle": "Changelog e funcionalidades futuras",
+  "whatsNewDialogTitle": "Novidades",
+  "whatsNewDialogDismiss": "Entendi"
 }
 

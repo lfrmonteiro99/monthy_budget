@@ -72,6 +72,7 @@ import 'services/command_action_registry.dart';
 import 'models/command_action.dart';
 import 'widgets/command_chat_fab.dart';
 import 'widgets/command_chat_panel.dart';
+import 'screens/product_updates_screen.dart';
 
 /// Global notifier for reactive locale changes from settings.
 final appLocaleNotifier = ValueNotifier<Locale?>(null);
@@ -533,6 +534,14 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           showTour: !_onboardingState.isTourDone('savings_goals'),
           onTourComplete: () => _markTourDone('savings_goals'),
         ),
+      ),
+    );
+  }
+
+  void _openProductUpdates() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const ProductUpdatesScreen(),
       ),
     );
   }
@@ -1442,6 +1451,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         },
         onOpenNotifications: _openNotificationSettings,
         onOpenSubscription: _openPaywall,
+        onOpenProductUpdates: _openProductUpdates,
         subscription: _subscription,
         pausedItemCount:
             DowngradeService.pausedCategories(_settings.expenses) +
