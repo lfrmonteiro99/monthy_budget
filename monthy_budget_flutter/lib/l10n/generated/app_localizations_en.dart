@@ -3859,4 +3859,87 @@ class SEn extends S {
   String pantryMarkedAtHome(String name) {
     return '$name marked as already at home';
   }
+
+  @override
+  String get householdActivityTitle => 'Household Activity';
+
+  @override
+  String get householdActivityFilterAll => 'All';
+
+  @override
+  String get householdActivityFilterShopping => 'Shopping';
+
+  @override
+  String get householdActivityFilterMeals => 'Meals';
+
+  @override
+  String get householdActivityFilterExpenses => 'Expenses';
+
+  @override
+  String get householdActivityFilterPantry => 'Pantry';
+
+  @override
+  String get householdActivityFilterSettings => 'Settings';
+
+  @override
+  String get householdActivityEmpty => 'No activity yet';
+
+  @override
+  String get householdActivityEmptyMessage =>
+      'Shared actions from your household will appear here.';
+
+  @override
+  String get householdActivityToday => 'TODAY';
+
+  @override
+  String get householdActivityYesterday => 'YESTERDAY';
+
+  @override
+  String get householdActivityThisWeek => 'THIS WEEK';
+
+  @override
+  String get householdActivityOlder => 'OLDER';
+
+  @override
+  String get householdActivityJustNow => 'Just now';
+
+  @override
+  String householdActivityMinutesAgo(int count) {
+    return '$count min ago';
+  }
+
+  @override
+  String householdActivityHoursAgo(int count) {
+    return '${count}h ago';
+  }
+
+  @override
+  String householdActivityDaysAgo(int count) {
+    return '${count}d ago';
+  }
+
+  @override
+  String householdActivityAddedBy(String name) {
+    return 'Added by $name';
+  }
+
+  @override
+  String householdActivityRemovedBy(String name) {
+    return 'Removed by $name';
+  }
+
+  @override
+  String householdActivitySwappedBy(String name) {
+    return 'Swapped by $name';
+  }
+
+  @override
+  String householdActivityUpdatedBy(String name) {
+    return 'Updated by $name';
+  }
+
+  @override
+  String householdActivityCheckedBy(String name) {
+    return 'Checked by $name';
+  }
 }

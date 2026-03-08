@@ -3884,4 +3884,87 @@ class SPt extends S {
   String pantryMarkedAtHome(String name) {
     return '$name marcado como já em casa';
   }
+
+  @override
+  String get householdActivityTitle => 'Atividade do Agregado';
+
+  @override
+  String get householdActivityFilterAll => 'Tudo';
+
+  @override
+  String get householdActivityFilterShopping => 'Compras';
+
+  @override
+  String get householdActivityFilterMeals => 'Refeições';
+
+  @override
+  String get householdActivityFilterExpenses => 'Despesas';
+
+  @override
+  String get householdActivityFilterPantry => 'Despensa';
+
+  @override
+  String get householdActivityFilterSettings => 'Definições';
+
+  @override
+  String get householdActivityEmpty => 'Sem atividade';
+
+  @override
+  String get householdActivityEmptyMessage =>
+      'As ações partilhadas do seu agregado aparecerão aqui.';
+
+  @override
+  String get householdActivityToday => 'HOJE';
+
+  @override
+  String get householdActivityYesterday => 'ONTEM';
+
+  @override
+  String get householdActivityThisWeek => 'ESTA SEMANA';
+
+  @override
+  String get householdActivityOlder => 'ANTERIORES';
+
+  @override
+  String get householdActivityJustNow => 'Agora mesmo';
+
+  @override
+  String householdActivityMinutesAgo(int count) {
+    return '$count min atrás';
+  }
+
+  @override
+  String householdActivityHoursAgo(int count) {
+    return '${count}h atrás';
+  }
+
+  @override
+  String householdActivityDaysAgo(int count) {
+    return '${count}d atrás';
+  }
+
+  @override
+  String householdActivityAddedBy(String name) {
+    return 'Adicionado por $name';
+  }
+
+  @override
+  String householdActivityRemovedBy(String name) {
+    return 'Removido por $name';
+  }
+
+  @override
+  String householdActivitySwappedBy(String name) {
+    return 'Trocado por $name';
+  }
+
+  @override
+  String householdActivityUpdatedBy(String name) {
+    return 'Atualizado por $name';
+  }
+
+  @override
+  String householdActivityCheckedBy(String name) {
+    return 'Marcado por $name';
+  }
 }

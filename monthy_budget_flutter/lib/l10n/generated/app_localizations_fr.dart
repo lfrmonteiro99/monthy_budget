@@ -3898,4 +3898,87 @@ class SFr extends S {
   String pantryMarkedAtHome(String name) {
     return '$name marqué comme déjà à la maison';
   }
+
+  @override
+  String get householdActivityTitle => 'Activité du Foyer';
+
+  @override
+  String get householdActivityFilterAll => 'Tout';
+
+  @override
+  String get householdActivityFilterShopping => 'Courses';
+
+  @override
+  String get householdActivityFilterMeals => 'Repas';
+
+  @override
+  String get householdActivityFilterExpenses => 'Dépenses';
+
+  @override
+  String get householdActivityFilterPantry => 'Garde-manger';
+
+  @override
+  String get householdActivityFilterSettings => 'Paramètres';
+
+  @override
+  String get householdActivityEmpty => 'Aucune activité';
+
+  @override
+  String get householdActivityEmptyMessage =>
+      'Les actions partagées de votre foyer apparaîtront ici.';
+
+  @override
+  String get householdActivityToday => 'AUJOURD\'HUI';
+
+  @override
+  String get householdActivityYesterday => 'HIER';
+
+  @override
+  String get householdActivityThisWeek => 'CETTE SEMAINE';
+
+  @override
+  String get householdActivityOlder => 'PLUS ANCIEN';
+
+  @override
+  String get householdActivityJustNow => 'À l\'instant';
+
+  @override
+  String householdActivityMinutesAgo(int count) {
+    return 'il y a $count min';
+  }
+
+  @override
+  String householdActivityHoursAgo(int count) {
+    return 'il y a ${count}h';
+  }
+
+  @override
+  String householdActivityDaysAgo(int count) {
+    return 'il y a ${count}j';
+  }
+
+  @override
+  String householdActivityAddedBy(String name) {
+    return 'Ajouté par $name';
+  }
+
+  @override
+  String householdActivityRemovedBy(String name) {
+    return 'Supprimé par $name';
+  }
+
+  @override
+  String householdActivitySwappedBy(String name) {
+    return 'Échangé par $name';
+  }
+
+  @override
+  String householdActivityUpdatedBy(String name) {
+    return 'Mis à jour par $name';
+  }
+
+  @override
+  String householdActivityCheckedBy(String name) {
+    return 'Coché par $name';
+  }
 }

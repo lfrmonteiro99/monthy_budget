@@ -4264,5 +4264,83 @@
                 "type": "String"
             }
         }
+    },
+    "householdActivityTitle": "Atividade do Agregado",
+    "householdActivityFilterAll": "Tudo",
+    "householdActivityFilterShopping": "Compras",
+    "householdActivityFilterMeals": "Refeições",
+    "householdActivityFilterExpenses": "Despesas",
+    "householdActivityFilterPantry": "Despensa",
+    "householdActivityFilterSettings": "Definições",
+    "householdActivityEmpty": "Sem atividade",
+    "householdActivityEmptyMessage": "As ações partilhadas do seu agregado aparecerão aqui.",
+    "householdActivityToday": "HOJE",
+    "householdActivityYesterday": "ONTEM",
+    "householdActivityThisWeek": "ESTA SEMANA",
+    "householdActivityOlder": "ANTERIORES",
+    "householdActivityJustNow": "Agora mesmo",
+    "householdActivityMinutesAgo": "{count} min atrás",
+    "@householdActivityMinutesAgo": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "householdActivityHoursAgo": "{count}h atrás",
+    "@householdActivityHoursAgo": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "householdActivityDaysAgo": "{count}d atrás",
+    "@householdActivityDaysAgo": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "householdActivityAddedBy": "Adicionado por {name}",
+    "@householdActivityAddedBy": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "householdActivityRemovedBy": "Removido por {name}",
+    "@householdActivityRemovedBy": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "householdActivitySwappedBy": "Trocado por {name}",
+    "@householdActivitySwappedBy": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "householdActivityUpdatedBy": "Atualizado por {name}",
+    "@householdActivityUpdatedBy": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "householdActivityCheckedBy": "Marcado por {name}",
+    "@householdActivityCheckedBy": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
     }
 }
