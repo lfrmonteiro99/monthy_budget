@@ -1,1846 +1,2092 @@
-﻿{
-  "@@locale": "fr",
-  "navBudget": "Budget",
-  "navGrocery": "Courses",
-  "navList": "Liste",
-  "navCoach": "Coach",
-  "navMeals": "Repas",
-  "navBudgetTooltip": "AperÃ§u du budget mensuel",
-  "navGroceryTooltip": "Catalogue de produits",
-  "navListTooltip": "Liste de courses",
-  "navCoachTooltip": "Coach financier IA",
-  "navMealsTooltip": "Planificateur de repas",
-  "appTitle": "Budget Mensuel",
-  "loading": "Chargement...",
-  "loadingApp": "Chargement de l'application",
-  "cancel": "Annuler",
-  "confirm": "Confirmer",
-  "close": "Fermer",
-  "save": "Enregistrer",
-  "delete": "Supprimer",
-  "clear": "Effacer",
-  "errorSavingPurchase": "Erreur lors de l'enregistrement : {error}",
-  "@errorSavingPurchase": {
-    "placeholders": {
-      "error": {
-        "type": "String"
-      }
+{
+    "@@locale": "fr",
+    "navBudget": "Budget",
+    "navGrocery": "Courses",
+    "navList": "Liste",
+    "navCoach": "Coach",
+    "navMeals": "Repas",
+    "navBudgetTooltip": "AperÃ§u du budget mensuel",
+    "navGroceryTooltip": "Catalogue de produits",
+    "navListTooltip": "Liste de courses",
+    "navCoachTooltip": "Coach financier IA",
+    "navMealsTooltip": "Planificateur de repas",
+    "appTitle": "Budget Mensuel",
+    "loading": "Chargement...",
+    "loadingApp": "Chargement de l'application",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "close": "Fermer",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "clear": "Effacer",
+    "errorSavingPurchase": "Erreur lors de l'enregistrement : {error}",
+    "@errorSavingPurchase": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "filterBy": "Filtrer par {label}",
+    "@filterBy": {
+        "placeholders": {
+            "label": {
+                "type": "String"
+            }
+        }
+    },
+    "addToList": "Ajouter {name} Ã  la liste",
+    "@addToList": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "enumMaritalSolteiro": "CÃ©libataire",
+    "enumMaritalCasado": "MariÃ©(e)",
+    "enumMaritalUniaoFacto": "Union libre",
+    "enumMaritalDivorciado": "DivorcÃ©(e)",
+    "enumMaritalViuvo": "Veuf/Veuve",
+    "enumSubsidyNone": "Sans primes",
+    "enumSubsidyFull": "Avec primes",
+    "enumSubsidyHalf": "50% primes",
+    "enumSubsidyNoneShort": "Sans",
+    "enumSubsidyFullShort": "Avec",
+    "enumSubsidyHalfShort": "50%",
+    "enumMealAllowanceNone": "Sans",
+    "enumMealAllowanceCard": "Carte",
+    "enumMealAllowanceCash": "EspÃ¨ces",
+    "enumCatTelecomunicacoes": "TÃ©lÃ©com",
+    "enumCatEnergia": "Ã‰nergie",
+    "enumCatAgua": "Eau",
+    "enumCatAlimentacao": "Alimentation",
+    "enumCatEducacao": "Ã‰ducation",
+    "enumCatHabitacao": "Logement",
+    "enumCatTransportes": "Transport",
+    "enumCatSaude": "SantÃ©",
+    "enumCatLazer": "Loisirs",
+    "enumCatOutros": "Autres",
+    "enumChartExpensesPie": "DÃ©penses par catÃ©gorie",
+    "enumChartIncomeVsExpenses": "Revenus vs DÃ©penses",
+    "enumChartNetIncome": "Revenu Net",
+    "enumChartDeductions": "PrÃ©lÃ¨vements (IR + Cotis.)",
+    "enumChartSavingsRate": "Taux d'Ã©pargne",
+    "enumMealBreakfast": "Petit-dÃ©jeuner",
+    "enumMealLunch": "DÃ©jeuner",
+    "enumMealSnack": "GoÃ»ter",
+    "enumMealDinner": "DÃ®ner",
+    "enumObjMinimizeCost": "Minimiser les coÃ»ts",
+    "enumObjBalancedHealth": "Ã‰quilibre coÃ»t/santÃ©",
+    "enumObjHighProtein": "Riche en protÃ©ines",
+    "enumObjLowCarb": "Faible en glucides",
+    "enumObjVegetarian": "VÃ©gÃ©tarien",
+    "enumEquipOven": "Four",
+    "enumEquipAirFryer": "Friteuse Ã  air",
+    "enumEquipFoodProcessor": "Robot culinaire",
+    "enumEquipPressureCooker": "Autocuiseur",
+    "enumEquipMicrowave": "Micro-ondes",
+    "enumEquipBimby": "Bimby / Thermomix",
+    "enumSodiumNoRestriction": "Sans restriction",
+    "enumSodiumReduced": "Sodium rÃ©duit",
+    "enumSodiumLow": "Faible en sodium",
+    "enumAge0to3": "0â€“3 ans",
+    "enumAge4to10": "4â€“10 ans",
+    "enumAgeTeen": "Adolescent",
+    "enumAgeAdult": "Adulte",
+    "enumAgeSenior": "Senior (65+)",
+    "enumActivitySedentary": "SÃ©dentaire",
+    "enumActivityModerate": "ModÃ©rÃ©",
+    "enumActivityActive": "Actif",
+    "enumActivityVeryActive": "TrÃ¨s actif",
+    "enumMedDiabetes": "DiabÃ¨te",
+    "enumMedHypertension": "Hypertension",
+    "enumMedHighCholesterol": "CholestÃ©rol Ã©levÃ©",
+    "enumMedGout": "Goutte",
+    "enumMedIbs": "Syndrome du cÃ´lon irritable",
+    "stressExcellent": "Excellent",
+    "stressGood": "Bon",
+    "stressWarning": "Attention",
+    "stressCritical": "Critique",
+    "stressFactorSavings": "Taux d'Ã©pargne",
+    "stressFactorSafety": "Marge de sÃ©curitÃ©",
+    "stressFactorFood": "Budget alimentation",
+    "stressFactorStability": "StabilitÃ© des dÃ©penses",
+    "stressStable": "Stable",
+    "stressHigh": "Ã‰levÃ©e",
+    "stressUsed": "{percent}% utilisÃ©",
+    "@stressUsed": {
+        "placeholders": {
+            "percent": {
+                "type": "String"
+            }
+        }
+    },
+    "stressNA": "N/D",
+    "monthReviewFoodExceeded": "L'alimentation a dÃ©passÃ© le budget de {percent}% â€” envisagez de revoir les portions ou la frÃ©quence des courses.",
+    "@monthReviewFoodExceeded": {
+        "placeholders": {
+            "percent": {
+                "type": "String"
+            }
+        }
+    },
+    "monthReviewExpensesExceeded": "Les dÃ©penses rÃ©elles ont dÃ©passÃ© le prÃ©vu de {amount}â‚¬ â€” ajuster les valeurs dans les paramÃ¨tres ?",
+    "@monthReviewExpensesExceeded": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "monthReviewSavedMore": "Ã‰conomisÃ© {amount}â‚¬ de plus que prÃ©vu â€” vous pouvez renforcer le fonds d'urgence.",
+    "@monthReviewSavedMore": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "monthReviewOnTrack": "DÃ©penses dans les prÃ©visions. Bon contrÃ´le budgÃ©taire.",
+    "dashboardTitle": "Budget Mensuel",
+    "dashboardStressIndex": "Indice de SÃ©rÃ©nitÃ©",
+    "dashboardTension": "Tension",
+    "dashboardLiquidity": "LiquiditÃ©",
+    "dashboardFinalPosition": "Position Finale",
+    "dashboardMonth": "Mois",
+    "dashboardGross": "Brut",
+    "dashboardNet": "Net",
+    "dashboardExpenses": "DÃ©penses",
+    "dashboardSavingsRate": "Taux Ã‰pargne",
+    "dashboardViewTrends": "Voir Ã©volution",
+    "dashboardViewProjection": "Voir projection",
+    "dashboardFinancialSummary": "RÃ‰SUMÃ‰ FINANCIER",
+    "dashboardOpenSettings": "Ouvrir les paramÃ¨tres",
+    "dashboardMonthlyLiquidity": "LIQUIDITÃ‰ MENSUELLE",
+    "dashboardPositiveBalance": "Solde positif",
+    "dashboardNegativeBalance": "Solde nÃ©gatif",
+    "dashboardHeroLabel": "LiquiditÃ© mensuelle : {amount}, {status}",
+    "@dashboardHeroLabel": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            },
+            "status": {
+                "type": "String"
+            }
+        }
+    },
+    "dashboardConfigureData": "Configurez vos donnÃ©es pour voir le rÃ©sumÃ©.",
+    "dashboardOpenSettingsButton": "Ouvrir les ParamÃ¨tres",
+    "dashboardGrossIncome": "Revenu Brut",
+    "dashboardNetIncome": "Revenu Net",
+    "dashboardInclMealAllowance": "Incl. indemn. repas : {amount}",
+    "@dashboardInclMealAllowance": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "dashboardDeductions": "PrÃ©lÃ¨vements",
+    "dashboardIrsSs": "IR : {irs} | Cotis. : {ss}",
+    "@dashboardIrsSs": {
+        "placeholders": {
+            "irs": {
+                "type": "String"
+            },
+            "ss": {
+                "type": "String"
+            }
+        }
+    },
+    "dashboardExpensesAmount": "DÃ©penses : {amount}",
+    "@dashboardExpensesAmount": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "dashboardSalaryDetail": "DÃ‰TAIL DES SALAIRES",
+    "dashboardSalaryN": "Salaire {n}",
+    "@dashboardSalaryN": {
+        "placeholders": {
+            "n": {
+                "type": "int"
+            }
+        }
+    },
+    "dashboardFood": "ALIMENTATION",
+    "dashboardSimulate": "Simuler",
+    "dashboardBudgeted": "BudgÃ©tÃ©",
+    "dashboardSpent": "DÃ©pensÃ©",
+    "dashboardRemaining": "Restant",
+    "dashboardFinalizePurchaseHint": "Finalisez un achat dans la Liste pour enregistrer les dÃ©penses.",
+    "dashboardPurchaseHistory": "HISTORIQUE DES ACHATS",
+    "dashboardViewAll": "Tout voir",
+    "dashboardAllPurchases": "Tous les Achats",
+    "dashboardPurchaseLabel": "Achat du {date}, {amount}",
+    "@dashboardPurchaseLabel": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            },
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "dashboardProductCount": "{count, plural, =1{1 produit} other{{count} produits}}",
+    "@dashboardProductCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "dashboardMonthlyExpenses": "DÃ‰PENSES MENSUELLES",
+    "dashboardTotal": "Total",
+    "dashboardGrossWithSubsidy": "Brut av/ primes",
+    "dashboardIrsRate": "IR ({rate})",
+    "@dashboardIrsRate": {
+        "placeholders": {
+            "rate": {
+                "type": "String"
+            }
+        }
+    },
+    "dashboardSsRate": "Cotis. Soc. (11%)",
+    "dashboardMealAllowance": "Indemn. Repas",
+    "dashboardExemptIncome": "Rev. ExonÃ©rÃ©",
+    "dashboardDetails": "DÃ©tails",
+    "dashboardVsLastMonth": "{delta} vs mois dernier",
+    "@dashboardVsLastMonth": {
+        "placeholders": {
+            "delta": {
+                "type": "String"
+            }
+        }
+    },
+    "dashboardPaceWarning": "DÃ©penses plus rapides que prÃ©vu",
+    "dashboardPaceCritical": "Risque de dÃ©passement du budget alimentaire",
+    "dashboardPace": "Rythme",
+    "dashboardProjection": "Projection",
+    "dashboardPaceValue": "{actual}€/jour vs {expected}€/jour",
+    "@dashboardPaceValue": {
+        "placeholders": {
+            "actual": {
+                "type": "String"
+            },
+            "expected": {
+                "type": "String"
+            }
+        }
+    },
+    "dashboardSummaryLabel": "â€” RÃ‰SUMÃ‰",
+    "dashboardViewMonthSummary": "Voir le rÃ©sumÃ© du mois",
+    "coachTitle": "Coach Financier",
+    "coachSubtitle": "IA Â· GPT-4o mini",
+    "coachApiKeyRequired": "Ajoutez votre clÃ© API OpenAI dans les ParamÃ¨tres pour utiliser cette fonctionnalitÃ©.",
+    "coachAnalysisTitle": "Analyse financiÃ¨re en 3 parties",
+    "coachAnalysisDescription": "Positionnement gÃ©nÃ©ral Â· Facteurs critiques de l'Indice de SÃ©rÃ©nitÃ© Â· OpportunitÃ© immÃ©diate. BasÃ© sur vos donnÃ©es rÃ©elles de budget, dÃ©penses et historique d'achats.",
+    "coachConfigureApiKey": "Configurer la clÃ© API dans les ParamÃ¨tres",
+    "coachApiKeyConfigured": "ClÃ© API configurÃ©e",
+    "coachAnalyzeButton": "Analyser mon budget",
+    "coachAnalyzing": "Analyse en cours...",
+    "coachCustomAnalysis": "Analyse personnalisÃ©e",
+    "coachNewAnalysis": "GÃ©nÃ©rer nouvelle analyse",
+    "coachHistory": "HISTORIQUE",
+    "coachClearAll": "Tout effacer",
+    "coachClearTitle": "Effacer l'historique",
+    "coachClearContent": "ÃŠtes-vous sÃ»r de vouloir supprimer toutes les analyses enregistrÃ©es ?",
+    "coachDeleteLabel": "Supprimer l'analyse",
+    "coachDeleteTooltip": "Supprimer",
+    "coachEmptyTitle": "Votre coach financier",
+    "coachEmptyBody": "Posez toute question sur votre budget, depenses ou epargne. J'utiliserai vos donnees reelles pour des conseils personnalises.",
+    "coachQuickPrompt1": "Ou puis-je reduire mes depenses ce mois-ci ?",
+    "coachQuickPrompt2": "Comment ameliorer mon epargne ?",
+    "coachQuickPrompt3": "Aidez-moi a creer un plan sur 30 jours.",
+    "coachComposerHint": "Demandez a votre coach...",
+    "coachYou": "Vous",
+    "coachAssistant": "Coach",
+    "coachCreditsCount": "{count} credits",
+    "@coachCreditsCount": {
+        "description": "Credits pill label",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "coachMemory": "Memoire",
+    "coachCostFree": "Mode Eco — sans cout de credits.",
+    "coachCostCredits": "Ce message coute {cost} credits.",
+    "@coachCostCredits": {
+        "description": "Cost info per message",
+        "placeholders": {
+            "cost": {
+                "type": "int"
+            }
+        }
+    },
+    "coachFree": "Gratuit",
+    "coachPerMsg": "{cost}/msg",
+    "@coachPerMsg": {
+        "description": "Cost per message on mode chip",
+        "placeholders": {
+            "cost": {
+                "type": "int"
+            }
+        }
+    },
+    "coachEcoFallbackTitle": "Mode Eco actif (sans credits)",
+    "coachEcoFallbackBody": "Vous pouvez continuer a discuter avec une memoire reduite.",
+    "coachRestoreMemory": "Restaurer la memoire",
+    "cmdAssistantTitle": "Assistant",
+    "cmdAssistantHint": "De quoi avez-vous besoin ?",
+    "cmdAssistantTooltip": "Besoin d'aide ? Appuyez ici",
+    "cmdSuggestionAddExpense": "Ajouter une depense",
+    "cmdSuggestionOpenList": "Ouvrir la liste de courses",
+    "cmdSuggestionChangeTheme": "Changer le theme",
+    "cmdSuggestionOpenSettings": "Aller aux parametres",
+    "cmdTemplateAddExpense": "Ajoute [montant] euros en [categorie]",
+    "cmdTemplateChangeTheme": "Change le theme en [clair/sombre]",
+    "cmdExecutionFailed": "J'ai compris la demande, mais je n'ai pas pu l'executer. Reessayez.",
+    "cmdNotUnderstood": "Je n'ai pas compris. Pouvez-vous reformuler ?",
+    "cmdUndo": "Annuler",
+    "expenseDeleted": "Dépense supprimée",
+    "cmdCapabilitiesCta": "Que puis-je faire ?",
+    "cmdCapabilitiesTitle": "Actions disponibles",
+    "cmdCapabilitiesSubtitle": "Voici les actions que l'assistant prend en charge pour le moment.",
+    "cmdCapabilitiesFooter": "Nous en ajoutons encore. Si ce n'est pas liste ici, cela peut ne pas encore fonctionner.",
+    "cmdCapabilityAddExpense": "Ajouter une depense",
+    "cmdCapabilityAddExpenseExample": "Ajoute [montant] euros en [categorie]",
+    "cmdCapabilityAddShoppingItem": "Ajouter a la liste",
+    "cmdCapabilityAddShoppingItemExample": "Ajoute [article] a la liste de courses",
+    "cmdCapabilityRemoveShoppingItem": "Retirer de la liste",
+    "cmdCapabilityRemoveShoppingItemExample": "Retire [article] de la liste de courses",
+    "cmdCapabilityToggleShoppingItemChecked": "Cocher ou decocher un article",
+    "cmdCapabilityToggleShoppingItemCheckedExample": "Coche [article] dans la liste de courses",
+    "cmdCapabilityAddSavingsGoal": "Creer un objectif d'epargne",
+    "cmdCapabilityAddSavingsGoalExample": "Cree objectif d'epargne [nom] de [montant]",
+    "cmdCapabilityAddSavingsContribution": "Ajouter a l'objectif d'epargne",
+    "cmdCapabilityAddSavingsContributionExample": "Ajoute [montant] a l'objectif [nom]",
+    "cmdCapabilityAddRecurringExpense": "Ajouter une depense recurrente",
+    "cmdCapabilityAddRecurringExpenseExample": "Ajoute depense recurrente [montant] en [categorie] jour [jour]",
+    "cmdCapabilityDeleteExpense": "Supprimer une depense",
+    "cmdCapabilityDeleteExpenseExample": "Supprime la depense [description]",
+    "cmdCapabilityChangeTheme": "Changer le theme",
+    "cmdCapabilityChangeThemeExample": "Change le theme en [clair/sombre]",
+    "cmdCapabilityChangePalette": "Changer la palette",
+    "cmdCapabilityChangePaletteExample": "Couleur [ocean/emerald/violet/teal/sunset]",
+    "cmdCapabilityChangeLanguage": "Changer la langue",
+    "cmdCapabilityChangeLanguageExample": "Langue [anglais/portugais/espagnol/francais]",
+    "cmdCapabilityNavigate": "Ouvrir un ecran",
+    "cmdCapabilityNavigateExample": "Ouvre la liste de courses",
+    "cmdCapabilityClearChecked": "Vider les coches",
+    "cmdCapabilityClearCheckedExample": "Effacer les elements coches",
+    "groceryTitle": "Courses",
+    "grocerySearchHint": "Rechercher un produit...",
+    "groceryLoadingLabel": "Chargement des produits",
+    "groceryLoadingMessage": "Chargement des produits...",
+    "groceryAll": "Tous",
+    "groceryProductCount": "{count} produits",
+    "@groceryProductCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "groceryAddedToList": "{name} ajoutÃ© Ã  la liste",
+    "@groceryAddedToList": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "groceryAvgPrice": "{unit} Â· prix moyen",
+    "@groceryAvgPrice": {
+        "placeholders": {
+            "unit": {
+                "type": "String"
+            }
+        }
+    },
+    "shoppingTitle": "Liste de Courses",
+    "shoppingEmpty": "Liste vide",
+    "shoppingEmptyMessage": "Ajoutez des produits depuis\nl'Ã©cran Courses.",
+    "shoppingItemsRemaining": "{count} Ã  acheter Â· {total}",
+    "@shoppingItemsRemaining": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "total": {
+                "type": "String"
+            }
+        }
+    },
+    "shoppingClear": "Effacer",
+    "shoppingFinalize": "Finaliser l'Achat",
+    "shoppingEstimatedTotal": "Total estimÃ©",
+    "shoppingHowMuchSpent": "COMBIEN AI-JE DÃ‰PENSÃ‰ ? (optionnel)",
+    "shoppingConfirm": "Confirmer",
+    "shoppingHistoryTooltip": "Historique d'achats",
+    "shoppingHistoryTitle": "Historique d'Achats",
+    "shoppingItemChecked": "{name}, achetÃ©",
+    "@shoppingItemChecked": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "shoppingItemSwipe": "{name}, glisser pour supprimer",
+    "@shoppingItemSwipe": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "shoppingProductCount": "{count, plural, =1{1 produit} other{{count} produits}}",
+    "@shoppingProductCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "shoppingViewItems": "Articles",
+    "shoppingViewMeals": "Repas",
+    "shoppingViewStores": "Magasins",
+    "shoppingGroupOther": "Autres",
+    "shoppingGroupCount": "{count, plural, =1{1 article} other{{count} articles}}",
+    "@shoppingGroupCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "shoppingCheapestAt": "Moins cher chez {store} ({price})",
+    "@shoppingCheapestAt": {
+        "placeholders": {
+            "store": {
+                "type": "String"
+            },
+            "price": {
+                "type": "String"
+            }
+        }
+    },
+    "authLogin": "Se connecter",
+    "authRegister": "CrÃ©er un compte",
+    "authEmail": "Email",
+    "authEmailHint": "exemple@email.com",
+    "authPassword": "Mot de passe",
+    "authLoginButton": "Se connecter",
+    "authRegisterButton": "S'inscrire",
+    "authSwitchToRegister": "CrÃ©er un nouveau compte",
+    "authSwitchToLogin": "J'ai dÃ©jÃ  un compte",
+    "authRegistrationSuccess": "Compte crÃ©Ã© ! VÃ©rifiez votre email pour confirmer votre compte avant de vous connecter.",
+    "authErrorNetwork": "Impossible de se connecter au serveur. Vérifiez votre connexion internet et réessayez.",
+    "authErrorInvalidCredentials": "Email ou mot de passe incorrect. Veuillez réessayer.",
+    "authErrorEmailNotConfirmed": "Veuillez vérifier votre email avant de vous connecter.",
+    "authErrorTooManyRequests": "Trop de tentatives. Veuillez patienter et réessayer.",
+    "authErrorGeneric": "Une erreur est survenue. Veuillez réessayer plus tard.",
+    "householdSetupTitle": "Configurer le Foyer",
+    "householdCreate": "CrÃ©er",
+    "householdJoinWithCode": "Rejoindre avec un code",
+    "householdNameLabel": "Nom du foyer",
+    "householdNameHint": "ex : Famille Dupont",
+    "householdCodeLabel": "Code d'invitation",
+    "householdCodeHint": "XXXXXX",
+    "householdCreateButton": "CrÃ©er le Foyer",
+    "householdJoinButton": "Rejoindre le Foyer",
+    "householdNameRequired": "Veuillez indiquer le nom du foyer.",
+    "chartExpensesByCategory": "DÃ©penses par CatÃ©gorie",
+    "chartIncomeVsExpenses": "Revenus vs DÃ©penses",
+    "chartDeductions": "PrÃ©lÃ¨vements (IR + Cotisations)",
+    "chartGrossVsNet": "Revenu Brut vs Net",
+    "chartSavingsRate": "Taux d'Ã‰pargne",
+    "chartNetIncome": "Rev. Net",
+    "chartExpensesLabel": "DÃ©penses",
+    "chartLiquidity": "LiquiditÃ©",
+    "chartSalaryN": "Sal. {n}",
+    "@chartSalaryN": {
+        "placeholders": {
+            "n": {
+                "type": "int"
+            }
+        }
+    },
+    "chartGross": "Brut",
+    "chartNet": "Net",
+    "chartNetSalary": "Sal. Net",
+    "chartIRS": "IR",
+    "chartSocialSecurity": "Cotis. Soc.",
+    "chartSavings": "Ã©pargne",
+    "projectionTitle": "Projection â€” {month} {year}",
+    "@projectionTitle": {
+        "placeholders": {
+            "month": {
+                "type": "String"
+            },
+            "year": {
+                "type": "String"
+            }
+        }
+    },
+    "projectionSubtitle": "DÃ©pensÃ© {spent} sur {budget} en {days} jours",
+    "@projectionSubtitle": {
+        "placeholders": {
+            "spent": {
+                "type": "String"
+            },
+            "budget": {
+                "type": "String"
+            },
+            "days": {
+                "type": "String"
+            }
+        }
+    },
+    "projectionFood": "ALIMENTATION",
+    "projectionCurrentPace": "Rythme actuel",
+    "projectionNoShopping": "Sans courses",
+    "projectionReduce20": "-20%",
+    "projectionDailySpend": "DÃ©pense journaliÃ¨re estimÃ©e : {amount}/jour",
+    "@projectionDailySpend": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "projectionEndOfMonth": "Projection fin de mois",
+    "projectionRemaining": "Restant projetÃ©",
+    "projectionStressImpact": "Impact sur l'indice",
+    "projectionExpenses": "DÃ‰PENSES",
+    "projectionSimulation": "Simulation â€” non enregistrÃ©",
+    "projectionReduceAll": "RÃ©duire toutes de ",
+    "projectionSimLiquidity": "LiquiditÃ© simulÃ©e",
+    "projectionDelta": "Delta",
+    "projectionSimSavingsRate": "Taux Ã©pargne simulÃ©",
+    "projectionSimIndex": "Indice simulÃ©",
+    "trendTitle": "Ã‰volution",
+    "trendStressIndex": "INDICE DE SÃ‰RÃ‰NITÃ‰",
+    "trendTotalExpenses": "DÃ‰PENSES TOTALES",
+    "trendExpensesByCategory": "DÃ‰PENSES PAR CATÃ‰GORIE",
+    "trendCurrent": "Actuel : {amount}",
+    "@trendCurrent": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "trendCatTelecom": "TÃ©lÃ©com",
+    "trendCatEnergy": "Ã‰nergie",
+    "trendCatWater": "Eau",
+    "trendCatFood": "Alimentation",
+    "trendCatEducation": "Ã‰ducation",
+    "trendCatHousing": "Logement",
+    "trendCatTransport": "Transport",
+    "trendCatHealth": "SantÃ©",
+    "trendCatLeisure": "Loisirs",
+    "trendCatOther": "Autres",
+    "monthReviewTitle": "RÃ©sumÃ© â€” {month}",
+    "@monthReviewTitle": {
+        "placeholders": {
+            "month": {
+                "type": "String"
+            }
+        }
+    },
+    "monthReviewPlanned": "PrÃ©vu",
+    "monthReviewActual": "RÃ©el",
+    "monthReviewDifference": "DiffÃ©rence",
+    "monthReviewFood": "Alimentation",
+    "monthReviewFoodValue": "{actual} sur {budget}",
+    "@monthReviewFoodValue": {
+        "placeholders": {
+            "actual": {
+                "type": "String"
+            },
+            "budget": {
+                "type": "String"
+            }
+        }
+    },
+    "monthReviewTopDeviations": "Ã‰CARTS PRINCIPAUX",
+    "monthReviewSuggestions": "SUGGESTIONS",
+    "monthReviewAiAnalysis": "Analyse IA dÃ©taillÃ©e",
+    "mealPlannerTitle": "Planificateur de Repas",
+    "mealBudgetLabel": "Budget alimentation",
+    "mealPeopleLabel": "Personnes au foyer",
+    "mealGeneratePlan": "GÃ©nÃ©rer le Plan Mensuel",
+    "mealGenerating": "GÃ©nÃ©ration...",
+    "mealRegenerateTitle": "RÃ©gÃ©nÃ©rer le plan ?",
+    "mealRegenerateContent": "Le plan actuel sera remplacÃ©.",
+    "mealRegenerate": "RÃ©gÃ©nÃ©rer",
+    "mealWeekLabel": "Semaine {n}",
+    "@mealWeekLabel": {
+        "placeholders": {
+            "n": {
+                "type": "int"
+            }
+        }
+    },
+    "mealWeekAbbr": "Sem.{n}",
+    "@mealWeekAbbr": {
+        "placeholders": {
+            "n": {
+                "type": "int"
+            }
+        }
+    },
+    "mealAddWeekToList": "Ajouter la semaine Ã  la liste",
+    "mealIngredientsAdded": "{count} ingrÃ©dients ajoutÃ©s Ã  la liste",
+    "@mealIngredientsAdded": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "mealDayLabel": "Jour {n}",
+    "@mealDayLabel": {
+        "placeholders": {
+            "n": {
+                "type": "int"
+            }
+        }
+    },
+    "mealIngredients": "IngrÃ©dients",
+    "mealPreparation": "PrÃ©paration",
+    "mealSwap": "Ã‰changer",
+    "mealConsolidatedList": "Voir la liste consolidÃ©e",
+    "mealConsolidatedTitle": "Liste ConsolidÃ©e",
+    "mealAlternatives": "Alternatives",
+    "mealTotalCost": "{cost}â‚¬ total",
+    "@mealTotalCost": {
+        "placeholders": {
+            "cost": {
+                "type": "String"
+            }
+        }
+    },
+    "mealCatProteins": "ProtÃ©ines",
+    "mealCatVegetables": "LÃ©gumes",
+    "mealCatCarbs": "Glucides",
+    "mealCatFats": "MatiÃ¨res grasses",
+    "mealCatCondiments": "Condiments",
+    "mealCostPerPerson": "{cost}€/pers",
+    "@mealCostPerPerson": {
+        "placeholders": {
+            "cost": {
+                "type": "String"
+            }
+        }
+    },
+    "mealNutriProt": "prot",
+    "mealNutriCarbs": "gluc",
+    "mealNutriFat": "gras",
+    "mealNutriFiber": "fibre",
+    "wizardStepMeals": "Repas",
+    "wizardStepObjective": "Objectif",
+    "wizardStepRestrictions": "Restrictions",
+    "wizardStepKitchen": "Cuisine",
+    "wizardStepStrategy": "StratÃ©gie",
+    "wizardMealsQuestion": "Quels repas voulez-vous inclure dans le plan quotidien ?",
+    "wizardBudgetWeight": "{weight} du budget",
+    "@wizardBudgetWeight": {
+        "placeholders": {
+            "weight": {
+                "type": "String"
+            }
+        }
+    },
+    "wizardObjectiveQuestion": "Quel est l'objectif principal de votre plan alimentaire ?",
+    "wizardSelected": "{label}, sÃ©lectionnÃ©",
+    "@wizardSelected": {
+        "placeholders": {
+            "label": {
+                "type": "String"
+            }
+        }
+    },
+    "wizardDietaryRestrictions": "RESTRICTIONS ALIMENTAIRES",
+    "wizardGlutenFree": "Sans gluten",
+    "wizardLactoseFree": "Sans lactose",
+    "wizardNutFree": "Sans fruits Ã  coque",
+    "wizardShellfishFree": "Sans crustacÃ©s",
+    "wizardDislikedIngredients": "INGRÃ‰DIENTS QUE VOUS N'AIMEZ PAS",
+    "wizardDislikedHint": "ex : thon, brocoli",
+    "wizardMaxPrepTime": "TEMPS DE PRÃ‰PARATION MAXIMUM",
+    "wizardMaxComplexity": "COMPLEXITÃ‰ MAXIMUM",
+    "wizardComplexityEasy": "Facile",
+    "wizardComplexityMedium": "Moyen",
+    "wizardComplexityAdvanced": "AvancÃ©",
+    "wizardEquipment": "Ã‰QUIPEMENT DISPONIBLE",
+    "wizardBatchCooking": "Batch cooking",
+    "wizardBatchCookingDesc": "Cuisiner pour plusieurs jours Ã  la fois",
+    "wizardMaxBatchDays": "JOURS MAXIMUM PAR RECETTE",
+    "wizardBatchDays": "{days} jours",
+    "@wizardBatchDays": {
+        "placeholders": {
+            "days": {
+                "type": "int"
+            }
+        }
+    },
+    "wizardPreferredCookingDay": "JOUR DE CUISINE PRÃ‰FÃ‰RÃ‰",
+    "wizardReuseLeftovers": "RÃ©utiliser les restes",
+    "wizardReuseLeftoversDesc": "Le dÃ®ner d'hier = le dÃ©jeuner d'aujourd'hui (coÃ»t 0)",
+    "wizardMaxNewIngredients": "NOUVEAUX INGRÃ‰DIENTS PAR SEMAINE MAX",
+    "wizardNoLimit": "Sans limite",
+    "wizardMinimizeWaste": "Minimiser le gaspillage",
+    "wizardMinimizeWasteDesc": "PrÃ©fÃ©rer les recettes rÃ©utilisant des ingrÃ©dients dÃ©jÃ  utilisÃ©s",
+    "wizardSettingsInfo": "Vous pouvez modifier les paramÃ¨tres du planificateur Ã  tout moment dans ParamÃ¨tres â†’ Repas.",
+    "wizardContinue": "Continuer",
+    "wizardGeneratePlan": "GÃ©nÃ©rer le Plan",
+    "wizardStepOf": "Ã‰tape {current} sur {total}",
+    "@wizardStepOf": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "wizardWeekdayMon": "Lun",
+    "wizardWeekdayTue": "Mar",
+    "wizardWeekdayWed": "Mer",
+    "wizardWeekdayThu": "Jeu",
+    "wizardWeekdayFri": "Ven",
+    "wizardWeekdaySat": "Sam",
+    "wizardWeekdaySun": "Dim",
+    "wizardPrepMin": "{mins}min",
+    "@wizardPrepMin": {
+        "placeholders": {
+            "mins": {
+                "type": "int"
+            }
+        }
+    },
+    "wizardPrepMin60Plus": "60+",
+    "settingsTitle": "ParamÃ¨tres",
+    "settingsPersonal": "DonnÃ©es Personnelles",
+    "settingsSalaries": "Salaires",
+    "settingsExpenses": "Budget et Factures",
+    "settingsCoachAi": "Coach IA",
+    "settingsDashboard": "Tableau de bord",
+    "settingsMeals": "Repas",
+    "settingsRegion": "RÃ©gion et Langue",
+    "settingsCountry": "Pays",
+    "settingsLanguage": "Langue",
+    "settingsMaritalStatus": "Ã‰tat civil",
+    "settingsDependents": "Personnes Ã  charge",
+    "settingsDisability": "Handicap",
+    "settingsGrossSalary": "Salaire brut",
+    "settingsTitulares": "Titulaires d'impÃ´t",
+    "settingsSubsidyMode": "Primes",
+    "settingsMealAllowance": "IndemnitÃ© repas",
+    "settingsMealAllowancePerDay": "Montant/jour",
+    "settingsWorkingDays": "Jours ouvrÃ©s/mois",
+    "settingsOtherExemptIncome": "Autres revenus exonÃ©rÃ©s",
+    "settingsAddSalary": "Ajouter un salaire",
+    "settingsAddExpense": "Ajouter une catÃ©gorie",
+    "settingsExpenseName": "Nom de catÃ©gorie",
+    "settingsExpenseAmount": "Montant",
+    "settingsExpenseCategory": "CatÃ©gorie",
+    "settingsApiKey": "ClÃ© API OpenAI",
+    "settingsInviteCode": "Code d'invitation",
+    "settingsCopyCode": "Copier",
+    "settingsCodeCopied": "Code copiÃ© !",
+    "settingsAdminOnly": "Seul l'administrateur peut modifier les paramÃ¨tres.",
+    "settingsShowSummaryCards": "Afficher les cartes rÃ©sumÃ©",
+    "settingsEnabledCharts": "Graphiques actifs",
+    "settingsLogout": "Se dÃ©connecter",
+    "settingsLogoutConfirmTitle": "Se dÃ©connecter",
+    "settingsLogoutConfirmContent": "ÃŠtes-vous sÃ»r de vouloir vous dÃ©connecter ?",
+    "settingsLogoutConfirmButton": "Se dÃ©connecter",
+    "settingsSalariesSection": "Revenus",
+    "settingsExpensesMonthly": "Budget et Factures",
+    "settingsFavorites": "Produits Favoris",
+    "settingsCoachOpenAi": "Coach IA (OpenAI)",
+    "settingsHousehold": "Foyer",
+    "settingsMaritalStatusLabel": "Ã‰TAT CIVIL",
+    "settingsDependentsLabel": "NOMBRE DE PERSONNES Ã€ CHARGE",
+    "settingsSocialSecurityRate": "Cotisations sociales : {rate}",
+    "@settingsSocialSecurityRate": {
+        "placeholders": {
+            "rate": {
+                "type": "String"
+            }
+        }
+    },
+    "settingsSalaryActive": "Actif",
+    "settingsGrossMonthlySalary": "SALAIRE BRUT MENSUEL",
+    "settingsSubsidyHoliday": "PRIMES DE VACANCES ET NOÃ‹L (DOUZIÃˆMES)",
+    "settingsOtherExemptLabel": "AUTRES REVENUS EXONÃ‰RÃ‰S D'IMPÃ”T",
+    "settingsMealAllowanceLabel": "INDEMNITÃ‰ REPAS",
+    "settingsAmountPerDay": "MONTANT/JOUR",
+    "settingsDaysPerMonth": "JOURS/MOIS",
+    "settingsTitularesLabel": "TITULAIRES D'IMPÃ”T",
+    "settingsTitularCount": "{n} Titulaire{suffix}",
+    "@settingsTitularCount": {
+        "placeholders": {
+            "n": {
+                "type": "int"
+            },
+            "suffix": {
+                "type": "String"
+            }
+        }
+    },
+    "settingsAddSalaryButton": "Ajouter un salaire",
+    "settingsAddExpenseButton": "Ajouter une CatÃ©gorie",
+    "settingsDeviceLocal": "Ces paramÃ¨tres sont stockÃ©s localement sur cet appareil.",
+    "settingsVisibleSections": "SECTIONS VISIBLES",
+    "settingsMinimalist": "Minimaliste",
+    "settingsFull": "Complet",
+    "settingsDashMonthlyLiquidity": "LiquiditÃ© mensuelle",
+    "settingsDashStressIndex": "Indice de SÃ©rÃ©nitÃ©",
+    "settingsDashSummaryCards": "Cartes rÃ©sumÃ©",
+    "settingsDashSalaryBreakdown": "DÃ©tail par salaire",
+    "settingsDashFood": "Alimentation",
+    "settingsDashPurchaseHistory": "Historique d'achats",
+    "settingsDashExpensesBreakdown": "DÃ©tail des dÃ©penses",
+    "settingsDashMonthReview": "Bilan du mois",
+    "settingsDashCharts": "Graphiques",
+    "dashGroupOverview": "VUE D'ENSEMBLE",
+    "dashGroupFinancialDetail": "DÃ‰TAIL FINANCIER",
+    "dashGroupHistory": "HISTORIQUE",
+    "dashGroupCharts": "GRAPHIQUES",
+    "settingsVisibleCharts": "GRAPHIQUES VISIBLES",
+    "settingsFavTip": "Les produits favoris influencent le plan repas — les recettes avec ces ingrÃ©dients sont prioritaires.",
+    "settingsMyFavorites": "MES FAVORIS",
+    "settingsProductCatalog": "CATALOGUE DE PRODUITS",
+    "settingsSearchProduct": "Rechercher un produit...",
+    "settingsLoadingProducts": "Chargement des produits...",
+    "settingsAddIngredient": "Ajouter un ingrÃ©dient",
+    "settingsIngredientName": "Nom de l'ingrÃ©dient",
+    "settingsAddButton": "Ajouter",
+    "settingsAddToPantry": "Ajouter au garde-manger",
+    "settingsHouseholdPeople": "FOYER (PERSONNES)",
+    "settingsAutomatic": "(auto)",
+    "settingsUseAutoValue": "Utiliser la valeur automatique",
+    "settingsManualValue": "Valeur manuelle : {count} personnes",
+    "@settingsManualValue": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "settingsAutoValue": "CalculÃ© automatiquement : {count} (titulaires + personnes Ã  charge)",
+    "@settingsAutoValue": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "settingsHouseholdMembers": "MEMBRES DU FOYER",
+    "settingsPortions": "portions",
+    "settingsTotalEquivalent": "Ã‰quivalent total : {total} portions",
+    "@settingsTotalEquivalent": {
+        "placeholders": {
+            "total": {
+                "type": "String"
+            }
+        }
+    },
+    "settingsAddMember": "Ajouter un membre",
+    "settingsPreferSeasonal": "PrÃ©fÃ©rer les recettes de saison",
+    "settingsPreferSeasonalDesc": "Priorise les recettes de la saison actuelle",
+    "settingsNutritionalGoals": "OBJECTIFS NUTRITIONNELS",
+    "settingsCalorieHint": "ex : 2000",
+    "settingsKcalPerDay": "kcal/jour",
+    "settingsProteinHint": "ex : 60",
+    "settingsGramsPerDay": "g/jour",
+    "settingsFiberHint": "ex : 25",
+    "settingsDailyProtein": "ProtÃ©ines quotidiennes",
+    "settingsDailyFiber": "Fibres quotidiennes",
+    "settingsMedicalConditions": "CONDITIONS MÃ‰DICALES",
+    "settingsActiveMeals": "REPAS ACTIFS",
+    "settingsObjective": "OBJECTIF",
+    "settingsVeggieDays": "JOURS VÃ‰GÃ‰TARIENS PAR SEMAINE",
+    "settingsDietaryRestrictions": "RESTRICTIONS ALIMENTAIRES",
+    "settingsEggFree": "Sans oeufs",
+    "settingsSodiumPref": "PRÃ‰FÃ‰RENCE EN SODIUM",
+    "settingsDislikedIngredients": "INGRÃ‰DIENTS NON SOUHAITÃ‰S",
+    "settingsExcludedProteins": "PROTÃ‰INES EXCLUES",
+    "settingsProteinChicken": "Poulet",
+    "settingsProteinGroundMeat": "Viande hachÃ©e",
+    "settingsProteinPork": "Porc",
+    "settingsProteinHake": "Merlu",
+    "settingsProteinCod": "Morue",
+    "settingsProteinSardine": "Sardine",
+    "settingsProteinTuna": "Thon",
+    "settingsProteinEgg": "Oeufs",
+    "settingsMaxPrepTime": "TEMPS MAX (MINUTES)",
+    "settingsMaxComplexity": "COMPLEXITÃ‰ MAXIMUM ({value}/5)",
+    "@settingsMaxComplexity": {
+        "placeholders": {
+            "value": {
+                "type": "int"
+            }
+        }
+    },
+    "settingsWeekendPrepTime": "TEMPS WEEK-END (MINUTES)",
+    "settingsWeekendComplexity": "COMPLEXITÃ‰ WEEK-END ({value}/5)",
+    "@settingsWeekendComplexity": {
+        "placeholders": {
+            "value": {
+                "type": "int"
+            }
+        }
+    },
+    "settingsEatingOutDays": "JOURS AU RESTAURANT",
+    "settingsWeeklyDistribution": "DISTRIBUTION HEBDOMADAIRE",
+    "settingsFishPerWeek": "Poisson par semaine : {count}",
+    "@settingsFishPerWeek": {
+        "placeholders": {
+            "count": {
+                "type": "String"
+            }
+        }
+    },
+    "settingsNoMinimum": "sans minimum",
+    "settingsLegumePerWeek": "LÃ©gumineuses par semaine : {count}",
+    "@settingsLegumePerWeek": {
+        "placeholders": {
+            "count": {
+                "type": "String"
+            }
+        }
+    },
+    "settingsRedMeatPerWeek": "Viande rouge max/semaine : {count}",
+    "@settingsRedMeatPerWeek": {
+        "placeholders": {
+            "count": {
+                "type": "String"
+            }
+        }
+    },
+    "settingsNoLimit": "sans limite",
+    "settingsAvailableEquipment": "Ã‰QUIPEMENT DISPONIBLE",
+    "settingsBatchCooking": "Batch cooking",
+    "settingsMaxBatchDays": "JOURS MAX PAR RECETTE",
+    "settingsReuseLeftovers": "RÃ©utiliser les restes",
+    "settingsMinimizeWaste": "Minimiser le gaspillage",
+    "settingsPrioritizeLowCost": "Prioriser le bas coÃ»t",
+    "settingsPrioritizeLowCostDesc": "PrÃ©fÃ©rer les recettes moins chÃ¨res",
+    "settingsNewIngredientsPerWeek": "NOUVEAUX INGRÃ‰DIENTS PAR SEMAINE ({count})",
+    "@settingsNewIngredientsPerWeek": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "settingsLunchboxLunches": "DÃ©jeuners en boÃ®te",
+    "settingsLunchboxLunchesDesc": "Uniquement des recettes transportables pour le dÃ©jeuner",
+    "settingsPantry": "GARDE-MANGER (TOUJOURS EN STOCK)",
+    "settingsResetWizard": "RÃ©initialiser l'Assistant",
+    "settingsApiKeyInfo": "La clÃ© est stockÃ©e localement sur l'appareil et n'est jamais partagÃ©e. Utilise le modÃ¨le GPT-4o mini (~€0,00008 par analyse).",
+    "settingsInviteCodeLabel": "CODE D'INVITATION",
+    "settingsGenerateInvite": "GÃ©nÃ©rer un code d'invitation",
+    "settingsShareWithMembers": "Partager avec les membres du foyer",
+    "settingsNewCode": "Nouveau code",
+    "settingsCodeValidInfo": "Le code est valide pendant 7 jours. Partagez-le avec les personnes que vous souhaitez ajouter au foyer.",
+    "settingsName": "Nom",
+    "settingsAgeGroup": "Tranche d'Ã¢ge",
+    "settingsActivityLevel": "Niveau d'activitÃ©",
+    "settingsSalaryN": "Salaire {n}",
+    "@settingsSalaryN": {
+        "placeholders": {
+            "n": {
+                "type": "int"
+            }
+        }
+    },
+    "countryPT": "Portugal",
+    "countryES": "Espagne",
+    "countryFR": "France",
+    "countryUK": "Royaume-Uni",
+    "langPT": "PortuguÃªs",
+    "langEN": "English",
+    "langFR": "FranÃ§ais",
+    "langES": "EspaÃ±ol",
+    "langSystem": "SystÃ¨me",
+    "taxIncomeTax": "ImpÃ´t sur le revenu",
+    "taxSocialContribution": "Cotisation sociale",
+    "taxIRS": "IRS",
+    "taxSS": "SÃ©curitÃ© Sociale",
+    "taxIRPF": "IRPF",
+    "taxSSSpain": "Seguridad Social",
+    "taxIR": "ImpÃ´t sur le Revenu",
+    "taxCSG": "CSG + CRDS",
+    "taxPAYE": "Income Tax",
+    "taxNI": "National Insurance",
+    "enumSubsidyEsNone": "Sans payes extras",
+    "enumSubsidyEsFull": "Avec payes extras",
+    "enumSubsidyEsHalf": "50% payes extras",
+    "aiCoachSystemPrompt": "Tu es un analyste financier personnel pour des utilisateurs portugais. RÃ©ponds toujours en portugais europÃ©en. Sois direct et analytique â€” utilise toujours les chiffres concrets du contexte fourni. Structure la rÃ©ponse exactement dans les 3 parties demandÃ©es. N'introduis pas de donnÃ©es, benchmarks ou rÃ©fÃ©rences externes non fournis.",
+    "aiCoachInvalidApiKey": "ClÃ© API invalide. VÃ©rifiez dans les ParamÃ¨tres.",
+    "aiCoachMidMonthSystem": "Tu es un consultant en budget domestique portugais. RÃ©ponds toujours en portugais europÃ©en. Sois pratique et direct.",
+    "aiMealPlannerSystem": "Tu es un chef portugais. RÃ©ponds toujours en portugais europÃ©en. RÃ©ponds UNIQUEMENT avec du JSON valide, sans texte supplÃ©mentaire.",
+    "monthAbbrJan": "Jan",
+    "monthAbbrFeb": "FÃ©v",
+    "monthAbbrMar": "Mar",
+    "monthAbbrApr": "Avr",
+    "monthAbbrMay": "Mai",
+    "monthAbbrJun": "Jui",
+    "monthAbbrJul": "Jul",
+    "monthAbbrAug": "AoÃ»",
+    "monthAbbrSep": "Sep",
+    "monthAbbrOct": "Oct",
+    "monthAbbrNov": "Nov",
+    "monthAbbrDec": "DÃ©c",
+    "monthFullJan": "Janvier",
+    "monthFullFeb": "FÃ©vrier",
+    "monthFullMar": "Mars",
+    "monthFullApr": "Avril",
+    "monthFullMay": "Mai",
+    "monthFullJun": "Juin",
+    "monthFullJul": "Juillet",
+    "monthFullAug": "AoÃ»t",
+    "monthFullSep": "Septembre",
+    "monthFullOct": "Octobre",
+    "monthFullNov": "Novembre",
+    "monthFullDec": "DÃ©cembre",
+    "setupWizardWelcomeTitle": "Bienvenue dans votre budget",
+    "setupWizardWelcomeSubtitle": "Configurons l'essentiel pour que votre tableau de bord soit prÃªt.",
+    "setupWizardBullet1": "Calculer votre salaire net",
+    "setupWizardBullet2": "Organiser vos dÃ©penses",
+    "setupWizardBullet3": "Voir combien il vous reste chaque mois",
+    "setupWizardReassurance": "Vous pouvez tout modifier plus tard dans les paramÃ¨tres.",
+    "setupWizardStart": "Commencer",
+    "setupWizardSkipAll": "Passer la configuration",
+    "setupWizardStepOf": "Ã‰tape {step} sur {total}",
+    "@setupWizardStepOf": {
+        "placeholders": {
+            "step": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "setupWizardContinue": "Continuer",
+    "setupWizardCountryTitle": "OÃ¹ habitez-vous ?",
+    "setupWizardCountrySubtitle": "Cela dÃ©finit le systÃ¨me fiscal, la devise et les valeurs par dÃ©faut.",
+    "setupWizardLanguage": "Langue",
+    "setupWizardLangSystem": "Par dÃ©faut du systÃ¨me",
+    "setupWizardCountryPT": "Portugal",
+    "setupWizardCountryES": "Espagne",
+    "setupWizardCountryFR": "France",
+    "setupWizardCountryUK": "Royaume-Uni",
+    "setupWizardPersonalTitle": "Informations personnelles",
+    "setupWizardPersonalSubtitle": "Nous utilisons ceci pour calculer vos impÃ´ts plus prÃ©cisÃ©ment.",
+    "setupWizardPrivacyNote": "Vos donnÃ©es restent dans votre compte et ne sont jamais partagÃ©es.",
+    "setupWizardSingle": "CÃ©libataire",
+    "setupWizardMarried": "MariÃ©(e)",
+    "setupWizardDependents": "Personnes Ã  charge",
+    "setupWizardTitulares": "Titulaires fiscaux",
+    "setupWizardSalaryTitle": "Quel est votre salaire ?",
+    "setupWizardSalarySubtitle": "Entrez le montant brut mensuel. Nous calculerons le net automatiquement.",
+    "setupWizardSalaryGross": "Salaire brut mensuel",
+    "setupWizardNetEstimate": "Net estimÃ© : {amount}",
+    "@setupWizardNetEstimate": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "setupWizardSalaryMoreLater": "Vous pouvez ajouter d'autres sources de revenus plus tard.",
+    "setupWizardSalaryRequired": "Veuillez entrer votre salaire",
+    "setupWizardSalaryPositive": "Le salaire doit être un nombre positif",
+    "setupWizardSalarySkip": "Passer cette étape",
+    "setupWizardExpensesTitle": "Vos dÃ©penses mensuelles",
+    "setupWizardExpensesSubtitle": "Valeurs suggÃ©rÃ©es pour votre pays. Ajustez selon vos besoins.",
+    "setupWizardExpensesMoreLater": "Vous pouvez ajouter d'autres catÃ©gories plus tard.",
+    "setupWizardNetLabel": "Net : {amount}",
+    "@setupWizardNetLabel": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "setupWizardTotalExpenses": "DÃ©penses : {amount}",
+    "@setupWizardTotalExpenses": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "setupWizardAvailableLabel": "Disponible : {amount}",
+    "@setupWizardAvailableLabel": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "setupWizardFinish": "Terminer",
+    "setupWizardCompleteTitle": "Tout est prÃªt !",
+    "setupWizardCompleteReassurance": "Votre budget est configurÃ©. Vous pouvez tout ajuster dans les paramÃ¨tres Ã  tout moment.",
+    "setupWizardGoToDashboard": "Voir mon budget",
+    "setupWizardConfigureSalaryHint": "Configurez votre salaire dans les paramÃ¨tres pour voir le calcul complet.",
+    "setupWizardExpRent": "Loyer / CrÃ©dit immobilier",
+    "setupWizardExpGroceries": "Alimentation",
+    "setupWizardExpTransport": "Transport",
+    "setupWizardExpUtilities": "Services (Ã©lectricitÃ©, eau, gaz)",
+    "setupWizardExpTelecom": "TÃ©lÃ©communications",
+    "setupWizardExpHealth": "SantÃ©",
+    "setupWizardExpLeisure": "Loisirs",
+    "expenseTrackerTitle": "BUDGET VS RÃ‰EL",
+    "expenseTrackerBudgeted": "BudgÃ©tÃ©",
+    "expenseTrackerActual": "RÃ©el",
+    "expenseTrackerRemaining": "Restant",
+    "expenseTrackerOver": "DÃ©passement",
+    "expenseTrackerViewAll": "Voir dÃ©tails",
+    "expenseTrackerNoExpenses": "Aucune dÃ©pense enregistrÃ©e.",
+    "expenseTrackerScreenTitle": "Suivi des DÃ©penses",
+    "expenseTrackerMonthTotal": "Total : {amount}",
+    "@expenseTrackerMonthTotal": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "expenseTrackerDeleteConfirm": "Supprimer cette dÃ©pense ?",
+    "expenseTrackerEmpty": "Aucune dÃ©pense ce mois.\nAppuyez sur + pour ajouter.",
+    "addExpenseTitle": "Ajouter une DÃ©pense",
+    "editExpenseTitle": "Modifier la DÃ©pense",
+    "addExpenseCategory": "CatÃ©gorie",
+    "addExpenseAmount": "Montant",
+    "addExpenseDate": "Date",
+    "addExpenseDescription": "Description (facultatif)",
+    "addExpenseCustomCategory": "CatÃ©gorie personnalisÃ©e",
+    "addExpenseInvalidAmount": "Entrez un montant valide",
+    "addExpenseTooltip": "Saisir une dÃ©pense",
+    "addExpenseItem": "DÃ©pense",
+    "addExpenseOthers": "Autres",
+    "settingsDashBudgetVsActual": "Budget vs RÃ©el",
+    "settingsAppearance": "Apparence",
+    "settingsTheme": "ThÃ¨me",
+    "themeSystem": "SystÃ¨me",
+    "themeLight": "Clair",
+    "themeDark": "Sombre",
+    "recurringExpenses": "Factures Mensuelles",
+    "recurringExpenseAdd": "Ajouter une Facture",
+    "recurringExpenseEdit": "Modifier la Facture",
+    "recurringExpenseCategory": "CatÃ©gorie",
+    "recurringExpenseAmount": "Montant",
+    "recurringExpenseDescription": "Description (facultatif)",
+    "recurringExpenseDayOfMonth": "Jour d'Ã©chÃ©ance",
+    "recurringExpenseActive": "Active",
+    "recurringExpenseInactive": "Inactive",
+    "recurringExpenseEmpty": "Aucune facture mensuelle.\nAjoutez-en une pour la gÃ©nÃ©rer automatiquement chaque mois.",
+    "recurringExpenseDeleteConfirm": "Supprimer cette facture ?",
+    "recurringExpenseAutoCreated": "CrÃ©Ã©e automatiquement",
+    "recurringExpenseManage": "GÃ©rer les factures",
+    "recurringExpenseMarkRecurring": "Marquer comme facture mensuelle",
+    "recurringExpensePopulated": "Factures mensuelles gÃ©nÃ©rÃ©es pour ce mois",
+    "recurringExpenseDayHint": "Ex : 1 pour le 1er",
+    "recurringExpenseNoDay": "Pas de jour fixe",
+    "recurringExpenseSaved": "Facture enregistrÃ©e",
+    "billsCount": "{count} factures",
+    "@billsCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "billsNone": "Aucune facture",
+    "billsPerMonth": "{count} factures Â· {amount}/mois",
+    "@billsPerMonth": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "billsExceedBudget": "Factures ({amount}) dÃ©passent le budget",
+    "@billsExceedBudget": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "billsAddBill": "Ajouter une Facture",
+    "billsBudgetSettings": "ParamÃ¨tres du Budget",
+    "billsRecurringBills": "Factures RÃ©currentes",
+    "billsDescription": "Description",
+    "billsAmount": "Montant",
+    "billsDueDay": "Jour d'Ã©chÃ©ance",
+    "billsActive": "Active",
+    "expenseTrends": "Tendances des DÃ©penses",
+    "expenseTrendsViewTrends": "Voir les Tendances",
+    "expenseTrends3Months": "3M",
+    "expenseTrends6Months": "6M",
+    "expenseTrends12Months": "12M",
+    "expenseTrendsBudgeted": "BudgÃ©tÃ©",
+    "expenseTrendsActual": "RÃ©el",
+    "expenseTrendsByCategory": "Par CatÃ©gorie",
+    "expenseTrendsNoData": "DonnÃ©es insuffisantes pour afficher les tendances.",
+    "expenseTrendsTotal": "Total",
+    "expenseTrendsAverage": "Moyenne",
+    "expenseTrendsOverview": "Vue d'ensemble",
+    "expenseTrendsMonthly": "Mensuel",
+    "savingsGoals": "Objectifs d'Ã‰pargne",
+    "savingsGoalAdd": "Nouvel Objectif",
+    "savingsGoalEdit": "Modifier l'Objectif",
+    "savingsGoalName": "Nom de l'objectif",
+    "savingsGoalTarget": "Montant cible",
+    "savingsGoalCurrent": "Montant actuel",
+    "savingsGoalDeadline": "Date limite",
+    "savingsGoalNoDeadline": "Pas de date limite",
+    "savingsGoalColor": "Couleur",
+    "savingsGoalProgress": "{percent}% atteint",
+    "@savingsGoalProgress": {
+        "placeholders": {
+            "percent": {
+                "type": "String"
+            }
+        }
+    },
+    "savingsGoalRemaining": "{amount} restant",
+    "@savingsGoalRemaining": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "savingsGoalCompleted": "Objectif atteint !",
+    "savingsGoalEmpty": "Aucun objectif d'Ã©pargne.\nCrÃ©ez-en un pour suivre vos progrÃ¨s.",
+    "savingsGoalDeleteConfirm": "Supprimer cet objectif ?",
+    "savingsGoalContribute": "Contribuer",
+    "savingsGoalContributionAmount": "Montant de la contribution",
+    "savingsGoalContributionNote": "Note (facultatif)",
+    "savingsGoalContributionDate": "Date",
+    "savingsGoalContributionHistory": "Historique des Contributions",
+    "savingsGoalSeeAll": "Voir tout",
+    "savingsGoalSurplusSuggestion": "Vous aviez {amount} d'excÃ©dent le mois dernier â€” allouer Ã  un objectif ?",
+    "@savingsGoalSurplusSuggestion": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "savingsGoalAllocate": "Allouer",
+    "savingsGoalSaved": "Objectif enregistrÃ©",
+    "savingsGoalContributionSaved": "Contribution enregistrÃ©e",
+    "settingsDashSavingsGoals": "Objectifs d'Ã‰pargne",
+    "savingsGoalActive": "Actif",
+    "savingsGoalInactive": "Inactif",
+    "savingsGoalDaysLeft": "{days} jours restants",
+    "@savingsGoalDaysLeft": {
+        "placeholders": {
+            "days": {
+                "type": "String"
+            }
+        }
+    },
+    "savingsGoalOverdue": "En retard",
+    "mealCostReconciliation": "CoÃ»ts des Repas",
+    "mealCostEstimated": "EstimÃ©",
+    "mealCostActual": "RÃ©el",
+    "mealCostWeek": "Semaine {number}",
+    "@mealCostWeek": {
+        "placeholders": {
+            "number": {
+                "type": "String"
+            }
+        }
+    },
+    "mealCostTotal": "Total du Mois",
+    "mealCostSavings": "Ã‰conomie",
+    "mealCostOverrun": "DÃ©passement",
+    "mealCostNoData": "Aucune donnÃ©e d'achats repas.",
+    "mealCostViewCosts": "CoÃ»ts",
+    "mealCostIsMealPurchase": "Achat repas",
+    "mealCostVsBudget": "vs budget",
+    "mealCostOnTrack": "Dans le budget",
+    "mealCostOver": "Au-dessus du budget",
+    "mealCostUnder": "En dessous du budget",
+    "mealVariation": "Variante",
+    "mealPairing": "Accompagnement",
+    "mealStorage": "Conservation",
+    "mealLeftover": "Restes",
+    "mealLeftoverIdea": "IdÃ©e de transformation",
+    "mealWeeklySummary": "Nutrition Hebdomadaire",
+    "mealBatchPrepGuide": "Guide de PrÃ©paration",
+    "mealBatchTotalTime": "Temps estimÃ©: {time}",
+    "@mealBatchTotalTime": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "mealBatchParallelTips": "Astuces de cuisson parallÃ¨le",
+    "mealFeedbackLike": "J'aime",
+    "mealFeedbackDislike": "Je n'aime pas",
+    "mealFeedbackSkip": "Passer",
+    "notifications": "Notifications",
+    "notificationSettings": "ParamÃ¨tres de Notifications",
+    "notificationBillReminders": "Rappels de factures",
+    "notificationBillReminderDays": "Jours avant l'Ã©chÃ©ance",
+    "notificationBudgetAlerts": "Alertes budget",
+    "notificationBudgetThreshold": "Seuil d'alerte ({percent}%)",
+    "@notificationBudgetThreshold": {
+        "placeholders": {
+            "percent": {
+                "type": "String"
+            }
+        }
+    },
+    "notificationMealPlanReminder": "Rappel plan repas",
+    "notificationMealPlanReminderDesc": "Notifie si aucun plan pour le mois en cours",
+    "notificationCustomReminders": "Rappels PersonnalisÃ©s",
+    "notificationAddCustom": "Ajouter un Rappel",
+    "notificationCustomTitle": "Titre",
+    "notificationCustomBody": "Message",
+    "notificationCustomTime": "Heure",
+    "notificationCustomRepeat": "RÃ©pÃ©ter",
+    "notificationCustomRepeatDaily": "Quotidien",
+    "notificationCustomRepeatWeekly": "Hebdomadaire",
+    "notificationCustomRepeatMonthly": "Mensuel",
+    "notificationCustomRepeatNone": "Ne pas rÃ©pÃ©ter",
+    "notificationCustomSaved": "Rappel enregistrÃ©",
+    "notificationCustomDeleteConfirm": "Supprimer ce rappel ?",
+    "notificationEmpty": "Aucun rappel personnalisÃ©.",
+    "notificationBillTitle": "Facture Ã  payer : {name}",
+    "@notificationBillTitle": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "notificationBillBody": "{amount} dÃ» dans {days} jours",
+    "@notificationBillBody": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            },
+            "days": {
+                "type": "String"
+            }
+        }
+    },
+    "notificationBudgetTitle": "Alerte budget",
+    "notificationBudgetBody": "Vous avez dÃ©pensÃ© {percent}% du budget mensuel",
+    "@notificationBudgetBody": {
+        "placeholders": {
+            "percent": {
+                "type": "String"
+            }
+        }
+    },
+    "notificationMealPlanTitle": "Plan de repas",
+    "notificationMealPlanBody": "Vous n'avez pas encore gÃ©nÃ©rÃ© le plan repas ce mois-ci",
+    "notificationPermissionRequired": "Autorisation de notifications requise",
+    "notificationSelectDays": "SÃ©lectionner les jours",
+    "settingsColorPalette": "Palette de couleurs",
+    "paletteOcean": "OcÃ©an",
+    "paletteEmerald": "Ã‰meraude",
+    "paletteViolet": "Violet",
+    "paletteTeal": "Sarcelle",
+    "paletteSunset": "Coucher de soleil",
+    "exportTooltip": "Exporter",
+    "exportTitle": "Exporter le mois",
+    "exportPdf": "Rapport PDF",
+    "exportPdfDesc": "Rapport avec budget vs rÃ©el",
+    "exportCsv": "DonnÃ©es CSV",
+    "exportCsvDesc": "DonnÃ©es brutes pour tableur",
+    "exportReportTitle": "Rapport Mensuel des DÃ©penses",
+    "exportBudgetVsActual": "Budget vs RÃ©el",
+    "exportExpenseDetail": "DÃ©tail des DÃ©penses",
+    "searchExpenses": "Rechercher",
+    "searchExpensesHint": "Rechercher par description...",
+    "searchDateRange": "PÃ©riode",
+    "searchNoResults": "Aucune dÃ©pense trouvÃ©e",
+    "searchResultCount": "{count} rÃ©sultats",
+    "@searchResultCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "expenseFixed": "Fixe",
+    "expenseVariable": "Variable",
+    "monthlyBudgetHint": "Budget pour {month}",
+    "@monthlyBudgetHint": {
+        "placeholders": {
+            "month": {
+                "type": "String"
+            }
+        }
+    },
+    "unsetBudgetsWarning": "{count} budgets variables non dÃ©finis",
+    "@unsetBudgetsWarning": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "unsetBudgetsCta": "DÃ©finir dans les paramÃ¨tres",
+    "paceProjected": "Projection : {amount}",
+    "@paceProjected": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "onbSkip": "Passer",
+    "onbNext": "Suivant",
+    "onbGetStarted": "Commencer",
+    "onbSlide0Title": "Votre budget, en un coup d'Å“il",
+    "onbSlide0Body": "Le tableau de bord affiche votre liquiditÃ© mensuelle, dÃ©penses et Indice de SÃ©rÃ©nitÃ©.",
+    "onbSlide1Title": "Suivez chaque dÃ©pense",
+    "onbSlide1Body": "Appuyez sur + pour enregistrer un achat. Assignez une catÃ©gorie et regardez les barres se mettre Ã  jour.",
+    "onbSlide2Title": "Achetez avec une liste",
+    "onbSlide2Body": "Parcourez les produits, crÃ©ez une liste, puis finalisez pour enregistrer vos dÃ©penses automatiquement.",
+    "onbSlide3Title": "Votre coach financier IA",
+    "onbSlide3Body": "Obtenez une analyse en 3 parties basÃ©e sur votre budget rÃ©el — pas des conseils gÃ©nÃ©riques.",
+    "onbSlide4Title": "Planifiez vos repas dans le budget",
+    "onbSlide4Body": "GÃ©nÃ©rez un plan mensuel adaptÃ© Ã  votre budget alimentaire et la taille du foyer.",
+    "onbTourSkip": "Passer la visite",
+    "onbTourNext": "Suivant",
+    "onbTourDone": "Compris",
+    "onbTourDash1Title": "LiquiditÃ© mensuelle",
+    "onbTourDash1Body": "Revenus moins toutes les dÃ©penses. Vert signifie solde positif.",
+    "onbTourDash2Title": "Indice de SÃ©rÃ©nitÃ©",
+    "onbTourDash2Body": "Score de santÃ© financiÃ¨re 0–100. Appuyez pour voir les facteurs.",
+    "onbTourDash3Title": "Budget vs rÃ©el",
+    "onbTourDash3Body": "DÃ©penses prÃ©vues vs rÃ©elles par catÃ©gorie.",
+    "onbTourDash4Title": "Ajouter une dÃ©pense",
+    "onbTourDash4Body": "Appuyez sur + Ã  tout moment pour enregistrer une dÃ©pense.",
+    "onbTourDash5Title": "Navigation",
+    "onbTourDash5Body": "5 sections : Budget, Ã‰picerie, Liste, Coach, Repas.",
+    "onbTourGrocery1Title": "Rechercher et filtrer",
+    "onbTourGrocery1Body": "Recherchez par nom ou filtrez par catÃ©gorie.",
+    "onbTourGrocery2Title": "Ajouter Ã  la liste",
+    "onbTourGrocery2Body": "Appuyez sur + sur un produit pour l'ajouter Ã  votre liste de courses.",
+    "onbTourGrocery3Title": "CatÃ©gories",
+    "onbTourGrocery3Body": "Faites dÃ©filer les filtres de catÃ©gorie pour affiner les produits.",
+    "onbTourShopping1Title": "Cocher les articles",
+    "onbTourShopping1Body": "Appuyez sur un article pour le marquer comme pris.",
+    "onbTourShopping2Title": "Finaliser l'achat",
+    "onbTourShopping2Body": "Enregistre la dÃ©pense et efface les articles cochÃ©s.",
+    "onbTourShopping3Title": "Historique d'achats",
+    "onbTourShopping3Body": "Consultez toutes vos sessions d'achats passÃ©es ici.",
+    "onbTourCoach1Title": "Analyser mon budget",
+    "onbTourCoach1Body": "Appuyez pour gÃ©nÃ©rer une analyse basÃ©e sur vos donnÃ©es rÃ©elles.",
+    "onbTourCoach2Title": "Historique d'analyses",
+    "onbTourCoach2Body": "Les analyses sauvegardÃ©es apparaissent ici, les plus rÃ©centes en premier.",
+    "onbTourMeals1Title": "GÃ©nÃ©rer un plan",
+    "onbTourMeals1Body": "CrÃ©e un mois complet de repas dans votre budget alimentaire.",
+    "onbTourMeals2Title": "Vue hebdomadaire",
+    "onbTourMeals2Body": "Parcourez les repas par semaine. Appuyez sur un jour pour voir la recette.",
+    "onbTourMeals3Title": "Ajouter Ã  la liste de courses",
+    "onbTourMeals3Body": "Envoyez les ingrÃ©dients de la semaine Ã  votre liste en un seul appui.",
+    "onbTourExpenseTracker1Title": "Navigation mensuelle",
+    "onbTourExpenseTracker1Body": "Changez de mois pour voir ou ajouter des dépenses pour n'importe quelle période.",
+    "onbTourExpenseTracker2Title": "Résumé du budget",
+    "onbTourExpenseTracker2Body": "Voyez votre budget vs dépenses réelles et le solde restant en un coup d'œil.",
+    "onbTourExpenseTracker3Title": "Par catégorie",
+    "onbTourExpenseTracker3Body": "Chaque catégorie affiche une barre de progression. Touchez pour développer et voir les dépenses individuelles.",
+    "onbTourExpenseTracker4Title": "Ajouter une dépense",
+    "onbTourExpenseTracker4Body": "Touchez + pour enregistrer une nouvelle dépense. Choisissez la catégorie et le montant.",
+    "onbTourSavings1Title": "Vos objectifs",
+    "onbTourSavings1Body": "Chaque carte montre la progression vers votre objectif. Touchez pour voir les détails et ajouter des contributions.",
+    "onbTourSavings2Title": "Créer un objectif",
+    "onbTourSavings2Body": "Touchez + pour définir un nouvel objectif d'épargne avec un montant cible et une date limite optionnelle.",
+    "onbTourRecurring1Title": "Dépenses récurrentes",
+    "onbTourRecurring1Body": "Factures fixes mensuelles comme le loyer, abonnements et services. Incluses automatiquement dans votre budget.",
+    "onbTourRecurring2Title": "Ajouter récurrente",
+    "onbTourRecurring2Body": "Touchez + pour enregistrer une nouvelle dépense récurrente avec montant et jour d'échéance.",
+    "onbTourAssistant1Title": "Assistant de commandes",
+    "onbTourAssistant1Body": "Votre raccourci pour les actions rapides. Touchez pour ajouter des dépenses, changer les paramètres, naviguer et plus u2014 tapez simplement ce dont vous avez besoin.",
+    "taxDeductionTitle": "DÃ©ductions Fiscales",
+    "taxDeductionSeeDetail": "Voir dÃ©tail",
+    "taxDeductionEstimated": "dÃ©duction estimÃ©e",
+    "taxDeductionMaxOf": "Max. de {amount}",
+    "@taxDeductionMaxOf": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "taxDeductionDetailTitle": "DÃ©ductions Fiscales â€” DÃ©tail",
+    "taxDeductionDeductibleTitle": "CATÃ‰GORIES DÃ‰DUCTIBLES",
+    "taxDeductionNonDeductibleTitle": "CATÃ‰GORIES NON DÃ‰DUCTIBLES",
+    "taxDeductionTotalLabel": "DÃ‰DUCTION ESTIMÃ‰E",
+    "taxDeductionSpent": "DÃ©pensÃ© : {amount}",
+    "@taxDeductionSpent": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "taxDeductionCapUsed": "{percent} de {cap} utilisÃ©",
+    "@taxDeductionCapUsed": {
+        "placeholders": {
+            "percent": {
+                "type": "String"
+            },
+            "cap": {
+                "type": "String"
+            }
+        }
+    },
+    "taxDeductionNotDeductible": "Non dÃ©ductible",
+    "taxDeductionDisclaimer": "Ces valeurs sont des estimations basÃ©es sur vos dÃ©penses enregistrÃ©es. Les dÃ©ductions rÃ©elles dÃ©pendent des factures dÃ©clarÃ©es. Consultez un professionnel fiscal pour les montants dÃ©finitifs.",
+    "settingsDashTaxDeductions": "DÃ©ductions fiscales (PT)",
+    "settingsDashUpcomingBills": "Factures Ã  venir",
+    "settingsDashBudgetStreaks": "SÃ©ries de budget",
+    "upcomingBillsTitle": "Factures Ã  Venir",
+    "upcomingBillsManage": "GÃ©rer",
+    "billDueToday": "Aujourd'hui",
+    "billDueTomorrow": "Demain",
+    "billDueInDays": "Dans {days} jours",
+    "@billDueInDays": {
+        "placeholders": {
+            "days": {
+                "type": "int"
+            }
+        }
+    },
+    "savingsProjectionReachedBy": "Atteint d'ici {date}",
+    "@savingsProjectionReachedBy": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "savingsProjectionNeedPerMonth": "Besoin de {amount}/mois pour respecter l'Ã©chÃ©ance",
+    "@savingsProjectionNeedPerMonth": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "savingsProjectionOnTrack": "En bonne voie",
+    "savingsProjectionBehind": "En retard",
+    "savingsProjectionNoData": "Ajoutez des contributions pour voir la projection",
+    "savingsProjectionAvgContribution": "Moy. {amount}/mois",
+    "@savingsProjectionAvgContribution": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "taxSimTitle": "Simulateur Fiscal",
+    "taxSimPresets": "SCÃ‰NARIOS RAPIDES",
+    "taxSimPresetRaise": "+â‚¬200 augmentation",
+    "taxSimPresetMeal": "Carte vs espÃ¨ces",
+    "taxSimPresetTitular": "Conjoint vs sÃ©parÃ©",
+    "taxSimParameters": "PARAMÃˆTRES",
+    "taxSimGross": "Salaire brut",
+    "taxSimMarital": "Ã‰tat civil",
+    "taxSimTitulares": "Titulaires",
+    "taxSimDependentes": "Personnes Ã  charge",
+    "taxSimMealType": "Type d'indemnitÃ© repas",
+    "taxSimMealAmount": "IndemnitÃ© repas/jour",
+    "taxSimComparison": "ACTUEL VS SIMULÃ‰",
+    "taxSimNetTakeHome": "Net Ã  percevoir",
+    "taxSimIRS": "Retenue d'impÃ´t",
+    "taxSimSS": "SÃ©curitÃ© sociale",
+    "taxSimDelta": "DiffÃ©rence mensuelle :",
+    "taxSimButton": "Simulateur Fiscal",
+    "streakTitle": "SÃ©ries de Budget",
+    "streakBronze": "Bronze",
+    "streakSilver": "Argent",
+    "streakGold": "Or",
+    "streakBronzeDesc": "LiquiditÃ© positive",
+    "streakSilverDesc": "Dans le budget",
+    "streakGoldDesc": "Toutes catÃ©gories",
+    "streakMonths": "{count} mois",
+    "@streakMonths": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "expenseDefaultBudget": "BUDGET DE BASE",
+    "expenseOverrideActive": "AjustÃ© pour {month}: {amount}",
+    "@expenseOverrideActive": {
+        "placeholders": {
+            "month": {
+                "type": "String"
+            },
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "expenseAdjustMonth": "Ajuster pour {month}",
+    "@expenseAdjustMonth": {
+        "placeholders": {
+            "month": {
+                "type": "String"
+            }
+        }
+    },
+    "expenseAdjustMonthHint": "Laissez vide pour utiliser le budget de base",
+    "settingsPersonalTip": "Le statut matrimonial et les personnes Ã  charge affectent votre tranche d'imposition, ce qui dÃ©termine le montant d'impÃ´t retenu sur votre salaire.",
+    "settingsSalariesTip": "Le salaire brut est utilisÃ© pour calculer le revenu net aprÃ¨s impÃ´ts et sÃ©curitÃ© sociale. Ajoutez plusieurs salaires si le mÃ©nage a plus d'un revenu.",
+    "settingsExpensesTip": "DÃ©finissez le budget mensuel pour chaque catÃ©gorie. Vous pouvez le modifier pour des mois spÃ©cifiques dans la vue dÃ©taillÃ©e.",
+    "settingsMealHouseholdTip": "Nombre de personnes qui mangent Ã  la maison. Cela adapte les recettes et les portions dans votre plan de repas.",
+    "settingsHouseholdTip": "Invitez des membres de la famille Ã  partager les donnÃ©es budgÃ©taires entre appareils. Tous les membres voient les mÃªmes dÃ©penses et budgets.",
+    "subscriptionTitle": "Abonnement",
+    "subscriptionFree": "Gratuit",
+    "subscriptionPremium": "Premium",
+    "subscriptionFamily": "Famille",
+    "subscriptionTrialActive": "Essai actif",
+    "subscriptionTrialDaysLeft": "{count} jours restants",
+    "@subscriptionTrialDaysLeft": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "subscriptionTrialExpired": "Essai expirÃ©",
+    "subscriptionUpgrade": "Mettre Ã  jour",
+    "subscriptionSeePlans": "Voir les Plans",
+    "subscriptionCurrentPlan": "Plan Actuel",
+    "subscriptionManage": "GÃ©rer l'Abonnement",
+    "subscriptionFeatureExplored": "{count}/{total} fonctionnalitÃ©s explorÃ©es",
+    "@subscriptionFeatureExplored": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "subscriptionTrialBannerTitle": "Essai Premium Actif",
+    "subscriptionTrialEndingSoon": "{count} jours restants dans votre essai !",
+    "@subscriptionTrialEndingSoon": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "subscriptionTrialLastDay": "Dernier jour de votre essai gratuit !",
+    "subscriptionUpgradeNow": "Mettre Ã  jour Maintenant",
+    "subscriptionKeepData": "Conserver Vos DonnÃ©es",
+    "subscriptionCancelAnytime": "Annulez Ã  tout moment",
+    "subscriptionNoHiddenFees": "Sans frais cachÃ©s",
+    "subscriptionMostPopular": "Le Plus Populaire",
+    "subscriptionYearlySave": "Ã©conomisez {percent}%",
+    "@subscriptionYearlySave": {
+        "placeholders": {
+            "percent": {
+                "type": "int"
+            }
+        }
+    },
+    "subscriptionMonthly": "Mensuel",
+    "subscriptionYearly": "Annuel",
+    "subscriptionPerMonth": "/mois",
+    "subscriptionPerYear": "/an",
+    "subscriptionBilledYearly": "facturÃ© annuellement",
+    "subscriptionStartPremium": "Commencer Premium",
+    "subscriptionStartFamily": "Commencer Famille",
+    "subscriptionContinueFree": "Continuer Gratuit",
+    "subscriptionTrialEnded": "Votre pÃ©riode d'essai est terminÃ©e",
+    "subscriptionChoosePlan": "Choisissez un plan pour conserver toutes vos donnÃ©es et fonctionnalitÃ©s",
+    "subscriptionUnlockPower": "DÃ©bloquez toute la puissance de votre budget",
+    "subscriptionRequiresPaid": "{feature} nÃ©cessite un abonnement payant",
+    "@subscriptionRequiresPaid": {
+        "placeholders": {
+            "feature": {
+                "type": "String"
+            }
+        }
+    },
+    "subscriptionTryFeature": "Essayez {feature}",
+    "@subscriptionTryFeature": {
+        "placeholders": {
+            "feature": {
+                "type": "String"
+            }
+        }
+    },
+    "subscriptionExplore": "Explorer {feature}",
+    "@subscriptionExplore": {
+        "placeholders": {
+            "feature": {
+                "type": "String"
+            }
+        }
+    },
+    "subtitleBatchCooking": "Suggère des recettes préparables à l'avance pour plusieurs repas",
+    "subtitleReuseLeftovers": "Planifie des repas qui réutilisent les ingrédients des jours précédents",
+    "subtitleMinimizeWaste": "Priorise l'utilisation de tous les ingrédients achetés avant leur expiration",
+    "subtitleMealTypeInclude": "Inclure ce repas dans votre plan hebdomadaire",
+    "subtitleShowHeroCard": "Votre résumé de liquidité nette en haut",
+    "subtitleShowStressIndex": "Score (0-100) mesurant la pression des dépenses vs les revenus",
+    "subtitleShowMonthReview": "Résumé comparatif de ce mois avec les précédents",
+    "subtitleShowUpcomingBills": "Dépenses récurrentes dans les 30 prochains jours",
+    "subtitleShowSummaryCards": "Revenus, déductions, dépenses et taux d'épargne",
+    "subtitleShowBudgetVsActual": "Comparaison côte à côte par catégorie de dépense",
+    "subtitleShowExpensesBreakdown": "Graphique circulaire des dépenses par catégorie",
+    "subtitleShowSavingsGoals": "Progression vers vos objectifs d'épargne",
+    "subtitleShowTaxDeductions": "Déductions fiscales éligibles estimées cette année",
+    "subtitleShowBudgetStreaks": "Combien de mois consécutifs vous êtes resté dans le budget",
+    "subtitleShowPurchaseHistory": "Achats récents de la liste de courses et coûts",
+    "subtitleShowCharts": "Graphiques de tendance du budget, des dépenses et des revenus",
+    "subtitleChartExpensesPie": "Répartition des dépenses par catégorie",
+    "subtitleChartIncomeVsExpenses": "Revenus mensuels comparés aux dépenses totales",
+    "subtitleChartDeductions": "Ventilation des dépenses déductibles d'impôts",
+    "subtitleChartNetIncome": "Tendance du revenu net au fil du temps",
+    "subtitleChartSavingsRate": "Pourcentage de revenus épargnés chaque mois",
+    "helperCountry": "Détermine le système fiscal, la devise et les taux de sécurité sociale",
+    "helperLanguage": "Remplacer la langue du système. \"Système\" suit le réglage de votre appareil",
+    "helperMaritalStatus": "Affecte le calcul de la tranche d'imposition",
+    "helperMealObjective": "Définit le régime alimentaire : omnivore, végétarien, pescatarien, etc.",
+    "helperSodiumPreference": "Filtre les recettes par niveau de teneur en sodium",
+    "subtitleDietaryRestriction": "Exclut les recettes contenant {ingredient}",
+    "@subtitleDietaryRestriction": {
+        "placeholders": {
+            "ingredient": {
+                "type": "String"
+            }
+        }
+    },
+    "subtitleExcludedProtein": "Supprimer {protein} de toutes les suggestions de repas",
+    "@subtitleExcludedProtein": {
+        "placeholders": {
+            "protein": {
+                "type": "String"
+            }
+        }
+    },
+    "subtitleKitchenEquipment": "Active les recettes nécessitant {equipment}",
+    "@subtitleKitchenEquipment": {
+        "placeholders": {
+            "equipment": {
+                "type": "String"
+            }
+        }
+    },
+    "helperVeggieDays": "Nombre de jours entièrement végétariens par semaine",
+    "helperFishDays": "Recommandé : 2-3 fois par semaine",
+    "helperLegumeDays": "Recommandé : 2-3 fois par semaine",
+    "helperRedMeatDays": "Recommandé : maximum 2 fois par semaine",
+    "helperMaxPrepTime": "Temps de cuisson maximum pour les repas en semaine (minutes)",
+    "helperMaxComplexity": "Niveau de difficulté des recettes pour les jours de semaine",
+    "helperWeekendPrepTime": "Temps de cuisson maximum pour les repas du week-end (minutes)",
+    "helperWeekendComplexity": "Niveau de difficulté des recettes pour le week-end",
+    "helperMaxBatchDays": "Combien de jours un repas cuisiné en lot peut être réutilisé",
+    "helperNewIngredients": "Limite le nombre de nouveaux ingrédients par semaine",
+    "helperGrossSalary": "Salaire total avant impôts et déductions",
+    "helperExemptIncome": "Revenus supplémentaires non soumis à l'impôt (ex. : subventions)",
+    "helperMealAllowance": "Indemnité repas journalière de votre employeur",
+    "helperWorkingDays": "Typique : 22. Affecte le calcul de l'indemnité repas",
+    "helperSalaryLabel": "Un nom pour identifier cette source de revenus",
+    "helperExpenseAmount": "Montant mensuel budgété pour cette catégorie",
+    "helperCalorieTarget": "Recommandé : 2000-2500 kcal pour les adultes",
+    "helperProteinTarget": "Recommandé : 50-70g pour les adultes",
+    "helperFiberTarget": "Recommandé : 25-30g pour les adultes",
+    "infoStressIndex": "Compare les dépenses réelles à votre budget. Plages de scores :\n\n0-30 : Confortable - dépenses bien dans le budget\n30-60 : Modéré - approche des limites du budget\n60-100 : Critique - les dépenses dépassent significativement le budget",
+    "infoBudgetStreak": "Mois consécutifs où vos dépenses totales sont restées dans le budget total.",
+    "infoUpcomingBills": "Affiche les dépenses récurrentes dans les 30 prochains jours basées sur vos dépenses mensuelles.",
+    "infoSalaryBreakdown": "Montre comment votre salaire brut est réparti en impôt sur le revenu, cotisations de sécurité sociale, revenu net et indemnité repas.",
+    "infoBudgetVsActual": "Compare ce que vous avez budgété par catégorie avec ce que vous avez réellement dépensé. Vert signifie sous le budget, rouge signifie au-dessus.",
+    "infoSavingsGoals": "Progression vers chaque objectif d'épargne basée sur les contributions effectuées.",
+    "infoTaxDeductions": "Dépenses déductibles estimées (santé, éducation, logement). Ce sont uniquement des estimations - consultez un professionnel fiscal pour des valeurs précises.",
+    "infoPurchaseHistory": "Total dépensé en achats de la liste de courses ce mois-ci.",
+    "infoExpensesBreakdown": "Ventilation visuelle de vos dépenses par catégorie pour le mois en cours.",
+    "infoCharts": "Données de tendance au fil du temps. Appuyez sur un graphique pour une vue détaillée.",
+    "infoExpenseTrackerSummary": "Budgété = vos dépenses mensuelles prévues. Réel = ce que vous avez dépensé jusqu'ici. Restant = budget moins réel.",
+    "infoExpenseTrackerProgress": "Vert : en dessous de 75% du budget. Jaune : 75-100%. Rouge : au-dessus du budget.",
+    "infoExpenseTrackerFilter": "Filtrez les dépenses par texte, catégorie ou plage de dates.",
+    "infoSavingsProjection": "Basé sur vos contributions mensuelles moyennes. \"En bonne voie\" signifie que votre rythme actuel atteint l'objectif à temps. \"En retard\" signifie que vous devez augmenter vos contributions.",
+    "infoSavingsRequired": "Le montant que vous devez épargner chaque mois à partir de maintenant pour atteindre votre objectif dans les délais.",
+    "infoCoachModes": "Eco : gratuit, sans mémoire de conversation.\nPlus : 1 crédit par message, retient les 5 derniers messages.\nPro : 2 crédits par message, mémoire de conversation complète.",
+    "infoCoachCredits": "Les crédits sont utilisés pour les modes Plus et Pro. Vous recevez des crédits de démarrage à l'inscription. Le mode Eco est toujours gratuit.",
+    "helperWizardGrossSalary": "Votre salaire mensuel total avant impôts",
+    "helperWizardMealAllowance": "Indemnité repas journalière de l'employeur (le cas échéant)",
+    "helperWizardRent": "Paiement mensuel de logement",
+    "helperWizardGroceries": "Budget mensuel alimentation et produits ménagers",
+    "helperWizardTransport": "Coûts mensuels de transport (carburant, transports en commun, etc.)",
+    "helperWizardUtilities": "Électricité, eau et gaz mensuels",
+    "helperWizardTelecom": "Internet, téléphone et TV mensuels",
+    "savingsGoalHowItWorksTitle": "Comment ça marche ?",
+    "@savingsGoalHowItWorksTitle": {
+        "description": "How it works section title"
+    },
+    "savingsGoalHowItWorksStep1": "Créez un objectif avec un nom et le montant à atteindre (ex : \"Vacances — 2 000 €\").",
+    "@savingsGoalHowItWorksStep1": {
+        "description": "How it works step 1"
+    },
+    "savingsGoalHowItWorksStep2": "Définissez éventuellement une date limite comme référence.",
+    "@savingsGoalHowItWorksStep2": {
+        "description": "How it works step 2"
+    },
+    "savingsGoalHowItWorksStep3": "Chaque fois que vous économisez, touchez l'objectif et enregistrez une contribution avec le montant et la date.",
+    "@savingsGoalHowItWorksStep3": {
+        "description": "How it works step 3"
+    },
+    "savingsGoalHowItWorksStep4": "Suivez votre progression : la barre montre combien vous avez épargné et la projection estime quand vous atteindrez votre objectif.",
+    "@savingsGoalHowItWorksStep4": {
+        "description": "How it works step 4"
+    },
+    "savingsGoalDashboardHint": "Touchez un objectif pour voir les détails et enregistrer des contributions.",
+    "@savingsGoalDashboardHint": {
+        "description": "Dashboard hint text"
+    },
+    "rateLimitMessage": "Veuillez patienter un moment avant de réessayer",
+    "planningExportTitle": "Exporter",
+    "planningImportTitle": "Importer",
+    "planningExportShoppingList": "Exporter la liste de courses",
+    "planningImportShoppingList": "Importer la liste de courses",
+    "planningExportMealPlan": "Exporter le plan de repas",
+    "planningImportMealPlan": "Importer le plan de repas",
+    "planningExportPantry": "Exporter le garde-manger",
+    "planningImportPantry": "Importer le garde-manger",
+    "planningExportFreeformMeals": "Exporter les repas libres",
+    "planningImportFreeformMeals": "Importer les repas libres",
+    "planningFormatCsv": "CSV",
+    "planningFormatJson": "JSON",
+    "planningImportSuccess": "Importé avec succès",
+    "planningImportError": "Échec de l'importation : {error}",
+    "@planningImportError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "planningExportSuccess": "Exporté avec succès",
+    "planningDataPortability": "Portabilité des données",
+    "planningDataPortabilityDesc": "Importer et exporter des artefacts de planification",
+    "mealBudgetInsightTitle": "Aperçu du Budget",
+    "mealBudgetStatusSafe": "En bonne voie",
+    "mealBudgetStatusWatch": "Attention",
+    "mealBudgetStatusOver": "Hors budget",
+    "mealBudgetWeeklyCost": "Coût hebdomadaire estimé",
+    "mealBudgetProjectedMonthly": "Projection mensuelle",
+    "mealBudgetMonthlyBudget": "Budget alimentaire mensuel",
+    "mealBudgetRemaining": "Budget restant",
+    "mealBudgetTopExpensive": "Repas les plus chers",
+    "mealBudgetSuggestedSwaps": "Échanges moins chers suggérés",
+    "mealBudgetViewDetails": "Voir les détails",
+    "mealBudgetApplySwap": "Appliquer",
+    "mealBudgetSwapSavings": "Économisez {amount}",
+    "@mealBudgetSwapSavings": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "mealBudgetDailyBreakdown": "Répartition quotidienne des coûts",
+    "mealBudgetShoppingImpact": "Impact sur les courses",
+    "mealBudgetUniqueIngredients": "Ingrédients uniques",
+    "mealBudgetEstShoppingCost": "Coût estimé des courses",
+    "productUpdatesTitle": "Mises a jour",
+    "whatsNewTab": "Nouveautes",
+    "roadmapTab": "Feuille de Route",
+    "noUpdatesYet": "Pas encore de nouveautes",
+    "noRoadmapItems": "Pas encore d'elements dans la feuille de route",
+    "roadmapNow": "Maintenant",
+    "roadmapNext": "Ensuite",
+    "roadmapLater": "Plus tard",
+    "productUpdatesSubtitle": "Changelog et fonctionnalites a venir",
+    "whatsNewDialogTitle": "Nouveautes",
+    "whatsNewDialogDismiss": "Compris",
+    "confidenceCenterTitle": "Centre de Confiance",
+    "confidenceSyncHealth": "État de Synchronisation",
+    "confidenceDataAlerts": "Alertes de Qualité des Données",
+    "confidenceRecommendedActions": "Actions Recommandées",
+    "confidenceCenterSubtitle": "Fraîcheur des données et santé du système",
+    "confidenceCenterTile": "Centre de Confiance",
+    "pantryPickerTitle": "Sélecteur de Garde-Manger",
+    "pantrySearchHint": "Rechercher des ingrédients...",
+    "pantryTabAlwaysHave": "Toujours en Stock",
+    "pantryTabThisWeek": "Cette Semaine",
+    "pantrySummaryLabel": "{count, plural, =1{1 article en garde-manger} other{{count} articles en garde-manger}}",
+    "@pantrySummaryLabel": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pantryEdit": "Modifier",
+    "pantryUseWhatWeHave": "Utiliser Ce Qu'on A",
+    "pantryMarkAtHome": "Déjà à la maison",
+    "pantryHaveIt": "J'en ai",
+    "pantryCoverageLabel": "{pct}% couvert par le garde-manger",
+    "@pantryCoverageLabel": {
+        "placeholders": {
+            "pct": {
+                "type": "int"
+            }
+        }
+    },
+    "pantryStaples": "ESSENTIELS (TOUJOURS EN STOCK)",
+    "pantryWeekly": "GARDE-MANGER DE LA SEMAINE",
+    "pantryAddedToWeekly": "{name} ajouté au garde-manger hebdomadaire",
+    "@pantryAddedToWeekly": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "pantryRemovedFromList": "{name} retiré de la liste (déjà à la maison)",
+    "@pantryRemovedFromList": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "pantryMarkedAtHome": "{name} marqué comme déjà à la maison",
+    "@pantryMarkedAtHome": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "householdActivityTitle": "Activité du Foyer",
+    "householdActivityFilterAll": "Tout",
+    "householdActivityFilterShopping": "Courses",
+    "householdActivityFilterMeals": "Repas",
+    "householdActivityFilterExpenses": "Dépenses",
+    "householdActivityFilterPantry": "Garde-manger",
+    "householdActivityFilterSettings": "Paramètres",
+    "householdActivityEmpty": "Aucune activité",
+    "householdActivityEmptyMessage": "Les actions partagées de votre foyer apparaîtront ici.",
+    "householdActivityToday": "AUJOURD'HUI",
+    "householdActivityYesterday": "HIER",
+    "householdActivityThisWeek": "CETTE SEMAINE",
+    "householdActivityOlder": "PLUS ANCIEN",
+    "householdActivityJustNow": "À l'instant",
+    "householdActivityMinutesAgo": "il y a {count} min",
+    "@householdActivityMinutesAgo": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "householdActivityHoursAgo": "il y a {count}h",
+    "@householdActivityHoursAgo": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "householdActivityDaysAgo": "il y a {count}j",
+    "@householdActivityDaysAgo": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "householdActivityAddedBy": "Ajouté par {name}",
+    "@householdActivityAddedBy": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "householdActivityRemovedBy": "Supprimé par {name}",
+    "@householdActivityRemovedBy": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "householdActivitySwappedBy": "Échangé par {name}",
+    "@householdActivitySwappedBy": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "householdActivityUpdatedBy": "Mis à jour par {name}",
+    "@householdActivityUpdatedBy": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "householdActivityCheckedBy": "Coché par {name}",
+    "@householdActivityCheckedBy": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "barcodeScanTitle": "Scanner Code-barres",
+    "barcodeScanHint": "Pointez la camera vers un code-barres",
+    "barcodeScanTooltip": "Scanner code-barres",
+    "barcodeProductFound": "Produit Trouve",
+    "barcodeProductNotFound": "Produit Non Trouve",
+    "barcodeLabel": "Code-barres",
+    "barcodeAddToList": "Ajouter a la Liste",
+    "barcodeManualEntry": "Aucun produit trouve. Saisissez les details manuellement :",
+    "barcodeProductName": "Nom du produit",
+    "barcodePrice": "Prix",
+    "barcodeAddedToList": "{name} ajoute a la liste de courses",
+    "@barcodeAddedToList": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
     }
-  },
-  "filterBy": "Filtrer par {label}",
-  "@filterBy": {
-    "placeholders": {
-      "label": {
-        "type": "String"
-      }
-    }
-  },
-  "addToList": "Ajouter {name} Ã  la liste",
-  "@addToList": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "enumMaritalSolteiro": "CÃ©libataire",
-  "enumMaritalCasado": "MariÃ©(e)",
-  "enumMaritalUniaoFacto": "Union libre",
-  "enumMaritalDivorciado": "DivorcÃ©(e)",
-  "enumMaritalViuvo": "Veuf/Veuve",
-  "enumSubsidyNone": "Sans primes",
-  "enumSubsidyFull": "Avec primes",
-  "enumSubsidyHalf": "50% primes",
-  "enumSubsidyNoneShort": "Sans",
-  "enumSubsidyFullShort": "Avec",
-  "enumSubsidyHalfShort": "50%",
-  "enumMealAllowanceNone": "Sans",
-  "enumMealAllowanceCard": "Carte",
-  "enumMealAllowanceCash": "EspÃ¨ces",
-  "enumCatTelecomunicacoes": "TÃ©lÃ©com",
-  "enumCatEnergia": "Ã‰nergie",
-  "enumCatAgua": "Eau",
-  "enumCatAlimentacao": "Alimentation",
-  "enumCatEducacao": "Ã‰ducation",
-  "enumCatHabitacao": "Logement",
-  "enumCatTransportes": "Transport",
-  "enumCatSaude": "SantÃ©",
-  "enumCatLazer": "Loisirs",
-  "enumCatOutros": "Autres",
-  "enumChartExpensesPie": "DÃ©penses par catÃ©gorie",
-  "enumChartIncomeVsExpenses": "Revenus vs DÃ©penses",
-  "enumChartNetIncome": "Revenu Net",
-  "enumChartDeductions": "PrÃ©lÃ¨vements (IR + Cotis.)",
-  "enumChartSavingsRate": "Taux d'Ã©pargne",
-  "enumMealBreakfast": "Petit-dÃ©jeuner",
-  "enumMealLunch": "DÃ©jeuner",
-  "enumMealSnack": "GoÃ»ter",
-  "enumMealDinner": "DÃ®ner",
-  "enumObjMinimizeCost": "Minimiser les coÃ»ts",
-  "enumObjBalancedHealth": "Ã‰quilibre coÃ»t/santÃ©",
-  "enumObjHighProtein": "Riche en protÃ©ines",
-  "enumObjLowCarb": "Faible en glucides",
-  "enumObjVegetarian": "VÃ©gÃ©tarien",
-  "enumEquipOven": "Four",
-  "enumEquipAirFryer": "Friteuse Ã  air",
-  "enumEquipFoodProcessor": "Robot culinaire",
-  "enumEquipPressureCooker": "Autocuiseur",
-  "enumEquipMicrowave": "Micro-ondes",
-  "enumEquipBimby": "Bimby / Thermomix",
-  "enumSodiumNoRestriction": "Sans restriction",
-  "enumSodiumReduced": "Sodium rÃ©duit",
-  "enumSodiumLow": "Faible en sodium",
-  "enumAge0to3": "0â€“3 ans",
-  "enumAge4to10": "4â€“10 ans",
-  "enumAgeTeen": "Adolescent",
-  "enumAgeAdult": "Adulte",
-  "enumAgeSenior": "Senior (65+)",
-  "enumActivitySedentary": "SÃ©dentaire",
-  "enumActivityModerate": "ModÃ©rÃ©",
-  "enumActivityActive": "Actif",
-  "enumActivityVeryActive": "TrÃ¨s actif",
-  "enumMedDiabetes": "DiabÃ¨te",
-  "enumMedHypertension": "Hypertension",
-  "enumMedHighCholesterol": "CholestÃ©rol Ã©levÃ©",
-  "enumMedGout": "Goutte",
-  "enumMedIbs": "Syndrome du cÃ´lon irritable",
-  "stressExcellent": "Excellent",
-  "stressGood": "Bon",
-  "stressWarning": "Attention",
-  "stressCritical": "Critique",
-  "stressFactorSavings": "Taux d'Ã©pargne",
-  "stressFactorSafety": "Marge de sÃ©curitÃ©",
-  "stressFactorFood": "Budget alimentation",
-  "stressFactorStability": "StabilitÃ© des dÃ©penses",
-  "stressStable": "Stable",
-  "stressHigh": "Ã‰levÃ©e",
-  "stressUsed": "{percent}% utilisÃ©",
-  "@stressUsed": {
-    "placeholders": {
-      "percent": {
-        "type": "String"
-      }
-    }
-  },
-  "stressNA": "N/D",
-  "monthReviewFoodExceeded": "L'alimentation a dÃ©passÃ© le budget de {percent}% â€” envisagez de revoir les portions ou la frÃ©quence des courses.",
-  "@monthReviewFoodExceeded": {
-    "placeholders": {
-      "percent": {
-        "type": "String"
-      }
-    }
-  },
-  "monthReviewExpensesExceeded": "Les dÃ©penses rÃ©elles ont dÃ©passÃ© le prÃ©vu de {amount}â‚¬ â€” ajuster les valeurs dans les paramÃ¨tres ?",
-  "@monthReviewExpensesExceeded": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "monthReviewSavedMore": "Ã‰conomisÃ© {amount}â‚¬ de plus que prÃ©vu â€” vous pouvez renforcer le fonds d'urgence.",
-  "@monthReviewSavedMore": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "monthReviewOnTrack": "DÃ©penses dans les prÃ©visions. Bon contrÃ´le budgÃ©taire.",
-  "dashboardTitle": "Budget Mensuel",
-  "dashboardStressIndex": "Indice de SÃ©rÃ©nitÃ©",
-  "dashboardTension": "Tension",
-  "dashboardLiquidity": "LiquiditÃ©",
-  "dashboardFinalPosition": "Position Finale",
-  "dashboardMonth": "Mois",
-  "dashboardGross": "Brut",
-  "dashboardNet": "Net",
-  "dashboardExpenses": "DÃ©penses",
-  "dashboardSavingsRate": "Taux Ã‰pargne",
-  "dashboardViewTrends": "Voir Ã©volution",
-  "dashboardViewProjection": "Voir projection",
-  "dashboardFinancialSummary": "RÃ‰SUMÃ‰ FINANCIER",
-  "dashboardOpenSettings": "Ouvrir les paramÃ¨tres",
-  "dashboardMonthlyLiquidity": "LIQUIDITÃ‰ MENSUELLE",
-  "dashboardPositiveBalance": "Solde positif",
-  "dashboardNegativeBalance": "Solde nÃ©gatif",
-  "dashboardHeroLabel": "LiquiditÃ© mensuelle : {amount}, {status}",
-  "@dashboardHeroLabel": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      },
-      "status": {
-        "type": "String"
-      }
-    }
-  },
-  "dashboardConfigureData": "Configurez vos donnÃ©es pour voir le rÃ©sumÃ©.",
-  "dashboardOpenSettingsButton": "Ouvrir les ParamÃ¨tres",
-  "dashboardGrossIncome": "Revenu Brut",
-  "dashboardNetIncome": "Revenu Net",
-  "dashboardInclMealAllowance": "Incl. indemn. repas : {amount}",
-  "@dashboardInclMealAllowance": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "dashboardDeductions": "PrÃ©lÃ¨vements",
-  "dashboardIrsSs": "IR : {irs} | Cotis. : {ss}",
-  "@dashboardIrsSs": {
-    "placeholders": {
-      "irs": {
-        "type": "String"
-      },
-      "ss": {
-        "type": "String"
-      }
-    }
-  },
-  "dashboardExpensesAmount": "DÃ©penses : {amount}",
-  "@dashboardExpensesAmount": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "dashboardSalaryDetail": "DÃ‰TAIL DES SALAIRES",
-  "dashboardSalaryN": "Salaire {n}",
-  "@dashboardSalaryN": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "dashboardFood": "ALIMENTATION",
-  "dashboardSimulate": "Simuler",
-  "dashboardBudgeted": "BudgÃ©tÃ©",
-  "dashboardSpent": "DÃ©pensÃ©",
-  "dashboardRemaining": "Restant",
-  "dashboardFinalizePurchaseHint": "Finalisez un achat dans la Liste pour enregistrer les dÃ©penses.",
-  "dashboardPurchaseHistory": "HISTORIQUE DES ACHATS",
-  "dashboardViewAll": "Tout voir",
-  "dashboardAllPurchases": "Tous les Achats",
-  "dashboardPurchaseLabel": "Achat du {date}, {amount}",
-  "@dashboardPurchaseLabel": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      },
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "dashboardProductCount": "{count, plural, =1{1 produit} other{{count} produits}}",
-  "@dashboardProductCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "dashboardMonthlyExpenses": "DÃ‰PENSES MENSUELLES",
-  "dashboardTotal": "Total",
-  "dashboardGrossWithSubsidy": "Brut av/ primes",
-  "dashboardIrsRate": "IR ({rate})",
-  "@dashboardIrsRate": {
-    "placeholders": {
-      "rate": {
-        "type": "String"
-      }
-    }
-  },
-  "dashboardSsRate": "Cotis. Soc. (11%)",
-  "dashboardMealAllowance": "Indemn. Repas",
-  "dashboardExemptIncome": "Rev. ExonÃ©rÃ©",
-  "dashboardDetails": "DÃ©tails",
-  "dashboardVsLastMonth": "{delta} vs mois dernier",
-  "@dashboardVsLastMonth": {
-    "placeholders": {
-      "delta": {
-        "type": "String"
-      }
-    }
-  },
-  "dashboardPaceWarning": "DÃ©penses plus rapides que prÃ©vu",
-  "dashboardPaceCritical": "Risque de dÃ©passement du budget alimentaire",
-  "dashboardPace": "Rythme",
-  "dashboardProjection": "Projection",
-  "dashboardPaceValue": "{actual}€/jour vs {expected}€/jour",
-  "@dashboardPaceValue": {
-    "placeholders": {
-      "actual": {
-        "type": "String"
-      },
-      "expected": {
-        "type": "String"
-      }
-    }
-  },
-  "dashboardSummaryLabel": "â€” RÃ‰SUMÃ‰",
-  "dashboardViewMonthSummary": "Voir le rÃ©sumÃ© du mois",
-  "coachTitle": "Coach Financier",
-  "coachSubtitle": "IA Â· GPT-4o mini",
-  "coachApiKeyRequired": "Ajoutez votre clÃ© API OpenAI dans les ParamÃ¨tres pour utiliser cette fonctionnalitÃ©.",
-  "coachAnalysisTitle": "Analyse financiÃ¨re en 3 parties",
-  "coachAnalysisDescription": "Positionnement gÃ©nÃ©ral Â· Facteurs critiques de l'Indice de SÃ©rÃ©nitÃ© Â· OpportunitÃ© immÃ©diate. BasÃ© sur vos donnÃ©es rÃ©elles de budget, dÃ©penses et historique d'achats.",
-  "coachConfigureApiKey": "Configurer la clÃ© API dans les ParamÃ¨tres",
-  "coachApiKeyConfigured": "ClÃ© API configurÃ©e",
-  "coachAnalyzeButton": "Analyser mon budget",
-  "coachAnalyzing": "Analyse en cours...",
-  "coachCustomAnalysis": "Analyse personnalisÃ©e",
-  "coachNewAnalysis": "GÃ©nÃ©rer nouvelle analyse",
-  "coachHistory": "HISTORIQUE",
-  "coachClearAll": "Tout effacer",
-  "coachClearTitle": "Effacer l'historique",
-  "coachClearContent": "ÃŠtes-vous sÃ»r de vouloir supprimer toutes les analyses enregistrÃ©es ?",
-  "coachDeleteLabel": "Supprimer l'analyse",
-  "coachDeleteTooltip": "Supprimer",
-  "coachEmptyTitle": "Votre coach financier",
-  "coachEmptyBody": "Posez toute question sur votre budget, depenses ou epargne. J'utiliserai vos donnees reelles pour des conseils personnalises.",
-  "coachQuickPrompt1": "Ou puis-je reduire mes depenses ce mois-ci ?",
-  "coachQuickPrompt2": "Comment ameliorer mon epargne ?",
-  "coachQuickPrompt3": "Aidez-moi a creer un plan sur 30 jours.",
-  "coachComposerHint": "Demandez a votre coach...",
-  "coachYou": "Vous",
-  "coachAssistant": "Coach",
-  "coachCreditsCount": "{count} credits",
-  "@coachCreditsCount": {
-    "description": "Credits pill label",
-    "placeholders": { "count": { "type": "int" } }
-  },
-  "coachMemory": "Memoire",
-  "coachCostFree": "Mode Eco \u2014 sans cout de credits.",
-  "coachCostCredits": "Ce message coute {cost} credits.",
-  "@coachCostCredits": {
-    "description": "Cost info per message",
-    "placeholders": { "cost": { "type": "int" } }
-  },
-  "coachFree": "Gratuit",
-  "coachPerMsg": "{cost}/msg",
-  "@coachPerMsg": {
-    "description": "Cost per message on mode chip",
-    "placeholders": { "cost": { "type": "int" } }
-  },
-  "coachEcoFallbackTitle": "Mode Eco actif (sans credits)",
-  "coachEcoFallbackBody": "Vous pouvez continuer a discuter avec une memoire reduite.",
-  "coachRestoreMemory": "Restaurer la memoire",
-
-  "cmdAssistantTitle": "Assistant",
-  "cmdAssistantHint": "De quoi avez-vous besoin ?",
-  "cmdAssistantTooltip": "Besoin d'aide ? Appuyez ici",
-  "cmdSuggestionAddExpense": "Ajouter une depense",
-  "cmdSuggestionOpenList": "Ouvrir la liste de courses",
-  "cmdSuggestionChangeTheme": "Changer le theme",
-  "cmdSuggestionOpenSettings": "Aller aux parametres",
-  "cmdTemplateAddExpense": "Ajoute [montant] euros en [categorie]",
-  "cmdTemplateChangeTheme": "Change le theme en [clair/sombre]",
-  "cmdExecutionFailed": "J'ai compris la demande, mais je n'ai pas pu l'executer. Reessayez.",
-  "cmdNotUnderstood": "Je n'ai pas compris. Pouvez-vous reformuler ?",
-  "cmdUndo": "Annuler",
-  "expenseDeleted": "Dépense supprimée",
-  "cmdCapabilitiesCta": "Que puis-je faire ?",
-  "cmdCapabilitiesTitle": "Actions disponibles",
-  "cmdCapabilitiesSubtitle": "Voici les actions que l'assistant prend en charge pour le moment.",
-  "cmdCapabilitiesFooter": "Nous en ajoutons encore. Si ce n'est pas liste ici, cela peut ne pas encore fonctionner.",
-  "cmdCapabilityAddExpense": "Ajouter une depense",
-  "cmdCapabilityAddExpenseExample": "Ajoute [montant] euros en [categorie]",
-  "cmdCapabilityAddShoppingItem": "Ajouter a la liste",
-  "cmdCapabilityAddShoppingItemExample": "Ajoute [article] a la liste de courses",
-  "cmdCapabilityRemoveShoppingItem": "Retirer de la liste",
-  "cmdCapabilityRemoveShoppingItemExample": "Retire [article] de la liste de courses",
-  "cmdCapabilityToggleShoppingItemChecked": "Cocher ou decocher un article",
-  "cmdCapabilityToggleShoppingItemCheckedExample": "Coche [article] dans la liste de courses",
-  "cmdCapabilityAddSavingsGoal": "Creer un objectif d'epargne",
-  "cmdCapabilityAddSavingsGoalExample": "Cree objectif d'epargne [nom] de [montant]",
-  "cmdCapabilityAddSavingsContribution": "Ajouter a l'objectif d'epargne",
-  "cmdCapabilityAddSavingsContributionExample": "Ajoute [montant] a l'objectif [nom]",
-  "cmdCapabilityAddRecurringExpense": "Ajouter une depense recurrente",
-  "cmdCapabilityAddRecurringExpenseExample": "Ajoute depense recurrente [montant] en [categorie] jour [jour]",
-  "cmdCapabilityDeleteExpense": "Supprimer une depense",
-  "cmdCapabilityDeleteExpenseExample": "Supprime la depense [description]",
-  "cmdCapabilityChangeTheme": "Changer le theme",
-  "cmdCapabilityChangeThemeExample": "Change le theme en [clair/sombre]",
-  "cmdCapabilityChangePalette": "Changer la palette",
-  "cmdCapabilityChangePaletteExample": "Couleur [ocean/emerald/violet/teal/sunset]",
-  "cmdCapabilityChangeLanguage": "Changer la langue",
-  "cmdCapabilityChangeLanguageExample": "Langue [anglais/portugais/espagnol/francais]",
-  "cmdCapabilityNavigate": "Ouvrir un ecran",
-  "cmdCapabilityNavigateExample": "Ouvre la liste de courses",
-  "cmdCapabilityClearChecked": "Vider les coches",
-  "cmdCapabilityClearCheckedExample": "Effacer les elements coches",
-
-  "groceryTitle": "Courses",
-  "grocerySearchHint": "Rechercher un produit...",
-  "groceryLoadingLabel": "Chargement des produits",
-  "groceryLoadingMessage": "Chargement des produits...",
-  "groceryAll": "Tous",
-  "groceryProductCount": "{count} produits",
-  "@groceryProductCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "groceryAddedToList": "{name} ajoutÃ© Ã  la liste",
-  "@groceryAddedToList": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "groceryAvgPrice": "{unit} Â· prix moyen",
-  "@groceryAvgPrice": {
-    "placeholders": {
-      "unit": {
-        "type": "String"
-      }
-    }
-  },
-  "shoppingTitle": "Liste de Courses",
-  "shoppingEmpty": "Liste vide",
-  "shoppingEmptyMessage": "Ajoutez des produits depuis\nl'Ã©cran Courses.",
-  "shoppingItemsRemaining": "{count} Ã  acheter Â· {total}",
-  "@shoppingItemsRemaining": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "total": {
-        "type": "String"
-      }
-    }
-  },
-  "shoppingClear": "Effacer",
-  "shoppingFinalize": "Finaliser l'Achat",
-  "shoppingEstimatedTotal": "Total estimÃ©",
-  "shoppingHowMuchSpent": "COMBIEN AI-JE DÃ‰PENSÃ‰ ? (optionnel)",
-  "shoppingConfirm": "Confirmer",
-  "shoppingHistoryTooltip": "Historique d'achats",
-  "shoppingHistoryTitle": "Historique d'Achats",
-  "shoppingItemChecked": "{name}, achetÃ©",
-  "@shoppingItemChecked": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "shoppingItemSwipe": "{name}, glisser pour supprimer",
-  "@shoppingItemSwipe": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "shoppingProductCount": "{count, plural, =1{1 produit} other{{count} produits}}",
-  "@shoppingProductCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "authLogin": "Se connecter",
-  "authRegister": "CrÃ©er un compte",
-  "authEmail": "Email",
-  "authEmailHint": "exemple@email.com",
-  "authPassword": "Mot de passe",
-  "authLoginButton": "Se connecter",
-  "authRegisterButton": "S'inscrire",
-  "authSwitchToRegister": "CrÃ©er un nouveau compte",
-  "authSwitchToLogin": "J'ai dÃ©jÃ  un compte",
-  "authRegistrationSuccess": "Compte crÃ©Ã© ! VÃ©rifiez votre email pour confirmer votre compte avant de vous connecter.",
-  "authErrorNetwork": "Impossible de se connecter au serveur. Vérifiez votre connexion internet et réessayez.",
-  "authErrorInvalidCredentials": "Email ou mot de passe incorrect. Veuillez réessayer.",
-  "authErrorEmailNotConfirmed": "Veuillez vérifier votre email avant de vous connecter.",
-  "authErrorTooManyRequests": "Trop de tentatives. Veuillez patienter et réessayer.",
-  "authErrorGeneric": "Une erreur est survenue. Veuillez réessayer plus tard.",
-  "householdSetupTitle": "Configurer le Foyer",
-  "householdCreate": "CrÃ©er",
-  "householdJoinWithCode": "Rejoindre avec un code",
-  "householdNameLabel": "Nom du foyer",
-  "householdNameHint": "ex : Famille Dupont",
-  "householdCodeLabel": "Code d'invitation",
-  "householdCodeHint": "XXXXXX",
-  "householdCreateButton": "CrÃ©er le Foyer",
-  "householdJoinButton": "Rejoindre le Foyer",
-  "householdNameRequired": "Veuillez indiquer le nom du foyer.",
-  "chartExpensesByCategory": "DÃ©penses par CatÃ©gorie",
-  "chartIncomeVsExpenses": "Revenus vs DÃ©penses",
-  "chartDeductions": "PrÃ©lÃ¨vements (IR + Cotisations)",
-  "chartGrossVsNet": "Revenu Brut vs Net",
-  "chartSavingsRate": "Taux d'Ã‰pargne",
-  "chartNetIncome": "Rev. Net",
-  "chartExpensesLabel": "DÃ©penses",
-  "chartLiquidity": "LiquiditÃ©",
-  "chartSalaryN": "Sal. {n}",
-  "@chartSalaryN": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "chartGross": "Brut",
-  "chartNet": "Net",
-  "chartNetSalary": "Sal. Net",
-  "chartIRS": "IR",
-  "chartSocialSecurity": "Cotis. Soc.",
-  "chartSavings": "Ã©pargne",
-  "projectionTitle": "Projection â€” {month} {year}",
-  "@projectionTitle": {
-    "placeholders": {
-      "month": {
-        "type": "String"
-      },
-      "year": {
-        "type": "String"
-      }
-    }
-  },
-  "projectionSubtitle": "DÃ©pensÃ© {spent} sur {budget} en {days} jours",
-  "@projectionSubtitle": {
-    "placeholders": {
-      "spent": {
-        "type": "String"
-      },
-      "budget": {
-        "type": "String"
-      },
-      "days": {
-        "type": "String"
-      }
-    }
-  },
-  "projectionFood": "ALIMENTATION",
-  "projectionCurrentPace": "Rythme actuel",
-  "projectionNoShopping": "Sans courses",
-  "projectionReduce20": "-20%",
-  "projectionDailySpend": "DÃ©pense journaliÃ¨re estimÃ©e : {amount}/jour",
-  "@projectionDailySpend": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "projectionEndOfMonth": "Projection fin de mois",
-  "projectionRemaining": "Restant projetÃ©",
-  "projectionStressImpact": "Impact sur l'indice",
-  "projectionExpenses": "DÃ‰PENSES",
-  "projectionSimulation": "Simulation â€” non enregistrÃ©",
-  "projectionReduceAll": "RÃ©duire toutes de ",
-  "projectionSimLiquidity": "LiquiditÃ© simulÃ©e",
-  "projectionDelta": "Delta",
-  "projectionSimSavingsRate": "Taux Ã©pargne simulÃ©",
-  "projectionSimIndex": "Indice simulÃ©",
-  "trendTitle": "Ã‰volution",
-  "trendStressIndex": "INDICE DE SÃ‰RÃ‰NITÃ‰",
-  "trendTotalExpenses": "DÃ‰PENSES TOTALES",
-  "trendExpensesByCategory": "DÃ‰PENSES PAR CATÃ‰GORIE",
-  "trendCurrent": "Actuel : {amount}",
-  "@trendCurrent": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "trendCatTelecom": "TÃ©lÃ©com",
-  "trendCatEnergy": "Ã‰nergie",
-  "trendCatWater": "Eau",
-  "trendCatFood": "Alimentation",
-  "trendCatEducation": "Ã‰ducation",
-  "trendCatHousing": "Logement",
-  "trendCatTransport": "Transport",
-  "trendCatHealth": "SantÃ©",
-  "trendCatLeisure": "Loisirs",
-  "trendCatOther": "Autres",
-  "monthReviewTitle": "RÃ©sumÃ© â€” {month}",
-  "@monthReviewTitle": {
-    "placeholders": {
-      "month": {
-        "type": "String"
-      }
-    }
-  },
-  "monthReviewPlanned": "PrÃ©vu",
-  "monthReviewActual": "RÃ©el",
-  "monthReviewDifference": "DiffÃ©rence",
-  "monthReviewFood": "Alimentation",
-  "monthReviewFoodValue": "{actual} sur {budget}",
-  "@monthReviewFoodValue": {
-    "placeholders": {
-      "actual": {
-        "type": "String"
-      },
-      "budget": {
-        "type": "String"
-      }
-    }
-  },
-  "monthReviewTopDeviations": "Ã‰CARTS PRINCIPAUX",
-  "monthReviewSuggestions": "SUGGESTIONS",
-  "monthReviewAiAnalysis": "Analyse IA dÃ©taillÃ©e",
-  "mealPlannerTitle": "Planificateur de Repas",
-  "mealBudgetLabel": "Budget alimentation",
-  "mealPeopleLabel": "Personnes au foyer",
-  "mealGeneratePlan": "GÃ©nÃ©rer le Plan Mensuel",
-  "mealGenerating": "GÃ©nÃ©ration...",
-  "mealRegenerateTitle": "RÃ©gÃ©nÃ©rer le plan ?",
-  "mealRegenerateContent": "Le plan actuel sera remplacÃ©.",
-  "mealRegenerate": "RÃ©gÃ©nÃ©rer",
-  "mealWeekLabel": "Semaine {n}",
-  "@mealWeekLabel": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "mealWeekAbbr": "Sem.{n}",
-  "@mealWeekAbbr": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "mealAddWeekToList": "Ajouter la semaine Ã  la liste",
-  "mealIngredientsAdded": "{count} ingrÃ©dients ajoutÃ©s Ã  la liste",
-  "@mealIngredientsAdded": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "mealDayLabel": "Jour {n}",
-  "@mealDayLabel": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "mealIngredients": "IngrÃ©dients",
-  "mealPreparation": "PrÃ©paration",
-  "mealSwap": "Ã‰changer",
-  "mealConsolidatedList": "Voir la liste consolidÃ©e",
-  "mealConsolidatedTitle": "Liste ConsolidÃ©e",
-  "mealAlternatives": "Alternatives",
-  "mealTotalCost": "{cost}â‚¬ total",
-  "@mealTotalCost": {
-    "placeholders": {
-      "cost": {
-        "type": "String"
-      }
-    }
-  },
-  "mealCatProteins": "ProtÃ©ines",
-  "mealCatVegetables": "LÃ©gumes",
-  "mealCatCarbs": "Glucides",
-  "mealCatFats": "MatiÃ¨res grasses",
-  "mealCatCondiments": "Condiments",
-  "mealCostPerPerson": "{cost}€/pers",
-  "@mealCostPerPerson": {
-    "placeholders": {
-      "cost": {
-        "type": "String"
-      }
-    }
-  },
-  "mealNutriProt": "prot",
-  "mealNutriCarbs": "gluc",
-  "mealNutriFat": "gras",
-  "mealNutriFiber": "fibre",
-  "wizardStepMeals": "Repas",
-  "wizardStepObjective": "Objectif",
-  "wizardStepRestrictions": "Restrictions",
-  "wizardStepKitchen": "Cuisine",
-  "wizardStepStrategy": "StratÃ©gie",
-  "wizardMealsQuestion": "Quels repas voulez-vous inclure dans le plan quotidien ?",
-  "wizardBudgetWeight": "{weight} du budget",
-  "@wizardBudgetWeight": {
-    "placeholders": {
-      "weight": {
-        "type": "String"
-      }
-    }
-  },
-  "wizardObjectiveQuestion": "Quel est l'objectif principal de votre plan alimentaire ?",
-  "wizardSelected": "{label}, sÃ©lectionnÃ©",
-  "@wizardSelected": {
-    "placeholders": {
-      "label": {
-        "type": "String"
-      }
-    }
-  },
-  "wizardDietaryRestrictions": "RESTRICTIONS ALIMENTAIRES",
-  "wizardGlutenFree": "Sans gluten",
-  "wizardLactoseFree": "Sans lactose",
-  "wizardNutFree": "Sans fruits Ã  coque",
-  "wizardShellfishFree": "Sans crustacÃ©s",
-  "wizardDislikedIngredients": "INGRÃ‰DIENTS QUE VOUS N'AIMEZ PAS",
-  "wizardDislikedHint": "ex : thon, brocoli",
-  "wizardMaxPrepTime": "TEMPS DE PRÃ‰PARATION MAXIMUM",
-  "wizardMaxComplexity": "COMPLEXITÃ‰ MAXIMUM",
-  "wizardComplexityEasy": "Facile",
-  "wizardComplexityMedium": "Moyen",
-  "wizardComplexityAdvanced": "AvancÃ©",
-  "wizardEquipment": "Ã‰QUIPEMENT DISPONIBLE",
-  "wizardBatchCooking": "Batch cooking",
-  "wizardBatchCookingDesc": "Cuisiner pour plusieurs jours Ã  la fois",
-  "wizardMaxBatchDays": "JOURS MAXIMUM PAR RECETTE",
-  "wizardBatchDays": "{days} jours",
-  "@wizardBatchDays": {
-    "placeholders": {
-      "days": {
-        "type": "int"
-      }
-    }
-  },
-  "wizardPreferredCookingDay": "JOUR DE CUISINE PRÃ‰FÃ‰RÃ‰",
-  "wizardReuseLeftovers": "RÃ©utiliser les restes",
-  "wizardReuseLeftoversDesc": "Le dÃ®ner d'hier = le dÃ©jeuner d'aujourd'hui (coÃ»t 0)",
-  "wizardMaxNewIngredients": "NOUVEAUX INGRÃ‰DIENTS PAR SEMAINE MAX",
-  "wizardNoLimit": "Sans limite",
-  "wizardMinimizeWaste": "Minimiser le gaspillage",
-  "wizardMinimizeWasteDesc": "PrÃ©fÃ©rer les recettes rÃ©utilisant des ingrÃ©dients dÃ©jÃ  utilisÃ©s",
-  "wizardSettingsInfo": "Vous pouvez modifier les paramÃ¨tres du planificateur Ã  tout moment dans ParamÃ¨tres â†’ Repas.",
-  "wizardContinue": "Continuer",
-  "wizardGeneratePlan": "GÃ©nÃ©rer le Plan",
-  "wizardStepOf": "Ã‰tape {current} sur {total}",
-  "@wizardStepOf": {
-    "placeholders": {
-      "current": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
-  },
-  "wizardWeekdayMon": "Lun",
-  "wizardWeekdayTue": "Mar",
-  "wizardWeekdayWed": "Mer",
-  "wizardWeekdayThu": "Jeu",
-  "wizardWeekdayFri": "Ven",
-  "wizardWeekdaySat": "Sam",
-  "wizardWeekdaySun": "Dim",
-  "wizardPrepMin": "{mins}min",
-  "@wizardPrepMin": {
-    "placeholders": {
-      "mins": {
-        "type": "int"
-      }
-    }
-  },
-  "wizardPrepMin60Plus": "60+",
-  "settingsTitle": "ParamÃ¨tres",
-  "settingsPersonal": "DonnÃ©es Personnelles",
-  "settingsSalaries": "Salaires",
-  "settingsExpenses": "Budget et Factures",
-  "settingsCoachAi": "Coach IA",
-  "settingsDashboard": "Tableau de bord",
-  "settingsMeals": "Repas",
-  "settingsRegion": "RÃ©gion et Langue",
-  "settingsCountry": "Pays",
-  "settingsLanguage": "Langue",
-  "settingsMaritalStatus": "Ã‰tat civil",
-  "settingsDependents": "Personnes Ã  charge",
-  "settingsDisability": "Handicap",
-  "settingsGrossSalary": "Salaire brut",
-  "settingsTitulares": "Titulaires d'impÃ´t",
-  "settingsSubsidyMode": "Primes",
-  "settingsMealAllowance": "IndemnitÃ© repas",
-  "settingsMealAllowancePerDay": "Montant/jour",
-  "settingsWorkingDays": "Jours ouvrÃ©s/mois",
-  "settingsOtherExemptIncome": "Autres revenus exonÃ©rÃ©s",
-  "settingsAddSalary": "Ajouter un salaire",
-  "settingsAddExpense": "Ajouter une catÃ©gorie",
-  "settingsExpenseName": "Nom de catÃ©gorie",
-  "settingsExpenseAmount": "Montant",
-  "settingsExpenseCategory": "CatÃ©gorie",
-  "settingsApiKey": "ClÃ© API OpenAI",
-  "settingsInviteCode": "Code d'invitation",
-  "settingsCopyCode": "Copier",
-  "settingsCodeCopied": "Code copiÃ© !",
-  "settingsAdminOnly": "Seul l'administrateur peut modifier les paramÃ¨tres.",
-  "settingsShowSummaryCards": "Afficher les cartes rÃ©sumÃ©",
-  "settingsEnabledCharts": "Graphiques actifs",
-  "settingsLogout": "Se dÃ©connecter",
-  "settingsLogoutConfirmTitle": "Se dÃ©connecter",
-  "settingsLogoutConfirmContent": "ÃŠtes-vous sÃ»r de vouloir vous dÃ©connecter ?",
-  "settingsLogoutConfirmButton": "Se dÃ©connecter",
-  "settingsSalariesSection": "Revenus",
-  "settingsExpensesMonthly": "Budget et Factures",
-  "settingsFavorites": "Produits Favoris",
-  "settingsCoachOpenAi": "Coach IA (OpenAI)",
-  "settingsHousehold": "Foyer",
-  "settingsMaritalStatusLabel": "Ã‰TAT CIVIL",
-  "settingsDependentsLabel": "NOMBRE DE PERSONNES Ã€ CHARGE",
-  "settingsSocialSecurityRate": "Cotisations sociales : {rate}",
-  "@settingsSocialSecurityRate": {
-    "placeholders": {
-      "rate": {
-        "type": "String"
-      }
-    }
-  },
-  "settingsSalaryActive": "Actif",
-  "settingsGrossMonthlySalary": "SALAIRE BRUT MENSUEL",
-  "settingsSubsidyHoliday": "PRIMES DE VACANCES ET NOÃ‹L (DOUZIÃˆMES)",
-  "settingsOtherExemptLabel": "AUTRES REVENUS EXONÃ‰RÃ‰S D'IMPÃ”T",
-  "settingsMealAllowanceLabel": "INDEMNITÃ‰ REPAS",
-  "settingsAmountPerDay": "MONTANT/JOUR",
-  "settingsDaysPerMonth": "JOURS/MOIS",
-  "settingsTitularesLabel": "TITULAIRES D'IMPÃ”T",
-  "settingsTitularCount": "{n} Titulaire{suffix}",
-  "@settingsTitularCount": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      },
-      "suffix": {
-        "type": "String"
-      }
-    }
-  },
-  "settingsAddSalaryButton": "Ajouter un salaire",
-  "settingsAddExpenseButton": "Ajouter une CatÃ©gorie",
-  "settingsDeviceLocal": "Ces paramÃ¨tres sont stockÃ©s localement sur cet appareil.",
-  "settingsVisibleSections": "SECTIONS VISIBLES",
-  "settingsMinimalist": "Minimaliste",
-  "settingsFull": "Complet",
-  "settingsDashMonthlyLiquidity": "LiquiditÃ© mensuelle",
-  "settingsDashStressIndex": "Indice de SÃ©rÃ©nitÃ©",
-  "settingsDashSummaryCards": "Cartes rÃ©sumÃ©",
-  "settingsDashSalaryBreakdown": "DÃ©tail par salaire",
-  "settingsDashFood": "Alimentation",
-  "settingsDashPurchaseHistory": "Historique d'achats",
-  "settingsDashExpensesBreakdown": "DÃ©tail des dÃ©penses",
-  "settingsDashMonthReview": "Bilan du mois",
-  "settingsDashCharts": "Graphiques",
-  "dashGroupOverview": "VUE D'ENSEMBLE",
-  "dashGroupFinancialDetail": "DÃ‰TAIL FINANCIER",
-  "dashGroupHistory": "HISTORIQUE",
-  "dashGroupCharts": "GRAPHIQUES",
-  "settingsVisibleCharts": "GRAPHIQUES VISIBLES",
-  "settingsFavTip": "Les produits favoris influencent le plan repas — les recettes avec ces ingrÃ©dients sont prioritaires.",
-  "settingsMyFavorites": "MES FAVORIS",
-  "settingsProductCatalog": "CATALOGUE DE PRODUITS",
-  "settingsSearchProduct": "Rechercher un produit...",
-  "settingsLoadingProducts": "Chargement des produits...",
-  "settingsAddIngredient": "Ajouter un ingrÃ©dient",
-  "settingsIngredientName": "Nom de l'ingrÃ©dient",
-  "settingsAddButton": "Ajouter",
-  "settingsAddToPantry": "Ajouter au garde-manger",
-  "settingsHouseholdPeople": "FOYER (PERSONNES)",
-  "settingsAutomatic": "(auto)",
-  "settingsUseAutoValue": "Utiliser la valeur automatique",
-  "settingsManualValue": "Valeur manuelle : {count} personnes",
-  "@settingsManualValue": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsAutoValue": "CalculÃ© automatiquement : {count} (titulaires + personnes Ã  charge)",
-  "@settingsAutoValue": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsHouseholdMembers": "MEMBRES DU FOYER",
-  "settingsPortions": "portions",
-  "settingsTotalEquivalent": "Ã‰quivalent total : {total} portions",
-  "@settingsTotalEquivalent": {
-    "placeholders": {
-      "total": {
-        "type": "String"
-      }
-    }
-  },
-  "settingsAddMember": "Ajouter un membre",
-  "settingsPreferSeasonal": "PrÃ©fÃ©rer les recettes de saison",
-  "settingsPreferSeasonalDesc": "Priorise les recettes de la saison actuelle",
-  "settingsNutritionalGoals": "OBJECTIFS NUTRITIONNELS",
-  "settingsCalorieHint": "ex : 2000",
-  "settingsKcalPerDay": "kcal/jour",
-  "settingsProteinHint": "ex : 60",
-  "settingsGramsPerDay": "g/jour",
-  "settingsFiberHint": "ex : 25",
-  "settingsDailyProtein": "ProtÃ©ines quotidiennes",
-  "settingsDailyFiber": "Fibres quotidiennes",
-  "settingsMedicalConditions": "CONDITIONS MÃ‰DICALES",
-  "settingsActiveMeals": "REPAS ACTIFS",
-  "settingsObjective": "OBJECTIF",
-  "settingsVeggieDays": "JOURS VÃ‰GÃ‰TARIENS PAR SEMAINE",
-  "settingsDietaryRestrictions": "RESTRICTIONS ALIMENTAIRES",
-  "settingsEggFree": "Sans oeufs",
-  "settingsSodiumPref": "PRÃ‰FÃ‰RENCE EN SODIUM",
-  "settingsDislikedIngredients": "INGRÃ‰DIENTS NON SOUHAITÃ‰S",
-  "settingsExcludedProteins": "PROTÃ‰INES EXCLUES",
-  "settingsProteinChicken": "Poulet",
-  "settingsProteinGroundMeat": "Viande hachÃ©e",
-  "settingsProteinPork": "Porc",
-  "settingsProteinHake": "Merlu",
-  "settingsProteinCod": "Morue",
-  "settingsProteinSardine": "Sardine",
-  "settingsProteinTuna": "Thon",
-  "settingsProteinEgg": "Oeufs",
-  "settingsMaxPrepTime": "TEMPS MAX (MINUTES)",
-  "settingsMaxComplexity": "COMPLEXITÃ‰ MAXIMUM ({value}/5)",
-  "@settingsMaxComplexity": {
-    "placeholders": {
-      "value": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWeekendPrepTime": "TEMPS WEEK-END (MINUTES)",
-  "settingsWeekendComplexity": "COMPLEXITÃ‰ WEEK-END ({value}/5)",
-  "@settingsWeekendComplexity": {
-    "placeholders": {
-      "value": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsEatingOutDays": "JOURS AU RESTAURANT",
-  "settingsWeeklyDistribution": "DISTRIBUTION HEBDOMADAIRE",
-  "settingsFishPerWeek": "Poisson par semaine : {count}",
-  "@settingsFishPerWeek": {
-    "placeholders": {
-      "count": {
-        "type": "String"
-      }
-    }
-  },
-  "settingsNoMinimum": "sans minimum",
-  "settingsLegumePerWeek": "LÃ©gumineuses par semaine : {count}",
-  "@settingsLegumePerWeek": {
-    "placeholders": {
-      "count": {
-        "type": "String"
-      }
-    }
-  },
-  "settingsRedMeatPerWeek": "Viande rouge max/semaine : {count}",
-  "@settingsRedMeatPerWeek": {
-    "placeholders": {
-      "count": {
-        "type": "String"
-      }
-    }
-  },
-  "settingsNoLimit": "sans limite",
-  "settingsAvailableEquipment": "Ã‰QUIPEMENT DISPONIBLE",
-  "settingsBatchCooking": "Batch cooking",
-  "settingsMaxBatchDays": "JOURS MAX PAR RECETTE",
-  "settingsReuseLeftovers": "RÃ©utiliser les restes",
-  "settingsMinimizeWaste": "Minimiser le gaspillage",
-  "settingsPrioritizeLowCost": "Prioriser le bas coÃ»t",
-  "settingsPrioritizeLowCostDesc": "PrÃ©fÃ©rer les recettes moins chÃ¨res",
-  "settingsNewIngredientsPerWeek": "NOUVEAUX INGRÃ‰DIENTS PAR SEMAINE ({count})",
-  "@settingsNewIngredientsPerWeek": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsLunchboxLunches": "DÃ©jeuners en boÃ®te",
-  "settingsLunchboxLunchesDesc": "Uniquement des recettes transportables pour le dÃ©jeuner",
-  "settingsPantry": "GARDE-MANGER (TOUJOURS EN STOCK)",
-  "settingsResetWizard": "RÃ©initialiser l'Assistant",
-  "settingsApiKeyInfo": "La clÃ© est stockÃ©e localement sur l'appareil et n'est jamais partagÃ©e. Utilise le modÃ¨le GPT-4o mini (~€0,00008 par analyse).",
-  "settingsInviteCodeLabel": "CODE D'INVITATION",
-  "settingsGenerateInvite": "GÃ©nÃ©rer un code d'invitation",
-  "settingsShareWithMembers": "Partager avec les membres du foyer",
-  "settingsNewCode": "Nouveau code",
-  "settingsCodeValidInfo": "Le code est valide pendant 7 jours. Partagez-le avec les personnes que vous souhaitez ajouter au foyer.",
-  "settingsName": "Nom",
-  "settingsAgeGroup": "Tranche d'Ã¢ge",
-  "settingsActivityLevel": "Niveau d'activitÃ©",
-  "settingsSalaryN": "Salaire {n}",
-  "@settingsSalaryN": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "countryPT": "Portugal",
-  "countryES": "Espagne",
-  "countryFR": "France",
-  "countryUK": "Royaume-Uni",
-  "langPT": "PortuguÃªs",
-  "langEN": "English",
-  "langFR": "FranÃ§ais",
-  "langES": "EspaÃ±ol",
-  "langSystem": "SystÃ¨me",
-  "taxIncomeTax": "ImpÃ´t sur le revenu",
-  "taxSocialContribution": "Cotisation sociale",
-  "taxIRS": "IRS",
-  "taxSS": "SÃ©curitÃ© Sociale",
-  "taxIRPF": "IRPF",
-  "taxSSSpain": "Seguridad Social",
-  "taxIR": "ImpÃ´t sur le Revenu",
-  "taxCSG": "CSG + CRDS",
-  "taxPAYE": "Income Tax",
-  "taxNI": "National Insurance",
-  "enumSubsidyEsNone": "Sans payes extras",
-  "enumSubsidyEsFull": "Avec payes extras",
-  "enumSubsidyEsHalf": "50% payes extras",
-  "aiCoachSystemPrompt": "Tu es un analyste financier personnel pour des utilisateurs portugais. RÃ©ponds toujours en portugais europÃ©en. Sois direct et analytique â€” utilise toujours les chiffres concrets du contexte fourni. Structure la rÃ©ponse exactement dans les 3 parties demandÃ©es. N'introduis pas de donnÃ©es, benchmarks ou rÃ©fÃ©rences externes non fournis.",
-  "aiCoachInvalidApiKey": "ClÃ© API invalide. VÃ©rifiez dans les ParamÃ¨tres.",
-  "aiCoachMidMonthSystem": "Tu es un consultant en budget domestique portugais. RÃ©ponds toujours en portugais europÃ©en. Sois pratique et direct.",
-  "aiMealPlannerSystem": "Tu es un chef portugais. RÃ©ponds toujours en portugais europÃ©en. RÃ©ponds UNIQUEMENT avec du JSON valide, sans texte supplÃ©mentaire.",
-  "monthAbbrJan": "Jan",
-  "monthAbbrFeb": "FÃ©v",
-  "monthAbbrMar": "Mar",
-  "monthAbbrApr": "Avr",
-  "monthAbbrMay": "Mai",
-  "monthAbbrJun": "Jui",
-  "monthAbbrJul": "Jul",
-  "monthAbbrAug": "AoÃ»",
-  "monthAbbrSep": "Sep",
-  "monthAbbrOct": "Oct",
-  "monthAbbrNov": "Nov",
-  "monthAbbrDec": "DÃ©c",
-  "monthFullJan": "Janvier",
-  "monthFullFeb": "FÃ©vrier",
-  "monthFullMar": "Mars",
-  "monthFullApr": "Avril",
-  "monthFullMay": "Mai",
-  "monthFullJun": "Juin",
-  "monthFullJul": "Juillet",
-  "monthFullAug": "AoÃ»t",
-  "monthFullSep": "Septembre",
-  "monthFullOct": "Octobre",
-  "monthFullNov": "Novembre",
-  "monthFullDec": "DÃ©cembre",
-  "setupWizardWelcomeTitle": "Bienvenue dans votre budget",
-  "setupWizardWelcomeSubtitle": "Configurons l'essentiel pour que votre tableau de bord soit prÃªt.",
-  "setupWizardBullet1": "Calculer votre salaire net",
-  "setupWizardBullet2": "Organiser vos dÃ©penses",
-  "setupWizardBullet3": "Voir combien il vous reste chaque mois",
-  "setupWizardReassurance": "Vous pouvez tout modifier plus tard dans les paramÃ¨tres.",
-  "setupWizardStart": "Commencer",
-  "setupWizardSkipAll": "Passer la configuration",
-  "setupWizardStepOf": "Ã‰tape {step} sur {total}",
-  "@setupWizardStepOf": {
-    "placeholders": {
-      "step": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
-  },
-  "setupWizardContinue": "Continuer",
-  "setupWizardCountryTitle": "OÃ¹ habitez-vous ?",
-  "setupWizardCountrySubtitle": "Cela dÃ©finit le systÃ¨me fiscal, la devise et les valeurs par dÃ©faut.",
-  "setupWizardLanguage": "Langue",
-  "setupWizardLangSystem": "Par dÃ©faut du systÃ¨me",
-  "setupWizardCountryPT": "Portugal",
-  "setupWizardCountryES": "Espagne",
-  "setupWizardCountryFR": "France",
-  "setupWizardCountryUK": "Royaume-Uni",
-  "setupWizardPersonalTitle": "Informations personnelles",
-  "setupWizardPersonalSubtitle": "Nous utilisons ceci pour calculer vos impÃ´ts plus prÃ©cisÃ©ment.",
-  "setupWizardPrivacyNote": "Vos donnÃ©es restent dans votre compte et ne sont jamais partagÃ©es.",
-  "setupWizardSingle": "CÃ©libataire",
-  "setupWizardMarried": "MariÃ©(e)",
-  "setupWizardDependents": "Personnes Ã  charge",
-  "setupWizardTitulares": "Titulaires fiscaux",
-  "setupWizardSalaryTitle": "Quel est votre salaire ?",
-  "setupWizardSalarySubtitle": "Entrez le montant brut mensuel. Nous calculerons le net automatiquement.",
-  "setupWizardSalaryGross": "Salaire brut mensuel",
-  "setupWizardNetEstimate": "Net estimÃ© : {amount}",
-  "@setupWizardNetEstimate": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "setupWizardSalaryMoreLater": "Vous pouvez ajouter d'autres sources de revenus plus tard.",
-  "setupWizardSalaryRequired": "Veuillez entrer votre salaire",
-  "setupWizardSalaryPositive": "Le salaire doit être un nombre positif",
-  "setupWizardSalarySkip": "Passer cette étape",
-  "setupWizardExpensesTitle": "Vos dÃ©penses mensuelles",
-  "setupWizardExpensesSubtitle": "Valeurs suggÃ©rÃ©es pour votre pays. Ajustez selon vos besoins.",
-  "setupWizardExpensesMoreLater": "Vous pouvez ajouter d'autres catÃ©gories plus tard.",
-  "setupWizardNetLabel": "Net : {amount}",
-  "@setupWizardNetLabel": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "setupWizardTotalExpenses": "DÃ©penses : {amount}",
-  "@setupWizardTotalExpenses": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "setupWizardAvailableLabel": "Disponible : {amount}",
-  "@setupWizardAvailableLabel": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "setupWizardFinish": "Terminer",
-  "setupWizardCompleteTitle": "Tout est prÃªt !",
-  "setupWizardCompleteReassurance": "Votre budget est configurÃ©. Vous pouvez tout ajuster dans les paramÃ¨tres Ã  tout moment.",
-  "setupWizardGoToDashboard": "Voir mon budget",
-  "setupWizardConfigureSalaryHint": "Configurez votre salaire dans les paramÃ¨tres pour voir le calcul complet.",
-  "setupWizardExpRent": "Loyer / CrÃ©dit immobilier",
-  "setupWizardExpGroceries": "Alimentation",
-  "setupWizardExpTransport": "Transport",
-  "setupWizardExpUtilities": "Services (Ã©lectricitÃ©, eau, gaz)",
-  "setupWizardExpTelecom": "TÃ©lÃ©communications",
-  "setupWizardExpHealth": "SantÃ©",
-  "setupWizardExpLeisure": "Loisirs",
-  "expenseTrackerTitle": "BUDGET VS RÃ‰EL",
-  "expenseTrackerBudgeted": "BudgÃ©tÃ©",
-  "expenseTrackerActual": "RÃ©el",
-  "expenseTrackerRemaining": "Restant",
-  "expenseTrackerOver": "DÃ©passement",
-  "expenseTrackerViewAll": "Voir dÃ©tails",
-  "expenseTrackerNoExpenses": "Aucune dÃ©pense enregistrÃ©e.",
-  "expenseTrackerScreenTitle": "Suivi des DÃ©penses",
-  "expenseTrackerMonthTotal": "Total : {amount}",
-  "@expenseTrackerMonthTotal": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "expenseTrackerDeleteConfirm": "Supprimer cette dÃ©pense ?",
-  "expenseTrackerEmpty": "Aucune dÃ©pense ce mois.\nAppuyez sur + pour ajouter.",
-  "addExpenseTitle": "Ajouter une DÃ©pense",
-  "editExpenseTitle": "Modifier la DÃ©pense",
-  "addExpenseCategory": "CatÃ©gorie",
-  "addExpenseAmount": "Montant",
-  "addExpenseDate": "Date",
-  "addExpenseDescription": "Description (facultatif)",
-  "addExpenseCustomCategory": "CatÃ©gorie personnalisÃ©e",
-  "addExpenseInvalidAmount": "Entrez un montant valide",
-  "addExpenseTooltip": "Saisir une dÃ©pense",
-  "addExpenseItem": "DÃ©pense",
-  "addExpenseOthers": "Autres",
-  "settingsDashBudgetVsActual": "Budget vs RÃ©el",
-  "settingsAppearance": "Apparence",
-  "settingsTheme": "ThÃ¨me",
-  "themeSystem": "SystÃ¨me",
-  "themeLight": "Clair",
-  "themeDark": "Sombre",
-  "recurringExpenses": "Factures Mensuelles",
-  "recurringExpenseAdd": "Ajouter une Facture",
-  "recurringExpenseEdit": "Modifier la Facture",
-  "recurringExpenseCategory": "CatÃ©gorie",
-  "recurringExpenseAmount": "Montant",
-  "recurringExpenseDescription": "Description (facultatif)",
-  "recurringExpenseDayOfMonth": "Jour d'Ã©chÃ©ance",
-  "recurringExpenseActive": "Active",
-  "recurringExpenseInactive": "Inactive",
-  "recurringExpenseEmpty": "Aucune facture mensuelle.\nAjoutez-en une pour la gÃ©nÃ©rer automatiquement chaque mois.",
-  "recurringExpenseDeleteConfirm": "Supprimer cette facture ?",
-  "recurringExpenseAutoCreated": "CrÃ©Ã©e automatiquement",
-  "recurringExpenseManage": "GÃ©rer les factures",
-  "recurringExpenseMarkRecurring": "Marquer comme facture mensuelle",
-  "recurringExpensePopulated": "Factures mensuelles gÃ©nÃ©rÃ©es pour ce mois",
-  "recurringExpenseDayHint": "Ex : 1 pour le 1er",
-  "recurringExpenseNoDay": "Pas de jour fixe",
-  "recurringExpenseSaved": "Facture enregistrÃ©e",
-  "billsCount": "{count} factures",
-  "@billsCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "billsNone": "Aucune facture",
-  "billsPerMonth": "{count} factures Â· {amount}/mois",
-  "@billsPerMonth": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "billsExceedBudget": "Factures ({amount}) dÃ©passent le budget",
-  "@billsExceedBudget": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "billsAddBill": "Ajouter une Facture",
-  "billsBudgetSettings": "ParamÃ¨tres du Budget",
-  "billsRecurringBills": "Factures RÃ©currentes",
-  "billsDescription": "Description",
-  "billsAmount": "Montant",
-  "billsDueDay": "Jour d'Ã©chÃ©ance",
-  "billsActive": "Active",
-  "expenseTrends": "Tendances des DÃ©penses",
-  "expenseTrendsViewTrends": "Voir les Tendances",
-  "expenseTrends3Months": "3M",
-  "expenseTrends6Months": "6M",
-  "expenseTrends12Months": "12M",
-  "expenseTrendsBudgeted": "BudgÃ©tÃ©",
-  "expenseTrendsActual": "RÃ©el",
-  "expenseTrendsByCategory": "Par CatÃ©gorie",
-  "expenseTrendsNoData": "DonnÃ©es insuffisantes pour afficher les tendances.",
-  "expenseTrendsTotal": "Total",
-  "expenseTrendsAverage": "Moyenne",
-  "expenseTrendsOverview": "Vue d'ensemble",
-  "expenseTrendsMonthly": "Mensuel",
-  "savingsGoals": "Objectifs d'Ã‰pargne",
-  "savingsGoalAdd": "Nouvel Objectif",
-  "savingsGoalEdit": "Modifier l'Objectif",
-  "savingsGoalName": "Nom de l'objectif",
-  "savingsGoalTarget": "Montant cible",
-  "savingsGoalCurrent": "Montant actuel",
-  "savingsGoalDeadline": "Date limite",
-  "savingsGoalNoDeadline": "Pas de date limite",
-  "savingsGoalColor": "Couleur",
-  "savingsGoalProgress": "{percent}% atteint",
-  "@savingsGoalProgress": {
-    "placeholders": {
-      "percent": {
-        "type": "String"
-      }
-    }
-  },
-  "savingsGoalRemaining": "{amount} restant",
-  "@savingsGoalRemaining": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "savingsGoalCompleted": "Objectif atteint !",
-  "savingsGoalEmpty": "Aucun objectif d'Ã©pargne.\nCrÃ©ez-en un pour suivre vos progrÃ¨s.",
-  "savingsGoalDeleteConfirm": "Supprimer cet objectif ?",
-  "savingsGoalContribute": "Contribuer",
-  "savingsGoalContributionAmount": "Montant de la contribution",
-  "savingsGoalContributionNote": "Note (facultatif)",
-  "savingsGoalContributionDate": "Date",
-  "savingsGoalContributionHistory": "Historique des Contributions",
-  "savingsGoalSeeAll": "Voir tout",
-  "savingsGoalSurplusSuggestion": "Vous aviez {amount} d'excÃ©dent le mois dernier â€” allouer Ã  un objectif ?",
-  "@savingsGoalSurplusSuggestion": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "savingsGoalAllocate": "Allouer",
-  "savingsGoalSaved": "Objectif enregistrÃ©",
-  "savingsGoalContributionSaved": "Contribution enregistrÃ©e",
-  "settingsDashSavingsGoals": "Objectifs d'Ã‰pargne",
-  "savingsGoalActive": "Actif",
-  "savingsGoalInactive": "Inactif",
-  "savingsGoalDaysLeft": "{days} jours restants",
-  "@savingsGoalDaysLeft": {
-    "placeholders": {
-      "days": {
-        "type": "String"
-      }
-    }
-  },
-  "savingsGoalOverdue": "En retard",
-  "mealCostReconciliation": "CoÃ»ts des Repas",
-  "mealCostEstimated": "EstimÃ©",
-  "mealCostActual": "RÃ©el",
-  "mealCostWeek": "Semaine {number}",
-  "@mealCostWeek": {
-    "placeholders": {
-      "number": {
-        "type": "String"
-      }
-    }
-  },
-  "mealCostTotal": "Total du Mois",
-  "mealCostSavings": "Ã‰conomie",
-  "mealCostOverrun": "DÃ©passement",
-  "mealCostNoData": "Aucune donnÃ©e d'achats repas.",
-  "mealCostViewCosts": "CoÃ»ts",
-  "mealCostIsMealPurchase": "Achat repas",
-  "mealCostVsBudget": "vs budget",
-  "mealCostOnTrack": "Dans le budget",
-  "mealCostOver": "Au-dessus du budget",
-  "mealCostUnder": "En dessous du budget",
-  "mealVariation": "Variante",
-  "mealPairing": "Accompagnement",
-  "mealStorage": "Conservation",
-  "mealLeftover": "Restes",
-  "mealLeftoverIdea": "IdÃ©e de transformation",
-  "mealWeeklySummary": "Nutrition Hebdomadaire",
-  "mealBatchPrepGuide": "Guide de PrÃ©paration",
-  "mealBatchTotalTime": "Temps estimÃ©: {time}",
-  "@mealBatchTotalTime": {
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "mealBatchParallelTips": "Astuces de cuisson parallÃ¨le",
-  "mealFeedbackLike": "J'aime",
-  "mealFeedbackDislike": "Je n'aime pas",
-  "mealFeedbackSkip": "Passer",
-
-  "notifications": "Notifications",
-  "notificationSettings": "ParamÃ¨tres de Notifications",
-  "notificationBillReminders": "Rappels de factures",
-  "notificationBillReminderDays": "Jours avant l'Ã©chÃ©ance",
-  "notificationBudgetAlerts": "Alertes budget",
-  "notificationBudgetThreshold": "Seuil d'alerte ({percent}%)",
-  "@notificationBudgetThreshold": {
-    "placeholders": {
-      "percent": {
-        "type": "String"
-      }
-    }
-  },
-  "notificationMealPlanReminder": "Rappel plan repas",
-  "notificationMealPlanReminderDesc": "Notifie si aucun plan pour le mois en cours",
-  "notificationCustomReminders": "Rappels PersonnalisÃ©s",
-  "notificationAddCustom": "Ajouter un Rappel",
-  "notificationCustomTitle": "Titre",
-  "notificationCustomBody": "Message",
-  "notificationCustomTime": "Heure",
-  "notificationCustomRepeat": "RÃ©pÃ©ter",
-  "notificationCustomRepeatDaily": "Quotidien",
-  "notificationCustomRepeatWeekly": "Hebdomadaire",
-  "notificationCustomRepeatMonthly": "Mensuel",
-  "notificationCustomRepeatNone": "Ne pas rÃ©pÃ©ter",
-  "notificationCustomSaved": "Rappel enregistrÃ©",
-  "notificationCustomDeleteConfirm": "Supprimer ce rappel ?",
-  "notificationEmpty": "Aucun rappel personnalisÃ©.",
-  "notificationBillTitle": "Facture Ã  payer : {name}",
-  "@notificationBillTitle": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "notificationBillBody": "{amount} dÃ» dans {days} jours",
-  "@notificationBillBody": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      },
-      "days": {
-        "type": "String"
-      }
-    }
-  },
-  "notificationBudgetTitle": "Alerte budget",
-  "notificationBudgetBody": "Vous avez dÃ©pensÃ© {percent}% du budget mensuel",
-  "@notificationBudgetBody": {
-    "placeholders": {
-      "percent": {
-        "type": "String"
-      }
-    }
-  },
-  "notificationMealPlanTitle": "Plan de repas",
-  "notificationMealPlanBody": "Vous n'avez pas encore gÃ©nÃ©rÃ© le plan repas ce mois-ci",
-  "notificationPermissionRequired": "Autorisation de notifications requise",
-  "notificationSelectDays": "SÃ©lectionner les jours",
-  "settingsColorPalette": "Palette de couleurs",
-  "paletteOcean": "OcÃ©an",
-  "paletteEmerald": "Ã‰meraude",
-  "paletteViolet": "Violet",
-  "paletteTeal": "Sarcelle",
-  "paletteSunset": "Coucher de soleil",
-  "exportTooltip": "Exporter",
-  "exportTitle": "Exporter le mois",
-  "exportPdf": "Rapport PDF",
-  "exportPdfDesc": "Rapport avec budget vs rÃ©el",
-  "exportCsv": "DonnÃ©es CSV",
-  "exportCsvDesc": "DonnÃ©es brutes pour tableur",
-  "exportReportTitle": "Rapport Mensuel des DÃ©penses",
-  "exportBudgetVsActual": "Budget vs RÃ©el",
-  "exportExpenseDetail": "DÃ©tail des DÃ©penses",
-  "searchExpenses": "Rechercher",
-  "searchExpensesHint": "Rechercher par description...",
-  "searchDateRange": "PÃ©riode",
-  "searchNoResults": "Aucune dÃ©pense trouvÃ©e",
-  "searchResultCount": "{count} rÃ©sultats",
-  "@searchResultCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "expenseFixed": "Fixe",
-  "expenseVariable": "Variable",
-  "monthlyBudgetHint": "Budget pour {month}",
-  "@monthlyBudgetHint": {
-    "placeholders": {
-      "month": {
-        "type": "String"
-      }
-    }
-  },
-  "unsetBudgetsWarning": "{count} budgets variables non dÃ©finis",
-  "@unsetBudgetsWarning": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "unsetBudgetsCta": "DÃ©finir dans les paramÃ¨tres",
-  "paceProjected": "Projection : {amount}",
-  "@paceProjected": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "onbSkip": "Passer",
-  "onbNext": "Suivant",
-  "onbGetStarted": "Commencer",
-  "onbSlide0Title": "Votre budget, en un coup d'Å“il",
-  "onbSlide0Body": "Le tableau de bord affiche votre liquiditÃ© mensuelle, dÃ©penses et Indice de SÃ©rÃ©nitÃ©.",
-  "onbSlide1Title": "Suivez chaque dÃ©pense",
-  "onbSlide1Body": "Appuyez sur + pour enregistrer un achat. Assignez une catÃ©gorie et regardez les barres se mettre Ã  jour.",
-  "onbSlide2Title": "Achetez avec une liste",
-  "onbSlide2Body": "Parcourez les produits, crÃ©ez une liste, puis finalisez pour enregistrer vos dÃ©penses automatiquement.",
-  "onbSlide3Title": "Votre coach financier IA",
-  "onbSlide3Body": "Obtenez une analyse en 3 parties basÃ©e sur votre budget rÃ©el — pas des conseils gÃ©nÃ©riques.",
-  "onbSlide4Title": "Planifiez vos repas dans le budget",
-  "onbSlide4Body": "GÃ©nÃ©rez un plan mensuel adaptÃ© Ã  votre budget alimentaire et la taille du foyer.",
-  "onbTourSkip": "Passer la visite",
-  "onbTourNext": "Suivant",
-  "onbTourDone": "Compris",
-  "onbTourDash1Title": "LiquiditÃ© mensuelle",
-  "onbTourDash1Body": "Revenus moins toutes les dÃ©penses. Vert signifie solde positif.",
-  "onbTourDash2Title": "Indice de SÃ©rÃ©nitÃ©",
-  "onbTourDash2Body": "Score de santÃ© financiÃ¨re 0–100. Appuyez pour voir les facteurs.",
-  "onbTourDash3Title": "Budget vs rÃ©el",
-  "onbTourDash3Body": "DÃ©penses prÃ©vues vs rÃ©elles par catÃ©gorie.",
-  "onbTourDash4Title": "Ajouter une dÃ©pense",
-  "onbTourDash4Body": "Appuyez sur + Ã  tout moment pour enregistrer une dÃ©pense.",
-  "onbTourDash5Title": "Navigation",
-  "onbTourDash5Body": "5 sections : Budget, Ã‰picerie, Liste, Coach, Repas.",
-  "onbTourGrocery1Title": "Rechercher et filtrer",
-  "onbTourGrocery1Body": "Recherchez par nom ou filtrez par catÃ©gorie.",
-  "onbTourGrocery2Title": "Ajouter Ã  la liste",
-  "onbTourGrocery2Body": "Appuyez sur + sur un produit pour l'ajouter Ã  votre liste de courses.",
-  "onbTourGrocery3Title": "CatÃ©gories",
-  "onbTourGrocery3Body": "Faites dÃ©filer les filtres de catÃ©gorie pour affiner les produits.",
-  "onbTourShopping1Title": "Cocher les articles",
-  "onbTourShopping1Body": "Appuyez sur un article pour le marquer comme pris.",
-  "onbTourShopping2Title": "Finaliser l'achat",
-  "onbTourShopping2Body": "Enregistre la dÃ©pense et efface les articles cochÃ©s.",
-  "onbTourShopping3Title": "Historique d'achats",
-  "onbTourShopping3Body": "Consultez toutes vos sessions d'achats passÃ©es ici.",
-  "onbTourCoach1Title": "Analyser mon budget",
-  "onbTourCoach1Body": "Appuyez pour gÃ©nÃ©rer une analyse basÃ©e sur vos donnÃ©es rÃ©elles.",
-  "onbTourCoach2Title": "Historique d'analyses",
-  "onbTourCoach2Body": "Les analyses sauvegardÃ©es apparaissent ici, les plus rÃ©centes en premier.",
-  "onbTourMeals1Title": "GÃ©nÃ©rer un plan",
-  "onbTourMeals1Body": "CrÃ©e un mois complet de repas dans votre budget alimentaire.",
-  "onbTourMeals2Title": "Vue hebdomadaire",
-  "onbTourMeals2Body": "Parcourez les repas par semaine. Appuyez sur un jour pour voir la recette.",
-  "onbTourMeals3Title": "Ajouter Ã  la liste de courses",
-  "onbTourMeals3Body": "Envoyez les ingrÃ©dients de la semaine Ã  votre liste en un seul appui.",
-"onbTourExpenseTracker1Title": "Navigation mensuelle",  "onbTourExpenseTracker1Body": "Changez de mois pour voir ou ajouter des dépenses pour n'importe quelle période.",  "onbTourExpenseTracker2Title": "Résumé du budget",  "onbTourExpenseTracker2Body": "Voyez votre budget vs dépenses réelles et le solde restant en un coup d'œil.",  "onbTourExpenseTracker3Title": "Par catégorie",  "onbTourExpenseTracker3Body": "Chaque catégorie affiche une barre de progression. Touchez pour développer et voir les dépenses individuelles.",  "onbTourExpenseTracker4Title": "Ajouter une dépense",  "onbTourExpenseTracker4Body": "Touchez + pour enregistrer une nouvelle dépense. Choisissez la catégorie et le montant.",  "onbTourSavings1Title": "Vos objectifs",  "onbTourSavings1Body": "Chaque carte montre la progression vers votre objectif. Touchez pour voir les détails et ajouter des contributions.",  "onbTourSavings2Title": "Créer un objectif",  "onbTourSavings2Body": "Touchez + pour définir un nouvel objectif d'épargne avec un montant cible et une date limite optionnelle.",  "onbTourRecurring1Title": "Dépenses récurrentes",  "onbTourRecurring1Body": "Factures fixes mensuelles comme le loyer, abonnements et services. Incluses automatiquement dans votre budget.",  "onbTourRecurring2Title": "Ajouter récurrente",  "onbTourRecurring2Body": "Touchez + pour enregistrer une nouvelle dépense récurrente avec montant et jour d'échéance.",  "onbTourAssistant1Title": "Assistant de commandes",  "onbTourAssistant1Body": "Votre raccourci pour les actions rapides. Touchez pour ajouter des dépenses, changer les paramètres, naviguer et plus u2014 tapez simplement ce dont vous avez besoin.",
-  "taxDeductionTitle": "DÃ©ductions Fiscales",
-  "taxDeductionSeeDetail": "Voir dÃ©tail",
-  "taxDeductionEstimated": "dÃ©duction estimÃ©e",
-  "taxDeductionMaxOf": "Max. de {amount}",
-  "@taxDeductionMaxOf": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "taxDeductionDetailTitle": "DÃ©ductions Fiscales â€” DÃ©tail",
-  "taxDeductionDeductibleTitle": "CATÃ‰GORIES DÃ‰DUCTIBLES",
-  "taxDeductionNonDeductibleTitle": "CATÃ‰GORIES NON DÃ‰DUCTIBLES",
-  "taxDeductionTotalLabel": "DÃ‰DUCTION ESTIMÃ‰E",
-  "taxDeductionSpent": "DÃ©pensÃ© : {amount}",
-  "@taxDeductionSpent": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "taxDeductionCapUsed": "{percent} de {cap} utilisÃ©",
-  "@taxDeductionCapUsed": {
-    "placeholders": {
-      "percent": {
-        "type": "String"
-      },
-      "cap": {
-        "type": "String"
-      }
-    }
-  },
-  "taxDeductionNotDeductible": "Non dÃ©ductible",
-  "taxDeductionDisclaimer": "Ces valeurs sont des estimations basÃ©es sur vos dÃ©penses enregistrÃ©es. Les dÃ©ductions rÃ©elles dÃ©pendent des factures dÃ©clarÃ©es. Consultez un professionnel fiscal pour les montants dÃ©finitifs.",
-  "settingsDashTaxDeductions": "DÃ©ductions fiscales (PT)",
-  "settingsDashUpcomingBills": "Factures Ã  venir",
-  "settingsDashBudgetStreaks": "SÃ©ries de budget",
-  "upcomingBillsTitle": "Factures Ã  Venir",
-  "upcomingBillsManage": "GÃ©rer",
-  "billDueToday": "Aujourd'hui",
-  "billDueTomorrow": "Demain",
-  "billDueInDays": "Dans {days} jours",
-  "@billDueInDays": {
-    "placeholders": {
-      "days": {
-        "type": "int"
-      }
-    }
-  },
-  "savingsProjectionReachedBy": "Atteint d'ici {date}",
-  "@savingsProjectionReachedBy": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
-  "savingsProjectionNeedPerMonth": "Besoin de {amount}/mois pour respecter l'Ã©chÃ©ance",
-  "@savingsProjectionNeedPerMonth": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "savingsProjectionOnTrack": "En bonne voie",
-  "savingsProjectionBehind": "En retard",
-  "savingsProjectionNoData": "Ajoutez des contributions pour voir la projection",
-  "savingsProjectionAvgContribution": "Moy. {amount}/mois",
-  "@savingsProjectionAvgContribution": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "taxSimTitle": "Simulateur Fiscal",
-  "taxSimPresets": "SCÃ‰NARIOS RAPIDES",
-  "taxSimPresetRaise": "+â‚¬200 augmentation",
-  "taxSimPresetMeal": "Carte vs espÃ¨ces",
-  "taxSimPresetTitular": "Conjoint vs sÃ©parÃ©",
-  "taxSimParameters": "PARAMÃˆTRES",
-  "taxSimGross": "Salaire brut",
-  "taxSimMarital": "Ã‰tat civil",
-  "taxSimTitulares": "Titulaires",
-  "taxSimDependentes": "Personnes Ã  charge",
-  "taxSimMealType": "Type d'indemnitÃ© repas",
-  "taxSimMealAmount": "IndemnitÃ© repas/jour",
-  "taxSimComparison": "ACTUEL VS SIMULÃ‰",
-  "taxSimNetTakeHome": "Net Ã  percevoir",
-  "taxSimIRS": "Retenue d'impÃ´t",
-  "taxSimSS": "SÃ©curitÃ© sociale",
-  "taxSimDelta": "DiffÃ©rence mensuelle :",
-  "taxSimButton": "Simulateur Fiscal",
-  "streakTitle": "SÃ©ries de Budget",
-  "streakBronze": "Bronze",
-  "streakSilver": "Argent",
-  "streakGold": "Or",
-  "streakBronzeDesc": "LiquiditÃ© positive",
-  "streakSilverDesc": "Dans le budget",
-  "streakGoldDesc": "Toutes catÃ©gories",
-  "streakMonths": "{count} mois",
-  "@streakMonths": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "expenseDefaultBudget": "BUDGET DE BASE",
-  "expenseOverrideActive": "AjustÃ© pour {month}: {amount}",
-  "@expenseOverrideActive": {
-    "placeholders": {
-      "month": {
-        "type": "String"
-      },
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "expenseAdjustMonth": "Ajuster pour {month}",
-  "@expenseAdjustMonth": {
-    "placeholders": {
-      "month": {
-        "type": "String"
-      }
-    }
-  },
-  "expenseAdjustMonthHint": "Laissez vide pour utiliser le budget de base",
-  "settingsPersonalTip": "Le statut matrimonial et les personnes Ã  charge affectent votre tranche d'imposition, ce qui dÃ©termine le montant d'impÃ´t retenu sur votre salaire.",
-  "settingsSalariesTip": "Le salaire brut est utilisÃ© pour calculer le revenu net aprÃ¨s impÃ´ts et sÃ©curitÃ© sociale. Ajoutez plusieurs salaires si le mÃ©nage a plus d'un revenu.",
-  "settingsExpensesTip": "DÃ©finissez le budget mensuel pour chaque catÃ©gorie. Vous pouvez le modifier pour des mois spÃ©cifiques dans la vue dÃ©taillÃ©e.",
-  "settingsMealHouseholdTip": "Nombre de personnes qui mangent Ã  la maison. Cela adapte les recettes et les portions dans votre plan de repas.",
-  "settingsHouseholdTip": "Invitez des membres de la famille Ã  partager les donnÃ©es budgÃ©taires entre appareils. Tous les membres voient les mÃªmes dÃ©penses et budgets.",
-  "subscriptionTitle": "Abonnement",
-  "subscriptionFree": "Gratuit",
-  "subscriptionPremium": "Premium",
-  "subscriptionFamily": "Famille",
-  "subscriptionTrialActive": "Essai actif",
-  "subscriptionTrialDaysLeft": "{count} jours restants",
-  "@subscriptionTrialDaysLeft": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "subscriptionTrialExpired": "Essai expirÃ©",
-  "subscriptionUpgrade": "Mettre Ã  jour",
-  "subscriptionSeePlans": "Voir les Plans",
-  "subscriptionCurrentPlan": "Plan Actuel",
-  "subscriptionManage": "GÃ©rer l'Abonnement",
-  "subscriptionFeatureExplored": "{count}/{total} fonctionnalitÃ©s explorÃ©es",
-  "@subscriptionFeatureExplored": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
-  },
-  "subscriptionTrialBannerTitle": "Essai Premium Actif",
-  "subscriptionTrialEndingSoon": "{count} jours restants dans votre essai !",
-  "@subscriptionTrialEndingSoon": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "subscriptionTrialLastDay": "Dernier jour de votre essai gratuit !",
-  "subscriptionUpgradeNow": "Mettre Ã  jour Maintenant",
-  "subscriptionKeepData": "Conserver Vos DonnÃ©es",
-  "subscriptionCancelAnytime": "Annulez Ã  tout moment",
-  "subscriptionNoHiddenFees": "Sans frais cachÃ©s",
-  "subscriptionMostPopular": "Le Plus Populaire",
-  "subscriptionYearlySave": "Ã©conomisez {percent}%",
-  "@subscriptionYearlySave": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "subscriptionMonthly": "Mensuel",
-  "subscriptionYearly": "Annuel",
-  "subscriptionPerMonth": "/mois",
-  "subscriptionPerYear": "/an",
-  "subscriptionBilledYearly": "facturÃ© annuellement",
-  "subscriptionStartPremium": "Commencer Premium",
-  "subscriptionStartFamily": "Commencer Famille",
-  "subscriptionContinueFree": "Continuer Gratuit",
-  "subscriptionTrialEnded": "Votre pÃ©riode d'essai est terminÃ©e",
-  "subscriptionChoosePlan": "Choisissez un plan pour conserver toutes vos donnÃ©es et fonctionnalitÃ©s",
-  "subscriptionUnlockPower": "DÃ©bloquez toute la puissance de votre budget",
-  "subscriptionRequiresPaid": "{feature} nÃ©cessite un abonnement payant",
-  "@subscriptionRequiresPaid": {
-    "placeholders": {
-      "feature": {
-        "type": "String"
-      }
-    }
-  },
-  "subscriptionTryFeature": "Essayez {feature}",
-  "@subscriptionTryFeature": {
-    "placeholders": {
-      "feature": {
-        "type": "String"
-      }
-    }
-  },
-  "subscriptionExplore": "Explorer {feature}",
-  "@subscriptionExplore": { "placeholders": { "feature": { "type": "String" } } },
-
-  "subtitleBatchCooking": "Suggère des recettes préparables à l'avance pour plusieurs repas",
-  "subtitleReuseLeftovers": "Planifie des repas qui réutilisent les ingrédients des jours précédents",
-  "subtitleMinimizeWaste": "Priorise l'utilisation de tous les ingrédients achetés avant leur expiration",
-  "subtitleMealTypeInclude": "Inclure ce repas dans votre plan hebdomadaire",
-
-  "subtitleShowHeroCard": "Votre résumé de liquidité nette en haut",
-  "subtitleShowStressIndex": "Score (0-100) mesurant la pression des dépenses vs les revenus",
-  "subtitleShowMonthReview": "Résumé comparatif de ce mois avec les précédents",
-  "subtitleShowUpcomingBills": "Dépenses récurrentes dans les 30 prochains jours",
-  "subtitleShowSummaryCards": "Revenus, déductions, dépenses et taux d'épargne",
-  "subtitleShowBudgetVsActual": "Comparaison côte à côte par catégorie de dépense",
-  "subtitleShowExpensesBreakdown": "Graphique circulaire des dépenses par catégorie",
-  "subtitleShowSavingsGoals": "Progression vers vos objectifs d'épargne",
-  "subtitleShowTaxDeductions": "Déductions fiscales éligibles estimées cette année",
-  "subtitleShowBudgetStreaks": "Combien de mois consécutifs vous êtes resté dans le budget",
-  "subtitleShowPurchaseHistory": "Achats récents de la liste de courses et coûts",
-  "subtitleShowCharts": "Graphiques de tendance du budget, des dépenses et des revenus",
-
-  "subtitleChartExpensesPie": "Répartition des dépenses par catégorie",
-  "subtitleChartIncomeVsExpenses": "Revenus mensuels comparés aux dépenses totales",
-  "subtitleChartDeductions": "Ventilation des dépenses déductibles d'impôts",
-  "subtitleChartNetIncome": "Tendance du revenu net au fil du temps",
-  "subtitleChartSavingsRate": "Pourcentage de revenus épargnés chaque mois",
-
-  "helperCountry": "Détermine le système fiscal, la devise et les taux de sécurité sociale",
-  "helperLanguage": "Remplacer la langue du système. \"Système\" suit le réglage de votre appareil",
-  "helperMaritalStatus": "Affecte le calcul de la tranche d'imposition",
-  "helperMealObjective": "Définit le régime alimentaire : omnivore, végétarien, pescatarien, etc.",
-  "helperSodiumPreference": "Filtre les recettes par niveau de teneur en sodium",
-
-  "subtitleDietaryRestriction": "Exclut les recettes contenant {ingredient}",
-  "@subtitleDietaryRestriction": { "placeholders": { "ingredient": { "type": "String" } } },
-  "subtitleExcludedProtein": "Supprimer {protein} de toutes les suggestions de repas",
-  "@subtitleExcludedProtein": { "placeholders": { "protein": { "type": "String" } } },
-  "subtitleKitchenEquipment": "Active les recettes nécessitant {equipment}",
-  "@subtitleKitchenEquipment": { "placeholders": { "equipment": { "type": "String" } } },
-
-  "helperVeggieDays": "Nombre de jours entièrement végétariens par semaine",
-  "helperFishDays": "Recommandé : 2-3 fois par semaine",
-  "helperLegumeDays": "Recommandé : 2-3 fois par semaine",
-  "helperRedMeatDays": "Recommandé : maximum 2 fois par semaine",
-  "helperMaxPrepTime": "Temps de cuisson maximum pour les repas en semaine (minutes)",
-  "helperMaxComplexity": "Niveau de difficulté des recettes pour les jours de semaine",
-  "helperWeekendPrepTime": "Temps de cuisson maximum pour les repas du week-end (minutes)",
-  "helperWeekendComplexity": "Niveau de difficulté des recettes pour le week-end",
-  "helperMaxBatchDays": "Combien de jours un repas cuisiné en lot peut être réutilisé",
-  "helperNewIngredients": "Limite le nombre de nouveaux ingrédients par semaine",
-
-  "helperGrossSalary": "Salaire total avant impôts et déductions",
-  "helperExemptIncome": "Revenus supplémentaires non soumis à l'impôt (ex. : subventions)",
-  "helperMealAllowance": "Indemnité repas journalière de votre employeur",
-  "helperWorkingDays": "Typique : 22. Affecte le calcul de l'indemnité repas",
-  "helperSalaryLabel": "Un nom pour identifier cette source de revenus",
-  "helperExpenseAmount": "Montant mensuel budgété pour cette catégorie",
-  "helperCalorieTarget": "Recommandé : 2000-2500 kcal pour les adultes",
-  "helperProteinTarget": "Recommandé : 50-70g pour les adultes",
-  "helperFiberTarget": "Recommandé : 25-30g pour les adultes",
-
-  "infoStressIndex": "Compare les dépenses réelles à votre budget. Plages de scores :\n\n0-30 : Confortable - dépenses bien dans le budget\n30-60 : Modéré - approche des limites du budget\n60-100 : Critique - les dépenses dépassent significativement le budget",
-  "infoBudgetStreak": "Mois consécutifs où vos dépenses totales sont restées dans le budget total.",
-  "infoUpcomingBills": "Affiche les dépenses récurrentes dans les 30 prochains jours basées sur vos dépenses mensuelles.",
-  "infoSalaryBreakdown": "Montre comment votre salaire brut est réparti en impôt sur le revenu, cotisations de sécurité sociale, revenu net et indemnité repas.",
-  "infoBudgetVsActual": "Compare ce que vous avez budgété par catégorie avec ce que vous avez réellement dépensé. Vert signifie sous le budget, rouge signifie au-dessus.",
-  "infoSavingsGoals": "Progression vers chaque objectif d'épargne basée sur les contributions effectuées.",
-  "infoTaxDeductions": "Dépenses déductibles estimées (santé, éducation, logement). Ce sont uniquement des estimations - consultez un professionnel fiscal pour des valeurs précises.",
-  "infoPurchaseHistory": "Total dépensé en achats de la liste de courses ce mois-ci.",
-  "infoExpensesBreakdown": "Ventilation visuelle de vos dépenses par catégorie pour le mois en cours.",
-  "infoCharts": "Données de tendance au fil du temps. Appuyez sur un graphique pour une vue détaillée.",
-  "infoExpenseTrackerSummary": "Budgété = vos dépenses mensuelles prévues. Réel = ce que vous avez dépensé jusqu'ici. Restant = budget moins réel.",
-  "infoExpenseTrackerProgress": "Vert : en dessous de 75% du budget. Jaune : 75-100%. Rouge : au-dessus du budget.",
-  "infoExpenseTrackerFilter": "Filtrez les dépenses par texte, catégorie ou plage de dates.",
-  "infoSavingsProjection": "Basé sur vos contributions mensuelles moyennes. \"En bonne voie\" signifie que votre rythme actuel atteint l'objectif à temps. \"En retard\" signifie que vous devez augmenter vos contributions.",
-  "infoSavingsRequired": "Le montant que vous devez épargner chaque mois à partir de maintenant pour atteindre votre objectif dans les délais.",
-  "infoCoachModes": "Eco : gratuit, sans mémoire de conversation.\nPlus : 1 crédit par message, retient les 5 derniers messages.\nPro : 2 crédits par message, mémoire de conversation complète.",
-  "infoCoachCredits": "Les crédits sont utilisés pour les modes Plus et Pro. Vous recevez des crédits de démarrage à l'inscription. Le mode Eco est toujours gratuit.",
-
-  "helperWizardGrossSalary": "Votre salaire mensuel total avant impôts",
-  "helperWizardMealAllowance": "Indemnité repas journalière de l'employeur (le cas échéant)",
-  "helperWizardRent": "Paiement mensuel de logement",
-  "helperWizardGroceries": "Budget mensuel alimentation et produits ménagers",
-  "helperWizardTransport": "Coûts mensuels de transport (carburant, transports en commun, etc.)",
-  "helperWizardUtilities": "Électricité, eau et gaz mensuels",
-  "helperWizardTelecom": "Internet, téléphone et TV mensuels",
-  "savingsGoalHowItWorksTitle": "Comment ça marche ?",
-  "@savingsGoalHowItWorksTitle": { "description": "How it works section title" },
-  "savingsGoalHowItWorksStep1": "Créez un objectif avec un nom et le montant à atteindre (ex : \"Vacances — 2 000 €\").",
-  "@savingsGoalHowItWorksStep1": { "description": "How it works step 1" },
-  "savingsGoalHowItWorksStep2": "Définissez éventuellement une date limite comme référence.",
-  "@savingsGoalHowItWorksStep2": { "description": "How it works step 2" },
-  "savingsGoalHowItWorksStep3": "Chaque fois que vous économisez, touchez l'objectif et enregistrez une contribution avec le montant et la date.",
-  "@savingsGoalHowItWorksStep3": { "description": "How it works step 3" },
-  "savingsGoalHowItWorksStep4": "Suivez votre progression : la barre montre combien vous avez épargné et la projection estime quand vous atteindrez votre objectif.",
-  "@savingsGoalHowItWorksStep4": { "description": "How it works step 4" },
-  "savingsGoalDashboardHint": "Touchez un objectif pour voir les détails et enregistrer des contributions.",
-  "@savingsGoalDashboardHint": { "description": "Dashboard hint text" },
-  "rateLimitMessage": "Veuillez patienter un moment avant de réessayer",
-
-  "barcodeScanTitle": "Scanner Code-barres",
-  "barcodeScanHint": "Pointez la camera vers un code-barres",
-  "barcodeScanTooltip": "Scanner code-barres",
-  "barcodeProductFound": "Produit Trouve",
-  "barcodeProductNotFound": "Produit Non Trouve",
-  "barcodeLabel": "Code-barres",
-  "barcodeAddToList": "Ajouter a la Liste",
-  "barcodeManualEntry": "Aucun produit trouve. Saisissez les details manuellement :",
-  "barcodeProductName": "Nom du produit",
-  "barcodePrice": "Prix",
-  "barcodeAddedToList": "{name} ajoute a la liste de courses",
-  "@barcodeAddedToList": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "mealBudgetInsightTitle": "Aperçu du Budget",
-  "mealBudgetStatusSafe": "En bonne voie",
-  "mealBudgetStatusWatch": "Attention",
-  "mealBudgetStatusOver": "Hors budget",
-  "mealBudgetWeeklyCost": "Coût hebdomadaire estimé",
-  "mealBudgetProjectedMonthly": "Projection mensuelle",
-  "mealBudgetMonthlyBudget": "Budget alimentaire mensuel",
-  "mealBudgetRemaining": "Budget restant",
-  "mealBudgetTopExpensive": "Repas les plus chers",
-  "mealBudgetSuggestedSwaps": "Échanges moins chers suggérés",
-  "mealBudgetViewDetails": "Voir les détails",
-  "mealBudgetApplySwap": "Appliquer",
-  "mealBudgetSwapSavings": "Économisez {amount}",
-  "@mealBudgetSwapSavings": {
-    "placeholders": {
-      "amount": { "type": "String" }
-    }
-  },
-  "mealBudgetDailyBreakdown": "Répartition quotidienne des coûts",
-  "mealBudgetShoppingImpact": "Impact sur les courses",
-  "mealBudgetUniqueIngredients": "Ingrédients uniques",
-  "mealBudgetEstShoppingCost": "Coût estimé des courses"
 }

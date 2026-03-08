@@ -49,4 +49,6 @@ flutter:
     - assets/barcode_products.json
     - assets/meal_planner/ingredients.json
     - assets/meal_planner/recipes.json
+    - assets/whats_new.json
+    - assets/roadmap.json
 

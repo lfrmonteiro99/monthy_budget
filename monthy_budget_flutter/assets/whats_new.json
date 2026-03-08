@@ -1,0 +1,30 @@
+[
+  {
+    "id": "2026.3.5-ai-coach",
+    "version": "2026.3.5",
+    "title": "AI Financial Coach",
+    "body": "Get personalized financial advice with our new AI-powered coach. Choose between Eco, Plus, and Pro modes for different levels of conversation depth.",
+    "featureKey": "coach"
+  },
+  {
+    "id": "2026.3.5-meal-planner",
+    "version": "2026.3.5",
+    "title": "Meal Planner",
+    "body": "Plan your weekly meals and automatically generate shopping lists with cost estimates. Helps you stay on budget while eating well.",
+    "featureKey": "meals"
+  },
+  {
+    "id": "2026.3.4-savings-goals",
+    "version": "2026.3.4",
+    "title": "Savings Goals Tracking",
+    "body": "Set savings targets with deadlines and track your progress. Visualize how close you are to achieving each goal.",
+    "featureKey": "savings_goals"
+  },
+  {
+    "id": "2026.3.3-expense-trends",
+    "version": "2026.3.3",
+    "title": "Expense Trends & Insights",
+    "body": "New charts and analytics to help you understand your spending patterns over time. Identify trends and optimize your budget.",
+    "featureKey": "expense_trends"
+  }
+]
