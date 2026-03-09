@@ -2123,5 +2123,141 @@
         }
     },
     "freeformAddToSlot": "Añadir comida libre",
-    "freeformReplace": "Reemplazar con comida libre"
+    "freeformReplace": "Reemplazar con comida libre",
+
+    "insightsTitle": "Análisis",
+    "insightsAnalyzeSpending": "Analizar gastos a lo largo del tiempo",
+    "insightsTrackProgress": "Seguir progreso de tus metas",
+    "insightsTaxOutcome": "Estimar resultado fiscal anual",
+
+    "moreTitle": "Más",
+    "moreDetailedDashboard": "Panel Detallado",
+    "moreDetailedDashboardSubtitle": "Abrir panel financiero completo con todas las tarjetas",
+    "moreSavingsSubtitle": "Seguir y actualizar el progreso de tus metas",
+    "moreNotificationsSubtitle": "Presupuestos, facturas y recordatorios",
+    "moreSettingsSubtitle": "Preferencias, perfil y panel",
+    "morePlanFree": "Plan Gratis",
+    "morePlanTrial": "Prueba Activa",
+    "morePlanPro": "Plan Pro",
+    "morePlanFamily": "Plan Familiar",
+    "morePlanManage": "Gestionar tu plan y facturación",
+    "morePlanLimits": "{categories} categorías \u2022 {goals} meta de ahorro",
+    "@morePlanLimits": {
+        "placeholders": {
+            "categories": { "type": "int" },
+            "goals": { "type": "int" }
+        }
+    },
+    "moreItemsPaused": "{count} elementos pausados",
+    "@moreItemsPaused": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "moreUpgrade": "Mejorar \u2192",
+
+    "planTitle": "Planificar",
+    "planGrocerySubtitle": "Explorar productos y precios",
+    "planShoppingList": "Lista de Compras",
+    "planShoppingSubtitle": "Revisar y finalizar compras",
+    "planMealSubtitle": "Generar planes semanales asequibles",
+
+    "coachActiveMemory": "Memoria activa: {mode} ({percent}%)",
+    "@coachActiveMemory": {
+        "placeholders": {
+            "mode": { "type": "String" },
+            "percent": { "type": "int" }
+        }
+    },
+    "coachCostPerMessageNote": "Coste por mensaje enviado. La respuesta del coach no consume créditos.",
+    "coachExpandTip": "Expandir aviso",
+    "coachCollapseTip": "Minimizar aviso",
+
+    "featureTryName": "Probar {name}",
+    "@featureTryName": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "featureExploreName": "Explorar {name}",
+    "@featureExploreName": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "featureRequiresPremium": "{name} requiere Premium",
+    "@featureRequiresPremium": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "featureTapToUpgrade": "Toca para mejorar",
+    "featureNameAiCoach": "Coach IA",
+    "featureNameMealPlanner": "Planificador de Comidas",
+    "featureNameExpenseTracker": "Rastreador de Gastos",
+    "featureNameSavingsGoals": "Metas de Ahorro",
+    "featureNameShoppingList": "Lista de Compras",
+    "featureNameGroceryBrowser": "Explorador de Productos",
+    "featureNameExportReports": "Exportar Informes",
+    "featureNameTaxSimulator": "Simulador Fiscal",
+    "featureNameDashboard": "Panel",
+    "featureTagAiCoach": "Tu asesor financiero personal",
+    "featureTagMealPlanner": "Ahorra dinero en comida",
+    "featureTagExpenseTracker": "Sabe adónde va cada euro",
+    "featureTagSavingsGoals": "Haz realidad tus sueños",
+    "featureTagShoppingList": "Compra de forma más inteligente",
+    "featureTagGroceryBrowser": "Compara precios al instante",
+    "featureTagExportReports": "Informes profesionales de presupuesto",
+    "featureTagTaxSimulator": "Planificación fiscal multi-país",
+    "featureTagDashboard": "Tu visión financiera general",
+    "featureDescAiCoach": "Obtén información personalizada sobre tus hábitos de gasto, consejos de ahorro y optimización del presupuesto con IA.",
+    "featureDescMealPlanner": "Planifica comidas semanales dentro de tu presupuesto. La IA genera recetas según tus preferencias y necesidades alimentarias.",
+    "featureDescExpenseTracker": "Sigue los gastos reales vs. presupuesto en tiempo real. Ve dónde gastas de más y dónde puedes ahorrar.",
+    "featureDescSavingsGoals": "Define metas de ahorro con plazos, sigue contribuciones y ve proyecciones de cuándo alcanzarás tus objetivos.",
+    "featureDescShoppingList": "Crea listas de compras compartidas en tiempo real. Marca artículos mientras compras, finaliza y controla gastos.",
+    "featureDescGroceryBrowser": "Explora productos de varias tiendas, compara precios y añade las mejores ofertas directamente a tu lista de compras.",
+    "featureDescExportReports": "Exporta tu presupuesto, gastos y resúmenes financieros en PDF o CSV para tus registros o contable.",
+    "featureDescTaxSimulator": "Compara obligaciones fiscales entre países. Perfecto para expatriados y quienes consideran mudarse.",
+    "featureDescDashboard": "Ve el resumen completo del presupuesto, gráficos y salud financiera de un vistazo.",
+
+    "trialPremiumActive": "Prueba Premium Activa",
+    "trialHalfway": "Tu prueba está a mitad de camino",
+    "trialDaysLeftInTrial": "¡{count} días restantes en tu prueba!",
+    "@trialDaysLeftInTrial": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "trialLastDay": "¡Último día de tu prueba gratuita!",
+    "trialSeePlans": "Ver Planes",
+    "trialUpgradeNow": "Mejorar Ahora \u2014 Conserva Tus Datos",
+    "trialSubtitleUrgent": "Tu acceso premium termina pronto. Mejora para conservar el Coach IA, Planificador de Comidas y todos tus datos.",
+    "trialSubtitleMidFeature": "¿Ya probaste el {name}? ¡Aprovecha al máximo tu prueba!",
+    "@trialSubtitleMidFeature": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "trialSubtitleMidProgress": "¡Estás haciendo un gran progreso! Sigue explorando funciones premium.",
+    "trialSubtitleEarly": "Tienes acceso completo a todas las funciones premium. ¡Explora todo!",
+    "trialFeaturesExplored": "{explored}/{total} funciones exploradas",
+    "@trialFeaturesExplored": {
+        "placeholders": {
+            "explored": { "type": "int" },
+            "total": { "type": "int" }
+        }
+    },
+    "trialDaysRemaining": "{count} días restantes",
+    "@trialDaysRemaining": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "trialProgressLabel": "Progreso de la prueba {percent}%",
+    "@trialProgressLabel": {
+        "placeholders": {
+            "percent": { "type": "int" }
+        }
+    },
+    "featureNameAiCoachFull": "Coach Financiero IA"
 }

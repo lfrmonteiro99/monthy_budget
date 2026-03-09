@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:orcamento_mensal/l10n/generated/app_localizations.dart';
 import 'package:orcamento_mensal/models/subscription_state.dart';
 import 'package:orcamento_mensal/widgets/trial_banner.dart';
 
-/// Wrap widget under test in a MaterialApp for theme context.
+/// Wrap widget under test in a MaterialApp with localization for theme context.
 Widget _wrap(Widget child) {
-  return MaterialApp(home: Scaffold(body: SingleChildScrollView(child: child)));
+  return MaterialApp(
+    locale: const Locale('en'),
+    localizationsDelegates: const [
+      S.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
+    supportedLocales: S.supportedLocales,
+    home: Scaffold(body: SingleChildScrollView(child: child)),
+  );
 }
 
 void main() {
@@ -120,7 +132,7 @@ void main() {
 
     group('mid phase (4-10 days left)', () {
       testWidgets('shows "halfway through" headline', (tester) async {
-        // Day 14 of 21 = 7 days left → mid phase
+        // Day 14 of 21 = 7 days left -> mid phase
         final state = SubscriptionState(
           trialStartDate: DateTime.now().subtract(const Duration(days: 14)),
         );
@@ -142,7 +154,7 @@ void main() {
           TrialBanner(subscription: state, onUpgrade: () {}),
         ));
 
-        // Next feature after 'dashboard' is 'ai_coach' → "AI Financial Coach"
+        // Next feature after 'dashboard' is 'ai_coach' -> "AI Financial Coach"
         expect(
           find.textContaining('AI Financial Coach'),
           findsOneWidget,
@@ -182,7 +194,7 @@ void main() {
     group('urgent phase (<=3 days left)', () {
       testWidgets('shows "X days left in your trial!" headline',
           (tester) async {
-        // Day 18 of 21 = 3 days left → urgent
+        // Day 18 of 21 = 3 days left -> urgent
         final state = SubscriptionState(
           trialStartDate: DateTime.now().subtract(const Duration(days: 18)),
         );
@@ -208,7 +220,7 @@ void main() {
       });
 
       testWidgets('shows urgent CTA text', (tester) async {
-        // Day 19 of 21 = 2 days left → urgent
+        // Day 19 of 21 = 2 days left -> urgent
         final state = SubscriptionState(
           trialStartDate: DateTime.now().subtract(const Duration(days: 19)),
         );
@@ -218,7 +230,7 @@ void main() {
         ));
 
         expect(
-            find.text('Upgrade Now — Keep Your Data'), findsOneWidget);
+            find.text('Upgrade Now \u2014 Keep Your Data'), findsOneWidget);
       });
 
       testWidgets('shows timer icon in urgent phase', (tester) async {
@@ -361,7 +373,7 @@ void main() {
           ),
         ));
 
-        await tester.tap(find.text('Upgrade Now — Keep Your Data'));
+        await tester.tap(find.text('Upgrade Now \u2014 Keep Your Data'));
         expect(upgraded, true);
       });
     });

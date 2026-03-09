@@ -41,7 +41,7 @@ class MoreScreen extends StatelessWidget {
         backgroundColor: AppColors.surface(context),
         surfaceTintColor: AppColors.surface(context),
         title: Text(
-          'More',
+          l10n.moreTitle,
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w700,
@@ -54,14 +54,14 @@ class MoreScreen extends StatelessWidget {
         children: [
           _Tile(
             icon: Icons.dashboard_customize_outlined,
-            title: 'Detailed Dashboard',
-            subtitle: 'Open full financial dashboard with all cards',
+            title: l10n.moreDetailedDashboard,
+            subtitle: l10n.moreDetailedDashboardSubtitle,
             onTap: onOpenDetailedDashboard,
           ),
           const SizedBox(height: 8),
           _Tile(
             icon: Icons.insights_outlined,
-            title: 'Insights',
+            title: l10n.insightsTitle,
             subtitle: l10n.trendTitle,
             onTap: onOpenInsights,
           ),
@@ -69,14 +69,14 @@ class MoreScreen extends StatelessWidget {
           _Tile(
             icon: Icons.savings_outlined,
             title: l10n.savingsGoals,
-            subtitle: 'Track and update your goal progress',
+            subtitle: l10n.moreSavingsSubtitle,
             onTap: onOpenSavingsGoals,
           ),
           const SizedBox(height: 8),
           _Tile(
             icon: Icons.notifications_outlined,
             title: l10n.notifications,
-            subtitle: 'Budgets, bills and reminders',
+            subtitle: l10n.moreNotificationsSubtitle,
             onTap: onOpenNotifications,
           ),
           const SizedBox(height: 8),
@@ -106,7 +106,7 @@ class MoreScreen extends StatelessWidget {
           _Tile(
             icon: Icons.settings_outlined,
             title: l10n.settingsTitle,
-            subtitle: 'Preferences, profile and dashboard',
+            subtitle: l10n.moreSettingsSubtitle,
             onTap: onOpenSettings,
           ),
         ],
@@ -126,32 +126,32 @@ class _SubscriptionTile extends StatelessWidget {
     required this.onTap,
   });
 
-  String _planLabel() {
-    if (subscription == null) return 'Free Plan';
-    if (subscription!.isTrialActive) return 'Trial Active';
+  String _planLabel(S l10n) {
+    if (subscription == null) return l10n.morePlanFree;
+    if (subscription!.isTrialActive) return l10n.morePlanTrial;
     switch (subscription!.tier) {
       case SubscriptionTier.premium:
-        return 'Pro Plan';
+        return l10n.morePlanPro;
       case SubscriptionTier.family:
-        return 'Family Plan';
+        return l10n.morePlanFamily;
       case SubscriptionTier.free:
-        return 'Free Plan';
+        return l10n.morePlanFree;
     }
   }
 
-  String _planDetails() {
+  String _planDetails(S l10n) {
     if (subscription == null || subscription!.hasPremiumAccess) {
-      return 'Manage your plan and billing';
+      return l10n.morePlanManage;
     }
-    final details = <String>[
-      '${DowngradeService.maxFreeCategories} categories',
-      '${DowngradeService.maxFreeSavingsGoals} savings goal',
-    ];
-    return details.join(' \u2022 ');
+    return l10n.morePlanLimits(
+      DowngradeService.maxFreeCategories,
+      DowngradeService.maxFreeSavingsGoals,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return ListTile(
       tileColor: AppColors.surface(context),
       shape: RoundedRectangleBorder(
@@ -161,7 +161,7 @@ class _SubscriptionTile extends StatelessWidget {
       leading:
           Icon(Icons.workspace_premium_outlined, color: AppColors.primary(context)),
       title: Text(
-        _planLabel(),
+        _planLabel(l10n),
         style: TextStyle(
           fontWeight: FontWeight.w700,
           color: AppColors.textPrimary(context),
@@ -171,14 +171,14 @@ class _SubscriptionTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            _planDetails(),
+            _planDetails(l10n),
             style: TextStyle(color: AppColors.textSecondary(context)),
           ),
           if (pausedItemCount > 0)
             Padding(
               padding: const EdgeInsets.only(top: 2),
               child: Text(
-                '$pausedItemCount items paused',
+                l10n.moreItemsPaused(pausedItemCount),
                 style: TextStyle(
                   fontSize: 12,
                   color: AppColors.textMuted(context),
@@ -189,7 +189,7 @@ class _SubscriptionTile extends StatelessWidget {
       ),
       trailing: subscription != null && !subscription!.hasPremiumAccess
           ? Text(
-              'Upgrade \u2192',
+              l10n.moreUpgrade,
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,

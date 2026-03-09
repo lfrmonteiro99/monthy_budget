@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../models/subscription_state.dart';
 import '../theme/app_colors.dart';
 
@@ -25,7 +26,8 @@ class FeatureDiscoveryCard extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final info = _featureInfo(next);
+    final l10n = S.of(context);
+    final info = _featureInfo(next, l10n);
 
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
@@ -59,7 +61,7 @@ class FeatureDiscoveryCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Try ${info.name}',
+                        l10n.featureTryName(info.name),
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
@@ -99,7 +101,7 @@ class FeatureDiscoveryCard extends StatelessWidget {
               child: OutlinedButton.icon(
                 onPressed: () => onExploreFeature(next),
                 icon: Icon(info.icon, size: 16),
-                label: Text('Explore ${info.name}'),
+                label: Text(l10n.featureExploreName(info.name)),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.primary(context),
                   side: BorderSide(
@@ -117,79 +119,70 @@ class FeatureDiscoveryCard extends StatelessWidget {
     );
   }
 
-  _FeatureInfo _featureInfo(String key) {
+  _FeatureInfo _featureInfo(String key, S l10n) {
     switch (key) {
       case 'ai_coach':
         return _FeatureInfo(
-          name: 'AI Coach',
+          name: l10n.featureNameAiCoach,
           icon: Icons.psychology_rounded,
-          tagline: 'Your personal financial advisor',
-          description:
-              'Get personalized insights about your spending habits, savings tips, and budget optimization powered by AI.',
+          tagline: l10n.featureTagAiCoach,
+          description: l10n.featureDescAiCoach,
         );
       case 'meal_planner':
         return _FeatureInfo(
-          name: 'Meal Planner',
+          name: l10n.featureNameMealPlanner,
           icon: Icons.restaurant_rounded,
-          tagline: 'Save money on food',
-          description:
-              'Plan weekly meals within your budget. AI generates recipes based on your preferences and dietary needs.',
+          tagline: l10n.featureTagMealPlanner,
+          description: l10n.featureDescMealPlanner,
         );
       case 'expense_tracker':
         return _FeatureInfo(
-          name: 'Expense Tracker',
+          name: l10n.featureNameExpenseTracker,
           icon: Icons.receipt_long_rounded,
-          tagline: 'Know where every euro goes',
-          description:
-              'Track actual expenses vs. your budget in real-time. See where you\'re overspending and where you can save.',
+          tagline: l10n.featureTagExpenseTracker,
+          description: l10n.featureDescExpenseTracker,
         );
       case 'savings_goals':
         return _FeatureInfo(
-          name: 'Savings Goals',
+          name: l10n.featureNameSavingsGoals,
           icon: Icons.savings_rounded,
-          tagline: 'Make your dreams happen',
-          description:
-              'Set savings goals with deadlines, track contributions, and see projections for when you\'ll reach your targets.',
+          tagline: l10n.featureTagSavingsGoals,
+          description: l10n.featureDescSavingsGoals,
         );
       case 'shopping_list':
         return _FeatureInfo(
-          name: 'Shopping List',
+          name: l10n.featureNameShoppingList,
           icon: Icons.shopping_basket_rounded,
-          tagline: 'Shop smarter together',
-          description:
-              'Create shared shopping lists that sync in real-time. Check items off as you shop, finalize and track spending.',
+          tagline: l10n.featureTagShoppingList,
+          description: l10n.featureDescShoppingList,
         );
       case 'grocery_browser':
         return _FeatureInfo(
-          name: 'Grocery Browser',
+          name: l10n.featureNameGroceryBrowser,
           icon: Icons.shopping_cart_rounded,
-          tagline: 'Compare prices instantly',
-          description:
-              'Browse products from multiple stores, compare prices, and add the best deals directly to your shopping list.',
+          tagline: l10n.featureTagGroceryBrowser,
+          description: l10n.featureDescGroceryBrowser,
         );
       case 'export':
         return _FeatureInfo(
-          name: 'Export Reports',
+          name: l10n.featureNameExportReports,
           icon: Icons.download_rounded,
-          tagline: 'Professional budget reports',
-          description:
-              'Export your budget, expenses, and financial summaries as PDF or CSV for your records or accountant.',
+          tagline: l10n.featureTagExportReports,
+          description: l10n.featureDescExportReports,
         );
       case 'tax_simulator':
         return _FeatureInfo(
-          name: 'Tax Simulator',
+          name: l10n.featureNameTaxSimulator,
           icon: Icons.calculate_rounded,
-          tagline: 'Multi-country tax planning',
-          description:
-              'Compare tax obligations across countries. Perfect for expats and anyone considering relocation.',
+          tagline: l10n.featureTagTaxSimulator,
+          description: l10n.featureDescTaxSimulator,
         );
       default:
         return _FeatureInfo(
-          name: 'Dashboard',
+          name: l10n.featureNameDashboard,
           icon: Icons.dashboard_rounded,
-          tagline: 'Your financial overview',
-          description:
-              'See your complete budget breakdown, charts, and financial health at a glance.',
+          tagline: l10n.featureTagDashboard,
+          description: l10n.featureDescDashboard,
         );
     }
   }
@@ -228,6 +221,7 @@ class PremiumLockOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!isLocked) return child;
 
+    final l10n = S.of(context);
     return GestureDetector(
       onTap: onTapLocked,
       child: Stack(
@@ -258,7 +252,7 @@ class PremiumLockOverlay extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    '$featureName requires Premium',
+                    l10n.featureRequiresPremium(featureName),
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -268,7 +262,7 @@ class PremiumLockOverlay extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Tap to upgrade',
+                    l10n.featureTapToUpgrade,
                     style: TextStyle(
                       fontSize: 12,
                       color: AppColors.primary(context),

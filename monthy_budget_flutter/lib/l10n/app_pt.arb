@@ -4395,5 +4395,213 @@
         }
     },
     "freeformAddToSlot": "Adicionar refeição livre",
-    "freeformReplace": "Substituir por refeição livre"
+    "freeformReplace": "Substituir por refeição livre",
+
+    "insightsTitle": "Análise",
+    "@insightsTitle": { "description": "Title for the Insights screen" },
+    "insightsAnalyzeSpending": "Analisar gastos ao longo do tempo",
+    "@insightsAnalyzeSpending": { "description": "Subtitle for expense trends tile" },
+    "insightsTrackProgress": "Acompanhar progresso das metas",
+    "@insightsTrackProgress": { "description": "Subtitle for savings goals tile" },
+    "insightsTaxOutcome": "Estimar resultado fiscal anual",
+    "@insightsTaxOutcome": { "description": "Subtitle for tax simulator tile" },
+
+    "moreTitle": "Mais",
+    "@moreTitle": { "description": "Title for the More screen" },
+    "moreDetailedDashboard": "Painel Detalhado",
+    "@moreDetailedDashboard": { "description": "Detailed dashboard tile title" },
+    "moreDetailedDashboardSubtitle": "Abrir painel financeiro completo com todos os cartões",
+    "@moreDetailedDashboardSubtitle": { "description": "Detailed dashboard tile subtitle" },
+    "moreSavingsSubtitle": "Acompanhar e atualizar o progresso das metas",
+    "@moreSavingsSubtitle": { "description": "Savings goals tile subtitle" },
+    "moreNotificationsSubtitle": "Orçamentos, contas e lembretes",
+    "@moreNotificationsSubtitle": { "description": "Notifications tile subtitle" },
+    "moreSettingsSubtitle": "Preferências, perfil e painel",
+    "@moreSettingsSubtitle": { "description": "Settings tile subtitle" },
+    "morePlanFree": "Plano Grátis",
+    "@morePlanFree": { "description": "Free plan label" },
+    "morePlanTrial": "Período de Teste Ativo",
+    "@morePlanTrial": { "description": "Trial active label" },
+    "morePlanPro": "Plano Pro",
+    "@morePlanPro": { "description": "Pro plan label" },
+    "morePlanFamily": "Plano Família",
+    "@morePlanFamily": { "description": "Family plan label" },
+    "morePlanManage": "Gerir o teu plano e faturação",
+    "@morePlanManage": { "description": "Manage plan subtitle" },
+    "morePlanLimits": "{categories} categorias \u2022 {goals} meta de poupança",
+    "@morePlanLimits": {
+        "description": "Free plan limits summary",
+        "placeholders": {
+            "categories": { "type": "int" },
+            "goals": { "type": "int" }
+        }
+    },
+    "moreItemsPaused": "{count} itens pausados",
+    "@moreItemsPaused": {
+        "description": "Count of paused items on subscription tile",
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "moreUpgrade": "Upgrade \u2192",
+    "@moreUpgrade": { "description": "Upgrade CTA text" },
+
+    "planTitle": "Planear",
+    "@planTitle": { "description": "Title for the Plan hub screen" },
+    "planGrocerySubtitle": "Explorar produtos e preços",
+    "@planGrocerySubtitle": { "description": "Grocery tile subtitle" },
+    "planShoppingList": "Lista de Compras",
+    "@planShoppingList": { "description": "Shopping list tile title" },
+    "planShoppingSubtitle": "Rever e finalizar compras",
+    "@planShoppingSubtitle": { "description": "Shopping list tile subtitle" },
+    "planMealSubtitle": "Gerar planos semanais acessíveis",
+    "@planMealSubtitle": { "description": "Meal planner tile subtitle" },
+
+    "coachActiveMemory": "Memória ativa: {mode} ({percent}%)",
+    "@coachActiveMemory": {
+        "description": "Active memory status line in coach mode card",
+        "placeholders": {
+            "mode": { "type": "String" },
+            "percent": { "type": "int" }
+        }
+    },
+    "coachCostPerMessageNote": "Custo por mensagem enviada. A resposta do coach não consome créditos.",
+    "@coachCostPerMessageNote": { "description": "Note about credit cost per message" },
+    "coachExpandTip": "Expandir aviso",
+    "@coachExpandTip": { "description": "Tooltip for expanding fallback card" },
+    "coachCollapseTip": "Minimizar aviso",
+    "@coachCollapseTip": { "description": "Tooltip for collapsing fallback card" },
+
+    "featureTryName": "Experimentar {name}",
+    "@featureTryName": {
+        "description": "Feature discovery card title",
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "featureExploreName": "Explorar {name}",
+    "@featureExploreName": {
+        "description": "Feature discovery card CTA button",
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "featureRequiresPremium": "{name} requer Premium",
+    "@featureRequiresPremium": {
+        "description": "Lock overlay message",
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "featureTapToUpgrade": "Toca para fazer upgrade",
+    "@featureTapToUpgrade": { "description": "Lock overlay CTA" },
+    "featureNameAiCoach": "Coach IA",
+    "@featureNameAiCoach": { "description": "AI Coach feature name" },
+    "featureNameMealPlanner": "Planeador de Refeições",
+    "@featureNameMealPlanner": { "description": "Meal Planner feature name" },
+    "featureNameExpenseTracker": "Rastreador de Despesas",
+    "@featureNameExpenseTracker": { "description": "Expense Tracker feature name" },
+    "featureNameSavingsGoals": "Metas de Poupança",
+    "@featureNameSavingsGoals": { "description": "Savings Goals feature name" },
+    "featureNameShoppingList": "Lista de Compras",
+    "@featureNameShoppingList": { "description": "Shopping List feature name" },
+    "featureNameGroceryBrowser": "Explorador de Produtos",
+    "@featureNameGroceryBrowser": { "description": "Grocery Browser feature name" },
+    "featureNameExportReports": "Exportar Relatórios",
+    "@featureNameExportReports": { "description": "Export Reports feature name" },
+    "featureNameTaxSimulator": "Simulador Fiscal",
+    "@featureNameTaxSimulator": { "description": "Tax Simulator feature name" },
+    "featureNameDashboard": "Painel",
+    "@featureNameDashboard": { "description": "Dashboard feature name" },
+    "featureTagAiCoach": "O teu consultor financeiro pessoal",
+    "@featureTagAiCoach": { "description": "AI Coach tagline" },
+    "featureTagMealPlanner": "Poupa dinheiro na alimentação",
+    "@featureTagMealPlanner": { "description": "Meal Planner tagline" },
+    "featureTagExpenseTracker": "Sabe para onde vai cada euro",
+    "@featureTagExpenseTracker": { "description": "Expense Tracker tagline" },
+    "featureTagSavingsGoals": "Concretiza os teus sonhos",
+    "@featureTagSavingsGoals": { "description": "Savings Goals tagline" },
+    "featureTagShoppingList": "Compra de forma mais inteligente",
+    "@featureTagShoppingList": { "description": "Shopping List tagline" },
+    "featureTagGroceryBrowser": "Compara preços instantaneamente",
+    "@featureTagGroceryBrowser": { "description": "Grocery Browser tagline" },
+    "featureTagExportReports": "Relatórios profissionais de orçamento",
+    "@featureTagExportReports": { "description": "Export Reports tagline" },
+    "featureTagTaxSimulator": "Planeamento fiscal multi-país",
+    "@featureTagTaxSimulator": { "description": "Tax Simulator tagline" },
+    "featureTagDashboard": "A tua visão financeira geral",
+    "@featureTagDashboard": { "description": "Dashboard tagline" },
+    "featureDescAiCoach": "Obtém insights personalizados sobre os teus hábitos de gastos, dicas de poupança e otimização do orçamento com IA.",
+    "@featureDescAiCoach": { "description": "AI Coach description" },
+    "featureDescMealPlanner": "Planeia refeições semanais dentro do teu orçamento. A IA gera receitas com base nas tuas preferências e necessidades alimentares.",
+    "@featureDescMealPlanner": { "description": "Meal Planner description" },
+    "featureDescExpenseTracker": "Acompanha despesas reais vs. orçamento em tempo real. Vê onde gastas demais e onde podes poupar.",
+    "@featureDescExpenseTracker": { "description": "Expense Tracker description" },
+    "featureDescSavingsGoals": "Define metas de poupança com prazos, acompanha contribuições e vê projeções de quando atingirás os teus objetivos.",
+    "@featureDescSavingsGoals": { "description": "Savings Goals description" },
+    "featureDescShoppingList": "Cria listas de compras partilhadas em tempo real. Marca itens enquanto compras, finaliza e acompanha gastos.",
+    "@featureDescShoppingList": { "description": "Shopping List description" },
+    "featureDescGroceryBrowser": "Explora produtos de várias lojas, compara preços e adiciona as melhores ofertas diretamente à tua lista de compras.",
+    "@featureDescGroceryBrowser": { "description": "Grocery Browser description" },
+    "featureDescExportReports": "Exporta o teu orçamento, despesas e resumos financeiros em PDF ou CSV para os teus registos ou contabilista.",
+    "@featureDescExportReports": { "description": "Export Reports description" },
+    "featureDescTaxSimulator": "Compara obrigações fiscais entre países. Perfeito para expatriados e quem considera mudança de país.",
+    "@featureDescTaxSimulator": { "description": "Tax Simulator description" },
+    "featureDescDashboard": "Vê o resumo completo do orçamento, gráficos e saúde financeira de relance.",
+    "@featureDescDashboard": { "description": "Dashboard description" },
+
+    "trialPremiumActive": "Período de Teste Premium Ativo",
+    "@trialPremiumActive": { "description": "Early phase trial headline" },
+    "trialHalfway": "O teu período de teste está a meio",
+    "@trialHalfway": { "description": "Mid phase trial headline" },
+    "trialDaysLeftInTrial": "{count} dias restantes no teu período de teste!",
+    "@trialDaysLeftInTrial": {
+        "description": "Urgent phase headline with days count",
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "trialLastDay": "Último dia do teu período de teste grátis!",
+    "@trialLastDay": { "description": "Last day urgent headline" },
+    "trialSeePlans": "Ver Planos",
+    "@trialSeePlans": { "description": "CTA button text early/mid phase" },
+    "trialUpgradeNow": "Upgrade Agora \u2014 Mantém os Teus Dados",
+    "@trialUpgradeNow": { "description": "CTA button text urgent phase" },
+    "trialSubtitleUrgent": "O teu acesso premium termina em breve. Faz upgrade para manter o Coach IA, Planeador de Refeições e todos os teus dados.",
+    "@trialSubtitleUrgent": { "description": "Urgent phase subtitle" },
+    "trialSubtitleMidFeature": "Já experimentaste o {name}? Aproveita ao máximo o teu período de teste!",
+    "@trialSubtitleMidFeature": {
+        "description": "Mid phase subtitle suggesting next feature",
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "trialSubtitleMidProgress": "Estás a fazer ótimo progresso! Continua a explorar funcionalidades premium.",
+    "@trialSubtitleMidProgress": { "description": "Mid phase subtitle when all features explored" },
+    "trialSubtitleEarly": "Tens acesso total a todas as funcionalidades premium. Explora tudo!",
+    "@trialSubtitleEarly": { "description": "Early phase subtitle" },
+    "trialFeaturesExplored": "{explored}/{total} funcionalidades exploradas",
+    "@trialFeaturesExplored": {
+        "description": "Features explored progress label",
+        "placeholders": {
+            "explored": { "type": "int" },
+            "total": { "type": "int" }
+        }
+    },
+    "trialDaysRemaining": "{count} dias restantes",
+    "@trialDaysRemaining": {
+        "description": "Days remaining label",
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "trialProgressLabel": "Progresso do teste {percent}%",
+    "@trialProgressLabel": {
+        "description": "Accessibility label for trial progress bar",
+        "placeholders": {
+            "percent": { "type": "int" }
+        }
+    },
+    "featureNameAiCoachFull": "Coach Financeiro IA",
+    "@featureNameAiCoachFull": { "description": "Full AI Financial Coach name for trial banner" }
 }
