@@ -3,9 +3,15 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 from scrapers.base import ScrapedListing
-from scrapers.registry import FunctionStoreScraper, pt_store_scrapers
+from scrapers.registry import (
+    FunctionStoreScraper,
+    es_store_scrapers,
+    pt_store_scrapers,
+)
 from scrapers.scraper_auchan import AuchanScraper
+from scrapers.scraper_carrefour_es import CarrefourEsScraper
 from scrapers.scraper_continente import ContinenteScraper
+from scrapers.scraper_mercadona import MercadonaScraper
 from scrapers.scraper_pingo_doce import PingoDoceScraper
 
 
@@ -106,6 +112,40 @@ class RegistryTest(unittest.TestCase):
             "auchan",
         ])
         self.assertTrue(all(scraper.country_code == "PT" for scraper in scrapers))
+
+    def test_es_registry_exposes_expected_store_ids(self):
+        class FakeMercadonaScraper:
+            country_code = "ES"
+            store_id = "mercadona"
+            store_name = "Mercadona"
+
+            def scrape(self):
+                return []
+
+        class FakeCarrefourEsScraper:
+            country_code = "ES"
+            store_id = "carrefour_es"
+            store_name = "Carrefour"
+
+            def scrape(self):
+                return []
+
+        fake_modules = {
+            "scraper_mercadona": SimpleNamespace(
+                MercadonaScraper=FakeMercadonaScraper,
+            ),
+            "scraper_carrefour_es": SimpleNamespace(
+                CarrefourEsScraper=FakeCarrefourEsScraper,
+            ),
+        }
+        with patch.dict("sys.modules", fake_modules):
+            scrapers = es_store_scrapers()
+
+        self.assertEqual([scraper.store_id for scraper in scrapers], [
+            "mercadona",
+            "carrefour_es",
+        ])
+        self.assertTrue(all(scraper.country_code == "ES" for scraper in scrapers))
 
 
 class ContinenteScraperTest(unittest.TestCase):
@@ -216,5 +256,78 @@ class AuchanScraperTest(unittest.TestCase):
         self.assertEqual(first.price, 1.99)
 
 
+class MercadonaScraperTest(unittest.TestCase):
+    def test_mercadona_scraper_exposes_stable_identity(self):
+        scraper = MercadonaScraper()
+
+        self.assertEqual(scraper.country_code, "ES")
+        self.assertEqual(scraper.store_id, "mercadona")
+        self.assertEqual(scraper.store_name, "Mercadona")
+
+    def test_mercadona_scraper_returns_scraped_listing_objects(self):
+        scraper = MercadonaScraper()
+
+        with patch(
+            "scrapers.scraper_mercadona._fetch_category_products",
+            return_value=[
+                {
+                    "name": "Leche Entera",
+                    "price": 1.05,
+                    "unit_price": "1,05/L",
+                    "category": "Lacteos y Huevos",
+                    "product_id": "es-1",
+                    "brand": "Hacendado",
+                }
+            ],
+        ), patch("scrapers.scraper_mercadona.time.sleep"):
+            listings = scraper.scrape()
+
+        self.assertEqual(len(listings), len(scraper.categories))
+        first = listings[0]
+        self.assertIsInstance(first, ScrapedListing)
+        self.assertEqual(first.country_code, "ES")
+        self.assertEqual(first.store_id, "mercadona")
+        self.assertEqual(first.store_name, "Mercadona")
+        self.assertEqual(first.product_name, "Leche Entera")
+        self.assertEqual(first.price, 1.05)
+
+
+class CarrefourEsScraperTest(unittest.TestCase):
+    def test_carrefour_es_scraper_exposes_stable_identity(self):
+        scraper = CarrefourEsScraper()
+
+        self.assertEqual(scraper.country_code, "ES")
+        self.assertEqual(scraper.store_id, "carrefour_es")
+        self.assertEqual(scraper.store_name, "Carrefour")
+
+    def test_carrefour_es_scraper_returns_scraped_listing_objects(self):
+        scraper = CarrefourEsScraper()
+
+        with patch(
+            "scrapers.scraper_carrefour_es._fetch_category_products",
+            return_value=[
+                {
+                    "name": "Huevos Camperos",
+                    "price": 2.49,
+                    "unit_price": "4,98/Kg",
+                    "category": "Lacteos y Huevos",
+                    "product_id": "es-2",
+                    "brand": "Carrefour",
+                }
+            ],
+        ), patch("scrapers.scraper_carrefour_es.time.sleep"):
+            listings = scraper.scrape()
+
+        self.assertEqual(len(listings), len(scraper.categories))
+        first = listings[0]
+        self.assertIsInstance(first, ScrapedListing)
+        self.assertEqual(first.country_code, "ES")
+        self.assertEqual(first.store_id, "carrefour_es")
+        self.assertEqual(first.store_name, "Carrefour")
+        self.assertEqual(first.product_name, "Huevos Camperos")
+        self.assertEqual(first.price, 2.49)
+
+
 if __name__ == "__main__":
     unittest.main()
+

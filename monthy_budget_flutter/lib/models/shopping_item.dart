@@ -21,6 +21,12 @@ class ShoppingItem {
   /// Optional: cheapest known price from price history.
   final double? cheapestKnownPrice;
 
+  /// Optional: quantity to buy (e.g. 0.7 for 700g).
+  final double? quantity;
+
+  /// Optional: unit of measurement (e.g. kg, g, un, L, mL).
+  final String? unit;
+
   ShoppingItem({
     this.id = '',
     required this.productName,
@@ -33,6 +39,8 @@ class ShoppingItem {
     this.preferredStore,
     this.cheapestKnownStore,
     this.cheapestKnownPrice,
+    this.quantity,
+    this.unit,
   }) : assert(price >= 0, 'price must be non-negative');
 
   @override
@@ -49,12 +57,14 @@ class ShoppingItem {
           sourceMealLabel == other.sourceMealLabel &&
           preferredStore == other.preferredStore &&
           cheapestKnownStore == other.cheapestKnownStore &&
-          cheapestKnownPrice == other.cheapestKnownPrice;
+          cheapestKnownPrice == other.cheapestKnownPrice &&
+          quantity == other.quantity &&
+          unit == other.unit;
 
   @override
   int get hashCode => Object.hash(id, productName, store, price, unitPrice,
       checked, sourceMealId, sourceMealLabel, preferredStore,
-      cheapestKnownStore, cheapestKnownPrice);
+      cheapestKnownStore, cheapestKnownPrice, quantity, unit);
 
   factory ShoppingItem.fromJson(Map<String, dynamic> json) {
     final rawPrice = (json['price'] as num?)?.toDouble() ?? 0;
@@ -72,6 +82,8 @@ class ShoppingItem {
       cheapestKnownStore: json['cheapestKnownStore'] as String?,
       cheapestKnownPrice:
           rawCheapest != null && rawCheapest < 0 ? 0 : rawCheapest,
+      quantity: (json['quantity'] as num?)?.toDouble(),
+      unit: json['unit'] as String?,
     );
   }
 
@@ -89,6 +101,8 @@ class ShoppingItem {
           'cheapestKnownStore': cheapestKnownStore,
         if (cheapestKnownPrice != null)
           'cheapestKnownPrice': cheapestKnownPrice,
+        if (quantity != null) 'quantity': quantity,
+        if (unit != null) 'unit': unit,
       };
 
   factory ShoppingItem.fromSupabase(Map<String, dynamic> row) {
@@ -107,6 +121,8 @@ class ShoppingItem {
       cheapestKnownStore: row['cheapest_known_store'] as String?,
       cheapestKnownPrice:
           rawCheapest != null && rawCheapest < 0 ? 0 : rawCheapest,
+      quantity: (row['quantity'] as num?)?.toDouble(),
+      unit: row['unit'] as String?,
     );
   }
 
@@ -124,5 +140,7 @@ class ShoppingItem {
           'cheapest_known_store': cheapestKnownStore,
         if (cheapestKnownPrice != null)
           'cheapest_known_price': cheapestKnownPrice,
+        if (quantity != null) 'quantity': quantity,
+        if (unit != null) 'unit': unit,
       };
 }

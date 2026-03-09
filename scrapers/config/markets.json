@@ -1,0 +1,12 @@
+{
+  "markets": [
+    {
+      "countryCode": "PT",
+      "configPath": "PT.json"
+    },
+    {
+      "countryCode": "ES",
+      "configPath": "ES.json"
+    }
+  ]
+}

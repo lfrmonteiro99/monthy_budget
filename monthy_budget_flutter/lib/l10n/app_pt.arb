@@ -4670,5 +4670,43 @@
             "count": { "type": "int" }
         }
     },
-    "quickScanReceipt": "Scan Recibo"
+    "quickScanReceipt": "Scan Recibo",
+    "groceryMarketData": "Dados do mercado {marketCode}",
+    "@groceryMarketData": {
+        "placeholders": {
+            "marketCode": { "type": "String" }
+        }
+    },
+    "groceryStoreCoverage": "{active} lojas ativas em {total}",
+    "@groceryStoreCoverage": {
+        "placeholders": {
+            "active": { "type": "int" },
+            "total": { "type": "int" }
+        }
+    },
+    "groceryStoreFreshCount": "{count} fresca",
+    "@groceryStoreFreshCount": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "groceryStorePartialCount": "{count} parcial",
+    "@groceryStorePartialCount": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "groceryStoreFailedCount": "{count} falhada",
+    "@groceryStoreFailedCount": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "groceryHideStaleStores": "Esconder lojas desatualizadas",
+    "groceryComparisonsFreshOnly": "A mostrar {count} loja fresca nas compara\u00e7\u00f5es",
+    "@groceryComparisonsFreshOnly": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    }
 }

@@ -4418,4 +4418,37 @@ class SFr extends S {
 
   @override
   String get quickScanReceipt => 'Scanner Reçu';
+
+  @override
+  String groceryMarketData(String marketCode) {
+    return 'Données du marché $marketCode';
+  }
+
+  @override
+  String groceryStoreCoverage(int active, int total) {
+    return '$active magasins actifs sur $total';
+  }
+
+  @override
+  String groceryStoreFreshCount(int count) {
+    return '$count frais';
+  }
+
+  @override
+  String groceryStorePartialCount(int count) {
+    return '$count partiel';
+  }
+
+  @override
+  String groceryStoreFailedCount(int count) {
+    return '$count en échec';
+  }
+
+  @override
+  String get groceryHideStaleStores => 'Masquer les magasins obsolètes';
+
+  @override
+  String groceryComparisonsFreshOnly(int count) {
+    return 'Affichage de $count magasin frais dans les comparaisons';
+  }
 }

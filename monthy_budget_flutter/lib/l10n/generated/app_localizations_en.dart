@@ -4380,4 +4380,37 @@ class SEn extends S {
 
   @override
   String get quickScanReceipt => 'Scan Receipt';
+
+  @override
+  String groceryMarketData(String marketCode) {
+    return '$marketCode market data';
+  }
+
+  @override
+  String groceryStoreCoverage(int active, int total) {
+    return '$active active of $total stores';
+  }
+
+  @override
+  String groceryStoreFreshCount(int count) {
+    return '$count fresh';
+  }
+
+  @override
+  String groceryStorePartialCount(int count) {
+    return '$count partial';
+  }
+
+  @override
+  String groceryStoreFailedCount(int count) {
+    return '$count failed';
+  }
+
+  @override
+  String get groceryHideStaleStores => 'Hide stale stores';
+
+  @override
+  String groceryComparisonsFreshOnly(int count) {
+    return 'Showing $count fresh store in comparisons';
+  }
 }

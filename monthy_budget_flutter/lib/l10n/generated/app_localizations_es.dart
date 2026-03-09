@@ -4412,4 +4412,37 @@ class SEs extends S {
 
   @override
   String get quickScanReceipt => 'Escanear Recibo';
+
+  @override
+  String groceryMarketData(String marketCode) {
+    return 'Datos del mercado $marketCode';
+  }
+
+  @override
+  String groceryStoreCoverage(int active, int total) {
+    return '$active tiendas activas de $total';
+  }
+
+  @override
+  String groceryStoreFreshCount(int count) {
+    return '$count fresca';
+  }
+
+  @override
+  String groceryStorePartialCount(int count) {
+    return '$count parcial';
+  }
+
+  @override
+  String groceryStoreFailedCount(int count) {
+    return '$count fallida';
+  }
+
+  @override
+  String get groceryHideStaleStores => 'Ocultar tiendas desactualizadas';
+
+  @override
+  String groceryComparisonsFreshOnly(int count) {
+    return 'Mostrando $count tienda fresca en comparaciones';
+  }
 }

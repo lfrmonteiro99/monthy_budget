@@ -1,4 +1,4 @@
-﻿"""Normalization models for grocery pipeline artifacts."""
+"""Normalization models for grocery pipeline artifacts."""
 
 from __future__ import annotations
 
@@ -142,6 +142,16 @@ class UnmatchedListingReport:
 class ReportingResult:
     duplicate_groups: list[DuplicateCanonicalGroup]
     unmatched_listings: list[UnmatchedListingReport]
+    warnings: list[str]
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class MatchingDiagnosticsReport:
+    unmatched_by_store: dict[str, list[str]]
+    low_confidence_listing_ids: list[str]
     warnings: list[str]
 
     def to_dict(self) -> dict[str, Any]:

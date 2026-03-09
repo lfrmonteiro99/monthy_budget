@@ -4406,4 +4406,37 @@ class SPt extends S {
 
   @override
   String get quickScanReceipt => 'Scan Recibo';
+
+  @override
+  String groceryMarketData(String marketCode) {
+    return 'Dados do mercado $marketCode';
+  }
+
+  @override
+  String groceryStoreCoverage(int active, int total) {
+    return '$active lojas ativas em $total';
+  }
+
+  @override
+  String groceryStoreFreshCount(int count) {
+    return '$count fresca';
+  }
+
+  @override
+  String groceryStorePartialCount(int count) {
+    return '$count parcial';
+  }
+
+  @override
+  String groceryStoreFailedCount(int count) {
+    return '$count falhada';
+  }
+
+  @override
+  String get groceryHideStaleStores => 'Esconder lojas desatualizadas';
+
+  @override
+  String groceryComparisonsFreshOnly(int count) {
+    return 'A mostrar $count loja fresca nas comparações';
+  }
 }
