@@ -4093,4 +4093,258 @@ class SEs extends S {
 
   @override
   String get freeformReplace => 'Reemplazar con comida libre';
+
+  @override
+  String get insightsTitle => 'Análisis';
+
+  @override
+  String get insightsAnalyzeSpending => 'Analizar gastos a lo largo del tiempo';
+
+  @override
+  String get insightsTrackProgress => 'Seguir progreso de tus metas';
+
+  @override
+  String get insightsTaxOutcome => 'Estimar resultado fiscal anual';
+
+  @override
+  String get moreTitle => 'Más';
+
+  @override
+  String get moreDetailedDashboard => 'Panel Detallado';
+
+  @override
+  String get moreDetailedDashboardSubtitle =>
+      'Abrir panel financiero completo con todas las tarjetas';
+
+  @override
+  String get moreSavingsSubtitle =>
+      'Seguir y actualizar el progreso de tus metas';
+
+  @override
+  String get moreNotificationsSubtitle =>
+      'Presupuestos, facturas y recordatorios';
+
+  @override
+  String get moreSettingsSubtitle => 'Preferencias, perfil y panel';
+
+  @override
+  String get morePlanFree => 'Plan Gratis';
+
+  @override
+  String get morePlanTrial => 'Prueba Activa';
+
+  @override
+  String get morePlanPro => 'Plan Pro';
+
+  @override
+  String get morePlanFamily => 'Plan Familiar';
+
+  @override
+  String get morePlanManage => 'Gestionar tu plan y facturación';
+
+  @override
+  String morePlanLimits(int categories, int goals) {
+    return '$categories categorías • $goals meta de ahorro';
+  }
+
+  @override
+  String moreItemsPaused(int count) {
+    return '$count elementos pausados';
+  }
+
+  @override
+  String get moreUpgrade => 'Mejorar →';
+
+  @override
+  String get planTitle => 'Planificar';
+
+  @override
+  String get planGrocerySubtitle => 'Explorar productos y precios';
+
+  @override
+  String get planShoppingList => 'Lista de Compras';
+
+  @override
+  String get planShoppingSubtitle => 'Revisar y finalizar compras';
+
+  @override
+  String get planMealSubtitle => 'Generar planes semanales asequibles';
+
+  @override
+  String coachActiveMemory(String mode, int percent) {
+    return 'Memoria activa: $mode ($percent%)';
+  }
+
+  @override
+  String get coachCostPerMessageNote =>
+      'Coste por mensaje enviado. La respuesta del coach no consume créditos.';
+
+  @override
+  String get coachExpandTip => 'Expandir aviso';
+
+  @override
+  String get coachCollapseTip => 'Minimizar aviso';
+
+  @override
+  String featureTryName(String name) {
+    return 'Probar $name';
+  }
+
+  @override
+  String featureExploreName(String name) {
+    return 'Explorar $name';
+  }
+
+  @override
+  String featureRequiresPremium(String name) {
+    return '$name requiere Premium';
+  }
+
+  @override
+  String get featureTapToUpgrade => 'Toca para mejorar';
+
+  @override
+  String get featureNameAiCoach => 'Coach IA';
+
+  @override
+  String get featureNameMealPlanner => 'Planificador de Comidas';
+
+  @override
+  String get featureNameExpenseTracker => 'Rastreador de Gastos';
+
+  @override
+  String get featureNameSavingsGoals => 'Metas de Ahorro';
+
+  @override
+  String get featureNameShoppingList => 'Lista de Compras';
+
+  @override
+  String get featureNameGroceryBrowser => 'Explorador de Productos';
+
+  @override
+  String get featureNameExportReports => 'Exportar Informes';
+
+  @override
+  String get featureNameTaxSimulator => 'Simulador Fiscal';
+
+  @override
+  String get featureNameDashboard => 'Panel';
+
+  @override
+  String get featureTagAiCoach => 'Tu asesor financiero personal';
+
+  @override
+  String get featureTagMealPlanner => 'Ahorra dinero en comida';
+
+  @override
+  String get featureTagExpenseTracker => 'Sabe adónde va cada euro';
+
+  @override
+  String get featureTagSavingsGoals => 'Haz realidad tus sueños';
+
+  @override
+  String get featureTagShoppingList => 'Compra de forma más inteligente';
+
+  @override
+  String get featureTagGroceryBrowser => 'Compara precios al instante';
+
+  @override
+  String get featureTagExportReports => 'Informes profesionales de presupuesto';
+
+  @override
+  String get featureTagTaxSimulator => 'Planificación fiscal multi-país';
+
+  @override
+  String get featureTagDashboard => 'Tu visión financiera general';
+
+  @override
+  String get featureDescAiCoach =>
+      'Obtén información personalizada sobre tus hábitos de gasto, consejos de ahorro y optimización del presupuesto con IA.';
+
+  @override
+  String get featureDescMealPlanner =>
+      'Planifica comidas semanales dentro de tu presupuesto. La IA genera recetas según tus preferencias y necesidades alimentarias.';
+
+  @override
+  String get featureDescExpenseTracker =>
+      'Sigue los gastos reales vs. presupuesto en tiempo real. Ve dónde gastas de más y dónde puedes ahorrar.';
+
+  @override
+  String get featureDescSavingsGoals =>
+      'Define metas de ahorro con plazos, sigue contribuciones y ve proyecciones de cuándo alcanzarás tus objetivos.';
+
+  @override
+  String get featureDescShoppingList =>
+      'Crea listas de compras compartidas en tiempo real. Marca artículos mientras compras, finaliza y controla gastos.';
+
+  @override
+  String get featureDescGroceryBrowser =>
+      'Explora productos de varias tiendas, compara precios y añade las mejores ofertas directamente a tu lista de compras.';
+
+  @override
+  String get featureDescExportReports =>
+      'Exporta tu presupuesto, gastos y resúmenes financieros en PDF o CSV para tus registros o contable.';
+
+  @override
+  String get featureDescTaxSimulator =>
+      'Compara obligaciones fiscales entre países. Perfecto para expatriados y quienes consideran mudarse.';
+
+  @override
+  String get featureDescDashboard =>
+      'Ve el resumen completo del presupuesto, gráficos y salud financiera de un vistazo.';
+
+  @override
+  String get trialPremiumActive => 'Prueba Premium Activa';
+
+  @override
+  String get trialHalfway => 'Tu prueba está a mitad de camino';
+
+  @override
+  String trialDaysLeftInTrial(int count) {
+    return '¡$count días restantes en tu prueba!';
+  }
+
+  @override
+  String get trialLastDay => '¡Último día de tu prueba gratuita!';
+
+  @override
+  String get trialSeePlans => 'Ver Planes';
+
+  @override
+  String get trialUpgradeNow => 'Mejorar Ahora — Conserva Tus Datos';
+
+  @override
+  String get trialSubtitleUrgent =>
+      'Tu acceso premium termina pronto. Mejora para conservar el Coach IA, Planificador de Comidas y todos tus datos.';
+
+  @override
+  String trialSubtitleMidFeature(String name) {
+    return '¿Ya probaste el $name? ¡Aprovecha al máximo tu prueba!';
+  }
+
+  @override
+  String get trialSubtitleMidProgress =>
+      '¡Estás haciendo un gran progreso! Sigue explorando funciones premium.';
+
+  @override
+  String get trialSubtitleEarly =>
+      'Tienes acceso completo a todas las funciones premium. ¡Explora todo!';
+
+  @override
+  String trialFeaturesExplored(int explored, int total) {
+    return '$explored/$total funciones exploradas';
+  }
+
+  @override
+  String trialDaysRemaining(int count) {
+    return '$count días restantes';
+  }
+
+  @override
+  String trialProgressLabel(int percent) {
+    return 'Progreso de la prueba $percent%';
+  }
+
+  @override
+  String get featureNameAiCoachFull => 'Coach Financiero IA';
 }

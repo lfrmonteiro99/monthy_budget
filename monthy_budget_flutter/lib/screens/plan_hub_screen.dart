@@ -25,7 +25,7 @@ class PlanHubScreen extends StatelessWidget {
         backgroundColor: AppColors.surface(context),
         surfaceTintColor: AppColors.surface(context),
         title: Text(
-          'Plan',
+          l10n.planTitle,
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w700,
@@ -39,21 +39,21 @@ class PlanHubScreen extends StatelessWidget {
           _HubCard(
             icon: Icons.shopping_cart_outlined,
             title: l10n.groceryTitle,
-            subtitle: 'Browse products and prices',
+            subtitle: l10n.planGrocerySubtitle,
             onTap: onOpenGrocery,
           ),
           const SizedBox(height: 12),
           _HubCard(
             icon: Icons.shopping_basket_outlined,
-            title: 'Shopping List',
-            subtitle: 'Review and finalize purchases',
+            title: l10n.planShoppingList,
+            subtitle: l10n.planShoppingSubtitle,
             onTap: onOpenShoppingList,
           ),
           const SizedBox(height: 12),
           _HubCard(
             icon: Icons.restaurant_outlined,
             title: l10n.mealPlannerTitle,
-            subtitle: 'Generate affordable weekly plans',
+            subtitle: l10n.planMealSubtitle,
             onTap: onOpenMealPlanner,
           ),
           const SizedBox(height: 12),

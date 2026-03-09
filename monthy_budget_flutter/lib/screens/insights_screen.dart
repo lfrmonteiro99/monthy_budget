@@ -31,7 +31,7 @@ class InsightsScreen extends StatelessWidget {
         backgroundColor: AppColors.surface(context),
         surfaceTintColor: AppColors.surface(context),
         title: Text(
-          'Insights',
+          l10n.insightsTitle,
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w700,
@@ -51,14 +51,14 @@ class InsightsScreen extends StatelessWidget {
           _ActionTile(
             icon: Icons.show_chart,
             title: l10n.trendTitle,
-            subtitle: 'Analyze spending over time',
+            subtitle: l10n.insightsAnalyzeSpending,
             onTap: onOpenExpenseTrends,
           ),
           const SizedBox(height: 12),
           _ActionTile(
             icon: Icons.savings_outlined,
             title: l10n.savingsGoals,
-            subtitle: 'Track progress to your targets',
+            subtitle: l10n.insightsTrackProgress,
             onTap: onOpenSavingsGoals,
           ),
           if (settings.country == Country.pt) ...[
@@ -66,7 +66,7 @@ class InsightsScreen extends StatelessWidget {
             _ActionTile(
               icon: Icons.calculate_outlined,
               title: l10n.taxSimTitle,
-              subtitle: 'Estimate annual tax outcome',
+              subtitle: l10n.insightsTaxOutcome,
               onTap: onOpenTaxSimulator,
             ),
           ],

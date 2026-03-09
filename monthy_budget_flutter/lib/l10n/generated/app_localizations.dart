@@ -7396,6 +7396,438 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Substituir por refeição livre'**
   String get freeformReplace;
+
+  /// Title for the Insights screen
+  ///
+  /// In pt, this message translates to:
+  /// **'Análise'**
+  String get insightsTitle;
+
+  /// Subtitle for expense trends tile
+  ///
+  /// In pt, this message translates to:
+  /// **'Analisar gastos ao longo do tempo'**
+  String get insightsAnalyzeSpending;
+
+  /// Subtitle for savings goals tile
+  ///
+  /// In pt, this message translates to:
+  /// **'Acompanhar progresso das metas'**
+  String get insightsTrackProgress;
+
+  /// Subtitle for tax simulator tile
+  ///
+  /// In pt, this message translates to:
+  /// **'Estimar resultado fiscal anual'**
+  String get insightsTaxOutcome;
+
+  /// Title for the More screen
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais'**
+  String get moreTitle;
+
+  /// Detailed dashboard tile title
+  ///
+  /// In pt, this message translates to:
+  /// **'Painel Detalhado'**
+  String get moreDetailedDashboard;
+
+  /// Detailed dashboard tile subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir painel financeiro completo com todos os cartões'**
+  String get moreDetailedDashboardSubtitle;
+
+  /// Savings goals tile subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Acompanhar e atualizar o progresso das metas'**
+  String get moreSavingsSubtitle;
+
+  /// Notifications tile subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamentos, contas e lembretes'**
+  String get moreNotificationsSubtitle;
+
+  /// Settings tile subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Preferências, perfil e painel'**
+  String get moreSettingsSubtitle;
+
+  /// Free plan label
+  ///
+  /// In pt, this message translates to:
+  /// **'Plano Grátis'**
+  String get morePlanFree;
+
+  /// Trial active label
+  ///
+  /// In pt, this message translates to:
+  /// **'Período de Teste Ativo'**
+  String get morePlanTrial;
+
+  /// Pro plan label
+  ///
+  /// In pt, this message translates to:
+  /// **'Plano Pro'**
+  String get morePlanPro;
+
+  /// Family plan label
+  ///
+  /// In pt, this message translates to:
+  /// **'Plano Família'**
+  String get morePlanFamily;
+
+  /// Manage plan subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Gerir o teu plano e faturação'**
+  String get morePlanManage;
+
+  /// Free plan limits summary
+  ///
+  /// In pt, this message translates to:
+  /// **'{categories} categorias • {goals} meta de poupança'**
+  String morePlanLimits(int categories, int goals);
+
+  /// Count of paused items on subscription tile
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} itens pausados'**
+  String moreItemsPaused(int count);
+
+  /// Upgrade CTA text
+  ///
+  /// In pt, this message translates to:
+  /// **'Upgrade →'**
+  String get moreUpgrade;
+
+  /// Title for the Plan hub screen
+  ///
+  /// In pt, this message translates to:
+  /// **'Planear'**
+  String get planTitle;
+
+  /// Grocery tile subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Explorar produtos e preços'**
+  String get planGrocerySubtitle;
+
+  /// Shopping list tile title
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista de Compras'**
+  String get planShoppingList;
+
+  /// Shopping list tile subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Rever e finalizar compras'**
+  String get planShoppingSubtitle;
+
+  /// Meal planner tile subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Gerar planos semanais acessíveis'**
+  String get planMealSubtitle;
+
+  /// Active memory status line in coach mode card
+  ///
+  /// In pt, this message translates to:
+  /// **'Memória ativa: {mode} ({percent}%)'**
+  String coachActiveMemory(String mode, int percent);
+
+  /// Note about credit cost per message
+  ///
+  /// In pt, this message translates to:
+  /// **'Custo por mensagem enviada. A resposta do coach não consome créditos.'**
+  String get coachCostPerMessageNote;
+
+  /// Tooltip for expanding fallback card
+  ///
+  /// In pt, this message translates to:
+  /// **'Expandir aviso'**
+  String get coachExpandTip;
+
+  /// Tooltip for collapsing fallback card
+  ///
+  /// In pt, this message translates to:
+  /// **'Minimizar aviso'**
+  String get coachCollapseTip;
+
+  /// Feature discovery card title
+  ///
+  /// In pt, this message translates to:
+  /// **'Experimentar {name}'**
+  String featureTryName(String name);
+
+  /// Feature discovery card CTA button
+  ///
+  /// In pt, this message translates to:
+  /// **'Explorar {name}'**
+  String featureExploreName(String name);
+
+  /// Lock overlay message
+  ///
+  /// In pt, this message translates to:
+  /// **'{name} requer Premium'**
+  String featureRequiresPremium(String name);
+
+  /// Lock overlay CTA
+  ///
+  /// In pt, this message translates to:
+  /// **'Toca para fazer upgrade'**
+  String get featureTapToUpgrade;
+
+  /// AI Coach feature name
+  ///
+  /// In pt, this message translates to:
+  /// **'Coach IA'**
+  String get featureNameAiCoach;
+
+  /// Meal Planner feature name
+  ///
+  /// In pt, this message translates to:
+  /// **'Planeador de Refeições'**
+  String get featureNameMealPlanner;
+
+  /// Expense Tracker feature name
+  ///
+  /// In pt, this message translates to:
+  /// **'Rastreador de Despesas'**
+  String get featureNameExpenseTracker;
+
+  /// Savings Goals feature name
+  ///
+  /// In pt, this message translates to:
+  /// **'Metas de Poupança'**
+  String get featureNameSavingsGoals;
+
+  /// Shopping List feature name
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista de Compras'**
+  String get featureNameShoppingList;
+
+  /// Grocery Browser feature name
+  ///
+  /// In pt, this message translates to:
+  /// **'Explorador de Produtos'**
+  String get featureNameGroceryBrowser;
+
+  /// Export Reports feature name
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar Relatórios'**
+  String get featureNameExportReports;
+
+  /// Tax Simulator feature name
+  ///
+  /// In pt, this message translates to:
+  /// **'Simulador Fiscal'**
+  String get featureNameTaxSimulator;
+
+  /// Dashboard feature name
+  ///
+  /// In pt, this message translates to:
+  /// **'Painel'**
+  String get featureNameDashboard;
+
+  /// AI Coach tagline
+  ///
+  /// In pt, this message translates to:
+  /// **'O teu consultor financeiro pessoal'**
+  String get featureTagAiCoach;
+
+  /// Meal Planner tagline
+  ///
+  /// In pt, this message translates to:
+  /// **'Poupa dinheiro na alimentação'**
+  String get featureTagMealPlanner;
+
+  /// Expense Tracker tagline
+  ///
+  /// In pt, this message translates to:
+  /// **'Sabe para onde vai cada euro'**
+  String get featureTagExpenseTracker;
+
+  /// Savings Goals tagline
+  ///
+  /// In pt, this message translates to:
+  /// **'Concretiza os teus sonhos'**
+  String get featureTagSavingsGoals;
+
+  /// Shopping List tagline
+  ///
+  /// In pt, this message translates to:
+  /// **'Compra de forma mais inteligente'**
+  String get featureTagShoppingList;
+
+  /// Grocery Browser tagline
+  ///
+  /// In pt, this message translates to:
+  /// **'Compara preços instantaneamente'**
+  String get featureTagGroceryBrowser;
+
+  /// Export Reports tagline
+  ///
+  /// In pt, this message translates to:
+  /// **'Relatórios profissionais de orçamento'**
+  String get featureTagExportReports;
+
+  /// Tax Simulator tagline
+  ///
+  /// In pt, this message translates to:
+  /// **'Planeamento fiscal multi-país'**
+  String get featureTagTaxSimulator;
+
+  /// Dashboard tagline
+  ///
+  /// In pt, this message translates to:
+  /// **'A tua visão financeira geral'**
+  String get featureTagDashboard;
+
+  /// AI Coach description
+  ///
+  /// In pt, this message translates to:
+  /// **'Obtém insights personalizados sobre os teus hábitos de gastos, dicas de poupança e otimização do orçamento com IA.'**
+  String get featureDescAiCoach;
+
+  /// Meal Planner description
+  ///
+  /// In pt, this message translates to:
+  /// **'Planeia refeições semanais dentro do teu orçamento. A IA gera receitas com base nas tuas preferências e necessidades alimentares.'**
+  String get featureDescMealPlanner;
+
+  /// Expense Tracker description
+  ///
+  /// In pt, this message translates to:
+  /// **'Acompanha despesas reais vs. orçamento em tempo real. Vê onde gastas demais e onde podes poupar.'**
+  String get featureDescExpenseTracker;
+
+  /// Savings Goals description
+  ///
+  /// In pt, this message translates to:
+  /// **'Define metas de poupança com prazos, acompanha contribuições e vê projeções de quando atingirás os teus objetivos.'**
+  String get featureDescSavingsGoals;
+
+  /// Shopping List description
+  ///
+  /// In pt, this message translates to:
+  /// **'Cria listas de compras partilhadas em tempo real. Marca itens enquanto compras, finaliza e acompanha gastos.'**
+  String get featureDescShoppingList;
+
+  /// Grocery Browser description
+  ///
+  /// In pt, this message translates to:
+  /// **'Explora produtos de várias lojas, compara preços e adiciona as melhores ofertas diretamente à tua lista de compras.'**
+  String get featureDescGroceryBrowser;
+
+  /// Export Reports description
+  ///
+  /// In pt, this message translates to:
+  /// **'Exporta o teu orçamento, despesas e resumos financeiros em PDF ou CSV para os teus registos ou contabilista.'**
+  String get featureDescExportReports;
+
+  /// Tax Simulator description
+  ///
+  /// In pt, this message translates to:
+  /// **'Compara obrigações fiscais entre países. Perfeito para expatriados e quem considera mudança de país.'**
+  String get featureDescTaxSimulator;
+
+  /// Dashboard description
+  ///
+  /// In pt, this message translates to:
+  /// **'Vê o resumo completo do orçamento, gráficos e saúde financeira de relance.'**
+  String get featureDescDashboard;
+
+  /// Early phase trial headline
+  ///
+  /// In pt, this message translates to:
+  /// **'Período de Teste Premium Ativo'**
+  String get trialPremiumActive;
+
+  /// Mid phase trial headline
+  ///
+  /// In pt, this message translates to:
+  /// **'O teu período de teste está a meio'**
+  String get trialHalfway;
+
+  /// Urgent phase headline with days count
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} dias restantes no teu período de teste!'**
+  String trialDaysLeftInTrial(int count);
+
+  /// Last day urgent headline
+  ///
+  /// In pt, this message translates to:
+  /// **'Último dia do teu período de teste grátis!'**
+  String get trialLastDay;
+
+  /// CTA button text early/mid phase
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver Planos'**
+  String get trialSeePlans;
+
+  /// CTA button text urgent phase
+  ///
+  /// In pt, this message translates to:
+  /// **'Upgrade Agora — Mantém os Teus Dados'**
+  String get trialUpgradeNow;
+
+  /// Urgent phase subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'O teu acesso premium termina em breve. Faz upgrade para manter o Coach IA, Planeador de Refeições e todos os teus dados.'**
+  String get trialSubtitleUrgent;
+
+  /// Mid phase subtitle suggesting next feature
+  ///
+  /// In pt, this message translates to:
+  /// **'Já experimentaste o {name}? Aproveita ao máximo o teu período de teste!'**
+  String trialSubtitleMidFeature(String name);
+
+  /// Mid phase subtitle when all features explored
+  ///
+  /// In pt, this message translates to:
+  /// **'Estás a fazer ótimo progresso! Continua a explorar funcionalidades premium.'**
+  String get trialSubtitleMidProgress;
+
+  /// Early phase subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Tens acesso total a todas as funcionalidades premium. Explora tudo!'**
+  String get trialSubtitleEarly;
+
+  /// Features explored progress label
+  ///
+  /// In pt, this message translates to:
+  /// **'{explored}/{total} funcionalidades exploradas'**
+  String trialFeaturesExplored(int explored, int total);
+
+  /// Days remaining label
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} dias restantes'**
+  String trialDaysRemaining(int count);
+
+  /// Accessibility label for trial progress bar
+  ///
+  /// In pt, this message translates to:
+  /// **'Progresso do teste {percent}%'**
+  String trialProgressLabel(int percent);
+
+  /// Full AI Financial Coach name for trial banner
+  ///
+  /// In pt, this message translates to:
+  /// **'Coach Financeiro IA'**
+  String get featureNameAiCoachFull;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
