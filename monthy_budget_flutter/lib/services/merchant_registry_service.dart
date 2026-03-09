@@ -32,8 +32,8 @@ class MerchantRegistryService {
         .select()
         .eq('nif', nif)
         .limit(1);
-    if ((rows as List).isEmpty) return null;
-    return MerchantInfo.fromSupabase(rows.first as Map<String, dynamic>);
+    if (rows.isEmpty) return null;
+    return MerchantInfo.fromSupabase(rows.first);
   }
 
   Future<void> confirm(String nif) async {
