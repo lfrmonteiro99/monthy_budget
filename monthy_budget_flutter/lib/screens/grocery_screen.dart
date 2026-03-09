@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/grocery_data.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/product.dart';
 import '../models/shopping_item.dart';
@@ -11,6 +12,8 @@ import '../onboarding/grocery_tour.dart';
 
 class GroceryScreen extends StatefulWidget {
   final List<Product> products;
+  final GroceryData? groceryData;
+  final bool isLoading;
   final ValueChanged<ShoppingItem>? onAddToShoppingList;
   final bool showTour;
   final VoidCallback? onTourComplete;
@@ -21,6 +24,8 @@ class GroceryScreen extends StatefulWidget {
   const GroceryScreen({
     super.key,
     required this.products,
+    this.groceryData,
+    this.isLoading = false,
     this.onAddToShoppingList,
     this.showTour = false,
     this.onTourComplete,
@@ -221,7 +226,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
           ),
         ),
       ),
-      body: widget.products.isEmpty
+      body: widget.isLoading
           ? Center(
               child: Semantics(
                 label: l10n.groceryLoadingLabel,
@@ -238,8 +243,12 @@ class _GroceryScreenState extends State<GroceryScreen> {
                 ),
               ),
             )
+          : widget.products.isEmpty
+              ? _buildEmptyState(l10n)
           : Column(
               children: [
+                if ((widget.groceryData?.hasCountryBundle ?? false))
+                  _buildAvailabilityCard(l10n),
                 // Category filter chips
                 SizedBox(
                   key: GroceryTourKeys.categoryFilter,
@@ -293,6 +302,113 @@ class _GroceryScreenState extends State<GroceryScreen> {
                 ),
               ],
             ),
+    );
+  }
+
+  Widget _buildEmptyState(S l10n) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.store_mall_directory_outlined,
+              size: 44,
+              color: AppColors.textMuted(context),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              l10n.groceryEmptyStateTitle,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary(context),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l10n.groceryEmptyStateMessage,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 13,
+                color: AppColors.textSecondary(context),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAvailabilityCard(S l10n) {
+    final groceryData = widget.groceryData;
+    if (groceryData == null || !groceryData.hasCountryBundle) {
+      return const SizedBox.shrink();
+    }
+
+    final hasWarning = groceryData.hasDegradedStores;
+    final accent = hasWarning
+        ? AppColors.warning(context)
+        : AppColors.success(context);
+    final background = hasWarning
+        ? AppColors.warningBackground(context)
+        : AppColors.successBackground(context);
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: accent.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.groceryAvailabilityTitle,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: accent,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            l10n.groceryAvailabilityCountry(groceryData.countryCode),
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary(context),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            l10n.groceryAvailabilitySummary(
+              groceryData.freshStoreCount,
+              groceryData.partialStoreCount,
+              groceryData.failedStoreCount,
+            ),
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColors.textSecondary(context),
+            ),
+          ),
+          if (hasWarning) ...[
+            const SizedBox(height: 6),
+            Text(
+              l10n.groceryAvailabilityWarning,
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.textSecondary(context),
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 

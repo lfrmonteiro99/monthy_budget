@@ -799,6 +799,30 @@ class SEn extends S {
   }
 
   @override
+  String get groceryAvailabilityTitle => 'Data availability';
+
+  @override
+  String groceryAvailabilityCountry(String countryCode) {
+    return 'Market: $countryCode';
+  }
+
+  @override
+  String groceryAvailabilitySummary(int fresh, int partial, int failed) {
+    return '$fresh fresh · $partial partial · $failed unavailable';
+  }
+
+  @override
+  String get groceryAvailabilityWarning =>
+      'Some stores have stale or partial data. Comparisons may be incomplete.';
+
+  @override
+  String get groceryEmptyStateTitle => 'No grocery data available';
+
+  @override
+  String get groceryEmptyStateMessage =>
+      'Try again later or switch market in settings.';
+
+  @override
   String get shoppingTitle => 'Shopping List';
 
   @override

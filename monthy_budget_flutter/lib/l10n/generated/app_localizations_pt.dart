@@ -802,6 +802,30 @@ class SPt extends S {
   }
 
   @override
+  String get groceryAvailabilityTitle => 'Disponibilidade dos dados';
+
+  @override
+  String groceryAvailabilityCountry(String countryCode) {
+    return 'Mercado: $countryCode';
+  }
+
+  @override
+  String groceryAvailabilitySummary(int fresh, int partial, int failed) {
+    return '$fresh frescas · $partial parciais · $failed indisponíveis';
+  }
+
+  @override
+  String get groceryAvailabilityWarning =>
+      'Algumas lojas têm dados parciais ou desatualizados. As comparações podem estar incompletas.';
+
+  @override
+  String get groceryEmptyStateTitle => 'Sem dados de supermercado disponíveis';
+
+  @override
+  String get groceryEmptyStateMessage =>
+      'Tenta novamente mais tarde ou muda de mercado nas definições.';
+
+  @override
   String get shoppingTitle => 'Lista de Compras';
 
   @override
