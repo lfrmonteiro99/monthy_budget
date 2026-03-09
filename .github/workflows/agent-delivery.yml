@@ -54,10 +54,14 @@ jobs:
             COMMIT_TEXT="$(git log -n 20 --pretty=format:'%s%n%b' || true)"
           fi
 
+          # Priority: branch name first (reliable), then commit messages (fragile)
           ISSUE=""
-          ISSUE="$(printf '%s\n' "$COMMIT_TEXT" | grep -Eo '#[0-9]+' | head -n1 | tr -d '#' || true)"
+          ISSUE="$(printf '%s\n' "$BRANCH" | grep -oP '(?<=issue-)\d+' | head -n1 || true)"
           if [[ -z "$ISSUE" ]]; then
             ISSUE="$(printf '%s\n' "$BRANCH" | grep -Eo '[0-9]+' | head -n1 || true)"
+          fi
+          if [[ -z "$ISSUE" ]]; then
+            ISSUE="$(printf '%s\n' "$COMMIT_TEXT" | grep -Eo '#[0-9]+' | head -n1 | tr -d '#' || true)"
           fi
 
           if [[ -n "$ISSUE" ]]; then
