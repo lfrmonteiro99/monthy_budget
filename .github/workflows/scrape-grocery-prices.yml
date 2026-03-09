@@ -115,17 +115,16 @@ jobs:
             monthy_budget_flutter/assets/grocery/PT/stores/*.json
             monthy_budget_flutter/assets/grocery_prices.json
 
-      - name: Commit and push updated grocery assets
+      - name: Explain publication strategy
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add monthy_budget_flutter/assets/grocery_prices.json monthy_budget_flutter/assets/grocery/PT
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "chore: update grocery bundles $(date -u +%Y-%m-%d)"
-            git push
-          fi
+          {
+            echo "## Publication strategy"
+            echo
+            echo "- Scheduled grocery scrapes do not push directly to \`main\`."
+            echo "- Fresh market data is published to \`gh-pages\`, which is the app's remote source of truth."
+            echo "- Repository changes to scrapers/workflows still go through normal issue -> branch -> PR flow."
+            echo "- Bundled fallback assets in \`main\` are updated via regular PRs when needed, not by the daily scheduler."
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Deploy assets to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
