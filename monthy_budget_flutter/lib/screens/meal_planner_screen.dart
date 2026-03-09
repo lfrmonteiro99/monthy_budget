@@ -438,6 +438,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final weekDays = _getWeekDays(plan, weekIndex);
     final iMap = _service.ingredientMap;
     final totals = <String, double>{};
+    final mealLabels = <String, Set<String>>{};
     for (final day in weekDays) {
       if (day.isLeftover || day.isFreeform) continue;
       final recipe = _service.recipeMap[day.recipeId];
@@ -446,6 +447,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       for (final ri in recipe.ingredients) {
         totals.update(ri.ingredientId, (v) => v + ri.quantity * scale,
             ifAbsent: () => ri.quantity * scale);
+        (mealLabels[ri.ingredientId] ??= {}).add(recipe.name);
       }
     }
     final l10n = S.of(context);
@@ -461,6 +463,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         unitPrice: '${ing.avgPricePerUnit.toStringAsFixed(2)}\u20AC/${ing.unit}',
         quantity: entry.value,
         unit: ing.unit,
+        sourceMealLabels: mealLabels[entry.key]?.toList() ?? const [],
       ));
       count++;
     }
