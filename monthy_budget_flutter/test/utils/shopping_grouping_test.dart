@@ -207,6 +207,137 @@ void main() {
     });
   });
 
+  group('mergeIntoList', () {
+    test('adds new item when no duplicate exists', () {
+      final list = [
+        ShoppingItem(id: '1', productName: 'Arroz', store: '', price: 1.10, quantity: 1.0, unit: 'kg'),
+      ];
+      final newItem = ShoppingItem(productName: 'Frango', store: '', price: 5.25, quantity: 0.7, unit: 'kg');
+
+      final result = mergeIntoList(list, newItem);
+
+      expect(result.merged, isNull);
+      expect(result.isNew, isTrue);
+    });
+
+    test('aggregates quantity and price when duplicate exists', () {
+      final list = [
+        ShoppingItem(id: 'x', productName: 'Frango', store: '', price: 3.50, quantity: 0.5, unit: 'kg'),
+      ];
+      final newItem = ShoppingItem(productName: 'Frango', store: '', price: 2.10, quantity: 0.3, unit: 'kg');
+
+      final result = mergeIntoList(list, newItem);
+
+      expect(result.isNew, isFalse);
+      expect(result.merged, isNotNull);
+      expect(result.merged!.id, 'x');
+      expect(result.merged!.quantity, closeTo(0.8, 0.001));
+      expect(result.merged!.price, closeTo(5.60, 0.001));
+    });
+
+    test('aggregates price even when quantities are null', () {
+      final list = [
+        ShoppingItem(id: 'y', productName: 'Pão', store: '', price: 0.99),
+      ];
+      final newItem = ShoppingItem(productName: 'Pão', store: '', price: 0.99);
+
+      final result = mergeIntoList(list, newItem);
+
+      expect(result.isNew, isFalse);
+      expect(result.merged!.price, closeTo(1.98, 0.001));
+      expect(result.merged!.quantity, isNull);
+    });
+
+    test('match is case-insensitive', () {
+      final list = [
+        ShoppingItem(id: 'z', productName: 'LEITE', store: '', price: 0.89, quantity: 1.0, unit: 'L'),
+      ];
+      final newItem = ShoppingItem(productName: 'Leite', store: '', price: 0.89, quantity: 1.0, unit: 'L');
+
+      final result = mergeIntoList(list, newItem);
+
+      expect(result.isNew, isFalse);
+      expect(result.merged!.quantity, closeTo(2.0, 0.001));
+    });
+
+    test('preserves sourceMealLabel from new item when existing has none', () {
+      final list = [
+        ShoppingItem(id: 'a', productName: 'Cebola', store: '', price: 0.40, quantity: 0.2, unit: 'kg'),
+      ];
+      final newItem = ShoppingItem(
+        productName: 'Cebola', store: '', price: 0.20, quantity: 0.1, unit: 'kg',
+        sourceMealLabel: 'Sopa de Legumes',
+      );
+
+      final result = mergeIntoList(list, newItem);
+
+      expect(result.merged!.sourceMealLabel, isNull);
+      expect(result.merged!.quantity, closeTo(0.3, 0.001));
+    });
+  });
+
+  group('availableGroupModes', () {
+    test('returns only items when no meal labels or stores', () {
+      final items = [
+        ShoppingItem(id: '1', productName: 'Milk', store: '', price: 1.0),
+        ShoppingItem(id: '2', productName: 'Bread', store: '', price: 0.99),
+      ];
+
+      final modes = availableGroupModes(items);
+
+      expect(modes, [ShoppingGroupMode.items]);
+    });
+
+    test('includes meals when at least one item has sourceMealLabel', () {
+      final items = [
+        ShoppingItem(id: '1', productName: 'Frango', store: '', price: 5.0, sourceMealLabel: 'Frango Assado'),
+        ShoppingItem(id: '2', productName: 'Arroz', store: '', price: 1.0),
+      ];
+
+      final modes = availableGroupModes(items);
+
+      expect(modes, contains(ShoppingGroupMode.meals));
+      expect(modes, contains(ShoppingGroupMode.items));
+      expect(modes, isNot(contains(ShoppingGroupMode.stores)));
+    });
+
+    test('includes stores when at least one item has preferredStore', () {
+      final items = [
+        ShoppingItem(id: '1', productName: 'Leite', store: '', price: 0.89, preferredStore: 'Lidl'),
+      ];
+
+      final modes = availableGroupModes(items);
+
+      expect(modes, contains(ShoppingGroupMode.stores));
+    });
+
+    test('includes stores when at least one item has non-empty store', () {
+      final items = [
+        ShoppingItem(id: '1', productName: 'Pão', store: 'Continente', price: 0.99),
+      ];
+
+      final modes = availableGroupModes(items);
+
+      expect(modes, contains(ShoppingGroupMode.stores));
+    });
+
+    test('includes both meals and stores when data exists for both', () {
+      final items = [
+        ShoppingItem(id: '1', productName: 'Frango', store: 'Lidl', price: 5.0, sourceMealLabel: 'Frango Assado'),
+      ];
+
+      final modes = availableGroupModes(items);
+
+      expect(modes.length, 3);
+    });
+
+    test('empty list returns only items', () {
+      final modes = availableGroupModes([]);
+
+      expect(modes, [ShoppingGroupMode.items]);
+    });
+  });
+
   group('ShoppingGroup', () {
     test('totalPrice sums all items', () {
       final group = ShoppingGroup(

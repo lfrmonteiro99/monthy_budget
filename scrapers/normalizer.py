@@ -1,4 +1,4 @@
-﻿"""PT listing normalization helpers."""
+"""EU listing normalization helpers."""
 
 from __future__ import annotations
 
@@ -81,7 +81,11 @@ def _build_listing_id(listing: ScrapedListing) -> str:
     return f"{listing.country_code}_{listing.store_id}_{suffix}"
 
 
-def normalize_pt_listings(listings: list[ScrapedListing]) -> NormalizationResult:
+def normalize_eu_listings(
+    listings: list[ScrapedListing],
+    *,
+    currency_code: str = "EUR",
+) -> NormalizationResult:
     normalized: list[StoreListing] = []
     warnings: list[str] = []
 
@@ -122,10 +126,18 @@ def normalize_pt_listings(listings: list[ScrapedListing]) -> NormalizationResult
                 base_quantity=base_quantity,
                 base_unit=base_unit,
                 price=round(listing.price, 2),
-                currency_code="EUR",
+                currency_code=currency_code,
                 price_per_base_unit=price_per_base_unit,
                 source_status="fresh",
             )
         )
 
     return NormalizationResult(listings=normalized, warnings=warnings)
+
+
+def normalize_pt_listings(listings: list[ScrapedListing]) -> NormalizationResult:
+    return normalize_eu_listings(listings, currency_code="EUR")
+
+
+def normalize_es_listings(listings: list[ScrapedListing]) -> NormalizationResult:
+    return normalize_eu_listings(listings, currency_code="EUR")

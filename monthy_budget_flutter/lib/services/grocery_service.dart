@@ -1,95 +1,107 @@
-import 'dart:convert';
+﻿import 'dart:convert';
+
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/grocery_data.dart';
+
+typedef GroceryAssetLoader = Future<String> Function(String path);
 
 /// Service that loads grocery price data.
 ///
 /// Fetch order:
-///   1. Remote (GitHub Pages) — if TTL has expired
-///   2. SharedPreferences cache — if remote fails or TTL hasn't expired
-///   3. Bundled asset — first-launch fallback
+///   1. Remote - if TTL has expired
+///   2. SharedPreferences cache - if remote fails or TTL hasn't expired
+///   3. Bundled asset - first-launch fallback
 class GroceryService {
-  static const _cacheKey = 'grocery_prices_cache';
-  static const _lastFetchKey = 'grocery_prices_last_fetch';
-  static const _cacheVersionKey = 'grocery_prices_cache_version';
-  static const _assetPath = 'assets/grocery_prices.json';
+  GroceryService({
+    GroceryAssetLoader? assetLoader,
+    http.Client? httpClient,
+  }) : _assetLoader = assetLoader ?? rootBundle.loadString,
+       _httpClient = httpClient ?? http.Client();
+
+  final GroceryAssetLoader _assetLoader;
+  final http.Client _httpClient;
+
+  static const _cacheKeyPrefix = 'grocery_prices_cache';
+  static const _lastFetchKeyPrefix = 'grocery_prices_last_fetch';
+  static const _cacheVersionKeyPrefix = 'grocery_prices_cache_version';
+  static const _legacyAssetPath = 'assets/grocery_prices.json';
+  static const _remoteBaseUrl =
+      'https://lfrmonteiro99.github.io/monthy_budget';
 
   // Bump this constant to force-invalidate stale caches on all devices.
   static const _cacheVersion = 2;
-
-  /// GitHub Pages URL where the daily-scraped JSON is published.
-  /// Repo: lfrmonteiro99/monthy_budget  →  gh-pages branch
-  static const _remoteUrl =
-      'https://lfrmonteiro99.github.io/monthy_budget/grocery_prices.json';
 
   /// How often the app should try fetching fresh data (12 hours).
   static const _fetchTtl = Duration(hours: 12);
 
   /// Load grocery data.
   /// Tries remote first (if stale), then cache, then bundled asset.
-  Future<GroceryData> load() async {
+  Future<GroceryData> load({String countryCode = 'PT'}) async {
     final prefs = await SharedPreferences.getInstance();
+    final normalizedCountryCode = _normalizeCountryCode(countryCode);
 
-    // Check if we should attempt a remote fetch
-    if (_shouldFetchRemote(prefs)) {
-      final remoteData = await _fetchRemote(prefs);
+    if (_shouldFetchRemote(prefs, normalizedCountryCode)) {
+      final remoteData = await _fetchRemote(prefs, normalizedCountryCode);
       if (remoteData != null) return remoteData;
     }
 
-    // Try cached data
-    final cached = _loadFromPrefs(prefs);
+    final cached = _loadFromPrefs(prefs, normalizedCountryCode);
     if (cached != null) return cached;
 
-    // First launch fallback: load from bundled asset
-    return _loadFromAsset(prefs);
+    return _loadFromAsset(prefs, normalizedCountryCode);
   }
 
-  /// Returns true when the cache is older than [_fetchTtl] or doesn't exist.
-  bool _shouldFetchRemote(SharedPreferences prefs) {
-    final lastFetch = prefs.getInt(_lastFetchKey);
+  bool _shouldFetchRemote(SharedPreferences prefs, String countryCode) {
+    final lastFetch = prefs.getInt(_lastFetchKey(countryCode));
     if (lastFetch == null) return true;
     final elapsed = DateTime.now().millisecondsSinceEpoch - lastFetch;
     return elapsed >= _fetchTtl.inMilliseconds;
   }
 
-  /// Fetch JSON from GitHub Pages, parse it, cache it. Returns null on failure.
-  Future<GroceryData?> _fetchRemote(SharedPreferences prefs) async {
-    try {
-      final response = await http
-          .get(Uri.parse(_remoteUrl))
-          .timeout(const Duration(seconds: 15));
+  Future<GroceryData?> _fetchRemote(
+    SharedPreferences prefs,
+    String countryCode,
+  ) async {
+    for (final remoteUrl in _remoteUrlsForCountry(countryCode)) {
+      try {
+        final response = await _httpClient
+            .get(Uri.parse(remoteUrl))
+            .timeout(const Duration(seconds: 15));
 
-      if (response.statusCode != 200) return null;
+        if (response.statusCode != 200) continue;
 
-      final raw = response.body;
-      final json = jsonDecode(raw) as Map<String, dynamic>;
-      final data = GroceryData.fromJson(json);
+        final raw = response.body;
+        final json = jsonDecode(raw) as Map<String, dynamic>;
+        final data = GroceryData.fromJson(json);
 
-      // Persist to cache
-      await prefs.setString(_cacheKey, raw);
-      await prefs.setInt(_lastFetchKey, DateTime.now().millisecondsSinceEpoch);
-      await prefs.setInt(_cacheVersionKey, _cacheVersion);
+        await prefs.setString(_cacheKey(countryCode), raw);
+        await prefs.setInt(
+          _lastFetchKey(countryCode),
+          DateTime.now().millisecondsSinceEpoch,
+        );
+        await prefs.setInt(_cacheVersionKey(countryCode), _cacheVersion);
 
-      return data;
-    } catch (_) {
-      return null;
+        return data;
+      } catch (_) {
+        continue;
+      }
     }
+    return null;
   }
 
-  /// Load from SharedPreferences cache. Returns null if empty or version mismatch.
-  GroceryData? _loadFromPrefs(SharedPreferences prefs) {
+  GroceryData? _loadFromPrefs(SharedPreferences prefs, String countryCode) {
     try {
-      // If cache version doesn't match, clear stale data so the asset is used.
-      final storedVersion = prefs.getInt(_cacheVersionKey) ?? 1;
+      final storedVersion = prefs.getInt(_cacheVersionKey(countryCode)) ?? 1;
       if (storedVersion != _cacheVersion) {
-        prefs.remove(_cacheKey);
-        prefs.remove(_lastFetchKey);
-        prefs.remove(_cacheVersionKey);
+        prefs.remove(_cacheKey(countryCode));
+        prefs.remove(_lastFetchKey(countryCode));
+        prefs.remove(_cacheVersionKey(countryCode));
         return null;
       }
-      final raw = prefs.getString(_cacheKey);
+      final raw = prefs.getString(_cacheKey(countryCode));
       if (raw == null) return null;
       final json = jsonDecode(raw) as Map<String, dynamic>;
       return GroceryData.fromJson(json);
@@ -98,20 +110,56 @@ class GroceryService {
     }
   }
 
-  /// Load from the bundled asset and seed the cache.
-  Future<GroceryData> _loadFromAsset(SharedPreferences prefs) async {
-    try {
-      final raw = await rootBundle.loadString(_assetPath);
-      final json = jsonDecode(raw) as Map<String, dynamic>;
-      final data = GroceryData.fromJson(json);
+  Future<GroceryData> _loadFromAsset(
+    SharedPreferences prefs,
+    String countryCode,
+  ) async {
+    for (final assetPath in _assetPathsForCountry(countryCode)) {
+      try {
+        final raw = await _assetLoader(assetPath);
+        final json = jsonDecode(raw) as Map<String, dynamic>;
+        final data = GroceryData.fromJson(json);
 
-      // Seed the cache so subsequent loads don't need the asset
-      await prefs.setString(_cacheKey, raw);
-      await prefs.setInt(_cacheVersionKey, _cacheVersion);
+        await prefs.setString(_cacheKey(countryCode), raw);
+        await prefs.setInt(_cacheVersionKey(countryCode), _cacheVersion);
 
-      return data;
-    } catch (_) {
-      return const GroceryData();
+        return data;
+      } catch (_) {
+        continue;
+      }
     }
+    return const GroceryData();
+  }
+
+  static String _normalizeCountryCode(String countryCode) =>
+      countryCode.trim().toUpperCase();
+
+  static String _cacheKey(String countryCode) =>
+      '${_cacheKeyPrefix}_${_normalizeCountryCode(countryCode)}';
+
+  static String _lastFetchKey(String countryCode) =>
+      '${_lastFetchKeyPrefix}_${_normalizeCountryCode(countryCode)}';
+
+  static String _cacheVersionKey(String countryCode) =>
+      '${_cacheVersionKeyPrefix}_${_normalizeCountryCode(countryCode)}';
+
+  static List<String> _assetPathsForCountry(String countryCode) {
+    final normalized = _normalizeCountryCode(countryCode);
+    final paths = <String>['assets/grocery/$normalized/catalog.json'];
+    if (normalized == 'PT') {
+      paths.add(_legacyAssetPath);
+    }
+    return paths;
+  }
+
+  static List<String> _remoteUrlsForCountry(String countryCode) {
+    final normalized = _normalizeCountryCode(countryCode);
+    final urls = <String>[
+      '$_remoteBaseUrl/assets/grocery/$normalized/catalog.json',
+    ];
+    if (normalized == 'PT') {
+      urls.add('$_remoteBaseUrl/grocery_prices.json');
+    }
+    return urls;
   }
 }

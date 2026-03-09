@@ -459,6 +459,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         store: '',
         price: cost,
         unitPrice: '${ing.avgPricePerUnit.toStringAsFixed(2)}\u20AC/${ing.unit}',
+        quantity: entry.value,
+        unit: ing.unit,
       ));
       count++;
     }

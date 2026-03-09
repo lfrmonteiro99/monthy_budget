@@ -1,10 +1,8 @@
-﻿"""Smoke validation helpers for grocery scraper adapters."""
+"""Smoke validation helpers for grocery scraper adapters."""
 
 from __future__ import annotations
 
 from collections.abc import Iterable
-
-from .base import ScrapedListing
 
 
 class SmokeValidationError(ValueError):
@@ -12,7 +10,7 @@ class SmokeValidationError(ValueError):
 
 
 def validate_smoke_listings(
-    listings: Iterable[ScrapedListing],
+    listings: Iterable[object],
     *,
     expected_country_code: str,
     expected_store_id: str,
@@ -22,8 +20,18 @@ def validate_smoke_listings(
         raise SmokeValidationError("empty output")
 
     for index, listing in enumerate(materialized):
-        if not isinstance(listing, ScrapedListing):
-            raise SmokeValidationError(f"listing {index} is not a ScrapedListing")
+        if not hasattr(listing, "country_code"):
+            raise SmokeValidationError(f"listing {index} is missing country_code")
+        if not hasattr(listing, "store_id"):
+            raise SmokeValidationError(f"listing {index} is missing store_id")
+        if not hasattr(listing, "store_name"):
+            raise SmokeValidationError(f"listing {index} is missing store_name")
+        if not hasattr(listing, "product_name"):
+            raise SmokeValidationError(f"listing {index} is missing product_name")
+        if not hasattr(listing, "category"):
+            raise SmokeValidationError(f"listing {index} is missing category")
+        if not hasattr(listing, "price"):
+            raise SmokeValidationError(f"listing {index} is missing price")
         if listing.country_code != expected_country_code:
             raise SmokeValidationError(
                 f"listing {index} has wrong country_code: {listing.country_code}"

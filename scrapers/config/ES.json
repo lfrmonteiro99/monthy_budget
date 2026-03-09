@@ -1,0 +1,17 @@
+{
+  "countryCode": "ES",
+  "currencyCode": "EUR",
+  "locale": "es-ES",
+  "stores": [
+    {
+      "storeId": "mercadona",
+      "displayName": "Mercadona",
+      "enabled": true
+    },
+    {
+      "storeId": "carrefour_es",
+      "displayName": "Carrefour",
+      "enabled": true
+    }
+  ]
+}
