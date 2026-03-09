@@ -37,10 +37,11 @@ class MonthlyBudget {
   }
 
   factory MonthlyBudget.fromSupabase(Map<String, dynamic> map) {
+    final rawAmount = (map['amount'] as num).toDouble();
     return MonthlyBudget(
       id: map['id'] as String,
       category: map['category'] as String,
-      amount: (map['amount'] as num).toDouble(),
+      amount: rawAmount < 0 ? 0 : rawAmount,
       monthKey: map['month_key'] as String,
     );
   }
