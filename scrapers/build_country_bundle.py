@@ -13,6 +13,10 @@ try:
     from run_scrapers import _build_category_summary, _build_comparison_index, _normalize_products
 except ImportError:
     from .run_scrapers import _build_category_summary, _build_comparison_index, _normalize_products
+try:
+    from market_config import load_market_config
+except ImportError:
+    from .market_config import load_market_config
 
 
 def _strip_accents(value: str) -> str:
@@ -123,6 +127,7 @@ def build_country_bundle(
     legacy_output_path: Path | None = None,
 ) -> dict:
     normalized_country = country_code.upper()
+    market_config = load_market_config(normalized_country)
     source_dir = input_root / normalized_country
     store_sets = _collect_store_artifacts(source_dir)
     raw_payloads = [item[0] for item in store_sets]
@@ -165,7 +170,7 @@ def build_country_bundle(
 
     catalog_payload = {
         "country_code": normalized_country,
-        "currency_code": "EUR",
+        "currency_code": market_config["currencyCode"],
         "generated_at": generated_at,
         "products": canonical_products,
         "stores": stores,

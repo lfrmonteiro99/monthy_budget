@@ -1,4 +1,4 @@
-﻿"""PT canonical product matching helpers."""
+"""PT canonical product matching helpers."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from dataclasses import replace
 from .models import CanonicalProduct, ListingMatchResult, MatchingResult, StoreListing
 
 _REMOVE_WORDS_RE = re.compile(
-    r"\b(continente|pingo\s*doce|auchan|mimosa|pack|emb|bio)\b",
+    r"\b(continente|pingo\s*doce|auchan|mercadona|carrefour|mimosa|pack|emb|bio)\b",
     re.IGNORECASE,
 )
 _NON_WORD_RE = re.compile(r"[^a-z0-9\s]")
@@ -52,6 +52,20 @@ def _match_by_store_product_id(listing: StoreListing, canonicals: list[Canonical
     return None
 
 
+def _match_by_override(
+    listing: StoreListing,
+    canonicals_by_id: dict[str, CanonicalProduct],
+    override_mappings: dict[str, str] | None,
+) -> CanonicalProduct | None:
+    if not override_mappings:
+        return None
+    override_key = f"{listing.store_id}:{listing.store_product_id}"
+    canonical_id = override_mappings.get(override_key) or override_mappings.get(listing.id)
+    if canonical_id is None:
+        return None
+    return canonicals_by_id.get(canonical_id)
+
+
 def _score_title_match(listing: StoreListing, canonical: CanonicalProduct) -> float:
     listing_tokens = _title_tokens(listing.raw_title)
     canonical_tokens = _title_tokens(canonical.normalized_name)
@@ -70,14 +84,34 @@ def _score_title_match(listing: StoreListing, canonical: CanonicalProduct) -> fl
 def match_pt_store_listings(
     listings: list[StoreListing],
     canonical_products: list[CanonicalProduct],
+    *,
+    override_mappings: dict[str, str] | None = None,
+    match_threshold: float = 0.55,
+    review_threshold: float = 0.9,
 ) -> MatchingResult:
     matched_listings: list[StoreListing] = []
     match_results: list[ListingMatchResult] = []
     matched_count = 0
     unmatched_count = 0
     low_confidence_count = 0
+    canonicals_by_id = {canonical.id: canonical for canonical in canonical_products}
 
     for listing in listings:
+        override_match = _match_by_override(listing, canonicals_by_id, override_mappings)
+        if override_match is not None:
+            matched_listings.append(replace(listing, canonical_product_id=override_match.id))
+            match_results.append(
+                ListingMatchResult(
+                    listing_id=listing.id,
+                    canonical_product_id=override_match.id,
+                    match_method="manual_override",
+                    match_confidence=1.0,
+                    review_required=False,
+                )
+            )
+            matched_count += 1
+            continue
+
         stable_match = _match_by_store_product_id(listing, canonical_products)
         if stable_match is not None:
             matched_listings.append(replace(listing, canonical_product_id=stable_match.id))
@@ -101,7 +135,7 @@ def match_pt_store_listings(
                 best_score = score
                 best_canonical = canonical
 
-        if best_canonical is None or best_score < 0.55:
+        if best_canonical is None or best_score < match_threshold:
             matched_listings.append(listing)
             match_results.append(
                 ListingMatchResult(
@@ -115,7 +149,7 @@ def match_pt_store_listings(
             unmatched_count += 1
             continue
 
-        review_required = best_score < 0.9
+        review_required = best_score < review_threshold
         match_results.append(
             ListingMatchResult(
                 listing_id=listing.id,

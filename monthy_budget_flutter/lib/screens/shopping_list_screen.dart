@@ -48,6 +48,9 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   bool _tourShown = false;
   ShoppingGroupMode _groupMode = ShoppingGroupMode.items;
 
+  List<ShoppingGroupMode> get _availableModes =>
+      availableGroupModes(widget.items);
+
   @override
   void initState() {
     super.initState();
@@ -309,10 +312,12 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       appBar: _buildAppBar(),
       body: Column(
         children: [
-          ShoppingGroupToggle(
-            selected: _groupMode,
-            onChanged: (mode) => setState(() => _groupMode = mode),
-          ),
+          if (_availableModes.length > 1)
+            ShoppingGroupToggle(
+              availableModes: _availableModes,
+              selected: _groupMode,
+              onChanged: (mode) => setState(() => _groupMode = mode),
+            ),
           Container(
             color: AppColors.surface(context),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),

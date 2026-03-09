@@ -5,11 +5,13 @@ import '../utils/shopping_grouping.dart';
 
 /// A segmented toggle for switching between shopping list group modes.
 class ShoppingGroupToggle extends StatelessWidget {
+  final List<ShoppingGroupMode> availableModes;
   final ShoppingGroupMode selected;
   final ValueChanged<ShoppingGroupMode> onChanged;
 
   const ShoppingGroupToggle({
     super.key,
+    required this.availableModes,
     required this.selected,
     required this.onChanged,
   });
@@ -27,7 +29,7 @@ class ShoppingGroupToggle extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       color: AppColors.surface(context),
       child: Row(
-        children: ShoppingGroupMode.values.map((mode) {
+        children: availableModes.map((mode) {
           final isSelected = mode == selected;
           return Expanded(
             child: Padding(

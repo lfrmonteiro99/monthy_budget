@@ -12,6 +12,12 @@ on:
       - 'monthy_budget_flutter/assets/grocery_prices.json'
       - 'monthy_budget_flutter/assets/grocery/**'
   workflow_dispatch:
+    inputs:
+      include_es_preview:
+        description: 'Run Spain preview stores in addition to PT'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -19,7 +25,7 @@ permissions:
   id-token: write
 
 jobs:
-  scrape_store:
+  scrape_store_pt:
     strategy:
       fail-fast: false
       matrix:
@@ -36,19 +42,33 @@ jobs:
       store: ${{ matrix.store }}
       run_id: ${{ github.run_id }}-${{ github.run_attempt }}
 
+  scrape_store_es_preview:
+    if: github.event_name == 'workflow_dispatch' && inputs.include_es_preview == true
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - country: ES
+            store: mercadona
+          - country: ES
+            store: carrefour_es
+    uses: ./.github/workflows/grocery-scrape-reusable.yml
+    with:
+      country: ${{ matrix.country }}
+      store: ${{ matrix.store }}
+      run_id: ${{ github.run_id }}-${{ github.run_attempt }}
+
   build_pt_bundle:
     name: Build PT grocery bundle
     runs-on: ubuntu-latest
-    needs: scrape_store
+    needs: [scrape_store_pt, scrape_store_es_preview]
     if: always()
     timeout-minutes: 15
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
@@ -65,7 +85,7 @@ jobs:
           merge-multiple: true
           if-no-files-found: warn
 
-      - name: Summarize downloaded store artifacts
+      - name: Summarize PT store artifacts
         run: |
           python - <<'PY'
           import json
@@ -83,12 +103,11 @@ jobs:
             else:
               found[store] = "missing"
 
-          summary_lines = ["## Grocery scrape matrix", "", "| Store | Status |", "| --- | --- |"]
+          lines = ["## PT grocery scrape matrix", "", "| Store | Status |", "| --- | --- |"]
           for store in expected:
-            summary_lines.append(f"| {store} | {found[store]} |")
-          print("\n".join(summary_lines))
+            lines.append(f"| {store} | {found[store]} |")
           with open(Path("${{ github.step_summary }}"), "a", encoding="utf-8") as fh:
-            fh.write("\n".join(summary_lines) + "\n")
+            fh.write("\n".join(lines) + "\n")
           PY
 
       - name: Build PT bundle and legacy asset
@@ -103,7 +122,7 @@ jobs:
         run: |
           python -m scrapers.validate_bundle \
             --country PT \
-            --input-root monthy_budget_flutter/assets/grocery | tee validation.json
+            --input-root monthy_budget_flutter/assets/grocery | tee pt_validation.json
 
       - name: Upload PT bundle artifact
         uses: actions/upload-artifact@v4
@@ -115,15 +134,108 @@ jobs:
             monthy_budget_flutter/assets/grocery/PT/stores/*.json
             monthy_budget_flutter/assets/grocery_prices.json
 
+  build_es_bundle:
+    name: Build ES grocery bundle
+    runs-on: ubuntu-latest
+    needs: [scrape_store_pt, scrape_store_es_preview]
+    if: github.event_name == 'workflow_dispatch' && inputs.include_es_preview == true && always()
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: scrapers/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r scrapers/requirements.txt
+
+      - name: Download ES store artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: grocery-ES-*
+          path: generated/grocery
+          merge-multiple: true
+          if-no-files-found: warn
+
+      - name: Summarize ES store artifacts
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          expected = ["mercadona", "carrefour_es"]
+          root = Path("generated/grocery/ES")
+          found = {}
+          for store in expected:
+            status_path = root / store / "status.json"
+            if status_path.exists():
+              payload = json.loads(status_path.read_text(encoding="utf-8"))
+              summary = payload["store_summary"]
+              found[store] = summary["status"]
+            else:
+              found[store] = "missing"
+
+          lines = ["## ES grocery preview matrix", "", "| Store | Status |", "| --- | --- |"]
+          for store in expected:
+            lines.append(f"| {store} | {found[store]} |")
+          with open(Path("${{ github.step_summary }}"), "a", encoding="utf-8") as fh:
+            fh.write("\n".join(lines) + "\n")
+          PY
+
+      - name: Build ES bundle
+        run: |
+          python -m scrapers.build_country_bundle \
+            --country ES \
+            --input-root generated/grocery \
+            --output-root monthy_budget_flutter/assets/grocery
+
+      - name: Validate ES bundle
+        run: |
+          python -m scrapers.validate_bundle \
+            --country ES \
+            --input-root monthy_budget_flutter/assets/grocery | tee es_validation.json
+
+      - name: Upload ES bundle artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: grocery-ES-bundle
+          path: |
+            monthy_budget_flutter/assets/grocery/ES/catalog.json
+            monthy_budget_flutter/assets/grocery/ES/store_summaries.json
+            monthy_budget_flutter/assets/grocery/ES/stores/*.json
+
+  deploy_assets:
+    name: Deploy grocery assets
+    runs-on: ubuntu-latest
+    needs: [build_pt_bundle, build_es_bundle]
+    if: always()
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download built grocery bundles
+        uses: actions/download-artifact@v4
+        with:
+          pattern: grocery-*-bundle
+          path: .
+          merge-multiple: true
+          if-no-files-found: warn
+
       - name: Explain publication strategy
         run: |
           {
             echo "## Publication strategy"
             echo
             echo "- Scheduled grocery scrapes do not push directly to \`main\`."
-            echo "- Fresh market data is published to \`gh-pages\`, which is the app's remote source of truth."
-            echo "- Repository changes to scrapers/workflows still go through normal issue -> branch -> PR flow."
-            echo "- Bundled fallback assets in \`main\` are updated via regular PRs when needed, not by the daily scheduler."
+            echo "- PT runs on the daily scheduler."
+            echo "- ES runs only via explicit preview dispatch."
+            echo "- Fresh market data is published to \`gh-pages\`."
+            echo "- Repository code/config changes still go through issue -> branch -> PR."
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Deploy assets to GitHub Pages
