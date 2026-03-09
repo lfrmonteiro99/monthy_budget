@@ -365,6 +365,161 @@ void main() {
         expect(map['cheapest_known_price'], 4.50);
       });
 
+      test('constructor defaults quantity and unit to null', () {
+        final item = ShoppingItem(
+          productName: 'Milk',
+          store: 'Lidl',
+          price: 1.29,
+        );
+
+        expect(item.quantity, isNull);
+        expect(item.unit, isNull);
+      });
+
+      test('constructor accepts quantity and unit', () {
+        final item = ShoppingItem(
+          productName: 'Frango',
+          store: 'Continente',
+          price: 5.25,
+          quantity: 0.7,
+          unit: 'kg',
+        );
+
+        expect(item.quantity, 0.7);
+        expect(item.unit, 'kg');
+      });
+
+      test('fromJson parses quantity and unit', () {
+        final json = {
+          'productName': 'Arroz',
+          'store': 'Lidl',
+          'price': 1.10,
+          'quantity': 1.0,
+          'unit': 'kg',
+        };
+
+        final item = ShoppingItem.fromJson(json);
+
+        expect(item.quantity, 1.0);
+        expect(item.unit, 'kg');
+      });
+
+      test('fromJson without quantity/unit produces null', () {
+        final json = {
+          'productName': 'Água',
+          'store': 'Lidl',
+          'price': 0.30,
+        };
+
+        final item = ShoppingItem.fromJson(json);
+
+        expect(item.quantity, isNull);
+        expect(item.unit, isNull);
+      });
+
+      test('toJson includes quantity and unit when present', () {
+        final item = ShoppingItem(
+          productName: 'Cebola',
+          store: 'Pingo Doce',
+          price: 0.80,
+          quantity: 0.5,
+          unit: 'kg',
+        );
+
+        final json = item.toJson();
+
+        expect(json['quantity'], 0.5);
+        expect(json['unit'], 'kg');
+      });
+
+      test('toJson omits quantity and unit when null', () {
+        final item = ShoppingItem(
+          productName: 'Pão',
+          store: 'Lidl',
+          price: 0.99,
+        );
+
+        final json = item.toJson();
+
+        expect(json.containsKey('quantity'), false);
+        expect(json.containsKey('unit'), false);
+      });
+
+      test('fromSupabase parses quantity and unit columns', () {
+        final row = {
+          'id': 'uuid-qty',
+          'product_name': 'Azeite',
+          'store': 'Continente',
+          'price': 4.50,
+          'unit_price': null,
+          'checked': false,
+          'quantity': 0.75,
+          'unit': 'L',
+        };
+
+        final item = ShoppingItem.fromSupabase(row);
+
+        expect(item.quantity, 0.75);
+        expect(item.unit, 'L');
+      });
+
+      test('fromSupabase without quantity/unit columns produces null', () {
+        final row = {
+          'id': 'uuid-old2',
+          'product_name': 'Sal',
+          'store': 'Lidl',
+          'price': 0.50,
+          'unit_price': null,
+          'checked': false,
+        };
+
+        final item = ShoppingItem.fromSupabase(row);
+
+        expect(item.quantity, isNull);
+        expect(item.unit, isNull);
+      });
+
+      test('toSupabase includes quantity and unit when present', () {
+        final item = ShoppingItem(
+          productName: 'Leite',
+          store: 'Pingo Doce',
+          price: 0.89,
+          quantity: 2.0,
+          unit: 'L',
+        );
+
+        final map = item.toSupabase('hh_1');
+
+        expect(map['quantity'], 2.0);
+        expect(map['unit'], 'L');
+      });
+
+      test('toSupabase omits quantity and unit when null', () {
+        final item = ShoppingItem(
+          productName: 'Manteiga',
+          store: 'Lidl',
+          price: 1.50,
+        );
+
+        final map = item.toSupabase('hh_1');
+
+        expect(map.containsKey('quantity'), false);
+        expect(map.containsKey('unit'), false);
+      });
+
+      test('equality includes quantity and unit', () {
+        final a = ShoppingItem(
+          id: '1', productName: 'A', store: 'S', price: 1.0,
+          quantity: 0.5, unit: 'kg',
+        );
+        final b = ShoppingItem(
+          id: '1', productName: 'A', store: 'S', price: 1.0,
+          quantity: 1.0, unit: 'kg',
+        );
+
+        expect(a == b, isFalse);
+      });
+
       test('equality includes new fields', () {
         final a = ShoppingItem(
           id: '1',
