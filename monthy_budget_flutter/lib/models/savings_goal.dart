@@ -66,11 +66,13 @@ class SavingsGoal {
   }
 
   factory SavingsGoal.fromSupabase(Map<String, dynamic> map) {
+    final rawTarget = (map['target_amount'] as num).toDouble();
+    final rawCurrent = (map['current_amount'] as num?)?.toDouble() ?? 0;
     return SavingsGoal(
       id: map['id'] as String,
       name: map['name'] as String,
-      targetAmount: (map['target_amount'] as num).toDouble(),
-      currentAmount: (map['current_amount'] as num?)?.toDouble() ?? 0,
+      targetAmount: rawTarget < 0 ? 0 : rawTarget,
+      currentAmount: rawCurrent < 0 ? 0 : rawCurrent,
       deadline: map['deadline'] != null
           ? DateTime.parse(map['deadline'] as String)
           : null,
@@ -123,10 +125,11 @@ class SavingsContribution {
       Object.hash(id, goalId, amount, contributionDate, note);
 
   factory SavingsContribution.fromSupabase(Map<String, dynamic> map) {
+    final rawAmount = (map['amount'] as num).toDouble();
     return SavingsContribution(
       id: map['id'] as String,
       goalId: map['goal_id'] as String,
-      amount: (map['amount'] as num).toDouble(),
+      amount: rawAmount < 0 ? 0 : rawAmount,
       contributionDate:
           DateTime.parse(map['contribution_date'] as String),
       note: map['note'] as String?,
