@@ -88,3 +88,32 @@ class MatchingResult:
     matched_count: int
     unmatched_count: int
     low_confidence_count: int
+
+
+@dataclass(frozen=True)
+class StoreDatasetStatus:
+    country_code: str
+    store_id: str
+    run_id: str
+    last_updated_at: str
+    scrape_status: str
+    listing_count: int
+    matched_count: int
+    unmatched_count: int
+    validation_warnings: list[str]
+    source_version: str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class StoreSummary:
+    store_id: str
+    display_name: str
+    last_updated_at: str | None
+    status: str
+    listing_count: int
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
