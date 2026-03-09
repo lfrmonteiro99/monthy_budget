@@ -1,7 +1,11 @@
 ﻿import unittest
 
 from scrapers.base import ScrapedListing
-from scrapers.normalizer import normalize_pt_listings, parse_size_text
+from scrapers.normalizer import (
+    normalize_es_listings,
+    normalize_pt_listings,
+    parse_size_text,
+)
 
 
 class ParseSizeTextTest(unittest.TestCase):
@@ -101,6 +105,31 @@ class NormalizePTListingsTest(unittest.TestCase):
         self.assertEqual(result.listings, [])
         self.assertEqual(len(result.warnings), 1)
         self.assertIn("invalid listing", result.warnings[0])
+
+
+class NormalizeESListingsTest(unittest.TestCase):
+    def test_normalize_es_listings_supports_spanish_titles(self):
+        listing = ScrapedListing(
+            country_code="ES",
+            store_id="mercadona",
+            store_name="Mercadona",
+            product_name="Leche Entera 6x1 L",
+            price=5.34,
+            category="Lacteos y Huevos",
+            product_id="es-123",
+            unit_price="0,89 /L",
+        )
+
+        result = normalize_es_listings([listing])
+
+        self.assertEqual(result.warnings, [])
+        normalized = result.listings[0]
+        self.assertEqual(normalized.country_code, "ES")
+        self.assertEqual(normalized.store_id, "mercadona")
+        self.assertEqual(normalized.pack_count, 6)
+        self.assertEqual(normalized.base_quantity, 6.0)
+        self.assertEqual(normalized.base_unit, "l")
+        self.assertEqual(normalized.currency_code, "EUR")
 
 
 if __name__ == "__main__":
