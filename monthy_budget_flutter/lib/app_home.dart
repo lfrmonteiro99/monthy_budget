@@ -8,6 +8,7 @@ import 'models/product.dart';
 import 'models/shopping_item.dart';
 import 'models/purchase_record.dart';
 import 'utils/calculations.dart';
+import 'utils/shopping_grouping.dart';
 import 'utils/formatters.dart';
 import 'data/tax/tax_factory.dart';
 import 'services/settings_service.dart';
@@ -875,11 +876,17 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   void _addToShoppingList(ShoppingItem item) async {
-    final exists = _shoppingList.any(
-      (e) => e.productName == item.productName,
-    );
-    if (exists) return;
-    await _shoppingListService.add(item, widget.householdId);
+    final result = mergeIntoList(_shoppingList, item);
+    if (result.isNew) {
+      await _shoppingListService.add(item, widget.householdId);
+    } else {
+      final merged = result.merged!;
+      await _shoppingListService.updateItem(
+        merged.id,
+        price: merged.price,
+        quantity: merged.quantity,
+      );
+    }
   }
 
   void _toggleShoppingItem(ShoppingItem item) async {

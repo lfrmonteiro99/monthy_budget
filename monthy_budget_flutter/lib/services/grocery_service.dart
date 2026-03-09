@@ -1,26 +1,52 @@
 import 'dart:convert';
+
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/grocery_data.dart';
 
+typedef GroceryAssetLoader = Future<String> Function(String path);
+
+/// Service that loads grocery price data.
+///
+/// Fetch order:
+///   1. Remote - if TTL has expired
+///   2. SharedPreferences cache - if remote fails or TTL hasn't expired
+///   3. Bundled asset - first-launch fallback
 class GroceryService {
+  GroceryService({
+    GroceryAssetLoader? assetLoader,
+    http.Client? httpClient,
+  }) : _assetLoader = assetLoader ?? rootBundle.loadString,
+       _httpClient = httpClient ?? http.Client();
+
+  final GroceryAssetLoader _assetLoader;
+  final http.Client _httpClient;
+
+  static const _cacheKeyPrefix = 'grocery_prices_cache';
+  static const _lastFetchKeyPrefix = 'grocery_prices_last_fetch';
+  static const _cacheVersionKeyPrefix = 'grocery_prices_cache_version';
+  static const _legacyAssetPath = 'assets/grocery_prices.json';
+  static const _remoteBaseUrl =
+      'https://lfrmonteiro99.github.io/monthy_budget';
+
   static const _cacheVersion = 3;
   static const _fetchTtl = Duration(hours: 12);
 
   Future<GroceryData> load({String countryCode = 'PT'}) async {
     final prefs = await SharedPreferences.getInstance();
-    final market = countryCode.toUpperCase();
+    final normalizedCountryCode = _normalizeCountryCode(countryCode);
 
-    if (_shouldFetchRemote(prefs, market)) {
-      final remoteData = await _fetchRemote(prefs, market);
+    if (_shouldFetchRemote(prefs, normalizedCountryCode)) {
+      final remoteData = await _fetchRemote(prefs, normalizedCountryCode);
       if (remoteData != null) return remoteData;
     }
 
-    final cached = _loadFromPrefs(prefs, market);
+    final cached = _loadFromPrefs(prefs, normalizedCountryCode);
     if (cached != null) return cached;
 
-    return _loadFromAsset(prefs, market);
+    return _loadFromAsset(prefs, normalizedCountryCode);
   }
 
   bool _shouldFetchRemote(SharedPreferences prefs, String countryCode) {
@@ -30,50 +56,35 @@ class GroceryService {
     return elapsed >= _fetchTtl.inMilliseconds;
   }
 
-  Future<GroceryData?> _fetchRemote(SharedPreferences prefs, String countryCode) async {
-    try {
-      final response = await http
-          .get(Uri.parse(_remoteUrl(countryCode)))
-          .timeout(const Duration(seconds: 15));
+  Future<GroceryData?> _fetchRemote(
+    SharedPreferences prefs,
+    String countryCode,
+  ) async {
+    for (final remoteUrl in _remoteUrlsForCountry(countryCode)) {
+      try {
+        final response = await _httpClient
+            .get(Uri.parse(remoteUrl))
+            .timeout(const Duration(seconds: 15));
 
-      if (response.statusCode != 200) {
-        if (countryCode == 'PT') {
-          return _fetchRemoteFallback(prefs);
-        }
-        return null;
+        if (response.statusCode != 200) continue;
+
+        final raw = response.body;
+        final json = jsonDecode(raw) as Map<String, dynamic>;
+        final data = GroceryData.fromJson(json);
+
+        await prefs.setString(_cacheKey(countryCode), raw);
+        await prefs.setInt(
+          _lastFetchKey(countryCode),
+          DateTime.now().millisecondsSinceEpoch,
+        );
+        await prefs.setInt(_cacheVersionKey(countryCode), _cacheVersion);
+
+        return data;
+      } catch (_) {
+        continue;
       }
-
-      final raw = response.body;
-      final json = jsonDecode(raw) as Map<String, dynamic>;
-      final data = GroceryData.fromJson(json);
-      await prefs.setString(_cacheKey(countryCode), raw);
-      await prefs.setInt(_lastFetchKey(countryCode), DateTime.now().millisecondsSinceEpoch);
-      await prefs.setInt(_cacheVersionKey(countryCode), _cacheVersion);
-      return data;
-    } catch (_) {
-      if (countryCode == 'PT') {
-        return _fetchRemoteFallback(prefs);
-      }
-      return null;
     }
-  }
-
-  Future<GroceryData?> _fetchRemoteFallback(SharedPreferences prefs) async {
-    try {
-      final response = await http
-          .get(Uri.parse('https://lfrmonteiro99.github.io/monthy_budget/grocery_prices.json'))
-          .timeout(const Duration(seconds: 15));
-      if (response.statusCode != 200) return null;
-      final raw = response.body;
-      final json = jsonDecode(raw) as Map<String, dynamic>;
-      final data = GroceryData.fromJson(json);
-      await prefs.setString(_cacheKey('PT'), raw);
-      await prefs.setInt(_lastFetchKey('PT'), DateTime.now().millisecondsSinceEpoch);
-      await prefs.setInt(_cacheVersionKey('PT'), _cacheVersion);
-      return data;
-    } catch (_) {
-      return null;
-    }
+    return null;
   }
 
   GroceryData? _loadFromPrefs(SharedPreferences prefs, String countryCode) {
@@ -94,34 +105,56 @@ class GroceryService {
     }
   }
 
-  Future<GroceryData> _loadFromAsset(SharedPreferences prefs, String countryCode) async {
-    try {
-      final raw = await rootBundle.loadString(_assetPath(countryCode));
-      final json = jsonDecode(raw) as Map<String, dynamic>;
-      final data = GroceryData.fromJson(json);
-      await prefs.setString(_cacheKey(countryCode), raw);
-      await prefs.setInt(_cacheVersionKey(countryCode), _cacheVersion);
-      return data;
-    } catch (_) {
-      if (countryCode == 'PT') {
-        try {
-          final raw = await rootBundle.loadString('assets/grocery_prices.json');
-          final json = jsonDecode(raw) as Map<String, dynamic>;
-          final data = GroceryData.fromJson(json);
-          await prefs.setString(_cacheKey('PT'), raw);
-          await prefs.setInt(_cacheVersionKey('PT'), _cacheVersion);
-          return data;
-        } catch (_) {
-          return const GroceryData();
-        }
+  Future<GroceryData> _loadFromAsset(
+    SharedPreferences prefs,
+    String countryCode,
+  ) async {
+    for (final assetPath in _assetPathsForCountry(countryCode)) {
+      try {
+        final raw = await _assetLoader(assetPath);
+        final json = jsonDecode(raw) as Map<String, dynamic>;
+        final data = GroceryData.fromJson(json);
+
+        await prefs.setString(_cacheKey(countryCode), raw);
+        await prefs.setInt(_cacheVersionKey(countryCode), _cacheVersion);
+
+        return data;
+      } catch (_) {
+        continue;
       }
-      return const GroceryData();
     }
+    return const GroceryData();
   }
 
-  String _cacheKey(String countryCode) => 'grocery_prices_cache_${countryCode.toUpperCase()}';
-  String _lastFetchKey(String countryCode) => 'grocery_prices_last_fetch_${countryCode.toUpperCase()}';
-  String _cacheVersionKey(String countryCode) => 'grocery_prices_cache_version_${countryCode.toUpperCase()}';
-  String _assetPath(String countryCode) => 'assets/grocery/${countryCode.toUpperCase()}/catalog.json';
-  String _remoteUrl(String countryCode) => 'https://lfrmonteiro99.github.io/monthy_budget/assets/grocery/${countryCode.toUpperCase()}/catalog.json';
+  static String _normalizeCountryCode(String countryCode) =>
+      countryCode.trim().toUpperCase();
+
+  static String _cacheKey(String countryCode) =>
+      '${_cacheKeyPrefix}_${_normalizeCountryCode(countryCode)}';
+
+  static String _lastFetchKey(String countryCode) =>
+      '${_lastFetchKeyPrefix}_${_normalizeCountryCode(countryCode)}';
+
+  static String _cacheVersionKey(String countryCode) =>
+      '${_cacheVersionKeyPrefix}_${_normalizeCountryCode(countryCode)}';
+
+  static List<String> _assetPathsForCountry(String countryCode) {
+    final normalized = _normalizeCountryCode(countryCode);
+    final paths = <String>['assets/grocery/$normalized/catalog.json'];
+    if (normalized == 'PT') {
+      paths.add(_legacyAssetPath);
+    }
+    return paths;
+  }
+
+  static List<String> _remoteUrlsForCountry(String countryCode) {
+    final normalized = _normalizeCountryCode(countryCode);
+    final urls = <String>[
+      '$_remoteBaseUrl/assets/grocery/$normalized/catalog.json',
+    ];
+    if (normalized == 'PT') {
+      urls.add('$_remoteBaseUrl/grocery_prices.json');
+    }
+    return urls;
+  }
 }
