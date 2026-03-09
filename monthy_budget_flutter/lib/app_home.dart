@@ -67,12 +67,14 @@ import 'services/command_pattern_cache.dart';
 import 'services/command_action_registry.dart';
 import 'services/data_health_service.dart';
 import 'models/data_health_status.dart';
+import 'models/grocery_data.dart';
 import 'utils/data_alert_builder.dart';
 import 'screens/confidence_center_screen.dart';
 import 'models/command_action.dart';
 import 'widgets/command_chat_fab.dart';
 import 'widgets/command_chat_panel.dart';
 import 'services/quick_action_service.dart';
+import 'services/grocery_service.dart';
 import 'widgets/quick_add_launcher.dart';
 import 'screens/product_updates_screen.dart';
 
@@ -97,6 +99,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   final _aiCoachService = AiCoachService();
   final _purchaseHistoryService = PurchaseHistoryService();
   final _productsService = ProductsService();
+  final _groceryService = GroceryService();
   final _expenseSnapshotService = ExpenseSnapshotService();
   final _localConfigService = LocalConfigService();
   final _actualExpenseService = ActualExpenseService();
@@ -129,6 +132,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   List<ShoppingItem> _shoppingList = [];
   String _openAiApiKey = '';
   PurchaseHistory _purchaseHistory = const PurchaseHistory();
+  GroceryData _groceryData = const GroceryData();
   LocalDashboardConfig _dashboardConfig = const LocalDashboardConfig();
   Map<String, List<ExpenseSnapshot>> _expenseHistory = {};
   bool _loaded = false;
@@ -220,6 +224,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     _dataHealthService.recordLoad(SyncDomain.purchaseHistory);
     _dataHealthService.recordLoad(SyncDomain.shopping);
     _syncLocaleAndFormatter(_settings);
+    _loadGroceryDataForCountry(_settings.country.name.toUpperCase());
     _expenseSnapshotService.loadHistory(widget.householdId).then((history) {
       if (mounted) setState(() => _expenseHistory = history);
     });
@@ -231,6 +236,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     await _loadSavingsGoals();
     _syncRevenueCat();
     _checkDowngrade();
+  }
+
+  Future<void> _loadGroceryDataForCountry(String countryCode) async {
+    final data = await _groceryService.load(countryCode: countryCode);
+    if (!mounted) return;
+    setState(() => _groceryData = data);
   }
 
   /// Check if the user needs downgrade handling (trial expired or subscription cancelled).
@@ -716,6 +727,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       MaterialPageRoute(
         builder: (_) => GroceryScreen(
           products: _products,
+          groceryData: _groceryData,
+          marketCode: _settings.country.name.toUpperCase(),
           onAddToShoppingList: _addToShoppingList,
           showTour: !_onboardingState.isTourDone('grocery'),
           onTourComplete: () => _markTourDone('grocery'),
@@ -825,11 +838,15 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
   void _saveSettings(AppSettings settings) {
     if (!widget.isAdmin) return;
+    final previousCountry = _settings.country;
     setState(() => _settings = settings);
     _syncLocaleAndFormatter(settings);
     _settingsService.save(settings, widget.householdId);
     _dataHealthService.recordSave(SyncDomain.settings);
     _refreshNotificationSchedules();
+    if (previousCountry != settings.country) {
+      _loadGroceryDataForCountry(settings.country.name.toUpperCase());
+    }
   }
 
   void _saveDashboardConfig(LocalDashboardConfig config) {

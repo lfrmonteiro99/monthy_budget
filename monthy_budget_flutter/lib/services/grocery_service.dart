@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:http/http.dart' as http;
@@ -31,14 +31,9 @@ class GroceryService {
   static const _remoteBaseUrl =
       'https://lfrmonteiro99.github.io/monthy_budget';
 
-  // Bump this constant to force-invalidate stale caches on all devices.
-  static const _cacheVersion = 2;
-
-  /// How often the app should try fetching fresh data (12 hours).
+  static const _cacheVersion = 3;
   static const _fetchTtl = Duration(hours: 12);
 
-  /// Load grocery data.
-  /// Tries remote first (if stale), then cache, then bundled asset.
   Future<GroceryData> load({String countryCode = 'PT'}) async {
     final prefs = await SharedPreferences.getInstance();
     final normalizedCountryCode = _normalizeCountryCode(countryCode);

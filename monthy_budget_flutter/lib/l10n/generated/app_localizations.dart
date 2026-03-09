@@ -7894,6 +7894,48 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Scan Recibo'**
   String get quickScanReceipt;
+
+  /// No description provided for @groceryMarketData.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dados do mercado {marketCode}'**
+  String groceryMarketData(String marketCode);
+
+  /// No description provided for @groceryStoreCoverage.
+  ///
+  /// In pt, this message translates to:
+  /// **'{active} lojas ativas em {total}'**
+  String groceryStoreCoverage(int active, int total);
+
+  /// No description provided for @groceryStoreFreshCount.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} fresca'**
+  String groceryStoreFreshCount(int count);
+
+  /// No description provided for @groceryStorePartialCount.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} parcial'**
+  String groceryStorePartialCount(int count);
+
+  /// No description provided for @groceryStoreFailedCount.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} falhada'**
+  String groceryStoreFailedCount(int count);
+
+  /// No description provided for @groceryHideStaleStores.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esconder lojas desatualizadas'**
+  String get groceryHideStaleStores;
+
+  /// No description provided for @groceryComparisonsFreshOnly.
+  ///
+  /// In pt, this message translates to:
+  /// **'A mostrar {count} loja fresca nas comparações'**
+  String groceryComparisonsFreshOnly(int count);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
