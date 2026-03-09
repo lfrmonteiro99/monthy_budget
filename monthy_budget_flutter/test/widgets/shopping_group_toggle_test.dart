@@ -12,6 +12,7 @@ void main() {
         wrapWithTestApp(
           Scaffold(
             body: ShoppingGroupToggle(
+              availableModes: ShoppingGroupMode.values,
               selected: ShoppingGroupMode.items,
               onChanged: (_) {},
             ),
@@ -31,6 +32,7 @@ void main() {
         wrapWithTestApp(
           Scaffold(
             body: ShoppingGroupToggle(
+              availableModes: ShoppingGroupMode.values,
               selected: ShoppingGroupMode.items,
               onChanged: (mode) => tapped = mode,
             ),
@@ -51,6 +53,7 @@ void main() {
         wrapWithTestApp(
           Scaffold(
             body: ShoppingGroupToggle(
+              availableModes: ShoppingGroupMode.values,
               selected: ShoppingGroupMode.items,
               onChanged: (mode) => tapped = mode,
             ),
