@@ -4671,6 +4671,26 @@
         }
     },
     "quickScanReceipt": "Scan Recibo",
+    "receiptReviewTitle": "Rever Recibo",
+    "receiptReviewMerchant": "Loja",
+    "receiptReviewDate": "Data",
+    "receiptReviewTotal": "Total",
+    "receiptReviewCategory": "Categoria",
+    "receiptReviewItems": "{count} itens detetados",
+    "@receiptReviewItems": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "receiptReviewConfirm": "Adicionar Despesa",
+    "receiptReviewRetake": "Repetir",
+    "receiptCameraPermissionTitle": "Acesso à Câmara",
+    "receiptCameraPermissionBody": "É necessário acesso à câmara para digitalizar recibos e códigos de barras.",
+    "receiptCameraPermissionAllow": "Permitir",
+    "receiptCameraPermissionDeny": "Agora não",
+    "receiptCameraBlockedTitle": "Câmara Bloqueada",
+    "receiptCameraBlockedBody": "A permissão da câmara foi negada permanentemente. Abra as definições para a ativar.",
+    "receiptCameraBlockedSettings": "Abrir Definições",
     "groceryMarketData": "Dados do mercado {marketCode}",
     "@groceryMarketData": {
         "placeholders": {

@@ -4414,6 +4414,55 @@ class SEs extends S {
   String get quickScanReceipt => 'Escanear Recibo';
 
   @override
+  String get receiptReviewTitle => 'Revisar Recibo';
+
+  @override
+  String get receiptReviewMerchant => 'Tienda';
+
+  @override
+  String get receiptReviewDate => 'Fecha';
+
+  @override
+  String get receiptReviewTotal => 'Total';
+
+  @override
+  String get receiptReviewCategory => 'Categoría';
+
+  @override
+  String receiptReviewItems(int count) {
+    return '$count artículos detectados';
+  }
+
+  @override
+  String get receiptReviewConfirm => 'Añadir Gasto';
+
+  @override
+  String get receiptReviewRetake => 'Repetir';
+
+  @override
+  String get receiptCameraPermissionTitle => 'Acceso a la Cámara';
+
+  @override
+  String get receiptCameraPermissionBody =>
+      'Se necesita acceso a la cámara para escanear recibos y códigos de barras.';
+
+  @override
+  String get receiptCameraPermissionAllow => 'Permitir';
+
+  @override
+  String get receiptCameraPermissionDeny => 'Ahora no';
+
+  @override
+  String get receiptCameraBlockedTitle => 'Cámara Bloqueada';
+
+  @override
+  String get receiptCameraBlockedBody =>
+      'El permiso de la cámara fue denegado permanentemente. Abra la configuración para activarlo.';
+
+  @override
+  String get receiptCameraBlockedSettings => 'Abrir Configuración';
+
+  @override
   String groceryMarketData(String marketCode) {
     return 'Datos del mercado $marketCode';
   }

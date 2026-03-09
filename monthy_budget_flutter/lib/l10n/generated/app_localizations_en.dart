@@ -4382,6 +4382,55 @@ class SEn extends S {
   String get quickScanReceipt => 'Scan Receipt';
 
   @override
+  String get receiptReviewTitle => 'Review Receipt';
+
+  @override
+  String get receiptReviewMerchant => 'Merchant';
+
+  @override
+  String get receiptReviewDate => 'Date';
+
+  @override
+  String get receiptReviewTotal => 'Total';
+
+  @override
+  String get receiptReviewCategory => 'Category';
+
+  @override
+  String receiptReviewItems(int count) {
+    return '$count items detected';
+  }
+
+  @override
+  String get receiptReviewConfirm => 'Add Expense';
+
+  @override
+  String get receiptReviewRetake => 'Retake';
+
+  @override
+  String get receiptCameraPermissionTitle => 'Camera Access';
+
+  @override
+  String get receiptCameraPermissionBody =>
+      'Camera access is needed to scan receipts and barcodes.';
+
+  @override
+  String get receiptCameraPermissionAllow => 'Allow';
+
+  @override
+  String get receiptCameraPermissionDeny => 'Not now';
+
+  @override
+  String get receiptCameraBlockedTitle => 'Camera Blocked';
+
+  @override
+  String get receiptCameraBlockedBody =>
+      'Camera permission was permanently denied. Open app settings to enable it.';
+
+  @override
+  String get receiptCameraBlockedSettings => 'Open Settings';
+
+  @override
   String groceryMarketData(String marketCode) {
     return '$marketCode market data';
   }

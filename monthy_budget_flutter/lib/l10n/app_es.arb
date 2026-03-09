@@ -2313,6 +2313,26 @@
         }
     },
     "quickScanReceipt": "Escanear Recibo",
+    "receiptReviewTitle": "Revisar Recibo",
+    "receiptReviewMerchant": "Tienda",
+    "receiptReviewDate": "Fecha",
+    "receiptReviewTotal": "Total",
+    "receiptReviewCategory": "Categoría",
+    "receiptReviewItems": "{count} artículos detectados",
+    "@receiptReviewItems": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "receiptReviewConfirm": "Añadir Gasto",
+    "receiptReviewRetake": "Repetir",
+    "receiptCameraPermissionTitle": "Acceso a la Cámara",
+    "receiptCameraPermissionBody": "Se necesita acceso a la cámara para escanear recibos y códigos de barras.",
+    "receiptCameraPermissionAllow": "Permitir",
+    "receiptCameraPermissionDeny": "Ahora no",
+    "receiptCameraBlockedTitle": "Cámara Bloqueada",
+    "receiptCameraBlockedBody": "El permiso de la cámara fue denegado permanentemente. Abra la configuración para activarlo.",
+    "receiptCameraBlockedSettings": "Abrir Configuración",
     "groceryMarketData": "Datos del mercado {marketCode}",
     "@groceryMarketData": {
         "placeholders": {

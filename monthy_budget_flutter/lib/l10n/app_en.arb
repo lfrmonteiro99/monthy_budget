@@ -2364,6 +2364,26 @@
         }
     },
     "quickScanReceipt": "Scan Receipt",
+    "receiptReviewTitle": "Review Receipt",
+    "receiptReviewMerchant": "Merchant",
+    "receiptReviewDate": "Date",
+    "receiptReviewTotal": "Total",
+    "receiptReviewCategory": "Category",
+    "receiptReviewItems": "{count} items detected",
+    "@receiptReviewItems": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "receiptReviewConfirm": "Add Expense",
+    "receiptReviewRetake": "Retake",
+    "receiptCameraPermissionTitle": "Camera Access",
+    "receiptCameraPermissionBody": "Camera access is needed to scan receipts and barcodes.",
+    "receiptCameraPermissionAllow": "Allow",
+    "receiptCameraPermissionDeny": "Not now",
+    "receiptCameraBlockedTitle": "Camera Blocked",
+    "receiptCameraBlockedBody": "Camera permission was permanently denied. Open app settings to enable it.",
+    "receiptCameraBlockedSettings": "Open Settings",
     "groceryMarketData": "{marketCode} market data",
     "@groceryMarketData": {
         "placeholders": {

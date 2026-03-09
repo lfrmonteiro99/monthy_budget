@@ -4420,6 +4420,55 @@ class SFr extends S {
   String get quickScanReceipt => 'Scanner Reçu';
 
   @override
+  String get receiptReviewTitle => 'Vérifier le Reçu';
+
+  @override
+  String get receiptReviewMerchant => 'Commerce';
+
+  @override
+  String get receiptReviewDate => 'Date';
+
+  @override
+  String get receiptReviewTotal => 'Total';
+
+  @override
+  String get receiptReviewCategory => 'Catégorie';
+
+  @override
+  String receiptReviewItems(int count) {
+    return '$count articles détectés';
+  }
+
+  @override
+  String get receiptReviewConfirm => 'Ajouter Dépense';
+
+  @override
+  String get receiptReviewRetake => 'Reprendre';
+
+  @override
+  String get receiptCameraPermissionTitle => 'Accès Caméra';
+
+  @override
+  String get receiptCameraPermissionBody =>
+      'L\'accès à la caméra est nécessaire pour scanner les reçus et les codes-barres.';
+
+  @override
+  String get receiptCameraPermissionAllow => 'Autoriser';
+
+  @override
+  String get receiptCameraPermissionDeny => 'Pas maintenant';
+
+  @override
+  String get receiptCameraBlockedTitle => 'Caméra Bloquée';
+
+  @override
+  String get receiptCameraBlockedBody =>
+      'L\'autorisation de la caméra a été définitivement refusée. Ouvrez les paramètres pour l\'activer.';
+
+  @override
+  String get receiptCameraBlockedSettings => 'Ouvrir Paramètres';
+
+  @override
   String groceryMarketData(String marketCode) {
     return 'Données du marché $marketCode';
   }

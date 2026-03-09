@@ -4408,6 +4408,55 @@ class SPt extends S {
   String get quickScanReceipt => 'Scan Recibo';
 
   @override
+  String get receiptReviewTitle => 'Rever Recibo';
+
+  @override
+  String get receiptReviewMerchant => 'Loja';
+
+  @override
+  String get receiptReviewDate => 'Data';
+
+  @override
+  String get receiptReviewTotal => 'Total';
+
+  @override
+  String get receiptReviewCategory => 'Categoria';
+
+  @override
+  String receiptReviewItems(int count) {
+    return '$count itens detetados';
+  }
+
+  @override
+  String get receiptReviewConfirm => 'Adicionar Despesa';
+
+  @override
+  String get receiptReviewRetake => 'Repetir';
+
+  @override
+  String get receiptCameraPermissionTitle => 'Acesso à Câmara';
+
+  @override
+  String get receiptCameraPermissionBody =>
+      'É necessário acesso à câmara para digitalizar recibos e códigos de barras.';
+
+  @override
+  String get receiptCameraPermissionAllow => 'Permitir';
+
+  @override
+  String get receiptCameraPermissionDeny => 'Agora não';
+
+  @override
+  String get receiptCameraBlockedTitle => 'Câmara Bloqueada';
+
+  @override
+  String get receiptCameraBlockedBody =>
+      'A permissão da câmara foi negada permanentemente. Abra as definições para a ativar.';
+
+  @override
+  String get receiptCameraBlockedSettings => 'Abrir Definições';
+
+  @override
   String groceryMarketData(String marketCode) {
     return 'Dados do mercado $marketCode';
   }
