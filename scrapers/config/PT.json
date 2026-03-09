@@ -1,0 +1,22 @@
+{
+  "countryCode": "PT",
+  "currencyCode": "EUR",
+  "locale": "pt-PT",
+  "stores": [
+    {
+      "storeId": "continente",
+      "displayName": "Continente",
+      "enabled": true
+    },
+    {
+      "storeId": "pingo_doce",
+      "displayName": "Pingo Doce",
+      "enabled": true
+    },
+    {
+      "storeId": "auchan",
+      "displayName": "Auchan",
+      "enabled": true
+    }
+  ]
+}

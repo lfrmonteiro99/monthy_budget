@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../models/grocery_data.dart';
 import '../models/product.dart';
 import '../models/shopping_item.dart';
 import '../services/barcode_scan_service.dart';
@@ -11,6 +12,8 @@ import '../onboarding/grocery_tour.dart';
 
 class GroceryScreen extends StatefulWidget {
   final List<Product> products;
+  final GroceryData? groceryData;
+  final String marketCode;
   final ValueChanged<ShoppingItem>? onAddToShoppingList;
   final bool showTour;
   final VoidCallback? onTourComplete;
@@ -21,6 +24,8 @@ class GroceryScreen extends StatefulWidget {
   const GroceryScreen({
     super.key,
     required this.products,
+    this.groceryData,
+    this.marketCode = 'PT',
     this.onAddToShoppingList,
     this.showTour = false,
     this.onTourComplete,
@@ -37,6 +42,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
   String _searchQuery = '';
   String? _selectedCategory;
   bool _tourShown = false;
+  bool _hideStaleStores = false;
 
   @override
   void initState() {
@@ -88,6 +94,8 @@ class _GroceryScreenState extends State<GroceryScreen> {
     }
     return list;
   }
+
+  GroceryData get _groceryData => widget.groceryData ?? const GroceryData();
 
   IconData _categoryIcon(String cat) {
     const map = {
@@ -240,6 +248,11 @@ class _GroceryScreenState extends State<GroceryScreen> {
             )
           : Column(
               children: [
+                if (_groceryData.hasStoreStatuses)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                    child: _buildMarketStatusCard(),
+                  ),
                 // Category filter chips
                 SizedBox(
                   key: GroceryTourKeys.categoryFilter,
@@ -321,6 +334,126 @@ class _GroceryScreenState extends State<GroceryScreen> {
         ...items.asMap().entries.map((e) =>
           _buildProductRow(e.value, tourKey: isFirst && e.key == 0 ? GroceryTourKeys.productCard : null)),
       ],
+    );
+  }
+
+  Widget _buildMarketStatusCard() {
+    final l10n = S.of(context);
+    final activeStores = _groceryData.freshStoreCount;
+    final totalStores = _groceryData.storeStatuses.length;
+    final visibleComparisons =
+        _groceryData.filterComparisons(hideStaleStores: _hideStaleStores);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border(context)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.groceryMarketData(widget.marketCode),
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary(context),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            l10n.groceryStoreCoverage(activeStores, totalStores),
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: AppColors.textSecondary(context),
+            ),
+          ),
+          if (_groceryData.hasDegradedStores) ...[
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                _statusPill(
+                  l10n.groceryStoreFreshCount(_groceryData.freshStoreCount),
+                  AppColors.successBackground(context),
+                  AppColors.success(context),
+                ),
+                if (_groceryData.partialStoreCount > 0)
+                  _statusPill(
+                    l10n.groceryStorePartialCount(_groceryData.partialStoreCount),
+                    AppColors.warningBackground(context),
+                    AppColors.warning(context),
+                  ),
+                if (_groceryData.failedStoreCount > 0)
+                  _statusPill(
+                    l10n.groceryStoreFailedCount(_groceryData.failedStoreCount),
+                    AppColors.errorBackground(context),
+                    AppColors.error(context),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            InkWell(
+              onTap: () => setState(() => _hideStaleStores = !_hideStaleStores),
+              borderRadius: BorderRadius.circular(10),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                child: Row(
+                  children: [
+                    Checkbox(
+                      value: _hideStaleStores,
+                      onChanged: (value) => setState(() => _hideStaleStores = value ?? false),
+                    ),
+                    Expanded(
+                      child: Text(
+                        l10n.groceryHideStaleStores,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary(context),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Text(
+              l10n.groceryComparisonsFreshOnly(
+                _hideStaleStores ? activeStores : visibleComparisons.isEmpty ? 0 : visibleComparisons.first.prices.length,
+              ),
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.textMuted(context),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _statusPill(String label, Color backgroundColor, Color textColor) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+          color: textColor,
+        ),
+      ),
     );
   }
 
