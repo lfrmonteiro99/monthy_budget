@@ -1,0 +1,90 @@
+name: Quality Gates
+
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-gates-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  coverage:
+    name: Test coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: monthy_budget_flutter
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.2'
+          channel: stable
+          cache: true
+
+      - name: Create Supabase config stub
+        run: |
+          mkdir -p lib/config
+          cat > lib/config/supabase_config.dart << 'DART'
+          const supabaseUrl = 'https://placeholder.supabase.co';
+          const supabaseAnonKey = 'placeholder';
+          DART
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate l10n
+        run: flutter gen-l10n
+
+      - name: Run tests with coverage
+        run: flutter test --coverage
+
+      - name: Enforce minimum coverage
+        uses: VeryGoodOpenSource/very_good_coverage@v3
+        with:
+          path: monthy_budget_flutter/coverage/lcov.info
+          min_coverage: 50
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lcov-report
+          path: monthy_budget_flutter/coverage/lcov.info
+          retention-days: 14
+
+  l10n-validation:
+    name: ARB key validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: monthy_budget_flutter
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate ARB keys are consistent
+        run: bash scripts/validate_arb_keys.sh
+
+  secrets-scan:
+    name: Secrets scanning
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
