@@ -89,10 +89,11 @@ class ActualExpense {
   }
 
   factory ActualExpense.fromSupabase(Map<String, dynamic> map) {
+    final rawAmount = (map['amount'] as num).toDouble();
     return ActualExpense(
       id: map['id'] as String,
       category: map['category'] as String,
-      amount: (map['amount'] as num).toDouble(),
+      amount: rawAmount < 0 ? 0 : rawAmount,
       date: DateTime.parse(map['expense_date'] as String),
       description: map['description'] as String?,
       monthKey: map['month_key'] as String,
