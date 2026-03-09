@@ -2,15 +2,16 @@ name: Scrape Grocery Prices
 
 on:
   schedule:
-    # Runs every day at 06:00 Lisbon time (UTC+0 in winter, UTC+1 in summer)
-    # Using 06:00 UTC covers both — 06:00 in winter, 07:00 in summer
     - cron: '0 6 * * *'
   push:
     branches: [main]
     paths:
       - 'scrapers/**'
+      - '.github/workflows/scrape-grocery-prices.yml'
+      - '.github/workflows/grocery-scrape-reusable.yml'
       - 'monthy_budget_flutter/assets/grocery_prices.json'
-  workflow_dispatch: # Allow manual trigger from GitHub UI
+      - 'monthy_budget_flutter/assets/grocery/**'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -18,8 +19,28 @@ permissions:
   id-token: write
 
 jobs:
-  scrape:
+  scrape_store:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - country: PT
+            store: continente
+          - country: PT
+            store: pingo_doce
+          - country: PT
+            store: auchan
+    uses: ./.github/workflows/grocery-scrape-reusable.yml
+    with:
+      country: ${{ matrix.country }}
+      store: ${{ matrix.store }}
+      run_id: ${{ github.run_id }}-${{ github.run_attempt }}
+
+  build_pt_bundle:
+    name: Build PT grocery bundle
     runs-on: ubuntu-latest
+    needs: scrape_store
+    if: always()
     timeout-minutes: 15
 
     steps:
@@ -36,43 +57,77 @@ jobs:
       - name: Install dependencies
         run: pip install -r scrapers/requirements.txt
 
-      - name: Create assets directory
-        run: mkdir -p monthy_budget_flutter/assets
+      - name: Download PT store artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: grocery-PT-*
+          path: generated/grocery
+          merge-multiple: true
+          if-no-files-found: warn
 
-      - name: Run grocery scrapers
-        working-directory: scrapers
-        run: python run_scrapers.py -o ../monthy_budget_flutter/assets/grocery_prices.json
-
-      - name: Check output
+      - name: Summarize downloaded store artifacts
         run: |
-          echo "--- File size ---"
-          ls -lh monthy_budget_flutter/assets/grocery_prices.json
-          echo "--- Metadata ---"
-          python3 -c "
+          python - <<'PY'
           import json
-          with open('monthy_budget_flutter/assets/grocery_prices.json') as f:
-              data = json.load(f)
-          m = data['metadata']
-          print(f'Scraped at: {m[\"scraped_at\"]}')
-          print(f'Total products: {m[\"total_products\"]}')
-          print(f'Total comparisons: {m[\"total_comparisons\"]}')
-          for name, result in m['scraper_results'].items():
-              print(f'  {name}: {result[\"status\"]}')
-          "
+          from pathlib import Path
 
-      - name: Commit and push updated prices
+          expected = ["continente", "pingo_doce", "auchan"]
+          root = Path("generated/grocery/PT")
+          found = {}
+          for store in expected:
+            status_path = root / store / "status.json"
+            if status_path.exists():
+              payload = json.loads(status_path.read_text(encoding="utf-8"))
+              summary = payload["store_summary"]
+              found[store] = summary["status"]
+            else:
+              found[store] = "missing"
+
+          summary_lines = ["## Grocery scrape matrix", "", "| Store | Status |", "| --- | --- |"]
+          for store in expected:
+            summary_lines.append(f"| {store} | {found[store]} |")
+          print("\n".join(summary_lines))
+          with open(Path("${{ github.step_summary }}"), "a", encoding="utf-8") as fh:
+            fh.write("\n".join(summary_lines) + "\n")
+          PY
+
+      - name: Build PT bundle and legacy asset
+        run: |
+          python -m scrapers.build_country_bundle \
+            --country PT \
+            --input-root generated/grocery \
+            --output-root monthy_budget_flutter/assets/grocery \
+            --legacy-output monthy_budget_flutter/assets/grocery_prices.json
+
+      - name: Validate PT bundle
+        run: |
+          python -m scrapers.validate_bundle \
+            --country PT \
+            --input-root monthy_budget_flutter/assets/grocery | tee validation.json
+
+      - name: Upload PT bundle artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: grocery-PT-bundle
+          path: |
+            monthy_budget_flutter/assets/grocery/PT/catalog.json
+            monthy_budget_flutter/assets/grocery/PT/store_summaries.json
+            monthy_budget_flutter/assets/grocery/PT/stores/*.json
+            monthy_budget_flutter/assets/grocery_prices.json
+
+      - name: Commit and push updated grocery assets
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add monthy_budget_flutter/assets/grocery_prices.json
+          git add monthy_budget_flutter/assets/grocery_prices.json monthy_budget_flutter/assets/grocery/PT
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "chore: update grocery prices $(date -u +%Y-%m-%d)"
+            git commit -m "chore: update grocery bundles $(date -u +%Y-%m-%d)"
             git push
           fi
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy assets to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

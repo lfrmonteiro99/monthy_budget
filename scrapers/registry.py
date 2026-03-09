@@ -60,3 +60,20 @@ def pt_store_scrapers() -> list[StoreScraper]:
         scraper_pingo_doce.PingoDoceScraper(),
         scraper_auchan.AuchanScraper(),
     ]
+
+
+def store_scrapers_for_country(country_code: str) -> list[StoreScraper]:
+    normalized = country_code.strip().upper()
+    if normalized == "PT":
+        return pt_store_scrapers()
+    raise ValueError(f"unsupported country_code: {country_code}")
+
+
+def get_store_scraper(country_code: str, store_id: str) -> StoreScraper:
+    normalized_store_id = store_id.strip().lower()
+    for scraper in store_scrapers_for_country(country_code):
+        if scraper.store_id == normalized_store_id:
+            return scraper
+    raise ValueError(
+        f"unsupported store_id '{store_id}' for country_code '{country_code}'"
+    )
