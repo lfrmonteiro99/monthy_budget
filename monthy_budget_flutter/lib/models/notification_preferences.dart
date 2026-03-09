@@ -131,13 +131,13 @@ class NotificationPreferences {
 
   factory NotificationPreferences.fromJsonString(String s) {
     final json = jsonDecode(s) as Map<String, dynamic>;
+    final rawThreshold = json['budgetAlertThreshold'] as int? ?? 80;
     return NotificationPreferences(
       billReminders: json['billReminders'] as bool? ?? false,
       billReminderDaysBefore:
           json['billReminderDaysBefore'] as int? ?? 1,
       budgetAlerts: json['budgetAlerts'] as bool? ?? false,
-      budgetAlertThreshold:
-          json['budgetAlertThreshold'] as int? ?? 80,
+      budgetAlertThreshold: rawThreshold.clamp(0, 100),
       mealPlanReminders: json['mealPlanReminders'] as bool? ?? false,
       customReminders: (json['customReminders'] as List<dynamic>?)
               ?.map((e) =>

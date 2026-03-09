@@ -56,20 +56,24 @@ class ShoppingItem {
       checked, sourceMealId, sourceMealLabel, preferredStore,
       cheapestKnownStore, cheapestKnownPrice);
 
-  factory ShoppingItem.fromJson(Map<String, dynamic> json) => ShoppingItem(
-        id: json['id'] as String? ?? '',
-        productName: json['productName'] as String? ?? '',
-        store: json['store'] as String? ?? '',
-        price: (json['price'] as num?)?.toDouble() ?? 0,
-        unitPrice: json['unitPrice'] as String?,
-        checked: json['checked'] as bool? ?? false,
-        sourceMealId: json['sourceMealId'] as String?,
-        sourceMealLabel: json['sourceMealLabel'] as String?,
-        preferredStore: json['preferredStore'] as String?,
-        cheapestKnownStore: json['cheapestKnownStore'] as String?,
-        cheapestKnownPrice:
-            (json['cheapestKnownPrice'] as num?)?.toDouble(),
-      );
+  factory ShoppingItem.fromJson(Map<String, dynamic> json) {
+    final rawPrice = (json['price'] as num?)?.toDouble() ?? 0;
+    final rawCheapest = (json['cheapestKnownPrice'] as num?)?.toDouble();
+    return ShoppingItem(
+      id: json['id'] as String? ?? '',
+      productName: json['productName'] as String? ?? '',
+      store: json['store'] as String? ?? '',
+      price: rawPrice < 0 ? 0 : rawPrice,
+      unitPrice: json['unitPrice'] as String?,
+      checked: json['checked'] as bool? ?? false,
+      sourceMealId: json['sourceMealId'] as String?,
+      sourceMealLabel: json['sourceMealLabel'] as String?,
+      preferredStore: json['preferredStore'] as String?,
+      cheapestKnownStore: json['cheapestKnownStore'] as String?,
+      cheapestKnownPrice:
+          rawCheapest != null && rawCheapest < 0 ? 0 : rawCheapest,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -87,20 +91,24 @@ class ShoppingItem {
           'cheapestKnownPrice': cheapestKnownPrice,
       };
 
-  factory ShoppingItem.fromSupabase(Map<String, dynamic> row) => ShoppingItem(
-        id: row['id'] as String,
-        productName: row['product_name'] as String,
-        store: row['store'] as String? ?? '',
-        price: (row['price'] as num?)?.toDouble() ?? 0,
-        unitPrice: row['unit_price'] as String?,
-        checked: row['checked'] as bool? ?? false,
-        sourceMealId: row['source_meal_id'] as String?,
-        sourceMealLabel: row['source_meal_label'] as String?,
-        preferredStore: row['preferred_store'] as String?,
-        cheapestKnownStore: row['cheapest_known_store'] as String?,
-        cheapestKnownPrice:
-            (row['cheapest_known_price'] as num?)?.toDouble(),
-      );
+  factory ShoppingItem.fromSupabase(Map<String, dynamic> row) {
+    final rawPrice = (row['price'] as num?)?.toDouble() ?? 0;
+    final rawCheapest = (row['cheapest_known_price'] as num?)?.toDouble();
+    return ShoppingItem(
+      id: row['id'] as String,
+      productName: row['product_name'] as String,
+      store: row['store'] as String? ?? '',
+      price: rawPrice < 0 ? 0 : rawPrice,
+      unitPrice: row['unit_price'] as String?,
+      checked: row['checked'] as bool? ?? false,
+      sourceMealId: row['source_meal_id'] as String?,
+      sourceMealLabel: row['source_meal_label'] as String?,
+      preferredStore: row['preferred_store'] as String?,
+      cheapestKnownStore: row['cheapest_known_store'] as String?,
+      cheapestKnownPrice:
+          rawCheapest != null && rawCheapest < 0 ? 0 : rawCheapest,
+    );
+  }
 
   Map<String, dynamic> toSupabase(String householdId) => {
         'household_id': householdId,
