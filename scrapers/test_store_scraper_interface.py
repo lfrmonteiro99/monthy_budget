@@ -4,6 +4,7 @@ from unittest.mock import patch
 
 from scrapers.base import ScrapedListing
 from scrapers.registry import FunctionStoreScraper, pt_store_scrapers
+from scrapers.scraper_continente import ContinenteScraper
 
 
 class ScrapedListingTest(unittest.TestCase):
@@ -56,8 +57,19 @@ class FunctionStoreScraperTest(unittest.TestCase):
 
 class RegistryTest(unittest.TestCase):
     def test_pt_registry_exposes_expected_store_ids(self):
+        class FakeContinenteScraper:
+            country_code = "PT"
+            store_id = "continente"
+            store_name = "Continente"
+
+            def scrape(self):
+                return []
+
         fake_modules = {
-            "scraper_continente": SimpleNamespace(scrape=lambda: []),
+            "scraper_continente": SimpleNamespace(
+                scrape=lambda: [],
+                ContinenteScraper=FakeContinenteScraper,
+            ),
             "scraper_pingo_doce": SimpleNamespace(scrape=lambda: []),
             "scraper_auchan": SimpleNamespace(scrape=lambda: []),
         }
@@ -70,6 +82,42 @@ class RegistryTest(unittest.TestCase):
             "auchan",
         ])
         self.assertTrue(all(scraper.country_code == "PT" for scraper in scrapers))
+
+
+class ContinenteScraperTest(unittest.TestCase):
+    def test_continente_scraper_exposes_stable_identity(self):
+        scraper = ContinenteScraper()
+
+        self.assertEqual(scraper.country_code, "PT")
+        self.assertEqual(scraper.store_id, "continente")
+        self.assertEqual(scraper.store_name, "Continente")
+
+    def test_continente_scraper_returns_scraped_listing_objects(self):
+        scraper = ContinenteScraper()
+
+        with patch(
+            "scrapers.scraper_continente._fetch_category_products",
+            return_value=[
+                {
+                    "name": "Leite Meio Gordo",
+                    "price": 0.89,
+                    "unit_price": "0.89/L",
+                    "category": "Lacticinios e Ovos",
+                    "product_id": "123",
+                    "brand": "Continente",
+                }
+            ],
+        ):
+            listings = scraper.scrape()
+
+        self.assertEqual(len(listings), len(scraper.categories))
+        first = listings[0]
+        self.assertIsInstance(first, ScrapedListing)
+        self.assertEqual(first.country_code, "PT")
+        self.assertEqual(first.store_id, "continente")
+        self.assertEqual(first.store_name, "Continente")
+        self.assertEqual(first.product_name, "Leite Meio Gordo")
+        self.assertEqual(first.price, 0.89)
 
 
 if __name__ == "__main__":
