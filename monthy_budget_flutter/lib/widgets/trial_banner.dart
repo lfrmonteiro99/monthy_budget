@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../models/subscription_state.dart';
 import '../theme/app_colors.dart';
 
@@ -24,6 +25,7 @@ class TrialBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!subscription.isTrialActive) return const SizedBox.shrink();
 
+    final l10n = S.of(context);
     final daysLeft = subscription.trialDaysRemaining;
     final isUrgent = daysLeft <= 3;
     final isMidTrial = daysLeft <= 10 && daysLeft > 3;
@@ -67,7 +69,7 @@ class TrialBanner extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    _headline(daysLeft, isUrgent, isMidTrial),
+                    _headline(l10n, daysLeft, isUrgent, isMidTrial),
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
@@ -92,7 +94,7 @@ class TrialBanner extends StatelessWidget {
 
             // Subtitle
             Text(
-              _subtitle(daysLeft, isUrgent, isMidTrial, subscription),
+              _subtitle(l10n, daysLeft, isUrgent, isMidTrial, subscription),
               style: TextStyle(
                 fontSize: 13,
                 color: AppColors.textSecondary(context),
@@ -106,7 +108,10 @@ class TrialBanner extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    '${subscription.featuresExploredCount}/${SubscriptionState.discoverableFeatures.length} features explored',
+                    l10n.trialFeaturesExplored(
+                      subscription.featuresExploredCount,
+                      SubscriptionState.discoverableFeatures.length,
+                    ),
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
@@ -115,7 +120,7 @@ class TrialBanner extends StatelessWidget {
                   ),
                   const Spacer(),
                   Text(
-                    '$daysLeft days left',
+                    l10n.trialDaysRemaining(daysLeft),
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
@@ -128,7 +133,7 @@ class TrialBanner extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Semantics(
-                label: 'Trial progress ${(subscription.explorationProgress * 100).round()}%',
+                label: l10n.trialProgressLabel((subscription.explorationProgress * 100).round()),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(4),
                   child: LinearProgressIndicator(
@@ -161,7 +166,7 @@ class TrialBanner extends StatelessWidget {
                   elevation: 0,
                 ),
                 child: Text(
-                  isUrgent ? 'Upgrade Now — Keep Your Data' : 'See Plans',
+                  isUrgent ? l10n.trialUpgradeNow : l10n.trialSeePlans,
                   style: const TextStyle(
                       fontWeight: FontWeight.w700, fontSize: 14),
                 ),
@@ -173,51 +178,51 @@ class TrialBanner extends StatelessWidget {
     );
   }
 
-  String _headline(int daysLeft, bool isUrgent, bool isMidTrial) {
+  String _headline(S l10n, int daysLeft, bool isUrgent, bool isMidTrial) {
     if (isUrgent) {
       return daysLeft <= 1
-          ? 'Last day of your free trial!'
-          : '$daysLeft days left in your trial!';
+          ? l10n.trialLastDay
+          : l10n.trialDaysLeftInTrial(daysLeft);
     }
     if (isMidTrial) {
-      return 'Your trial is halfway through';
+      return l10n.trialHalfway;
     }
-    return 'Premium Trial Active';
+    return l10n.trialPremiumActive;
   }
 
-  String _subtitle(int daysLeft, bool isUrgent, bool isMidTrial,
+  String _subtitle(S l10n, int daysLeft, bool isUrgent, bool isMidTrial,
       SubscriptionState sub) {
     if (isUrgent) {
-      return 'Your premium access ends soon. Upgrade to keep AI Coach, Meal Planner, and all your data.';
+      return l10n.trialSubtitleUrgent;
     }
     if (isMidTrial) {
       final next = sub.nextFeatureToDiscover;
       if (next != null) {
-        return 'Have you tried the ${_featureName(next)} yet? Make the most of your trial!';
+        return l10n.trialSubtitleMidFeature(_featureName(next, l10n));
       }
-      return 'You\'re making great progress! Keep exploring premium features.';
+      return l10n.trialSubtitleMidProgress;
     }
-    return 'You have full access to all premium features. Explore everything!';
+    return l10n.trialSubtitleEarly;
   }
 
-  String _featureName(String key) {
+  String _featureName(String key, S l10n) {
     switch (key) {
       case 'ai_coach':
-        return 'AI Financial Coach';
+        return l10n.featureNameAiCoachFull;
       case 'meal_planner':
-        return 'Meal Planner';
+        return l10n.featureNameMealPlanner;
       case 'expense_tracker':
-        return 'Expense Tracker';
+        return l10n.featureNameExpenseTracker;
       case 'savings_goals':
-        return 'Savings Goals';
+        return l10n.featureNameSavingsGoals;
       case 'export':
-        return 'Export Reports';
+        return l10n.featureNameExportReports;
       case 'tax_simulator':
-        return 'Tax Simulator';
+        return l10n.featureNameTaxSimulator;
       case 'shopping_list':
-        return 'Shopping List';
+        return l10n.featureNameShoppingList;
       case 'grocery_browser':
-        return 'Grocery Browser';
+        return l10n.featureNameGroceryBrowser;
       default:
         return key;
     }

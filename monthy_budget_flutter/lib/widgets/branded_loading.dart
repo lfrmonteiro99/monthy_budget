@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
 
 class BrandedLoading extends StatefulWidget {
@@ -52,7 +53,7 @@ class _BrandedLoadingState extends State<BrandedLoading>
             ),
             const SizedBox(height: 12),
             Text(
-              'Orcamento Mensal',
+              S.of(context).appTitle,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,

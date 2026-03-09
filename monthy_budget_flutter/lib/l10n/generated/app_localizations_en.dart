@@ -4064,4 +4064,256 @@ class SEn extends S {
 
   @override
   String get freeformReplace => 'Replace with freeform';
+
+  @override
+  String get insightsTitle => 'Insights';
+
+  @override
+  String get insightsAnalyzeSpending => 'Analyze spending over time';
+
+  @override
+  String get insightsTrackProgress => 'Track progress to your targets';
+
+  @override
+  String get insightsTaxOutcome => 'Estimate annual tax outcome';
+
+  @override
+  String get moreTitle => 'More';
+
+  @override
+  String get moreDetailedDashboard => 'Detailed Dashboard';
+
+  @override
+  String get moreDetailedDashboardSubtitle =>
+      'Open full financial dashboard with all cards';
+
+  @override
+  String get moreSavingsSubtitle => 'Track and update your goal progress';
+
+  @override
+  String get moreNotificationsSubtitle => 'Budgets, bills and reminders';
+
+  @override
+  String get moreSettingsSubtitle => 'Preferences, profile and dashboard';
+
+  @override
+  String get morePlanFree => 'Free Plan';
+
+  @override
+  String get morePlanTrial => 'Trial Active';
+
+  @override
+  String get morePlanPro => 'Pro Plan';
+
+  @override
+  String get morePlanFamily => 'Family Plan';
+
+  @override
+  String get morePlanManage => 'Manage your plan and billing';
+
+  @override
+  String morePlanLimits(int categories, int goals) {
+    return '$categories categories • $goals savings goal';
+  }
+
+  @override
+  String moreItemsPaused(int count) {
+    return '$count items paused';
+  }
+
+  @override
+  String get moreUpgrade => 'Upgrade →';
+
+  @override
+  String get planTitle => 'Plan';
+
+  @override
+  String get planGrocerySubtitle => 'Browse products and prices';
+
+  @override
+  String get planShoppingList => 'Shopping List';
+
+  @override
+  String get planShoppingSubtitle => 'Review and finalize purchases';
+
+  @override
+  String get planMealSubtitle => 'Generate affordable weekly plans';
+
+  @override
+  String coachActiveMemory(String mode, int percent) {
+    return 'Active memory: $mode ($percent%)';
+  }
+
+  @override
+  String get coachCostPerMessageNote =>
+      'Cost per message sent. Coach response does not consume credits.';
+
+  @override
+  String get coachExpandTip => 'Expand notice';
+
+  @override
+  String get coachCollapseTip => 'Minimize notice';
+
+  @override
+  String featureTryName(String name) {
+    return 'Try $name';
+  }
+
+  @override
+  String featureExploreName(String name) {
+    return 'Explore $name';
+  }
+
+  @override
+  String featureRequiresPremium(String name) {
+    return '$name requires Premium';
+  }
+
+  @override
+  String get featureTapToUpgrade => 'Tap to upgrade';
+
+  @override
+  String get featureNameAiCoach => 'AI Coach';
+
+  @override
+  String get featureNameMealPlanner => 'Meal Planner';
+
+  @override
+  String get featureNameExpenseTracker => 'Expense Tracker';
+
+  @override
+  String get featureNameSavingsGoals => 'Savings Goals';
+
+  @override
+  String get featureNameShoppingList => 'Shopping List';
+
+  @override
+  String get featureNameGroceryBrowser => 'Grocery Browser';
+
+  @override
+  String get featureNameExportReports => 'Export Reports';
+
+  @override
+  String get featureNameTaxSimulator => 'Tax Simulator';
+
+  @override
+  String get featureNameDashboard => 'Dashboard';
+
+  @override
+  String get featureTagAiCoach => 'Your personal financial advisor';
+
+  @override
+  String get featureTagMealPlanner => 'Save money on food';
+
+  @override
+  String get featureTagExpenseTracker => 'Know where every euro goes';
+
+  @override
+  String get featureTagSavingsGoals => 'Make your dreams happen';
+
+  @override
+  String get featureTagShoppingList => 'Shop smarter together';
+
+  @override
+  String get featureTagGroceryBrowser => 'Compare prices instantly';
+
+  @override
+  String get featureTagExportReports => 'Professional budget reports';
+
+  @override
+  String get featureTagTaxSimulator => 'Multi-country tax planning';
+
+  @override
+  String get featureTagDashboard => 'Your financial overview';
+
+  @override
+  String get featureDescAiCoach =>
+      'Get personalized insights about your spending habits, savings tips, and budget optimization powered by AI.';
+
+  @override
+  String get featureDescMealPlanner =>
+      'Plan weekly meals within your budget. AI generates recipes based on your preferences and dietary needs.';
+
+  @override
+  String get featureDescExpenseTracker =>
+      'Track actual expenses vs. your budget in real-time. See where you\'re overspending and where you can save.';
+
+  @override
+  String get featureDescSavingsGoals =>
+      'Set savings goals with deadlines, track contributions, and see projections for when you\'ll reach your targets.';
+
+  @override
+  String get featureDescShoppingList =>
+      'Create shared shopping lists that sync in real-time. Check items off as you shop, finalize and track spending.';
+
+  @override
+  String get featureDescGroceryBrowser =>
+      'Browse products from multiple stores, compare prices, and add the best deals directly to your shopping list.';
+
+  @override
+  String get featureDescExportReports =>
+      'Export your budget, expenses, and financial summaries as PDF or CSV for your records or accountant.';
+
+  @override
+  String get featureDescTaxSimulator =>
+      'Compare tax obligations across countries. Perfect for expats and anyone considering relocation.';
+
+  @override
+  String get featureDescDashboard =>
+      'See your complete budget breakdown, charts, and financial health at a glance.';
+
+  @override
+  String get trialPremiumActive => 'Premium Trial Active';
+
+  @override
+  String get trialHalfway => 'Your trial is halfway through';
+
+  @override
+  String trialDaysLeftInTrial(int count) {
+    return '$count days left in your trial!';
+  }
+
+  @override
+  String get trialLastDay => 'Last day of your free trial!';
+
+  @override
+  String get trialSeePlans => 'See Plans';
+
+  @override
+  String get trialUpgradeNow => 'Upgrade Now — Keep Your Data';
+
+  @override
+  String get trialSubtitleUrgent =>
+      'Your premium access ends soon. Upgrade to keep AI Coach, Meal Planner, and all your data.';
+
+  @override
+  String trialSubtitleMidFeature(String name) {
+    return 'Have you tried the $name yet? Make the most of your trial!';
+  }
+
+  @override
+  String get trialSubtitleMidProgress =>
+      'You\'re making great progress! Keep exploring premium features.';
+
+  @override
+  String get trialSubtitleEarly =>
+      'You have full access to all premium features. Explore everything!';
+
+  @override
+  String trialFeaturesExplored(int explored, int total) {
+    return '$explored/$total features explored';
+  }
+
+  @override
+  String trialDaysRemaining(int count) {
+    return '$count days left';
+  }
+
+  @override
+  String trialProgressLabel(int percent) {
+    return 'Trial progress $percent%';
+  }
+
+  @override
+  String get featureNameAiCoachFull => 'AI Financial Coach';
 }
