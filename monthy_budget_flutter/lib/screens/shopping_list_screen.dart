@@ -345,6 +345,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             ),
           ),
           Divider(height: 1, color: AppColors.surfaceVariant(context)),
+          if (widget.items.isNotEmpty && widget.items.every((i) => i.checked))
+            _buildReceiptScanBanner(l10n),
           Expanded(
             child: _buildListBody(l10n),
           ),
@@ -390,6 +392,48 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildReceiptScanBanner(S l10n) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      color: AppColors.primary(context).withValues(alpha: 0.1),
+      child: Row(
+        children: [
+          Icon(Icons.document_scanner, size: 22, color: AppColors.primary(context)),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              l10n.receiptScanPrompt,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textPrimary(context),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          TextButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(l10n.quickScanReceipt),
+                  duration: const Duration(seconds: 2),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+              );
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.primary(context),
+              textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+            ),
+            child: Text(l10n.quickScanReceipt),
+          ),
+        ],
+      ),
     );
   }
 
