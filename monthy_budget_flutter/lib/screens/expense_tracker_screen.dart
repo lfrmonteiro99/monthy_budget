@@ -394,6 +394,13 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
         scrolledUnderElevation: 1,
         actions: [
           IconButton(
+            icon: const Icon(Icons.document_scanner),
+            tooltip: l10n.quickScanReceipt,
+            onPressed: () {
+              // TODO: implement scan receipt navigation
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.share),
             tooltip: l10n.exportTooltip,
             onPressed: _exportMonth,
