@@ -4316,4 +4316,44 @@ class SEn extends S {
 
   @override
   String get featureNameAiCoachFull => 'AI Financial Coach';
+
+  @override
+  String get receiptScanTitle => 'Scan Receipt';
+
+  @override
+  String get receiptScanQrMode => 'QR Code';
+
+  @override
+  String get receiptScanPhotoMode => 'Photo';
+
+  @override
+  String get receiptScanHint => 'Point camera at the receipt QR code';
+
+  @override
+  String receiptScanSuccess(String amount, String store) {
+    return 'Expense of $amount at $store recorded';
+  }
+
+  @override
+  String get receiptScanFailed => 'Could not read receipt';
+
+  @override
+  String get receiptScanPrompt =>
+      'Shopping done? Scan the receipt to record expenses automatically.';
+
+  @override
+  String get receiptMerchantUnknown => 'Unknown merchant';
+
+  @override
+  String receiptMerchantNamePrompt(String nif) {
+    return 'Enter store name for NIF $nif';
+  }
+
+  @override
+  String receiptItemsMatched(int count) {
+    return '$count items matched with shopping list';
+  }
+
+  @override
+  String get quickScanReceipt => 'Scan Receipt';
 }

@@ -4603,5 +4603,32 @@
         }
     },
     "featureNameAiCoachFull": "Coach Financeiro IA",
-    "@featureNameAiCoachFull": { "description": "Full AI Financial Coach name for trial banner" }
+    "@featureNameAiCoachFull": { "description": "Full AI Financial Coach name for trial banner" },
+    "receiptScanTitle": "Scan Recibo",
+    "receiptScanQrMode": "QR Code",
+    "receiptScanPhotoMode": "Foto",
+    "receiptScanHint": "Aponte a câmara para o QR code do recibo",
+    "receiptScanSuccess": "Despesa de {amount} no {store} registada",
+    "@receiptScanSuccess": {
+        "placeholders": {
+            "amount": { "type": "String" },
+            "store": { "type": "String" }
+        }
+    },
+    "receiptScanFailed": "Não foi possível ler o recibo",
+    "receiptScanPrompt": "Compras feitas? Scan o recibo para registar despesa automaticamente.",
+    "receiptMerchantUnknown": "Loja desconhecida",
+    "receiptMerchantNamePrompt": "Insira o nome da loja para NIF {nif}",
+    "@receiptMerchantNamePrompt": {
+        "placeholders": {
+            "nif": { "type": "String" }
+        }
+    },
+    "receiptItemsMatched": "{count} itens associados à lista de compras",
+    "@receiptItemsMatched": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "quickScanReceipt": "Scan Recibo"
 }

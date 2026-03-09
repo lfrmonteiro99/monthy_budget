@@ -4342,4 +4342,44 @@ class SPt extends S {
 
   @override
   String get featureNameAiCoachFull => 'Coach Financeiro IA';
+
+  @override
+  String get receiptScanTitle => 'Scan Recibo';
+
+  @override
+  String get receiptScanQrMode => 'QR Code';
+
+  @override
+  String get receiptScanPhotoMode => 'Foto';
+
+  @override
+  String get receiptScanHint => 'Aponte a câmara para o QR code do recibo';
+
+  @override
+  String receiptScanSuccess(String amount, String store) {
+    return 'Despesa de $amount no $store registada';
+  }
+
+  @override
+  String get receiptScanFailed => 'Não foi possível ler o recibo';
+
+  @override
+  String get receiptScanPrompt =>
+      'Compras feitas? Scan o recibo para registar despesa automaticamente.';
+
+  @override
+  String get receiptMerchantUnknown => 'Loja desconhecida';
+
+  @override
+  String receiptMerchantNamePrompt(String nif) {
+    return 'Insira o nome da loja para NIF $nif';
+  }
+
+  @override
+  String receiptItemsMatched(int count) {
+    return '$count itens associados à lista de compras';
+  }
+
+  @override
+  String get quickScanReceipt => 'Scan Recibo';
 }

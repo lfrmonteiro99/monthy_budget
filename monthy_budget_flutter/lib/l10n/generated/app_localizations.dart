@@ -7828,6 +7828,72 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Coach Financeiro IA'**
   String get featureNameAiCoachFull;
+
+  /// No description provided for @receiptScanTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Scan Recibo'**
+  String get receiptScanTitle;
+
+  /// No description provided for @receiptScanQrMode.
+  ///
+  /// In pt, this message translates to:
+  /// **'QR Code'**
+  String get receiptScanQrMode;
+
+  /// No description provided for @receiptScanPhotoMode.
+  ///
+  /// In pt, this message translates to:
+  /// **'Foto'**
+  String get receiptScanPhotoMode;
+
+  /// No description provided for @receiptScanHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aponte a câmara para o QR code do recibo'**
+  String get receiptScanHint;
+
+  /// No description provided for @receiptScanSuccess.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesa de {amount} no {store} registada'**
+  String receiptScanSuccess(String amount, String store);
+
+  /// No description provided for @receiptScanFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível ler o recibo'**
+  String get receiptScanFailed;
+
+  /// No description provided for @receiptScanPrompt.
+  ///
+  /// In pt, this message translates to:
+  /// **'Compras feitas? Scan o recibo para registar despesa automaticamente.'**
+  String get receiptScanPrompt;
+
+  /// No description provided for @receiptMerchantUnknown.
+  ///
+  /// In pt, this message translates to:
+  /// **'Loja desconhecida'**
+  String get receiptMerchantUnknown;
+
+  /// No description provided for @receiptMerchantNamePrompt.
+  ///
+  /// In pt, this message translates to:
+  /// **'Insira o nome da loja para NIF {nif}'**
+  String receiptMerchantNamePrompt(String nif);
+
+  /// No description provided for @receiptItemsMatched.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} itens associados à lista de compras'**
+  String receiptItemsMatched(int count);
+
+  /// No description provided for @quickScanReceipt.
+  ///
+  /// In pt, this message translates to:
+  /// **'Scan Recibo'**
+  String get quickScanReceipt;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
