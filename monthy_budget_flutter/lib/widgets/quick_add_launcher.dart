@@ -77,6 +77,11 @@ class _QuickAddLauncherState extends State<QuickAddLauncher>
         label: l10n.quickOpenAssistant,
         action: QuickAction.openAssistant,
       ),
+      _QuickItem(
+        icon: Icons.document_scanner,
+        label: l10n.quickScanReceipt,
+        action: QuickAction.scanReceipt,
+      ),
     ];
 
     return Column(

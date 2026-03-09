@@ -1252,6 +1252,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         _openMealPlanner();
       case QuickAction.openAssistant:
         setState(() => _commandPanelOpen = true);
+      case QuickAction.scanReceipt:
+        break; // TODO: open ReceiptScanSheet
     }
   }
 

@@ -439,6 +439,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               color: AppColors.textPrimary(context)),
         ),
         actions: [
+          IconButton(
+            icon: Icon(Icons.document_scanner,
+                color: AppColors.textSecondary(context)),
+            tooltip: l10n.quickScanReceipt,
+            onPressed: () {
+              // TODO: implement scan receipt navigation
+            },
+          ),
           if (widget.onAddToShoppingList != null)
             IconButton(
               icon: Icon(Icons.qr_code_scanner,

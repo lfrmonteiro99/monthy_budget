@@ -6,7 +6,8 @@ enum QuickAction {
   addExpense('quick_add_expense'),
   addShopping('quick_add_shopping'),
   openMeals('open_meals'),
-  openAssistant('open_assistant');
+  openAssistant('open_assistant'),
+  scanReceipt('scan_receipt');
 
   const QuickAction(this.type);
   final String type;

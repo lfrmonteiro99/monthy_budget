@@ -9,6 +9,7 @@ void main() {
           QuickAction.fromType('quick_add_shopping'), QuickAction.addShopping);
       expect(QuickAction.fromType('open_meals'), QuickAction.openMeals);
       expect(QuickAction.fromType('open_assistant'), QuickAction.openAssistant);
+      expect(QuickAction.fromType('scan_receipt'), QuickAction.scanReceipt);
     });
 
     test('returns null for unknown type', () {
@@ -25,6 +26,14 @@ void main() {
     test('each value has a unique type string', () {
       final types = QuickAction.values.map((a) => a.type).toSet();
       expect(types.length, QuickAction.values.length);
+    });
+
+    test('scanReceipt enum value exists with correct type', () {
+      expect(QuickAction.scanReceipt.type, 'scan_receipt');
+    });
+
+    test('has 5 values', () {
+      expect(QuickAction.values, hasLength(5));
     });
   });
 }
