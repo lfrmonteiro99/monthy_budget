@@ -14,9 +14,6 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-import scraper_deco
-import scraper_openfoodfacts
-
 try:  # Script execution from scrapers/
     from registry import pt_store_scrapers
 except ImportError:  # Package execution from repo root/tests
@@ -30,6 +27,50 @@ logging.basicConfig(
 logger = logging.getLogger("run_scrapers")
 
 DEFAULT_OUTPUT = Path(__file__).parent.parent / "monthy_budget_flutter" / "assets" / "grocery_prices.json"
+
+
+def _load_external_scrapers():
+    try:  # Script execution from scrapers/
+        import scraper_deco
+        import scraper_openfoodfacts
+    except ImportError:  # Package execution from repo root/tests
+        from . import scraper_deco, scraper_openfoodfacts
+    return scraper_deco, scraper_openfoodfacts
+
+
+def _build_store_artifact(
+    *,
+    scraper,
+    status: str,
+    scraped_at: str,
+    listings=None,
+    error: str | None = None,
+) -> dict:
+    listings = listings or []
+    artifact = {
+        "country_code": scraper.country_code,
+        "store_id": scraper.store_id,
+        "store_name": scraper.store_name,
+        "status": status,
+        "scraped_at": scraped_at,
+        "listing_count": len(listings),
+        "listings": [listing.to_dict() for listing in listings],
+    }
+    if error:
+        artifact["error"] = error
+    return artifact
+
+
+def _store_result_from_artifact(artifact: dict) -> dict:
+    payload = {
+        "status": artifact["status"],
+        "count": artifact["listing_count"],
+        "country_code": artifact["country_code"],
+        "store_id": artifact["store_id"],
+    }
+    if "error" in artifact:
+        payload["error"] = artifact["error"]
+    return payload
 
 
 def _normalize_products(products: list[dict]) -> list[dict]:
@@ -162,31 +203,36 @@ def _build_category_summary(products: list[dict]) -> list[dict]:
 def run(output_path: Path, enrich_nutrition: bool = False) -> None:
     """Execute all scrapers and write combined JSON output."""
     now = datetime.now(timezone.utc)
+    scraper_deco, scraper_openfoodfacts = _load_external_scrapers()
     logger.info(f"Starting grocery price scrape at {now.isoformat()}")
 
     # Run store scrapers
     all_products = []
     scraper_results = {}
+    store_artifacts = []
+    scraped_at = now.isoformat()
 
     for scraper in pt_store_scrapers():
         try:
             listings = scraper.scrape()
             products = [listing.to_legacy_product() for listing in listings]
             all_products.extend(products)
-            scraper_results[scraper.store_name] = {
-                "status": "ok",
-                "count": len(products),
-                "country_code": scraper.country_code,
-                "store_id": scraper.store_id,
-            }
+            artifact = _build_store_artifact(
+                scraper=scraper,
+                status="ok",
+                scraped_at=scraped_at,
+                listings=listings,
+            )
         except Exception as e:
             logger.error(f"{scraper.store_name} scraper failed: {e}")
-            scraper_results[scraper.store_name] = {
-                "status": "error",
-                "error": str(e),
-                "country_code": scraper.country_code,
-                "store_id": scraper.store_id,
-            }
+            artifact = _build_store_artifact(
+                scraper=scraper,
+                status="error",
+                scraped_at=scraped_at,
+                error=str(e),
+            )
+        store_artifacts.append(artifact)
+        scraper_results[scraper.store_name] = _store_result_from_artifact(artifact)
 
     # Normalize and deduplicate
     all_products = _normalize_products(all_products)
@@ -229,12 +275,13 @@ def run(output_path: Path, enrich_nutrition: bool = False) -> None:
     # Assemble final JSON
     output = {
         "metadata": {
-            "scraped_at": now.isoformat(),
+            "scraped_at": scraped_at,
             "scraper_version": "1.0.0",
             "scraper_results": scraper_results,
             "total_products": len(all_products),
             "total_comparisons": len(comparison_index),
         },
+        "store_artifacts": store_artifacts,
         "deco_index": deco_data,
         "products": all_products,
         "comparisons": comparison_index,
