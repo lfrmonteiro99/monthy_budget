@@ -2615,7 +2615,7 @@ class SEn extends S {
   String get mealWeeklySummary => 'Weekly Nutrition';
 
   @override
-  String get mealBatchPrepGuide => 'Prep Guide';
+  String get mealBatchPrepGuide => 'Batch Cooking';
 
   @override
   String mealBatchTotalTime(String time) {
@@ -2624,6 +2624,17 @@ class SEn extends S {
 
   @override
   String get mealBatchParallelTips => 'Parallel cooking tips';
+
+  @override
+  String get mealViewPrepGuide => 'How to Prepare';
+
+  @override
+  String get mealPrepGuideTitle => 'How to Prepare';
+
+  @override
+  String mealPrepTime(String minutes) {
+    return 'Time: $minutes min';
+  }
 
   @override
   String get mealFeedbackLike => 'Liked';

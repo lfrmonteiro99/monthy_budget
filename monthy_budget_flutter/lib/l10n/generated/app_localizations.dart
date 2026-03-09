@@ -4862,7 +4862,7 @@ abstract class S {
   /// Batch cooking prep guide button
   ///
   /// In pt, this message translates to:
-  /// **'Guia de Preparação'**
+  /// **'Cozinha em Lote'**
   String get mealBatchPrepGuide;
 
   /// Batch cooking total time estimate
@@ -4876,6 +4876,24 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Dicas de cozinha paralela'**
   String get mealBatchParallelTips;
+
+  /// Per-meal preparation guide button
+  ///
+  /// In pt, this message translates to:
+  /// **'Preparação'**
+  String get mealViewPrepGuide;
+
+  /// Title for the per-meal preparation guide sheet
+  ///
+  /// In pt, this message translates to:
+  /// **'Como Preparar'**
+  String get mealPrepGuideTitle;
+
+  /// Prep time label in guide
+  ///
+  /// In pt, this message translates to:
+  /// **'Tempo: {minutes} min'**
+  String mealPrepTime(String minutes);
 
   /// Label for liked meal feedback button
   ///

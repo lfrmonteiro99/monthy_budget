@@ -50,7 +50,14 @@
       "fatG": 16,
       "fiberG": 2.5,
       "sodiumMg": 380
-    }
+    },
+    "prepSteps": [
+      "Pré-aquece o forno a 200°C.",
+      "Tempera o frango com alho picado, azeite, sal e pimenta.",
+      "Corta as batatas em quartos e dispõe no tabuleiro à volta do frango.",
+      "Rega tudo com um fio de azeite.",
+      "Leva ao forno durante 45-50 minutos até o frango ficar dourado."
+    ]
   },
   {
     "id": "frango_arroz",
@@ -105,7 +112,14 @@
       "fatG": 12,
       "fiberG": 1.5,
       "sodiumMg": 350
-    }
+    },
+    "prepSteps": [
+      "Corta o frango em pedaços e tempera com sal e pimenta.",
+      "Numa panela, refoga a cebola picada em azeite até ficar translúcida.",
+      "Junta o frango e deixa selar de todos os lados.",
+      "Adiciona a cenoura ralada e o arroz, mexendo bem.",
+      "Cobre com água (2x o volume do arroz) e deixa cozinhar em lume brando 18 minutos."
+    ]
   },
   {
     "id": "frango_estufado",
@@ -163,7 +177,14 @@
       "fatG": 18,
       "fiberG": 3,
       "sodiumMg": 420
-    }
+    },
+    "prepSteps": [
+      "Corta o frango em pedaços e tempera com sal.",
+      "Pica a cebola e a cenoura em cubos pequenos.",
+      "Refoga a cebola em azeite, junta o frango e deixa selar.",
+      "Adiciona a cenoura, o tomate pelado esmagado e um copo de água.",
+      "Tampa e deixa estufar em lume brando durante 30-35 minutos."
+    ]
   },
   {
     "id": "frango_grelhado",
@@ -214,7 +235,14 @@
       "fatG": 10,
       "fiberG": 2,
       "sodiumMg": 300
-    }
+    },
+    "prepSteps": [
+      "Corta o peito de frango em bifes finos e tempera com alho, azeite, sal e pimenta.",
+      "Deixa marinar pelo menos 15 minutos.",
+      "Aquece a grelha ou frigideira antiaderente em lume alto.",
+      "Grelha o frango 4-5 minutos de cada lado.",
+      "Serve com arroz cozido e salada de alface temperada."
+    ]
   },
   {
     "id": "frango_broculos",
@@ -265,7 +293,14 @@
       "fatG": 14,
       "fiberG": 4,
       "sodiumMg": 320
-    }
+    },
+    "prepSteps": [
+      "Corta o frango em tiras finas.",
+      "Separa os brócolos em raminhos e lava bem.",
+      "Refoga o alho laminado em azeite numa frigideira grande.",
+      "Junta o frango e salteia em lume alto até dourar.",
+      "Adiciona os brócolos, tampa e cozinha 5-6 minutos até ficarem tenros."
+    ]
   },
   {
     "id": "esparguete_bolonhesa",
@@ -320,7 +355,14 @@
       "fatG": 18,
       "fiberG": 3.5,
       "sodiumMg": 480
-    }
+    },
+    "prepSteps": [
+      "Pica a cebola finamente.",
+      "Refoga a cebola em azeite até ficar translúcida.",
+      "Junta a carne picada e deixa selar, desfazendo com uma colher de pau.",
+      "Adiciona o tomate pelado esmagado, tempera e deixa cozinhar 20 minutos em lume brando.",
+      "Cozinha a massa em água com sal e escorre. Serve com o molho por cima."
+    ]
   },
   {
     "id": "almondegas",
@@ -371,7 +413,14 @@
       "fatG": 22,
       "fiberG": 3,
       "sodiumMg": 460
-    }
+    },
+    "prepSteps": [
+      "Mistura a carne picada com cebola ralada, sal, pimenta e um ovo (opcional).",
+      "Forma bolas com as mãos e reserva.",
+      "Prepara o molho refogando cebola em azeite e juntando tomate pelado esmagado.",
+      "Coloca as almôndegas no molho e deixa cozinhar 25-30 minutos em lume brando.",
+      "Serve com arroz branco ou pão."
+    ]
   },
   {
     "id": "empadao",
@@ -427,7 +476,14 @@
       "fatG": 22,
       "fiberG": 2.5,
       "sodiumMg": 440
-    }
+    },
+    "prepSteps": [
+      "Pré-aquece o forno a 180°C.",
+      "Coze as batatas e faz puré com um pouco de azeite.",
+      "Refoga a cebola, junta a carne picada e cozinha até secar.",
+      "Numa forma, coloca uma camada de puré, a carne e cobre com outra camada de puré.",
+      "Leva ao forno 25-30 minutos até dourar por cima."
+    ]
   },
   {
     "id": "hamburguer",
@@ -478,7 +534,14 @@
       "fatG": 24,
       "fiberG": 2,
       "sodiumMg": 550
-    }
+    },
+    "prepSteps": [
+      "Mistura a carne picada com cebola muito picada, sal e pimenta.",
+      "Forma hambúrgueres achatados com as mãos.",
+      "Aquece uma frigideira em lume alto.",
+      "Cozinha os hambúrgueres 4 minutos de cada lado.",
+      "Monta no pão com tomate fatiado e os condimentos que preferires."
+    ]
   },
   {
     "id": "lasanha",
@@ -534,7 +597,14 @@
       "fatG": 28,
       "fiberG": 2,
       "sodiumMg": 520
-    }
+    },
+    "prepSteps": [
+      "Pré-aquece o forno a 190°C.",
+      "Prepara o molho bolonhesa refogando cebola e carne picada com tomate pelado.",
+      "Numa forma, alterna camadas de folhas de lasanha com molho de carne.",
+      "Termina com uma camada generosa de molho por cima.",
+      "Cobre com papel de alumínio e leva ao forno 40 minutos. Retira o alumínio nos últimos 10."
+    ]
   },
   {
     "id": "feijoada_simples",
@@ -592,7 +662,14 @@
       "fatG": 10,
       "fiberG": 12,
       "sodiumMg": 380
-    }
+    },
+    "prepSteps": [
+      "Se usar feijão seco, demolha na véspera e coze previamente.",
+      "Corta o chouriço em rodelas e a cenoura em cubos.",
+      "Refoga a cebola picada em azeite.",
+      "Junta o chouriço, a cenoura e o feijão cozido.",
+      "Adiciona água até cobrir, tempera e deixa cozinhar 20-25 minutos."
+    ]
   },
   {
     "id": "grao_espinafres",
@@ -643,7 +720,14 @@
       "fatG": 10,
       "fiberG": 10,
       "sodiumMg": 320
-    }
+    },
+    "prepSteps": [
+      "Escorre e lava o grão-de-bico (se for de lata).",
+      "Lava os espinafres e escorre bem.",
+      "Refoga o alho laminado em azeite.",
+      "Junta os espinafres e deixa murchar 2-3 minutos.",
+      "Adiciona o grão, tempera com sal e azeite e aquece bem."
+    ]
   },
   {
     "id": "lentilhas_estufadas",
@@ -701,7 +785,14 @@
       "fatG": 8,
       "fiberG": 14,
       "sodiumMg": 350
-    }
+    },
+    "prepSteps": [
+      "Lava as lentilhas em água corrente.",
+      "Pica a cebola e a cenoura em cubos pequenos.",
+      "Refoga a cebola em azeite, junta a cenoura.",
+      "Adiciona as lentilhas, o tomate pelado e água até cobrir.",
+      "Cozinha em lume brando 25-30 minutos até as lentilhas ficarem tenras."
+    ]
   },
   {
     "id": "feijao_verde_batata",
@@ -752,7 +843,14 @@
       "fatG": 8,
       "fiberG": 8,
       "sodiumMg": 300
-    }
+    },
+    "prepSteps": [
+      "Lava e corta o feijão verde em pedaços.",
+      "Descasca e corta as batatas em cubos.",
+      "Coze tudo junto em água com sal durante 15-20 minutos.",
+      "Escorre e tempera com alho picado e azeite a gosto.",
+      "Serve quente como prato principal ou acompanhamento."
+    ]
   },
   {
     "id": "sopa_feijao",
@@ -810,7 +908,14 @@
       "fatG": 6,
       "fiberG": 10,
       "sodiumMg": 350
-    }
+    },
+    "prepSteps": [
+      "Se usar feijão seco, demolha na véspera e coze.",
+      "Descasca e corta as batatas e cenouras em pedaços.",
+      "Refoga a cebola em azeite numa panela grande.",
+      "Junta as batatas, cenouras, feijão e água.",
+      "Cozinha 25 minutos e tritura parcialmente para engrossar."
+    ]
   },
   {
     "id": "omelete_legumes",
@@ -862,7 +967,14 @@
       "fatG": 24,
       "fiberG": 2.5,
       "sodiumMg": 400
-    }
+    },
+    "prepSteps": [
+      "Bate os ovos com sal e pimenta.",
+      "Corta o pimento e a cebola em cubos pequenos.",
+      "Refoga os legumes em azeite até ficarem macios.",
+      "Deita os ovos batidos por cima e cozinha em lume médio.",
+      "Quando a base estiver firme, dobra ao meio e serve."
+    ]
   },
   {
     "id": "tortilha",
@@ -914,7 +1026,14 @@
       "fatG": 20,
       "fiberG": 2.5,
       "sodiumMg": 350
-    }
+    },
+    "prepSteps": [
+      "Descasca e corta as batatas em fatias finas.",
+      "Frita as batatas em azeite abundante até ficarem macias (não crocantes).",
+      "Bate os ovos com a cebola picada e sal.",
+      "Mistura as batatas com os ovos e deita numa frigideira com um fio de azeite.",
+      "Cozinha em lume brando, vira com a ajuda de um prato e cozinha do outro lado."
+    ]
   },
   {
     "id": "frittata_espinafres",
@@ -968,7 +1087,14 @@
       "fatG": 22,
       "fiberG": 3,
       "sodiumMg": 380
-    }
+    },
+    "prepSteps": [
+      "Pré-aquece o forno a 180°C.",
+      "Refoga o alho em azeite e junta os espinafres até murcharem.",
+      "Bate os ovos com sal e pimenta.",
+      "Mistura os espinafres com os ovos numa forma refratária.",
+      "Leva ao forno 15-20 minutos até ficar firme e dourada."
+    ]
   },
   {
     "id": "ovos_mexidos_tomate",
@@ -1020,7 +1146,14 @@
       "fatG": 18,
       "fiberG": 2,
       "sodiumMg": 360
-    }
+    },
+    "prepSteps": [
+      "Corta o tomate em cubos e a cebola em meias-luas.",
+      "Refoga a cebola em azeite até amolecer.",
+      "Junta o tomate e deixa cozinhar 5 minutos.",
+      "Adiciona os ovos e mexe em lume brando até ficarem cremosos.",
+      "Serve imediatamente com pão torrado."
+    ]
   },
   {
     "id": "ovo_arroz",
@@ -1071,7 +1204,14 @@
       "fatG": 12,
       "fiberG": 2.5,
       "sodiumMg": 340
-    }
+    },
+    "prepSteps": [
+      "Cozinha o arroz em água com sal (18 minutos).",
+      "Rala a cenoura finamente.",
+      "Numa frigideira, salteia a cenoura em azeite.",
+      "Junta o arroz cozido e mistura bem.",
+      "Faz um ovo estrelado ou mexido e serve por cima do arroz."
+    ]
   },
   {
     "id": "pescada_forno",
@@ -1124,7 +1264,14 @@
       "fatG": 8,
       "fiberG": 2.5,
       "sodiumMg": 340
-    }
+    },
+    "prepSteps": [
+      "Pré-aquece o forno a 190°C.",
+      "Corta as batatas em rodelas finas e a cebola em meias-luas.",
+      "Dispõe as batatas e a cebola no fundo do tabuleiro.",
+      "Coloca os filetes de pescada por cima, rega com azeite.",
+      "Leva ao forno 40-45 minutos até o peixe estar cozido e as batatas tenras."
+    ]
   },
   {
     "id": "peixe_grelhado",
@@ -1175,7 +1322,14 @@
       "fatG": 8,
       "fiberG": 3,
       "sodiumMg": 300
-    }
+    },
+    "prepSteps": [
+      "Tempera a pescada com sal e um fio de azeite.",
+      "Corta a courgette e a cenoura em tiras ou rodelas.",
+      "Grelha o peixe numa frigideira antiaderente, 4 minutos de cada lado.",
+      "Salteia os legumes separadamente em azeite.",
+      "Serve o peixe com os legumes grelhados."
+    ]
   },
   {
     "id": "arroz_peixe",
@@ -1230,7 +1384,14 @@
       "fatG": 10,
       "fiberG": 2,
       "sodiumMg": 380
-    }
+    },
+    "prepSteps": [
+      "Corta a pescada em pedaços e tempera com sal.",
+      "Pica a cebola e refoga em azeite.",
+      "Junta o tomate pelado esmagado e deixa apurar.",
+      "Adiciona água, e quando ferver, junta o arroz e o peixe.",
+      "Cozinha em lume brando 18-20 minutos. Deve ficar caldoso."
+    ]
   },
   {
     "id": "bacalhau_cozido",
@@ -1288,7 +1449,14 @@
       "fatG": 10,
       "fiberG": 3.5,
       "sodiumMg": 680
-    }
+    },
+    "prepSteps": [
+      "Demolha o bacalhau em água durante 24-48 horas, mudando a água várias vezes.",
+      "Coze as batatas com casca e os ovos separadamente.",
+      "Coze o bacalhau em água (sem sal) durante 15-20 minutos.",
+      "Descasca as batatas e corta os ovos ao meio.",
+      "Serve tudo junto, regado com azeite a gosto e cebola picada."
+    ]
   },
   {
     "id": "bacalhau_grao",
@@ -1342,7 +1510,14 @@
       "fatG": 14,
       "fiberG": 6,
       "sodiumMg": 650
-    }
+    },
+    "prepSteps": [
+      "Demolha o bacalhau previamente (24-48 horas).",
+      "Coze o bacalhau em água durante 15-20 minutos e desfaz em lascas.",
+      "Escorre o grão-de-bico.",
+      "Mistura o bacalhau desfiado com o grão num prato.",
+      "Tempera generosamente com azeite, alho picado e salsa."
+    ]
   },
   {
     "id": "costeletas_porco",
@@ -1393,7 +1568,14 @@
       "fatG": 20,
       "fiberG": 1.5,
       "sodiumMg": 350
-    }
+    },
+    "prepSteps": [
+      "Tempera as costeletas com alho picado, sal e pimenta.",
+      "Deixa marinar pelo menos 30 minutos.",
+      "Aquece a grelha ou frigideira em lume alto.",
+      "Grelha as costeletas 5-6 minutos de cada lado.",
+      "Serve com batatas cozidas temperadas com azeite."
+    ]
   },
   {
     "id": "porco_alentejana",
@@ -1444,7 +1626,14 @@
       "fatG": 28,
       "fiberG": 3,
       "sodiumMg": 580
-    }
+    },
+    "prepSteps": [
+      "Corta a carne de porco em cubos e tempera com alho, massa de pimentão e vinho branco.",
+      "Deixa marinar pelo menos 2 horas (ou de véspera).",
+      "Frita as batatas cortadas em cubos e reserva.",
+      "Numa panela, cozinha a carne na marinada até ficar macia.",
+      "Junta as batatas fritas à carne e mistura bem antes de servir."
+    ]
   },
   {
     "id": "bifanas",
@@ -1495,7 +1684,14 @@
       "fatG": 22,
       "fiberG": 1.5,
       "sodiumMg": 500
-    }
+    },
+    "prepSteps": [
+      "Corta a carne de porco em bifes muito finos.",
+      "Prepara a marinada com alho esmagado, azeite, vinho branco e sal.",
+      "Deixa marinar pelo menos 30 minutos.",
+      "Frita as bifanas rapidamente em lume alto, 2 minutos de cada lado.",
+      "Serve no pão com o molho da frigideira."
+    ]
   },
   {
     "id": "porco_assado",
@@ -1548,7 +1744,14 @@
       "fatG": 24,
       "fiberG": 2,
       "sodiumMg": 420
-    }
+    },
+    "prepSteps": [
+      "Pré-aquece o forno a 180°C.",
+      "Tempera o lombo de porco com alho, sal, pimenta e azeite.",
+      "Corta as batatas em quartos e a cebola em gomos.",
+      "Coloca tudo num tabuleiro e leva ao forno.",
+      "Assa durante 50-60 minutos, regando de vez em quando com o próprio molho."
+    ]
   },
   {
     "id": "feijoada_porco",
@@ -1606,7 +1809,14 @@
       "fatG": 24,
       "fiberG": 8,
       "sodiumMg": 620
-    }
+    },
+    "prepSteps": [
+      "Demolha o feijão na véspera.",
+      "Coze o feijão com a cenoura até ficarem quase tenros.",
+      "Corta a carne de porco em pedaços e o chouriço em rodelas.",
+      "Junta a carne e o chouriço ao feijão e deixa cozinhar mais 30 minutos.",
+      "Rectifica os temperos e serve com arroz branco."
+    ]
   },
   {
     "id": "sardinhas_assadas",
@@ -1659,7 +1869,14 @@
       "fatG": 18,
       "fiberG": 2.5,
       "sodiumMg": 420
-    }
+    },
+    "prepSteps": [
+      "Lava as sardinhas e tempera com sal grosso.",
+      "Aquece a grelha ou assadeira a lume alto.",
+      "Assa as sardinhas 5-6 minutos de cada lado.",
+      "Coze as batatas e corta o pimento em tiras.",
+      "Serve as sardinhas com as batatas e pimento assado."
+    ]
   },
   {
     "id": "atum_salada",
@@ -1717,7 +1934,14 @@
       "fatG": 16,
       "fiberG": 4,
       "sodiumMg": 380
-    }
+    },
+    "prepSteps": [
+      "Lava e corta a alface em pedaços.",
+      "Corta o tomate em rodelas e a cebola em meias-luas finas.",
+      "Escorre o atum da lata.",
+      "Monta a salada com alface, tomate, cebola e atum por cima.",
+      "Tempera com azeite, vinagre e sal a gosto."
+    ]
   },
   {
     "id": "atum_arroz",
@@ -1772,7 +1996,14 @@
       "fatG": 12,
       "fiberG": 2,
       "sodiumMg": 340
-    }
+    },
+    "prepSteps": [
+      "Pica a cebola e refoga em azeite.",
+      "Junta o tomate pelado esmagado e deixa apurar 5 minutos.",
+      "Adiciona o arroz e a água (2x o volume do arroz).",
+      "Quando o arroz estiver quase cozido, junta o atum escorrido.",
+      "Mexe delicadamente e serve quando o arroz absorver a água."
+    ]
   },
   {
     "id": "caldeirada",
@@ -1834,7 +2065,14 @@
       "fatG": 12,
       "fiberG": 3,
       "sodiumMg": 480
-    }
+    },
+    "prepSteps": [
+      "Corta a pescada em postas, as batatas em rodelas e o tomate em fatias.",
+      "Pica a cebola e o pimento.",
+      "Numa panela, faz camadas: batata, cebola, pimento, tomate e peixe.",
+      "Rega com azeite e um pouco de água, tempera com sal.",
+      "Cozinha em lume brando 35-40 minutos sem mexer (apenas agitar a panela)."
+    ]
   },
   {
     "id": "pataniscas_bacalhau",
@@ -1892,7 +2130,14 @@
       "fatG": 18,
       "fiberG": 2,
       "sodiumMg": 580
-    }
+    },
+    "prepSteps": [
+      "Demolha o bacalhau previamente e desfaz em lascas.",
+      "Prepara a massa misturando farinha, ovos e um pouco de água.",
+      "Adiciona o bacalhau desfiado e a cebola picada à massa.",
+      "Aquece azeite numa frigideira.",
+      "Deita colheradas da massa no azeite quente e frita até dourar de ambos os lados."
+    ]
   },
   {
     "id": "papas_aveia",
@@ -1938,7 +2183,14 @@
       "fatG": 6,
       "fiberG": 5,
       "sodiumMg": 80
-    }
+    },
+    "prepSteps": [
+      "Aquece o leite numa panela pequena.",
+      "Junta a aveia e mexe em lume brando 5 minutos.",
+      "Quando engrossar, retira do lume.",
+      "Corta a banana em rodelas.",
+      "Serve as papas numa taça e decora com a fruta por cima."
+    ]
   },
   {
     "id": "torradas_queijo",
@@ -1989,7 +2241,14 @@
       "fatG": 16,
       "fiberG": 1.5,
       "sodiumMg": 460
-    }
+    },
+    "prepSteps": [
+      "Corta o pão de forma em fatias, se necessário.",
+      "Barra cada fatia com um pouco de manteiga.",
+      "Coloca uma fatia de fiambre e uma de queijo em cada torrada.",
+      "Leva à torradeira ou ao forno até o queijo derreter.",
+      "Serve quente."
+    ]
   },
   {
     "id": "cereais_leite",
@@ -2035,7 +2294,14 @@
       "fatG": 4,
       "fiberG": 3,
       "sodiumMg": 200
-    }
+    },
+    "prepSteps": [
+      "Coloca os cereais numa taça.",
+      "Verte o leite frio ou morno sobre os cereais.",
+      "Lava e corta a fruta em pedaços pequenos.",
+      "Junta a fruta por cima.",
+      "Serve imediatamente para manter os cereais crocantes."
+    ]
   },
   {
     "id": "iogurte_fruta",
@@ -2082,7 +2348,14 @@
       "fatG": 6,
       "fiberG": 3,
       "sodiumMg": 100
-    }
+    },
+    "prepSteps": [
+      "Coloca o iogurte numa taça.",
+      "Lava e corta a fruta em pedaços.",
+      "Junta a fruta ao iogurte.",
+      "Polvilha com aveia por cima.",
+      "Mistura levemente e serve."
+    ]
   },
   {
     "id": "ovos_pequeno_almoco",
@@ -2128,7 +2401,14 @@
       "fatG": 16,
       "fiberG": 1.5,
       "sodiumMg": 400
-    }
+    },
+    "prepSteps": [
+      "Bate os ovos com sal e pimenta.",
+      "Aquece uma frigideira com um pouco de manteiga.",
+      "Deita os ovos e mexe em lume brando com uma espátula.",
+      "Retira quando ainda estiverem ligeiramente cremosos.",
+      "Tosta o pão de forma e serve os ovos por cima ou ao lado."
+    ]
   },
   {
     "id": "panquecas",
@@ -2179,7 +2459,14 @@
       "fatG": 12,
       "fiberG": 1.5,
       "sodiumMg": 280
-    }
+    },
+    "prepSteps": [
+      "Tritura a aveia até ficar em flocos finos.",
+      "Mistura a aveia, o ovo, o leite e a banana esmagada.",
+      "Aquece uma frigideira antiaderente com um pouco de azeite.",
+      "Deita pequenas porções de massa e cozinha 2 minutos de cada lado.",
+      "Serve com fruta fresca ou mel."
+    ]
   },
   {
     "id": "tosta_mista",
@@ -2226,7 +2513,14 @@
       "fatG": 16,
       "fiberG": 1.5,
       "sodiumMg": 480
-    }
+    },
+    "prepSteps": [
+      "Coloca uma fatia de fiambre e uma de queijo entre duas fatias de pão.",
+      "Aquece a tostadeira ou uma frigideira.",
+      "Tosta até o pão ficar dourado e crocante e o queijo derreter.",
+      "Corta ao meio na diagonal.",
+      "Serve quente."
+    ]
   },
   {
     "id": "fruta_iogurte",
@@ -2272,7 +2566,14 @@
       "fatG": 4,
       "fiberG": 4,
       "sodiumMg": 80
-    }
+    },
+    "prepSteps": [
+      "Coloca o iogurte no fundo de uma taça.",
+      "Corta a fruta em pedaços variados.",
+      "Fatia a banana em rodelas.",
+      "Dispõe a fruta e a banana sobre o iogurte.",
+      "Serve fresco."
+    ]
   },
   {
     "id": "caldo_verde",
@@ -2330,7 +2631,14 @@
       "fatG": 8,
       "fiberG": 4,
       "sodiumMg": 380
-    }
+    },
+    "prepSteps": [
+      "Descasca e corta as batatas em pedaços.",
+      "Coze as batatas com a cebola em água com sal.",
+      "Quando estiverem cozidas, tritura com a varinha mágica.",
+      "Corta os espinafres em tiras finas e o chouriço em rodelas.",
+      "Junta ao caldo, deixa ferver 5 minutos e serve com um fio de azeite."
+    ]
   },
   {
     "id": "arroz_legumes",
@@ -2385,7 +2693,14 @@
       "fatG": 8,
       "fiberG": 4.5,
       "sodiumMg": 280
-    }
+    },
+    "prepSteps": [
+      "Corta a cenoura, a courgette e o pimento em cubos pequenos.",
+      "Refoga os legumes em azeite durante 5 minutos.",
+      "Junta o arroz e mexe bem.",
+      "Adiciona água (2x o volume do arroz) e sal.",
+      "Cozinha em lume brando 18 minutos até o arroz estar cozido."
+    ]
   },
   {
     "id": "massa_cogumelos",
@@ -2443,7 +2758,14 @@
       "fatG": 12,
       "fiberG": 3.5,
       "sodiumMg": 280
-    }
+    },
+    "prepSteps": [
+      "Limpa e fatia os cogumelos.",
+      "Refoga o alho laminado em azeite.",
+      "Junta os cogumelos e salteia em lume alto 5 minutos.",
+      "Adiciona as natas, tempera e deixa apurar 3 minutos.",
+      "Cozinha a massa, escorre e mistura com o molho de cogumelos."
+    ]
   },
   {
     "id": "sopa_legumes",
@@ -2501,7 +2823,14 @@
       "fatG": 4,
       "fiberG": 5,
       "sodiumMg": 300
-    }
+    },
+    "prepSteps": [
+      "Descasca e corta a batata, a cenoura, a cebola e a courgette em pedaços.",
+      "Coloca tudo numa panela com água e sal.",
+      "Cozinha durante 20-25 minutos até os legumes estarem macios.",
+      "Tritura tudo com a varinha mágica até ficar homogéneo.",
+      "Serve com um fio de azeite."
+    ]
   },
   {
     "id": "salada_grao",
@@ -2559,6 +2888,13 @@
       "fatG": 12,
       "fiberG": 8,
       "sodiumMg": 280
-    }
+    },
+    "prepSteps": [
+      "Escorre e lava o grão-de-bico.",
+      "Corta o tomate em cubos e a cebola em meias-luas finas.",
+      "Lava e corta a alface em pedaços.",
+      "Mistura tudo numa saladeira.",
+      "Tempera com azeite, vinagre, sal e ervas aromáticas a gosto."
+    ]
   }
 ]
