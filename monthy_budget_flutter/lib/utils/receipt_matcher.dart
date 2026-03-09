@@ -71,22 +71,26 @@ class ReceiptMatcher {
     final levDist = _levenshtein(na, nb);
     final levSim = 1.0 - (levDist / maxLen);
 
-    // Substring containment boost
+    // Substring containment boost — strong signal when the shorter string
+    // is fully contained in the longer one (common for short shopping-list
+    // keywords matched against verbose receipt product names).
     double substringBoost = 0.0;
     if (na.contains(nb) || nb.contains(na)) {
-      final shorter = min(na.length, nb.length);
-      substringBoost = shorter / maxLen;
+      substringBoost = 1.0;
     }
 
-    // Word overlap score
+    // Word overlap: use recall against the *shorter* word set so that a
+    // single-word shopping item like "leite" scores 1.0 when it appears
+    // anywhere in a multi-word receipt name.
     final wordsA = na.split(RegExp(r'\s+')).toSet();
     final wordsB = nb.split(RegExp(r'\s+')).toSet();
     final intersection = wordsA.intersection(wordsB).length;
-    final union = wordsA.union(wordsB).length;
-    final wordOverlap = union > 0 ? intersection / union : 0.0;
+    final smaller = min(wordsA.length, wordsB.length);
+    final wordRecall = smaller > 0 ? intersection / smaller : 0.0;
 
     // Weighted combination
-    final combined = (levSim * 0.4) + (substringBoost * 0.3) + (wordOverlap * 0.3);
+    final combined =
+        (levSim * 0.3) + (substringBoost * 0.35) + (wordRecall * 0.35);
 
     return min(1.0, combined);
   }
