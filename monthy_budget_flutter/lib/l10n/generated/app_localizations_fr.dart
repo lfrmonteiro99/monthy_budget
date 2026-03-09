@@ -4354,4 +4354,44 @@ class SFr extends S {
 
   @override
   String get featureNameAiCoachFull => 'Coach Financier IA';
+
+  @override
+  String get receiptScanTitle => 'Scanner Reçu';
+
+  @override
+  String get receiptScanQrMode => 'QR Code';
+
+  @override
+  String get receiptScanPhotoMode => 'Photo';
+
+  @override
+  String get receiptScanHint => 'Pointez la caméra vers le QR code du reçu';
+
+  @override
+  String receiptScanSuccess(String amount, String store) {
+    return 'Dépense de $amount chez $store enregistrée';
+  }
+
+  @override
+  String get receiptScanFailed => 'Impossible de lire le reçu';
+
+  @override
+  String get receiptScanPrompt =>
+      'Courses terminées? Scannez le reçu pour enregistrer les dépenses automatiquement.';
+
+  @override
+  String get receiptMerchantUnknown => 'Commerçant inconnu';
+
+  @override
+  String receiptMerchantNamePrompt(String nif) {
+    return 'Entrez le nom du magasin pour NIF $nif';
+  }
+
+  @override
+  String receiptItemsMatched(int count) {
+    return '$count articles associés à la liste de courses';
+  }
+
+  @override
+  String get quickScanReceipt => 'Scanner Reçu';
 }
