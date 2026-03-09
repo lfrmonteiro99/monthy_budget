@@ -2259,5 +2259,32 @@
             "percent": { "type": "int" }
         }
     },
-    "featureNameAiCoachFull": "Coach Financier IA"
+    "featureNameAiCoachFull": "Coach Financier IA",
+    "receiptScanTitle": "Scanner Reçu",
+    "receiptScanQrMode": "QR Code",
+    "receiptScanPhotoMode": "Photo",
+    "receiptScanHint": "Pointez la caméra vers le QR code du reçu",
+    "receiptScanSuccess": "Dépense de {amount} chez {store} enregistrée",
+    "@receiptScanSuccess": {
+        "placeholders": {
+            "amount": { "type": "String" },
+            "store": { "type": "String" }
+        }
+    },
+    "receiptScanFailed": "Impossible de lire le reçu",
+    "receiptScanPrompt": "Courses terminées? Scannez le reçu pour enregistrer les dépenses automatiquement.",
+    "receiptMerchantUnknown": "Commerçant inconnu",
+    "receiptMerchantNamePrompt": "Entrez le nom du magasin pour NIF {nif}",
+    "@receiptMerchantNamePrompt": {
+        "placeholders": {
+            "nif": { "type": "String" }
+        }
+    },
+    "receiptItemsMatched": "{count} articles associés à la liste de courses",
+    "@receiptItemsMatched": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "quickScanReceipt": "Scanner Reçu"
 }

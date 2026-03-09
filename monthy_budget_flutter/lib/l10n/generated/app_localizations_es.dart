@@ -4347,4 +4347,44 @@ class SEs extends S {
 
   @override
   String get featureNameAiCoachFull => 'Coach Financiero IA';
+
+  @override
+  String get receiptScanTitle => 'Escanear Recibo';
+
+  @override
+  String get receiptScanQrMode => 'Código QR';
+
+  @override
+  String get receiptScanPhotoMode => 'Foto';
+
+  @override
+  String get receiptScanHint => 'Apunte la cámara al código QR del recibo';
+
+  @override
+  String receiptScanSuccess(String amount, String store) {
+    return 'Gasto de $amount en $store registrado';
+  }
+
+  @override
+  String get receiptScanFailed => 'No se pudo leer el recibo';
+
+  @override
+  String get receiptScanPrompt =>
+      '¿Compras hechas? Escanea el recibo para registrar gastos automáticamente.';
+
+  @override
+  String get receiptMerchantUnknown => 'Tienda desconocida';
+
+  @override
+  String receiptMerchantNamePrompt(String nif) {
+    return 'Ingrese el nombre de la tienda para NIF $nif';
+  }
+
+  @override
+  String receiptItemsMatched(int count) {
+    return '$count artículos asociados a la lista de compras';
+  }
+
+  @override
+  String get quickScanReceipt => 'Escanear Recibo';
 }
