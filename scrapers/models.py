@@ -120,6 +120,35 @@ class StoreSummary:
 
 
 @dataclass(frozen=True)
+class DuplicateCanonicalGroup:
+    signature: str
+    canonical_ids: list[str]
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class UnmatchedListingReport:
+    listing_id: str
+    store_id: str
+    raw_title: str
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class ReportingResult:
+    duplicate_groups: list[DuplicateCanonicalGroup]
+    unmatched_listings: list[UnmatchedListingReport]
+    warnings: list[str]
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
 class MatchingDiagnosticsReport:
     unmatched_by_store: dict[str, list[str]]
     low_confidence_listing_ids: list[str]
