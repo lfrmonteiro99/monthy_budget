@@ -2313,6 +2313,26 @@
         }
     },
     "quickScanReceipt": "Scanner Reçu",
+    "receiptReviewTitle": "Vérifier le Reçu",
+    "receiptReviewMerchant": "Commerce",
+    "receiptReviewDate": "Date",
+    "receiptReviewTotal": "Total",
+    "receiptReviewCategory": "Catégorie",
+    "receiptReviewItems": "{count} articles détectés",
+    "@receiptReviewItems": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "receiptReviewConfirm": "Ajouter Dépense",
+    "receiptReviewRetake": "Reprendre",
+    "receiptCameraPermissionTitle": "Accès Caméra",
+    "receiptCameraPermissionBody": "L'accès à la caméra est nécessaire pour scanner les reçus et les codes-barres.",
+    "receiptCameraPermissionAllow": "Autoriser",
+    "receiptCameraPermissionDeny": "Pas maintenant",
+    "receiptCameraBlockedTitle": "Caméra Bloquée",
+    "receiptCameraBlockedBody": "L'autorisation de la caméra a été définitivement refusée. Ouvrez les paramètres pour l'activer.",
+    "receiptCameraBlockedSettings": "Ouvrir Paramètres",
     "groceryMarketData": "Donn\u00e9es du march\u00e9 {marketCode}",
     "@groceryMarketData": {
         "placeholders": {

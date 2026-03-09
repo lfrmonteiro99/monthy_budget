@@ -75,7 +75,10 @@ import 'models/grocery_data.dart';
 import 'widgets/command_chat_fab.dart';
 import 'widgets/command_chat_panel.dart';
 import 'services/quick_action_service.dart';
+import 'services/receipt_scan_service.dart';
 import 'widgets/quick_add_launcher.dart';
+import 'widgets/receipt_review_sheet.dart';
+import 'widgets/receipt_scan_sheet.dart';
 import 'screens/product_updates_screen.dart';
 
 class AppHome extends StatefulWidget {
@@ -1284,6 +1287,46 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     }
   }
 
+  Future<void> _openReceiptScanner() async {
+    final receipt = await ReceiptScanSheet.show(context);
+    if (receipt == null || !mounted) return;
+
+    final categories =
+        _settings.expenses.map((e) => e.label).toList();
+
+    final chosenCategory = await ReceiptReviewSheet.show(
+      context,
+      receipt: receipt,
+      categories: categories,
+    );
+    if (chosenCategory == null || !mounted) return;
+
+    final expense = ReceiptScanService.buildExpense(
+      receipt: receipt,
+      category: chosenCategory,
+    );
+    await _addActualExpense(expense);
+
+    if (mounted) {
+      final l10n = S.of(context);
+      final merchantLabel = receipt.merchantName ??
+          (receipt.merchantNif.isNotEmpty
+              ? 'NIF ${receipt.merchantNif}'
+              : l10n.receiptMerchantUnknown);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.receiptScanSuccess(
+            formatCurrency(receipt.totalAmount),
+            merchantLabel,
+          )),
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
+    }
+  }
+
   void _handleQuickAction(QuickAction action) {
     if (!_loaded) return;
     switch (action) {
@@ -1296,7 +1339,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       case QuickAction.openAssistant:
         setState(() => _commandPanelOpen = true);
       case QuickAction.scanReceipt:
-        break; // TODO: open ReceiptScanSheet
+        _openReceiptScanner();
     }
   }
 

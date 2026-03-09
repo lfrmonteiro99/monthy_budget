@@ -7931,6 +7931,96 @@ abstract class S {
   /// **'Scan Recibo'**
   String get quickScanReceipt;
 
+  /// No description provided for @receiptReviewTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Rever Recibo'**
+  String get receiptReviewTitle;
+
+  /// No description provided for @receiptReviewMerchant.
+  ///
+  /// In pt, this message translates to:
+  /// **'Loja'**
+  String get receiptReviewMerchant;
+
+  /// No description provided for @receiptReviewDate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Data'**
+  String get receiptReviewDate;
+
+  /// No description provided for @receiptReviewTotal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Total'**
+  String get receiptReviewTotal;
+
+  /// No description provided for @receiptReviewCategory.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria'**
+  String get receiptReviewCategory;
+
+  /// No description provided for @receiptReviewItems.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} itens detetados'**
+  String receiptReviewItems(int count);
+
+  /// No description provided for @receiptReviewConfirm.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar Despesa'**
+  String get receiptReviewConfirm;
+
+  /// No description provided for @receiptReviewRetake.
+  ///
+  /// In pt, this message translates to:
+  /// **'Repetir'**
+  String get receiptReviewRetake;
+
+  /// No description provided for @receiptCameraPermissionTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Acesso à Câmara'**
+  String get receiptCameraPermissionTitle;
+
+  /// No description provided for @receiptCameraPermissionBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'É necessário acesso à câmara para digitalizar recibos e códigos de barras.'**
+  String get receiptCameraPermissionBody;
+
+  /// No description provided for @receiptCameraPermissionAllow.
+  ///
+  /// In pt, this message translates to:
+  /// **'Permitir'**
+  String get receiptCameraPermissionAllow;
+
+  /// No description provided for @receiptCameraPermissionDeny.
+  ///
+  /// In pt, this message translates to:
+  /// **'Agora não'**
+  String get receiptCameraPermissionDeny;
+
+  /// No description provided for @receiptCameraBlockedTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Câmara Bloqueada'**
+  String get receiptCameraBlockedTitle;
+
+  /// No description provided for @receiptCameraBlockedBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'A permissão da câmara foi negada permanentemente. Abra as definições para a ativar.'**
+  String get receiptCameraBlockedBody;
+
+  /// No description provided for @receiptCameraBlockedSettings.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir Definições'**
+  String get receiptCameraBlockedSettings;
+
   /// No description provided for @groceryMarketData.
   ///
   /// In pt, this message translates to:
