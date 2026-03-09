@@ -84,57 +84,8 @@ void main() {
     expect(find.text('Milk'), findsNothing);
   });
 
-  testWidgets('Grocery screen surfaces stale-store status and lets user hide degraded stores',
+  testWidgets('Grocery screen shows degraded store availability summary',
       (tester) async {
-    final groceryData = GroceryData.fromJson({
-      'store_statuses': [
-        {
-          'store_id': 'continente',
-          'store_name': 'Continente',
-          'status': 'fresh',
-          'scraped_at': '2026-03-09T09:00:00Z',
-          'listing_count': 100,
-          'matched_count': 98,
-          'unmatched_count': 2,
-          'validation_warnings': [],
-        },
-        {
-          'store_id': 'pingo_doce',
-          'store_name': 'Pingo Doce',
-          'status': 'partial',
-          'scraped_at': '2026-03-09T08:00:00Z',
-          'listing_count': 80,
-          'matched_count': 70,
-          'unmatched_count': 10,
-          'validation_warnings': ['high unmatched'],
-        },
-        {
-          'store_id': 'auchan',
-          'store_name': 'Auchan',
-          'status': 'failed',
-          'scraped_at': '2026-03-08T08:00:00Z',
-          'listing_count': 0,
-          'matched_count': 0,
-          'unmatched_count': 0,
-          'validation_warnings': ['timeout'],
-        },
-      ],
-      'comparisons': [
-        {
-          'product_name': 'Milk',
-          'prices': [
-            {'store': 'Continente', 'price': 1.20},
-            {'store': 'Pingo Doce', 'price': 1.10},
-            {'store': 'Auchan', 'price': 1.05},
-          ],
-          'cheapest_store': 'Auchan',
-          'cheapest_price': 1.05,
-          'potential_savings': 0.15,
-          'savings_percent': 12.5,
-        },
-      ],
-    });
-
     await tester.pumpWidget(
       wrapWithTestApp(
         GroceryScreen(
@@ -147,20 +98,53 @@ void main() {
               unit: 'L',
             ),
           ],
-          groceryData: groceryData,
-          marketCode: 'PT',
+          groceryData: const GroceryData(
+            countryCode: 'PT',
+            currencyCode: 'EUR',
+            storeSummaries: [
+              GroceryStoreSummary(
+                countryCode: 'PT',
+                storeId: 'continente',
+                storeName: 'Continente',
+                status: GroceryStoreStatus.fresh,
+              ),
+              GroceryStoreSummary(
+                countryCode: 'PT',
+                storeId: 'pingo_doce',
+                storeName: 'Pingo Doce',
+                status: GroceryStoreStatus.partial,
+              ),
+              GroceryStoreSummary(
+                countryCode: 'PT',
+                storeId: 'auchan',
+                storeName: 'Auchan',
+                status: GroceryStoreStatus.failed,
+              ),
+            ],
+          ),
         ),
       ),
     );
-    await tester.pumpAndSettle();
 
-    expect(find.text('PT market data'), findsOneWidget);
-    expect(find.text('1 active of 3 stores'), findsOneWidget);
-    expect(find.text('Hide stale stores'), findsOneWidget);
+    expect(find.text('Data availability'), findsOneWidget);
+    expect(find.text('Market: PT'), findsOneWidget);
+    expect(
+      find.text('1 fresh · 1 partial · 1 unavailable'),
+      findsOneWidget,
+    );
+  });
 
-    await tester.tap(find.text('Hide stale stores'));
-    await tester.pumpAndSettle();
+  testWidgets('Grocery screen shows empty state when no data is available',
+      (tester) async {
+    await tester.pumpWidget(
+      wrapWithTestApp(
+        const GroceryScreen(
+          products: [],
+        ),
+      ),
+    );
 
-    expect(find.text('Showing 1 fresh store in comparisons'), findsOneWidget);
+    expect(find.text('No grocery data available'), findsOneWidget);
+    expect(find.textContaining('Try again later'), findsOneWidget);
   });
 }

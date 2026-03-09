@@ -415,6 +415,32 @@
             }
         }
     },
+    "groceryAvailabilityTitle": "Disponibilité des données",
+    "groceryAvailabilityCountry": "Marché : {countryCode}",
+    "@groceryAvailabilityCountry": {
+        "placeholders": {
+            "countryCode": {
+                "type": "String"
+            }
+        }
+    },
+    "groceryAvailabilitySummary": "{fresh} fraîches · {partial} partielles · {failed} indisponibles",
+    "@groceryAvailabilitySummary": {
+        "placeholders": {
+            "fresh": {
+                "type": "int"
+            },
+            "partial": {
+                "type": "int"
+            },
+            "failed": {
+                "type": "int"
+            }
+        }
+    },
+    "groceryAvailabilityWarning": "Certaines enseignes ont des données partielles ou périmées. Les comparaisons peuvent être incomplètes.",
+    "groceryEmptyStateTitle": "Aucune donnée de courses disponible",
+    "groceryEmptyStateMessage": "Réessayez plus tard ou changez de marché dans les réglages.",
     "shoppingTitle": "Liste de Courses",
     "shoppingEmpty": "Liste vide",
     "shoppingEmptyMessage": "Ajoutez des produits depuis\nl'écran Courses.",

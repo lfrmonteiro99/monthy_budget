@@ -807,6 +807,30 @@ class SFr extends S {
   }
 
   @override
+  String get groceryAvailabilityTitle => 'Disponibilité des données';
+
+  @override
+  String groceryAvailabilityCountry(String countryCode) {
+    return 'Marché : $countryCode';
+  }
+
+  @override
+  String groceryAvailabilitySummary(int fresh, int partial, int failed) {
+    return '$fresh fraîches · $partial partielles · $failed indisponibles';
+  }
+
+  @override
+  String get groceryAvailabilityWarning =>
+      'Certaines enseignes ont des données partielles ou périmées. Les comparaisons peuvent être incomplètes.';
+
+  @override
+  String get groceryEmptyStateTitle => 'Aucune donnée de courses disponible';
+
+  @override
+  String get groceryEmptyStateMessage =>
+      'Réessayez plus tard ou changez de marché dans les réglages.';
+
+  @override
   String get shoppingTitle => 'Liste de Courses';
 
   @override

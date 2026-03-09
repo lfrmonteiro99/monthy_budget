@@ -803,6 +803,31 @@ class SEs extends S {
   }
 
   @override
+  String get groceryAvailabilityTitle => 'Disponibilidad de datos';
+
+  @override
+  String groceryAvailabilityCountry(String countryCode) {
+    return 'Mercado: $countryCode';
+  }
+
+  @override
+  String groceryAvailabilitySummary(int fresh, int partial, int failed) {
+    return '$fresh frescas · $partial parciales · $failed no disponibles';
+  }
+
+  @override
+  String get groceryAvailabilityWarning =>
+      'Algunas tiendas tienen datos parciales o desactualizados. Las comparaciones pueden estar incompletas.';
+
+  @override
+  String get groceryEmptyStateTitle =>
+      'No hay datos de supermercado disponibles';
+
+  @override
+  String get groceryEmptyStateMessage =>
+      'Inténtalo de nuevo más tarde o cambia de mercado en ajustes.';
+
+  @override
   String get shoppingTitle => 'Lista de la Compra';
 
   @override

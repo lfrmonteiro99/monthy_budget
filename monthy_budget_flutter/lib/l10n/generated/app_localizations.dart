@@ -1535,6 +1535,42 @@ abstract class S {
   /// **'{unit} · preço médio'**
   String groceryAvgPrice(String unit);
 
+  /// Grocery data availability card title
+  ///
+  /// In pt, this message translates to:
+  /// **'Disponibilidade dos dados'**
+  String get groceryAvailabilityTitle;
+
+  /// Selected grocery market label
+  ///
+  /// In pt, this message translates to:
+  /// **'Mercado: {countryCode}'**
+  String groceryAvailabilityCountry(String countryCode);
+
+  /// Grocery store status count summary
+  ///
+  /// In pt, this message translates to:
+  /// **'{fresh} frescas · {partial} parciais · {failed} indisponíveis'**
+  String groceryAvailabilitySummary(int fresh, int partial, int failed);
+
+  /// Warning shown when grocery market data is degraded
+  ///
+  /// In pt, this message translates to:
+  /// **'Algumas lojas têm dados parciais ou desatualizados. As comparações podem estar incompletas.'**
+  String get groceryAvailabilityWarning;
+
+  /// Grocery empty state title
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem dados de supermercado disponíveis'**
+  String get groceryEmptyStateTitle;
+
+  /// Grocery empty state message
+  ///
+  /// In pt, this message translates to:
+  /// **'Tenta novamente mais tarde ou muda de mercado nas definições.'**
+  String get groceryEmptyStateMessage;
+
   /// Shopping list screen title
   ///
   /// In pt, this message translates to:

@@ -457,6 +457,32 @@
             }
         }
     },
+    "groceryAvailabilityTitle": "Data availability",
+    "groceryAvailabilityCountry": "Market: {countryCode}",
+    "@groceryAvailabilityCountry": {
+        "placeholders": {
+            "countryCode": {
+                "type": "String"
+            }
+        }
+    },
+    "groceryAvailabilitySummary": "{fresh} fresh · {partial} partial · {failed} unavailable",
+    "@groceryAvailabilitySummary": {
+        "placeholders": {
+            "fresh": {
+                "type": "int"
+            },
+            "partial": {
+                "type": "int"
+            },
+            "failed": {
+                "type": "int"
+            }
+        }
+    },
+    "groceryAvailabilityWarning": "Some stores have stale or partial data. Comparisons may be incomplete.",
+    "groceryEmptyStateTitle": "No grocery data available",
+    "groceryEmptyStateMessage": "Try again later or switch market in settings.",
     "shoppingTitle": "Shopping List",
     "shoppingEmpty": "Empty list",
     "shoppingEmptyMessage": "Add products from the\nGrocery screen.",

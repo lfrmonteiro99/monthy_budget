@@ -2,122 +2,122 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:orcamento_mensal/models/grocery_data.dart';
 
 void main() {
-  test('GroceryData parses store statuses from country bundle payloads', () {
-    final data = GroceryData.fromJson({
-      'metadata': {
-        'generated_at': '2026-03-09T10:00:00Z',
-        'country_code': 'ES',
+  group('GroceryData.fromJson', () {
+    test('keeps legacy grocery payload support', () {
+      final data = GroceryData.fromJson({
+        'metadata': {
+          'scraped_at': '2026-03-09T10:00:00Z',
+          'total_products': 1,
+          'total_comparisons': 0,
+        },
+        'products': [
+          {
+            'name': 'Milk',
+            'price': 1.49,
+            'unit_price': '1.49/L',
+            'category': 'Dairy',
+            'store': 'Continente',
+          },
+        ],
+      });
+
+      expect(data.countryCode, isEmpty);
+      expect(data.products, hasLength(1));
+      expect(data.products.first.name, 'Milk');
+      expect(data.hasCountryBundle, isFalse);
+    });
+
+    test('parses country bundle payload and derives UI models', () {
+      final data = GroceryData.fromJson({
+        'country_code': 'PT',
         'currency_code': 'EUR',
-      },
-      'store_statuses': [
-        {
-          'store_id': 'mercadona',
-          'store_name': 'Mercadona',
-          'status': 'fresh',
-          'scraped_at': '2026-03-09T09:00:00Z',
-          'listing_count': 120,
-          'matched_count': 118,
-          'unmatched_count': 2,
-          'validation_warnings': [],
-        },
-        {
-          'store_id': 'carrefour_es',
-          'store_name': 'Carrefour',
-          'status': 'failed',
-          'scraped_at': '2026-03-08T09:00:00Z',
-          'listing_count': 0,
-          'matched_count': 0,
-          'unmatched_count': 0,
-          'validation_warnings': ['timeout'],
-        },
-      ],
+        'generated_at': '2026-03-09T10:00:00Z',
+        'products': [
+          {
+            'id': 'milk_1l',
+            'display_name': 'Whole Milk 1L',
+            'category': 'Dairy',
+            'brand': 'Mimosa',
+            'size_unit': 'L',
+          },
+        ],
+        'stores': [
+          {'store_id': 'continente', 'store_name': 'Continente'},
+          {'store_id': 'pingo_doce', 'store_name': 'Pingo Doce'},
+          {'store_id': 'auchan', 'store_name': 'Auchan'},
+        ],
+        'store_statuses': [
+          {
+            'country_code': 'PT',
+            'store_id': 'continente',
+            'store_name': 'Continente',
+            'status': 'fresh',
+            'listing_count': 20,
+            'matched_count': 18,
+            'unmatched_count': 2,
+          },
+          {
+            'country_code': 'PT',
+            'store_id': 'pingo_doce',
+            'store_name': 'Pingo Doce',
+            'status': 'partial',
+            'listing_count': 12,
+            'matched_count': 9,
+            'unmatched_count': 3,
+            'validation_warning_count': 1,
+          },
+          {
+            'country_code': 'PT',
+            'store_id': 'auchan',
+            'store_name': 'Auchan',
+            'status': 'failed',
+            'listing_count': 0,
+            'matched_count': 0,
+            'unmatched_count': 0,
+          },
+        ],
+        'listings': [
+          {
+            'canonical_product_id': 'milk_1l',
+            'product_name': 'Whole Milk 1L',
+            'store_id': 'continente',
+            'category': 'Dairy',
+            'price': 1.29,
+            'price_per_base_unit': 1.29,
+            'base_unit': 'L',
+          },
+          {
+            'canonical_product_id': 'milk_1l',
+            'product_name': 'Whole Milk 1L',
+            'store_id': 'pingo_doce',
+            'category': 'Dairy',
+            'price': 1.39,
+            'price_per_base_unit': 1.39,
+            'base_unit': 'L',
+          },
+        ],
+      });
+
+      expect(data.countryCode, 'PT');
+      expect(data.currencyCode, 'EUR');
+      expect(data.generatedAt, '2026-03-09T10:00:00Z');
+      expect(data.hasCountryBundle, isTrue);
+      expect(data.storeSummaries, hasLength(3));
+      expect(data.freshStoreCount, 1);
+      expect(data.partialStoreCount, 1);
+      expect(data.failedStoreCount, 1);
+      expect(data.hasDegradedStores, isTrue);
+      expect(data.products, hasLength(1));
+      expect(data.products.first.name, 'Whole Milk 1L');
+      expect(data.products.first.price, closeTo(1.34, 0.001));
+      expect(data.comparisons, hasLength(1));
+      expect(data.comparisons.first.cheapestStore, 'Continente');
+      expect(data.categorySummary, hasLength(1));
+
+      final catalogProducts = data.toCatalogProducts();
+      expect(catalogProducts, hasLength(1));
+      expect(catalogProducts.first.category, 'Dairy');
+      expect(catalogProducts.first.unit, 'L');
     });
-
-    expect(data.metadata.countryCode, 'ES');
-    expect(data.metadata.currencyCode, 'EUR');
-    expect(data.storeStatuses, hasLength(2));
-    expect(data.freshStoreCount, 1);
-    expect(data.failedStoreCount, 1);
-    expect(data.hasDegradedStores, isTrue);
-  });
-
-  test('GroceryData filterComparisons removes non-fresh stores and recomputes cheapest result', () {
-    final data = GroceryData.fromJson({
-      'comparisons': [
-        {
-          'product_name': 'Milk',
-          'prices': [
-            {'store': 'Mercadona', 'price': 1.15, 'unit_price': '1.15/L'},
-            {'store': 'Carrefour', 'price': 1.05, 'unit_price': '1.05/L'},
-            {'store': 'Dia', 'price': 1.09, 'unit_price': '1.09/L'},
-          ],
-          'cheapest_store': 'Carrefour',
-          'cheapest_price': 1.05,
-          'potential_savings': 0.10,
-          'savings_percent': 8.7,
-        },
-      ],
-      'store_statuses': [
-        {
-          'store_id': 'mercadona',
-          'store_name': 'Mercadona',
-          'status': 'fresh',
-          'scraped_at': '2026-03-09T09:00:00Z',
-          'listing_count': 100,
-          'matched_count': 100,
-          'unmatched_count': 0,
-          'validation_warnings': [],
-        },
-        {
-          'store_id': 'carrefour_es',
-          'store_name': 'Carrefour',
-          'status': 'failed',
-          'scraped_at': '2026-03-08T09:00:00Z',
-          'listing_count': 0,
-          'matched_count': 0,
-          'unmatched_count': 0,
-          'validation_warnings': [],
-        },
-        {
-          'store_id': 'dia',
-          'store_name': 'Dia',
-          'status': 'partial',
-          'scraped_at': '2026-03-08T21:00:00Z',
-          'listing_count': 95,
-          'matched_count': 80,
-          'unmatched_count': 15,
-          'validation_warnings': ['high unmatched'],
-        },
-      ],
-    });
-
-    final filtered = data.filterComparisons(hideStaleStores: true);
-
-    expect(filtered, hasLength(1));
-    expect(filtered.first.prices, hasLength(1));
-    expect(filtered.first.prices.first.store, 'Mercadona');
-    expect(filtered.first.cheapestStore, 'Mercadona');
-    expect(filtered.first.cheapestPrice, 1.15);
-  });
-
-  test('GroceryData keeps legacy payloads compatible', () {
-    final data = GroceryData.fromJson({
-      'metadata': {
-        'scraped_at': '2026-03-09T10:00:00Z',
-        'total_products': 1,
-      },
-      'products': [
-        {
-          'name': 'Milk',
-          'price': 1.5,
-          'category': 'Dairy',
-          'store': 'Continente',
-        },
-      ],
-    });
-
-    expect(data.products, hasLength(1));
-    expect(data.storeStatuses, isEmpty);
-    expect(data.hasDegradedStores, isFalse);
   });
 }

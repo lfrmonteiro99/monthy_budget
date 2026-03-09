@@ -1,24 +1,6 @@
+import 'product.dart';
+
 // Models for grocery price comparison data loaded from scraped JSON.
-
-enum GroceryStoreDatasetStatus {
-  fresh,
-  partial,
-  failed;
-
-  bool get isFresh => this == GroceryStoreDatasetStatus.fresh;
-  bool get isDegraded => this != GroceryStoreDatasetStatus.fresh;
-
-  static GroceryStoreDatasetStatus fromJson(String? value) {
-    switch (value) {
-      case 'partial':
-        return GroceryStoreDatasetStatus.partial;
-      case 'failed':
-        return GroceryStoreDatasetStatus.failed;
-      default:
-        return GroceryStoreDatasetStatus.fresh;
-    }
-  }
-}
 
 class GroceryData {
   final GroceryMetadata metadata;
@@ -26,7 +8,10 @@ class GroceryData {
   final List<GroceryProduct> products;
   final List<ProductComparison> comparisons;
   final List<CategorySummary> categorySummary;
-  final List<GroceryStoreStatus> storeStatuses;
+  final String countryCode;
+  final String currencyCode;
+  final String generatedAt;
+  final List<GroceryStoreSummary> storeSummaries;
 
   const GroceryData({
     this.metadata = const GroceryMetadata(),
@@ -34,13 +19,24 @@ class GroceryData {
     this.products = const [],
     this.comparisons = const [],
     this.categorySummary = const [],
-    this.storeStatuses = const [],
+    this.countryCode = '',
+    this.currencyCode = '',
+    this.generatedAt = '',
+    this.storeSummaries = const [],
   });
 
   factory GroceryData.fromJson(Map<String, dynamic> json) {
+    if (_looksLikeCountryBundle(json)) {
+      return _fromCountryBundle(json);
+    }
+
     return GroceryData(
-      metadata: GroceryMetadata.fromJson(json['metadata'] as Map<String, dynamic>? ?? {}),
-      decoIndex: DecoIndex.fromJson(json['deco_index'] as Map<String, dynamic>? ?? {}),
+      metadata: GroceryMetadata.fromJson(
+        json['metadata'] as Map<String, dynamic>? ?? {},
+      ),
+      decoIndex: DecoIndex.fromJson(
+        json['deco_index'] as Map<String, dynamic>? ?? {},
+      ),
       products: (json['products'] as List<dynamic>? ?? [])
           .map((p) => GroceryProduct.fromJson(p as Map<String, dynamic>))
           .toList(),
@@ -50,80 +46,274 @@ class GroceryData {
       categorySummary: (json['category_summary'] as List<dynamic>? ?? [])
           .map((s) => CategorySummary.fromJson(s as Map<String, dynamic>))
           .toList(),
-      storeStatuses: (json['store_statuses'] as List<dynamic>? ?? [])
-          .map((s) => GroceryStoreStatus.fromJson(s as Map<String, dynamic>))
-          .toList(),
     );
+  }
+
+  static bool _looksLikeCountryBundle(Map<String, dynamic> json) {
+    return json.containsKey('listings') ||
+        json.containsKey('stores') ||
+        json.containsKey('store_statuses');
+  }
+
+  static GroceryData _fromCountryBundle(Map<String, dynamic> json) {
+    final countryCode = (json['country_code'] as String? ?? '').toUpperCase();
+    final currencyCode = json['currency_code'] as String? ?? '';
+    final generatedAt = json['generated_at'] as String? ?? '';
+
+    final statuses = (json['store_statuses'] as List<dynamic>? ?? [])
+        .map((entry) => GroceryStoreSummary.fromJson(
+              entry as Map<String, dynamic>,
+            ))
+        .toList();
+    final storeIndex = {
+      for (final store in (json['stores'] as List<dynamic>? ?? [])
+          .map((entry) => GroceryBundleStore.fromJson(entry as Map<String, dynamic>)))
+        store.storeId: store,
+    };
+    final listings = (json['listings'] as List<dynamic>? ?? [])
+        .map((entry) => GroceryBundleListing.fromJson(
+              entry as Map<String, dynamic>,
+              countryCode: countryCode,
+              storeIndex: storeIndex,
+            ))
+        .toList();
+    final catalogProducts = {
+      for (final product in (json['products'] as List<dynamic>? ?? [])
+          .map((entry) => GroceryCatalogProduct.fromJson(entry as Map<String, dynamic>)))
+        product.id: product,
+    };
+
+    final products = _deriveProducts(listings, catalogProducts);
+    final comparisons = _deriveComparisons(listings, catalogProducts);
+    final categorySummary = _deriveCategorySummary(listings, catalogProducts);
+    final metadata = GroceryMetadata(
+      scrapedAt: generatedAt,
+      totalProducts: products.length,
+      totalComparisons: comparisons.length,
+    );
+
+    return GroceryData(
+      metadata: metadata,
+      products: products,
+      comparisons: comparisons,
+      categorySummary: categorySummary,
+      countryCode: countryCode,
+      currencyCode: currencyCode,
+      generatedAt: generatedAt,
+      storeSummaries: statuses,
+    );
+  }
+
+  static List<GroceryProduct> _deriveProducts(
+    List<GroceryBundleListing> listings,
+    Map<String, GroceryCatalogProduct> catalogProducts,
+  ) {
+    final byProduct = <String, List<GroceryBundleListing>>{};
+    for (final listing in listings) {
+      final key = listing.productId;
+      if (key.isEmpty || listing.price <= 0) continue;
+      byProduct.putIfAbsent(key, () => []).add(listing);
+    }
+
+    final result = <GroceryProduct>[];
+    for (final entry in byProduct.entries) {
+      final listingGroup = entry.value;
+      if (listingGroup.isEmpty) continue;
+      final catalog = catalogProducts[entry.key];
+      final avgPrice = listingGroup
+              .map((item) => item.price)
+              .fold<double>(0, (sum, value) => sum + value) /
+          listingGroup.length;
+      final seed = listingGroup.first;
+      result.add(
+        GroceryProduct(
+          name: catalog?.displayName ?? seed.productName,
+          price: avgPrice,
+          unitPrice: _formatUnitPrice(seed.pricePerBaseUnit, seed.baseUnit),
+          category: catalog?.category ?? seed.category,
+          store: listingGroup.length == 1 ? seed.storeName : '',
+          brand: catalog?.brand ?? seed.brand,
+        ),
+      );
+    }
+
+    result.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    return result;
+  }
+
+  static List<ProductComparison> _deriveComparisons(
+    List<GroceryBundleListing> listings,
+    Map<String, GroceryCatalogProduct> catalogProducts,
+  ) {
+    final byProduct = <String, List<GroceryBundleListing>>{};
+    for (final listing in listings) {
+      final key = listing.productId;
+      if (key.isEmpty || listing.price <= 0) continue;
+      byProduct.putIfAbsent(key, () => []).add(listing);
+    }
+
+    final result = <ProductComparison>[];
+    for (final entry in byProduct.entries) {
+      final listingGroup = entry.value;
+      if (listingGroup.length < 2) continue;
+      final prices = listingGroup
+          .map(
+            (listing) => StorePrice(
+              store: listing.storeName,
+              price: listing.price,
+              unitPrice: _formatUnitPrice(
+                listing.pricePerBaseUnit,
+                listing.baseUnit,
+              ),
+            ),
+          )
+          .toList()
+        ..sort((a, b) => a.price.compareTo(b.price));
+      final cheapest = prices.first;
+      final mostExpensive = prices.last;
+      final potentialSavings = mostExpensive.price - cheapest.price;
+      final savingsPercent = mostExpensive.price > 0
+          ? (potentialSavings / mostExpensive.price) * 100
+          : 0.0;
+      result.add(
+        ProductComparison(
+          productName:
+              catalogProducts[entry.key]?.displayName ?? listingGroup.first.productName,
+          prices: prices,
+          cheapestStore: cheapest.store,
+          cheapestPrice: cheapest.price,
+          potentialSavings: potentialSavings,
+          savingsPercent: savingsPercent,
+        ),
+      );
+    }
+
+    result.sort(
+      (a, b) => b.potentialSavings.compareTo(a.potentialSavings),
+    );
+    return result;
+  }
+
+  static List<CategorySummary> _deriveCategorySummary(
+    List<GroceryBundleListing> listings,
+    Map<String, GroceryCatalogProduct> catalogProducts,
+  ) {
+    final byCategory = <String, List<GroceryBundleListing>>{};
+    for (final listing in listings) {
+      if (listing.price <= 0) continue;
+      final category = catalogProducts[listing.productId]?.category ?? listing.category;
+      if (category.isEmpty) continue;
+      byCategory.putIfAbsent(category, () => []).add(listing);
+    }
+
+    final result = <CategorySummary>[];
+    for (final entry in byCategory.entries) {
+      final byStore = <String, List<GroceryBundleListing>>{};
+      for (final listing in entry.value) {
+        byStore.putIfAbsent(listing.storeName, () => []).add(listing);
+      }
+      final stores = <String, StoreCategoryStats>{};
+      for (final storeEntry in byStore.entries) {
+        final prices = storeEntry.value.map((item) => item.price).toList();
+        final avgPrice =
+            prices.fold<double>(0, (sum, value) => sum + value) / prices.length;
+        prices.sort();
+        stores[storeEntry.key] = StoreCategoryStats(
+          avgPrice: avgPrice,
+          productCount: prices.length,
+          minPrice: prices.first,
+          maxPrice: prices.last,
+        );
+      }
+
+      var cheapestStore = '';
+      var cheapestAvg = double.infinity;
+      for (final storeEntry in stores.entries) {
+        if (storeEntry.value.avgPrice < cheapestAvg) {
+          cheapestAvg = storeEntry.value.avgPrice;
+          cheapestStore = storeEntry.key;
+        }
+      }
+
+      result.add(
+        CategorySummary(
+          category: entry.key,
+          stores: stores,
+          cheapestStore: cheapestStore,
+        ),
+      );
+    }
+
+    result.sort((a, b) => a.category.toLowerCase().compareTo(b.category.toLowerCase()));
+    return result;
+  }
+
+  static String? _formatUnitPrice(double? pricePerBaseUnit, String? baseUnit) {
+    if (pricePerBaseUnit == null || pricePerBaseUnit <= 0) return null;
+    if (baseUnit == null || baseUnit.isEmpty) {
+      return pricePerBaseUnit.toStringAsFixed(2);
+    }
+    return '${pricePerBaseUnit.toStringAsFixed(2)}/$baseUnit';
   }
 
   bool get hasProducts => products.isNotEmpty;
   bool get hasComparisons => comparisons.isNotEmpty;
-  bool get hasStoreStatuses => storeStatuses.isNotEmpty;
-  int get freshStoreCount => storeStatuses.where((s) => s.status.isFresh).length;
-  int get partialStoreCount => storeStatuses.where((s) => s.status == GroceryStoreDatasetStatus.partial).length;
-  int get failedStoreCount => storeStatuses.where((s) => s.status == GroceryStoreDatasetStatus.failed).length;
-  bool get hasDegradedStores => partialStoreCount > 0 || failedStoreCount > 0;
+  bool get hasStoreSummaries => storeSummaries.isNotEmpty;
+  bool get hasCountryBundle =>
+      countryCode.isNotEmpty || currencyCode.isNotEmpty || hasStoreSummaries;
 
-  List<GroceryStoreStatus> visibleStoreStatuses({bool hideStaleStores = false}) {
-    if (!hideStaleStores) return storeStatuses;
-    return storeStatuses.where((status) => status.status.isFresh).toList();
-  }
+  List<GroceryStoreSummary> get degradedStoreSummaries =>
+      storeSummaries.where((summary) => summary.isDegraded).toList();
 
-  List<ProductComparison> filterComparisons({bool hideStaleStores = false}) {
-    if (!hideStaleStores || storeStatuses.isEmpty) return comparisons;
+  List<GroceryStoreSummary> get availableStoreSummaries =>
+      storeSummaries.where((summary) => summary.status != GroceryStoreStatus.failed).toList();
 
-    final freshStores = {
-      for (final status in storeStatuses.where((s) => s.status.isFresh)) ...[
-        _normalizeStoreKey(status.storeId),
-        _normalizeStoreKey(status.storeName),
-      ]
-    };
+  bool get hasDegradedStores => degradedStoreSummaries.isNotEmpty;
+  int get freshStoreCount =>
+      storeSummaries.where((summary) => summary.status == GroceryStoreStatus.fresh).length;
+  int get partialStoreCount =>
+      storeSummaries.where((summary) => summary.status == GroceryStoreStatus.partial).length;
+  int get failedStoreCount =>
+      storeSummaries.where((summary) => summary.status == GroceryStoreStatus.failed).length;
 
-    return comparisons
-        .map((comparison) {
-          final filteredPrices = comparison.prices
-              .where((price) => freshStores.contains(_normalizeStoreKey(price.store)))
-              .toList();
-          if (filteredPrices.isEmpty) return null;
-          return ProductComparison.fromPrices(
-            productName: comparison.productName,
-            prices: filteredPrices,
-          );
-        })
-        .whereType<ProductComparison>()
+  List<Product> toCatalogProducts() {
+    return products
+        .map(
+          (product) => Product(
+            id: '${countryCode.isEmpty ? 'grocery' : countryCode}_${product.name}',
+            name: product.name,
+            category: product.category,
+            avgPrice: product.price,
+            unit: _unitFromUnitPrice(product.unitPrice),
+          ),
+        )
         .toList();
   }
-}
 
-String _normalizeStoreKey(String value) => value.trim().toLowerCase().replaceAll(' ', '_');
+  static String _unitFromUnitPrice(String? unitPrice) {
+    if (unitPrice == null || unitPrice.isEmpty) return 'un';
+    final index = unitPrice.lastIndexOf('/');
+    if (index == -1 || index == unitPrice.length - 1) return 'un';
+    return unitPrice.substring(index + 1);
+  }
+}
 
 class GroceryMetadata {
   final String scrapedAt;
   final int totalProducts;
   final int totalComparisons;
-  final String countryCode;
-  final String currencyCode;
-  final String generatedAt;
 
   const GroceryMetadata({
     this.scrapedAt = '',
     this.totalProducts = 0,
     this.totalComparisons = 0,
-    this.countryCode = 'PT',
-    this.currencyCode = 'EUR',
-    this.generatedAt = '',
   });
 
   factory GroceryMetadata.fromJson(Map<String, dynamic> json) {
-    final generatedAt = json['generated_at'] as String? ?? '';
-    final scrapedAt = json['scraped_at'] as String? ?? generatedAt;
     return GroceryMetadata(
-      scrapedAt: scrapedAt,
+      scrapedAt: json['scraped_at'] as String? ?? '',
       totalProducts: json['total_products'] as int? ?? 0,
       totalComparisons: json['total_comparisons'] as int? ?? 0,
-      countryCode: (json['country_code'] as String? ?? 'PT').toUpperCase(),
-      currencyCode: (json['currency_code'] as String? ?? 'EUR').toUpperCase(),
-      generatedAt: generatedAt.isEmpty ? scrapedAt : generatedAt,
     );
   }
 }
@@ -230,27 +420,6 @@ class ProductComparison {
       savingsPercent: (json['savings_percent'] as num?)?.toDouble() ?? 0,
     );
   }
-
-  factory ProductComparison.fromPrices({
-    required String productName,
-    required List<StorePrice> prices,
-  }) {
-    final sorted = [...prices]..sort((a, b) => a.price.compareTo(b.price));
-    final cheapest = sorted.first;
-    final mostExpensive = sorted.last;
-    final savings = mostExpensive.price - cheapest.price;
-    final savingsPercent = mostExpensive.price <= 0
-        ? 0.0
-        : (savings / mostExpensive.price) * 100;
-    return ProductComparison(
-      productName: productName,
-      prices: sorted,
-      cheapestStore: cheapest.store,
-      cheapestPrice: cheapest.price,
-      potentialSavings: savings,
-      savingsPercent: savingsPercent,
-    );
-  }
 }
 
 class StorePrice {
@@ -283,7 +452,10 @@ class CategorySummary {
   factory CategorySummary.fromJson(Map<String, dynamic> json) {
     final storesJson = json['stores'] as Map<String, dynamic>? ?? {};
     final stores = storesJson.map(
-      (key, value) => MapEntry(key, StoreCategoryStats.fromJson(value as Map<String, dynamic>)),
+      (key, value) => MapEntry(
+        key,
+        StoreCategoryStats.fromJson(value as Map<String, dynamic>),
+      ),
     );
     return CategorySummary(
       category: json['category'] as String? ?? '',
@@ -316,39 +488,155 @@ class StoreCategoryStats {
   }
 }
 
-class GroceryStoreStatus {
+enum GroceryStoreStatus { fresh, partial, failed }
+
+class GroceryStoreSummary {
+  final String countryCode;
   final String storeId;
   final String storeName;
-  final GroceryStoreDatasetStatus status;
-  final String scrapedAt;
+  final GroceryStoreStatus status;
+  final String lastUpdatedAt;
   final int listingCount;
   final int matchedCount;
   final int unmatchedCount;
-  final List<String> validationWarnings;
+  final int validationWarningCount;
+  final String? sourceVersion;
+  final String? error;
 
-  const GroceryStoreStatus({
+  const GroceryStoreSummary({
+    this.countryCode = '',
     this.storeId = '',
     this.storeName = '',
-    this.status = GroceryStoreDatasetStatus.fresh,
-    this.scrapedAt = '',
+    this.status = GroceryStoreStatus.fresh,
+    this.lastUpdatedAt = '',
     this.listingCount = 0,
     this.matchedCount = 0,
     this.unmatchedCount = 0,
-    this.validationWarnings = const [],
+    this.validationWarningCount = 0,
+    this.sourceVersion,
+    this.error,
   });
 
-  factory GroceryStoreStatus.fromJson(Map<String, dynamic> json) {
-    return GroceryStoreStatus(
+  factory GroceryStoreSummary.fromJson(Map<String, dynamic> json) {
+    final rawStatus = json['status'] as String? ?? 'fresh';
+    return GroceryStoreSummary(
+      countryCode: (json['country_code'] as String? ?? '').toUpperCase(),
       storeId: json['store_id'] as String? ?? '',
       storeName: json['store_name'] as String? ?? '',
-      status: GroceryStoreDatasetStatus.fromJson(json['status'] as String?),
-      scrapedAt: json['scraped_at'] as String? ?? '',
+      status: switch (rawStatus) {
+        'partial' => GroceryStoreStatus.partial,
+        'failed' => GroceryStoreStatus.failed,
+        _ => GroceryStoreStatus.fresh,
+      },
+      lastUpdatedAt: json['last_updated_at'] as String? ??
+          json['scraped_at'] as String? ??
+          '',
       listingCount: json['listing_count'] as int? ?? 0,
       matchedCount: json['matched_count'] as int? ?? 0,
       unmatchedCount: json['unmatched_count'] as int? ?? 0,
-      validationWarnings: (json['validation_warnings'] as List<dynamic>? ?? [])
-          .map((warning) => warning.toString())
-          .toList(),
+      validationWarningCount:
+          (json['validation_warnings'] as List<dynamic>?)?.length ??
+              (json['validation_warning_count'] as int? ?? 0),
+      sourceVersion: json['source_version'] as String?,
+      error: json['error'] as String?,
+    );
+  }
+
+  bool get isDegraded => status != GroceryStoreStatus.fresh;
+}
+
+class GroceryBundleStore {
+  final String storeId;
+  final String storeName;
+
+  const GroceryBundleStore({
+    this.storeId = '',
+    this.storeName = '',
+  });
+
+  factory GroceryBundleStore.fromJson(Map<String, dynamic> json) {
+    return GroceryBundleStore(
+      storeId: json['store_id'] as String? ?? '',
+      storeName: json['store_name'] as String? ?? '',
+    );
+  }
+}
+
+class GroceryCatalogProduct {
+  final String id;
+  final String displayName;
+  final String category;
+  final String? brand;
+  final String? unit;
+
+  const GroceryCatalogProduct({
+    this.id = '',
+    this.displayName = '',
+    this.category = '',
+    this.brand,
+    this.unit,
+  });
+
+  factory GroceryCatalogProduct.fromJson(Map<String, dynamic> json) {
+    return GroceryCatalogProduct(
+      id: json['id'] as String? ?? '',
+      displayName: json['display_name'] as String? ??
+          json['name'] as String? ??
+          json['normalized_name'] as String? ??
+          '',
+      category: json['category'] as String? ?? '',
+      brand: json['brand'] as String?,
+      unit: json['size_unit'] as String? ?? json['base_unit'] as String?,
+    );
+  }
+}
+
+class GroceryBundleListing {
+  final String productId;
+  final String productName;
+  final String storeId;
+  final String storeName;
+  final String category;
+  final String? brand;
+  final double price;
+  final double? pricePerBaseUnit;
+  final String? baseUnit;
+
+  const GroceryBundleListing({
+    this.productId = '',
+    this.productName = '',
+    this.storeId = '',
+    this.storeName = '',
+    this.category = '',
+    this.brand,
+    this.price = 0,
+    this.pricePerBaseUnit,
+    this.baseUnit,
+  });
+
+  factory GroceryBundleListing.fromJson(
+    Map<String, dynamic> json, {
+    required String countryCode,
+    required Map<String, GroceryBundleStore> storeIndex,
+  }) {
+    final storeId = json['store_id'] as String? ?? '';
+    final store = storeIndex[storeId];
+    return GroceryBundleListing(
+      productId: json['canonical_product_id'] as String? ??
+          json['product_id'] as String? ??
+          '',
+      productName: json['product_name'] as String? ??
+          json['display_name'] as String? ??
+          json['normalized_name'] as String? ??
+          '',
+      storeId: storeId,
+      storeName: json['store_name'] as String? ?? store?.storeName ?? storeId,
+      category: json['category'] as String? ?? '',
+      brand: json['brand'] as String?,
+      price: (json['price'] as num?)?.toDouble() ?? 0,
+      pricePerBaseUnit: (json['price_per_base_unit'] as num?)?.toDouble() ??
+          (json['price_per_unit'] as num?)?.toDouble(),
+      baseUnit: json['base_unit'] as String? ?? json['size_unit'] as String?,
     );
   }
 }
