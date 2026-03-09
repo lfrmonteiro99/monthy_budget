@@ -147,6 +147,106 @@ class BuildCountryBundleTest(unittest.TestCase):
             self.assertNotEqual(validation["errors"], [])
             self.assertIn("all stores failed", validation["errors"][0])
 
+    def test_build_country_bundle_supports_es(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            generated = root / "generated" / "grocery"
+            assets = root / "assets" / "grocery"
+
+            _write_json(
+                generated / "ES" / "mercadona" / "raw.json",
+                {
+                    "country_code": "ES",
+                    "store_id": "mercadona",
+                    "store_name": "Mercadona",
+                    "status": "ok",
+                    "scraped_at": "2026-03-09T10:00:00Z",
+                    "listing_count": 1,
+                    "listings": [
+                        {
+                            "country_code": "ES",
+                            "store_id": "mercadona",
+                            "store_name": "Mercadona",
+                            "product_name": "Leche Entera 1 L",
+                            "price": 1.05,
+                            "category": "Lacteos y Huevos",
+                            "product_id": "milk-es-1",
+                            "unit_price": "1,05/L",
+                        }
+                    ],
+                },
+            )
+            _write_json(
+                generated / "ES" / "mercadona" / "normalized.json",
+                {
+                    "country_code": "ES",
+                    "store_id": "mercadona",
+                    "store_name": "Mercadona",
+                    "generated_at": "2026-03-09T10:00:00Z",
+                    "currency_code": "EUR",
+                    "warnings": [],
+                    "listings": [
+                        {
+                            "id": "ES_mercadona_milk-es-1",
+                            "country_code": "ES",
+                            "store_id": "mercadona",
+                            "canonical_product_id": None,
+                            "store_product_id": "milk-es-1",
+                            "product_url": None,
+                            "raw_title": "Leche Entera 1 L",
+                            "display_title": "Leche Entera 1 L",
+                            "brand": None,
+                            "size_value": 1.0,
+                            "size_unit": "l",
+                            "pack_count": 1,
+                            "base_quantity": 1.0,
+                            "base_unit": "l",
+                            "price": 1.05,
+                            "currency_code": "EUR",
+                            "price_per_base_unit": 1.05,
+                            "source_status": "fresh",
+                        }
+                    ],
+                },
+            )
+            _write_json(
+                generated / "ES" / "mercadona" / "status.json",
+                {
+                    "dataset_status": {
+                        "country_code": "ES",
+                        "store_id": "mercadona",
+                        "run_id": "run-es-1",
+                        "last_updated_at": "2026-03-09T10:00:00Z",
+                        "scrape_status": "success",
+                        "listing_count": 1,
+                        "matched_count": 1,
+                        "unmatched_count": 0,
+                        "validation_warnings": [],
+                        "source_version": "2.0.0",
+                    },
+                    "store_summary": {
+                        "store_id": "mercadona",
+                        "display_name": "Mercadona",
+                        "last_updated_at": "2026-03-09T10:00:00Z",
+                        "status": "fresh",
+                        "listing_count": 1,
+                    },
+                },
+            )
+
+            catalog = build_country_bundle(
+                country_code="ES",
+                input_root=generated,
+                output_root=assets,
+            )
+
+            self.assertEqual(catalog["country_code"], "ES")
+            self.assertEqual(catalog["currency_code"], "EUR")
+            self.assertTrue((assets / "ES" / "catalog.json").exists())
+            self.assertTrue((assets / "ES" / "store_summaries.json").exists())
+            validation = validate_country_bundle(country_code="ES", input_root=assets)
+            self.assertEqual(validation["errors"], [])
+
 
 if __name__ == "__main__":
     unittest.main()

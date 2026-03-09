@@ -62,10 +62,25 @@ def pt_store_scrapers() -> list[StoreScraper]:
     ]
 
 
+def es_store_scrapers() -> list[StoreScraper]:
+    try:
+        import scraper_carrefour_es
+        import scraper_mercadona
+    except ImportError:
+        from . import scraper_carrefour_es, scraper_mercadona
+
+    return [
+        scraper_mercadona.MercadonaScraper(),
+        scraper_carrefour_es.CarrefourEsScraper(),
+    ]
+
+
 def store_scrapers_for_country(country_code: str) -> list[StoreScraper]:
     normalized = country_code.strip().upper()
     if normalized == "PT":
         return pt_store_scrapers()
+    if normalized == "ES":
+        return es_store_scrapers()
     raise ValueError(f"unsupported country_code: {country_code}")
 
 

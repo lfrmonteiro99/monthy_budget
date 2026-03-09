@@ -8,8 +8,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .base import ScrapedListing, StoreScraper
+from .market_config import load_market_config
 from .models import ListingMatchResult, MatchingResult
-from .normalizer import normalize_pt_listings
+from .normalizer import normalize_es_listings, normalize_pt_listings
 from .registry import get_store_scraper
 from .status import build_store_status_summary
 
@@ -108,12 +109,15 @@ def normalize_store_artifact(artifact: dict, run_id: str) -> tuple[dict, dict]:
         for listing in artifact.get("listings", [])
     ]
 
-    if artifact["country_code"] != "PT":
+    market_config = load_market_config(artifact["country_code"])
+    if artifact["country_code"] == "PT":
+        normalized_result = normalize_pt_listings(listings)
+    elif artifact["country_code"] == "ES":
+        normalized_result = normalize_es_listings(listings)
+    else:
         raise ValueError(
-            f"normalize_store_artifact only supports PT for now, got {artifact['country_code']}"
+            f"normalize_store_artifact does not support {artifact['country_code']}"
         )
-
-    normalized_result = normalize_pt_listings(listings)
     matching_result = _matching_result_for_normalized(
         artifact,
         [listing.id for listing in normalized_result.listings],
@@ -130,6 +134,7 @@ def normalize_store_artifact(artifact: dict, run_id: str) -> tuple[dict, dict]:
         "store_id": artifact["store_id"],
         "store_name": artifact["store_name"],
         "generated_at": artifact["scraped_at"],
+        "currency_code": market_config["currencyCode"],
         "warnings": normalized_result.warnings,
         "listings": [listing.to_dict() for listing in normalized_result.listings],
     }
