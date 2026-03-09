@@ -14,11 +14,13 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-import scraper_continente
-import scraper_pingo_doce
-import scraper_auchan
 import scraper_deco
 import scraper_openfoodfacts
+
+try:  # Script execution from scrapers/
+    from registry import pt_store_scrapers
+except ImportError:  # Package execution from repo root/tests
+    from .registry import pt_store_scrapers
 
 logging.basicConfig(
     level=logging.INFO,
@@ -166,18 +168,25 @@ def run(output_path: Path, enrich_nutrition: bool = False) -> None:
     all_products = []
     scraper_results = {}
 
-    for name, scraper_fn in [
-        ("Continente", scraper_continente.scrape),
-        ("Pingo Doce", scraper_pingo_doce.scrape),
-        ("Auchan", scraper_auchan.scrape),
-    ]:
+    for scraper in pt_store_scrapers():
         try:
-            products = scraper_fn()
+            listings = scraper.scrape()
+            products = [listing.to_legacy_product() for listing in listings]
             all_products.extend(products)
-            scraper_results[name] = {"status": "ok", "count": len(products)}
+            scraper_results[scraper.store_name] = {
+                "status": "ok",
+                "count": len(products),
+                "country_code": scraper.country_code,
+                "store_id": scraper.store_id,
+            }
         except Exception as e:
-            logger.error(f"{name} scraper failed: {e}")
-            scraper_results[name] = {"status": "error", "error": str(e)}
+            logger.error(f"{scraper.store_name} scraper failed: {e}")
+            scraper_results[scraper.store_name] = {
+                "status": "error",
+                "error": str(e),
+                "country_code": scraper.country_code,
+                "store_id": scraper.store_id,
+            }
 
     # Normalize and deduplicate
     all_products = _normalize_products(all_products)
