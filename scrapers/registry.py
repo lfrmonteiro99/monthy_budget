@@ -57,16 +57,6 @@ def pt_store_scrapers() -> list[StoreScraper]:
 
     return [
         scraper_continente.ContinenteScraper(),
-        FunctionStoreScraper(
-            country_code="PT",
-            store_id="pingo_doce",
-            store_name="Pingo Doce",
-            scrape_fn=scraper_pingo_doce.scrape,
-        ),
-        FunctionStoreScraper(
-            country_code="PT",
-            store_id="auchan",
-            store_name="Auchan",
-            scrape_fn=scraper_auchan.scrape,
-        ),
+        scraper_pingo_doce.PingoDoceScraper(),
+        scraper_auchan.AuchanScraper(),
     ]
