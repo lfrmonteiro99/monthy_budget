@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'l10n/generated/app_localizations.dart';
@@ -142,6 +143,11 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   bool _groceryLoading = false;
   int _currentIndex = 0;
 
+  /// Lifecycle debounce: skip refresh if resumed within this duration.
+  static const _resumeDebounce = Duration(seconds: 30);
+  DateTime _lastRefresh = DateTime.fromMillisecondsSinceEpoch(0);
+  bool _refreshing = false;
+
   late StreamSubscription<List<ShoppingItem>> _shoppingListSub;
 
   @override
@@ -168,33 +174,77 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _refreshData();
-      _syncRevenueCat();
+    switch (state) {
+      case AppLifecycleState.paused:
+      case AppLifecycleState.inactive:
+        // Pause realtime stream to save battery/bandwidth in background.
+        _shoppingListSub.pause();
+        break;
+      case AppLifecycleState.resumed:
+        // Resume realtime stream.
+        _shoppingListSub.resume();
+        // Debounce: skip data refresh if we were backgrounded briefly.
+        final elapsed = DateTime.now().difference(_lastRefresh);
+        if (elapsed >= _resumeDebounce && !_refreshing) {
+          _refreshData();
+          _syncRevenueCat();
+        }
+        break;
+      default:
+        break;
     }
   }
 
   /// Lightweight refresh of household-synced data — called on app resume.
+  ///
+  /// Guarded by [_refreshing] to prevent overlapping calls and debounced by
+  /// [_resumeDebounce] so quick app-switches don't trigger network requests.
+  /// All state updates are batched into a single [setState] to minimise
+  /// widget-tree rebuilds.
   Future<void> _refreshData() async {
-    if (!mounted) return;
-    final settings = await _settingsService.load(widget.householdId);
-    final results = await Future.wait([
-      _favoritesService.load(widget.householdId),
-      _purchaseHistoryService.load(widget.householdId),
-      _loadGroceryData(settings.country, updateLoadingState: false),
-    ]);
-    if (mounted) {
-      setState(() {
-        _settings = settings;
-        _favorites = results[0] as List<String>;
-        _purchaseHistory = results[1] as PurchaseHistory;
-        _groceryData = results[2] as GroceryData;
-      });
+    if (!mounted || _refreshing) return;
+    _refreshing = true;
+    try {
+      final settings = await _settingsService.load(widget.householdId);
+      final results = await Future.wait([
+        _favoritesService.load(widget.householdId),
+        _purchaseHistoryService.load(widget.householdId),
+        _loadGroceryData(settings.country, updateLoadingState: false),
+        _actualExpenseService.loadMonth(
+            widget.householdId, _currentMonthKey),
+        _expenseSnapshotService.loadHistory(widget.householdId),
+      ]);
+      if (mounted) {
+        final newFavorites = results[0] as List<String>;
+        final newHistory = results[1] as PurchaseHistory;
+        final newGrocery = results[2] as GroceryData;
+        final newExpenses = results[3] as List<ActualExpense>;
+        final newSnapshots =
+            results[4] as Map<String, List<ExpenseSnapshot>>;
+
+        // Single setState — one rebuild instead of many.
+        final changed = !identical(_settings, settings) ||
+            !listEquals(_favorites, newFavorites) ||
+            !identical(_purchaseHistory, newHistory) ||
+            !identical(_groceryData, newGrocery) ||
+            !listEquals(_actualExpenses, newExpenses) ||
+            _expenseHistory.length != newSnapshots.length;
+
+        if (changed) {
+          setState(() {
+            _settings = settings;
+            _favorites = newFavorites;
+            _purchaseHistory = newHistory;
+            _groceryData = newGrocery;
+            _actualExpenses = newExpenses;
+            _expenseHistory = newSnapshots;
+          });
+        }
+      }
+      _lastRefresh = DateTime.now();
+    } finally {
+      _refreshing = false;
     }
-    _expenseSnapshotService.loadHistory(widget.householdId).then((history) {
-      if (mounted) setState(() => _expenseHistory = history);
-    });
-    _loadActualExpenses();
   }
 
   Future<void> _loadAll() async {
@@ -228,6 +278,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       _subscription = results[7] as SubscriptionState;
       _loaded = true;
     });
+    _lastRefresh = DateTime.now();
     _dataHealthService.recordLoad(SyncDomain.settings);
     _dataHealthService.recordLoad(SyncDomain.purchaseHistory);
     _dataHealthService.recordLoad(SyncDomain.shopping);
