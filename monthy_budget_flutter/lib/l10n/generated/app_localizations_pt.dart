@@ -3062,7 +3062,7 @@ class SPt extends S {
 
   @override
   String get onbTourAssistant1Body =>
-      'O seu atalho para ações rápidas. Toque para adicionar despesas, mudar definições, navegar e mais 2014 basta escrever o que precisa.';
+      'O seu atalho para ações rápidas. Toque para adicionar despesas, mudar definições, navegar e mais — basta escrever o que precisa.';
 
   @override
   String get taxDeductionTitle => 'Deduções IRS';
