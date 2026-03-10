@@ -807,6 +807,30 @@ class SFr extends S {
   }
 
   @override
+  String get groceryAvailabilityTitle => 'Disponibilité des données';
+
+  @override
+  String groceryAvailabilityCountry(String countryCode) {
+    return 'Marché : $countryCode';
+  }
+
+  @override
+  String groceryAvailabilitySummary(int fresh, int partial, int failed) {
+    return '$fresh fraîches · $partial partielles · $failed indisponibles';
+  }
+
+  @override
+  String get groceryAvailabilityWarning =>
+      'Certaines enseignes ont des données partielles ou périmées. Les comparaisons peuvent être incomplètes.';
+
+  @override
+  String get groceryEmptyStateTitle => 'Aucune donnée de courses disponible';
+
+  @override
+  String get groceryEmptyStateMessage =>
+      'Réessayez plus tard ou changez de marché dans les réglages.';
+
+  @override
   String get shoppingTitle => 'Liste de Courses';
 
   @override
@@ -2606,7 +2630,7 @@ class SFr extends S {
   String get mealWeeklySummary => 'Nutrition Hebdomadaire';
 
   @override
-  String get mealBatchPrepGuide => 'Guide de Préparation';
+  String get mealBatchPrepGuide => 'Cuisine en Lot';
 
   @override
   String mealBatchTotalTime(String time) {
@@ -2615,6 +2639,17 @@ class SFr extends S {
 
   @override
   String get mealBatchParallelTips => 'Astuces de cuisson parallèle';
+
+  @override
+  String get mealViewPrepGuide => 'Préparation';
+
+  @override
+  String get mealPrepGuideTitle => 'Comment Préparer';
+
+  @override
+  String mealPrepTime(String minutes) {
+    return 'Temps: $minutes min';
+  }
 
   @override
   String get mealFeedbackLike => 'J\'aime';
@@ -4354,4 +4389,126 @@ class SFr extends S {
 
   @override
   String get featureNameAiCoachFull => 'Coach Financier IA';
+
+  @override
+  String get receiptScanTitle => 'Scanner Reçu';
+
+  @override
+  String get receiptScanQrMode => 'QR Code';
+
+  @override
+  String get receiptScanPhotoMode => 'Photo';
+
+  @override
+  String get receiptScanHint => 'Pointez la caméra vers le QR code du reçu';
+
+  @override
+  String receiptScanSuccess(String amount, String store) {
+    return 'Dépense de $amount chez $store enregistrée';
+  }
+
+  @override
+  String get receiptScanFailed => 'Impossible de lire le reçu';
+
+  @override
+  String get receiptScanPrompt =>
+      'Courses terminées? Scannez le reçu pour enregistrer les dépenses automatiquement.';
+
+  @override
+  String get receiptMerchantUnknown => 'Commerçant inconnu';
+
+  @override
+  String receiptMerchantNamePrompt(String nif) {
+    return 'Entrez le nom du magasin pour NIF $nif';
+  }
+
+  @override
+  String receiptItemsMatched(int count) {
+    return '$count articles associés à la liste de courses';
+  }
+
+  @override
+  String get quickScanReceipt => 'Scanner Reçu';
+
+  @override
+  String get receiptReviewTitle => 'Vérifier le Reçu';
+
+  @override
+  String get receiptReviewMerchant => 'Commerce';
+
+  @override
+  String get receiptReviewDate => 'Date';
+
+  @override
+  String get receiptReviewTotal => 'Total';
+
+  @override
+  String get receiptReviewCategory => 'Catégorie';
+
+  @override
+  String receiptReviewItems(int count) {
+    return '$count articles détectés';
+  }
+
+  @override
+  String get receiptReviewConfirm => 'Ajouter Dépense';
+
+  @override
+  String get receiptReviewRetake => 'Reprendre';
+
+  @override
+  String get receiptCameraPermissionTitle => 'Accès Caméra';
+
+  @override
+  String get receiptCameraPermissionBody =>
+      'L\'accès à la caméra est nécessaire pour scanner les reçus et les codes-barres.';
+
+  @override
+  String get receiptCameraPermissionAllow => 'Autoriser';
+
+  @override
+  String get receiptCameraPermissionDeny => 'Pas maintenant';
+
+  @override
+  String get receiptCameraBlockedTitle => 'Caméra Bloquée';
+
+  @override
+  String get receiptCameraBlockedBody =>
+      'L\'autorisation de la caméra a été définitivement refusée. Ouvrez les paramètres pour l\'activer.';
+
+  @override
+  String get receiptCameraBlockedSettings => 'Ouvrir Paramètres';
+
+  @override
+  String groceryMarketData(String marketCode) {
+    return 'Données du marché $marketCode';
+  }
+
+  @override
+  String groceryStoreCoverage(int active, int total) {
+    return '$active magasins actifs sur $total';
+  }
+
+  @override
+  String groceryStoreFreshCount(int count) {
+    return '$count frais';
+  }
+
+  @override
+  String groceryStorePartialCount(int count) {
+    return '$count partiel';
+  }
+
+  @override
+  String groceryStoreFailedCount(int count) {
+    return '$count en échec';
+  }
+
+  @override
+  String get groceryHideStaleStores => 'Masquer les magasins obsolètes';
+
+  @override
+  String groceryComparisonsFreshOnly(int count) {
+    return 'Affichage de $count magasin frais dans les comparaisons';
+  }
 }

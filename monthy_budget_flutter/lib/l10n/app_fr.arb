@@ -415,6 +415,32 @@
             }
         }
     },
+    "groceryAvailabilityTitle": "Disponibilité des données",
+    "groceryAvailabilityCountry": "Marché : {countryCode}",
+    "@groceryAvailabilityCountry": {
+        "placeholders": {
+            "countryCode": {
+                "type": "String"
+            }
+        }
+    },
+    "groceryAvailabilitySummary": "{fresh} fraîches · {partial} partielles · {failed} indisponibles",
+    "@groceryAvailabilitySummary": {
+        "placeholders": {
+            "fresh": {
+                "type": "int"
+            },
+            "partial": {
+                "type": "int"
+            },
+            "failed": {
+                "type": "int"
+            }
+        }
+    },
+    "groceryAvailabilityWarning": "Certaines enseignes ont des données partielles ou périmées. Les comparaisons peuvent être incomplètes.",
+    "groceryEmptyStateTitle": "Aucune donnée de courses disponible",
+    "groceryEmptyStateMessage": "Réessayez plus tard ou changez de marché dans les réglages.",
     "shoppingTitle": "Liste de Courses",
     "shoppingEmpty": "Liste vide",
     "shoppingEmptyMessage": "Ajoutez des produits depuis\nl'écran Courses.",
@@ -1343,7 +1369,17 @@
     "mealLeftover": "Restes",
     "mealLeftoverIdea": "Idée de transformation",
     "mealWeeklySummary": "Nutrition Hebdomadaire",
-    "mealBatchPrepGuide": "Guide de Préparation",
+    "mealBatchPrepGuide": "Cuisine en Lot",
+    "mealViewPrepGuide": "Préparation",
+    "mealPrepGuideTitle": "Comment Préparer",
+    "mealPrepTime": "Temps: {minutes} min",
+    "@mealPrepTime": {
+        "placeholders": {
+            "minutes": {
+                "type": "String"
+            }
+        }
+    },
     "mealBatchTotalTime": "Temps estimé: {time}",
     "@mealBatchTotalTime": {
         "placeholders": {
@@ -2259,5 +2295,90 @@
             "percent": { "type": "int" }
         }
     },
-    "featureNameAiCoachFull": "Coach Financier IA"
+    "featureNameAiCoachFull": "Coach Financier IA",
+    "receiptScanTitle": "Scanner Reçu",
+    "receiptScanQrMode": "QR Code",
+    "receiptScanPhotoMode": "Photo",
+    "receiptScanHint": "Pointez la caméra vers le QR code du reçu",
+    "receiptScanSuccess": "Dépense de {amount} chez {store} enregistrée",
+    "@receiptScanSuccess": {
+        "placeholders": {
+            "amount": { "type": "String" },
+            "store": { "type": "String" }
+        }
+    },
+    "receiptScanFailed": "Impossible de lire le reçu",
+    "receiptScanPrompt": "Courses terminées? Scannez le reçu pour enregistrer les dépenses automatiquement.",
+    "receiptMerchantUnknown": "Commerçant inconnu",
+    "receiptMerchantNamePrompt": "Entrez le nom du magasin pour NIF {nif}",
+    "@receiptMerchantNamePrompt": {
+        "placeholders": {
+            "nif": { "type": "String" }
+        }
+    },
+    "receiptItemsMatched": "{count} articles associés à la liste de courses",
+    "@receiptItemsMatched": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "quickScanReceipt": "Scanner Reçu",
+    "receiptReviewTitle": "Vérifier le Reçu",
+    "receiptReviewMerchant": "Commerce",
+    "receiptReviewDate": "Date",
+    "receiptReviewTotal": "Total",
+    "receiptReviewCategory": "Catégorie",
+    "receiptReviewItems": "{count} articles détectés",
+    "@receiptReviewItems": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "receiptReviewConfirm": "Ajouter Dépense",
+    "receiptReviewRetake": "Reprendre",
+    "receiptCameraPermissionTitle": "Accès Caméra",
+    "receiptCameraPermissionBody": "L'accès à la caméra est nécessaire pour scanner les reçus et les codes-barres.",
+    "receiptCameraPermissionAllow": "Autoriser",
+    "receiptCameraPermissionDeny": "Pas maintenant",
+    "receiptCameraBlockedTitle": "Caméra Bloquée",
+    "receiptCameraBlockedBody": "L'autorisation de la caméra a été définitivement refusée. Ouvrez les paramètres pour l'activer.",
+    "receiptCameraBlockedSettings": "Ouvrir Paramètres",
+    "groceryMarketData": "Donn\u00e9es du march\u00e9 {marketCode}",
+    "@groceryMarketData": {
+        "placeholders": {
+            "marketCode": { "type": "String" }
+        }
+    },
+    "groceryStoreCoverage": "{active} magasins actifs sur {total}",
+    "@groceryStoreCoverage": {
+        "placeholders": {
+            "active": { "type": "int" },
+            "total": { "type": "int" }
+        }
+    },
+    "groceryStoreFreshCount": "{count} frais",
+    "@groceryStoreFreshCount": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "groceryStorePartialCount": "{count} partiel",
+    "@groceryStorePartialCount": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "groceryStoreFailedCount": "{count} en \u00e9chec",
+    "@groceryStoreFailedCount": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "groceryHideStaleStores": "Masquer les magasins obsol\u00e8tes",
+    "groceryComparisonsFreshOnly": "Affichage de {count} magasin frais dans les comparaisons",
+    "@groceryComparisonsFreshOnly": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    }
 }

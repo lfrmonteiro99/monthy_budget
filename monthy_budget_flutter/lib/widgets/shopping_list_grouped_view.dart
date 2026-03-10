@@ -191,6 +191,17 @@ class _ShoppingListGroupedViewState extends State<ShoppingListGroupedView> {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
+                      if (item.quantity != null && item.unit != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Text(
+                            '${_formatQuantity(item.quantity!)} ${item.unit!}',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: AppColors.textMuted(context),
+                            ),
+                          ),
+                        ),
                       if (item.cheapestKnownStore != null &&
                           item.cheapestKnownPrice != null)
                         Padding(
@@ -231,5 +242,9 @@ class _ShoppingListGroupedViewState extends State<ShoppingListGroupedView> {
         ),
       ),
     );
+  }
+
+  String _formatQuantity(double q) {
+    return q == q.roundToDouble() ? q.toInt().toString() : q.toStringAsFixed(2);
   }
 }

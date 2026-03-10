@@ -146,6 +146,7 @@ class Recipe {
   final bool isPortable;
   final List<String> seasons; // empty = all seasons
   final NutritionInfo? nutrition;
+  final List<String> prepSteps;
 
   const Recipe({
     required this.id,
@@ -170,6 +171,7 @@ class Recipe {
     this.isPortable = true,
     this.seasons = const [],
     this.nutrition,
+    this.prepSteps = const [],
   });
 
   factory Recipe.fromJson(Map<String, dynamic> json) => Recipe(
@@ -202,6 +204,7 @@ class Recipe {
         nutrition: json['nutrition'] != null
             ? NutritionInfo.fromJson(json['nutrition'] as Map<String, dynamic>)
             : null,
+        prepSteps: List<String>.from(json['prepSteps'] ?? []),
       );
 
   Map<String, dynamic> toJson() => {
@@ -227,6 +230,7 @@ class Recipe {
         'isPortable': isPortable,
         'seasons': seasons,
         if (nutrition != null) 'nutrition': nutrition!.toJson(),
+        if (prepSteps.isNotEmpty) 'prepSteps': prepSteps,
       };
 }
 

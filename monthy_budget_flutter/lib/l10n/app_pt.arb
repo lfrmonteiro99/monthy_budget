@@ -954,6 +954,46 @@
             }
         }
     },
+    "groceryAvailabilityTitle": "Disponibilidade dos dados",
+    "@groceryAvailabilityTitle": {
+        "description": "Grocery data availability card title"
+    },
+    "groceryAvailabilityCountry": "Mercado: {countryCode}",
+    "@groceryAvailabilityCountry": {
+        "description": "Selected grocery market label",
+        "placeholders": {
+            "countryCode": {
+                "type": "String"
+            }
+        }
+    },
+    "groceryAvailabilitySummary": "{fresh} frescas · {partial} parciais · {failed} indisponíveis",
+    "@groceryAvailabilitySummary": {
+        "description": "Grocery store status count summary",
+        "placeholders": {
+            "fresh": {
+                "type": "int"
+            },
+            "partial": {
+                "type": "int"
+            },
+            "failed": {
+                "type": "int"
+            }
+        }
+    },
+    "groceryAvailabilityWarning": "Algumas lojas têm dados parciais ou desatualizados. As comparações podem estar incompletas.",
+    "@groceryAvailabilityWarning": {
+        "description": "Warning shown when grocery market data is degraded"
+    },
+    "groceryEmptyStateTitle": "Sem dados de supermercado disponíveis",
+    "@groceryEmptyStateTitle": {
+        "description": "Grocery empty state title"
+    },
+    "groceryEmptyStateMessage": "Tenta novamente mais tarde ou muda de mercado nas definições.",
+    "@groceryEmptyStateMessage": {
+        "description": "Grocery empty state message"
+    },
     "shoppingTitle": "Lista de Compras",
     "@shoppingTitle": {
         "description": "Shopping list screen title"
@@ -3366,9 +3406,26 @@
     "@mealWeeklySummary": {
         "description": "Weekly nutrition summary header"
     },
-    "mealBatchPrepGuide": "Guia de Preparação",
+    "mealBatchPrepGuide": "Cozinha em Lote",
     "@mealBatchPrepGuide": {
         "description": "Batch cooking prep guide button"
+    },
+    "mealViewPrepGuide": "Preparação",
+    "@mealViewPrepGuide": {
+        "description": "Per-meal preparation guide button"
+    },
+    "mealPrepGuideTitle": "Como Preparar",
+    "@mealPrepGuideTitle": {
+        "description": "Title for the per-meal preparation guide sheet"
+    },
+    "mealPrepTime": "Tempo: {minutes} min",
+    "@mealPrepTime": {
+        "description": "Prep time label in guide",
+        "placeholders": {
+            "minutes": {
+                "type": "String"
+            }
+        }
     },
     "mealBatchTotalTime": "Tempo estimado: {time}",
     "@mealBatchTotalTime": {
@@ -4603,5 +4660,90 @@
         }
     },
     "featureNameAiCoachFull": "Coach Financeiro IA",
-    "@featureNameAiCoachFull": { "description": "Full AI Financial Coach name for trial banner" }
+    "@featureNameAiCoachFull": { "description": "Full AI Financial Coach name for trial banner" },
+    "receiptScanTitle": "Scan Recibo",
+    "receiptScanQrMode": "QR Code",
+    "receiptScanPhotoMode": "Foto",
+    "receiptScanHint": "Aponte a câmara para o QR code do recibo",
+    "receiptScanSuccess": "Despesa de {amount} no {store} registada",
+    "@receiptScanSuccess": {
+        "placeholders": {
+            "amount": { "type": "String" },
+            "store": { "type": "String" }
+        }
+    },
+    "receiptScanFailed": "Não foi possível ler o recibo",
+    "receiptScanPrompt": "Compras feitas? Scan o recibo para registar despesa automaticamente.",
+    "receiptMerchantUnknown": "Loja desconhecida",
+    "receiptMerchantNamePrompt": "Insira o nome da loja para NIF {nif}",
+    "@receiptMerchantNamePrompt": {
+        "placeholders": {
+            "nif": { "type": "String" }
+        }
+    },
+    "receiptItemsMatched": "{count} itens associados à lista de compras",
+    "@receiptItemsMatched": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "quickScanReceipt": "Scan Recibo",
+    "receiptReviewTitle": "Rever Recibo",
+    "receiptReviewMerchant": "Loja",
+    "receiptReviewDate": "Data",
+    "receiptReviewTotal": "Total",
+    "receiptReviewCategory": "Categoria",
+    "receiptReviewItems": "{count} itens detetados",
+    "@receiptReviewItems": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "receiptReviewConfirm": "Adicionar Despesa",
+    "receiptReviewRetake": "Repetir",
+    "receiptCameraPermissionTitle": "Acesso à Câmara",
+    "receiptCameraPermissionBody": "É necessário acesso à câmara para digitalizar recibos e códigos de barras.",
+    "receiptCameraPermissionAllow": "Permitir",
+    "receiptCameraPermissionDeny": "Agora não",
+    "receiptCameraBlockedTitle": "Câmara Bloqueada",
+    "receiptCameraBlockedBody": "A permissão da câmara foi negada permanentemente. Abra as definições para a ativar.",
+    "receiptCameraBlockedSettings": "Abrir Definições",
+    "groceryMarketData": "Dados do mercado {marketCode}",
+    "@groceryMarketData": {
+        "placeholders": {
+            "marketCode": { "type": "String" }
+        }
+    },
+    "groceryStoreCoverage": "{active} lojas ativas em {total}",
+    "@groceryStoreCoverage": {
+        "placeholders": {
+            "active": { "type": "int" },
+            "total": { "type": "int" }
+        }
+    },
+    "groceryStoreFreshCount": "{count} fresca",
+    "@groceryStoreFreshCount": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "groceryStorePartialCount": "{count} parcial",
+    "@groceryStorePartialCount": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "groceryStoreFailedCount": "{count} falhada",
+    "@groceryStoreFailedCount": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "groceryHideStaleStores": "Esconder lojas desatualizadas",
+    "groceryComparisonsFreshOnly": "A mostrar {count} loja fresca nas compara\u00e7\u00f5es",
+    "@groceryComparisonsFreshOnly": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    }
 }

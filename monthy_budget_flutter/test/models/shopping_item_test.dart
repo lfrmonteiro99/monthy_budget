@@ -192,22 +192,29 @@ void main() {
       expect(item.id, '');
     });
 
-    group('new optional fields - backward compatibility', () {
-      test('constructor defaults new fields to null', () {
+    group('sourceMealLabels (N:N)', () {
+      test('constructor defaults sourceMealLabels to empty list', () {
         final item = ShoppingItem(
           productName: 'Milk',
           store: 'Lidl',
           price: 1.29,
         );
 
-        expect(item.sourceMealId, isNull);
-        expect(item.sourceMealLabel, isNull);
-        expect(item.preferredStore, isNull);
-        expect(item.cheapestKnownStore, isNull);
-        expect(item.cheapestKnownPrice, isNull);
+        expect(item.sourceMealLabels, isEmpty);
       });
 
-      test('fromJson without new fields produces null values', () {
+      test('constructor accepts sourceMealLabels list', () {
+        final item = ShoppingItem(
+          productName: 'Chicken',
+          store: 'Continente',
+          price: 5.0,
+          sourceMealLabels: ['Grilled Chicken', 'Chicken Soup'],
+        );
+
+        expect(item.sourceMealLabels, ['Grilled Chicken', 'Chicken Soup']);
+      });
+
+      test('fromJson without sourceMealLabels produces empty list', () {
         final json = {
           'id': 'si_1',
           'productName': 'Milk',
@@ -218,37 +225,36 @@ void main() {
 
         final item = ShoppingItem.fromJson(json);
 
-        expect(item.sourceMealId, isNull);
-        expect(item.sourceMealLabel, isNull);
-        expect(item.preferredStore, isNull);
-        expect(item.cheapestKnownStore, isNull);
-        expect(item.cheapestKnownPrice, isNull);
+        expect(item.sourceMealLabels, isEmpty);
       });
 
-      test('fromJson with new fields parses correctly', () {
+      test('fromJson parses sourceMealLabels list', () {
         final json = {
-          'id': 'si_2',
           'productName': 'Chicken',
           'store': 'Continente',
           'price': 5.0,
-          'checked': false,
-          'sourceMealId': 'meal_1',
-          'sourceMealLabel': 'Grilled Chicken',
-          'preferredStore': 'Lidl',
-          'cheapestKnownStore': 'Auchan',
-          'cheapestKnownPrice': 4.50,
+          'sourceMealLabels': ['Grilled Chicken', 'Chicken Soup'],
         };
 
         final item = ShoppingItem.fromJson(json);
 
-        expect(item.sourceMealId, 'meal_1');
-        expect(item.sourceMealLabel, 'Grilled Chicken');
-        expect(item.preferredStore, 'Lidl');
-        expect(item.cheapestKnownStore, 'Auchan');
-        expect(item.cheapestKnownPrice, 4.50);
+        expect(item.sourceMealLabels, ['Grilled Chicken', 'Chicken Soup']);
       });
 
-      test('toJson omits new fields when null', () {
+      test('fromJson with legacy sourceMealLabel migrates to list', () {
+        final json = {
+          'productName': 'Rice',
+          'store': 'Lidl',
+          'price': 1.10,
+          'sourceMealLabel': 'Fried Rice',
+        };
+
+        final item = ShoppingItem.fromJson(json);
+
+        expect(item.sourceMealLabels, ['Fried Rice']);
+      });
+
+      test('toJson omits sourceMealLabels when empty', () {
         final item = ShoppingItem(
           productName: 'Eggs',
           store: 'Lidl',
@@ -257,35 +263,23 @@ void main() {
 
         final json = item.toJson();
 
-        expect(json.containsKey('sourceMealId'), false);
-        expect(json.containsKey('sourceMealLabel'), false);
-        expect(json.containsKey('preferredStore'), false);
-        expect(json.containsKey('cheapestKnownStore'), false);
-        expect(json.containsKey('cheapestKnownPrice'), false);
+        expect(json.containsKey('sourceMealLabels'), false);
       });
 
-      test('toJson includes new fields when present', () {
+      test('toJson includes sourceMealLabels when non-empty', () {
         final item = ShoppingItem(
           productName: 'Chicken',
           store: 'Continente',
           price: 5.0,
-          sourceMealId: 'meal_1',
-          sourceMealLabel: 'Grilled Chicken',
-          preferredStore: 'Lidl',
-          cheapestKnownStore: 'Auchan',
-          cheapestKnownPrice: 4.50,
+          sourceMealLabels: ['Grilled Chicken', 'Chicken Soup'],
         );
 
         final json = item.toJson();
 
-        expect(json['sourceMealId'], 'meal_1');
-        expect(json['sourceMealLabel'], 'Grilled Chicken');
-        expect(json['preferredStore'], 'Lidl');
-        expect(json['cheapestKnownStore'], 'Auchan');
-        expect(json['cheapestKnownPrice'], 4.50);
+        expect(json['sourceMealLabels'], ['Grilled Chicken', 'Chicken Soup']);
       });
 
-      test('fromSupabase without new columns produces null values', () {
+      test('fromSupabase without source_meal_labels produces empty list', () {
         final row = {
           'id': 'uuid-old',
           'product_name': 'Water',
@@ -297,14 +291,10 @@ void main() {
 
         final item = ShoppingItem.fromSupabase(row);
 
-        expect(item.sourceMealId, isNull);
-        expect(item.sourceMealLabel, isNull);
-        expect(item.preferredStore, isNull);
-        expect(item.cheapestKnownStore, isNull);
-        expect(item.cheapestKnownPrice, isNull);
+        expect(item.sourceMealLabels, isEmpty);
       });
 
-      test('fromSupabase with new columns parses correctly', () {
+      test('fromSupabase parses source_meal_labels text array', () {
         final row = {
           'id': 'uuid-new',
           'product_name': 'Chicken',
@@ -312,23 +302,31 @@ void main() {
           'price': 5.0,
           'unit_price': null,
           'checked': false,
-          'source_meal_id': 'meal_1',
-          'source_meal_label': 'Grilled Chicken',
-          'preferred_store': 'Lidl',
-          'cheapest_known_store': 'Auchan',
-          'cheapest_known_price': 4.50,
+          'source_meal_labels': ['Grilled Chicken', 'Chicken Soup'],
         };
 
         final item = ShoppingItem.fromSupabase(row);
 
-        expect(item.sourceMealId, 'meal_1');
-        expect(item.sourceMealLabel, 'Grilled Chicken');
-        expect(item.preferredStore, 'Lidl');
-        expect(item.cheapestKnownStore, 'Auchan');
-        expect(item.cheapestKnownPrice, 4.50);
+        expect(item.sourceMealLabels, ['Grilled Chicken', 'Chicken Soup']);
       });
 
-      test('toSupabase omits new fields when null', () {
+      test('fromSupabase migrates legacy source_meal_label to list', () {
+        final row = {
+          'id': 'uuid-legacy',
+          'product_name': 'Rice',
+          'store': 'Lidl',
+          'price': 1.10,
+          'unit_price': null,
+          'checked': false,
+          'source_meal_label': 'Fried Rice',
+        };
+
+        final item = ShoppingItem.fromSupabase(row);
+
+        expect(item.sourceMealLabels, ['Fried Rice']);
+      });
+
+      test('toSupabase omits source_meal_labels when empty', () {
         final item = ShoppingItem(
           productName: 'Banana',
           store: 'Lidl',
@@ -337,20 +335,203 @@ void main() {
 
         final map = item.toSupabase('hh_1');
 
-        expect(map.containsKey('source_meal_id'), false);
-        expect(map.containsKey('source_meal_label'), false);
+        expect(map.containsKey('source_meal_labels'), false);
+      });
+
+      test('toSupabase includes source_meal_labels when non-empty', () {
+        final item = ShoppingItem(
+          productName: 'Chicken',
+          store: 'Continente',
+          price: 5.0,
+          sourceMealLabels: ['Grilled Chicken', 'Chicken Soup'],
+        );
+
+        final map = item.toSupabase('hh_1');
+
+        expect(map['source_meal_labels'], ['Grilled Chicken', 'Chicken Soup']);
+      });
+
+      test('equality includes sourceMealLabels', () {
+        final a = ShoppingItem(
+          id: '1',
+          productName: 'A',
+          store: 'S',
+          price: 1.0,
+          sourceMealLabels: ['Meal A'],
+        );
+        final b = ShoppingItem(
+          id: '1',
+          productName: 'A',
+          store: 'S',
+          price: 1.0,
+          sourceMealLabels: ['Meal B'],
+        );
+
+        expect(a == b, isFalse);
+      });
+
+      test('no longer has sourceMealId or sourceMealLabel fields', () {
+        // This test verifies the old fields were removed.
+        // It checks the toJson output does not contain old keys.
+        final item = ShoppingItem(
+          productName: 'Test',
+          store: 'S',
+          price: 1.0,
+          sourceMealLabels: ['A'],
+        );
+
+        final json = item.toJson();
+
+        expect(json.containsKey('sourceMealId'), false);
+        expect(json.containsKey('sourceMealLabel'), false);
+      });
+    });
+
+    group('other optional fields - backward compatibility', () {
+      test('constructor defaults optional fields to null', () {
+        final item = ShoppingItem(
+          productName: 'Milk',
+          store: 'Lidl',
+          price: 1.29,
+        );
+
+        expect(item.preferredStore, isNull);
+        expect(item.cheapestKnownStore, isNull);
+        expect(item.cheapestKnownPrice, isNull);
+      });
+
+      test('fromJson without optional fields produces null values', () {
+        final json = {
+          'id': 'si_1',
+          'productName': 'Milk',
+          'store': 'Lidl',
+          'price': 1.29,
+          'checked': false,
+        };
+
+        final item = ShoppingItem.fromJson(json);
+
+        expect(item.preferredStore, isNull);
+        expect(item.cheapestKnownStore, isNull);
+        expect(item.cheapestKnownPrice, isNull);
+      });
+
+      test('fromJson with optional fields parses correctly', () {
+        final json = {
+          'id': 'si_2',
+          'productName': 'Chicken',
+          'store': 'Continente',
+          'price': 5.0,
+          'checked': false,
+          'sourceMealLabels': ['Grilled Chicken'],
+          'preferredStore': 'Lidl',
+          'cheapestKnownStore': 'Auchan',
+          'cheapestKnownPrice': 4.50,
+        };
+
+        final item = ShoppingItem.fromJson(json);
+
+        expect(item.sourceMealLabels, ['Grilled Chicken']);
+        expect(item.preferredStore, 'Lidl');
+        expect(item.cheapestKnownStore, 'Auchan');
+        expect(item.cheapestKnownPrice, 4.50);
+      });
+
+      test('toJson omits optional fields when null/empty', () {
+        final item = ShoppingItem(
+          productName: 'Eggs',
+          store: 'Lidl',
+          price: 2.50,
+        );
+
+        final json = item.toJson();
+
+        expect(json.containsKey('sourceMealLabels'), false);
+        expect(json.containsKey('preferredStore'), false);
+        expect(json.containsKey('cheapestKnownStore'), false);
+        expect(json.containsKey('cheapestKnownPrice'), false);
+      });
+
+      test('toJson includes optional fields when present', () {
+        final item = ShoppingItem(
+          productName: 'Chicken',
+          store: 'Continente',
+          price: 5.0,
+          sourceMealLabels: ['Grilled Chicken'],
+          preferredStore: 'Lidl',
+          cheapestKnownStore: 'Auchan',
+          cheapestKnownPrice: 4.50,
+        );
+
+        final json = item.toJson();
+
+        expect(json['sourceMealLabels'], ['Grilled Chicken']);
+        expect(json['preferredStore'], 'Lidl');
+        expect(json['cheapestKnownStore'], 'Auchan');
+        expect(json['cheapestKnownPrice'], 4.50);
+      });
+
+      test('fromSupabase without optional columns produces defaults', () {
+        final row = {
+          'id': 'uuid-old',
+          'product_name': 'Water',
+          'store': 'Lidl',
+          'price': 0.50,
+          'unit_price': null,
+          'checked': false,
+        };
+
+        final item = ShoppingItem.fromSupabase(row);
+
+        expect(item.sourceMealLabels, isEmpty);
+        expect(item.preferredStore, isNull);
+        expect(item.cheapestKnownStore, isNull);
+        expect(item.cheapestKnownPrice, isNull);
+      });
+
+      test('fromSupabase with optional columns parses correctly', () {
+        final row = {
+          'id': 'uuid-new',
+          'product_name': 'Chicken',
+          'store': 'Continente',
+          'price': 5.0,
+          'unit_price': null,
+          'checked': false,
+          'source_meal_labels': ['Grilled Chicken'],
+          'preferred_store': 'Lidl',
+          'cheapest_known_store': 'Auchan',
+          'cheapest_known_price': 4.50,
+        };
+
+        final item = ShoppingItem.fromSupabase(row);
+
+        expect(item.sourceMealLabels, ['Grilled Chicken']);
+        expect(item.preferredStore, 'Lidl');
+        expect(item.cheapestKnownStore, 'Auchan');
+        expect(item.cheapestKnownPrice, 4.50);
+      });
+
+      test('toSupabase omits optional fields when null/empty', () {
+        final item = ShoppingItem(
+          productName: 'Banana',
+          store: 'Lidl',
+          price: 0.50,
+        );
+
+        final map = item.toSupabase('hh_1');
+
+        expect(map.containsKey('source_meal_labels'), false);
         expect(map.containsKey('preferred_store'), false);
         expect(map.containsKey('cheapest_known_store'), false);
         expect(map.containsKey('cheapest_known_price'), false);
       });
 
-      test('toSupabase includes new fields when present', () {
+      test('toSupabase includes optional fields when present', () {
         final item = ShoppingItem(
           productName: 'Chicken',
           store: 'Continente',
           price: 5.0,
-          sourceMealId: 'meal_1',
-          sourceMealLabel: 'Grilled Chicken',
+          sourceMealLabels: ['Grilled Chicken'],
           preferredStore: 'Lidl',
           cheapestKnownStore: 'Auchan',
           cheapestKnownPrice: 4.50,
@@ -358,27 +539,162 @@ void main() {
 
         final map = item.toSupabase('hh_1');
 
-        expect(map['source_meal_id'], 'meal_1');
-        expect(map['source_meal_label'], 'Grilled Chicken');
+        expect(map['source_meal_labels'], ['Grilled Chicken']);
         expect(map['preferred_store'], 'Lidl');
         expect(map['cheapest_known_store'], 'Auchan');
         expect(map['cheapest_known_price'], 4.50);
       });
 
-      test('equality includes new fields', () {
+      test('constructor defaults quantity and unit to null', () {
+        final item = ShoppingItem(
+          productName: 'Milk',
+          store: 'Lidl',
+          price: 1.29,
+        );
+
+        expect(item.quantity, isNull);
+        expect(item.unit, isNull);
+      });
+
+      test('constructor accepts quantity and unit', () {
+        final item = ShoppingItem(
+          productName: 'Frango',
+          store: 'Continente',
+          price: 5.25,
+          quantity: 0.7,
+          unit: 'kg',
+        );
+
+        expect(item.quantity, 0.7);
+        expect(item.unit, 'kg');
+      });
+
+      test('fromJson parses quantity and unit', () {
+        final json = {
+          'productName': 'Arroz',
+          'store': 'Lidl',
+          'price': 1.10,
+          'quantity': 1.0,
+          'unit': 'kg',
+        };
+
+        final item = ShoppingItem.fromJson(json);
+
+        expect(item.quantity, 1.0);
+        expect(item.unit, 'kg');
+      });
+
+      test('fromJson without quantity/unit produces null', () {
+        final json = {
+          'productName': 'Água',
+          'store': 'Lidl',
+          'price': 0.30,
+        };
+
+        final item = ShoppingItem.fromJson(json);
+
+        expect(item.quantity, isNull);
+        expect(item.unit, isNull);
+      });
+
+      test('toJson includes quantity and unit when present', () {
+        final item = ShoppingItem(
+          productName: 'Cebola',
+          store: 'Pingo Doce',
+          price: 0.80,
+          quantity: 0.5,
+          unit: 'kg',
+        );
+
+        final json = item.toJson();
+
+        expect(json['quantity'], 0.5);
+        expect(json['unit'], 'kg');
+      });
+
+      test('toJson omits quantity and unit when null', () {
+        final item = ShoppingItem(
+          productName: 'Pão',
+          store: 'Lidl',
+          price: 0.99,
+        );
+
+        final json = item.toJson();
+
+        expect(json.containsKey('quantity'), false);
+        expect(json.containsKey('unit'), false);
+      });
+
+      test('fromSupabase parses quantity and unit columns', () {
+        final row = {
+          'id': 'uuid-qty',
+          'product_name': 'Azeite',
+          'store': 'Continente',
+          'price': 4.50,
+          'unit_price': null,
+          'checked': false,
+          'quantity': 0.75,
+          'unit': 'L',
+        };
+
+        final item = ShoppingItem.fromSupabase(row);
+
+        expect(item.quantity, 0.75);
+        expect(item.unit, 'L');
+      });
+
+      test('fromSupabase without quantity/unit columns produces null', () {
+        final row = {
+          'id': 'uuid-old2',
+          'product_name': 'Sal',
+          'store': 'Lidl',
+          'price': 0.50,
+          'unit_price': null,
+          'checked': false,
+        };
+
+        final item = ShoppingItem.fromSupabase(row);
+
+        expect(item.quantity, isNull);
+        expect(item.unit, isNull);
+      });
+
+      test('toSupabase includes quantity and unit when present', () {
+        final item = ShoppingItem(
+          productName: 'Leite',
+          store: 'Pingo Doce',
+          price: 0.89,
+          quantity: 2.0,
+          unit: 'L',
+        );
+
+        final map = item.toSupabase('hh_1');
+
+        expect(map['quantity'], 2.0);
+        expect(map['unit'], 'L');
+      });
+
+      test('toSupabase omits quantity and unit when null', () {
+        final item = ShoppingItem(
+          productName: 'Manteiga',
+          store: 'Lidl',
+          price: 1.50,
+        );
+
+        final map = item.toSupabase('hh_1');
+
+        expect(map.containsKey('quantity'), false);
+        expect(map.containsKey('unit'), false);
+      });
+
+      test('equality includes quantity and unit', () {
         final a = ShoppingItem(
-          id: '1',
-          productName: 'A',
-          store: 'S',
-          price: 1.0,
-          sourceMealId: 'm1',
+          id: '1', productName: 'A', store: 'S', price: 1.0,
+          quantity: 0.5, unit: 'kg',
         );
         final b = ShoppingItem(
-          id: '1',
-          productName: 'A',
-          store: 'S',
-          price: 1.0,
-          sourceMealId: 'm2',
+          id: '1', productName: 'A', store: 'S', price: 1.0,
+          quantity: 1.0, unit: 'kg',
         );
 
         expect(a == b, isFalse);

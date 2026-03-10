@@ -1,0 +1,50 @@
+name: Grocery Scrape Reusable
+
+on:
+  workflow_call:
+    inputs:
+      country:
+        required: true
+        type: string
+      store:
+        required: true
+        type: string
+      run_id:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  scrape_store:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: scrapers/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r scrapers/requirements.txt
+
+      - name: Generate store artifacts
+        run: |
+          python -m scrapers.store_pipeline \
+            --country "${{ inputs.country }}" \
+            --store "${{ inputs.store }}" \
+            --output-root generated/grocery \
+            --run-id "${{ inputs.run_id }}"
+
+      - name: Upload store workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: grocery-${{ inputs.country }}-${{ inputs.store }}
+          path: generated/grocery/${{ inputs.country }}

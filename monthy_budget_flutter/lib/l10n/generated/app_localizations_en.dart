@@ -799,6 +799,30 @@ class SEn extends S {
   }
 
   @override
+  String get groceryAvailabilityTitle => 'Data availability';
+
+  @override
+  String groceryAvailabilityCountry(String countryCode) {
+    return 'Market: $countryCode';
+  }
+
+  @override
+  String groceryAvailabilitySummary(int fresh, int partial, int failed) {
+    return '$fresh fresh · $partial partial · $failed unavailable';
+  }
+
+  @override
+  String get groceryAvailabilityWarning =>
+      'Some stores have stale or partial data. Comparisons may be incomplete.';
+
+  @override
+  String get groceryEmptyStateTitle => 'No grocery data available';
+
+  @override
+  String get groceryEmptyStateMessage =>
+      'Try again later or switch market in settings.';
+
+  @override
   String get shoppingTitle => 'Shopping List';
 
   @override
@@ -2591,7 +2615,7 @@ class SEn extends S {
   String get mealWeeklySummary => 'Weekly Nutrition';
 
   @override
-  String get mealBatchPrepGuide => 'Prep Guide';
+  String get mealBatchPrepGuide => 'Batch Cooking';
 
   @override
   String mealBatchTotalTime(String time) {
@@ -2600,6 +2624,17 @@ class SEn extends S {
 
   @override
   String get mealBatchParallelTips => 'Parallel cooking tips';
+
+  @override
+  String get mealViewPrepGuide => 'How to Prepare';
+
+  @override
+  String get mealPrepGuideTitle => 'How to Prepare';
+
+  @override
+  String mealPrepTime(String minutes) {
+    return 'Time: $minutes min';
+  }
 
   @override
   String get mealFeedbackLike => 'Liked';
@@ -4316,4 +4351,126 @@ class SEn extends S {
 
   @override
   String get featureNameAiCoachFull => 'AI Financial Coach';
+
+  @override
+  String get receiptScanTitle => 'Scan Receipt';
+
+  @override
+  String get receiptScanQrMode => 'QR Code';
+
+  @override
+  String get receiptScanPhotoMode => 'Photo';
+
+  @override
+  String get receiptScanHint => 'Point camera at the receipt QR code';
+
+  @override
+  String receiptScanSuccess(String amount, String store) {
+    return 'Expense of $amount at $store recorded';
+  }
+
+  @override
+  String get receiptScanFailed => 'Could not read receipt';
+
+  @override
+  String get receiptScanPrompt =>
+      'Shopping done? Scan the receipt to record expenses automatically.';
+
+  @override
+  String get receiptMerchantUnknown => 'Unknown merchant';
+
+  @override
+  String receiptMerchantNamePrompt(String nif) {
+    return 'Enter store name for NIF $nif';
+  }
+
+  @override
+  String receiptItemsMatched(int count) {
+    return '$count items matched with shopping list';
+  }
+
+  @override
+  String get quickScanReceipt => 'Scan Receipt';
+
+  @override
+  String get receiptReviewTitle => 'Review Receipt';
+
+  @override
+  String get receiptReviewMerchant => 'Merchant';
+
+  @override
+  String get receiptReviewDate => 'Date';
+
+  @override
+  String get receiptReviewTotal => 'Total';
+
+  @override
+  String get receiptReviewCategory => 'Category';
+
+  @override
+  String receiptReviewItems(int count) {
+    return '$count items detected';
+  }
+
+  @override
+  String get receiptReviewConfirm => 'Add Expense';
+
+  @override
+  String get receiptReviewRetake => 'Retake';
+
+  @override
+  String get receiptCameraPermissionTitle => 'Camera Access';
+
+  @override
+  String get receiptCameraPermissionBody =>
+      'Camera access is needed to scan receipts and barcodes.';
+
+  @override
+  String get receiptCameraPermissionAllow => 'Allow';
+
+  @override
+  String get receiptCameraPermissionDeny => 'Not now';
+
+  @override
+  String get receiptCameraBlockedTitle => 'Camera Blocked';
+
+  @override
+  String get receiptCameraBlockedBody =>
+      'Camera permission was permanently denied. Open app settings to enable it.';
+
+  @override
+  String get receiptCameraBlockedSettings => 'Open Settings';
+
+  @override
+  String groceryMarketData(String marketCode) {
+    return '$marketCode market data';
+  }
+
+  @override
+  String groceryStoreCoverage(int active, int total) {
+    return '$active active of $total stores';
+  }
+
+  @override
+  String groceryStoreFreshCount(int count) {
+    return '$count fresh';
+  }
+
+  @override
+  String groceryStorePartialCount(int count) {
+    return '$count partial';
+  }
+
+  @override
+  String groceryStoreFailedCount(int count) {
+    return '$count failed';
+  }
+
+  @override
+  String get groceryHideStaleStores => 'Hide stale stores';
+
+  @override
+  String groceryComparisonsFreshOnly(int count) {
+    return 'Showing $count fresh store in comparisons';
+  }
 }

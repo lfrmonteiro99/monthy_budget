@@ -1535,6 +1535,42 @@ abstract class S {
   /// **'{unit} · preço médio'**
   String groceryAvgPrice(String unit);
 
+  /// Grocery data availability card title
+  ///
+  /// In pt, this message translates to:
+  /// **'Disponibilidade dos dados'**
+  String get groceryAvailabilityTitle;
+
+  /// Selected grocery market label
+  ///
+  /// In pt, this message translates to:
+  /// **'Mercado: {countryCode}'**
+  String groceryAvailabilityCountry(String countryCode);
+
+  /// Grocery store status count summary
+  ///
+  /// In pt, this message translates to:
+  /// **'{fresh} frescas · {partial} parciais · {failed} indisponíveis'**
+  String groceryAvailabilitySummary(int fresh, int partial, int failed);
+
+  /// Warning shown when grocery market data is degraded
+  ///
+  /// In pt, this message translates to:
+  /// **'Algumas lojas têm dados parciais ou desatualizados. As comparações podem estar incompletas.'**
+  String get groceryAvailabilityWarning;
+
+  /// Grocery empty state title
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem dados de supermercado disponíveis'**
+  String get groceryEmptyStateTitle;
+
+  /// Grocery empty state message
+  ///
+  /// In pt, this message translates to:
+  /// **'Tenta novamente mais tarde ou muda de mercado nas definições.'**
+  String get groceryEmptyStateMessage;
+
   /// Shopping list screen title
   ///
   /// In pt, this message translates to:
@@ -4826,7 +4862,7 @@ abstract class S {
   /// Batch cooking prep guide button
   ///
   /// In pt, this message translates to:
-  /// **'Guia de Preparação'**
+  /// **'Cozinha em Lote'**
   String get mealBatchPrepGuide;
 
   /// Batch cooking total time estimate
@@ -4840,6 +4876,24 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Dicas de cozinha paralela'**
   String get mealBatchParallelTips;
+
+  /// Per-meal preparation guide button
+  ///
+  /// In pt, this message translates to:
+  /// **'Preparação'**
+  String get mealViewPrepGuide;
+
+  /// Title for the per-meal preparation guide sheet
+  ///
+  /// In pt, this message translates to:
+  /// **'Como Preparar'**
+  String get mealPrepGuideTitle;
+
+  /// Prep time label in guide
+  ///
+  /// In pt, this message translates to:
+  /// **'Tempo: {minutes} min'**
+  String mealPrepTime(String minutes);
 
   /// Label for liked meal feedback button
   ///
@@ -7828,6 +7882,204 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Coach Financeiro IA'**
   String get featureNameAiCoachFull;
+
+  /// No description provided for @receiptScanTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Scan Recibo'**
+  String get receiptScanTitle;
+
+  /// No description provided for @receiptScanQrMode.
+  ///
+  /// In pt, this message translates to:
+  /// **'QR Code'**
+  String get receiptScanQrMode;
+
+  /// No description provided for @receiptScanPhotoMode.
+  ///
+  /// In pt, this message translates to:
+  /// **'Foto'**
+  String get receiptScanPhotoMode;
+
+  /// No description provided for @receiptScanHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aponte a câmara para o QR code do recibo'**
+  String get receiptScanHint;
+
+  /// No description provided for @receiptScanSuccess.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesa de {amount} no {store} registada'**
+  String receiptScanSuccess(String amount, String store);
+
+  /// No description provided for @receiptScanFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível ler o recibo'**
+  String get receiptScanFailed;
+
+  /// No description provided for @receiptScanPrompt.
+  ///
+  /// In pt, this message translates to:
+  /// **'Compras feitas? Scan o recibo para registar despesa automaticamente.'**
+  String get receiptScanPrompt;
+
+  /// No description provided for @receiptMerchantUnknown.
+  ///
+  /// In pt, this message translates to:
+  /// **'Loja desconhecida'**
+  String get receiptMerchantUnknown;
+
+  /// No description provided for @receiptMerchantNamePrompt.
+  ///
+  /// In pt, this message translates to:
+  /// **'Insira o nome da loja para NIF {nif}'**
+  String receiptMerchantNamePrompt(String nif);
+
+  /// No description provided for @receiptItemsMatched.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} itens associados à lista de compras'**
+  String receiptItemsMatched(int count);
+
+  /// No description provided for @quickScanReceipt.
+  ///
+  /// In pt, this message translates to:
+  /// **'Scan Recibo'**
+  String get quickScanReceipt;
+
+  /// No description provided for @receiptReviewTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Rever Recibo'**
+  String get receiptReviewTitle;
+
+  /// No description provided for @receiptReviewMerchant.
+  ///
+  /// In pt, this message translates to:
+  /// **'Loja'**
+  String get receiptReviewMerchant;
+
+  /// No description provided for @receiptReviewDate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Data'**
+  String get receiptReviewDate;
+
+  /// No description provided for @receiptReviewTotal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Total'**
+  String get receiptReviewTotal;
+
+  /// No description provided for @receiptReviewCategory.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria'**
+  String get receiptReviewCategory;
+
+  /// No description provided for @receiptReviewItems.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} itens detetados'**
+  String receiptReviewItems(int count);
+
+  /// No description provided for @receiptReviewConfirm.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar Despesa'**
+  String get receiptReviewConfirm;
+
+  /// No description provided for @receiptReviewRetake.
+  ///
+  /// In pt, this message translates to:
+  /// **'Repetir'**
+  String get receiptReviewRetake;
+
+  /// No description provided for @receiptCameraPermissionTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Acesso à Câmara'**
+  String get receiptCameraPermissionTitle;
+
+  /// No description provided for @receiptCameraPermissionBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'É necessário acesso à câmara para digitalizar recibos e códigos de barras.'**
+  String get receiptCameraPermissionBody;
+
+  /// No description provided for @receiptCameraPermissionAllow.
+  ///
+  /// In pt, this message translates to:
+  /// **'Permitir'**
+  String get receiptCameraPermissionAllow;
+
+  /// No description provided for @receiptCameraPermissionDeny.
+  ///
+  /// In pt, this message translates to:
+  /// **'Agora não'**
+  String get receiptCameraPermissionDeny;
+
+  /// No description provided for @receiptCameraBlockedTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Câmara Bloqueada'**
+  String get receiptCameraBlockedTitle;
+
+  /// No description provided for @receiptCameraBlockedBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'A permissão da câmara foi negada permanentemente. Abra as definições para a ativar.'**
+  String get receiptCameraBlockedBody;
+
+  /// No description provided for @receiptCameraBlockedSettings.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir Definições'**
+  String get receiptCameraBlockedSettings;
+
+  /// No description provided for @groceryMarketData.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dados do mercado {marketCode}'**
+  String groceryMarketData(String marketCode);
+
+  /// No description provided for @groceryStoreCoverage.
+  ///
+  /// In pt, this message translates to:
+  /// **'{active} lojas ativas em {total}'**
+  String groceryStoreCoverage(int active, int total);
+
+  /// No description provided for @groceryStoreFreshCount.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} fresca'**
+  String groceryStoreFreshCount(int count);
+
+  /// No description provided for @groceryStorePartialCount.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} parcial'**
+  String groceryStorePartialCount(int count);
+
+  /// No description provided for @groceryStoreFailedCount.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} falhada'**
+  String groceryStoreFailedCount(int count);
+
+  /// No description provided for @groceryHideStaleStores.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esconder lojas desatualizadas'**
+  String get groceryHideStaleStores;
+
+  /// No description provided for @groceryComparisonsFreshOnly.
+  ///
+  /// In pt, this message translates to:
+  /// **'A mostrar {count} loja fresca nas comparações'**
+  String groceryComparisonsFreshOnly(int count);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'l10n/generated/app_localizations.dart';
@@ -10,6 +11,7 @@ import 'models/purchase_record.dart';
 import 'utils/calculations.dart';
 import 'utils/formatters.dart';
 import 'data/tax/tax_factory.dart';
+import 'data/tax/tax_system.dart';
 import 'services/settings_service.dart';
 import 'services/favorites_service.dart';
 import 'services/shopping_list_service.dart';
@@ -51,6 +53,7 @@ import 'theme/app_colors.dart';
 import 'models/onboarding_state.dart';
 import 'models/subscription_state.dart';
 import 'services/subscription_service.dart';
+import 'services/grocery_service.dart';
 import 'screens/welcome_slideshow_screen.dart';
 import 'screens/paywall_screen.dart';
 import 'widgets/trial_banner.dart';
@@ -69,10 +72,14 @@ import 'models/data_health_status.dart';
 import 'utils/data_alert_builder.dart';
 import 'screens/confidence_center_screen.dart';
 import 'models/command_action.dart';
+import 'models/grocery_data.dart';
 import 'widgets/command_chat_fab.dart';
 import 'widgets/command_chat_panel.dart';
 import 'services/quick_action_service.dart';
+import 'services/receipt_scan_service.dart';
 import 'widgets/quick_add_launcher.dart';
+import 'widgets/receipt_review_sheet.dart';
+import 'widgets/receipt_scan_sheet.dart';
 import 'screens/product_updates_screen.dart';
 
 class AppHome extends StatefulWidget {
@@ -96,6 +103,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   final _aiCoachService = AiCoachService();
   final _purchaseHistoryService = PurchaseHistoryService();
   final _productsService = ProductsService();
+  final _groceryService = GroceryService();
   final _expenseSnapshotService = ExpenseSnapshotService();
   final _localConfigService = LocalConfigService();
   final _actualExpenseService = ActualExpenseService();
@@ -124,6 +132,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   List<SavingsGoal> _savingsGoals = [];
   Map<String, SavingsProjection> _savingsProjections = {};
   List<Product> _products = [];
+  GroceryData _groceryData = const GroceryData();
   List<String> _favorites = [];
   List<ShoppingItem> _shoppingList = [];
   String _openAiApiKey = '';
@@ -131,7 +140,13 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   LocalDashboardConfig _dashboardConfig = const LocalDashboardConfig();
   Map<String, List<ExpenseSnapshot>> _expenseHistory = {};
   bool _loaded = false;
+  bool _groceryLoading = false;
   int _currentIndex = 0;
+
+  /// Lifecycle debounce: skip refresh if resumed within this duration.
+  static const _resumeDebounce = Duration(seconds: 30);
+  DateTime _lastRefresh = DateTime.fromMillisecondsSinceEpoch(0);
+  bool _refreshing = false;
 
   late StreamSubscription<List<ShoppingItem>> _shoppingListSub;
 
@@ -159,31 +174,77 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _refreshData();
-      _syncRevenueCat();
+    switch (state) {
+      case AppLifecycleState.paused:
+      case AppLifecycleState.inactive:
+        // Pause realtime stream to save battery/bandwidth in background.
+        _shoppingListSub.pause();
+        break;
+      case AppLifecycleState.resumed:
+        // Resume realtime stream.
+        _shoppingListSub.resume();
+        // Debounce: skip data refresh if we were backgrounded briefly.
+        final elapsed = DateTime.now().difference(_lastRefresh);
+        if (elapsed >= _resumeDebounce && !_refreshing) {
+          _refreshData();
+          _syncRevenueCat();
+        }
+        break;
+      default:
+        break;
     }
   }
 
   /// Lightweight refresh of household-synced data — called on app resume.
+  ///
+  /// Guarded by [_refreshing] to prevent overlapping calls and debounced by
+  /// [_resumeDebounce] so quick app-switches don't trigger network requests.
+  /// All state updates are batched into a single [setState] to minimise
+  /// widget-tree rebuilds.
   Future<void> _refreshData() async {
-    if (!mounted) return;
-    final results = await Future.wait([
-      _settingsService.load(widget.householdId),
-      _favoritesService.load(widget.householdId),
-      _purchaseHistoryService.load(widget.householdId),
-    ]);
-    if (mounted) {
-      setState(() {
-        _settings = results[0] as AppSettings;
-        _favorites = results[1] as List<String>;
-        _purchaseHistory = results[2] as PurchaseHistory;
-      });
+    if (!mounted || _refreshing) return;
+    _refreshing = true;
+    try {
+      final settings = await _settingsService.load(widget.householdId);
+      final results = await Future.wait([
+        _favoritesService.load(widget.householdId),
+        _purchaseHistoryService.load(widget.householdId),
+        _loadGroceryData(settings.country, updateLoadingState: false),
+        _actualExpenseService.loadMonth(
+            widget.householdId, _currentMonthKey),
+        _expenseSnapshotService.loadHistory(widget.householdId),
+      ]);
+      if (mounted) {
+        final newFavorites = results[0] as List<String>;
+        final newHistory = results[1] as PurchaseHistory;
+        final newGrocery = results[2] as GroceryData;
+        final newExpenses = results[3] as List<ActualExpense>;
+        final newSnapshots =
+            results[4] as Map<String, List<ExpenseSnapshot>>;
+
+        // Single setState — one rebuild instead of many.
+        final changed = !identical(_settings, settings) ||
+            !listEquals(_favorites, newFavorites) ||
+            !identical(_purchaseHistory, newHistory) ||
+            !identical(_groceryData, newGrocery) ||
+            !listEquals(_actualExpenses, newExpenses) ||
+            _expenseHistory.length != newSnapshots.length;
+
+        if (changed) {
+          setState(() {
+            _settings = settings;
+            _favorites = newFavorites;
+            _purchaseHistory = newHistory;
+            _groceryData = newGrocery;
+            _actualExpenses = newExpenses;
+            _expenseHistory = newSnapshots;
+          });
+        }
+      }
+      _lastRefresh = DateTime.now();
+    } finally {
+      _refreshing = false;
     }
-    _expenseSnapshotService.loadHistory(widget.householdId).then((history) {
-      if (mounted) setState(() => _expenseHistory = history);
-    });
-    _loadActualExpenses();
   }
 
   Future<void> _loadAll() async {
@@ -194,27 +255,30 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       if (changed) await _subscriptionService.clear();
     }
 
+    final settings = await _settingsService.load(widget.householdId);
     final results = await Future.wait([
-      _settingsService.load(widget.householdId),
       _favoritesService.load(widget.householdId),
       _purchaseHistoryService.load(widget.householdId),
       _aiCoachService.loadApiKey(),
       _productsService.load(),
+      _loadGroceryData(settings.country, updateLoadingState: false),
       _localConfigService.load(),
       _localConfigService.loadOnboardingState(),
       _subscriptionService.load(),
     ]);
     setState(() {
-      _settings = results[0] as AppSettings;
-      _favorites = results[1] as List<String>;
-      _purchaseHistory = results[2] as PurchaseHistory;
-      _openAiApiKey = results[3] as String;
-      _products = results[4] as List<Product>;
+      _settings = settings;
+      _favorites = results[0] as List<String>;
+      _purchaseHistory = results[1] as PurchaseHistory;
+      _openAiApiKey = results[2] as String;
+      _products = results[3] as List<Product>;
+      _groceryData = results[4] as GroceryData;
       _dashboardConfig = results[5] as LocalDashboardConfig;
       _onboardingState = results[6] as OnboardingState;
       _subscription = results[7] as SubscriptionState;
       _loaded = true;
     });
+    _lastRefresh = DateTime.now();
     _dataHealthService.recordLoad(SyncDomain.settings);
     _dataHealthService.recordLoad(SyncDomain.purchaseHistory);
     _dataHealthService.recordLoad(SyncDomain.shopping);
@@ -230,6 +294,25 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     await _loadSavingsGoals();
     _syncRevenueCat();
     _checkDowngrade();
+  }
+
+  Future<GroceryData> _loadGroceryData(
+    Country country, {
+    bool updateLoadingState = true,
+  }) async {
+    if (updateLoadingState && mounted) {
+      setState(() => _groceryLoading = true);
+    }
+    try {
+      return await _groceryService.load(countryCode: country.name);
+    } catch (e) {
+      debugPrint('Failed to load grocery data for ${country.name}: $e');
+      return const GroceryData();
+    } finally {
+      if (updateLoadingState && mounted) {
+        setState(() => _groceryLoading = false);
+      }
+    }
   }
 
   /// Check if the user needs downgrade handling (trial expired or subscription cancelled).
@@ -711,10 +794,17 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   void _openGrocery() {
+    final countryProducts = _groceryData.toCatalogProducts();
+    final effectiveProducts =
+        countryProducts.isNotEmpty || _settings.country != Country.pt
+            ? countryProducts
+            : _products;
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => GroceryScreen(
-          products: _products,
+          products: effectiveProducts,
+          groceryData: _groceryData,
+          isLoading: _groceryLoading,
           onAddToShoppingList: _addToShoppingList,
           showTour: !_onboardingState.isTourDone('grocery'),
           onTourComplete: () => _markTourDone('grocery'),
@@ -824,11 +914,18 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
   void _saveSettings(AppSettings settings) {
     if (!widget.isAdmin) return;
+    final countryChanged = settings.country != _settings.country;
     setState(() => _settings = settings);
     _syncLocaleAndFormatter(settings);
     _settingsService.save(settings, widget.householdId);
     _dataHealthService.recordSave(SyncDomain.settings);
     _refreshNotificationSchedules();
+    if (countryChanged) {
+      _loadGroceryData(settings.country).then((data) {
+        if (!mounted) return;
+        setState(() => _groceryData = data);
+      });
+    }
   }
 
   void _saveDashboardConfig(LocalDashboardConfig config) {
@@ -1241,6 +1338,46 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     }
   }
 
+  Future<void> _openReceiptScanner() async {
+    final receipt = await ReceiptScanSheet.show(context);
+    if (receipt == null || !mounted) return;
+
+    final categories =
+        _settings.expenses.map((e) => e.label).toList();
+
+    final chosenCategory = await ReceiptReviewSheet.show(
+      context,
+      receipt: receipt,
+      categories: categories,
+    );
+    if (chosenCategory == null || !mounted) return;
+
+    final expense = ReceiptScanService.buildExpense(
+      receipt: receipt,
+      category: chosenCategory,
+    );
+    await _addActualExpense(expense);
+
+    if (mounted) {
+      final l10n = S.of(context);
+      final merchantLabel = receipt.merchantName ??
+          (receipt.merchantNif.isNotEmpty
+              ? 'NIF ${receipt.merchantNif}'
+              : l10n.receiptMerchantUnknown);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.receiptScanSuccess(
+            formatCurrency(receipt.totalAmount),
+            merchantLabel,
+          )),
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
+    }
+  }
+
   void _handleQuickAction(QuickAction action) {
     if (!_loaded) return;
     switch (action) {
@@ -1252,6 +1389,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         _openMealPlanner();
       case QuickAction.openAssistant:
         setState(() => _commandPanelOpen = true);
+      case QuickAction.scanReceipt:
+        _openReceiptScanner();
     }
   }
 

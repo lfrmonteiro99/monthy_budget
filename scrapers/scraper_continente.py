@@ -3,8 +3,15 @@
 import json
 import time
 import logging
-import requests
-from bs4 import BeautifulSoup
+from typing import TYPE_CHECKING
+
+try:  # Script execution from scrapers/
+    from base import ScrapedListing, StoreScraper
+except ImportError:  # Package execution from repo root/tests
+    from .base import ScrapedListing, StoreScraper
+
+if TYPE_CHECKING:
+    import requests
 
 logger = logging.getLogger(__name__)
 
@@ -36,8 +43,11 @@ HEADERS = {
 PRODUCT_API = f"{BASE_URL}/on/demandware.store/Sites-continente-Site/default/Search-UpdateGrid"
 
 
-def _fetch_category_products(session: requests.Session, category: dict, max_products: int = 50) -> list[dict]:
+def _fetch_category_products(session: "requests.Session", category: dict, max_products: int = 50) -> list[dict]:
     """Fetch products from a single Continente category via their internal API."""
+    import requests
+    from bs4 import BeautifulSoup
+
     products = []
     url = f"{BASE_URL}/{category['slug']}"
 
@@ -99,6 +109,8 @@ def _fetch_category_products(session: requests.Session, category: dict, max_prod
 
 def scrape() -> list[dict]:
     """Scrape products from Continente across all categories."""
+    import requests
+
     all_products = []
     session = requests.Session()
 
@@ -111,3 +123,40 @@ def scrape() -> list[dict]:
 
     logger.info(f"Continente total: {len(all_products)} products")
     return all_products
+
+
+class ContinenteScraper(StoreScraper):
+    country_code = "PT"
+    store_id = "continente"
+    store_name = "Continente"
+    categories = CATEGORIES
+
+    def scrape(self) -> list[ScrapedListing]:
+        import requests
+
+        listings: list[ScrapedListing] = []
+        session = requests.Session()
+
+        for category in self.categories:
+            logger.info(f"Scraping {self.store_name}: {category['name']}...")
+            products = _fetch_category_products(session, category)
+            listings.extend(
+                ScrapedListing(
+                    country_code=self.country_code,
+                    store_id=self.store_id,
+                    store_name=self.store_name,
+                    product_name=product.get("name", ""),
+                    price=float(product.get("price", 0)),
+                    category=product.get("category", ""),
+                    product_id=str(product.get("product_id", "")),
+                    unit_price=product.get("unit_price"),
+                    brand=product.get("brand"),
+                    product_url=product.get("product_url"),
+                )
+                for product in products
+            )
+            logger.info(f"  Found {len(products)} products")
+            time.sleep(2)
+
+        logger.info(f"{self.store_name} total: {len(listings)} products")
+        return listings

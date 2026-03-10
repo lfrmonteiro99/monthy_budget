@@ -12,6 +12,7 @@ permissions:
   contents: write
   pull-requests: write
   issues: write
+  statuses: write
 
 concurrency:
   group: agent-delivery-${{ github.ref }}
@@ -196,7 +197,50 @@ jobs:
 
           gh pr edit "$PR_NUMBER" --add-label "$LABEL" || true
 
-          gh workflow run "PR Governance" --ref "$BRANCH" -f pr_number="$PR_NUMBER" -f branch="$BRANCH" || true
+          # --- Inline PR validation (replaces external PR Governance trigger) ---
+          # The PR Governance workflow cannot be triggered reliably from here because
+          # GITHUB_TOKEN-created PRs don't fire pull_request events (GitHub anti-recursion),
+          # and workflow_dispatch checks don't associate with the PR.
+          # Instead, run the same validation inline and post a commit status.
+          SHA="$(gh pr view "$PR_NUMBER" --json headRefOid --jq .headRefOid)"
+          PR_BODY="$(gh pr view "$PR_NUMBER" --json body --jq .body)"
+          PR_LABELS="$(gh pr view "$PR_NUMBER" --json labels --jq '.labels[].name' | paste -sd, -)"
+
+          VALIDATE_OK=true
+          VALIDATE_MSG=""
+
+          if ! echo "$PR_BODY" | grep -Eiq '(Fixes|Closes|Resolves)[[:space:]]+#[0-9]+'; then
+            VALIDATE_OK=false
+            VALIDATE_MSG="PR body must include: Fixes #<issue-number>"
+          fi
+
+          if ! echo "$PR_BODY" | grep -Eiq '^##[[:space:]]+Release Notes'; then
+            VALIDATE_OK=false
+            VALIDATE_MSG="${VALIDATE_MSG:+$VALIDATE_MSG; }PR body must include a '## Release Notes' section"
+          fi
+
+          if ! echo "$PR_LABELS" | grep -Eq '(^|,)(release:patch|release:minor|release:major)(,|$)'; then
+            VALIDATE_OK=false
+            VALIDATE_MSG="${VALIDATE_MSG:+$VALIDATE_MSG; }PR must include one release label: release:patch | release:minor | release:major"
+          fi
+
+          if [[ "$VALIDATE_OK" == "true" ]]; then
+            gh api "repos/${{ github.repository }}/statuses/$SHA" \
+              -f state=success \
+              -f context=validate-pr \
+              -f description="PR governance checks passed" \
+              -f target_url="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo "✅ validate-pr: passed"
+          else
+            gh api "repos/${{ github.repository }}/statuses/$SHA" \
+              -f state=failure \
+              -f context=validate-pr \
+              -f description="$VALIDATE_MSG" \
+              -f target_url="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo "❌ validate-pr: $VALIDATE_MSG"
+            exit 1
+          fi
+
           TITLE="$(gh pr view "$PR_NUMBER" --json title --jq .title)"
           gh pr merge "$PR_NUMBER" --auto --squash --delete-branch \
             --subject "$TITLE (Fixes #$ISSUE)" \

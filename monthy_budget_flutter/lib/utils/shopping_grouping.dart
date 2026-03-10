@@ -30,16 +30,80 @@ class StoreSummary {
   });
 }
 
-/// Groups items by their [sourceMealLabel].
-/// Items without a source meal are placed under [ungroupedLabel].
+/// Result of attempting to merge a new item into an existing list.
+class MergeResult {
+  /// The updated item if a duplicate was found, null if new.
+  final ShoppingItem? merged;
+
+  const MergeResult({this.merged});
+
+  bool get isNew => merged == null;
+}
+
+/// Finds a duplicate by productName (case-insensitive) and aggregates
+/// quantity + price. Unions sourceMealLabels. Returns [MergeResult] with
+/// merged item or null if new.
+MergeResult mergeIntoList(List<ShoppingItem> existing, ShoppingItem newItem) {
+  final match = existing.cast<ShoppingItem?>().firstWhere(
+    (e) => e!.productName.toLowerCase() == newItem.productName.toLowerCase(),
+    orElse: () => null,
+  );
+  if (match == null) return const MergeResult();
+
+  final mergedQuantity = match.quantity != null && newItem.quantity != null
+      ? match.quantity! + newItem.quantity!
+      : match.quantity ?? newItem.quantity;
+
+  // Union of meal labels (deduplicated, order-preserving)
+  final mergedLabels = {...match.sourceMealLabels, ...newItem.sourceMealLabels}.toList();
+
+  return MergeResult(
+    merged: ShoppingItem(
+      id: match.id,
+      productName: match.productName,
+      store: match.store,
+      price: match.price + newItem.price,
+      unitPrice: match.unitPrice,
+      checked: match.checked,
+      sourceMealLabels: mergedLabels,
+      preferredStore: match.preferredStore,
+      cheapestKnownStore: match.cheapestKnownStore,
+      cheapestKnownPrice: match.cheapestKnownPrice,
+      quantity: mergedQuantity,
+      unit: match.unit ?? newItem.unit,
+    ),
+  );
+}
+
+/// Returns which group modes have meaningful data for the given items.
+/// Always includes [ShoppingGroupMode.items].
+List<ShoppingGroupMode> availableGroupModes(List<ShoppingItem> items) {
+  final modes = [ShoppingGroupMode.items];
+  if (items.any((i) => i.sourceMealLabels.isNotEmpty)) {
+    modes.add(ShoppingGroupMode.meals);
+  }
+  if (items.any((i) => i.preferredStore != null || i.store.isNotEmpty)) {
+    modes.add(ShoppingGroupMode.stores);
+  }
+  return modes;
+}
+
+/// Groups items by their [sourceMealLabels].
+/// Items with multiple labels appear in each corresponding group.
+/// Items without labels are placed under [ungroupedLabel].
 List<ShoppingGroup> groupByMeal(
   List<ShoppingItem> items, {
   String ungroupedLabel = 'Other',
 }) {
   final map = <String, List<ShoppingItem>>{};
   for (final item in items) {
-    final key = item.sourceMealLabel ?? ungroupedLabel;
-    (map[key] ??= []).add(item);
+    if (item.sourceMealLabels.isEmpty) {
+      (map[ungroupedLabel] ??= []).add(item);
+    } else {
+      for (final label in item.sourceMealLabels) {
+        (map[label] ??= []).add(item);
+      }
+    }
   }
   return map.entries
       .map((e) => ShoppingGroup(label: e.key, items: e.value))
