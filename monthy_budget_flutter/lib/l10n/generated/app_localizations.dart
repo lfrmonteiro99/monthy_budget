@@ -4865,18 +4865,6 @@ abstract class S {
   /// **'Cozinha em Lote'**
   String get mealBatchPrepGuide;
 
-  /// Batch cooking total time estimate
-  ///
-  /// In pt, this message translates to:
-  /// **'Tempo estimado: {time}'**
-  String mealBatchTotalTime(String time);
-
-  /// Parallel cooking tips header
-  ///
-  /// In pt, this message translates to:
-  /// **'Dicas de cozinha paralela'**
-  String get mealBatchParallelTips;
-
   /// Per-meal preparation guide button
   ///
   /// In pt, this message translates to:
@@ -4894,6 +4882,18 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Tempo: {minutes} min'**
   String mealPrepTime(String minutes);
+
+  /// Batch cooking total time estimate
+  ///
+  /// In pt, this message translates to:
+  /// **'Tempo estimado: {time}'**
+  String mealBatchTotalTime(String time);
+
+  /// Parallel cooking tips header
+  ///
+  /// In pt, this message translates to:
+  /// **'Dicas de cozinha paralela'**
+  String get mealBatchParallelTips;
 
   /// Label for liked meal feedback button
   ///
@@ -5636,7 +5636,7 @@ abstract class S {
   /// No description provided for @onbTourAssistant1Body.
   ///
   /// In pt, this message translates to:
-  /// **'O seu atalho para ações rápidas. Toque para adicionar despesas, mudar definições, navegar e mais u2014 basta escrever o que precisa.'**
+  /// **'O seu atalho para ações rápidas. Toque para adicionar despesas, mudar definições, navegar e mais 2014 basta escrever o que precisa.'**
   String get onbTourAssistant1Body;
 
   /// No description provided for @taxDeductionTitle.

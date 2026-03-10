@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/actual_expense.dart';
@@ -92,6 +93,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   bool _tourShown = false;
+  TutorialCoachMark? _activeTour;
 
   // Convenience accessors so helper methods don't need widget. prefix everywhere
   AppSettings get settings => widget.settings;
@@ -122,17 +124,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
           _tourShown = true;
           Future.delayed(const Duration(milliseconds: 500), () {
             if (!mounted) return;
-            buildDashboardTour(
+            _activeTour = buildDashboardTour(
               context: context,
               fabKey: widget.fabKey!,
               navBarKey: widget.navBarKey!,
-              onFinish: () => widget.onTourComplete?.call(),
-              onSkip: () => widget.onTourComplete?.call(),
-            ).show(context: context);
+              onFinish: () {
+                _activeTour = null;
+                widget.onTourComplete?.call();
+              },
+              onSkip: () {
+                _activeTour = null;
+                widget.onTourComplete?.call();
+              },
+            );
+            _activeTour!.show(context: context);
           });
         }
       });
     }
+  }
+
+  @override
+  void dispose() {
+    _activeTour?.finish();
+    super.dispose();
   }
 
   @override

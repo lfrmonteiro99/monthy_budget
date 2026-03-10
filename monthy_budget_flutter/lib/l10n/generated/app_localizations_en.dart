@@ -2618,14 +2618,6 @@ class SEn extends S {
   String get mealBatchPrepGuide => 'Batch Cooking';
 
   @override
-  String mealBatchTotalTime(String time) {
-    return 'Estimated time: $time';
-  }
-
-  @override
-  String get mealBatchParallelTips => 'Parallel cooking tips';
-
-  @override
   String get mealViewPrepGuide => 'How to Prepare';
 
   @override
@@ -2635,6 +2627,14 @@ class SEn extends S {
   String mealPrepTime(String minutes) {
     return 'Time: $minutes min';
   }
+
+  @override
+  String mealBatchTotalTime(String time) {
+    return 'Estimated time: $time';
+  }
+
+  @override
+  String get mealBatchParallelTips => 'Parallel cooking tips';
 
   @override
   String get mealFeedbackLike => 'Liked';

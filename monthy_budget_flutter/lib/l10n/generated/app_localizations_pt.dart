@@ -2626,14 +2626,6 @@ class SPt extends S {
   String get mealBatchPrepGuide => 'Cozinha em Lote';
 
   @override
-  String mealBatchTotalTime(String time) {
-    return 'Tempo estimado: $time';
-  }
-
-  @override
-  String get mealBatchParallelTips => 'Dicas de cozinha paralela';
-
-  @override
   String get mealViewPrepGuide => 'Preparação';
 
   @override
@@ -2643,6 +2635,14 @@ class SPt extends S {
   String mealPrepTime(String minutes) {
     return 'Tempo: $minutes min';
   }
+
+  @override
+  String mealBatchTotalTime(String time) {
+    return 'Tempo estimado: $time';
+  }
+
+  @override
+  String get mealBatchParallelTips => 'Dicas de cozinha paralela';
 
   @override
   String get mealFeedbackLike => 'Gostei';
@@ -3062,7 +3062,7 @@ class SPt extends S {
 
   @override
   String get onbTourAssistant1Body =>
-      'O seu atalho para ações rápidas. Toque para adicionar despesas, mudar definições, navegar e mais u2014 basta escrever o que precisa.';
+      'O seu atalho para ações rápidas. Toque para adicionar despesas, mudar definições, navegar e mais 2014 basta escrever o que precisa.';
 
   @override
   String get taxDeductionTitle => 'Deduções IRS';

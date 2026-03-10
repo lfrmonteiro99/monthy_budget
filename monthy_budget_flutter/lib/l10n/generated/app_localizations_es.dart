@@ -2629,14 +2629,6 @@ class SEs extends S {
   String get mealBatchPrepGuide => 'Cocina en Lote';
 
   @override
-  String mealBatchTotalTime(String time) {
-    return 'Tiempo estimado: $time';
-  }
-
-  @override
-  String get mealBatchParallelTips => 'Consejos de cocina paralela';
-
-  @override
   String get mealViewPrepGuide => 'Preparación';
 
   @override
@@ -2646,6 +2638,14 @@ class SEs extends S {
   String mealPrepTime(String minutes) {
     return 'Tiempo: $minutes min';
   }
+
+  @override
+  String mealBatchTotalTime(String time) {
+    return 'Tiempo estimado: $time';
+  }
+
+  @override
+  String get mealBatchParallelTips => 'Consejos de cocina paralela';
 
   @override
   String get mealFeedbackLike => 'Me gusta';
@@ -3064,7 +3064,7 @@ class SEs extends S {
 
   @override
   String get onbTourAssistant1Body =>
-      'Tu atajo para acciones rápidas. Toca para añadir gastos, cambiar ajustes, navegar y más u2014 solo escribe lo que necesitas.';
+      'Tu atajo para acciones rápidas. Toca para añadir gastos, cambiar ajustes, navegar y más 2014 solo escribe lo que necesitas.';
 
   @override
   String get taxDeductionTitle => 'Deducciones Fiscales';

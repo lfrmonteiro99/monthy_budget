@@ -145,21 +145,23 @@ class GroceryService {
 
   static List<String> _assetPathsForCountry(String countryCode) {
     final normalized = _normalizeCountryCode(countryCode);
-    final paths = <String>['assets/grocery/$normalized/catalog.json'];
+    final paths = <String>[];
+    // Legacy bundled asset exists for PT — try it first to avoid 404 noise
     if (normalized == 'PT') {
       paths.add(_legacyAssetPath);
     }
+    paths.add('assets/grocery/$normalized/catalog.json');
     return paths;
   }
 
   static List<String> _remoteUrlsForCountry(String countryCode) {
     final normalized = _normalizeCountryCode(countryCode);
-    final urls = <String>[
-      '$_remoteBaseUrl/assets/grocery/$normalized/catalog.json',
-    ];
+    final urls = <String>[];
+    // Legacy remote URL exists for PT — try it first
     if (normalized == 'PT') {
       urls.add('$_remoteBaseUrl/grocery_prices.json');
     }
+    urls.add('$_remoteBaseUrl/assets/grocery/$normalized/catalog.json');
     return urls;
   }
 }

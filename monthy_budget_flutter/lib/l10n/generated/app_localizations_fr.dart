@@ -2633,14 +2633,6 @@ class SFr extends S {
   String get mealBatchPrepGuide => 'Cuisine en Lot';
 
   @override
-  String mealBatchTotalTime(String time) {
-    return 'Temps estimé: $time';
-  }
-
-  @override
-  String get mealBatchParallelTips => 'Astuces de cuisson parallèle';
-
-  @override
   String get mealViewPrepGuide => 'Préparation';
 
   @override
@@ -2650,6 +2642,14 @@ class SFr extends S {
   String mealPrepTime(String minutes) {
     return 'Temps: $minutes min';
   }
+
+  @override
+  String mealBatchTotalTime(String time) {
+    return 'Temps estimé: $time';
+  }
+
+  @override
+  String get mealBatchParallelTips => 'Astuces de cuisson parallèle';
 
   @override
   String get mealFeedbackLike => 'J\'aime';
@@ -3069,7 +3069,7 @@ class SFr extends S {
 
   @override
   String get onbTourAssistant1Body =>
-      'Votre raccourci pour les actions rapides. Touchez pour ajouter des dépenses, changer les paramètres, naviguer et plus u2014 tapez simplement ce dont vous avez besoin.';
+      'Votre raccourci pour les actions rapides. Touchez pour ajouter des dépenses, changer les paramètres, naviguer et plus 2014 tapez simplement ce dont vous avez besoin.';
 
   @override
   String get taxDeductionTitle => 'Déductions Fiscales';
