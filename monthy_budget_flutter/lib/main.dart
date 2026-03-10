@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -30,7 +32,30 @@ Future<void> main() async {
   final binding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: binding);
 
-  // Validate config before attempting to connect
+  // --- Critical path: only what's needed to show the login screen ---
+
+  // Supabase + theme config in parallel
+  final configService = LocalConfigService();
+  final results = await Future.wait([
+    _initSupabase(),
+    configService.loadThemeMode(),
+    configService.loadColorPalette(),
+  ]);
+
+  appThemeModeNotifier.value = results[1] as ThemeMode;
+  final palette = results[2] as AppColorPalette;
+  appColorPaletteNotifier.value = palette;
+  AppColors.palette = palette;
+
+  // Show UI immediately — splash removed, login visible
+  FlutterNativeSplash.remove();
+  runApp(const OrcamentoMensalApp());
+
+  // --- Non-critical: defer to background after UI is on screen ---
+  unawaited(_initDeferredServices());
+}
+
+Future<void> _initSupabase() async {
   if (supabaseUrl.isEmpty ||
       supabaseUrl.contains('example.supabase.co') ||
       supabaseUrl.contains('placeholder') ||
@@ -48,34 +73,32 @@ Future<void> main() async {
       supabaseInitError = 'Supabase init failed: $e';
     }
   }
+}
 
-  final configService = LocalConfigService();
-  final savedTheme = await configService.loadThemeMode();
-  final savedPalette = await configService.loadColorPalette();
-  appThemeModeNotifier.value = savedTheme;
-  appColorPaletteNotifier.value = savedPalette;
-  AppColors.palette = savedPalette;
-
-  try {
-    await NotificationService().init();
-  } catch (e) {
-    debugPrint('NotificationService initialization failed: $e');
-  }
-
-  try {
-    await AdService.initialize();
-  } catch (e) {
-    debugPrint('AdService initialization failed: $e');
-  }
-
-  try {
-    await RevenueCatService.initialize();
-  } catch (e) {
-    debugPrint('RevenueCatService initialization failed: $e');
-  }
-
-  FlutterNativeSplash.remove();
-  runApp(const OrcamentoMensalApp());
+Future<void> _initDeferredServices() async {
+  await Future.wait([
+    Future(() async {
+      try {
+        await NotificationService().init();
+      } catch (e) {
+        debugPrint('NotificationService initialization failed: $e');
+      }
+    }),
+    Future(() async {
+      try {
+        await AdService.initialize();
+      } catch (e) {
+        debugPrint('AdService initialization failed: $e');
+      }
+    }),
+    Future(() async {
+      try {
+        await RevenueCatService.initialize();
+      } catch (e) {
+        debugPrint('RevenueCatService initialization failed: $e');
+      }
+    }),
+  ]);
 }
 
 class OrcamentoMensalApp extends StatelessWidget {
