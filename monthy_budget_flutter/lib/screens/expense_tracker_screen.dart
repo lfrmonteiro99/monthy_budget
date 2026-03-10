@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/actual_expense.dart';
@@ -62,6 +63,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
   final _searchController = TextEditingController();
   final _exportService = ExportService();
   bool _tourShown = false;
+  TutorialCoachMark? _activeTour;
 
   @override
   void initState() {
@@ -77,15 +79,23 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
   void _tryShowTour() {
     if (_tourShown || !mounted) return;
     _tourShown = true;
-    buildExpenseTrackerTour(
+    _activeTour = buildExpenseTrackerTour(
       context: context,
-      onFinish: () => widget.onTourComplete?.call(),
-      onSkip: () => widget.onTourComplete?.call(),
-    ).show(context: context);
+      onFinish: () {
+        _activeTour = null;
+        widget.onTourComplete?.call();
+      },
+      onSkip: () {
+        _activeTour = null;
+        widget.onTourComplete?.call();
+      },
+    );
+    _activeTour!.show(context: context);
   }
 
   @override
   void dispose() {
+    _activeTour?.finish();
     _searchController.dispose();
     super.dispose();
   }

@@ -12,6 +12,7 @@ class NotificationService {
 
   final _plugin = FlutterLocalNotificationsPlugin();
   bool _initialized = false;
+  Future<void>? _initFuture;
   Future<void> _refreshChain = Future.value();
   bool _budgetAlertTriggered = false;
 
@@ -25,7 +26,12 @@ class NotificationService {
   static const _trialExpiryId = 2002;
   static const _customBaseId = 3000;
 
-  Future<void> init() async {
+  Future<void> init() {
+    _initFuture ??= _doInit();
+    return _initFuture!;
+  }
+
+  Future<void> _doInit() async {
     if (_initialized) return;
 
     tz.initializeTimeZones();
@@ -63,6 +69,13 @@ class NotificationService {
     String? topCategoryName,
     double? topCategoryUsagePercent,
   }) async {
+    if (!_initialized) {
+      if (_initFuture != null) {
+        await _initFuture;
+      } else {
+        return; // init() never called — skip silently
+      }
+    }
     _refreshChain = _refreshChain.then((_) async {
       await _refreshAllSchedulesImpl(
         prefs: prefs,

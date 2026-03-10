@@ -1597,11 +1597,15 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
             )
           : screens[_currentIndex],
       floatingActionButton: _currentIndex == 0
-          ? QuickAddLauncher(
-              key: _fabKey,
-              onAction: _handleQuickAction,
+          ? Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: QuickAddLauncher(
+                key: _fabKey,
+                onAction: _handleQuickAction,
+              ),
             )
           : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: NavigationBar(
         key: _navBarKey,
         selectedIndex: _currentIndex,

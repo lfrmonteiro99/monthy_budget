@@ -11,13 +11,13 @@ void main() {
       SharedPreferences.setMockInitialValues({});
     });
 
-    test('load defaults to PT and falls back to legacy asset path', () async {
+    test('load defaults to PT and falls back to country asset path', () async {
       final requestedAssets = <String>[];
       final service = GroceryService(
         assetLoader: (path) async {
           requestedAssets.add(path);
-          if (path == 'assets/grocery/PT/catalog.json') {
-            throw Exception('missing PT country asset');
+          if (path == 'assets/grocery_prices.json') {
+            throw Exception('missing legacy asset');
           }
           return _sampleGroceryJson(totalProducts: 1);
         },
@@ -27,9 +27,10 @@ void main() {
       final data = await service.load();
 
       expect(data.metadata.totalProducts, 1);
+      // Legacy path tried first for PT, then country-specific fallback
       expect(
         requestedAssets,
-        ['assets/grocery/PT/catalog.json', 'assets/grocery_prices.json'],
+        ['assets/grocery_prices.json', 'assets/grocery/PT/catalog.json'],
       );
     });
 
