@@ -4365,6 +4365,12 @@ class SEn extends S {
   String get receiptScanHint => 'Point camera at the receipt QR code';
 
   @override
+  String get receiptScanPhotoHint => 'Position the receipt and tap the button to capture';
+
+  @override
+  String get receiptScanProcessing => 'Reading receipt\u2026';
+
+  @override
   String receiptScanSuccess(String amount, String store) {
     return 'Expense of $amount at $store recorded';
   }

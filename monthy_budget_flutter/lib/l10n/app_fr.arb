@@ -2300,6 +2300,8 @@
     "receiptScanQrMode": "QR Code",
     "receiptScanPhotoMode": "Photo",
     "receiptScanHint": "Pointez la caméra vers le QR code du reçu",
+    "receiptScanPhotoHint": "Positionnez le reçu et appuyez sur le bouton pour capturer",
+    "receiptScanProcessing": "Lecture du reçu…",
     "receiptScanSuccess": "Dépense de {amount} chez {store} enregistrée",
     "@receiptScanSuccess": {
         "placeholders": {

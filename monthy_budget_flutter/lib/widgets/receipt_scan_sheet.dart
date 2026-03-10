@@ -1,6 +1,6 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../l10n/generated/app_localizations.dart';
@@ -37,24 +37,64 @@ class _ReceiptScanSheetState extends State<ReceiptScanSheet> {
   bool _processing = false;
   String? _error;
 
-  MobileScannerController? _cameraController;
+  MobileScannerController? _qrController;
+
+  // In-app camera for photo mode
+  CameraController? _photoCameraController;
+  bool _photoCameraReady = false;
 
   @override
   void initState() {
     super.initState();
-    _initCamera();
+    _initQrCamera();
   }
 
-  void _initCamera() {
-    _cameraController = MobileScannerController(
+  void _initQrCamera() {
+    _qrController = MobileScannerController(
       detectionSpeed: DetectionSpeed.normal,
       facing: CameraFacing.back,
     );
   }
 
+  Future<void> _initPhotoCamera() async {
+    if (_photoCameraController != null) return;
+    try {
+      final cameras = await availableCameras();
+      if (cameras.isEmpty) {
+        if (mounted) {
+          setState(() => _error = S.of(context).receiptScanFailed);
+        }
+        return;
+      }
+      final back = cameras.firstWhere(
+        (c) => c.lensDirection == CameraLensDirection.back,
+        orElse: () => cameras.first,
+      );
+      final controller = CameraController(
+        back,
+        ResolutionPreset.high,
+        enableAudio: false,
+      );
+      await controller.initialize();
+      if (mounted) {
+        setState(() {
+          _photoCameraController = controller;
+          _photoCameraReady = true;
+        });
+      } else {
+        controller.dispose();
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() => _error = S.of(context).receiptScanFailed);
+      }
+    }
+  }
+
   @override
   void dispose() {
-    _cameraController?.dispose();
+    _qrController?.dispose();
+    _photoCameraController?.dispose();
     super.dispose();
   }
 
@@ -74,26 +114,26 @@ class _ReceiptScanSheetState extends State<ReceiptScanSheet> {
     Navigator.of(context).pop(receipt);
   }
 
-  Future<void> _onTakePhoto() async {
+  Future<void> _onCapturePhoto() async {
+    final controller = _photoCameraController;
+    if (controller == null || !controller.value.isInitialized) return;
+    if (_processing) return;
+
     setState(() {
       _processing = true;
       _error = null;
     });
 
     try {
-      final picker = ImagePicker();
-      final image = await picker.pickImage(source: ImageSource.camera);
-      if (image == null) {
-        setState(() => _processing = false);
-        return;
-      }
-
+      final image = await controller.takePicture();
       final inputImage = InputImage.fromFilePath(image.path);
       final recognizer = TextRecognizer();
       try {
         final recognised = await recognizer.processImage(inputImage);
-        final lines =
-            recognised.blocks.expand((b) => b.lines).map((l) => l.text).toList();
+        final lines = recognised.blocks
+            .expand((b) => b.lines)
+            .map((l) => l.text)
+            .toList();
 
         final receipt = ReceiptScanService.processOcrText(textLines: lines);
         if (receipt != null && mounted) {
@@ -127,6 +167,16 @@ class _ReceiptScanSheetState extends State<ReceiptScanSheet> {
       _error = null;
       _scanned = false;
     });
+    if (mode == _ScanMode.photo) {
+      _initPhotoCamera();
+    }
+  }
+
+  String _hintText(S l10n) {
+    if (_error != null) return _error!;
+    if (_processing) return l10n.receiptScanProcessing;
+    if (_mode == _ScanMode.photo) return l10n.receiptScanPhotoHint;
+    return l10n.receiptScanHint;
   }
 
   @override
@@ -211,7 +261,7 @@ class _ReceiptScanSheetState extends State<ReceiptScanSheet> {
           Padding(
             padding: const EdgeInsets.all(20),
             child: Text(
-              _error ?? l10n.receiptScanHint,
+              _hintText(l10n),
               style: TextStyle(
                 fontSize: 13,
                 color: _error != null
@@ -241,7 +291,7 @@ class _ReceiptScanSheetState extends State<ReceiptScanSheet> {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: MobileScanner(
-            controller: _cameraController!,
+            controller: _qrController!,
             onDetect: _onQrDetect,
           ),
         ),
@@ -258,7 +308,7 @@ class _ReceiptScanSheetState extends State<ReceiptScanSheet> {
             CircularProgressIndicator(color: AppColors.primary(context)),
             const SizedBox(height: 16),
             Text(
-              l10n.receiptScanHint,
+              l10n.receiptScanProcessing,
               style: TextStyle(
                 fontSize: 13,
                 color: AppColors.textMuted(context),
@@ -269,25 +319,51 @@ class _ReceiptScanSheetState extends State<ReceiptScanSheet> {
       );
     }
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+    if (!_photoCameraReady || _photoCameraController == null) {
+      return Center(
+        child: CircularProgressIndicator(color: AppColors.primary(context)),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Stack(
+          alignment: Alignment.bottomCenter,
           children: [
-            Icon(
-              Icons.camera_alt_outlined,
-              size: 64,
-              color: AppColors.textMuted(context),
+            // Live camera preview
+            SizedBox.expand(
+              child: FittedBox(
+                fit: BoxFit.cover,
+                clipBehavior: Clip.hardEdge,
+                child: SizedBox(
+                  width: _photoCameraController!.value.previewSize?.height ?? 1,
+                  height: _photoCameraController!.value.previewSize?.width ?? 1,
+                  child: CameraPreview(_photoCameraController!),
+                ),
+              ),
             ),
-            const SizedBox(height: 16),
-            FilledButton.icon(
-              onPressed: _onTakePhoto,
-              icon: const Icon(Icons.camera_alt),
-              label: Text(l10n.receiptScanPhotoMode),
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary(context),
-                foregroundColor: AppColors.onPrimary(context),
+            // Capture button
+            Positioned(
+              bottom: 20,
+              child: GestureDetector(
+                onTap: _onCapturePhoto,
+                child: Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 4),
+                  ),
+                  child: Container(
+                    margin: const EdgeInsets.all(4),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ),
             ),
           ],

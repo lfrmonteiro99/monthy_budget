@@ -4397,6 +4397,12 @@ class SEs extends S {
   String get receiptScanHint => 'Apunte la cámara al código QR del recibo';
 
   @override
+  String get receiptScanPhotoHint => 'Coloque el recibo y pulse el botón para capturar';
+
+  @override
+  String get receiptScanProcessing => 'Leyendo recibo\u2026';
+
+  @override
   String receiptScanSuccess(String amount, String store) {
     return 'Gasto de $amount en $store registrado';
   }
