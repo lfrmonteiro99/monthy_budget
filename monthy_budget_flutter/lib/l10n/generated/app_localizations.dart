@@ -5636,7 +5636,7 @@ abstract class S {
   /// No description provided for @onbTourAssistant1Body.
   ///
   /// In pt, this message translates to:
-  /// **'O seu atalho para ações rápidas. Toque para adicionar despesas, mudar definições, navegar e mais 2014 basta escrever o que precisa.'**
+  /// **'O seu atalho para ações rápidas. Toque para adicionar despesas, mudar definições, navegar e mais — basta escrever o que precisa.'**
   String get onbTourAssistant1Body;
 
   /// No description provided for @taxDeductionTitle.

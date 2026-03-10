@@ -3069,7 +3069,7 @@ class SFr extends S {
 
   @override
   String get onbTourAssistant1Body =>
-      'Votre raccourci pour les actions rapides. Touchez pour ajouter des dépenses, changer les paramètres, naviguer et plus 2014 tapez simplement ce dont vous avez besoin.';
+      'Votre raccourci pour les actions rapides. Touchez pour ajouter des dépenses, changer les paramètres, naviguer et plus — tapez simplement ce dont vous avez besoin.';
 
   @override
   String get taxDeductionTitle => 'Déductions Fiscales';
