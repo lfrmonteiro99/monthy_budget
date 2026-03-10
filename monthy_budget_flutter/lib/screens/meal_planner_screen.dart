@@ -364,6 +364,166 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     );
   }
 
+  void _showMealPrepGuide(MealDay mealDay) {
+    final recipe = _service.recipeMap[mealDay.recipeId];
+    if (recipe == null) return;
+    final l10n = S.of(context);
+    final aiContent = _aiContent[mealDay.recipeId];
+    // Use local prepSteps as primary source, fall back to AI steps
+    final steps = recipe.prepSteps.isNotEmpty
+        ? recipe.prepSteps
+        : (aiContent?.steps ?? []);
+    if (steps.isEmpty) return;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.surface(context),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => DraggableScrollableSheet(
+        initialChildSize: 0.6,
+        maxChildSize: 0.9,
+        expand: false,
+        builder: (ctx, controller) => Column(
+          children: [
+            Container(
+              width: 40, height: 4,
+              margin: const EdgeInsets.symmetric(vertical: 12),
+              decoration: BoxDecoration(
+                color: AppColors.borderMuted(ctx),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.mealPrepGuideTitle,
+                      style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+                  const SizedBox(height: 4),
+                  Text(recipe.name,
+                      style: TextStyle(fontSize: 14, color: AppColors.textSecondary(ctx))),
+                  const SizedBox(height: 2),
+                  Text(l10n.mealPrepTime(recipe.prepMinutes.toString()),
+                      style: TextStyle(fontSize: 12, color: AppColors.textMuted(ctx))),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            Expanded(
+              child: ListView(
+                controller: controller,
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                children: [
+                  ...steps.asMap().entries.map((e) => Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 26, height: 26,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary(ctx),
+                            borderRadius: BorderRadius.circular(13),
+                          ),
+                          child: Text('${e.key + 1}',
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.onPrimary(ctx))),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(child: Padding(
+                          padding: const EdgeInsets.only(top: 3),
+                          child: Text(e.value, style: const TextStyle(fontSize: 14)),
+                        )),
+                      ],
+                    ),
+                  )),
+                  // Show AI-enriched extras if available
+                  if (aiContent != null) ...[
+                    if (aiContent.tip.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.warningBackground(ctx),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.lightbulb_outline, size: 18, color: AppColors.warning(ctx)),
+                            const SizedBox(width: 10),
+                            Expanded(child: Text(aiContent.tip,
+                                style: const TextStyle(fontSize: 13, color: Color(0xFF92400E)))),
+                          ],
+                        ),
+                      ),
+                    ],
+                    if (aiContent.variation.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.infoBackground(ctx),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.shuffle, size: 18, color: AppColors.primary(ctx)),
+                            const SizedBox(width: 10),
+                            Expanded(child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(l10n.mealVariation,
+                                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.primary(ctx))),
+                                const SizedBox(height: 2),
+                                Text(aiContent.variation, style: const TextStyle(fontSize: 13)),
+                              ],
+                            )),
+                          ],
+                        ),
+                      ),
+                    ],
+                    if (aiContent.storageInfo.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceVariant(ctx),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.kitchen, size: 18, color: AppColors.textSecondary(ctx)),
+                            const SizedBox(width: 10),
+                            Expanded(child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(l10n.mealStorage,
+                                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textSecondary(ctx))),
+                                const SizedBox(height: 2),
+                                Text(aiContent.storageInfo, style: const TextStyle(fontSize: 13)),
+                              ],
+                            )),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _setFeedback(int dayIndex, MealType mealType, MealFeedback feedback) {
     final plan = _plan!;
     final updatedDays = plan.days.map((d) {
@@ -931,6 +1091,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     onReplaceFreeform: () => _replaceMealWithFreeform(day),
                     onAddIngredientToList: widget.onAddToShoppingList,
                     onFeedback: (fb) => _setFeedback(day.dayIndex, day.mealType, fb),
+                    onViewPrepGuide: () => _showMealPrepGuide(day),
                     activePantryIds: resolveActivePantry(widget.settings.mealSettings),
                   );
                 },
@@ -990,6 +1151,7 @@ class _DayCard extends StatelessWidget {
   final VoidCallback onReplaceFreeform;
   final void Function(ShoppingItem) onAddIngredientToList;
   final ValueChanged<MealFeedback> onFeedback;
+  final VoidCallback onViewPrepGuide;
   final Set<String> activePantryIds;
 
   const _DayCard({
@@ -1003,6 +1165,7 @@ class _DayCard extends StatelessWidget {
     required this.onReplaceFreeform,
     required this.onAddIngredientToList,
     required this.onFeedback,
+    required this.onViewPrepGuide,
     this.activePantryIds = const {},
   });
 
@@ -1169,7 +1332,7 @@ class _DayCard extends StatelessWidget {
                         ),
                         label: Text(
                           isExpanded ? l10n.close : l10n.mealIngredients,
-                          style: const TextStyle(fontSize: 13),
+                          style: const TextStyle(fontSize: 12),
                         ),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppColors.textSecondary(context),
@@ -1178,12 +1341,25 @@ class _DayCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: onViewPrepGuide,
+                        icon: const Icon(Icons.menu_book_outlined, size: 16),
+                        label: Text(l10n.mealViewPrepGuide, style: const TextStyle(fontSize: 12)),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.primary(context),
+                          side: BorderSide(color: AppColors.primary(context).withValues(alpha: 0.5)),
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
                     Expanded(
                       child: OutlinedButton.icon(
                         onPressed: onSwap,
                         icon: const Icon(Icons.swap_horiz, size: 16),
-                        label: Text(l10n.mealSwap, style: const TextStyle(fontSize: 13)),
+                        label: Text(l10n.mealSwap, style: const TextStyle(fontSize: 12)),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppColors.textSecondary(context),
                           side: BorderSide(color: AppColors.border(context)),

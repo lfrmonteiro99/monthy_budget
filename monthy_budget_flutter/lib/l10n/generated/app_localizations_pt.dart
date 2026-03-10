@@ -2623,7 +2623,7 @@ class SPt extends S {
   String get mealWeeklySummary => 'Nutrição Semanal';
 
   @override
-  String get mealBatchPrepGuide => 'Guia de Preparação';
+  String get mealBatchPrepGuide => 'Cozinha em Lote';
 
   @override
   String mealBatchTotalTime(String time) {
@@ -2632,6 +2632,17 @@ class SPt extends S {
 
   @override
   String get mealBatchParallelTips => 'Dicas de cozinha paralela';
+
+  @override
+  String get mealViewPrepGuide => 'Preparação';
+
+  @override
+  String get mealPrepGuideTitle => 'Como Preparar';
+
+  @override
+  String mealPrepTime(String minutes) {
+    return 'Tempo: $minutes min';
+  }
 
   @override
   String get mealFeedbackLike => 'Gostei';

@@ -1369,7 +1369,17 @@
     "mealLeftover": "Restes",
     "mealLeftoverIdea": "Idée de transformation",
     "mealWeeklySummary": "Nutrition Hebdomadaire",
-    "mealBatchPrepGuide": "Guide de Préparation",
+    "mealBatchPrepGuide": "Cuisine en Lot",
+    "mealViewPrepGuide": "Préparation",
+    "mealPrepGuideTitle": "Comment Préparer",
+    "mealPrepTime": "Temps: {minutes} min",
+    "@mealPrepTime": {
+        "placeholders": {
+            "minutes": {
+                "type": "String"
+            }
+        }
+    },
     "mealBatchTotalTime": "Temps estimé: {time}",
     "@mealBatchTotalTime": {
         "placeholders": {

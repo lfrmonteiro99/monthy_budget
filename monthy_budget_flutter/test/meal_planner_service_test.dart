@@ -134,4 +134,67 @@ void main() {
       expect(service.monthlyFoodBudget(settings), 0.0);
     });
   });
+
+  group('Recipe prepSteps', () {
+    test('prepSteps defaults to empty list', () {
+      const recipe = Recipe(
+        id: 'test',
+        name: 'Test',
+        proteinId: 'frango',
+        type: RecipeType.carne,
+        complexity: 1,
+        prepMinutes: 10,
+        servings: 4,
+        ingredients: [],
+      );
+      expect(recipe.prepSteps, isEmpty);
+    });
+
+    test('prepSteps round-trips through JSON', () {
+      const recipe = Recipe(
+        id: 'test',
+        name: 'Test',
+        proteinId: 'frango',
+        type: RecipeType.carne,
+        complexity: 1,
+        prepMinutes: 10,
+        servings: 4,
+        ingredients: [],
+        prepSteps: ['Passo 1', 'Passo 2', 'Passo 3'],
+      );
+      final json = recipe.toJson();
+      final restored = Recipe.fromJson(json);
+      expect(restored.prepSteps, ['Passo 1', 'Passo 2', 'Passo 3']);
+    });
+
+    test('fromJson handles missing prepSteps gracefully', () {
+      final json = {
+        'id': 'test',
+        'name': 'Test',
+        'proteinId': 'frango',
+        'type': 'carne',
+        'complexity': 1,
+        'prepMinutes': 10,
+        'servings': 4,
+        'ingredients': <Map<String, dynamic>>[],
+      };
+      final recipe = Recipe.fromJson(json);
+      expect(recipe.prepSteps, isEmpty);
+    });
+
+    test('toJson omits prepSteps when empty', () {
+      const recipe = Recipe(
+        id: 'test',
+        name: 'Test',
+        proteinId: 'frango',
+        type: RecipeType.carne,
+        complexity: 1,
+        prepMinutes: 10,
+        servings: 4,
+        ingredients: [],
+      );
+      final json = recipe.toJson();
+      expect(json.containsKey('prepSteps'), isFalse);
+    });
+  });
 }

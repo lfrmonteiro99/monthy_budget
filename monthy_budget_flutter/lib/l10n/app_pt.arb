@@ -3406,9 +3406,26 @@
     "@mealWeeklySummary": {
         "description": "Weekly nutrition summary header"
     },
-    "mealBatchPrepGuide": "Guia de Preparação",
+    "mealBatchPrepGuide": "Cozinha em Lote",
     "@mealBatchPrepGuide": {
         "description": "Batch cooking prep guide button"
+    },
+    "mealViewPrepGuide": "Preparação",
+    "@mealViewPrepGuide": {
+        "description": "Per-meal preparation guide button"
+    },
+    "mealPrepGuideTitle": "Como Preparar",
+    "@mealPrepGuideTitle": {
+        "description": "Title for the per-meal preparation guide sheet"
+    },
+    "mealPrepTime": "Tempo: {minutes} min",
+    "@mealPrepTime": {
+        "description": "Prep time label in guide",
+        "placeholders": {
+            "minutes": {
+                "type": "String"
+            }
+        }
     },
     "mealBatchTotalTime": "Tempo estimado: {time}",
     "@mealBatchTotalTime": {

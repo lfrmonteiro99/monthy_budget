@@ -1435,7 +1435,17 @@
     "mealLeftover": "Leftover",
     "mealLeftoverIdea": "Transform idea",
     "mealWeeklySummary": "Weekly Nutrition",
-    "mealBatchPrepGuide": "Prep Guide",
+    "mealBatchPrepGuide": "Batch Cooking",
+    "mealViewPrepGuide": "How to Prepare",
+    "mealPrepGuideTitle": "How to Prepare",
+    "mealPrepTime": "Time: {minutes} min",
+    "@mealPrepTime": {
+        "placeholders": {
+            "minutes": {
+                "type": "String"
+            }
+        }
+    },
     "mealBatchTotalTime": "Estimated time: {time}",
     "@mealBatchTotalTime": {
         "placeholders": {

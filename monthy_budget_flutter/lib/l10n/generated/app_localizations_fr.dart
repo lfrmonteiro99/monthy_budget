@@ -2630,7 +2630,7 @@ class SFr extends S {
   String get mealWeeklySummary => 'Nutrition Hebdomadaire';
 
   @override
-  String get mealBatchPrepGuide => 'Guide de Préparation';
+  String get mealBatchPrepGuide => 'Cuisine en Lot';
 
   @override
   String mealBatchTotalTime(String time) {
@@ -2639,6 +2639,17 @@ class SFr extends S {
 
   @override
   String get mealBatchParallelTips => 'Astuces de cuisson parallèle';
+
+  @override
+  String get mealViewPrepGuide => 'Préparation';
+
+  @override
+  String get mealPrepGuideTitle => 'Comment Préparer';
+
+  @override
+  String mealPrepTime(String minutes) {
+    return 'Temps: $minutes min';
+  }
 
   @override
   String get mealFeedbackLike => 'J\'aime';
