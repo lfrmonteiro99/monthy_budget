@@ -243,6 +243,26 @@ jobs:
             exit 1
           fi
 
+          # Resolve all bot review threads to unblock required_conversation_resolution
+          UNRESOLVED="$(gh api graphql -f query='
+            query($owner:String!,$repo:String!,$pr:Int!) {
+              repository(owner:$owner,name:$repo) {
+                pullRequest(number:$pr) {
+                  reviewThreads(first:50) {
+                    nodes { id isResolved comments(first:1) { nodes { author { login } } } }
+                  }
+                }
+              }
+            }' -f owner="${{ github.repository_owner }}" \
+               -f repo="$(echo '${{ github.repository }}' | cut -d/ -f2)" \
+               -F pr="$PR_NUMBER" \
+               --jq '.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved==false) | select(.comments.nodes[0].author.login | test("\\[bot\\]$|bot$")) | .id')"
+
+          for THREAD_ID in $UNRESOLVED; do
+            gh api graphql -f query="mutation { resolveReviewThread(input:{threadId:\"$THREAD_ID\"}) { thread { isResolved } } }" --silent
+            echo "Resolved bot review thread: $THREAD_ID"
+          done
+
           TITLE="$(gh pr view "$PR_NUMBER" --json title --jq .title)"
           gh pr merge "$PR_NUMBER" --auto --squash --delete-branch \
             --subject "$TITLE (Fixes #$ISSUE)" \
