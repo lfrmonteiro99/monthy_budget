@@ -1,8 +1,9 @@
 name: Release Tag
 
+# Triggers on push to main (works even when merge is done by GITHUB_TOKEN,
+# unlike pull_request events which are suppressed for Actions-created merges).
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches: [main]
 
 permissions:
@@ -10,44 +11,45 @@ permissions:
 
 jobs:
   tag-and-release:
-    if: >
-      github.event.pull_request.merged == true &&
-      startsWith(github.event.pull_request.title, 'chore(release):')
     runs-on: ubuntu-latest
     steps:
+      - name: Check if release commit
+        id: check
+        shell: bash
+        run: |
+          MSG="${{ github.event.head_commit.message }}"
+          if echo "$MSG" | grep -qP '^chore\(release\):.*v\d+\.\d+\.\d+'; then
+            TAG="$(echo "$MSG" | grep -oP 'v\d+\.\d+\.\d+' | head -n1)"
+            echo "is_release=true" >> "$GITHUB_OUTPUT"
+            echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+            echo "Detected release commit: $TAG"
+          else
+            echo "is_release=false" >> "$GITHUB_OUTPUT"
+            echo "Not a release commit, skipping."
+          fi
+
       - uses: actions/checkout@v4
+        if: steps.check.outputs.is_release == 'true'
         with:
           fetch-depth: 0
 
-      - name: Extract version from PR title
-        id: version
+      - name: Verify tag does not exist
+        if: steps.check.outputs.is_release == 'true'
         shell: bash
         run: |
-          set -euo pipefail
-          TITLE="${{ github.event.pull_request.title }}"
-          # Extract tag from "chore(release): vYYYY.M.PATCH"
-          TAG="$(echo "$TITLE" | grep -oP 'v\d+\.\d+\.\d+' | head -n1)"
-          if [[ -z "$TAG" ]]; then
-            echo "Could not extract version tag from PR title: $TITLE"
-            exit 1
-          fi
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "Resolved tag: $TAG"
-
-      - name: Check tag does not exist
-        shell: bash
-        run: |
-          if git rev-parse -q --verify "refs/tags/${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
-            echo "Tag ${{ steps.version.outputs.tag }} already exists, skipping."
-            exit 0
+          TAG="${{ steps.check.outputs.tag }}"
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists, skipping."
+            echo "skip=true" >> "$GITHUB_ENV"
           fi
 
       - name: Extract changelog section
+        if: steps.check.outputs.is_release == 'true' && env.skip != 'true'
         id: changelog
         shell: bash
         run: |
           set -euo pipefail
-          TAG="${{ steps.version.outputs.tag }}"
+          TAG="${{ steps.check.outputs.tag }}"
           VERSION="${TAG#v}"
           CHANGELOG="monthy_budget_flutter/CHANGELOG.md"
 
@@ -56,7 +58,6 @@ jobs:
             exit 0
           fi
 
-          # Extract section between this version header and the next
           BODY="$(awk -v ver="$VERSION" '
             /^## / {
               if (found) exit
@@ -70,7 +71,6 @@ jobs:
             BODY="Release $TAG"
           fi
 
-          # Multi-line output
           {
             echo "body<<CHANGELOG_EOF"
             echo "$BODY"
@@ -78,13 +78,14 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Create tag and GitHub Release
+        if: steps.check.outputs.is_release == 'true' && env.skip != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          TAG="${{ steps.version.outputs.tag }}"
-          SHA="${{ github.event.pull_request.merge_commit_sha }}"
+          TAG="${{ steps.check.outputs.tag }}"
+          SHA="${{ github.sha }}"
 
           git tag "$TAG" "$SHA"
           git push origin "$TAG"
