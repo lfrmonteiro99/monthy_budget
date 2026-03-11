@@ -204,14 +204,32 @@ class AiCoachService {
     required BudgetSummary summary,
     required PurchaseHistory purchaseHistory,
     int maxTokens = 1000,
+    CoachMode? effectiveMode,
+    String? lastMicroAction,
+    DateTime? lastMicroActionDate,
   }) async {
     final safeMessage = sanitizeUserInput(userMessage);
-    final groundedUserMessage = _buildGroundedUserMessage(
+    var groundedUserMessage = _buildGroundedUserMessage(
       userMessage: safeMessage,
       settings: settings,
       summary: summary,
       purchaseHistory: purchaseHistory,
     );
+
+    // Feature #5: Inject micro-action follow-up context for Pro mode
+    if (effectiveMode == CoachMode.pro &&
+        lastMicroAction != null &&
+        history.isEmpty) {
+      final dateStr = lastMicroActionDate != null
+          ? '${lastMicroActionDate.day.toString().padLeft(2, '0')}/${lastMicroActionDate.month.toString().padLeft(2, '0')}/${lastMicroActionDate.year}'
+          : '';
+      groundedUserMessage =
+          '[Contexto de continuidade] Na última sessão Pro ($dateStr), '
+          'a micro-ação sugerida foi: "$lastMicroAction". '
+          'Pergunta ao utilizador se conseguiu cumprir antes de prosseguir com a resposta.\n\n'
+          '$groundedUserMessage';
+    }
+
     final messages = buildBoundedChatMessages(
       history: history,
       userMessage: groundedUserMessage,
@@ -220,6 +238,7 @@ class AiCoachService {
         settings: settings,
         summary: summary,
         purchaseHistory: purchaseHistory,
+        effectiveMode: effectiveMode,
       ),
     );
     return _requestChatCompletion(
@@ -678,6 +697,7 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
     required AppSettings settings,
     required BudgetSummary summary,
     required PurchaseHistory purchaseHistory,
+    CoachMode? effectiveMode,
   }) {
     final stress = calculateStressIndex(
       summary: summary,
@@ -693,7 +713,9 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
         ? (summary.totalExpenses / summary.totalNetWithMeal * 100)
         : 0.0;
     final savingsRate = summary.savingsRate * 100;
-    return 'Es um coach financeiro pessoal para utilizadores portugueses. '
+
+    final buf = StringBuffer();
+    buf.write('Es um coach financeiro pessoal para utilizadores portugueses. '
         'Responde sempre em portugues europeu, de forma direta e pratica, '
         'respondendo primeiro a pergunta exata do utilizador. '
         'Evita formatos fixos (nao responder em "3 partes" a menos que seja pedido). '
@@ -707,7 +729,31 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
         '- Poupanca mensal: ${summary.netLiquidity.toStringAsFixed(2)} EUR (${savingsRate.toStringAsFixed(1)}%)\n'
         '- Orcamento alimentar: ${foodBudget.toStringAsFixed(2)} EUR\n'
         '- Gasto alimentar atual: ${foodSpent.toStringAsFixed(2)} EUR\n'
-        '- Indice de tranquilidade: ${stress.score}/100';
+        '- Indice de tranquilidade: ${stress.score}/100');
+
+    // Feature #4: SESSION_INSIGHT delimiter instruction (all modes)
+    buf.write('\n\n'
+        'No final de cada resposta substantiva (não saudações), inclui um resumo breve delimitado:\n'
+        '[SESSION_INSIGHT]tópico breve|valor monetário se aplicável[/SESSION_INSIGHT]\n\n'
+        'Exemplos:\n'
+        '[SESSION_INSIGHT]otimização de despesas alimentação|€47/mês[/SESSION_INSIGHT]\n'
+        '[SESSION_INSIGHT]análise de subscrições|€23/mês[/SESSION_INSIGHT]\n'
+        '[SESSION_INSIGHT]estratégia de poupança para entrada de casa|[/SESSION_INSIGHT]\n\n'
+        'Se não houver valor monetário concreto, deixa o segundo campo vazio.\n'
+        'Não incluas este delimitador em saudações ou respostas curtas.');
+
+    // Feature #5: MICRO_ACTION delimiter instruction (Pro only)
+    if (effectiveMode == CoachMode.pro) {
+      buf.write('\n\n'
+          'Quando dás um conselho prático, termina a resposta com uma micro-ação concreta delimitada:\n'
+          '[MICRO_ACTION]ação específica com valor em EUR e prazo[/MICRO_ACTION]\n\n'
+          'Exemplos:\n'
+          '[MICRO_ACTION]Move €15 do orçamento de jantar fora para a poupança de emergência esta semana[/MICRO_ACTION]\n'
+          '[MICRO_ACTION]Cancela a subscrição de streaming que não usas há 2 meses (poupança: €12/mês)[/MICRO_ACTION]\n\n'
+          'Sê específico: inclui valores, prazos e ações concretas. Não incluas micro-ações para saudações.');
+    }
+
+    return buf.toString();
   }
 
   static List<Map<String, String>> buildBoundedChatMessages({

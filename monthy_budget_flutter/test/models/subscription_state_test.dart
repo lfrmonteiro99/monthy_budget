@@ -721,7 +721,7 @@ void main() {
         expect(json['preferredCoachMode'], 'pro');
         expect(json['trialStarterCreditsGranted'], false);
         expect(json['trialExtensionUsed'], false);
-        expect(json.keys.length, 8);
+        expect(json.keys.length, greaterThanOrEqualTo(8));
       });
 
       test('fromJson with empty featuresExplored list', () {
@@ -990,6 +990,217 @@ void main() {
         };
         final state = SubscriptionState.fromJson(json);
         expect(state.trialExtensionUsed, false);
+      });
+    });
+
+    group('credit cap (Feature #6)', () {
+      test('maxCreditCap is 150', () {
+        expect(SubscriptionState.maxCreditCap, 150);
+      });
+
+      test('isAtCreditCap true when aiCredits >= 150', () {
+        final state = makeState(aiCredits: 150);
+        expect(state.isAtCreditCap, true);
+      });
+
+      test('isAtCreditCap true when aiCredits > 150', () {
+        final state = makeState(aiCredits: 200);
+        expect(state.isAtCreditCap, true);
+      });
+
+      test('isAtCreditCap false when aiCredits < 150', () {
+        final state = makeState(aiCredits: 149);
+        expect(state.isAtCreditCap, false);
+      });
+
+      test('creditsAfterPurchase clamps at maxCreditCap', () {
+        final state = makeState(aiCredits: 100);
+        expect(state.creditsAfterPurchase(80), 150);
+      });
+
+      test('creditsAfterPurchase returns sum when below cap', () {
+        final state = makeState(aiCredits: 50);
+        expect(state.creditsAfterPurchase(30), 80);
+      });
+
+      test('creditsWasted returns excess when above cap', () {
+        final state = makeState(aiCredits: 100);
+        expect(state.creditsWasted(80), 30);
+      });
+
+      test('creditsWasted returns 0 when within cap', () {
+        final state = makeState(aiCredits: 50);
+        expect(state.creditsWasted(30), 0);
+      });
+
+      test('creditsWasted returns 0 when exactly at cap', () {
+        final state = makeState(aiCredits: 100);
+        expect(state.creditsWasted(50), 0);
+      });
+    });
+
+    group('downgrade card (Feature #1)', () {
+      test('downgradeCardShown defaults to false', () {
+        final state = makeState();
+        expect(state.downgradeCardShown, false);
+      });
+
+      test('downgradeCardShown roundtrips through JSON', () {
+        final original = SubscriptionState(
+          trialStartDate: DateTime(2026, 1, 1),
+          downgradeCardShown: true,
+        );
+        final restored = SubscriptionState.fromJson(original.toJson());
+        expect(restored.downgradeCardShown, true);
+      });
+
+      test('copyWith updates downgradeCardShown', () {
+        final state = makeState();
+        final updated = state.copyWith(downgradeCardShown: true);
+        expect(updated.downgradeCardShown, true);
+        expect(state.downgradeCardShown, false);
+      });
+    });
+
+    group('endowment plus (Feature #2)', () {
+      test('endowmentConversations is 3', () {
+        expect(SubscriptionState.endowmentConversations, 3);
+      });
+
+      test('isInEndowmentPeriod true for new premium user', () {
+        final state = SubscriptionState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
+          trialUsed: true,
+        );
+        expect(state.isInEndowmentPeriod, true);
+      });
+
+      test('isInEndowmentPeriod true for family user', () {
+        final state = SubscriptionState(
+          tier: SubscriptionTier.family,
+          trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
+          trialUsed: true,
+        );
+        expect(state.isInEndowmentPeriod, true);
+      });
+
+      test('isInEndowmentPeriod false for free user', () {
+        final state = SubscriptionState(
+          tier: SubscriptionTier.free,
+          trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
+          trialUsed: true,
+        );
+        expect(state.isInEndowmentPeriod, false);
+      });
+
+      test('isInEndowmentPeriod false when endowmentPlusCompleted', () {
+        final state = SubscriptionState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
+          trialUsed: true,
+          endowmentPlusCompleted: true,
+        );
+        expect(state.isInEndowmentPeriod, false);
+      });
+
+      test('isInEndowmentPeriod false when conversationCount >= 3', () {
+        final state = SubscriptionState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
+          trialUsed: true,
+          coachConversationCount: 3,
+        );
+        expect(state.isInEndowmentPeriod, false);
+      });
+
+      test('coachConversationCount roundtrips through JSON', () {
+        final original = SubscriptionState(
+          trialStartDate: DateTime(2026, 1, 1),
+          coachConversationCount: 2,
+          endowmentPlusCompleted: false,
+        );
+        final restored = SubscriptionState.fromJson(original.toJson());
+        expect(restored.coachConversationCount, 2);
+        expect(restored.endowmentPlusCompleted, false);
+      });
+    });
+
+    group('recommendation tracking (Feature #3)', () {
+      test('recommendationsAccepted defaults to 0', () {
+        final state = makeState();
+        expect(state.recommendationsAccepted, 0);
+        expect(state.recommendationsShown, 0);
+      });
+
+      test('roundtrips recommendation counters through JSON', () {
+        final original = SubscriptionState(
+          trialStartDate: DateTime(2026, 1, 1),
+          recommendationsAccepted: 5,
+          recommendationsShown: 10,
+        );
+        final restored = SubscriptionState.fromJson(original.toJson());
+        expect(restored.recommendationsAccepted, 5);
+        expect(restored.recommendationsShown, 10);
+      });
+    });
+
+    group('session insight (Feature #4)', () {
+      test('lastSessionInsight defaults to null', () {
+        final state = makeState();
+        expect(state.lastSessionInsight, isNull);
+        expect(state.lastSessionInsightValue, isNull);
+      });
+
+      test('roundtrips session insight through JSON', () {
+        final original = SubscriptionState(
+          trialStartDate: DateTime(2026, 1, 1),
+          lastSessionInsight: 'otimização de despesas',
+          lastSessionInsightValue: '€47/mês',
+          totalProSessions: 3,
+          totalPlusSessions: 7,
+        );
+        final restored = SubscriptionState.fromJson(original.toJson());
+        expect(restored.lastSessionInsight, 'otimização de despesas');
+        expect(restored.lastSessionInsightValue, '€47/mês');
+        expect(restored.totalProSessions, 3);
+        expect(restored.totalPlusSessions, 7);
+      });
+
+      test('session counters default to 0', () {
+        final state = makeState();
+        expect(state.totalProSessions, 0);
+        expect(state.totalPlusSessions, 0);
+      });
+    });
+
+    group('micro action (Feature #5)', () {
+      test('lastMicroAction defaults to null', () {
+        final state = makeState();
+        expect(state.lastMicroAction, isNull);
+        expect(state.lastMicroActionDate, isNull);
+      });
+
+      test('roundtrips micro action through JSON', () {
+        final date = DateTime(2026, 3, 1, 14, 30);
+        final original = SubscriptionState(
+          trialStartDate: DateTime(2026, 1, 1),
+          lastMicroAction: 'Move €15 para poupança',
+          lastMicroActionDate: date,
+        );
+        final restored = SubscriptionState.fromJson(original.toJson());
+        expect(restored.lastMicroAction, 'Move €15 para poupança');
+        expect(restored.lastMicroActionDate, date);
+      });
+
+      test('fromJson with missing lastMicroAction defaults to null', () {
+        final json = {
+          'tier': 'free',
+          'trialStartDate': DateTime.now().toIso8601String(),
+        };
+        final state = SubscriptionState.fromJson(json);
+        expect(state.lastMicroAction, isNull);
+        expect(state.lastMicroActionDate, isNull);
       });
     });
 

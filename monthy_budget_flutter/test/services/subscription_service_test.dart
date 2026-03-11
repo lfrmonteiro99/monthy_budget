@@ -357,6 +357,304 @@ void main() {
       });
     });
 
+    group('credit cap (Feature #6)', () {
+      test('addAiCredits caps at 150', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          aiCredits: 100,
+        );
+
+        final updated = await service.addAiCredits(state, 100);
+        expect(updated.aiCredits, 150);
+      });
+
+      test('addAiCredits resets downgradeCardShown', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          aiCredits: 10,
+          downgradeCardShown: true,
+        );
+
+        final updated = await service.addAiCredits(state, 5);
+        expect(updated.downgradeCardShown, false);
+      });
+
+      test('addAiCredits does not exceed cap from zero', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          aiCredits: 0,
+        );
+
+        final updated = await service.addAiCredits(state, 200);
+        expect(updated.aiCredits, 150);
+      });
+
+      test('addAiCredits allows exact cap', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          aiCredits: 100,
+        );
+
+        final updated = await service.addAiCredits(state, 50);
+        expect(updated.aiCredits, 150);
+      });
+    });
+
+    group('markDowngradeCardShown (Feature #1)', () {
+      test('sets downgradeCardShown to true', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+        );
+
+        final updated = await service.markDowngradeCardShown(state);
+        expect(updated.downgradeCardShown, true);
+      });
+
+      test('persists the change', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+        );
+
+        await service.markDowngradeCardShown(state);
+
+        final prefs = await SharedPreferences.getInstance();
+        final restored = SubscriptionState.fromJsonString(
+          prefs.getString('subscription_state')!,
+        );
+        expect(restored.downgradeCardShown, true);
+      });
+    });
+
+    group('incrementConversationCount (Feature #2)', () {
+      test('increments coachConversationCount', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          coachConversationCount: 0,
+        );
+
+        final updated = await service.incrementConversationCount(state);
+        expect(updated.coachConversationCount, 1);
+        expect(updated.endowmentPlusCompleted, false);
+      });
+
+      test('sets endowmentPlusCompleted when reaching 3', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          coachConversationCount: 2,
+        );
+
+        final updated = await service.incrementConversationCount(state);
+        expect(updated.coachConversationCount, 3);
+        expect(updated.endowmentPlusCompleted, true);
+      });
+
+      test('preserves endowmentPlusCompleted if already true', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          coachConversationCount: 5,
+          endowmentPlusCompleted: true,
+        );
+
+        final updated = await service.incrementConversationCount(state);
+        expect(updated.coachConversationCount, 6);
+        expect(updated.endowmentPlusCompleted, true);
+      });
+    });
+
+    group('endowment bypass in resolveAndConsumeCoachMode (Feature #2)', () {
+      test('free Plus during endowment period', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
+          trialUsed: true,
+          aiCredits: 0,
+          coachConversationCount: 0,
+          endowmentPlusCompleted: false,
+        );
+
+        final result = await service.resolveAndConsumeCoachMode(
+          state,
+          requestedMode: CoachMode.plus,
+        );
+        expect(result.resolution.effectiveMode, CoachMode.plus);
+        expect(result.resolution.estimatedCreditCost, 0);
+        expect(result.state.aiCredits, 0);
+      });
+
+      test('no bypass for Pro during endowment', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
+          trialUsed: true,
+          aiCredits: 1,
+          coachConversationCount: 0,
+          endowmentPlusCompleted: false,
+        );
+
+        final result = await service.resolveAndConsumeCoachMode(
+          state,
+          requestedMode: CoachMode.pro,
+        );
+        expect(result.resolution.effectiveMode, CoachMode.eco);
+        expect(result.resolution.usedFallback, true);
+      });
+    });
+
+    group('trackRecommendation (Feature #3)', () {
+      test('increments shown and accepted when accepted', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          recommendationsShown: 5,
+          recommendationsAccepted: 2,
+        );
+
+        final updated =
+            await service.trackRecommendation(state, accepted: true);
+        expect(updated.recommendationsShown, 6);
+        expect(updated.recommendationsAccepted, 3);
+      });
+
+      test('increments shown only when not accepted', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          recommendationsShown: 5,
+          recommendationsAccepted: 2,
+        );
+
+        final updated =
+            await service.trackRecommendation(state, accepted: false);
+        expect(updated.recommendationsShown, 6);
+        expect(updated.recommendationsAccepted, 2);
+      });
+    });
+
+    group('session insight (Feature #4)', () {
+      test('setSessionInsight stores insight and value', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+        );
+
+        final updated = await service.setSessionInsight(
+            state, 'otimização de despesas', '€47/mês');
+        expect(updated.lastSessionInsight, 'otimização de despesas');
+        expect(updated.lastSessionInsightValue, '€47/mês');
+      });
+
+      test('setSessionInsight with null value', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+        );
+
+        final updated = await service.setSessionInsight(
+            state, 'estratégia poupança', null);
+        expect(updated.lastSessionInsight, 'estratégia poupança');
+        expect(updated.lastSessionInsightValue, isNull);
+      });
+
+      test('trackSessionCompleted increments pro counter', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          totalProSessions: 2,
+          totalPlusSessions: 3,
+        );
+
+        final updated =
+            await service.trackSessionCompleted(state, CoachMode.pro);
+        expect(updated.totalProSessions, 3);
+        expect(updated.totalPlusSessions, 3);
+      });
+
+      test('trackSessionCompleted increments plus counter', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          totalProSessions: 2,
+          totalPlusSessions: 3,
+        );
+
+        final updated =
+            await service.trackSessionCompleted(state, CoachMode.plus);
+        expect(updated.totalProSessions, 2);
+        expect(updated.totalPlusSessions, 4);
+      });
+
+      test('trackSessionCompleted does not increment for eco', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          totalProSessions: 2,
+          totalPlusSessions: 3,
+        );
+
+        final updated =
+            await service.trackSessionCompleted(state, CoachMode.eco);
+        expect(updated.totalProSessions, 2);
+        expect(updated.totalPlusSessions, 3);
+      });
+    });
+
+    group('micro action (Feature #5)', () {
+      test('setLastMicroAction stores action and date', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+        );
+
+        final updated =
+            await service.setLastMicroAction(state, 'Move €15 para poupança');
+        expect(updated.lastMicroAction, 'Move €15 para poupança');
+        expect(updated.lastMicroActionDate, isNotNull);
+      });
+
+      test('clearLastMicroAction clears both fields', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          trialStartDate: DateTime.now(),
+          lastMicroAction: 'Some action',
+          lastMicroActionDate: DateTime.now(),
+        );
+
+        final updated = await service.clearLastMicroAction(state);
+        expect(updated.lastMicroAction, isNull);
+        expect(updated.lastMicroActionDate, isNull);
+      });
+
+      test('clearLastMicroAction preserves other fields', () async {
+        SharedPreferences.setMockInitialValues({});
+        final state = SubscriptionState(
+          tier: SubscriptionTier.premium,
+          trialStartDate: DateTime(2026, 1, 1),
+          trialUsed: true,
+          aiCredits: 50,
+          lastMicroAction: 'Some action',
+          lastMicroActionDate: DateTime.now(),
+          totalProSessions: 5,
+        );
+
+        final updated = await service.clearLastMicroAction(state);
+        expect(updated.tier, SubscriptionTier.premium);
+        expect(updated.aiCredits, 50);
+        expect(updated.totalProSessions, 5);
+        expect(updated.lastMicroAction, isNull);
+      });
+    });
+
     group('featureLabel()', () {
       test('returns correct labels for all known features', () {
         expect(SubscriptionService.featureLabel('dashboard'),
