@@ -10,6 +10,8 @@ All notable changes to this project will be documented in this file.
 
 - V2026.3.11 (Fixes #391) ([object], [object])
 
+- V2026.3.12 (Fixes #397) ([object], [object])
+
 
 ### Other Changes
 
