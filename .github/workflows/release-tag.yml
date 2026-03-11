@@ -1,7 +1,8 @@
 name: Release Tag
 
-# Triggers on push to main (works even when merge is done by GITHUB_TOKEN,
-# unlike pull_request events which are suppressed for Actions-created merges).
+# Fallback: creates tag + release when a release commit is pushed to main
+# by a human (not GITHUB_TOKEN). For automated merges via agent-delivery,
+# that workflow handles tagging, building, and uploading artifacts directly.
 on:
   push:
     branches: [main]
@@ -12,10 +13,6 @@ permissions:
 jobs:
   tag-and-release:
     runs-on: ubuntu-latest
-    outputs:
-      is_release: ${{ steps.check.outputs.is_release }}
-      tag: ${{ steps.check.outputs.tag }}
-      skip: ${{ env.skip }}
     steps:
       - name: Check if release commit
         id: check
@@ -100,118 +97,3 @@ jobs:
             --notes "${{ steps.changelog.outputs.body }}"
 
           echo "✅ Created tag $TAG and GitHub Release"
-
-  # Build APK/AAB and attach to the GitHub Release.
-  # This runs inside the same workflow because tag pushes done with
-  # GITHUB_TOKEN do NOT trigger other workflows (GitHub anti-recursion),
-  # so flutter-ci.yml never sees the v* tag push.
-  build:
-    needs: tag-and-release
-    if: needs.tag-and-release.outputs.is_release == 'true' && needs.tag-and-release.outputs.skip != 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    defaults:
-      run:
-        working-directory: monthy_budget_flutter
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.41.2'
-          channel: stable
-          cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Generate l10n
-        run: flutter gen-l10n
-
-      - name: Validate signing secrets
-        run: |
-          missing=""
-          [ -z "${KEYSTORE_BASE64}" ] && missing="${missing} KEYSTORE_BASE64"
-          [ -z "${KEYSTORE_PASSWORD}" ] && missing="${missing} KEYSTORE_PASSWORD"
-          [ -z "${KEY_ALIAS}" ] && missing="${missing} KEY_ALIAS"
-          [ -z "${KEY_PASSWORD}" ] && missing="${missing} KEY_PASSWORD"
-          if [ -n "$missing" ]; then
-            echo "::error::Missing signing secrets:${missing}. Go to repo Settings > Secrets and variables > Actions and add them."
-            exit 1
-          fi
-        env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-
-      - name: Decode keystore
-        run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/keystore.jks
-          if [ ! -s android/keystore.jks ]; then
-            echo "::error::Decoded keystore is empty - KEYSTORE_BASE64 secret may be invalid."
-            exit 1
-          fi
-          echo "Keystore decoded: $(wc -c < android/keystore.jks) bytes"
-
-      - name: Build APK
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: |
-          flutter build apk --release \
-            --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
-            --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
-
-      - name: Build AAB
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: |
-          flutter build appbundle --release \
-            --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
-            --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
-
-      - name: Upload artifacts to GitHub Release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          TAG="${{ needs.tag-and-release.outputs.tag }}"
-          APK="build/app/outputs/flutter-apk/app-release.apk"
-          AAB="$(ls build/app/outputs/bundle/release/*.aab 2>/dev/null | head -n1)"
-
-          if [ -f "$APK" ]; then
-            gh release upload "$TAG" "$APK" --clobber
-            echo "✅ Uploaded APK to release $TAG"
-          else
-            echo "::warning::APK not found at $APK"
-          fi
-
-          if [ -n "$AAB" ] && [ -f "$AAB" ]; then
-            gh release upload "$TAG" "$AAB" --clobber
-            echo "✅ Uploaded AAB to release $TAG"
-          else
-            echo "::warning::AAB not found"
-          fi
-
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: gestao-mensal-apk
-          path: monthy_budget_flutter/build/app/outputs/flutter-apk/app-release.apk
-          retention-days: 30
-
-      - name: Upload AAB artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: gestao-mensal-aab
-          path: monthy_budget_flutter/build/app/outputs/bundle/release/*.aab
-          retention-days: 30
