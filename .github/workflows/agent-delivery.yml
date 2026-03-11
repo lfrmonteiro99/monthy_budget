@@ -275,22 +275,32 @@ jobs:
           set -euo pipefail
           BRANCH='${{ needs.prepare.outputs.branch_name }}'
 
-          # Detect release commit: look at the latest commit on the branch
-          LAST_MSG="$(git log -1 --pretty=%s)"
+          # Detect release version from branch name or commit messages
           TAG=""
 
           # Try branch name first (release/vYYYY.M.PATCH)
           TAG="$(echo "$BRANCH" | grep -oP 'v\d+\.\d+\.\d+' || true)"
 
-          # Fallback: extract from commit messages (chore(release): vX.Y.Z)
+          # Fallback: search recent commits for chore(release): vX.Y.Z
           if [[ -z "$TAG" ]]; then
-            TAG="$(git log origin/$DEFAULT_BRANCH..HEAD --pretty=%s | grep -oP 'v\d+\.\d+\.\d+' | head -n1 || true)"
+            git fetch origin "$DEFAULT_BRANCH" --depth=1 || true
+            TAG="$(git log "origin/$DEFAULT_BRANCH..HEAD" --pretty=%s 2>/dev/null \
+              | grep -oP 'v\d+\.\d+\.\d+' | head -n1 || true)"
+          fi
+
+          # Last resort: search last 10 commits
+          if [[ -z "$TAG" ]]; then
+            TAG="$(git log -10 --pretty=%s \
+              | grep -P 'chore\(release\)' \
+              | grep -oP 'v\d+\.\d+\.\d+' | head -n1 || true)"
           fi
 
           if [[ -z "$TAG" ]]; then
             echo "No version tag found in branch name or commits, skipping."
             exit 0
           fi
+
+          echo "Detected release tag: $TAG"
 
           echo "Waiting for PR merge to complete..."
           PR_NUMBER="$(gh pr list --head "$BRANCH" --base "$DEFAULT_BRANCH" --state all --json number --jq '.[0].number // empty')"
