@@ -1,0 +1,97 @@
+name: Release Tag
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  tag-and-release:
+    if: >
+      github.event.pull_request.merged == true &&
+      startsWith(github.event.pull_request.title, 'chore(release):')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from PR title
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          TITLE="${{ github.event.pull_request.title }}"
+          # Extract tag from "chore(release): vYYYY.M.PATCH"
+          TAG="$(echo "$TITLE" | grep -oP 'v\d+\.\d+\.\d+' | head -n1)"
+          if [[ -z "$TAG" ]]; then
+            echo "Could not extract version tag from PR title: $TITLE"
+            exit 1
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Resolved tag: $TAG"
+
+      - name: Check tag does not exist
+        shell: bash
+        run: |
+          if git rev-parse -q --verify "refs/tags/${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
+            echo "Tag ${{ steps.version.outputs.tag }} already exists, skipping."
+            exit 0
+          fi
+
+      - name: Extract changelog section
+        id: changelog
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${{ steps.version.outputs.tag }}"
+          VERSION="${TAG#v}"
+          CHANGELOG="monthy_budget_flutter/CHANGELOG.md"
+
+          if [[ ! -f "$CHANGELOG" ]]; then
+            echo "body=Release $TAG" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Extract section between this version header and the next
+          BODY="$(awk -v ver="$VERSION" '
+            /^## / {
+              if (found) exit
+              if (index($0, ver)) found=1
+              next
+            }
+            found { print }
+          ' "$CHANGELOG")"
+
+          if [[ -z "$BODY" ]]; then
+            BODY="Release $TAG"
+          fi
+
+          # Multi-line output
+          {
+            echo "body<<CHANGELOG_EOF"
+            echo "$BODY"
+            echo "CHANGELOG_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create tag and GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${{ steps.version.outputs.tag }}"
+          SHA="${{ github.event.pull_request.merge_commit_sha }}"
+
+          git tag "$TAG" "$SHA"
+          git push origin "$TAG"
+
+          gh release create "$TAG" \
+            --target "$SHA" \
+            --title "$TAG" \
+            --notes "${{ steps.changelog.outputs.body }}"
+
+          echo "✅ Created tag $TAG and GitHub Release"
