@@ -4,9 +4,11 @@ import '../models/shopping_item.dart';
 import '../models/purchase_record.dart';
 import '../services/barcode_scan_service.dart';
 import '../theme/app_colors.dart';
+import '../utils/atcud_parser.dart';
 import '../utils/formatters.dart';
 import '../widgets/barcode_result_card.dart';
 import '../widgets/barcode_scan_sheet.dart';
+import '../widgets/receipt_scan_sheet.dart';
 import '../utils/shopping_grouping.dart';
 import '../onboarding/shopping_tour.dart';
 import '../widgets/shopping_group_toggle.dart';
@@ -376,6 +378,26 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     final barcode = await BarcodeScanSheet.show(context);
     if (barcode == null || !mounted) return;
 
+    // Detect invoice/receipt barcodes (ATCUD QR codes) and redirect
+    if (AtcudParser.isAtcudQrCode(barcode)) {
+      if (!mounted) return;
+      final l10n = S.of(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.barcodeInvoiceDetected),
+          duration: const Duration(seconds: 4),
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          action: SnackBarAction(
+            label: l10n.barcodeInvoiceAction,
+            onPressed: () => ReceiptScanSheet.show(context),
+          ),
+        ),
+      );
+      return;
+    }
+
     final service = widget.barcodeScanService ?? BarcodeScanService();
     final candidate = await service.lookup(barcode);
 
@@ -492,9 +514,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             icon: Icon(Icons.document_scanner,
                 color: AppColors.textSecondary(context)),
             tooltip: l10n.quickScanReceipt,
-            onPressed: () {
-              // TODO: implement scan receipt navigation
-            },
+            onPressed: () => ReceiptScanSheet.show(context),
           ),
           if (widget.onAddToShoppingList != null)
             IconButton(

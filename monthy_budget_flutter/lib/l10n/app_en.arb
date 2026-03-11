@@ -2176,6 +2176,8 @@
             }
         }
     },
+    "barcodeInvoiceDetected": "This is an invoice barcode, not a product",
+    "barcodeInvoiceAction": "Open Receipt Scanner",
     "quickAddTooltip": "Quick actions",
     "quickAddExpense": "Add expense",
     "quickAddShopping": "Add shopping item",
