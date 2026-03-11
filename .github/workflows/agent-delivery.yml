@@ -270,16 +270,25 @@ jobs:
 
       - name: Create release tag and GitHub Release
         id: release-tag
-        if: startsWith(needs.prepare.outputs.branch_name, 'release/')
         shell: bash
         run: |
           set -euo pipefail
           BRANCH='${{ needs.prepare.outputs.branch_name }}'
 
-          # Extract version tag from branch name (release/vYYYY.M.PATCH)
+          # Detect release commit: look at the latest commit on the branch
+          LAST_MSG="$(git log -1 --pretty=%s)"
+          TAG=""
+
+          # Try branch name first (release/vYYYY.M.PATCH)
           TAG="$(echo "$BRANCH" | grep -oP 'v\d+\.\d+\.\d+' || true)"
+
+          # Fallback: extract from commit messages (chore(release): vX.Y.Z)
           if [[ -z "$TAG" ]]; then
-            echo "Could not extract version from branch: $BRANCH"
+            TAG="$(git log origin/$DEFAULT_BRANCH..HEAD --pretty=%s | grep -oP 'v\d+\.\d+\.\d+' | head -n1 || true)"
+          fi
+
+          if [[ -z "$TAG" ]]; then
+            echo "No version tag found in branch name or commits, skipping."
             exit 0
           fi
 
@@ -338,9 +347,7 @@ jobs:
 
   build-release:
     needs: [prepare, open-pr-and-merge]
-    if: >-
-      startsWith(needs.prepare.outputs.branch_name, 'release/')
-      && needs.open-pr-and-merge.outputs.release_tag != ''
+    if: needs.open-pr-and-merge.outputs.release_tag != ''
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:
