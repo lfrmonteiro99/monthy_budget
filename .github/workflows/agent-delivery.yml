@@ -245,3 +245,69 @@ jobs:
           gh pr merge "$PR_NUMBER" --auto --squash --delete-branch \
             --subject "$TITLE (Fixes #$ISSUE)" \
             --body "Fixes #$ISSUE"
+
+      - name: Create release tag and GitHub Release
+        if: startsWith(needs.prepare.outputs.branch_name, 'release/')
+        shell: bash
+        run: |
+          set -euo pipefail
+          BRANCH='${{ needs.prepare.outputs.branch_name }}'
+
+          # Extract version tag from branch name (release/vYYYY.M.PATCH)
+          TAG="$(echo "$BRANCH" | grep -oP 'v\d+\.\d+\.\d+' || true)"
+          if [[ -z "$TAG" ]]; then
+            echo "Could not extract version from branch: $BRANCH"
+            exit 0
+          fi
+
+          echo "Waiting for PR merge to complete..."
+          PR_NUMBER="$(gh pr list --head "$BRANCH" --base "$DEFAULT_BRANCH" --state all --json number --jq '.[0].number // empty')"
+          if [[ -z "$PR_NUMBER" ]]; then
+            echo "No PR found for $BRANCH"; exit 0
+          fi
+
+          for i in $(seq 1 30); do
+            STATE="$(gh pr view "$PR_NUMBER" --json state --jq .state)"
+            if [[ "$STATE" == "MERGED" ]]; then break; fi
+            echo "PR #$PR_NUMBER state: $STATE (attempt $i/30)"
+            sleep 10
+          done
+
+          if [[ "$STATE" != "MERGED" ]]; then
+            echo "PR #$PR_NUMBER did not merge in time, skipping tag."
+            exit 0
+          fi
+
+          MERGE_SHA="$(gh pr view "$PR_NUMBER" --json mergeCommit --jq .mergeCommit.oid)"
+          if [[ -z "$MERGE_SHA" ]]; then
+            echo "Could not get merge commit SHA"; exit 1
+          fi
+
+          # Check tag doesn't already exist
+          if git ls-remote --tags origin "refs/tags/$TAG" | grep -q .; then
+            echo "Tag $TAG already exists, skipping."
+            exit 0
+          fi
+
+          # Create tag on merge commit
+          git tag "$TAG" "$MERGE_SHA"
+          git push origin "$TAG"
+
+          # Extract changelog section
+          CHANGELOG="monthy_budget_flutter/CHANGELOG.md"
+          VERSION="${TAG#v}"
+          BODY="Release $TAG"
+          if [[ -f "$CHANGELOG" ]]; then
+            SECTION="$(awk -v ver="$VERSION" '
+              /^## / { if (found) exit; if (index($0, ver)) found=1; next }
+              found { print }
+            ' "$CHANGELOG")"
+            if [[ -n "$SECTION" ]]; then BODY="$SECTION"; fi
+          fi
+
+          gh release create "$TAG" \
+            --target "$MERGE_SHA" \
+            --title "$TAG" \
+            --notes "$BODY"
+
+          echo "✅ Created tag $TAG and GitHub Release"
