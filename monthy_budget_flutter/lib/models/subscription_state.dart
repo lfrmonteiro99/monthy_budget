@@ -77,6 +77,9 @@ const featureTierRequirements = <PremiumFeature, SubscriptionTier>{
 /// Persistent state for the user's subscription.
 class SubscriptionState {
   static const trialStarterCredits = 20;
+  static const maxCreditCap = 150;
+  static const endowmentConversations = 3;
+
   final SubscriptionTier tier;
   final DateTime trialStartDate;
   final bool trialUsed;
@@ -85,6 +88,27 @@ class SubscriptionState {
   final CoachMode preferredCoachMode;
   final bool trialStarterCreditsGranted;
   final bool trialExtensionUsed;
+
+  // Feature #1: Downgrade Transition Card
+  final bool downgradeCardShown;
+
+  // Feature #2: Endowment Plus
+  final int coachConversationCount;
+  final bool endowmentPlusCompleted;
+
+  // Feature #3: Smart Mode Recommendation
+  final int recommendationsAccepted;
+  final int recommendationsShown;
+
+  // Feature #4: ROI Framing
+  final String? lastSessionInsight;
+  final String? lastSessionInsightValue;
+  final int totalProSessions;
+  final int totalPlusSessions;
+
+  // Feature #5: Micro-Action Follow-up
+  final String? lastMicroAction;
+  final DateTime? lastMicroActionDate;
 
   static const trialDays = 21;
   static const trialExtensionDays = 7;
@@ -98,6 +122,17 @@ class SubscriptionState {
     this.preferredCoachMode = CoachMode.plus,
     this.trialStarterCreditsGranted = false,
     this.trialExtensionUsed = false,
+    this.downgradeCardShown = false,
+    this.coachConversationCount = 0,
+    this.endowmentPlusCompleted = false,
+    this.recommendationsAccepted = 0,
+    this.recommendationsShown = 0,
+    this.lastSessionInsight,
+    this.lastSessionInsightValue,
+    this.totalProSessions = 0,
+    this.totalPlusSessions = 0,
+    this.lastMicroAction,
+    this.lastMicroActionDate,
   });
 
   @override
@@ -110,12 +145,28 @@ class SubscriptionState {
           aiCredits == other.aiCredits &&
           preferredCoachMode == other.preferredCoachMode &&
           trialStarterCreditsGranted == other.trialStarterCreditsGranted &&
-          trialExtensionUsed == other.trialExtensionUsed;
+          trialExtensionUsed == other.trialExtensionUsed &&
+          downgradeCardShown == other.downgradeCardShown &&
+          coachConversationCount == other.coachConversationCount &&
+          endowmentPlusCompleted == other.endowmentPlusCompleted &&
+          recommendationsAccepted == other.recommendationsAccepted &&
+          recommendationsShown == other.recommendationsShown &&
+          lastSessionInsight == other.lastSessionInsight &&
+          lastSessionInsightValue == other.lastSessionInsightValue &&
+          totalProSessions == other.totalProSessions &&
+          totalPlusSessions == other.totalPlusSessions &&
+          lastMicroAction == other.lastMicroAction &&
+          lastMicroActionDate == other.lastMicroActionDate;
 
   @override
   int get hashCode => Object.hash(
         tier, trialStartDate, trialUsed, aiCredits,
         preferredCoachMode, trialStarterCreditsGranted, trialExtensionUsed,
+        downgradeCardShown, coachConversationCount, endowmentPlusCompleted,
+        recommendationsAccepted, recommendationsShown,
+        lastSessionInsight, lastSessionInsightValue,
+        totalProSessions, totalPlusSessions,
+        lastMicroAction, lastMicroActionDate,
       );
 
   /// Total trial days including any extension.
@@ -152,6 +203,21 @@ class SubscriptionState {
   /// Whether the user currently has family-level access (paid or trial).
   bool get hasFamilyAccess =>
       tier == SubscriptionTier.family || isTrialActive;
+
+  // Feature #6: Credit cap getters
+  bool get isAtCreditCap => aiCredits >= maxCreditCap;
+  int creditsAfterPurchase(int packCredits) =>
+      (aiCredits + packCredits).clamp(0, maxCreditCap);
+  int creditsWasted(int packCredits) {
+    final excess = (aiCredits + packCredits) - maxCreditCap;
+    return excess > 0 ? excess : 0;
+  }
+
+  // Feature #2: Endowment Plus getter
+  bool get isInEndowmentPeriod =>
+      !endowmentPlusCompleted &&
+      coachConversationCount < endowmentConversations &&
+      (tier == SubscriptionTier.premium || tier == SubscriptionTier.family);
 
   bool get hasAiCredits => aiCredits > 0;
 
@@ -242,6 +308,17 @@ class SubscriptionState {
     CoachMode? preferredCoachMode,
     bool? trialStarterCreditsGranted,
     bool? trialExtensionUsed,
+    bool? downgradeCardShown,
+    int? coachConversationCount,
+    bool? endowmentPlusCompleted,
+    int? recommendationsAccepted,
+    int? recommendationsShown,
+    String? lastSessionInsight,
+    String? lastSessionInsightValue,
+    int? totalProSessions,
+    int? totalPlusSessions,
+    String? lastMicroAction,
+    DateTime? lastMicroActionDate,
   }) {
     return SubscriptionState(
       tier: tier ?? this.tier,
@@ -253,6 +330,21 @@ class SubscriptionState {
       trialStarterCreditsGranted:
           trialStarterCreditsGranted ?? this.trialStarterCreditsGranted,
       trialExtensionUsed: trialExtensionUsed ?? this.trialExtensionUsed,
+      downgradeCardShown: downgradeCardShown ?? this.downgradeCardShown,
+      coachConversationCount:
+          coachConversationCount ?? this.coachConversationCount,
+      endowmentPlusCompleted:
+          endowmentPlusCompleted ?? this.endowmentPlusCompleted,
+      recommendationsAccepted:
+          recommendationsAccepted ?? this.recommendationsAccepted,
+      recommendationsShown: recommendationsShown ?? this.recommendationsShown,
+      lastSessionInsight: lastSessionInsight ?? this.lastSessionInsight,
+      lastSessionInsightValue:
+          lastSessionInsightValue ?? this.lastSessionInsightValue,
+      totalProSessions: totalProSessions ?? this.totalProSessions,
+      totalPlusSessions: totalPlusSessions ?? this.totalPlusSessions,
+      lastMicroAction: lastMicroAction ?? this.lastMicroAction,
+      lastMicroActionDate: lastMicroActionDate ?? this.lastMicroActionDate,
     );
   }
 
@@ -265,6 +357,19 @@ class SubscriptionState {
         'preferredCoachMode': preferredCoachMode.name,
         'trialStarterCreditsGranted': trialStarterCreditsGranted,
         'trialExtensionUsed': trialExtensionUsed,
+        'downgradeCardShown': downgradeCardShown,
+        'coachConversationCount': coachConversationCount,
+        'endowmentPlusCompleted': endowmentPlusCompleted,
+        'recommendationsAccepted': recommendationsAccepted,
+        'recommendationsShown': recommendationsShown,
+        if (lastSessionInsight != null) 'lastSessionInsight': lastSessionInsight,
+        if (lastSessionInsightValue != null)
+          'lastSessionInsightValue': lastSessionInsightValue,
+        'totalProSessions': totalProSessions,
+        'totalPlusSessions': totalPlusSessions,
+        if (lastMicroAction != null) 'lastMicroAction': lastMicroAction,
+        if (lastMicroActionDate != null)
+          'lastMicroActionDate': lastMicroActionDate!.toIso8601String(),
       };
 
   factory SubscriptionState.fromJson(Map<String, dynamic> json) {
@@ -290,6 +395,26 @@ class SubscriptionState {
           json['trialStarterCreditsGranted'] as bool? ?? false,
       trialExtensionUsed:
           json['trialExtensionUsed'] as bool? ?? false,
+      downgradeCardShown:
+          json['downgradeCardShown'] as bool? ?? false,
+      coachConversationCount:
+          (json['coachConversationCount'] as num?)?.toInt() ?? 0,
+      endowmentPlusCompleted:
+          json['endowmentPlusCompleted'] as bool? ?? false,
+      recommendationsAccepted:
+          (json['recommendationsAccepted'] as num?)?.toInt() ?? 0,
+      recommendationsShown:
+          (json['recommendationsShown'] as num?)?.toInt() ?? 0,
+      lastSessionInsight: json['lastSessionInsight'] as String?,
+      lastSessionInsightValue: json['lastSessionInsightValue'] as String?,
+      totalProSessions:
+          (json['totalProSessions'] as num?)?.toInt() ?? 0,
+      totalPlusSessions:
+          (json['totalPlusSessions'] as num?)?.toInt() ?? 0,
+      lastMicroAction: json['lastMicroAction'] as String?,
+      lastMicroActionDate: json['lastMicroActionDate'] != null
+          ? DateTime.parse(json['lastMicroActionDate'] as String)
+          : null,
     );
   }
 

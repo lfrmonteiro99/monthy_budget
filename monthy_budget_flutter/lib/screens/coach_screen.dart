@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
@@ -11,6 +13,7 @@ import '../services/ai_coach_service.dart';
 import '../services/subscription_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/calculations.dart';
+import '../utils/coach_mode_recommender.dart';
 import '../utils/rate_limiter.dart';
 import '../widgets/info_icon_button.dart';
 
@@ -60,6 +63,26 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   bool _ecoBannerCollapsed = false;
   final _rateLimiter = RateLimiter(minInterval: const Duration(seconds: 3));
 
+  // Feature #1: Downgrade transition card
+  bool _downgradeCardDismissed = false;
+
+  // Feature #2: Endowment Plus banner
+  bool _endowmentBannerDismissed = false;
+
+  // Feature #3: Smart mode recommendation
+  CoachMode? _pendingRecommendation;
+  bool _showRecommendation = false;
+  Timer? _recommendationTimer;
+
+  // Feature #5: Micro-action follow-up card
+  bool _microActionCardDismissed = false;
+
+  // Regex for parsing LLM delimiters
+  static final _sessionInsightRegex =
+      RegExp(r'\[SESSION_INSIGHT\](.*?)\|(.*?)\[/SESSION_INSIGHT\]');
+  static final _microActionRegex =
+      RegExp(r'\[MICRO_ACTION\](.*?)\[/MICRO_ACTION\]');
+
   List<String> _quickPrompts(S l10n) => [
     l10n.coachQuickPrompt1,
     l10n.coachQuickPrompt2,
@@ -103,6 +126,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     _composerController.dispose();
     _scrollController.dispose();
+    _recommendationTimer?.cancel();
     super.dispose();
   }
 
@@ -116,6 +140,54 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     if (!mounted) return;
     setState(() => _messages = messages);
     _scrollToBottom();
+  }
+
+  void _updateSubscription(SubscriptionState updated) {
+    setState(() => _subscription = updated);
+    widget.onSubscriptionChanged(updated);
+  }
+
+  /// Parse and strip [SESSION_INSIGHT] and [MICRO_ACTION] from LLM reply.
+  Future<String> _parseAndStoreDelimiters(
+      String reply, CoachMode effectiveMode) async {
+    var cleaned = reply;
+
+    // Feature #4: Parse SESSION_INSIGHT
+    final insightMatch = _sessionInsightRegex.firstMatch(cleaned);
+    if (insightMatch != null) {
+      final insight = insightMatch.group(1)?.trim() ?? '';
+      final value = insightMatch.group(2)?.trim();
+      if (insight.isNotEmpty) {
+        final updated = await _subscriptionService.setSessionInsight(
+          _subscription,
+          insight,
+          (value != null && value.isNotEmpty) ? value : null,
+        );
+        _updateSubscription(updated);
+      }
+      cleaned = cleaned.replaceAll(_sessionInsightRegex, '').trim();
+    }
+
+    // Feature #5: Parse MICRO_ACTION (Pro only)
+    if (effectiveMode == CoachMode.pro) {
+      final actionMatch = _microActionRegex.firstMatch(cleaned);
+      if (actionMatch != null) {
+        final action = actionMatch.group(1)?.trim() ?? '';
+        if (action.isNotEmpty) {
+          final updated =
+              await _subscriptionService.setLastMicroAction(_subscription, action);
+          _updateSubscription(updated);
+        }
+        cleaned = cleaned.replaceAll(_microActionRegex, '').trim();
+      }
+    }
+
+    // Feature #4: Track session completed
+    final tracked =
+        await _subscriptionService.trackSessionCompleted(_subscription, effectiveMode);
+    _updateSubscription(tracked);
+
+    return cleaned;
   }
 
   Future<void> _sendCurrentMessage() async {
@@ -132,6 +204,16 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
       );
       return;
     }
+
+    // Feature #2: Increment conversation count on first message of new session
+    if (_messages.isEmpty && _subscription.isInEndowmentPeriod) {
+      final updated =
+          await _subscriptionService.incrementConversationCount(_subscription);
+      _updateSubscription(updated);
+    }
+
+    // Feature #3: Dismiss recommendation on send
+    _dismissRecommendation();
 
     final previousMessages = List<CoachChatMessage>.from(_messages);
     final userMessage = CoachChatMessage(
@@ -163,6 +245,14 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
       }
       widget.onSubscriptionChanged(nextSubscription);
 
+      // Feature #1: Show downgrade transition card on first fallback
+      if (resolution.usedFallback && !_subscription.downgradeCardShown) {
+        final marked =
+            await _subscriptionService.markDowngradeCardShown(_subscription);
+        _updateSubscription(marked);
+        setState(() => _downgradeCardDismissed = false);
+      }
+
       final effectiveMode = resolution.effectiveMode;
       final taxSystem = getTaxSystem(widget.settings.country);
       final summary = calculateBudgetSummary(
@@ -180,14 +270,21 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         summary: summary,
         purchaseHistory: widget.purchaseHistory,
         maxTokens: _maxTokensForMode(effectiveMode),
+        effectiveMode: effectiveMode,
+        lastMicroAction: _subscription.lastMicroAction,
+        lastMicroActionDate: _subscription.lastMicroActionDate,
       );
 
       if (!mounted) return;
+
+      // Parse delimiters from reply
+      final cleanedReply = await _parseAndStoreDelimiters(reply, effectiveMode);
+
       final updated = [
         ..._messages,
         CoachChatMessage(
           role: 'assistant',
-          content: reply,
+          content: cleanedReply,
           timestamp: DateTime.now(),
         ),
       ];
@@ -267,6 +364,71 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     });
   }
 
+  // Feature #3: Handle recommendation
+  void _checkRecommendation(String text) {
+    if (text.trim().isEmpty) {
+      _dismissRecommendation();
+      return;
+    }
+    final recommended = recommendMode(text);
+    if (recommended.index > _selectedMode.index &&
+        _subscription.aiCredits >= _subscription.creditCostForMode(recommended)) {
+      setState(() {
+        _pendingRecommendation = recommended;
+        _showRecommendation = true;
+      });
+      _recommendationTimer?.cancel();
+      _recommendationTimer = Timer(const Duration(seconds: 8), () {
+        if (mounted) _dismissRecommendation();
+      });
+    } else if (recommended == _selectedMode) {
+      setState(() {
+        _pendingRecommendation = null;
+        _showRecommendation = false;
+      });
+    } else {
+      _dismissRecommendation();
+    }
+  }
+
+  void _dismissRecommendation() {
+    _recommendationTimer?.cancel();
+    if (_showRecommendation) {
+      setState(() {
+        _pendingRecommendation = null;
+        _showRecommendation = false;
+      });
+    }
+  }
+
+  Future<void> _acceptRecommendation() async {
+    if (_pendingRecommendation == null) return;
+    final mode = _pendingRecommendation!;
+    setState(() => _selectedMode = mode);
+    final updated =
+        await _subscriptionService.trackRecommendation(_subscription, accepted: true);
+    _updateSubscription(updated);
+    _dismissRecommendation();
+  }
+
+  Future<void> _declineRecommendation() async {
+    final updated =
+        await _subscriptionService.trackRecommendation(_subscription, accepted: false);
+    _updateSubscription(updated);
+    _dismissRecommendation();
+  }
+
+  // Feature #5: Micro-action follow-up handlers
+  Future<void> _completeMicroAction() async {
+    final updated = await _subscriptionService.clearLastMicroAction(_subscription);
+    _updateSubscription(updated);
+    setState(() => _microActionCardDismissed = true);
+  }
+
+  void _dismissMicroAction() {
+    setState(() => _microActionCardDismissed = true);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
@@ -316,16 +478,36 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
               padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
               child: _buildModeCard(),
             ),
-            if (_lastModeResolution?.usedFallback == true)
+
+            // Feature #1: Downgrade transition card (one-time per depletion)
+            if (_lastModeResolution?.usedFallback == true &&
+                !_downgradeCardDismissed &&
+                _subscription.downgradeCardShown)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+                child: _buildDowngradeTransitionCard(),
+              ),
+
+            // Existing fallback card (for subsequent eco messages)
+            if (_lastModeResolution?.usedFallback == true && _downgradeCardDismissed)
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
                 child: _buildFallbackCard(),
               ),
+
+            // Feature #2: Endowment Plus banner
+            if (_subscription.isInEndowmentPeriod && !_endowmentBannerDismissed)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+                child: _buildEndowmentBanner(),
+              ),
+
             if (_error != null)
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
                 child: _buildErrorCard(),
               ),
+
             Expanded(
               child: Container(
                 key: CoachTourKeys.historyList,
@@ -333,9 +515,340 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                 child: _buildMessagesList(),
               ),
             ),
+
+            // Feature #3: Smart mode recommendation widget
+            if (_showRecommendation && _pendingRecommendation != null)
+              _buildRecommendationWidget(),
+
             _buildComposer(),
           ],
         ),
+      ),
+    );
+  }
+
+  // Feature #1: Downgrade transition card
+  Widget _buildDowngradeTransitionCard() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.warningBackground(context),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.warning(context).withValues(alpha: 0.35),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Modo alterado para Eco',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: AppColors.warning(context),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(child: _buildCompareColumn(
+                title: 'Com Plus',
+                items: [
+                  ('Memória: 20 msgs', true),
+                  ('Respostas detalhadas', true),
+                  ('Contexto financeiro', true),
+                ],
+              )),
+              const SizedBox(width: 8),
+              Expanded(child: _buildCompareColumn(
+                title: 'Com Eco',
+                items: [
+                  ('Memória: 6 msgs', false),
+                  ('Respostas curtas', false),
+                  ('Contexto limitado', false),
+                ],
+              )),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: FilledButton(
+                  onPressed: () {
+                    setState(() => _downgradeCardDismissed = true);
+                    _showCreditPacksSheet();
+                  },
+                  child: const Text('Comprar créditos'),
+                ),
+              ),
+              const SizedBox(width: 8),
+              TextButton(
+                onPressed: () {
+                  setState(() => _downgradeCardDismissed = true);
+                },
+                child: const Text('Continuar com Eco'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCompareColumn({
+    required String title,
+    required List<(String, bool)> items,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.border(context)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary(context),
+            ),
+          ),
+          const SizedBox(height: 6),
+          ...items.map((item) => Padding(
+            padding: const EdgeInsets.only(bottom: 3),
+            child: Row(
+              children: [
+                Icon(
+                  item.$2 ? Icons.check_circle : Icons.cancel,
+                  size: 14,
+                  color: item.$2
+                      ? AppColors.success(context)
+                      : AppColors.error(context),
+                ),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    item.$1,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: AppColors.textSecondary(context),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )),
+        ],
+      ),
+    );
+  }
+
+  // Feature #2: Endowment Plus banner
+  Widget _buildEndowmentBanner() {
+    final remaining =
+        SubscriptionState.endowmentConversations - _subscription.coachConversationCount;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: AppColors.primary(context).withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.primary(context).withValues(alpha: 0.15),
+        ),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              'Estás a usar o modo Plus gratuitamente — '
+              'o coach lembra as últimas 20 mensagens ($remaining restantes)',
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.primary(context),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          IconButton(
+            onPressed: () => setState(() => _endowmentBannerDismissed = true),
+            icon: const Icon(Icons.close, size: 16),
+            visualDensity: VisualDensity.compact,
+            color: AppColors.primary(context),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Feature #3: Smart mode recommendation
+  Widget _buildRecommendationWidget() {
+    final rec = _pendingRecommendation!;
+    final isPro = rec == CoachMode.pro;
+    final cost = _subscription.creditCostForMode(rec);
+    final accentColor = isPro
+        ? const Color(0xFF7C3AED)
+        : AppColors.primary(context);
+    final bgColor = isPro
+        ? const Color(0xFF7C3AED).withValues(alpha: 0.06)
+        : AppColors.primary(context).withValues(alpha: 0.06);
+
+    final text = isPro
+        ? 'Pergunta complexa detetada — Pro daria uma análise mais detalhada ($cost cr.)'
+        : 'Plus dá mais contexto para esta análise ($cost cr.)';
+
+    return Container(
+      margin: const EdgeInsets.fromLTRB(12, 4, 12, 0),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border(
+          left: BorderSide(width: 3, color: accentColor),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary(context),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              FilledButton(
+                onPressed: _acceptRecommendation,
+                style: FilledButton.styleFrom(
+                  backgroundColor: accentColor,
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                ),
+                child: Text('Usar ${rec.name.substring(0, 1).toUpperCase()}${rec.name.substring(1)}'),
+              ),
+              const SizedBox(width: 8),
+              TextButton(
+                onPressed: _declineRecommendation,
+                child: Text('Manter ${_selectedMode.name.substring(0, 1).toUpperCase()}${_selectedMode.name.substring(1)}'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Feature #5: Micro-action follow-up card
+  Widget _buildMicroActionCard() {
+    final action = _subscription.lastMicroAction!;
+    final date = _subscription.lastMicroActionDate;
+    final daysAgo = date != null
+        ? DateTime.now().difference(date).inDays
+        : 0;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.successBackground(context),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.success(context).withValues(alpha: 0.15),
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 3,
+            height: 80,
+            decoration: BoxDecoration(
+              color: AppColors.success(context),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.track_changes, size: 16,
+                        color: AppColors.success(context)),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Ação pendente da última sessão',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary(context),
+                      ),
+                    ),
+                  ],
+                ),
+                if (daysAgo > 0)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text(
+                      'Sugerido há $daysAgo dia${daysAgo == 1 ? '' : 's'}',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: AppColors.textMuted(context),
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface(context),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    action,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textPrimary(context),
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    FilledButton(
+                      onPressed: _completeMicroAction,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: AppColors.success(context),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 6),
+                      ),
+                      child: const Text('Consegui!'),
+                    ),
+                    const SizedBox(width: 8),
+                    OutlinedButton(
+                      onPressed: _dismissMicroAction,
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 6),
+                      ),
+                      child: const Text('Ainda não'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -349,6 +862,9 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Feature #5: Show micro-action follow-up card
+              if (_subscription.lastMicroAction != null && !_microActionCardDismissed)
+                _buildMicroActionCard(),
               Text(
                 l10n.coachEmptyBody,
                 textAlign: TextAlign.center,
@@ -458,6 +974,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                   maxLines: 4,
                   textInputAction: TextInputAction.send,
                   onSubmitted: (_) => _sendCurrentMessage(),
+                  onChanged: _checkRecommendation,
                   decoration: InputDecoration(
                     hintText: l10n.coachComposerHint,
                     isDense: true,
@@ -584,6 +1101,38 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
               color: AppColors.textMuted(context),
             ),
           ),
+          // Feature #6: Credit cap warning
+          if (_subscription.isAtCreditCap)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                decoration: BoxDecoration(
+                  color: AppColors.warningBackground(context),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: AppColors.warning(context).withValues(alpha: 0.15),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.info, size: 16,
+                        color: AppColors.warning(context)),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        'Máximo atingido (150). Usa os teus créditos antes da próxima renovação!',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.warning(context),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -701,6 +1250,11 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         ],
       ),
     );
+  }
+
+  // Feature #4: Credit packs sheet (placeholder — enhances existing)
+  void _showCreditPacksSheet() {
+    widget.onOpenSettings();
   }
 }
 

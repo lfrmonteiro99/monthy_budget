@@ -141,7 +141,12 @@ class SubscriptionService {
   Future<SubscriptionState> addAiCredits(
       SubscriptionState current, int amount) async {
     if (amount <= 0) return current;
-    final updated = current.copyWith(aiCredits: current.aiCredits + amount);
+    final capped = (current.aiCredits + amount)
+        .clamp(0, SubscriptionState.maxCreditCap);
+    final updated = current.copyWith(
+      aiCredits: capped,
+      downgradeCardShown: false,
+    );
     await save(updated);
     return updated;
   }
@@ -160,6 +165,18 @@ class SubscriptionService {
     SubscriptionState current, {
     CoachMode? requestedMode,
   }) async {
+    // Feature #2: Endowment Plus bypass
+    final requested = requestedMode ?? current.preferredCoachMode;
+    if (current.isInEndowmentPeriod && requested == CoachMode.plus) {
+      final resolution = CoachModeResolution(
+        requestedMode: requested,
+        effectiveMode: CoachMode.plus,
+        estimatedCreditCost: 0,
+        usedFallback: false,
+      );
+      return (state: current, resolution: resolution);
+    }
+
     final resolution = current.resolveCoachMode(requestedMode: requestedMode);
     if (resolution.estimatedCreditCost <= 0) {
       return (state: current, resolution: resolution);
@@ -167,6 +184,102 @@ class SubscriptionService {
 
     final updated = await consumeAiCredits(current, resolution.estimatedCreditCost);
     return (state: updated, resolution: resolution);
+  }
+
+  // Feature #1: Downgrade Transition Card
+  Future<SubscriptionState> markDowngradeCardShown(
+      SubscriptionState current) async {
+    final updated = current.copyWith(downgradeCardShown: true);
+    await save(updated);
+    return updated;
+  }
+
+  // Feature #2: Endowment Plus
+  Future<SubscriptionState> incrementConversationCount(
+      SubscriptionState current) async {
+    final newCount = current.coachConversationCount + 1;
+    final completed = newCount >= SubscriptionState.endowmentConversations;
+    final updated = current.copyWith(
+      coachConversationCount: newCount,
+      endowmentPlusCompleted: completed || current.endowmentPlusCompleted,
+    );
+    await save(updated);
+    return updated;
+  }
+
+  // Feature #3: Smart Mode Recommendation
+  Future<SubscriptionState> trackRecommendation(
+      SubscriptionState current, {required bool accepted}) async {
+    final updated = current.copyWith(
+      recommendationsShown: current.recommendationsShown + 1,
+      recommendationsAccepted: accepted
+          ? current.recommendationsAccepted + 1
+          : current.recommendationsAccepted,
+    );
+    await save(updated);
+    return updated;
+  }
+
+  // Feature #4: ROI Framing
+  Future<SubscriptionState> setSessionInsight(
+      SubscriptionState current, String insight, String? value) async {
+    final updated = current.copyWith(
+      lastSessionInsight: insight,
+      lastSessionInsightValue: value,
+    );
+    await save(updated);
+    return updated;
+  }
+
+  Future<SubscriptionState> trackSessionCompleted(
+      SubscriptionState current, CoachMode mode) async {
+    final updated = current.copyWith(
+      totalProSessions: mode == CoachMode.pro
+          ? current.totalProSessions + 1
+          : current.totalProSessions,
+      totalPlusSessions: mode == CoachMode.plus
+          ? current.totalPlusSessions + 1
+          : current.totalPlusSessions,
+    );
+    await save(updated);
+    return updated;
+  }
+
+  // Feature #5: Micro-Action Follow-up
+  Future<SubscriptionState> setLastMicroAction(
+      SubscriptionState current, String action) async {
+    final updated = current.copyWith(
+      lastMicroAction: action,
+      lastMicroActionDate: DateTime.now(),
+    );
+    await save(updated);
+    return updated;
+  }
+
+  Future<SubscriptionState> clearLastMicroAction(
+      SubscriptionState current) async {
+    final updated = SubscriptionState(
+      tier: current.tier,
+      trialStartDate: current.trialStartDate,
+      trialUsed: current.trialUsed,
+      featuresExplored: current.featuresExplored,
+      aiCredits: current.aiCredits,
+      preferredCoachMode: current.preferredCoachMode,
+      trialStarterCreditsGranted: current.trialStarterCreditsGranted,
+      trialExtensionUsed: current.trialExtensionUsed,
+      downgradeCardShown: current.downgradeCardShown,
+      coachConversationCount: current.coachConversationCount,
+      endowmentPlusCompleted: current.endowmentPlusCompleted,
+      recommendationsAccepted: current.recommendationsAccepted,
+      recommendationsShown: current.recommendationsShown,
+      lastSessionInsight: current.lastSessionInsight,
+      lastSessionInsightValue: current.lastSessionInsightValue,
+      totalProSessions: current.totalProSessions,
+      totalPlusSessions: current.totalPlusSessions,
+      // lastMicroAction and lastMicroActionDate intentionally null
+    );
+    await save(updated);
+    return updated;
   }
 
   /// Returns a human-readable label for a feature key.
