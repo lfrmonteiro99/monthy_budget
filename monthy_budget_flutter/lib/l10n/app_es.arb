@@ -2125,6 +2125,8 @@
             }
         }
     },
+    "barcodeInvoiceDetected": "Este es un código de factura, no de producto",
+    "barcodeInvoiceAction": "Abrir Escáner de Recibos",
     "quickAddTooltip": "Acciones rápidas",
     "quickAddExpense": "Añadir gasto",
     "quickAddShopping": "Añadir artículo de compras",

@@ -4418,6 +4418,8 @@
             }
         }
     },
+    "barcodeInvoiceDetected": "Este é um código de fatura, não de produto",
+    "barcodeInvoiceAction": "Abrir Scanner de Recibos",
     "quickAddTooltip": "Ações rápidas",
     "quickAddExpense": "Adicionar despesa",
     "quickAddShopping": "Adicionar item de compras",
