@@ -75,10 +75,21 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   final _rateLimiter = RateLimiter(minInterval: const Duration(seconds: 3));
   MealPlanBudgetInsight? _budgetInsight;
 
+  late AppSettings _localSettings;
+
   @override
   void initState() {
     super.initState();
+    _localSettings = widget.settings;
     _init();
+  }
+
+  @override
+  void didUpdateWidget(covariant MealPlannerScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.settings != oldWidget.settings) {
+      _localSettings = widget.settings;
+    }
   }
 
   Future<void> _init() async {
@@ -764,11 +775,13 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.settings.mealSettings.wizardCompleted) {
+    if (!_localSettings.mealSettings.wizardCompleted) {
       return MealWizardScreen(
-        initial: widget.settings.mealSettings,
+        initial: _localSettings.mealSettings,
         onComplete: (ms) {
-          widget.onSaveSettings(widget.settings.copyWith(mealSettings: ms));
+          final updated = _localSettings.copyWith(mealSettings: ms);
+          widget.onSaveSettings(updated);
+          setState(() => _localSettings = updated);
         },
       );
     }

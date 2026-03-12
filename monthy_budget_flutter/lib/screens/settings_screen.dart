@@ -84,7 +84,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   late AppSettings _draft;
   late List<String> _favorites;
   late TextEditingController _apiKeyController;
-  String? _openSection = 'salaries';
+  String? _openSection;
   late LocalDashboardConfig _localDashboard;
   String? _inviteCode;
   List<AssociatedHouseholdMember> _associatedMembers = const [];
