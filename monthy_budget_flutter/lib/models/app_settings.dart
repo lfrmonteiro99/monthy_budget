@@ -549,6 +549,19 @@ class AppSettings {
     return jsonEncode(map);
   }
 
+  /// Returns true if the JSON map contains salary data with a non-zero
+  /// gross amount, indicating an existing user who configured their budget
+  /// before the setupWizardCompleted flag was introduced.
+  static bool _hasConfiguredSalary(Map<String, dynamic> map) {
+    final salaries = map['salaries'] as List<dynamic>?;
+    if (salaries == null || salaries.isEmpty) return false;
+    return salaries.any((s) {
+      if (s is! Map<String, dynamic>) return false;
+      final gross = (s['grossAmount'] as num?)?.toDouble() ?? 0;
+      return gross > 0;
+    });
+  }
+
   factory AppSettings.fromJsonString(String jsonStr) {
     final map = jsonDecode(jsonStr) as Map<String, dynamic>;
     return AppSettings(
@@ -573,10 +586,13 @@ class AppSettings {
           const {},
       country: Country.fromJson(map['country'] as String?),
       localeOverride: map['localeOverride'] as String?,
-      // Existing users (row exists but key missing) → true; new users → false
+      // If the key exists, use its value. If missing, check whether the user
+      // has real configured data (salary > 0) — old users who set up their
+      // budget before the wizard existed should skip it; brand-new users
+      // whose row was auto-created by the DB should see it.
       setupWizardCompleted: map.containsKey('setupWizardCompleted')
           ? (map['setupWizardCompleted'] ?? false)
-          : true,
+          : _hasConfiguredSalary(map),
     );
   }
 }
