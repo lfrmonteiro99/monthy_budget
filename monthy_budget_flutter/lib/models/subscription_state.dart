@@ -18,6 +18,24 @@ const coachModeMessageWindow = <CoachMode, int>{
   CoachMode.pro: 40,
 };
 
+class CreditPack {
+  final String id;
+  final int credits;
+  final String fallbackPrice;
+
+  const CreditPack({
+    required this.id,
+    required this.credits,
+    required this.fallbackPrice,
+  });
+}
+
+const creditPacks = <CreditPack>[
+  CreditPack(id: 'credits_50', credits: 50, fallbackPrice: '€0.99'),
+  CreditPack(id: 'credits_150', credits: 150, fallbackPrice: '€1.99'),
+  CreditPack(id: 'credits_500', credits: 500, fallbackPrice: '€4.99'),
+];
+
 class CoachModeResolution {
   final CoachMode requestedMode;
   final CoachMode effectiveMode;
