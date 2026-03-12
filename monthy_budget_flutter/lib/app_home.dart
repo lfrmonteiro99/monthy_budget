@@ -1473,24 +1473,13 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       monthlyBudgets: _monthlyBudgets,
     );
 
-    final focusedDashboardConfig = _dashboardConfig.copyWith(
-      showSummaryCards: false,
-      showSalaryBreakdown: false,
-      showPurchaseHistory: false,
-      showExpensesBreakdown: false,
-      showCharts: false,
-      showBudgetVsActual: false,
-      showSavingsGoals: false,
-      showTaxDeductions: false,
-    );
-
     final screens = [
       DashboardScreen(
         settings: _settings,
         summary: summary,
         purchaseHistory: _purchaseHistory,
         onSaveSettings: _saveSettings,
-        dashboardConfig: focusedDashboardConfig,
+        dashboardConfig: _dashboardConfig,
         expenseHistory: _expenseHistory,
         onSnapshotExpenses: _snapshotExpenses,
         actualExpenses: _actualExpenses,
@@ -1514,7 +1503,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         onTourComplete: () => _markTourDone('dashboard'),
         fabKey: _fabKey,
         navBarKey: _navBarKey,
-        focusedMode: true,
+        focusedMode: false,
         onOpenInsights: _openInsights,
       ),
       ExpenseTrackerScreen(
