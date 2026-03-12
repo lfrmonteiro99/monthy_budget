@@ -1302,24 +1302,31 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFFEE2E2),
+        color: AppColors.errorBackground(context),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFFCA5A5)),
+        border: Border.all(color: AppColors.error(context).withValues(alpha: 0.4)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.error_outline, color: Color(0xFFDC2626), size: 18),
+          Icon(Icons.error_outline, color: AppColors.error(context), size: 18),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               _error!,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
-                color: Color(0xFFDC2626),
+                color: AppColors.error(context),
                 height: 1.4,
               ),
             ),
+          ),
+          const SizedBox(width: 8),
+          GestureDetector(
+            onTap: () {
+              setState(() => _error = null);
+            },
+            child: Icon(Icons.close, size: 16, color: AppColors.error(context)),
           ),
         ],
       ),

@@ -4571,4 +4571,7 @@ class SFr extends S {
 
   @override
   String get authSignOut => 'Se déconnecter';
+
+  @override
+  String get actionRetry => 'Réessayer';
 }

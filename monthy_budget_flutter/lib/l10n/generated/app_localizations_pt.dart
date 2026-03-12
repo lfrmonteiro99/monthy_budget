@@ -4559,4 +4559,7 @@ class SPt extends S {
 
   @override
   String get authSignOut => 'Terminar sessão';
+
+  @override
+  String get actionRetry => 'Tentar novamente';
 }
