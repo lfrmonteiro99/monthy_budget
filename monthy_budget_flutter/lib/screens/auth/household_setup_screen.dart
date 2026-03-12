@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../../models/app_settings.dart';
 import '../../services/household_service.dart';
+import '../../services/settings_service.dart';
 import '../../theme/app_colors.dart';
 
 class HouseholdSetupScreen extends StatefulWidget {
@@ -13,6 +15,7 @@ class HouseholdSetupScreen extends StatefulWidget {
 
 class _HouseholdSetupScreenState extends State<HouseholdSetupScreen> {
   final _service = HouseholdService();
+  final _settingsService = SettingsService();
   final _nameCtrl = TextEditingController();
   final _codeCtrl = TextEditingController();
   bool _creating = true;
@@ -37,6 +40,9 @@ class _HouseholdSetupScreenState extends State<HouseholdSetupScreen> {
         final name = _nameCtrl.text.trim();
         if (name.isEmpty) throw Exception(S.of(context).householdNameRequired);
         profile = await _service.createHousehold(name);
+        // Explicitly write setupWizardCompleted: false so the wizard
+        // is guaranteed to appear regardless of what the RPC seeds.
+        await _settingsService.save(const AppSettings(), profile.householdId);
       } else {
         profile = await _service.joinHousehold(_codeCtrl.text.trim());
       }
