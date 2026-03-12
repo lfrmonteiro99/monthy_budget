@@ -8,18 +8,6 @@ import '../../theme/app_colors.dart';
 import '../../utils/formatters.dart';
 import '../info_icon_button.dart';
 
-const _categoryColors = {
-  ExpenseCategory.telecomunicacoes: Color(0xFF818CF8),
-  ExpenseCategory.energia: Color(0xFFFBBF24),
-  ExpenseCategory.agua: Color(0xFF60A5FA),
-  ExpenseCategory.alimentacao: Color(0xFF34D399),
-  ExpenseCategory.educacao: Color(0xFFA78BFA),
-  ExpenseCategory.habitacao: Color(0xFFF87171),
-  ExpenseCategory.transportes: Color(0xFFFB923C),
-  ExpenseCategory.saude: Color(0xFFF472B6),
-  ExpenseCategory.lazer: Color(0xFF2DD4BF),
-  ExpenseCategory.outros: Color(0xFF94A3B8),
-};
 
 class BudgetCharts extends StatelessWidget {
   final BudgetSummary summary;
@@ -128,7 +116,7 @@ class _ExpensesPieChart extends StatelessWidget {
                 sections: entries.map((e) {
                   return PieChartSectionData(
                     value: e.value,
-                    color: _categoryColors[e.key] ?? const Color(0xFF94A3B8),
+                    color: AppColors.categoryColor(e.key),
                     title: '${(e.value / total * 100).toStringAsFixed(1)}%',
                     titleStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.onPrimary(context)),
                     radius: 80,
@@ -152,7 +140,7 @@ class _ExpensesPieChart extends StatelessWidget {
                     width: 10,
                     height: 10,
                     decoration: BoxDecoration(
-                      color: _categoryColors[e.key] ?? const Color(0xFF94A3B8),
+                      color: AppColors.categoryColor(e.key),
                       shape: BoxShape.circle,
                     ),
                   ),

@@ -1359,21 +1359,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  static Color _categoryColor(ExpenseCategory category) {
-    const colors = {
-      ExpenseCategory.telecomunicacoes: Color(0xFF818CF8),
-      ExpenseCategory.energia: Color(0xFFFBBF24),
-      ExpenseCategory.agua: Color(0xFF60A5FA),
-      ExpenseCategory.alimentacao: Color(0xFF34D399),
-      ExpenseCategory.educacao: Color(0xFFA78BFA),
-      ExpenseCategory.habitacao: Color(0xFFF87171),
-      ExpenseCategory.transportes: Color(0xFFFB923C),
-      ExpenseCategory.saude: Color(0xFFF472B6),
-      ExpenseCategory.lazer: Color(0xFF2DD4BF),
-      ExpenseCategory.outros: Color(0xFF94A3B8),
-    };
-    return colors[category] ?? const Color(0xFF94A3B8);
-  }
+  static Color _categoryColor(ExpenseCategory category) =>
+      AppColors.categoryColor(category);
 }
 
 class _SummaryCard extends StatelessWidget {

@@ -180,18 +180,18 @@ class _AlertCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final (Color bg, Color border, IconData icon) = switch (alert.severity) {
       AlertSeverity.critical => (
-          const Color(0xFFFEE2E2),
-          const Color(0xFFFCA5A5),
+          AppColors.errorBackground(context),
+          AppColors.errorBorder(context),
           Icons.error,
         ),
       AlertSeverity.warning => (
-          const Color(0xFFFEF3C7),
-          const Color(0xFFFCD34D),
+          AppColors.warningBackground(context),
+          AppColors.warningBorder(context),
           Icons.warning_amber,
         ),
       AlertSeverity.info => (
-          const Color(0xFFDBEAFE),
-          const Color(0xFF93C5FD),
+          AppColors.infoBackground(context),
+          AppColors.infoBorder(context),
           Icons.info_outline,
         ),
     };

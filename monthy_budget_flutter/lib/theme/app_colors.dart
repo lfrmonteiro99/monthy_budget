@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/app_settings.dart';
 
 enum AppColorPalette { ocean, emerald, violet, teal, sunset }
 
@@ -137,4 +138,37 @@ class AppColors {
 
   static Color dragHandle(BuildContext context) =>
       _isDark(context) ? const Color(0xFF475569) : const Color(0xFFCBD5E1);
+
+  // ── Status Borders ─────────────────────────────────────────────────
+
+  static Color errorBorder(BuildContext context) =>
+      _isDark(context) ? const Color(0xFF7F1D1D) : const Color(0xFFFCA5A5);
+
+  static Color warningBorder(BuildContext context) =>
+      _isDark(context) ? const Color(0xFF78350F) : const Color(0xFFFCD34D);
+
+  // ── Expense Category Colors ────────────────────────────────────────
+
+  static const _expenseCategoryColors = {
+    ExpenseCategory.telecomunicacoes: Color(0xFF818CF8),
+    ExpenseCategory.energia: Color(0xFFFBBF24),
+    ExpenseCategory.agua: Color(0xFF60A5FA),
+    ExpenseCategory.alimentacao: Color(0xFF34D399),
+    ExpenseCategory.educacao: Color(0xFFA78BFA),
+    ExpenseCategory.habitacao: Color(0xFFF87171),
+    ExpenseCategory.transportes: Color(0xFFFB923C),
+    ExpenseCategory.saude: Color(0xFFF472B6),
+    ExpenseCategory.lazer: Color(0xFF2DD4BF),
+    ExpenseCategory.outros: Color(0xFF94A3B8),
+  };
+
+  static const _defaultCategoryColor = Color(0xFF94A3B8);
+
+  static Color categoryColor(ExpenseCategory category) =>
+      _expenseCategoryColors[category] ?? _defaultCategoryColor;
+
+  static Color categoryColorByName(String name) {
+    final cat = ExpenseCategory.values.where((e) => e.name == name);
+    return cat.isEmpty ? _defaultCategoryColor : categoryColor(cat.first);
+  }
 }

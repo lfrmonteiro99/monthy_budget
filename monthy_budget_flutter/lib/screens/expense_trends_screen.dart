@@ -8,18 +8,6 @@ import '../models/app_settings.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 
-const _categoryColors = <String, Color>{
-  'telecomunicacoes': Color(0xFF818CF8),
-  'energia': Color(0xFFFBBF24),
-  'agua': Color(0xFF60A5FA),
-  'alimentacao': Color(0xFF34D399),
-  'educacao': Color(0xFFA78BFA),
-  'habitacao': Color(0xFFF87171),
-  'transportes': Color(0xFFFB923C),
-  'saude': Color(0xFFF472B6),
-  'lazer': Color(0xFF2DD4BF),
-  'outros': Color(0xFF94A3B8),
-};
 
 Map<String, String> _localizedCategoryLabels(S l10n) => {
       'telecomunicacoes': l10n.trendCatTelecom,
@@ -597,7 +585,7 @@ class _CategoryBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final barFraction = maxAvg > 0 ? (stat.average / maxAvg).clamp(0.0, 1.0) : 0.0;
     final color =
-        _categoryColors[stat.category] ?? const Color(0xFF94A3B8);
+        AppColors.categoryColorByName(stat.category);
     final categoryLabels = _localizedCategoryLabels(l10n);
     final label = categoryLabels[stat.category] ??
         _localizedCategory(stat.category, l10n);
@@ -679,7 +667,7 @@ class _CategoryBar extends StatelessWidget {
     final label = categoryLabels[stat.category] ??
         _localizedCategory(stat.category, l10n);
     final color =
-        _categoryColors[stat.category] ?? const Color(0xFF94A3B8);
+        AppColors.categoryColorByName(stat.category);
 
     // Build per-month data for this category
     final monthlyData = <_MonthAmount>[];
