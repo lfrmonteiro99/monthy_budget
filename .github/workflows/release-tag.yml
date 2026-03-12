@@ -6,6 +6,11 @@ name: Release Tag
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v2026.3.20)'
+        required: true
 
 permissions:
   contents: write
@@ -21,15 +26,23 @@ jobs:
         id: check
         shell: bash
         run: |
-          MSG="${{ github.event.head_commit.message }}"
-          if echo "$MSG" | grep -qP '^chore\(release\):.*v\d+\.\d+\.\d+'; then
-            TAG="$(echo "$MSG" | grep -oP 'v\d+\.\d+\.\d+' | head -n1)"
+          # Support workflow_dispatch with explicit tag input
+          if [[ -n "${{ github.event.inputs.tag }}" ]]; then
+            TAG="${{ github.event.inputs.tag }}"
             echo "is_release=true" >> "$GITHUB_OUTPUT"
             echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-            echo "Detected release commit: $TAG"
+            echo "Manual dispatch for tag: $TAG"
           else
-            echo "is_release=false" >> "$GITHUB_OUTPUT"
-            echo "Not a release commit, skipping."
+            MSG="${{ github.event.head_commit.message }}"
+            if echo "$MSG" | grep -qP '^chore\(release\):.*v\d+\.\d+\.\d+'; then
+              TAG="$(echo "$MSG" | grep -oP 'v\d+\.\d+\.\d+' | head -n1)"
+              echo "is_release=true" >> "$GITHUB_OUTPUT"
+              echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+              echo "Detected release commit: $TAG"
+            else
+              echo "is_release=false" >> "$GITHUB_OUTPUT"
+              echo "Not a release commit, skipping."
+            fi
           fi
 
       - uses: actions/checkout@v4
@@ -43,12 +56,12 @@ jobs:
         run: |
           TAG="${{ steps.check.outputs.tag }}"
           if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null 2>&1; then
-            echo "Tag $TAG already exists, skipping."
-            echo "skip=true" >> "$GITHUB_ENV"
+            echo "Tag $TAG already exists, skipping tag creation."
+            echo "skip_tag=true" >> "$GITHUB_ENV"
           fi
 
       - name: Extract changelog section
-        if: steps.check.outputs.is_release == 'true' && env.skip != 'true'
+        if: steps.check.outputs.is_release == 'true' && env.skip_tag != 'true'
         id: changelog
         shell: bash
         run: |
@@ -82,7 +95,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Create tag and GitHub Release
-        if: steps.check.outputs.is_release == 'true' && env.skip != 'true'
+        if: steps.check.outputs.is_release == 'true' && env.skip_tag != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
