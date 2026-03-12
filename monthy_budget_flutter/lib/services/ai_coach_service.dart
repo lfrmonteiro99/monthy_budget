@@ -214,6 +214,7 @@ class AiCoachService {
       settings: settings,
       summary: summary,
       purchaseHistory: purchaseHistory,
+      effectiveMode: effectiveMode,
     );
 
     // Feature #5: Inject micro-action follow-up context for Pro mode
@@ -254,6 +255,7 @@ class AiCoachService {
     required AppSettings settings,
     required BudgetSummary summary,
     required PurchaseHistory purchaseHistory,
+    CoachMode? effectiveMode,
   }) {
     final now = DateTime.now();
     final monthRecords = purchaseHistory.records
@@ -261,22 +263,32 @@ class AiCoachService {
         .toList()
       ..sort((a, b) => b.date.compareTo(a.date));
 
+    // All enabled expense categories (no limit)
     final topExpenses = settings.expenses
         .where((e) => e.enabled && e.amount > 0)
         .toList()
       ..sort((a, b) => b.amount.compareTo(a.amount));
     final topExpensesText = topExpenses
-        .take(6)
         .map((e) => '- ${e.category.label}: ${e.amount.toStringAsFixed(2)} EUR')
         .join('\n');
 
+    // Transaction limit scales with mode
+    final txLimit = switch (effectiveMode) {
+      CoachMode.pro => 25,
+      CoachMode.plus => 15,
+      _ => 8,
+    };
+
     final recentPurchasesText = monthRecords
-        .take(8)
-        .map(
-          (r) =>
-              '- ${r.date.day.toString().padLeft(2, '0')}/${r.date.month.toString().padLeft(2, '0')}: '
-              '${r.amount.toStringAsFixed(2)} EUR (${r.itemCount} itens)',
-        )
+        .take(txLimit)
+        .map((r) {
+          final date =
+              '${r.date.day.toString().padLeft(2, '0')}/${r.date.month.toString().padLeft(2, '0')}';
+          final itemNames =
+              r.items.isNotEmpty ? ' [${r.items.join(", ")}]' : '';
+          return '- $date: ${r.amount.toStringAsFixed(2)} EUR '
+              '(${r.itemCount} itens)$itemNames';
+        })
         .join('\n');
 
     return '''
@@ -288,10 +300,10 @@ Dados reais da app (usar estes valores na resposta):
 - Despesas fixas: ${summary.totalExpenses.toStringAsFixed(2)} EUR
 - Poupanca mensal: ${summary.netLiquidity.toStringAsFixed(2)} EUR
 
-Top categorias de despesa:
+Categorias de despesa:
 ${topExpensesText.isEmpty ? '- sem dados' : topExpensesText}
 
-Compras recentes deste mes:
+Compras recentes deste mes ($txLimit mais recentes):
 ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText}
 ''';
   }
@@ -721,8 +733,8 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
         'Evita formatos fixos (nao responder em "3 partes" a menos que seja pedido). '
         'Mantem continuidade da conversa e usa o historico para responder. '
         'Nunca inventes dados externos; usa apenas o contexto e o que o utilizador disser. '
+        'NUNCA uses exemplos hipoteticos nem valores inventados. Se os dados reais estao disponiveis, usa-os. Se nao, diz explicitamente que nao tens esse dado. '
         'Quando houver dados numericos no pedido, cita esses numeros na resposta. '
-        'Se faltar dado para algo pedido, diz explicitamente que nao tens esse dado. '
         'Contexto financeiro atual:\n'
         '- Liquido mensal: ${summary.totalNetWithMeal.toStringAsFixed(2)} EUR\n'
         '- Despesas fixas: ${summary.totalExpenses.toStringAsFixed(2)} EUR (${fixedExpenseRatio.toStringAsFixed(1)}%)\n'
