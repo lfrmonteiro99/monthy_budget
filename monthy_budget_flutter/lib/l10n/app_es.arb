@@ -2407,5 +2407,6 @@
 
     "authConnectionError": "Error de conexión",
     "authRetry": "Reintentar",
-    "authSignOut": "Cerrar sesión"
+    "authSignOut": "Cerrar sesión",
+    "actionRetry": "Reintentar"
 }

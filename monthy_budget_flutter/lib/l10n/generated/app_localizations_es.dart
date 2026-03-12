@@ -4565,4 +4565,7 @@ class SEs extends S {
 
   @override
   String get authSignOut => 'Cerrar sesión';
+
+  @override
+  String get actionRetry => 'Reintentar';
 }

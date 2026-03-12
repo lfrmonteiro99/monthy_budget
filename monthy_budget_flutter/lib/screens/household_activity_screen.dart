@@ -138,10 +138,23 @@ class _HouseholdActivityScreenState extends State<HouseholdActivityScreen> {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(32),
-          child: Text(
-            _error!,
-            style: TextStyle(color: AppColors.error(context)),
-            textAlign: TextAlign.center,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.error_outline, size: 40, color: AppColors.error(context)),
+              const SizedBox(height: 12),
+              Text(
+                _error!,
+                style: TextStyle(color: AppColors.error(context)),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              FilledButton.icon(
+                onPressed: _loadEvents,
+                icon: const Icon(Icons.refresh, size: 18),
+                label: Text(l10n.actionRetry),
+              ),
+            ],
           ),
         ),
       );

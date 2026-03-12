@@ -2458,5 +2458,6 @@
 
     "authConnectionError": "Connection error",
     "authRetry": "Retry",
-    "authSignOut": "Sign out"
+    "authSignOut": "Sign out",
+    "actionRetry": "Retry"
 }

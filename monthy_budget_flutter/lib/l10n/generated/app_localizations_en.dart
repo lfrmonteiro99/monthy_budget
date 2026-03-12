@@ -4533,4 +4533,7 @@ class SEn extends S {
 
   @override
   String get authSignOut => 'Sign out';
+
+  @override
+  String get actionRetry => 'Retry';
 }

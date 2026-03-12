@@ -4772,5 +4772,6 @@
 
     "authConnectionError": "Erro de ligação",
     "authRetry": "Tentar novamente",
-    "authSignOut": "Terminar sessão"
+    "authSignOut": "Terminar sessão",
+    "actionRetry": "Tentar novamente"
 }

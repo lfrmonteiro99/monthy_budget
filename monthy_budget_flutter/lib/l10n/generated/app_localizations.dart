@@ -8194,6 +8194,12 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Terminar sessão'**
   String get authSignOut;
+
+  /// No description provided for @actionRetry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get actionRetry;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
