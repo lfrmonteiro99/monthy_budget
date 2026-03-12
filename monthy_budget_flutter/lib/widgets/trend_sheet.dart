@@ -6,18 +6,6 @@ import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 import '../l10n/generated/app_localizations.dart';
 
-const _categoryColors = {
-  'telecomunicacoes': Color(0xFF818CF8),
-  'energia': Color(0xFFFBBF24),
-  'agua': Color(0xFF60A5FA),
-  'alimentacao': Color(0xFF34D399),
-  'educacao': Color(0xFFA78BFA),
-  'habitacao': Color(0xFFF87171),
-  'transportes': Color(0xFFFB923C),
-  'saude': Color(0xFFF472B6),
-  'lazer': Color(0xFF2DD4BF),
-  'outros': Color(0xFF94A3B8),
-};
 
 Map<String, String> _localizedCategoryLabels(S l10n) => {
   'telecomunicacoes': l10n.trendCatTelecom,
@@ -391,7 +379,7 @@ class _TrendSheetContent extends StatelessWidget {
           stackItems.add(BarChartRodStackItem(
             runningY,
             runningY + amount,
-            _categoryColors[cat] ?? const Color(0xFF94A3B8),
+            AppColors.categoryColorByName(cat),
           ));
           runningY += amount;
         }
@@ -490,7 +478,7 @@ class _TrendSheetContent extends StatelessWidget {
             runSpacing: 4,
             children: categories.map((cat) => _zoneDot(
               context,
-              _categoryColors[cat] ?? const Color(0xFF94A3B8),
+              AppColors.categoryColorByName(cat),
               categoryLabels[cat] ?? cat,
             )).toList(),
           ),
