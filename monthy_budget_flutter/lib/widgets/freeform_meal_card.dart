@@ -77,15 +77,15 @@ class FreeformMealCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF0FDF4),
+                      color: AppColors.successBackground(context),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
                       mealDay.mealType.localizedLabel(l10n),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF16A34A),
+                        color: AppColors.success(context),
                       ),
                     ),
                   ),
@@ -93,20 +93,20 @@ class FreeformMealCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF3E8FF),
+                      color: AppColors.primaryLight(context),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.edit_note, size: 12, color: Color(0xFF7C3AED)),
+                        Icon(Icons.edit_note, size: 12, color: AppColors.primary(context)),
                         const SizedBox(width: 4),
                         Text(
                           l10n.freeformBadge,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF7C3AED),
+                            color: AppColors.primary(context),
                           ),
                         ),
                       ],
@@ -127,6 +127,8 @@ class FreeformMealCard extends StatelessWidget {
               // Title
               Text(
                 mealDay.freeformTitle ?? '',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
               ),
               // Note preview

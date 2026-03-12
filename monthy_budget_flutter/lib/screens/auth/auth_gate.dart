@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../services/household_service.dart';
 import '../../theme/app_colors.dart';
 import '../../widgets/branded_loading.dart';
@@ -133,7 +134,7 @@ class _ErrorScreen extends StatelessWidget {
               Icon(Icons.cloud_off, size: 56, color: AppColors.error(context)),
               const SizedBox(height: 16),
               Text(
-                'Connection error',
+                S.of(context).authConnectionError,
                 style: Theme.of(context)
                     .textTheme
                     .titleLarge
@@ -152,12 +153,12 @@ class _ErrorScreen extends StatelessWidget {
               FilledButton.icon(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh),
-                label: const Text('Retry'),
+                label: Text(S.of(context).authRetry),
               ),
               const SizedBox(height: 8),
               TextButton(
                 onPressed: onSignOut,
-                child: const Text('Sign out'),
+                child: Text(S.of(context).authSignOut),
               ),
             ],
           ),

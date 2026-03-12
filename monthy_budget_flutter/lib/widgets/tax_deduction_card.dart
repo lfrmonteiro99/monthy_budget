@@ -115,6 +115,8 @@ class TaxDeductionCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           _categoryLabel(l10n, c.category),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 12,
                             color: AppColors.textSecondary(context),

@@ -2382,5 +2382,30 @@
         "placeholders": {
             "count": { "type": "int" }
         }
-    }
+    },
+
+    "navHome": "Inicio",
+    "navHomeTip": "Resumen mensual",
+    "navTrack": "Gastos",
+    "navTrackTip": "Registrar gastos mensuales",
+    "navPlan": "Planear",
+    "navPlanTip": "Supermercado, lista y plan de comidas",
+    "navMore": "Más",
+    "navMoreTip": "Ajustes y análisis",
+
+    "paywallContinueFree": "Continuando con el plan gratuito",
+    "paywallUpgradedPro": "Actualizado a Pro — ¡gracias!",
+    "paywallNoRestore": "No se encontraron compras anteriores",
+    "paywallRestoredPro": "¡Suscripción Pro restaurada!",
+    "subscriptionPro": "Pro",
+    "subscriptionTrialLabel": "Prueba ({count} días restantes)",
+    "@subscriptionTrialLabel": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+
+    "authConnectionError": "Error de conexión",
+    "authRetry": "Reintentar",
+    "authSignOut": "Cerrar sesión"
 }

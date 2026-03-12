@@ -511,8 +511,8 @@ class _GroceryScreenState extends State<GroceryScreen> {
               child: Tooltip(
                 message: l10n.pantryHaveIt,
                 child: SizedBox(
-                  width: 36,
-                  height: 36,
+                  width: 48,
+                  height: 48,
                   child: Material(
                     color: widget.weeklyPantryIds.contains(product.name.toLowerCase())
                         ? AppColors.successBackground(context)

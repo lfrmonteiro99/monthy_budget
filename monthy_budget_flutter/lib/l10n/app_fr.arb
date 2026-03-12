@@ -2382,5 +2382,30 @@
         "placeholders": {
             "count": { "type": "int" }
         }
-    }
+    },
+
+    "navHome": "Accueil",
+    "navHomeTip": "Résumé mensuel",
+    "navTrack": "Dépenses",
+    "navTrackTip": "Suivre les dépenses mensuelles",
+    "navPlan": "Planifier",
+    "navPlanTip": "Courses, liste et plan de repas",
+    "navMore": "Plus",
+    "navMoreTip": "Paramètres et analyses",
+
+    "paywallContinueFree": "Continuation avec le plan gratuit",
+    "paywallUpgradedPro": "Mis à jour vers Pro — merci !",
+    "paywallNoRestore": "Aucun achat précédent trouvé",
+    "paywallRestoredPro": "Abonnement Pro restauré !",
+    "subscriptionPro": "Pro",
+    "subscriptionTrialLabel": "Essai ({count} jours restants)",
+    "@subscriptionTrialLabel": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+
+    "authConnectionError": "Erreur de connexion",
+    "authRetry": "Réessayer",
+    "authSignOut": "Se déconnecter"
 }

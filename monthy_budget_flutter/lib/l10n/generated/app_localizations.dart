@@ -64,7 +64,8 @@ import 'app_localizations_pt.dart';
 /// be consistent with the languages listed in the S.supportedLocales
 /// property.
 abstract class S {
-  S(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  S(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -84,19 +85,20 @@ abstract class S {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
     Locale('es'),
     Locale('fr'),
-    Locale('pt')
+    Locale('pt'),
   ];
 
   /// Bottom nav label for budget tab
@@ -8090,6 +8092,108 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'A mostrar {count} loja fresca nas comparações'**
   String groceryComparisonsFreshOnly(int count);
+
+  /// No description provided for @navHome.
+  ///
+  /// In pt, this message translates to:
+  /// **'Início'**
+  String get navHome;
+
+  /// No description provided for @navHomeTip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Resumo mensal'**
+  String get navHomeTip;
+
+  /// No description provided for @navTrack.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas'**
+  String get navTrack;
+
+  /// No description provided for @navTrackTip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Registar despesas mensais'**
+  String get navTrackTip;
+
+  /// No description provided for @navPlan.
+  ///
+  /// In pt, this message translates to:
+  /// **'Planear'**
+  String get navPlan;
+
+  /// No description provided for @navPlanTip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mercearia, lista e plano de refeições'**
+  String get navPlanTip;
+
+  /// No description provided for @navMore.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais'**
+  String get navMore;
+
+  /// No description provided for @navMoreTip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Definições e análises'**
+  String get navMoreTip;
+
+  /// No description provided for @paywallContinueFree.
+  ///
+  /// In pt, this message translates to:
+  /// **'A continuar com o plano gratuito'**
+  String get paywallContinueFree;
+
+  /// No description provided for @paywallUpgradedPro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atualizado para Pro — obrigado!'**
+  String get paywallUpgradedPro;
+
+  /// No description provided for @paywallNoRestore.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhuma compra anterior encontrada'**
+  String get paywallNoRestore;
+
+  /// No description provided for @paywallRestoredPro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Subscrição Pro restaurada!'**
+  String get paywallRestoredPro;
+
+  /// No description provided for @subscriptionPro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pro'**
+  String get subscriptionPro;
+
+  /// No description provided for @subscriptionTrialLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Teste ({count} dias restantes)'**
+  String subscriptionTrialLabel(int count);
+
+  /// No description provided for @authConnectionError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro de ligação'**
+  String get authConnectionError;
+
+  /// No description provided for @authRetry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get authRetry;
+
+  /// No description provided for @authSignOut.
+  ///
+  /// In pt, this message translates to:
+  /// **'Terminar sessão'**
+  String get authSignOut;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
@@ -8101,27 +8205,30 @@ class _SDelegate extends LocalizationsDelegate<S> {
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'es', 'fr', 'pt'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'es', 'fr', 'pt'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_SDelegate old) => false;
 }
 
 S lookupS(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return SEn();
-    case 'es': return SEs();
-    case 'fr': return SFr();
-    case 'pt': return SPt();
+    case 'en':
+      return SEn();
+    case 'es':
+      return SEs();
+    case 'fr':
+      return SFr();
+    case 'pt':
+      return SPt();
   }
 
   throw FlutterError(
     'S.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
+    'that was used.',
   );
 }

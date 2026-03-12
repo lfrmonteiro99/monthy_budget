@@ -452,7 +452,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           label: Text(l10n.settingsLogout),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: AppColors.error(context),
-                            side: const BorderSide(color: Color(0xFFFECACA)),
+                            side: BorderSide(color: AppColors.errorBackground(context)),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12)),
                             padding: const EdgeInsets.symmetric(vertical: 14),
