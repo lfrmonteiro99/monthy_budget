@@ -2408,5 +2408,36 @@
     "authConnectionError": "Erreur de connexion",
     "authRetry": "Réessayer",
     "authSignOut": "Se déconnecter",
-    "actionRetry": "Réessayer"
+    "actionRetry": "Réessayer",
+
+    "setupWizardThemeTitle": "Apparence",
+    "setupWizardThemeSubtitle": "Choisissez le thème et la palette de couleurs de l'application.",
+    "setupWizardThemeLight": "Clair",
+    "setupWizardThemeDark": "Sombre",
+    "setupWizardThemeSystem": "Système",
+    "setupWizardThemeColorLabel": "PALETTE DE COULEURS",
+
+    "setupWizardNotifTitle": "Notifications",
+    "setupWizardNotifSubtitle": "Activez les rappels pour ne jamais manquer un paiement.",
+    "setupWizardNotifBillReminders": "Rappels de factures",
+    "setupWizardNotifBillDaysBefore": "{days} jour(s) avant l'échéance",
+    "setupWizardNotifBudgetAlerts": "Alerte budget",
+    "setupWizardNotifBudgetThreshold": "Avertir à {threshold}% du budget dépensé",
+    "setupWizardNotifNote": "Vous pouvez personnaliser les rappels plus tard dans les paramètres.",
+
+    "setupWizardSavingsTitle": "Objectif d'épargne",
+    "setupWizardSavingsSubtitle": "Définissez un objectif pour commencer à épargner dès le premier jour.",
+    "setupWizardSavingsGoalName": "Nom de l'objectif",
+    "setupWizardSavingsGoalNameHint": "ex : Fonds d'urgence",
+    "setupWizardSavingsTargetAmount": "Montant cible",
+    "setupWizardSavingsSkip": "Passer cette étape",
+    "setupWizardSavingsNote": "Vous pouvez créer plusieurs objectifs plus tard.",
+
+    "setupWizardDashboardTitle": "Votre tableau de bord",
+    "setupWizardDashboardSubtitle": "Choisissez le niveau de détail de votre tableau de bord.",
+    "setupWizardDashboardMinimalist": "Minimaliste",
+    "setupWizardDashboardMinimalistDesc": "Résumé mensuel et factures à venir",
+    "setupWizardDashboardComplete": "Complet",
+    "setupWizardDashboardCompleteDesc": "Graphiques, objectifs, tendances et plus",
+    "setupWizardDashboardNote": "Vous pouvez personnaliser chaque widget plus tard dans les paramètres."
 }

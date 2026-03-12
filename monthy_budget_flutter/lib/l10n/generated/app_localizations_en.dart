@@ -4536,4 +4536,85 @@ class SEn extends S {
 
   @override
   String get actionRetry => 'Retry';
+
+  @override
+  String get setupWizardThemeTitle => 'Appearance';
+
+  @override
+  String get setupWizardThemeSubtitle => 'Choose your app theme and color palette.';
+
+  @override
+  String get setupWizardThemeLight => 'Light';
+
+  @override
+  String get setupWizardThemeDark => 'Dark';
+
+  @override
+  String get setupWizardThemeSystem => 'System';
+
+  @override
+  String get setupWizardThemeColorLabel => 'COLOR PALETTE';
+
+  @override
+  String get setupWizardNotifTitle => 'Notifications';
+
+  @override
+  String get setupWizardNotifSubtitle => 'Set up reminders so you never miss a payment.';
+
+  @override
+  String get setupWizardNotifBillReminders => 'Bill payment reminders';
+
+  @override
+  String setupWizardNotifBillDaysBefore(int days) => '$days day(s) before due date';
+
+  @override
+  String get setupWizardNotifBudgetAlerts => 'Budget alert';
+
+  @override
+  String setupWizardNotifBudgetThreshold(int threshold) => 'Warn when spending $threshold% of budget';
+
+  @override
+  String get setupWizardNotifNote => 'You can customize reminders later in settings.';
+
+  @override
+  String get setupWizardSavingsTitle => 'Savings goal';
+
+  @override
+  String get setupWizardSavingsSubtitle => 'Set a target to start saving from day one.';
+
+  @override
+  String get setupWizardSavingsGoalName => 'Goal name';
+
+  @override
+  String get setupWizardSavingsGoalNameHint => 'e.g. Emergency fund';
+
+  @override
+  String get setupWizardSavingsTargetAmount => 'Target amount';
+
+  @override
+  String get setupWizardSavingsSkip => 'Skip this step';
+
+  @override
+  String get setupWizardSavingsNote => 'You can create multiple goals later.';
+
+  @override
+  String get setupWizardDashboardTitle => 'Your dashboard';
+
+  @override
+  String get setupWizardDashboardSubtitle => 'Choose the level of detail for your dashboard.';
+
+  @override
+  String get setupWizardDashboardMinimalist => 'Minimalist';
+
+  @override
+  String get setupWizardDashboardMinimalistDesc => 'Monthly summary and upcoming bills';
+
+  @override
+  String get setupWizardDashboardComplete => 'Complete';
+
+  @override
+  String get setupWizardDashboardCompleteDesc => 'Charts, goals, trends and more';
+
+  @override
+  String get setupWizardDashboardNote => 'You can customize each widget later in dashboard settings.';
 }

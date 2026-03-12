@@ -2459,5 +2459,36 @@
     "authConnectionError": "Connection error",
     "authRetry": "Retry",
     "authSignOut": "Sign out",
-    "actionRetry": "Retry"
+    "actionRetry": "Retry",
+
+    "setupWizardThemeTitle": "Appearance",
+    "setupWizardThemeSubtitle": "Choose your app theme and color palette.",
+    "setupWizardThemeLight": "Light",
+    "setupWizardThemeDark": "Dark",
+    "setupWizardThemeSystem": "System",
+    "setupWizardThemeColorLabel": "COLOR PALETTE",
+
+    "setupWizardNotifTitle": "Notifications",
+    "setupWizardNotifSubtitle": "Set up reminders so you never miss a payment.",
+    "setupWizardNotifBillReminders": "Bill payment reminders",
+    "setupWizardNotifBillDaysBefore": "{days} day(s) before due date",
+    "setupWizardNotifBudgetAlerts": "Budget alert",
+    "setupWizardNotifBudgetThreshold": "Warn when spending {threshold}% of budget",
+    "setupWizardNotifNote": "You can customize reminders later in settings.",
+
+    "setupWizardSavingsTitle": "Savings goal",
+    "setupWizardSavingsSubtitle": "Set a target to start saving from day one.",
+    "setupWizardSavingsGoalName": "Goal name",
+    "setupWizardSavingsGoalNameHint": "e.g. Emergency fund",
+    "setupWizardSavingsTargetAmount": "Target amount",
+    "setupWizardSavingsSkip": "Skip this step",
+    "setupWizardSavingsNote": "You can create multiple goals later.",
+
+    "setupWizardDashboardTitle": "Your dashboard",
+    "setupWizardDashboardSubtitle": "Choose the level of detail for your dashboard.",
+    "setupWizardDashboardMinimalist": "Minimalist",
+    "setupWizardDashboardMinimalistDesc": "Monthly summary and upcoming bills",
+    "setupWizardDashboardComplete": "Complete",
+    "setupWizardDashboardCompleteDesc": "Charts, goals, trends and more",
+    "setupWizardDashboardNote": "You can customize each widget later in dashboard settings."
 }

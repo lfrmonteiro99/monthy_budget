@@ -2408,5 +2408,36 @@
     "authConnectionError": "Error de conexión",
     "authRetry": "Reintentar",
     "authSignOut": "Cerrar sesión",
-    "actionRetry": "Reintentar"
+    "actionRetry": "Reintentar",
+
+    "setupWizardThemeTitle": "Apariencia",
+    "setupWizardThemeSubtitle": "Elige el tema y la paleta de colores de la aplicación.",
+    "setupWizardThemeLight": "Claro",
+    "setupWizardThemeDark": "Oscuro",
+    "setupWizardThemeSystem": "Sistema",
+    "setupWizardThemeColorLabel": "PALETA DE COLORES",
+
+    "setupWizardNotifTitle": "Notificaciones",
+    "setupWizardNotifSubtitle": "Activa recordatorios para no olvidar ningún pago.",
+    "setupWizardNotifBillReminders": "Recordar facturas por pagar",
+    "setupWizardNotifBillDaysBefore": "{days} día(s) antes del vencimiento",
+    "setupWizardNotifBudgetAlerts": "Alerta de presupuesto",
+    "setupWizardNotifBudgetThreshold": "Avisar al gastar el {threshold}% del presupuesto",
+    "setupWizardNotifNote": "Puedes personalizar los recordatorios más tarde en ajustes.",
+
+    "setupWizardSavingsTitle": "Meta de ahorro",
+    "setupWizardSavingsSubtitle": "Define un objetivo para empezar a ahorrar desde el primer día.",
+    "setupWizardSavingsGoalName": "Nombre del objetivo",
+    "setupWizardSavingsGoalNameHint": "ej: Fondo de emergencia",
+    "setupWizardSavingsTargetAmount": "Monto objetivo",
+    "setupWizardSavingsSkip": "Saltar este paso",
+    "setupWizardSavingsNote": "Puedes crear múltiples objetivos más tarde.",
+
+    "setupWizardDashboardTitle": "Tu panel",
+    "setupWizardDashboardSubtitle": "Elige el nivel de detalle de tu panel inicial.",
+    "setupWizardDashboardMinimalist": "Minimalista",
+    "setupWizardDashboardMinimalistDesc": "Resumen mensual y facturas próximas",
+    "setupWizardDashboardComplete": "Completo",
+    "setupWizardDashboardCompleteDesc": "Gráficos, metas, tendencias y más",
+    "setupWizardDashboardNote": "Puedes personalizar cada widget más tarde en los ajustes del panel."
 }

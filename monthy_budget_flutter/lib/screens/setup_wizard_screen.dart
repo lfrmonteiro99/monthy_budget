@@ -2,16 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
+import '../models/local_dashboard_config.dart';
+import '../models/notification_preferences.dart';
+import '../models/savings_goal.dart';
 import '../data/tax/tax_system.dart';
 import '../data/tax/tax_factory.dart';
 import '../utils/calculations.dart';
 import '../utils/formatters.dart';
-import '../main.dart' show appLocaleNotifier;
+import '../main.dart' show appLocaleNotifier, appThemeModeNotifier, appColorPaletteNotifier;
 import '../theme/app_colors.dart';
+
+/// Result object returned by the setup wizard containing all user choices.
+class SetupWizardResult {
+  final AppSettings settings;
+  final ThemeMode themeMode;
+  final AppColorPalette colorPalette;
+  final NotificationPreferences notificationPrefs;
+  final LocalDashboardConfig dashboardConfig;
+  final SavingsGoal? savingsGoal;
+
+  const SetupWizardResult({
+    required this.settings,
+    this.themeMode = ThemeMode.system,
+    this.colorPalette = AppColorPalette.ocean,
+    required this.notificationPrefs,
+    required this.dashboardConfig,
+    this.savingsGoal,
+  });
+}
 
 class SetupWizardScreen extends StatefulWidget {
   final AppSettings initial;
-  final ValueChanged<AppSettings> onComplete;
+  final ValueChanged<SetupWizardResult> onComplete;
 
   const SetupWizardScreen({
     super.key,
@@ -25,9 +47,9 @@ class SetupWizardScreen extends StatefulWidget {
 
 class _SetupWizardScreenState extends State<SetupWizardScreen> {
   late AppSettings _draft;
-  int _step = 0; // 0=welcome, 1=country, 2=personal, 3=salary, 4=expenses, 5=completion
+  int _step = 0; // 0=welcome, 1=country, 2=personal, 3=salary, 4=expenses, 5=theme, 6=notif, 7=savings, 8=dashboard, 9=completion
   late PageController _pageController;
-  static const _dataSteps = 4; // for progress display (steps 1-4)
+  static const _dataSteps = 8; // for progress display (steps 1-8)
 
   // Expense controllers for step 4
   final _expenseControllers = <String, TextEditingController>{};
@@ -37,6 +59,14 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
 
   // Meal allowance controller
   final _mealAllowanceController = TextEditingController();
+
+  // New wizard state for additional steps
+  ThemeMode _selectedThemeMode = ThemeMode.system;
+  AppColorPalette _selectedPalette = AppColorPalette.ocean;
+  NotificationPreferences _notifPrefs = NotificationPreferences();
+  bool _dashboardFull = false; // false = minimalist, true = full
+  final _savingsNameController = TextEditingController();
+  final _savingsAmountController = TextEditingController();
 
   @override
   void initState() {
@@ -51,6 +81,8 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
     _pageController.dispose();
     _salaryController.dispose();
     _mealAllowanceController.dispose();
+    _savingsNameController.dispose();
+    _savingsAmountController.dispose();
     for (final c in _expenseControllers.values) {
       c.dispose();
     }
@@ -99,7 +131,7 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
   }
 
   void _next() {
-    if (_step < 5) {
+    if (_step < 9) {
       setState(() => _step++);
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
@@ -119,7 +151,13 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
   }
 
   void _skipAll() {
-    widget.onComplete(_draft);
+    widget.onComplete(SetupWizardResult(
+      settings: _draft,
+      themeMode: _selectedThemeMode,
+      colorPalette: _selectedPalette,
+      notificationPrefs: _notifPrefs,
+      dashboardConfig: const LocalDashboardConfig(),
+    ));
   }
 
   void _finishExpenses() {
@@ -143,8 +181,30 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
     _next();
   }
 
+  SavingsGoal? _buildSavingsGoal() {
+    final name = _savingsNameController.text.trim();
+    final amount = double.tryParse(
+        _savingsAmountController.text.replaceAll(',', '.')) ?? 0;
+    if (name.isEmpty || amount <= 0) return null;
+    return SavingsGoal(
+      id: 'wizard_savings_${DateTime.now().millisecondsSinceEpoch}',
+      name: name,
+      targetAmount: amount,
+    );
+  }
+
   void _finish() {
-    widget.onComplete(_draft);
+    final dashboardConfig = _dashboardFull
+        ? LocalDashboardConfig.full()
+        : LocalDashboardConfig.minimalist();
+    widget.onComplete(SetupWizardResult(
+      settings: _draft,
+      themeMode: _selectedThemeMode,
+      colorPalette: _selectedPalette,
+      notificationPrefs: _notifPrefs,
+      dashboardConfig: dashboardConfig,
+      savingsGoal: _buildSavingsGoal(),
+    ));
   }
 
   List<String> _expenseKeyOrder() =>
@@ -206,7 +266,7 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background(context),
-      appBar: _step >= 1 && _step <= 4
+      appBar: _step >= 1 && _step <= 8
           ? AppBar(
               backgroundColor: AppColors.surface(context),
               elevation: 0,
@@ -266,6 +326,37 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
             expenseIcon: _expenseIcon,
             expenseLabel: (key) => _expenseL10nLabel(S.of(context), key),
             onFinish: _finishExpenses,
+          ),
+          _ThemeStep(
+            themeMode: _selectedThemeMode,
+            palette: _selectedPalette,
+            onThemeChanged: (mode) {
+              setState(() => _selectedThemeMode = mode);
+              appThemeModeNotifier.value = mode;
+            },
+            onPaletteChanged: (palette) {
+              setState(() => _selectedPalette = palette);
+              AppColors.palette = palette;
+              appColorPaletteNotifier.value = palette;
+            },
+            onNext: _next,
+          ),
+          _NotificationsStep(
+            prefs: _notifPrefs,
+            onChanged: (prefs) => setState(() => _notifPrefs = prefs),
+            onNext: _next,
+          ),
+          _SavingsStep(
+            country: _draft.country,
+            nameController: _savingsNameController,
+            amountController: _savingsAmountController,
+            onNext: _next,
+            onSkip: _next,
+          ),
+          _DashboardStep(
+            isFull: _dashboardFull,
+            onChanged: (full) => setState(() => _dashboardFull = full),
+            onNext: _next,
           ),
           _CompletionStep(
             draft: _draft,
@@ -1219,7 +1310,574 @@ class _ExpensesStep extends StatelessWidget {
 }
 
 // ============================================================
-// Screen 5 -- Completion
+// Screen 5 -- Theme & Appearance
+// ============================================================
+class _ThemeStep extends StatelessWidget {
+  final ThemeMode themeMode;
+  final AppColorPalette palette;
+  final ValueChanged<ThemeMode> onThemeChanged;
+  final ValueChanged<AppColorPalette> onPaletteChanged;
+  final VoidCallback onNext;
+
+  const _ThemeStep({
+    required this.themeMode,
+    required this.palette,
+    required this.onThemeChanged,
+    required this.onPaletteChanged,
+    required this.onNext,
+  });
+
+  static const _themeModes = [
+    (ThemeMode.system, Icons.brightness_auto_outlined),
+    (ThemeMode.light, Icons.light_mode_outlined),
+    (ThemeMode.dark, Icons.dark_mode_outlined),
+  ];
+
+  String _themeModeLabel(S l10n, ThemeMode mode) {
+    switch (mode) {
+      case ThemeMode.system: return l10n.setupWizardThemeSystem;
+      case ThemeMode.light: return l10n.setupWizardThemeLight;
+      case ThemeMode.dark: return l10n.setupWizardThemeDark;
+    }
+  }
+
+  static const _paletteColors = {
+    AppColorPalette.ocean: Color(0xFF2563EB),
+    AppColorPalette.emerald: Color(0xFF059669),
+    AppColorPalette.violet: Color(0xFF7C3AED),
+    AppColorPalette.teal: Color(0xFF0D9488),
+    AppColorPalette.sunset: Color(0xFFEA580C),
+  };
+
+  String _paletteName(AppColorPalette p) {
+    switch (p) {
+      case AppColorPalette.ocean: return 'Ocean';
+      case AppColorPalette.emerald: return 'Emerald';
+      case AppColorPalette.violet: return 'Violet';
+      case AppColorPalette.teal: return 'Teal';
+      case AppColorPalette.sunset: return 'Sunset';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = S.of(context);
+    return Column(
+      children: [
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+              Text(l10n.setupWizardThemeTitle,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+              const SizedBox(height: 6),
+              Text(l10n.setupWizardThemeSubtitle,
+                  style: TextStyle(fontSize: 14, color: AppColors.textSecondary(context))),
+              const SizedBox(height: 20),
+              Row(
+                children: _themeModes.map((entry) {
+                  final (mode, icon) = entry;
+                  final selected = themeMode == mode;
+                  return Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(right: mode != ThemeMode.dark ? 8 : 0),
+                      child: Material(
+                        color: selected
+                            ? AppColors.infoBackground(context)
+                            : AppColors.surface(context),
+                        borderRadius: BorderRadius.circular(12),
+                        child: InkWell(
+                          onTap: () => onThemeChanged(mode),
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: selected
+                                    ? AppColors.primary(context)
+                                    : AppColors.border(context),
+                                width: selected ? 2 : 1,
+                              ),
+                            ),
+                            child: Column(
+                              children: [
+                                Icon(icon,
+                                    size: 28,
+                                    color: selected
+                                        ? AppColors.primary(context)
+                                        : AppColors.textMuted(context)),
+                                const SizedBox(height: 8),
+                                Text(_themeModeLabel(l10n, mode),
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                                      color: selected
+                                          ? AppColors.textPrimary(context)
+                                          : AppColors.textLabel(context),
+                                    )),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 24),
+              Text(l10n.setupWizardThemeColorLabel,
+                  style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textMuted(context),
+                      letterSpacing: 1.2)),
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: AppColorPalette.values.map((p) {
+                  final selected = palette == p;
+                  final color = _paletteColors[p] ?? const Color(0xFF2563EB);
+                  return GestureDetector(
+                    onTap: () => onPaletteChanged(p),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: color,
+                            shape: BoxShape.circle,
+                            border: selected
+                                ? Border.all(color: AppColors.textPrimary(context), width: 3)
+                                : null,
+                            boxShadow: selected
+                                ? [BoxShadow(color: color.withValues(alpha: 0.4), blurRadius: 8, spreadRadius: 2)]
+                                : null,
+                          ),
+                          child: selected
+                              ? const Icon(Icons.check, color: Colors.white, size: 24)
+                              : null,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(_paletteName(p),
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                              color: AppColors.textSecondary(context),
+                            )),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        ),
+        _BottomButton(
+          label: l10n.setupWizardContinue,
+          onPressed: onNext,
+        ),
+      ],
+    );
+  }
+}
+
+// ============================================================
+// Screen 6 -- Notifications
+// ============================================================
+class _NotificationsStep extends StatelessWidget {
+  final NotificationPreferences prefs;
+  final ValueChanged<NotificationPreferences> onChanged;
+  final VoidCallback onNext;
+
+  const _NotificationsStep({
+    required this.prefs,
+    required this.onChanged,
+    required this.onNext,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = S.of(context);
+    return Column(
+      children: [
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+              Text(l10n.setupWizardNotifTitle,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+              const SizedBox(height: 6),
+              Text(l10n.setupWizardNotifSubtitle,
+                  style: TextStyle(fontSize: 14, color: AppColors.textSecondary(context))),
+              const SizedBox(height: 24),
+              // Bill reminders
+              _SwitchRow(
+                icon: Icons.receipt_long_outlined,
+                label: l10n.setupWizardNotifBillReminders,
+                value: prefs.billReminders,
+                onChanged: (v) => onChanged(prefs.copyWith(billReminders: v)),
+              ),
+              AnimatedCrossFade(
+                firstChild: const SizedBox.shrink(),
+                secondChild: Padding(
+                  padding: const EdgeInsets.only(left: 44, top: 8, bottom: 8),
+                  child: Row(
+                    children: [
+                      Text(l10n.setupWizardNotifBillDaysBefore(prefs.billReminderDaysBefore),
+                          style: TextStyle(fontSize: 13, color: AppColors.textSecondary(context))),
+                      const Spacer(),
+                      _CounterButton(
+                        icon: Icons.remove,
+                        onPressed: prefs.billReminderDaysBefore > 1
+                            ? () => onChanged(prefs.copyWith(
+                                  billReminderDaysBefore: prefs.billReminderDaysBefore - 1))
+                            : null,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text('${prefs.billReminderDaysBefore}',
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                      ),
+                      _CounterButton(
+                        icon: Icons.add,
+                        onPressed: prefs.billReminderDaysBefore < 7
+                            ? () => onChanged(prefs.copyWith(
+                                  billReminderDaysBefore: prefs.billReminderDaysBefore + 1))
+                            : null,
+                      ),
+                    ],
+                  ),
+                ),
+                crossFadeState: prefs.billReminders
+                    ? CrossFadeState.showSecond
+                    : CrossFadeState.showFirst,
+                duration: const Duration(milliseconds: 250),
+              ),
+              const SizedBox(height: 12),
+              // Budget alerts
+              _SwitchRow(
+                icon: Icons.pie_chart_outlined,
+                label: l10n.setupWizardNotifBudgetAlerts,
+                value: prefs.budgetAlerts,
+                onChanged: (v) => onChanged(prefs.copyWith(budgetAlerts: v)),
+              ),
+              AnimatedCrossFade(
+                firstChild: const SizedBox.shrink(),
+                secondChild: Padding(
+                  padding: const EdgeInsets.only(left: 44, top: 8, bottom: 8, right: 4),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.setupWizardNotifBudgetThreshold(prefs.budgetAlertThreshold),
+                        style: TextStyle(fontSize: 13, color: AppColors.textSecondary(context)),
+                      ),
+                      Slider(
+                        value: prefs.budgetAlertThreshold.toDouble(),
+                        min: 50,
+                        max: 100,
+                        divisions: 10,
+                        label: '${prefs.budgetAlertThreshold}%',
+                        activeColor: AppColors.primary(context),
+                        onChanged: (v) => onChanged(
+                            prefs.copyWith(budgetAlertThreshold: v.round())),
+                      ),
+                    ],
+                  ),
+                ),
+                crossFadeState: prefs.budgetAlerts
+                    ? CrossFadeState.showSecond
+                    : CrossFadeState.showFirst,
+                duration: const Duration(milliseconds: 250),
+              ),
+              const SizedBox(height: 20),
+              _InfoBox(text: l10n.setupWizardNotifNote),
+            ],
+          ),
+        ),
+        _BottomButton(
+          label: l10n.setupWizardContinue,
+          onPressed: onNext,
+        ),
+      ],
+    );
+  }
+}
+
+class _SwitchRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  const _SwitchRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, size: 20, color: AppColors.textSecondary(context)),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(label,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+        ),
+        Switch.adaptive(
+          value: value,
+          onChanged: onChanged,
+          activeColor: AppColors.primary(context),
+        ),
+      ],
+    );
+  }
+}
+
+// ============================================================
+// Screen 7 -- Savings Goal
+// ============================================================
+class _SavingsStep extends StatelessWidget {
+  final Country country;
+  final TextEditingController nameController;
+  final TextEditingController amountController;
+  final VoidCallback onNext;
+  final VoidCallback onSkip;
+
+  const _SavingsStep({
+    required this.country,
+    required this.nameController,
+    required this.amountController,
+    required this.onNext,
+    required this.onSkip,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = S.of(context);
+    return Column(
+      children: [
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+              Text(l10n.setupWizardSavingsTitle,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+              const SizedBox(height: 6),
+              Text(l10n.setupWizardSavingsSubtitle,
+                  style: TextStyle(fontSize: 14, color: AppColors.textSecondary(context))),
+              const SizedBox(height: 24),
+              Icon(Icons.savings_outlined,
+                  size: 48, color: AppColors.primary(context)),
+              const SizedBox(height: 24),
+              TextField(
+                controller: nameController,
+                textCapitalization: TextCapitalization.sentences,
+                decoration: InputDecoration(
+                  labelText: l10n.setupWizardSavingsGoalName,
+                  hintText: l10n.setupWizardSavingsGoalNameHint,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: AppColors.border(context))),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: AppColors.primary(context), width: 2)),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: amountController,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[\d.,]')),
+                ],
+                decoration: InputDecoration(
+                  labelText: l10n.setupWizardSavingsTargetAmount,
+                  prefixText: '${country.currencySymbol} ',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: AppColors.border(context))),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: AppColors.primary(context), width: 2)),
+                ),
+              ),
+              const SizedBox(height: 20),
+              _InfoBox(text: l10n.setupWizardSavingsNote),
+            ],
+          ),
+        ),
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+            child: Column(
+              children: [
+                TextButton(
+                  onPressed: onSkip,
+                  child: Text(l10n.setupWizardSavingsSkip,
+                      style: TextStyle(fontSize: 13, color: AppColors.textMuted(context))),
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    onPressed: onNext,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppColors.primary(context),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    child: Text(l10n.setupWizardContinue,
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ============================================================
+// Screen 8 -- Dashboard Layout
+// ============================================================
+class _DashboardStep extends StatelessWidget {
+  final bool isFull;
+  final ValueChanged<bool> onChanged;
+  final VoidCallback onNext;
+
+  const _DashboardStep({
+    required this.isFull,
+    required this.onChanged,
+    required this.onNext,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = S.of(context);
+    return Column(
+      children: [
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+              Text(l10n.setupWizardDashboardTitle,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+              const SizedBox(height: 6),
+              Text(l10n.setupWizardDashboardSubtitle,
+                  style: TextStyle(fontSize: 14, color: AppColors.textSecondary(context))),
+              const SizedBox(height: 24),
+              _DashboardOption(
+                icon: Icons.view_agenda_outlined,
+                label: l10n.setupWizardDashboardMinimalist,
+                description: l10n.setupWizardDashboardMinimalistDesc,
+                selected: !isFull,
+                onTap: () => onChanged(false),
+              ),
+              const SizedBox(height: 12),
+              _DashboardOption(
+                icon: Icons.dashboard_outlined,
+                label: l10n.setupWizardDashboardComplete,
+                description: l10n.setupWizardDashboardCompleteDesc,
+                selected: isFull,
+                onTap: () => onChanged(true),
+              ),
+              const SizedBox(height: 20),
+              _InfoBox(text: l10n.setupWizardDashboardNote),
+            ],
+          ),
+        ),
+        _BottomButton(
+          label: l10n.setupWizardFinish,
+          onPressed: onNext,
+        ),
+      ],
+    );
+  }
+}
+
+class _DashboardOption extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String description;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _DashboardOption({
+    required this.icon,
+    required this.label,
+    required this.description,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: selected ? AppColors.infoBackground(context) : AppColors.surface(context),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: selected ? AppColors.primary(context) : AppColors.border(context),
+              width: selected ? 2 : 1,
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(icon,
+                  size: 32,
+                  color: selected
+                      ? AppColors.primary(context)
+                      : AppColors.textMuted(context)),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(label,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                          color: AppColors.textPrimary(context),
+                        )),
+                    const SizedBox(height: 4),
+                    Text(description,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary(context),
+                        )),
+                  ],
+                ),
+              ),
+              Icon(
+                selected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+                color: selected ? AppColors.primary(context) : AppColors.borderMuted(context),
+                size: 20,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ============================================================
+// Screen 9 -- Completion
 // ============================================================
 class _CompletionStep extends StatefulWidget {
   final AppSettings draft;

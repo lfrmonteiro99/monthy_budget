@@ -8200,6 +8200,87 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Tentar novamente'**
   String get actionRetry;
+
+  /// Setup wizard theme step title
+  String get setupWizardThemeTitle;
+
+  /// Setup wizard theme step subtitle
+  String get setupWizardThemeSubtitle;
+
+  /// Light theme option
+  String get setupWizardThemeLight;
+
+  /// Dark theme option
+  String get setupWizardThemeDark;
+
+  /// System theme option
+  String get setupWizardThemeSystem;
+
+  /// Color palette label
+  String get setupWizardThemeColorLabel;
+
+  /// Setup wizard notifications step title
+  String get setupWizardNotifTitle;
+
+  /// Setup wizard notifications step subtitle
+  String get setupWizardNotifSubtitle;
+
+  /// Bill reminders toggle
+  String get setupWizardNotifBillReminders;
+
+  /// Days before bill due
+  String setupWizardNotifBillDaysBefore(int days);
+
+  /// Budget alert toggle
+  String get setupWizardNotifBudgetAlerts;
+
+  /// Budget threshold label
+  String setupWizardNotifBudgetThreshold(int threshold);
+
+  /// Notification step info note
+  String get setupWizardNotifNote;
+
+  /// Setup wizard savings step title
+  String get setupWizardSavingsTitle;
+
+  /// Setup wizard savings step subtitle
+  String get setupWizardSavingsSubtitle;
+
+  /// Savings goal name label
+  String get setupWizardSavingsGoalName;
+
+  /// Savings goal name hint
+  String get setupWizardSavingsGoalNameHint;
+
+  /// Savings target amount label
+  String get setupWizardSavingsTargetAmount;
+
+  /// Skip savings step
+  String get setupWizardSavingsSkip;
+
+  /// Savings step info note
+  String get setupWizardSavingsNote;
+
+  /// Setup wizard dashboard step title
+  String get setupWizardDashboardTitle;
+
+  /// Setup wizard dashboard step subtitle
+  String get setupWizardDashboardSubtitle;
+
+  /// Minimalist dashboard option
+  String get setupWizardDashboardMinimalist;
+
+  /// Minimalist dashboard description
+  String get setupWizardDashboardMinimalistDesc;
+
+  /// Full dashboard option
+  String get setupWizardDashboardComplete;
+
+  /// Full dashboard description
+  String get setupWizardDashboardCompleteDesc;
+
+  /// Dashboard step info note
+  String get setupWizardDashboardNote;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

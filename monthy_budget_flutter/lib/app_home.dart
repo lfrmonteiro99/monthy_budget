@@ -1449,9 +1449,24 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     if (!_settings.setupWizardCompleted) {
       return SetupWizardScreen(
         initial: _settings,
-        onComplete: (settings) {
-          final completed = settings.copyWith(setupWizardCompleted: true);
+        onComplete: (result) {
+          final completed = result.settings.copyWith(setupWizardCompleted: true);
           _saveSettings(completed);
+          // Apply theme & palette
+          _localConfigService.saveThemeMode(result.themeMode);
+          _localConfigService.saveColorPalette(result.colorPalette);
+          // Apply notification preferences
+          _notificationPrefs = result.notificationPrefs;
+          _localConfigService.saveNotificationPreferences(result.notificationPrefs);
+          // Apply dashboard config
+          _dashboardConfig = result.dashboardConfig;
+          _localConfigService.save(result.dashboardConfig);
+          // Save savings goal if provided
+          if (result.savingsGoal != null) {
+            _savingsGoalService.saveGoal(result.savingsGoal!, widget.householdId).then((_) {
+              if (mounted) _loadSavingsGoals();
+            });
+          }
         },
       );
     }

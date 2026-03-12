@@ -4568,4 +4568,85 @@ class SEs extends S {
 
   @override
   String get actionRetry => 'Reintentar';
+
+  @override
+  String get setupWizardThemeTitle => 'Apariencia';
+
+  @override
+  String get setupWizardThemeSubtitle => 'Elige el tema y la paleta de colores de la aplicación.';
+
+  @override
+  String get setupWizardThemeLight => 'Claro';
+
+  @override
+  String get setupWizardThemeDark => 'Oscuro';
+
+  @override
+  String get setupWizardThemeSystem => 'Sistema';
+
+  @override
+  String get setupWizardThemeColorLabel => 'PALETA DE COLORES';
+
+  @override
+  String get setupWizardNotifTitle => 'Notificaciones';
+
+  @override
+  String get setupWizardNotifSubtitle => 'Activa recordatorios para no olvidar ningún pago.';
+
+  @override
+  String get setupWizardNotifBillReminders => 'Recordar facturas por pagar';
+
+  @override
+  String setupWizardNotifBillDaysBefore(int days) => '$days día(s) antes del vencimiento';
+
+  @override
+  String get setupWizardNotifBudgetAlerts => 'Alerta de presupuesto';
+
+  @override
+  String setupWizardNotifBudgetThreshold(int threshold) => 'Avisar al gastar el $threshold% del presupuesto';
+
+  @override
+  String get setupWizardNotifNote => 'Puedes personalizar los recordatorios más tarde en ajustes.';
+
+  @override
+  String get setupWizardSavingsTitle => 'Meta de ahorro';
+
+  @override
+  String get setupWizardSavingsSubtitle => 'Define un objetivo para empezar a ahorrar desde el primer día.';
+
+  @override
+  String get setupWizardSavingsGoalName => 'Nombre del objetivo';
+
+  @override
+  String get setupWizardSavingsGoalNameHint => 'ej: Fondo de emergencia';
+
+  @override
+  String get setupWizardSavingsTargetAmount => 'Monto objetivo';
+
+  @override
+  String get setupWizardSavingsSkip => 'Saltar este paso';
+
+  @override
+  String get setupWizardSavingsNote => 'Puedes crear múltiples objetivos más tarde.';
+
+  @override
+  String get setupWizardDashboardTitle => 'Tu panel';
+
+  @override
+  String get setupWizardDashboardSubtitle => 'Elige el nivel de detalle de tu panel inicial.';
+
+  @override
+  String get setupWizardDashboardMinimalist => 'Minimalista';
+
+  @override
+  String get setupWizardDashboardMinimalistDesc => 'Resumen mensual y facturas próximas';
+
+  @override
+  String get setupWizardDashboardComplete => 'Completo';
+
+  @override
+  String get setupWizardDashboardCompleteDesc => 'Gráficos, metas, tendencias y más';
+
+  @override
+  String get setupWizardDashboardNote => 'Puedes personalizar cada widget más tarde en los ajustes del panel.';
 }
