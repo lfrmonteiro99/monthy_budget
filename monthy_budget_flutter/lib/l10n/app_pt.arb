@@ -4747,5 +4747,30 @@
         "placeholders": {
             "count": { "type": "int" }
         }
-    }
+    },
+
+    "navHome": "Início",
+    "navHomeTip": "Resumo mensal",
+    "navTrack": "Despesas",
+    "navTrackTip": "Registar despesas mensais",
+    "navPlan": "Planear",
+    "navPlanTip": "Mercearia, lista e plano de refeições",
+    "navMore": "Mais",
+    "navMoreTip": "Definições e análises",
+
+    "paywallContinueFree": "A continuar com o plano gratuito",
+    "paywallUpgradedPro": "Atualizado para Pro — obrigado!",
+    "paywallNoRestore": "Nenhuma compra anterior encontrada",
+    "paywallRestoredPro": "Subscrição Pro restaurada!",
+    "subscriptionPro": "Pro",
+    "subscriptionTrialLabel": "Teste ({count} dias restantes)",
+    "@subscriptionTrialLabel": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+
+    "authConnectionError": "Erro de ligação",
+    "authRetry": "Tentar novamente",
+    "authSignOut": "Terminar sessão"
 }

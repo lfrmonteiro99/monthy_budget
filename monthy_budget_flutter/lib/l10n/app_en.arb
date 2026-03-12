@@ -2433,5 +2433,30 @@
         "placeholders": {
             "count": { "type": "int" }
         }
-    }
+    },
+
+    "navHome": "Home",
+    "navHomeTip": "Monthly overview",
+    "navTrack": "Track",
+    "navTrackTip": "Track monthly expenses",
+    "navPlan": "Plan",
+    "navPlanTip": "Groceries, list and meal plan",
+    "navMore": "More",
+    "navMoreTip": "Settings and insights",
+
+    "paywallContinueFree": "Continuing with Free plan",
+    "paywallUpgradedPro": "Upgraded to Pro — thank you!",
+    "paywallNoRestore": "No previous purchases found",
+    "paywallRestoredPro": "Restored Pro subscription!",
+    "subscriptionPro": "Pro",
+    "subscriptionTrialLabel": "Trial ({count} days left)",
+    "@subscriptionTrialLabel": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+
+    "authConnectionError": "Connection error",
+    "authRetry": "Retry",
+    "authSignOut": "Sign out"
 }

@@ -169,6 +169,8 @@ class _BarcodeResultCardState extends State<BarcodeResultCard> {
                 children: [
                   Text(
                     product.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
