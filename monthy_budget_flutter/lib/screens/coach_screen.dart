@@ -9,7 +9,9 @@ import '../models/app_settings.dart';
 import '../models/purchase_record.dart';
 import '../models/subscription_state.dart';
 import '../onboarding/coach_tour.dart';
+import '../config/revenuecat_config.dart';
 import '../services/ai_coach_service.dart';
+import '../services/revenuecat_service.dart';
 import '../services/subscription_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/calculations.dart';
@@ -76,6 +78,8 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
 
   // Feature #5: Micro-action follow-up card
   bool _microActionCardDismissed = false;
+  // Track last parsed micro-action for inline display
+  String? _lastParsedMicroAction;
 
   // Regex for parsing LLM delimiters
   static final _sessionInsightRegex =
@@ -169,11 +173,13 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     }
 
     // Feature #5: Parse MICRO_ACTION (Pro only)
+    _lastParsedMicroAction = null;
     if (effectiveMode == CoachMode.pro) {
       final actionMatch = _microActionRegex.firstMatch(cleaned);
       if (actionMatch != null) {
         final action = actionMatch.group(1)?.trim() ?? '';
         if (action.isNotEmpty) {
+          _lastParsedMicroAction = action;
           final updated =
               await _subscriptionService.setLastMicroAction(_subscription, action);
           _updateSubscription(updated);
@@ -747,6 +753,65 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 
   // Feature #5: Micro-action follow-up card
+  Widget _buildInlineMicroActionTag() {
+    final action = _lastParsedMicroAction;
+    if (action == null) return const SizedBox.shrink();
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final maxWidth = screenWidth >= 1200
+        ? 840.0
+        : screenWidth >= 700
+            ? 640.0
+            : screenWidth * 0.9;
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        constraints: BoxConstraints(maxWidth: maxWidth),
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: AppColors.successBackground(context),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: AppColors.success(context).withValues(alpha: 0.1),
+          ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.flag_rounded, size: 16,
+                color: AppColors.success(context)),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'PRÓXIMO PASSO',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.5,
+                      color: AppColors.success(context),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    action,
+                    style: TextStyle(
+                      fontSize: 13,
+                      height: 1.4,
+                      color: AppColors.textPrimary(context),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildMicroActionCard() {
     final action = _subscription.lastMicroAction!;
     final date = _subscription.lastMicroActionDate;
@@ -940,7 +1005,16 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           );
         }
         final message = _messages[index];
-        return _MessageBubble(message: message);
+        final isLastAssistant = message.role == 'assistant' &&
+            index == _messages.length - 1 &&
+            _lastParsedMicroAction != null;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _MessageBubble(message: message),
+            if (isLastAssistant) _buildInlineMicroActionTag(),
+          ],
+        );
       },
     );
   }
@@ -1252,9 +1326,53 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     );
   }
 
-  // Feature #4: Credit packs sheet (placeholder — enhances existing)
+  // Feature #4: Credit packs sheet with ROI card
   void _showCreditPacksSheet() {
-    widget.onOpenSettings();
+    showModalBottomSheet(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (ctx) => _CreditPacksSheet(
+        subscription: _subscription,
+        onPurchase: (pack) async {
+          Navigator.pop(ctx);
+          await _purchaseCreditPack(pack);
+        },
+      ),
+    );
+  }
+
+  Future<void> _purchaseCreditPack(CreditPack pack) async {
+    try {
+      if (revenueCatSimulateMode) {
+        final updated =
+            await _subscriptionService.addAiCredits(_subscription, pack.credits);
+        _updateSubscription(updated);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('+${pack.credits} créditos adicionados')),
+          );
+        }
+        return;
+      }
+      final success = await RevenueCatService.purchaseConsumable(pack.id);
+      if (success) {
+        final updated =
+            await _subscriptionService.addAiCredits(_subscription, pack.credits);
+        _updateSubscription(updated);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('+${pack.credits} créditos adicionados')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro na compra: $e')),
+        );
+      }
+    }
   }
 }
 
@@ -1397,6 +1515,293 @@ class _MessageBubble extends StatelessWidget {
                   ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _CreditPacksSheet extends StatelessWidget {
+  final SubscriptionState subscription;
+  final ValueChanged<CreditPack> onPurchase;
+
+  const _CreditPacksSheet({
+    required this.subscription,
+    required this.onPurchase,
+  });
+
+  String _packSessions(CreditPack pack) {
+    final plus = pack.credits ~/ coachModeCreditCost[CoachMode.plus]!;
+    final pro = pack.credits ~/ coachModeCreditCost[CoachMode.pro]!;
+    return '$plus consultas Plus ou $pro consultas Pro';
+  }
+
+  int _recommendedPackIndex() {
+    if (subscription.totalProSessions > subscription.totalPlusSessions) {
+      return 2; // 500 credits for heavy Pro users
+    }
+    return 1; // 150 credits default
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final recommended = _recommendedPackIndex();
+    final insight = subscription.lastSessionInsight;
+    final insightValue = subscription.lastSessionInsightValue;
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header
+            Row(
+              children: [
+                Text(
+                  'Créditos AI Coach',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary(context),
+                  ),
+                ),
+                const Spacer(),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary(context).withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: Text(
+                    '${subscription.aiCredits} restantes',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primary(context),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+
+            // ROI insight card
+            if (insight != null) ...[
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.primary(context).withValues(alpha: 0.06),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: AppColors.primary(context).withValues(alpha: 0.12),
+                  ),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.insights_rounded, size: 20,
+                        color: AppColors.primary(context)),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text.rich(
+                        TextSpan(
+                          style: TextStyle(
+                            fontSize: 12.5,
+                            height: 1.5,
+                            color: AppColors.textSecondary(context),
+                          ),
+                          children: [
+                            const TextSpan(text: 'Na última sessão Pro, discutimos '),
+                            TextSpan(
+                              text: insight,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textPrimary(context),
+                              ),
+                            ),
+                            if (insightValue != null && insightValue.isNotEmpty) ...[
+                              const TextSpan(text: '. Potencial: '),
+                              TextSpan(
+                                text: insightValue,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.primary(context),
+                                ),
+                              ),
+                            ],
+                            const TextSpan(text: '. Custou 5 créditos (€0,05).'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
+
+            // Cap warning
+            if (subscription.isAtCreditCap) ...[
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: AppColors.warningBackground(context),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: AppColors.warning(context).withValues(alpha: 0.15),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.info_rounded, size: 16,
+                        color: AppColors.warning(context)),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Máximo atingido (${SubscriptionState.maxCreditCap}). '
+                        'Usa os créditos antes de comprar mais.',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textPrimary(context),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
+
+            // Pack cards
+            ...List.generate(creditPacks.length, (i) {
+              final pack = creditPacks[i];
+              final isRecommended = i == recommended;
+              final wasted = subscription.creditsWasted(pack.credits);
+              final isDimmed = wasted > pack.credits * 0.5;
+
+              return Opacity(
+                opacity: isDimmed ? 0.45 : 1.0,
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface(context),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isRecommended
+                          ? AppColors.primary(context)
+                          : AppColors.border(context),
+                      width: isRecommended ? 2 : 1,
+                    ),
+                  ),
+                  child: ListTile(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    onTap: isDimmed ? null : () => onPurchase(pack),
+                    leading: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '${pack.credits}',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textPrimary(context),
+                          ),
+                        ),
+                        Text(
+                          'créditos',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.textMuted(context),
+                          ),
+                        ),
+                      ],
+                    ),
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (isRecommended)
+                          Container(
+                            margin: const EdgeInsets.only(bottom: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary(context),
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            child: Text(
+                              'MELHOR VALOR',
+                              style: TextStyle(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.5,
+                                color: AppColors.onPrimary(context),
+                              ),
+                            ),
+                          ),
+                        Text(
+                          _packSessions(pack),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: wasted > 0
+                                ? AppColors.error(context)
+                                : AppColors.textSecondary(context),
+                          ),
+                        ),
+                        if (wasted > 0)
+                          Text(
+                            'Perderias $wasted créditos',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.error(context),
+                            ),
+                          ),
+                      ],
+                    ),
+                    trailing: OutlinedButton(
+                      onPressed: isDimmed ? null : () => onPurchase(pack),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: AppColors.primary(context)),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 8),
+                      ),
+                      child: Text(
+                        pack.fallbackPrice,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primary(context),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+
+            // Personalized recommendation
+            const SizedBox(height: 4),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.auto_awesome, size: 14,
+                    color: AppColors.primary(context)),
+                const SizedBox(width: 4),
+                Text(
+                  'Recomendamos o pacote de ${creditPacks[recommended].credits} créditos',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary(context),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

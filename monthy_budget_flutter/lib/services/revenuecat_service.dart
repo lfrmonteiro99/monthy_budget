@@ -145,6 +145,27 @@ class RevenueCatService {
     return _tierFromCustomerInfo(customerInfo);
   }
 
+  /// Purchase a consumable product (e.g. AI credit pack) by its store product
+  /// identifier. Returns `true` when the purchase succeeds.
+  static Future<bool> purchaseConsumable(String productId) async {
+    if (revenueCatSimulateMode || !_initialized || !_available) return false;
+    try {
+      final products = await Purchases.getProducts(
+        [productId],
+        productCategory: ProductCategory.nonSubscription,
+      );
+      if (products.isEmpty) {
+        debugPrint('RevenueCat: product $productId not found');
+        return false;
+      }
+      await Purchases.purchaseStoreProduct(products.first);
+      return true;
+    } on PlatformException catch (e) {
+      if (e.code == 'userCancelledError') return false;
+      rethrow;
+    }
+  }
+
   /// Restore previous purchases and return the resulting tier.
   static Future<SubscriptionTier> restorePurchases() async {
     if (revenueCatSimulateMode || !_initialized || !_available) {
