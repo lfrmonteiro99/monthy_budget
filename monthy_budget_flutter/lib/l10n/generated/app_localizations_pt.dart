@@ -4571,4 +4571,28 @@ class SPt extends S {
 
   @override
   String get actionRetry => 'Tentar novamente';
+
+  @override
+  String get settingsGroupAccount => 'CONTA';
+
+  @override
+  String get settingsGroupBudget => 'ORÇAMENTO';
+
+  @override
+  String get settingsGroupPreferences => 'PREFERÊNCIAS';
+
+  @override
+  String get settingsGroupAdvanced => 'AVANÇADO';
+
+  @override
+  String get settingsManageSubscription => 'Gerir Subscrição';
+
+  @override
+  String get settingsAbout => 'Sobre';
+
+  @override
+  String get mealShowDetails => 'Mostrar detalhes';
+
+  @override
+  String get mealHideDetails => 'Ocultar detalhes';
 }

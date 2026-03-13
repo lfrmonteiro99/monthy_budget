@@ -4545,4 +4545,28 @@ class SEn extends S {
 
   @override
   String get actionRetry => 'Retry';
+
+  @override
+  String get settingsGroupAccount => 'ACCOUNT';
+
+  @override
+  String get settingsGroupBudget => 'BUDGET';
+
+  @override
+  String get settingsGroupPreferences => 'PREFERENCES';
+
+  @override
+  String get settingsGroupAdvanced => 'ADVANCED';
+
+  @override
+  String get settingsManageSubscription => 'Manage Subscription';
+
+  @override
+  String get settingsAbout => 'About';
+
+  @override
+  String get mealShowDetails => 'Show details';
+
+  @override
+  String get mealHideDetails => 'Hide details';
 }

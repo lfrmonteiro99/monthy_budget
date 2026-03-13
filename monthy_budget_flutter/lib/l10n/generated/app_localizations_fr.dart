@@ -4583,4 +4583,28 @@ class SFr extends S {
 
   @override
   String get actionRetry => 'Réessayer';
+
+  @override
+  String get settingsGroupAccount => 'COMPTE';
+
+  @override
+  String get settingsGroupBudget => 'BUDGET';
+
+  @override
+  String get settingsGroupPreferences => 'PRÉFÉRENCES';
+
+  @override
+  String get settingsGroupAdvanced => 'AVANCÉ';
+
+  @override
+  String get settingsManageSubscription => 'Gérer l\'abonnement';
+
+  @override
+  String get settingsAbout => 'À propos';
+
+  @override
+  String get mealShowDetails => 'Afficher les détails';
+
+  @override
+  String get mealHideDetails => 'Masquer les détails';
 }

@@ -103,13 +103,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _draft = widget.settings;
     _favorites = List<String>.from(widget.favorites);
     _apiKeyController = TextEditingController(text: widget.apiKey);
-    if (widget.initialSection != null) {
-      _openSection = widget.initialSection;
-    }
     _localDashboard = widget.dashboardConfig ?? const LocalDashboardConfig();
     _monthlyBudgetsDraft = Map<String, double>.from(widget.monthlyBudgets);
     _recurringDraft = List.from(widget.recurringExpenses);
     _loadAssociatedMembers();
+    // Auto-open section page if requested via initialSection
+    if (widget.initialSection != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _autoOpenInitialSection(widget.initialSection!);
+      });
+    }
   }
 
   @override
@@ -126,6 +129,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() {
       _openSection = _openSection == section ? null : section;
     });
+  }
+
+  void _autoOpenInitialSection(String section) {
+    final l10n = S.of(context);
+    final mapping = <String, (String, Widget Function())>{
+      'salaries': (l10n.settingsSalariesSection, _buildSalariesSection),
+      'expenses': (l10n.settingsExpensesMonthly, _buildExpensesSection),
+      'meals': (l10n.settingsMeals, _buildMealsSection),
+      'favorites': (l10n.settingsFavorites, _buildFavoritesSection),
+      'appearance': (l10n.settingsAppearance, _buildAppearanceSection),
+      'dashboard': (l10n.settingsDashboard, _buildDashboardSection),
+      'profile': (l10n.settingsPersonal, _buildProfileSection),
+      'coach': (l10n.settingsCoachOpenAi, _buildCoachSection),
+      'household': (l10n.settingsHousehold, _buildHouseholdSection),
+    };
+    final entry = mapping[section];
+    if (entry != null) {
+      _openSectionPage(entry.$1, entry.$2);
+    }
+  }
+
+  void _openSectionPage(String title, Widget Function() builder) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => _SettingsDetailPage(
+          title: title,
+          body: builder(),
+        ),
+      ),
+    );
   }
 
   void _handleSave() {
@@ -303,168 +336,124 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
             Divider(height: 1, color: AppColors.surfaceVariant(context)),
-            // Body
+            // Body — grouped list (iOS Settings style)
             Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    _SectionHeader(
-                      icon: Icons.account_balance_wallet,
-                      title: l10n.settingsSalariesSection,
-                      subtitle: formatCurrency(
-                        _draft.salaries
-                            .where((s) => s.enabled)
-                            .fold(0.0, (sum, s) => sum + s.grossAmount),
-                      ),
-                      isOpen: _openSection == 'salaries',
-                      onTap: () => _toggleSection('salaries'),
+              child: ListView(
+                children: [
+                  // ── ACCOUNT ──
+                  _GroupHeader(label: l10n.settingsGroupAccount),
+                  _SettingsItem(
+                    icon: Icons.person,
+                    title: l10n.settingsPersonal,
+                    onTap: () => _openSectionPage(l10n.settingsPersonal, _buildProfileSection),
+                  ),
+                  _SettingsItem(
+                    icon: Icons.people_outline,
+                    title: l10n.settingsHousehold,
+                    onTap: () => _openSectionPage(l10n.settingsHousehold, _buildHouseholdSection),
+                  ),
+                  if (widget.onOpenSubscription != null)
+                    _SettingsItem(
+                      icon: Icons.workspace_premium_rounded,
+                      title: 'Subscription',
+                      subtitle: _subscriptionSubtitle(),
+                      onTap: widget.onOpenSubscription!,
                     ),
-                    if (_openSection == 'salaries') _buildSalariesSection(),
-                    _SectionHeader(
-                      icon: Icons.receipt_long,
-                      title: l10n.settingsExpensesMonthly,
-                      subtitle: _isFreeUser
-                          ? '(${_draft.expenses.where((e) => e.enabled).length}/${DowngradeService.maxFreeCategories} active)'
-                          : '(${_draft.expenses.where((e) => e.enabled).length})',
-                      isOpen: _openSection == 'expenses',
-                      onTap: () => _toggleSection('expenses'),
+                  if (widget.onOpenCustomerCenter != null)
+                    _SettingsItem(
+                      icon: Icons.manage_accounts_outlined,
+                      title: l10n.settingsManageSubscription,
+                      onTap: widget.onOpenCustomerCenter!,
                     ),
-                    if (_openSection == 'expenses') _buildExpensesSection(),
-                    _SectionHeader(
-                      icon: Icons.restaurant,
-                      title: l10n.settingsMeals,
-                      isOpen: _openSection == 'meals',
-                      onTap: () => _toggleSection('meals'),
+
+                  // ── BUDGET ──
+                  _GroupHeader(label: l10n.settingsGroupBudget),
+                  _SettingsItem(
+                    icon: Icons.account_balance_wallet,
+                    title: l10n.settingsSalariesSection,
+                    subtitle: formatCurrency(
+                      _draft.salaries
+                          .where((s) => s.enabled)
+                          .fold(0.0, (sum, s) => sum + s.grossAmount),
                     ),
-                    if (_openSection == 'meals') _buildMealsSection(),
-                    _SectionHeader(
-                      icon: Icons.favorite,
-                      title: l10n.settingsFavorites,
-                      subtitle: '(${_favorites.length})',
-                      isOpen: _openSection == 'favorites',
-                      onTap: () => _toggleSection('favorites'),
-                    ),
-                    if (_openSection == 'favorites') _buildFavoritesSection(),
-                    // Appearance section
-                    _SectionHeader(
-                      icon: Icons.palette_outlined,
-                      title: l10n.settingsAppearance,
-                      isOpen: _openSection == 'appearance',
-                      onTap: () => _toggleSection('appearance'),
-                    ),
-                    if (_openSection == 'appearance') _buildAppearanceSection(),
-                    _SectionHeader(
-                      icon: Icons.dashboard,
-                      title: l10n.settingsDashboard,
-                      isOpen: _openSection == 'dashboard',
-                      onTap: () => _toggleSection('dashboard'),
-                    ),
-                    if (_openSection == 'dashboard') _buildDashboardSection(),
-                    _SectionHeader(
-                      icon: Icons.person,
-                      title: l10n.settingsPersonal,
-                      isOpen: _openSection == 'profile',
-                      onTap: () => _toggleSection('profile'),
-                    ),
-                    if (_openSection == 'profile') _buildProfileSection(),
-                    _SectionHeader(
-                      icon: Icons.psychology_outlined,
-                      title: l10n.settingsCoachOpenAi,
-                      isOpen: _openSection == 'coach',
-                      onTap: () => _toggleSection('coach'),
-                    ),
-                    if (_openSection == 'coach') _buildCoachSection(),
-                    _SectionHeader(
-                      icon: Icons.people_outline,
-                      title: l10n.settingsHousehold,
-                      isOpen: _openSection == 'household',
-                      onTap: () => _toggleSection('household'),
-                    ),
-                    if (_openSection == 'household') _buildHouseholdSection(),
-                    // Subscription management
-                    if (widget.onOpenSubscription != null)
-                      ListTile(
-                        leading: Icon(Icons.workspace_premium_rounded,
-                            color: AppColors.primary(context)),
-                        title: Text('Subscription',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.textPrimary(context))),
-                        subtitle: Text(
-                          _subscriptionSubtitle(),
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: AppColors.textSecondary(context)),
-                        ),
-                        trailing: Icon(Icons.chevron_right,
-                            color: AppColors.textMuted(context)),
-                        onTap: widget.onOpenSubscription,
-                      ),
-                    // Customer Center — manage existing subscription
-                    if (widget.onOpenCustomerCenter != null)
-                      ListTile(
-                        leading: Icon(Icons.manage_accounts_outlined,
-                            color: AppColors.textSecondary(context)),
-                        title: Text('Manage Subscription',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.textPrimary(context))),
-                        subtitle: Text(
-                          'Cancel, change plan, or restore purchases',
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: AppColors.textSecondary(context)),
-                        ),
-                        trailing: Icon(Icons.chevron_right,
-                            color: AppColors.textMuted(context)),
-                        onTap: widget.onOpenCustomerCenter,
-                      ),
-                    // Notifications navigation
-                    ListTile(
-                      leading: Icon(Icons.notifications_outlined,
-                          color: AppColors.textSecondary(context)),
-                      title: Text(l10n.notifications,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.textPrimary(context))),
-                      trailing: Icon(Icons.chevron_right,
-                          color: AppColors.textMuted(context)),
-                      onTap: () {
-                        if (widget.onOpenNotificationSettings != null) {
-                          widget.onOpenNotificationSettings!();
-                        }
-                      },
-                    ),
-                    const SizedBox(height: 24),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton.icon(
-                          onPressed: () async {
-                            await Supabase.instance.client.auth.signOut();
-                            if (context.mounted) {
-                              Navigator.of(context)
-                                  .popUntil((route) => route.isFirst);
-                            }
-                          },
-                          icon: const Icon(Icons.logout, size: 18),
-                          label: Text(l10n.settingsLogout),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColors.error(context),
-                            side: BorderSide(color: AppColors.errorBackground(context)),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            textStyle: const TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.w600),
-                          ),
+                    onTap: () => _openSectionPage(l10n.settingsSalariesSection, _buildSalariesSection),
+                  ),
+                  _SettingsItem(
+                    icon: Icons.receipt_long,
+                    title: l10n.settingsExpensesMonthly,
+                    subtitle: _isFreeUser
+                        ? '${_draft.expenses.where((e) => e.enabled).length}/${DowngradeService.maxFreeCategories}'
+                        : '${_draft.expenses.where((e) => e.enabled).length}',
+                    onTap: () => _openSectionPage(l10n.settingsExpensesMonthly, _buildExpensesSection),
+                  ),
+
+                  // ── PREFERENCES ──
+                  _GroupHeader(label: l10n.settingsGroupPreferences),
+                  _SettingsItem(
+                    icon: Icons.palette_outlined,
+                    title: l10n.settingsAppearance,
+                    onTap: () => _openSectionPage(l10n.settingsAppearance, _buildAppearanceSection),
+                  ),
+                  _SettingsItem(
+                    icon: Icons.dashboard,
+                    title: l10n.settingsDashboard,
+                    onTap: () => _openSectionPage(l10n.settingsDashboard, _buildDashboardSection),
+                  ),
+                  _SettingsItem(
+                    icon: Icons.notifications_outlined,
+                    title: l10n.notifications,
+                    onTap: () => widget.onOpenNotificationSettings?.call(),
+                  ),
+                  _SettingsItem(
+                    icon: Icons.restaurant,
+                    title: l10n.settingsMeals,
+                    onTap: () => _openSectionPage(l10n.settingsMeals, _buildMealsSection),
+                  ),
+                  _SettingsItem(
+                    icon: Icons.favorite,
+                    title: l10n.settingsFavorites,
+                    subtitle: '${_favorites.length}',
+                    onTap: () => _openSectionPage(l10n.settingsFavorites, _buildFavoritesSection),
+                  ),
+
+                  // ── ADVANCED ──
+                  _GroupHeader(label: l10n.settingsGroupAdvanced),
+                  _SettingsItem(
+                    icon: Icons.psychology_outlined,
+                    title: l10n.settingsCoachOpenAi,
+                    onTap: () => _openSectionPage(l10n.settingsCoachOpenAi, _buildCoachSection),
+                  ),
+
+                  // ── LOGOUT ──
+                  const SizedBox(height: 24),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () async {
+                          await Supabase.instance.client.auth.signOut();
+                          if (context.mounted) {
+                            Navigator.of(context)
+                                .popUntil((route) => route.isFirst);
+                          }
+                        },
+                        icon: const Icon(Icons.logout, size: 18),
+                        label: Text(l10n.settingsLogout),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.error(context),
+                          side: BorderSide(color: AppColors.errorBackground(context)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          textStyle: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w600),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 32),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 32),
+                ],
               ),
             ),
           ],
@@ -2751,6 +2740,127 @@ class _SectionHeader extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+// ─── Grouped Settings List widgets ───
+
+class _GroupHeader extends StatelessWidget {
+  final String label;
+  const _GroupHeader({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textMuted(context),
+          letterSpacing: 1.0,
+        ),
+      ),
+    );
+  }
+}
+
+class _SettingsItem extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String? subtitle;
+  final VoidCallback? onTap;
+
+  const _SettingsItem({
+    required this.icon,
+    required this.title,
+    this.subtitle,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppColors.surface(context),
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: AppColors.surfaceVariant(context),
+                width: 0.5,
+              ),
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(icon, size: 20, color: AppColors.primary(context)),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textPrimary(context),
+                      ),
+                    ),
+                    if (subtitle != null)
+                      Text(
+                        subtitle!,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary(context),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right,
+                  size: 20, color: AppColors.textMuted(context)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SettingsDetailPage extends StatelessWidget {
+  final String title;
+  final Widget body;
+
+  const _SettingsDetailPage({
+    required this.title,
+    required this.body,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.background(context),
+      appBar: AppBar(
+        backgroundColor: AppColors.surface(context),
+        elevation: 0,
+        title: Text(
+          title,
+          style: TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary(context),
+          ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: body,
       ),
     );
   }

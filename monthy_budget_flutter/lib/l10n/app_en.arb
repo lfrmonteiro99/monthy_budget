@@ -2462,5 +2462,15 @@
     "authConnectionError": "Connection error",
     "authRetry": "Retry",
     "authSignOut": "Sign out",
-    "actionRetry": "Retry"
+    "actionRetry": "Retry",
+
+    "settingsGroupAccount": "ACCOUNT",
+    "settingsGroupBudget": "BUDGET",
+    "settingsGroupPreferences": "PREFERENCES",
+    "settingsGroupAdvanced": "ADVANCED",
+    "settingsManageSubscription": "Manage Subscription",
+    "settingsAbout": "About",
+
+    "mealShowDetails": "Show details",
+    "mealHideDetails": "Hide details"
 }

@@ -1453,14 +1453,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       );
     }
 
+    // Welcome slideshow removed – the simplified wizard (3 steps) already
+    // introduces the app.  Auto-mark as seen so old state doesn't block.
     if (!_onboardingState.welcomeSeen) {
-      return WelcomeSlideshowScreen(
-        onComplete: () {
-          final updated = _onboardingState.copyWith(welcomeSeen: true);
-          setState(() => _onboardingState = updated);
-          _localConfigService.saveOnboardingState(updated);
-        },
-      );
+      final updated = _onboardingState.copyWith(welcomeSeen: true);
+      _onboardingState = updated;
+      _localConfigService.saveOnboardingState(updated);
     }
 
     final l10n = S.of(context);

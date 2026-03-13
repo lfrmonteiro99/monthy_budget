@@ -2411,5 +2411,15 @@
     "authConnectionError": "Error de conexión",
     "authRetry": "Reintentar",
     "authSignOut": "Cerrar sesión",
-    "actionRetry": "Reintentar"
+    "actionRetry": "Reintentar",
+
+    "settingsGroupAccount": "CUENTA",
+    "settingsGroupBudget": "PRESUPUESTO",
+    "settingsGroupPreferences": "PREFERENCIAS",
+    "settingsGroupAdvanced": "AVANZADO",
+    "settingsManageSubscription": "Gestionar Suscripción",
+    "settingsAbout": "Acerca de",
+
+    "mealShowDetails": "Mostrar detalles",
+    "mealHideDetails": "Ocultar detalles"
 }
