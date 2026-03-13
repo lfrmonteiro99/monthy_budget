@@ -124,8 +124,8 @@ class _TrendSheetContent extends StatelessWidget {
         children: [
           Text(
             l10n.trendStressIndex,
-            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600,
-                color: AppColors.textMuted(context), letterSpacing: 1.2),
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary(context), letterSpacing: 0.5),
           ),
           const SizedBox(height: 16),
           SizedBox(
@@ -298,8 +298,8 @@ class _TrendSheetContent extends StatelessWidget {
         children: [
           Text(
             l10n.trendTotalExpenses,
-            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600,
-                color: AppColors.textMuted(context), letterSpacing: 1.2),
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary(context), letterSpacing: 0.5),
           ),
           const SizedBox(height: 16),
           SizedBox(
@@ -444,8 +444,8 @@ class _TrendSheetContent extends StatelessWidget {
         children: [
           Text(
             l10n.trendExpensesByCategory,
-            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600,
-                color: AppColors.textMuted(context), letterSpacing: 1.2),
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary(context), letterSpacing: 0.5),
           ),
           const SizedBox(height: 16),
           SizedBox(

@@ -219,10 +219,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               Text(
                                 l10n.dashboardFinancialSummary,
                                 style: TextStyle(
-                                  fontSize: 10,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w600,
-                                  color: AppColors.textMuted(context),
-                                  letterSpacing: 1.2,
+                                  color: AppColors.textSecondary(context),
+                                  letterSpacing: 0.5,
                                 ),
                               ),
                             ],
@@ -545,10 +545,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Text(
             l10n.dashboardMonthlyLiquidity,
             style: TextStyle(
-              fontSize: 10,
+              fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: AppColors.textMuted(context),
-              letterSpacing: 1.2,
+              color: AppColors.textSecondary(context),
+              letterSpacing: 0.5,
             ),
           ),
           const SizedBox(height: 8),
@@ -703,7 +703,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Expanded(
                 child: Text(
                   l10n.dashboardSalaryDetail,
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.textMuted(context), letterSpacing: 1.2),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondary(context), letterSpacing: 0.5),
                 ),
               ),
               InfoIconButton(title: l10n.dashboardSalaryDetail, body: l10n.infoSalaryBreakdown),
@@ -1351,7 +1351,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Expanded(
                 child: Text(
                   l10n.dashboardMonthlyExpenses,
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.textMuted(context), letterSpacing: 1.2),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondary(context), letterSpacing: 0.5),
                 ),
               ),
               InfoIconButton(title: l10n.dashboardMonthlyExpenses, body: l10n.infoExpensesBreakdown),
@@ -1489,158 +1489,71 @@ class _StressIndexCardState extends State<_StressIndexCard> {
     final l10n = S.of(context);
     final color = _scoreColor(context, result.score);
 
+    // Gradient background matching mockup stress-card
+    final bgGradient = result.score >= 60
+        ? const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFFF0FDF4), Color(0xFFECFDF5)],
+          )
+        : result.score >= 40
+            ? const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFFFFFBEB), Color(0xFFFEF3C7)],
+              )
+            : const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFFFEF2F2), Color(0xFFFEE2E2)],
+              );
+    final borderColor = result.score >= 60
+        ? const Color(0xFFBBF7D0)
+        : result.score >= 40
+            ? const Color(0xFFFDE68A)
+            : const Color(0xFFFECACA);
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.surface(context),
+        gradient: bgGradient,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border(context)),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shimmer(context),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: borderColor),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  l10n.dashboardStressIndex.toUpperCase(),
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textMuted(context),
-                    letterSpacing: 0.8,
-                  ),
-                ),
-              ),
-              InfoIconButton(title: l10n.dashboardStressIndex, body: l10n.infoStressIndex),
-            ],
+          Text(
+            '${result.score}',
+            style: TextStyle(
+              fontSize: 40,
+              fontWeight: FontWeight.w700,
+              color: color,
+            ),
           ),
-          const SizedBox(height: 12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '${result.score}',
-                style: TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.w800,
-                  color: color,
-                  letterSpacing: -1,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
-                      child: Text(
-                        result.level.localizedLabel(l10n),
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: color,
-                        ),
-                      ),
+          Text(
+            l10n.dashboardStressIndex,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: color.withValues(alpha: 0.8),
+            ),
+          ),
+          if (result.delta != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '${result.delta! >= 0 ? "↑" : "↓"} ${result.delta!.abs().toStringAsFixed(1)} vs ${l10n.dashboardPreviousMonth}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary(context),
                     ),
-                    if (result.delta != null)
-                      Row(
-                        children: [
-                          Icon(
-                            result.delta! > 0
-                                ? Icons.arrow_upward
-                                : result.delta! < 0
-                                    ? Icons.arrow_downward
-                                    : Icons.remove,
-                            size: 12,
-                            color: result.delta! > 0
-                                ? AppColors.success(context)
-                                : result.delta! < 0
-                                    ? AppColors.error(context)
-                                    : Colors.grey,
-                          ),
-                          const SizedBox(width: 2),
-                          Text(
-                            l10n.dashboardVsLastMonth('${result.delta! > 0 ? '+' : ''}${result.delta}'),
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w500,
-                              color: result.delta! > 0
-                                  ? AppColors.success(context)
-                                  : result.delta! < 0
-                                      ? AppColors.error(context)
-                                      : Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          LinearProgressIndicator(
-            value: result.score / 100.0,
-            backgroundColor: AppColors.border(context),
-            color: color,
-            minHeight: 6,
-            borderRadius: BorderRadius.circular(3),
-          ),
-          if (_expanded) ...[
-            const SizedBox(height: 12),
-            Divider(height: 1, color: AppColors.border(context)),
-            const SizedBox(height: 10),
-            ...result.factors.map((f) => Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
-                  child: Row(
-                    children: [
-                      Icon(
-                        f.ok
-                            ? Icons.check_circle_outline
-                            : Icons.warning_amber_outlined,
-                        size: 16,
-                        color: f.ok
-                            ? AppColors.success(context)
-                            : AppColors.warning(context),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          f.type.localizedLabel(l10n),
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: AppColors.textLabel(context),
-                          ),
-                        ),
-                      ),
-                      Text(
-                        _localizedValueLabel(f, l10n),
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary(context),
-                        ),
-                      ),
-                    ],
                   ),
-                )),
-          ],
+                ],
+              ),
+            ),
           const SizedBox(height: 6),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -1677,6 +1590,45 @@ class _StressIndexCardState extends State<_StressIndexCard> {
               ],
             ],
           ),
+          if (_expanded) ...[
+            const SizedBox(height: 12),
+            Divider(height: 1, color: borderColor),
+            const SizedBox(height: 10),
+            ...result.factors.map((f) => Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Row(
+                    children: [
+                      Icon(
+                        f.ok
+                            ? Icons.check_circle_outline
+                            : Icons.warning_amber_outlined,
+                        size: 16,
+                        color: f.ok
+                            ? AppColors.success(context)
+                            : AppColors.warning(context),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          f.type.localizedLabel(l10n),
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: AppColors.textLabel(context),
+                          ),
+                        ),
+                      ),
+                      Text(
+                        _localizedValueLabel(f, l10n),
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary(context),
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+          ],
         ],
       ),
     );
@@ -1869,15 +1821,15 @@ class _MonthReviewCard extends StatelessWidget {
                   child: Text(
                     '${review.monthLabel.toUpperCase()} ${l10n.dashboardSummaryLabel}',
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textMuted(context),
-                      letterSpacing: 1.2,
+                      color: AppColors.textSecondary(context),
+                      letterSpacing: 0.5,
                     ),
                   ),
                 ),
                 InfoIconButton(title: 'Month Review', body: l10n.infoCharts),
-                Icon(Icons.chevron_right, size: 18, color: AppColors.textMuted(context)),
+                Icon(Icons.chevron_right, size: 18, color: AppColors.textSecondary(context)),
               ],
             ),
             const SizedBox(height: 12),

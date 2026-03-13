@@ -489,10 +489,10 @@ class _CountryStep extends StatelessWidget {
               const SizedBox(height: 20),
               Text(l10n.setupWizardLanguage,
                   style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textMuted(context),
-                      letterSpacing: 1.2)),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textSecondary(context),
+                      letterSpacing: 0.5)),
               const SizedBox(height: 8),
               DropdownButtonFormField<String?>(
                 initialValue: draft.localeOverride,
@@ -608,10 +608,10 @@ class _PersonalStep extends StatelessWidget {
                     children: [
                       Text(l10n.setupWizardTitulares,
                           style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textMuted(context),
-                              letterSpacing: 1.2)),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textSecondary(context),
+                              letterSpacing: 0.5)),
                       const SizedBox(height: 8),
                       Row(
                         children: [1, 2].map((t) {
@@ -675,10 +675,10 @@ class _PersonalStep extends StatelessWidget {
               const SizedBox(height: 20),
               Text(l10n.setupWizardDependents,
                   style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textMuted(context),
-                      letterSpacing: 1.2)),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textSecondary(context),
+                      letterSpacing: 0.5)),
               const SizedBox(height: 8),
               Row(
                 children: [
@@ -860,10 +860,10 @@ class _SalaryStep extends StatelessWidget {
                 const SizedBox(height: 20),
                 Text(l10n.enumMealAllowanceCard.isNotEmpty ? 'SUBSÍDIO DE ALIMENTAÇÃO' : 'MEAL ALLOWANCE',
                     style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textMuted(context),
-                        letterSpacing: 1.2)),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textSecondary(context),
+                        letterSpacing: 0.5)),
                 const SizedBox(height: 8),
                 Row(
                   children: MealAllowanceType.values.map((type) {
@@ -962,10 +962,10 @@ class _SalaryStep extends StatelessWidget {
                 const SizedBox(height: 20),
                 Text(l10n.setupWizardSubsidyLabel,
                     style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textMuted(context),
-                        letterSpacing: 1.2)),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textSecondary(context),
+                        letterSpacing: 0.5)),
                 const SizedBox(height: 8),
                 Row(
                   children: SubsidyMode.values.map((mode) {

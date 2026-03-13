@@ -117,7 +117,7 @@ class _MonthReviewContent extends StatelessWidget {
         if (review.deviations.isNotEmpty) ...[
           Text(
             S.of(context).monthReviewTopDeviations,
-            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.textMuted(context), letterSpacing: 1.2),
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondary(context), letterSpacing: 0.5),
           ),
           const SizedBox(height: 8),
           ...review.deviations.take(3).map((d) => Container(
@@ -167,7 +167,7 @@ class _MonthReviewContent extends StatelessWidget {
         // Suggestions
         Text(
           S.of(context).monthReviewSuggestions,
-          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.textMuted(context), letterSpacing: 1.2),
+          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondary(context), letterSpacing: 0.5),
         ),
         const SizedBox(height: 8),
         ...review.suggestions.map((s) => Padding(
