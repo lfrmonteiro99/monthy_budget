@@ -707,6 +707,12 @@ abstract class S {
   /// **'Índice de Tranquilidade'**
   String get dashboardStressIndex;
 
+  /// No description provided for @dashboardViewFullReport.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver Relatório Completo'**
+  String get dashboardViewFullReport;
+
   /// Dashboard tension label
   ///
   /// In pt, this message translates to:

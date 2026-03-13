@@ -327,6 +327,9 @@ class SFr extends S {
   String get dashboardStressIndex => 'Indice de Sérénité';
 
   @override
+  String get dashboardViewFullReport => 'Voir le Rapport Complet';
+
+  @override
   String get dashboardTension => 'Tension';
 
   @override

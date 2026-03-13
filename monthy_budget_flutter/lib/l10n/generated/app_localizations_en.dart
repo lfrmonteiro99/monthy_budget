@@ -327,6 +327,9 @@ class SEn extends S {
   String get dashboardStressIndex => 'Serenity Index';
 
   @override
+  String get dashboardViewFullReport => 'View Full Report';
+
+  @override
   String get dashboardTension => 'Tension';
 
   @override

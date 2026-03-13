@@ -57,6 +57,7 @@ class DashboardScreen extends StatefulWidget {
   final bool focusedMode;
   final VoidCallback? onOpenInsights;
   final VoidCallback? onOpenCoach;
+  final VoidCallback? onOpenDetailedDashboard;
 
   const DashboardScreen({
     super.key,
@@ -87,6 +88,7 @@ class DashboardScreen extends StatefulWidget {
     this.focusedMode = false,
     this.onOpenInsights,
     this.onOpenCoach,
+    this.onOpenDetailedDashboard,
   });
 
   @override
@@ -438,6 +440,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SizedBox(height: 16),
         ],
         _buildNextActionsCard(context, l10n),
+        if (widget.onOpenDetailedDashboard != null) ...[
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: widget.onOpenDetailedDashboard,
+              icon: const Icon(Icons.dashboard_customize_outlined),
+              label: Text(l10n.dashboardViewFullReport),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                side: BorderSide(color: AppColors.border(context)),
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }

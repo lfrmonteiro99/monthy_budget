@@ -1503,9 +1503,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         onTourComplete: () => _markTourDone('dashboard'),
         fabKey: _fabKey,
         navBarKey: _navBarKey,
-        focusedMode: false,
+        focusedMode: true,
         onOpenInsights: _openInsights,
         onOpenCoach: _openCoach,
+        onOpenDetailedDashboard: _openDetailedDashboard,
       ),
       ExpenseTrackerScreen(
         settings: _settings,

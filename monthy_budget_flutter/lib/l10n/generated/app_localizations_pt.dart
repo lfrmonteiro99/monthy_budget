@@ -327,6 +327,9 @@ class SPt extends S {
   String get dashboardStressIndex => 'Índice de Tranquilidade';
 
   @override
+  String get dashboardViewFullReport => 'Ver Relatório Completo';
+
+  @override
   String get dashboardTension => 'Tensão';
 
   @override
