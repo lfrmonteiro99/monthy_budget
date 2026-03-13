@@ -52,7 +52,7 @@ class TrialOnboardingNudge extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       decoration: BoxDecoration(
         color: AppColors.primary(context).withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: AppColors.primary(context).withValues(alpha: 0.2),
         ),

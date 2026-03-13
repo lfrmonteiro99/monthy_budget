@@ -44,7 +44,7 @@ class TrialBanner extends StatelessWidget {
                   AppColors.primary(context).withValues(alpha: 0.05),
                 ],
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: isUrgent
               ? AppColors.error(context).withValues(alpha: 0.3)

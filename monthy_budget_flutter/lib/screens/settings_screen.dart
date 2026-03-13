@@ -792,7 +792,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: salary.enabled ? AppColors.surface(context) : AppColors.background(context),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(14),
                 border: Border.all(
                   color: salary.enabled ? AppColors.border(context) : AppColors.surfaceVariant(context),
                   width: 2,
@@ -1091,7 +1091,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: expense.enabled ? AppColors.surface(context) : AppColors.background(context),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(14),
                   border: Border.all(
                     color: expense.enabled ? AppColors.border(context) : AppColors.surfaceVariant(context),
                     width: 2,
@@ -1238,7 +1238,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             style: OutlinedButton.styleFrom(
               foregroundColor: Colors.grey.shade400,
               side: BorderSide(color: Colors.grey.shade200, width: 2, style: BorderStyle.solid),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               padding: const EdgeInsets.symmetric(vertical: 16),
               minimumSize: const Size(double.infinity, 0),
               textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
@@ -2801,7 +2801,7 @@ class _SettingsItem extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(icon, size: 20, color: AppColors.primary(context)),
+              Icon(icon, size: 20, color: AppColors.settingsIcon(context)),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
@@ -2827,7 +2827,7 @@ class _SettingsItem extends StatelessWidget {
                 ),
               ),
               Icon(Icons.chevron_right,
-                  size: 20, color: AppColors.textMuted(context)),
+                  size: 20, color: AppColors.settingsArrow(context)),
             ],
           ),
         ),

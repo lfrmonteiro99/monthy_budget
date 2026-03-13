@@ -33,7 +33,7 @@ class FeatureDiscoveryCard extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
       decoration: BoxDecoration(
         color: AppColors.surface(context),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(color: AppColors.border(context)),
       ),
       child: Padding(
@@ -233,7 +233,7 @@ class PremiumLockOverlay extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 color: AppColors.background(context).withValues(alpha: 0.6),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(14),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

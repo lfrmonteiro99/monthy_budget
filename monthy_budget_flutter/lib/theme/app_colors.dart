@@ -22,7 +22,7 @@ class AppColors {
   // ── Brand / Primary ─────────────────────────────────────────────────
 
   static const _primaryColors = {
-    AppColorPalette.ocean:   (light: Color(0xFF3B82F6), dark: Color(0xFF60A5FA)),
+    AppColorPalette.ocean:   (light: Color(0xFF2563EB), dark: Color(0xFF60A5FA)),
     AppColorPalette.emerald: (light: Color(0xFF059669), dark: Color(0xFF34D399)),
     AppColorPalette.violet:  (light: Color(0xFF7C3AED), dark: Color(0xFFA78BFA)),
     AppColorPalette.teal:    (light: Color(0xFF0D9488), dark: Color(0xFF2DD4BF)),
@@ -30,7 +30,7 @@ class AppColors {
   };
 
   static const _primaryLightColors = {
-    AppColorPalette.ocean:   (light: Color(0xFFDBEAFE), dark: Color(0xFF1E3A5F)),
+    AppColorPalette.ocean:   (light: Color(0xFFEFF6FF), dark: Color(0xFF1E3A5F)),
     AppColorPalette.emerald: (light: Color(0xFFD1FAE5), dark: Color(0xFF064E3B)),
     AppColorPalette.violet:  (light: Color(0xFFEDE9FE), dark: Color(0xFF2E1065)),
     AppColorPalette.teal:    (light: Color(0xFFCCFBF1), dark: Color(0xFF134E4A)),
@@ -68,7 +68,7 @@ class AppColors {
   // ── Text ─────────────────────────────────────────────────────────────
 
   static Color textPrimary(BuildContext context) =>
-      _isDark(context) ? const Color(0xFFF1F5F9) : const Color(0xFF1E293B);
+      _isDark(context) ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
 
   static Color textSecondary(BuildContext context) =>
       _isDark(context) ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
@@ -137,6 +137,18 @@ class AppColors {
   }
 
   static Color dragHandle(BuildContext context) =>
+      _isDark(context) ? const Color(0xFF475569) : const Color(0xFFCBD5E1);
+
+  /// Chip selected background — mockup: #EFF6FF light
+  static Color chipSelected(BuildContext context) =>
+      _isDark(context) ? const Color(0xFF1E3A5F) : const Color(0xFFEFF6FF);
+
+  /// Settings list item icon color — mockup: #475569
+  static Color settingsIcon(BuildContext context) =>
+      _isDark(context) ? const Color(0xFF94A3B8) : const Color(0xFF475569);
+
+  /// Settings list item trailing arrow — mockup: #CBD5E1
+  static Color settingsArrow(BuildContext context) =>
       _isDark(context) ? const Color(0xFF475569) : const Color(0xFFCBD5E1);
 
   // ── Status Borders ─────────────────────────────────────────────────

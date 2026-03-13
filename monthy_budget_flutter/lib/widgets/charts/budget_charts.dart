@@ -62,7 +62,7 @@ class _ChartCard extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppColors.surface(context),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(color: AppColors.surfaceVariant(context)),
         boxShadow: [
           BoxShadow(color: AppColors.shimmer(context), blurRadius: 8, offset: const Offset(0, 2)),
