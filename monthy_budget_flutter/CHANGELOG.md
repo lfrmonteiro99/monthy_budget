@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2026.3.24 - 2026-03-13
+
+### Bug Fixes
+
+- Fix ChipThemeData compilation error on Flutter 3.41 — remove materialTapTargetSize #459
+
 ## v2026.3.23 - 2026-03-13
 
 ### Features
