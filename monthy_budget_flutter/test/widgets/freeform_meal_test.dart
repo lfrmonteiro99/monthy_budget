@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:orcamento_mensal/models/meal_planner.dart';
 import 'package:orcamento_mensal/models/meal_settings.dart';
 import 'package:orcamento_mensal/widgets/freeform_meal_card.dart';
+import 'package:orcamento_mensal/utils/formatters.dart';
 import 'package:orcamento_mensal/widgets/freeform_meal_sheet.dart';
 
 import '../helpers/test_app.dart';
@@ -36,7 +37,7 @@ void main() {
       expect(find.text('Leftover pasta'), findsOneWidget);
       expect(find.text('Freeform'), findsOneWidget);
       expect(find.text('From yesterday dinner'), findsOneWidget);
-      expect(find.text('8.50\u20AC'), findsOneWidget);
+      expect(find.text('8.50${currencySymbol()}'), findsOneWidget);
       expect(find.text('Leftovers'), findsOneWidget);
     });
 

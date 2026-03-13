@@ -65,6 +65,9 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   bool _ecoBannerCollapsed = false;
   final _rateLimiter = RateLimiter(minInterval: const Duration(seconds: 3));
 
+  // Welcome card for first-time users
+  bool _welcomeCardDismissed = false;
+
   // Feature #1: Downgrade transition card
   bool _downgradeCardDismissed = false;
 
@@ -586,7 +589,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                     setState(() => _downgradeCardDismissed = true);
                     _showCreditPacksSheet();
                   },
-                  child: const Text('Comprar créditos'),
+                  child: Text(S.of(context).coachBuyCredits),
                 ),
               ),
               const SizedBox(width: 8),
@@ -594,7 +597,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                 onPressed: () {
                   setState(() => _downgradeCardDismissed = true);
                 },
-                child: const Text('Continuar com Eco'),
+                child: Text(S.of(context).coachContinueEco),
               ),
             ],
           ),
@@ -738,12 +741,12 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                   backgroundColor: accentColor,
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                 ),
-                child: Text('Usar ${rec.name.substring(0, 1).toUpperCase()}${rec.name.substring(1)}'),
+                child: Text(S.of(context).coachUseMode('${rec.name.substring(0, 1).toUpperCase()}${rec.name.substring(1)}')),
               ),
               const SizedBox(width: 8),
               TextButton(
                 onPressed: _declineRecommendation,
-                child: Text('Manter ${_selectedMode.name.substring(0, 1).toUpperCase()}${_selectedMode.name.substring(1)}'),
+                child: Text(S.of(context).coachKeepMode('${_selectedMode.name.substring(0, 1).toUpperCase()}${_selectedMode.name.substring(1)}')),
               ),
             ],
           ),
@@ -897,7 +900,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 14, vertical: 6),
                       ),
-                      child: const Text('Consegui!'),
+                      child: Text(S.of(context).coachAchieved),
                     ),
                     const SizedBox(width: 8),
                     OutlinedButton(
@@ -906,7 +909,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 14, vertical: 6),
                       ),
-                      child: const Text('Ainda não'),
+                      child: Text(S.of(context).coachNotYet),
                     ),
                   ],
                 ),
@@ -918,15 +921,107 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     );
   }
 
+  Widget _buildWelcomeCard(S l10n) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.infoBackground(context),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: AppColors.primary(context).withValues(alpha: 0.2),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.psychology_alt_rounded,
+                  size: 20, color: AppColors.primary(context)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  l10n.coachWelcomeTitle,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary(context),
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () => setState(() => _welcomeCardDismissed = true),
+                icon: const Icon(Icons.close, size: 16),
+                visualDensity: VisualDensity.compact,
+                color: AppColors.textMuted(context),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.coachWelcomeBody,
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColors.textSecondary(context),
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.toll_outlined,
+                  size: 14, color: AppColors.textMuted(context)),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  l10n.coachWelcomeCredits,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: AppColors.textMuted(context),
+                    height: 1.4,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.timer_outlined,
+                  size: 14, color: AppColors.textMuted(context)),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  l10n.coachWelcomeRateLimit,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: AppColors.textMuted(context),
+                    height: 1.4,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildMessagesList() {
     if (_messages.isEmpty) {
       final l10n = S.of(context);
       return Center(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 18),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Welcome/onboarding card for new users
+              if (!_welcomeCardDismissed)
+                _buildWelcomeCard(l10n),
               // Feature #5: Show micro-action follow-up card
               if (_subscription.lastMicroAction != null && !_microActionCardDismissed)
                 _buildMicroActionCard(),
@@ -1357,7 +1452,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         _updateSubscription(updated);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('+${pack.credits} créditos adicionados')),
+            SnackBar(content: Text(S.of(context).coachCreditsAdded(pack.credits))),
           );
         }
         return;
@@ -1369,14 +1464,14 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         _updateSubscription(updated);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('+${pack.credits} créditos adicionados')),
+            SnackBar(content: Text(S.of(context).coachCreditsAdded(pack.credits))),
           );
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro na compra: $e')),
+          SnackBar(content: Text(S.of(context).coachPurchaseError(e.toString()))),
         );
       }
     }

@@ -58,24 +58,40 @@ class _WelcomeSlideshowScreenState extends State<WelcomeSlideshowScreen> {
                 itemBuilder: (_, i) => _buildSlide(context, slides[i]),
               ),
             ),
+            // Swipe hint on first slide
+            if (_currentPage == 0)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Text(
+                  l10n.onbSwipeHint,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textMuted(context),
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ),
             // Dot indicator + button
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      slides.length,
-                      (i) => Container(
-                        width: _currentPage == i ? 24 : 8,
-                        height: 8,
-                        margin: const EdgeInsets.symmetric(horizontal: 3),
-                        decoration: BoxDecoration(
-                          color: _currentPage == i
-                              ? AppColors.primary(context)
-                              : AppColors.border(context),
-                          borderRadius: BorderRadius.circular(4),
+                  Semantics(
+                    label: l10n.onbSlideOf(_currentPage + 1, slides.length),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        slides.length,
+                        (i) => Container(
+                          width: _currentPage == i ? 24 : 8,
+                          height: 8,
+                          margin: const EdgeInsets.symmetric(horizontal: 3),
+                          decoration: BoxDecoration(
+                            color: _currentPage == i
+                                ? AppColors.primary(context)
+                                : AppColors.border(context),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
                         ),
                       ),
                     ),

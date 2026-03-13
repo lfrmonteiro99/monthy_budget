@@ -2421,5 +2421,100 @@
     "settingsAbout": "Acerca de",
 
     "mealShowDetails": "Mostrar detalles",
-    "mealHideDetails": "Ocultar detalles"
+    "mealHideDetails": "Ocultar detalles",
+
+    "taxSimTitularesHint": "Número de titulares de ingresos en el hogar",
+    "taxSimMealTypeHint": "Tarjeta: exento de impuestos hasta el límite legal. Efectivo: tributado como ingreso.",
+    "taxSimIRSFull": "IRPF (Impuesto sobre la Renta) retención",
+    "taxSimSSFull": "SS (Seguridad Social)",
+    "stressZoneCritical": "0–39: Alta presión financiera, acción urgente necesaria",
+    "stressZoneWarning": "40–59: Algunos riesgos presentes, mejoras recomendadas",
+    "stressZoneGood": "60–79: Finanzas saludables, pequeñas optimizaciones posibles",
+    "stressZoneExcellent": "80–100: Posición financiera fuerte, bien gestionada",
+    "projectionStressHint": "Cómo este escenario de gastos afecta tu puntuación general de salud financiera (0–100)",
+    "coachWelcomeTitle": "Tu Coach Financiero IA",
+    "coachWelcomeBody": "Pregunta sobre tu presupuesto, gastos o ahorros. El coach analiza tus datos financieros reales para darte consejos personalizados.",
+    "coachWelcomeCredits": "Los créditos se usan en los modos Plus y Pro. El modo Eco es siempre gratuito.",
+    "coachWelcomeRateLimit": "Para garantizar respuestas de calidad, hay una breve pausa entre mensajes.",
+    "planMealsProBadge": "PRO",
+
+    "coachBuyCredits": "Comprar créditos",
+    "coachContinueEco": "Continuar con Eco",
+    "coachAchieved": "¡Lo logré!",
+    "coachNotYet": "Aún no",
+    "coachCreditsAdded": "+{count} créditos añadidos",
+    "@coachCreditsAdded": {
+        "placeholders": {
+            "count": {"type": "int"}
+        }
+    },
+    "coachPurchaseError": "Error en la compra: {error}",
+    "@coachPurchaseError": {
+        "placeholders": {
+            "error": {"type": "String"}
+        }
+    },
+    "coachUseMode": "Usar {mode}",
+    "@coachUseMode": {
+        "placeholders": {
+            "mode": {"type": "String"}
+        }
+    },
+    "coachKeepMode": "Mantener {mode}",
+    "@coachKeepMode": {
+        "placeholders": {
+            "mode": {"type": "String"}
+        }
+    },
+
+    "savingsGoalSaveError": "Error al guardar objetivo: {error}",
+    "@savingsGoalSaveError": {
+        "placeholders": {
+            "error": {"type": "String"}
+        }
+    },
+    "savingsGoalDeleteError": "Error al eliminar objetivo: {error}",
+    "@savingsGoalDeleteError": {
+        "placeholders": {
+            "error": {"type": "String"}
+        }
+    },
+    "savingsGoalUpdateError": "Error al actualizar objetivo: {error}",
+    "@savingsGoalUpdateError": {
+        "placeholders": {
+            "error": {"type": "String"}
+        }
+    },
+
+    "settingsSubscription": "Suscripción",
+    "settingsSubscriptionFree": "Gratuito",
+    "settingsActiveCategoriesCount": "Categorías Activas ({active} de {total})",
+    "@settingsActiveCategoriesCount": {
+        "placeholders": {
+            "active": {"type": "int"},
+            "total": {"type": "int"}
+        }
+    },
+    "settingsPausedCategories": "Categorías Pausadas",
+    "settingsOpenDashboard": "Abrir Dashboard Detallado",
+    "settingsAssistantGroup": "ASISTENTE",
+    "settingsAiCoach": "Coach IA",
+
+    "setupWizardSubsidyLabel": "SUBSIDIOS",
+    "setupWizardPerDay": "/día",
+
+    "configurationError": "Error de Configuración",
+
+    "confidenceAllHealthy": "Todos los sistemas saludables. No se requieren acciones.",
+    "confidenceNoAlerts": "Sin alertas. Todo en orden.",
+
+    "onbSwipeHint": "Desliza para continuar",
+    "onbSlideOf": "Diapositiva {current} de {total}",
+    "@onbSlideOf": {
+        "placeholders": {
+            "current": {"type": "int"},
+            "total": {"type": "int"}
+        }
+    },
+    "expenseTrendsChartLabel": "Gráfico de tendencias de gastos mostrando presupuesto versus gastos reales"
 }

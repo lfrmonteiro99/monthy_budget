@@ -3,6 +3,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../models/meal_planner.dart';
 import '../models/shopping_item.dart';
 import '../theme/app_colors.dart';
+import '../utils/formatters.dart';
 
 /// Card that renders a freeform (non-recipe) meal in the plan list.
 class FreeformMealCard extends StatelessWidget {
@@ -114,7 +115,7 @@ class FreeformMealCard extends StatelessWidget {
                   ),
                   const Spacer(),
                   Text(
-                    '${mealDay.costEstimate.toStringAsFixed(2)}\u20AC',
+                    '${mealDay.costEstimate.toStringAsFixed(2)}${currencySymbol()}',
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,

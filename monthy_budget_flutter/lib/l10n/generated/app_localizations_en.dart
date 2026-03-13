@@ -324,10 +324,10 @@ class SEn extends S {
   String get dashboardTitle => 'Monthly Budget';
 
   @override
-  String get dashboardStressIndex => 'Serenity Index';
+  String get dashboardViewFullReport => 'View Full Report';
 
   @override
-  String get dashboardViewFullReport => 'View Full Report';
+  String get dashboardStressIndex => 'Serenity Index';
 
   @override
   String get dashboardTension => 'Tension';
@@ -4569,4 +4569,152 @@ class SEn extends S {
 
   @override
   String get mealHideDetails => 'Hide details';
+
+  @override
+  String get taxSimTitularesHint => 'Number of income earners in the household';
+
+  @override
+  String get taxSimMealTypeHint =>
+      'Card: tax-free up to the legal limit. Cash: taxed as income.';
+
+  @override
+  String get taxSimIRSFull => 'IRS (Income Tax) retention';
+
+  @override
+  String get taxSimSSFull => 'SS (Social Security)';
+
+  @override
+  String get stressZoneCritical =>
+      '0–39: High financial pressure, urgent action needed';
+
+  @override
+  String get stressZoneWarning =>
+      '40–59: Some risks present, improvements recommended';
+
+  @override
+  String get stressZoneGood =>
+      '60–79: Healthy finances, minor optimizations possible';
+
+  @override
+  String get stressZoneExcellent =>
+      '80–100: Strong financial position, well managed';
+
+  @override
+  String get projectionStressHint =>
+      'How this spending scenario affects your overall financial health score (0–100)';
+
+  @override
+  String get coachWelcomeTitle => 'Your AI Financial Coach';
+
+  @override
+  String get coachWelcomeBody =>
+      'Ask questions about your budget, expenses, or savings. The coach analyzes your real financial data to provide personalized advice.';
+
+  @override
+  String get coachWelcomeCredits =>
+      'Credits are used for Plus and Pro modes. Eco mode is always free.';
+
+  @override
+  String get coachWelcomeRateLimit =>
+      'To ensure quality responses, there is a brief cooldown between messages.';
+
+  @override
+  String get planMealsProBadge => 'PRO';
+
+  @override
+  String get coachBuyCredits => 'Buy credits';
+
+  @override
+  String get coachContinueEco => 'Continue with Eco';
+
+  @override
+  String get coachAchieved => 'I did it!';
+
+  @override
+  String get coachNotYet => 'Not yet';
+
+  @override
+  String coachCreditsAdded(int count) {
+    return '+$count credits added';
+  }
+
+  @override
+  String coachPurchaseError(String error) {
+    return 'Purchase error: $error';
+  }
+
+  @override
+  String coachUseMode(String mode) {
+    return 'Use $mode';
+  }
+
+  @override
+  String coachKeepMode(String mode) {
+    return 'Keep $mode';
+  }
+
+  @override
+  String savingsGoalSaveError(String error) {
+    return 'Failed to save goal: $error';
+  }
+
+  @override
+  String savingsGoalDeleteError(String error) {
+    return 'Failed to delete goal: $error';
+  }
+
+  @override
+  String savingsGoalUpdateError(String error) {
+    return 'Failed to update goal: $error';
+  }
+
+  @override
+  String get settingsSubscription => 'Subscription';
+
+  @override
+  String get settingsSubscriptionFree => 'Free';
+
+  @override
+  String settingsActiveCategoriesCount(int active, int total) {
+    return 'Active Categories ($active of $total)';
+  }
+
+  @override
+  String get settingsPausedCategories => 'Paused Categories';
+
+  @override
+  String get settingsOpenDashboard => 'Open Detailed Dashboard';
+
+  @override
+  String get settingsAssistantGroup => 'ASSISTANT';
+
+  @override
+  String get settingsAiCoach => 'AI Coach';
+
+  @override
+  String get setupWizardSubsidyLabel => 'SUBSIDIES';
+
+  @override
+  String get setupWizardPerDay => '/day';
+
+  @override
+  String get configurationError => 'Configuration Error';
+
+  @override
+  String get confidenceAllHealthy => 'All systems healthy. No actions needed.';
+
+  @override
+  String get confidenceNoAlerts => 'No alerts. Everything looks good.';
+
+  @override
+  String get onbSwipeHint => 'Swipe to continue';
+
+  @override
+  String onbSlideOf(int current, int total) {
+    return 'Slide $current of $total';
+  }
+
+  @override
+  String get expenseTrendsChartLabel =>
+      'Expense trends overview chart showing budgeted versus actual spending';
 }

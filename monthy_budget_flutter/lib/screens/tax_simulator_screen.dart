@@ -254,6 +254,7 @@ class _TaxSimulatorScreenState extends State<TaxSimulatorScreen> {
             const SizedBox(height: 12),
             _SegmentedRow(
               label: l10n.taxSimTitulares,
+              subtitle: l10n.taxSimTitularesHint,
               options: const ['1', '2'],
               selected: _titulares - 1,
               onSelected: (i) => setState(() {
@@ -281,6 +282,7 @@ class _TaxSimulatorScreenState extends State<TaxSimulatorScreen> {
             const SizedBox(height: 12),
             _SegmentedRow(
               label: l10n.taxSimMealType,
+              subtitle: l10n.taxSimMealTypeHint,
               options: [
                 MealAllowanceType.none.localizedLabel(l10n),
                 MealAllowanceType.card.localizedLabel(l10n),
@@ -345,14 +347,14 @@ class _TaxSimulatorScreenState extends State<TaxSimulatorScreen> {
           ),
           const SizedBox(height: 10),
           _ComparisonRow(
-            label: l10n.taxSimIRS,
+            label: l10n.taxSimIRSFull,
             current: _currentCalc.irsRetention,
             simulated: _simCalc.irsRetention,
             invertColor: true,
           ),
           const SizedBox(height: 10),
           _ComparisonRow(
-            label: l10n.taxSimSS,
+            label: l10n.taxSimSSFull,
             current: _currentCalc.socialSecurity,
             simulated: _simCalc.socialSecurity,
             invertColor: true,
@@ -468,12 +470,14 @@ class _SliderRow extends StatelessWidget {
 
 class _SegmentedRow extends StatelessWidget {
   final String label;
+  final String? subtitle;
   final List<String> options;
   final int selected;
   final ValueChanged<int> onSelected;
 
   const _SegmentedRow({
     required this.label,
+    this.subtitle,
     required this.options,
     required this.selected,
     required this.onSelected,
@@ -489,6 +493,13 @@ class _SegmentedRow extends StatelessWidget {
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
                 color: AppColors.textSecondary(context))),
+        if (subtitle != null) ...[
+          const SizedBox(height: 2),
+          Text(subtitle!,
+              style: TextStyle(
+                  fontSize: 11,
+                  color: AppColors.textMuted(context))),
+        ],
         const SizedBox(height: 8),
         SizedBox(
           width: double.infinity,

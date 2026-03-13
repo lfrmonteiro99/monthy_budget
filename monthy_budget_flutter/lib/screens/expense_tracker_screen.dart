@@ -404,10 +404,19 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
         scrolledUnderElevation: 1,
         actions: [
           IconButton(
-            icon: const Icon(Icons.document_scanner),
+            icon: Icon(Icons.document_scanner,
+                color: AppColors.textMuted(context)),
             tooltip: l10n.quickScanReceipt,
             onPressed: () {
-              // TODO: implement scan receipt navigation
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('${l10n.quickScanReceipt} — coming soon'),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
             },
           ),
           IconButton(
@@ -751,16 +760,19 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                   ),
                 ),
                 if (_dateFrom != null)
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _dateFrom = null;
-                        _dateTo = null;
-                      });
-                      _applyFilters();
-                    },
-                    child: Icon(Icons.clear, size: 16,
-                        color: AppColors.textMuted(context)),
+                  Tooltip(
+                    message: l10n.shoppingClear,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _dateFrom = null;
+                          _dateTo = null;
+                        });
+                        _applyFilters();
+                      },
+                      child: Icon(Icons.clear, size: 16,
+                          color: AppColors.textMuted(context)),
+                    ),
                   ),
               ],
             ),

@@ -634,7 +634,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         productName: ing.name,
         store: '',
         price: cost,
-        unitPrice: '${ing.avgPricePerUnit.toStringAsFixed(2)}\u20AC/${ing.unit}',
+        unitPrice: '${ing.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${ing.unit}',
         quantity: entry.value,
         unit: ing.unit,
         sourceMealLabels: mealLabels[entry.key]?.toList() ?? const [],
@@ -847,7 +847,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 24),
-            _InfoRow(label: l10n.mealBudgetLabel, value: '${budget.toStringAsFixed(2)}\u20AC'),
+            _InfoRow(label: l10n.mealBudgetLabel, value: '${budget.toStringAsFixed(2)}${currencySymbol()}'),
             const SizedBox(height: 8),
             _InfoRow(label: l10n.mealPeopleLabel, value: '$np'),
             const SizedBox(height: 20),
@@ -908,7 +908,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '${plan.totalEstimatedCost.toStringAsFixed(2)}\u20AC / ${plan.monthlyBudget.toStringAsFixed(2)}\u20AC',
+                    '${plan.totalEstimatedCost.toStringAsFixed(2)}${currencySymbol()} / ${plan.monthlyBudget.toStringAsFixed(2)}${currencySymbol()}',
                     style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
                   ),
                   TextButton.icon(
@@ -1290,7 +1290,7 @@ class _DayCard extends StatelessWidget {
                     ],
                     const Spacer(),
                     Text(
-                      '${mealDay.costEstimate.toStringAsFixed(2)}\u20AC',
+                      '${mealDay.costEstimate.toStringAsFixed(2)}${currencySymbol()}',
                       style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
@@ -1486,7 +1486,7 @@ class _DayCard extends StatelessWidget {
                                   store: '',
                                   price: cost,
                                   unitPrice:
-                                      '${ing.avgPricePerUnit.toStringAsFixed(2)}\u20AC/${ing.unit}',
+                                      '${ing.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${ing.unit}',
                                 )),
                                 borderRadius: BorderRadius.circular(10),
                                 child: Icon(Icons.add, size: 18, color: AppColors.onPrimary(context)),
@@ -1708,8 +1708,8 @@ class _SwapSheet extends StatelessWidget {
               final cost = service.recipeCost(r, nPessoas, ingredientMap);
               final delta = cost - currentCost;
               final deltaStr = delta >= 0
-                  ? '+${delta.toStringAsFixed(2)}\u20AC'
-                  : '${delta.toStringAsFixed(2)}\u20AC';
+                  ? '+${delta.toStringAsFixed(2)}${currencySymbol()}'
+                  : '${delta.toStringAsFixed(2)}${currencySymbol()}';
               final deltaColor =
                   delta > 0 ? Colors.red : const Color(0xFF16A34A);
               return ListTile(
@@ -1838,7 +1838,7 @@ class _ConsolidatedSheet extends StatelessWidget {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            '${cost.toStringAsFixed(2)}\u20AC',
+                            '${cost.toStringAsFixed(2)}${currencySymbol()}',
                             style: const TextStyle(
                                 fontSize: 13, fontWeight: FontWeight.w600),
                           ),
@@ -1858,7 +1858,7 @@ class _ConsolidatedSheet extends StatelessWidget {
                                   store: '',
                                   price: cost,
                                   unitPrice:
-                                      '${ing.avgPricePerUnit.toStringAsFixed(2)}\u20AC/${ing.unit}',
+                                      '${ing.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${ing.unit}',
                                 )),
                                 borderRadius: BorderRadius.circular(10),
                                 child: Icon(Icons.add, size: 18, color: AppColors.onPrimary(context)),

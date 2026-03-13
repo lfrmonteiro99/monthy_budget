@@ -49,6 +49,23 @@ class SavingsGoalCard extends StatelessWidget {
               color: AppColors.textMuted(context),
             ),
           ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: onSeeAll,
+              icon: const Icon(Icons.add, size: 18),
+              label: Text(l10n.savingsGoalSeeAll),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.primary(context),
+                side: BorderSide(color: AppColors.primary(context)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 10),
+              ),
+            ),
+          ),
         ],
       );
     }

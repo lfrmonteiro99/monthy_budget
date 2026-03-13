@@ -1656,7 +1656,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         if (_commandPanelOpen)
           GestureDetector(
             onTap: () => setState(() => _commandPanelOpen = false),
-            child: Container(color: Colors.black.withValues(alpha: 0.3)),
+            child: Container(color: Theme.of(context).shadowColor.withValues(alpha: 0.3)),
           ),
         // Command assistant panel
         if (_commandPanelOpen)

@@ -2472,5 +2472,100 @@
     "settingsAbout": "About",
 
     "mealShowDetails": "Show details",
-    "mealHideDetails": "Hide details"
+    "mealHideDetails": "Hide details",
+
+    "taxSimTitularesHint": "Number of income earners in the household",
+    "taxSimMealTypeHint": "Card: tax-free up to the legal limit. Cash: taxed as income.",
+    "taxSimIRSFull": "IRS (Income Tax) retention",
+    "taxSimSSFull": "SS (Social Security)",
+    "stressZoneCritical": "0–39: High financial pressure, urgent action needed",
+    "stressZoneWarning": "40–59: Some risks present, improvements recommended",
+    "stressZoneGood": "60–79: Healthy finances, minor optimizations possible",
+    "stressZoneExcellent": "80–100: Strong financial position, well managed",
+    "projectionStressHint": "How this spending scenario affects your overall financial health score (0–100)",
+    "coachWelcomeTitle": "Your AI Financial Coach",
+    "coachWelcomeBody": "Ask questions about your budget, expenses, or savings. The coach analyzes your real financial data to provide personalized advice.",
+    "coachWelcomeCredits": "Credits are used for Plus and Pro modes. Eco mode is always free.",
+    "coachWelcomeRateLimit": "To ensure quality responses, there is a brief cooldown between messages.",
+    "planMealsProBadge": "PRO",
+
+    "coachBuyCredits": "Buy credits",
+    "coachContinueEco": "Continue with Eco",
+    "coachAchieved": "I did it!",
+    "coachNotYet": "Not yet",
+    "coachCreditsAdded": "+{count} credits added",
+    "@coachCreditsAdded": {
+        "placeholders": {
+            "count": {"type": "int"}
+        }
+    },
+    "coachPurchaseError": "Purchase error: {error}",
+    "@coachPurchaseError": {
+        "placeholders": {
+            "error": {"type": "String"}
+        }
+    },
+    "coachUseMode": "Use {mode}",
+    "@coachUseMode": {
+        "placeholders": {
+            "mode": {"type": "String"}
+        }
+    },
+    "coachKeepMode": "Keep {mode}",
+    "@coachKeepMode": {
+        "placeholders": {
+            "mode": {"type": "String"}
+        }
+    },
+
+    "savingsGoalSaveError": "Failed to save goal: {error}",
+    "@savingsGoalSaveError": {
+        "placeholders": {
+            "error": {"type": "String"}
+        }
+    },
+    "savingsGoalDeleteError": "Failed to delete goal: {error}",
+    "@savingsGoalDeleteError": {
+        "placeholders": {
+            "error": {"type": "String"}
+        }
+    },
+    "savingsGoalUpdateError": "Failed to update goal: {error}",
+    "@savingsGoalUpdateError": {
+        "placeholders": {
+            "error": {"type": "String"}
+        }
+    },
+
+    "settingsSubscription": "Subscription",
+    "settingsSubscriptionFree": "Free",
+    "settingsActiveCategoriesCount": "Active Categories ({active} of {total})",
+    "@settingsActiveCategoriesCount": {
+        "placeholders": {
+            "active": {"type": "int"},
+            "total": {"type": "int"}
+        }
+    },
+    "settingsPausedCategories": "Paused Categories",
+    "settingsOpenDashboard": "Open Detailed Dashboard",
+    "settingsAssistantGroup": "ASSISTANT",
+    "settingsAiCoach": "AI Coach",
+
+    "setupWizardSubsidyLabel": "SUBSIDIES",
+    "setupWizardPerDay": "/day",
+
+    "configurationError": "Configuration Error",
+
+    "confidenceAllHealthy": "All systems healthy. No actions needed.",
+    "confidenceNoAlerts": "No alerts. Everything looks good.",
+
+    "onbSwipeHint": "Swipe to continue",
+    "onbSlideOf": "Slide {current} of {total}",
+    "@onbSlideOf": {
+        "placeholders": {
+            "current": {"type": "int"},
+            "total": {"type": "int"}
+        }
+    },
+    "expenseTrendsChartLabel": "Expense trends overview chart showing budgeted versus actual spending"
 }

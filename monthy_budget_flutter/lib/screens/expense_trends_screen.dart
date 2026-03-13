@@ -274,7 +274,9 @@ class _ExpenseTrendsScreenState extends State<ExpenseTrendsScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          SizedBox(
+          Semantics(
+            label: l10n.expenseTrendsChartLabel,
+            child: SizedBox(
             height: 220,
             child: LineChart(
               LineChartData(
@@ -414,15 +416,16 @@ class _ExpenseTrendsScreenState extends State<ExpenseTrendsScreen> {
               ),
             ),
           ),
+          ),
           const SizedBox(height: 14),
           // Legend
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _legendDot(
-                  context, AppColors.primary(context), l10n.expenseTrendsBudgeted),
+              _legendLine(
+                  context, AppColors.primary(context), l10n.expenseTrendsBudgeted, dashed: false),
               const SizedBox(width: 20),
-              _legendDot(context, actualColor, l10n.expenseTrendsActual),
+              _legendLine(context, actualColor, l10n.expenseTrendsActual, dashed: true),
             ],
           ),
           const SizedBox(height: 12),
@@ -525,6 +528,43 @@ class _ExpenseTrendsScreenState extends State<ExpenseTrendsScreen> {
         ],
       );
 
+  Widget _legendLine(BuildContext context, Color color, String label,
+      {required bool dashed}) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(
+          width: 20,
+          height: 3,
+          child: dashed
+              ? Row(
+                  children: [
+                    Container(width: 5, height: 3, color: color),
+                    const SizedBox(width: 3),
+                    Container(width: 5, height: 3, color: color),
+                    const SizedBox(width: 3),
+                    Container(width: 4, height: 3, color: color),
+                  ],
+                )
+              : Container(
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+        ),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            color: AppColors.textSecondary(context),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _summaryColumn(
           BuildContext context, String label, String value, Color color) =>
       Column(
@@ -607,12 +647,13 @@ class _CategoryBar extends StatelessWidget {
               width: 80,
               child: Text(
                 label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                   color: AppColors.textPrimary(context),
                 ),
-                overflow: TextOverflow.ellipsis,
               ),
             ),
             const SizedBox(width: 8),
@@ -887,8 +928,12 @@ class _CategoryDetailSheet extends StatelessWidget {
                           final mk = idx < monthlyData.length
                               ? monthlyData[idx].monthKey
                               : '';
+                          final parts = mk.split('-');
+                          final tooltipLabel = parts.length == 2
+                              ? '${localizedMonthAbbr(l10n, int.parse(parts[1]))} ${parts[0]}'
+                              : mk;
                           return LineTooltipItem(
-                            '$mk\n${formatCurrency(s.y)}',
+                            '$tooltipLabel\n${formatCurrency(s.y)}',
                             TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,

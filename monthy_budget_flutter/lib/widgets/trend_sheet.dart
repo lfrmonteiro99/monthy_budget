@@ -236,6 +236,39 @@ class _TrendSheetContent extends StatelessWidget {
               _zoneDot(context, AppColors.success(context), l10n.stressExcellent),
             ],
           ),
+          const SizedBox(height: 10),
+          // Zone explanations
+          ...[
+            (AppColors.error(context), l10n.stressZoneCritical),
+            (AppColors.warning(context), l10n.stressZoneWarning),
+            (AppColors.primary(context), l10n.stressZoneGood),
+            (AppColors.success(context), l10n.stressZoneExcellent),
+          ].map((entry) => Padding(
+            padding: const EdgeInsets.only(bottom: 3),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 6, height: 6,
+                  margin: const EdgeInsets.only(top: 4),
+                  decoration: BoxDecoration(
+                    color: entry.$1,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    entry.$2,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: AppColors.textMuted(context),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )),
         ],
       ),
     );

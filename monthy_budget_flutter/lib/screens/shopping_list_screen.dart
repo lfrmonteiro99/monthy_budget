@@ -340,7 +340,30 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 ),
                 if (hasChecked)
                   TextButton.icon(
-                    onPressed: widget.onClearChecked,
+                    onPressed: () async {
+                      final confirmed = await showDialog<bool>(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: Text(l10n.shoppingClear),
+                          content: Text(l10n.shoppingClear),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(ctx, false),
+                              child: Text(l10n.cancel),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(ctx, true),
+                              child: Text(l10n.delete,
+                                  style: TextStyle(
+                                      color: AppColors.error(context))),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (confirmed == true) {
+                        widget.onClearChecked();
+                      }
+                    },
                     icon: const Icon(Icons.delete_sweep, size: 16),
                     label: Text(l10n.shoppingClear),
                     style: TextButton.styleFrom(
