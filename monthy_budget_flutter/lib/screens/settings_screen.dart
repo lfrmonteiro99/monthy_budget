@@ -2650,7 +2650,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _label(String text) => Text(
         text,
-        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.grey.shade500, letterSpacing: 1.2),
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondary(context), letterSpacing: 0.5),
       );
 
   Widget _counterButton(String text, VoidCallback onTap) => Material(

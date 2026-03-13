@@ -194,8 +194,8 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(S.of(context).projectionFood, style: TextStyle(
-            fontSize: 10, fontWeight: FontWeight.w600,
-            color: AppColors.textMuted(context), letterSpacing: 1.2,
+            fontSize: 12, fontWeight: FontWeight.w600,
+            color: AppColors.textSecondary(context), letterSpacing: 0.5,
           )),
           const SizedBox(height: 16),
 
@@ -291,8 +291,8 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
           Row(
             children: [
               Text(S.of(context).projectionExpenses, style: TextStyle(
-                fontSize: 10, fontWeight: FontWeight.w600,
-                color: AppColors.textMuted(context), letterSpacing: 1.2,
+                fontSize: 12, fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary(context), letterSpacing: 0.5,
               )),
               const Spacer(),
               Container(

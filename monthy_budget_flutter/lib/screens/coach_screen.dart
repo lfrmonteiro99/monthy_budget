@@ -460,10 +460,10 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
             Text(
               l10n.coachSubtitle,
               style: TextStyle(
-                fontSize: 10,
+                fontSize: 12,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textMuted(context),
-                letterSpacing: 1.2,
+                color: AppColors.textSecondary(context),
+                letterSpacing: 0.5,
               ),
             ),
           ],

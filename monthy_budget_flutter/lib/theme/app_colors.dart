@@ -131,8 +131,16 @@ class AppColors {
   static Color shimmer(BuildContext context) =>
       _isDark(context) ? Colors.white.withValues(alpha: 0.03) : Colors.black.withValues(alpha: 0.03);
 
+  static const _navIndicatorColors = {
+    AppColorPalette.ocean:   (light: Color(0xFFDBEAFE), dark: Color(0xFF1E3A6E)),
+    AppColorPalette.emerald: (light: Color(0xFFD1FAE5), dark: Color(0xFF064E3B)),
+    AppColorPalette.violet:  (light: Color(0xFFEDE9FE), dark: Color(0xFF2E1065)),
+    AppColorPalette.teal:    (light: Color(0xFFCCFBF1), dark: Color(0xFF134E4A)),
+    AppColorPalette.sunset:  (light: Color(0xFFFFF7ED), dark: Color(0xFF431407)),
+  };
+
   static Color navIndicator(BuildContext context) {
-    final c = _primaryLightColors[palette]!;
+    final c = _navIndicatorColors[palette]!;
     return _isDark(context) ? c.dark : c.light;
   }
 
@@ -143,13 +151,12 @@ class AppColors {
   static Color chipSelected(BuildContext context) =>
       _isDark(context) ? const Color(0xFF1E3A5F) : const Color(0xFFEFF6FF);
 
-  /// Settings list item icon color — mockup: #475569
-  static Color settingsIcon(BuildContext context) =>
-      _isDark(context) ? const Color(0xFF94A3B8) : const Color(0xFF475569);
+  /// Settings list item icon color — mockup: #2563eb (primary blue)
+  static Color settingsIcon(BuildContext context) => primary(context);
 
-  /// Settings list item trailing arrow — mockup: #CBD5E1
+  /// Settings list item trailing arrow — mockup: #94a3b8
   static Color settingsArrow(BuildContext context) =>
-      _isDark(context) ? const Color(0xFF475569) : const Color(0xFFCBD5E1);
+      _isDark(context) ? const Color(0xFF475569) : const Color(0xFF94A3B8);
 
   // ── Status Borders ─────────────────────────────────────────────────
 

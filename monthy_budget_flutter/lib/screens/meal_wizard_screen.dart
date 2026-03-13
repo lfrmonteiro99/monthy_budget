@@ -704,9 +704,9 @@ class _Step5Strategy extends StatelessWidget {
 Widget _sectionLabel(BuildContext context, String text) => Text(
       text,
       style: TextStyle(
-        fontSize: 10,
-        fontWeight: FontWeight.w700,
-        color: AppColors.textMuted(context),
-        letterSpacing: 1.2,
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: AppColors.textSecondary(context),
+        letterSpacing: 0.5,
       ),
     );

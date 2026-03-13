@@ -267,10 +267,10 @@ class _ExpenseTrendsScreenState extends State<ExpenseTrendsScreen> {
           Text(
             l10n.expenseTrendsOverview.toUpperCase(),
             style: TextStyle(
-              fontSize: 10,
+              fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: AppColors.textMuted(context),
-              letterSpacing: 1.2,
+              color: AppColors.textSecondary(context),
+              letterSpacing: 0.5,
             ),
           ),
           const SizedBox(height: 16),
@@ -478,10 +478,10 @@ class _ExpenseTrendsScreenState extends State<ExpenseTrendsScreen> {
           Text(
             l10n.expenseTrendsByCategory.toUpperCase(),
             style: TextStyle(
-              fontSize: 10,
+              fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: AppColors.textMuted(context),
-              letterSpacing: 1.2,
+              color: AppColors.textSecondary(context),
+              letterSpacing: 0.5,
             ),
           ),
           const SizedBox(height: 16),
