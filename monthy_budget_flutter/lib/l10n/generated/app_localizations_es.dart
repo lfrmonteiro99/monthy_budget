@@ -327,6 +327,9 @@ class SEs extends S {
   String get dashboardStressIndex => 'Índice de Tranquilidad';
 
   @override
+  String get dashboardViewFullReport => 'Ver Informe Completo';
+
+  @override
   String get dashboardTension => 'Tensión';
 
   @override
