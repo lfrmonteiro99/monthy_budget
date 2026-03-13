@@ -1802,9 +1802,9 @@ class _SalaryAndExpensesStep extends StatelessWidget {
                   onChanged: (v) {
                     final amount = double.tryParse(v.replaceAll(',', '.')) ?? 0;
                     if (amount > 0) {
-                      final salaries = List<SalaryEntry>.from(
+                      final salaries = List<SalaryInfo>.from(
                           draft.salaries.isEmpty
-                              ? [SalaryEntry(grossAmount: amount)]
+                              ? [SalaryInfo(grossAmount: amount)]
                               : [draft.salaries[0].copyWith(grossAmount: amount)]);
                       onChanged(draft.copyWith(salaries: salaries));
                     }
@@ -1812,10 +1812,10 @@ class _SalaryAndExpensesStep extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 // Expenses section
-                Text(l10n.setupWizardExpTitle,
+                Text(l10n.setupWizardExpensesTitle,
                     style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
                 const SizedBox(height: 6),
-                Text(l10n.setupWizardExpSubtitle,
+                Text(l10n.setupWizardExpensesSubtitle,
                     style: TextStyle(fontSize: 13, color: AppColors.textSecondary(context))),
                 const SizedBox(height: 12),
                 ...expenseKeyOrder.map((key) {
