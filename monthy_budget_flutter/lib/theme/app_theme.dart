@@ -118,8 +118,6 @@ ThemeData lightTheme(AppColorPalette palette) {
         fontWeight: FontWeight.w500,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      visualDensity: VisualDensity.compact,
     ),
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: Colors.white,
@@ -295,8 +293,6 @@ ThemeData darkTheme(AppColorPalette palette) {
         color: const Color(0xFFF1F5F9),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      visualDensity: VisualDensity.compact,
     ),
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: const Color(0xFF1E293B),
