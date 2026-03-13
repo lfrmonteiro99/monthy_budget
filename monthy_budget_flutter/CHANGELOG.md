@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2026.3.22 - 2026-03-13
+
+### Bug Fixes
+
+- Fix compilation errors in setup_wizard_screen.dart — SalaryEntry→SalaryInfo, incorrect l10n keys #454
+
 ## v2026.3.21 - 2026-03-13
 
 ### Features
