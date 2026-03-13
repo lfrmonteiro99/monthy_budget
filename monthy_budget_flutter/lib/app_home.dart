@@ -39,6 +39,7 @@ import 'screens/expense_trends_screen.dart';
 import 'screens/insights_screen.dart';
 import 'screens/more_screen.dart';
 import 'screens/plan_hub_screen.dart';
+import 'screens/plan_and_shop_screen.dart';
 import 'screens/notification_settings_screen.dart';
 import 'models/recurring_expense.dart';
 import 'models/notification_preferences.dart';
@@ -689,10 +690,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         _openSavingsGoals();
         break;
       case 'shopping_list':
-        _openShoppingList();
+        setState(() => _currentIndex = 2);
         break;
       case 'grocery_browser':
-        _openGrocery();
+        setState(() => _currentIndex = 2);
         break;
       case 'export':
         Navigator.of(context).push(
@@ -1047,17 +1048,13 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       case 'expenses':
         setState(() => _currentIndex = 1);
       case 'plan':
-        setState(() => _currentIndex = 2);
       case 'more':
-        setState(() => _currentIndex = 3);
+      case 'grocery':
+      case 'shopping_list':
+      case 'meals':
+        setState(() => _currentIndex = 2);
       case 'coach':
         _openCoach();
-      case 'grocery':
-        _openGrocery();
-      case 'shopping_list':
-        _openShoppingList();
-      case 'meals':
-        _openMealPlanner();
       case 'settings':
         Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
@@ -1508,6 +1505,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         navBarKey: _navBarKey,
         focusedMode: false,
         onOpenInsights: _openInsights,
+        onOpenCoach: _openCoach,
       ),
       ExpenseTrackerScreen(
         settings: _settings,
@@ -1524,30 +1522,37 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         showTour: !_onboardingState.isTourDone('expense_tracker'),
         onTourComplete: () => _markTourDone('expense_tracker'),
       ),
-      PlanHubScreen(
-        onOpenGrocery: _openGrocery,
-        onOpenShoppingList: _openShoppingList,
-        onOpenMealPlanner: _openMealPlanner,
-        onOpenCoach: _openCoach,
-      ),
-      MoreScreen(
-        onOpenDetailedDashboard: _openDetailedDashboard,
-        onOpenInsights: _openInsights,
-        onOpenSavingsGoals: _openSavingsGoals,
-        onOpenSettings: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
-          );
-        },
-        onOpenNotifications: _openNotificationSettings,
-        onOpenSubscription: _openPaywall,
-        onOpenConfidenceCenter: _openConfidenceCenter,
-        onOpenProductUpdates: _openProductUpdates,
-        subscription: _subscription,
-        pausedItemCount:
-            DowngradeService.pausedCategories(_settings.expenses) +
-                DowngradeService.pausedSavingsGoals(_savingsGoals),
-        confidenceAlertCount: _dataHealthService.alertBadgeCount,
+      PlanAndShopScreen(
+        shoppingItems: _shoppingList,
+        onToggleChecked: _toggleShoppingItem,
+        onRemove: _removeShoppingItem,
+        onClearChecked: _clearCheckedItems,
+        onFinalize: _finalizeShopping,
+        purchaseHistory: _purchaseHistory,
+        onAddToShoppingList: _addToShoppingList,
+        products: _groceryData.toCatalogProducts().isNotEmpty ||
+                _settings.country != Country.pt
+            ? _groceryData.toCatalogProducts()
+            : _products,
+        groceryData: _groceryData,
+        groceryLoading: _groceryLoading,
+        settings: _settings,
+        apiKey: _openAiApiKey,
+        favorites: _favorites,
+        householdId: widget.householdId,
+        onSaveSettings: _saveSettings,
+        onOpenMealSettings: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => _buildSettingsScreen(initialSection: 'meals'),
+          ),
+        ),
+        showShoppingTour: !_onboardingState.isTourDone('shopping'),
+        onShoppingTourComplete: () => _markTourDone('shopping'),
+        showGroceryTour: !_onboardingState.isTourDone('grocery'),
+        onGroceryTourComplete: () => _markTourDone('grocery'),
+        showMealsTour: !_onboardingState.isTourDone('meals'),
+        onMealsTourComplete: () => _markTourDone('meals'),
+        canAccessMeals: _subscription.hasPremiumAccess,
       ),
     ];
 
@@ -1602,7 +1607,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         key: _navBarKey,
         selectedIndex: _currentIndex,
         onDestinationSelected: (i) {
-          const tabFeatures = ['dashboard', 'expense_tracker', 'planning', 'more'];
+          const tabFeatures = ['dashboard', 'expense_tracker', 'plan_and_shop'];
           if (i < tabFeatures.length) _trackFeature(tabFeatures[i]);
 
           setState(() => _currentIndex = i);
@@ -1632,7 +1637,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                 '${_shoppingList.where((i) => !i.checked).length}',
                 style: const TextStyle(fontSize: 10),
               ),
-              child: const Icon(Icons.event_note_outlined),
+              child: const Icon(Icons.shopping_basket_outlined),
             ),
             selectedIcon: Badge(
               isLabelVisible: _shoppingList.any((i) => !i.checked),
@@ -1640,17 +1645,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                 '${_shoppingList.where((i) => !i.checked).length}',
                 style: const TextStyle(fontSize: 10),
               ),
-              child: Icon(Icons.event_note, color: AppColors.primary(context)),
+              child: Icon(Icons.shopping_basket, color: AppColors.primary(context)),
             ),
-            label: l10n.navPlan,
-            tooltip: l10n.navPlanTip,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.more_horiz),
-            selectedIcon:
-                Icon(Icons.more_horiz, color: AppColors.primary(context)),
-            label: l10n.navMore,
-            tooltip: l10n.navMoreTip,
+            label: l10n.navPlanAndShop,
+            tooltip: l10n.navPlanAndShopTip,
           ),
         ],
       ),

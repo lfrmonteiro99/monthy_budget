@@ -22,6 +22,7 @@ class GroceryScreen extends StatefulWidget {
   final BarcodeScanService? barcodeScanService;
   final Set<String> weeklyPantryIds;
   final ValueChanged<String>? onToggleWeeklyPantry;
+  final bool embedded;
 
   const GroceryScreen({
     super.key,
@@ -34,6 +35,7 @@ class GroceryScreen extends StatefulWidget {
     this.barcodeScanService,
     this.weeklyPantryIds = const {},
     this.onToggleWeeklyPantry,
+    this.embedded = false,
   });
 
   @override
@@ -193,62 +195,38 @@ class _GroceryScreenState extends State<GroceryScreen> {
     }
     final cats = byCategory.keys.toList()..sort();
 
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
-      appBar: AppBar(
-        backgroundColor: AppColors.surface(context),
-        surfaceTintColor: AppColors.surface(context),
-        title: Text(
-          l10n.groceryTitle,
-          style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary(context)),
-        ),
-        actions: [
-          if (widget.onAddToShoppingList != null)
-            IconButton(
-              icon: Icon(Icons.qr_code_scanner,
-                  color: AppColors.textSecondary(context)),
-              tooltip: l10n.barcodeScanTooltip,
-              onPressed: _onScanBarcode,
-            ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(56),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-            child: TextField(
-              key: GroceryTourKeys.searchBar,
-              onChanged: (v) => setState(() => _searchQuery = v),
-              decoration: InputDecoration(
-                hintText: l10n.grocerySearchHint,
-                hintStyle:
-                    TextStyle(color: AppColors.textMuted(context), fontSize: 14),
-                prefixIcon: Icon(Icons.search,
-                    color: AppColors.textMuted(context), size: 20),
-                filled: true,
-                fillColor: AppColors.background(context),
-                contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: AppColors.border(context)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: AppColors.border(context)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide:
-                      BorderSide(color: AppColors.primary(context), width: 2),
-                ),
-              ),
-            ),
+    final searchBar = Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
+      child: TextField(
+        key: GroceryTourKeys.searchBar,
+        onChanged: (v) => setState(() => _searchQuery = v),
+        decoration: InputDecoration(
+          hintText: l10n.grocerySearchHint,
+          hintStyle:
+              TextStyle(color: AppColors.textMuted(context), fontSize: 14),
+          prefixIcon: Icon(Icons.search,
+              color: AppColors.textMuted(context), size: 20),
+          filled: true,
+          fillColor: AppColors.background(context),
+          contentPadding: const EdgeInsets.symmetric(vertical: 10),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: AppColors.border(context)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: AppColors.border(context)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide:
+                BorderSide(color: AppColors.primary(context), width: 2),
           ),
         ),
       ),
-      body: widget.isLoading
+    );
+
+    final bodyContent = widget.isLoading
           ? Center(
               child: Semantics(
                 label: l10n.groceryLoadingLabel,
@@ -323,7 +301,44 @@ class _GroceryScreenState extends State<GroceryScreen> {
                   ),
                 ),
               ],
+            );
+
+    if (widget.embedded) {
+      return Column(
+        children: [
+          searchBar,
+          Expanded(child: bodyContent),
+        ],
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: AppColors.background(context),
+      appBar: AppBar(
+        backgroundColor: AppColors.surface(context),
+        surfaceTintColor: AppColors.surface(context),
+        title: Text(
+          l10n.groceryTitle,
+          style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary(context)),
+        ),
+        actions: [
+          if (widget.onAddToShoppingList != null)
+            IconButton(
+              icon: Icon(Icons.qr_code_scanner,
+                  color: AppColors.textSecondary(context)),
+              tooltip: l10n.barcodeScanTooltip,
+              onPressed: _onScanBarcode,
             ),
+        ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(56),
+          child: searchBar,
+        ),
+      ),
+      body: bodyContent,
     );
   }
 

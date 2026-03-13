@@ -2390,6 +2390,8 @@
     "navTrackTip": "Suivre les dépenses mensuelles",
     "navPlan": "Planifier",
     "navPlanTip": "Courses, liste et plan de repas",
+    "navPlanAndShop": "Courses",
+    "navPlanAndShopTip": "Liste de courses, épicerie et repas",
     "navMore": "Plus",
     "navMoreTip": "Paramètres et analyses",
 

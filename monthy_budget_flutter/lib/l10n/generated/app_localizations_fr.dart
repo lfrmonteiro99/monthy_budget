@@ -4538,6 +4538,12 @@ class SFr extends S {
   String get navPlanTip => 'Courses, liste et plan de repas';
 
   @override
+  String get navPlanAndShop => 'Courses';
+
+  @override
+  String get navPlanAndShopTip => 'Liste de courses, épicerie et repas';
+
+  @override
   String get navMore => 'Plus';
 
   @override

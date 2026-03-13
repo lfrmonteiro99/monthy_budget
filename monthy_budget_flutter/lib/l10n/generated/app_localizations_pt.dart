@@ -4526,6 +4526,12 @@ class SPt extends S {
   String get navPlanTip => 'Mercearia, lista e plano de refeições';
 
   @override
+  String get navPlanAndShop => 'Compras';
+
+  @override
+  String get navPlanAndShopTip => 'Lista de compras, mercearia e refeições';
+
+  @override
   String get navMore => 'Mais';
 
   @override

@@ -2441,6 +2441,8 @@
     "navTrackTip": "Track monthly expenses",
     "navPlan": "Plan",
     "navPlanTip": "Groceries, list and meal plan",
+    "navPlanAndShop": "Shop",
+    "navPlanAndShopTip": "Shopping list, grocery and meals",
     "navMore": "More",
     "navMoreTip": "Settings and insights",
 
