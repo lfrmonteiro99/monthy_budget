@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2026.3.23 - 2026-03-13
+
+### Features
+
+- Align design system with UX mockup — Inter font, updated colors, border-radius, FAB shape, chip styling #459
+
+### Bug Fixes
+
+- Fix 31 UX audit issues — l10n hardcoded strings, AppColors theming, text overflow, accessibility, tooltips #457
+
 ## v2026.3.22 - 2026-03-13
 
 ### Bug Fixes
