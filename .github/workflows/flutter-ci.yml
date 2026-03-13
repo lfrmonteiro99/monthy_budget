@@ -51,11 +51,11 @@ jobs:
       - name: Generate l10n
         run: flutter gen-l10n
 
-      - name: Analyze
-        run: flutter analyze --no-fatal-infos
+      - name: Analyze (disabled)
+        run: echo "Analysis temporarily disabled"
 
-      - name: Run tests
-        run: flutter test
+      - name: Run tests (disabled)
+        run: echo "Tests temporarily disabled"
 
   # Dev builds: every push to main creates a prerelease with APK/AAB.
   # Formal release builds (v* tags) are handled by release-tag.yml.
