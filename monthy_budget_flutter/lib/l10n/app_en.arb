@@ -149,6 +149,7 @@
     },
     "monthReviewOnTrack": "Expenses within budget. Good financial control.",
     "dashboardTitle": "Monthly Budget",
+    "dashboardViewFullReport": "View Full Report",
     "dashboardStressIndex": "Serenity Index",
     "dashboardTension": "Tension",
     "dashboardLiquidity": "Liquidity",
@@ -2441,6 +2442,8 @@
     "navTrackTip": "Track monthly expenses",
     "navPlan": "Plan",
     "navPlanTip": "Groceries, list and meal plan",
+    "navPlanAndShop": "Shop",
+    "navPlanAndShopTip": "Shopping list, grocery and meals",
     "navMore": "More",
     "navMoreTip": "Settings and insights",
 
@@ -2459,5 +2462,15 @@
     "authConnectionError": "Connection error",
     "authRetry": "Retry",
     "authSignOut": "Sign out",
-    "actionRetry": "Retry"
+    "actionRetry": "Retry",
+
+    "settingsGroupAccount": "ACCOUNT",
+    "settingsGroupBudget": "BUDGET",
+    "settingsGroupPreferences": "PREFERENCES",
+    "settingsGroupAdvanced": "ADVANCED",
+    "settingsManageSubscription": "Manage Subscription",
+    "settingsAbout": "About",
+
+    "mealShowDetails": "Show details",
+    "mealHideDetails": "Hide details"
 }

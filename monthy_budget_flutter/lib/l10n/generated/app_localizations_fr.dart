@@ -327,6 +327,9 @@ class SFr extends S {
   String get dashboardStressIndex => 'Indice de Sérénité';
 
   @override
+  String get dashboardViewFullReport => 'Voir le Rapport Complet';
+
+  @override
   String get dashboardTension => 'Tension';
 
   @override
@@ -4538,6 +4541,12 @@ class SFr extends S {
   String get navPlanTip => 'Courses, liste et plan de repas';
 
   @override
+  String get navPlanAndShop => 'Courses';
+
+  @override
+  String get navPlanAndShopTip => 'Liste de courses, épicerie et repas';
+
+  @override
   String get navMore => 'Plus';
 
   @override
@@ -4574,4 +4583,28 @@ class SFr extends S {
 
   @override
   String get actionRetry => 'Réessayer';
+
+  @override
+  String get settingsGroupAccount => 'COMPTE';
+
+  @override
+  String get settingsGroupBudget => 'BUDGET';
+
+  @override
+  String get settingsGroupPreferences => 'PRÉFÉRENCES';
+
+  @override
+  String get settingsGroupAdvanced => 'AVANCÉ';
+
+  @override
+  String get settingsManageSubscription => 'Gérer l\'abonnement';
+
+  @override
+  String get settingsAbout => 'À propos';
+
+  @override
+  String get mealShowDetails => 'Afficher les détails';
+
+  @override
+  String get mealHideDetails => 'Masquer les détails';
 }

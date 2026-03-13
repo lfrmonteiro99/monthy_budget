@@ -327,6 +327,9 @@ class SEn extends S {
   String get dashboardStressIndex => 'Serenity Index';
 
   @override
+  String get dashboardViewFullReport => 'View Full Report';
+
+  @override
   String get dashboardTension => 'Tension';
 
   @override
@@ -4500,6 +4503,12 @@ class SEn extends S {
   String get navPlanTip => 'Groceries, list and meal plan';
 
   @override
+  String get navPlanAndShop => 'Shop';
+
+  @override
+  String get navPlanAndShopTip => 'Shopping list, grocery and meals';
+
+  @override
   String get navMore => 'More';
 
   @override
@@ -4536,4 +4545,28 @@ class SEn extends S {
 
   @override
   String get actionRetry => 'Retry';
+
+  @override
+  String get settingsGroupAccount => 'ACCOUNT';
+
+  @override
+  String get settingsGroupBudget => 'BUDGET';
+
+  @override
+  String get settingsGroupPreferences => 'PREFERENCES';
+
+  @override
+  String get settingsGroupAdvanced => 'ADVANCED';
+
+  @override
+  String get settingsManageSubscription => 'Manage Subscription';
+
+  @override
+  String get settingsAbout => 'About';
+
+  @override
+  String get mealShowDetails => 'Show details';
+
+  @override
+  String get mealHideDetails => 'Hide details';
 }

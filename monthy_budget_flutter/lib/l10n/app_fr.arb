@@ -149,6 +149,7 @@
     },
     "monthReviewOnTrack": "Dépenses dans les prévisions. Bon contrôle budgétaire.",
     "dashboardTitle": "Budget Mensuel",
+    "dashboardViewFullReport": "Voir le Rapport Complet",
     "dashboardStressIndex": "Indice de Sérénité",
     "dashboardTension": "Tension",
     "dashboardLiquidity": "Liquidité",
@@ -2390,6 +2391,8 @@
     "navTrackTip": "Suivre les dépenses mensuelles",
     "navPlan": "Planifier",
     "navPlanTip": "Courses, liste et plan de repas",
+    "navPlanAndShop": "Courses",
+    "navPlanAndShopTip": "Liste de courses, épicerie et repas",
     "navMore": "Plus",
     "navMoreTip": "Paramètres et analyses",
 
@@ -2408,5 +2411,15 @@
     "authConnectionError": "Erreur de connexion",
     "authRetry": "Réessayer",
     "authSignOut": "Se déconnecter",
-    "actionRetry": "Réessayer"
+    "actionRetry": "Réessayer",
+
+    "settingsGroupAccount": "COMPTE",
+    "settingsGroupBudget": "BUDGET",
+    "settingsGroupPreferences": "PRÉFÉRENCES",
+    "settingsGroupAdvanced": "AVANCÉ",
+    "settingsManageSubscription": "Gérer l'abonnement",
+    "settingsAbout": "À propos",
+
+    "mealShowDetails": "Afficher les détails",
+    "mealHideDetails": "Masquer les détails"
 }

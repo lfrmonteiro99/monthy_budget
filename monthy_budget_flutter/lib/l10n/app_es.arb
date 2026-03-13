@@ -149,6 +149,7 @@
     },
     "monthReviewOnTrack": "Gastos dentro de lo previsto. Buen control presupuestario.",
     "dashboardTitle": "Presupuesto Mensual",
+    "dashboardViewFullReport": "Ver Informe Completo",
     "dashboardStressIndex": "Índice de Tranquilidad",
     "dashboardTension": "Tensión",
     "dashboardLiquidity": "Liquidez",
@@ -2390,6 +2391,8 @@
     "navTrackTip": "Registrar gastos mensuales",
     "navPlan": "Planear",
     "navPlanTip": "Supermercado, lista y plan de comidas",
+    "navPlanAndShop": "Compras",
+    "navPlanAndShopTip": "Lista de compras, supermercado y comidas",
     "navMore": "Más",
     "navMoreTip": "Ajustes y análisis",
 
@@ -2408,5 +2411,15 @@
     "authConnectionError": "Error de conexión",
     "authRetry": "Reintentar",
     "authSignOut": "Cerrar sesión",
-    "actionRetry": "Reintentar"
+    "actionRetry": "Reintentar",
+
+    "settingsGroupAccount": "CUENTA",
+    "settingsGroupBudget": "PRESUPUESTO",
+    "settingsGroupPreferences": "PREFERENCIAS",
+    "settingsGroupAdvanced": "AVANZADO",
+    "settingsManageSubscription": "Gestionar Suscripción",
+    "settingsAbout": "Acerca de",
+
+    "mealShowDetails": "Mostrar detalles",
+    "mealHideDetails": "Ocultar detalles"
 }

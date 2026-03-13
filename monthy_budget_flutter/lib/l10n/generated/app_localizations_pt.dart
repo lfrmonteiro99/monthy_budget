@@ -327,6 +327,9 @@ class SPt extends S {
   String get dashboardStressIndex => 'Índice de Tranquilidade';
 
   @override
+  String get dashboardViewFullReport => 'Ver Relatório Completo';
+
+  @override
   String get dashboardTension => 'Tensão';
 
   @override
@@ -4526,6 +4529,12 @@ class SPt extends S {
   String get navPlanTip => 'Mercearia, lista e plano de refeições';
 
   @override
+  String get navPlanAndShop => 'Compras';
+
+  @override
+  String get navPlanAndShopTip => 'Lista de compras, mercearia e refeições';
+
+  @override
   String get navMore => 'Mais';
 
   @override
@@ -4562,4 +4571,28 @@ class SPt extends S {
 
   @override
   String get actionRetry => 'Tentar novamente';
+
+  @override
+  String get settingsGroupAccount => 'CONTA';
+
+  @override
+  String get settingsGroupBudget => 'ORÇAMENTO';
+
+  @override
+  String get settingsGroupPreferences => 'PREFERÊNCIAS';
+
+  @override
+  String get settingsGroupAdvanced => 'AVANÇADO';
+
+  @override
+  String get settingsManageSubscription => 'Gerir Subscrição';
+
+  @override
+  String get settingsAbout => 'Sobre';
+
+  @override
+  String get mealShowDetails => 'Mostrar detalhes';
+
+  @override
+  String get mealHideDetails => 'Ocultar detalhes';
 }

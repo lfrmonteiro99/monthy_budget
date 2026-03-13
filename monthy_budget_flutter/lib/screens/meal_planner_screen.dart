@@ -36,6 +36,7 @@ class MealPlannerScreen extends StatefulWidget {
   final PurchaseHistory purchaseHistory;
   final bool showTour;
   final VoidCallback? onTourComplete;
+  final bool embedded;
 
   const MealPlannerScreen({
     super.key,
@@ -49,6 +50,7 @@ class MealPlannerScreen extends StatefulWidget {
     required this.purchaseHistory,
     this.showTour = false,
     this.onTourComplete,
+    this.embedded = false,
   });
 
   @override
@@ -74,6 +76,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   bool _batchPlanLoading = false;
   final _rateLimiter = RateLimiter(minInterval: const Duration(seconds: 3));
   MealPlanBudgetInsight? _budgetInsight;
+  bool _showDetails = false; // Progressive disclosure toggle
 
   late AppSettings _localSettings;
 
@@ -775,17 +778,23 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Auto-complete wizard with sensible defaults instead of blocking access.
+    // Users can fine-tune via Settings > Meals.
     if (!_localSettings.mealSettings.wizardCompleted) {
-      return MealWizardScreen(
-        initial: _localSettings.mealSettings,
-        onComplete: (ms) {
-          final updated = _localSettings.copyWith(mealSettings: ms);
-          widget.onSaveSettings(updated);
-          setState(() => _localSettings = updated);
-        },
-      );
+      final ms = _localSettings.mealSettings.copyWith(wizardCompleted: true);
+      final updated = _localSettings.copyWith(mealSettings: ms);
+      widget.onSaveSettings(updated);
+      _localSettings = updated;
     }
     final l10n = S.of(context);
+    final bodyContent = !_catalogReady
+        ? Center(child: CircularProgressIndicator(color: AppColors.primary(context)))
+        : _plan == null
+            ? _buildEmptyState()
+            : _buildPlanView();
+
+    if (widget.embedded) return bodyContent;
+
     return Scaffold(
       backgroundColor: AppColors.background(context),
       appBar: AppBar(
@@ -814,11 +823,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           ),
         ],
       ),
-      body: !_catalogReady
-          ? Center(child: CircularProgressIndicator(color: AppColors.primary(context)))
-          : _plan == null
-              ? _buildEmptyState()
-              : _buildPlanView(),
+      body: bodyContent,
     );
   }
 
@@ -945,6 +950,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 borderRadius: BorderRadius.circular(3),
               ),
               const SizedBox(height: 12),
+              // Week navigator (← Week N →) — replaces W1-W4 tabs
               Builder(builder: (_) {
                 final daysInMonth = DateTime(plan.year, plan.month + 1, 0).day;
                 final weekCount = (daysInMonth / 7).ceil();
@@ -955,81 +961,92 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 }
                 return Row(
                 key: MealsTourKeys.weekTabs,
-                children: List.generate(weekCount, (i) {
-                  final selected = _selectedWeek == i;
-                  return Expanded(
-                    child: Semantics(
-                      button: true,
-                      label: l10n.mealWeekLabel(i + 1),
-                      selected: selected,
-                      child: Material(
-                      color: selected ? AppColors.primary(context) : AppColors.surfaceVariant(context),
-                      borderRadius: BorderRadius.circular(8),
-                      child: InkWell(
-                      onTap: () {
-                        setState(() => _selectedWeek = i);
-                        if (_plan != null) _loadWeeklySummary(i, _plan!);
-                        _recomputeBudgetInsight();
-                      },
-                      borderRadius: BorderRadius.circular(8),
-                      child: Container(
-                        margin: const EdgeInsets.only(right: 4),
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        alignment: Alignment.center,
-                        child: Text(
-                          l10n.mealWeekAbbr(i + 1),
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: selected ? AppColors.onPrimary(context) : AppColors.textSecondary(context),
-                          ),
-                        ),
-                      ),
-                    ),
-                    ),
-                    ),
-                  );
-                }),
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.chevron_left),
+                    onPressed: _selectedWeek > 0
+                        ? () {
+                            setState(() => _selectedWeek--);
+                            if (_plan != null) _loadWeeklySummary(_selectedWeek, _plan!);
+                            _recomputeBudgetInsight();
+                          }
+                        : null,
+                  ),
+                  Text(
+                    l10n.mealWeekLabel(_selectedWeek + 1),
+                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.chevron_right),
+                    onPressed: _selectedWeek < weekCount - 1
+                        ? () {
+                            setState(() => _selectedWeek++);
+                            if (_plan != null) _loadWeeklySummary(_selectedWeek, _plan!);
+                            _recomputeBudgetInsight();
+                          }
+                        : null,
+                  ),
+                ],
               );
               }),
               const SizedBox(height: 12),
             ],
           ),
         ),
-        // Pantry summary
-        PantrySummaryChipRow(
-          activePantryIds: resolveActivePantry(widget.settings.mealSettings),
-          ingredientMap: _service.ingredientMap,
-          onEditPantry: () => _showPantryPicker(),
-        ),
-        // Weekly Nutrition Summary
-        if (_weeklySummaries.containsKey(_selectedWeek))
-          _WeeklySummaryCard(summary: _weeklySummaries[_selectedWeek]!),
-        // Budget Insight Card
-        if (_budgetInsight != null)
-          MealPlanBudgetCard(
-            insight: _budgetInsight!,
-            onViewDetails: () => showMealPlanBudgetSheet(
-              context: context,
-              insight: _budgetInsight!,
-              onApplySwap: (swap) {
-                Navigator.of(context).pop();
-                final updated = _service.swapDay(
-                  plan,
-                  swap.original.dayIndex,
-                  MealType.values.firstWhere(
-                    (m) => m.name == swap.original.mealType,
-                    orElse: () => MealType.dinner,
-                  ),
-                  swap.alternativeRecipeId,
-                );
-                _service.save(updated, widget.householdId);
-                setState(() => _plan = updated);
-                _enrichPlan(updated);
-                _recomputeBudgetInsight();
-              },
+        // Toggle for detailed view (pantry, nutrition, budget)
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              onPressed: () => setState(() => _showDetails = !_showDetails),
+              icon: Icon(
+                _showDetails ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                size: 16,
+              ),
+              label: Text(_showDetails ? l10n.mealHideDetails : l10n.mealShowDetails),
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.textSecondary(context),
+                textStyle: const TextStyle(fontSize: 12),
+              ),
             ),
           ),
+        ),
+        // Progressive disclosure: pantry, nutrition, budget
+        if (_showDetails) ...[
+          PantrySummaryChipRow(
+            activePantryIds: resolveActivePantry(widget.settings.mealSettings),
+            ingredientMap: _service.ingredientMap,
+            onEditPantry: () => _showPantryPicker(),
+          ),
+          if (_weeklySummaries.containsKey(_selectedWeek))
+            _WeeklySummaryCard(summary: _weeklySummaries[_selectedWeek]!),
+          if (_budgetInsight != null)
+            MealPlanBudgetCard(
+              insight: _budgetInsight!,
+              onViewDetails: () => showMealPlanBudgetSheet(
+                context: context,
+                insight: _budgetInsight!,
+                onApplySwap: (swap) {
+                  Navigator.of(context).pop();
+                  final updated = _service.swapDay(
+                    plan,
+                    swap.original.dayIndex,
+                    MealType.values.firstWhere(
+                      (m) => m.name == swap.original.mealType,
+                      orElse: () => MealType.dinner,
+                    ),
+                    swap.alternativeRecipeId,
+                  );
+                  _service.save(updated, widget.householdId);
+                  setState(() => _plan = updated);
+                  _enrichPlan(updated);
+                  _recomputeBudgetInsight();
+                },
+              ),
+            ),
+        ],
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(

@@ -56,6 +56,8 @@ class DashboardScreen extends StatefulWidget {
   final GlobalKey? navBarKey;
   final bool focusedMode;
   final VoidCallback? onOpenInsights;
+  final VoidCallback? onOpenCoach;
+  final VoidCallback? onOpenDetailedDashboard;
 
   const DashboardScreen({
     super.key,
@@ -85,6 +87,8 @@ class DashboardScreen extends StatefulWidget {
     this.navBarKey,
     this.focusedMode = false,
     this.onOpenInsights,
+    this.onOpenCoach,
+    this.onOpenDetailedDashboard,
   });
 
   @override
@@ -223,25 +227,52 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ),
                             ],
                           ),
-                          Semantics(
-                            button: true,
-                            label: l10n.dashboardOpenSettings,
-                            child: Material(
-                              color: AppColors.background(context),
-                              borderRadius: BorderRadius.circular(12),
-                              child: InkWell(
-                                onTap: onOpenSettings,
-                                borderRadius: BorderRadius.circular(12),
-                                child: Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: AppColors.border(context)),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (widget.onOpenCoach != null)
+                                Semantics(
+                                  button: true,
+                                  label: l10n.coachTitle,
+                                  child: Material(
+                                    color: AppColors.background(context),
                                     borderRadius: BorderRadius.circular(12),
+                                    child: InkWell(
+                                      onTap: widget.onOpenCoach,
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(color: AppColors.border(context)),
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        child: Icon(Icons.psychology, size: 20, color: AppColors.primary(context)),
+                                      ),
+                                    ),
                                   ),
-                                  child: Icon(Icons.settings, size: 20, color: AppColors.textSecondary(context)),
+                                ),
+                              if (widget.onOpenCoach != null) const SizedBox(width: 8),
+                              Semantics(
+                                button: true,
+                                label: l10n.dashboardOpenSettings,
+                                child: Material(
+                                  color: AppColors.background(context),
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: InkWell(
+                                    onTap: onOpenSettings,
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: AppColors.border(context)),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Icon(Icons.settings, size: 20, color: AppColors.textSecondary(context)),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
                         ],
                       ),
@@ -409,6 +440,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SizedBox(height: 16),
         ],
         _buildNextActionsCard(context, l10n),
+        if (widget.onOpenDetailedDashboard != null) ...[
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: widget.onOpenDetailedDashboard,
+              icon: const Icon(Icons.dashboard_customize_outlined),
+              label: Text(l10n.dashboardViewFullReport),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                side: BorderSide(color: AppColors.border(context)),
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }

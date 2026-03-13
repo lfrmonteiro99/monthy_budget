@@ -435,6 +435,7 @@
     "@dashboardTitle": {
         "description": "Dashboard screen title"
     },
+    "dashboardViewFullReport": "Ver Relatório Completo",
     "dashboardStressIndex": "Índice de Tranquilidade",
     "@dashboardStressIndex": {
         "description": "Stress index card title"
@@ -4755,6 +4756,8 @@
     "navTrackTip": "Registar despesas mensais",
     "navPlan": "Planear",
     "navPlanTip": "Mercearia, lista e plano de refeições",
+    "navPlanAndShop": "Compras",
+    "navPlanAndShopTip": "Lista de compras, mercearia e refeições",
     "navMore": "Mais",
     "navMoreTip": "Definições e análises",
 
@@ -4773,5 +4776,15 @@
     "authConnectionError": "Erro de ligação",
     "authRetry": "Tentar novamente",
     "authSignOut": "Terminar sessão",
-    "actionRetry": "Tentar novamente"
+    "actionRetry": "Tentar novamente",
+
+    "settingsGroupAccount": "CONTA",
+    "settingsGroupBudget": "ORÇAMENTO",
+    "settingsGroupPreferences": "PREFERÊNCIAS",
+    "settingsGroupAdvanced": "AVANÇADO",
+    "settingsManageSubscription": "Gerir Subscrição",
+    "settingsAbout": "Sobre",
+
+    "mealShowDetails": "Mostrar detalhes",
+    "mealHideDetails": "Ocultar detalhes"
 }

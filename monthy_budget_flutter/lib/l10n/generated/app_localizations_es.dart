@@ -327,6 +327,9 @@ class SEs extends S {
   String get dashboardStressIndex => 'Índice de Tranquilidad';
 
   @override
+  String get dashboardViewFullReport => 'Ver Informe Completo';
+
+  @override
   String get dashboardTension => 'Tensión';
 
   @override
@@ -4532,6 +4535,12 @@ class SEs extends S {
   String get navPlanTip => 'Supermercado, lista y plan de comidas';
 
   @override
+  String get navPlanAndShop => 'Compras';
+
+  @override
+  String get navPlanAndShopTip => 'Lista de compras, supermercado y comidas';
+
+  @override
   String get navMore => 'Más';
 
   @override
@@ -4568,4 +4577,28 @@ class SEs extends S {
 
   @override
   String get actionRetry => 'Reintentar';
+
+  @override
+  String get settingsGroupAccount => 'CUENTA';
+
+  @override
+  String get settingsGroupBudget => 'PRESUPUESTO';
+
+  @override
+  String get settingsGroupPreferences => 'PREFERENCIAS';
+
+  @override
+  String get settingsGroupAdvanced => 'AVANZADO';
+
+  @override
+  String get settingsManageSubscription => 'Gestionar Suscripción';
+
+  @override
+  String get settingsAbout => 'Acerca de';
+
+  @override
+  String get mealShowDetails => 'Mostrar detalles';
+
+  @override
+  String get mealHideDetails => 'Ocultar detalles';
 }

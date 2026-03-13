@@ -707,6 +707,12 @@ abstract class S {
   /// **'Índice de Tranquilidade'**
   String get dashboardStressIndex;
 
+  /// No description provided for @dashboardViewFullReport.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver Relatório Completo'**
+  String get dashboardViewFullReport;
+
   /// Dashboard tension label
   ///
   /// In pt, this message translates to:
@@ -8129,6 +8135,18 @@ abstract class S {
   /// **'Mercearia, lista e plano de refeições'**
   String get navPlanTip;
 
+  /// No description provided for @navPlanAndShop.
+  ///
+  /// In pt, this message translates to:
+  /// **'Compras'**
+  String get navPlanAndShop;
+
+  /// No description provided for @navPlanAndShopTip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista de compras, mercearia e refeições'**
+  String get navPlanAndShopTip;
+
   /// No description provided for @navMore.
   ///
   /// In pt, this message translates to:
@@ -8200,6 +8218,30 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Tentar novamente'**
   String get actionRetry;
+
+  /// Settings group header: Account
+  String get settingsGroupAccount;
+
+  /// Settings group header: Budget
+  String get settingsGroupBudget;
+
+  /// Settings group header: Preferences
+  String get settingsGroupPreferences;
+
+  /// Settings group header: Advanced
+  String get settingsGroupAdvanced;
+
+  /// Manage subscription label
+  String get settingsManageSubscription;
+
+  /// About label
+  String get settingsAbout;
+
+  /// Show details toggle
+  String get mealShowDetails;
+
+  /// Hide details toggle
+  String get mealHideDetails;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
