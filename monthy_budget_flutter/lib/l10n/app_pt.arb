@@ -4776,5 +4776,15 @@
     "authConnectionError": "Erro de ligação",
     "authRetry": "Tentar novamente",
     "authSignOut": "Terminar sessão",
-    "actionRetry": "Tentar novamente"
+    "actionRetry": "Tentar novamente",
+
+    "settingsGroupAccount": "CONTA",
+    "settingsGroupBudget": "ORÇAMENTO",
+    "settingsGroupPreferences": "PREFERÊNCIAS",
+    "settingsGroupAdvanced": "AVANÇADO",
+    "settingsManageSubscription": "Gerir Subscrição",
+    "settingsAbout": "Sobre",
+
+    "mealShowDetails": "Mostrar detalhes",
+    "mealHideDetails": "Ocultar detalhes"
 }

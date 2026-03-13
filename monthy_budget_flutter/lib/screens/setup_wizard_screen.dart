@@ -25,9 +25,9 @@ class SetupWizardScreen extends StatefulWidget {
 
 class _SetupWizardScreenState extends State<SetupWizardScreen> {
   late AppSettings _draft;
-  int _step = 0; // 0=welcome, 1=country, 2=personal, 3=salary, 4=expenses, 5=completion
+  int _step = 0; // 0=welcome+country, 1=salary+expenses, 2=completion
   late PageController _pageController;
-  static const _dataSteps = 4; // for progress display (steps 1-4)
+  static const _dataSteps = 2; // for progress display (steps 1-2)
 
   // Expense controllers for step 4
   final _expenseControllers = <String, TextEditingController>{};
@@ -99,7 +99,7 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
   }
 
   void _next() {
-    if (_step < 5) {
+    if (_step < 2) {
       setState(() => _step++);
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
@@ -206,7 +206,7 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background(context),
-      appBar: _step >= 1 && _step <= 4
+      appBar: _step >= 1 && _step <= _dataSteps
           ? AppBar(
               backgroundColor: AppColors.surface(context),
               elevation: 0,
@@ -233,8 +233,8 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(),
         children: [
-          _WelcomeStep(onStart: _next, onSkip: _skipAll),
-          _CountryStep(
+          // Step 0: Welcome message + Country selection (combined)
+          _WelcomeAndCountryStep(
             draft: _draft,
             onChanged: (d) {
               final countryChanged = d.country != _draft.country;
@@ -245,28 +245,24 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
               }
             },
             onNext: _next,
+            onSkip: _skipAll,
           ),
-          _PersonalStep(
+          // Step 1: Salary + Expenses (combined, personal info deferred to Settings)
+          _SalaryAndExpensesStep(
             draft: _draft,
             onChanged: (d) => setState(() => _draft = d),
-            onNext: _next,
-          ),
-          _SalaryStep(
-            draft: _draft,
-            onChanged: (d) => setState(() => _draft = d),
-            onNext: _next,
-            onSkip: _next,
             salaryController: _salaryController,
             mealAllowanceController: _mealAllowanceController,
-          ),
-          _ExpensesStep(
-            draft: _draft,
-            controllers: _expenseControllers,
+            expenseControllers: _expenseControllers,
             expenseKeyOrder: _expenseKeyOrder(),
             expenseIcon: _expenseIcon,
             expenseLabel: (key) => _expenseL10nLabel(S.of(context), key),
-            onFinish: _finishExpenses,
+            onFinish: () {
+              _finishExpenses();
+            },
+            onSkip: _next,
           ),
+          // Step 2: Completion
           _CompletionStep(
             draft: _draft,
             onGoToDashboard: _finish,
@@ -1573,6 +1569,337 @@ class _SummaryRow extends StatelessWidget {
               color: valueColor ?? AppColors.textPrimary(context),
             )),
       ],
+    );
+  }
+}
+
+// ============================================================
+// Combined Step 0 — Welcome + Country (simplified onboarding)
+// ============================================================
+class _WelcomeAndCountryStep extends StatelessWidget {
+  final AppSettings draft;
+  final ValueChanged<AppSettings> onChanged;
+  final VoidCallback onNext;
+  final VoidCallback onSkip;
+
+  const _WelcomeAndCountryStep({
+    required this.draft,
+    required this.onChanged,
+    required this.onNext,
+    required this.onSkip,
+  });
+
+  static const _countries = [
+    (Country.pt, '🇵🇹'),
+    (Country.es, '🇪🇸'),
+    (Country.fr, '🇫🇷'),
+    (Country.uk, '🇬🇧'),
+  ];
+
+  String _countryName(S l10n, Country c) {
+    switch (c) {
+      case Country.pt: return l10n.setupWizardCountryPT;
+      case Country.es: return l10n.setupWizardCountryES;
+      case Country.fr: return l10n.setupWizardCountryFR;
+      case Country.uk: return l10n.setupWizardCountryUK;
+    }
+  }
+
+  String? _localeForCountry(Country c) {
+    switch (c) {
+      case Country.pt: return 'pt';
+      case Country.es: return 'es';
+      case Country.fr: return 'fr';
+      case Country.uk: return 'en';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = S.of(context);
+    return SafeArea(
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
+              children: [
+                const SizedBox(height: 12),
+                Icon(Icons.account_balance_wallet_outlined,
+                    size: 56, color: AppColors.primary(context)),
+                const SizedBox(height: 16),
+                Text(
+                  l10n.setupWizardWelcomeTitle,
+                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  l10n.setupWizardWelcomeSubtitle,
+                  style: TextStyle(fontSize: 14, color: AppColors.textSecondary(context)),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 28),
+                Text(l10n.setupWizardCountryTitle,
+                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                const SizedBox(height: 12),
+                ..._countries.map((entry) {
+                  final (country, flag) = entry;
+                  final selected = draft.country == country;
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Material(
+                      color: selected ? AppColors.infoBackground(context) : AppColors.surface(context),
+                      borderRadius: BorderRadius.circular(12),
+                      child: InkWell(
+                        onTap: () {
+                          final newLocale = _localeForCountry(country);
+                          onChanged(draft.copyWith(
+                            country: country,
+                            localeOverride: newLocale,
+                          ));
+                          appLocaleNotifier.value =
+                              newLocale != null ? Locale(newLocale) : null;
+                        },
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: selected
+                                  ? AppColors.primary(context)
+                                  : AppColors.border(context),
+                              width: selected ? 2 : 1,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Text(flag, style: const TextStyle(fontSize: 22)),
+                              const SizedBox(width: 12),
+                              Text(_countryName(l10n, country),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: selected
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
+                                  )),
+                              const Spacer(),
+                              Icon(
+                                selected
+                                    ? Icons.radio_button_checked
+                                    : Icons.radio_button_unchecked,
+                                color: selected
+                                    ? AppColors.primary(context)
+                                    : AppColors.borderMuted(context),
+                                size: 20,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(28, 0, 28, 8),
+            child: SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: onNext,
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.primary(context),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+                child: Text(l10n.setupWizardContinue,
+                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: onSkip,
+            child: Text(l10n.setupWizardSkipAll,
+                style: TextStyle(fontSize: 13, color: AppColors.textMuted(context))),
+          ),
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+}
+
+// ============================================================
+// Combined Step 1 — Salary + Expenses (simplified onboarding)
+// ============================================================
+class _SalaryAndExpensesStep extends StatelessWidget {
+  final AppSettings draft;
+  final ValueChanged<AppSettings> onChanged;
+  final TextEditingController salaryController;
+  final TextEditingController mealAllowanceController;
+  final Map<String, TextEditingController> expenseControllers;
+  final List<String> expenseKeyOrder;
+  final IconData Function(String key) expenseIcon;
+  final String Function(String key) expenseLabel;
+  final VoidCallback onFinish;
+  final VoidCallback onSkip;
+  final _formKey = GlobalKey<FormState>();
+
+  _SalaryAndExpensesStep({
+    required this.draft,
+    required this.onChanged,
+    required this.salaryController,
+    required this.mealAllowanceController,
+    required this.expenseControllers,
+    required this.expenseKeyOrder,
+    required this.expenseIcon,
+    required this.expenseLabel,
+    required this.onFinish,
+    required this.onSkip,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = S.of(context);
+    final country = draft.country;
+
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.all(20),
+              children: [
+                Text(l10n.setupWizardSalaryTitle,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                const SizedBox(height: 6),
+                Text(l10n.setupWizardSalarySubtitle,
+                    style: TextStyle(fontSize: 14, color: AppColors.textSecondary(context))),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: salaryController,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[\d.,]')),
+                  ],
+                  decoration: InputDecoration(
+                    labelText: l10n.setupWizardSalaryGross,
+                    prefixText: '${country.currencySymbol} ',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: AppColors.border(context)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: AppColors.primary(context), width: 2),
+                    ),
+                  ),
+                  onChanged: (v) {
+                    final amount = double.tryParse(v.replaceAll(',', '.')) ?? 0;
+                    if (amount > 0) {
+                      final salaries = List<SalaryEntry>.from(
+                          draft.salaries.isEmpty
+                              ? [SalaryEntry(grossAmount: amount)]
+                              : [draft.salaries[0].copyWith(grossAmount: amount)]);
+                      onChanged(draft.copyWith(salaries: salaries));
+                    }
+                  },
+                ),
+                const SizedBox(height: 24),
+                // Expenses section
+                Text(l10n.setupWizardExpTitle,
+                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                const SizedBox(height: 6),
+                Text(l10n.setupWizardExpSubtitle,
+                    style: TextStyle(fontSize: 13, color: AppColors.textSecondary(context))),
+                const SizedBox(height: 12),
+                ...expenseKeyOrder.map((key) {
+                  final ctrl = expenseControllers[key]!;
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Row(
+                      children: [
+                        Icon(expenseIcon(key), size: 20, color: AppColors.primary(context)),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          flex: 3,
+                          child: Text(expenseLabel(key),
+                              style: const TextStyle(fontSize: 14)),
+                        ),
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          width: 100,
+                          child: TextFormField(
+                            controller: ctrl,
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(RegExp(r'[\d.,]')),
+                            ],
+                            textAlign: TextAlign.end,
+                            style: const TextStyle(fontSize: 14),
+                            decoration: InputDecoration(
+                              prefixText: '${country.currencySymbol} ',
+                              prefixStyle: TextStyle(
+                                  fontSize: 13, color: AppColors.textMuted(context)),
+                              contentPadding:
+                                  const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(color: AppColors.border(context)),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: onSkip,
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    child: Text(l10n.setupWizardSkipAll),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  flex: 2,
+                  child: FilledButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        onFinish();
+                      }
+                    },
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppColors.primary(context),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    child: Text(l10n.setupWizardContinue,
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+      ),
     );
   }
 }

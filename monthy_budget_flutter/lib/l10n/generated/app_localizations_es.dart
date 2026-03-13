@@ -4577,4 +4577,28 @@ class SEs extends S {
 
   @override
   String get actionRetry => 'Reintentar';
+
+  @override
+  String get settingsGroupAccount => 'CUENTA';
+
+  @override
+  String get settingsGroupBudget => 'PRESUPUESTO';
+
+  @override
+  String get settingsGroupPreferences => 'PREFERENCIAS';
+
+  @override
+  String get settingsGroupAdvanced => 'AVANZADO';
+
+  @override
+  String get settingsManageSubscription => 'Gestionar Suscripción';
+
+  @override
+  String get settingsAbout => 'Acerca de';
+
+  @override
+  String get mealShowDetails => 'Mostrar detalles';
+
+  @override
+  String get mealHideDetails => 'Ocultar detalles';
 }

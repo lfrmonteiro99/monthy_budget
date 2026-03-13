@@ -8218,6 +8218,30 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Tentar novamente'**
   String get actionRetry;
+
+  /// Settings group header: Account
+  String get settingsGroupAccount;
+
+  /// Settings group header: Budget
+  String get settingsGroupBudget;
+
+  /// Settings group header: Preferences
+  String get settingsGroupPreferences;
+
+  /// Settings group header: Advanced
+  String get settingsGroupAdvanced;
+
+  /// Manage subscription label
+  String get settingsManageSubscription;
+
+  /// About label
+  String get settingsAbout;
+
+  /// Show details toggle
+  String get mealShowDetails;
+
+  /// Hide details toggle
+  String get mealHideDetails;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
