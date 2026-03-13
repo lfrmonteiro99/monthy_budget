@@ -234,10 +234,13 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
             _projectedRemaining >= 0 ? AppColors.success(context) : AppColors.error(context),
           ),
           const SizedBox(height: 8),
-          _resultRow(
-            S.of(context).projectionStressImpact,
-            '${delta >= 0 ? '+' : ''}$delta pts (${simStress.score}/100)',
-            delta >= 0 ? AppColors.success(context) : AppColors.error(context),
+          Tooltip(
+            message: S.of(context).projectionStressHint,
+            child: _resultRow(
+              S.of(context).projectionStressImpact,
+              '${delta >= 0 ? '+' : ''}$delta pts (${simStress.score}/100)',
+              delta >= 0 ? AppColors.success(context) : AppColors.error(context),
+            ),
           ),
         ],
       ),
@@ -350,10 +353,13 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
             AppColors.textLabel(context),
           ),
           const SizedBox(height: 8),
-          _resultRow(
-            S.of(context).projectionSimIndex,
-            '${simStress.score}/100 (${stressDelta >= 0 ? '+' : ''}$stressDelta)',
-            stressDelta >= 0 ? AppColors.success(context) : AppColors.error(context),
+          Tooltip(
+            message: S.of(context).projectionStressHint,
+            child: _resultRow(
+              S.of(context).projectionSimIndex,
+              '${simStress.score}/100 (${stressDelta >= 0 ? '+' : ''}$stressDelta)',
+              stressDelta >= 0 ? AppColors.success(context) : AppColors.error(context),
+            ),
           ),
         ],
       ),

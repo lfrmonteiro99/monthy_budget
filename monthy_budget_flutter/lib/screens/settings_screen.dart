@@ -204,7 +204,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   String _subscriptionSubtitle() {
-    return widget.subscriptionLabel ?? 'Free';
+    return widget.subscriptionLabel ?? S.of(context).settingsSubscriptionFree;
   }
 
   String? _currentUserIdSafe() {
@@ -355,7 +355,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   if (widget.onOpenSubscription != null)
                     _SettingsItem(
                       icon: Icons.workspace_premium_rounded,
-                      title: 'Subscription',
+                      title: S.of(context).settingsSubscription,
                       subtitle: _subscriptionSubtitle(),
                       onTap: widget.onOpenSubscription!,
                     ),
@@ -1051,7 +1051,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: Text(
-                'Active Categories (${activeExpenses.length} of ${_draft.expenses.length})',
+                l10n.settingsActiveCategoriesCount(activeExpenses.length, _draft.expenses.length),
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
@@ -1067,7 +1067,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Padding(
                 padding: const EdgeInsets.only(top: 8, bottom: 12),
                 child: Text(
-                  'Paused Categories',
+                  l10n.settingsPausedCategories,
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
@@ -1335,7 +1335,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   OutlinedButton.icon(
                     onPressed: widget.onOpenDetailedDashboard,
                     icon: const Icon(Icons.dashboard_customize_outlined, size: 16),
-                    label: const Text('Open Detailed Dashboard'),
+                    label: Text(l10n.settingsOpenDashboard),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.textPrimary(context),
                       side: BorderSide(color: AppColors.border(context)),
@@ -2411,8 +2411,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
 
-          // ── Group G: ASSISTENTE ──
-          _groupLabel('ASSISTENTE'),
+          // ── Group G: ASSISTANT ──
+          _groupLabel(l10n.settingsAssistantGroup),
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
@@ -2441,7 +2441,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _label('AI Coach'),
+          _label(S.of(context).settingsAiCoach),
           const SizedBox(height: 8),
           Container(
             width: double.infinity,
@@ -2546,6 +2546,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 leading: Icon(Icons.person_outline, color: AppColors.primary(context)),
                 title: Text(
                   member.email,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(color: AppColors.textPrimary(context)),
                 ),
                 subtitle: Text(

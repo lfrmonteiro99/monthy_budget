@@ -3,6 +3,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../models/meal_planner.dart';
 import '../models/meal_settings.dart';
 import '../theme/app_colors.dart';
+import '../utils/formatters.dart';
 
 /// Bottom sheet for creating / editing a freeform meal.
 ///
@@ -219,7 +220,30 @@ class _FreeformMealSheetState extends State<FreeformMealSheet> {
                 if (isEditing)
                   IconButton(
                     icon: Icon(Icons.delete_outline, color: AppColors.error(context)),
-                    onPressed: () => Navigator.pop(context, 'delete'),
+                    onPressed: () async {
+                      final confirmed = await showDialog<bool>(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: Text(l10n.delete),
+                          content: Text(l10n.confirm),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(ctx, false),
+                              child: Text(l10n.cancel),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(ctx, true),
+                              child: Text(l10n.delete,
+                                  style: TextStyle(
+                                      color: AppColors.error(context))),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (confirmed == true && context.mounted) {
+                        Navigator.pop(context, 'delete');
+                      }
+                    },
                   ),
               ],
             ),
@@ -252,7 +276,7 @@ class _FreeformMealSheetState extends State<FreeformMealSheet> {
                   controller: _costCtrl,
                   decoration: InputDecoration(
                     labelText: l10n.freeformCostLabel,
-                    prefixText: '\u20AC ',
+                    prefixText: '${currencySymbol()} ',
                   ),
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 ),
@@ -317,7 +341,7 @@ class _FreeformMealSheetState extends State<FreeformMealSheet> {
                         ? Text(
                             [
                               if (item.quantity != null) '${item.quantity}${item.unit != null ? ' ${item.unit}' : ''}',
-                              if (item.estimatedPrice != null) '${item.estimatedPrice!.toStringAsFixed(2)}\u20AC',
+                              if (item.estimatedPrice != null) '${item.estimatedPrice!.toStringAsFixed(2)}${currencySymbol()}',
                               if (item.store != null) item.store,
                             ].join(' - '),
                             style: TextStyle(fontSize: 11, color: AppColors.textMuted(context)),

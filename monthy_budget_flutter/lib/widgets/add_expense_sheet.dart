@@ -401,55 +401,75 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
               const SizedBox(height: 20),
 
               // --- Date (compact inline) ---
-              InkWell(
-                onTap: () async {
-                  final picked = await showDatePicker(
-                    context: context,
-                    initialDate: _selectedDate,
-                    firstDate:
-                        DateTime.now().subtract(const Duration(days: 365)),
-                    lastDate: DateTime.now(),
-                  );
-                  if (picked != null) {
-                    setState(() => _selectedDate = picked);
-                  }
-                },
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 14),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.borderMuted(context)),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.calendar_today,
-                          size: 18, color: AppColors.textSecondary(context)),
-                      const SizedBox(width: 8),
-                      Text(
-                        '${_selectedDate.day.toString().padLeft(2, '0')}/${_selectedDate.month.toString().padLeft(2, '0')}/${_selectedDate.year}',
-                        style: TextStyle(
-                            fontSize: 14, color: AppColors.textPrimary(context)),
-                      ),
-                      const Spacer(),
-                      // Optional: expand description inline
-                      TextButton.icon(
-                        onPressed: () => setState(() => _showDescription = !_showDescription),
-                        icon: Icon(
-                          _showDescription ? Icons.expand_less : Icons.notes,
-                          size: 16,
-                          color: AppColors.textMuted(context),
-                        ),
-                        label: Text(
-                          l10n.addExpenseDescription,
+              // Date range limited to 1 year back: expenses older than 12 months
+              // fall outside the budgeting cycle and should not be retroactively added.
+              Tooltip(
+                message: l10n.addExpenseDate,
+                child: InkWell(
+                  onTap: () async {
+                    final picked = await showDatePicker(
+                      context: context,
+                      initialDate: _selectedDate,
+                      // 1-year limit: keeps entries within the current budgeting cycle
+                      firstDate:
+                          DateTime.now().subtract(const Duration(days: 365)),
+                      lastDate: DateTime.now(),
+                    );
+                    if (picked != null) {
+                      setState(() => _selectedDate = picked);
+                    }
+                  },
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 14),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.borderMuted(context)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.calendar_today,
+                            size: 18, color: AppColors.textSecondary(context)),
+                        const SizedBox(width: 8),
+                        Text(
+                          '${_selectedDate.day.toString().padLeft(2, '0')}/${_selectedDate.month.toString().padLeft(2, '0')}/${_selectedDate.year}',
                           style: TextStyle(
-                            fontSize: 12,
-                            color: AppColors.textMuted(context),
+                              fontSize: 14, color: AppColors.textPrimary(context)),
+                        ),
+                        const Spacer(),
+                        // M8: Toggle note with clear visual state
+                        TextButton.icon(
+                          onPressed: () => setState(() => _showDescription = !_showDescription),
+                          icon: Icon(
+                            _showDescription ? Icons.expand_less : Icons.note_add,
+                            size: 18,
+                            color: _showDescription
+                                ? AppColors.primary(context)
+                                : AppColors.textSecondary(context),
+                          ),
+                          label: Text(
+                            l10n.addExpenseDescription,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: _showDescription
+                                  ? AppColors.primary(context)
+                                  : AppColors.textSecondary(context),
+                            ),
+                          ),
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            backgroundColor: _showDescription
+                                ? AppColors.primaryLight(context)
+                                : null,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

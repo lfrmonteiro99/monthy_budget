@@ -157,8 +157,10 @@ class _SupabaseErrorScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.error_outline, size: 64, color: Colors.red),
+              Icon(Icons.error_outline, size: 64, color: AppColors.error(context)),
               const SizedBox(height: 16),
+              // Hardcoded: l10n is unavailable here because this screen renders
+              // before MaterialApp (and its localization delegates) are built.
               const Text(
                 'Configuration Error',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -167,7 +169,7 @@ class _SupabaseErrorScreen extends StatelessWidget {
               Text(
                 error,
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 13, color: Colors.grey),
+                style: TextStyle(fontSize: 13, color: AppColors.textSecondary(context)),
               ),
             ],
           ),

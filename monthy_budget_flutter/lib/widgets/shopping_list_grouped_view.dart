@@ -86,6 +86,8 @@ class _ShoppingListGroupedViewState extends State<ShoppingListGroupedView> {
             Expanded(
               child: Text(
                 group.label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -196,6 +198,8 @@ class _ShoppingListGroupedViewState extends State<ShoppingListGroupedView> {
                           padding: const EdgeInsets.only(top: 2),
                           child: Text(
                             '${_formatQuantity(item.quantity!)} ${item.unit!}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 11,
                               color: AppColors.textMuted(context),

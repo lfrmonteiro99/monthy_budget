@@ -1808,9 +1808,9 @@ class _ExemptIncomeRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAFAFA),
+        color: AppColors.surfaceVariant(context),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.surfaceVariant(context)),
+        border: Border.all(color: AppColors.border(context)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

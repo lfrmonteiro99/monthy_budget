@@ -930,7 +930,7 @@ class _SalaryStep extends StatelessWidget {
                       FilteringTextInputFormatter.allow(RegExp(r'[\d.,]')),
                     ],
                     decoration: InputDecoration(
-                      labelText: '${country.currencySymbol}/dia',
+                      labelText: '${country.currencySymbol}${l10n.setupWizardPerDay}',
                       helperText: l10n.helperWizardMealAllowance,
                       helperStyle: TextStyle(fontSize: 11, color: AppColors.textMuted(context)),
                       border: OutlineInputBorder(
@@ -960,7 +960,7 @@ class _SalaryStep extends StatelessWidget {
               ],
               if (showSubsidies) ...[
                 const SizedBox(height: 20),
-                Text('DUODÉCIMOS',
+                Text(l10n.setupWizardSubsidyLabel,
                     style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,

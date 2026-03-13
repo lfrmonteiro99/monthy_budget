@@ -141,7 +141,15 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen>
               text: l10n.groceryTitle,
             ),
             Tab(
-              icon: const Icon(Icons.restaurant_outlined, size: 20),
+              icon: widget.canAccessMeals
+                  ? const Icon(Icons.restaurant_outlined, size: 20)
+                  : Badge(
+                      label: Text(
+                        l10n.planMealsProBadge,
+                        style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w700),
+                      ),
+                      child: const Icon(Icons.restaurant_outlined, size: 20),
+                    ),
               text: l10n.mealPlannerTitle,
             ),
           ],
@@ -226,6 +234,7 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen>
           IconButton(
             icon: Icon(Icons.settings_outlined,
                 color: AppColors.textSecondary(context)),
+            tooltip: l10n.settingsTitle,
             onPressed: widget.onOpenMealSettings,
           ),
         ];

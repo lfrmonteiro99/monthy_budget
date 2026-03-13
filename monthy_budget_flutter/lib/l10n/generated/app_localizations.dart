@@ -701,17 +701,17 @@ abstract class S {
   /// **'Orçamento Mensal'**
   String get dashboardTitle;
 
-  /// Stress index card title
-  ///
-  /// In pt, this message translates to:
-  /// **'Índice de Tranquilidade'**
-  String get dashboardStressIndex;
-
   /// No description provided for @dashboardViewFullReport.
   ///
   /// In pt, this message translates to:
   /// **'Ver Relatório Completo'**
   String get dashboardViewFullReport;
+
+  /// Stress index card title
+  ///
+  /// In pt, this message translates to:
+  /// **'Índice de Tranquilidade'**
+  String get dashboardStressIndex;
 
   /// Dashboard tension label
   ///
@@ -8219,29 +8219,293 @@ abstract class S {
   /// **'Tentar novamente'**
   String get actionRetry;
 
-  /// Settings group header: Account
+  /// No description provided for @settingsGroupAccount.
+  ///
+  /// In pt, this message translates to:
+  /// **'CONTA'**
   String get settingsGroupAccount;
 
-  /// Settings group header: Budget
+  /// No description provided for @settingsGroupBudget.
+  ///
+  /// In pt, this message translates to:
+  /// **'ORÇAMENTO'**
   String get settingsGroupBudget;
 
-  /// Settings group header: Preferences
+  /// No description provided for @settingsGroupPreferences.
+  ///
+  /// In pt, this message translates to:
+  /// **'PREFERÊNCIAS'**
   String get settingsGroupPreferences;
 
-  /// Settings group header: Advanced
+  /// No description provided for @settingsGroupAdvanced.
+  ///
+  /// In pt, this message translates to:
+  /// **'AVANÇADO'**
   String get settingsGroupAdvanced;
 
-  /// Manage subscription label
+  /// No description provided for @settingsManageSubscription.
+  ///
+  /// In pt, this message translates to:
+  /// **'Gerir Subscrição'**
   String get settingsManageSubscription;
 
-  /// About label
+  /// No description provided for @settingsAbout.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sobre'**
   String get settingsAbout;
 
-  /// Show details toggle
+  /// No description provided for @mealShowDetails.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mostrar detalhes'**
   String get mealShowDetails;
 
-  /// Hide details toggle
+  /// No description provided for @mealHideDetails.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ocultar detalhes'**
   String get mealHideDetails;
+
+  /// No description provided for @taxSimTitularesHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Número de titulares de rendimento no agregado familiar'**
+  String get taxSimTitularesHint;
+
+  /// No description provided for @taxSimMealTypeHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cartão: isento de imposto até ao limite legal. Dinheiro: tributado como rendimento.'**
+  String get taxSimMealTypeHint;
+
+  /// No description provided for @taxSimIRSFull.
+  ///
+  /// In pt, this message translates to:
+  /// **'IRS (Imposto sobre o Rendimento) retenção'**
+  String get taxSimIRSFull;
+
+  /// No description provided for @taxSimSSFull.
+  ///
+  /// In pt, this message translates to:
+  /// **'SS (Segurança Social)'**
+  String get taxSimSSFull;
+
+  /// No description provided for @stressZoneCritical.
+  ///
+  /// In pt, this message translates to:
+  /// **'0–39: Pressão financeira elevada, ação urgente necessária'**
+  String get stressZoneCritical;
+
+  /// No description provided for @stressZoneWarning.
+  ///
+  /// In pt, this message translates to:
+  /// **'40–59: Alguns riscos presentes, melhorias recomendadas'**
+  String get stressZoneWarning;
+
+  /// No description provided for @stressZoneGood.
+  ///
+  /// In pt, this message translates to:
+  /// **'60–79: Finanças saudáveis, pequenas otimizações possíveis'**
+  String get stressZoneGood;
+
+  /// No description provided for @stressZoneExcellent.
+  ///
+  /// In pt, this message translates to:
+  /// **'80–100: Posição financeira forte, bem gerida'**
+  String get stressZoneExcellent;
+
+  /// No description provided for @projectionStressHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Como este cenário de gastos afeta a sua pontuação geral de saúde financeira (0–100)'**
+  String get projectionStressHint;
+
+  /// No description provided for @coachWelcomeTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'O Seu Coach Financeiro IA'**
+  String get coachWelcomeTitle;
+
+  /// No description provided for @coachWelcomeBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'Faça perguntas sobre o seu orçamento, despesas ou poupanças. O coach analisa os seus dados financeiros reais para dar conselhos personalizados.'**
+  String get coachWelcomeBody;
+
+  /// No description provided for @coachWelcomeCredits.
+  ///
+  /// In pt, this message translates to:
+  /// **'Os créditos são usados nos modos Plus e Pro. O modo Eco é sempre gratuito.'**
+  String get coachWelcomeCredits;
+
+  /// No description provided for @coachWelcomeRateLimit.
+  ///
+  /// In pt, this message translates to:
+  /// **'Para garantir respostas de qualidade, existe um breve intervalo entre mensagens.'**
+  String get coachWelcomeRateLimit;
+
+  /// No description provided for @planMealsProBadge.
+  ///
+  /// In pt, this message translates to:
+  /// **'PRO'**
+  String get planMealsProBadge;
+
+  /// No description provided for @coachBuyCredits.
+  ///
+  /// In pt, this message translates to:
+  /// **'Comprar créditos'**
+  String get coachBuyCredits;
+
+  /// No description provided for @coachContinueEco.
+  ///
+  /// In pt, this message translates to:
+  /// **'Continuar com Eco'**
+  String get coachContinueEco;
+
+  /// No description provided for @coachAchieved.
+  ///
+  /// In pt, this message translates to:
+  /// **'Consegui!'**
+  String get coachAchieved;
+
+  /// No description provided for @coachNotYet.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não'**
+  String get coachNotYet;
+
+  /// No description provided for @coachCreditsAdded.
+  ///
+  /// In pt, this message translates to:
+  /// **'+{count} créditos adicionados'**
+  String coachCreditsAdded(int count);
+
+  /// No description provided for @coachPurchaseError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro na compra: {error}'**
+  String coachPurchaseError(String error);
+
+  /// No description provided for @coachUseMode.
+  ///
+  /// In pt, this message translates to:
+  /// **'Usar {mode}'**
+  String coachUseMode(String mode);
+
+  /// No description provided for @coachKeepMode.
+  ///
+  /// In pt, this message translates to:
+  /// **'Manter {mode}'**
+  String coachKeepMode(String mode);
+
+  /// No description provided for @savingsGoalSaveError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao guardar objetivo: {error}'**
+  String savingsGoalSaveError(String error);
+
+  /// No description provided for @savingsGoalDeleteError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao eliminar objetivo: {error}'**
+  String savingsGoalDeleteError(String error);
+
+  /// No description provided for @savingsGoalUpdateError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao atualizar objetivo: {error}'**
+  String savingsGoalUpdateError(String error);
+
+  /// No description provided for @settingsSubscription.
+  ///
+  /// In pt, this message translates to:
+  /// **'Subscrição'**
+  String get settingsSubscription;
+
+  /// No description provided for @settingsSubscriptionFree.
+  ///
+  /// In pt, this message translates to:
+  /// **'Gratuito'**
+  String get settingsSubscriptionFree;
+
+  /// No description provided for @settingsActiveCategoriesCount.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categorias Ativas ({active} de {total})'**
+  String settingsActiveCategoriesCount(int active, int total);
+
+  /// No description provided for @settingsPausedCategories.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categorias Pausadas'**
+  String get settingsPausedCategories;
+
+  /// No description provided for @settingsOpenDashboard.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir Dashboard Detalhado'**
+  String get settingsOpenDashboard;
+
+  /// No description provided for @settingsAssistantGroup.
+  ///
+  /// In pt, this message translates to:
+  /// **'ASSISTENTE'**
+  String get settingsAssistantGroup;
+
+  /// No description provided for @settingsAiCoach.
+  ///
+  /// In pt, this message translates to:
+  /// **'Coach IA'**
+  String get settingsAiCoach;
+
+  /// No description provided for @setupWizardSubsidyLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'DUODÉCIMOS'**
+  String get setupWizardSubsidyLabel;
+
+  /// No description provided for @setupWizardPerDay.
+  ///
+  /// In pt, this message translates to:
+  /// **'/dia'**
+  String get setupWizardPerDay;
+
+  /// No description provided for @configurationError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro de Configuração'**
+  String get configurationError;
+
+  /// No description provided for @confidenceAllHealthy.
+  ///
+  /// In pt, this message translates to:
+  /// **'Todos os sistemas saudáveis. Nenhuma ação necessária.'**
+  String get confidenceAllHealthy;
+
+  /// No description provided for @confidenceNoAlerts.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem alertas. Tudo em ordem.'**
+  String get confidenceNoAlerts;
+
+  /// No description provided for @onbSwipeHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Deslize para continuar'**
+  String get onbSwipeHint;
+
+  /// No description provided for @onbSlideOf.
+  ///
+  /// In pt, this message translates to:
+  /// **'Slide {current} de {total}'**
+  String onbSlideOf(int current, int total);
+
+  /// No description provided for @expenseTrendsChartLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Gráfico de tendências de despesas mostrando orçamento versus gastos reais'**
+  String get expenseTrendsChartLabel;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

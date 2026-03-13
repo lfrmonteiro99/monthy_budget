@@ -324,10 +324,10 @@ class SPt extends S {
   String get dashboardTitle => 'Orçamento Mensal';
 
   @override
-  String get dashboardStressIndex => 'Índice de Tranquilidade';
+  String get dashboardViewFullReport => 'Ver Relatório Completo';
 
   @override
-  String get dashboardViewFullReport => 'Ver Relatório Completo';
+  String get dashboardStressIndex => 'Índice de Tranquilidade';
 
   @override
   String get dashboardTension => 'Tensão';
@@ -4595,4 +4595,154 @@ class SPt extends S {
 
   @override
   String get mealHideDetails => 'Ocultar detalhes';
+
+  @override
+  String get taxSimTitularesHint =>
+      'Número de titulares de rendimento no agregado familiar';
+
+  @override
+  String get taxSimMealTypeHint =>
+      'Cartão: isento de imposto até ao limite legal. Dinheiro: tributado como rendimento.';
+
+  @override
+  String get taxSimIRSFull => 'IRS (Imposto sobre o Rendimento) retenção';
+
+  @override
+  String get taxSimSSFull => 'SS (Segurança Social)';
+
+  @override
+  String get stressZoneCritical =>
+      '0–39: Pressão financeira elevada, ação urgente necessária';
+
+  @override
+  String get stressZoneWarning =>
+      '40–59: Alguns riscos presentes, melhorias recomendadas';
+
+  @override
+  String get stressZoneGood =>
+      '60–79: Finanças saudáveis, pequenas otimizações possíveis';
+
+  @override
+  String get stressZoneExcellent =>
+      '80–100: Posição financeira forte, bem gerida';
+
+  @override
+  String get projectionStressHint =>
+      'Como este cenário de gastos afeta a sua pontuação geral de saúde financeira (0–100)';
+
+  @override
+  String get coachWelcomeTitle => 'O Seu Coach Financeiro IA';
+
+  @override
+  String get coachWelcomeBody =>
+      'Faça perguntas sobre o seu orçamento, despesas ou poupanças. O coach analisa os seus dados financeiros reais para dar conselhos personalizados.';
+
+  @override
+  String get coachWelcomeCredits =>
+      'Os créditos são usados nos modos Plus e Pro. O modo Eco é sempre gratuito.';
+
+  @override
+  String get coachWelcomeRateLimit =>
+      'Para garantir respostas de qualidade, existe um breve intervalo entre mensagens.';
+
+  @override
+  String get planMealsProBadge => 'PRO';
+
+  @override
+  String get coachBuyCredits => 'Comprar créditos';
+
+  @override
+  String get coachContinueEco => 'Continuar com Eco';
+
+  @override
+  String get coachAchieved => 'Consegui!';
+
+  @override
+  String get coachNotYet => 'Ainda não';
+
+  @override
+  String coachCreditsAdded(int count) {
+    return '+$count créditos adicionados';
+  }
+
+  @override
+  String coachPurchaseError(String error) {
+    return 'Erro na compra: $error';
+  }
+
+  @override
+  String coachUseMode(String mode) {
+    return 'Usar $mode';
+  }
+
+  @override
+  String coachKeepMode(String mode) {
+    return 'Manter $mode';
+  }
+
+  @override
+  String savingsGoalSaveError(String error) {
+    return 'Erro ao guardar objetivo: $error';
+  }
+
+  @override
+  String savingsGoalDeleteError(String error) {
+    return 'Erro ao eliminar objetivo: $error';
+  }
+
+  @override
+  String savingsGoalUpdateError(String error) {
+    return 'Erro ao atualizar objetivo: $error';
+  }
+
+  @override
+  String get settingsSubscription => 'Subscrição';
+
+  @override
+  String get settingsSubscriptionFree => 'Gratuito';
+
+  @override
+  String settingsActiveCategoriesCount(int active, int total) {
+    return 'Categorias Ativas ($active de $total)';
+  }
+
+  @override
+  String get settingsPausedCategories => 'Categorias Pausadas';
+
+  @override
+  String get settingsOpenDashboard => 'Abrir Dashboard Detalhado';
+
+  @override
+  String get settingsAssistantGroup => 'ASSISTENTE';
+
+  @override
+  String get settingsAiCoach => 'Coach IA';
+
+  @override
+  String get setupWizardSubsidyLabel => 'DUODÉCIMOS';
+
+  @override
+  String get setupWizardPerDay => '/dia';
+
+  @override
+  String get configurationError => 'Erro de Configuração';
+
+  @override
+  String get confidenceAllHealthy =>
+      'Todos os sistemas saudáveis. Nenhuma ação necessária.';
+
+  @override
+  String get confidenceNoAlerts => 'Sem alertas. Tudo em ordem.';
+
+  @override
+  String get onbSwipeHint => 'Deslize para continuar';
+
+  @override
+  String onbSlideOf(int current, int total) {
+    return 'Slide $current de $total';
+  }
+
+  @override
+  String get expenseTrendsChartLabel =>
+      'Gráfico de tendências de despesas mostrando orçamento versus gastos reais';
 }

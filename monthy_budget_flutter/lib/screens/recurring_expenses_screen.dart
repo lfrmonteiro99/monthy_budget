@@ -157,13 +157,36 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
           ? Center(
               child: Padding(
                 padding: const EdgeInsets.all(32),
-                child: Text(
-                  l10n.recurringExpenseEmpty,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: AppColors.textMuted(context),
-                    fontSize: 14,
-                  ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.repeat, size: 48,
+                        color: AppColors.dragHandle(context)),
+                    const SizedBox(height: 16),
+                    Text(
+                      l10n.recurringExpenseEmpty,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: AppColors.textMuted(context),
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    OutlinedButton.icon(
+                      onPressed: () => _addOrEdit(),
+                      icon: const Icon(Icons.add, size: 18),
+                      label: Text(l10n.recurringExpenseAdd),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.primary(context),
+                        side: BorderSide(color: AppColors.primary(context)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             )

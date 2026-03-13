@@ -114,7 +114,7 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save goal: $e')),
+          SnackBar(content: Text(S.of(context).savingsGoalSaveError(e.toString()))),
         );
       }
     }
@@ -148,7 +148,7 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to delete goal: $e')),
+          SnackBar(content: Text(S.of(context).savingsGoalDeleteError(e.toString()))),
         );
       }
     }
@@ -179,7 +179,7 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update goal: $e')),
+          SnackBar(content: Text(S.of(context).savingsGoalUpdateError(e.toString()))),
         );
       }
     }

@@ -401,7 +401,7 @@ class _AddCustomReminderSheetState extends State<_AddCustomReminderSheet> {
                 ),
                 textCapitalization: TextCapitalization.sentences,
                 validator: (v) =>
-                    (v == null || v.trim().isEmpty) ? '' : null,
+                    (v == null || v.trim().isEmpty) ? l10n.notificationCustomTitle : null,
               ),
               const SizedBox(height: 16),
 

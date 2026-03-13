@@ -50,13 +50,13 @@ class ConfidenceCenterScreen extends StatelessWidget {
           const SizedBox(height: 24),
           _SectionHeader(title: l10n.confidenceRecommendedActions),
           const SizedBox(height: 8),
-          ..._recommendedActions(alerts),
+          ..._recommendedActions(alerts, l10n),
         ],
       ),
     );
   }
 
-  List<Widget> _recommendedActions(List<DataAlert> alerts) {
+  List<Widget> _recommendedActions(List<DataAlert> alerts, S l10n) {
     final actions = alerts
         .where((a) => a.recommendedAction != null)
         .map((a) => a.recommendedAction!)
@@ -64,11 +64,11 @@ class ConfidenceCenterScreen extends StatelessWidget {
         .toList();
     if (actions.isEmpty) {
       return [
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 12),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
           child: Text(
-            'All systems healthy. No actions needed.',
-            style: TextStyle(fontSize: 14),
+            l10n.confidenceAllHealthy,
+            style: const TextStyle(fontSize: 14),
           ),
         ),
       ];
@@ -243,7 +243,7 @@ class _EmptyAlerts extends StatelessWidget {
           Icon(Icons.check_circle, size: 20, color: Colors.green),
           const SizedBox(width: 8),
           Text(
-            'No alerts. Everything looks good.',
+            S.of(context).confidenceNoAlerts,
             style: TextStyle(
               fontSize: 14,
               color: AppColors.textSecondary(context),
