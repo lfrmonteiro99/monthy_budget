@@ -1545,7 +1545,7 @@ class _StressIndexCardState extends State<_StressIndexCard> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '${result.delta! >= 0 ? "↑" : "↓"} ${result.delta!.abs().toStringAsFixed(1)} vs ${l10n.dashboardPreviousMonth}',
+                    l10n.dashboardVsLastMonth('${result.delta! >= 0 ? "↑" : "↓"} ${result.delta!.abs().toStringAsFixed(1)}'),
                     style: TextStyle(
                       fontSize: 12,
                       color: AppColors.textSecondary(context),
