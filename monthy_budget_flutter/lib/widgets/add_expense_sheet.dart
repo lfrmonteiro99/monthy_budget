@@ -209,7 +209,17 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
   }
 
   void _save() {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(S.of(context).addExpenseInvalidAmount),
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
+      return;
+    }
     final amount =
         double.tryParse(_amountController.text.replaceAll(',', '.'));
     if (amount == null || amount <= 0) return;
@@ -222,7 +232,17 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
     } else {
       category = _selectedCategory;
     }
-    if (category == null || category.isEmpty) return;
+    if (category == null || category.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(S.of(context).addExpenseCategory),
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
+      return;
+    }
 
     final description = _descriptionController.text.trim();
 
@@ -318,6 +338,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                     const TextInputType.numberWithOptions(decimal: true),
                 decoration: InputDecoration(
                   prefixText: currencySymbol(),
+                  hintText: '0.00',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
