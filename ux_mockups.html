@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planeia - UX Simplificado (Mockups)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #f1f5f9;
+    color: #1e293b;
+    padding: 20px;
+  }
+  h1 { text-align: center; margin: 20px 0 8px; font-size: 28px; font-weight: 700; }
+  .subtitle { text-align: center; color: #64748b; font-size: 14px; margin-bottom: 32px; }
+  .screens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: center;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+  .screen-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .screen-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .phase-badge {
+    display: inline-block;
+    background: #dbeafe;
+    color: #2563eb;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 6px;
+  }
+  .phone {
+    width: 375px;
+    height: 780px;
+    background: #fff;
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .phone::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 30px;
+    background: #000;
+    border-radius: 0 0 20px 20px;
+    z-index: 10;
+  }
+  .status-bar {
+    height: 48px;
+    background: #fff;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 24px 6px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .app-bar {
+    height: 56px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .app-bar-title {
+    flex: 1;
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .app-bar-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    cursor: pointer;
+    color: #64748b;
+  }
+  .app-bar-icon.coach {
+    color: #2563eb;
+    border: 1px solid #e2e8f0;
+  }
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    background: #f8fafc;
+  }
+  .bottom-nav {
+    height: 72px;
+    background: #fff;
+    display: flex;
+    border-top: 1px solid #f1f5f9;
+  }
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    position: relative;
+  }
+  .nav-item.active .nav-icon { color: #2563eb; }
+  .nav-item.active .nav-label { color: #2563eb; font-weight: 600; }
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    width: 56px;
+    height: 28px;
+    background: #dbeafe;
+    border-radius: 14px;
+    z-index: 0;
+  }
+  .nav-icon {
+    font-size: 24px;
+    color: #94a3b8;
+    z-index: 1;
+    position: relative;
+  }
+  .nav-label {
+    font-size: 11px;
+    color: #94a3b8;
+    z-index: 1;
+  }
+  .nav-badge {
+    position: absolute;
+    top: 4px;
+    right: calc(50% - 22px);
+    background: #ef4444;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    z-index: 2;
+  }
+  /* Cards */
+  .card {
+    background: #fff;
+    border-radius: 14px;
+    margin: 8px 16px;
+    padding: 16px;
+    border: 1px solid #f1f5f9;
+  }
+  .card-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  /* FAB */
+  .fab {
+    position: absolute;
+    bottom: 88px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    background: #2563eb;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 28px;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.35);
+    z-index: 5;
+  }
+  /* Tabs */
+  .tab-bar {
+    display: flex;
+    background: #fff;
+    border-bottom: 2px solid #f1f5f9;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 4px 8px;
+    gap: 4px;
+    font-size: 12px;
+    color: #94a3b8;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+  }
+  .tab.active {
+    color: #2563eb;
+    border-bottom-color: #2563eb;
+    font-weight: 600;
+  }
+  .tab .material-icons-outlined { font-size: 20px; }
+  /* Settings items */
+  .settings-group-header {
+    padding: 20px 20px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #94a3b8;
+    letter-spacing: 1px;
+  }
+  .settings-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    background: #fff;
+    border-bottom: 0.5px solid #f1f5f9;
+    gap: 14px;
+    cursor: pointer;
+  }
+  .settings-item:hover { background: #f8fafc; }
+  .settings-item-icon {
+    color: #2563eb;
+    font-size: 20px;
+  }
+  .settings-item-text { flex: 1; }
+  .settings-item-title { font-size: 15px; font-weight: 500; }
+  .settings-item-subtitle { font-size: 12px; color: #64748b; }
+  .settings-item-arrow { color: #94a3b8; font-size: 20px; }
+  /* Wizard */
+  .wizard-icon {
+    text-align: center;
+    color: #2563eb;
+    margin: 12px 0;
+  }
+  .wizard-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .wizard-subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 24px;
+  }
+  .country-option {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    gap: 12px;
+    cursor: pointer;
+  }
+  .country-option.selected {
+    background: #eff6ff;
+    border-color: #2563eb;
+    border-width: 2px;
+  }
+  .country-flag { font-size: 22px; }
+  .country-name { flex: 1; font-size: 14px; }
+  .country-radio { color: #cbd5e1; font-size: 20px; }
+  .country-option.selected .country-radio { color: #2563eb; }
+  /* Buttons */
+  .btn-primary {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+  }
+  .btn-outline {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    color: #2563eb;
+    border: 1px solid #2563eb;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+  }
+  .btn-text {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 8px;
+  }
+  /* Stress card */
+  .stress-card {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+    border: 1px solid #bbf7d0;
+    border-radius: 14px;
+    margin: 8px 16px;
+    padding: 16px;
+    text-align: center;
+  }
+  .stress-score {
+    font-size: 40px;
+    font-weight: 700;
+    color: #16a34a;
+  }
+  .stress-label {
+    font-size: 13px;
+    color: #15803d;
+    font-weight: 500;
+  }
+  /* Chips */
+  .chip-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    font-size: 13px;
+    color: #475569;
+    cursor: pointer;
+    background: #fff;
+  }
+  .chip.selected {
+    background: #eff6ff;
+    border-color: #93c5fd;
+    color: #2563eb;
+    font-weight: 500;
+  }
+  .chip .material-icons-outlined { font-size: 16px; }
+  /* Sheet */
+  .sheet-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 10;
+    display: flex;
+    align-items: flex-end;
+  }
+  .sheet {
+    width: 100%;
+    background: #fff;
+    border-radius: 20px 20px 0 0;
+    padding: 12px 20px 32px;
+    max-height: 65%;
+    overflow-y: auto;
+  }
+  .sheet-handle {
+    width: 40px;
+    height: 4px;
+    background: #cbd5e1;
+    border-radius: 2px;
+    margin: 0 auto 16px;
+  }
+  /* Form field */
+  .form-field {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 16px;
+    width: 100%;
+    font-size: 14px;
+    outline: none;
+    font-family: inherit;
+  }
+  .form-field:focus { border-color: #2563eb; border-width: 2px; }
+  .form-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  /* Week nav */
+  .week-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 8px 0;
+  }
+  .week-nav-label { font-size: 15px; font-weight: 600; }
+  .week-nav-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #475569;
+    font-size: 24px;
+    border-radius: 8px;
+  }
+  .week-nav-btn:hover { background: #f1f5f9; }
+  .week-nav-btn:disabled { color: #e2e8f0; cursor: default; }
+  /* Progress bar */
+  .progress-bar {
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: #2563eb;
+    border-radius: 3px;
+  }
+  /* Meal day card */
+  .meal-day {
+    background: #fff;
+    border-radius: 12px;
+    margin: 6px 16px;
+    padding: 14px;
+    border: 1px solid #f1f5f9;
+  }
+  .meal-day-header {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .meal-entry {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+  }
+  .meal-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .meal-name { font-size: 14px; flex: 1; }
+  .meal-badge {
+    font-size: 11px;
+    color: #16a34a;
+    background: #f0fdf4;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  /* Toggle */
+  .toggle-details {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 4px 16px;
+    gap: 4px;
+    color: #64748b;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  /* Expense row */
+  .expense-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+  }
+  .expense-icon-box {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+  .expense-details { flex: 1; }
+  .expense-name { font-size: 14px; font-weight: 500; }
+  .expense-date { font-size: 12px; color: #94a3b8; }
+  .expense-amount { font-size: 14px; font-weight: 600; }
+  /* Completion */
+  .completion-check {
+    width: 72px;
+    height: 72px;
+    background: #f0fdf4;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    color: #16a34a;
+  }
+  .summary-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 16px;
+    margin: 16px 0;
+  }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 13px;
+  }
+  .summary-row .label { color: #64748b; }
+  .summary-row .value { font-weight: 500; }
+  .summary-row.highlight .value { color: #16a34a; font-weight: 700; }
+  /* Shopping list item */
+  .shop-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background: #fff;
+    border-bottom: 0.5px solid #f1f5f9;
+    gap: 12px;
+  }
+  .shop-check {
+    width: 22px;
+    height: 22px;
+    border: 2px solid #cbd5e1;
+    border-radius: 6px;
+  }
+  .shop-check.done {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+  .shop-text { flex: 1; font-size: 14px; }
+  .shop-text.done { text-decoration: line-through; color: #94a3b8; }
+  .shop-qty { font-size: 12px; color: #64748b; }
+  /* Logout btn */
+  .btn-logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: calc(100% - 40px);
+    margin: 24px 20px;
+    padding: 14px;
+    background: transparent;
+    color: #ef4444;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  /* Section header */
+  .section-sep { height: 8px; background: #f1f5f9; }
+  /* Comparison table */
+  .comparison { max-width: 900px; margin: 40px auto; }
+  .comparison h2 { text-align: center; margin-bottom: 16px; font-size: 20px; }
+  .comparison table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .comparison th {
+    background: #f1f5f9;
+    padding: 10px 16px;
+    text-align: left;
+    font-weight: 600;
+  }
+  .comparison td {
+    padding: 10px 16px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .comparison .before { color: #ef4444; }
+  .comparison .after { color: #16a34a; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>Planeia — UX Simplificado</h1>
+<p class="subtitle">Mockups aproximados dos ecrãs após as 6 fases de simplificação</p>
+
+<div class="screens">
+
+<!-- ============ SCREEN 1: Dashboard (Focused) ============ -->
+<div class="screen-wrapper">
+  <div class="screen-label">Dashboard (Focused Mode) <span class="phase-badge">Fase 2</span></div>
+  <div class="phone">
+    <div class="status-bar"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+    <div class="app-bar">
+      <div class="app-bar-title">Planeia</div>
+      <div class="app-bar-icon coach" title="Coach IA">
+        <span class="material-icons" style="font-size:20px">psychology</span>
+      </div>
+      <div class="app-bar-icon" style="margin-left:4px">
+        <span class="material-icons-outlined">settings</span>
+      </div>
+    </div>
+    <div class="content">
+      <!-- Stress Index -->
+      <div class="stress-card">
+        <div class="stress-score">7.8</div>
+        <div class="stress-label">Índice de Tranquilidade</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:4px">↑ 0.3 vs mês anterior</div>
+      </div>
+      <!-- Month Review -->
+      <div class="card">
+        <div class="card-title">Revisão do Mês</div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+          <span style="font-size:13px;color:#64748b">Rendimento líquido</span>
+          <span style="font-size:13px;font-weight:600">€1,450.00</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+          <span style="font-size:13px;color:#64748b">Total despesas</span>
+          <span style="font-size:13px;font-weight:600">€980.50</span>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span style="font-size:13px;color:#64748b">Disponível</span>
+          <span style="font-size:13px;font-weight:700;color:#16a34a">€469.50</span>
+        </div>
+      </div>
+      <!-- Upcoming Bills -->
+      <div class="card">
+        <div class="card-title">Contas a Pagar</div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0">
+          <span style="font-size:13px">💡 Eletricidade</span>
+          <span style="font-size:13px;font-weight:500">€65.00 · dia 15</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0">
+          <span style="font-size:13px">📱 Telecomunicações</span>
+          <span style="font-size:13px;font-weight:500">€35.00 · dia 20</span>
+        </div>
+      </div>
+      <!-- View Full Report -->
+      <div style="padding:12px 16px">
+        <div class="btn-outline" style="display:flex;align-items:center;justify-content:center;gap:8px">
+          <span class="material-icons-outlined" style="font-size:18px">dashboard_customize</span>
+          Ver Relatório Completo
+        </div>
+      </div>
+    </div>
+    <!-- FAB -->
+    <div class="fab">
+      <span class="material-icons">add</span>
+    </div>
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+      <div class="nav-item active">
+        <span class="material-icons nav-icon">dashboard</span>
+        <span class="nav-label">Home</span>
+      </div>
+      <div class="nav-item">
+        <span class="material-icons-outlined nav-icon">receipt_long</span>
+        <span class="nav-label">Despesas</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-badge">3</span>
+        <span class="material-icons-outlined nav-icon">shopping_basket</span>
+        <span class="nav-label">Compras</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCREEN 2: Expense Tracker ============ -->
+<div class="screen-wrapper">
+  <div class="screen-label">Despesas <span class="phase-badge">Fase 3</span></div>
+  <div class="phone">
+    <div class="status-bar"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+    <div class="app-bar">
+      <div class="app-bar-title">Despesas</div>
+      <div class="app-bar-icon">
+        <span class="material-icons-outlined">filter_list</span>
+      </div>
+    </div>
+    <div class="content">
+      <!-- Month nav -->
+      <div style="display:flex;align-items:center;justify-content:center;padding:12px;gap:12px">
+        <span class="material-icons" style="color:#475569;cursor:pointer">chevron_left</span>
+        <span style="font-size:15px;font-weight:600">Março 2026</span>
+        <span class="material-icons" style="color:#cbd5e1">chevron_right</span>
+      </div>
+      <!-- Summary -->
+      <div style="display:flex;padding:0 16px 12px;gap:12px">
+        <div style="flex:1;background:#f0fdf4;padding:12px;border-radius:12px;text-align:center">
+          <div style="font-size:11px;color:#6b7280">Orçamento</div>
+          <div style="font-size:16px;font-weight:700;color:#16a34a">€1,200</div>
+        </div>
+        <div style="flex:1;background:#fef2f2;padding:12px;border-radius:12px;text-align:center">
+          <div style="font-size:11px;color:#6b7280">Gasto</div>
+          <div style="font-size:16px;font-weight:700;color:#ef4444">€780.50</div>
+        </div>
+        <div style="flex:1;background:#eff6ff;padding:12px;border-radius:12px;text-align:center">
+          <div style="font-size:11px;color:#6b7280">Restante</div>
+          <div style="font-size:16px;font-weight:700;color:#2563eb">€419.50</div>
+        </div>
+      </div>
+      <!-- Expense items -->
+      <div style="background:#fff;padding:0 16px">
+        <div class="expense-row">
+          <div class="expense-icon-box" style="background:#fef3c7">🛒</div>
+          <div class="expense-details">
+            <div class="expense-name">Supermercado Continente</div>
+            <div class="expense-date">Hoje · Alimentação</div>
+          </div>
+          <div class="expense-amount" style="color:#ef4444">-€45.30</div>
+        </div>
+        <div class="expense-row">
+          <div class="expense-icon-box" style="background:#dbeafe">⛽</div>
+          <div class="expense-details">
+            <div class="expense-name">Gasolineira BP</div>
+            <div class="expense-date">Ontem · Transportes</div>
+          </div>
+          <div class="expense-amount" style="color:#ef4444">-€55.00</div>
+        </div>
+        <div class="expense-row">
+          <div class="expense-icon-box" style="background:#fce7f3">💊</div>
+          <div class="expense-details">
+            <div class="expense-name">Farmácia</div>
+            <div class="expense-date">11 Mar · Saúde</div>
+          </div>
+          <div class="expense-amount" style="color:#ef4444">-€12.80</div>
+        </div>
+        <div class="expense-row">
+          <div class="expense-icon-box" style="background:#f0fdf4">🍕</div>
+          <div class="expense-details">
+            <div class="expense-name">Restaurante Cervejaria</div>
+            <div class="expense-date">10 Mar · Lazer</div>
+          </div>
+          <div class="expense-amount" style="color:#ef4444">-€28.50</div>
+        </div>
+        <div class="expense-row">
+          <div class="expense-icon-box" style="background:#ede9fe">📱</div>
+          <div class="expense-details">
+            <div class="expense-name">NOS Telecomunicações</div>
+            <div class="expense-date">8 Mar · Telecomunicações</div>
+          </div>
+          <div class="expense-amount" style="color:#ef4444">-€34.99</div>
+        </div>
+        <div class="expense-row">
+          <div class="expense-icon-box" style="background:#fef3c7">🛒</div>
+          <div class="expense-details">
+            <div class="expense-name">Lidl Compras Semanais</div>
+            <div class="expense-date">7 Mar · Alimentação</div>
+          </div>
+          <div class="expense-amount" style="color:#ef4444">-€62.40</div>
+        </div>
+      </div>
+    </div>
+    <!-- FAB -->
+    <div class="fab">
+      <span class="material-icons">add</span>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item">
+        <span class="material-icons-outlined nav-icon">dashboard</span>
+        <span class="nav-label">Home</span>
+      </div>
+      <div class="nav-item active">
+        <span class="material-icons nav-icon">receipt_long</span>
+        <span class="nav-label">Despesas</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-badge">3</span>
+        <span class="material-icons-outlined nav-icon">shopping_basket</span>
+        <span class="nav-label">Compras</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCREEN 3: Add Expense Sheet ============ -->
+<div class="screen-wrapper">
+  <div class="screen-label">Adicionar Despesa <span class="phase-badge">Fase 3</span></div>
+  <div class="phone">
+    <div class="status-bar"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+    <div class="app-bar">
+      <div class="app-bar-title" style="color:#94a3b8">Despesas</div>
+    </div>
+    <div class="content" style="background:rgba(0,0,0,0.3);position:relative">
+      <!-- Sheet -->
+      <div style="position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:12px 20px 32px">
+        <div class="sheet-handle"></div>
+        <div style="font-size:18px;font-weight:700;margin-bottom:16px">Adicionar Despesa</div>
+
+        <!-- Amount FIRST -->
+        <div class="form-label">VALOR</div>
+        <div style="display:flex;align-items:center;border:2px solid #2563eb;border-radius:12px;padding:12px 16px;margin-bottom:16px">
+          <span style="color:#94a3b8;margin-right:4px">€</span>
+          <span style="font-size:18px;font-weight:600;color:#2563eb">45.30</span>
+          <span style="margin-left:auto;width:2px;height:20px;background:#2563eb;animation:blink 1s infinite"></span>
+        </div>
+
+        <!-- Flat category chips -->
+        <div class="form-label">CATEGORIA</div>
+        <div class="chip-wrap" style="margin-bottom:16px">
+          <div class="chip selected">
+            <span class="material-icons-outlined">shopping_cart</span>
+            Alimentação
+          </div>
+          <div class="chip">
+            <span class="material-icons-outlined">home</span>
+            Renda
+          </div>
+          <div class="chip">
+            <span class="material-icons-outlined">directions_car</span>
+            Transportes
+          </div>
+          <div class="chip">
+            <span class="material-icons-outlined">bolt</span>
+            Energia
+          </div>
+          <div class="chip">
+            <span class="material-icons-outlined">wifi</span>
+            Telecom
+          </div>
+          <div class="chip">
+            <span class="material-icons-outlined">local_hospital</span>
+            Saúde
+          </div>
+          <div class="chip">
+            <span class="material-icons-outlined">sports_esports</span>
+            Lazer
+          </div>
+          <div class="chip" style="border-style:dashed">
+            <span class="material-icons-outlined">add</span>
+            Outra
+          </div>
+        </div>
+
+        <!-- Date + notes toggle -->
+        <div style="display:flex;align-items:center;gap:8px;border:1px solid #e2e8f0;border-radius:12px;padding:10px 16px;margin-bottom:16px">
+          <span class="material-icons-outlined" style="font-size:18px;color:#64748b">calendar_today</span>
+          <span style="font-size:14px;flex:1">13/03/2026</span>
+          <span class="material-icons-outlined" style="font-size:16px;color:#94a3b8;cursor:pointer" title="Notas">notes</span>
+        </div>
+
+        <!-- Save -->
+        <button class="btn-primary">Guardar</button>
+      </div>
+    </div>
+    <div class="bottom-nav" style="opacity:0.3">
+      <div class="nav-item"><span class="material-icons-outlined nav-icon">dashboard</span><span class="nav-label">Home</span></div>
+      <div class="nav-item active"><span class="material-icons nav-icon">receipt_long</span><span class="nav-label">Despesas</span></div>
+      <div class="nav-item"><span class="material-icons-outlined nav-icon">shopping_basket</span><span class="nav-label">Compras</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCREEN 4: Plan & Shop (Shopping List) ============ -->
+<div class="screen-wrapper">
+  <div class="screen-label">Compras — Lista <span class="phase-badge">Fase 1</span></div>
+  <div class="phone">
+    <div class="status-bar"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+    <div class="app-bar">
+      <div class="app-bar-title">Compras</div>
+      <div class="app-bar-icon">
+        <span class="material-icons-outlined">document_scanner</span>
+      </div>
+    </div>
+    <div class="tab-bar">
+      <div class="tab active">
+        <span class="material-icons-outlined">shopping_basket</span>
+        Lista
+      </div>
+      <div class="tab">
+        <span class="material-icons-outlined">shopping_cart</span>
+        Mercearia
+      </div>
+      <div class="tab">
+        <span class="material-icons-outlined">restaurant</span>
+        Refeições
+      </div>
+    </div>
+    <div class="content">
+      <div class="shop-item">
+        <div class="shop-check"></div>
+        <span class="shop-text">Leite meio-gordo</span>
+        <span class="shop-qty">6 un.</span>
+      </div>
+      <div class="shop-item">
+        <div class="shop-check"></div>
+        <span class="shop-text">Peito de frango</span>
+        <span class="shop-qty">1 kg</span>
+      </div>
+      <div class="shop-item">
+        <div class="shop-check"></div>
+        <span class="shop-text">Arroz agulha</span>
+        <span class="shop-qty">1 kg</span>
+      </div>
+      <div class="shop-item">
+        <div class="shop-check"></div>
+        <span class="shop-text">Tomate cherry</span>
+        <span class="shop-qty">500g</span>
+      </div>
+      <div class="shop-item">
+        <div class="shop-check"></div>
+        <span class="shop-text">Azeite virgem extra</span>
+        <span class="shop-qty">750ml</span>
+      </div>
+      <div class="shop-item">
+        <div class="shop-check done">✓</div>
+        <span class="shop-text done">Ovos classe M</span>
+        <span class="shop-qty">12 un.</span>
+      </div>
+      <div class="shop-item">
+        <div class="shop-check done">✓</div>
+        <span class="shop-text done">Pão integral</span>
+        <span class="shop-qty">1 un.</span>
+      </div>
+      <div style="padding:16px;text-align:center;color:#94a3b8;font-size:13px">
+        5 por comprar · 2 comprados
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item">
+        <span class="material-icons-outlined nav-icon">dashboard</span>
+        <span class="nav-label">Home</span>
+      </div>
+      <div class="nav-item">
+        <span class="material-icons-outlined nav-icon">receipt_long</span>
+        <span class="nav-label">Despesas</span>
+      </div>
+      <div class="nav-item active">
+        <span class="material-icons nav-icon">shopping_basket</span>
+        <span class="nav-label">Compras</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCREEN 5: Meal Planner (Simplified) ============ -->
+<div class="screen-wrapper">
+  <div class="screen-label">Refeições (Simplificado) <span class="phase-badge">Fase 6</span></div>
+  <div class="phone">
+    <div class="status-bar"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+    <div class="app-bar">
+      <div class="app-bar-title">Compras</div>
+      <div class="app-bar-icon">
+        <span class="material-icons-outlined">settings</span>
+      </div>
+    </div>
+    <div class="tab-bar">
+      <div class="tab">
+        <span class="material-icons-outlined">shopping_basket</span>
+        Lista
+      </div>
+      <div class="tab">
+        <span class="material-icons-outlined">shopping_cart</span>
+        Mercearia
+      </div>
+      <div class="tab active">
+        <span class="material-icons-outlined">restaurant</span>
+        Refeições
+      </div>
+    </div>
+    <div class="content">
+      <!-- Budget header -->
+      <div style="background:#fff;padding:12px 16px 0">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <span style="font-size:15px;font-weight:700">€185.40 / €250.00</span>
+          <span style="font-size:13px;color:#64748b;cursor:pointer">↻ Regenerar</span>
+        </div>
+        <div class="progress-bar" style="margin-bottom:12px">
+          <div class="progress-fill" style="width:74%"></div>
+        </div>
+        <!-- Week nav (← →) -->
+        <div class="week-nav">
+          <button class="week-nav-btn"><span class="material-icons">chevron_left</span></button>
+          <span class="week-nav-label">Semana 2</span>
+          <button class="week-nav-btn"><span class="material-icons">chevron_right</span></button>
+        </div>
+      </div>
+      <!-- Toggle details -->
+      <div class="toggle-details">
+        <span class="material-icons-outlined" style="font-size:16px">visibility</span>
+        Mostrar detalhes
+      </div>
+      <!-- Meal days (simplified - no nutrition/pantry/budget) -->
+      <div class="meal-day">
+        <div class="meal-day-header">Segunda, 9 Mar</div>
+        <div class="meal-entry">
+          <div class="meal-dot" style="background:#f59e0b"></div>
+          <span class="meal-name">Almoço: Frango grelhado c/ arroz</span>
+          <span class="meal-badge">3/5 🏠</span>
+        </div>
+        <div class="meal-entry">
+          <div class="meal-dot" style="background:#8b5cf6"></div>
+          <span class="meal-name">Jantar: Sopa de legumes + omelete</span>
+        </div>
+      </div>
+      <div class="meal-day">
+        <div class="meal-day-header">Terça, 10 Mar</div>
+        <div class="meal-entry">
+          <div class="meal-dot" style="background:#f59e0b"></div>
+          <span class="meal-name">Almoço: Bacalhau à Brás</span>
+          <span class="meal-badge">4/6 🏠</span>
+        </div>
+        <div class="meal-entry">
+          <div class="meal-dot" style="background:#8b5cf6"></div>
+          <span class="meal-name">Jantar: Massa c/ atum e tomate</span>
+        </div>
+      </div>
+      <div class="meal-day">
+        <div class="meal-day-header">Quarta, 11 Mar</div>
+        <div class="meal-entry">
+          <div class="meal-dot" style="background:#f59e0b"></div>
+          <span class="meal-name">Almoço: Arroz de frango 🥦</span>
+        </div>
+        <div class="meal-entry">
+          <div class="meal-dot" style="background:#8b5cf6"></div>
+          <span class="meal-name">Jantar: Salmão c/ batata doce</span>
+        </div>
+      </div>
+      <!-- Action -->
+      <div style="padding:8px 16px">
+        <div class="btn-outline" style="font-size:13px;padding:10px;display:flex;align-items:center;justify-content:center;gap:6px">
+          <span class="material-icons-outlined" style="font-size:16px">add_shopping_cart</span>
+          Adicionar semana à lista
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item">
+        <span class="material-icons-outlined nav-icon">dashboard</span>
+        <span class="nav-label">Home</span>
+      </div>
+      <div class="nav-item">
+        <span class="material-icons-outlined nav-icon">receipt_long</span>
+        <span class="nav-label">Despesas</span>
+      </div>
+      <div class="nav-item active">
+        <span class="material-icons nav-icon">shopping_basket</span>
+        <span class="nav-label">Compras</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCREEN 6: Settings ============ -->
+<div class="screen-wrapper">
+  <div class="screen-label">Definições (Agrupadas) <span class="phase-badge">Fase 5</span></div>
+  <div class="phone">
+    <div class="status-bar"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+    <div class="app-bar">
+      <div class="app-bar-icon">
+        <span class="material-icons">arrow_back</span>
+      </div>
+      <div class="app-bar-title">Definições</div>
+      <button class="btn-primary" style="width:auto;padding:8px 16px;font-size:14px;border-radius:12px;display:flex;align-items:center;gap:4px">
+        <span class="material-icons" style="font-size:16px">check</span> Guardar
+      </button>
+    </div>
+    <div class="content">
+      <!-- ACCOUNT -->
+      <div class="settings-group-header">CONTA</div>
+      <div class="settings-item">
+        <span class="material-icons settings-item-icon">person</span>
+        <div class="settings-item-text"><div class="settings-item-title">Dados Pessoais</div></div>
+        <span class="material-icons settings-item-arrow">chevron_right</span>
+      </div>
+      <div class="settings-item">
+        <span class="material-icons-outlined settings-item-icon">people</span>
+        <div class="settings-item-text"><div class="settings-item-title">Agregado</div></div>
+        <span class="material-icons settings-item-arrow">chevron_right</span>
+      </div>
+      <div class="settings-item">
+        <span class="material-icons settings-item-icon" style="color:#f59e0b">workspace_premium</span>
+        <div class="settings-item-text">
+          <div class="settings-item-title">Subscription</div>
+          <div class="settings-item-subtitle">Premium</div>
+        </div>
+        <span class="material-icons settings-item-arrow">chevron_right</span>
+      </div>
+      <!-- BUDGET -->
+      <div class="settings-group-header">ORÇAMENTO</div>
+      <div class="settings-item">
+        <span class="material-icons settings-item-icon">account_balance_wallet</span>
+        <div class="settings-item-text">
+          <div class="settings-item-title">Vencimentos</div>
+          <div class="settings-item-subtitle">€1,800.00</div>
+        </div>
+        <span class="material-icons settings-item-arrow">chevron_right</span>
+      </div>
+      <div class="settings-item">
+        <span class="material-icons-outlined settings-item-icon">receipt_long</span>
+        <div class="settings-item-text">
+          <div class="settings-item-title">Orçamento e Contas</div>
+          <div class="settings-item-subtitle">7 categorias</div>
+        </div>
+        <span class="material-icons settings-item-arrow">chevron_right</span>
+      </div>
+      <!-- PREFERENCES -->
+      <div class="settings-group-header">PREFERÊNCIAS</div>
+      <div class="settings-item">
+        <span class="material-icons-outlined settings-item-icon">palette</span>
+        <div class="settings-item-text"><div class="settings-item-title">Aparência</div></div>
+        <span class="material-icons settings-item-arrow">chevron_right</span>
+      </div>
+      <div class="settings-item">
+        <span class="material-icons settings-item-icon">dashboard</span>
+        <div class="settings-item-text"><div class="settings-item-title">Dashboard</div></div>
+        <span class="material-icons settings-item-arrow">chevron_right</span>
+      </div>
+      <div class="settings-item">
+        <span class="material-icons-outlined settings-item-icon">notifications</span>
+        <div class="settings-item-text"><div class="settings-item-title">Notificações</div></div>
+        <span class="material-icons settings-item-arrow">chevron_right</span>
+      </div>
+      <div class="settings-item">
+        <span class="material-icons settings-item-icon">restaurant</span>
+        <div class="settings-item-text"><div class="settings-item-title">Refeições</div></div>
+        <span class="material-icons settings-item-arrow">chevron_right</span>
+      </div>
+      <div class="settings-item">
+        <span class="material-icons settings-item-icon">favorite</span>
+        <div class="settings-item-text">
+          <div class="settings-item-title">Produtos Favoritos</div>
+          <div class="settings-item-subtitle">12</div>
+        </div>
+        <span class="material-icons settings-item-arrow">chevron_right</span>
+      </div>
+      <!-- ADVANCED -->
+      <div class="settings-group-header">AVANÇADO</div>
+      <div class="settings-item">
+        <span class="material-icons-outlined settings-item-icon">psychology</span>
+        <div class="settings-item-text"><div class="settings-item-title">Coach IA (OpenAI)</div></div>
+        <span class="material-icons settings-item-arrow">chevron_right</span>
+      </div>
+      <!-- Logout -->
+      <button class="btn-logout">
+        <span class="material-icons" style="font-size:18px">logout</span>
+        Terminar sessão
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCREEN 7: Wizard Step 1 ============ -->
+<div class="screen-wrapper">
+  <div class="screen-label">Onboarding — Passo 1 de 3 <span class="phase-badge">Fase 4</span></div>
+  <div class="phone">
+    <div class="status-bar"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+    <div class="content" style="display:flex;flex-direction:column;background:#fff;padding-top:48px">
+      <div style="flex:1;padding:0 28px;overflow-y:auto">
+        <div class="wizard-icon">
+          <span class="material-icons-outlined" style="font-size:56px">account_balance_wallet</span>
+        </div>
+        <div class="wizard-title">Bem-vindo ao Planeia</div>
+        <div class="wizard-subtitle">O teu orçamento familiar, simplificado.</div>
+
+        <div style="font-size:15px;font-weight:600;margin-bottom:12px">Seleciona o teu país</div>
+
+        <div class="country-option selected">
+          <span class="country-flag">🇵🇹</span>
+          <span class="country-name">Portugal</span>
+          <span class="material-icons country-radio">radio_button_checked</span>
+        </div>
+        <div class="country-option">
+          <span class="country-flag">🇪🇸</span>
+          <span class="country-name">Espanha</span>
+          <span class="material-icons country-radio">radio_button_unchecked</span>
+        </div>
+        <div class="country-option">
+          <span class="country-flag">🇫🇷</span>
+          <span class="country-name">França</span>
+          <span class="material-icons country-radio">radio_button_unchecked</span>
+        </div>
+        <div class="country-option">
+          <span class="country-flag">🇬🇧</span>
+          <span class="country-name">Reino Unido</span>
+          <span class="material-icons country-radio">radio_button_unchecked</span>
+        </div>
+      </div>
+      <div style="padding:0 28px 8px">
+        <button class="btn-primary">Continuar</button>
+        <div style="text-align:center;padding:8px">
+          <button class="btn-text">Saltar tudo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCREEN 8: Wizard Step 2 ============ -->
+<div class="screen-wrapper">
+  <div class="screen-label">Onboarding — Passo 2 de 3 <span class="phase-badge">Fase 4</span></div>
+  <div class="phone">
+    <div class="status-bar"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+    <div class="app-bar">
+      <div class="app-bar-icon"><span class="material-icons">arrow_back</span></div>
+      <span style="font-size:16px;font-weight:600">Passo 1 de 2</span>
+      <div style="flex:1"></div>
+    </div>
+    <div style="height:4px;background:#e2e8f0">
+      <div style="height:100%;width:50%;background:#2563eb"></div>
+    </div>
+    <div class="content" style="background:#fff;display:flex;flex-direction:column">
+      <div style="flex:1;padding:20px;overflow-y:auto">
+        <div style="font-size:18px;font-weight:700;margin-bottom:6px">Salário e Despesas</div>
+        <div style="font-size:14px;color:#64748b;margin-bottom:16px">Configura o teu rendimento e principais gastos.</div>
+
+        <!-- Salary -->
+        <div class="form-label">SALÁRIO BRUTO MENSAL</div>
+        <div style="display:flex;align-items:center;border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px;margin-bottom:20px">
+          <span style="color:#94a3b8;margin-right:6px">€</span>
+          <span style="font-size:16px">1,800.00</span>
+        </div>
+
+        <!-- Expenses -->
+        <div style="font-size:15px;font-weight:600;margin-bottom:6px">Despesas Fixas</div>
+        <div style="font-size:13px;color:#64748b;margin-bottom:12px">Valores mensais aproximados</div>
+
+        <div style="display:flex;align-items:center;padding:8px 0;gap:10px">
+          <span class="material-icons-outlined" style="color:#2563eb;font-size:20px">home</span>
+          <span style="flex:3;font-size:14px">Renda</span>
+          <div style="width:100px;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;text-align:right;font-size:14px">€ 550</div>
+        </div>
+        <div style="display:flex;align-items:center;padding:8px 0;gap:10px">
+          <span class="material-icons-outlined" style="color:#2563eb;font-size:20px">shopping_cart</span>
+          <span style="flex:3;font-size:14px">Alimentação</span>
+          <div style="width:100px;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;text-align:right;font-size:14px">€ 300</div>
+        </div>
+        <div style="display:flex;align-items:center;padding:8px 0;gap:10px">
+          <span class="material-icons-outlined" style="color:#2563eb;font-size:20px">directions_car</span>
+          <span style="flex:3;font-size:14px">Transportes</span>
+          <div style="width:100px;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;text-align:right;font-size:14px">€ 100</div>
+        </div>
+        <div style="display:flex;align-items:center;padding:8px 0;gap:10px">
+          <span class="material-icons-outlined" style="color:#2563eb;font-size:20px">bolt</span>
+          <span style="flex:3;font-size:14px">Energia</span>
+          <div style="width:100px;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;text-align:right;font-size:14px">€ 65</div>
+        </div>
+        <div style="display:flex;align-items:center;padding:8px 0;gap:10px">
+          <span class="material-icons-outlined" style="color:#2563eb;font-size:20px">wifi</span>
+          <span style="flex:3;font-size:14px">Telecom</span>
+          <div style="width:100px;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;text-align:right;font-size:14px">€ 35</div>
+        </div>
+      </div>
+      <div style="padding:0 20px 8px;display:flex;gap:12px">
+        <button class="btn-outline" style="flex:1">Saltar</button>
+        <button class="btn-primary" style="flex:2">Continuar</button>
+      </div>
+      <div style="height:8px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCREEN 9: Wizard Completion ============ -->
+<div class="screen-wrapper">
+  <div class="screen-label">Onboarding — Conclusão <span class="phase-badge">Fase 4</span></div>
+  <div class="phone">
+    <div class="status-bar"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+    <div class="content" style="background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center">
+      <div style="flex:2"></div>
+      <div class="completion-check">
+        <span class="material-icons" style="font-size:48px">check_circle</span>
+      </div>
+      <div style="height:24px"></div>
+      <div style="font-size:24px;font-weight:700">Tudo pronto!</div>
+      <div style="height:24px"></div>
+      <div class="summary-card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <span>🇵🇹</span>
+          <span style="font-size:14px;font-weight:600">Portugal</span>
+        </div>
+        <hr style="border:none;border-top:1px solid #e2e8f0;margin:12px 0">
+        <div class="summary-row">
+          <span class="label">Rendimento líquido</span>
+          <span class="value">€1,294.00</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Total despesas</span>
+          <span class="value">€1,050.00</span>
+        </div>
+        <div class="summary-row highlight">
+          <span class="label">Disponível</span>
+          <span class="value">€244.00</span>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#94a3b8">Podes ajustar tudo nas Definições a qualquer momento.</div>
+      <div style="flex:3"></div>
+      <button class="btn-primary" style="margin-bottom:24px">Ir para o Dashboard</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- end screens -->
+
+<!-- Comparison table -->
+<div class="comparison">
+  <h2>Comparação de Taps: Antes vs Depois</h2>
+  <table>
+    <thead>
+      <tr><th>Acção</th><th>Antes</th><th>Depois</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Adicionar despesa (Dashboard)</td><td class="before">2 taps (FAB → escolher)</td><td class="after">1 tap (FAB direto)</td></tr>
+      <tr><td>Abrir Lista de Compras</td><td class="before">2 taps (Plan → card)</td><td class="after">1 tap (tab Compras)</td></tr>
+      <tr><td>Abrir Coach IA</td><td class="before">2 taps (Plan → card)</td><td class="after">1 tap (ícone no header)</td></tr>
+      <tr><td>Abrir Definições</td><td class="before">3 taps (More → Settings → scroll)</td><td class="after">1 tap (ícone settings)</td></tr>
+      <tr><td>Completar onboarding</td><td class="before">11 ecrãs</td><td class="after">3 ecrãs</td></tr>
+      <tr><td>Adicionar despesa conhecida</td><td class="before">4-6 taps no sheet</td><td class="after">3 taps no sheet</td></tr>
+      <tr><td>Abrir Mercearia</td><td class="before">2 taps (Plan → card)</td><td class="after">2 taps (tab → sub-tab)</td></tr>
+      <tr><td>Abrir Refeições</td><td class="before">2 taps (Plan → card)</td><td class="after">2 taps (tab → sub-tab)</td></tr>
+      <tr><td>Ver Relatório Completo</td><td class="before">2 taps (More → Insights)</td><td class="after">2 taps (Dashboard → botão)</td></tr>
+      <tr><td>Encontrar setting específico</td><td class="before">Scroll + abrir accordion</td><td class="after">Grupo + tap direto</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div style="text-align:center;padding:40px 20px;color:#94a3b8;font-size:13px">
+  Planeia — UX Simplificado · 6 Fases · 13 Março 2026<br>
+  <strong>Coach e Command Chat permanecem 100% separados</strong> — produtos distintos com modelos de negócio diferentes
+</div>
+
+</body>
+</html>
