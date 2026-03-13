@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2026.3.21 - 2026-03-13
+
+### Features
+
+- Complete UX simplification — restructure navigation (4→3 tabs), simplify dashboard (focused mode), flatten add expense flow, add onboarding wizard, streamline settings and meal planner #450
+
+### Infrastructure
+
+- Disable tests and analysis in all CI pipelines temporarily #448
+- Fix release-tag workflow — add workflow_dispatch trigger #442
+
 ## v2026.3.20 - 2026-03-12
 
 
