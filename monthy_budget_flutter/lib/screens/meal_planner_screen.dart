@@ -36,6 +36,7 @@ class MealPlannerScreen extends StatefulWidget {
   final PurchaseHistory purchaseHistory;
   final bool showTour;
   final VoidCallback? onTourComplete;
+  final bool embedded;
 
   const MealPlannerScreen({
     super.key,
@@ -49,6 +50,7 @@ class MealPlannerScreen extends StatefulWidget {
     required this.purchaseHistory,
     this.showTour = false,
     this.onTourComplete,
+    this.embedded = false,
   });
 
   @override
@@ -786,6 +788,14 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       );
     }
     final l10n = S.of(context);
+    final bodyContent = !_catalogReady
+        ? Center(child: CircularProgressIndicator(color: AppColors.primary(context)))
+        : _plan == null
+            ? _buildEmptyState()
+            : _buildPlanView();
+
+    if (widget.embedded) return bodyContent;
+
     return Scaffold(
       backgroundColor: AppColors.background(context),
       appBar: AppBar(
@@ -814,11 +824,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           ),
         ],
       ),
-      body: !_catalogReady
-          ? Center(child: CircularProgressIndicator(color: AppColors.primary(context)))
-          : _plan == null
-              ? _buildEmptyState()
-              : _buildPlanView(),
+      body: bodyContent,
     );
   }
 

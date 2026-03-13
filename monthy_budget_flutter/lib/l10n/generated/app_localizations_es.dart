@@ -4532,6 +4532,12 @@ class SEs extends S {
   String get navPlanTip => 'Supermercado, lista y plan de comidas';
 
   @override
+  String get navPlanAndShop => 'Compras';
+
+  @override
+  String get navPlanAndShopTip => 'Lista de compras, supermercado y comidas';
+
+  @override
   String get navMore => 'Más';
 
   @override

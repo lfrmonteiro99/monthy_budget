@@ -8129,6 +8129,18 @@ abstract class S {
   /// **'Mercearia, lista e plano de refeições'**
   String get navPlanTip;
 
+  /// No description provided for @navPlanAndShop.
+  ///
+  /// In pt, this message translates to:
+  /// **'Compras'**
+  String get navPlanAndShop;
+
+  /// No description provided for @navPlanAndShopTip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista de compras, mercearia e refeições'**
+  String get navPlanAndShopTip;
+
   /// No description provided for @navMore.
   ///
   /// In pt, this message translates to:

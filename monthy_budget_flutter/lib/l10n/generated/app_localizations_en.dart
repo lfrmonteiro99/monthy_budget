@@ -4500,6 +4500,12 @@ class SEn extends S {
   String get navPlanTip => 'Groceries, list and meal plan';
 
   @override
+  String get navPlanAndShop => 'Shop';
+
+  @override
+  String get navPlanAndShopTip => 'Shopping list, grocery and meals';
+
+  @override
   String get navMore => 'More';
 
   @override

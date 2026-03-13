@@ -26,6 +26,7 @@ class ShoppingListScreen extends StatefulWidget {
   final ValueChanged<ShoppingItem>? onAddToShoppingList;
   final BarcodeScanService? barcodeScanService;
   final ValueChanged<ShoppingItem>? onMarkAtHome;
+  final bool embedded;
 
   const ShoppingListScreen({
     super.key,
@@ -40,6 +41,7 @@ class ShoppingListScreen extends StatefulWidget {
     this.onAddToShoppingList,
     this.barcodeScanService,
     this.onMarkAtHome,
+    this.embedded = false,
   });
 
   @override
@@ -277,42 +279,41 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         widget.items.where((i) => !i.checked).fold(0.0, (s, i) => s + i.price);
 
     if (widget.items.isEmpty) {
-      return Scaffold(
-        backgroundColor: AppColors.background(context),
-        appBar: _buildAppBar(),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(32),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.shopping_basket_outlined,
-                    size: 56, color: AppColors.dragHandle(context)),
-                const SizedBox(height: 16),
-                Text(
-                  l10n.shoppingEmpty,
-                  style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textLabel(context)),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  l10n.shoppingEmptyMessage,
-                  style: TextStyle(fontSize: 14, color: AppColors.textMuted(context)),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
+      final emptyBody = Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.shopping_basket_outlined,
+                  size: 56, color: AppColors.dragHandle(context)),
+              const SizedBox(height: 16),
+              Text(
+                l10n.shoppingEmpty,
+                style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textLabel(context)),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.shoppingEmptyMessage,
+                style: TextStyle(fontSize: 14, color: AppColors.textMuted(context)),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
       );
+      if (widget.embedded) return emptyBody;
+      return Scaffold(
+        backgroundColor: AppColors.background(context),
+        appBar: _buildAppBar(),
+        body: emptyBody,
+      );
     }
 
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
-      appBar: _buildAppBar(),
-      body: Column(
+    final body = Column(
         children: [
           if (_availableModes.length > 1)
             ShoppingGroupToggle(
@@ -358,7 +359,35 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             child: _buildListBody(l10n),
           ),
         ],
-      ),
+      );
+
+    if (widget.embedded) {
+      return Stack(
+        children: [
+          body,
+          if (hasChecked)
+            Positioned(
+              bottom: 16,
+              right: 16,
+              child: FloatingActionButton.extended(
+                key: ShoppingTourKeys.finalizeButton,
+                onPressed: _showFinalizeSheet,
+                backgroundColor: AppColors.success(context),
+                icon: Icon(Icons.check_circle_outline, color: AppColors.onPrimary(context)),
+                label: Text(
+                  l10n.shoppingFinalize,
+                  style: TextStyle(color: AppColors.onPrimary(context), fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
+        ],
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: AppColors.background(context),
+      appBar: _buildAppBar(),
+      body: body,
       floatingActionButton: hasChecked
           ? FloatingActionButton.extended(
               key: ShoppingTourKeys.finalizeButton,
