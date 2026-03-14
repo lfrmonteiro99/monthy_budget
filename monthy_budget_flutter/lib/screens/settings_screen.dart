@@ -148,6 +148,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       'salaries': (l10n.settingsSalariesSection, _buildSalariesSection),
       'expenses': (l10n.settingsExpensesMonthly, _buildExpensesSection),
       'categories': (l10n.customCategories, _buildCategoriesSection),
+      'categories': (l10n.customCategories, _buildCategoriesSection),
       'meals': (l10n.settingsMeals, _buildMealsSection),
       'favorites': (l10n.settingsFavorites, _buildFavoritesSection),
       'appearance': (l10n.settingsAppearance, _buildAppearanceSection),
@@ -1407,6 +1408,160 @@ class _SettingsScreenState extends State<SettingsScreen> {
         },
       ),
     );
+  }
+
+  Widget _buildCategoriesSection() {
+    final l10n = S.of(context);
+    return Container(
+      color: AppColors.surface(context),
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (_customCategoriesDraft.isEmpty)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 32),
+                child: Column(
+                  children: [
+                    Icon(Icons.category, size: 48, color: AppColors.dragHandle(context)),
+                    const SizedBox(height: 16),
+                    Text(
+                      l10n.customCategoryEmpty,
+                      style: TextStyle(
+                        color: AppColors.textMuted(context),
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            ..._customCategoriesDraft.map((cat) => Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.border(context)),
+              ),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: cat.colorHex != null
+                        ? Color(int.parse('FF${cat.colorHex!.replaceAll('#', '')}', radix: 16))
+                            .withOpacity(0.15)
+                        : AppColors.primaryLight(context),
+                    child: Icon(
+                      getCategoryIcon(cat.iconName),
+                      size: 20,
+                      color: cat.colorHex != null
+                          ? Color(int.parse('FF${cat.colorHex!.replaceAll('#', '')}', radix: 16))
+                          : AppColors.primary(context),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      cat.name,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary(context),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.edit, size: 20, color: AppColors.textSecondary(context)),
+                    onPressed: () => _showCategoryEditor(cat),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete_outline, size: 20, color: AppColors.error(context)),
+                    onPressed: () => _deleteCustomCategory(cat),
+                  ),
+                ],
+              ),
+            )),
+          const SizedBox(height: 16),
+          Center(
+            child: OutlinedButton.icon(
+              onPressed: () => _showCategoryEditor(null),
+              icon: const Icon(Icons.add, size: 18),
+              label: Text(l10n.customCategoryAdd),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.primary(context),
+                side: BorderSide(color: AppColors.primary(context)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _showCategoryEditor(CustomCategory? existing) async {
+    final result = await showModalBottomSheet<CustomCategory>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _EditCustomCategorySheet(existing: existing),
+    );
+    if (result == null || !mounted) return;
+
+    await _categoryService.save(result, widget.householdId);
+    if (!mounted) return;
+
+    setState(() {
+      if (existing != null) {
+        _customCategoriesDraft = _customCategoriesDraft
+            .map((c) => c.id == result.id ? result : c)
+            .toList();
+      } else {
+        _customCategoriesDraft = [..._customCategoriesDraft, result];
+      }
+    });
+    widget.onCustomCategoriesChanged?.call(_customCategoriesDraft);
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(S.of(context).customCategorySaved)),
+      );
+    }
+  }
+
+  Future<void> _deleteCustomCategory(CustomCategory cat) async {
+    final l10n = S.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(l10n.customCategoryDelete),
+        content: Text(l10n.customCategoryDeleteConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.delete,
+                style: TextStyle(color: AppColors.error(context))),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    await _categoryService.delete(cat.id);
+    if (!mounted) return;
+
+    setState(() {
+      _customCategoriesDraft =
+          _customCategoriesDraft.where((c) => c.id != cat.id).toList();
+    });
+    widget.onCustomCategoriesChanged?.call(_customCategoriesDraft);
   }
 
   Widget _buildCategoriesSection() {
@@ -4012,6 +4167,240 @@ class _EditCustomCategorySheetState extends State<_EditCustomCategorySheet> {
               const SizedBox(height: 24),
 
               // Save button
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: _save,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary(context),
+                    foregroundColor: AppColors.onPrimary(context),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    elevation: 0,
+                  ),
+                  child: Text(
+                    l10n.save,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _EditCustomCategorySheet extends StatefulWidget {
+  final CustomCategory? existing;
+  const _EditCustomCategorySheet({this.existing});
+
+  @override
+  State<_EditCustomCategorySheet> createState() =>
+      _EditCustomCategorySheetState();
+}
+
+class _EditCustomCategorySheetState extends State<_EditCustomCategorySheet> {
+  final _nameController = TextEditingController();
+  String? _selectedIcon;
+  String? _selectedColorHex;
+  final _formKey = GlobalKey<FormState>();
+
+  static const _colorOptions = <String>[
+    '4CAF50', 'F44336', '2196F3', 'FF9800', '9C27B0',
+    'E91E63', '00BCD4', '795548', '607D8B', 'FFEB3B',
+    '8BC34A', '03A9F4', 'FF5722', '673AB7', '009688',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.existing != null) {
+      _nameController.text = widget.existing!.name;
+      _selectedIcon = widget.existing!.iconName;
+      _selectedColorHex = widget.existing!.colorHex;
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  void _save() {
+    if (!_formKey.currentState!.validate()) return;
+    final name = _nameController.text.trim();
+    if (name.isEmpty) return;
+
+    final result = CustomCategory(
+      id: widget.existing?.id ??
+          'cat_${DateTime.now().millisecondsSinceEpoch}',
+      name: name,
+      iconName: _selectedIcon,
+      colorHex: _selectedColorHex,
+      sortOrder: widget.existing?.sortOrder ?? 0,
+    );
+    Navigator.of(context).pop(result);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = S.of(context);
+    final isEdit = widget.existing != null;
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.7,
+      minChildSize: 0.5,
+      maxChildSize: 0.95,
+      builder: (_, scrollController) => Container(
+        decoration: BoxDecoration(
+          color: AppColors.surface(context),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            controller: scrollController,
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.dragHandle(context),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                isEdit ? l10n.customCategoryEdit : l10n.customCategoryAdd,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary(context),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                l10n.customCategoryName,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textSecondary(context),
+                  letterSpacing: 0.8,
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _nameController,
+                autofocus: !isEdit,
+                decoration: InputDecoration(
+                  hintText: l10n.customCategoryName,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 12),
+                ),
+                textCapitalization: TextCapitalization.sentences,
+                validator: (v) {
+                  if (v == null || v.trim().isEmpty) {
+                    return l10n.customCategoryName;
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              Text(
+                l10n.customCategoryIcon,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textSecondary(context),
+                  letterSpacing: 0.8,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: categoryIconMap.entries.map((entry) {
+                  final selected = _selectedIcon == entry.key;
+                  return GestureDetector(
+                    onTap: () => setState(() => _selectedIcon = entry.key),
+                    child: Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: selected
+                            ? AppColors.primaryLight(context)
+                            : AppColors.background(context),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: selected
+                              ? AppColors.primary(context)
+                              : AppColors.border(context),
+                          width: selected ? 2 : 1,
+                        ),
+                      ),
+                      child: Icon(
+                        entry.value,
+                        size: 22,
+                        color: selected
+                            ? AppColors.primary(context)
+                            : AppColors.textSecondary(context),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                l10n.customCategoryColor,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textSecondary(context),
+                  letterSpacing: 0.8,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _colorOptions.map((hex) {
+                  final color = Color(int.parse('FF$hex', radix: 16));
+                  final selected = _selectedColorHex == hex;
+                  return GestureDetector(
+                    onTap: () => setState(() => _selectedColorHex = hex),
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: color,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: selected ? Colors.white : Colors.transparent,
+                          width: 3,
+                        ),
+                        boxShadow: selected
+                            ? [BoxShadow(color: color.withOpacity(0.5), blurRadius: 8)]
+                            : null,
+                      ),
+                      child: selected
+                          ? const Icon(Icons.check, color: Colors.white, size: 20)
+                          : null,
+                    ),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
                 height: 48,

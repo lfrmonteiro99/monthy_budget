@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import 'app_settings.dart';
 
 class ActualExpense {
@@ -9,6 +11,10 @@ class ActualExpense {
   final String monthKey;
   final String? recurringExpenseId;
   final bool isFromRecurring;
+  final double? locationLat;
+  final double? locationLng;
+  final String? locationAddress;
+  final List<String>? attachmentUrls;
 
   ActualExpense({
     required this.id,
@@ -19,6 +25,10 @@ class ActualExpense {
     required this.monthKey,
     this.recurringExpenseId,
     this.isFromRecurring = false,
+    this.locationLat,
+    this.locationLng,
+    this.locationAddress,
+    this.attachmentUrls,
   }) : assert(amount >= 0, 'amount must be non-negative');
 
   @override
@@ -32,12 +42,18 @@ class ActualExpense {
           description == other.description &&
           monthKey == other.monthKey &&
           recurringExpenseId == other.recurringExpenseId &&
-          isFromRecurring == other.isFromRecurring;
+          isFromRecurring == other.isFromRecurring &&
+          locationLat == other.locationLat &&
+          locationLng == other.locationLng &&
+          locationAddress == other.locationAddress &&
+          listEquals(attachmentUrls, other.attachmentUrls);
 
   @override
   int get hashCode => Object.hash(
         id, category, amount, date, description,
         monthKey, recurringExpenseId, isFromRecurring,
+        locationLat, locationLng, locationAddress,
+        attachmentUrls != null ? Object.hashAll(attachmentUrls!) : null,
       );
 
   factory ActualExpense.create({
@@ -47,6 +63,10 @@ class ActualExpense {
     String? description,
     String? recurringExpenseId,
     bool isFromRecurring = false,
+    double? locationLat,
+    double? locationLng,
+    String? locationAddress,
+    List<String>? attachmentUrls,
   }) {
     final monthKey =
         '${date.year}-${date.month.toString().padLeft(2, '0')}';
@@ -59,6 +79,10 @@ class ActualExpense {
       monthKey: monthKey,
       recurringExpenseId: recurringExpenseId,
       isFromRecurring: isFromRecurring,
+      locationLat: locationLat,
+      locationLng: locationLng,
+      locationAddress: locationAddress,
+      attachmentUrls: attachmentUrls,
     );
   }
 
@@ -71,6 +95,10 @@ class ActualExpense {
     String? monthKey,
     String? recurringExpenseId,
     bool? isFromRecurring,
+    double? locationLat,
+    double? locationLng,
+    String? locationAddress,
+    List<String>? attachmentUrls,
   }) {
     final newDate = date ?? this.date;
     final newMonthKey = date != null
@@ -85,6 +113,10 @@ class ActualExpense {
       monthKey: newMonthKey,
       recurringExpenseId: recurringExpenseId ?? this.recurringExpenseId,
       isFromRecurring: isFromRecurring ?? this.isFromRecurring,
+      locationLat: locationLat ?? this.locationLat,
+      locationLng: locationLng ?? this.locationLng,
+      locationAddress: locationAddress ?? this.locationAddress,
+      attachmentUrls: attachmentUrls ?? this.attachmentUrls,
     );
   }
 
@@ -99,6 +131,10 @@ class ActualExpense {
       monthKey: map['month_key'] as String,
       recurringExpenseId: map['recurring_expense_id'] as String?,
       isFromRecurring: map['is_from_recurring'] as bool? ?? false,
+      locationLat: (map['location_lat'] as num?)?.toDouble(),
+      locationLng: (map['location_lng'] as num?)?.toDouble(),
+      locationAddress: map['location_address'] as String?,
+      attachmentUrls: (map['attachment_urls'] as List<dynamic>?)?.cast<String>(),
     );
   }
 
@@ -118,6 +154,12 @@ class ActualExpense {
     }
     if (isFromRecurring) {
       map['is_from_recurring'] = isFromRecurring;
+    }
+    if (locationLat != null) map['location_lat'] = locationLat;
+    if (locationLng != null) map['location_lng'] = locationLng;
+    if (locationAddress != null) map['location_address'] = locationAddress;
+    if (attachmentUrls != null && attachmentUrls!.isNotEmpty) {
+      map['attachment_urls'] = attachmentUrls;
     }
     return map;
   }

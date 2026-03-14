@@ -8524,6 +8524,39 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Gráfico de tendências de despesas mostrando orçamento versus gastos reais'**
   String get expenseTrendsChartLabel;
+
+  /// Custom categories section title
+  String get customCategories;
+
+  /// Add custom category button
+  String get customCategoryAdd;
+
+  /// Edit custom category title
+  String get customCategoryEdit;
+
+  /// Delete custom category title
+  String get customCategoryDelete;
+
+  /// Delete custom category confirmation
+  String get customCategoryDeleteConfirm;
+
+  /// Category name field label
+  String get customCategoryName;
+
+  /// Category icon field label
+  String get customCategoryIcon;
+
+  /// Category color field label
+  String get customCategoryColor;
+
+  /// Empty state for custom categories
+  String get customCategoryEmpty;
+
+  /// Category saved snackbar message
+  String get customCategorySaved;
+
+  /// Category in use error message
+  String get customCategoryInUse;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
