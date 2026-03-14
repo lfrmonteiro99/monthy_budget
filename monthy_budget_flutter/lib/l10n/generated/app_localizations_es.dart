@@ -4796,6 +4796,13 @@ class SEs extends S {
   String get customCategoryInUse => 'Categoría en uso, no se puede eliminar';
 
   @override
+  String get customCategoryPredefinedHint =>
+      'Categorías predefinidas usadas en toda la aplicación';
+
+  @override
+  String get customCategoryDefault => 'Predefinida';
+
+  @override
   String get expenseLocationPermissionDenied => 'Permiso de ubicación denegado';
 
   @override

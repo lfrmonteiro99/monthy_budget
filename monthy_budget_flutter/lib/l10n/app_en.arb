@@ -2583,6 +2583,8 @@
     "customCategoryEmpty": "No custom categories",
     "customCategorySaved": "Category saved",
     "customCategoryInUse": "Category in use, cannot delete",
+    "customCategoryPredefinedHint": "Built-in categories used across the app",
+    "customCategoryDefault": "Default",
     "expenseLocationPermissionDenied": "Location permission denied",
     "expenseAttachPhoto": "Attach Photo",
     "expenseAttachCamera": "Camera",

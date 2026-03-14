@@ -2532,6 +2532,8 @@
     "customCategoryEmpty": "Sin categorías personalizadas",
     "customCategorySaved": "Categoría guardada",
     "customCategoryInUse": "Categoría en uso, no se puede eliminar",
+    "customCategoryPredefinedHint": "Categorías predefinidas usadas en toda la aplicación",
+    "customCategoryDefault": "Predefinida",
     "expenseLocationPermissionDenied": "Permiso de ubicación denegado",
     "expenseAttachPhoto": "Adjuntar Foto",
     "expenseAttachCamera": "Cámara",
