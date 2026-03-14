@@ -7,6 +7,7 @@ import '../models/app_settings.dart';
 import '../models/actual_expense.dart';
 import '../models/custom_category.dart';
 import '../theme/app_colors.dart';
+import '../utils/category_helpers.dart';
 import '../utils/formatters.dart';
 import '../widgets/add_expense_sheet.dart';
 import '../widgets/export_bottom_sheet.dart';
@@ -204,35 +205,6 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
     }
   }
 
-  IconData _categoryIcon(String catName) {
-    try {
-      final cat = ExpenseCategory.values.firstWhere((c) => c.name == catName);
-      switch (cat) {
-        case ExpenseCategory.telecomunicacoes:
-          return Icons.phone;
-        case ExpenseCategory.energia:
-          return Icons.bolt;
-        case ExpenseCategory.agua:
-          return Icons.water_drop;
-        case ExpenseCategory.alimentacao:
-          return Icons.restaurant;
-        case ExpenseCategory.educacao:
-          return Icons.school;
-        case ExpenseCategory.habitacao:
-          return Icons.home;
-        case ExpenseCategory.transportes:
-          return Icons.directions_car;
-        case ExpenseCategory.saude:
-          return Icons.local_hospital;
-        case ExpenseCategory.lazer:
-          return Icons.sports_esports;
-        case ExpenseCategory.outros:
-          return Icons.more_horiz;
-      }
-    } catch (_) {
-      return Icons.label_outline;
-    }
-  }
 
   String _monthLabel(S l10n) {
     final monthNames = [
@@ -603,7 +575,8 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                               .where(
                                   (e) => e.category == summaries[i].category)
                               .toList(),
-                          icon: _categoryIcon(summaries[i].category),
+                          icon: categoryIconByName(summaries[i].category),
+                          categoryColor: categoryColorByNameFull(summaries[i].category),
                           label:
                               _localizedCategory(summaries[i].category, l10n),
                           onEdit: _editExpense,
@@ -726,7 +699,8 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                               expense: expense,
                               categoryLabel: _localizedCategory(
                                   expense.category, l10n),
-                              categoryIcon: _categoryIcon(expense.category),
+                              categoryIcon: categoryIconByName(expense.category),
+                              categoryColor: categoryColorByNameFull(expense.category),
                             );
                           },
                         ),
@@ -826,11 +800,13 @@ class _SearchResultTile extends StatelessWidget {
   final ActualExpense expense;
   final String categoryLabel;
   final IconData categoryIcon;
+  final Color categoryColor;
 
   const _SearchResultTile({
     required this.expense,
     required this.categoryLabel,
     required this.categoryIcon,
+    required this.categoryColor,
   });
 
   @override
@@ -842,8 +818,11 @@ class _SearchResultTile extends StatelessWidget {
       child: ListTile(
         dense: true,
         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-        leading: Icon(categoryIcon, size: 20,
-            color: AppColors.textSecondary(context)),
+        leading: CircleAvatar(
+          radius: 16,
+          backgroundColor: categoryColor.withValues(alpha: 0.15),
+          child: Icon(categoryIcon, size: 16, color: categoryColor),
+        ),
         title: Row(
           children: [
             Expanded(
@@ -914,6 +893,7 @@ class _CategorySection extends StatelessWidget {
   final CategoryBudgetSummary summary;
   final List<ActualExpense> expenses;
   final IconData icon;
+  final Color categoryColor;
   final String label;
   final Future<void> Function(ActualExpense) onEdit;
   final Future<void> Function(ActualExpense) onDelete;
@@ -923,6 +903,7 @@ class _CategorySection extends StatelessWidget {
     required this.summary,
     required this.expenses,
     required this.icon,
+    required this.categoryColor,
     required this.label,
     required this.onEdit,
     required this.onDelete,
@@ -945,7 +926,11 @@ class _CategorySection extends StatelessWidget {
         border: Border.all(color: AppColors.border(context)),
       ),
       child: ExpansionTile(
-        leading: Icon(icon, size: 20, color: AppColors.textSecondary(context)),
+        leading: CircleAvatar(
+          radius: 18,
+          backgroundColor: categoryColor.withValues(alpha: 0.15),
+          child: Icon(icon, size: 18, color: categoryColor),
+        ),
         title: Row(
           children: [
             Expanded(

@@ -84,6 +84,16 @@ create table household_invites (
   expires_at   timestamptz default (now() + interval '7 days')
 );
 
+create table custom_categories (
+  id           text primary key,
+  household_id uuid not null references households(id) on delete cascade,
+  name         text not null,
+  icon_name    text,
+  color_hex    text,
+  sort_order   int not null default 0,
+  created_at   timestamptz default now()
+);
+
 -- ─── RLS ─────────────────────────────────────────────────
 
 alter table households          enable row level security;
@@ -94,6 +104,7 @@ alter table purchase_records    enable row level security;
 alter table household_favorites enable row level security;
 alter table meal_plans          enable row level security;
 alter table household_invites   enable row level security;
+alter table custom_categories   enable row level security;
 
 -- Helper: caller's household_id
 create or replace function my_household_id()
@@ -145,6 +156,12 @@ create policy "write plans" on meal_plans for all   using (household_id = my_hou
 -- household_invites (admin creates, household reads)
 create policy "read invites"        on household_invites for select using (household_id = my_household_id());
 create policy "create invite admin" on household_invites for insert with check (household_id = my_household_id() and my_role() = 'admin');
+
+-- custom_categories (all members)
+create policy "read categories"  on custom_categories for select using (household_id = my_household_id());
+create policy "insert categories" on custom_categories for insert with check (household_id = my_household_id());
+create policy "update categories" on custom_categories for update using (household_id = my_household_id());
+create policy "delete categories" on custom_categories for delete using (household_id = my_household_id());
 
 -- ─── Expense Snapshots ──────────────────────────────────────
 create table expense_snapshots (

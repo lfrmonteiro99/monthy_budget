@@ -356,6 +356,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
             label: cat.localizedLabel(l10n),
             categoryKey: cat.name,
             icon: _categoryIcon(cat),
+            color: AppColors.categoryColor(cat),
           )),
       ...widget.customCategories.map((cat) => _CategoryChoice(
             label: cat.name,
