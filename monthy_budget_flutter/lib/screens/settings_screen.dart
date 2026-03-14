@@ -6,6 +6,7 @@ import '../models/recurring_expense.dart';
 import '../models/custom_category.dart';
 import '../models/budget_category_view.dart';
 import '../services/category_service.dart';
+import '../utils/category_helpers.dart';
 import '../utils/category_icons.dart';
 import '../utils/budget_category_builder.dart';
 import '../data/irs_tables.dart';
@@ -1201,12 +1202,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: DropdownButtonHideUnderline(
-                                child: DropdownButton<ExpenseCategory>(
+                                child: DropdownButton<String>(
                                   value: expense.category,
                                   isExpanded: true,
                                   style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
                                   items: ExpenseCategory.values
-                                      .map((c) => DropdownMenuItem(value: c, child: Text(c.localizedLabel(l10n))))
+                                      .map((c) => DropdownMenuItem(value: c.name, child: Text(c.localizedLabel(l10n))))
                                       .toList(),
                                   onChanged: (v) {
                                     if (v != null) {
@@ -1229,7 +1230,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode, helperText: l10n.helperExpenseAmount),
                         ),
                       ),
-                      if (_monthlyBudgetsDraft.containsKey(expense.category.name)) ...[
+                      if (_monthlyBudgetsDraft.containsKey(expense.category)) ...[
                         const SizedBox(height: 4),
                         Row(
                           children: [
@@ -1238,12 +1239,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             Expanded(
                               child: Text(
                                 l10n.expenseOverrideActive(_currentMonthLabel(l10n),
-                                  _monthlyBudgetsDraft[expense.category.name]!.toStringAsFixed(2)),
+                                  _monthlyBudgetsDraft[expense.category]!.toStringAsFixed(2)),
                                 style: TextStyle(fontSize: 11, color: AppColors.primary(context)),
                               ),
                             ),
                             GestureDetector(
-                              onTap: () => setState(() => _monthlyBudgetsDraft.remove(expense.category.name)),
+                              onTap: () => setState(() => _monthlyBudgetsDraft.remove(expense.category)),
                               child: Icon(Icons.close, size: 14, color: AppColors.textMuted(context)),
                             ),
                           ],
@@ -1278,7 +1279,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildRecurringPaymentToggle(ExpenseItem expense, S l10n) {
-    final categoryName = expense.category.name;
+    final categoryName = expense.category;
     final existingRecurring = _recurringDraft.where(
       (r) => r.category == categoryName,
     ).toList();
@@ -1390,7 +1391,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         currencyCode: _draft.country.currencyCode,
         householdId: widget.householdId,
         inputDecoration: _inputDecoration,
-        initialMonthlyOverride: _monthlyBudgetsDraft[expense.category.name],
+        initialMonthlyOverride: _monthlyBudgetsDraft[expense.category],
         onMonthlyBudgetChanged: (category, amount) {
           setState(() {
             if (amount != null) {
@@ -1403,7 +1404,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         onBillsChanged: (updatedBills) {
           setState(() {
             // Remove old bills for this category, add updated ones
-            final catName = expense.category.name;
+            final catName = expense.category;
             _recurringDraft = [
               ..._recurringDraft.where((b) => b.category != catName),
               ...updatedBills,
@@ -3285,7 +3286,7 @@ class _CategoryDetailSheetState extends State<_CategoryDetailSheet> {
       backgroundColor: Colors.transparent,
       builder: (_) => _BillFormSheet(
         existing: existing,
-        categoryName: widget.expense.category.name,
+        categoryName: widget.expense.category,
       ),
     );
   }
@@ -3325,7 +3326,7 @@ class _CategoryDetailSheetState extends State<_CategoryDetailSheet> {
                   child: Text(
                     widget.expense.label.isNotEmpty
                         ? widget.expense.label
-                        : widget.expense.category.localizedLabel(l10n),
+                        : localizedCategoryLabel(widget.expense.category, l10n),
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
@@ -3364,7 +3365,7 @@ class _CategoryDetailSheetState extends State<_CategoryDetailSheet> {
                   Icon(Icons.category, size: 16, color: AppColors.textMuted(context)),
                   const SizedBox(width: 8),
                   Text(
-                    widget.expense.category.localizedLabel(l10n),
+                    localizedCategoryLabel(widget.expense.category, l10n),
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -3424,7 +3425,7 @@ class _CategoryDetailSheetState extends State<_CategoryDetailSheet> {
                   _monthlyOverride = amount != null && amount > 0 ? amount : null;
                 });
                 widget.onMonthlyBudgetChanged(
-                  widget.expense.category.name,
+                  widget.expense.category,
                   amount != null && amount > 0 ? amount : null,
                 );
               },
@@ -3510,7 +3511,7 @@ class _CategoryDetailSheetState extends State<_CategoryDetailSheet> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            bill.description ?? widget.expense.category.localizedLabel(l10n),
+                            bill.description ?? localizedCategoryLabel(widget.expense.category, l10n),
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w600,

@@ -43,13 +43,13 @@ void main() {
             id: 'food',
             label: 'Food',
             amount: 260,
-            category: ExpenseCategory.alimentacao,
+            category: 'alimentacao',
           ),
           ExpenseItem(
             id: 'rent',
             label: 'Rent',
             amount: 700,
-            category: ExpenseCategory.habitacao,
+            category: 'habitacao',
           ),
         ],
         purchaseHistory: PurchaseHistory(

@@ -19,7 +19,7 @@ void main() {
           id: 'food',
           label: 'Alimentação',
           amount: 400,
-          category: ExpenseCategory.alimentacao,
+          category: 'alimentacao',
           enabled: true,
         ),
       ],

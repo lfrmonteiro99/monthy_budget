@@ -163,16 +163,16 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
     }
   }
 
-  ExpenseCategory _expenseCategory(String key) {
+  String _expenseCategory(String key) {
     switch (key) {
-      case 'rent': return ExpenseCategory.habitacao;
-      case 'groceries': return ExpenseCategory.alimentacao;
-      case 'transport': return ExpenseCategory.transportes;
-      case 'utilities': return ExpenseCategory.energia;
-      case 'telecom': return ExpenseCategory.telecomunicacoes;
-      case 'health': return ExpenseCategory.saude;
-      case 'leisure': return ExpenseCategory.lazer;
-      default: return ExpenseCategory.outros;
+      case 'rent': return 'habitacao';
+      case 'groceries': return 'alimentacao';
+      case 'transport': return 'transportes';
+      case 'utilities': return 'energia';
+      case 'telecom': return 'telecomunicacoes';
+      case 'health': return 'saude';
+      case 'leisure': return 'lazer';
+      default: return 'outros';
     }
   }
 

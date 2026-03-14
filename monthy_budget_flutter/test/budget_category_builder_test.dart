@@ -10,12 +10,12 @@ void main() {
         const [
           ExpenseItem(
             id: 'food',
-            category: ExpenseCategory.alimentacao,
+            category: 'alimentacao',
             amount: 300,
           ),
           ExpenseItem(
             id: 'home',
-            category: ExpenseCategory.habitacao,
+            category: 'habitacao',
             amount: 700,
           ),
         ],
@@ -36,10 +36,10 @@ void main() {
       );
 
       final food = views.firstWhere(
-        (v) => v.budgetItem.category == ExpenseCategory.alimentacao,
+        (v) => v.budgetItem.category == 'alimentacao',
       );
       final home = views.firstWhere(
-        (v) => v.budgetItem.category == ExpenseCategory.habitacao,
+        (v) => v.budgetItem.category == 'habitacao',
       );
 
       expect(food.recurringBills.length, 1);
@@ -53,7 +53,7 @@ void main() {
         const [
           ExpenseItem(
             id: 'other',
-            category: ExpenseCategory.outros,
+            category: 'outros',
             amount: 100,
           ),
         ],
@@ -68,7 +68,7 @@ void main() {
       );
 
       final outros =
-          views.firstWhere((v) => v.budgetItem.category == ExpenseCategory.outros);
+          views.firstWhere((v) => v.budgetItem.category == 'outros');
       expect(outros.recurringBills.length, 1);
       expect(outros.hasRecurringBills, isTrue);
     });
@@ -78,7 +78,7 @@ void main() {
         const [
           ExpenseItem(
             id: 'food',
-            category: ExpenseCategory.alimentacao,
+            category: 'alimentacao',
             amount: 300,
           ),
         ],

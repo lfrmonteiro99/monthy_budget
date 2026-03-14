@@ -8,6 +8,7 @@ import '../models/app_settings.dart';
 import '../models/budget_summary.dart';
 import '../models/coach_insight.dart';
 import '../models/purchase_record.dart';
+import '../utils/category_helpers.dart';
 import '../utils/stress_index.dart';
 import 'revenuecat_service.dart';
 import '../models/subscription_state.dart';
@@ -269,7 +270,7 @@ class AiCoachService {
         .toList()
       ..sort((a, b) => b.amount.compareTo(a.amount));
     final topExpensesText = topExpenses
-        .map((e) => '- ${e.category.label}: ${e.amount.toStringAsFixed(2)} EUR')
+        .map((e) => '- ${categoryLabel(e.category)}: ${e.amount.toStringAsFixed(2)} EUR')
         .join('\n');
 
     // Transaction limit scales with mode
@@ -629,7 +630,7 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
     // ── Fixed expenses ────────────────────────────────────────────────────────
     final expByCategory = <String, double>{};
     for (final e in settings.expenses.where((e) => e.enabled && e.amount > 0)) {
-      expByCategory.update(e.category.label, (v) => v + e.amount, ifAbsent: () => e.amount);
+      expByCategory.update(categoryLabel(e.category), (v) => v + e.amount, ifAbsent: () => e.amount);
     }
     if (expByCategory.isNotEmpty) {
       final net = summary.totalNetWithMeal;
@@ -646,7 +647,7 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
 
     // ── Food / purchase history ───────────────────────────────────────────────
     final foodBudget = settings.expenses
-        .where((e) => e.category == ExpenseCategory.alimentacao && e.enabled)
+        .where((e) => e.category == 'alimentacao' && e.enabled)
         .fold(0.0, (s, e) => s + e.amount);
     final foodSpent = purchaseHistory.spentInMonth(now.year, now.month);
     final monthRecords = purchaseHistory.records
@@ -718,7 +719,7 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
     );
     final now = DateTime.now();
     final foodBudget = settings.expenses
-        .where((e) => e.category == ExpenseCategory.alimentacao && e.enabled)
+        .where((e) => e.category == 'alimentacao' && e.enabled)
         .fold(0.0, (s, e) => s + e.amount);
     final foodSpent = purchaseHistory.spentInMonth(now.year, now.month);
     final fixedExpenseRatio = summary.totalNetWithMeal > 0

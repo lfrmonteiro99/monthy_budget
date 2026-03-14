@@ -21,7 +21,7 @@ AppSettings _settings({
         id: 'food',
         label: 'Alimentação',
         amount: foodBudget,
-        category: ExpenseCategory.alimentacao,
+        category: 'alimentacao',
       ),
     ],
     mealSettings: ms,

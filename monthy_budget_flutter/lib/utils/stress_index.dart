@@ -98,7 +98,7 @@ StressIndexResult calculateStressIndex({
 
   // Factor 3 — Food budget (20%)
   final foodBudget = settings.expenses
-      .where((e) => e.category == ExpenseCategory.alimentacao && e.enabled)
+      .where((e) => e.category == 'alimentacao' && e.enabled)
       .fold(0.0, (s, e) => s + e.amount);
   final foodSpent = purchaseHistory.spentInMonth(now.year, now.month);
   final hasFoodBudget = foodBudget > 0;

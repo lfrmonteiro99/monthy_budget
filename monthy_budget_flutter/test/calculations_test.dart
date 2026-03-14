@@ -57,14 +57,14 @@ void main() {
           ExpenseItem(
             id: 'rent',
             label: 'Rent',
-            category: ExpenseCategory.habitacao,
+            category: 'habitacao',
             amount: 700,
             isFixed: true,
           ),
           ExpenseItem(
             id: 'food',
             label: 'Food',
-            category: ExpenseCategory.alimentacao,
+            category: 'alimentacao',
             amount: 500,
             isFixed: false,
           ),
@@ -92,7 +92,7 @@ void main() {
           ExpenseItem(
             id: 'a',
             amount: 200,
-            category: ExpenseCategory.outros,
+            category: 'outros',
           ),
         ],
         getTaxSystem(Country.pt),

@@ -17,7 +17,7 @@ List<BudgetCategoryView> buildCategoryViews(
   final matchedCategories = <String>{};
 
   for (final item in expenses) {
-    final catName = item.category.name;
+    final catName = item.category;
     final bills = byCategory[catName] ?? [];
     matchedCategories.add(catName);
     views.add(BudgetCategoryView(
@@ -37,7 +37,7 @@ List<BudgetCategoryView> buildCategoryViews(
   if (orphans.isNotEmpty) {
     // Find existing "outros" view and append orphans
     final outrosIdx = views.indexWhere(
-      (v) => v.budgetItem.category == ExpenseCategory.outros,
+      (v) => v.budgetItem.category == 'outros',
     );
     if (outrosIdx >= 0) {
       final existing = views[outrosIdx];

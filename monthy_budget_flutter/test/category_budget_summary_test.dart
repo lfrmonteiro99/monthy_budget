@@ -9,7 +9,7 @@ void main() {
         const [
           ExpenseItem(
             id: 'food',
-            category: ExpenseCategory.alimentacao,
+            category: 'alimentacao',
             amount: 300,
           ),
         ],
@@ -57,7 +57,7 @@ void main() {
         const [
           ExpenseItem(
             id: 'var_food',
-            category: ExpenseCategory.alimentacao,
+            category: 'alimentacao',
             isFixed: false,
             amount: 999,
           ),

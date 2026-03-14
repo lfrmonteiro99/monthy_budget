@@ -105,20 +105,20 @@ void main() {
             id: 'food',
             label: 'Comida',
             amount: 200,
-            category: ExpenseCategory.alimentacao,
+            category: 'alimentacao',
           ),
           ExpenseItem(
             id: 'food2',
             label: 'Extra',
             amount: 50,
-            category: ExpenseCategory.alimentacao,
+            category: 'alimentacao',
             enabled: false,
           ),
           ExpenseItem(
             id: 'rent',
             label: 'Renda',
             amount: 700,
-            category: ExpenseCategory.habitacao,
+            category: 'habitacao',
           ),
         ],
       );
@@ -128,7 +128,7 @@ void main() {
     test('returns 0 when no alimentacao expenses exist', () {
       final settings = AppSettings(
         expenses: const [
-          ExpenseItem(id: 'rent', label: 'Renda', amount: 700, category: ExpenseCategory.habitacao),
+          ExpenseItem(id: 'rent', label: 'Renda', amount: 700, category: 'habitacao'),
         ],
       );
       expect(service.monthlyFoodBudget(settings), 0.0);
