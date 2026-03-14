@@ -3096,6 +3096,10 @@
         "description": "Label when no day set"
     },
     "recurringExpenseSaved": "Pagamento recorrente guardado",
+    "recurringPaymentToggle": "Pagamento recorrente",
+    "@recurringPaymentToggle": {
+        "description": "Toggle label for recurring payment per budget item"
+    },
     "@recurringExpenseSaved": {
         "description": "Snackbar on save"
     },
@@ -3107,8 +3111,8 @@
             }
         }
     },
-    "billsNone": "Sem contas",
-    "billsPerMonth": "{count} contas · {amount}/mês",
+    "billsNone": "Sem pagamentos recorrentes",
+    "billsPerMonth": "{count} pagamentos · {amount}/mês",
     "@billsPerMonth": {
         "placeholders": {
             "count": {
@@ -3127,9 +3131,9 @@
             }
         }
     },
-    "billsAddBill": "Adicionar Conta",
+    "billsAddBill": "Adicionar Pagamento Recorrente",
     "billsBudgetSettings": "Configuração do Orçamento",
-    "billsRecurringBills": "Contas Recorrentes",
+    "billsRecurringBills": "Pagamentos Recorrentes",
     "billsDescription": "Descrição",
     "billsAmount": "Montante",
     "billsDueDay": "Dia de vencimento",
@@ -3469,7 +3473,7 @@
     "@notificationPreferredTimeDesc": {
         "description": "Preferred notification time description"
     },
-    "notificationBillReminders": "Lembretes de contas",
+    "notificationBillReminders": "Lembretes de pagamentos",
     "@notificationBillReminders": {
         "description": "Bill reminders toggle"
     },
@@ -3550,7 +3554,7 @@
     "@notificationEmpty": {
         "description": "Empty custom reminders"
     },
-    "notificationBillTitle": "Conta a vencer: {name}",
+    "notificationBillTitle": "Pagamento a vencer: {name}",
     "@notificationBillTitle": {
         "description": "Bill notification title",
         "placeholders": {
@@ -3827,9 +3831,9 @@
     "taxDeductionNotDeductible": "Não dedutível",
     "taxDeductionDisclaimer": "Estes valores são estimativas baseadas nas despesas registadas. As deduções reais dependem das faturas registadas no e-Fatura. Consulte um profissional fiscal para valores definitivos.",
     "settingsDashTaxDeductions": "Deduções fiscais (PT)",
-    "settingsDashUpcomingBills": "Contas a pagar",
+    "settingsDashUpcomingBills": "Próximos pagamentos",
     "settingsDashBudgetStreaks": "Séries de orçamento",
-    "upcomingBillsTitle": "Contas a Pagar",
+    "upcomingBillsTitle": "Próximos Pagamentos",
     "upcomingBillsManage": "Gerir",
     "billDueToday": "Hoje",
     "billDueTomorrow": "Amanhã",
@@ -4889,5 +4893,28 @@
             "total": {"type": "int"}
         }
     },
-    "expenseTrendsChartLabel": "Gráfico de tendências de despesas mostrando orçamento versus gastos reais"
+    "expenseTrendsChartLabel": "Gráfico de tendências de despesas mostrando orçamento versus gastos reais",
+
+    "customCategories": "Categorias",
+    "@customCategories": {"description": "Custom categories section title"},
+    "customCategoryAdd": "Adicionar Categoria",
+    "@customCategoryAdd": {"description": "Add custom category button"},
+    "customCategoryEdit": "Editar Categoria",
+    "@customCategoryEdit": {"description": "Edit custom category title"},
+    "customCategoryDelete": "Eliminar Categoria",
+    "@customCategoryDelete": {"description": "Delete custom category title"},
+    "customCategoryDeleteConfirm": "Eliminar esta categoria?",
+    "@customCategoryDeleteConfirm": {"description": "Delete custom category confirmation"},
+    "customCategoryName": "Nome da categoria",
+    "@customCategoryName": {"description": "Category name field label"},
+    "customCategoryIcon": "Ícone",
+    "@customCategoryIcon": {"description": "Category icon field label"},
+    "customCategoryColor": "Cor",
+    "@customCategoryColor": {"description": "Category color field label"},
+    "customCategoryEmpty": "Sem categorias personalizadas",
+    "@customCategoryEmpty": {"description": "Empty state for custom categories"},
+    "customCategorySaved": "Categoria guardada",
+    "@customCategorySaved": {"description": "Category saved snackbar message"},
+    "customCategoryInUse": "Categoria em uso, não pode ser eliminada",
+    "@customCategoryInUse": {"description": "Category in use error message"}
 }

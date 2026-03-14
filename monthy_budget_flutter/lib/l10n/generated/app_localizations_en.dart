@@ -2326,13 +2326,13 @@ class SEn extends S {
   String get themeDark => 'Dark';
 
   @override
-  String get recurringExpenses => 'Monthly Bills';
+  String get recurringExpenses => 'Recurring Payments';
 
   @override
-  String get recurringExpenseAdd => 'Add Bill';
+  String get recurringExpenseAdd => 'Add Recurring Payment';
 
   @override
-  String get recurringExpenseEdit => 'Edit Bill';
+  String get recurringExpenseEdit => 'Edit Recurring Payment';
 
   @override
   String get recurringExpenseCategory => 'Category';
@@ -2354,23 +2354,23 @@ class SEn extends S {
 
   @override
   String get recurringExpenseEmpty =>
-      'No monthly bills.\nAdd one to auto-generate every month.';
+      'No recurring payments.\nAdd one to auto-generate every month.';
 
   @override
-  String get recurringExpenseDeleteConfirm => 'Delete this bill?';
+  String get recurringExpenseDeleteConfirm => 'Delete this recurring payment?';
 
   @override
   String get recurringExpenseAutoCreated => 'Auto-created';
 
   @override
-  String get recurringExpenseManage => 'Manage bills';
+  String get recurringExpenseManage => 'Manage recurring payments';
 
   @override
-  String get recurringExpenseMarkRecurring => 'Mark as monthly bill';
+  String get recurringExpenseMarkRecurring => 'Mark as recurring payment';
 
   @override
   String get recurringExpensePopulated =>
-      'Monthly bills generated for this month';
+      'Recurring payments generated for this month';
 
   @override
   String get recurringExpenseDayHint => 'E.g. 1 for the 1st';
@@ -2379,34 +2379,37 @@ class SEn extends S {
   String get recurringExpenseNoDay => 'No fixed day';
 
   @override
-  String get recurringExpenseSaved => 'Bill saved';
+  String get recurringExpenseSaved => 'Recurring payment saved';
+
+  @override
+  String get recurringPaymentToggle => 'Recurring payment';
 
   @override
   String billsCount(int count) {
-    return '$count bills';
+    return '$count payments';
   }
 
   @override
-  String get billsNone => 'No bills';
+  String get billsNone => 'No recurring payments';
 
   @override
   String billsPerMonth(int count, String amount) {
-    return '$count bills Â· $amount/mo';
+    return '$count payments Â· $amount/mo';
   }
 
   @override
   String billsExceedBudget(String amount) {
-    return 'Bills ($amount) exceed budget';
+    return 'Recurring payments ($amount) exceed budget';
   }
 
   @override
-  String get billsAddBill => 'Add Bill';
+  String get billsAddBill => 'Add Recurring Payment';
 
   @override
   String get billsBudgetSettings => 'Budget Settings';
 
   @override
-  String get billsRecurringBills => 'Recurring Bills';
+  String get billsRecurringBills => 'Recurring Payments';
 
   @override
   String get billsDescription => 'Description';
@@ -2661,7 +2664,7 @@ class SEn extends S {
   String get notificationPreferredTimeDesc => 'Scheduled notifications will use this time (except custom reminders)';
 
   @override
-  String get notificationBillReminders => 'Bill reminders';
+  String get notificationBillReminders => 'Payment reminders';
 
   @override
   String get notificationBillReminderDays => 'Days before due';
@@ -2722,7 +2725,7 @@ class SEn extends S {
 
   @override
   String notificationBillTitle(String name) {
-    return 'Bill due: $name';
+    return 'Payment due: $name';
   }
 
   @override
@@ -3107,13 +3110,13 @@ class SEn extends S {
   String get settingsDashTaxDeductions => 'Tax deductions (PT)';
 
   @override
-  String get settingsDashUpcomingBills => 'Upcoming bills';
+  String get settingsDashUpcomingBills => 'Upcoming payments';
 
   @override
   String get settingsDashBudgetStreaks => 'Budget streaks';
 
   @override
-  String get upcomingBillsTitle => 'Upcoming Bills';
+  String get upcomingBillsTitle => 'Upcoming Payments';
 
   @override
   String get upcomingBillsManage => 'Manage';
@@ -4723,4 +4726,37 @@ class SEn extends S {
   @override
   String get expenseTrendsChartLabel =>
       'Expense trends overview chart showing budgeted versus actual spending';
+
+  @override
+  String get customCategories => 'Categories';
+
+  @override
+  String get customCategoryAdd => 'Add Category';
+
+  @override
+  String get customCategoryEdit => 'Edit Category';
+
+  @override
+  String get customCategoryDelete => 'Delete Category';
+
+  @override
+  String get customCategoryDeleteConfirm => 'Delete this category?';
+
+  @override
+  String get customCategoryName => 'Category name';
+
+  @override
+  String get customCategoryIcon => 'Icon';
+
+  @override
+  String get customCategoryColor => 'Color';
+
+  @override
+  String get customCategoryEmpty => 'No custom categories';
+
+  @override
+  String get customCategorySaved => 'Category saved';
+
+  @override
+  String get customCategoryInUse => 'Category in use, cannot delete';
 }

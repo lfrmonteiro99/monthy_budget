@@ -2336,13 +2336,13 @@ class SEs extends S {
   String get themeDark => 'Oscuro';
 
   @override
-  String get recurringExpenses => 'Facturas Mensuales';
+  String get recurringExpenses => 'Pagos Recurrentes';
 
   @override
-  String get recurringExpenseAdd => 'Añadir Factura';
+  String get recurringExpenseAdd => 'Añadir Pago Recurrente';
 
   @override
-  String get recurringExpenseEdit => 'Editar Factura';
+  String get recurringExpenseEdit => 'Editar Pago Recurrente';
 
   @override
   String get recurringExpenseCategory => 'Categoría';
@@ -2364,23 +2364,23 @@ class SEs extends S {
 
   @override
   String get recurringExpenseEmpty =>
-      'Sin facturas mensuales.\nAñade una para generarla automáticamente cada mes.';
+      'Sin pagos recurrentes.\nAñade uno para generarlo automáticamente cada mes.';
 
   @override
-  String get recurringExpenseDeleteConfirm => '¿Eliminar esta factura?';
+  String get recurringExpenseDeleteConfirm => '¿Eliminar este pago recurrente?';
 
   @override
   String get recurringExpenseAutoCreated => 'Creado automáticamente';
 
   @override
-  String get recurringExpenseManage => 'Gestionar facturas';
+  String get recurringExpenseManage => 'Gestionar pagos recurrentes';
 
   @override
-  String get recurringExpenseMarkRecurring => 'Marcar como factura mensual';
+  String get recurringExpenseMarkRecurring => 'Marcar como pago recurrente';
 
   @override
   String get recurringExpensePopulated =>
-      'Facturas mensuales generadas para este mes';
+      'Pagos recurrentes generados para este mes';
 
   @override
   String get recurringExpenseDayHint => 'Ej: 1 para el día 1';
@@ -2389,34 +2389,37 @@ class SEs extends S {
   String get recurringExpenseNoDay => 'Sin día fijo';
 
   @override
-  String get recurringExpenseSaved => 'Factura guardada';
+  String get recurringExpenseSaved => 'Pago recurrente guardado';
+
+  @override
+  String get recurringPaymentToggle => 'Pago recurrente';
 
   @override
   String billsCount(int count) {
-    return '$count facturas';
+    return '$count pagos';
   }
 
   @override
-  String get billsNone => 'Sin facturas';
+  String get billsNone => 'Sin pagos recurrentes';
 
   @override
   String billsPerMonth(int count, String amount) {
-    return '$count facturas · $amount/mes';
+    return '$count pagos · $amount/mes';
   }
 
   @override
   String billsExceedBudget(String amount) {
-    return 'Facturas ($amount) superan presupuesto';
+    return 'Pagos recurrentes ($amount) superan presupuesto';
   }
 
   @override
-  String get billsAddBill => 'Añadir Factura';
+  String get billsAddBill => 'Añadir Pago Recurrente';
 
   @override
   String get billsBudgetSettings => 'Configuración del Presupuesto';
 
   @override
-  String get billsRecurringBills => 'Facturas Recurrentes';
+  String get billsRecurringBills => 'Pagos Recurrentes';
 
   @override
   String get billsDescription => 'Descripción';
@@ -2672,7 +2675,7 @@ class SEs extends S {
   String get notificationPreferredTimeDesc => 'Las notificaciones programadas usarán esta hora (excepto recordatorios personalizados)';
 
   @override
-  String get notificationBillReminders => 'Recordatorios de facturas';
+  String get notificationBillReminders => 'Recordatorios de pagos';
 
   @override
   String get notificationBillReminderDays => 'Días antes del vencimiento';
@@ -2733,7 +2736,7 @@ class SEs extends S {
 
   @override
   String notificationBillTitle(String name) {
-    return 'Factura pendiente: $name';
+    return 'Pago pendiente: $name';
   }
 
   @override
@@ -3122,13 +3125,13 @@ class SEs extends S {
   String get settingsDashTaxDeductions => 'Deducciones fiscales (PT)';
 
   @override
-  String get settingsDashUpcomingBills => 'Facturas pendientes';
+  String get settingsDashUpcomingBills => 'Próximos pagos';
 
   @override
   String get settingsDashBudgetStreaks => 'Rachas de presupuesto';
 
   @override
-  String get upcomingBillsTitle => 'Facturas Pendientes';
+  String get upcomingBillsTitle => 'Próximos Pagos';
 
   @override
   String get upcomingBillsManage => 'Gestionar';
@@ -4757,4 +4760,37 @@ class SEs extends S {
   @override
   String get expenseTrendsChartLabel =>
       'Gráfico de tendencias de gastos mostrando presupuesto versus gastos reales';
+
+  @override
+  String get customCategories => 'Categorías';
+
+  @override
+  String get customCategoryAdd => 'Añadir Categoría';
+
+  @override
+  String get customCategoryEdit => 'Editar Categoría';
+
+  @override
+  String get customCategoryDelete => 'Eliminar Categoría';
+
+  @override
+  String get customCategoryDeleteConfirm => '¿Eliminar esta categoría?';
+
+  @override
+  String get customCategoryName => 'Nombre de categoría';
+
+  @override
+  String get customCategoryIcon => 'Icono';
+
+  @override
+  String get customCategoryColor => 'Color';
+
+  @override
+  String get customCategoryEmpty => 'Sin categorías personalizadas';
+
+  @override
+  String get customCategorySaved => 'Categoría guardada';
+
+  @override
+  String get customCategoryInUse => 'Categoría en uso, no se puede eliminar';
 }

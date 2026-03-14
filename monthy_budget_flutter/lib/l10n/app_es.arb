@@ -1221,24 +1221,25 @@
     "themeLight": "Claro",
     "themeDark": "Oscuro",
     "recurringExpenses": "Pagos Recurrentes",
-    "recurringExpenseAdd": "Añadir Factura",
-    "recurringExpenseEdit": "Editar Factura",
+    "recurringExpenseAdd": "Añadir Pago Recurrente",
+    "recurringExpenseEdit": "Editar Pago Recurrente",
     "recurringExpenseCategory": "Categoría",
     "recurringExpenseAmount": "Importe",
     "recurringExpenseDescription": "Descripción (opcional)",
     "recurringExpenseDayOfMonth": "Día de vencimiento",
     "recurringExpenseActive": "Activo",
     "recurringExpenseInactive": "Inactivo",
-    "recurringExpenseEmpty": "Sin facturas mensuales.\nAñade una para generarla automáticamente cada mes.",
-    "recurringExpenseDeleteConfirm": "¿Eliminar esta factura?",
+    "recurringExpenseEmpty": "Sin pagos recurrentes.\nAñade uno para generarlo automáticamente cada mes.",
+    "recurringExpenseDeleteConfirm": "¿Eliminar este pago recurrente?",
     "recurringExpenseAutoCreated": "Creado automáticamente",
-    "recurringExpenseManage": "Gestionar facturas",
-    "recurringExpenseMarkRecurring": "Marcar como factura mensual",
-    "recurringExpensePopulated": "Facturas mensuales generadas para este mes",
+    "recurringExpenseManage": "Gestionar pagos recurrentes",
+    "recurringExpenseMarkRecurring": "Marcar como pago recurrente",
+    "recurringExpensePopulated": "Pagos recurrentes generados para este mes",
     "recurringExpenseDayHint": "Ej: 1 para el día 1",
     "recurringExpenseNoDay": "Sin día fijo",
-    "recurringExpenseSaved": "Factura guardada",
-    "billsCount": "{count} facturas",
+    "recurringExpenseSaved": "Pago recurrente guardado",
+    "recurringPaymentToggle": "Pago recurrente",
+    "billsCount": "{count} pagos",
     "@billsCount": {
         "placeholders": {
             "count": {
@@ -1246,8 +1247,8 @@
             }
         }
     },
-    "billsNone": "Sin facturas",
-    "billsPerMonth": "{count} facturas · {amount}/mes",
+    "billsNone": "Sin pagos recurrentes",
+    "billsPerMonth": "{count} pagos · {amount}/mes",
     "@billsPerMonth": {
         "placeholders": {
             "count": {
@@ -1266,9 +1267,9 @@
             }
         }
     },
-    "billsAddBill": "Añadir Factura",
+    "billsAddBill": "Añadir Pago Recurrente",
     "billsBudgetSettings": "Configuración del Presupuesto",
-    "billsRecurringBills": "Facturas Recurrentes",
+    "billsRecurringBills": "Pagos Recurrentes",
     "billsDescription": "Descripción",
     "billsAmount": "Importe",
     "billsDueDay": "Día de vencimiento",
@@ -1397,7 +1398,7 @@
     "notificationSettings": "Ajustes de Notificaciones",
     "notificationPreferredTime": "Hora preferida",
     "notificationPreferredTimeDesc": "Las notificaciones programadas usarán esta hora (excepto recordatorios personalizados)",
-    "notificationBillReminders": "Recordatorios de facturas",
+    "notificationBillReminders": "Recordatorios de pagos",
     "notificationBillReminderDays": "Días antes del vencimiento",
     "notificationBudgetAlerts": "Alertas de presupuesto",
     "notificationBudgetThreshold": "Límite de alerta ({percent}%)",
@@ -1423,7 +1424,7 @@
     "notificationCustomSaved": "Recordatorio guardado",
     "notificationCustomDeleteConfirm": "¿Eliminar este recordatorio?",
     "notificationEmpty": "Sin recordatorios personalizados.",
-    "notificationBillTitle": "Factura pendiente: {name}",
+    "notificationBillTitle": "Pago pendiente: {name}",
     "@notificationBillTitle": {
         "placeholders": {
             "name": {
@@ -1612,9 +1613,9 @@
     "taxDeductionNotDeductible": "No deducible",
     "taxDeductionDisclaimer": "Estos valores son estimaciones basadas en los gastos registrados. Las deducciones reales dependen de las facturas registradas. Consulte a un profesional fiscal para importes definitivos.",
     "settingsDashTaxDeductions": "Deducciones fiscales (PT)",
-    "settingsDashUpcomingBills": "Facturas pendientes",
+    "settingsDashUpcomingBills": "Próximos pagos",
     "settingsDashBudgetStreaks": "Rachas de presupuesto",
-    "upcomingBillsTitle": "Facturas Pendientes",
+    "upcomingBillsTitle": "Próximos Pagos",
     "upcomingBillsManage": "Gestionar",
     "billDueToday": "Hoy",
     "billDueTomorrow": "Mañana",
@@ -2518,5 +2519,17 @@
             "total": {"type": "int"}
         }
     },
-    "expenseTrendsChartLabel": "Gráfico de tendencias de gastos mostrando presupuesto versus gastos reales"
+    "expenseTrendsChartLabel": "Gráfico de tendencias de gastos mostrando presupuesto versus gastos reales",
+
+    "customCategories": "Categorías",
+    "customCategoryAdd": "Añadir Categoría",
+    "customCategoryEdit": "Editar Categoría",
+    "customCategoryDelete": "Eliminar Categoría",
+    "customCategoryDeleteConfirm": "¿Eliminar esta categoría?",
+    "customCategoryName": "Nombre de categoría",
+    "customCategoryIcon": "Icono",
+    "customCategoryColor": "Color",
+    "customCategoryEmpty": "Sin categorías personalizadas",
+    "customCategorySaved": "Categoría guardada",
+    "customCategoryInUse": "Categoría en uso, no se puede eliminar"
 }

@@ -2333,13 +2333,13 @@ class SPt extends S {
   String get themeDark => 'Escuro';
 
   @override
-  String get recurringExpenses => 'Contas Mensais';
+  String get recurringExpenses => 'Pagamentos Recorrentes';
 
   @override
-  String get recurringExpenseAdd => 'Adicionar Conta';
+  String get recurringExpenseAdd => 'Adicionar Pagamento Recorrente';
 
   @override
-  String get recurringExpenseEdit => 'Editar Conta';
+  String get recurringExpenseEdit => 'Editar Pagamento Recorrente';
 
   @override
   String get recurringExpenseCategory => 'Categoria';
@@ -2361,23 +2361,23 @@ class SPt extends S {
 
   @override
   String get recurringExpenseEmpty =>
-      'Sem contas mensais.\nAdicione para gerar automaticamente todos os meses.';
+      'Sem pagamentos recorrentes.\nAdicione para gerar automaticamente todos os meses.';
 
   @override
-  String get recurringExpenseDeleteConfirm => 'Eliminar esta conta?';
+  String get recurringExpenseDeleteConfirm => 'Eliminar este pagamento recorrente?';
 
   @override
   String get recurringExpenseAutoCreated => 'Criada automaticamente';
 
   @override
-  String get recurringExpenseManage => 'Gerir contas';
+  String get recurringExpenseManage => 'Gerir pagamentos recorrentes';
 
   @override
-  String get recurringExpenseMarkRecurring => 'Marcar como conta mensal';
+  String get recurringExpenseMarkRecurring => 'Marcar como pagamento recorrente';
 
   @override
   String get recurringExpensePopulated =>
-      'Contas mensais geradas para este mês';
+      'Pagamentos recorrentes gerados para este mês';
 
   @override
   String get recurringExpenseDayHint => 'Ex: 1 para dia 1';
@@ -2386,34 +2386,37 @@ class SPt extends S {
   String get recurringExpenseNoDay => 'Sem dia fixo';
 
   @override
-  String get recurringExpenseSaved => 'Conta guardada';
+  String get recurringExpenseSaved => 'Pagamento recorrente guardado';
+
+  @override
+  String get recurringPaymentToggle => 'Pagamento recorrente';
 
   @override
   String billsCount(int count) {
-    return '$count contas';
+    return '$count pagamentos';
   }
 
   @override
-  String get billsNone => 'Sem contas';
+  String get billsNone => 'Sem pagamentos recorrentes';
 
   @override
   String billsPerMonth(int count, String amount) {
-    return '$count contas · $amount/mês';
+    return '$count pagamentos · $amount/mês';
   }
 
   @override
   String billsExceedBudget(String amount) {
-    return 'Contas ($amount) excedem orçamento';
+    return 'Pagamentos recorrentes ($amount) excedem orçamento';
   }
 
   @override
-  String get billsAddBill => 'Adicionar Conta';
+  String get billsAddBill => 'Adicionar Pagamento Recorrente';
 
   @override
   String get billsBudgetSettings => 'Configuração do Orçamento';
 
   @override
-  String get billsRecurringBills => 'Contas Recorrentes';
+  String get billsRecurringBills => 'Pagamentos Recorrentes';
 
   @override
   String get billsDescription => 'Descrição';
@@ -2669,7 +2672,7 @@ class SPt extends S {
   String get notificationPreferredTimeDesc => 'Notificações agendadas usarão esta hora (exceto lembretes personalizados)';
 
   @override
-  String get notificationBillReminders => 'Lembretes de contas';
+  String get notificationBillReminders => 'Lembretes de pagamentos';
 
   @override
   String get notificationBillReminderDays => 'Dias antes do vencimento';
@@ -2730,7 +2733,7 @@ class SPt extends S {
 
   @override
   String notificationBillTitle(String name) {
-    return 'Conta a vencer: $name';
+    return 'Pagamento a vencer: $name';
   }
 
   @override
@@ -3120,13 +3123,13 @@ class SPt extends S {
   String get settingsDashTaxDeductions => 'Deduções fiscais (PT)';
 
   @override
-  String get settingsDashUpcomingBills => 'Contas a pagar';
+  String get settingsDashUpcomingBills => 'Próximos pagamentos';
 
   @override
   String get settingsDashBudgetStreaks => 'Séries de orçamento';
 
   @override
-  String get upcomingBillsTitle => 'Contas a Pagar';
+  String get upcomingBillsTitle => 'Próximos Pagamentos';
 
   @override
   String get upcomingBillsManage => 'Gerir';
@@ -4751,4 +4754,37 @@ class SPt extends S {
   @override
   String get expenseTrendsChartLabel =>
       'Gráfico de tendências de despesas mostrando orçamento versus gastos reais';
+
+  @override
+  String get customCategories => 'Categorias';
+
+  @override
+  String get customCategoryAdd => 'Adicionar Categoria';
+
+  @override
+  String get customCategoryEdit => 'Editar Categoria';
+
+  @override
+  String get customCategoryDelete => 'Eliminar Categoria';
+
+  @override
+  String get customCategoryDeleteConfirm => 'Eliminar esta categoria?';
+
+  @override
+  String get customCategoryName => 'Nome da categoria';
+
+  @override
+  String get customCategoryIcon => 'Ícone';
+
+  @override
+  String get customCategoryColor => 'Cor';
+
+  @override
+  String get customCategoryEmpty => 'Sem categorias personalizadas';
+
+  @override
+  String get customCategorySaved => 'Categoria guardada';
+
+  @override
+  String get customCategoryInUse => 'Categoria em uso, não pode ser eliminada';
 }

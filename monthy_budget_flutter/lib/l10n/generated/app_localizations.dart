@@ -4322,19 +4322,19 @@ abstract class S {
   /// Recurring expenses title
   ///
   /// In pt, this message translates to:
-  /// **'Contas Mensais'**
+  /// **'Pagamentos Recorrentes'**
   String get recurringExpenses;
 
   /// Add recurring expense
   ///
   /// In pt, this message translates to:
-  /// **'Adicionar Conta'**
+  /// **'Adicionar Pagamento Recorrente'**
   String get recurringExpenseAdd;
 
   /// Edit recurring expense
   ///
   /// In pt, this message translates to:
-  /// **'Editar Conta'**
+  /// **'Editar Pagamento Recorrente'**
   String get recurringExpenseEdit;
 
   /// Category field
@@ -4376,13 +4376,13 @@ abstract class S {
   /// Empty state message
   ///
   /// In pt, this message translates to:
-  /// **'Sem contas mensais.\nAdicione para gerar automaticamente todos os meses.'**
+  /// **'Sem pagamentos recorrentes.\nAdicione para gerar automaticamente todos os meses.'**
   String get recurringExpenseEmpty;
 
   /// Delete confirmation
   ///
   /// In pt, this message translates to:
-  /// **'Eliminar esta conta?'**
+  /// **'Eliminar este pagamento recorrente?'**
   String get recurringExpenseDeleteConfirm;
 
   /// Badge for auto-created expenses
@@ -4394,19 +4394,19 @@ abstract class S {
   /// Manage recurring button
   ///
   /// In pt, this message translates to:
-  /// **'Gerir contas'**
+  /// **'Gerir pagamentos recorrentes'**
   String get recurringExpenseManage;
 
   /// Toggle to mark expense as recurring
   ///
   /// In pt, this message translates to:
-  /// **'Marcar como conta mensal'**
+  /// **'Marcar como pagamento recorrente'**
   String get recurringExpenseMarkRecurring;
 
   /// Snackbar when recurring populated
   ///
   /// In pt, this message translates to:
-  /// **'Contas mensais geradas para este mês'**
+  /// **'Pagamentos recorrentes gerados para este mês'**
   String get recurringExpensePopulated;
 
   /// Hint for day of month field
@@ -4424,37 +4424,43 @@ abstract class S {
   /// Snackbar on save
   ///
   /// In pt, this message translates to:
-  /// **'Conta guardada'**
+  /// **'Pagamento recorrente guardado'**
   String get recurringExpenseSaved;
+
+  /// No description provided for @recurringPaymentToggle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pagamento recorrente'**
+  String get recurringPaymentToggle;
 
   /// No description provided for @billsCount.
   ///
   /// In pt, this message translates to:
-  /// **'{count} contas'**
+  /// **'{count} pagamentos'**
   String billsCount(int count);
 
   /// No description provided for @billsNone.
   ///
   /// In pt, this message translates to:
-  /// **'Sem contas'**
+  /// **'Sem pagamentos recorrentes'**
   String get billsNone;
 
   /// No description provided for @billsPerMonth.
   ///
   /// In pt, this message translates to:
-  /// **'{count} contas · {amount}/mês'**
+  /// **'{count} pagamentos · {amount}/mês'**
   String billsPerMonth(int count, String amount);
 
   /// No description provided for @billsExceedBudget.
   ///
   /// In pt, this message translates to:
-  /// **'Contas ({amount}) excedem orçamento'**
+  /// **'Pagamentos recorrentes ({amount}) excedem orçamento'**
   String billsExceedBudget(String amount);
 
   /// No description provided for @billsAddBill.
   ///
   /// In pt, this message translates to:
-  /// **'Adicionar Conta'**
+  /// **'Adicionar Pagamento Recorrente'**
   String get billsAddBill;
 
   /// No description provided for @billsBudgetSettings.
@@ -4466,7 +4472,7 @@ abstract class S {
   /// No description provided for @billsRecurringBills.
   ///
   /// In pt, this message translates to:
-  /// **'Contas Recorrentes'**
+  /// **'Pagamentos Recorrentes'**
   String get billsRecurringBills;
 
   /// No description provided for @billsDescription.
@@ -4946,7 +4952,7 @@ abstract class S {
   /// Bill reminders toggle
   ///
   /// In pt, this message translates to:
-  /// **'Lembretes de contas'**
+  /// **'Lembretes de pagamentos'**
   String get notificationBillReminders;
 
   /// Days before bill due
@@ -5060,7 +5066,7 @@ abstract class S {
   /// Bill notification title
   ///
   /// In pt, this message translates to:
-  /// **'Conta a vencer: {name}'**
+  /// **'Pagamento a vencer: {name}'**
   String notificationBillTitle(String name);
 
   /// Bill notification body
@@ -5738,7 +5744,7 @@ abstract class S {
   /// No description provided for @settingsDashUpcomingBills.
   ///
   /// In pt, this message translates to:
-  /// **'Contas a pagar'**
+  /// **'Próximos pagamentos'**
   String get settingsDashUpcomingBills;
 
   /// No description provided for @settingsDashBudgetStreaks.
@@ -5750,7 +5756,7 @@ abstract class S {
   /// No description provided for @upcomingBillsTitle.
   ///
   /// In pt, this message translates to:
-  /// **'Contas a Pagar'**
+  /// **'Próximos Pagamentos'**
   String get upcomingBillsTitle;
 
   /// No description provided for @upcomingBillsManage.
