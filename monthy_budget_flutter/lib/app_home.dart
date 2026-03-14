@@ -791,6 +791,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                 onOpenRecurring: _openRecurringExpenses,
                 showTour: !_onboardingState.isTourDone('expense_tracker'),
                 onTourComplete: () => _markTourDone('expense_tracker'),
+                customCategories: _customCategories,
               ),
             ),
           ),
@@ -1347,6 +1348,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       context: context,
       budgetExpenses: _settings.expenses,
       currentExpenses: _actualExpenses,
+      customCategories: _customCategories,
     );
     if (result != null) {
       _addActualExpense(result.expense);
@@ -1541,6 +1543,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         onOpenRecurring: _openRecurringExpenses,
         showTour: !_onboardingState.isTourDone('expense_tracker'),
         onTourComplete: () => _markTourDone('expense_tracker'),
+        customCategories: _customCategories,
       ),
       PlanAndShopScreen(
         shoppingItems: _shoppingList,

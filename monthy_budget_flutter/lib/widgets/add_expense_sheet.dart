@@ -6,6 +6,8 @@ import 'package:geocoding/geocoding.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/actual_expense.dart';
+import '../models/custom_category.dart';
+import '../utils/category_icons.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 
@@ -21,6 +23,7 @@ Future<ExpenseFormResult?> showAddExpenseSheet({
   required BuildContext context,
   required List<ExpenseItem> budgetExpenses,
   required List<ActualExpense> currentExpenses,
+  List<CustomCategory> customCategories = const [],
   ActualExpense? existing,
   Future<void> Function(ActualExpense)? onDelete,
   String? householdId,
@@ -33,6 +36,7 @@ Future<ExpenseFormResult?> showAddExpenseSheet({
     builder: (_) => _AddExpenseSheet(
       budgetExpenses: budgetExpenses,
       currentExpenses: currentExpenses,
+      customCategories: customCategories,
       existing: existing,
       onDelete: onDelete,
       householdId: householdId,
@@ -43,6 +47,7 @@ Future<ExpenseFormResult?> showAddExpenseSheet({
 class _AddExpenseSheet extends StatefulWidget {
   final List<ExpenseItem> budgetExpenses;
   final List<ActualExpense> currentExpenses;
+  final List<CustomCategory> customCategories;
   final ActualExpense? existing;
   final Future<void> Function(ActualExpense)? onDelete;
   final String? householdId;
@@ -50,6 +55,7 @@ class _AddExpenseSheet extends StatefulWidget {
   const _AddExpenseSheet({
     required this.budgetExpenses,
     required this.currentExpenses,
+    this.customCategories = const [],
     this.existing,
     this.onDelete,
     this.householdId,
@@ -60,8 +66,6 @@ class _AddExpenseSheet extends StatefulWidget {
 }
 
 class _AddExpenseSheetState extends State<_AddExpenseSheet> {
-  ExpenseItem? _selectedExpenseItem;
-  bool _isOthers = false;
   String? _selectedCategory;
   bool _isCustom = false;
   final _customCategoryController = TextEditingController();
@@ -79,9 +83,6 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
   List<String> _existingAttachmentUrls = [];
   bool _showExtras = false;
 
-  List<ExpenseItem> get _enabledItems =>
-      widget.budgetExpenses.where((e) => e.enabled).toList();
-
   @override
   void initState() {
     super.initState();
@@ -90,25 +91,22 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
       _selectedDate = e.date;
       _amountController.text = e.amount.toStringAsFixed(2);
       _descriptionController.text = e.description ?? '';
-      final match = _enabledItems.where(
-        (item) =>
-            item.label == e.description && item.category.name == e.category,
-      );
-      if (match.isNotEmpty) {
-        _selectedExpenseItem = match.first;
-        _isOthers = false;
+
+      // Check if existing category is a known enum value
+      final isKnown = ExpenseCategory.values.any((c) => c.name == e.category);
+      // Check if it's a custom category from the list
+      final isCustomCat = widget.customCategories.any((c) => c.name == e.category);
+
+      if (isKnown) {
+        _selectedCategory = e.category;
+        _isCustom = false;
+      } else if (isCustomCat) {
+        _selectedCategory = e.category;
+        _isCustom = false;
       } else {
-        _isOthers = true;
-        _selectedExpenseItem = null;
-        final isKnown =
-            ExpenseCategory.values.any((c) => c.name == e.category);
-        if (isKnown) {
-          _selectedCategory = e.category;
-          _isCustom = false;
-        } else {
-          _isCustom = true;
-          _customCategoryController.text = e.category;
-        }
+        // Freeform custom category
+        _isCustom = true;
+        _customCategoryController.text = e.category;
       }
       _showDescription = _descriptionController.text.isNotEmpty;
       _locationLat = e.locationLat;
@@ -130,80 +128,38 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
     super.dispose();
   }
 
-  List<String> get _customCategoriesUsed {
-    final known = ExpenseCategory.values.map((c) => c.name).toSet();
-    final custom = <String>{};
-    for (final e in widget.currentExpenses) {
-      if (!known.contains(e.category)) custom.add(e.category);
+  IconData _categoryIcon(ExpenseCategory cat) {
+    switch (cat) {
+      case ExpenseCategory.telecomunicacoes:
+        return Icons.phone;
+      case ExpenseCategory.energia:
+        return Icons.bolt;
+      case ExpenseCategory.agua:
+        return Icons.water_drop;
+      case ExpenseCategory.alimentacao:
+        return Icons.restaurant;
+      case ExpenseCategory.educacao:
+        return Icons.school;
+      case ExpenseCategory.habitacao:
+        return Icons.home;
+      case ExpenseCategory.transportes:
+        return Icons.directions_car;
+      case ExpenseCategory.saude:
+        return Icons.local_hospital;
+      case ExpenseCategory.lazer:
+        return Icons.sports_esports;
+      case ExpenseCategory.outros:
+        return Icons.more_horiz;
     }
-    return custom.toList()..sort();
   }
 
-  IconData _categoryIcon(String catName) {
+  Color? _customCategoryColor(CustomCategory cat) {
+    if (cat.colorHex == null) return null;
     try {
-      final cat =
-          ExpenseCategory.values.firstWhere((c) => c.name == catName);
-      switch (cat) {
-        case ExpenseCategory.telecomunicacoes:
-          return Icons.phone;
-        case ExpenseCategory.energia:
-          return Icons.bolt;
-        case ExpenseCategory.agua:
-          return Icons.water_drop;
-        case ExpenseCategory.alimentacao:
-          return Icons.restaurant;
-        case ExpenseCategory.educacao:
-          return Icons.school;
-        case ExpenseCategory.habitacao:
-          return Icons.home;
-        case ExpenseCategory.transportes:
-          return Icons.directions_car;
-        case ExpenseCategory.saude:
-          return Icons.local_hospital;
-        case ExpenseCategory.lazer:
-          return Icons.sports_esports;
-        case ExpenseCategory.outros:
-          return Icons.more_horiz;
-      }
+      return Color(
+          int.parse('FF${cat.colorHex!.replaceAll('#', '')}', radix: 16));
     } catch (_) {
-      return Icons.label_outline;
-    }
-  }
-
-  void _selectExpenseItem(ExpenseItem item) {
-    setState(() {
-      _selectedExpenseItem = item;
-      _isOthers = false;
-      _selectedCategory = item.category.name;
-      _isCustom = false;
-      if (_descriptionController.text.trim().isEmpty) {
-        _descriptionController.text = item.label;
-      }
-    });
-  }
-
-  bool _isChoiceSelected(_CategoryChoice choice) {
-    if (choice.expenseItem != null) {
-      return !_isOthers &&
-          _selectedExpenseItem?.id == choice.expenseItem!.id;
-    }
-    if (choice.customCategory != null) {
-      return _isCustom &&
-          _customCategoryController.text == choice.customCategory;
-    }
-    return false;
-  }
-
-  void _selectChoice(_CategoryChoice choice) {
-    if (choice.expenseItem != null) {
-      _selectExpenseItem(choice.expenseItem!);
-    } else if (choice.customCategory != null) {
-      setState(() {
-        _isCustom = true;
-        _isOthers = true;
-        _selectedExpenseItem = null;
-        _customCategoryController.text = choice.customCategory!;
-      });
+      return null;
     }
   }
 
@@ -339,9 +295,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
     if (amount == null || amount <= 0) return;
 
     final String? category;
-    if (_selectedExpenseItem != null) {
-      category = _selectedExpenseItem!.category.name;
-    } else if (_isCustom) {
+    if (_isCustom) {
       category = _customCategoryController.text.trim();
     } else {
       category = _selectedCategory;
@@ -393,18 +347,19 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     final isEdit = widget.existing != null;
-    final enabledItems = _enabledItems;
-    final customCats = _customCategoriesUsed;
+
+    // Build category choices: predefined ExpenseCategory values + custom categories
     final allChoices = <_CategoryChoice>[
-      ...enabledItems.map((item) => _CategoryChoice(
-            label: item.label,
-            icon: _categoryIcon(item.category.name),
-            expenseItem: item,
+      ...ExpenseCategory.values.map((cat) => _CategoryChoice(
+            label: cat.localizedLabel(l10n),
+            categoryKey: cat.name,
+            icon: _categoryIcon(cat),
           )),
-      ...customCats.map((cat) => _CategoryChoice(
-            label: cat,
-            icon: Icons.label_outline,
-            customCategory: cat,
+      ...widget.customCategories.map((cat) => _CategoryChoice(
+            label: cat.name,
+            categoryKey: cat.name,
+            icon: getCategoryIcon(cat.iconName),
+            color: _customCategoryColor(cat),
           )),
     ];
 
@@ -488,16 +443,29 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                 runSpacing: 8,
                 children: [
                   ...allChoices.map((choice) {
-                    final selected = _isChoiceSelected(choice);
+                    final selected =
+                        !_isCustom && _selectedCategory == choice.categoryKey;
+                    final chipColor = choice.color;
                     return ChoiceChip(
-                      avatar: Icon(choice.icon, size: 16),
+                      avatar: Icon(choice.icon, size: 16,
+                          color: selected
+                              ? (chipColor ?? AppColors.primary(context))
+                              : AppColors.textSecondary(context)),
                       label: Text(choice.label),
                       selected: selected,
-                      onSelected: (_) => _selectChoice(choice),
-                      selectedColor: AppColors.primaryLight(context),
+                      onSelected: (_) {
+                        setState(() {
+                          _selectedCategory = choice.categoryKey;
+                          _isCustom = false;
+                          _customCategoryController.clear();
+                        });
+                      },
+                      selectedColor: chipColor != null
+                          ? chipColor.withValues(alpha: 0.15)
+                          : AppColors.primaryLight(context),
                       side: BorderSide(
                         color: selected
-                            ? const Color(0xFF93C5FD)
+                            ? (chipColor ?? const Color(0xFF93C5FD))
                             : const Color(0xFFE2E8F0),
                       ),
                       labelStyle: TextStyle(
@@ -505,7 +473,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                         fontWeight:
                             selected ? FontWeight.w600 : FontWeight.w400,
                         color: selected
-                            ? AppColors.primary(context)
+                            ? (chipColor ?? AppColors.primary(context))
                             : AppColors.textSecondary(context),
                       ),
                     );
@@ -513,19 +481,15 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                   ChoiceChip(
                     avatar: const Icon(Icons.add, size: 16),
                     label: Text(l10n.addExpenseCustomCategory),
-                    selected: _isCustom &&
-                        !customCats
-                            .contains(_customCategoryController.text),
+                    selected: _isCustom,
                     onSelected: (_) => setState(() {
                       _isCustom = true;
-                      _isOthers = true;
-                      _selectedExpenseItem = null;
-                      _customCategoryController.clear();
                       _selectedCategory = null;
+                      _customCategoryController.clear();
                     }),
                     selectedColor: AppColors.primaryLight(context),
                     side: BorderSide(
-                      color: (_isCustom && !customCats.contains(_customCategoryController.text))
+                      color: _isCustom
                           ? const Color(0xFF93C5FD)
                           : const Color(0xFFE2E8F0),
                     ),
@@ -533,9 +497,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                   ),
                 ],
               ),
-              if (_isCustom &&
-                  !customCats
-                      .contains(_customCategoryController.text)) ...[
+              if (_isCustom) ...[
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _customCategoryController,
@@ -855,14 +817,14 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
 
 class _CategoryChoice {
   final String label;
+  final String categoryKey;
   final IconData icon;
-  final ExpenseItem? expenseItem;
-  final String? customCategory;
+  final Color? color;
 
   const _CategoryChoice({
     required this.label,
+    required this.categoryKey,
     required this.icon,
-    this.expenseItem,
-    this.customCategory,
+    this.color,
   });
 }

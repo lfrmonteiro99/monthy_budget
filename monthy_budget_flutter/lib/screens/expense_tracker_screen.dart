@@ -5,6 +5,7 @@ import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/actual_expense.dart';
+import '../models/custom_category.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 import '../widgets/add_expense_sheet.dart';
@@ -25,6 +26,7 @@ class ExpenseTrackerScreen extends StatefulWidget {
   final VoidCallback? onOpenRecurring;
   final bool showTour;
   final VoidCallback? onTourComplete;
+  final List<CustomCategory> customCategories;
 
   const ExpenseTrackerScreen({
     super.key,
@@ -39,6 +41,7 @@ class ExpenseTrackerScreen extends StatefulWidget {
     this.onOpenRecurring,
     this.showTour = false,
     this.onTourComplete,
+    this.customCategories = const [],
   });
 
   @override
@@ -122,6 +125,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
       context: context,
       budgetExpenses: widget.settings.expenses,
       currentExpenses: _expenses,
+      customCategories: widget.customCategories,
     );
     if (result != null && mounted) {
       final expense = result.expense;
@@ -136,6 +140,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
       context: context,
       budgetExpenses: widget.settings.expenses,
       currentExpenses: _expenses,
+      customCategories: widget.customCategories,
       existing: expense,
       onDelete: _deleteExpense,
     );
