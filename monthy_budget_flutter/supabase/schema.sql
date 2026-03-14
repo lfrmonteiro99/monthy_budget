@@ -192,7 +192,13 @@ create table actual_expenses (
   expense_date  date not null,
   description   text,
   month_key     text not null,
-  created_at    timestamptz default now()
+  created_at    timestamptz default now(),
+  attachment_urls  text[],
+  location_lat     double precision,
+  location_lng     double precision,
+  location_address text,
+  recurring_expense_id text,
+  is_from_recurring boolean default false
 );
 
 create index idx_actual_expenses_month on actual_expenses(household_id, month_key);
