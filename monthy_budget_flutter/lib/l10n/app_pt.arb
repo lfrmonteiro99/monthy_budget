@@ -1829,7 +1829,7 @@
     "@settingsSalaries": {
         "description": "Settings section: salaries"
     },
-    "settingsExpenses": "Orçamento e Contas",
+    "settingsExpenses": "Orçamento e Pagamentos Recorrentes",
     "@settingsExpenses": {
         "description": "Settings section: expenses"
     },
@@ -1965,7 +1965,7 @@
     "@settingsSalariesSection": {
         "description": "Settings section header: salaries/income"
     },
-    "settingsExpensesMonthly": "Orçamento e Contas",
+    "settingsExpensesMonthly": "Orçamento e Pagamentos Recorrentes",
     "@settingsExpensesMonthly": {
         "description": "Settings section header: monthly expenses"
     },
@@ -3027,15 +3027,15 @@
     "@themeDark": {
         "description": "Dark theme option"
     },
-    "recurringExpenses": "Contas Mensais",
+    "recurringExpenses": "Pagamentos Recorrentes",
     "@recurringExpenses": {
         "description": "Recurring expenses title"
     },
-    "recurringExpenseAdd": "Adicionar Conta",
+    "recurringExpenseAdd": "Adicionar Pagamento Recorrente",
     "@recurringExpenseAdd": {
         "description": "Add recurring expense"
     },
-    "recurringExpenseEdit": "Editar Conta",
+    "recurringExpenseEdit": "Editar Pagamento Recorrente",
     "@recurringExpenseEdit": {
         "description": "Edit recurring expense"
     },
@@ -3063,11 +3063,11 @@
     "@recurringExpenseInactive": {
         "description": "Inactive label"
     },
-    "recurringExpenseEmpty": "Sem contas mensais.\nAdicione para gerar automaticamente todos os meses.",
+    "recurringExpenseEmpty": "Sem pagamentos recorrentes.\nAdicione para gerar automaticamente todos os meses.",
     "@recurringExpenseEmpty": {
         "description": "Empty state message"
     },
-    "recurringExpenseDeleteConfirm": "Eliminar esta conta?",
+    "recurringExpenseDeleteConfirm": "Eliminar este pagamento recorrente?",
     "@recurringExpenseDeleteConfirm": {
         "description": "Delete confirmation"
     },
@@ -3075,15 +3075,15 @@
     "@recurringExpenseAutoCreated": {
         "description": "Badge for auto-created expenses"
     },
-    "recurringExpenseManage": "Gerir contas",
+    "recurringExpenseManage": "Gerir pagamentos recorrentes",
     "@recurringExpenseManage": {
         "description": "Manage recurring button"
     },
-    "recurringExpenseMarkRecurring": "Marcar como conta mensal",
+    "recurringExpenseMarkRecurring": "Marcar como pagamento recorrente",
     "@recurringExpenseMarkRecurring": {
         "description": "Toggle to mark expense as recurring"
     },
-    "recurringExpensePopulated": "Contas mensais geradas para este mês",
+    "recurringExpensePopulated": "Pagamentos recorrentes gerados para este mês",
     "@recurringExpensePopulated": {
         "description": "Snackbar when recurring populated"
     },
@@ -3095,11 +3095,15 @@
     "@recurringExpenseNoDay": {
         "description": "Label when no day set"
     },
-    "recurringExpenseSaved": "Conta guardada",
+    "recurringExpenseSaved": "Pagamento recorrente guardado",
+    "recurringPaymentToggle": "Pagamento recorrente",
+    "@recurringPaymentToggle": {
+        "description": "Toggle label for recurring payment per budget item"
+    },
     "@recurringExpenseSaved": {
         "description": "Snackbar on save"
     },
-    "billsCount": "{count} contas",
+    "billsCount": "{count} pagamentos",
     "@billsCount": {
         "placeholders": {
             "count": {
@@ -3107,8 +3111,8 @@
             }
         }
     },
-    "billsNone": "Sem contas",
-    "billsPerMonth": "{count} contas · {amount}/mês",
+    "billsNone": "Sem pagamentos recorrentes",
+    "billsPerMonth": "{count} pagamentos · {amount}/mês",
     "@billsPerMonth": {
         "placeholders": {
             "count": {
@@ -3127,9 +3131,9 @@
             }
         }
     },
-    "billsAddBill": "Adicionar Conta",
+    "billsAddBill": "Adicionar Pagamento Recorrente",
     "billsBudgetSettings": "Configuração do Orçamento",
-    "billsRecurringBills": "Contas Recorrentes",
+    "billsRecurringBills": "Pagamentos Recorrentes",
     "billsDescription": "Descrição",
     "billsAmount": "Montante",
     "billsDueDay": "Dia de vencimento",
@@ -3461,7 +3465,15 @@
     "@notificationSettings": {
         "description": "Notification settings title"
     },
-    "notificationBillReminders": "Lembretes de contas",
+    "notificationPreferredTime": "Hora preferida",
+    "@notificationPreferredTime": {
+        "description": "Preferred notification time label"
+    },
+    "notificationPreferredTimeDesc": "Notificações agendadas usarão esta hora (exceto lembretes personalizados)",
+    "@notificationPreferredTimeDesc": {
+        "description": "Preferred notification time description"
+    },
+    "notificationBillReminders": "Lembretes de pagamentos",
     "@notificationBillReminders": {
         "description": "Bill reminders toggle"
     },
@@ -3542,7 +3554,7 @@
     "@notificationEmpty": {
         "description": "Empty custom reminders"
     },
-    "notificationBillTitle": "Conta a vencer: {name}",
+    "notificationBillTitle": "Pagamento a vencer: {name}",
     "@notificationBillTitle": {
         "description": "Bill notification title",
         "placeholders": {
@@ -3819,9 +3831,9 @@
     "taxDeductionNotDeductible": "Não dedutível",
     "taxDeductionDisclaimer": "Estes valores são estimativas baseadas nas despesas registadas. As deduções reais dependem das faturas registadas no e-Fatura. Consulte um profissional fiscal para valores definitivos.",
     "settingsDashTaxDeductions": "Deduções fiscais (PT)",
-    "settingsDashUpcomingBills": "Contas a pagar",
+    "settingsDashUpcomingBills": "Próximos pagamentos",
     "settingsDashBudgetStreaks": "Séries de orçamento",
-    "upcomingBillsTitle": "Contas a Pagar",
+    "upcomingBillsTitle": "Próximos Pagamentos",
     "upcomingBillsManage": "Gerir",
     "billDueToday": "Hoje",
     "billDueTomorrow": "Amanhã",
@@ -4881,5 +4893,40 @@
             "total": {"type": "int"}
         }
     },
-    "expenseTrendsChartLabel": "Gráfico de tendências de despesas mostrando orçamento versus gastos reais"
+    "expenseTrendsChartLabel": "Gráfico de tendências de despesas mostrando orçamento versus gastos reais",
+
+    "customCategories": "Categorias",
+    "@customCategories": {"description": "Custom categories section title"},
+    "customCategoryAdd": "Adicionar Categoria",
+    "@customCategoryAdd": {"description": "Add custom category button"},
+    "customCategoryEdit": "Editar Categoria",
+    "@customCategoryEdit": {"description": "Edit custom category title"},
+    "customCategoryDelete": "Eliminar Categoria",
+    "@customCategoryDelete": {"description": "Delete custom category title"},
+    "customCategoryDeleteConfirm": "Eliminar esta categoria?",
+    "@customCategoryDeleteConfirm": {"description": "Delete custom category confirmation"},
+    "customCategoryName": "Nome da categoria",
+    "@customCategoryName": {"description": "Category name field label"},
+    "customCategoryIcon": "Ícone",
+    "@customCategoryIcon": {"description": "Category icon field label"},
+    "customCategoryColor": "Cor",
+    "@customCategoryColor": {"description": "Category color field label"},
+    "customCategoryEmpty": "Sem categorias personalizadas",
+    "@customCategoryEmpty": {"description": "Empty state for custom categories"},
+    "customCategorySaved": "Categoria guardada",
+    "@customCategorySaved": {"description": "Category saved snackbar message"},
+    "customCategoryInUse": "Categoria em uso, não pode ser eliminada",
+    "@customCategoryInUse": {"description": "Category in use error message"},
+    "expenseLocationPermissionDenied": "Permissão de localização negada",
+    "@expenseLocationPermissionDenied": {"description": "Location permission denied message"},
+    "expenseAttachPhoto": "Anexar Foto",
+    "@expenseAttachPhoto": {"description": "Attach photo label"},
+    "expenseAttachCamera": "Câmara",
+    "@expenseAttachCamera": {"description": "Camera option label"},
+    "expenseAttachGallery": "Galeria",
+    "@expenseAttachGallery": {"description": "Gallery option label"},
+    "expenseExtras": "Extras",
+    "@expenseExtras": {"description": "Extras toggle label"},
+    "expenseLocationDetect": "Detetar localização",
+    "@expenseLocationDetect": {"description": "Detect location button label"}
 }

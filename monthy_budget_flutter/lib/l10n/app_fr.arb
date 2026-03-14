@@ -811,7 +811,7 @@
     "settingsTitle": "Paramètres",
     "settingsPersonal": "Données Personnelles",
     "settingsSalaries": "Salaires",
-    "settingsExpenses": "Budget et Factures",
+    "settingsExpenses": "Budget et Paiements Récurrents",
     "settingsCoachAi": "Coach IA",
     "settingsDashboard": "Tableau de bord",
     "settingsMeals": "Repas",
@@ -845,7 +845,7 @@
     "settingsLogoutConfirmContent": "Êtes-vous sûr de vouloir vous déconnecter ?",
     "settingsLogoutConfirmButton": "Se déconnecter",
     "settingsSalariesSection": "Revenus",
-    "settingsExpensesMonthly": "Budget et Factures",
+    "settingsExpensesMonthly": "Budget et Paiements Récurrents",
     "settingsFavorites": "Produits Favoris",
     "settingsCoachOpenAi": "Coach IA (OpenAI)",
     "settingsHousehold": "Foyer",
@@ -1220,25 +1220,26 @@
     "themeSystem": "Système",
     "themeLight": "Clair",
     "themeDark": "Sombre",
-    "recurringExpenses": "Factures Mensuelles",
-    "recurringExpenseAdd": "Ajouter une Facture",
-    "recurringExpenseEdit": "Modifier la Facture",
+    "recurringExpenses": "Paiements Récurrents",
+    "recurringExpenseAdd": "Ajouter un Paiement Récurrent",
+    "recurringExpenseEdit": "Modifier le Paiement Récurrent",
     "recurringExpenseCategory": "Catégorie",
     "recurringExpenseAmount": "Montant",
     "recurringExpenseDescription": "Description (facultatif)",
     "recurringExpenseDayOfMonth": "Jour d'échéance",
     "recurringExpenseActive": "Active",
     "recurringExpenseInactive": "Inactive",
-    "recurringExpenseEmpty": "Aucune facture mensuelle.\nAjoutez-en une pour la générer automatiquement chaque mois.",
-    "recurringExpenseDeleteConfirm": "Supprimer cette facture ?",
+    "recurringExpenseEmpty": "Aucun paiement récurrent.\nAjoutez-en un pour le générer automatiquement chaque mois.",
+    "recurringExpenseDeleteConfirm": "Supprimer ce paiement récurrent ?",
     "recurringExpenseAutoCreated": "Créée automatiquement",
-    "recurringExpenseManage": "Gérer les factures",
-    "recurringExpenseMarkRecurring": "Marquer comme facture mensuelle",
-    "recurringExpensePopulated": "Factures mensuelles générées pour ce mois",
+    "recurringExpenseManage": "Gérer les paiements récurrents",
+    "recurringExpenseMarkRecurring": "Marquer comme paiement récurrent",
+    "recurringExpensePopulated": "Paiements récurrents générés pour ce mois",
     "recurringExpenseDayHint": "Ex : 1 pour le 1er",
     "recurringExpenseNoDay": "Pas de jour fixe",
-    "recurringExpenseSaved": "Facture enregistrée",
-    "billsCount": "{count} factures",
+    "recurringExpenseSaved": "Paiement récurrent enregistré",
+    "recurringPaymentToggle": "Paiement récurrent",
+    "billsCount": "{count} paiements",
     "@billsCount": {
         "placeholders": {
             "count": {
@@ -1246,8 +1247,8 @@
             }
         }
     },
-    "billsNone": "Aucune facture",
-    "billsPerMonth": "{count} factures · {amount}/mois",
+    "billsNone": "Aucun paiement récurrent",
+    "billsPerMonth": "{count} paiements · {amount}/mois",
     "@billsPerMonth": {
         "placeholders": {
             "count": {
@@ -1266,9 +1267,9 @@
             }
         }
     },
-    "billsAddBill": "Ajouter une Facture",
+    "billsAddBill": "Ajouter un Paiement Récurrent",
     "billsBudgetSettings": "Paramètres du Budget",
-    "billsRecurringBills": "Factures Récurrentes",
+    "billsRecurringBills": "Paiements Récurrents",
     "billsDescription": "Description",
     "billsAmount": "Montant",
     "billsDueDay": "Jour d'échéance",
@@ -1395,7 +1396,9 @@
     "mealFeedbackSkip": "Passer",
     "notifications": "Notifications",
     "notificationSettings": "Paramètres de Notifications",
-    "notificationBillReminders": "Rappels de factures",
+    "notificationPreferredTime": "Heure préférée",
+    "notificationPreferredTimeDesc": "Les notifications programmées utiliseront cette heure (sauf rappels personnalisés)",
+    "notificationBillReminders": "Rappels de paiements",
     "notificationBillReminderDays": "Jours avant l'échéance",
     "notificationBudgetAlerts": "Alertes budget",
     "notificationBudgetThreshold": "Seuil d'alerte ({percent}%)",
@@ -1421,7 +1424,7 @@
     "notificationCustomSaved": "Rappel enregistré",
     "notificationCustomDeleteConfirm": "Supprimer ce rappel ?",
     "notificationEmpty": "Aucun rappel personnalisé.",
-    "notificationBillTitle": "Facture à payer : {name}",
+    "notificationBillTitle": "Paiement à venir : {name}",
     "@notificationBillTitle": {
         "placeholders": {
             "name": {
@@ -1610,9 +1613,9 @@
     "taxDeductionNotDeductible": "Non déductible",
     "taxDeductionDisclaimer": "Ces valeurs sont des estimations basées sur vos dépenses enregistrées. Les déductions réelles dépendent des factures déclarées. Consultez un professionnel fiscal pour les montants définitifs.",
     "settingsDashTaxDeductions": "Déductions fiscales (PT)",
-    "settingsDashUpcomingBills": "Factures à venir",
+    "settingsDashUpcomingBills": "Prochains paiements",
     "settingsDashBudgetStreaks": "Séries de budget",
-    "upcomingBillsTitle": "Factures à Venir",
+    "upcomingBillsTitle": "Prochains Paiements",
     "upcomingBillsManage": "Gérer",
     "billDueToday": "Aujourd'hui",
     "billDueTomorrow": "Demain",
@@ -2516,5 +2519,23 @@
             "total": {"type": "int"}
         }
     },
-    "expenseTrendsChartLabel": "Graphique des tendances de dépenses montrant le budget par rapport aux dépenses réelles"
+    "expenseTrendsChartLabel": "Graphique des tendances de dépenses montrant le budget par rapport aux dépenses réelles",
+
+    "customCategories": "Catégories",
+    "customCategoryAdd": "Ajouter Catégorie",
+    "customCategoryEdit": "Modifier Catégorie",
+    "customCategoryDelete": "Supprimer Catégorie",
+    "customCategoryDeleteConfirm": "Supprimer cette catégorie ?",
+    "customCategoryName": "Nom de catégorie",
+    "customCategoryIcon": "Icône",
+    "customCategoryColor": "Couleur",
+    "customCategoryEmpty": "Aucune catégorie personnalisée",
+    "customCategorySaved": "Catégorie enregistrée",
+    "customCategoryInUse": "Catégorie en cours d'utilisation",
+    "expenseLocationPermissionDenied": "Autorisation de localisation refusée",
+    "expenseAttachPhoto": "Joindre une photo",
+    "expenseAttachCamera": "Appareil photo",
+    "expenseAttachGallery": "Galerie",
+    "expenseExtras": "Extras",
+    "expenseLocationDetect": "Détecter la position"
 }

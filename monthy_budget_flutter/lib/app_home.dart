@@ -42,8 +42,10 @@ import 'screens/plan_hub_screen.dart';
 import 'screens/plan_and_shop_screen.dart';
 import 'screens/notification_settings_screen.dart';
 import 'models/recurring_expense.dart';
+import 'models/custom_category.dart';
 import 'models/notification_preferences.dart';
 import 'services/recurring_expense_service.dart';
+import 'services/category_service.dart';
 import 'services/notification_service.dart';
 import 'services/savings_goal_service.dart';
 import 'models/savings_goal.dart';
@@ -109,6 +111,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   final _localConfigService = LocalConfigService();
   final _actualExpenseService = ActualExpenseService();
   final _recurringExpenseService = RecurringExpenseService();
+  final _categoryService = CategoryService();
   final _savingsGoalService = SavingsGoalService();
   final _monthlyBudgetService = MonthlyBudgetService();
   final _subscriptionService = SubscriptionService();
@@ -127,6 +130,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   AppSettings _settings = const AppSettings();
   List<ActualExpense> _actualExpenses = [];
   List<RecurringExpense> _recurringExpenses = [];
+  List<CustomCategory> _customCategories = [];
   Map<String, List<ActualExpense>> _actualExpenseHistory = {};
   Map<String, double> _monthlyBudgets = {};
   NotificationPreferences _notificationPrefs = NotificationPreferences();
@@ -289,6 +293,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     });
     _loadActualExpenses();
     _loadRecurringExpenses();
+    _loadCustomCategories();
     _loadActualExpenseHistory();
     _loadMonthlyBudgets();
     _loadNotificationPrefs();
@@ -415,6 +420,18 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     } catch (e) {
       _dataHealthService.recordError(SyncDomain.recurringExpenses, '$e');
       rethrow;
+    }
+  }
+
+  Future<void> _loadCustomCategories() async {
+    try {
+      final categories =
+          await _categoryService.load(widget.householdId);
+      if (mounted) {
+        setState(() => _customCategories = categories);
+      }
+    } catch (e) {
+      debugPrint('Failed to load custom categories: $e');
     }
   }
 
@@ -1332,7 +1349,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       currentExpenses: _actualExpenses,
     );
     if (result != null) {
-      _addActualExpense(result);
+      _addActualExpense(result.expense);
     }
   }
 
@@ -1432,6 +1449,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       onRecurringChanged: (updated) {
         setState(() => _recurringExpenses = updated);
         _refreshNotificationSchedules();
+      },
+      customCategories: _customCategories,
+      onCustomCategoriesChanged: (updated) {
+        setState(() => _customCategories = updated);
       },
       initialSection: initialSection,
     );

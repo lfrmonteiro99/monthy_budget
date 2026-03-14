@@ -853,7 +853,7 @@
     "settingsTitle": "Settings",
     "settingsPersonal": "Personal Data",
     "settingsSalaries": "Salaries",
-    "settingsExpenses": "Budget & Bills",
+    "settingsExpenses": "Budget & Recurring Payments",
     "settingsCoachAi": "AI Coach",
     "settingsDashboard": "Dashboard",
     "settingsMeals": "Meals",
@@ -887,7 +887,7 @@
     "settingsLogoutConfirmContent": "Are you sure you want to sign out?",
     "settingsLogoutConfirmButton": "Sign out",
     "settingsSalariesSection": "Income",
-    "settingsExpensesMonthly": "Budget & Bills",
+    "settingsExpensesMonthly": "Budget & Recurring Payments",
     "settingsFavorites": "Favorite Products",
     "settingsCoachOpenAi": "AI Coach (OpenAI)",
     "settingsHousehold": "Household",
@@ -1262,25 +1262,26 @@
     "themeSystem": "System",
     "themeLight": "Light",
     "themeDark": "Dark",
-    "recurringExpenses": "Monthly Bills",
-    "recurringExpenseAdd": "Add Bill",
-    "recurringExpenseEdit": "Edit Bill",
+    "recurringExpenses": "Recurring Payments",
+    "recurringExpenseAdd": "Add Recurring Payment",
+    "recurringExpenseEdit": "Edit Recurring Payment",
     "recurringExpenseCategory": "Category",
     "recurringExpenseAmount": "Amount",
     "recurringExpenseDescription": "Description (optional)",
     "recurringExpenseDayOfMonth": "Due day",
     "recurringExpenseActive": "Active",
     "recurringExpenseInactive": "Inactive",
-    "recurringExpenseEmpty": "No monthly bills.\nAdd one to auto-generate every month.",
-    "recurringExpenseDeleteConfirm": "Delete this bill?",
+    "recurringExpenseEmpty": "No recurring payments.\nAdd one to auto-generate every month.",
+    "recurringExpenseDeleteConfirm": "Delete this recurring payment?",
     "recurringExpenseAutoCreated": "Auto-created",
-    "recurringExpenseManage": "Manage bills",
-    "recurringExpenseMarkRecurring": "Mark as monthly bill",
-    "recurringExpensePopulated": "Monthly bills generated for this month",
+    "recurringExpenseManage": "Manage recurring payments",
+    "recurringExpenseMarkRecurring": "Mark as recurring payment",
+    "recurringExpensePopulated": "Recurring payments generated for this month",
     "recurringExpenseDayHint": "E.g. 1 for the 1st",
     "recurringExpenseNoDay": "No fixed day",
-    "recurringExpenseSaved": "Bill saved",
-    "billsCount": "{count} bills",
+    "recurringExpenseSaved": "Recurring payment saved",
+    "recurringPaymentToggle": "Recurring payment",
+    "billsCount": "{count} payments",
     "@billsCount": {
         "placeholders": {
             "count": {
@@ -1288,8 +1289,8 @@
             }
         }
     },
-    "billsNone": "No bills",
-    "billsPerMonth": "{count} bills Â· {amount}/mo",
+    "billsNone": "No recurring payments",
+    "billsPerMonth": "{count} payments Â· {amount}/mo",
     "@billsPerMonth": {
         "placeholders": {
             "count": {
@@ -1308,9 +1309,9 @@
             }
         }
     },
-    "billsAddBill": "Add Bill",
+    "billsAddBill": "Add Recurring Payment",
     "billsBudgetSettings": "Budget Settings",
-    "billsRecurringBills": "Recurring Bills",
+    "billsRecurringBills": "Recurring Payments",
     "billsDescription": "Description",
     "billsAmount": "Amount",
     "billsDueDay": "Due day",
@@ -1470,7 +1471,9 @@
     },
     "notifications": "Notifications",
     "notificationSettings": "Notification Settings",
-    "notificationBillReminders": "Bill reminders",
+    "notificationPreferredTime": "Preferred time",
+    "notificationPreferredTimeDesc": "Scheduled notifications will use this time (except custom reminders)",
+    "notificationBillReminders": "Payment reminders",
     "notificationBillReminderDays": "Days before due",
     "notificationBudgetAlerts": "Budget alerts",
     "notificationBudgetThreshold": "Alert threshold ({percent}%)",
@@ -1496,7 +1499,7 @@
     "notificationCustomSaved": "Reminder saved",
     "notificationCustomDeleteConfirm": "Delete this reminder?",
     "notificationEmpty": "No custom reminders.",
-    "notificationBillTitle": "Bill due: {name}",
+    "notificationBillTitle": "Payment due: {name}",
     "@notificationBillTitle": {
         "placeholders": {
             "name": {
@@ -1685,9 +1688,9 @@
     "taxDeductionNotDeductible": "Not deductible",
     "taxDeductionDisclaimer": "These values are estimates based on your tracked expenses. Actual IRS deductions depend on invoices registered in e-Fatura. Consult a tax professional for definitive amounts.",
     "settingsDashTaxDeductions": "Tax deductions (PT)",
-    "settingsDashUpcomingBills": "Upcoming bills",
+    "settingsDashUpcomingBills": "Upcoming payments",
     "settingsDashBudgetStreaks": "Budget streaks",
-    "upcomingBillsTitle": "Upcoming Bills",
+    "upcomingBillsTitle": "Upcoming Payments",
     "upcomingBillsManage": "Manage",
     "billDueToday": "Today",
     "billDueTomorrow": "Tomorrow",
@@ -2567,5 +2570,23 @@
             "total": {"type": "int"}
         }
     },
-    "expenseTrendsChartLabel": "Expense trends overview chart showing budgeted versus actual spending"
+    "expenseTrendsChartLabel": "Expense trends overview chart showing budgeted versus actual spending",
+
+    "customCategories": "Categories",
+    "customCategoryAdd": "Add Category",
+    "customCategoryEdit": "Edit Category",
+    "customCategoryDelete": "Delete Category",
+    "customCategoryDeleteConfirm": "Delete this category?",
+    "customCategoryName": "Category name",
+    "customCategoryIcon": "Icon",
+    "customCategoryColor": "Color",
+    "customCategoryEmpty": "No custom categories",
+    "customCategorySaved": "Category saved",
+    "customCategoryInUse": "Category in use, cannot delete",
+    "expenseLocationPermissionDenied": "Location permission denied",
+    "expenseAttachPhoto": "Attach Photo",
+    "expenseAttachCamera": "Camera",
+    "expenseAttachGallery": "Gallery",
+    "expenseExtras": "Extras",
+    "expenseLocationDetect": "Detect location"
 }

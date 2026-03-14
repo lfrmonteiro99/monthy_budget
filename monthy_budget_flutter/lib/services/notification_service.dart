@@ -105,6 +105,8 @@ class NotificationService {
       await _scheduleBillReminders(
         recurringExpenses: recurringExpenses,
         daysBefore: prefs.billReminderDaysBefore,
+        hour: prefs.preferredHour,
+        minute: prefs.preferredMinute,
       );
     }
 
@@ -127,7 +129,10 @@ class NotificationService {
     }
 
     if (prefs.mealPlanReminders && !hasMealPlan) {
-      await _scheduleMealPlanReminder();
+      await _scheduleMealPlanReminder(
+        hour: prefs.preferredHour,
+        minute: prefs.preferredMinute,
+      );
     }
 
     for (int i = 0; i < prefs.customReminders.length; i++) {
@@ -138,6 +143,8 @@ class NotificationService {
   Future<void> _scheduleBillReminders({
     required List<RecurringExpense> recurringExpenses,
     required int daysBefore,
+    required int hour,
+    required int minute,
   }) async {
     final active = recurringExpenses
         .where((r) => r.isActive && r.dayOfMonth != null)
@@ -147,11 +154,11 @@ class NotificationService {
       final expense = active[i];
       final now = DateTime.now();
       final dueDay = expense.dayOfMonth!.clamp(1, 31);
-      var dueDate = DateTime(now.year, now.month, dueDay, 9);
+      var dueDate = DateTime(now.year, now.month, dueDay, hour, minute);
 
       // If due date already passed this month, schedule for next month
       if (dueDate.isBefore(now)) {
-        dueDate = DateTime(now.year, now.month + 1, dueDay, 9);
+        dueDate = DateTime(now.year, now.month + 1, dueDay, hour, minute);
       }
 
       var reminderDate = dueDate.subtract(Duration(days: daysBefore));
@@ -216,8 +223,11 @@ class NotificationService {
     }
   }
 
-  Future<void> _scheduleMealPlanReminder() async {
-    // Schedule for next Monday at 9am
+  Future<void> _scheduleMealPlanReminder({
+    required int hour,
+    required int minute,
+  }) async {
+    // Schedule for next Monday at preferred time
     final now = DateTime.now();
     var nextMonday = now.add(Duration(days: (8 - now.weekday) % 7));
     if (nextMonday.isBefore(now) ||
@@ -225,7 +235,7 @@ class NotificationService {
       nextMonday = nextMonday.add(const Duration(days: 7));
     }
     final scheduledDate =
-        DateTime(nextMonday.year, nextMonday.month, nextMonday.day, 9);
+        DateTime(nextMonday.year, nextMonday.month, nextMonday.day, hour, minute);
 
     try {
       await _plugin.zonedSchedule(
@@ -259,6 +269,8 @@ class NotificationService {
     required int maxFreeCategories,
     required int maxFreeSavingsGoals,
     int daysBeforeExpiry = 10,
+    int preferredHour = 10,
+    int preferredMinute = 0,
   }) async {
     final reminderDate = trialEndDate.subtract(Duration(days: daysBeforeExpiry));
     final now = DateTime.now();
@@ -282,7 +294,7 @@ class NotificationService {
         'Trial ending soon',
         body,
         tz.TZDateTime.from(
-          DateTime(reminderDate.year, reminderDate.month, reminderDate.day, 10),
+          DateTime(reminderDate.year, reminderDate.month, reminderDate.day, preferredHour, preferredMinute),
           tz.local,
         ),
         NotificationDetails(

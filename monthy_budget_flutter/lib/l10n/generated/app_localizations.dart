@@ -2660,7 +2660,7 @@ abstract class S {
   /// Settings section: expenses
   ///
   /// In pt, this message translates to:
-  /// **'Orçamento e Contas'**
+  /// **'Orçamento e Pagamentos Recorrentes'**
   String get settingsExpenses;
 
   /// Settings section: AI coach
@@ -2864,7 +2864,7 @@ abstract class S {
   /// Settings section header: monthly expenses
   ///
   /// In pt, this message translates to:
-  /// **'Orçamento e Contas'**
+  /// **'Orçamento e Pagamentos Recorrentes'**
   String get settingsExpensesMonthly;
 
   /// Settings section header: favorite products
@@ -4322,19 +4322,19 @@ abstract class S {
   /// Recurring expenses title
   ///
   /// In pt, this message translates to:
-  /// **'Contas Mensais'**
+  /// **'Pagamentos Recorrentes'**
   String get recurringExpenses;
 
   /// Add recurring expense
   ///
   /// In pt, this message translates to:
-  /// **'Adicionar Conta'**
+  /// **'Adicionar Pagamento Recorrente'**
   String get recurringExpenseAdd;
 
   /// Edit recurring expense
   ///
   /// In pt, this message translates to:
-  /// **'Editar Conta'**
+  /// **'Editar Pagamento Recorrente'**
   String get recurringExpenseEdit;
 
   /// Category field
@@ -4376,13 +4376,13 @@ abstract class S {
   /// Empty state message
   ///
   /// In pt, this message translates to:
-  /// **'Sem contas mensais.\nAdicione para gerar automaticamente todos os meses.'**
+  /// **'Sem pagamentos recorrentes.\nAdicione para gerar automaticamente todos os meses.'**
   String get recurringExpenseEmpty;
 
   /// Delete confirmation
   ///
   /// In pt, this message translates to:
-  /// **'Eliminar esta conta?'**
+  /// **'Eliminar este pagamento recorrente?'**
   String get recurringExpenseDeleteConfirm;
 
   /// Badge for auto-created expenses
@@ -4394,19 +4394,19 @@ abstract class S {
   /// Manage recurring button
   ///
   /// In pt, this message translates to:
-  /// **'Gerir contas'**
+  /// **'Gerir pagamentos recorrentes'**
   String get recurringExpenseManage;
 
   /// Toggle to mark expense as recurring
   ///
   /// In pt, this message translates to:
-  /// **'Marcar como conta mensal'**
+  /// **'Marcar como pagamento recorrente'**
   String get recurringExpenseMarkRecurring;
 
   /// Snackbar when recurring populated
   ///
   /// In pt, this message translates to:
-  /// **'Contas mensais geradas para este mês'**
+  /// **'Pagamentos recorrentes gerados para este mês'**
   String get recurringExpensePopulated;
 
   /// Hint for day of month field
@@ -4424,25 +4424,31 @@ abstract class S {
   /// Snackbar on save
   ///
   /// In pt, this message translates to:
-  /// **'Conta guardada'**
+  /// **'Pagamento recorrente guardado'**
   String get recurringExpenseSaved;
+
+  /// Toggle label for recurring payment per budget item
+  ///
+  /// In pt, this message translates to:
+  /// **'Pagamento recorrente'**
+  String get recurringPaymentToggle;
 
   /// No description provided for @billsCount.
   ///
   /// In pt, this message translates to:
-  /// **'{count} contas'**
+  /// **'{count} pagamentos'**
   String billsCount(int count);
 
   /// No description provided for @billsNone.
   ///
   /// In pt, this message translates to:
-  /// **'Sem contas'**
+  /// **'Sem pagamentos recorrentes'**
   String get billsNone;
 
   /// No description provided for @billsPerMonth.
   ///
   /// In pt, this message translates to:
-  /// **'{count} contas · {amount}/mês'**
+  /// **'{count} pagamentos · {amount}/mês'**
   String billsPerMonth(int count, String amount);
 
   /// No description provided for @billsExceedBudget.
@@ -4454,7 +4460,7 @@ abstract class S {
   /// No description provided for @billsAddBill.
   ///
   /// In pt, this message translates to:
-  /// **'Adicionar Conta'**
+  /// **'Adicionar Pagamento Recorrente'**
   String get billsAddBill;
 
   /// No description provided for @billsBudgetSettings.
@@ -4466,7 +4472,7 @@ abstract class S {
   /// No description provided for @billsRecurringBills.
   ///
   /// In pt, this message translates to:
-  /// **'Contas Recorrentes'**
+  /// **'Pagamentos Recorrentes'**
   String get billsRecurringBills;
 
   /// No description provided for @billsDescription.
@@ -4931,10 +4937,22 @@ abstract class S {
   /// **'Definições de Notificações'**
   String get notificationSettings;
 
+  /// Preferred notification time label
+  ///
+  /// In pt, this message translates to:
+  /// **'Hora preferida'**
+  String get notificationPreferredTime;
+
+  /// Preferred notification time description
+  ///
+  /// In pt, this message translates to:
+  /// **'Notificações agendadas usarão esta hora (exceto lembretes personalizados)'**
+  String get notificationPreferredTimeDesc;
+
   /// Bill reminders toggle
   ///
   /// In pt, this message translates to:
-  /// **'Lembretes de contas'**
+  /// **'Lembretes de pagamentos'**
   String get notificationBillReminders;
 
   /// Days before bill due
@@ -5048,7 +5066,7 @@ abstract class S {
   /// Bill notification title
   ///
   /// In pt, this message translates to:
-  /// **'Conta a vencer: {name}'**
+  /// **'Pagamento a vencer: {name}'**
   String notificationBillTitle(String name);
 
   /// Bill notification body
@@ -5726,7 +5744,7 @@ abstract class S {
   /// No description provided for @settingsDashUpcomingBills.
   ///
   /// In pt, this message translates to:
-  /// **'Contas a pagar'**
+  /// **'Próximos pagamentos'**
   String get settingsDashUpcomingBills;
 
   /// No description provided for @settingsDashBudgetStreaks.
@@ -5738,7 +5756,7 @@ abstract class S {
   /// No description provided for @upcomingBillsTitle.
   ///
   /// In pt, this message translates to:
-  /// **'Contas a Pagar'**
+  /// **'Próximos Pagamentos'**
   String get upcomingBillsTitle;
 
   /// No description provided for @upcomingBillsManage.
@@ -8506,6 +8524,108 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Gráfico de tendências de despesas mostrando orçamento versus gastos reais'**
   String get expenseTrendsChartLabel;
+
+  /// Custom categories section title
+  ///
+  /// In pt, this message translates to:
+  /// **'Categorias'**
+  String get customCategories;
+
+  /// Add custom category button
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar Categoria'**
+  String get customCategoryAdd;
+
+  /// Edit custom category title
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar Categoria'**
+  String get customCategoryEdit;
+
+  /// Delete custom category title
+  ///
+  /// In pt, this message translates to:
+  /// **'Eliminar Categoria'**
+  String get customCategoryDelete;
+
+  /// Delete custom category confirmation
+  ///
+  /// In pt, this message translates to:
+  /// **'Eliminar esta categoria?'**
+  String get customCategoryDeleteConfirm;
+
+  /// Category name field label
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome da categoria'**
+  String get customCategoryName;
+
+  /// Category icon field label
+  ///
+  /// In pt, this message translates to:
+  /// **'Ícone'**
+  String get customCategoryIcon;
+
+  /// Category color field label
+  ///
+  /// In pt, this message translates to:
+  /// **'Cor'**
+  String get customCategoryColor;
+
+  /// Empty state for custom categories
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem categorias personalizadas'**
+  String get customCategoryEmpty;
+
+  /// Category saved snackbar message
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria guardada'**
+  String get customCategorySaved;
+
+  /// Category in use error message
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria em uso, não pode ser eliminada'**
+  String get customCategoryInUse;
+
+  /// Location permission denied message
+  ///
+  /// In pt, this message translates to:
+  /// **'Permissão de localização negada'**
+  String get expenseLocationPermissionDenied;
+
+  /// Attach photo label
+  ///
+  /// In pt, this message translates to:
+  /// **'Anexar Foto'**
+  String get expenseAttachPhoto;
+
+  /// Camera option label
+  ///
+  /// In pt, this message translates to:
+  /// **'Câmara'**
+  String get expenseAttachCamera;
+
+  /// Gallery option label
+  ///
+  /// In pt, this message translates to:
+  /// **'Galeria'**
+  String get expenseAttachGallery;
+
+  /// Extras toggle label
+  ///
+  /// In pt, this message translates to:
+  /// **'Extras'**
+  String get expenseExtras;
+
+  /// Detect location button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Detetar localização'**
+  String get expenseLocationDetect;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

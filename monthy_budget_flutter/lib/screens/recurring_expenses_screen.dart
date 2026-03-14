@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/recurring_expense.dart';
+import '../models/custom_category.dart';
 import '../models/app_settings.dart';
 import '../services/recurring_expense_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
+import '../utils/category_icons.dart';
 import '../onboarding/recurring_expenses_tour.dart';
 
 class RecurringExpensesScreen extends StatefulWidget {
   final String householdId;
   final List<RecurringExpense> expenses;
   final ValueChanged<List<RecurringExpense>> onChanged;
+  final List<CustomCategory> customCategories;
   final bool showTour;
   final VoidCallback? onTourComplete;
 
@@ -19,6 +22,7 @@ class RecurringExpensesScreen extends StatefulWidget {
     required this.householdId,
     required this.expenses,
     required this.onChanged,
+    this.customCategories = const [],
     this.showTour = false,
     this.onTourComplete,
   });
@@ -131,7 +135,10 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _EditRecurringSheet(existing: existing),
+      builder: (_) => _EditRecurringSheet(
+        existing: existing,
+        customCategories: widget.customCategories,
+      ),
     );
   }
 
@@ -275,9 +282,29 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
   }
 }
 
+/// Public helper to show the recurring expense edit sheet from other screens.
+/// Pass [preselectedCategory] to pre-select the category chip.
+Future<RecurringExpense?> showEditRecurringSheet(
+  BuildContext context, {
+  RecurringExpense? existing,
+  String? preselectedCategory,
+}) {
+  return showModalBottomSheet<RecurringExpense>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (_) => _EditRecurringSheet(
+      existing: existing,
+      preselectedCategory: preselectedCategory,
+    ),
+  );
+}
+
 class _EditRecurringSheet extends StatefulWidget {
   final RecurringExpense? existing;
-  const _EditRecurringSheet({this.existing});
+  final List<CustomCategory> customCategories;
+  final String? preselectedCategory;
+  const _EditRecurringSheet({this.existing, this.customCategories = const [], this.preselectedCategory});
 
   @override
   State<_EditRecurringSheet> createState() => _EditRecurringSheetState();
@@ -301,6 +328,8 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
       _descriptionController.text = e.description ?? '';
       if (e.dayOfMonth != null) _dayController.text = e.dayOfMonth.toString();
       _isActive = e.isActive;
+    } else if (widget.preselectedCategory != null) {
+      _selectedCategory = widget.preselectedCategory;
     }
   }
 
@@ -395,32 +424,53 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: categories.map((cat) {
-                  final selected = _selectedCategory == cat;
-                  String label;
-                  try {
-                    final ec = ExpenseCategory.values
-                        .firstWhere((c) => c.name == cat);
-                    label = ec.localizedLabel(l10n);
-                  } catch (_) {
-                    label = cat;
-                  }
-                  return ChoiceChip(
-                    label: Text(label),
-                    selected: selected,
-                    onSelected: (_) =>
-                        setState(() => _selectedCategory = cat),
-                    selectedColor: AppColors.primaryLight(context),
-                    labelStyle: TextStyle(
-                      fontSize: 13,
-                      fontWeight:
-                          selected ? FontWeight.w600 : FontWeight.w400,
-                      color: selected
-                          ? AppColors.primary(context)
-                          : AppColors.textSecondary(context),
-                    ),
-                  );
-                }).toList(),
+                children: [
+                  ...categories.map((cat) {
+                    final selected = _selectedCategory == cat;
+                    String label;
+                    try {
+                      final ec = ExpenseCategory.values
+                          .firstWhere((c) => c.name == cat);
+                      label = ec.localizedLabel(l10n);
+                    } catch (_) {
+                      label = cat;
+                    }
+                    return ChoiceChip(
+                      label: Text(label),
+                      selected: selected,
+                      onSelected: (_) =>
+                          setState(() => _selectedCategory = cat),
+                      selectedColor: AppColors.primaryLight(context),
+                      labelStyle: TextStyle(
+                        fontSize: 13,
+                        fontWeight:
+                            selected ? FontWeight.w600 : FontWeight.w400,
+                        color: selected
+                            ? AppColors.primary(context)
+                            : AppColors.textSecondary(context),
+                      ),
+                    );
+                  }),
+                  ...widget.customCategories.map((cc) {
+                    final selected = _selectedCategory == cc.name;
+                    return ChoiceChip(
+                      avatar: Icon(getCategoryIcon(cc.iconName), size: 16),
+                      label: Text(cc.name),
+                      selected: selected,
+                      onSelected: (_) =>
+                          setState(() => _selectedCategory = cc.name),
+                      selectedColor: AppColors.primaryLight(context),
+                      labelStyle: TextStyle(
+                        fontSize: 13,
+                        fontWeight:
+                            selected ? FontWeight.w600 : FontWeight.w400,
+                        color: selected
+                            ? AppColors.primary(context)
+                            : AppColors.textSecondary(context),
+                      ),
+                    );
+                  }),
+                ],
               ),
               const SizedBox(height: 20),
 

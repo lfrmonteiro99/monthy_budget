@@ -72,5 +72,7 @@
 		<string>O Gestão Mensal precisa de acesso à câmara para digitalizar recibos e códigos de barras.</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>O Gestão Mensal precisa de acesso à galeria para anexar imagens de recibos.</string>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>O Gestão Mensal pode registar a localização onde foi feita a despesa.</string>
 	</dict>
 </plist>

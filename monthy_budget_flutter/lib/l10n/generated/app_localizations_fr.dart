@@ -1447,7 +1447,7 @@ class SFr extends S {
   String get settingsSalaries => 'Salaires';
 
   @override
-  String get settingsExpenses => 'Budget et Factures';
+  String get settingsExpenses => 'Budget et Paiements Récurrents';
 
   @override
   String get settingsCoachAi => 'Coach IA';
@@ -1551,7 +1551,7 @@ class SFr extends S {
   String get settingsSalariesSection => 'Revenus';
 
   @override
-  String get settingsExpensesMonthly => 'Budget et Factures';
+  String get settingsExpensesMonthly => 'Budget et Paiements Récurrents';
 
   @override
   String get settingsFavorites => 'Produits Favoris';
@@ -2340,13 +2340,13 @@ class SFr extends S {
   String get themeDark => 'Sombre';
 
   @override
-  String get recurringExpenses => 'Factures Mensuelles';
+  String get recurringExpenses => 'Paiements Récurrents';
 
   @override
-  String get recurringExpenseAdd => 'Ajouter une Facture';
+  String get recurringExpenseAdd => 'Ajouter un Paiement Récurrent';
 
   @override
-  String get recurringExpenseEdit => 'Modifier la Facture';
+  String get recurringExpenseEdit => 'Modifier le Paiement Récurrent';
 
   @override
   String get recurringExpenseCategory => 'Catégorie';
@@ -2368,23 +2368,25 @@ class SFr extends S {
 
   @override
   String get recurringExpenseEmpty =>
-      'Aucune facture mensuelle.\nAjoutez-en une pour la générer automatiquement chaque mois.';
+      'Aucun paiement récurrent.\nAjoutez-en un pour le générer automatiquement chaque mois.';
 
   @override
-  String get recurringExpenseDeleteConfirm => 'Supprimer cette facture ?';
+  String get recurringExpenseDeleteConfirm =>
+      'Supprimer ce paiement récurrent ?';
 
   @override
   String get recurringExpenseAutoCreated => 'Créée automatiquement';
 
   @override
-  String get recurringExpenseManage => 'Gérer les factures';
+  String get recurringExpenseManage => 'Gérer les paiements récurrents';
 
   @override
-  String get recurringExpenseMarkRecurring => 'Marquer comme facture mensuelle';
+  String get recurringExpenseMarkRecurring =>
+      'Marquer comme paiement récurrent';
 
   @override
   String get recurringExpensePopulated =>
-      'Factures mensuelles générées pour ce mois';
+      'Paiements récurrents générés pour ce mois';
 
   @override
   String get recurringExpenseDayHint => 'Ex : 1 pour le 1er';
@@ -2393,19 +2395,22 @@ class SFr extends S {
   String get recurringExpenseNoDay => 'Pas de jour fixe';
 
   @override
-  String get recurringExpenseSaved => 'Facture enregistrée';
+  String get recurringExpenseSaved => 'Paiement récurrent enregistré';
+
+  @override
+  String get recurringPaymentToggle => 'Paiement récurrent';
 
   @override
   String billsCount(int count) {
-    return '$count factures';
+    return '$count paiements';
   }
 
   @override
-  String get billsNone => 'Aucune facture';
+  String get billsNone => 'Aucun paiement récurrent';
 
   @override
   String billsPerMonth(int count, String amount) {
-    return '$count factures · $amount/mois';
+    return '$count paiements · $amount/mois';
   }
 
   @override
@@ -2414,13 +2419,13 @@ class SFr extends S {
   }
 
   @override
-  String get billsAddBill => 'Ajouter une Facture';
+  String get billsAddBill => 'Ajouter un Paiement Récurrent';
 
   @override
   String get billsBudgetSettings => 'Paramètres du Budget';
 
   @override
-  String get billsRecurringBills => 'Factures Récurrentes';
+  String get billsRecurringBills => 'Paiements Récurrents';
 
   @override
   String get billsDescription => 'Description';
@@ -2670,7 +2675,14 @@ class SFr extends S {
   String get notificationSettings => 'Paramètres de Notifications';
 
   @override
-  String get notificationBillReminders => 'Rappels de factures';
+  String get notificationPreferredTime => 'Heure préférée';
+
+  @override
+  String get notificationPreferredTimeDesc =>
+      'Les notifications programmées utiliseront cette heure (sauf rappels personnalisés)';
+
+  @override
+  String get notificationBillReminders => 'Rappels de paiements';
 
   @override
   String get notificationBillReminderDays => 'Jours avant l\'échéance';
@@ -2731,7 +2743,7 @@ class SFr extends S {
 
   @override
   String notificationBillTitle(String name) {
-    return 'Facture à payer : $name';
+    return 'Paiement à venir : $name';
   }
 
   @override
@@ -3121,13 +3133,13 @@ class SFr extends S {
   String get settingsDashTaxDeductions => 'Déductions fiscales (PT)';
 
   @override
-  String get settingsDashUpcomingBills => 'Factures à venir';
+  String get settingsDashUpcomingBills => 'Prochains paiements';
 
   @override
   String get settingsDashBudgetStreaks => 'Séries de budget';
 
   @override
-  String get upcomingBillsTitle => 'Factures à Venir';
+  String get upcomingBillsTitle => 'Prochains Paiements';
 
   @override
   String get upcomingBillsManage => 'Gérer';
@@ -4757,4 +4769,56 @@ class SFr extends S {
   @override
   String get expenseTrendsChartLabel =>
       'Graphique des tendances de dépenses montrant le budget par rapport aux dépenses réelles';
+
+  @override
+  String get customCategories => 'Catégories';
+
+  @override
+  String get customCategoryAdd => 'Ajouter Catégorie';
+
+  @override
+  String get customCategoryEdit => 'Modifier Catégorie';
+
+  @override
+  String get customCategoryDelete => 'Supprimer Catégorie';
+
+  @override
+  String get customCategoryDeleteConfirm => 'Supprimer cette catégorie ?';
+
+  @override
+  String get customCategoryName => 'Nom de catégorie';
+
+  @override
+  String get customCategoryIcon => 'Icône';
+
+  @override
+  String get customCategoryColor => 'Couleur';
+
+  @override
+  String get customCategoryEmpty => 'Aucune catégorie personnalisée';
+
+  @override
+  String get customCategorySaved => 'Catégorie enregistrée';
+
+  @override
+  String get customCategoryInUse => 'Catégorie en cours d\'utilisation';
+
+  @override
+  String get expenseLocationPermissionDenied =>
+      'Autorisation de localisation refusée';
+
+  @override
+  String get expenseAttachPhoto => 'Joindre une photo';
+
+  @override
+  String get expenseAttachCamera => 'Appareil photo';
+
+  @override
+  String get expenseAttachGallery => 'Galerie';
+
+  @override
+  String get expenseExtras => 'Extras';
+
+  @override
+  String get expenseLocationDetect => 'Détecter la position';
 }
