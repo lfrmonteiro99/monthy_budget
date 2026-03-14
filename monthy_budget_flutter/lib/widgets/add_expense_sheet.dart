@@ -130,14 +130,6 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
     super.dispose();
   }
 
-  List<String> get _budgetCategories {
-    final cats = <String>{};
-    for (final e in widget.budgetExpenses) {
-      if (e.enabled) cats.add(e.category.name);
-    }
-    return cats.toList();
-  }
-
   List<String> get _customCategoriesUsed {
     final known = ExpenseCategory.values.map((c) => c.name).toSet();
     final custom = <String>{};
@@ -145,16 +137,6 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
       if (!known.contains(e.category)) custom.add(e.category);
     }
     return custom.toList()..sort();
-  }
-
-  String _localizedCategory(String catName, S l10n) {
-    try {
-      final cat =
-          ExpenseCategory.values.firstWhere((c) => c.name == catName);
-      return cat.localizedLabel(l10n);
-    } catch (_) {
-      return catName;
-    }
   }
 
   IconData _categoryIcon(String catName) {
@@ -197,15 +179,6 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
       if (_descriptionController.text.trim().isEmpty) {
         _descriptionController.text = item.label;
       }
-    });
-  }
-
-  void _selectOthers() {
-    setState(() {
-      _selectedExpenseItem = null;
-      _isOthers = true;
-      _selectedCategory = null;
-      _isCustom = false;
     });
   }
 

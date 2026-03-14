@@ -2409,7 +2409,7 @@ class SEs extends S {
 
   @override
   String billsExceedBudget(String amount) {
-    return 'Pagos recurrentes ($amount) superan presupuesto';
+    return 'Facturas ($amount) superan presupuesto';
   }
 
   @override
@@ -2672,7 +2672,8 @@ class SEs extends S {
   String get notificationPreferredTime => 'Hora preferida';
 
   @override
-  String get notificationPreferredTimeDesc => 'Las notificaciones programadas usarán esta hora (excepto recordatorios personalizados)';
+  String get notificationPreferredTimeDesc =>
+      'Las notificaciones programadas usarán esta hora (excepto recordatorios personalizados)';
 
   @override
   String get notificationBillReminders => 'Recordatorios de pagos';
@@ -4793,4 +4794,22 @@ class SEs extends S {
 
   @override
   String get customCategoryInUse => 'Categoría en uso, no se puede eliminar';
+
+  @override
+  String get expenseLocationPermissionDenied => 'Permiso de ubicación denegado';
+
+  @override
+  String get expenseAttachPhoto => 'Adjuntar Foto';
+
+  @override
+  String get expenseAttachCamera => 'Cámara';
+
+  @override
+  String get expenseAttachGallery => 'Galería';
+
+  @override
+  String get expenseExtras => 'Extras';
+
+  @override
+  String get expenseLocationDetect => 'Detectar ubicación';
 }

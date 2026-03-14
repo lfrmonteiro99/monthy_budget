@@ -2364,7 +2364,8 @@ class SPt extends S {
       'Sem pagamentos recorrentes.\nAdicione para gerar automaticamente todos os meses.';
 
   @override
-  String get recurringExpenseDeleteConfirm => 'Eliminar este pagamento recorrente?';
+  String get recurringExpenseDeleteConfirm =>
+      'Eliminar este pagamento recorrente?';
 
   @override
   String get recurringExpenseAutoCreated => 'Criada automaticamente';
@@ -2373,7 +2374,8 @@ class SPt extends S {
   String get recurringExpenseManage => 'Gerir pagamentos recorrentes';
 
   @override
-  String get recurringExpenseMarkRecurring => 'Marcar como pagamento recorrente';
+  String get recurringExpenseMarkRecurring =>
+      'Marcar como pagamento recorrente';
 
   @override
   String get recurringExpensePopulated =>
@@ -2406,7 +2408,7 @@ class SPt extends S {
 
   @override
   String billsExceedBudget(String amount) {
-    return 'Pagamentos recorrentes ($amount) excedem orçamento';
+    return 'Contas ($amount) excedem orçamento';
   }
 
   @override
@@ -2669,7 +2671,8 @@ class SPt extends S {
   String get notificationPreferredTime => 'Hora preferida';
 
   @override
-  String get notificationPreferredTimeDesc => 'Notificações agendadas usarão esta hora (exceto lembretes personalizados)';
+  String get notificationPreferredTimeDesc =>
+      'Notificações agendadas usarão esta hora (exceto lembretes personalizados)';
 
   @override
   String get notificationBillReminders => 'Lembretes de pagamentos';
@@ -4787,4 +4790,23 @@ class SPt extends S {
 
   @override
   String get customCategoryInUse => 'Categoria em uso, não pode ser eliminada';
+
+  @override
+  String get expenseLocationPermissionDenied =>
+      'Permissão de localização negada';
+
+  @override
+  String get expenseAttachPhoto => 'Anexar Foto';
+
+  @override
+  String get expenseAttachCamera => 'Câmara';
+
+  @override
+  String get expenseAttachGallery => 'Galeria';
+
+  @override
+  String get expenseExtras => 'Extras';
+
+  @override
+  String get expenseLocationDetect => 'Detetar localização';
 }

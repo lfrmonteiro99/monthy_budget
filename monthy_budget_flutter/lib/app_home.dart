@@ -423,6 +423,18 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     }
   }
 
+  Future<void> _loadCustomCategories() async {
+    try {
+      final categories =
+          await _categoryService.load(widget.householdId);
+      if (mounted) {
+        setState(() => _customCategories = categories);
+      }
+    } catch (e) {
+      debugPrint('Failed to load custom categories: $e');
+    }
+  }
+
   void _openRecurringExpenses() {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -1335,7 +1347,6 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       context: context,
       budgetExpenses: _settings.expenses,
       currentExpenses: _actualExpenses,
-      customCategories: _customCategories,
     );
     if (result != null) {
       _addActualExpense(result.expense);

@@ -4916,5 +4916,17 @@
     "customCategorySaved": "Categoria guardada",
     "@customCategorySaved": {"description": "Category saved snackbar message"},
     "customCategoryInUse": "Categoria em uso, não pode ser eliminada",
-    "@customCategoryInUse": {"description": "Category in use error message"}
+    "@customCategoryInUse": {"description": "Category in use error message"},
+    "expenseLocationPermissionDenied": "Permissão de localização negada",
+    "@expenseLocationPermissionDenied": {"description": "Location permission denied message"},
+    "expenseAttachPhoto": "Anexar Foto",
+    "@expenseAttachPhoto": {"description": "Attach photo label"},
+    "expenseAttachCamera": "Câmara",
+    "@expenseAttachCamera": {"description": "Camera option label"},
+    "expenseAttachGallery": "Galeria",
+    "@expenseAttachGallery": {"description": "Gallery option label"},
+    "expenseExtras": "Extras",
+    "@expenseExtras": {"description": "Extras toggle label"},
+    "expenseLocationDetect": "Detetar localização",
+    "@expenseLocationDetect": {"description": "Detect location button label"}
 }

@@ -2371,7 +2371,8 @@ class SFr extends S {
       'Aucun paiement récurrent.\nAjoutez-en un pour le générer automatiquement chaque mois.';
 
   @override
-  String get recurringExpenseDeleteConfirm => 'Supprimer ce paiement récurrent ?';
+  String get recurringExpenseDeleteConfirm =>
+      'Supprimer ce paiement récurrent ?';
 
   @override
   String get recurringExpenseAutoCreated => 'Créée automatiquement';
@@ -2380,7 +2381,8 @@ class SFr extends S {
   String get recurringExpenseManage => 'Gérer les paiements récurrents';
 
   @override
-  String get recurringExpenseMarkRecurring => 'Marquer comme paiement récurrent';
+  String get recurringExpenseMarkRecurring =>
+      'Marquer comme paiement récurrent';
 
   @override
   String get recurringExpensePopulated =>
@@ -2413,7 +2415,7 @@ class SFr extends S {
 
   @override
   String billsExceedBudget(String amount) {
-    return 'Paiements récurrents ($amount) dépassent le budget';
+    return 'Factures ($amount) dépassent le budget';
   }
 
   @override
@@ -2676,7 +2678,8 @@ class SFr extends S {
   String get notificationPreferredTime => 'Heure préférée';
 
   @override
-  String get notificationPreferredTimeDesc => 'Les notifications programmées utiliseront cette heure (sauf rappels personnalisés)';
+  String get notificationPreferredTimeDesc =>
+      'Les notifications programmées utiliseront cette heure (sauf rappels personnalisés)';
 
   @override
   String get notificationBillReminders => 'Rappels de paiements';
@@ -4799,4 +4802,23 @@ class SFr extends S {
 
   @override
   String get customCategoryInUse => 'Catégorie en cours d\'utilisation';
+
+  @override
+  String get expenseLocationPermissionDenied =>
+      'Autorisation de localisation refusée';
+
+  @override
+  String get expenseAttachPhoto => 'Joindre une photo';
+
+  @override
+  String get expenseAttachCamera => 'Appareil photo';
+
+  @override
+  String get expenseAttachGallery => 'Galerie';
+
+  @override
+  String get expenseExtras => 'Extras';
+
+  @override
+  String get expenseLocationDetect => 'Détecter la position';
 }

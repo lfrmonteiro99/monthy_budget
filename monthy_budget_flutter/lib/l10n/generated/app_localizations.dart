@@ -2660,7 +2660,7 @@ abstract class S {
   /// Settings section: expenses
   ///
   /// In pt, this message translates to:
-  /// **'Orçamento e Contas'**
+  /// **'Orçamento e Pagamentos Recorrentes'**
   String get settingsExpenses;
 
   /// Settings section: AI coach
@@ -2864,7 +2864,7 @@ abstract class S {
   /// Settings section header: monthly expenses
   ///
   /// In pt, this message translates to:
-  /// **'Orçamento e Contas'**
+  /// **'Orçamento e Pagamentos Recorrentes'**
   String get settingsExpensesMonthly;
 
   /// Settings section header: favorite products
@@ -4427,7 +4427,7 @@ abstract class S {
   /// **'Pagamento recorrente guardado'**
   String get recurringExpenseSaved;
 
-  /// No description provided for @recurringPaymentToggle.
+  /// Toggle label for recurring payment per budget item
   ///
   /// In pt, this message translates to:
   /// **'Pagamento recorrente'**
@@ -4454,7 +4454,7 @@ abstract class S {
   /// No description provided for @billsExceedBudget.
   ///
   /// In pt, this message translates to:
-  /// **'Pagamentos recorrentes ({amount}) excedem orçamento'**
+  /// **'Contas ({amount}) excedem orçamento'**
   String billsExceedBudget(String amount);
 
   /// No description provided for @billsAddBill.
@@ -8526,37 +8526,106 @@ abstract class S {
   String get expenseTrendsChartLabel;
 
   /// Custom categories section title
+  ///
+  /// In pt, this message translates to:
+  /// **'Categorias'**
   String get customCategories;
 
   /// Add custom category button
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar Categoria'**
   String get customCategoryAdd;
 
   /// Edit custom category title
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar Categoria'**
   String get customCategoryEdit;
 
   /// Delete custom category title
+  ///
+  /// In pt, this message translates to:
+  /// **'Eliminar Categoria'**
   String get customCategoryDelete;
 
   /// Delete custom category confirmation
+  ///
+  /// In pt, this message translates to:
+  /// **'Eliminar esta categoria?'**
   String get customCategoryDeleteConfirm;
 
   /// Category name field label
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome da categoria'**
   String get customCategoryName;
 
   /// Category icon field label
+  ///
+  /// In pt, this message translates to:
+  /// **'Ícone'**
   String get customCategoryIcon;
 
   /// Category color field label
+  ///
+  /// In pt, this message translates to:
+  /// **'Cor'**
   String get customCategoryColor;
 
   /// Empty state for custom categories
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem categorias personalizadas'**
   String get customCategoryEmpty;
 
   /// Category saved snackbar message
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria guardada'**
   String get customCategorySaved;
 
   /// Category in use error message
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria em uso, não pode ser eliminada'**
   String get customCategoryInUse;
+
+  /// Location permission denied message
+  ///
+  /// In pt, this message translates to:
+  /// **'Permissão de localização negada'**
+  String get expenseLocationPermissionDenied;
+
+  /// Attach photo label
+  ///
+  /// In pt, this message translates to:
+  /// **'Anexar Foto'**
+  String get expenseAttachPhoto;
+
+  /// Camera option label
+  ///
+  /// In pt, this message translates to:
+  /// **'Câmara'**
+  String get expenseAttachCamera;
+
+  /// Gallery option label
+  ///
+  /// In pt, this message translates to:
+  /// **'Galeria'**
+  String get expenseAttachGallery;
+
+  /// Extras toggle label
+  ///
+  /// In pt, this message translates to:
+  /// **'Extras'**
+  String get expenseExtras;
+
+  /// Detect location button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Detetar localização'**
+  String get expenseLocationDetect;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

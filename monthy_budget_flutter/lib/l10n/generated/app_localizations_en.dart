@@ -2399,7 +2399,7 @@ class SEn extends S {
 
   @override
   String billsExceedBudget(String amount) {
-    return 'Recurring payments ($amount) exceed budget';
+    return 'Bills ($amount) exceed budget';
   }
 
   @override
@@ -2661,7 +2661,8 @@ class SEn extends S {
   String get notificationPreferredTime => 'Preferred time';
 
   @override
-  String get notificationPreferredTimeDesc => 'Scheduled notifications will use this time (except custom reminders)';
+  String get notificationPreferredTimeDesc =>
+      'Scheduled notifications will use this time (except custom reminders)';
 
   @override
   String get notificationBillReminders => 'Payment reminders';
@@ -4759,4 +4760,22 @@ class SEn extends S {
 
   @override
   String get customCategoryInUse => 'Category in use, cannot delete';
+
+  @override
+  String get expenseLocationPermissionDenied => 'Location permission denied';
+
+  @override
+  String get expenseAttachPhoto => 'Attach Photo';
+
+  @override
+  String get expenseAttachCamera => 'Camera';
+
+  @override
+  String get expenseAttachGallery => 'Gallery';
+
+  @override
+  String get expenseExtras => 'Extras';
+
+  @override
+  String get expenseLocationDetect => 'Detect location';
 }

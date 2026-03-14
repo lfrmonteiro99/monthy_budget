@@ -2582,5 +2582,11 @@
     "customCategoryColor": "Color",
     "customCategoryEmpty": "No custom categories",
     "customCategorySaved": "Category saved",
-    "customCategoryInUse": "Category in use, cannot delete"
+    "customCategoryInUse": "Category in use, cannot delete",
+    "expenseLocationPermissionDenied": "Location permission denied",
+    "expenseAttachPhoto": "Attach Photo",
+    "expenseAttachCamera": "Camera",
+    "expenseAttachGallery": "Gallery",
+    "expenseExtras": "Extras",
+    "expenseLocationDetect": "Detect location"
 }

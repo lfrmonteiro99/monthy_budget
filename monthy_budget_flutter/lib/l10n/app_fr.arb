@@ -2531,5 +2531,11 @@
     "customCategoryColor": "Couleur",
     "customCategoryEmpty": "Aucune catégorie personnalisée",
     "customCategorySaved": "Catégorie enregistrée",
-    "customCategoryInUse": "Catégorie en cours d'utilisation"
+    "customCategoryInUse": "Catégorie en cours d'utilisation",
+    "expenseLocationPermissionDenied": "Autorisation de localisation refusée",
+    "expenseAttachPhoto": "Joindre une photo",
+    "expenseAttachCamera": "Appareil photo",
+    "expenseAttachGallery": "Galerie",
+    "expenseExtras": "Extras",
+    "expenseLocationDetect": "Détecter la position"
 }
