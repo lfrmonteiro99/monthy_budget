@@ -1503,7 +1503,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
     if (result == null || !mounted) return;
 
-    await _categoryService.save(result, widget.householdId);
+    try {
+      await _categoryService.save(result, widget.householdId);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(S.of(context).authErrorGeneric)),
+        );
+      }
+      return;
+    }
     if (!mounted) return;
 
     setState(() {
@@ -1546,7 +1555,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
     if (confirmed != true) return;
 
-    await _categoryService.delete(cat.id);
+    try {
+      await _categoryService.delete(cat.id);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(S.of(context).authErrorGeneric)),
+        );
+      }
+      return;
+    }
     if (!mounted) return;
 
     setState(() {
