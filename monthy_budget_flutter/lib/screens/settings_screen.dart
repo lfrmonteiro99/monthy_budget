@@ -860,56 +860,54 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // ── Header: Switch + Label + Delete ──
                     Row(
                       children: [
-                        Expanded(
-                          child: TextField(
-                            controller: TextEditingController(text: salary.label)
-                              ..selection = TextSelection.collapsed(offset: salary.label.length),
-                            onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(label: v)),
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textLabel(context)),
-                            decoration: InputDecoration(
-                              hintText: l10n.settingsSalaryN(idx + 1),
-                              helperText: l10n.helperSalaryLabel,
-                              helperStyle: TextStyle(fontSize: 11, color: AppColors.textMuted(context)),
-                              helperMaxLines: 2,
-                              border: InputBorder.none,
-                              isDense: true,
-                              contentPadding: EdgeInsets.zero,
-                            ),
+                        Container(
+                          width: 10, height: 10,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: salary.enabled ? const Color(0xFF34D399) : AppColors.textMuted(context),
                           ),
                         ),
-                        if (_draft.salaries.length > 1)
+                        const SizedBox(width: 6),
+                        Switch(
+                          value: salary.enabled,
+                          onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(enabled: v)),
+                          activeTrackColor: AppColors.primary(context),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: TextFormField(
+                            initialValue: salary.label,
+                            onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(label: v)),
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textLabel(context)),
+                            decoration: _inputDecoration(l10n.settingsSalaryLabelHint, helperText: l10n.helperSalaryLabel),
+                          ),
+                        ),
+                        if (_draft.salaries.length > 1) ...[
+                          const SizedBox(width: 8),
                           IconButton(
                             onPressed: () => _removeSalary(idx),
-                            icon: Icon(Icons.remove_circle_outline, size: 18, color: AppColors.borderMuted(context)),
+                            icon: Icon(Icons.remove_circle_outline, size: 20, color: AppColors.error(context)),
                             visualDensity: VisualDensity.compact,
                             padding: EdgeInsets.zero,
                           ),
-                        Row(
-                          children: [
-                            Text(l10n.settingsSalaryActive, style: TextStyle(fontSize: 12, color: Colors.grey.shade400)),
-                            const SizedBox(width: 4),
-                            Switch(
-                              value: salary.enabled,
-                              onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(enabled: v)),
-                              activeTrackColor: AppColors.primary(context),
-                            ),
-                          ],
-                        ),
+                        ],
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    const Divider(height: 24),
+                    // ── Gross Salary ──
                     _label(l10n.settingsGrossMonthlySalary),
                     const SizedBox(height: 8),
                     TextFormField(
-                      initialValue: salary.grossAmount > 0 ? salary.grossAmount.toString() : '',
+                      initialValue: salary.grossAmount > 0 ? salary.grossAmount.toStringAsFixed(2) : '',
                       onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(grossAmount: double.tryParse(v) ?? 0)),
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode, helperText: l10n.helperGrossSalary),
                     ),
                     if (_draft.country.hasSubsidies) ...[
-                      const SizedBox(height: 12),
+                      const Divider(height: 24),
                       _label(l10n.settingsSubsidyHoliday),
                       const SizedBox(height: 8),
                       Row(
@@ -935,17 +933,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         }).toList(),
                       ),
                     ],
-                    const SizedBox(height: 12),
+                    const Divider(height: 24),
                     _label(l10n.settingsOtherExemptLabel),
                     const SizedBox(height: 8),
                     TextFormField(
-                      initialValue: salary.otherExemptIncome > 0 ? salary.otherExemptIncome.toString() : '',
+                      initialValue: salary.otherExemptIncome > 0 ? salary.otherExemptIncome.toStringAsFixed(2) : '',
                       onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(otherExemptIncome: double.tryParse(v) ?? 0)),
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode, helperText: l10n.helperExemptIncome),
                     ),
                     if (_draft.country.hasMealAllowance) ...[
-                      const SizedBox(height: 12),
+                      const Divider(height: 24),
                       _label(l10n.settingsMealAllowanceLabel),
                       const SizedBox(height: 8),
                       Row(
@@ -981,7 +979,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   _label(l10n.settingsAmountPerDay),
                                   const SizedBox(height: 4),
                                   TextFormField(
-                                    initialValue: salary.mealAllowancePerDay > 0 ? salary.mealAllowancePerDay.toString() : '',
+                                    initialValue: salary.mealAllowancePerDay > 0 ? salary.mealAllowancePerDay.toStringAsFixed(2) : '',
                                     onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(mealAllowancePerDay: double.tryParse(v) ?? 0)),
                                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
                                     decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode, helperText: l10n.helperMealAllowance),
@@ -1241,65 +1239,49 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Divider(height: 1),
-                    const SizedBox(height: 10),
-                    // Category name + dropdown
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: TextEditingController(text: expense.label)
-                              ..selection = TextSelection.collapsed(offset: expense.label.length),
-                            onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(label: v)),
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textLabel(context)),
-                            decoration: InputDecoration(
-                              hintText: l10n.settingsExpenseName,
-                              border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: AppColors.border(context)),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                value: expense.category,
-                                isExpanded: true,
-                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
-                                items: ExpenseCategory.values.map((c) {
-                                  final cc = AppColors.categoryColor(c);
-                                  return DropdownMenuItem(
-                                    value: c.name,
-                                    child: Row(children: [
-                                      Icon(categoryIconByName(c.name), size: 16, color: cc),
-                                      const SizedBox(width: 8),
-                                      Text(c.localizedLabel(l10n)),
-                                    ]),
-                                  );
-                                }).toList(),
-                                onChanged: (v) {
-                                  if (v != null) _updateExpense(expense.id, (e) => e.copyWith(category: v));
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    const SizedBox(height: 12),
+                    // ── Expense Name ──
+                    _label(l10n.settingsExpenseNameLabel),
                     const SizedBox(height: 8),
-                    // Budget amount
-                    SizedBox(
-                      width: double.infinity,
-                      child: TextFormField(
-                        initialValue: expense.amount > 0 ? expense.amount.toString() : '',
-                        onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(amount: double.tryParse(v) ?? 0)),
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode, helperText: l10n.helperExpenseAmount),
-                      ),
+                    TextFormField(
+                      initialValue: expense.label,
+                      onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(label: v)),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textLabel(context)),
+                      decoration: _inputDecoration(l10n.settingsExpenseName),
+                    ),
+                    const SizedBox(height: 12),
+                    // ── Category ──
+                    _label(l10n.settingsCategoryLabel),
+                    const SizedBox(height: 8),
+                    DropdownButtonFormField<String>(
+                      value: expense.category,
+                      isExpanded: true,
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
+                      decoration: _inputDecoration(l10n.settingsExpenseCategory),
+                      items: ExpenseCategory.values.map((c) {
+                        final cc = AppColors.categoryColor(c);
+                        return DropdownMenuItem(
+                          value: c.name,
+                          child: Row(children: [
+                            Icon(categoryIconByName(c.name), size: 16, color: cc),
+                            const SizedBox(width: 8),
+                            Text(c.localizedLabel(l10n)),
+                          ]),
+                        );
+                      }).toList(),
+                      onChanged: (v) {
+                        if (v != null) _updateExpense(expense.id, (e) => e.copyWith(category: v));
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    // ── Monthly Budget ──
+                    _label(l10n.settingsMonthlyBudgetLabel),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      initialValue: expense.amount > 0 ? expense.amount.toStringAsFixed(2) : '',
+                      onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(amount: double.tryParse(v) ?? 0)),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode, helperText: l10n.helperExpenseAmount),
                     ),
                     const SizedBox(height: 8),
                     // Recurring payment toggle
