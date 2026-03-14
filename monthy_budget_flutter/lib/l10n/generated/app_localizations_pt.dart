@@ -4816,4 +4816,21 @@ class SPt extends S {
 
   @override
   String get expenseLocationDetect => 'Detetar localização';
+
+  @override
+  String get biometricLockTitle => 'Bloqueio da App';
+
+  @override
+  String get biometricLockSubtitle =>
+      'Exigir autenticação ao abrir a aplicação';
+
+  @override
+  String get biometricPrompt => 'Autentique-se para continuar';
+
+  @override
+  String get biometricReason =>
+      'Verifique a sua identidade para desbloquear a aplicação';
+
+  @override
+  String get biometricRetry => 'Tentar Novamente';
 }

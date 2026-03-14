@@ -8638,6 +8638,36 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Detetar localização'**
   String get expenseLocationDetect;
+
+  /// Biometric lock setting title
+  ///
+  /// In pt, this message translates to:
+  /// **'Bloqueio da App'**
+  String get biometricLockTitle;
+
+  /// Biometric lock setting subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Exigir autenticação ao abrir a aplicação'**
+  String get biometricLockSubtitle;
+
+  /// Biometric lock screen prompt
+  ///
+  /// In pt, this message translates to:
+  /// **'Autentique-se para continuar'**
+  String get biometricPrompt;
+
+  /// Biometric authentication reason
+  ///
+  /// In pt, this message translates to:
+  /// **'Verifique a sua identidade para desbloquear a aplicação'**
+  String get biometricReason;
+
+  /// Biometric retry button
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar Novamente'**
+  String get biometricRetry;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

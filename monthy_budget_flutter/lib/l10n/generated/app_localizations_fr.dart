@@ -4828,4 +4828,21 @@ class SFr extends S {
 
   @override
   String get expenseLocationDetect => 'Détecter la position';
+
+  @override
+  String get biometricLockTitle => 'Verrouillage de l\'app';
+
+  @override
+  String get biometricLockSubtitle =>
+      'Exiger l\'authentification à l\'ouverture de l\'application';
+
+  @override
+  String get biometricPrompt => 'Authentifiez-vous pour continuer';
+
+  @override
+  String get biometricReason =>
+      'Vérifiez votre identité pour déverrouiller l\'application';
+
+  @override
+  String get biometricRetry => 'Réessayer';
 }

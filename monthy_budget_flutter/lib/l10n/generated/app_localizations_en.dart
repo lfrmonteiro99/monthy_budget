@@ -4785,4 +4785,20 @@ class SEn extends S {
 
   @override
   String get expenseLocationDetect => 'Detect location';
+
+  @override
+  String get biometricLockTitle => 'App Lock';
+
+  @override
+  String get biometricLockSubtitle =>
+      'Require authentication when opening the app';
+
+  @override
+  String get biometricPrompt => 'Authenticate to continue';
+
+  @override
+  String get biometricReason => 'Verify your identity to unlock the app';
+
+  @override
+  String get biometricRetry => 'Try Again';
 }

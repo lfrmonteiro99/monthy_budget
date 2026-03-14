@@ -4932,5 +4932,15 @@
     "expenseExtras": "Extras",
     "@expenseExtras": {"description": "Extras toggle label"},
     "expenseLocationDetect": "Detetar localização",
-    "@expenseLocationDetect": {"description": "Detect location button label"}
+    "@expenseLocationDetect": {"description": "Detect location button label"},
+    "biometricLockTitle": "Bloqueio da App",
+    "@biometricLockTitle": {"description": "Biometric lock setting title"},
+    "biometricLockSubtitle": "Exigir autenticação ao abrir a aplicação",
+    "@biometricLockSubtitle": {"description": "Biometric lock setting subtitle"},
+    "biometricPrompt": "Autentique-se para continuar",
+    "@biometricPrompt": {"description": "Biometric lock screen prompt"},
+    "biometricReason": "Verifique a sua identidade para desbloquear a aplicação",
+    "@biometricReason": {"description": "Biometric authentication reason"},
+    "biometricRetry": "Tentar Novamente",
+    "@biometricRetry": {"description": "Biometric retry button"}
 }

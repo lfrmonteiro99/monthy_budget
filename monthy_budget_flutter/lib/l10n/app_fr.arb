@@ -2539,5 +2539,10 @@
     "expenseAttachCamera": "Appareil photo",
     "expenseAttachGallery": "Galerie",
     "expenseExtras": "Extras",
-    "expenseLocationDetect": "Détecter la position"
+    "expenseLocationDetect": "Détecter la position",
+    "biometricLockTitle": "Verrouillage de l'app",
+    "biometricLockSubtitle": "Exiger l'authentification à l'ouverture de l'application",
+    "biometricPrompt": "Authentifiez-vous pour continuer",
+    "biometricReason": "Vérifiez votre identité pour déverrouiller l'application",
+    "biometricRetry": "Réessayer"
 }
