@@ -24,6 +24,7 @@ class NotificationService {
   static const _budgetAlertId = 2000;
   static const _mealPlanId = 2001;
   static const _trialExpiryId = 2002;
+  static const _dailyExpenseId = 2003;
   static const _customBaseId = 3000;
 
   Future<void> init() {
@@ -128,6 +129,10 @@ class NotificationService {
       _budgetAlertTriggered = true;
     }
 
+    if (prefs.dailyExpenseReminder) {
+      await _scheduleDailyExpenseReminder(prefs);
+    }
+
     if (prefs.mealPlanReminders && !hasMealPlan) {
       await _scheduleMealPlanReminder(
         hour: prefs.preferredHour,
@@ -137,6 +142,38 @@ class NotificationService {
 
     for (int i = 0; i < prefs.customReminders.length; i++) {
       await _scheduleCustomReminder(prefs.customReminders[i], i);
+    }
+  }
+
+  Future<void> _scheduleDailyExpenseReminder(
+      NotificationPreferences prefs) async {
+    final now = DateTime.now();
+    var scheduledDate =
+        DateTime(now.year, now.month, now.day, prefs.preferredHour, prefs.preferredMinute);
+
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+
+    try {
+      await _plugin.zonedSchedule(
+        _dailyExpenseId,
+        'Don\'t forget your expenses!',
+        'Take a moment to log today\'s expenses',
+        tz.TZDateTime.from(scheduledDate, tz.local),
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            _channelId,
+            _channelName,
+            importance: Importance.defaultImportance,
+            priority: Priority.defaultPriority,
+          ),
+        ),
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+        matchDateTimeComponents: DateTimeComponents.time,
+      );
+    } catch (e) {
+      debugPrint('Failed to schedule daily expense reminder: $e');
     }
   }
 

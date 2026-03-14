@@ -64,6 +64,7 @@ class CustomReminder {
 }
 
 class NotificationPreferences {
+  final bool dailyExpenseReminder;
   final bool billReminders;
   final int billReminderDaysBefore;
   final bool budgetAlerts;
@@ -74,6 +75,7 @@ class NotificationPreferences {
   final int preferredMinute;
 
   NotificationPreferences({
+    this.dailyExpenseReminder = true,
     this.billReminders = false,
     this.billReminderDaysBefore = 1,
     this.budgetAlerts = false,
@@ -91,6 +93,7 @@ class NotificationPreferences {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is NotificationPreferences &&
+          dailyExpenseReminder == other.dailyExpenseReminder &&
           billReminders == other.billReminders &&
           billReminderDaysBefore == other.billReminderDaysBefore &&
           budgetAlerts == other.budgetAlerts &&
@@ -101,12 +104,13 @@ class NotificationPreferences {
 
   @override
   int get hashCode => Object.hash(
-        billReminders, billReminderDaysBefore,
+        dailyExpenseReminder, billReminders, billReminderDaysBefore,
         budgetAlerts, budgetAlertThreshold, mealPlanReminders,
         preferredHour, preferredMinute,
       );
 
   NotificationPreferences copyWith({
+    bool? dailyExpenseReminder,
     bool? billReminders,
     int? billReminderDaysBefore,
     bool? budgetAlerts,
@@ -117,6 +121,8 @@ class NotificationPreferences {
     int? preferredMinute,
   }) {
     return NotificationPreferences(
+      dailyExpenseReminder:
+          dailyExpenseReminder ?? this.dailyExpenseReminder,
       billReminders: billReminders ?? this.billReminders,
       billReminderDaysBefore:
           billReminderDaysBefore ?? this.billReminderDaysBefore,
@@ -131,6 +137,7 @@ class NotificationPreferences {
   }
 
   String toJsonString() => jsonEncode({
+        'dailyExpenseReminder': dailyExpenseReminder,
         'billReminders': billReminders,
         'billReminderDaysBefore': billReminderDaysBefore,
         'budgetAlerts': budgetAlerts,
@@ -146,6 +153,7 @@ class NotificationPreferences {
     final json = jsonDecode(s) as Map<String, dynamic>;
     final rawThreshold = json['budgetAlertThreshold'] as int? ?? 80;
     return NotificationPreferences(
+      dailyExpenseReminder: json['dailyExpenseReminder'] as bool? ?? true,
       billReminders: json['billReminders'] as bool? ?? false,
       billReminderDaysBefore:
           json['billReminderDaysBefore'] as int? ?? 1,

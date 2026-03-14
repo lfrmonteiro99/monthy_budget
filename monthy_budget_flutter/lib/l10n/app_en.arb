@@ -2595,5 +2595,13 @@
     "biometricLockSubtitle": "Require authentication when opening the app",
     "biometricPrompt": "Authenticate to continue",
     "biometricReason": "Verify your identity to unlock the app",
-    "biometricRetry": "Try Again"
+    "biometricRetry": "Try Again",
+    "notifDailyExpenseReminder": "Daily expense reminder",
+    "notifDailyExpenseReminderDesc": "Reminds you to log today's expenses",
+    "notifDailyExpenseTitle": "Don't forget your expenses!",
+    "notifDailyExpenseBody": "Take a moment to log today's expenses",
+    "settingsSalaryLabelHint": "e.g., Main job, Freelance",
+    "settingsExpenseNameLabel": "EXPENSE NAME",
+    "settingsCategoryLabel": "CATEGORY",
+    "settingsMonthlyBudgetLabel": "MONTHLY BUDGET"
 }

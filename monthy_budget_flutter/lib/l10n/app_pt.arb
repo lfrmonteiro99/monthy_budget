@@ -4942,5 +4942,21 @@
     "biometricReason": "Verifique a sua identidade para desbloquear a aplicação",
     "@biometricReason": {"description": "Biometric authentication reason"},
     "biometricRetry": "Tentar Novamente",
-    "@biometricRetry": {"description": "Biometric retry button"}
+    "@biometricRetry": {"description": "Biometric retry button"},
+    "notifDailyExpenseReminder": "Lembrete diário de despesas",
+    "@notifDailyExpenseReminder": {"description": "Daily expense reminder toggle label"},
+    "notifDailyExpenseReminderDesc": "Lembra-o de registar as despesas do dia",
+    "@notifDailyExpenseReminderDesc": {"description": "Daily expense reminder description"},
+    "notifDailyExpenseTitle": "Não se esqueça das despesas!",
+    "@notifDailyExpenseTitle": {"description": "Daily expense notification title"},
+    "notifDailyExpenseBody": "Reserve um momento para registar as despesas de hoje",
+    "@notifDailyExpenseBody": {"description": "Daily expense notification body"},
+    "settingsSalaryLabelHint": "ex: Emprego principal, Freelance",
+    "@settingsSalaryLabelHint": {"description": "Placeholder for salary label input"},
+    "settingsExpenseNameLabel": "NOME DA DESPESA",
+    "@settingsExpenseNameLabel": {"description": "Label above expense name input"},
+    "settingsCategoryLabel": "CATEGORIA",
+    "@settingsCategoryLabel": {"description": "Label above category dropdown"},
+    "settingsMonthlyBudgetLabel": "ORÇAMENTO MENSAL",
+    "@settingsMonthlyBudgetLabel": {"description": "Label above monthly budget input"}
 }

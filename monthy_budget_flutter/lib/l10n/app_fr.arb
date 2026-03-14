@@ -2544,5 +2544,13 @@
     "biometricLockSubtitle": "Exiger l'authentification à l'ouverture de l'application",
     "biometricPrompt": "Authentifiez-vous pour continuer",
     "biometricReason": "Vérifiez votre identité pour déverrouiller l'application",
-    "biometricRetry": "Réessayer"
+    "biometricRetry": "Réessayer",
+    "notifDailyExpenseReminder": "Rappel quotidien des dépenses",
+    "notifDailyExpenseReminderDesc": "Vous rappelle d'enregistrer les dépenses du jour",
+    "notifDailyExpenseTitle": "N'oubliez pas vos dépenses !",
+    "notifDailyExpenseBody": "Prenez un moment pour enregistrer les dépenses d'aujourd'hui",
+    "settingsSalaryLabelHint": "ex : Emploi principal, Freelance",
+    "settingsExpenseNameLabel": "NOM DE LA DÉPENSE",
+    "settingsCategoryLabel": "CATÉGORIE",
+    "settingsMonthlyBudgetLabel": "BUDGET MENSUEL"
 }

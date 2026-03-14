@@ -76,6 +76,30 @@ void main() {
       expect(updated.billReminders, isFalse); // unchanged
     });
 
+    test('dailyExpenseReminder defaults to true', () {
+      final prefs = NotificationPreferences();
+      expect(prefs.dailyExpenseReminder, isTrue);
+    });
+
+    test('dailyExpenseReminder defaults to true for backward compatibility', () {
+      final json = '{"billReminders":true}';
+      final prefs = NotificationPreferences.fromJsonString(json);
+      expect(prefs.dailyExpenseReminder, isTrue);
+    });
+
+    test('dailyExpenseReminder roundtrips through serialization', () {
+      final prefs = NotificationPreferences(dailyExpenseReminder: false);
+      final decoded = NotificationPreferences.fromJsonString(prefs.toJsonString());
+      expect(decoded.dailyExpenseReminder, isFalse);
+    });
+
+    test('copyWith updates dailyExpenseReminder', () {
+      final prefs = NotificationPreferences();
+      final updated = prefs.copyWith(dailyExpenseReminder: false);
+      expect(updated.dailyExpenseReminder, isFalse);
+      expect(updated.billReminders, isFalse); // unchanged
+    });
+
     test('CustomReminder.fromJson falls back for unknown repeat value', () {
       final reminder = CustomReminder.fromJson(const {
         'id': 'x',
