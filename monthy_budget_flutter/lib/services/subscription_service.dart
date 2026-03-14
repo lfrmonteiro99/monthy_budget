@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/subscription_state.dart';
 
 /// Manages subscription state, trial tracking, and feature discovery.
@@ -7,20 +8,41 @@ class SubscriptionService {
   static const _trialEndNoticeKey = 'trial_end_notice_seen';
   static const _downgradeAppliedKey = 'downgrade_applied';
 
+  /// Returns the account creation date from Supabase auth.
+  /// Falls back to [DateTime.now()] if unavailable (e.g. in tests).
+  DateTime _accountCreatedAt() {
+    try {
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user != null && user.createdAt.isNotEmpty) {
+        return DateTime.parse(user.createdAt);
+      }
+    } catch (_) {
+      // Supabase not initialized (unit tests) — fall through to default.
+    }
+    return DateTime.now();
+  }
+
   Future<SubscriptionState> load() async {
     final prefs = await SharedPreferences.getInstance();
     final json = prefs.getString(_key);
+    final accountDate = _accountCreatedAt();
     if (json == null) {
-      // First launch: start trial now
+      // First launch: trial starts from account creation date
       final initial = SubscriptionState(
-        trialStartDate: DateTime.now(),
+        trialStartDate: accountDate,
         aiCredits: SubscriptionState.trialStarterCredits,
         trialStarterCreditsGranted: true,
       );
       await save(initial);
       return initial;
     }
-    final loaded = SubscriptionState.fromJsonString(json);
+    var loaded = SubscriptionState.fromJsonString(json);
+    // Migrate: if trialStartDate was set from local DateTime.now() instead
+    // of account creation, fix it. Account date is always <= local date.
+    if (loaded.trialStartDate.isAfter(accountDate)) {
+      loaded = loaded.copyWith(trialStartDate: accountDate);
+      await save(loaded);
+    }
     if (!loaded.trialStarterCreditsGranted && loaded.isTrialActive) {
       final upgraded = loaded.copyWith(
         aiCredits: loaded.aiCredits + SubscriptionState.trialStarterCredits,
