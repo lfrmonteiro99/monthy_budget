@@ -2,16 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## v2026.3.28 - 2026-03-14
+## v2026.3.29 - 2026-03-14
 
 
 
-### Documentation
+### Other Changes
 
-- Add plan and issue for coach real data + tier differentiation (#422) ([object])
+- Fix category system, expense creation, and settings error handling (Fixes #491)
 
-
-### Features
-
-- Add expense location/attachments and enhance settings UI (Fixes #483) ([object], [object])
+Fixes #491 ([object], [object])
 
