@@ -12,6 +12,7 @@ import '../widgets/add_expense_sheet.dart';
 import '../widgets/export_bottom_sheet.dart';
 import '../widgets/info_icon_button.dart';
 import '../services/export_service.dart';
+import '../services/actual_expense_service.dart';
 import '../onboarding/expense_tracker_tour.dart';
 
 class ExpenseTrackerScreen extends StatefulWidget {
@@ -65,6 +66,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
 
   final _searchController = TextEditingController();
   final _exportService = ExportService();
+  final _expenseService = ActualExpenseService();
   bool _tourShown = false;
   TutorialCoachMark? _activeTour;
 
@@ -128,7 +130,21 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
       customCategories: widget.customCategories,
     );
     if (result != null && mounted) {
-      final expense = result.expense;
+      var expense = result.expense;
+      if (result.newAttachmentFiles.isNotEmpty) {
+        final urls = await _expenseService.uploadAttachments(
+          result.newAttachmentFiles,
+          widget.householdId,
+          expense.id,
+        );
+        if (urls.isNotEmpty) {
+          final allUrls = [
+            ...?expense.attachmentUrls,
+            ...urls,
+          ];
+          expense = expense.copyWith(attachmentUrls: allUrls);
+        }
+      }
       await widget.onAdd(expense);
       setState(() => _expenses = [..._expenses, expense]
         ..sort((a, b) => b.date.compareTo(a.date)));
@@ -145,7 +161,21 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
       onDelete: _deleteExpense,
     );
     if (result != null && mounted) {
-      final updated = result.expense;
+      var updated = result.expense;
+      if (result.newAttachmentFiles.isNotEmpty) {
+        final urls = await _expenseService.uploadAttachments(
+          result.newAttachmentFiles,
+          widget.householdId,
+          updated.id,
+        );
+        if (urls.isNotEmpty) {
+          final allUrls = [
+            ...?updated.attachmentUrls,
+            ...urls,
+          ];
+          updated = updated.copyWith(attachmentUrls: allUrls);
+        }
+      }
       await widget.onUpdate(updated);
       setState(() {
         _expenses = _expenses
