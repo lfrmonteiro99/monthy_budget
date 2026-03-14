@@ -56,7 +56,7 @@ AllStreaks calculateStreaks({
   final defaultByCategory = <String, double>{};
   for (final item in expenses) {
     if (!item.enabled) continue;
-    final catName = item.category.name;
+    final catName = item.category;
     defaultByCategory[catName] = (defaultByCategory[catName] ?? 0) + item.amount;
   }
 

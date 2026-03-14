@@ -63,7 +63,7 @@ class MealPlannerService {
 
   double monthlyFoodBudget(AppSettings settings) {
     return settings.expenses
-        .where((e) => e.category == ExpenseCategory.alimentacao && e.enabled)
+        .where((e) => e.category == 'alimentacao' && e.enabled)
         .fold(0.0, (sum, e) => sum + e.amount);
   }
 

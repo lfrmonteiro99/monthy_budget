@@ -7,6 +7,7 @@ import '../models/budget_summary.dart';
 import '../models/purchase_record.dart';
 import '../models/recurring_expense.dart';
 import '../theme/app_colors.dart';
+import '../utils/category_helpers.dart';
 import '../utils/formatters.dart';
 import '../utils/stress_index.dart';
 import '../utils/budget_streaks.dart';
@@ -868,8 +869,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     // Count expenses with zero default and no monthly override
     final unsetCount = settings.expenses
-        .where((e) => e.enabled && e.amount == 0 && !monthlyBudgets.containsKey(e.category.name))
-        .map((e) => e.category.name)
+        .where((e) => e.enabled && e.amount == 0 && !monthlyBudgets.containsKey(e.category))
+        .map((e) => e.category)
         .toSet()
         .length;
 
@@ -1379,7 +1380,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           children: [
                             Text(expense.label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textLabel(context))),
                             const SizedBox(width: 8),
-                            Text(expense.category.label, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+                            Text(categoryLabel(expense.category), style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
                           ],
                         ),
                       ),
@@ -1405,8 +1406,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  static Color _categoryColor(ExpenseCategory category) =>
-      AppColors.categoryColor(category);
+  static Color _categoryColor(String category) =>
+      AppColors.categoryColorByName(category);
 }
 
 class _SummaryCard extends StatelessWidget {

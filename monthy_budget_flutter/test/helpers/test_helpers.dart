@@ -52,7 +52,7 @@ ExpenseItem makeExpense({
   String id = 'exp_1',
   String label = 'Rent',
   double amount = 500,
-  ExpenseCategory category = ExpenseCategory.habitacao,
+  String category = 'habitacao',
   bool enabled = true,
   bool isFixed = true,
 }) =>

@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/actual_expense.dart';
 
@@ -32,7 +35,47 @@ class ActualExpenseService {
           '${expense.date.year}-${expense.date.month.toString().padLeft(2, '0')}-${expense.date.day.toString().padLeft(2, '0')}',
       'description': expense.description,
       'month_key': expense.monthKey,
+      'attachment_urls': expense.attachmentUrls,
+      'location_lat': expense.locationLat,
+      'location_lng': expense.locationLng,
+      'location_address': expense.locationAddress,
     }).eq('id', expense.id);
+  }
+
+  /// Uploads [files] to Supabase Storage under
+  /// `expense-attachments/$householdId/$expenseId/` and returns the public URLs.
+  ///
+  /// Handles missing bucket gracefully by logging and returning an empty list.
+  Future<List<String>> uploadAttachments(
+    List<File> files,
+    String householdId,
+    String expenseId,
+  ) async {
+    if (files.isEmpty) return [];
+
+    final urls = <String>[];
+    const bucket = 'expense-attachments';
+
+    for (final file in files) {
+      final fileName = file.path.split(Platform.pathSeparator).last;
+      final storagePath = '$householdId/$expenseId/$fileName';
+
+      try {
+        await _client.storage.from(bucket).upload(
+              storagePath,
+              file,
+              fileOptions: const FileOptions(upsert: true),
+            );
+        final publicUrl =
+            _client.storage.from(bucket).getPublicUrl(storagePath);
+        urls.add(publicUrl);
+      } catch (e) {
+        debugPrint('Failed to upload attachment $fileName: $e');
+        // Continue with remaining files rather than aborting the whole batch.
+      }
+    }
+
+    return urls;
   }
 
   Future<void> delete(String id) async {

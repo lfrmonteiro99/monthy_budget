@@ -29,7 +29,7 @@ void main() {
             id: 'rent',
             label: 'Rent',
             amount: 700,
-            category: ExpenseCategory.habitacao,
+            category: 'habitacao',
             enabled: true,
           ),
         ],
@@ -46,7 +46,7 @@ void main() {
       expect(decoded.personalInfo.dependentes, 2);
       expect(decoded.salaries.single.grossAmount, 2500);
       expect(decoded.salaries.single.subsidyMode, SubsidyMode.full);
-      expect(decoded.expenses.single.category, ExpenseCategory.habitacao);
+      expect(decoded.expenses.single.category, 'habitacao');
       expect(decoded.mealSettings.glutenFree, isTrue);
       expect(decoded.country, Country.es);
       expect(decoded.localeOverride, 'es');

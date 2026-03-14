@@ -5,6 +5,7 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../models/app_settings.dart';
 import '../../models/budget_summary.dart';
 import '../../theme/app_colors.dart';
+import '../../utils/category_helpers.dart';
 import '../../utils/formatters.dart';
 import '../info_icon_button.dart';
 
@@ -96,7 +97,7 @@ class _ExpensesPieChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final grouped = <ExpenseCategory, double>{};
+    final grouped = <String, double>{};
     for (final exp in expenses) {
       grouped[exp.category] = (grouped[exp.category] ?? 0) + exp.amount;
     }
@@ -116,7 +117,7 @@ class _ExpensesPieChart extends StatelessWidget {
                 sections: entries.map((e) {
                   return PieChartSectionData(
                     value: e.value,
-                    color: AppColors.categoryColor(e.key),
+                    color: AppColors.categoryColorByName(e.key),
                     title: '${(e.value / total * 100).toStringAsFixed(1)}%',
                     titleStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.onPrimary(context)),
                     radius: 80,
@@ -140,13 +141,13 @@ class _ExpensesPieChart extends StatelessWidget {
                     width: 10,
                     height: 10,
                     decoration: BoxDecoration(
-                      color: AppColors.categoryColor(e.key),
+                      color: AppColors.categoryColorByName(e.key),
                       shape: BoxShape.circle,
                     ),
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    '${e.key.localizedLabel(l10n)}: ${formatCurrency(e.value)}',
+                    '${localizedCategoryLabel(e.key, l10n)}: ${formatCurrency(e.value)}',
                     style: TextStyle(fontSize: 11, color: AppColors.textSecondary(context)),
                   ),
                 ],

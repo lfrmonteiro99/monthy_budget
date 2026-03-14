@@ -49,12 +49,12 @@ void main() {
         expenses: const [
           ExpenseItem(
             id: 'food',
-            category: ExpenseCategory.alimentacao,
+            category: 'alimentacao',
             amount: 100,
           ),
           ExpenseItem(
             id: 'home',
-            category: ExpenseCategory.habitacao,
+            category: 'habitacao',
             amount: 400,
           ),
         ],
@@ -94,12 +94,12 @@ void main() {
         expenses: const [
           ExpenseItem(
             id: 'food',
-            category: ExpenseCategory.alimentacao,
+            category: 'alimentacao',
             amount: 100,
           ),
           ExpenseItem(
             id: 'home',
-            category: ExpenseCategory.habitacao,
+            category: 'habitacao',
             amount: 400,
           ),
         ],

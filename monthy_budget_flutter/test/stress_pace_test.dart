@@ -75,7 +75,7 @@ void main() {
           ExpenseItem(
             id: 'food',
             label: 'Food',
-            category: ExpenseCategory.alimentacao,
+            category: 'alimentacao',
             amount: 200,
             enabled: true,
           ),

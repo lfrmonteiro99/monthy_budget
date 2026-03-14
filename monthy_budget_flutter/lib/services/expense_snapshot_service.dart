@@ -35,7 +35,7 @@ class ExpenseSnapshotService {
           'month': month,
           'expense_id': e.id,
           'label': e.label,
-          'category': e.category.name,
+          'category': e.category,
           'amount': e.amount,
           'enabled': e.enabled,
         });

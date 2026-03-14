@@ -137,8 +137,8 @@ BudgetSummary calculateBudgetSummary(
   // Sum per-category default amounts, then apply monthly overrides
   final defaultByCategory = <String, double>{};
   for (final e in expenses.where((e) => e.enabled)) {
-    defaultByCategory[e.category.name] =
-        (defaultByCategory[e.category.name] ?? 0) + e.amount;
+    defaultByCategory[e.category] =
+        (defaultByCategory[e.category] ?? 0) + e.amount;
   }
   final totalExpenses = defaultByCategory.entries.fold(0.0, (sum, entry) {
     return sum + (monthlyBudgets[entry.key] ?? entry.value);

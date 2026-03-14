@@ -379,7 +379,7 @@ class ExpenseItem {
   final String id;
   final String label;
   final double amount;
-  final ExpenseCategory category;
+  final String category;
   final bool enabled;
   final bool isFixed;
 
@@ -387,7 +387,7 @@ class ExpenseItem {
     required this.id,
     this.label = '',
     this.amount = 0,
-    this.category = ExpenseCategory.outros,
+    this.category = 'outros',
     this.enabled = true,
     this.isFixed = true,
   });
@@ -396,7 +396,7 @@ class ExpenseItem {
     String? id,
     String? label,
     double? amount,
-    ExpenseCategory? category,
+    String? category,
     bool? enabled,
     bool? isFixed,
   }) {
@@ -414,7 +414,7 @@ class ExpenseItem {
         'id': id,
         'label': label,
         'amount': amount,
-        'category': category.name,
+        'category': category,
         'enabled': enabled,
         'isFixed': isFixed,
       };
@@ -423,7 +423,7 @@ class ExpenseItem {
         id: json['id'] ?? 'expense_${DateTime.now().millisecondsSinceEpoch}',
         label: json['label'] ?? '',
         amount: (json['amount'] ?? 0).toDouble(),
-        category: ExpenseCategory.fromJson(json['category'] ?? 'outros'),
+        category: json['category'] as String? ?? 'outros',
         enabled: json['enabled'] ?? true,
         isFixed: json['isFixed'] ?? true,
       );
@@ -492,11 +492,11 @@ class AppSettings {
       SalaryInfo(label: 'Vencimento 2', enabled: false),
     ],
     this.expenses = const [
-      ExpenseItem(id: 'vodafone', label: 'Vodafone', category: ExpenseCategory.telecomunicacoes),
-      ExpenseItem(id: 'eletricidade', label: 'Eletricidade', category: ExpenseCategory.energia),
-      ExpenseItem(id: 'agua', label: 'Água', category: ExpenseCategory.agua),
-      ExpenseItem(id: 'compras', label: 'Compras / Alimentação', category: ExpenseCategory.alimentacao),
-      ExpenseItem(id: 'escola', label: 'Escola', category: ExpenseCategory.educacao),
+      ExpenseItem(id: 'vodafone', label: 'Vodafone', category: 'telecomunicacoes'),
+      ExpenseItem(id: 'eletricidade', label: 'Eletricidade', category: 'energia'),
+      ExpenseItem(id: 'agua', label: 'Água', category: 'agua'),
+      ExpenseItem(id: 'compras', label: 'Compras / Alimentação', category: 'alimentacao'),
+      ExpenseItem(id: 'escola', label: 'Escola', category: 'educacao'),
     ],
     this.dashboardConfig = const DashboardConfig(),
     this.mealSettings = const MealSettings(),
