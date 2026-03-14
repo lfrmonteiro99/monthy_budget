@@ -2603,5 +2603,7 @@
     "settingsSalaryLabelHint": "e.g., Main job, Freelance",
     "settingsExpenseNameLabel": "EXPENSE NAME",
     "settingsCategoryLabel": "CATEGORY",
-    "settingsMonthlyBudgetLabel": "MONTHLY BUDGET"
+    "settingsMonthlyBudgetLabel": "MONTHLY BUDGET",
+    "expenseLocationSearch": "Search",
+    "expenseLocationSearchHint": "Search address..."
 }

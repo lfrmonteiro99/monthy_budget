@@ -2552,5 +2552,7 @@
     "settingsSalaryLabelHint": "ex : Emploi principal, Freelance",
     "settingsExpenseNameLabel": "NOM DE LA DÉPENSE",
     "settingsCategoryLabel": "CATÉGORIE",
-    "settingsMonthlyBudgetLabel": "BUDGET MENSUEL"
+    "settingsMonthlyBudgetLabel": "BUDGET MENSUEL",
+    "expenseLocationSearch": "Rechercher",
+    "expenseLocationSearchHint": "Rechercher une adresse..."
 }

@@ -4645,4 +4645,10 @@ class SPt extends S {
 
   @override
   String get settingsMonthlyBudgetLabel => 'ORÇAMENTO MENSAL';
+
+  @override
+  String get expenseLocationSearch => 'Pesquisar';
+
+  @override
+  String get expenseLocationSearchHint => 'Pesquisar endereço...';
 }

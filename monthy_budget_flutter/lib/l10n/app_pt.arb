@@ -4958,5 +4958,9 @@
     "settingsCategoryLabel": "CATEGORIA",
     "@settingsCategoryLabel": {"description": "Label above category dropdown"},
     "settingsMonthlyBudgetLabel": "ORÇAMENTO MENSAL",
-    "@settingsMonthlyBudgetLabel": {"description": "Label above monthly budget input"}
+    "@settingsMonthlyBudgetLabel": {"description": "Label above monthly budget input"},
+    "expenseLocationSearch": "Pesquisar",
+    "@expenseLocationSearch": {"description": "Search address button label"},
+    "expenseLocationSearchHint": "Pesquisar endereço...",
+    "@expenseLocationSearchHint": {"description": "Address search field hint"}
 }

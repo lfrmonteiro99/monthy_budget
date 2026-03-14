@@ -4645,4 +4645,10 @@ class SEs extends S {
 
   @override
   String get settingsMonthlyBudgetLabel => 'PRESUPUESTO MENSUAL';
+
+  @override
+  String get expenseLocationSearch => 'Buscar';
+
+  @override
+  String get expenseLocationSearchHint => 'Buscar dirección...';
 }
