@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/app_settings.dart';
-import 'package:orcamento_mensal/models/expense_snapshot.dart';
-import 'package:orcamento_mensal/models/purchase_record.dart';
-import 'package:orcamento_mensal/utils/month_review.dart';
+import 'package:monthly_management/models/app_settings.dart';
+import 'package:monthly_management/models/expense_snapshot.dart';
+import 'package:monthly_management/models/purchase_record.dart';
+import 'package:monthly_management/utils/month_review.dart';
 
 void main() {
   group('buildMonthReview', () {

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/data/tax/tax_system.dart';
-import 'package:orcamento_mensal/utils/formatters.dart';
+import 'package:monthly_management/data/tax/tax_system.dart';
+import 'package:monthly_management/utils/formatters.dart';
 
 void main() {
   group('formatters', () {

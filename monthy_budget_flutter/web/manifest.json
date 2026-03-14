@@ -1,6 +1,6 @@
 {
-    "name": "orcamento_mensal",
-    "short_name": "orcamento_mensal",
+    "name": "Monthly Management",
+    "short_name": "Monthly Management",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

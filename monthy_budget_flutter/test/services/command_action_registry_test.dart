@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/actual_expense.dart';
-import 'package:orcamento_mensal/models/recurring_expense.dart';
-import 'package:orcamento_mensal/models/savings_goal.dart';
-import 'package:orcamento_mensal/models/shopping_item.dart';
-import 'package:orcamento_mensal/services/command_action_registry.dart';
-import 'package:orcamento_mensal/theme/app_colors.dart';
+import 'package:monthly_management/models/actual_expense.dart';
+import 'package:monthly_management/models/recurring_expense.dart';
+import 'package:monthly_management/models/savings_goal.dart';
+import 'package:monthly_management/models/shopping_item.dart';
+import 'package:monthly_management/services/command_action_registry.dart';
+import 'package:monthly_management/theme/app_colors.dart';
 
 void main() {
   late CommandActionRegistry registry;

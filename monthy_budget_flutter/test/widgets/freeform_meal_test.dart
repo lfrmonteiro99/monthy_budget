@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/meal_planner.dart';
-import 'package:orcamento_mensal/models/meal_settings.dart';
-import 'package:orcamento_mensal/widgets/freeform_meal_card.dart';
-import 'package:orcamento_mensal/utils/formatters.dart';
-import 'package:orcamento_mensal/widgets/freeform_meal_sheet.dart';
+import 'package:monthly_management/models/meal_planner.dart';
+import 'package:monthly_management/models/meal_settings.dart';
+import 'package:monthly_management/widgets/freeform_meal_card.dart';
+import 'package:monthly_management/utils/formatters.dart';
+import 'package:monthly_management/widgets/freeform_meal_sheet.dart';
 
 import '../helpers/test_app.dart';
 

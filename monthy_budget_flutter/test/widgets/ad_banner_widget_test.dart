@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/widgets/ad_banner_widget.dart';
+import 'package:monthly_management/widgets/ad_banner_widget.dart';
 
 void main() {
   group('AdBannerWidget', () {

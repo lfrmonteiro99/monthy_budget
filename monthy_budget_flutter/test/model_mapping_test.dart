@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/actual_expense.dart';
-import 'package:orcamento_mensal/models/recurring_expense.dart';
-import 'package:orcamento_mensal/models/savings_goal.dart';
-import 'package:orcamento_mensal/models/shopping_item.dart';
+import 'package:monthly_management/models/actual_expense.dart';
+import 'package:monthly_management/models/recurring_expense.dart';
+import 'package:monthly_management/models/savings_goal.dart';
+import 'package:monthly_management/models/shopping_item.dart';
 
 void main() {
   group('ShoppingItem mapping', () {

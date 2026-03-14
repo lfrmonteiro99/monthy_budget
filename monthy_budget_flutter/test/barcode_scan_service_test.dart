@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/product.dart';
-import 'package:orcamento_mensal/models/scanned_product_candidate.dart';
-import 'package:orcamento_mensal/services/barcode_scan_service.dart';
+import 'package:monthly_management/models/product.dart';
+import 'package:monthly_management/models/scanned_product_candidate.dart';
+import 'package:monthly_management/services/barcode_scan_service.dart';
 
 void main() {
   group('BarcodeScanService', () {

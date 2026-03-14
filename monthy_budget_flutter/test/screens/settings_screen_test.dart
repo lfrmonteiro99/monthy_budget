@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/app_settings.dart';
-import 'package:orcamento_mensal/screens/settings_screen.dart';
-import 'package:orcamento_mensal/services/household_service.dart';
+import 'package:monthly_management/models/app_settings.dart';
+import 'package:monthly_management/screens/settings_screen.dart';
+import 'package:monthly_management/services/household_service.dart';
 
 import '../helpers/test_app.dart';
 

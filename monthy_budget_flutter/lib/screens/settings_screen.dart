@@ -358,6 +358,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       title: S.of(context).settingsSubscription,
                       subtitle: _subscriptionSubtitle(),
                       onTap: widget.onOpenSubscription!,
+                      iconColor: const Color(0xFFF59E0B),
                     ),
                   if (widget.onOpenCustomerCenter != null)
                     _SettingsItem(
@@ -442,7 +443,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         label: Text(l10n.settingsLogout),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppColors.error(context),
-                          side: BorderSide(color: AppColors.errorBackground(context)),
+                          side: const BorderSide(color: Color(0xFFFECACA)),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12)),
                           padding: const EdgeInsets.symmetric(vertical: 14),
@@ -2775,12 +2776,14 @@ class _SettingsItem extends StatelessWidget {
   final String title;
   final String? subtitle;
   final VoidCallback? onTap;
+  final Color? iconColor;
 
   const _SettingsItem({
     required this.icon,
     required this.title,
     this.subtitle,
     this.onTap,
+    this.iconColor,
   });
 
   @override
@@ -2801,7 +2804,7 @@ class _SettingsItem extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(icon, size: 20, color: AppColors.settingsIcon(context)),
+              Icon(icon, size: 20, color: iconColor ?? AppColors.settingsIcon(context)),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(

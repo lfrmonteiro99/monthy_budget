@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/utils/atcud_parser.dart';
+import 'package:monthly_management/utils/atcud_parser.dart';
 
 void main() {
   group('AtcudParser', () {

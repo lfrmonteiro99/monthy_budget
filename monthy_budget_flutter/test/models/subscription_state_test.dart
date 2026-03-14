@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/subscription_state.dart';
+import 'package:monthly_management/models/subscription_state.dart';
 
 void main() {
   group('SubscriptionTier enum', () {

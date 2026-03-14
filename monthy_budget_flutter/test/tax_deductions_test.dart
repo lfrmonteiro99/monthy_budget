@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/data/tax/tax_deductions.dart';
-import 'package:orcamento_mensal/data/tax/tax_system.dart';
+import 'package:monthly_management/data/tax/tax_deductions.dart';
+import 'package:monthly_management/data/tax/tax_system.dart';
 
 void main() {
   group('getTaxDeductionSystem', () {

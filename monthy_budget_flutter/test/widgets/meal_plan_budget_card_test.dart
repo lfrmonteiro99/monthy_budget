@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/meal_budget_insight.dart';
-import 'package:orcamento_mensal/widgets/meal_plan_budget_card.dart';
-import 'package:orcamento_mensal/widgets/meal_budget_status_chip.dart';
+import 'package:monthly_management/models/meal_budget_insight.dart';
+import 'package:monthly_management/widgets/meal_plan_budget_card.dart';
+import 'package:monthly_management/widgets/meal_budget_status_chip.dart';
 
 import '../helpers/test_app.dart';
 

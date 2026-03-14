@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/l10n/generated/app_localizations.dart';
-import 'package:orcamento_mensal/models/subscription_state.dart';
-import 'package:orcamento_mensal/widgets/trial_banner.dart';
+import 'package:monthly_management/l10n/generated/app_localizations.dart';
+import 'package:monthly_management/models/subscription_state.dart';
+import 'package:monthly_management/widgets/trial_banner.dart';
 
 /// Wrap widget under test in a MaterialApp with localization for theme context.
 Widget _wrap(Widget child) {

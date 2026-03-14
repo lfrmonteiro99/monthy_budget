@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/meal_planner.dart';
-import 'package:orcamento_mensal/models/app_settings.dart';
-import 'package:orcamento_mensal/services/meal_planner_service.dart';
+import 'package:monthly_management/models/meal_planner.dart';
+import 'package:monthly_management/models/app_settings.dart';
+import 'package:monthly_management/services/meal_planner_service.dart';
 
 void main() {
   final service = MealPlannerService();

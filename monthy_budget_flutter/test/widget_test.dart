@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/main.dart';
+import 'package:monthly_management/main.dart';
 
 void main() {
   test('OrcamentoMensalApp can be instantiated', () {

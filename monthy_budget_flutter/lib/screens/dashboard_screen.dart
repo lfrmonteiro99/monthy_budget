@@ -1546,9 +1546,9 @@ class _StressIndexCardState extends State<_StressIndexCard> {
                 children: [
                   Text(
                     l10n.dashboardVsLastMonth('${result.delta! >= 0 ? "↑" : "↓"} ${result.delta!.abs().toStringAsFixed(1)}'),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
-                      color: AppColors.textSecondary(context),
+                      color: Color(0xFF6B7280),
                     ),
                   ),
                 ],

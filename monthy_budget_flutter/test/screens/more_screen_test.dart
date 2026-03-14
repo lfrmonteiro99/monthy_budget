@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/screens/more_screen.dart';
+import 'package:monthly_management/screens/more_screen.dart';
 
 import '../helpers/test_app.dart';
 

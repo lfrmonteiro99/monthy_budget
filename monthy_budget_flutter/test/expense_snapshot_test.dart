@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/expense_snapshot.dart';
+import 'package:monthly_management/models/expense_snapshot.dart';
 
 void main() {
   group('ExpenseSnapshot.fromJson', () {

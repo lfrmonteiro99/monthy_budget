@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/screens/plan_hub_screen.dart';
+import 'package:monthly_management/screens/plan_hub_screen.dart';
 
 import '../helpers/test_app.dart';
 

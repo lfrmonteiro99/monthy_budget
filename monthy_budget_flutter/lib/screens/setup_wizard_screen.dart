@@ -219,12 +219,12 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
                 style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
               bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(4),
+                preferredSize: const Size.fromHeight(6),
                 child: LinearProgressIndicator(
                   value: _step / _dataSteps,
                   backgroundColor: AppColors.border(context),
                   color: AppColors.primary(context),
-                  minHeight: 4,
+                  minHeight: 6,
                 ),
               ),
             )
@@ -292,11 +292,11 @@ class _WelcomeStep extends StatelessWidget {
           children: [
             const Spacer(flex: 2),
             Icon(Icons.account_balance_wallet_outlined,
-                size: 64, color: AppColors.primary(context)),
+                size: 56, color: AppColors.primary(context)),
             const SizedBox(height: 24),
             Text(
               l10n.setupWizardWelcomeTitle,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
@@ -438,7 +438,7 @@ class _CountryStep extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 14),
+                            horizontal: 16, vertical: 12),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(

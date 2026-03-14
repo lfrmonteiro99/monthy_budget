@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/services/merchant_registry_service.dart';
+import 'package:monthly_management/services/merchant_registry_service.dart';
 
 void main() {
   group('MerchantInfo', () {

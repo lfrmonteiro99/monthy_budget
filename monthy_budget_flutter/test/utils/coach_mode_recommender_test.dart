@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/subscription_state.dart';
-import 'package:orcamento_mensal/utils/coach_mode_recommender.dart';
+import 'package:monthly_management/models/subscription_state.dart';
+import 'package:monthly_management/utils/coach_mode_recommender.dart';
 
 void main() {
   group('recommendMode', () {

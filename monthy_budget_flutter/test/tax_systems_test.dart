@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/data/tax/es_tax_system.dart';
-import 'package:orcamento_mensal/data/tax/fr_tax_system.dart';
-import 'package:orcamento_mensal/data/tax/pt_tax_system.dart';
-import 'package:orcamento_mensal/data/tax/tax_factory.dart';
-import 'package:orcamento_mensal/data/tax/tax_system.dart';
-import 'package:orcamento_mensal/data/tax/uk_tax_system.dart';
+import 'package:monthly_management/data/tax/es_tax_system.dart';
+import 'package:monthly_management/data/tax/fr_tax_system.dart';
+import 'package:monthly_management/data/tax/pt_tax_system.dart';
+import 'package:monthly_management/data/tax/tax_factory.dart';
+import 'package:monthly_management/data/tax/tax_system.dart';
+import 'package:monthly_management/data/tax/uk_tax_system.dart';
 
 void main() {
   group('Tax factory', () {

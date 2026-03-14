@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/data/tax/tax_system.dart';
-import 'package:orcamento_mensal/models/app_settings.dart';
-import 'package:orcamento_mensal/models/meal_settings.dart';
+import 'package:monthly_management/data/tax/tax_system.dart';
+import 'package:monthly_management/models/app_settings.dart';
+import 'package:monthly_management/models/meal_settings.dart';
 
 void main() {
   group('AppSettings serialization', () {

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/command_action.dart';
+import 'package:monthly_management/models/command_action.dart';
 
 void main() {
   group('CommandAction', () {

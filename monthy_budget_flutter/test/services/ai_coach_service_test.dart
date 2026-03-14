@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/services/ai_coach_service.dart';
+import 'package:monthly_management/services/ai_coach_service.dart';
 
 void main() {
   group('AiCoachService edge-function fallback helpers', () {

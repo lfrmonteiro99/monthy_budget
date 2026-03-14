@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/app_settings.dart';
-import 'package:orcamento_mensal/models/purchase_record.dart';
-import 'package:orcamento_mensal/screens/plan_and_shop_screen.dart';
+import 'package:monthly_management/models/app_settings.dart';
+import 'package:monthly_management/models/purchase_record.dart';
+import 'package:monthly_management/screens/plan_and_shop_screen.dart';
 
 import '../helpers/test_app.dart';
 

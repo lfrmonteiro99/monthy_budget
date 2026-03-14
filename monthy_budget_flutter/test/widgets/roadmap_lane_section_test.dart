@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/roadmap_entry.dart';
-import 'package:orcamento_mensal/widgets/roadmap_lane_section.dart';
+import 'package:monthly_management/models/roadmap_entry.dart';
+import 'package:monthly_management/widgets/roadmap_lane_section.dart';
 
 import '../helpers/test_app.dart';
 

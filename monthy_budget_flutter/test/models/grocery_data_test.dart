@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/grocery_data.dart';
+import 'package:monthly_management/models/grocery_data.dart';
 
 void main() {
   group('GroceryData.fromJson', () {

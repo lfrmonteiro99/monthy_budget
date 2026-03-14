@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/app_settings.dart';
-import 'package:orcamento_mensal/screens/setup_wizard_screen.dart';
+import 'package:monthly_management/models/app_settings.dart';
+import 'package:monthly_management/screens/setup_wizard_screen.dart';
 
 import '../helpers/test_app.dart';
 

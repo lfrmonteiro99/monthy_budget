@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/data_health_status.dart';
-import 'package:orcamento_mensal/screens/confidence_center_screen.dart';
+import 'package:monthly_management/models/data_health_status.dart';
+import 'package:monthly_management/screens/confidence_center_screen.dart';
 
 import '../helpers/test_app.dart';
 

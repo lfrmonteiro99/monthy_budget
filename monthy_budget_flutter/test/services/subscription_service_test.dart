@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:orcamento_mensal/models/subscription_state.dart';
-import 'package:orcamento_mensal/services/subscription_service.dart';
+import 'package:monthly_management/models/subscription_state.dart';
+import 'package:monthly_management/services/subscription_service.dart';
 
 void main() {
   late SubscriptionService service;
