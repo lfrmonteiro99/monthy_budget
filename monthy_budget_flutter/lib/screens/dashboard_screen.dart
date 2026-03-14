@@ -6,6 +6,7 @@ import '../models/actual_expense.dart';
 import '../models/budget_summary.dart';
 import '../models/purchase_record.dart';
 import '../models/recurring_expense.dart';
+import '../models/custom_category.dart';
 import '../theme/app_colors.dart';
 import '../utils/category_helpers.dart';
 import '../utils/formatters.dart';
@@ -59,6 +60,7 @@ class DashboardScreen extends StatefulWidget {
   final VoidCallback? onOpenInsights;
   final VoidCallback? onOpenCoach;
   final VoidCallback? onOpenDetailedDashboard;
+  final List<CustomCategory> customCategories;
 
   const DashboardScreen({
     super.key,
@@ -90,6 +92,7 @@ class DashboardScreen extends StatefulWidget {
     this.onOpenInsights,
     this.onOpenCoach,
     this.onOpenDetailedDashboard,
+    this.customCategories = const [],
   });
 
   @override
@@ -965,7 +968,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   children: [
                     Row(
                       children: [
-                        Icon(_budgetCategoryIcon(s.category),
+                        Icon(_budgetCategoryIcon(s.category, customCategories: widget.customCategories),
                             size: 14, color: AppColors.textSecondary(context)),
                         const SizedBox(width: 6),
                         Expanded(
@@ -1064,24 +1067,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  static IconData _budgetCategoryIcon(String catName) {
-    try {
-      final cat = ExpenseCategory.values.firstWhere((c) => c.name == catName);
-      switch (cat) {
-        case ExpenseCategory.telecomunicacoes: return Icons.phone;
-        case ExpenseCategory.energia: return Icons.bolt;
-        case ExpenseCategory.agua: return Icons.water_drop;
-        case ExpenseCategory.alimentacao: return Icons.restaurant;
-        case ExpenseCategory.educacao: return Icons.school;
-        case ExpenseCategory.habitacao: return Icons.home;
-        case ExpenseCategory.transportes: return Icons.directions_car;
-        case ExpenseCategory.saude: return Icons.local_hospital;
-        case ExpenseCategory.lazer: return Icons.sports_esports;
-        case ExpenseCategory.outros: return Icons.more_horiz;
-      }
-    } catch (_) {
-      return Icons.label_outline;
-    }
+  static IconData _budgetCategoryIcon(
+    String catName, {
+    List<CustomCategory>? customCategories,
+  }) {
+    return categoryIconByName(catName, customCategories: customCategories);
   }
 
   static String _budgetCategoryLabel(String catName, S l10n) {

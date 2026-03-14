@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
+import '../models/custom_category.dart';
 import '../theme/app_colors.dart';
 import 'category_icons.dart';
 
@@ -35,8 +36,14 @@ String categoryLabel(String categoryName) {
 /// Returns the icon for a category name.
 ///
 /// For predefined categories, returns the standard icon.
-/// For custom categories, uses [getCategoryIcon] with the optional [iconName].
-IconData categoryIconByName(String categoryName, {String? iconName}) {
+/// For custom categories, looks up the matching [CustomCategory] in
+/// [customCategories] and uses its `iconName`. Falls back to
+/// [getCategoryIcon] with the optional [iconName].
+IconData categoryIconByName(
+  String categoryName, {
+  String? iconName,
+  List<CustomCategory>? customCategories,
+}) {
   final predefined = <String, IconData>{
     'telecomunicacoes': Icons.phone,
     'energia': Icons.bolt,
@@ -49,7 +56,16 @@ IconData categoryIconByName(String categoryName, {String? iconName}) {
     'lazer': Icons.sports_esports,
     'outros': Icons.more_horiz,
   };
-  return predefined[categoryName] ?? getCategoryIcon(iconName);
+  if (predefined.containsKey(categoryName)) return predefined[categoryName]!;
+
+  // Try custom categories lookup
+  if (customCategories != null) {
+    final custom =
+        customCategories.where((c) => c.name == categoryName).firstOrNull;
+    if (custom != null) return getCategoryIcon(custom.iconName);
+  }
+
+  return getCategoryIcon(iconName);
 }
 
 /// Returns the color for a category name.
