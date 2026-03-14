@@ -649,6 +649,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                           TileLayer(
                             urlTemplate:
                                 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            userAgentPackageName: 'com.sinmetro.monthybudget',
                           ),
                           MarkerLayer(markers: [
                             Marker(
