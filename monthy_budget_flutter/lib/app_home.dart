@@ -484,7 +484,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   ({String category, double percent})? _topCategoryUsage() {
     final budgetByCategory = <String, double>{};
     for (final item in _settings.expenses.where((e) => e.enabled && e.amount > 0)) {
-      budgetByCategory.update(item.category.name, (v) => v + item.amount,
+      budgetByCategory.update(item.category, (v) => v + item.amount,
           ifAbsent: () => item.amount);
     }
     if (budgetByCategory.isEmpty) return null;
@@ -1351,7 +1351,22 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       customCategories: _customCategories,
     );
     if (result != null) {
-      _addActualExpense(result.expense);
+      var expense = result.expense;
+      if (result.newAttachmentFiles.isNotEmpty) {
+        final urls = await _actualExpenseService.uploadAttachments(
+          result.newAttachmentFiles,
+          widget.householdId,
+          expense.id,
+        );
+        if (urls.isNotEmpty) {
+          final allUrls = [
+            ...?expense.attachmentUrls,
+            ...urls,
+          ];
+          expense = expense.copyWith(attachmentUrls: allUrls);
+        }
+      }
+      _addActualExpense(expense);
     }
   }
 

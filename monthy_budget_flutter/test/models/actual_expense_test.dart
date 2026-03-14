@@ -218,6 +218,128 @@ void main() {
       });
     });
 
+    group('toSupabase attachment and location fields', () {
+      test('includes attachment_urls when present', () {
+        final expense = ActualExpense(
+          id: 'exp_att',
+          category: 'outros',
+          amount: 10.0,
+          date: DateTime(2026, 3, 5),
+          monthKey: '2026-03',
+          attachmentUrls: ['https://storage/a.jpg', 'https://storage/b.jpg'],
+        );
+
+        final map = expense.toSupabase('hh_1');
+        expect(map['attachment_urls'], ['https://storage/a.jpg', 'https://storage/b.jpg']);
+      });
+
+      test('omits attachment_urls when null', () {
+        final expense = ActualExpense(
+          id: 'exp_noatt',
+          category: 'outros',
+          amount: 10.0,
+          date: DateTime(2026, 3, 5),
+          monthKey: '2026-03',
+        );
+
+        final map = expense.toSupabase('hh_1');
+        expect(map.containsKey('attachment_urls'), false);
+      });
+
+      test('omits attachment_urls when empty list', () {
+        final expense = ActualExpense(
+          id: 'exp_empty',
+          category: 'outros',
+          amount: 10.0,
+          date: DateTime(2026, 3, 5),
+          monthKey: '2026-03',
+          attachmentUrls: [],
+        );
+
+        final map = expense.toSupabase('hh_1');
+        expect(map.containsKey('attachment_urls'), false);
+      });
+
+      test('includes location fields when present', () {
+        final expense = ActualExpense(
+          id: 'exp_loc',
+          category: 'alimentacao',
+          amount: 25.0,
+          date: DateTime(2026, 3, 10),
+          monthKey: '2026-03',
+          locationLat: 38.7223,
+          locationLng: -9.1393,
+          locationAddress: 'Lisbon, Portugal',
+        );
+
+        final map = expense.toSupabase('hh_1');
+        expect(map['location_lat'], 38.7223);
+        expect(map['location_lng'], -9.1393);
+        expect(map['location_address'], 'Lisbon, Portugal');
+      });
+
+      test('omits location fields when null', () {
+        final expense = ActualExpense(
+          id: 'exp_noloc',
+          category: 'outros',
+          amount: 10.0,
+          date: DateTime(2026, 3, 5),
+          monthKey: '2026-03',
+        );
+
+        final map = expense.toSupabase('hh_1');
+        expect(map.containsKey('location_lat'), false);
+        expect(map.containsKey('location_lng'), false);
+        expect(map.containsKey('location_address'), false);
+      });
+    });
+
+    group('fromSupabase attachment and location fields', () {
+      test('parses attachment_urls and location fields', () {
+        final map = {
+          'id': 'exp_full',
+          'category': 'alimentacao',
+          'amount': 42.5,
+          'expense_date': '2026-03-10',
+          'description': null,
+          'month_key': '2026-03',
+          'attachment_urls': ['https://storage/a.jpg'],
+          'location_lat': 38.7223,
+          'location_lng': -9.1393,
+          'location_address': 'Lisbon',
+        };
+
+        final expense = ActualExpense.fromSupabase(map);
+
+        expect(expense.attachmentUrls, ['https://storage/a.jpg']);
+        expect(expense.locationLat, 38.7223);
+        expect(expense.locationLng, -9.1393);
+        expect(expense.locationAddress, 'Lisbon');
+      });
+
+      test('handles null attachment and location fields', () {
+        final map = {
+          'id': 'exp_null',
+          'category': 'lazer',
+          'amount': 15,
+          'expense_date': '2026-01-20',
+          'description': null,
+          'month_key': '2026-01',
+          'attachment_urls': null,
+          'location_lat': null,
+          'location_lng': null,
+          'location_address': null,
+        };
+
+        final expense = ActualExpense.fromSupabase(map);
+
+        expect(expense.attachmentUrls, isNull);
+        expect(expense.locationLat, isNull);
+        expect(expense.locationLng, isNull);
+        expect(expense.locationAddress, isNull);
+      });
+    });
+
     group('copyWith', () {
       final original = ActualExpense(
         id: 'exp_orig',
@@ -269,6 +391,28 @@ void main() {
         expect(copy.amount, 200.0);
         expect(copy.isFromRecurring, true);
         expect(copy.id, original.id);
+      });
+
+      test('updates attachmentUrls via copyWith', () {
+        final copy = original.copyWith(
+          attachmentUrls: ['https://storage/new.jpg'],
+        );
+
+        expect(copy.attachmentUrls, ['https://storage/new.jpg']);
+        expect(copy.id, original.id);
+        expect(copy.category, original.category);
+      });
+
+      test('updates location fields via copyWith', () {
+        final copy = original.copyWith(
+          locationLat: 40.0,
+          locationLng: -8.0,
+          locationAddress: 'Coimbra',
+        );
+
+        expect(copy.locationLat, 40.0);
+        expect(copy.locationLng, -8.0);
+        expect(copy.locationAddress, 'Coimbra');
       });
     });
   });
@@ -380,7 +524,7 @@ void main() {
             id: 'e1',
             label: 'Rent',
             amount: 500,
-            category: ExpenseCategory.habitacao,
+            category: 'habitacao',
             isFixed: true,
             enabled: true,
           ),
@@ -412,7 +556,7 @@ void main() {
             id: 'e_food',
             label: 'Food',
             amount: 300,
-            category: ExpenseCategory.alimentacao,
+            category: 'alimentacao',
             isFixed: true,
             enabled: true,
           ),
@@ -448,7 +592,7 @@ void main() {
             id: 'e_danger',
             label: 'High',
             amount: 310,
-            category: ExpenseCategory.lazer,
+            category: 'lazer',
             isFixed: true,
             enabled: true,
           ),
@@ -516,7 +660,7 @@ void main() {
             id: 'e_hab',
             label: 'Rent',
             amount: 500,
-            category: ExpenseCategory.habitacao,
+            category: 'habitacao',
             isFixed: true,
             enabled: true,
           ),
@@ -555,7 +699,7 @@ void main() {
             id: 'e_dis',
             label: 'Disabled',
             amount: 200,
-            category: ExpenseCategory.saude,
+            category: 'saude',
             isFixed: true,
             enabled: false,
           ),
@@ -577,7 +721,7 @@ void main() {
             id: 'e_var',
             label: 'Variable',
             amount: 0,
-            category: ExpenseCategory.lazer,
+            category: 'lazer',
             isFixed: false,
             enabled: true,
           ),
