@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/meal_settings.dart';
+import 'package:monthly_management/models/meal_settings.dart';
 
 void main() {
   group('MealSettings', () {

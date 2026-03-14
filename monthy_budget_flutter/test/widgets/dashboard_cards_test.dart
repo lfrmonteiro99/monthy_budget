@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/data/tax/tax_deductions.dart';
-import 'package:orcamento_mensal/models/recurring_expense.dart';
-import 'package:orcamento_mensal/utils/budget_streaks.dart';
-import 'package:orcamento_mensal/widgets/budget_streak_card.dart';
-import 'package:orcamento_mensal/widgets/tax_deduction_card.dart';
-import 'package:orcamento_mensal/widgets/upcoming_bills_card.dart';
+import 'package:monthly_management/data/tax/tax_deductions.dart';
+import 'package:monthly_management/models/recurring_expense.dart';
+import 'package:monthly_management/utils/budget_streaks.dart';
+import 'package:monthly_management/widgets/budget_streak_card.dart';
+import 'package:monthly_management/widgets/tax_deduction_card.dart';
+import 'package:monthly_management/widgets/upcoming_bills_card.dart';
 
 import '../helpers/test_app.dart';
 

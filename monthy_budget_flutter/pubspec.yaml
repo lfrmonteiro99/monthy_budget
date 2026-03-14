@@ -1,4 +1,4 @@
-name: orcamento_mensal
+name: monthly_management
 description: "Calculadora de Orcamento Mensal - Portuguese monthly budget calculator with IRS tax tables"
 publish_to: 'none'
 

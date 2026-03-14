@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/data/tax/tax_factory.dart';
-import 'package:orcamento_mensal/data/tax/tax_system.dart';
-import 'package:orcamento_mensal/models/app_settings.dart';
-import 'package:orcamento_mensal/utils/calculations.dart';
+import 'package:monthly_management/data/tax/tax_factory.dart';
+import 'package:monthly_management/data/tax/tax_system.dart';
+import 'package:monthly_management/models/app_settings.dart';
+import 'package:monthly_management/utils/calculations.dart';
 
 void main() {
   group('calculateMealAllowance', () {

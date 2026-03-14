@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/actual_expense.dart';
-import 'package:orcamento_mensal/models/app_settings.dart';
-import 'package:orcamento_mensal/models/purchase_record.dart';
-import 'package:orcamento_mensal/utils/budget_streaks.dart';
+import 'package:monthly_management/models/actual_expense.dart';
+import 'package:monthly_management/models/app_settings.dart';
+import 'package:monthly_management/models/purchase_record.dart';
+import 'package:monthly_management/utils/budget_streaks.dart';
 
 void main() {
   String monthKey(DateTime dt) =>

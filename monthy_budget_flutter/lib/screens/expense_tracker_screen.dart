@@ -724,9 +724,11 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                       ),
                       selected: selected,
                       onSelected: (_) => _toggleCategory(cat),
-                      selectedColor:
-                          AppColors.primary(context).withValues(alpha: 0.2),
+                      selectedColor: AppColors.chipSelected(context),
                       checkmarkColor: AppColors.primary(context),
+                      side: selected
+                          ? BorderSide(color: const Color(0xFF93C5FD))
+                          : null,
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       visualDensity: VisualDensity.compact,
                     ),
@@ -810,16 +812,16 @@ class _SearchResultTile extends StatelessWidget {
             Expanded(
               child: Text(
                 expense.description ?? categoryLabel,
-                style: const TextStyle(fontSize: 13),
+                style: const TextStyle(fontSize: 14),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
             Text(
               formatCurrency(expense.amount),
               style: TextStyle(
-                fontSize: 13,
+                fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary(context),
+                color: AppColors.error(context),
               ),
             ),
           ],
@@ -827,7 +829,7 @@ class _SearchResultTile extends StatelessWidget {
         subtitle: Text(
           '$dateStr  •  $categoryLabel',
           style:
-              TextStyle(fontSize: 11, color: AppColors.textMuted(context)),
+              TextStyle(fontSize: 12, color: AppColors.textMuted(context)),
         ),
       ),
     );
@@ -999,16 +1001,16 @@ class _CategorySection extends StatelessWidget {
                   Expanded(
                     child: Text(
                       expense.description ?? label,
-                      style: const TextStyle(fontSize: 13),
+                      style: const TextStyle(fontSize: 14),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   Text(
                     formatCurrency(expense.amount),
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary(context),
+                      color: AppColors.error(context),
                     ),
                   ),
                 ],
@@ -1016,7 +1018,7 @@ class _CategorySection extends StatelessWidget {
               subtitle: Text(
                 '${expense.date.day.toString().padLeft(2, '0')}/${expense.date.month.toString().padLeft(2, '0')}/${expense.date.year}',
                 style: TextStyle(
-                    fontSize: 11, color: AppColors.textMuted(context)),
+                    fontSize: 12, color: AppColors.textMuted(context)),
               ),
             ),
           );

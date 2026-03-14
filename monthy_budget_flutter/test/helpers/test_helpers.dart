@@ -3,14 +3,14 @@
 /// All helpers produce deterministic data so tests stay reproducible.
 library;
 
-import 'package:orcamento_mensal/models/actual_expense.dart';
-import 'package:orcamento_mensal/models/app_settings.dart';
-import 'package:orcamento_mensal/models/budget_summary.dart';
-import 'package:orcamento_mensal/models/expense_snapshot.dart';
-import 'package:orcamento_mensal/models/purchase_record.dart';
-import 'package:orcamento_mensal/models/recurring_expense.dart';
-import 'package:orcamento_mensal/models/savings_goal.dart';
-import 'package:orcamento_mensal/data/tax/tax_system.dart';
+import 'package:monthly_management/models/actual_expense.dart';
+import 'package:monthly_management/models/app_settings.dart';
+import 'package:monthly_management/models/budget_summary.dart';
+import 'package:monthly_management/models/expense_snapshot.dart';
+import 'package:monthly_management/models/purchase_record.dart';
+import 'package:monthly_management/models/recurring_expense.dart';
+import 'package:monthly_management/models/savings_goal.dart';
+import 'package:monthly_management/data/tax/tax_system.dart';
 
 // ─── App Settings Factories ────────────────────────────────
 

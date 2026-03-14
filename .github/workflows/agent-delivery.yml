@@ -136,10 +136,10 @@ jobs:
         run: flutter pub get
       - name: Generate l10n
         run: flutter gen-l10n
-      - name: Analyze (disabled)
-        run: echo "Analysis temporarily disabled"
-      - name: Test (disabled)
-        run: echo "Tests temporarily disabled"
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+      - name: Test
+        run: flutter test
 
   open-pr-and-merge:
     runs-on: ubuntu-latest

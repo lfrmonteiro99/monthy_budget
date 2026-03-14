@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/app_settings.dart';
-import 'package:orcamento_mensal/models/local_dashboard_config.dart';
+import 'package:monthly_management/models/app_settings.dart';
+import 'package:monthly_management/models/local_dashboard_config.dart';
 
 void main() {
   group('LocalDashboardConfig', () {

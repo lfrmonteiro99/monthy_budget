@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/savings_goal.dart';
-import 'package:orcamento_mensal/utils/savings_projections.dart';
-import 'package:orcamento_mensal/widgets/savings_goal_card.dart';
+import 'package:monthly_management/models/savings_goal.dart';
+import 'package:monthly_management/utils/savings_projections.dart';
+import 'package:monthly_management/widgets/savings_goal_card.dart';
 
 import '../helpers/test_app.dart';
 

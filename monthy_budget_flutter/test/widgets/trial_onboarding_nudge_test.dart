@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/subscription_state.dart';
-import 'package:orcamento_mensal/widgets/trial_onboarding_nudge.dart';
+import 'package:monthly_management/models/subscription_state.dart';
+import 'package:monthly_management/widgets/trial_onboarding_nudge.dart';
 
 Widget _wrap(Widget child) {
   return MaterialApp(home: Scaffold(body: SingleChildScrollView(child: child)));

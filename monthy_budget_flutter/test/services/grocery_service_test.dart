@@ -2,7 +2,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
-import 'package:orcamento_mensal/services/grocery_service.dart';
+import 'package:monthly_management/services/grocery_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

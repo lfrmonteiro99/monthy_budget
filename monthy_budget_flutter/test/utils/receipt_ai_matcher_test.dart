@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/utils/receipt_ai_matcher.dart';
+import 'package:monthly_management/utils/receipt_ai_matcher.dart';
 
 void main() {
   group('ReceiptAiMatcher', () {

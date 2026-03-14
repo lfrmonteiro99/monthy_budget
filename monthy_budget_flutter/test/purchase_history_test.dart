@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/purchase_record.dart';
+import 'package:monthly_management/models/purchase_record.dart';
 
 void main() {
   group('PurchaseHistory', () {

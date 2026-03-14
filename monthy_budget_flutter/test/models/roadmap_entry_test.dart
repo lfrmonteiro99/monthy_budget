@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/roadmap_entry.dart';
+import 'package:monthly_management/models/roadmap_entry.dart';
 
 void main() {
   group('RoadmapEntry', () {

@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_redundant_argument_values
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/parsed_receipt.dart';
-import 'package:orcamento_mensal/services/receipt_scan_service.dart';
+import 'package:monthly_management/models/parsed_receipt.dart';
+import 'package:monthly_management/services/receipt_scan_service.dart';
 
 // Re-export is not automatic; ParsedReceipt and ReceiptLineItem must be
 // imported directly from the models barrel.

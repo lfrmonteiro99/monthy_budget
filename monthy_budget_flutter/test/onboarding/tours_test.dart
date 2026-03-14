@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/onboarding/coach_tour.dart';
-import 'package:orcamento_mensal/onboarding/meals_tour.dart';
+import 'package:monthly_management/onboarding/coach_tour.dart';
+import 'package:monthly_management/onboarding/meals_tour.dart';
 
 import '../helpers/test_app.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/subscription_state.dart';
-import 'package:orcamento_mensal/services/ad_service.dart';
+import 'package:monthly_management/models/subscription_state.dart';
+import 'package:monthly_management/services/ad_service.dart';
 
 void main() {
   group('AdService.shouldShowAds', () {

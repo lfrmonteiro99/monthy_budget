@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/notification_preferences.dart';
-import 'package:orcamento_mensal/screens/notification_settings_screen.dart';
+import 'package:monthly_management/models/notification_preferences.dart';
+import 'package:monthly_management/screens/notification_settings_screen.dart';
 
 import '../helpers/test_app.dart';
 

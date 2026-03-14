@@ -322,11 +322,11 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
 
               // --- Amount (first — auto-focused with numpad) ---
               Text(
-                l10n.addExpenseAmount,
+                l10n.addExpenseAmount.toUpperCase(),
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary(context),
+                  color: const Color(0xFF64748B),
                   letterSpacing: 0.8,
                 ),
               ),
@@ -343,7 +343,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 12),
+                      horizontal: 16, vertical: 12),
                 ),
                 validator: (v) {
                   final val =
@@ -358,11 +358,11 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
 
               // --- Flat category picker (merged tier 1 + tier 2) ---
               Text(
-                l10n.addExpenseCategory,
+                l10n.addExpenseCategory.toUpperCase(),
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary(context),
+                  color: const Color(0xFF64748B),
                   letterSpacing: 0.8,
                 ),
               ),
@@ -379,6 +379,11 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                       selected: selected,
                       onSelected: (_) => _selectChoice(choice),
                       selectedColor: AppColors.primaryLight(context),
+                      side: BorderSide(
+                        color: selected
+                            ? const Color(0xFF93C5FD)
+                            : const Color(0xFFE2E8F0),
+                      ),
                       labelStyle: TextStyle(
                         fontSize: 13,
                         fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
@@ -400,6 +405,11 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                       _selectedCategory = null;
                     }),
                     selectedColor: AppColors.primaryLight(context),
+                    side: BorderSide(
+                      color: (_isCustom && !customCats.contains(_customCategoryController.text))
+                          ? const Color(0xFF93C5FD)
+                          : const Color(0xFFE2E8F0),
+                    ),
                     labelStyle: const TextStyle(fontSize: 13),
                   ),
                 ],
@@ -414,7 +424,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 12),
+                        horizontal: 16, vertical: 12),
                   ),
                   textCapitalization: TextCapitalization.sentences,
                 ),
@@ -506,7 +516,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 12),
+                        horizontal: 16, vertical: 12),
                   ),
                   textCapitalization: TextCapitalization.sentences,
                 ),

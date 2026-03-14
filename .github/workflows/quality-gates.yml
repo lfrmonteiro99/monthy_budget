@@ -45,14 +45,14 @@ jobs:
       - name: Generate l10n
         run: flutter gen-l10n
 
-      - name: Run tests with coverage (disabled)
-        run: echo "Tests temporarily disabled"
+      - name: Run tests with coverage
+        run: flutter test --coverage
 
-      # - name: Enforce minimum coverage (disabled)
-      #   uses: VeryGoodOpenSource/very_good_coverage@v3
-      #   with:
-      #     path: monthy_budget_flutter/coverage/lcov.info
-      #     min_coverage: 25
+      - name: Enforce minimum coverage
+        uses: VeryGoodOpenSource/very_good_coverage@v3
+        with:
+          path: monthy_budget_flutter/coverage/lcov.info
+          min_coverage: 25
 
       - name: Upload coverage report
         if: always()

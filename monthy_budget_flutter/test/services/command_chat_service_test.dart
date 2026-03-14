@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/services/command_chat_service.dart';
+import 'package:monthly_management/services/command_chat_service.dart';
 
 void main() {
   group('CommandChatService regex fallback', () {

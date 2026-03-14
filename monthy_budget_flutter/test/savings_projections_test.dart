@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/savings_goal.dart';
-import 'package:orcamento_mensal/utils/savings_projections.dart';
+import 'package:monthly_management/models/savings_goal.dart';
+import 'package:monthly_management/utils/savings_projections.dart';
 
 void main() {
   group('calculateProjection', () {

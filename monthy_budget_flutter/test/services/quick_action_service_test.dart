@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/services/quick_action_service.dart';
+import 'package:monthly_management/services/quick_action_service.dart';
 
 void main() {
   group('QuickAction.fromType', () {

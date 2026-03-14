@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/utils/receipt_text_parser.dart';
+import 'package:monthly_management/utils/receipt_text_parser.dart';
 
 void main() {
   group('ReceiptTextParser.parseLines', () {

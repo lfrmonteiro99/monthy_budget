@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/notification_preferences.dart';
+import 'package:monthly_management/models/notification_preferences.dart';
 
 void main() {
   group('NotificationPreferences', () {

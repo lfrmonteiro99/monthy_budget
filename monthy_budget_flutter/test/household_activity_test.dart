@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/household_activity_event.dart';
-import 'package:orcamento_mensal/screens/household_activity_screen.dart';
-import 'package:orcamento_mensal/services/household_activity_service.dart';
-import 'package:orcamento_mensal/l10n/generated/app_localizations.dart';
+import 'package:monthly_management/models/household_activity_event.dart';
+import 'package:monthly_management/screens/household_activity_screen.dart';
+import 'package:monthly_management/services/household_activity_service.dart';
+import 'package:monthly_management/l10n/generated/app_localizations.dart';
 
 /// Fake service that returns canned data without touching Supabase.
 class FakeHouseholdActivityService extends HouseholdActivityService {

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/config/ad_config.dart';
-import 'package:orcamento_mensal/models/monthly_budget.dart';
-import 'package:orcamento_mensal/onboarding/tour_step_content.dart';
+import 'package:monthly_management/config/ad_config.dart';
+import 'package:monthly_management/models/monthly_budget.dart';
+import 'package:monthly_management/onboarding/tour_step_content.dart';
 
 import 'helpers/test_app.dart';
 

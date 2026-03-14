@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/command_action.dart';
-import 'package:orcamento_mensal/widgets/command_chat_panel.dart';
+import 'package:monthly_management/models/command_action.dart';
+import 'package:monthly_management/widgets/command_chat_panel.dart';
 
 import '../helpers/test_app.dart';
 

@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/meal_budget_insight.dart';
-import 'package:orcamento_mensal/models/meal_planner.dart';
-import 'package:orcamento_mensal/models/meal_settings.dart';
-import 'package:orcamento_mensal/services/meal_planner_service.dart';
-import 'package:orcamento_mensal/utils/meal_budget_insights.dart';
+import 'package:monthly_management/models/meal_budget_insight.dart';
+import 'package:monthly_management/models/meal_planner.dart';
+import 'package:monthly_management/models/meal_settings.dart';
+import 'package:monthly_management/services/meal_planner_service.dart';
+import 'package:monthly_management/utils/meal_budget_insights.dart';
 
 void main() {
   late MealPlannerService service;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/whats_new_entry.dart';
-import 'package:orcamento_mensal/widgets/whats_new_card.dart';
+import 'package:monthly_management/models/whats_new_entry.dart';
+import 'package:monthly_management/widgets/whats_new_card.dart';
 
 import '../helpers/test_app.dart';
 

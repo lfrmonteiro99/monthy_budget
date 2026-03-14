@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/grocery_data.dart';
-import 'package:orcamento_mensal/models/product.dart';
-import 'package:orcamento_mensal/models/shopping_item.dart';
-import 'package:orcamento_mensal/screens/grocery_screen.dart';
+import 'package:monthly_management/models/grocery_data.dart';
+import 'package:monthly_management/models/product.dart';
+import 'package:monthly_management/models/shopping_item.dart';
+import 'package:monthly_management/screens/grocery_screen.dart';
 
 import '../helpers/test_app.dart';
 

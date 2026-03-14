@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/services/product_updates_service.dart';
+import 'package:monthly_management/services/product_updates_service.dart';
 
 void main() {
   group('ProductUpdatesService.compareVersions', () {

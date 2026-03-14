@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/parsed_receipt.dart';
+import 'package:monthly_management/models/parsed_receipt.dart';
 
 void main() {
   group('ReceiptLineItem', () {

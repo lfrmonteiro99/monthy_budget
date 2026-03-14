@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/app_settings.dart';
-import 'package:orcamento_mensal/models/savings_goal.dart';
-import 'package:orcamento_mensal/services/downgrade_service.dart';
+import 'package:monthly_management/models/app_settings.dart';
+import 'package:monthly_management/models/savings_goal.dart';
+import 'package:monthly_management/services/downgrade_service.dart';
 
 void main() {
   group('DowngradeService static helpers', () {

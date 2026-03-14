@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/utils/shopping_grouping.dart';
-import 'package:orcamento_mensal/widgets/shopping_group_toggle.dart';
+import 'package:monthly_management/utils/shopping_grouping.dart';
+import 'package:monthly_management/widgets/shopping_group_toggle.dart';
 
 import '../helpers/test_app.dart';
 

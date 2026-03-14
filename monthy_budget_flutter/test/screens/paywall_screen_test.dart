@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/subscription_state.dart';
-import 'package:orcamento_mensal/screens/paywall_screen.dart';
+import 'package:monthly_management/models/subscription_state.dart';
+import 'package:monthly_management/screens/paywall_screen.dart';
 
 Widget _wrap(Widget child) {
   return MaterialApp(home: child);

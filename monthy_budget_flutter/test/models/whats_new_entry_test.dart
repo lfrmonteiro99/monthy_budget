@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/whats_new_entry.dart';
+import 'package:monthly_management/models/whats_new_entry.dart';
 
 void main() {
   group('WhatsNewEntry', () {

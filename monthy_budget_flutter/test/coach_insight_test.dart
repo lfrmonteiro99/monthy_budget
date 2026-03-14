@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/coach_insight.dart';
+import 'package:monthly_management/models/coach_insight.dart';
 
 void main() {
   group('CoachInsight', () {

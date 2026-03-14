@@ -180,15 +180,15 @@ class _ShoppingListGroupedViewState extends State<ShoppingListGroupedView> {
                       Text(
                         item.productName,
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 14,
                           fontWeight: FontWeight.w500,
                           color: item.checked
-                              ? AppColors.textMuted(context)
+                              ? const Color(0xFF94A3B8)
                               : AppColors.textPrimary(context),
                           decoration: item.checked
                               ? TextDecoration.lineThrough
                               : null,
-                          decorationColor: AppColors.textMuted(context),
+                          decorationColor: const Color(0xFF94A3B8),
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -200,9 +200,9 @@ class _ShoppingListGroupedViewState extends State<ShoppingListGroupedView> {
                             '${_formatQuantity(item.quantity!)} ${item.unit!}',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: AppColors.textMuted(context),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF64748B),
                             ),
                           ),
                         ),

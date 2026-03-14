@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/app_settings.dart';
-import 'package:orcamento_mensal/models/budget_summary.dart';
-import 'package:orcamento_mensal/models/local_dashboard_config.dart';
-import 'package:orcamento_mensal/models/purchase_record.dart';
-import 'package:orcamento_mensal/screens/dashboard_screen.dart';
+import 'package:monthly_management/models/app_settings.dart';
+import 'package:monthly_management/models/budget_summary.dart';
+import 'package:monthly_management/models/local_dashboard_config.dart';
+import 'package:monthly_management/models/purchase_record.dart';
+import 'package:monthly_management/screens/dashboard_screen.dart';
 
 import '../helpers/test_app.dart';
 

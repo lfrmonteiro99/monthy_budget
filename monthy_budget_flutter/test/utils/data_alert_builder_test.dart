@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/data_health_status.dart';
-import 'package:orcamento_mensal/utils/data_alert_builder.dart';
+import 'package:monthly_management/models/data_health_status.dart';
+import 'package:monthly_management/utils/data_alert_builder.dart';
 
 void main() {
   final now = DateTime(2026, 3, 8, 12, 0);

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:orcamento_mensal/services/command_pattern_cache.dart';
+import 'package:monthly_management/services/command_pattern_cache.dart';
 
 void main() {
   setUp(() {

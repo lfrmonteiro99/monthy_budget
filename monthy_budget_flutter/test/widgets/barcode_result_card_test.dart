@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:orcamento_mensal/l10n/generated/app_localizations.dart';
-import 'package:orcamento_mensal/models/product.dart';
-import 'package:orcamento_mensal/models/scanned_product_candidate.dart';
-import 'package:orcamento_mensal/models/shopping_item.dart';
-import 'package:orcamento_mensal/widgets/barcode_result_card.dart';
+import 'package:monthly_management/l10n/generated/app_localizations.dart';
+import 'package:monthly_management/models/product.dart';
+import 'package:monthly_management/models/scanned_product_candidate.dart';
+import 'package:monthly_management/models/shopping_item.dart';
+import 'package:monthly_management/widgets/barcode_result_card.dart';
 
 Widget _wrap(Widget child) {
   return MaterialApp(

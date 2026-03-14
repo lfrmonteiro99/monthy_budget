@@ -221,12 +221,19 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   Row(
                     children: [
                       SizedBox(
-                        width: 24,
-                        height: 24,
+                        width: 22,
+                        height: 22,
                         child: Checkbox(
                           value: isMealPurchase,
                           onChanged: (v) => setSheetState(() => isMealPurchase = v ?? false),
                           activeColor: AppColors.primary(ctx),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          side: const BorderSide(
+                            width: 2,
+                            color: Color(0xFFCBD5E1),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -779,14 +786,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 child: Text(
                   item.productName,
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: item.checked
-                        ? AppColors.textMuted(context)
+                        ? const Color(0xFF94A3B8)
                         : AppColors.textPrimary(context),
                     decoration:
                         item.checked ? TextDecoration.lineThrough : null,
-                    decorationColor: AppColors.textMuted(context),
+                    decorationColor: const Color(0xFF94A3B8),
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,

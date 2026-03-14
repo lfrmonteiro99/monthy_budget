@@ -1602,52 +1602,71 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
             )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      bottomNavigationBar: NavigationBar(
-        key: _navBarKey,
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (i) {
-          const tabFeatures = ['dashboard', 'expense_tracker', 'plan_and_shop'];
-          if (i < tabFeatures.length) _trackFeature(tabFeatures[i]);
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            height: 1,
+            color: const Color(0xFFF1F5F9),
+          ),
+          NavigationBar(
+            key: _navBarKey,
+            selectedIndex: _currentIndex,
+            onDestinationSelected: (i) {
+              const tabFeatures = ['dashboard', 'expense_tracker', 'plan_and_shop'];
+              if (i < tabFeatures.length) _trackFeature(tabFeatures[i]);
 
-          setState(() => _currentIndex = i);
-        },
-        backgroundColor: AppColors.surface(context),
-        indicatorColor: AppColors.navIndicator(context),
-        height: 72,
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-        destinations: [
-          NavigationDestination(
-            icon: const Icon(Icons.dashboard_outlined),
-            selectedIcon: Icon(Icons.dashboard, color: AppColors.primary(context)),
-            label: l10n.navHome,
-            tooltip: l10n.navHomeTip,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.receipt_long_outlined),
-            selectedIcon:
-                Icon(Icons.receipt_long, color: AppColors.primary(context)),
-            label: l10n.navTrack,
-            tooltip: l10n.navTrackTip,
-          ),
-          NavigationDestination(
-            icon: Badge(
-              isLabelVisible: _shoppingList.any((i) => !i.checked),
-              label: Text(
-                '${_shoppingList.where((i) => !i.checked).length}',
-                style: const TextStyle(fontSize: 10),
+              setState(() => _currentIndex = i);
+            },
+            backgroundColor: AppColors.surface(context),
+            indicatorColor: AppColors.navIndicator(context),
+            height: 72,
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+            destinations: [
+              NavigationDestination(
+                icon: const Icon(Icons.dashboard_outlined),
+                selectedIcon: Icon(Icons.dashboard, color: AppColors.primary(context)),
+                label: l10n.navHome,
+                tooltip: l10n.navHomeTip,
               ),
-              child: const Icon(Icons.shopping_basket_outlined),
-            ),
-            selectedIcon: Badge(
-              isLabelVisible: _shoppingList.any((i) => !i.checked),
-              label: Text(
-                '${_shoppingList.where((i) => !i.checked).length}',
-                style: const TextStyle(fontSize: 10),
+              NavigationDestination(
+                icon: const Icon(Icons.receipt_long_outlined),
+                selectedIcon:
+                    Icon(Icons.receipt_long, color: AppColors.primary(context)),
+                label: l10n.navTrack,
+                tooltip: l10n.navTrackTip,
               ),
-              child: Icon(Icons.shopping_basket, color: AppColors.primary(context)),
-            ),
-            label: l10n.navPlanAndShop,
-            tooltip: l10n.navPlanAndShopTip,
+              NavigationDestination(
+                icon: Badge(
+                  isLabelVisible: _shoppingList.any((i) => !i.checked),
+                  backgroundColor: const Color(0xFFEF4444),
+                  label: Text(
+                    '${_shoppingList.where((i) => !i.checked).length}',
+                    style: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                  child: const Icon(Icons.shopping_basket_outlined),
+                ),
+                selectedIcon: Badge(
+                  isLabelVisible: _shoppingList.any((i) => !i.checked),
+                  backgroundColor: const Color(0xFFEF4444),
+                  label: Text(
+                    '${_shoppingList.where((i) => !i.checked).length}',
+                    style: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                  child: Icon(Icons.shopping_basket, color: AppColors.primary(context)),
+                ),
+                label: l10n.navPlanAndShop,
+                tooltip: l10n.navPlanAndShopTip,
+              ),
+            ],
           ),
         ],
       ),

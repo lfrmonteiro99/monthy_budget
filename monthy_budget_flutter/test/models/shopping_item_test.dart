@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/shopping_item.dart';
+import 'package:monthly_management/models/shopping_item.dart';
 
 void main() {
   group('ShoppingItem', () {

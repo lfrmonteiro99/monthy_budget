@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/actual_expense.dart';
-import 'package:orcamento_mensal/models/app_settings.dart';
+import 'package:monthly_management/models/actual_expense.dart';
+import 'package:monthly_management/models/app_settings.dart';
 
 import '../helpers/test_helpers.dart';
 

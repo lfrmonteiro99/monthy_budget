@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/savings_goal.dart';
+import 'package:monthly_management/models/savings_goal.dart';
 
 import '../helpers/test_helpers.dart';
 

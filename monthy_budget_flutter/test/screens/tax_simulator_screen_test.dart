@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/data/tax/tax_system.dart';
-import 'package:orcamento_mensal/models/app_settings.dart';
-import 'package:orcamento_mensal/screens/tax_simulator_screen.dart';
+import 'package:monthly_management/data/tax/tax_system.dart';
+import 'package:monthly_management/models/app_settings.dart';
+import 'package:monthly_management/screens/tax_simulator_screen.dart';
 
 import '../helpers/test_app.dart';
 

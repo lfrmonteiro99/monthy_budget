@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:orcamento_mensal/models/product.dart';
+import 'package:monthly_management/models/product.dart';
 
 void main() {
   test('Product.fromJson maps fields and converts avg_price to double', () {

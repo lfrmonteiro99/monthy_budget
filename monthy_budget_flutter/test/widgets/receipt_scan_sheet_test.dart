@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:orcamento_mensal/l10n/generated/app_localizations.dart';
-import 'package:orcamento_mensal/widgets/receipt_scan_sheet.dart';
+import 'package:monthly_management/l10n/generated/app_localizations.dart';
+import 'package:monthly_management/widgets/receipt_scan_sheet.dart';
 
 Widget _wrap(Widget child) {
   return MaterialApp(
