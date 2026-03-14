@@ -2,13 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## v2026.3.32 - 2026-03-14
+## v2026.3.33 - 2026-03-14
 
 
 
 ### Other Changes
 
-- Fix category icons and colors across all screens #513 (Fixes #513) (Fixes #513) ([object], [object], [object], [object])
+- Fix OpenStreetMap tile access by adding userAgentPackageName #520 (Fixes #520) (Fixes #520) ([object], [object], [object], [object])
 
-- Redesign budget settings with expand/collapse cards and summary header #515 (Fixes #515) (Fixes #515) ([object], [object], [object], [object])
+- Add biometric authentication (app lock) #521 (Fixes #521) ([object], [object], [object])
 
