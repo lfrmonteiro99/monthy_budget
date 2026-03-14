@@ -1129,6 +1129,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     children: [
                       Row(
                         children: [
+                          CircleAvatar(
+                            radius: 16,
+                            backgroundColor: AppColors.categoryColorByName(expense.category).withValues(alpha: 0.15),
+                            child: Icon(
+                              categoryIconByName(expense.category),
+                              size: 16,
+                              color: AppColors.categoryColorByName(expense.category),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
                           Switch(
                             value: expense.enabled,
                             onChanged: (v) async {
@@ -1207,7 +1217,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   isExpanded: true,
                                   style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
                                   items: ExpenseCategory.values
-                                      .map((c) => DropdownMenuItem(value: c.name, child: Text(c.localizedLabel(l10n))))
+                                      .map((c) {
+                                        final catColor = AppColors.categoryColor(c);
+                                        return DropdownMenuItem(
+                                          value: c.name,
+                                          child: Row(
+                                            children: [
+                                              Icon(categoryIconByName(c.name), size: 16, color: catColor),
+                                              const SizedBox(width: 8),
+                                              Text(c.localizedLabel(l10n)),
+                                            ],
+                                          ),
+                                        );
+                                      })
                                       .toList(),
                                   onChanged: (v) {
                                     if (v != null) {
@@ -1582,9 +1604,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     try {
       await _categoryService.save(result, widget.householdId);
     } catch (e) {
+      debugPrint('CategoryService.save error: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(S.of(context).authErrorGeneric)),
+          SnackBar(
+            content: Text('${S.of(context).authErrorGeneric}: $e'),
+            duration: const Duration(seconds: 5),
+          ),
         );
       }
       return;

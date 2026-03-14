@@ -41,13 +41,13 @@ IconData categoryIconByName(String categoryName, {String? iconName}) {
     'telecomunicacoes': Icons.phone,
     'energia': Icons.bolt,
     'agua': Icons.water_drop,
-    'alimentacao': Icons.shopping_cart,
+    'alimentacao': Icons.restaurant,
     'educacao': Icons.school,
     'habitacao': Icons.home,
     'transportes': Icons.directions_car,
     'saude': Icons.local_hospital,
     'lazer': Icons.sports_esports,
-    'outros': Icons.category,
+    'outros': Icons.more_horiz,
   };
   return predefined[categoryName] ?? getCategoryIcon(iconName);
 }
