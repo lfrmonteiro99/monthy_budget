@@ -1437,7 +1437,7 @@ class SEn extends S {
   String get settingsSalaries => 'Salaries';
 
   @override
-  String get settingsExpenses => 'Budget & Bills';
+  String get settingsExpenses => 'Budget & Recurring Payments';
 
   @override
   String get settingsCoachAi => 'AI Coach';
@@ -1540,7 +1540,7 @@ class SEn extends S {
   String get settingsSalariesSection => 'Income';
 
   @override
-  String get settingsExpensesMonthly => 'Budget & Bills';
+  String get settingsExpensesMonthly => 'Budget & Recurring Payments';
 
   @override
   String get settingsFavorites => 'Favorite Products';
@@ -2653,6 +2653,12 @@ class SEn extends S {
 
   @override
   String get notificationSettings => 'Notification Settings';
+
+  @override
+  String get notificationPreferredTime => 'Preferred time';
+
+  @override
+  String get notificationPreferredTimeDesc => 'Scheduled notifications will use this time (except custom reminders)';
 
   @override
   String get notificationBillReminders => 'Bill reminders';

@@ -98,6 +98,62 @@ class _NotificationSettingsScreenState
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          // Preferred notification time
+          _buildSectionCard(
+            children: [
+              ListTile(
+                leading: Icon(Icons.schedule,
+                    color: AppColors.primary(context)),
+                title: Text(l10n.notificationPreferredTime,
+                    style: TextStyle(
+                        color: AppColors.textPrimary(context),
+                        fontWeight: FontWeight.w600)),
+                subtitle: Text(
+                  l10n.notificationPreferredTimeDesc,
+                  style: TextStyle(
+                      color: AppColors.textSecondary(context),
+                      fontSize: 13),
+                ),
+                trailing: InkWell(
+                  onTap: () async {
+                    final picked = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay(
+                        hour: _prefs.preferredHour,
+                        minute: _prefs.preferredMinute,
+                      ),
+                    );
+                    if (picked != null) {
+                      _update(_prefs.copyWith(
+                        preferredHour: picked.hour,
+                        preferredMinute: picked.minute,
+                      ));
+                    }
+                  },
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: AppColors.borderMuted(context)),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      '${_prefs.preferredHour.toString().padLeft(2, '0')}:${_prefs.preferredMinute.toString().padLeft(2, '0')}',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primary(context),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
           // Bill reminders
           _buildSectionCard(
             children: [

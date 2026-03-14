@@ -4931,6 +4931,18 @@ abstract class S {
   /// **'Definições de Notificações'**
   String get notificationSettings;
 
+  /// Preferred notification time label
+  ///
+  /// In pt, this message translates to:
+  /// **'Hora preferida'**
+  String get notificationPreferredTime;
+
+  /// Preferred notification time description
+  ///
+  /// In pt, this message translates to:
+  /// **'Notificações agendadas usarão esta hora (exceto lembretes personalizados)'**
+  String get notificationPreferredTimeDesc;
+
   /// Bill reminders toggle
   ///
   /// In pt, this message translates to:

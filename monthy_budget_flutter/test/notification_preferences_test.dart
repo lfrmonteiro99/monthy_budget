@@ -46,6 +46,36 @@ void main() {
       expect(decoded.customReminders.first.repeatDays, [1, 3, 5]);
     });
 
+    test('preferred time defaults to 9:00 for backward compatibility', () {
+      final json = '{"billReminders":true,"billReminderDaysBefore":2}';
+      final prefs = NotificationPreferences.fromJsonString(json);
+
+      expect(prefs.preferredHour, 9);
+      expect(prefs.preferredMinute, 0);
+    });
+
+    test('preferred time roundtrips through serialization', () {
+      final prefs = NotificationPreferences(
+        preferredHour: 18,
+        preferredMinute: 30,
+      );
+
+      final decoded =
+          NotificationPreferences.fromJsonString(prefs.toJsonString());
+
+      expect(decoded.preferredHour, 18);
+      expect(decoded.preferredMinute, 30);
+    });
+
+    test('copyWith updates preferred time', () {
+      final prefs = NotificationPreferences();
+      final updated = prefs.copyWith(preferredHour: 20, preferredMinute: 15);
+
+      expect(updated.preferredHour, 20);
+      expect(updated.preferredMinute, 15);
+      expect(updated.billReminders, isFalse); // unchanged
+    });
+
     test('CustomReminder.fromJson falls back for unknown repeat value', () {
       final reminder = CustomReminder.fromJson(const {
         'id': 'x',

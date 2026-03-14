@@ -1444,7 +1444,7 @@ class SEs extends S {
   String get settingsSalaries => 'Salarios';
 
   @override
-  String get settingsExpenses => 'Presupuesto y Facturas';
+  String get settingsExpenses => 'Presupuesto y Pagos Recurrentes';
 
   @override
   String get settingsCoachAi => 'Coach IA';
@@ -1548,7 +1548,7 @@ class SEs extends S {
   String get settingsSalariesSection => 'Ingresos';
 
   @override
-  String get settingsExpensesMonthly => 'Presupuesto y Facturas';
+  String get settingsExpensesMonthly => 'Presupuesto y Pagos Recurrentes';
 
   @override
   String get settingsFavorites => 'Productos Favoritos';
@@ -2664,6 +2664,12 @@ class SEs extends S {
 
   @override
   String get notificationSettings => 'Ajustes de Notificaciones';
+
+  @override
+  String get notificationPreferredTime => 'Hora preferida';
+
+  @override
+  String get notificationPreferredTimeDesc => 'Las notificaciones programadas usarán esta hora (excepto recordatorios personalizados)';
 
   @override
   String get notificationBillReminders => 'Recordatorios de facturas';

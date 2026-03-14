@@ -1829,7 +1829,7 @@
     "@settingsSalaries": {
         "description": "Settings section: salaries"
     },
-    "settingsExpenses": "Orçamento e Contas",
+    "settingsExpenses": "Orçamento e Pagamentos Recorrentes",
     "@settingsExpenses": {
         "description": "Settings section: expenses"
     },
@@ -1965,7 +1965,7 @@
     "@settingsSalariesSection": {
         "description": "Settings section header: salaries/income"
     },
-    "settingsExpensesMonthly": "Orçamento e Contas",
+    "settingsExpensesMonthly": "Orçamento e Pagamentos Recorrentes",
     "@settingsExpensesMonthly": {
         "description": "Settings section header: monthly expenses"
     },
@@ -3027,15 +3027,15 @@
     "@themeDark": {
         "description": "Dark theme option"
     },
-    "recurringExpenses": "Contas Mensais",
+    "recurringExpenses": "Pagamentos Recorrentes",
     "@recurringExpenses": {
         "description": "Recurring expenses title"
     },
-    "recurringExpenseAdd": "Adicionar Conta",
+    "recurringExpenseAdd": "Adicionar Pagamento Recorrente",
     "@recurringExpenseAdd": {
         "description": "Add recurring expense"
     },
-    "recurringExpenseEdit": "Editar Conta",
+    "recurringExpenseEdit": "Editar Pagamento Recorrente",
     "@recurringExpenseEdit": {
         "description": "Edit recurring expense"
     },
@@ -3063,11 +3063,11 @@
     "@recurringExpenseInactive": {
         "description": "Inactive label"
     },
-    "recurringExpenseEmpty": "Sem contas mensais.\nAdicione para gerar automaticamente todos os meses.",
+    "recurringExpenseEmpty": "Sem pagamentos recorrentes.\nAdicione para gerar automaticamente todos os meses.",
     "@recurringExpenseEmpty": {
         "description": "Empty state message"
     },
-    "recurringExpenseDeleteConfirm": "Eliminar esta conta?",
+    "recurringExpenseDeleteConfirm": "Eliminar este pagamento recorrente?",
     "@recurringExpenseDeleteConfirm": {
         "description": "Delete confirmation"
     },
@@ -3075,15 +3075,15 @@
     "@recurringExpenseAutoCreated": {
         "description": "Badge for auto-created expenses"
     },
-    "recurringExpenseManage": "Gerir contas",
+    "recurringExpenseManage": "Gerir pagamentos recorrentes",
     "@recurringExpenseManage": {
         "description": "Manage recurring button"
     },
-    "recurringExpenseMarkRecurring": "Marcar como conta mensal",
+    "recurringExpenseMarkRecurring": "Marcar como pagamento recorrente",
     "@recurringExpenseMarkRecurring": {
         "description": "Toggle to mark expense as recurring"
     },
-    "recurringExpensePopulated": "Contas mensais geradas para este mês",
+    "recurringExpensePopulated": "Pagamentos recorrentes gerados para este mês",
     "@recurringExpensePopulated": {
         "description": "Snackbar when recurring populated"
     },
@@ -3095,11 +3095,11 @@
     "@recurringExpenseNoDay": {
         "description": "Label when no day set"
     },
-    "recurringExpenseSaved": "Conta guardada",
+    "recurringExpenseSaved": "Pagamento recorrente guardado",
     "@recurringExpenseSaved": {
         "description": "Snackbar on save"
     },
-    "billsCount": "{count} contas",
+    "billsCount": "{count} pagamentos",
     "@billsCount": {
         "placeholders": {
             "count": {
@@ -3460,6 +3460,14 @@
     "notificationSettings": "Definições de Notificações",
     "@notificationSettings": {
         "description": "Notification settings title"
+    },
+    "notificationPreferredTime": "Hora preferida",
+    "@notificationPreferredTime": {
+        "description": "Preferred notification time label"
+    },
+    "notificationPreferredTimeDesc": "Notificações agendadas usarão esta hora (exceto lembretes personalizados)",
+    "@notificationPreferredTimeDesc": {
+        "description": "Preferred notification time description"
     },
     "notificationBillReminders": "Lembretes de contas",
     "@notificationBillReminders": {

@@ -1441,7 +1441,7 @@ class SPt extends S {
   String get settingsSalaries => 'Salários';
 
   @override
-  String get settingsExpenses => 'Orçamento e Contas';
+  String get settingsExpenses => 'Orçamento e Pagamentos Recorrentes';
 
   @override
   String get settingsCoachAi => 'Coach IA';
@@ -1544,7 +1544,7 @@ class SPt extends S {
   String get settingsSalariesSection => 'Vencimentos';
 
   @override
-  String get settingsExpensesMonthly => 'Orçamento e Contas';
+  String get settingsExpensesMonthly => 'Orçamento e Pagamentos Recorrentes';
 
   @override
   String get settingsFavorites => 'Produtos Favoritos';
@@ -2661,6 +2661,12 @@ class SPt extends S {
 
   @override
   String get notificationSettings => 'Definições de Notificações';
+
+  @override
+  String get notificationPreferredTime => 'Hora preferida';
+
+  @override
+  String get notificationPreferredTimeDesc => 'Notificações agendadas usarão esta hora (exceto lembretes personalizados)';
 
   @override
   String get notificationBillReminders => 'Lembretes de contas';

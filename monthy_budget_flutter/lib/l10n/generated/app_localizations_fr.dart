@@ -1447,7 +1447,7 @@ class SFr extends S {
   String get settingsSalaries => 'Salaires';
 
   @override
-  String get settingsExpenses => 'Budget et Factures';
+  String get settingsExpenses => 'Budget et Paiements Récurrents';
 
   @override
   String get settingsCoachAi => 'Coach IA';
@@ -1551,7 +1551,7 @@ class SFr extends S {
   String get settingsSalariesSection => 'Revenus';
 
   @override
-  String get settingsExpensesMonthly => 'Budget et Factures';
+  String get settingsExpensesMonthly => 'Budget et Paiements Récurrents';
 
   @override
   String get settingsFavorites => 'Produits Favoris';
@@ -2668,6 +2668,12 @@ class SFr extends S {
 
   @override
   String get notificationSettings => 'Paramètres de Notifications';
+
+  @override
+  String get notificationPreferredTime => 'Heure préférée';
+
+  @override
+  String get notificationPreferredTimeDesc => 'Les notifications programmées utiliseront cette heure (sauf rappels personnalisés)';
 
   @override
   String get notificationBillReminders => 'Rappels de factures';

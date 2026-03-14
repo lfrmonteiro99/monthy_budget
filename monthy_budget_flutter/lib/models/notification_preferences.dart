@@ -70,6 +70,8 @@ class NotificationPreferences {
   final int budgetAlertThreshold; // percentage 0-100
   final bool mealPlanReminders;
   final List<CustomReminder> customReminders;
+  final int preferredHour;
+  final int preferredMinute;
 
   NotificationPreferences({
     this.billReminders = false,
@@ -78,6 +80,8 @@ class NotificationPreferences {
     this.budgetAlertThreshold = 80,
     this.mealPlanReminders = false,
     this.customReminders = const [],
+    this.preferredHour = 9,
+    this.preferredMinute = 0,
   }) : assert(
          budgetAlertThreshold >= 0 && budgetAlertThreshold <= 100,
          'budgetAlertThreshold must be between 0 and 100',
@@ -91,12 +95,15 @@ class NotificationPreferences {
           billReminderDaysBefore == other.billReminderDaysBefore &&
           budgetAlerts == other.budgetAlerts &&
           budgetAlertThreshold == other.budgetAlertThreshold &&
-          mealPlanReminders == other.mealPlanReminders;
+          mealPlanReminders == other.mealPlanReminders &&
+          preferredHour == other.preferredHour &&
+          preferredMinute == other.preferredMinute;
 
   @override
   int get hashCode => Object.hash(
         billReminders, billReminderDaysBefore,
         budgetAlerts, budgetAlertThreshold, mealPlanReminders,
+        preferredHour, preferredMinute,
       );
 
   NotificationPreferences copyWith({
@@ -106,6 +113,8 @@ class NotificationPreferences {
     int? budgetAlertThreshold,
     bool? mealPlanReminders,
     List<CustomReminder>? customReminders,
+    int? preferredHour,
+    int? preferredMinute,
   }) {
     return NotificationPreferences(
       billReminders: billReminders ?? this.billReminders,
@@ -116,6 +125,8 @@ class NotificationPreferences {
           budgetAlertThreshold ?? this.budgetAlertThreshold,
       mealPlanReminders: mealPlanReminders ?? this.mealPlanReminders,
       customReminders: customReminders ?? this.customReminders,
+      preferredHour: preferredHour ?? this.preferredHour,
+      preferredMinute: preferredMinute ?? this.preferredMinute,
     );
   }
 
@@ -127,6 +138,8 @@ class NotificationPreferences {
         'mealPlanReminders': mealPlanReminders,
         'customReminders':
             customReminders.map((r) => r.toJson()).toList(),
+        'preferredHour': preferredHour,
+        'preferredMinute': preferredMinute,
       });
 
   factory NotificationPreferences.fromJsonString(String s) {
@@ -144,6 +157,8 @@ class NotificationPreferences {
                   CustomReminder.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
+      preferredHour: json['preferredHour'] as int? ?? 9,
+      preferredMinute: json['preferredMinute'] as int? ?? 0,
     );
   }
 }
