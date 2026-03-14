@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart' as latlong;
 import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/actual_expense.dart';
@@ -629,6 +631,38 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
               ]),
               if (_showExtras) ...[
                 const SizedBox(height: 12),
+                if (_locationLat != null && _locationLng != null) ...[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: SizedBox(
+                      height: 180,
+                      child: FlutterMap(
+                        options: MapOptions(
+                          initialCenter: latlong.LatLng(
+                              _locationLat!, _locationLng!),
+                          initialZoom: 15,
+                          interactionOptions: const InteractionOptions(
+                              flags: InteractiveFlag.none),
+                        ),
+                        children: [
+                          TileLayer(
+                            urlTemplate:
+                                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          ),
+                          MarkerLayer(markers: [
+                            Marker(
+                              point: latlong.LatLng(
+                                  _locationLat!, _locationLng!),
+                              child: const Icon(Icons.location_pin,
+                                  color: Colors.red, size: 40),
+                            ),
+                          ]),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                ],
                 Row(children: [
                   Icon(Icons.location_on,
                       size: 18,
