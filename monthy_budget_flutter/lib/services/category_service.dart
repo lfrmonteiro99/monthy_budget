@@ -2,7 +2,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/custom_category.dart';
 
 class CategoryService {
-  final _client = Supabase.instance.client;
+  SupabaseClient get _client => Supabase.instance.client;
 
   Future<List<CustomCategory>> load(String householdId) async {
     final rows = await _client
