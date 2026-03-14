@@ -8591,6 +8591,18 @@ abstract class S {
   /// **'Categoria em uso, não pode ser eliminada'**
   String get customCategoryInUse;
 
+  /// Hint for predefined categories section
+  ///
+  /// In pt, this message translates to:
+  /// **'Categorias predefinidas usadas em toda a aplicação'**
+  String get customCategoryPredefinedHint;
+
+  /// Badge for predefined categories
+  ///
+  /// In pt, this message translates to:
+  /// **'Predefinida'**
+  String get customCategoryDefault;
+
   /// Location permission denied message
   ///
   /// In pt, this message translates to:

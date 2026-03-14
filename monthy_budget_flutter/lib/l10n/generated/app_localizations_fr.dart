@@ -4804,6 +4804,13 @@ class SFr extends S {
   String get customCategoryInUse => 'Catégorie en cours d\'utilisation';
 
   @override
+  String get customCategoryPredefinedHint =>
+      'Catégories prédéfinies utilisées dans l\'application';
+
+  @override
+  String get customCategoryDefault => 'Prédéfinie';
+
+  @override
   String get expenseLocationPermissionDenied =>
       'Autorisation de localisation refusée';
 

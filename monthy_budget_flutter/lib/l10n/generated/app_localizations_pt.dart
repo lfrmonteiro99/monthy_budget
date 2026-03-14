@@ -4792,6 +4792,13 @@ class SPt extends S {
   String get customCategoryInUse => 'Categoria em uso, não pode ser eliminada';
 
   @override
+  String get customCategoryPredefinedHint =>
+      'Categorias predefinidas usadas em toda a aplicação';
+
+  @override
+  String get customCategoryDefault => 'Predefinida';
+
+  @override
   String get expenseLocationPermissionDenied =>
       'Permissão de localização negada';
 

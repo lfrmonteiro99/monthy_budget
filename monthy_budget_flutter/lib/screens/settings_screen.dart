@@ -98,6 +98,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _loadingAssociatedMembers = false;
   late Map<String, double> _monthlyBudgetsDraft;
   late List<RecurringExpense> _recurringDraft;
+
+  /// Notifier that triggers rebuilds of the pushed detail page whenever
+  /// parent state changes via [setState].
+  final _detailRebuildNotifier = ValueNotifier<int>(0);
+
+  @override
+  void setState(VoidCallback fn) {
+    super.setState(fn);
+    // Also notify any open detail page so it rebuilds with fresh state.
+    _detailRebuildNotifier.value++;
+  }
   late List<CustomCategory> _customCategoriesDraft;
   final _categoryService = CategoryService();
 
@@ -128,6 +139,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void dispose() {
     _apiKeyController.dispose();
+    _detailRebuildNotifier.dispose();
     super.dispose();
   }
 
@@ -160,7 +172,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       MaterialPageRoute(
         builder: (_) => _SettingsDetailPage(
           title: title,
-          body: builder(),
+          bodyBuilder: builder,
+          rebuildNotifier: _detailRebuildNotifier,
         ),
       ),
     );
@@ -395,7 +408,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   _SettingsItem(
                     icon: Icons.category,
                     title: l10n.customCategories,
-                    subtitle: '${_customCategoriesDraft.length}',
+                    subtitle: '${ExpenseCategory.values.length + _customCategoriesDraft.length}',
                     onTap: () => _openSectionPage(l10n.customCategories, _buildCategoriesSection),
                   ),
 
@@ -1402,6 +1415,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  IconData _predefinedCategoryIcon(ExpenseCategory cat) {
+    return switch (cat) {
+      ExpenseCategory.telecomunicacoes => Icons.phone,
+      ExpenseCategory.energia => Icons.bolt,
+      ExpenseCategory.agua => Icons.water_drop,
+      ExpenseCategory.alimentacao => Icons.restaurant,
+      ExpenseCategory.educacao => Icons.school,
+      ExpenseCategory.habitacao => Icons.home,
+      ExpenseCategory.transportes => Icons.directions_car,
+      ExpenseCategory.saude => Icons.local_hospital,
+      ExpenseCategory.lazer => Icons.sports_esports,
+      ExpenseCategory.outros => Icons.more_horiz,
+    };
+  }
+
   Widget _buildCategoriesSection() {
     final l10n = S.of(context);
     return Container(
@@ -1410,22 +1438,69 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // ── Predefined categories ──
+          _label(l10n.settingsExpensesMonthly),
+          const SizedBox(height: 4),
+          Text(
+            l10n.customCategoryPredefinedHint,
+            style: TextStyle(fontSize: 12, color: AppColors.textMuted(context)),
+          ),
+          const SizedBox(height: 12),
+          ...ExpenseCategory.values.map((cat) {
+            final color = AppColors.categoryColor(cat);
+            return Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.border(context)),
+              ),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: color.withValues(alpha: 0.15),
+                    child: Icon(_predefinedCategoryIcon(cat), size: 20, color: color),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      cat.localizedLabel(l10n),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary(context),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      l10n.customCategoryDefault,
+                      style: TextStyle(fontSize: 11, color: color, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+
+          const SizedBox(height: 20),
+          Divider(color: AppColors.border(context)),
+          const SizedBox(height: 16),
+
+          // ── Custom categories ──
+          _label(l10n.customCategories),
+          const SizedBox(height: 12),
           if (_customCategoriesDraft.isEmpty)
             Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 32),
-                child: Column(
-                  children: [
-                    Icon(Icons.category, size: 48, color: AppColors.dragHandle(context)),
-                    const SizedBox(height: 16),
-                    Text(
-                      l10n.customCategoryEmpty,
-                      style: TextStyle(
-                        color: AppColors.textMuted(context),
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Text(
+                  l10n.customCategoryEmpty,
+                  style: TextStyle(color: AppColors.textMuted(context), fontSize: 14),
                 ),
               ),
             )
@@ -3070,11 +3145,13 @@ class _SettingsItem extends StatelessWidget {
 
 class _SettingsDetailPage extends StatelessWidget {
   final String title;
-  final Widget body;
+  final Widget Function() bodyBuilder;
+  final ValueNotifier<int> rebuildNotifier;
 
   const _SettingsDetailPage({
     required this.title,
-    required this.body,
+    required this.bodyBuilder,
+    required this.rebuildNotifier,
   });
 
   @override
@@ -3093,8 +3170,11 @@ class _SettingsDetailPage extends StatelessWidget {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: body,
+      body: ValueListenableBuilder<int>(
+        valueListenable: rebuildNotifier,
+        builder: (context, _, child) => SingleChildScrollView(
+          child: bodyBuilder(),
+        ),
       ),
     );
   }

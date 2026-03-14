@@ -2532,6 +2532,8 @@
     "customCategoryEmpty": "Aucune catégorie personnalisée",
     "customCategorySaved": "Catégorie enregistrée",
     "customCategoryInUse": "Catégorie en cours d'utilisation",
+    "customCategoryPredefinedHint": "Catégories prédéfinies utilisées dans l'application",
+    "customCategoryDefault": "Prédéfinie",
     "expenseLocationPermissionDenied": "Autorisation de localisation refusée",
     "expenseAttachPhoto": "Joindre une photo",
     "expenseAttachCamera": "Appareil photo",

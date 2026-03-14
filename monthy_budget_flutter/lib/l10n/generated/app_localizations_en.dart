@@ -4762,6 +4762,13 @@ class SEn extends S {
   String get customCategoryInUse => 'Category in use, cannot delete';
 
   @override
+  String get customCategoryPredefinedHint =>
+      'Built-in categories used across the app';
+
+  @override
+  String get customCategoryDefault => 'Default';
+
+  @override
   String get expenseLocationPermissionDenied => 'Location permission denied';
 
   @override
