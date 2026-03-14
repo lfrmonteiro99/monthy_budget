@@ -154,6 +154,31 @@ class _NotificationSettingsScreenState
           ),
           const SizedBox(height: 12),
 
+          // Daily expense reminder
+          _buildSectionCard(
+            children: [
+              SwitchListTile(
+                value: _prefs.dailyExpenseReminder,
+                onChanged: (v) {
+                  if (v) _ensurePermission();
+                  _update(_prefs.copyWith(dailyExpenseReminder: v));
+                },
+                title: Text(l10n.notifDailyExpenseReminder,
+                    style: TextStyle(
+                        color: AppColors.textPrimary(context),
+                        fontWeight: FontWeight.w600)),
+                subtitle: Text(
+                  l10n.notifDailyExpenseReminderDesc,
+                  style: TextStyle(
+                      color: AppColors.textSecondary(context),
+                      fontSize: 13),
+                ),
+                activeThumbColor: AppColors.primary(context),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
           // Bill reminders
           _buildSectionCard(
             children: [

@@ -317,8 +317,7 @@ class SEs extends S {
   }
 
   @override
-  String get monthReviewOnTrack =>
-      'Gastos dentro de lo previsto. Buen control presupuestario.';
+  String get monthReviewOnTrack => 'Gastos dentro de lo previsto. Buen control presupuestario.';
 
   @override
   String get dashboardTitle => 'Presupuesto Mensual';
@@ -380,8 +379,7 @@ class SEs extends S {
   }
 
   @override
-  String get dashboardConfigureData =>
-      'Configure sus datos para ver el resumen.';
+  String get dashboardConfigureData => 'Configure sus datos para ver el resumen.';
 
   @override
   String get dashboardOpenSettingsButton => 'Abrir Configuración';
@@ -434,8 +432,7 @@ class SEs extends S {
   String get dashboardRemaining => 'Restante';
 
   @override
-  String get dashboardFinalizePurchaseHint =>
-      'Finaliza una compra en la Lista para registrar gastos.';
+  String get dashboardFinalizePurchaseHint => 'Finaliza una compra en la Lista para registrar gastos.';
 
   @override
   String get dashboardPurchaseHistory => 'HISTORIAL DE COMPRAS';
@@ -497,8 +494,7 @@ class SEs extends S {
   String get dashboardPaceWarning => 'Gastando más rápido de lo previsto';
 
   @override
-  String get dashboardPaceCritical =>
-      'Riesgo de superar presupuesto alimentario';
+  String get dashboardPaceCritical => 'Riesgo de superar presupuesto alimentario';
 
   @override
   String get dashboardPace => 'Ritmo';
@@ -524,15 +520,13 @@ class SEs extends S {
   String get coachSubtitle => 'IA · GPT-4o mini';
 
   @override
-  String get coachApiKeyRequired =>
-      'Añade tu API key de OpenAI en Configuración para usar esta funcionalidad.';
+  String get coachApiKeyRequired => 'Añade tu API key de OpenAI en Configuración para usar esta funcionalidad.';
 
   @override
   String get coachAnalysisTitle => 'Análisis financiero en 3 partes';
 
   @override
-  String get coachAnalysisDescription =>
-      'Posicionamiento general · Factores críticos del Índice de Tranquilidad · Oportunidad inmediata. Basado en tus datos reales de presupuesto, gastos e historial de compras.';
+  String get coachAnalysisDescription => 'Posicionamiento general · Factores críticos del Índice de Tranquilidad · Oportunidad inmediata. Basado en tus datos reales de presupuesto, gastos e historial de compras.';
 
   @override
   String get coachConfigureApiKey => 'Configurar API key en Ajustes';
@@ -562,8 +556,7 @@ class SEs extends S {
   String get coachClearTitle => 'Limpiar historial';
 
   @override
-  String get coachClearContent =>
-      '¿Estás seguro de que quieres eliminar todos los análisis guardados?';
+  String get coachClearContent => '¿Estás seguro de que quieres eliminar todos los análisis guardados?';
 
   @override
   String get coachDeleteLabel => 'Eliminar análisis';
@@ -575,8 +568,7 @@ class SEs extends S {
   String get coachEmptyTitle => 'Tu coach financiero';
 
   @override
-  String get coachEmptyBody =>
-      'Pregunta lo que quieras sobre tu presupuesto, gastos o ahorros. Usare tus datos reales para darte consejos personalizados.';
+  String get coachEmptyBody => 'Pregunta lo que quieras sobre tu presupuesto, gastos o ahorros. Usare tus datos reales para darte consejos personalizados.';
 
   @override
   String get coachQuickPrompt1 => 'Donde puedo recortar gastos este mes?';
@@ -624,8 +616,7 @@ class SEs extends S {
   String get coachEcoFallbackTitle => 'Modo Eco activo (sin creditos)';
 
   @override
-  String get coachEcoFallbackBody =>
-      'Puedes seguir chateando con memoria reducida.';
+  String get coachEcoFallbackBody => 'Puedes seguir chateando con memoria reducida.';
 
   @override
   String get coachRestoreMemory => 'Restaurar memoria';
@@ -658,8 +649,7 @@ class SEs extends S {
   String get cmdTemplateChangeTheme => 'Cambia el tema a [claro/oscuro]';
 
   @override
-  String get cmdExecutionFailed =>
-      'Entendi el pedido, pero no pude ejecutarlo. Intenta de nuevo.';
+  String get cmdExecutionFailed => 'Entendi el pedido, pero no pude ejecutarlo. Intenta de nuevo.';
 
   @override
   String get cmdNotUnderstood => 'No entendi. Puedes reformular?';
@@ -677,91 +667,76 @@ class SEs extends S {
   String get cmdCapabilitiesTitle => 'Acciones disponibles';
 
   @override
-  String get cmdCapabilitiesSubtitle =>
-      'Estas son las acciones que el asistente soporta ahora mismo.';
+  String get cmdCapabilitiesSubtitle => 'Estas son las acciones que el asistente soporta ahora mismo.';
 
   @override
-  String get cmdCapabilitiesFooter =>
-      'Seguimos anadiendo mas. Si no aparece aqui, puede que aun no funcione.';
+  String get cmdCapabilitiesFooter => 'Seguimos anadiendo mas. Si no aparece aqui, puede que aun no funcione.';
 
   @override
   String get cmdCapabilityAddExpense => 'Anadir un gasto';
 
   @override
-  String get cmdCapabilityAddExpenseExample =>
-      'Anade [cantidad] euros en [categoria]';
+  String get cmdCapabilityAddExpenseExample => 'Anade [cantidad] euros en [categoria]';
 
   @override
   String get cmdCapabilityAddShoppingItem => 'Anadir a la lista';
 
   @override
-  String get cmdCapabilityAddShoppingItemExample =>
-      'Anade [articulo] a la lista de compras';
+  String get cmdCapabilityAddShoppingItemExample => 'Anade [articulo] a la lista de compras';
 
   @override
   String get cmdCapabilityRemoveShoppingItem => 'Quitar de la lista';
 
   @override
-  String get cmdCapabilityRemoveShoppingItemExample =>
-      'Quita [articulo] de la lista de compras';
+  String get cmdCapabilityRemoveShoppingItemExample => 'Quita [articulo] de la lista de compras';
 
   @override
-  String get cmdCapabilityToggleShoppingItemChecked =>
-      'Marcar o desmarcar de la lista';
+  String get cmdCapabilityToggleShoppingItemChecked => 'Marcar o desmarcar de la lista';
 
   @override
-  String get cmdCapabilityToggleShoppingItemCheckedExample =>
-      'Marca [articulo] en la lista de compras';
+  String get cmdCapabilityToggleShoppingItemCheckedExample => 'Marca [articulo] en la lista de compras';
 
   @override
   String get cmdCapabilityAddSavingsGoal => 'Crear objetivo de ahorro';
 
   @override
-  String get cmdCapabilityAddSavingsGoalExample =>
-      'Crea objetivo de ahorro [nombre] de [cantidad]';
+  String get cmdCapabilityAddSavingsGoalExample => 'Crea objetivo de ahorro [nombre] de [cantidad]';
 
   @override
-  String get cmdCapabilityAddSavingsContribution =>
-      'Anadir al objetivo de ahorro';
+  String get cmdCapabilityAddSavingsContribution => 'Anadir al objetivo de ahorro';
 
   @override
-  String get cmdCapabilityAddSavingsContributionExample =>
-      'Anade [cantidad] al objetivo [nombre]';
+  String get cmdCapabilityAddSavingsContributionExample => 'Anade [cantidad] al objetivo [nombre]';
 
   @override
   String get cmdCapabilityAddRecurringExpense => 'Anadir gasto recurrente';
 
   @override
-  String get cmdCapabilityAddRecurringExpenseExample =>
-      'Anade gasto recurrente [cantidad] en [categoria] dia [dia]';
+  String get cmdCapabilityAddRecurringExpenseExample => 'Anade gasto recurrente [cantidad] en [categoria] dia [dia]';
 
   @override
   String get cmdCapabilityDeleteExpense => 'Eliminar un gasto';
 
   @override
-  String get cmdCapabilityDeleteExpenseExample =>
-      'Elimina el gasto [descripcion]';
+  String get cmdCapabilityDeleteExpenseExample => 'Elimina el gasto [descripcion]';
 
   @override
   String get cmdCapabilityChangeTheme => 'Cambiar tema';
 
   @override
-  String get cmdCapabilityChangeThemeExample =>
-      'Cambia el tema a [claro/oscuro]';
+  String get cmdCapabilityChangeThemeExample => 'Cambia el tema a [claro/oscuro]';
 
   @override
   String get cmdCapabilityChangePalette => 'Cambiar paleta';
 
   @override
-  String get cmdCapabilityChangePaletteExample =>
-      'Color [ocean/emerald/violet/teal/sunset]';
+  String get cmdCapabilityChangePaletteExample => 'Color [ocean/emerald/violet/teal/sunset]';
 
   @override
   String get cmdCapabilityChangeLanguage => 'Cambiar idioma';
 
   @override
-  String get cmdCapabilityChangeLanguageExample =>
-      'Idioma [ingles/portugues/espanol/frances]';
+  String get cmdCapabilityChangeLanguageExample => 'Idioma [ingles/portugues/espanol/frances]';
 
   @override
   String get cmdCapabilityNavigate => 'Abrir pantalla';
@@ -819,16 +794,13 @@ class SEs extends S {
   }
 
   @override
-  String get groceryAvailabilityWarning =>
-      'Algunas tiendas tienen datos parciales o desactualizados. Las comparaciones pueden estar incompletas.';
+  String get groceryAvailabilityWarning => 'Algunas tiendas tienen datos parciales o desactualizados. Las comparaciones pueden estar incompletas.';
 
   @override
-  String get groceryEmptyStateTitle =>
-      'No hay datos de supermercado disponibles';
+  String get groceryEmptyStateTitle => 'No hay datos de supermercado disponibles';
 
   @override
-  String get groceryEmptyStateMessage =>
-      'Inténtalo de nuevo más tarde o cambia de mercado en ajustes.';
+  String get groceryEmptyStateMessage => 'Inténtalo de nuevo más tarde o cambia de mercado en ajustes.';
 
   @override
   String get shoppingTitle => 'Lista de la Compra';
@@ -837,8 +809,7 @@ class SEs extends S {
   String get shoppingEmpty => 'Lista vacía';
 
   @override
-  String get shoppingEmptyMessage =>
-      'Añade productos desde la\npantalla Supermercado.';
+  String get shoppingEmptyMessage => 'Añade productos desde la\npantalla Supermercado.';
 
   @override
   String shoppingItemsRemaining(int count, String total) {
@@ -943,28 +914,22 @@ class SEs extends S {
   String get authSwitchToLogin => 'Ya tengo cuenta';
 
   @override
-  String get authRegistrationSuccess =>
-      '¡Cuenta creada! Revisa tu email para verificar la cuenta antes de iniciar sesión.';
+  String get authRegistrationSuccess => '¡Cuenta creada! Revisa tu email para verificar la cuenta antes de iniciar sesión.';
 
   @override
-  String get authErrorNetwork =>
-      'No se pudo conectar al servidor. Comprueba tu conexión a internet e inténtalo de nuevo.';
+  String get authErrorNetwork => 'No se pudo conectar al servidor. Comprueba tu conexión a internet e inténtalo de nuevo.';
 
   @override
-  String get authErrorInvalidCredentials =>
-      'Email o contraseña incorrectos. Inténtalo de nuevo.';
+  String get authErrorInvalidCredentials => 'Email o contraseña incorrectos. Inténtalo de nuevo.';
 
   @override
-  String get authErrorEmailNotConfirmed =>
-      'Verifica tu email antes de iniciar sesión.';
+  String get authErrorEmailNotConfirmed => 'Verifica tu email antes de iniciar sesión.';
 
   @override
-  String get authErrorTooManyRequests =>
-      'Demasiados intentos. Espera un momento e inténtalo de nuevo.';
+  String get authErrorTooManyRequests => 'Demasiados intentos. Espera un momento e inténtalo de nuevo.';
 
   @override
-  String get authErrorGeneric =>
-      'Algo salió mal. Inténtalo de nuevo más tarde.';
+  String get authErrorGeneric => 'Algo salió mal. Inténtalo de nuevo más tarde.';
 
   @override
   String get householdSetupTitle => 'Configurar Hogar';
@@ -1296,8 +1261,7 @@ class SEs extends S {
   String get wizardStepStrategy => 'Estrategia';
 
   @override
-  String get wizardMealsQuestion =>
-      '¿Qué comidas quieres incluir en el plan diario?';
+  String get wizardMealsQuestion => '¿Qué comidas quieres incluir en el plan diario?';
 
   @override
   String wizardBudgetWeight(String weight) {
@@ -1305,8 +1269,7 @@ class SEs extends S {
   }
 
   @override
-  String get wizardObjectiveQuestion =>
-      '¿Cuál es el objetivo principal de tu plan alimentario?';
+  String get wizardObjectiveQuestion => '¿Cuál es el objetivo principal de tu plan alimentario?';
 
   @override
   String wizardSelected(String label) {
@@ -1373,12 +1336,10 @@ class SEs extends S {
   String get wizardReuseLeftovers => 'Reutilizar sobras';
 
   @override
-  String get wizardReuseLeftoversDesc =>
-      'La cena de ayer = almuerzo de hoy (coste 0)';
+  String get wizardReuseLeftoversDesc => 'La cena de ayer = almuerzo de hoy (coste 0)';
 
   @override
-  String get wizardMaxNewIngredients =>
-      'MÁXIMO DE INGREDIENTES NUEVOS POR SEMANA';
+  String get wizardMaxNewIngredients => 'MÁXIMO DE INGREDIENTES NUEVOS POR SEMANA';
 
   @override
   String get wizardNoLimit => 'Sin límite';
@@ -1387,12 +1348,10 @@ class SEs extends S {
   String get wizardMinimizeWaste => 'Minimizar desperdicio';
 
   @override
-  String get wizardMinimizeWasteDesc =>
-      'Preferir recetas que reutilicen ingredientes ya usados';
+  String get wizardMinimizeWasteDesc => 'Preferir recetas que reutilicen ingredientes ya usados';
 
   @override
-  String get wizardSettingsInfo =>
-      'Puedes cambiar la configuración del planificador en cualquier momento en Ajustes â†’ Comidas.';
+  String get wizardSettingsInfo => 'Puedes cambiar la configuración del planificador en cualquier momento en Ajustes â†’ Comidas.';
 
   @override
   String get wizardContinue => 'Continuar';
@@ -1522,8 +1481,7 @@ class SEs extends S {
   String get settingsCodeCopied => '¡Código copiado!';
 
   @override
-  String get settingsAdminOnly =>
-      'Solo el administrador puede editar la configuración.';
+  String get settingsAdminOnly => 'Solo el administrador puede editar la configuración.';
 
   @override
   String get settingsShowSummaryCards => 'Mostrar tarjetas resumen';
@@ -1538,8 +1496,7 @@ class SEs extends S {
   String get settingsLogoutConfirmTitle => 'Cerrar sesión';
 
   @override
-  String get settingsLogoutConfirmContent =>
-      '¿Estás seguro de que quieres cerrar sesión?';
+  String get settingsLogoutConfirmContent => '¿Estás seguro de que quieres cerrar sesión?';
 
   @override
   String get settingsLogoutConfirmButton => 'Cerrar sesión';
@@ -1606,8 +1563,7 @@ class SEs extends S {
   String get settingsAddExpenseButton => 'Añadir Categoría';
 
   @override
-  String get settingsDeviceLocal =>
-      'Estos ajustes se guardan localmente en este dispositivo.';
+  String get settingsDeviceLocal => 'Estos ajustes se guardan localmente en este dispositivo.';
 
   @override
   String get settingsVisibleSections => 'SECCIONES VISIBLES';
@@ -1661,8 +1617,7 @@ class SEs extends S {
   String get settingsVisibleCharts => 'GRÁFICOS VISIBLES';
 
   @override
-  String get settingsFavTip =>
-      'Los productos favoritos influyen en el plan de comidas — las recetas con esos ingredientes tienen prioridad.';
+  String get settingsFavTip => 'Los productos favoritos influyen en el plan de comidas — las recetas con esos ingredientes tienen prioridad.';
 
   @override
   String get settingsMyFavorites => 'MIS FAVORITOS';
@@ -1725,8 +1680,7 @@ class SEs extends S {
   String get settingsPreferSeasonal => 'Preferir recetas de temporada';
 
   @override
-  String get settingsPreferSeasonalDesc =>
-      'Prioriza recetas de la temporada actual';
+  String get settingsPreferSeasonalDesc => 'Prioriza recetas de la temporada actual';
 
   @override
   String get settingsNutritionalGoals => 'OBJETIVOS NUTRICIONALES';
@@ -1876,8 +1830,7 @@ class SEs extends S {
   String get settingsLunchboxLunches => 'Almuerzos para llevar';
 
   @override
-  String get settingsLunchboxLunchesDesc =>
-      'Solo recetas transportables para el almuerzo';
+  String get settingsLunchboxLunchesDesc => 'Solo recetas transportables para el almuerzo';
 
   @override
   String get settingsPantry => 'DESPENSA (SIEMPRE EN STOCK)';
@@ -1886,8 +1839,7 @@ class SEs extends S {
   String get settingsResetWizard => 'Restablecer Asistente';
 
   @override
-  String get settingsApiKeyInfo =>
-      'La clave se guarda localmente en el dispositivo y nunca se comparte. Usa el modelo GPT-4o mini (~€0,00008 por análisis).';
+  String get settingsApiKeyInfo => 'La clave se guarda localmente en el dispositivo y nunca se comparte. Usa el modelo GPT-4o mini (~€0,00008 por análisis).';
 
   @override
   String get settingsInviteCodeLabel => 'CÓDIGO DE INVITACIÓN';
@@ -1902,8 +1854,7 @@ class SEs extends S {
   String get settingsNewCode => 'Nuevo código';
 
   @override
-  String get settingsCodeValidInfo =>
-      'El código es válido por 7 días. Compártelo con quien quieras añadir al hogar.';
+  String get settingsCodeValidInfo => 'El código es válido por 7 días. Compártelo con quien quieras añadir al hogar.';
 
   @override
   String get settingsName => 'Nombre';
@@ -1986,20 +1937,16 @@ class SEs extends S {
   String get enumSubsidyEsHalf => '50% pagas extras';
 
   @override
-  String get aiCoachSystemPrompt =>
-      'Eres un analista financiero personal para usuarios portugueses. Responde siempre en portugués europeo. Sé directo y analítico â€” usa siempre números concretos del contexto proporcionado. Estructura la respuesta exactamente en las 3 partes pedidas. No introduzcas datos, benchmarks o referencias externas no proporcionados.';
+  String get aiCoachSystemPrompt => 'Eres un analista financiero personal para usuarios portugueses. Responde siempre en portugués europeo. Sé directo y analítico â€” usa siempre números concretos del contexto proporcionado. Estructura la respuesta exactamente en las 3 partes pedidas. No introduzcas datos, benchmarks o referencias externas no proporcionados.';
 
   @override
-  String get aiCoachInvalidApiKey =>
-      'API key inválida. Verifica en Configuración.';
+  String get aiCoachInvalidApiKey => 'API key inválida. Verifica en Configuración.';
 
   @override
-  String get aiCoachMidMonthSystem =>
-      'Eres un consultor de presupuesto doméstico portugués. Responde siempre en portugués europeo. Sé práctico y directo.';
+  String get aiCoachMidMonthSystem => 'Eres un consultor de presupuesto doméstico portugués. Responde siempre en portugués europeo. Sé práctico y directo.';
 
   @override
-  String get aiMealPlannerSystem =>
-      'Eres un chef portugués. Responde siempre en portugués europeo. Responde SOLO con JSON válido, sin texto adicional.';
+  String get aiMealPlannerSystem => 'Eres un chef portugués. Responde siempre en portugués europeo. Responde SOLO con JSON válido, sin texto adicional.';
 
   @override
   String get monthAbbrJan => 'Ene';
@@ -2077,8 +2024,7 @@ class SEs extends S {
   String get setupWizardWelcomeTitle => 'Bienvenido a tu presupuesto';
 
   @override
-  String get setupWizardWelcomeSubtitle =>
-      'Vamos a configurar lo esencial para que tu panel esté listo.';
+  String get setupWizardWelcomeSubtitle => 'Vamos a configurar lo esencial para que tu panel esté listo.';
 
   @override
   String get setupWizardBullet1 => 'Calcular tu salario neto';
@@ -2090,8 +2036,7 @@ class SEs extends S {
   String get setupWizardBullet3 => 'Ver cuánto te queda cada mes';
 
   @override
-  String get setupWizardReassurance =>
-      'Puedes cambiarlo todo más tarde en ajustes.';
+  String get setupWizardReassurance => 'Puedes cambiarlo todo más tarde en ajustes.';
 
   @override
   String get setupWizardStart => 'Empezar';
@@ -2111,8 +2056,7 @@ class SEs extends S {
   String get setupWizardCountryTitle => '¿Dónde vives?';
 
   @override
-  String get setupWizardCountrySubtitle =>
-      'Esto define el sistema fiscal, la moneda y los valores por defecto.';
+  String get setupWizardCountrySubtitle => 'Esto define el sistema fiscal, la moneda y los valores por defecto.';
 
   @override
   String get setupWizardLanguage => 'Idioma';
@@ -2136,12 +2080,10 @@ class SEs extends S {
   String get setupWizardPersonalTitle => 'Información personal';
 
   @override
-  String get setupWizardPersonalSubtitle =>
-      'Usamos esto para calcular tus impuestos con más precisión.';
+  String get setupWizardPersonalSubtitle => 'Usamos esto para calcular tus impuestos con más precisión.';
 
   @override
-  String get setupWizardPrivacyNote =>
-      'Tus datos se quedan en tu cuenta y nunca se comparten.';
+  String get setupWizardPrivacyNote => 'Tus datos se quedan en tu cuenta y nunca se comparten.';
 
   @override
   String get setupWizardSingle => 'Soltero/a';
@@ -2159,8 +2101,7 @@ class SEs extends S {
   String get setupWizardSalaryTitle => '¿Cuál es tu salario?';
 
   @override
-  String get setupWizardSalarySubtitle =>
-      'Introduce el importe bruto mensual. Calculamos el neto automáticamente.';
+  String get setupWizardSalarySubtitle => 'Introduce el importe bruto mensual. Calculamos el neto automáticamente.';
 
   @override
   String get setupWizardSalaryGross => 'Salario bruto mensual';
@@ -2171,15 +2112,13 @@ class SEs extends S {
   }
 
   @override
-  String get setupWizardSalaryMoreLater =>
-      'Puedes añadir más fuentes de ingreso más tarde.';
+  String get setupWizardSalaryMoreLater => 'Puedes añadir más fuentes de ingreso más tarde.';
 
   @override
   String get setupWizardSalaryRequired => 'Por favor ingrese su salario';
 
   @override
-  String get setupWizardSalaryPositive =>
-      'El salario debe ser un número positivo';
+  String get setupWizardSalaryPositive => 'El salario debe ser un número positivo';
 
   @override
   String get setupWizardSalarySkip => 'Saltar este paso';
@@ -2188,12 +2127,10 @@ class SEs extends S {
   String get setupWizardExpensesTitle => 'Tus gastos mensuales';
 
   @override
-  String get setupWizardExpensesSubtitle =>
-      'Valores sugeridos para tu país. Ajusta según necesites.';
+  String get setupWizardExpensesSubtitle => 'Valores sugeridos para tu país. Ajusta según necesites.';
 
   @override
-  String get setupWizardExpensesMoreLater =>
-      'Puedes añadir más categorías más tarde.';
+  String get setupWizardExpensesMoreLater => 'Puedes añadir más categorías más tarde.';
 
   @override
   String setupWizardNetLabel(String amount) {
@@ -2217,15 +2154,13 @@ class SEs extends S {
   String get setupWizardCompleteTitle => '¡Todo listo!';
 
   @override
-  String get setupWizardCompleteReassurance =>
-      'Tu presupuesto está configurado. Puedes ajustarlo todo en ajustes en cualquier momento.';
+  String get setupWizardCompleteReassurance => 'Tu presupuesto está configurado. Puedes ajustarlo todo en ajustes en cualquier momento.';
 
   @override
   String get setupWizardGoToDashboard => 'Ver mi presupuesto';
 
   @override
-  String get setupWizardConfigureSalaryHint =>
-      'Configura tu salario en ajustes para ver el cálculo completo.';
+  String get setupWizardConfigureSalaryHint => 'Configura tu salario en ajustes para ver el cálculo completo.';
 
   @override
   String get setupWizardExpRent => 'Alquiler / Hipoteca';
@@ -2281,8 +2216,7 @@ class SEs extends S {
   String get expenseTrackerDeleteConfirm => '¿Eliminar este gasto?';
 
   @override
-  String get expenseTrackerEmpty =>
-      'Sin gastos este mes.\nToca + para añadir el primero.';
+  String get expenseTrackerEmpty => 'Sin gastos este mes.\nToca + para añadir el primero.';
 
   @override
   String get addExpenseTitle => 'Añadir Gasto';
@@ -2363,8 +2297,7 @@ class SEs extends S {
   String get recurringExpenseInactive => 'Inactivo';
 
   @override
-  String get recurringExpenseEmpty =>
-      'Sin pagos recurrentes.\nAñade uno para generarlo automáticamente cada mes.';
+  String get recurringExpenseEmpty => 'Sin pagos recurrentes.\nAñade uno para generarlo automáticamente cada mes.';
 
   @override
   String get recurringExpenseDeleteConfirm => '¿Eliminar este pago recurrente?';
@@ -2379,8 +2312,7 @@ class SEs extends S {
   String get recurringExpenseMarkRecurring => 'Marcar como pago recurrente';
 
   @override
-  String get recurringExpensePopulated =>
-      'Pagos recurrentes generados para este mes';
+  String get recurringExpensePopulated => 'Pagos recurrentes generados para este mes';
 
   @override
   String get recurringExpenseDayHint => 'Ej: 1 para el día 1';
@@ -2458,8 +2390,7 @@ class SEs extends S {
   String get expenseTrendsByCategory => 'Por Categoría';
 
   @override
-  String get expenseTrendsNoData =>
-      'Datos insuficientes para mostrar tendencias.';
+  String get expenseTrendsNoData => 'Datos insuficientes para mostrar tendencias.';
 
   @override
   String get expenseTrendsTotal => 'Total';
@@ -2514,8 +2445,7 @@ class SEs extends S {
   String get savingsGoalCompleted => '¡Objetivo alcanzado!';
 
   @override
-  String get savingsGoalEmpty =>
-      'Sin objetivos de ahorro.\nCrea uno para seguir tu progreso.';
+  String get savingsGoalEmpty => 'Sin objetivos de ahorro.\nCrea uno para seguir tu progreso.';
 
   @override
   String get savingsGoalDeleteConfirm => '¿Eliminar este objetivo?';
@@ -2672,8 +2602,7 @@ class SEs extends S {
   String get notificationPreferredTime => 'Hora preferida';
 
   @override
-  String get notificationPreferredTimeDesc =>
-      'Las notificaciones programadas usarán esta hora (excepto recordatorios personalizados)';
+  String get notificationPreferredTimeDesc => 'Las notificaciones programadas usarán esta hora (excepto recordatorios personalizados)';
 
   @override
   String get notificationBillReminders => 'Recordatorios de pagos';
@@ -2693,8 +2622,7 @@ class SEs extends S {
   String get notificationMealPlanReminder => 'Recordatorio de plan de comidas';
 
   @override
-  String get notificationMealPlanReminderDesc =>
-      'Notifica si no hay plan para el mes actual';
+  String get notificationMealPlanReminderDesc => 'Notifica si no hay plan para el mes actual';
 
   @override
   String get notificationCustomReminders => 'Recordatorios Personalizados';
@@ -2757,12 +2685,10 @@ class SEs extends S {
   String get notificationMealPlanTitle => 'Plan de comidas';
 
   @override
-  String get notificationMealPlanBody =>
-      'Aún no has generado el plan de comidas de este mes';
+  String get notificationMealPlanBody => 'Aún no has generado el plan de comidas de este mes';
 
   @override
-  String get notificationPermissionRequired =>
-      'Permiso de notificaciones requerido';
+  String get notificationPermissionRequired => 'Permiso de notificaciones requerido';
 
   @override
   String get notificationSelectDays => 'Seleccionar días';
@@ -2866,36 +2792,31 @@ class SEs extends S {
   String get onbSlide0Title => 'Tu presupuesto, de un vistazo';
 
   @override
-  String get onbSlide0Body =>
-      'El panel muestra tu liquidez mensual, gastos e Índice de Serenidad.';
+  String get onbSlide0Body => 'El panel muestra tu liquidez mensual, gastos e Índice de Serenidad.';
 
   @override
   String get onbSlide1Title => 'Registra cada gasto';
 
   @override
-  String get onbSlide1Body =>
-      'Toca + para registrar una compra. Asigna una categoría y observa las barras actualizarse.';
+  String get onbSlide1Body => 'Toca + para registrar una compra. Asigna una categoría y observa las barras actualizarse.';
 
   @override
   String get onbSlide2Title => 'Compra con lista';
 
   @override
-  String get onbSlide2Body =>
-      'Explora productos, crea una lista y finaliza para registrar el gasto automáticamente.';
+  String get onbSlide2Body => 'Explora productos, crea una lista y finaliza para registrar el gasto automáticamente.';
 
   @override
   String get onbSlide3Title => 'Tu coach financiero IA';
 
   @override
-  String get onbSlide3Body =>
-      'Obtén un análisis en 3 partes basado en tu presupuesto real — no consejos genéricos.';
+  String get onbSlide3Body => 'Obtén un análisis en 3 partes basado en tu presupuesto real — no consejos genéricos.';
 
   @override
   String get onbSlide4Title => 'Planifica comidas en presupuesto';
 
   @override
-  String get onbSlide4Body =>
-      'Genera un plan mensual ajustado a tu presupuesto alimentario y tamaño del hogar.';
+  String get onbSlide4Body => 'Genera un plan mensual ajustado a tu presupuesto alimentario y tamaño del hogar.';
 
   @override
   String get onbTourSkip => 'Saltar tour';
@@ -2910,15 +2831,13 @@ class SEs extends S {
   String get onbTourDash1Title => 'Liquidez mensual';
 
   @override
-  String get onbTourDash1Body =>
-      'Ingresos menos todos los gastos. Verde significa saldo positivo.';
+  String get onbTourDash1Body => 'Ingresos menos todos los gastos. Verde significa saldo positivo.';
 
   @override
   String get onbTourDash2Title => 'Índice de Serenidad';
 
   @override
-  String get onbTourDash2Body =>
-      'Puntuación de salud financiera 0–100. Toca para ver los factores.';
+  String get onbTourDash2Body => 'Puntuación de salud financiera 0–100. Toca para ver los factores.';
 
   @override
   String get onbTourDash3Title => 'Presupuesto vs real';
@@ -2930,15 +2849,13 @@ class SEs extends S {
   String get onbTourDash4Title => 'Añadir gasto';
 
   @override
-  String get onbTourDash4Body =>
-      'Toca + en cualquier momento para registrar un gasto.';
+  String get onbTourDash4Body => 'Toca + en cualquier momento para registrar un gasto.';
 
   @override
   String get onbTourDash5Title => 'Navegación';
 
   @override
-  String get onbTourDash5Body =>
-      '5 secciones: Presupuesto, Supermercado, Lista, Coach, Comidas.';
+  String get onbTourDash5Body => '5 secciones: Presupuesto, Supermercado, Lista, Coach, Comidas.';
 
   @override
   String get onbTourGrocery1Title => 'Buscar y filtrar';
@@ -2950,134 +2867,115 @@ class SEs extends S {
   String get onbTourGrocery2Title => 'Añadir a la lista';
 
   @override
-  String get onbTourGrocery2Body =>
-      'Toca + en cualquier producto para añadirlo a tu lista de compras.';
+  String get onbTourGrocery2Body => 'Toca + en cualquier producto para añadirlo a tu lista de compras.';
 
   @override
   String get onbTourGrocery3Title => 'Categorías';
 
   @override
-  String get onbTourGrocery3Body =>
-      'Desplaza los filtros de categoría para acotar productos.';
+  String get onbTourGrocery3Body => 'Desplaza los filtros de categoría para acotar productos.';
 
   @override
   String get onbTourShopping1Title => 'Marcar ítems';
 
   @override
-  String get onbTourShopping1Body =>
-      'Toca un ítem para marcarlo como recogido.';
+  String get onbTourShopping1Body => 'Toca un ítem para marcarlo como recogido.';
 
   @override
   String get onbTourShopping2Title => 'Finalizar compra';
 
   @override
-  String get onbTourShopping2Body =>
-      'Registra el gasto y limpia los ítems marcados.';
+  String get onbTourShopping2Body => 'Registra el gasto y limpia los ítems marcados.';
 
   @override
   String get onbTourShopping3Title => 'Historial de compras';
 
   @override
-  String get onbTourShopping3Body =>
-      'Consulta todas las sesiones de compras anteriores aquí.';
+  String get onbTourShopping3Body => 'Consulta todas las sesiones de compras anteriores aquí.';
 
   @override
   String get onbTourCoach1Title => 'Analizar mi presupuesto';
 
   @override
-  String get onbTourCoach1Body =>
-      'Toca para generar un análisis basado en tus datos reales.';
+  String get onbTourCoach1Body => 'Toca para generar un análisis basado en tus datos reales.';
 
   @override
   String get onbTourCoach2Title => 'Historial de análisis';
 
   @override
-  String get onbTourCoach2Body =>
-      'Los análisis guardados aparecen aquí, más recientes primero.';
+  String get onbTourCoach2Body => 'Los análisis guardados aparecen aquí, más recientes primero.';
 
   @override
   String get onbTourMeals1Title => 'Generar plan';
 
   @override
-  String get onbTourMeals1Body =>
-      'Crea un mes completo de comidas dentro del presupuesto alimentario.';
+  String get onbTourMeals1Body => 'Crea un mes completo de comidas dentro del presupuesto alimentario.';
 
   @override
   String get onbTourMeals2Title => 'Vista semanal';
 
   @override
-  String get onbTourMeals2Body =>
-      'Navega comidas por semana. Toca un día para ver la receta.';
+  String get onbTourMeals2Body => 'Navega comidas por semana. Toca un día para ver la receta.';
 
   @override
   String get onbTourMeals3Title => 'Añadir a la lista de compras';
 
   @override
-  String get onbTourMeals3Body =>
-      'Envía los ingredientes de la semana a tu lista con un toque.';
+  String get onbTourMeals3Body => 'Envía los ingredientes de la semana a tu lista con un toque.';
 
   @override
   String get onbTourExpenseTracker1Title => 'Navegación mensual';
 
   @override
-  String get onbTourExpenseTracker1Body =>
-      'Cambia entre meses para ver o añadir gastos de cualquier período.';
+  String get onbTourExpenseTracker1Body => 'Cambia entre meses para ver o añadir gastos de cualquier período.';
 
   @override
   String get onbTourExpenseTracker2Title => 'Resumen del presupuesto';
 
   @override
-  String get onbTourExpenseTracker2Body =>
-      'Ve tu presupuesto vs gasto real y el saldo restante de un vistazo.';
+  String get onbTourExpenseTracker2Body => 'Ve tu presupuesto vs gasto real y el saldo restante de un vistazo.';
 
   @override
   String get onbTourExpenseTracker3Title => 'Por categoría';
 
   @override
-  String get onbTourExpenseTracker3Body =>
-      'Cada categoría muestra una barra de progreso. Toca para expandir y ver gastos individuales.';
+  String get onbTourExpenseTracker3Body => 'Cada categoría muestra una barra de progreso. Toca para expandir y ver gastos individuales.';
 
   @override
   String get onbTourExpenseTracker4Title => 'Añadir gasto';
 
   @override
-  String get onbTourExpenseTracker4Body =>
-      'Toca + para registrar un nuevo gasto. Elige la categoría y el importe.';
+  String get onbTourExpenseTracker4Body => 'Toca + para registrar un nuevo gasto. Elige la categoría y el importe.';
 
   @override
   String get onbTourSavings1Title => 'Tus objetivos';
 
   @override
-  String get onbTourSavings1Body =>
-      'Cada tarjeta muestra el progreso hacia tu meta. Toca para ver detalles y añadir contribuciones.';
+  String get onbTourSavings1Body => 'Cada tarjeta muestra el progreso hacia tu meta. Toca para ver detalles y añadir contribuciones.';
 
   @override
   String get onbTourSavings2Title => 'Crear objetivo';
 
   @override
-  String get onbTourSavings2Body =>
-      'Toca + para definir un nuevo objetivo de ahorro con importe meta y fecha límite opcional.';
+  String get onbTourSavings2Body => 'Toca + para definir un nuevo objetivo de ahorro con importe meta y fecha límite opcional.';
 
   @override
   String get onbTourRecurring1Title => 'Gastos recurrentes';
 
   @override
-  String get onbTourRecurring1Body =>
-      'Facturas fijas mensuales como alquiler, suscripciones y servicios. Se incluyen automáticamente en tu presupuesto.';
+  String get onbTourRecurring1Body => 'Facturas fijas mensuales como alquiler, suscripciones y servicios. Se incluyen automáticamente en tu presupuesto.';
 
   @override
   String get onbTourRecurring2Title => 'Añadir recurrente';
 
   @override
-  String get onbTourRecurring2Body =>
-      'Toca + para registrar un nuevo gasto recurrente con importe y día de vencimiento.';
+  String get onbTourRecurring2Body => 'Toca + para registrar un nuevo gasto recurrente con importe y día de vencimiento.';
 
   @override
   String get onbTourAssistant1Title => 'Asistente de comandos';
 
   @override
-  String get onbTourAssistant1Body =>
-      'Tu atajo para acciones rápidas. Toca para añadir gastos, cambiar ajustes, navegar y más — solo escribe lo que necesitas.';
+  String get onbTourAssistant1Body => 'Tu atajo para acciones rápidas. Toca para añadir gastos, cambiar ajustes, navegar y más — solo escribe lo que necesitas.';
 
   @override
   String get taxDeductionTitle => 'Deducciones Fiscales';
@@ -3119,8 +3017,7 @@ class SEs extends S {
   String get taxDeductionNotDeductible => 'No deducible';
 
   @override
-  String get taxDeductionDisclaimer =>
-      'Estos valores son estimaciones basadas en los gastos registrados. Las deducciones reales dependen de las facturas registradas. Consulte a un profesional fiscal para importes definitivos.';
+  String get taxDeductionDisclaimer => 'Estos valores son estimaciones basadas en los gastos registrados. Las deducciones reales dependen de las facturas registradas. Consulte a un profesional fiscal para importes definitivos.';
 
   @override
   String get settingsDashTaxDeductions => 'Deducciones fiscales (PT)';
@@ -3165,8 +3062,7 @@ class SEs extends S {
   String get savingsProjectionBehind => 'Retrasado';
 
   @override
-  String get savingsProjectionNoData =>
-      'Añade contribuciones para ver proyección';
+  String get savingsProjectionNoData => 'Añade contribuciones para ver proyección';
 
   @override
   String savingsProjectionAvgContribution(String amount) {
@@ -3267,28 +3163,22 @@ class SEs extends S {
   }
 
   @override
-  String get expenseAdjustMonthHint =>
-      'Deje vacío para usar el presupuesto base';
+  String get expenseAdjustMonthHint => 'Deje vacío para usar el presupuesto base';
 
   @override
-  String get settingsPersonalTip =>
-      'El estado civil y los dependientes afectan su tramo de IRPF, lo que determina cuánto impuesto se retiene de su salario.';
+  String get settingsPersonalTip => 'El estado civil y los dependientes afectan su tramo de IRPF, lo que determina cuánto impuesto se retiene de su salario.';
 
   @override
-  String get settingsSalariesTip =>
-      'El salario bruto se usa para calcular el ingreso neto después de impuestos y seguridad social. Añada varios salarios si el hogar tiene más de un ingreso.';
+  String get settingsSalariesTip => 'El salario bruto se usa para calcular el ingreso neto después de impuestos y seguridad social. Añada varios salarios si el hogar tiene más de un ingreso.';
 
   @override
-  String get settingsExpensesTip =>
-      'Defina el presupuesto mensual para cada categoría. Puede ajustarlo para meses específicos en la vista de detalle.';
+  String get settingsExpensesTip => 'Defina el presupuesto mensual para cada categoría. Puede ajustarlo para meses específicos en la vista de detalle.';
 
   @override
-  String get settingsMealHouseholdTip =>
-      'Número de personas que comen en casa. Esto ajusta recetas y porciones en el plan de comidas.';
+  String get settingsMealHouseholdTip => 'Número de personas que comen en casa. Esto ajusta recetas y porciones en el plan de comidas.';
 
   @override
-  String get settingsHouseholdTip =>
-      'Invite a familiares para compartir datos del presupuesto entre dispositivos. Todos los miembros ven los mismos gastos y presupuestos.';
+  String get settingsHouseholdTip => 'Invite a familiares para compartir datos del presupuesto entre dispositivos. Todos los miembros ven los mismos gastos y presupuestos.';
 
   @override
   String get subscriptionTitle => 'Suscripción';
@@ -3389,12 +3279,10 @@ class SEs extends S {
   String get subscriptionTrialEnded => 'Tu periodo de prueba ha terminado';
 
   @override
-  String get subscriptionChoosePlan =>
-      'Elige un plan para conservar todos tus datos y funciones';
+  String get subscriptionChoosePlan => 'Elige un plan para conservar todos tus datos y funciones';
 
   @override
-  String get subscriptionUnlockPower =>
-      'Desbloquea todo el poder de tu presupuesto';
+  String get subscriptionUnlockPower => 'Desbloquea todo el poder de tu presupuesto';
 
   @override
   String subscriptionRequiresPaid(String feature) {
@@ -3412,107 +3300,82 @@ class SEs extends S {
   }
 
   @override
-  String get subtitleBatchCooking =>
-      'Sugiere recetas que se pueden preparar con antelación para varias comidas';
+  String get subtitleBatchCooking => 'Sugiere recetas que se pueden preparar con antelación para varias comidas';
 
   @override
-  String get subtitleReuseLeftovers =>
-      'Planifica comidas que reutilizan ingredientes de días anteriores';
+  String get subtitleReuseLeftovers => 'Planifica comidas que reutilizan ingredientes de días anteriores';
 
   @override
-  String get subtitleMinimizeWaste =>
-      'Prioriza el uso de todos los ingredientes comprados antes de que caduquen';
+  String get subtitleMinimizeWaste => 'Prioriza el uso de todos los ingredientes comprados antes de que caduquen';
 
   @override
-  String get subtitleMealTypeInclude =>
-      'Incluir esta comida en tu plan semanal';
+  String get subtitleMealTypeInclude => 'Incluir esta comida en tu plan semanal';
 
   @override
-  String get subtitleShowHeroCard =>
-      'Tu resumen de liquidez neta en la parte superior';
+  String get subtitleShowHeroCard => 'Tu resumen de liquidez neta en la parte superior';
 
   @override
-  String get subtitleShowStressIndex =>
-      'Puntuación (0-100) que mide la presión de gastos vs ingresos';
+  String get subtitleShowStressIndex => 'Puntuación (0-100) que mide la presión de gastos vs ingresos';
 
   @override
-  String get subtitleShowMonthReview =>
-      'Resumen comparativo de este mes con los anteriores';
+  String get subtitleShowMonthReview => 'Resumen comparativo de este mes con los anteriores';
 
   @override
-  String get subtitleShowUpcomingBills =>
-      'Gastos recurrentes en los próximos 30 días';
+  String get subtitleShowUpcomingBills => 'Gastos recurrentes en los próximos 30 días';
 
   @override
-  String get subtitleShowSummaryCards =>
-      'Ingresos, deducciones, gastos y tasa de ahorro';
+  String get subtitleShowSummaryCards => 'Ingresos, deducciones, gastos y tasa de ahorro';
 
   @override
-  String get subtitleShowBudgetVsActual =>
-      'Comparación lado a lado por categoría de gasto';
+  String get subtitleShowBudgetVsActual => 'Comparación lado a lado por categoría de gasto';
 
   @override
-  String get subtitleShowExpensesBreakdown =>
-      'Gráfico circular de gastos por categoría';
+  String get subtitleShowExpensesBreakdown => 'Gráfico circular de gastos por categoría';
 
   @override
-  String get subtitleShowSavingsGoals =>
-      'Progreso hacia tus objetivos de ahorro';
+  String get subtitleShowSavingsGoals => 'Progreso hacia tus objetivos de ahorro';
 
   @override
-  String get subtitleShowTaxDeductions =>
-      'Deducciones fiscales elegibles estimadas este año';
+  String get subtitleShowTaxDeductions => 'Deducciones fiscales elegibles estimadas este año';
 
   @override
-  String get subtitleShowBudgetStreaks =>
-      'Cuántos meses consecutivos te mantuviste dentro del presupuesto';
+  String get subtitleShowBudgetStreaks => 'Cuántos meses consecutivos te mantuviste dentro del presupuesto';
 
   @override
-  String get subtitleShowPurchaseHistory =>
-      'Compras recientes de la lista de compras y costes';
+  String get subtitleShowPurchaseHistory => 'Compras recientes de la lista de compras y costes';
 
   @override
-  String get subtitleShowCharts =>
-      'Gráficos de tendencia de presupuesto, gastos e ingresos';
+  String get subtitleShowCharts => 'Gráficos de tendencia de presupuesto, gastos e ingresos';
 
   @override
   String get subtitleChartExpensesPie => 'Distribución de gastos por categoría';
 
   @override
-  String get subtitleChartIncomeVsExpenses =>
-      'Ingresos mensuales comparados con el gasto total';
+  String get subtitleChartIncomeVsExpenses => 'Ingresos mensuales comparados con el gasto total';
 
   @override
-  String get subtitleChartDeductions =>
-      'Desglose de gastos deducibles de impuestos';
+  String get subtitleChartDeductions => 'Desglose de gastos deducibles de impuestos';
 
   @override
-  String get subtitleChartNetIncome =>
-      'Tendencia del ingreso neto a lo largo del tiempo';
+  String get subtitleChartNetIncome => 'Tendencia del ingreso neto a lo largo del tiempo';
 
   @override
-  String get subtitleChartSavingsRate =>
-      'Porcentaje de ingresos ahorrados cada mes';
+  String get subtitleChartSavingsRate => 'Porcentaje de ingresos ahorrados cada mes';
 
   @override
-  String get helperCountry =>
-      'Determina el sistema fiscal, la moneda y las tasas de seguridad social';
+  String get helperCountry => 'Determina el sistema fiscal, la moneda y las tasas de seguridad social';
 
   @override
-  String get helperLanguage =>
-      'Sustituir el idioma del sistema. \"Sistema\" sigue la configuración del dispositivo';
+  String get helperLanguage => 'Sustituir el idioma del sistema. \"Sistema\" sigue la configuración del dispositivo';
 
   @override
-  String get helperMaritalStatus =>
-      'Afecta al cálculo del tramo fiscal del IRPF';
+  String get helperMaritalStatus => 'Afecta al cálculo del tramo fiscal del IRPF';
 
   @override
-  String get helperMealObjective =>
-      'Define el patrón alimentario: omnívoro, vegetariano, pescatariano, etc.';
+  String get helperMealObjective => 'Define el patrón alimentario: omnívoro, vegetariano, pescatariano, etc.';
 
   @override
-  String get helperSodiumPreference =>
-      'Filtra recetas por nivel de contenido de sodio';
+  String get helperSodiumPreference => 'Filtra recetas por nivel de contenido de sodio';
 
   @override
   String subtitleDietaryRestriction(String ingredient) {
@@ -3530,8 +3393,7 @@ class SEs extends S {
   }
 
   @override
-  String get helperVeggieDays =>
-      'Número de días completamente vegetarianos por semana';
+  String get helperVeggieDays => 'Número de días completamente vegetarianos por semana';
 
   @override
   String get helperFishDays => 'Recomendado: 2-3 veces por semana';
@@ -3543,51 +3405,40 @@ class SEs extends S {
   String get helperRedMeatDays => 'Recomendado: máximo 2 veces por semana';
 
   @override
-  String get helperMaxPrepTime =>
-      'Tiempo máximo de cocción para comidas entre semana (minutos)';
+  String get helperMaxPrepTime => 'Tiempo máximo de cocción para comidas entre semana (minutos)';
 
   @override
-  String get helperMaxComplexity =>
-      'Nivel de dificultad de las recetas para días laborables';
+  String get helperMaxComplexity => 'Nivel de dificultad de las recetas para días laborables';
 
   @override
-  String get helperWeekendPrepTime =>
-      'Tiempo máximo de cocción para comidas de fin de semana (minutos)';
+  String get helperWeekendPrepTime => 'Tiempo máximo de cocción para comidas de fin de semana (minutos)';
 
   @override
-  String get helperWeekendComplexity =>
-      'Nivel de dificultad de las recetas para fines de semana';
+  String get helperWeekendComplexity => 'Nivel de dificultad de las recetas para fines de semana';
 
   @override
-  String get helperMaxBatchDays =>
-      'Cuántos días se puede reutilizar una comida cocinada en lote';
+  String get helperMaxBatchDays => 'Cuántos días se puede reutilizar una comida cocinada en lote';
 
   @override
-  String get helperNewIngredients =>
-      'Limita cuántos ingredientes nuevos aparecen cada semana';
+  String get helperNewIngredients => 'Limita cuántos ingredientes nuevos aparecen cada semana';
 
   @override
-  String get helperGrossSalary =>
-      'Salario total antes de impuestos y deducciones';
+  String get helperGrossSalary => 'Salario total antes de impuestos y deducciones';
 
   @override
-  String get helperExemptIncome =>
-      'Ingresos adicionales no sujetos a IRPF (ej.: subsidios)';
+  String get helperExemptIncome => 'Ingresos adicionales no sujetos a IRPF (ej.: subsidios)';
 
   @override
   String get helperMealAllowance => 'Subsidio de comida diario de tu empleador';
 
   @override
-  String get helperWorkingDays =>
-      'Típico: 22. Afecta al cálculo del subsidio de comida';
+  String get helperWorkingDays => 'Típico: 22. Afecta al cálculo del subsidio de comida';
 
   @override
-  String get helperSalaryLabel =>
-      'Un nombre para identificar esta fuente de ingresos';
+  String get helperSalaryLabel => 'Un nombre para identificar esta fuente de ingresos';
 
   @override
-  String get helperExpenseAmount =>
-      'Importe mensual presupuestado para esta categoría';
+  String get helperExpenseAmount => 'Importe mensual presupuestado para esta categoría';
 
   @override
   String get helperCalorieTarget => 'Recomendado: 2000-2500 kcal para adultos';
@@ -3599,91 +3450,70 @@ class SEs extends S {
   String get helperFiberTarget => 'Recomendado: 25-30g para adultos';
 
   @override
-  String get infoStressIndex =>
-      'Compara el gasto real con tu presupuesto. Rangos de puntuación:\n\n0-30: Cómodo - gasto bien dentro del presupuesto\n30-60: Moderado - acercándose a los límites del presupuesto\n60-100: Crítico - el gasto excede significativamente el presupuesto';
+  String get infoStressIndex => 'Compara el gasto real con tu presupuesto. Rangos de puntuación:\n\n0-30: Cómodo - gasto bien dentro del presupuesto\n30-60: Moderado - acercándose a los límites del presupuesto\n60-100: Crítico - el gasto excede significativamente el presupuesto';
 
   @override
-  String get infoBudgetStreak =>
-      'Meses consecutivos en los que tu gasto total se mantuvo dentro del presupuesto total.';
+  String get infoBudgetStreak => 'Meses consecutivos en los que tu gasto total se mantuvo dentro del presupuesto total.';
 
   @override
-  String get infoUpcomingBills =>
-      'Muestra gastos recurrentes en los próximos 30 días basándose en tus gastos mensuales.';
+  String get infoUpcomingBills => 'Muestra gastos recurrentes en los próximos 30 días basándose en tus gastos mensuales.';
 
   @override
-  String get infoSalaryBreakdown =>
-      'Muestra cómo se divide tu salario bruto en impuesto IRPF, contribuciones a la seguridad social, ingreso neto y subsidio de comida.';
+  String get infoSalaryBreakdown => 'Muestra cómo se divide tu salario bruto en impuesto IRPF, contribuciones a la seguridad social, ingreso neto y subsidio de comida.';
 
   @override
-  String get infoBudgetVsActual =>
-      'Compara lo que presupuestaste por categoría con lo que realmente gastaste. Verde significa por debajo del presupuesto, rojo significa por encima.';
+  String get infoBudgetVsActual => 'Compara lo que presupuestaste por categoría con lo que realmente gastaste. Verde significa por debajo del presupuesto, rojo significa por encima.';
 
   @override
-  String get infoSavingsGoals =>
-      'Progreso hacia cada objetivo de ahorro basado en las contribuciones realizadas.';
+  String get infoSavingsGoals => 'Progreso hacia cada objetivo de ahorro basado en las contribuciones realizadas.';
 
   @override
-  String get infoTaxDeductions =>
-      'Gastos deducibles estimados (salud, educación, vivienda). Son solo estimaciones - consulta a un profesional fiscal para valores precisos.';
+  String get infoTaxDeductions => 'Gastos deducibles estimados (salud, educación, vivienda). Son solo estimaciones - consulta a un profesional fiscal para valores precisos.';
 
   @override
-  String get infoPurchaseHistory =>
-      'Total gastado en compras de la lista de compras este mes.';
+  String get infoPurchaseHistory => 'Total gastado en compras de la lista de compras este mes.';
 
   @override
-  String get infoExpensesBreakdown =>
-      'Desglose visual de tus gastos por categoría del mes actual.';
+  String get infoExpensesBreakdown => 'Desglose visual de tus gastos por categoría del mes actual.';
 
   @override
-  String get infoCharts =>
-      'Datos de tendencia a lo largo del tiempo. Toca cualquier gráfico para una vista detallada.';
+  String get infoCharts => 'Datos de tendencia a lo largo del tiempo. Toca cualquier gráfico para una vista detallada.';
 
   @override
-  String get infoExpenseTrackerSummary =>
-      'Presupuestado = tu gasto mensual planificado. Real = lo que has gastado hasta ahora. Restante = presupuesto menos real.';
+  String get infoExpenseTrackerSummary => 'Presupuestado = tu gasto mensual planificado. Real = lo que has gastado hasta ahora. Restante = presupuesto menos real.';
 
   @override
-  String get infoExpenseTrackerProgress =>
-      'Verde: por debajo del 75% del presupuesto. Amarillo: 75-100%. Rojo: por encima del presupuesto.';
+  String get infoExpenseTrackerProgress => 'Verde: por debajo del 75% del presupuesto. Amarillo: 75-100%. Rojo: por encima del presupuesto.';
 
   @override
-  String get infoExpenseTrackerFilter =>
-      'Filtra gastos por texto, categoría o rango de fechas.';
+  String get infoExpenseTrackerFilter => 'Filtra gastos por texto, categoría o rango de fechas.';
 
   @override
-  String get infoSavingsProjection =>
-      'Basado en tus contribuciones mensuales medias. \"En camino\" significa que tu ritmo actual alcanza el objetivo a tiempo. \"Retrasado\" significa que necesitas aumentar las contribuciones.';
+  String get infoSavingsProjection => 'Basado en tus contribuciones mensuales medias. \"En camino\" significa que tu ritmo actual alcanza el objetivo a tiempo. \"Retrasado\" significa que necesitas aumentar las contribuciones.';
 
   @override
-  String get infoSavingsRequired =>
-      'La cantidad que necesitas ahorrar cada mes a partir de ahora para alcanzar tu objetivo en el plazo.';
+  String get infoSavingsRequired => 'La cantidad que necesitas ahorrar cada mes a partir de ahora para alcanzar tu objetivo en el plazo.';
 
   @override
-  String get infoCoachModes =>
-      'Eco: gratuito, sin memoria de conversación.\nPlus: 1 crédito por mensaje, recuerda los últimos 5 mensajes.\nPro: 2 créditos por mensaje, memoria de conversación completa.';
+  String get infoCoachModes => 'Eco: gratuito, sin memoria de conversación.\nPlus: 1 crédito por mensaje, recuerda los últimos 5 mensajes.\nPro: 2 créditos por mensaje, memoria de conversación completa.';
 
   @override
-  String get infoCoachCredits =>
-      'Los créditos se usan en los modos Plus y Pro. Recibes créditos iniciales al registrarte. El modo Eco es siempre gratuito.';
+  String get infoCoachCredits => 'Los créditos se usan en los modos Plus y Pro. Recibes créditos iniciales al registrarte. El modo Eco es siempre gratuito.';
 
   @override
-  String get helperWizardGrossSalary =>
-      'Tu salario mensual total antes de impuestos';
+  String get helperWizardGrossSalary => 'Tu salario mensual total antes de impuestos';
 
   @override
-  String get helperWizardMealAllowance =>
-      'Subsidio de comida diario del empleador (si corresponde)';
+  String get helperWizardMealAllowance => 'Subsidio de comida diario del empleador (si corresponde)';
 
   @override
   String get helperWizardRent => 'Pago mensual de vivienda';
 
   @override
-  String get helperWizardGroceries =>
-      'Presupuesto mensual de alimentación y productos del hogar';
+  String get helperWizardGroceries => 'Presupuesto mensual de alimentación y productos del hogar';
 
   @override
-  String get helperWizardTransport =>
-      'Costes mensuales de transporte (combustible, transporte público, etc.)';
+  String get helperWizardTransport => 'Costes mensuales de transporte (combustible, transporte público, etc.)';
 
   @override
   String get helperWizardUtilities => 'Electricidad, agua y gas mensuales';
@@ -3695,28 +3525,22 @@ class SEs extends S {
   String get savingsGoalHowItWorksTitle => '¿Cómo funciona?';
 
   @override
-  String get savingsGoalHowItWorksStep1 =>
-      'Crea un objetivo con un nombre y el monto que quieres ahorrar (ej: \"Vacaciones — 2 000 €\").';
+  String get savingsGoalHowItWorksStep1 => 'Crea un objetivo con un nombre y el monto que quieres ahorrar (ej: \"Vacaciones — 2 000 €\").';
 
   @override
-  String get savingsGoalHowItWorksStep2 =>
-      'Opcionalmente define una fecha límite como referencia.';
+  String get savingsGoalHowItWorksStep2 => 'Opcionalmente define una fecha límite como referencia.';
 
   @override
-  String get savingsGoalHowItWorksStep3 =>
-      'Cada vez que ahorres dinero, toca el objetivo y registra una contribución con el monto y la fecha.';
+  String get savingsGoalHowItWorksStep3 => 'Cada vez que ahorres dinero, toca el objetivo y registra una contribución con el monto y la fecha.';
 
   @override
-  String get savingsGoalHowItWorksStep4 =>
-      'Sigue tu progreso: la barra muestra cuánto has ahorrado y la proyección estima cuándo alcanzarás tu objetivo.';
+  String get savingsGoalHowItWorksStep4 => 'Sigue tu progreso: la barra muestra cuánto has ahorrado y la proyección estima cuándo alcanzarás tu objetivo.';
 
   @override
-  String get savingsGoalDashboardHint =>
-      'Toca un objetivo para ver detalles y registrar contribuciones.';
+  String get savingsGoalDashboardHint => 'Toca un objetivo para ver detalles y registrar contribuciones.';
 
   @override
-  String get rateLimitMessage =>
-      'Por favor, espera un momento antes de intentarlo de nuevo';
+  String get rateLimitMessage => 'Por favor, espera un momento antes de intentarlo de nuevo';
 
   @override
   String get planningExportTitle => 'Exportar';
@@ -3769,8 +3593,7 @@ class SEs extends S {
   String get planningDataPortability => 'Portabilidad de datos';
 
   @override
-  String get planningDataPortabilityDesc =>
-      'Importar y exportar artefactos de planificación';
+  String get planningDataPortabilityDesc => 'Importar y exportar artefactos de planificación';
 
   @override
   String get mealBudgetInsightTitle => 'Visión del Presupuesto';
@@ -3871,8 +3694,7 @@ class SEs extends S {
   String get confidenceRecommendedActions => 'Acciones Recomendadas';
 
   @override
-  String get confidenceCenterSubtitle =>
-      'Frescura de datos y salud del sistema';
+  String get confidenceCenterSubtitle => 'Frescura de datos y salud del sistema';
 
   @override
   String get confidenceCenterTile => 'Centro de Confianza';
@@ -3963,8 +3785,7 @@ class SEs extends S {
   String get householdActivityEmpty => 'Sin actividad';
 
   @override
-  String get householdActivityEmptyMessage =>
-      'Las acciones compartidas de tu hogar aparecerán aquí.';
+  String get householdActivityEmptyMessage => 'Las acciones compartidas de tu hogar aparecerán aquí.';
 
   @override
   String get householdActivityToday => 'HOY';
@@ -4043,8 +3864,7 @@ class SEs extends S {
   String get barcodeAddToList => 'Agregar a la Lista';
 
   @override
-  String get barcodeManualEntry =>
-      'No se encontro ningún producto. Ingresa los datos manualmente:';
+  String get barcodeManualEntry => 'No se encontro ningún producto. Ingresa los datos manualmente:';
 
   @override
   String get barcodeProductName => 'Nombre del producto';
@@ -4058,8 +3878,7 @@ class SEs extends S {
   }
 
   @override
-  String get barcodeInvoiceDetected =>
-      'Este es un código de factura, no de producto';
+  String get barcodeInvoiceDetected => 'Este es un código de factura, no de producto';
 
   @override
   String get barcodeInvoiceAction => 'Abrir Escáner de Recibos';
@@ -4169,16 +3988,13 @@ class SEs extends S {
   String get moreDetailedDashboard => 'Panel Detallado';
 
   @override
-  String get moreDetailedDashboardSubtitle =>
-      'Abrir panel financiero completo con todas las tarjetas';
+  String get moreDetailedDashboardSubtitle => 'Abrir panel financiero completo con todas las tarjetas';
 
   @override
-  String get moreSavingsSubtitle =>
-      'Seguir y actualizar el progreso de tus metas';
+  String get moreSavingsSubtitle => 'Seguir y actualizar el progreso de tus metas';
 
   @override
-  String get moreNotificationsSubtitle =>
-      'Presupuestos, facturas y recordatorios';
+  String get moreNotificationsSubtitle => 'Presupuestos, facturas y recordatorios';
 
   @override
   String get moreSettingsSubtitle => 'Preferencias, perfil y panel';
@@ -4232,8 +4048,7 @@ class SEs extends S {
   }
 
   @override
-  String get coachCostPerMessageNote =>
-      'Coste por mensaje enviado. La respuesta del coach no consume créditos.';
+  String get coachCostPerMessageNote => 'Coste por mensaje enviado. La respuesta del coach no consume créditos.';
 
   @override
   String get coachExpandTip => 'Expandir aviso';
@@ -4314,40 +4129,31 @@ class SEs extends S {
   String get featureTagDashboard => 'Tu visión financiera general';
 
   @override
-  String get featureDescAiCoach =>
-      'Obtén información personalizada sobre tus hábitos de gasto, consejos de ahorro y optimización del presupuesto con IA.';
+  String get featureDescAiCoach => 'Obtén información personalizada sobre tus hábitos de gasto, consejos de ahorro y optimización del presupuesto con IA.';
 
   @override
-  String get featureDescMealPlanner =>
-      'Planifica comidas semanales dentro de tu presupuesto. La IA genera recetas según tus preferencias y necesidades alimentarias.';
+  String get featureDescMealPlanner => 'Planifica comidas semanales dentro de tu presupuesto. La IA genera recetas según tus preferencias y necesidades alimentarias.';
 
   @override
-  String get featureDescExpenseTracker =>
-      'Sigue los gastos reales vs. presupuesto en tiempo real. Ve dónde gastas de más y dónde puedes ahorrar.';
+  String get featureDescExpenseTracker => 'Sigue los gastos reales vs. presupuesto en tiempo real. Ve dónde gastas de más y dónde puedes ahorrar.';
 
   @override
-  String get featureDescSavingsGoals =>
-      'Define metas de ahorro con plazos, sigue contribuciones y ve proyecciones de cuándo alcanzarás tus objetivos.';
+  String get featureDescSavingsGoals => 'Define metas de ahorro con plazos, sigue contribuciones y ve proyecciones de cuándo alcanzarás tus objetivos.';
 
   @override
-  String get featureDescShoppingList =>
-      'Crea listas de compras compartidas en tiempo real. Marca artículos mientras compras, finaliza y controla gastos.';
+  String get featureDescShoppingList => 'Crea listas de compras compartidas en tiempo real. Marca artículos mientras compras, finaliza y controla gastos.';
 
   @override
-  String get featureDescGroceryBrowser =>
-      'Explora productos de varias tiendas, compara precios y añade las mejores ofertas directamente a tu lista de compras.';
+  String get featureDescGroceryBrowser => 'Explora productos de varias tiendas, compara precios y añade las mejores ofertas directamente a tu lista de compras.';
 
   @override
-  String get featureDescExportReports =>
-      'Exporta tu presupuesto, gastos y resúmenes financieros en PDF o CSV para tus registros o contable.';
+  String get featureDescExportReports => 'Exporta tu presupuesto, gastos y resúmenes financieros en PDF o CSV para tus registros o contable.';
 
   @override
-  String get featureDescTaxSimulator =>
-      'Compara obligaciones fiscales entre países. Perfecto para expatriados y quienes consideran mudarse.';
+  String get featureDescTaxSimulator => 'Compara obligaciones fiscales entre países. Perfecto para expatriados y quienes consideran mudarse.';
 
   @override
-  String get featureDescDashboard =>
-      'Ve el resumen completo del presupuesto, gráficos y salud financiera de un vistazo.';
+  String get featureDescDashboard => 'Ve el resumen completo del presupuesto, gráficos y salud financiera de un vistazo.';
 
   @override
   String get trialPremiumActive => 'Prueba Premium Activa';
@@ -4370,8 +4176,7 @@ class SEs extends S {
   String get trialUpgradeNow => 'Mejorar Ahora — Conserva Tus Datos';
 
   @override
-  String get trialSubtitleUrgent =>
-      'Tu acceso premium termina pronto. Mejora para conservar el Coach IA, Planificador de Comidas y todos tus datos.';
+  String get trialSubtitleUrgent => 'Tu acceso premium termina pronto. Mejora para conservar el Coach IA, Planificador de Comidas y todos tus datos.';
 
   @override
   String trialSubtitleMidFeature(String name) {
@@ -4379,12 +4184,10 @@ class SEs extends S {
   }
 
   @override
-  String get trialSubtitleMidProgress =>
-      '¡Estás haciendo un gran progreso! Sigue explorando funciones premium.';
+  String get trialSubtitleMidProgress => '¡Estás haciendo un gran progreso! Sigue explorando funciones premium.';
 
   @override
-  String get trialSubtitleEarly =>
-      'Tienes acceso completo a todas las funciones premium. ¡Explora todo!';
+  String get trialSubtitleEarly => 'Tienes acceso completo a todas las funciones premium. ¡Explora todo!';
 
   @override
   String trialFeaturesExplored(int explored, int total) {
@@ -4425,8 +4228,7 @@ class SEs extends S {
   String get receiptScanFailed => 'No se pudo leer el recibo';
 
   @override
-  String get receiptScanPrompt =>
-      '¿Compras hechas? Escanea el recibo para registrar gastos automáticamente.';
+  String get receiptScanPrompt => '¿Compras hechas? Escanea el recibo para registrar gastos automáticamente.';
 
   @override
   String get receiptMerchantUnknown => 'Tienda desconocida';
@@ -4474,8 +4276,7 @@ class SEs extends S {
   String get receiptCameraPermissionTitle => 'Acceso a la Cámara';
 
   @override
-  String get receiptCameraPermissionBody =>
-      'Se necesita acceso a la cámara para escanear recibos y códigos de barras.';
+  String get receiptCameraPermissionBody => 'Se necesita acceso a la cámara para escanear recibos y códigos de barras.';
 
   @override
   String get receiptCameraPermissionAllow => 'Permitir';
@@ -4487,8 +4288,7 @@ class SEs extends S {
   String get receiptCameraBlockedTitle => 'Cámara Bloqueada';
 
   @override
-  String get receiptCameraBlockedBody =>
-      'El permiso de la cámara fue denegado permanentemente. Abra la configuración para activarlo.';
+  String get receiptCameraBlockedBody => 'El permiso de la cámara fue denegado permanentemente. Abra la configuración para activarlo.';
 
   @override
   String get receiptCameraBlockedSettings => 'Abrir Configuración';
@@ -4613,12 +4413,10 @@ class SEs extends S {
   String get mealHideDetails => 'Ocultar detalles';
 
   @override
-  String get taxSimTitularesHint =>
-      'Número de titulares de ingresos en el hogar';
+  String get taxSimTitularesHint => 'Número de titulares de ingresos en el hogar';
 
   @override
-  String get taxSimMealTypeHint =>
-      'Tarjeta: exento de impuestos hasta el límite legal. Efectivo: tributado como ingreso.';
+  String get taxSimMealTypeHint => 'Tarjeta: exento de impuestos hasta el límite legal. Efectivo: tributado como ingreso.';
 
   @override
   String get taxSimIRSFull => 'IRPF (Impuesto sobre la Renta) retención';
@@ -4627,39 +4425,31 @@ class SEs extends S {
   String get taxSimSSFull => 'SS (Seguridad Social)';
 
   @override
-  String get stressZoneCritical =>
-      '0–39: Alta presión financiera, acción urgente necesaria';
+  String get stressZoneCritical => '0–39: Alta presión financiera, acción urgente necesaria';
 
   @override
-  String get stressZoneWarning =>
-      '40–59: Algunos riesgos presentes, mejoras recomendadas';
+  String get stressZoneWarning => '40–59: Algunos riesgos presentes, mejoras recomendadas';
 
   @override
-  String get stressZoneGood =>
-      '60–79: Finanzas saludables, pequeñas optimizaciones posibles';
+  String get stressZoneGood => '60–79: Finanzas saludables, pequeñas optimizaciones posibles';
 
   @override
-  String get stressZoneExcellent =>
-      '80–100: Posición financiera fuerte, bien gestionada';
+  String get stressZoneExcellent => '80–100: Posición financiera fuerte, bien gestionada';
 
   @override
-  String get projectionStressHint =>
-      'Cómo este escenario de gastos afecta tu puntuación general de salud financiera (0–100)';
+  String get projectionStressHint => 'Cómo este escenario de gastos afecta tu puntuación general de salud financiera (0–100)';
 
   @override
   String get coachWelcomeTitle => 'Tu Coach Financiero IA';
 
   @override
-  String get coachWelcomeBody =>
-      'Pregunta sobre tu presupuesto, gastos o ahorros. El coach analiza tus datos financieros reales para darte consejos personalizados.';
+  String get coachWelcomeBody => 'Pregunta sobre tu presupuesto, gastos o ahorros. El coach analiza tus datos financieros reales para darte consejos personalizados.';
 
   @override
-  String get coachWelcomeCredits =>
-      'Los créditos se usan en los modos Plus y Pro. El modo Eco es siempre gratuito.';
+  String get coachWelcomeCredits => 'Los créditos se usan en los modos Plus y Pro. El modo Eco es siempre gratuito.';
 
   @override
-  String get coachWelcomeRateLimit =>
-      'Para garantizar respuestas de calidad, hay una breve pausa entre mensajes.';
+  String get coachWelcomeRateLimit => 'Para garantizar respuestas de calidad, hay una breve pausa entre mensajes.';
 
   @override
   String get planMealsProBadge => 'PRO';
@@ -4744,8 +4534,7 @@ class SEs extends S {
   String get configurationError => 'Error de Configuración';
 
   @override
-  String get confidenceAllHealthy =>
-      'Todos los sistemas saludables. No se requieren acciones.';
+  String get confidenceAllHealthy => 'Todos los sistemas saludables. No se requieren acciones.';
 
   @override
   String get confidenceNoAlerts => 'Sin alertas. Todo en orden.';
@@ -4759,8 +4548,7 @@ class SEs extends S {
   }
 
   @override
-  String get expenseTrendsChartLabel =>
-      'Gráfico de tendencias de gastos mostrando presupuesto versus gastos reales';
+  String get expenseTrendsChartLabel => 'Gráfico de tendencias de gastos mostrando presupuesto versus gastos reales';
 
   @override
   String get customCategories => 'Categorías';
@@ -4796,8 +4584,7 @@ class SEs extends S {
   String get customCategoryInUse => 'Categoría en uso, no se puede eliminar';
 
   @override
-  String get customCategoryPredefinedHint =>
-      'Categorías predefinidas usadas en toda la aplicación';
+  String get customCategoryPredefinedHint => 'Categorías predefinidas usadas en toda la aplicación';
 
   @override
   String get customCategoryDefault => 'Predefinida';
@@ -4824,16 +4611,38 @@ class SEs extends S {
   String get biometricLockTitle => 'Bloqueo de App';
 
   @override
-  String get biometricLockSubtitle =>
-      'Requerir autenticación al abrir la aplicación';
+  String get biometricLockSubtitle => 'Requerir autenticación al abrir la aplicación';
 
   @override
   String get biometricPrompt => 'Autentícate para continuar';
 
   @override
-  String get biometricReason =>
-      'Verifica tu identidad para desbloquear la aplicación';
+  String get biometricReason => 'Verifica tu identidad para desbloquear la aplicación';
 
   @override
   String get biometricRetry => 'Intentar de Nuevo';
+
+  @override
+  String get notifDailyExpenseReminder => 'Recordatorio diario de gastos';
+
+  @override
+  String get notifDailyExpenseReminderDesc => 'Te recuerda registrar los gastos del día';
+
+  @override
+  String get notifDailyExpenseTitle => '¡No olvides tus gastos!';
+
+  @override
+  String get notifDailyExpenseBody => 'Tómate un momento para registrar los gastos de hoy';
+
+  @override
+  String get settingsSalaryLabelHint => 'ej: Empleo principal, Freelance';
+
+  @override
+  String get settingsExpenseNameLabel => 'NOMBRE DEL GASTO';
+
+  @override
+  String get settingsCategoryLabel => 'CATEGORÍA';
+
+  @override
+  String get settingsMonthlyBudgetLabel => 'PRESUPUESTO MENSUAL';
 }
