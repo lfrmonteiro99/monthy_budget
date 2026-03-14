@@ -712,14 +712,23 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                       separatorBuilder: (_, __) =>
                           const SizedBox(width: 8),
                       itemBuilder: (_, i) => Stack(children: [
-                        Container(
-                          width: 64,
-                          height: 64,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: AppColors.borderMuted(context),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network(
+                            _existingAttachmentUrls[i],
+                            width: 64,
+                            height: 64,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              width: 64,
+                              height: 64,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: AppColors.borderMuted(context),
+                              ),
+                              child: const Icon(Icons.broken_image, size: 32),
+                            ),
                           ),
-                          child: const Icon(Icons.image, size: 32),
                         ),
                         Positioned(
                           top: 0,
