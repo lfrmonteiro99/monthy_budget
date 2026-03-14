@@ -18,8 +18,8 @@ export default function App() {
       <TrustBar />
       <HowItWorks />
       <Features />
-      <Pricing />
       <Screens />
+      <Pricing />
       <Timeline />
       <FAQ />
       <CTA />

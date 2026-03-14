@@ -115,7 +115,7 @@ export default function PrivacyPolicy() {
         <ul className="list-disc pl-6 space-y-1.5">
           <li><strong style={{ color: "var(--text-primary)" }}>Dados de pagamento:</strong> todos os pagamentos são processados pela Google. <strong style={{ color: "var(--text-primary)" }}>Não temos acesso</strong> ao número do seu cartão de crédito, conta bancária ou outros dados de pagamento.</li>
           <li><strong style={{ color: "var(--text-primary)" }}>Dados que recebemos:</strong> a Google notifica-nos apenas sobre o estado da subscrição (ativa, expirada, cancelada), o tipo de plano e a data de renovação — informações necessárias para ativar as funcionalidades correspondentes.</li>
-          <li><strong style={{ color: "var(--text-primary)" }}>Período de teste:</strong> ao iniciar um teste gratuito de 14 dias, registamos a data de início para gerir o acesso às funcionalidades. Não são recolhidos dados de pagamento durante o período de teste.</li>
+          <li><strong style={{ color: "var(--text-primary)" }}>Período de teste:</strong> ao iniciar um teste gratuito de 21 dias, registamos a data de início para gerir o acesso às funcionalidades. Não são recolhidos dados de pagamento durante o período de teste.</li>
         </ul>
 
         <h2 id="pp-8" className="text-xl font-bold mt-8 mb-3" style={{ color: "var(--text-primary)" }}>8. Os Seus Direitos (RGPD)</h2>

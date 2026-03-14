@@ -15,7 +15,9 @@ export default function CTA() {
             <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">{t.cta_title}</h2>
             <p className="text-sm sm:text-base opacity-90 max-w-lg mx-auto mb-6 sm:mb-8">{t.cta_desc}</p>
             <a
-              href="#"
+              href="https://play.google.com/store/apps/details?id=com.orcamentomensal.orcamento_mensal"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-xl font-semibold text-sm no-underline hover:no-underline transition-all hover:-translate-y-0.5 min-h-[48px]"
               style={{
                 background: "white",
@@ -24,7 +26,7 @@ export default function CTA() {
               }}
             >
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="m5 12 5 5L20 7" />
+                <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
               {t.cta_button}
             </a>

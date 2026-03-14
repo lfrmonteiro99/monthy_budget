@@ -20,6 +20,8 @@ html {
 body {
   font-family: var(--font-family-sans);
   transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: var(--bg);
+  color: var(--text-primary);
 }
 
 /* Light mode */
@@ -52,8 +54,8 @@ body {
   --surface: #1E293B;
   --surface-variant: #334155;
   --text-primary: #F1F5F9;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
+  --text-secondary: #A8B8CC;
+  --text-muted: #8B9AB8;
   --text-label: #CBD5E1;
   --border: #334155;
   --border-card: #334155;
@@ -68,11 +70,6 @@ body {
   --shadow-md: 0 4px 6px -1px rgba(0,0,0,.3);
   --shadow-lg: 0 10px 15px -3px rgba(0,0,0,.3);
   --shadow-xl: 0 20px 25px -5px rgba(0,0,0,.3);
-}
-
-body {
-  background-color: var(--bg);
-  color: var(--text-primary);
 }
 
 /* Prevent text size adjustment on orientation change */

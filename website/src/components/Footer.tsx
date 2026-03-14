@@ -6,7 +6,7 @@ export default function Footer() {
 
   return (
     <footer
-      className="border-t pt-10 pb-6 transition-colors"
+      className="site-footer border-t pt-10 pb-6 transition-colors"
       style={{ background: "var(--surface)", borderTopColor: "var(--border-card)" }}
     >
       <div className="max-w-[1140px] mx-auto px-4 sm:px-6">

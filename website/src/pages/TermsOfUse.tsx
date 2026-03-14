@@ -62,16 +62,16 @@ export default function TermsOfUse() {
         <h3 className="text-base font-semibold mt-6 mb-2" style={{ color: "var(--text-primary)" }}>3.1 Planos disponíveis</h3>
         <p>A App oferece os seguintes planos:</p>
         <ul className="list-disc pl-6 space-y-1.5">
-          <li><strong style={{ color: "var(--text-primary)" }}>Gratuito (pós-teste):</strong> calculadora de orçamento (até 5 categorias), registo de despesas do mês atual, 1 objetivo de poupança, lista de compras local e anúncios banner.</li>
-          <li><strong style={{ color: "var(--text-primary)" }}>Premium — €3,99/mês ou €29,99/ano:</strong> categorias e histórico ilimitados, Coach Financeiro com IA, plano de refeições com receitas IA, sincronização da lista de compras em tempo real, exportação PDF/CSV, lembretes de contas e sem anúncios.</li>
+          <li><strong style={{ color: "var(--text-primary)" }}>Gratuito (pós-teste):</strong> calculadora de orçamento (até 8 categorias), registo de despesas do mês atual, 1 objetivo de poupança, lista de compras local e anúncios banner.</li>
+          <li><strong style={{ color: "var(--text-primary)" }}>Premium — €3,99/mês ou €29,99/ano:</strong> categorias e histórico ilimitados, Coach Financeiro com IA, plano de refeições com receitas IA, sincronização da lista de compras em tempo real, exportação PDF/CSV, lembretes de contas, tendências de despesas, objetivos de poupança ilimitados, gestão de despesas recorrentes e sem anúncios.</li>
           <li><strong style={{ color: "var(--text-primary)" }}>Família — €6,99/mês ou €49,99/ano:</strong> tudo do Premium, mais partilha familiar (até 6 pessoas), simulador de impostos multi-país, índice de stress e sequências, relatórios de fim de mês, dashboard personalizável e todos os temas de cores.</li>
         </ul>
 
         <h3 className="text-base font-semibold mt-6 mb-2" style={{ color: "var(--text-primary)" }}>3.2 Período de teste gratuito</h3>
-        <p>Ao instalar a App, tem acesso a um período de teste gratuito de 14 dias com todas as funcionalidades Premium. Durante o teste:</p>
+        <p>Ao instalar a App, tem acesso a um período de teste gratuito de 21 dias com todas as funcionalidades Premium. Durante o teste:</p>
         <ul className="list-disc pl-6 space-y-1.5">
           <li>Não é necessário cartão de crédito nem dados de pagamento.</li>
-          <li>O teste termina automaticamente ao fim de 14 dias.</li>
+          <li>O teste termina automaticamente ao fim de 21 dias.</li>
           <li>Após o termo do teste, a App transita para o plano Gratuito, a menos que subscreva um plano pago.</li>
           <li>Os dados criados durante o teste são mantidos, mas o acesso a funcionalidades exclusivas dos planos pagos será limitado.</li>
         </ul>

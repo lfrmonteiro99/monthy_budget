@@ -38,6 +38,9 @@ export default function Pricing() {
         t.pricing_premium_feat5,
         t.pricing_premium_feat6,
         t.pricing_premium_feat7,
+        t.pricing_premium_feat8,
+        t.pricing_premium_feat9,
+        t.pricing_premium_feat10,
       ],
       muted: [],
     },
@@ -101,7 +104,7 @@ export default function Pricing() {
               >
                 {t.pricing_toggle_yearly}
                 <span
-                  className="text-[0.65rem] font-bold px-1.5 py-0.5 rounded-full"
+                  className="text-xs font-bold px-2 py-0.5 rounded-full"
                   style={{
                     background: yearly ? "rgba(255,255,255,0.25)" : "var(--primary-light-val)",
                     color: yearly ? "white" : "var(--primary-val)",
@@ -168,7 +171,7 @@ export default function Pricing() {
 
                 <a
                   href="#download"
-                  className="block w-full text-center py-3 rounded-xl font-semibold text-sm no-underline hover:no-underline transition-all hover:-translate-y-0.5 mb-6 min-h-[44px] flex items-center justify-center"
+                  className="w-full py-3 rounded-xl font-semibold text-sm no-underline hover:no-underline transition-all hover:-translate-y-0.5 mb-6 min-h-[44px] flex items-center justify-center"
                   style={
                     plan.popular
                       ? {
@@ -177,9 +180,9 @@ export default function Pricing() {
                           boxShadow: "0 4px 14px rgba(59,130,246,0.35)",
                         }
                       : {
-                          background: "var(--surface-variant)",
-                          color: "var(--text-primary)",
-                          border: "1px solid var(--border)",
+                          background: "var(--primary-light-val)",
+                          color: "var(--primary-val)",
+                          border: "1px solid var(--primary-val)",
                         }
                   }
                 >
