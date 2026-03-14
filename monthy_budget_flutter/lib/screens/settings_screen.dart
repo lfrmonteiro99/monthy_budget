@@ -4,17 +4,14 @@ import '../models/app_settings.dart';
 import '../models/product.dart';
 import '../models/recurring_expense.dart';
 import '../models/custom_category.dart';
-import '../models/budget_category_view.dart';
 import '../services/category_service.dart';
 import '../utils/category_helpers.dart';
 import '../utils/category_icons.dart';
-import '../utils/budget_category_builder.dart';
 import '../data/irs_tables.dart';
 import '../data/tax/tax_system.dart';
 import '../data/tax/tax_factory.dart';
 import '../utils/formatters.dart';
 import '../services/household_service.dart';
-import '../services/recurring_expense_service.dart';
 import '../models/meal_settings.dart';
 import '../models/local_dashboard_config.dart';
 import '../l10n/generated/app_localizations.dart';
@@ -110,6 +107,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     // Also notify any open detail page so it rebuilds with fresh state.
     _detailRebuildNotifier.value++;
   }
+  int? _expandedExpenseIndex;
   late List<CustomCategory> _customCategoriesDraft;
   final _categoryService = CategoryService();
 
@@ -1055,7 +1053,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildExpensesSection() {
     final l10n = S.of(context);
-    final categoryViews = buildCategoryViews(_draft.expenses, _recurringDraft);
 
     // Sort: active first, then paused
     final sortedExpenses = List<ExpenseItem>.from(_draft.expenses)
@@ -1066,6 +1063,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     final activeExpenses = sortedExpenses.where((e) => e.enabled).toList();
     final pausedExpenses = sortedExpenses.where((e) => !e.enabled).toList();
+    final totalBudget = activeExpenses.fold<double>(0.0, (s, e) => s + e.amount);
 
     return Container(
       color: AppColors.surface(context),
@@ -1073,226 +1071,317 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Column(
         children: [
           _helpTip(l10n.settingsExpensesTip),
-          if (_isFreeUser && pausedExpenses.isNotEmpty) ...[
+          // ── Budget Summary Header ──
+          Container(
+            margin: const EdgeInsets.only(bottom: 16),
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: AppColors.primary(context).withValues(alpha: 0.06),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.primary(context).withValues(alpha: 0.15)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${formatCurrency(totalBudget)} / ${l10n.settingsExpenseName}',
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textLabel(context)),
+                    ),
+                    Text(
+                      '${activeExpenses.length} / ${_draft.expenses.length}',
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textMuted(context)),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: _draft.expenses.isEmpty ? 0.0 : activeExpenses.length / _draft.expenses.length,
+                    minHeight: 4,
+                    backgroundColor: AppColors.border(context),
+                    valueColor: AlwaysStoppedAnimation(AppColors.primary(context)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // ── Empty State ──
+          if (_draft.expenses.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 32),
+              child: Column(
+                children: [
+                  Icon(Icons.account_balance_wallet_outlined, size: 64, color: AppColors.primary(context).withValues(alpha: 0.4)),
+                  const SizedBox(height: 12),
+                  Text(
+                    l10n.settingsAddExpenseButton,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textLabel(context)),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    l10n.settingsExpensesTip,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 13, color: AppColors.textMuted(context)),
+                  ),
+                ],
+              ),
+            ),
+          if (_isFreeUser && pausedExpenses.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: Text(
                 l10n.settingsActiveCategoriesCount(activeExpenses.length, _draft.expenses.length),
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textMuted(context),
-                  letterSpacing: 0.8,
-                ),
+                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textMuted(context), letterSpacing: 0.8),
               ),
             ),
-          ],
-          // Render expenses: active first, then paused with section header
+          // ── Expense Cards ──
           for (int ei = 0; ei < sortedExpenses.length; ei++) ...[
             if (_isFreeUser && ei == activeExpenses.length && pausedExpenses.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 8, bottom: 12),
                 child: Text(
                   l10n.settingsPausedCategories,
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textMuted(context),
-                    letterSpacing: 0.8,
-                  ),
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textMuted(context), letterSpacing: 0.8),
                 ),
               ),
             Builder(builder: (_) {
-            final expense = sortedExpenses[ei];
-            // Find matching category view for bill info
-            final view = categoryViews.firstWhere(
-              (v) => v.budgetItem.id == expense.id,
-              orElse: () => BudgetCategoryView(budgetItem: expense),
-            );
-            final bills = view.recurringBills;
-            return GestureDetector(
-              onTap: () => _showCategoryDetailSheet(expense, bills),
-              child: Container(
-                margin: const EdgeInsets.only(bottom: 12),
-                padding: const EdgeInsets.all(16),
+              final expense = sortedExpenses[ei];
+              final isExpanded = _expandedExpenseIndex == ei;
+              final catColor = AppColors.categoryColorByName(expense.category);
+
+              // ── Collapsed Row ──
+              final collapsedRow = InkWell(
+                borderRadius: BorderRadius.circular(14),
+                onTap: () => setState(() {
+                  _expandedExpenseIndex = isExpanded ? null : ei;
+                }),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 12, height: 12,
+                        decoration: BoxDecoration(shape: BoxShape.circle, color: catColor),
+                      ),
+                      const SizedBox(width: 8),
+                      Icon(categoryIconByName(expense.category), size: 18, color: catColor),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          expense.label.isNotEmpty ? expense.label : expense.category,
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textLabel(context)),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Text(
+                        expense.amount > 0 ? formatCurrency(expense.amount) : '—',
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textSecondary(context)),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        width: 8, height: 8,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: expense.enabled ? const Color(0xFF34D399) : AppColors.textMuted(context),
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      AnimatedRotation(
+                        turns: isExpanded ? 0.5 : 0.0,
+                        duration: const Duration(milliseconds: 250),
+                        curve: Curves.easeInOut,
+                        child: Icon(Icons.expand_more, size: 20, color: AppColors.textMuted(context)),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+
+              // ── Expanded Fields ──
+              final expandedFields = Padding(
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Divider(height: 1),
+                    const SizedBox(height: 10),
+                    // Category name + dropdown
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: TextEditingController(text: expense.label)
+                              ..selection = TextSelection.collapsed(offset: expense.label.length),
+                            onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(label: v)),
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textLabel(context)),
+                            decoration: InputDecoration(
+                              hintText: l10n.settingsExpenseName,
+                              border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: AppColors.border(context)),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                value: expense.category,
+                                isExpanded: true,
+                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
+                                items: ExpenseCategory.values.map((c) {
+                                  final cc = AppColors.categoryColor(c);
+                                  return DropdownMenuItem(
+                                    value: c.name,
+                                    child: Row(children: [
+                                      Icon(categoryIconByName(c.name), size: 16, color: cc),
+                                      const SizedBox(width: 8),
+                                      Text(c.localizedLabel(l10n)),
+                                    ]),
+                                  );
+                                }).toList(),
+                                onChanged: (v) {
+                                  if (v != null) _updateExpense(expense.id, (e) => e.copyWith(category: v));
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    // Budget amount
+                    SizedBox(
+                      width: double.infinity,
+                      child: TextFormField(
+                        initialValue: expense.amount > 0 ? expense.amount.toString() : '',
+                        onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(amount: double.tryParse(v) ?? 0)),
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode, helperText: l10n.helperExpenseAmount),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    // Recurring payment toggle
+                    _buildRecurringPaymentToggle(expense, l10n),
+                    const SizedBox(height: 8),
+                    // Enable/disable + delete row
+                    Row(
+                      children: [
+                        Switch.adaptive(
+                          value: expense.enabled,
+                          onChanged: (v) async {
+                            if (v && _isFreeUser) {
+                              final activeCount = _draft.expenses.where((e) => e.enabled).length;
+                              if (activeCount >= DowngradeService.maxFreeCategories) {
+                                final action = await showCategoryLimitDialog(context, expense.label);
+                                if (action == LimitReachedAction.upgrade) {
+                                  widget.onOpenSubscription?.call();
+                                }
+                                return;
+                              }
+                            }
+                            _updateExpense(expense.id, (e) => e.copyWith(enabled: v));
+                          },
+                          activeTrackColor: AppColors.primary(context),
+                        ),
+                        Text(
+                          expense.enabled ? l10n.settingsActiveCategoriesCount(1, 1).split('/').first.trim() : l10n.settingsPausedCategories,
+                          style: TextStyle(fontSize: 12, color: AppColors.textSecondary(context)),
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: () {
+                            _removeExpense(expense.id);
+                            if (_expandedExpenseIndex == ei) _expandedExpenseIndex = null;
+                          },
+                          icon: const Icon(Icons.delete_outline, size: 18),
+                          color: AppColors.dragHandle(context),
+                        ),
+                      ],
+                    ),
+                    // Monthly override info
+                    if (_monthlyBudgetsDraft.containsKey(expense.category)) ...[
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Icon(Icons.edit_calendar, size: 14, color: AppColors.textMuted(context)),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              l10n.expenseOverrideActive(_currentMonthLabel(l10n),
+                                _monthlyBudgetsDraft[expense.category]!.toStringAsFixed(2)),
+                              style: TextStyle(fontSize: 11, color: AppColors.primary(context)),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => setState(() => _monthlyBudgetsDraft.remove(expense.category)),
+                            child: Icon(Icons.close, size: 14, color: AppColors.textMuted(context)),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
+              );
+
+              return Container(
+                margin: const EdgeInsets.only(bottom: 10),
                 decoration: BoxDecoration(
                   color: expense.enabled ? AppColors.surface(context) : AppColors.background(context),
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: expense.enabled ? AppColors.border(context) : AppColors.surfaceVariant(context),
-                    width: 2,
+                  border: Border(
+                    top: BorderSide(color: expense.enabled ? AppColors.border(context) : AppColors.surfaceVariant(context)),
+                    right: BorderSide(color: expense.enabled ? AppColors.border(context) : AppColors.surfaceVariant(context)),
+                    bottom: BorderSide(color: expense.enabled ? AppColors.border(context) : AppColors.surfaceVariant(context)),
+                    left: BorderSide(
+                      color: isExpanded ? AppColors.primary(context) : (expense.enabled ? AppColors.border(context) : AppColors.surfaceVariant(context)),
+                      width: isExpanded ? 3.0 : 1.0,
+                    ),
                   ),
                 ),
                 child: Opacity(
                   opacity: expense.enabled ? 1.0 : 0.5,
                   child: Column(
                     children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 16,
-                            backgroundColor: AppColors.categoryColorByName(expense.category).withValues(alpha: 0.15),
-                            child: Icon(
-                              categoryIconByName(expense.category),
-                              size: 16,
-                              color: AppColors.categoryColorByName(expense.category),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Switch(
-                            value: expense.enabled,
-                            onChanged: (v) async {
-                              if (v && _isFreeUser) {
-                                final activeCount = _draft.expenses.where((e) => e.enabled).length;
-                                if (activeCount >= DowngradeService.maxFreeCategories) {
-                                  final action = await showCategoryLimitDialog(context, expense.label);
-                                  if (action == LimitReachedAction.upgrade) {
-                                    widget.onOpenSubscription?.call();
-                                  }
-                                  return;
-                                }
-                              }
-                              _updateExpense(expense.id, (e) => e.copyWith(enabled: v));
-                            },
-                            activeTrackColor: AppColors.primary(context),
-                          ),
-                          Expanded(
-                            child: TextField(
-                              controller: TextEditingController(text: expense.label)
-                                ..selection = TextSelection.collapsed(offset: expense.label.length),
-                              onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(label: v)),
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textLabel(context)),
-                              decoration: InputDecoration(
-                                hintText: l10n.settingsExpenseName,
-                                border: InputBorder.none,
-                                isDense: true,
-                                contentPadding: EdgeInsets.zero,
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () => _removeExpense(expense.id),
-                            icon: const Icon(Icons.delete_outline, size: 18),
-                            color: AppColors.dragHandle(context),
-                          ),
-                        ],
+                      collapsedRow,
+                      AnimatedCrossFade(
+                        firstChild: const SizedBox.shrink(),
+                        secondChild: expandedFields,
+                        crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                        duration: const Duration(milliseconds: 250),
+                        firstCurve: Curves.easeInOut,
+                        secondCurve: Curves.easeInOut,
+                        sizeCurve: Curves.easeInOut,
                       ),
-                      const SizedBox(height: 4),
-                      // Bill summary subtitle
-                      Row(
-                        children: [
-                          const SizedBox(width: 48), // align with label after switch
-                          Icon(Icons.repeat, size: 14, color: AppColors.textMuted(context)),
-                          const SizedBox(width: 4),
-                          if (bills.isEmpty)
-                            Text(
-                              l10n.billsNone,
-                              style: TextStyle(fontSize: 12, color: AppColors.textMuted(context)),
-                            )
-                          else
-                            Text(
-                              l10n.billsPerMonth(
-                                view.activeBillCount,
-                                formatCurrency(view.totalRecurringAmount),
-                              ),
-                              style: TextStyle(fontSize: 12, color: AppColors.textSecondary(context)),
-                            ),
-                          const Spacer(),
-                          Icon(Icons.chevron_right, size: 16, color: AppColors.textMuted(context)),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: AppColors.border(context)),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  value: expense.category,
-                                  isExpanded: true,
-                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
-                                  items: ExpenseCategory.values
-                                      .map((c) {
-                                        final catColor = AppColors.categoryColor(c);
-                                        return DropdownMenuItem(
-                                          value: c.name,
-                                          child: Row(
-                                            children: [
-                                              Icon(categoryIconByName(c.name), size: 16, color: catColor),
-                                              const SizedBox(width: 8),
-                                              Text(c.localizedLabel(l10n)),
-                                            ],
-                                          ),
-                                        );
-                                      })
-                                      .toList(),
-                                  onChanged: (v) {
-                                    if (v != null) {
-                                      _updateExpense(expense.id, (e) => e.copyWith(category: v));
-                                    }
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      SizedBox(
-                        width: double.infinity,
-                        child: TextFormField(
-                          initialValue: expense.amount > 0 ? expense.amount.toString() : '',
-                          onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(amount: double.tryParse(v) ?? 0)),
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                          decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode, helperText: l10n.helperExpenseAmount),
-                        ),
-                      ),
-                      if (_monthlyBudgetsDraft.containsKey(expense.category)) ...[
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            Icon(Icons.edit_calendar, size: 14, color: AppColors.textMuted(context)),
-                            const SizedBox(width: 4),
-                            Expanded(
-                              child: Text(
-                                l10n.expenseOverrideActive(_currentMonthLabel(l10n),
-                                  _monthlyBudgetsDraft[expense.category]!.toStringAsFixed(2)),
-                                style: TextStyle(fontSize: 11, color: AppColors.primary(context)),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () => setState(() => _monthlyBudgetsDraft.remove(expense.category)),
-                              child: Icon(Icons.close, size: 14, color: AppColors.textMuted(context)),
-                            ),
-                          ],
-                        ),
-                      ],
-                      // Recurring payment toggle
-                      const SizedBox(height: 8),
-                      _buildRecurringPaymentToggle(expense, l10n),
                     ],
                   ),
                 ),
-              ),
-            );
-          }),
+              );
+            }),
           ],
-          OutlinedButton.icon(
-            onPressed: _addExpense,
-            icon: const Icon(Icons.add, size: 18),
-            label: Text(l10n.settingsAddExpenseButton),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: Colors.grey.shade400,
-              side: BorderSide(color: Colors.grey.shade200, width: 2, style: BorderStyle.solid),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              minimumSize: const Size(double.infinity, 0),
-              textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+          const SizedBox(height: 8),
+          // ── Add Button ──
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: _addExpense,
+              icon: const Icon(Icons.add, size: 18),
+              label: Text(l10n.settingsAddExpenseButton),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.primary(context),
+                side: BorderSide(color: AppColors.primary(context).withValues(alpha: 0.4), width: 2),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
             ),
           ),
         ],
@@ -1402,41 +1491,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  void _showCategoryDetailSheet(ExpenseItem expense, List<RecurringExpense> bills) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => _CategoryDetailSheet(
-        expense: expense,
-        bills: bills,
-        currencyCode: _draft.country.currencyCode,
-        householdId: widget.householdId,
-        inputDecoration: _inputDecoration,
-        initialMonthlyOverride: _monthlyBudgetsDraft[expense.category],
-        onMonthlyBudgetChanged: (category, amount) {
-          setState(() {
-            if (amount != null) {
-              _monthlyBudgetsDraft[category] = amount;
-            } else {
-              _monthlyBudgetsDraft.remove(category);
-            }
-          });
-        },
-        onBillsChanged: (updatedBills) {
-          setState(() {
-            // Remove old bills for this category, add updated ones
-            final catName = expense.category;
-            _recurringDraft = [
-              ..._recurringDraft.where((b) => b.category != catName),
-              ...updatedBills,
-            ];
-          });
-          widget.onRecurringChanged?.call(_recurringDraft);
-        },
-      ),
-    );
-  }
 
   IconData _predefinedCategoryIcon(ExpenseCategory cat) {
     return switch (cat) {
@@ -3201,655 +3255,6 @@ class _SettingsDetailPage extends StatelessWidget {
         valueListenable: rebuildNotifier,
         builder: (context, _, child) => SingleChildScrollView(
           child: bodyBuilder(),
-        ),
-      ),
-    );
-  }
-}
-
-class _CategoryDetailSheet extends StatefulWidget {
-  final ExpenseItem expense;
-  final List<RecurringExpense> bills;
-  final String currencyCode;
-  final String householdId;
-  final InputDecoration Function(String hint, {String? suffix}) inputDecoration;
-  final ValueChanged<List<RecurringExpense>> onBillsChanged;
-  final double? initialMonthlyOverride;
-  final void Function(String category, double? amount) onMonthlyBudgetChanged;
-
-  const _CategoryDetailSheet({
-    required this.expense,
-    required this.bills,
-    required this.currencyCode,
-    required this.householdId,
-    required this.inputDecoration,
-    required this.onBillsChanged,
-    required this.onMonthlyBudgetChanged,
-    this.initialMonthlyOverride,
-  });
-
-  @override
-  State<_CategoryDetailSheet> createState() => _CategoryDetailSheetState();
-}
-
-class _CategoryDetailSheetState extends State<_CategoryDetailSheet> {
-  final _recurringService = RecurringExpenseService();
-  late List<RecurringExpense> _bills;
-  double? _monthlyOverride;
-
-  @override
-  void initState() {
-    super.initState();
-    _bills = List.from(widget.bills);
-    _monthlyOverride = widget.initialMonthlyOverride;
-  }
-
-  String _currentMonthLabel(S l10n) {
-    final now = DateTime.now();
-    return '${localizedMonthFull(l10n, now.month)} ${now.year}';
-  }
-
-  void _notifyParent() => widget.onBillsChanged(_bills);
-
-  double get _totalActiveBills =>
-      _bills.where((b) => b.isActive).fold(0.0, (sum, b) => sum + b.amount);
-
-  bool get _billsExceedBudget => _totalActiveBills > widget.expense.amount;
-
-  Future<void> _addBill() async {
-    final result = await _showBillForm(null);
-    if (result == null) return;
-    await _recurringService.save(result, widget.householdId);
-    if (!mounted) return;
-    setState(() => _bills = [..._bills, result]);
-    _notifyParent();
-  }
-
-  Future<void> _editBill(RecurringExpense bill) async {
-    final result = await _showBillForm(bill);
-    if (result == null) return;
-    await _recurringService.save(result, widget.householdId);
-    if (!mounted) return;
-    setState(() {
-      _bills = _bills.map((b) => b.id == result.id ? result : b).toList();
-    });
-    _notifyParent();
-  }
-
-  Future<void> _deleteBill(RecurringExpense bill) async {
-    final l10n = S.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(l10n.delete),
-        content: Text(l10n.recurringExpenseDeleteConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.delete,
-                style: TextStyle(color: AppColors.error(context))),
-          ),
-        ],
-      ),
-    );
-    if (confirmed != true) return;
-    await _recurringService.delete(bill.id);
-    if (!mounted) return;
-    setState(() {
-      _bills = _bills.where((b) => b.id != bill.id).toList();
-    });
-    _notifyParent();
-  }
-
-  Future<RecurringExpense?> _showBillForm(RecurringExpense? existing) {
-    return showModalBottomSheet<RecurringExpense>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => _BillFormSheet(
-        existing: existing,
-        categoryName: widget.expense.category,
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = S.of(context);
-    return DraggableScrollableSheet(
-      initialChildSize: 0.7,
-      minChildSize: 0.4,
-      maxChildSize: 0.95,
-      builder: (_, scrollController) => Container(
-        decoration: BoxDecoration(
-          color: AppColors.surface(context),
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: ListView(
-          controller: scrollController,
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
-          children: [
-            // Drag handle
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppColors.dragHandle(context),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            // Header row
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    widget.expense.label.isNotEmpty
-                        ? widget.expense.label
-                        : localizedCategoryLabel(widget.expense.category, l10n),
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary(context),
-                    ),
-                  ),
-                ),
-                IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: Icon(Icons.close, color: AppColors.textMuted(context)),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-
-            // BUDGET SETTINGS section header
-            Text(
-              l10n.billsBudgetSettings.toUpperCase(),
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textSecondary(context),
-                letterSpacing: 0.8,
-              ),
-            ),
-            const SizedBox(height: 12),
-            // Category display
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                border: Border.all(color: AppColors.border(context)),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.category, size: 16, color: AppColors.textMuted(context)),
-                  const SizedBox(width: 8),
-                  Text(
-                    localizedCategoryLabel(widget.expense.category, l10n),
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.textLabel(context),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 12),
-            // Default budget display
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary(context).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    l10n.expenseDefaultBudget,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.primary(context),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  formatCurrency(widget.expense.amount),
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary(context),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            // Monthly override field
-            Text(
-              l10n.expenseAdjustMonth(_currentMonthLabel(l10n)),
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textSecondary(context),
-                letterSpacing: 0.8,
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              initialValue: _monthlyOverride?.toString() ?? '',
-              onChanged: (v) {
-                final amount = double.tryParse(v);
-                setState(() {
-                  _monthlyOverride = amount != null && amount > 0 ? amount : null;
-                });
-                widget.onMonthlyBudgetChanged(
-                  widget.expense.category,
-                  amount != null && amount > 0 ? amount : null,
-                );
-              },
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(
-                hintText: l10n.expenseAdjustMonthHint,
-                hintStyle: TextStyle(fontSize: 13, color: AppColors.textMuted(context)),
-                suffixText: widget.currencyCode,
-                suffixStyle: TextStyle(fontSize: 13, color: AppColors.textMuted(context)),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // RECURRING BILLS section header + add button
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    l10n.billsRecurringBills.toUpperCase(),
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary(context),
-                      letterSpacing: 0.8,
-                    ),
-                  ),
-                ),
-                TextButton.icon(
-                  onPressed: _addBill,
-                  icon: const Icon(Icons.add, size: 16),
-                  label: Text(l10n.billsAddBill),
-                  style: TextButton.styleFrom(
-                    foregroundColor: AppColors.primary(context),
-                    textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-
-            // Bills list
-            if (_bills.isEmpty)
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.background(context),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Center(
-                  child: Text(
-                    l10n.billsNone,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppColors.textMuted(context),
-                    ),
-                  ),
-                ),
-              )
-            else
-              ..._bills.map((bill) => Container(
-                margin: const EdgeInsets.only(bottom: 8),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                decoration: BoxDecoration(
-                  color: AppColors.background(context),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.border(context)),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.repeat,
-                      size: 16,
-                      color: bill.isActive
-                          ? AppColors.primary(context)
-                          : AppColors.textMuted(context),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            bill.description ?? localizedCategoryLabel(widget.expense.category, l10n),
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                              color: bill.isActive
-                                  ? AppColors.textPrimary(context)
-                                  : AppColors.textMuted(context),
-                            ),
-                          ),
-                          Text(
-                            [
-                              formatCurrency(bill.amount),
-                              if (bill.dayOfMonth != null) '${l10n.billsDueDay} ${bill.dayOfMonth}',
-                              if (!bill.isActive) l10n.recurringExpenseInactive,
-                            ].join(' · '),
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: AppColors.textSecondary(context),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    PopupMenuButton<String>(
-                      icon: Icon(Icons.more_vert, size: 18, color: AppColors.textMuted(context)),
-                      onSelected: (action) {
-                        switch (action) {
-                          case 'edit':
-                            _editBill(bill);
-                          case 'delete':
-                            _deleteBill(bill);
-                        }
-                      },
-                      itemBuilder: (_) => [
-                        PopupMenuItem(
-                          value: 'edit',
-                          child: Text(l10n.recurringExpenseEdit),
-                        ),
-                        PopupMenuItem(
-                          value: 'delete',
-                          child: Text(l10n.delete,
-                              style: TextStyle(color: AppColors.error(context))),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              )),
-
-            // Warning if bills exceed budget
-            if (_billsExceedBudget && widget.expense.amount > 0) ...[
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppColors.warningBackground(context),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.warning_amber_rounded, size: 18, color: AppColors.warning(context)),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        l10n.billsExceedBudget(
-                          formatCurrency(_totalActiveBills - widget.expense.amount),
-                        ),
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.warning(context),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _BillFormSheet extends StatefulWidget {
-  final RecurringExpense? existing;
-  final String categoryName;
-
-  const _BillFormSheet({
-    this.existing,
-    required this.categoryName,
-  });
-
-  @override
-  State<_BillFormSheet> createState() => _BillFormSheetState();
-}
-
-class _BillFormSheetState extends State<_BillFormSheet> {
-  final _formKey = GlobalKey<FormState>();
-  final _descriptionController = TextEditingController();
-  final _amountController = TextEditingController();
-  final _dayController = TextEditingController();
-  bool _isActive = true;
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.existing != null) {
-      final e = widget.existing!;
-      _descriptionController.text = e.description ?? '';
-      _amountController.text = e.amount.toStringAsFixed(2);
-      if (e.dayOfMonth != null) _dayController.text = e.dayOfMonth.toString();
-      _isActive = e.isActive;
-    }
-  }
-
-  @override
-  void dispose() {
-    _descriptionController.dispose();
-    _amountController.dispose();
-    _dayController.dispose();
-    super.dispose();
-  }
-
-  void _save() {
-    if (!_formKey.currentState!.validate()) return;
-
-    final amount = double.tryParse(_amountController.text.replaceAll(',', '.'));
-    if (amount == null || amount <= 0) return;
-
-    final dayText = _dayController.text.trim();
-    final day = dayText.isNotEmpty ? int.tryParse(dayText) : null;
-
-    final result = RecurringExpense(
-      id: widget.existing?.id ??
-          'rec_${DateTime.now().millisecondsSinceEpoch}',
-      category: widget.categoryName,
-      amount: amount,
-      description: _descriptionController.text.trim().isEmpty
-          ? null
-          : _descriptionController.text.trim(),
-      dayOfMonth: day?.clamp(1, 31),
-      isActive: _isActive,
-    );
-    Navigator.of(context).pop(result);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = S.of(context);
-    final isEdit = widget.existing != null;
-
-    return DraggableScrollableSheet(
-      initialChildSize: 0.6,
-      minChildSize: 0.4,
-      maxChildSize: 0.9,
-      builder: (_, scrollController) => Container(
-        decoration: BoxDecoration(
-          color: AppColors.surface(context),
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            controller: scrollController,
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
-            children: [
-              // Drag handle
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: AppColors.dragHandle(context),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                isEdit ? l10n.recurringExpenseEdit : l10n.billsAddBill,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary(context),
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Description
-              Text(
-                l10n.billsDescription.toUpperCase(),
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary(context),
-                  letterSpacing: 0.8,
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _descriptionController,
-                decoration: InputDecoration(
-                  hintText: l10n.billsDescription,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 12),
-                ),
-                textCapitalization: TextCapitalization.sentences,
-              ),
-              const SizedBox(height: 20),
-
-              // Amount
-              Text(
-                l10n.billsAmount.toUpperCase(),
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary(context),
-                  letterSpacing: 0.8,
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _amountController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(
-                  prefixText: currencySymbol(),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 12),
-                ),
-                validator: (v) {
-                  final val = double.tryParse((v ?? '').replaceAll(',', '.'));
-                  if (val == null || val <= 0) return l10n.addExpenseInvalidAmount;
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-
-              // Due day
-              Text(
-                l10n.billsDueDay.toUpperCase(),
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary(context),
-                  letterSpacing: 0.8,
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _dayController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  hintText: '1-31',
-                  prefixIcon: Icon(Icons.calendar_today,
-                      size: 18, color: AppColors.textMuted(context)),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 12),
-                ),
-                validator: (v) {
-                  if (v == null || v.trim().isEmpty) return null;
-                  final val = int.tryParse(v.trim());
-                  if (val == null || val < 1 || val > 31) return '1-31';
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-
-              // Active toggle
-              SwitchListTile(
-                value: _isActive,
-                onChanged: (v) => setState(() => _isActive = v),
-                title: Text(
-                  l10n.billsActive,
-                  style: TextStyle(color: AppColors.textPrimary(context)),
-                ),
-                activeThumbColor: AppColors.primary(context),
-                contentPadding: EdgeInsets.zero,
-              ),
-              const SizedBox(height: 24),
-
-              // Save button
-              SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: _save,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary(context),
-                    foregroundColor: AppColors.onPrimary(context),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    elevation: 0,
-                  ),
-                  child: Text(
-                    l10n.save,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
