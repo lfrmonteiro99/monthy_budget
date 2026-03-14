@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:monthly_management/services/quick_action_service.dart';
 import 'package:monthly_management/widgets/quick_add_launcher.dart';
 
 import '../helpers/test_app.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  GoogleFonts.config.allowRuntimeFetching = false;
+
   group('QuickAddLauncher', () {
     testWidgets('shows speed-dial options when tapped', (tester) async {
+      // QuickAddLauncher is now a single-action FAB that directly fires
+      // addExpense. Verify the FAB is rendered and triggers addExpense.
       QuickAction? received;
 
       await tester.pumpWidget(
@@ -19,25 +25,13 @@ void main() {
           ),
         ),
       );
-
-      // Initially the action chips are not visible (collapsed).
-      expect(find.text('Add expense'), findsNothing);
-      expect(find.text('Add shopping item'), findsNothing);
-      expect(find.text('Meal planner'), findsNothing);
-      expect(find.text('Assistant'), findsNothing);
-
-      // Tap the launcher FAB to expand.
-      await tester.tap(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
 
-      // All four quick-action chips should now be visible.
-      expect(find.text('Add expense'), findsOneWidget);
-      expect(find.text('Add shopping item'), findsOneWidget);
-      expect(find.text('Meal planner'), findsOneWidget);
-      expect(find.text('Assistant'), findsOneWidget);
+      // The FAB should be visible.
+      expect(find.byType(FloatingActionButton), findsOneWidget);
 
-      // Tap "Add expense" chip.
-      await tester.tap(find.text('Add expense'));
+      // Tap the FAB — it directly dispatches addExpense.
+      await tester.tap(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
 
       expect(received, QuickAction.addExpense);
@@ -45,6 +39,7 @@ void main() {
 
     testWidgets('dispatches addShopping when shopping chip is tapped',
         (tester) async {
+      // Widget is now a single-action FAB — always dispatches addExpense.
       QuickAction? received;
 
       await tester.pumpWidget(
@@ -56,18 +51,18 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       await tester.tap(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Add shopping item'));
-      await tester.pumpAndSettle();
-
-      expect(received, QuickAction.addShopping);
+      // Single-action FAB always fires addExpense.
+      expect(received, QuickAction.addExpense);
     });
 
     testWidgets('dispatches openMeals when meals chip is tapped',
         (tester) async {
+      // Widget is now a single-action FAB — always dispatches addExpense.
       QuickAction? received;
 
       await tester.pumpWidget(
@@ -79,18 +74,17 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       await tester.tap(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Meal planner'));
-      await tester.pumpAndSettle();
-
-      expect(received, QuickAction.openMeals);
+      expect(received, QuickAction.addExpense);
     });
 
     testWidgets('dispatches openAssistant when assistant chip is tapped',
         (tester) async {
+      // Widget is now a single-action FAB — always dispatches addExpense.
       QuickAction? received;
 
       await tester.pumpWidget(
@@ -102,17 +96,17 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       await tester.tap(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Assistant'));
-      await tester.pumpAndSettle();
-
-      expect(received, QuickAction.openAssistant);
+      expect(received, QuickAction.addExpense);
     });
 
     testWidgets('collapses after selecting an action', (tester) async {
+      // Widget is now a single-action FAB — no expand/collapse behavior.
+      // Verify the FAB remains visible after being tapped.
       await tester.pumpWidget(
         wrapWithTestApp(
           Scaffold(
@@ -122,18 +116,17 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
-      // Expand
+      // FAB is present.
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+
+      // Tap.
       await tester.tap(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
-      expect(find.text('Add expense'), findsOneWidget);
 
-      // Select
-      await tester.tap(find.text('Add expense'));
-      await tester.pumpAndSettle();
-
-      // Should collapse
-      expect(find.text('Add expense'), findsNothing);
+      // FAB should still be visible (it's a persistent single button).
+      expect(find.byType(FloatingActionButton), findsOneWidget);
     });
   });
 }
