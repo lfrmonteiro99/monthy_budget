@@ -2539,5 +2539,10 @@
     "expenseAttachCamera": "Cámara",
     "expenseAttachGallery": "Galería",
     "expenseExtras": "Extras",
-    "expenseLocationDetect": "Detectar ubicación"
+    "expenseLocationDetect": "Detectar ubicación",
+    "biometricLockTitle": "Bloqueo de App",
+    "biometricLockSubtitle": "Requerir autenticación al abrir la aplicación",
+    "biometricPrompt": "Autentícate para continuar",
+    "biometricReason": "Verifica tu identidad para desbloquear la aplicación",
+    "biometricRetry": "Intentar de Nuevo"
 }

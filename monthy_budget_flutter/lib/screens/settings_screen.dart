@@ -19,6 +19,7 @@ import '../theme/app_colors.dart';
 import '../main.dart';
 import '../models/subscription_state.dart';
 import '../services/downgrade_service.dart';
+import '../services/biometric_service.dart';
 import '../services/local_config_service.dart';
 import '../widgets/limit_reached_dialog.dart';
 import 'recurring_expenses_screen.dart' show showEditRecurringSheet;
@@ -110,6 +111,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   int? _expandedExpenseIndex;
   late List<CustomCategory> _customCategoriesDraft;
   final _categoryService = CategoryService();
+  final _biometricService = BiometricService();
+  bool _biometricSupported = false;
+  bool _biometricEnabled = false;
 
   String _favSearch = '';
 
@@ -126,6 +130,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _monthlyBudgetsDraft = Map<String, double>.from(widget.monthlyBudgets);
     _recurringDraft = List.from(widget.recurringExpenses);
     _customCategoriesDraft = List.from(widget.customCategories);
+    _loadBiometricState();
     _loadAssociatedMembers();
     // Auto-open section page if requested via initialSection
     if (widget.initialSection != null) {
@@ -145,6 +150,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool get _isCasado =>
       _draft.personalInfo.maritalStatus == MaritalStatus.casado ||
       _draft.personalInfo.maritalStatus == MaritalStatus.uniaoFacto;
+
+  Future<void> _loadBiometricState() async {
+    final supported = await _biometricService.isDeviceSupported();
+    final enabled = await _biometricService.isEnabled();
+    if (mounted) {
+      setState(() {
+        _biometricSupported = supported;
+        _biometricEnabled = enabled;
+      });
+    }
+  }
 
   void _autoOpenInitialSection(String section) {
     final l10n = S.of(context);
@@ -369,6 +385,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     title: l10n.settingsHousehold,
                     onTap: () => _openSectionPage(l10n.settingsHousehold, _buildHouseholdSection),
                   ),
+                  if (_biometricSupported)
+                    _BiometricToggleItem(
+                      enabled: _biometricEnabled,
+                      onChanged: (value) async {
+                        if (value) {
+                          // Authenticate first to confirm biometrics work
+                          final success = await _biometricService.authenticate(
+                            reason: S.of(context).biometricReason,
+                          );
+                          if (!success) return;
+                        }
+                        await _biometricService.setEnabled(value);
+                        if (mounted) {
+                          setState(() => _biometricEnabled = value);
+                        }
+                      },
+                    ),
                   if (widget.onOpenSubscription != null)
                     _SettingsItem(
                       icon: Icons.workspace_premium_rounded,
@@ -3218,6 +3251,67 @@ class _SettingsItem extends StatelessWidget {
                   size: 20, color: AppColors.settingsArrow(context)),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BiometricToggleItem extends StatelessWidget {
+  final bool enabled;
+  final ValueChanged<bool> onChanged;
+
+  const _BiometricToggleItem({
+    required this.enabled,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = S.of(context);
+    return Material(
+      color: AppColors.surface(context),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: AppColors.surfaceVariant(context),
+              width: 0.5,
+            ),
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.fingerprint, size: 20, color: AppColors.settingsIcon(context)),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.biometricLockTitle,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.textPrimary(context),
+                    ),
+                  ),
+                  Text(
+                    l10n.biometricLockSubtitle,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary(context),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Switch(
+              value: enabled,
+              onChanged: onChanged,
+            ),
+          ],
         ),
       ),
     );

@@ -4819,4 +4819,21 @@ class SEs extends S {
 
   @override
   String get expenseLocationDetect => 'Detectar ubicación';
+
+  @override
+  String get biometricLockTitle => 'Bloqueo de App';
+
+  @override
+  String get biometricLockSubtitle =>
+      'Requerir autenticación al abrir la aplicación';
+
+  @override
+  String get biometricPrompt => 'Autentícate para continuar';
+
+  @override
+  String get biometricReason =>
+      'Verifica tu identidad para desbloquear la aplicación';
+
+  @override
+  String get biometricRetry => 'Intentar de Nuevo';
 }

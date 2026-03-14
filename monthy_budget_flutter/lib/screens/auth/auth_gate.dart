@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../../services/biometric_service.dart';
 import '../../services/household_service.dart';
 import '../../theme/app_colors.dart';
 import '../../widgets/branded_loading.dart';
+import 'biometric_lock_screen.dart';
 import 'login_screen.dart';
 import 'household_setup_screen.dart';
 
@@ -94,10 +96,81 @@ class _AuthGateState extends State<AuthGate> {
           );
         }
 
-        // Fully ready
-        return widget.appBuilder(_profile!);
+        // Fully ready — wrap with biometric gate
+        return _BiometricGate(
+          child: widget.appBuilder(_profile!),
+        );
       },
     );
+  }
+}
+
+/// Wraps the authenticated app content.  On [AppLifecycleState.resumed],
+/// if biometric lock is enabled, shows the lock screen overlay.
+/// Does NOT lock on first build (initial session restore).
+class _BiometricGate extends StatefulWidget {
+  final Widget child;
+  const _BiometricGate({required this.child});
+
+  @override
+  State<_BiometricGate> createState() => _BiometricGateState();
+}
+
+class _BiometricGateState extends State<_BiometricGate>
+    with WidgetsBindingObserver {
+  final _biometricService = BiometricService();
+  bool _locked = false;
+  bool _didFirstBuild = false;
+  bool _wasPaused = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    // Mark first build complete after the frame so we skip locking on
+    // initial session restore.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _didFirstBuild = true;
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden) {
+      _wasPaused = true;
+    }
+    if (state == AppLifecycleState.resumed && _didFirstBuild && _wasPaused) {
+      _wasPaused = false;
+      _checkAndLock();
+    }
+  }
+
+  Future<void> _checkAndLock() async {
+    final enabled = await _biometricService.isEnabled();
+    if (enabled && mounted) {
+      setState(() => _locked = true);
+    }
+  }
+
+  void _unlock() {
+    if (mounted) {
+      setState(() => _locked = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_locked) {
+      return BiometricLockScreen(onUnlocked: _unlock);
+    }
+    return widget.child;
   }
 }
 
