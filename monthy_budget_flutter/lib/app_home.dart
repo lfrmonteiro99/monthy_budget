@@ -121,8 +121,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   final _dataHealthService = DataHealthService();
   bool _commandPanelOpen = false;
 
+  // Use a far-past date so trial is NOT active before load() completes.
   SubscriptionState _subscription =
-      SubscriptionState(trialStartDate: DateTime.now());
+      SubscriptionState(trialStartDate: DateTime(2000));
   OnboardingState _onboardingState = const OnboardingState();
   final _fabKey = GlobalKey(debugLabel: 'tour_fab');
   final _navBarKey = GlobalKey(debugLabel: 'tour_nav_bar');
