@@ -11,6 +11,7 @@ import '../data/irs_tables.dart';
 import '../data/tax/tax_system.dart';
 import '../data/tax/tax_factory.dart';
 import '../utils/formatters.dart';
+import '../utils/calculations.dart';
 import '../services/household_service.dart';
 import '../models/meal_settings.dart';
 import '../models/local_dashboard_config.dart';
@@ -836,6 +837,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildSalariesSection() {
     final l10n = S.of(context);
+    final taxSystem = getTaxSystem(_draft.country);
     return Container(
       color: AppColors.surface(context),
       padding: const EdgeInsets.all(20),
@@ -844,6 +846,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _helpTip(l10n.settingsSalariesTip),
           ...List.generate(_draft.salaries.length, (idx) {
             final salary = _draft.salaries[idx];
+            // Calculate net for summary row
+            final salaryCalc = salary.grossAmount > 0
+                ? calculateNetSalary(salary, _draft.personalInfo, taxSystem)
+                : null;
+            final currency = _draft.country.currencyCode;
             return Container(
               margin: EdgeInsets.only(bottom: idx < _draft.salaries.length - 1 ? 16 : 0),
               padding: const EdgeInsets.all(16),
@@ -896,146 +903,257 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ],
                       ],
                     ),
-                    const Divider(height: 24),
-                    // ── Gross Salary ──
-                    _label(l10n.settingsGrossMonthlySalary),
+                    // ── Summary: Gross → Net ──
                     const SizedBox(height: 8),
-                    TextFormField(
-                      initialValue: salary.grossAmount > 0 ? salary.grossAmount.toStringAsFixed(2) : '',
-                      onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(grossAmount: double.tryParse(v) ?? 0)),
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode, helperText: l10n.helperGrossSalary),
-                    ),
-                    if (_draft.country.hasSubsidies) ...[
-                      const Divider(height: 24),
-                      _label(l10n.settingsSubsidyHoliday),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: SubsidyMode.values.map((mode) {
-                          final isSelected = salary.subsidyMode == mode;
-                          return Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(right: mode != SubsidyMode.half ? 6 : 0),
-                              child: OutlinedButton(
-                                onPressed: () => _updateSalary(idx, (s) => s.copyWith(subsidyMode: mode)),
-                                style: OutlinedButton.styleFrom(
-                                  backgroundColor: isSelected ? AppColors.primary(context) : AppColors.surface(context),
-                                  foregroundColor: isSelected ? AppColors.onPrimary(context) : AppColors.textSecondary(context),
-                                  side: BorderSide(color: isSelected ? AppColors.primary(context) : AppColors.border(context), width: 2),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                  padding: const EdgeInsets.symmetric(vertical: 8),
-                                  textStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
-                                ),
-                                child: Text(mode.localizedShortLabel(l10n)),
-                              ),
-                            ),
-                          );
-                        }).toList(),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: AppColors.background(context),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    ],
-                    const Divider(height: 24),
-                    _label(l10n.settingsOtherExemptLabel),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      initialValue: salary.otherExemptIncome > 0 ? salary.otherExemptIncome.toStringAsFixed(2) : '',
-                      onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(otherExemptIncome: double.tryParse(v) ?? 0)),
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode, helperText: l10n.helperExemptIncome),
-                    ),
-                    if (_draft.country.hasMealAllowance) ...[
-                      const Divider(height: 24),
-                      _label(l10n.settingsMealAllowanceLabel),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: MealAllowanceType.values.map((type) {
-                          final isSelected = salary.mealAllowanceType == type;
-                          return Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(right: type != MealAllowanceType.cash ? 6 : 0),
-                              child: OutlinedButton(
-                                onPressed: () => _updateSalary(idx, (s) => s.copyWith(mealAllowanceType: type)),
-                                style: OutlinedButton.styleFrom(
-                                  backgroundColor: isSelected ? AppColors.primary(context) : AppColors.surface(context),
-                                  foregroundColor: isSelected ? AppColors.onPrimary(context) : AppColors.textSecondary(context),
-                                  side: BorderSide(color: isSelected ? AppColors.primary(context) : AppColors.border(context), width: 2),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                  padding: const EdgeInsets.symmetric(vertical: 8),
-                                  textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                                ),
-                                child: Text(type.localizedLabel(l10n)),
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                      if (salary.mealAllowanceType != MealAllowanceType.none) ...[
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _label(l10n.settingsAmountPerDay),
-                                  const SizedBox(height: 4),
-                                  TextFormField(
-                                    initialValue: salary.mealAllowancePerDay > 0 ? salary.mealAllowancePerDay.toStringAsFixed(2) : '',
-                                    onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(mealAllowancePerDay: double.tryParse(v) ?? 0)),
-                                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                    decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode, helperText: l10n.helperMealAllowance),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          const SizedBox(width: 12),
-                          SizedBox(
-                            width: 96,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _label(l10n.settingsDaysPerMonth),
-                                const SizedBox(height: 4),
-                                TextFormField(
-                                  initialValue: salary.workingDaysPerMonth > 0 ? salary.workingDaysPerMonth.toString() : '',
-                                  onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(workingDaysPerMonth: int.tryParse(v) ?? 0)),
-                                  keyboardType: TextInputType.number,
-                                  decoration: _inputDecoration('22', helperText: l10n.helperWorkingDays),
-                                ),
-                              ],
-                            ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            l10n.settingsSalarySummaryGross,
+                            style: TextStyle(fontSize: 11, color: AppColors.textMuted(context)),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            salary.grossAmount > 0
+                                ? '${salary.grossAmount.toStringAsFixed(2)} $currency'
+                                : '\u2014',
+                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimary(context)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Icon(Icons.arrow_forward, size: 14, color: AppColors.textMuted(context)),
+                          ),
+                          Text(
+                            l10n.settingsSalarySummaryNet,
+                            style: TextStyle(fontSize: 11, color: AppColors.textMuted(context)),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            salaryCalc != null
+                                ? '${salaryCalc.totalNetWithMeal.toStringAsFixed(2)} $currency'
+                                : '\u2014',
+                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimary(context)),
                           ),
                         ],
                       ),
-                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    // ── Gross Salary sub-section ──
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.background(context),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _label(l10n.settingsGrossMonthlySalary),
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            initialValue: salary.grossAmount > 0 ? salary.grossAmount.toStringAsFixed(2) : '',
+                            onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(grossAmount: double.tryParse(v) ?? 0)),
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                            decoration: _inputDecoration('0.00', suffix: currency, helperText: l10n.helperGrossSalary),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (_draft.country.hasSubsidies) ...[
+                      // ── Subsidy Mode sub-section ──
+                      const SizedBox(height: 12),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.background(context),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _label(l10n.settingsSubsidyHoliday),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: SubsidyMode.values.map((mode) {
+                                final isSelected = salary.subsidyMode == mode;
+                                return Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(right: mode != SubsidyMode.half ? 6 : 0),
+                                    child: OutlinedButton(
+                                      onPressed: () => _updateSalary(idx, (s) => s.copyWith(subsidyMode: mode)),
+                                      style: OutlinedButton.styleFrom(
+                                        backgroundColor: isSelected ? AppColors.primary(context) : AppColors.surface(context),
+                                        foregroundColor: isSelected ? AppColors.onPrimary(context) : AppColors.textSecondary(context),
+                                        side: BorderSide(color: isSelected ? AppColors.primary(context) : AppColors.border(context), width: 2),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                        padding: const EdgeInsets.symmetric(vertical: 8),
+                                        textStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+                                      ),
+                                      child: Text(mode.localizedShortLabel(l10n)),
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    // ── Other Exempt Income sub-section ──
+                    const SizedBox(height: 12),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.background(context),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _label(l10n.settingsOtherExemptLabel),
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            initialValue: salary.otherExemptIncome > 0 ? salary.otherExemptIncome.toStringAsFixed(2) : '',
+                            onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(otherExemptIncome: double.tryParse(v) ?? 0)),
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                            decoration: _inputDecoration('0.00', suffix: currency, helperText: l10n.helperExemptIncome),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (_draft.country.hasMealAllowance) ...[
+                      // ── Meal Allowance sub-section ──
+                      const SizedBox(height: 12),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.background(context),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _label(l10n.settingsMealAllowanceLabel),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: MealAllowanceType.values.map((type) {
+                                final isSelected = salary.mealAllowanceType == type;
+                                return Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(right: type != MealAllowanceType.cash ? 6 : 0),
+                                    child: OutlinedButton(
+                                      onPressed: () => _updateSalary(idx, (s) => s.copyWith(mealAllowanceType: type)),
+                                      style: OutlinedButton.styleFrom(
+                                        backgroundColor: isSelected ? AppColors.primary(context) : AppColors.surface(context),
+                                        foregroundColor: isSelected ? AppColors.onPrimary(context) : AppColors.textSecondary(context),
+                                        side: BorderSide(color: isSelected ? AppColors.primary(context) : AppColors.border(context), width: 2),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                        padding: const EdgeInsets.symmetric(vertical: 8),
+                                        textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                                      ),
+                                      child: Text(type.localizedLabel(l10n)),
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                            if (salary.mealAllowanceType != MealAllowanceType.none) ...[
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        _label(l10n.settingsAmountPerDay),
+                                        const SizedBox(height: 4),
+                                        TextFormField(
+                                          initialValue: salary.mealAllowancePerDay > 0 ? salary.mealAllowancePerDay.toStringAsFixed(2) : '',
+                                          onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(mealAllowancePerDay: double.tryParse(v) ?? 0)),
+                                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                          decoration: _inputDecoration('0.00', suffix: currency, helperText: l10n.helperMealAllowance),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  SizedBox(
+                                    width: 96,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        _label(l10n.settingsDaysPerMonth),
+                                        const SizedBox(height: 4),
+                                        TextFormField(
+                                          initialValue: salary.workingDaysPerMonth > 0 ? salary.workingDaysPerMonth.toString() : '',
+                                          onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(workingDaysPerMonth: int.tryParse(v) ?? 0)),
+                                          keyboardType: TextInputType.number,
+                                          decoration: _inputDecoration('22', helperText: l10n.helperWorkingDays),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
                     ],
                     if (_draft.country.hasTitulares && _isCasado) ...[
+                      // ── Titulares sub-section ──
                       const SizedBox(height: 12),
-                      _label(l10n.settingsTitularesLabel),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [1, 2].map((n) {
-                          final isSelected = salary.titulares == n;
-                          return Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(right: n == 1 ? 8 : 0),
-                              child: OutlinedButton(
-                                onPressed: () => _updateSalary(idx, (s) => s.copyWith(titulares: n)),
-                                style: OutlinedButton.styleFrom(
-                                  backgroundColor: isSelected ? AppColors.primary(context) : AppColors.surface(context),
-                                  foregroundColor: isSelected ? AppColors.onPrimary(context) : AppColors.textSecondary(context),
-                                  side: BorderSide(color: isSelected ? AppColors.primary(context) : AppColors.border(context), width: 2),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                  padding: const EdgeInsets.symmetric(vertical: 8),
-                                  textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                                ),
-                                child: Text(l10n.settingsTitularCount(n, n > 1 ? 'es' : '')),
-                              ),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.background(context),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _label(l10n.settingsTitularesLabel),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [1, 2].map((n) {
+                                final isSelected = salary.titulares == n;
+                                return Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(right: n == 1 ? 8 : 0),
+                                    child: OutlinedButton(
+                                      onPressed: () => _updateSalary(idx, (s) => s.copyWith(titulares: n)),
+                                      style: OutlinedButton.styleFrom(
+                                        backgroundColor: isSelected ? AppColors.primary(context) : AppColors.surface(context),
+                                        foregroundColor: isSelected ? AppColors.onPrimary(context) : AppColors.textSecondary(context),
+                                        side: BorderSide(color: isSelected ? AppColors.primary(context) : AppColors.border(context), width: 2),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                        padding: const EdgeInsets.symmetric(vertical: 8),
+                                        textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                                      ),
+                                      child: Text(l10n.settingsTitularCount(n, n > 1 ? 'es' : '')),
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
                             ),
-                          );
-                        }).toList(),
+                          ],
+                        ),
                       ),
                     ],
                     if (_draft.country == Country.pt) ...[
+                      // ── IRS Table sub-section ──
                       const SizedBox(height: 12),
                       Builder(builder: (_) {
                         final table = getApplicableTable(
@@ -1044,14 +1162,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           _draft.personalInfo.dependentes,
                         );
                         return Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                           decoration: BoxDecoration(
-                            color: AppColors.background(context),
-                            borderRadius: BorderRadius.circular(8),
+                            color: AppColors.primary(context).withValues(alpha: 0.08),
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          child: Text(
-                            '${table.label} — ${table.description}',
-                            style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+                          child: Row(
+                            children: [
+                              Icon(Icons.table_chart_outlined, size: 16, color: AppColors.primary(context)),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  '${table.label} \u2014 ${table.description}',
+                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textPrimary(context)),
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       }),

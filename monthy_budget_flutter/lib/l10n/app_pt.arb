@@ -5012,5 +5012,9 @@
     "dashGroupInsights": "Análise",
     "@dashGroupInsights": {"description": "Insights group label in dashboard settings"},
     "dashReorderHint": "Arraste para reordenar os cartões",
-    "@dashReorderHint": {"description": "Hint text for drag-to-reorder in dashboard card settings"}
+    "@dashReorderHint": {"description": "Hint text for drag-to-reorder in dashboard card settings"},
+    "settingsSalarySummaryGross": "Bruto",
+    "@settingsSalarySummaryGross": {"description": "Label for gross amount in salary summary row"},
+    "settingsSalarySummaryNet": "Líquido",
+    "@settingsSalarySummaryNet": {"description": "Label for net amount in salary summary row"}
 }

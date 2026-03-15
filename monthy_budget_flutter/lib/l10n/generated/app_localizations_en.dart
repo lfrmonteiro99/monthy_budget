@@ -4917,4 +4917,10 @@ class SEn extends S {
 
   @override
   String get dashReorderHint => 'Drag to reorder cards';
+
+  @override
+  String get settingsSalarySummaryGross => 'Gross';
+
+  @override
+  String get settingsSalarySummaryNet => 'Net';
 }

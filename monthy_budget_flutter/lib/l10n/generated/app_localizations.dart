@@ -8878,6 +8878,18 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Arraste para reordenar os cartões'**
   String get dashReorderHint;
+
+  /// Label for gross amount in salary summary row
+  ///
+  /// In pt, this message translates to:
+  /// **'Bruto'**
+  String get settingsSalarySummaryGross;
+
+  /// Label for net amount in salary summary row
+  ///
+  /// In pt, this message translates to:
+  /// **'Líquido'**
+  String get settingsSalarySummaryNet;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

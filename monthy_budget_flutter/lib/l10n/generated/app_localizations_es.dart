@@ -4954,4 +4954,10 @@ class SEs extends S {
 
   @override
   String get dashReorderHint => 'Arrastra para reordenar las tarjetas';
+
+  @override
+  String get settingsSalarySummaryGross => 'Bruto';
+
+  @override
+  String get settingsSalarySummaryNet => 'Neto';
 }

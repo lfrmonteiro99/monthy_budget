@@ -4952,4 +4952,10 @@ class SPt extends S {
 
   @override
   String get dashReorderHint => 'Arraste para reordenar os cartões';
+
+  @override
+  String get settingsSalarySummaryGross => 'Bruto';
+
+  @override
+  String get settingsSalarySummaryNet => 'Líquido';
 }
