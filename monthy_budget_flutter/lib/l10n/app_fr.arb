@@ -2579,5 +2579,7 @@
     "dashboardCoachGoodSavings": "Excellent ! Vous épargnez plus de 20%. Continuez ainsi !",
     "dashboardCoachGeneral": "Appuyez pour des analyses personnalisées de votre budget.",
     "dashGroupInsights": "Analyses",
-    "dashReorderHint": "Glissez pour réorganiser les cartes"
+    "dashReorderHint": "Glissez pour réorganiser les cartes",
+    "settingsSalarySummaryGross": "Brut",
+    "settingsSalarySummaryNet": "Net"
 }

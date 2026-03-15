@@ -2630,5 +2630,7 @@
     "dashboardCoachGoodSavings": "Excellent! You're saving over 20%. Keep it up!",
     "dashboardCoachGeneral": "Tap for personalized budget analysis.",
     "dashGroupInsights": "Insights",
-    "dashReorderHint": "Drag to reorder cards"
+    "dashReorderHint": "Drag to reorder cards",
+    "settingsSalarySummaryGross": "Gross",
+    "settingsSalarySummaryNet": "Net"
 }

@@ -4964,4 +4964,10 @@ class SFr extends S {
 
   @override
   String get dashReorderHint => 'Glissez pour réorganiser les cartes';
+
+  @override
+  String get settingsSalarySummaryGross => 'Brut';
+
+  @override
+  String get settingsSalarySummaryNet => 'Net';
 }
