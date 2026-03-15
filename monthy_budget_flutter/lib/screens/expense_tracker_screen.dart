@@ -100,6 +100,18 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
   }
 
   @override
+  void didUpdateWidget(covariant ExpenseTrackerScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Sync with parent when viewing the current month and parent data changes
+    final now = DateTime.now();
+    final isCurrentMonth =
+        _currentMonth.year == now.year && _currentMonth.month == now.month;
+    if (isCurrentMonth && widget.expenses != oldWidget.expenses) {
+      setState(() => _expenses = List.of(widget.expenses));
+    }
+  }
+
+  @override
   void dispose() {
     _activeTour?.finish();
     _searchController.dispose();
@@ -144,6 +156,12 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
             ...urls,
           ];
           expense = expense.copyWith(attachmentUrls: allUrls);
+        } else if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(S.of(context).expenseAttachUploadFailed),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ));
         }
       }
       await widget.onAdd(expense);
@@ -175,6 +193,12 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
             ...urls,
           ];
           updated = updated.copyWith(attachmentUrls: allUrls);
+        } else if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(S.of(context).expenseAttachUploadFailed),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ));
         }
       }
       await widget.onUpdate(updated);
@@ -576,7 +600,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                                   (e) => e.category == summaries[i].category)
                               .toList(),
                           icon: categoryIconByName(summaries[i].category, customCategories: widget.customCategories),
-                          categoryColor: categoryColorByNameFull(summaries[i].category),
+                          categoryColor: categoryColorByNameFull(summaries[i].category, customCategories: widget.customCategories),
                           label:
                               _localizedCategory(summaries[i].category, l10n),
                           onEdit: _editExpense,
@@ -700,7 +724,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                               categoryLabel: _localizedCategory(
                                   expense.category, l10n),
                               categoryIcon: categoryIconByName(expense.category, customCategories: widget.customCategories),
-                              categoryColor: categoryColorByNameFull(expense.category),
+                              categoryColor: categoryColorByNameFull(expense.category, customCategories: widget.customCategories),
                             );
                           },
                         ),

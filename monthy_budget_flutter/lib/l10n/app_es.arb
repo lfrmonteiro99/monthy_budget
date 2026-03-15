@@ -2540,6 +2540,7 @@
     "expenseAttachPhoto": "Adjuntar Foto",
     "expenseAttachCamera": "Cámara",
     "expenseAttachGallery": "Galería",
+    "expenseAttachUploadFailed": "Error al subir anexos. Verifique su conexión.",
     "expenseExtras": "Extras",
     "expenseLocationDetect": "Detectar ubicación",
     "biometricLockTitle": "Bloqueo de App",
@@ -2583,5 +2584,9 @@
     "dashGroupInsights": "Análisis",
     "dashReorderHint": "Arrastra para reordenar las tarjetas",
     "settingsSalarySummaryGross": "Bruto",
-    "settingsSalarySummaryNet": "Neto"
+    "settingsSalarySummaryNet": "Neto",
+    "settingsDeductionIrs": "IRPF",
+    "settingsDeductionSs": "SS",
+    "settingsDeductionMeal": "Comida",
+    "settingsMealMonthlyTotal": "Total mensual: {amount}"
 }

@@ -4819,6 +4819,10 @@ class SPt extends S {
   String get expenseAttachGallery => 'Galeria';
 
   @override
+  String get expenseAttachUploadFailed =>
+      'Falha ao carregar anexos. Verifique a sua ligação.';
+
+  @override
   String get expenseExtras => 'Extras';
 
   @override
@@ -4965,4 +4969,18 @@ class SPt extends S {
 
   @override
   String get settingsSalarySummaryNet => 'Líquido';
+
+  @override
+  String get settingsDeductionIrs => 'IRS';
+
+  @override
+  String get settingsDeductionSs => 'SS';
+
+  @override
+  String get settingsDeductionMeal => 'Sub. Alim.';
+
+  @override
+  String settingsMealMonthlyTotal(String amount) {
+    return 'Total mensal: $amount';
+  }
 }

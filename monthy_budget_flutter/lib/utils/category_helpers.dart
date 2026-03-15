@@ -71,18 +71,30 @@ IconData categoryIconByName(
 /// Returns the color for a category name.
 ///
 /// For predefined categories, uses [AppColors.categoryColorByName].
-/// For custom categories, parses [colorHex] or falls back to a default.
-Color categoryColorByNameFull(String categoryName, {String? colorHex}) {
+/// For custom categories, looks up [colorHex] from [customCategories] or
+/// uses the explicit [colorHex] parameter, falling back to a default.
+Color categoryColorByNameFull(
+  String categoryName, {
+  String? colorHex,
+  List<CustomCategory>? customCategories,
+}) {
   // Check if it's a predefined category
   for (final cat in ExpenseCategory.values) {
     if (cat.name == categoryName) {
       return AppColors.categoryColorByName(categoryName);
     }
   }
-  // Custom category — parse colorHex or use default
-  if (colorHex != null && colorHex.isNotEmpty) {
-    final hex = colorHex.replaceAll('#', '');
-    return Color(int.parse('FF$hex', radix: 16));
+  // Try to find colorHex from customCategories if not provided
+  final hex = colorHex ??
+      customCategories
+          ?.where((c) => c.name == categoryName)
+          .firstOrNull
+          ?.colorHex;
+  if (hex != null && hex.isNotEmpty) {
+    final cleaned = hex.replaceAll('#', '');
+    try {
+      return Color(int.parse('FF$cleaned', radix: 16));
+    } catch (_) {}
   }
   return AppColors.categoryColorByName(categoryName);
 }

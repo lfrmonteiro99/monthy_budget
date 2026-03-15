@@ -2591,6 +2591,7 @@
     "expenseAttachPhoto": "Attach Photo",
     "expenseAttachCamera": "Camera",
     "expenseAttachGallery": "Gallery",
+    "expenseAttachUploadFailed": "Failed to upload attachments. Check your connection.",
     "expenseExtras": "Extras",
     "expenseLocationDetect": "Detect location",
     "biometricLockTitle": "App Lock",
@@ -2634,5 +2635,9 @@
     "dashGroupInsights": "Insights",
     "dashReorderHint": "Drag to reorder cards",
     "settingsSalarySummaryGross": "Gross",
-    "settingsSalarySummaryNet": "Net"
+    "settingsSalarySummaryNet": "Net",
+    "settingsDeductionIrs": "IRS",
+    "settingsDeductionSs": "SS",
+    "settingsDeductionMeal": "Meal",
+    "settingsMealMonthlyTotal": "Monthly total: {amount}"
 }

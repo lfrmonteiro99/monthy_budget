@@ -4788,6 +4788,10 @@ class SEn extends S {
   String get expenseAttachGallery => 'Gallery';
 
   @override
+  String get expenseAttachUploadFailed =>
+      'Failed to upload attachments. Check your connection.';
+
+  @override
   String get expenseExtras => 'Extras';
 
   @override
@@ -4930,4 +4934,18 @@ class SEn extends S {
 
   @override
   String get settingsSalarySummaryNet => 'Net';
+
+  @override
+  String get settingsDeductionIrs => 'IRS';
+
+  @override
+  String get settingsDeductionSs => 'SS';
+
+  @override
+  String get settingsDeductionMeal => 'Meal';
+
+  @override
+  String settingsMealMonthlyTotal(String amount) {
+    return 'Monthly total: $amount';
+  }
 }
