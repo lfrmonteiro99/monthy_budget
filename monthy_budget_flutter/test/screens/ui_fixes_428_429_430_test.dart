@@ -12,12 +12,12 @@ import 'package:monthly_management/screens/settings_screen.dart';
 import '../helpers/test_app.dart';
 
 void main() {
-  // ── Issue #428: Dashboard should show full (detailed) layout by default ──
+  // ── Issue #428: Dashboard uses unified layout (no focusedMode) ──
 
-  group('Issue #428 – full dashboard as home', () {
-    testWidgets('focusedMode defaults to false in DashboardScreen constructor',
+  group('Issue #428 – unified dashboard', () {
+    testWidgets('DashboardScreen constructs without error',
         (tester) async {
-      // Verify the DashboardScreen default value for focusedMode is false
+      // ignore: unused_local_variable
       final screen = DashboardScreen(
         settings: const AppSettings(),
         summary: const BudgetSummary(),
@@ -33,9 +33,7 @@ void main() {
         onSnapshotExpenses: () {},
         onAddExpense: () {},
         onOpenExpenseTracker: () {},
-        // focusedMode intentionally not set — should default to false
       );
-      expect(screen.focusedMode, isFalse);
     });
   });
 

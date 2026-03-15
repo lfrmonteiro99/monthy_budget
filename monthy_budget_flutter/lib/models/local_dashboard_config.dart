@@ -20,15 +20,16 @@ class LocalDashboardConfig {
   final bool showTopCategories;
   final bool showSavingsRate;
   final bool showCoachInsight;
+  final bool showQuickActions;
   final List<ChartType> enabledCharts;
   final List<String> cardOrder;
 
   static const defaultCardOrder = [
     'heroCard', 'stressIndex', 'budgetStreaks', 'monthReview',
     'upcomingBills', 'burnRate', 'topCategories', 'cashFlowForecast',
-    'savingsRate', 'coachInsight', 'summaryCards', 'salaryBreakdown',
-    'budgetVsActual', 'savingsGoals', 'taxDeductions', 'purchaseHistory',
-    'expensesBreakdown', 'charts',
+    'savingsRate', 'coachInsight', 'quickActions', 'summaryCards',
+    'salaryBreakdown', 'budgetVsActual', 'savingsGoals', 'taxDeductions',
+    'purchaseHistory', 'expensesBreakdown', 'charts',
   ];
 
   const LocalDashboardConfig({
@@ -50,6 +51,7 @@ class LocalDashboardConfig {
     this.showTopCategories = true,
     this.showSavingsRate = true,
     this.showCoachInsight = true,
+    this.showQuickActions = true,
     this.enabledCharts = const [
       ChartType.expensesPie,
       ChartType.incomeVsExpenses,
@@ -78,6 +80,7 @@ class LocalDashboardConfig {
     showTopCategories: false,
     showSavingsRate: false,
     showCoachInsight: false,
+    showQuickActions: false,
     enabledCharts: [],
   );
 
@@ -100,6 +103,7 @@ class LocalDashboardConfig {
     showTopCategories: true,
     showSavingsRate: true,
     showCoachInsight: true,
+    showQuickActions: true,
     enabledCharts: [
       ChartType.expensesPie,
       ChartType.incomeVsExpenses,
@@ -127,6 +131,7 @@ class LocalDashboardConfig {
     bool? showTopCategories,
     bool? showSavingsRate,
     bool? showCoachInsight,
+    bool? showQuickActions,
     List<ChartType>? enabledCharts,
     List<String>? cardOrder,
   }) {
@@ -149,6 +154,7 @@ class LocalDashboardConfig {
       showTopCategories: showTopCategories ?? this.showTopCategories,
       showSavingsRate: showSavingsRate ?? this.showSavingsRate,
       showCoachInsight: showCoachInsight ?? this.showCoachInsight,
+      showQuickActions: showQuickActions ?? this.showQuickActions,
       enabledCharts: enabledCharts ?? this.enabledCharts,
       cardOrder: cardOrder ?? this.cardOrder,
     );
@@ -173,6 +179,7 @@ class LocalDashboardConfig {
         'showTopCategories': showTopCategories,
         'showSavingsRate': showSavingsRate,
         'showCoachInsight': showCoachInsight,
+        'showQuickActions': showQuickActions,
         'enabledCharts': enabledCharts.map((c) => c.jsonValue).toList(),
         'cardOrder': cardOrder,
       };
@@ -197,6 +204,7 @@ class LocalDashboardConfig {
       showTopCategories: json['showTopCategories'] ?? true,
       showSavingsRate: json['showSavingsRate'] ?? true,
       showCoachInsight: json['showCoachInsight'] ?? true,
+      showQuickActions: json['showQuickActions'] ?? true,
       enabledCharts: (json['enabledCharts'] as List<dynamic>?)
               ?.map((e) => ChartType.fromJson(e as String))
               .toList() ??
@@ -233,6 +241,7 @@ class LocalDashboardConfig {
       case 'topCategories': return showTopCategories;
       case 'savingsRate': return showSavingsRate;
       case 'coachInsight': return showCoachInsight;
+      case 'quickActions': return showQuickActions;
       default: return false;
     }
   }
@@ -257,6 +266,7 @@ class LocalDashboardConfig {
       case 'topCategories': return copyWith(showTopCategories: value);
       case 'savingsRate': return copyWith(showSavingsRate: value);
       case 'coachInsight': return copyWith(showCoachInsight: value);
+      case 'quickActions': return copyWith(showQuickActions: value);
       default: return this;
     }
   }

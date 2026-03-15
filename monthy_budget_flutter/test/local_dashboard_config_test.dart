@@ -93,6 +93,7 @@ void main() {
       const config = LocalDashboardConfig(showHeroCard: true, showCharts: false);
       expect(config.isCardVisible('heroCard'), isTrue);
       expect(config.isCardVisible('charts'), isFalse);
+      expect(config.isCardVisible('quickActions'), isTrue);
       expect(config.isCardVisible('unknown'), isFalse);
     });
 

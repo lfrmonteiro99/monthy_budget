@@ -5,7 +5,6 @@ import '../services/downgrade_service.dart';
 import '../theme/app_colors.dart';
 
 class MoreScreen extends StatelessWidget {
-  final VoidCallback onOpenDetailedDashboard;
   final VoidCallback onOpenInsights;
   final VoidCallback onOpenSavingsGoals;
   final VoidCallback onOpenSettings;
@@ -19,7 +18,6 @@ class MoreScreen extends StatelessWidget {
 
   const MoreScreen({
     super.key,
-    required this.onOpenDetailedDashboard,
     required this.onOpenInsights,
     required this.onOpenSavingsGoals,
     required this.onOpenSettings,
@@ -52,13 +50,6 @@ class MoreScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         children: [
-          _Tile(
-            icon: Icons.dashboard_customize_outlined,
-            title: l10n.moreDetailedDashboard,
-            subtitle: l10n.moreDetailedDashboardSubtitle,
-            onTap: onOpenDetailedDashboard,
-          ),
-          const SizedBox(height: 8),
           _Tile(
             icon: Icons.insights_outlined,
             title: l10n.insightsTitle,

@@ -89,7 +89,7 @@ void main() {
     expect(called, 1);
   });
 
-  testWidgets('Focused dashboard exposes quick actions and insights callback',
+  testWidgets('Dashboard exposes quick actions and insights callback',
       (tester) async {
     var openTrackerCalled = 0;
     var openInsightsCalled = 0;
@@ -116,7 +116,6 @@ void main() {
           onSnapshotExpenses: () {},
           onAddExpense: () {},
           onOpenExpenseTracker: () => openTrackerCalled++,
-          focusedMode: true,
           onOpenInsights: () => openInsightsCalled++,
         ),
       ),
@@ -126,10 +125,14 @@ void main() {
     expect(find.text('Expense Tracker'), findsOneWidget);
     expect(find.byIcon(Icons.insights_outlined), findsOneWidget);
 
+    await tester.ensureVisible(find.text('Expense Tracker'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Expense Tracker'));
     await tester.pump();
     expect(openTrackerCalled, 1);
 
+    await tester.ensureVisible(find.byIcon(Icons.insights_outlined));
+    await tester.pumpAndSettle();
     await tester.tap(find.byIcon(Icons.insights_outlined));
     await tester.pump();
     expect(openInsightsCalled, 1);

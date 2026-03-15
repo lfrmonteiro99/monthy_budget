@@ -3139,6 +3139,9 @@ class SFr extends S {
   String get settingsDashBudgetStreaks => 'Séries de budget';
 
   @override
+  String get settingsDashQuickActions => 'Actions rapides';
+
+  @override
   String get upcomingBillsTitle => 'Prochains Paiements';
 
   @override
@@ -3473,6 +3476,10 @@ class SFr extends S {
   @override
   String get subtitleShowBudgetStreaks =>
       'Combien de mois consécutifs vous êtes resté dans le budget';
+
+  @override
+  String get subtitleShowQuickActions =>
+      'Raccourcis pour ajouter des dépenses, naviguer et plus';
 
   @override
   String get subtitleShowPurchaseHistory =>

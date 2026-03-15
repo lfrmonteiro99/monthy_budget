@@ -56,10 +56,8 @@ class DashboardScreen extends StatefulWidget {
   final VoidCallback? onTourComplete;
   final GlobalKey? fabKey;
   final GlobalKey? navBarKey;
-  final bool focusedMode;
   final VoidCallback? onOpenInsights;
   final VoidCallback? onOpenCoach;
-  final VoidCallback? onOpenDetailedDashboard;
   final List<CustomCategory> customCategories;
 
   const DashboardScreen({
@@ -88,10 +86,8 @@ class DashboardScreen extends StatefulWidget {
     this.onTourComplete,
     this.fabKey,
     this.navBarKey,
-    this.focusedMode = false,
     this.onOpenInsights,
     this.onOpenCoach,
-    this.onOpenDetailedDashboard,
     this.customCategories = const [],
   });
 
@@ -288,13 +284,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ],
                 ),
               ),
-              if (hasData && widget.focusedMode) ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                  child: _buildFocusedDashboardBody(context, stressResult, monthReview, l10n),
-                ),
-              ],
-              if (hasData && !widget.focusedMode) ...[
+              if (hasData) ...[
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                   child: Column(
@@ -431,71 +421,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           const SizedBox(height: 16),
         ];
+      case 'quickActions':
+        return [_buildNextActionsCard(context, l10n), const SizedBox(height: 16)];
       default:
         return const [];
     }
-  }
-
-  Widget _buildFocusedDashboardBody(
-    BuildContext context,
-    StressIndexResult stressResult,
-    MonthReviewResult? monthReview,
-    S l10n,
-  ) {
-    return Column(
-      children: [
-        _StressIndexCard(
-          key: DashboardTourKeys.stressIndex,
-          result: stressResult,
-          onShowTrend: stressResult.score > 0
-              ? () {
-                  showTrendSheet(
-                    context: context,
-                    stressHistory: settings.stressHistory,
-                    expenseHistory: expenseHistory,
-                    currentTotalExpenses: summary.totalExpenses,
-                  );
-                }
-              : null,
-        ),
-        const SizedBox(height: 16),
-        if (monthReview != null) ...[
-          _MonthReviewCard(
-            review: monthReview,
-            onTap: () => showMonthReviewSheet(
-              context: context,
-              review: monthReview,
-            ),
-          ),
-          const SizedBox(height: 16),
-        ],
-        if (dashboardConfig.showUpcomingBills &&
-            recurringExpenses.any((r) => r.isActive && r.dayOfMonth != null)) ...[
-          UpcomingBillsCard(
-            recurringExpenses: recurringExpenses,
-            reminderDaysBefore: widget.billReminderDaysBefore,
-            onOpenRecurring: widget.onOpenRecurringExpenses,
-          ),
-          const SizedBox(height: 16),
-        ],
-        _buildNextActionsCard(context, l10n),
-        if (widget.onOpenDetailedDashboard != null) ...[
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: widget.onOpenDetailedDashboard,
-              icon: const Icon(Icons.dashboard_customize_outlined),
-              label: Text(l10n.dashboardViewFullReport),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                side: BorderSide(color: AppColors.border(context)),
-              ),
-            ),
-          ),
-        ],
-      ],
-    );
   }
 
   Widget _buildNextActionsCard(BuildContext context, S l10n) {
@@ -1801,11 +1731,12 @@ class _SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(14),
+      child: Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.surface(context),
-        borderRadius: BorderRadius.circular(14),
         border: Border(
           left: BorderSide(color: color.shade400, width: 3),
           top: BorderSide(color: AppColors.surfaceVariant(context)),
@@ -1830,6 +1761,7 @@ class _SummaryCard extends StatelessWidget {
             Text(sublabel!, style: TextStyle(fontSize: 9, color: AppColors.textMuted(context))),
           ],
         ],
+      ),
       ),
     );
   }
