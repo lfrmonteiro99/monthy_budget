@@ -4645,4 +4645,10 @@ class SFr extends S {
 
   @override
   String get settingsMonthlyBudgetLabel => 'BUDGET MENSUEL';
+
+  @override
+  String get expenseLocationSearch => 'Rechercher';
+
+  @override
+  String get expenseLocationSearchHint => 'Rechercher une adresse...';
 }

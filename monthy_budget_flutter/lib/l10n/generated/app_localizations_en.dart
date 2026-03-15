@@ -4645,4 +4645,10 @@ class SEn extends S {
 
   @override
   String get settingsMonthlyBudgetLabel => 'MONTHLY BUDGET';
+
+  @override
+  String get expenseLocationSearch => 'Search';
+
+  @override
+  String get expenseLocationSearchHint => 'Search address...';
 }

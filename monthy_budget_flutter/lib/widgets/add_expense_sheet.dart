@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -84,6 +86,10 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
   final List<File> _attachmentFiles = [];
   List<String> _existingAttachmentUrls = [];
   bool _showExtras = false;
+  bool _showAddressSearch = false;
+  bool _searchingAddress = false;
+  final _addressSearchController = TextEditingController();
+  List<Map<String, dynamic>> _addressResults = [];
 
   @override
   void initState() {
@@ -127,6 +133,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
     _customCategoryController.dispose();
     _amountController.dispose();
     _descriptionController.dispose();
+    _addressSearchController.dispose();
     super.dispose();
   }
 
@@ -238,7 +245,51 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
       _locationLat = null;
       _locationLng = null;
       _locationAddress = null;
+      _showAddressSearch = false;
+      _addressResults = [];
+      _addressSearchController.clear();
     });
+  }
+
+  Future<void> _searchAddress(String query) async {
+    if (query.trim().length < 3) return;
+    setState(() => _searchingAddress = true);
+    try {
+      final uri = Uri.https('nominatim.openstreetmap.org', '/search', {
+        'q': query.trim(),
+        'format': 'json',
+        'limit': '5',
+        'addressdetails': '1',
+      });
+      final response = await http.get(uri, headers: {
+        'User-Agent': 'MonthlyBudget/1.0 (com.sinmetro.monthybudget)',
+      });
+      if (response.statusCode == 200 && mounted) {
+        final results = (jsonDecode(response.body) as List)
+            .cast<Map<String, dynamic>>();
+        setState(() => _addressResults = results);
+      }
+    } catch (_) {
+      // Nominatim may fail — silently ignore
+    } finally {
+      if (mounted) setState(() => _searchingAddress = false);
+    }
+  }
+
+  void _selectSearchResult(Map<String, dynamic> result) {
+    final lat = double.tryParse(result['lat']?.toString() ?? '');
+    final lon = double.tryParse(result['lon']?.toString() ?? '');
+    final displayName = result['display_name'] as String? ?? '';
+    if (lat != null && lon != null) {
+      setState(() {
+        _locationLat = lat;
+        _locationLng = lon;
+        _locationAddress = displayName;
+        _showAddressSearch = false;
+        _addressResults = [];
+        _addressSearchController.clear();
+      });
+    }
   }
 
   Future<void> _pickPhoto() async {
@@ -687,8 +738,79 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                       label: Text(l10n.expenseLocationDetect,
                           style: const TextStyle(fontSize: 13)),
                     ),
+                    const SizedBox(width: 4),
+                    TextButton.icon(
+                      onPressed: () => setState(() =>
+                          _showAddressSearch = !_showAddressSearch),
+                      icon: const Icon(Icons.search, size: 16),
+                      label: Text(l10n.expenseLocationSearch,
+                          style: const TextStyle(fontSize: 13)),
+                    ),
                   ],
                 ]),
+                if (_showAddressSearch && _locationAddress == null) ...[
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _addressSearchController,
+                    decoration: InputDecoration(
+                      hintText: l10n.expenseLocationSearchHint,
+                      prefixIcon: const Icon(Icons.search, size: 20),
+                      suffixIcon: _searchingAddress
+                          ? const Padding(
+                              padding: EdgeInsets.all(12),
+                              child: SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 2),
+                              ),
+                            )
+                          : null,
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 10),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                    textInputAction: TextInputAction.search,
+                    onSubmitted: _searchAddress,
+                  ),
+                  if (_addressResults.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Container(
+                      constraints: const BoxConstraints(maxHeight: 180),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface(context),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                            color: AppColors.borderMuted(context)),
+                      ),
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        itemCount: _addressResults.length,
+                        separatorBuilder: (_, __) => Divider(
+                            height: 1,
+                            color: AppColors.borderMuted(context)),
+                        itemBuilder: (_, i) {
+                          final r = _addressResults[i];
+                          return ListTile(
+                            dense: true,
+                            visualDensity: VisualDensity.compact,
+                            leading: const Icon(Icons.place, size: 18),
+                            title: Text(
+                              r['display_name'] ?? '',
+                              style: const TextStyle(fontSize: 12),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            onTap: () => _selectSearchResult(r),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ],
                 const SizedBox(height: 8),
                 Row(children: [
                   Icon(Icons.camera_alt,

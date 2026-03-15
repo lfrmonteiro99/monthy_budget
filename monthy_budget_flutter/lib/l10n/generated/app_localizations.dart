@@ -8714,6 +8714,18 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'ORÇAMENTO MENSAL'**
   String get settingsMonthlyBudgetLabel;
+
+  /// Search address button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Pesquisar'**
+  String get expenseLocationSearch;
+
+  /// Address search field hint
+  ///
+  /// In pt, this message translates to:
+  /// **'Pesquisar endereço...'**
+  String get expenseLocationSearchHint;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
