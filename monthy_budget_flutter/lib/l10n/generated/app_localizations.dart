@@ -5753,6 +5753,12 @@ abstract class S {
   /// **'Séries de orçamento'**
   String get settingsDashBudgetStreaks;
 
+  /// No description provided for @settingsDashQuickActions.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ações rápidas'**
+  String get settingsDashQuickActions;
+
   /// No description provided for @upcomingBillsTitle.
   ///
   /// In pt, this message translates to:
@@ -6322,6 +6328,12 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Quantos meses consecutivos ficou dentro do orçamento'**
   String get subtitleShowBudgetStreaks;
+
+  /// No description provided for @subtitleShowQuickActions.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atalhos para adicionar despesas, navegar e mais'**
+  String get subtitleShowQuickActions;
 
   /// No description provided for @subtitleShowPurchaseHistory.
   ///

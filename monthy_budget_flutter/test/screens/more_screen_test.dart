@@ -6,7 +6,6 @@ import '../helpers/test_app.dart';
 
 void main() {
   testWidgets('More screen exposes core utility entry points', (tester) async {
-    var detailedDashboard = 0;
     var insights = 0;
     var savings = 0;
     var settings = 0;
@@ -17,7 +16,6 @@ void main() {
     await tester.pumpWidget(
       wrapWithTestApp(
         MoreScreen(
-          onOpenDetailedDashboard: () => detailedDashboard++,
           onOpenInsights: () => insights++,
           onOpenSavingsGoals: () => savings++,
           onOpenSettings: () => settings++,
@@ -28,8 +26,6 @@ void main() {
       ),
     );
 
-    await tester.tap(find.widgetWithText(ListTile, 'Detailed Dashboard'));
-    await tester.pump();
     await tester.tap(find.widgetWithText(ListTile, 'Insights'));
     await tester.pump();
     await tester.tap(find.text('Savings Goals'));
@@ -44,7 +40,6 @@ void main() {
     await tester.tap(find.text('Product Updates'));
     await tester.pump();
 
-    expect(detailedDashboard, 1);
     expect(insights, 1);
     expect(savings, 1);
     expect(settings, 1);

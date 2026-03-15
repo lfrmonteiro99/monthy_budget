@@ -3117,6 +3117,9 @@ class SEn extends S {
   String get settingsDashBudgetStreaks => 'Budget streaks';
 
   @override
+  String get settingsDashQuickActions => 'Quick actions';
+
+  @override
   String get upcomingBillsTitle => 'Upcoming Payments';
 
   @override
@@ -3445,6 +3448,10 @@ class SEn extends S {
   @override
   String get subtitleShowBudgetStreaks =>
       'How many consecutive months you stayed within budget';
+
+  @override
+  String get subtitleShowQuickActions =>
+      'Shortcuts to add expenses, navigate, and more';
 
   @override
   String get subtitleShowPurchaseHistory =>

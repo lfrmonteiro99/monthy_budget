@@ -3132,6 +3132,9 @@ class SEs extends S {
   String get settingsDashBudgetStreaks => 'Rachas de presupuesto';
 
   @override
+  String get settingsDashQuickActions => 'Acciones rápidas';
+
+  @override
   String get upcomingBillsTitle => 'Próximos Pagos';
 
   @override
@@ -3466,6 +3469,10 @@ class SEs extends S {
   @override
   String get subtitleShowBudgetStreaks =>
       'Cuántos meses consecutivos te mantuviste dentro del presupuesto';
+
+  @override
+  String get subtitleShowQuickActions =>
+      'Atajos para añadir gastos, navegar y más';
 
   @override
   String get subtitleShowPurchaseHistory =>

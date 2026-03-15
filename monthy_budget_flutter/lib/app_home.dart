@@ -754,67 +754,6 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     );
   }
 
-  void _openDetailedDashboard() {
-    final taxSystem = getTaxSystem(_settings.country);
-    final summary = calculateBudgetSummary(
-      _settings.salaries,
-      _settings.personalInfo,
-      _settings.expenses,
-      taxSystem,
-      monthlyBudgets: _monthlyBudgets,
-    );
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => DashboardScreen(
-          settings: _settings,
-          summary: summary,
-          purchaseHistory: _purchaseHistory,
-          onSaveSettings: _saveSettings,
-          dashboardConfig: LocalDashboardConfig.full(),
-          expenseHistory: _expenseHistory,
-          onSnapshotExpenses: _snapshotExpenses,
-          actualExpenses: _actualExpenses,
-          onAddExpense: _openAddExpenseSheet,
-          monthlyBudgets: _monthlyBudgets,
-          customCategories: _customCategories,
-          onOpenExpenseTracker: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => ExpenseTrackerScreen(
-                settings: _settings,
-                expenses: _actualExpenses,
-                householdId: widget.householdId,
-                onAdd: _addActualExpense,
-                onUpdate: _updateActualExpense,
-                onDelete: _deleteActualExpense,
-                onLoadMonth: (monthKey) =>
-                    _actualExpenseService.loadMonth(widget.householdId, monthKey),
-                onLoadHistory: () =>
-                    _actualExpenseService.loadHistory(widget.householdId),
-                onOpenRecurring: _openRecurringExpenses,
-                showTour: !_onboardingState.isTourDone('expense_tracker'),
-                onTourComplete: () => _markTourDone('expense_tracker'),
-                customCategories: _customCategories,
-              ),
-            ),
-          ),
-          onViewTrends: _openExpenseTrends,
-          savingsGoals: _savingsGoals,
-          savingsProjections: _savingsProjections,
-          onOpenSavingsGoals: _openSavingsGoals,
-          recurringExpenses: _recurringExpenses,
-          actualExpenseHistory: _actualExpenseHistory,
-          billReminderDaysBefore: _notificationPrefs.billReminderDaysBefore,
-          onOpenRecurringExpenses: _openRecurringExpenses,
-          onOpenSettings: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
   void _openGrocery() {
     final countryProducts = _groceryData.toCatalogProducts();
     final effectiveProducts =
@@ -1442,7 +1381,6 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       products: _products,
       dashboardConfig: _dashboardConfig,
       onSaveDashboardConfig: _saveDashboardConfig,
-      onOpenDetailedDashboard: _openDetailedDashboard,
       onOpenNotificationSettings: _openNotificationSettings,
       onOpenSubscription: _openPaywall,
       onOpenCustomerCenter: _openCustomerCenter,
@@ -1541,10 +1479,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         onTourComplete: () => _markTourDone('dashboard'),
         fabKey: _fabKey,
         navBarKey: _navBarKey,
-        focusedMode: true,
         onOpenInsights: _openInsights,
         onOpenCoach: _openCoach,
-        onOpenDetailedDashboard: _openDetailedDashboard,
         customCategories: _customCategories,
       ),
       ExpenseTrackerScreen(

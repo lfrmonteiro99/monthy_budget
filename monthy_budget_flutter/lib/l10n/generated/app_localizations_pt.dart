@@ -3132,6 +3132,9 @@ class SPt extends S {
   String get settingsDashBudgetStreaks => 'Séries de orçamento';
 
   @override
+  String get settingsDashQuickActions => 'Ações rápidas';
+
+  @override
   String get upcomingBillsTitle => 'Próximos Pagamentos';
 
   @override
@@ -3464,6 +3467,10 @@ class SPt extends S {
   @override
   String get subtitleShowBudgetStreaks =>
       'Quantos meses consecutivos ficou dentro do orçamento';
+
+  @override
+  String get subtitleShowQuickActions =>
+      'Atalhos para adicionar despesas, navegar e mais';
 
   @override
   String get subtitleShowPurchaseHistory =>
