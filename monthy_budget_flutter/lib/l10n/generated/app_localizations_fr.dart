@@ -4831,6 +4831,10 @@ class SFr extends S {
   String get expenseAttachGallery => 'Galerie';
 
   @override
+  String get expenseAttachUploadFailed =>
+      'Échec du téléchargement des pièces jointes. Vérifiez votre connexion.';
+
+  @override
   String get expenseExtras => 'Extras';
 
   @override
@@ -4977,4 +4981,18 @@ class SFr extends S {
 
   @override
   String get settingsSalarySummaryNet => 'Net';
+
+  @override
+  String get settingsDeductionIrs => 'IR';
+
+  @override
+  String get settingsDeductionSs => 'SS';
+
+  @override
+  String get settingsDeductionMeal => 'Repas';
+
+  @override
+  String settingsMealMonthlyTotal(String amount) {
+    return 'Total mensuel : $amount';
+  }
 }

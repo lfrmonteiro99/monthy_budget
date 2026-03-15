@@ -8639,6 +8639,12 @@ abstract class S {
   /// **'Galeria'**
   String get expenseAttachGallery;
 
+  /// Attachment upload failure message
+  ///
+  /// In pt, this message translates to:
+  /// **'Falha ao carregar anexos. Verifique a sua ligação.'**
+  String get expenseAttachUploadFailed;
+
   /// Extras toggle label
   ///
   /// In pt, this message translates to:
@@ -8902,6 +8908,30 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Líquido'**
   String get settingsSalarySummaryNet;
+
+  /// IRS deduction label in salary breakdown
+  ///
+  /// In pt, this message translates to:
+  /// **'IRS'**
+  String get settingsDeductionIrs;
+
+  /// Social security deduction label in salary breakdown
+  ///
+  /// In pt, this message translates to:
+  /// **'SS'**
+  String get settingsDeductionSs;
+
+  /// Meal allowance label in salary breakdown
+  ///
+  /// In pt, this message translates to:
+  /// **'Sub. Alim.'**
+  String get settingsDeductionMeal;
+
+  /// Monthly meal allowance total
+  ///
+  /// In pt, this message translates to:
+  /// **'Total mensal: {amount}'**
+  String settingsMealMonthlyTotal(String amount);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

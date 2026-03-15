@@ -2540,6 +2540,7 @@
     "expenseAttachPhoto": "Joindre une photo",
     "expenseAttachCamera": "Appareil photo",
     "expenseAttachGallery": "Galerie",
+    "expenseAttachUploadFailed": "Échec du téléchargement des pièces jointes. Vérifiez votre connexion.",
     "expenseExtras": "Extras",
     "expenseLocationDetect": "Détecter la position",
     "biometricLockTitle": "Verrouillage de l'app",
@@ -2583,5 +2584,9 @@
     "dashGroupInsights": "Analyses",
     "dashReorderHint": "Glissez pour réorganiser les cartes",
     "settingsSalarySummaryGross": "Brut",
-    "settingsSalarySummaryNet": "Net"
+    "settingsSalarySummaryNet": "Net",
+    "settingsDeductionIrs": "IR",
+    "settingsDeductionSs": "SS",
+    "settingsDeductionMeal": "Repas",
+    "settingsMealMonthlyTotal": "Total mensuel : {amount}"
 }

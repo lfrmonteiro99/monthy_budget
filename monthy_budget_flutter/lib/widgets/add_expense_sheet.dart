@@ -500,11 +500,9 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                     final selected =
                         !_isCustom && _selectedCategory == choice.categoryKey;
                     final chipColor = choice.color;
+                    final iconColor = chipColor ?? (selected ? AppColors.primary(context) : AppColors.textSecondary(context));
                     return ChoiceChip(
-                      avatar: Icon(choice.icon, size: 16,
-                          color: selected
-                              ? (chipColor ?? AppColors.primary(context))
-                              : AppColors.textSecondary(context)),
+                      avatar: Icon(choice.icon, size: 16, color: iconColor),
                       label: Text(choice.label),
                       selected: selected,
                       onSelected: (_) {
@@ -520,7 +518,9 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                       side: BorderSide(
                         color: selected
                             ? (chipColor ?? const Color(0xFF93C5FD))
-                            : const Color(0xFFE2E8F0),
+                            : chipColor != null
+                                ? chipColor.withValues(alpha: 0.3)
+                                : const Color(0xFFE2E8F0),
                       ),
                       labelStyle: TextStyle(
                         fontSize: 13,
@@ -528,7 +528,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                             selected ? FontWeight.w600 : FontWeight.w400,
                         color: selected
                             ? (chipColor ?? AppColors.primary(context))
-                            : AppColors.textSecondary(context),
+                            : chipColor ?? AppColors.textSecondary(context),
                       ),
                     );
                   }),

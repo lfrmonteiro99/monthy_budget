@@ -942,6 +942,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ],
                       ),
                     ),
+                    // ── Deduction Breakdown ──
+                    if (salaryCalc != null && salary.grossAmount > 0) ...[
+                      const SizedBox(height: 6),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _deductionChip(l10n.settingsDeductionIrs,
+                                '-${salaryCalc.irsRetention.toStringAsFixed(0)}',
+                                '${(salaryCalc.irsRate * 100).toStringAsFixed(1)}%',
+                                const Color(0xFFEF4444)),
+                            _deductionChip(l10n.settingsDeductionSs,
+                                '-${salaryCalc.socialSecurity.toStringAsFixed(0)}',
+                                '${(salaryCalc.socialSecurityRate * 100).toStringAsFixed(0)}%',
+                                const Color(0xFFF59E0B)),
+                            if (salaryCalc.mealAllowance.netMealAllowance > 0)
+                              _deductionChip(l10n.settingsDeductionMeal,
+                                  '+${salaryCalc.mealAllowance.netMealAllowance.toStringAsFixed(0)}',
+                                  null,
+                                  const Color(0xFF10B981)),
+                          ],
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: 12),
                     // ── Gross Salary sub-section ──
                     Container(
@@ -994,7 +1019,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         side: BorderSide(color: isSelected ? AppColors.primary(context) : AppColors.border(context), width: 2),
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                         padding: const EdgeInsets.symmetric(vertical: 8),
-                                        textStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+                                        textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                                       ),
                                       child: Text(mode.localizedShortLabel(l10n)),
                                     ),
@@ -1104,6 +1129,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   ),
                                 ],
                               ),
+                              if (salary.mealAllowancePerDay > 0 && salary.workingDaysPerMonth > 0) ...[
+                                const SizedBox(height: 8),
+                                Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF10B981).withValues(alpha: 0.08),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    l10n.settingsMealMonthlyTotal(
+                                      '${(salary.mealAllowancePerDay * salary.workingDaysPerMonth).toStringAsFixed(2)} $currency',
+                                    ),
+                                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textSecondary(context)),
+                                  ),
+                                ),
+                              ],
                             ],
                           ],
                         ),
@@ -3275,6 +3317,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
         text,
         style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondary(context), letterSpacing: 0.5),
       );
+
+  Widget _deductionChip(String label, String value, String? subtitle, Color color) {
+    return Column(
+      children: [
+        Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.textMuted(context))),
+        const SizedBox(height: 2),
+        Text(value, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: color)),
+        if (subtitle != null)
+          Text(subtitle, style: TextStyle(fontSize: 9, color: AppColors.textMuted(context))),
+      ],
+    );
+  }
 
   Widget _counterButton(String text, VoidCallback onTap) => Material(
         color: Colors.transparent,

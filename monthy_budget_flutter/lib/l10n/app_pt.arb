@@ -4931,6 +4931,8 @@
     "@expenseAttachCamera": {"description": "Camera option label"},
     "expenseAttachGallery": "Galeria",
     "@expenseAttachGallery": {"description": "Gallery option label"},
+    "expenseAttachUploadFailed": "Falha ao carregar anexos. Verifique a sua ligação.",
+    "@expenseAttachUploadFailed": {"description": "Attachment upload failure message"},
     "expenseExtras": "Extras",
     "@expenseExtras": {"description": "Extras toggle label"},
     "expenseLocationDetect": "Detetar localização",
@@ -5018,5 +5020,18 @@
     "settingsSalarySummaryGross": "Bruto",
     "@settingsSalarySummaryGross": {"description": "Label for gross amount in salary summary row"},
     "settingsSalarySummaryNet": "Líquido",
-    "@settingsSalarySummaryNet": {"description": "Label for net amount in salary summary row"}
+    "@settingsSalarySummaryNet": {"description": "Label for net amount in salary summary row"},
+    "settingsDeductionIrs": "IRS",
+    "@settingsDeductionIrs": {"description": "IRS deduction label in salary breakdown"},
+    "settingsDeductionSs": "SS",
+    "@settingsDeductionSs": {"description": "Social security deduction label in salary breakdown"},
+    "settingsDeductionMeal": "Sub. Alim.",
+    "@settingsDeductionMeal": {"description": "Meal allowance label in salary breakdown"},
+    "settingsMealMonthlyTotal": "Total mensal: {amount}",
+    "@settingsMealMonthlyTotal": {
+        "description": "Monthly meal allowance total",
+        "placeholders": {
+            "amount": {"type": "String"}
+        }
+    }
 }

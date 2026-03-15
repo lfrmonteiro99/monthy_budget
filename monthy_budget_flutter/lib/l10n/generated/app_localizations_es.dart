@@ -4822,6 +4822,10 @@ class SEs extends S {
   String get expenseAttachGallery => 'Galería';
 
   @override
+  String get expenseAttachUploadFailed =>
+      'Error al subir anexos. Verifique su conexión.';
+
+  @override
   String get expenseExtras => 'Extras';
 
   @override
@@ -4967,4 +4971,18 @@ class SEs extends S {
 
   @override
   String get settingsSalarySummaryNet => 'Neto';
+
+  @override
+  String get settingsDeductionIrs => 'IRPF';
+
+  @override
+  String get settingsDeductionSs => 'SS';
+
+  @override
+  String get settingsDeductionMeal => 'Comida';
+
+  @override
+  String settingsMealMonthlyTotal(String amount) {
+    return 'Total mensual: $amount';
+  }
 }
