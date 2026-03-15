@@ -575,7 +575,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                               .where(
                                   (e) => e.category == summaries[i].category)
                               .toList(),
-                          icon: categoryIconByName(summaries[i].category),
+                          icon: categoryIconByName(summaries[i].category, customCategories: widget.customCategories),
                           categoryColor: categoryColorByNameFull(summaries[i].category),
                           label:
                               _localizedCategory(summaries[i].category, l10n),
@@ -699,7 +699,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                               expense: expense,
                               categoryLabel: _localizedCategory(
                                   expense.category, l10n),
-                              categoryIcon: categoryIconByName(expense.category),
+                              categoryIcon: categoryIconByName(expense.category, customCategories: widget.customCategories),
                               categoryColor: categoryColorByNameFull(expense.category),
                             );
                           },

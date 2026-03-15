@@ -776,6 +776,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           actualExpenses: _actualExpenses,
           onAddExpense: _openAddExpenseSheet,
           monthlyBudgets: _monthlyBudgets,
+          customCategories: _customCategories,
           onOpenExpenseTracker: () => Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => ExpenseTrackerScreen(
@@ -1544,6 +1545,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         onOpenInsights: _openInsights,
         onOpenCoach: _openCoach,
         onOpenDetailedDashboard: _openDetailedDashboard,
+        customCategories: _customCategories,
       ),
       ExpenseTrackerScreen(
         settings: _settings,
