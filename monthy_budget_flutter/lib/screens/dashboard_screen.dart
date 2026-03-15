@@ -299,96 +299,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                   child: Column(
                     children: [
-                      if (dashboardConfig.showStressIndex)
-                        _StressIndexCard(
-                          key: DashboardTourKeys.stressIndex,
-                          result: stressResult,
-                          onShowTrend: stressResult.score > 0 ? () {
-                            showTrendSheet(
-                              context: context,
-                              stressHistory: settings.stressHistory,
-                              expenseHistory: expenseHistory,
-                              currentTotalExpenses: summary.totalExpenses,
-                            );
-                          } : null,
-                        ),
-                      if (dashboardConfig.showStressIndex) const SizedBox(height: 16),
-                      // Budget Streaks — high visibility after stress index
-                      if (dashboardConfig.showBudgetStreaks) ...[
-                        BudgetStreakCard(
-                          streaks: calculateStreaks(
-                            actualExpenseHistory: actualExpenseHistory,
-                            expenses: settings.expenses,
-                            totalNetIncome: summary.totalNetWithMeal,
-                            purchaseHistory: purchaseHistory,
-                            monthlyBudgets: monthlyBudgets,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                      ],
-                      if (dashboardConfig.showMonthReview && monthReview != null)
-                        _MonthReviewCard(
-                          review: monthReview,
-                          onTap: () => showMonthReviewSheet(
-                            context: context,
-                            review: monthReview,
-                          ),
-                        ),
-                      if (dashboardConfig.showMonthReview && monthReview != null) const SizedBox(height: 16),
-                      // Upcoming Bills
-                      if (dashboardConfig.showUpcomingBills && recurringExpenses.any((r) => r.isActive && r.dayOfMonth != null)) ...[
-                        UpcomingBillsCard(
-                          recurringExpenses: recurringExpenses,
-                          reminderDaysBefore: widget.billReminderDaysBefore,
-                          onOpenRecurring: widget.onOpenRecurringExpenses,
-                        ),
-                        const SizedBox(height: 16),
-                      ],
-                      if (dashboardConfig.showSummaryCards) _buildSummaryCards(l10n),
-                      if (dashboardConfig.showSummaryCards) const SizedBox(height: 16),
-                      if (dashboardConfig.showSalaryBreakdown) _buildSalaryBreakdown(context, l10n),
-                      // Tax Simulator button — after salary breakdown
-                      if (dashboardConfig.showSalaryBreakdown && settings.country == Country.pt) ...[
-                        const SizedBox(height: 8),
-                        _buildTaxSimulatorButton(context, l10n),
-                      ],
-                      if (dashboardConfig.showBudgetVsActual) ...[
-                        const SizedBox(height: 16),
-                        _buildBudgetVsActualCard(context),
-                      ],
-                      if (dashboardConfig.showBudgetVsActual && onViewTrends != null) ...[
-                        const SizedBox(height: 16),
-                        _buildViewTrendsButton(context, l10n),
-                      ],
-                      if (dashboardConfig.showSavingsGoals && onOpenSavingsGoals != null) ...[
-                        const SizedBox(height: 16),
-                        SavingsGoalCard(
-                          goals: savingsGoals,
-                          onSeeAll: onOpenSavingsGoals!,
-                          projections: savingsProjections,
-                        ),
-                      ],
-                      // Tax Deductions — PT only, after savings goals
-                      if (dashboardConfig.showTaxDeductions && settings.country == Country.pt) ...[
-                        const SizedBox(height: 16),
-                        _buildTaxDeductionCard(context),
-                      ],
-                      if (dashboardConfig.showPurchaseHistory && purchaseHistory.records.isNotEmpty) ...[
-                        const SizedBox(height: 16),
-                        _buildPurchaseHistoryCard(context),
-                      ],
-                      if (dashboardConfig.showExpensesBreakdown && summary.totalExpenses > 0) ...[
-                        const SizedBox(height: 16),
-                        _buildExpensesBreakdown(context, l10n),
-                      ],
-                      if (dashboardConfig.showCharts) ...[
-                        const SizedBox(height: 16),
-                        BudgetCharts(
-                          summary: summary,
-                          expenses: settings.expenses,
-                          enabledCharts: dashboardConfig.enabledCharts,
-                        ),
-                      ],
+                      for (final cardId in dashboardConfig.cardOrder)
+                        if (cardId != 'heroCard')
+                          ..._buildCardById(cardId, context, stressResult, monthReview, l10n),
                       const SizedBox(height: 16),
                     ],
                   ),
@@ -399,6 +312,128 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       ),
     );
+  }
+
+  List<Widget> _buildCardById(
+    String cardId,
+    BuildContext context,
+    StressIndexResult stressResult,
+    MonthReviewResult? monthReview,
+    S l10n,
+  ) {
+    if (!dashboardConfig.isCardVisible(cardId)) return const [];
+    switch (cardId) {
+      case 'stressIndex':
+        return [
+          _StressIndexCard(
+            key: DashboardTourKeys.stressIndex,
+            result: stressResult,
+            onShowTrend: stressResult.score > 0 ? () {
+              showTrendSheet(
+                context: context,
+                stressHistory: settings.stressHistory,
+                expenseHistory: expenseHistory,
+                currentTotalExpenses: summary.totalExpenses,
+              );
+            } : null,
+          ),
+          const SizedBox(height: 16),
+        ];
+      case 'budgetStreaks':
+        return [
+          BudgetStreakCard(
+            streaks: calculateStreaks(
+              actualExpenseHistory: actualExpenseHistory,
+              expenses: settings.expenses,
+              totalNetIncome: summary.totalNetWithMeal,
+              purchaseHistory: purchaseHistory,
+              monthlyBudgets: monthlyBudgets,
+            ),
+          ),
+          const SizedBox(height: 16),
+        ];
+      case 'monthReview':
+        if (monthReview == null) return const [];
+        return [
+          _MonthReviewCard(
+            review: monthReview,
+            onTap: () => showMonthReviewSheet(context: context, review: monthReview),
+          ),
+          const SizedBox(height: 16),
+        ];
+      case 'upcomingBills':
+        if (!recurringExpenses.any((r) => r.isActive && r.dayOfMonth != null)) return const [];
+        return [
+          UpcomingBillsCard(
+            recurringExpenses: recurringExpenses,
+            reminderDaysBefore: widget.billReminderDaysBefore,
+            onOpenRecurring: widget.onOpenRecurringExpenses,
+          ),
+          const SizedBox(height: 16),
+        ];
+      case 'burnRate':
+        return [_buildBurnRateCard(context, l10n), const SizedBox(height: 16)];
+      case 'topCategories':
+        if (summary.totalExpenses <= 0) return const [];
+        return [_buildTopCategoriesCard(context, l10n), const SizedBox(height: 16)];
+      case 'cashFlowForecast':
+        return [_buildCashFlowForecastCard(context, l10n), const SizedBox(height: 16)];
+      case 'savingsRate':
+        return [_buildSavingsRateCard(context, l10n), const SizedBox(height: 16)];
+      case 'coachInsight':
+        if (widget.onOpenCoach == null) return const [];
+        return [_buildCoachInsightCard(context, l10n), const SizedBox(height: 16)];
+      case 'summaryCards':
+        return [_buildSummaryCards(l10n), const SizedBox(height: 16)];
+      case 'salaryBreakdown':
+        return [
+          _buildSalaryBreakdown(context, l10n),
+          if (settings.country == Country.pt) ...[
+            const SizedBox(height: 8),
+            _buildTaxSimulatorButton(context, l10n),
+          ],
+          const SizedBox(height: 16),
+        ];
+      case 'budgetVsActual':
+        return [
+          _buildBudgetVsActualCard(context),
+          if (onViewTrends != null) ...[
+            const SizedBox(height: 16),
+            _buildViewTrendsButton(context, l10n),
+          ],
+          const SizedBox(height: 16),
+        ];
+      case 'savingsGoals':
+        if (onOpenSavingsGoals == null) return const [];
+        return [
+          SavingsGoalCard(
+            goals: savingsGoals,
+            onSeeAll: onOpenSavingsGoals!,
+            projections: savingsProjections,
+          ),
+          const SizedBox(height: 16),
+        ];
+      case 'taxDeductions':
+        if (settings.country != Country.pt) return const [];
+        return [_buildTaxDeductionCard(context), const SizedBox(height: 16)];
+      case 'purchaseHistory':
+        if (purchaseHistory.records.isEmpty) return const [];
+        return [_buildPurchaseHistoryCard(context), const SizedBox(height: 16)];
+      case 'expensesBreakdown':
+        if (summary.totalExpenses <= 0) return const [];
+        return [_buildExpensesBreakdown(context, l10n), const SizedBox(height: 16)];
+      case 'charts':
+        return [
+          BudgetCharts(
+            summary: summary,
+            expenses: settings.expenses,
+            enabledCharts: dashboardConfig.enabledCharts,
+          ),
+          const SizedBox(height: 16),
+        ];
+      default:
+        return const [];
+    }
   }
 
   Widget _buildFocusedDashboardBody(
@@ -629,6 +664,355 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Text(l10n.dashboardOpenSettingsButton, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
           ),
         ],
+      ),
+    );
+  }
+
+  // ── Burn Rate Card ──
+  Widget _buildBurnRateCard(BuildContext context, S l10n) {
+    final now = DateTime.now();
+    final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
+    final daysPassed = now.day;
+    final daysRemaining = daysInMonth - daysPassed;
+    final totalBudget = summary.totalNetWithMeal;
+    final spent = summary.totalExpenses;
+    final remaining = totalBudget - spent;
+    final dailyAvgSpend = daysPassed > 0 ? spent / daysPassed : 0.0;
+    final dailyBudgetAllowance = daysRemaining > 0 ? remaining / daysRemaining : 0.0;
+    final isOverBudget = remaining < 0;
+    final paceLabel = dailyAvgSpend <= (totalBudget / daysInMonth)
+        ? l10n.dashboardBurnRateOnTrack
+        : l10n.dashboardBurnRateOver;
+    final paceColor = dailyAvgSpend <= (totalBudget / daysInMonth)
+        ? const Color(0xFF34D399)
+        : AppColors.error(context);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.surfaceVariant(context)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            Icon(Icons.speed, size: 18, color: paceColor),
+            const SizedBox(width: 8),
+            Text(l10n.dashboardBurnRateTitle, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textLabel(context))),
+            const Spacer(),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(color: paceColor.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(6)),
+              child: Text(paceLabel, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: paceColor)),
+            ),
+          ]),
+          const SizedBox(height: 12),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: totalBudget > 0 ? (spent / totalBudget).clamp(0.0, 1.0) : 0.0,
+              backgroundColor: AppColors.surfaceVariant(context),
+              color: isOverBudget ? AppColors.error(context) : AppColors.primary(context),
+              minHeight: 6,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(children: [
+            Expanded(child: _miniStat(l10n.dashboardBurnRateDailyAvg, formatCurrency(dailyAvgSpend), context)),
+            Expanded(child: _miniStat(l10n.dashboardBurnRateAllowance, formatCurrency(dailyBudgetAllowance > 0 ? dailyBudgetAllowance : 0), context)),
+            Expanded(child: _miniStat(l10n.dashboardBurnRateDaysLeft, '$daysRemaining', context)),
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Widget _miniStat(String label, String value, BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: TextStyle(fontSize: 9, color: AppColors.textMuted(context))),
+        const SizedBox(height: 2),
+        Text(value, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textPrimary(context))),
+      ],
+    );
+  }
+
+  // ── Top Categories Card ──
+  Widget _buildTopCategoriesCard(BuildContext context, S l10n) {
+    final categoryTotals = <String, double>{};
+    for (final e in actualExpenses) {
+      categoryTotals[e.category] = (categoryTotals[e.category] ?? 0) + e.amount;
+    }
+    final sorted = categoryTotals.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+    final top = sorted.take(5).toList();
+    final total = summary.totalExpenses;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.surfaceVariant(context)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            Icon(Icons.pie_chart_outline, size: 18, color: AppColors.primary(context)),
+            const SizedBox(width: 8),
+            Text(l10n.dashboardTopCategoriesTitle, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textLabel(context))),
+          ]),
+          const SizedBox(height: 12),
+          ...top.map((entry) {
+            final pct = total > 0 ? entry.value / total : 0.0;
+            final budgetAmount = monthlyBudgets[entry.key] ?? 0;
+            final overBudget = budgetAmount > 0 && entry.value > budgetAmount;
+            final barColor = overBudget
+                ? AppColors.error(context)
+                : pct > 0.3
+                    ? Colors.amber.shade600
+                    : AppColors.primary(context);
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(children: [
+                    Icon(categoryIconByName(entry.key, customCategories: widget.customCategories), size: 14, color: AppColors.textSecondary(context)),
+                    const SizedBox(width: 6),
+                    Expanded(child: Text(_budgetCategoryLabel(entry.key, l10n), style: TextStyle(fontSize: 11, color: AppColors.textSecondary(context)))),
+                    Text(formatCurrency(entry.value), style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textPrimary(context))),
+                    const SizedBox(width: 6),
+                    Text('${(pct * 100).toStringAsFixed(0)}%', style: TextStyle(fontSize: 10, color: AppColors.textMuted(context))),
+                  ]),
+                  const SizedBox(height: 4),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(2),
+                    child: LinearProgressIndicator(
+                      value: pct.clamp(0.0, 1.0),
+                      backgroundColor: AppColors.surfaceVariant(context),
+                      color: barColor,
+                      minHeight: 3,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  // ── Cash Flow Forecast Card ──
+  Widget _buildCashFlowForecastCard(BuildContext context, S l10n) {
+    final now = DateTime.now();
+    final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
+    final daysPassed = now.day;
+    final daysRemaining = daysInMonth - daysPassed;
+    final monthlyIncome = summary.totalNetWithMeal;
+    final currentSpent = summary.totalExpenses;
+    final recurringTotal = recurringExpenses
+        .where((r) => r.isActive)
+        .fold(0.0, (sum, r) => sum + r.amount);
+    final recurringRemaining = recurringExpenses
+        .where((r) => r.isActive && r.dayOfMonth != null && r.dayOfMonth! > daysPassed)
+        .fold(0.0, (sum, r) => sum + r.amount);
+    final dailyDiscretionary = daysPassed > 0
+        ? (currentSpent - (recurringTotal - recurringRemaining)).clamp(0.0, double.infinity) / daysPassed
+        : 0.0;
+    final projectedSpend = currentSpent + recurringRemaining + (dailyDiscretionary * daysRemaining);
+    final projectedBalance = monthlyIncome - projectedSpend;
+    final isPositive = projectedBalance >= 0;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.surfaceVariant(context)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            Icon(Icons.trending_up, size: 18, color: isPositive ? const Color(0xFF34D399) : AppColors.error(context)),
+            const SizedBox(width: 8),
+            Text(l10n.dashboardCashFlowTitle, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textLabel(context))),
+          ]),
+          const SizedBox(height: 12),
+          Row(children: [
+            Expanded(child: _miniStat(l10n.dashboardCashFlowProjectedSpend, formatCurrency(projectedSpend), context)),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.dashboardCashFlowEndOfMonth, style: TextStyle(fontSize: 9, color: AppColors.textMuted(context))),
+                  const SizedBox(height: 2),
+                  Text(
+                    formatCurrency(projectedBalance),
+                    style: TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.w700,
+                      color: isPositive ? const Color(0xFF34D399) : AppColors.error(context),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ]),
+          const SizedBox(height: 8),
+          if (recurringRemaining > 0)
+            Text(
+              l10n.dashboardCashFlowPendingBills(formatCurrency(recurringRemaining)),
+              style: TextStyle(fontSize: 10, color: AppColors.textMuted(context)),
+            ),
+        ],
+      ),
+    );
+  }
+
+  // ── Savings Rate Card ──
+  Widget _buildSavingsRateCard(BuildContext context, S l10n) {
+    final currentRate = summary.savingsRate;
+    final saved = summary.netLiquidity > 0 ? summary.netLiquidity : 0.0;
+    final rateColor = currentRate >= 20
+        ? const Color(0xFF34D399)
+        : currentRate >= 10
+            ? Colors.amber.shade600
+            : AppColors.error(context);
+
+    // Build 6-month trend from actualExpenseHistory
+    final now = DateTime.now();
+    final monthRates = <String, double>{};
+    for (int i = 5; i >= 0; i--) {
+      final m = DateTime(now.year, now.month - i, 1);
+      final key = '${m.year}-${m.month.toString().padLeft(2, '0')}';
+      final expenses = actualExpenseHistory[key];
+      if (expenses != null && expenses.isNotEmpty) {
+        final totalSpent = expenses.fold(0.0, (s, e) => s + e.amount);
+        final income = summary.totalNetWithMeal;
+        monthRates[key] = income > 0 ? ((income - totalSpent) / income * 100).clamp(-100, 100) : 0;
+      }
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.surfaceVariant(context)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            Icon(Icons.savings_outlined, size: 18, color: rateColor),
+            const SizedBox(width: 8),
+            Text(l10n.dashboardSavingsRateTitle, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textLabel(context))),
+            const Spacer(),
+            Text(
+              '${currentRate.toStringAsFixed(1)}%',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: rateColor),
+            ),
+          ]),
+          const SizedBox(height: 8),
+          Text(
+            l10n.dashboardSavingsRateSaved(formatCurrency(saved)),
+            style: TextStyle(fontSize: 11, color: AppColors.textSecondary(context)),
+          ),
+          if (monthRates.length > 1) ...[
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 40,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: monthRates.entries.map((e) {
+                  final barHeight = (e.value.clamp(0, 100) / 100 * 36).clamp(2.0, 36.0);
+                  return Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                            height: barHeight,
+                            decoration: BoxDecoration(
+                              color: e.value >= 20
+                                  ? const Color(0xFF34D399).withValues(alpha: 0.6)
+                                  : e.value >= 0
+                                      ? Colors.amber.withValues(alpha: 0.6)
+                                      : AppColors.error(context).withValues(alpha: 0.6),
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  // ── AI Coach Insight Card ──
+  Widget _buildCoachInsightCard(BuildContext context, S l10n) {
+    // Generate a contextual insight based on current data
+    String insight;
+    IconData insightIcon;
+    if (summary.savingsRate < 10 && summary.totalExpenses > 0) {
+      insight = l10n.dashboardCoachLowSavings;
+      insightIcon = Icons.warning_amber;
+    } else if (summary.totalExpenses > summary.totalNetWithMeal * 0.9) {
+      insight = l10n.dashboardCoachHighSpending;
+      insightIcon = Icons.trending_down;
+    } else if (summary.savingsRate >= 20) {
+      insight = l10n.dashboardCoachGoodSavings;
+      insightIcon = Icons.emoji_events;
+    } else {
+      insight = l10n.dashboardCoachGeneral;
+      insightIcon = Icons.lightbulb_outline;
+    }
+
+    return GestureDetector(
+      onTap: widget.onOpenCoach,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.surface(context),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.primary(context).withValues(alpha: 0.3)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: AppColors.primary(context).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(insightIcon, size: 20, color: AppColors.primary(context)),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.dashboardCoachInsightTitle, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.primary(context))),
+                  const SizedBox(height: 4),
+                  Text(insight, style: TextStyle(fontSize: 12, color: AppColors.textSecondary(context))),
+                ],
+              ),
+            ),
+            Icon(Icons.chevron_right, size: 20, color: AppColors.textMuted(context)),
+          ],
+        ),
       ),
     );
   }

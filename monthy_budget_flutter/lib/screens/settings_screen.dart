@@ -1840,52 +1840,90 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ],
           ),
+          const SizedBox(height: 4),
+          Text(
+            l10n.dashReorderHint,
+            style: TextStyle(fontSize: 12, color: AppColors.textMuted(context)),
+          ),
           const SizedBox(height: 12),
-          _groupLabel(l10n.dashGroupOverview),
-          _dashToggle(l10n.settingsDashMonthlyLiquidity, _localDashboard.showHeroCard,
-              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showHeroCard: v)),
-              subtitle: l10n.subtitleShowHeroCard),
-          _dashToggle(l10n.settingsDashStressIndex, _localDashboard.showStressIndex,
-              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showStressIndex: v)),
-              subtitle: l10n.subtitleShowStressIndex),
-          _dashToggle(l10n.settingsDashMonthReview, _localDashboard.showMonthReview,
-              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showMonthReview: v)),
-              subtitle: l10n.subtitleShowMonthReview),
-          _dashToggle(l10n.settingsDashSummaryCards, _localDashboard.showSummaryCards,
-              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showSummaryCards: v)),
-              subtitle: l10n.subtitleShowSummaryCards),
-          const SizedBox(height: 8),
-          _groupLabel(l10n.dashGroupFinancialDetail),
-          _dashToggle(l10n.settingsDashSalaryBreakdown, _localDashboard.showSalaryBreakdown,
-              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showSalaryBreakdown: v))),
-          _dashToggle(l10n.settingsDashBudgetVsActual, _localDashboard.showBudgetVsActual,
-              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showBudgetVsActual: v)),
-              subtitle: l10n.subtitleShowBudgetVsActual),
-          _dashToggle(l10n.settingsDashExpensesBreakdown, _localDashboard.showExpensesBreakdown,
-              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showExpensesBreakdown: v)),
-              subtitle: l10n.subtitleShowExpensesBreakdown),
-          _dashToggle(l10n.savingsGoals, _localDashboard.showSavingsGoals,
-              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showSavingsGoals: v)),
-              subtitle: l10n.subtitleShowSavingsGoals),
-          _dashToggle(l10n.settingsDashTaxDeductions, _localDashboard.showTaxDeductions,
-              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showTaxDeductions: v)),
-              subtitle: l10n.subtitleShowTaxDeductions),
-          _dashToggle(l10n.settingsDashUpcomingBills, _localDashboard.showUpcomingBills,
-              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showUpcomingBills: v)),
-              subtitle: l10n.subtitleShowUpcomingBills),
-          _dashToggle(l10n.settingsDashBudgetStreaks, _localDashboard.showBudgetStreaks,
-              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showBudgetStreaks: v)),
-              subtitle: l10n.subtitleShowBudgetStreaks),
-          const SizedBox(height: 8),
-          _groupLabel(l10n.dashGroupHistory),
-          _dashToggle(l10n.settingsDashPurchaseHistory, _localDashboard.showPurchaseHistory,
-              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showPurchaseHistory: v)),
-              subtitle: l10n.subtitleShowPurchaseHistory),
-          const SizedBox(height: 8),
-          _groupLabel(l10n.dashGroupCharts),
-          _dashToggle(l10n.settingsDashCharts, _localDashboard.showCharts,
-              (v) => setState(() => _localDashboard = _localDashboard.copyWith(showCharts: v)),
-              subtitle: l10n.subtitleShowCharts),
+          ReorderableListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            buildDefaultDragHandles: false,
+            proxyDecorator: (child, index, animation) {
+              return Material(
+                elevation: 2,
+                borderRadius: BorderRadius.circular(8),
+                color: AppColors.surface(context),
+                child: child,
+              );
+            },
+            itemCount: _localDashboard.cardOrder.length,
+            onReorder: (oldIndex, newIndex) {
+              setState(() {
+                final order = List<String>.from(_localDashboard.cardOrder);
+                if (newIndex > oldIndex) newIndex--;
+                final item = order.removeAt(oldIndex);
+                order.insert(newIndex, item);
+                _localDashboard = _localDashboard.copyWith(cardOrder: order);
+              });
+            },
+            itemBuilder: (context, index) {
+              final cardId = _localDashboard.cardOrder[index];
+              final label = _cardLabel(l10n, cardId);
+              final subtitle = _cardSubtitle(l10n, cardId);
+              final isVisible = _localDashboard.isCardVisible(cardId);
+              return Container(
+                key: ValueKey(cardId),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: AppColors.border(context), width: 0.5),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    ReorderableDragStartListener(
+                      index: index,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
+                        child: Icon(Icons.drag_handle, size: 20, color: AppColors.textMuted(context)),
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            label,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: isVisible ? AppColors.textPrimary(context) : AppColors.textMuted(context),
+                            ),
+                          ),
+                          if (subtitle != null)
+                            Text(
+                              subtitle,
+                              style: TextStyle(fontSize: 12, color: AppColors.textMuted(context)),
+                            ),
+                        ],
+                      ),
+                    ),
+                    Switch(
+                      value: isVisible,
+                      activeTrackColor: AppColors.primary(context),
+                      onChanged: (v) {
+                        setState(() {
+                          _localDashboard = _localDashboard.setCardVisible(cardId, v);
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
           if (_localDashboard.showCharts) ...[
             const SizedBox(height: 16),
             _label(l10n.settingsVisibleCharts),
@@ -1924,17 +1962,51 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _dashToggle(String label, bool value, ValueChanged<bool> onChanged, {String? subtitle}) {
-    return SwitchListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textPrimary(context))),
-      subtitle: subtitle != null
-          ? Text(subtitle, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context)))
-          : null,
-      value: value,
-      activeTrackColor: AppColors.primary(context),
-      onChanged: onChanged,
-    );
+  String _cardLabel(S l10n, String cardId) {
+    switch (cardId) {
+      case 'heroCard': return l10n.settingsDashMonthlyLiquidity;
+      case 'stressIndex': return l10n.settingsDashStressIndex;
+      case 'monthReview': return l10n.settingsDashMonthReview;
+      case 'summaryCards': return l10n.settingsDashSummaryCards;
+      case 'burnRate': return l10n.dashboardBurnRateTitle;
+      case 'topCategories': return l10n.dashboardTopCategoriesTitle;
+      case 'cashFlowForecast': return l10n.dashboardCashFlowTitle;
+      case 'savingsRate': return l10n.dashboardSavingsRateTitle;
+      case 'coachInsight': return l10n.dashboardCoachInsightTitle;
+      case 'salaryBreakdown': return l10n.settingsDashSalaryBreakdown;
+      case 'budgetVsActual': return l10n.settingsDashBudgetVsActual;
+      case 'expensesBreakdown': return l10n.settingsDashExpensesBreakdown;
+      case 'savingsGoals': return l10n.savingsGoals;
+      case 'taxDeductions': return l10n.settingsDashTaxDeductions;
+      case 'upcomingBills': return l10n.settingsDashUpcomingBills;
+      case 'budgetStreaks': return l10n.settingsDashBudgetStreaks;
+      case 'purchaseHistory': return l10n.settingsDashPurchaseHistory;
+      case 'charts': return l10n.settingsDashCharts;
+      default: return cardId;
+    }
+  }
+
+  String? _cardSubtitle(S l10n, String cardId) {
+    switch (cardId) {
+      case 'heroCard': return l10n.subtitleShowHeroCard;
+      case 'stressIndex': return l10n.subtitleShowStressIndex;
+      case 'monthReview': return l10n.subtitleShowMonthReview;
+      case 'summaryCards': return l10n.subtitleShowSummaryCards;
+      case 'burnRate': return l10n.dashboardBurnRateSubtitle;
+      case 'topCategories': return l10n.dashboardTopCategoriesSubtitle;
+      case 'cashFlowForecast': return l10n.dashboardCashFlowSubtitle;
+      case 'savingsRate': return l10n.dashboardSavingsRateSubtitle;
+      case 'coachInsight': return l10n.dashboardCoachInsightSubtitle;
+      case 'budgetVsActual': return l10n.subtitleShowBudgetVsActual;
+      case 'expensesBreakdown': return l10n.subtitleShowExpensesBreakdown;
+      case 'savingsGoals': return l10n.subtitleShowSavingsGoals;
+      case 'taxDeductions': return l10n.subtitleShowTaxDeductions;
+      case 'upcomingBills': return l10n.subtitleShowUpcomingBills;
+      case 'budgetStreaks': return l10n.subtitleShowBudgetStreaks;
+      case 'purchaseHistory': return l10n.subtitleShowPurchaseHistory;
+      case 'charts': return l10n.subtitleShowCharts;
+      default: return null;
+    }
   }
 
   String _currentMonthLabel(S l10n) {
