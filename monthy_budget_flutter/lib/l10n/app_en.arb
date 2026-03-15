@@ -2604,6 +2604,7 @@
     "settingsExpenseNameLabel": "EXPENSE NAME",
     "settingsCategoryLabel": "CATEGORY",
     "settingsMonthlyBudgetLabel": "MONTHLY BUDGET",
-    "expenseLocationSearch": "Search",
-    "expenseLocationSearchHint": "Search address..."
+    "expenseLocationSearch": "Search address",
+    "expenseLocationSearchHint": "Type to search...",
+    "expenseLocationCurrent": "Current location"
 }

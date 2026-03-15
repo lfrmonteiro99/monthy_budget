@@ -8718,14 +8718,20 @@ abstract class S {
   /// Search address button label
   ///
   /// In pt, this message translates to:
-  /// **'Pesquisar'**
+  /// **'Pesquisar morada'**
   String get expenseLocationSearch;
 
   /// Address search field hint
   ///
   /// In pt, this message translates to:
-  /// **'Pesquisar endereço...'**
+  /// **'Escreva para pesquisar...'**
   String get expenseLocationSearchHint;
+
+  /// Current location button label
+  ///
+  /// In pt, this message translates to:
+  /// **'Localização atual'**
+  String get expenseLocationCurrent;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

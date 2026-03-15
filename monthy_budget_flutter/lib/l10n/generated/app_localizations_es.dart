@@ -4647,8 +4647,11 @@ class SEs extends S {
   String get settingsMonthlyBudgetLabel => 'PRESUPUESTO MENSUAL';
 
   @override
-  String get expenseLocationSearch => 'Buscar';
+  String get expenseLocationSearch => 'Buscar dirección';
 
   @override
-  String get expenseLocationSearchHint => 'Buscar dirección...';
+  String get expenseLocationSearchHint => 'Escriba para buscar...';
+
+  @override
+  String get expenseLocationCurrent => 'Ubicación actual';
 }

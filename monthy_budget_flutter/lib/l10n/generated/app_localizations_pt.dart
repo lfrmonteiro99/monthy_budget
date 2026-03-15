@@ -4647,8 +4647,11 @@ class SPt extends S {
   String get settingsMonthlyBudgetLabel => 'ORÇAMENTO MENSAL';
 
   @override
-  String get expenseLocationSearch => 'Pesquisar';
+  String get expenseLocationSearch => 'Pesquisar morada';
 
   @override
-  String get expenseLocationSearchHint => 'Pesquisar endereço...';
+  String get expenseLocationSearchHint => 'Escreva para pesquisar...';
+
+  @override
+  String get expenseLocationCurrent => 'Localização atual';
 }

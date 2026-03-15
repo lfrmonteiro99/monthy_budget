@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -90,6 +91,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
   bool _searchingAddress = false;
   final _addressSearchController = TextEditingController();
   List<Map<String, dynamic>> _addressResults = [];
+  Timer? _searchDebounce;
 
   @override
   void initState() {
@@ -134,6 +136,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
     _amountController.dispose();
     _descriptionController.dispose();
     _addressSearchController.dispose();
+    _searchDebounce?.cancel();
     super.dispose();
   }
 
@@ -290,6 +293,21 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
         _addressSearchController.clear();
       });
     }
+  }
+
+  void _onAddressSearchChanged(String query) {
+    _searchDebounce?.cancel();
+    if (query.trim().length < 3) {
+      setState(() {
+        _addressResults = [];
+        _searchingAddress = false;
+      });
+      return;
+    }
+    setState(() => _searchingAddress = true);
+    _searchDebounce = Timer(const Duration(milliseconds: 500), () {
+      _searchAddress(query);
+    });
   }
 
   Future<void> _pickPhoto() async {
@@ -717,41 +735,43 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                   const SizedBox(height: 8),
                 ],
                 Row(children: [
-                  Icon(Icons.location_on,
-                      size: 18,
-                      color: AppColors.textSecondary(context)),
-                  const SizedBox(width: 8),
-                  if (_locationAddress != null) ...[
-                    Expanded(
-                      child: Chip(
-                        label: Text(_locationAddress!,
-                            style: const TextStyle(fontSize: 12),
-                            overflow: TextOverflow.ellipsis),
-                        deleteIcon: const Icon(Icons.close, size: 16),
-                        onDeleted: _removeLocation,
-                      ),
-                    ),
-                  ] else ...[
-                    TextButton.icon(
+                  Expanded(
+                    child: TextButton.icon(
                       onPressed: _detectLocation,
                       icon: const Icon(Icons.my_location, size: 16),
-                      label: Text(l10n.expenseLocationDetect,
+                      label: Text(l10n.expenseLocationCurrent,
                           style: const TextStyle(fontSize: 13)),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                      ),
                     ),
-                    const SizedBox(width: 4),
-                    TextButton.icon(
-                      onPressed: () => setState(() =>
-                          _showAddressSearch = !_showAddressSearch),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: TextButton.icon(
+                      onPressed: () => setState(
+                          () => _showAddressSearch = !_showAddressSearch),
                       icon: const Icon(Icons.search, size: 16),
                       label: Text(l10n.expenseLocationSearch,
                           style: const TextStyle(fontSize: 13)),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        backgroundColor: _showAddressSearch
+                            ? AppColors.primaryLight(context)
+                            : null,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
                     ),
-                  ],
+                  ),
                 ]),
-                if (_showAddressSearch && _locationAddress == null) ...[
+                if (_showAddressSearch) ...[
                   const SizedBox(height: 8),
                   TextField(
                     controller: _addressSearchController,
+                    onChanged: _onAddressSearchChanged,
                     decoration: InputDecoration(
                       hintText: l10n.expenseLocationSearchHint,
                       prefixIcon: const Icon(Icons.search, size: 20),
@@ -765,7 +785,18 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                                     strokeWidth: 2),
                               ),
                             )
-                          : null,
+                          : _addressSearchController.text.isNotEmpty
+                              ? IconButton(
+                                  icon: const Icon(Icons.close, size: 18),
+                                  onPressed: () {
+                                    _addressSearchController.clear();
+                                    setState(() {
+                                      _addressResults = [];
+                                      _searchingAddress = false;
+                                    });
+                                  },
+                                )
+                              : null,
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 10),
@@ -810,6 +841,24 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                       ),
                     ),
                   ],
+                ],
+                if (_locationAddress != null) ...[
+                  const SizedBox(height: 8),
+                  Row(children: [
+                    Icon(Icons.location_on,
+                        size: 18,
+                        color: AppColors.textSecondary(context)),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Chip(
+                        label: Text(_locationAddress!,
+                            style: const TextStyle(fontSize: 12),
+                            overflow: TextOverflow.ellipsis),
+                        deleteIcon: const Icon(Icons.close, size: 16),
+                        onDeleted: _removeLocation,
+                      ),
+                    ),
+                  ]),
                 ],
                 const SizedBox(height: 8),
                 Row(children: [

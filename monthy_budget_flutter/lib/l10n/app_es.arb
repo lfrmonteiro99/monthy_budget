@@ -2553,6 +2553,7 @@
     "settingsExpenseNameLabel": "NOMBRE DEL GASTO",
     "settingsCategoryLabel": "CATEGORÍA",
     "settingsMonthlyBudgetLabel": "PRESUPUESTO MENSUAL",
-    "expenseLocationSearch": "Buscar",
-    "expenseLocationSearchHint": "Buscar dirección..."
+    "expenseLocationSearch": "Buscar dirección",
+    "expenseLocationSearchHint": "Escriba para buscar...",
+    "expenseLocationCurrent": "Ubicación actual"
 }

@@ -4647,8 +4647,11 @@ class SEn extends S {
   String get settingsMonthlyBudgetLabel => 'MONTHLY BUDGET';
 
   @override
-  String get expenseLocationSearch => 'Search';
+  String get expenseLocationSearch => 'Search address';
 
   @override
-  String get expenseLocationSearchHint => 'Search address...';
+  String get expenseLocationSearchHint => 'Type to search...';
+
+  @override
+  String get expenseLocationCurrent => 'Current location';
 }

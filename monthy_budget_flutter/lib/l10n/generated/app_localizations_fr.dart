@@ -4647,8 +4647,11 @@ class SFr extends S {
   String get settingsMonthlyBudgetLabel => 'BUDGET MENSUEL';
 
   @override
-  String get expenseLocationSearch => 'Rechercher';
+  String get expenseLocationSearch => 'Rechercher adresse';
 
   @override
-  String get expenseLocationSearchHint => 'Rechercher une adresse...';
+  String get expenseLocationSearchHint => 'Tapez pour chercher...';
+
+  @override
+  String get expenseLocationCurrent => 'Position actuelle';
 }
