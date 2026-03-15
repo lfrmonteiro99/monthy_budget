@@ -64,7 +64,8 @@ import 'app_localizations_pt.dart';
 /// be consistent with the languages listed in the S.supportedLocales
 /// property.
 abstract class S {
-  S(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  S(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -84,19 +85,20 @@ abstract class S {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
     Locale('es'),
     Locale('fr'),
-    Locale('pt')
+    Locale('pt'),
   ];
 
   /// Bottom nav label for budget tab
@@ -8726,6 +8728,156 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Pesquisar endereço...'**
   String get expenseLocationSearchHint;
+
+  /// Burn rate card title
+  ///
+  /// In pt, this message translates to:
+  /// **'Velocidade de Gasto'**
+  String get dashboardBurnRateTitle;
+
+  /// Burn rate card subtitle for settings
+  ///
+  /// In pt, this message translates to:
+  /// **'Média diária vs orçamento disponível'**
+  String get dashboardBurnRateSubtitle;
+
+  /// On track pace label
+  ///
+  /// In pt, this message translates to:
+  /// **'No caminho'**
+  String get dashboardBurnRateOnTrack;
+
+  /// Over pace label
+  ///
+  /// In pt, this message translates to:
+  /// **'Acima do ritmo'**
+  String get dashboardBurnRateOver;
+
+  /// Daily average label
+  ///
+  /// In pt, this message translates to:
+  /// **'MÉDIA/DIA'**
+  String get dashboardBurnRateDailyAvg;
+
+  /// Daily allowance label
+  ///
+  /// In pt, this message translates to:
+  /// **'DISP./DIA'**
+  String get dashboardBurnRateAllowance;
+
+  /// Days remaining label
+  ///
+  /// In pt, this message translates to:
+  /// **'DIAS RESTANTES'**
+  String get dashboardBurnRateDaysLeft;
+
+  /// Top categories card title
+  ///
+  /// In pt, this message translates to:
+  /// **'Top Categorias'**
+  String get dashboardTopCategoriesTitle;
+
+  /// Top categories subtitle for settings
+  ///
+  /// In pt, this message translates to:
+  /// **'Categorias com mais despesas este mês'**
+  String get dashboardTopCategoriesSubtitle;
+
+  /// Cash flow forecast card title
+  ///
+  /// In pt, this message translates to:
+  /// **'Previsão de Fluxo'**
+  String get dashboardCashFlowTitle;
+
+  /// Cash flow subtitle for settings
+  ///
+  /// In pt, this message translates to:
+  /// **'Projeção de saldo até ao fim do mês'**
+  String get dashboardCashFlowSubtitle;
+
+  /// Projected spend label
+  ///
+  /// In pt, this message translates to:
+  /// **'GASTO PROJETADO'**
+  String get dashboardCashFlowProjectedSpend;
+
+  /// End of month label
+  ///
+  /// In pt, this message translates to:
+  /// **'FIM DO MÊS'**
+  String get dashboardCashFlowEndOfMonth;
+
+  /// Pending bills message
+  ///
+  /// In pt, this message translates to:
+  /// **'Contas pendentes: {amount}'**
+  String dashboardCashFlowPendingBills(String amount);
+
+  /// Savings rate card title
+  ///
+  /// In pt, this message translates to:
+  /// **'Taxa de Poupança'**
+  String get dashboardSavingsRateTitle;
+
+  /// Savings rate subtitle for settings
+  ///
+  /// In pt, this message translates to:
+  /// **'Percentagem do rendimento poupada'**
+  String get dashboardSavingsRateSubtitle;
+
+  /// Saved amount message
+  ///
+  /// In pt, this message translates to:
+  /// **'Poupado este mês: {amount}'**
+  String dashboardSavingsRateSaved(String amount);
+
+  /// Coach insight card title
+  ///
+  /// In pt, this message translates to:
+  /// **'Dica Financeira'**
+  String get dashboardCoachInsightTitle;
+
+  /// Coach insight subtitle for settings
+  ///
+  /// In pt, this message translates to:
+  /// **'Sugestão personalizada do assistente financeiro'**
+  String get dashboardCoachInsightSubtitle;
+
+  /// Low savings coach tip
+  ///
+  /// In pt, this message translates to:
+  /// **'A sua taxa de poupança está abaixo de 10%. Identifique uma despesa que pode reduzir este mês.'**
+  String get dashboardCoachLowSavings;
+
+  /// High spending coach tip
+  ///
+  /// In pt, this message translates to:
+  /// **'Os gastos estão a aproximar-se do rendimento. Reveja as despesas não essenciais.'**
+  String get dashboardCoachHighSpending;
+
+  /// Good savings coach tip
+  ///
+  /// In pt, this message translates to:
+  /// **'Excelente! Está a poupar mais de 20%. Continue assim!'**
+  String get dashboardCoachGoodSavings;
+
+  /// General coach tip
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque para obter análises personalizadas do seu orçamento.'**
+  String get dashboardCoachGeneral;
+
+  /// Insights group label in dashboard settings
+  ///
+  /// In pt, this message translates to:
+  /// **'Análise'**
+  String get dashGroupInsights;
+
+  /// Hint text for drag-to-reorder in dashboard card settings
+  ///
+  /// In pt, this message translates to:
+  /// **'Arraste para reordenar os cartões'**
+  String get dashReorderHint;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
@@ -8737,27 +8889,30 @@ class _SDelegate extends LocalizationsDelegate<S> {
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'es', 'fr', 'pt'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'es', 'fr', 'pt'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_SDelegate old) => false;
 }
 
 S lookupS(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return SEn();
-    case 'es': return SEs();
-    case 'fr': return SFr();
-    case 'pt': return SPt();
+    case 'en':
+      return SEn();
+    case 'es':
+      return SEs();
+    case 'fr':
+      return SFr();
+    case 'pt':
+      return SPt();
   }
 
   throw FlutterError(
     'S.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
+    'that was used.',
   );
 }

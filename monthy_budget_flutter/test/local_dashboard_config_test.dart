@@ -9,9 +9,11 @@ void main() {
 
       expect(config.showHeroCard, isTrue);
       expect(config.showStressIndex, isTrue);
-      expect(config.showSummaryCards, isFalse);
+      expect(config.showSummaryCards, isTrue);
+      expect(config.showBudgetVsActual, isTrue);
       expect(config.showCharts, isFalse);
       expect(config.showPurchaseHistory, isFalse);
+      expect(config.cardOrder, LocalDashboardConfig.defaultCardOrder);
     });
 
     test('minimalist preset disables most widgets', () {
@@ -64,6 +66,41 @@ void main() {
       expect(config.showSalaryBreakdown, isTrue);
       expect(config.showPurchaseHistory, isTrue);
       expect(config.showCharts, isTrue);
+    });
+
+    test('cardOrder JSON roundtrip preserves custom order', () {
+      const customOrder = ['charts', 'heroCard', 'stressIndex'];
+      const config = LocalDashboardConfig(cardOrder: customOrder);
+
+      final decoded = LocalDashboardConfig.fromJsonString(config.toJsonString());
+      expect(decoded.cardOrder, customOrder);
+    });
+
+    test('cardOrder defaults when missing from JSON', () {
+      final decoded = LocalDashboardConfig.fromJson({'showHeroCard': true});
+      expect(decoded.cardOrder, LocalDashboardConfig.defaultCardOrder);
+    });
+
+    test('copyWith preserves cardOrder when not specified', () {
+      const customOrder = ['charts', 'heroCard'];
+      const config = LocalDashboardConfig(cardOrder: customOrder);
+      final updated = config.copyWith(showCharts: true);
+      expect(updated.cardOrder, customOrder);
+      expect(updated.showCharts, isTrue);
+    });
+
+    test('isCardVisible returns correct values', () {
+      const config = LocalDashboardConfig(showHeroCard: true, showCharts: false);
+      expect(config.isCardVisible('heroCard'), isTrue);
+      expect(config.isCardVisible('charts'), isFalse);
+      expect(config.isCardVisible('unknown'), isFalse);
+    });
+
+    test('setCardVisible toggles a specific card', () {
+      const config = LocalDashboardConfig(showCharts: false);
+      final updated = config.setCardVisible('charts', true);
+      expect(updated.showCharts, isTrue);
+      expect(updated.showHeroCard, config.showHeroCard);
     });
   });
 }
