@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2026.3.36 - 2026-03-15
+
+### New Features
+- 5 new dashboard cards: burn rate, top categories, cash flow forecast, savings rate, coach insight #548
+- Reorderable dashboard cards: drag-to-reorder + show/hide toggles in settings #548
+
+### Improvements
+- Income/salary section redesign with visual grouping, summary header (Gross → Net), and styled IRS table #549
+
 ## v2026.3.35 - 2026-03-15
 
 ### New Features
