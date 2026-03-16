@@ -379,7 +379,8 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
       _dismissRecommendation();
       return;
     }
-    final recommended = recommendMode(text);
+    final locale = Localizations.localeOf(context).languageCode;
+    final recommended = recommendMode(text, locale: locale);
     if (recommended.index > _selectedMode.index &&
         _subscription.aiCredits >= _subscription.creditCostForMode(recommended)) {
       setState(() {
