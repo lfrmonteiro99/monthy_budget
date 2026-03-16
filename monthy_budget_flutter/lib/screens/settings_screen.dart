@@ -855,37 +855,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ? calculateNetSalary(salary, _draft.personalInfo, taxSystem)
                 : null;
             final currency = _draft.country.currencyCode;
+            final enabledBorderColor = salary.enabled
+                ? AppColors.border(context)
+                : AppColors.surfaceVariant(context);
+
             return Container(
               margin: EdgeInsets.only(bottom: idx < _draft.salaries.length - 1 ? 16 : 0),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: salary.enabled ? AppColors.surface(context) : AppColors.background(context),
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: salary.enabled ? AppColors.border(context) : AppColors.surfaceVariant(context),
-                  width: 2,
-                ),
+                border: Border.all(color: enabledBorderColor, width: 1.5),
+                color: salary.enabled ? AppColors.surface(context) : AppColors.background(context),
               ),
-              child: Opacity(
-                opacity: salary.enabled ? 1.0 : 0.5,
-                child: Column(
+              child: Stack(
+                children: [
+                  Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // ── Header: Switch + Label + Delete ──
                     Row(
                       children: [
-                        Container(
-                          width: 10, height: 10,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: salary.enabled ? const Color(0xFF34D399) : AppColors.textMuted(context),
+                        SizedBox(
+                          height: 28,
+                          child: Switch.adaptive(
+                            value: salary.enabled,
+                            onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(enabled: v)),
+                            activeTrackColor: AppColors.primary(context),
                           ),
-                        ),
-                        const SizedBox(width: 6),
-                        Switch(
-                          value: salary.enabled,
-                          onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(enabled: v)),
-                          activeTrackColor: AppColors.primary(context),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
@@ -908,42 +904,63 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ],
                     ),
                     // ── Summary: Gross → Net ──
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 10),
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                       decoration: BoxDecoration(
-                        color: AppColors.background(context),
-                        borderRadius: BorderRadius.circular(10),
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColors.primary(context).withValues(alpha: 0.08),
+                            AppColors.primary(context).withValues(alpha: 0.02),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.primary(context).withValues(alpha: 0.15)),
                       ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            l10n.settingsSalarySummaryGross,
-                            style: TextStyle(fontSize: 11, color: AppColors.textMuted(context)),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            salary.grossAmount > 0
-                                ? '${salary.grossAmount.toStringAsFixed(2)} $currency'
-                                : '\u2014',
-                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimary(context)),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  l10n.settingsSalarySummaryGross,
+                                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.textMuted(context)),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  salary.grossAmount > 0
+                                      ? '${salary.grossAmount.toStringAsFixed(2)} $currency'
+                                      : '\u2014',
+                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textPrimary(context)),
+                                ),
+                              ],
+                            ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: Icon(Icons.arrow_forward, size: 14, color: AppColors.textMuted(context)),
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            child: Icon(Icons.trending_flat, size: 20, color: AppColors.primary(context)),
                           ),
-                          Text(
-                            l10n.settingsSalarySummaryNet,
-                            style: TextStyle(fontSize: 11, color: AppColors.textMuted(context)),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            salaryCalc != null
-                                ? '${salaryCalc.totalNetWithMeal.toStringAsFixed(2)} $currency'
-                                : '\u2014',
-                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimary(context)),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  l10n.settingsSalarySummaryNet,
+                                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.textMuted(context)),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  salaryCalc != null
+                                      ? '${salaryCalc.totalNetWithMeal.toStringAsFixed(2)} $currency'
+                                      : '\u2014',
+                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.primary(context)),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -973,7 +990,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                     ],
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 14),
+                    // ── Income section header ──
+                    _salarySectionHeader(Icons.payments_outlined, l10n.settingsGrossMonthlySalary),
+                    const SizedBox(height: 8),
                     // ── Gross Salary sub-section ──
                     Container(
                       width: double.infinity,
@@ -998,7 +1018,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     if (_draft.country.hasSubsidies) ...[
                       // ── Subsidy Mode sub-section ──
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 14),
+                      _salarySectionHeader(Icons.card_giftcard_outlined, l10n.settingsSubsidyHoliday),
+                      const SizedBox(height: 8),
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(12),
@@ -1062,7 +1084,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     if (_draft.country.hasMealAllowance) ...[
                       // ── Meal Allowance sub-section ──
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 14),
+                      _salarySectionHeader(Icons.restaurant_outlined, l10n.settingsMealAllowanceLabel),
+                      const SizedBox(height: 8),
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(12),
@@ -1159,7 +1183,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ],
                     if (_draft.country.hasTitulares && _isCasado) ...[
                       // ── Titulares sub-section ──
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 14),
+                      _salarySectionHeader(Icons.people_outline, l10n.settingsTitularesLabel),
+                      const SizedBox(height: 8),
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(12),
@@ -1231,6 +1257,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ],
                   ],
                 ),
+                  if (!salary.enabled)
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: AppColors.textMuted(context).withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          l10n.settingsPausedCategories,
+                          style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: AppColors.textMuted(context)),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             );
           }),
@@ -3391,6 +3434,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
         text,
         style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondary(context), letterSpacing: 0.5),
       );
+
+  Widget _salarySectionHeader(IconData icon, String title) {
+    return Row(
+      children: [
+        Icon(icon, size: 14, color: AppColors.primary(context)),
+        const SizedBox(width: 6),
+        Text(
+          title.toUpperCase(),
+          style: TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textMuted(context),
+            letterSpacing: 0.8,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(child: Divider(color: AppColors.border(context), height: 1)),
+      ],
+    );
+  }
 
   Widget _deductionChip(String label, String value, String? subtitle, Color color) {
     return Column(
