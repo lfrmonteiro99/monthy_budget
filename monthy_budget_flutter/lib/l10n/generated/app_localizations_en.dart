@@ -4984,4 +4984,10 @@ class SEn extends S {
 
   @override
   String get mealTasteProfileBoost => 'Taste profile applied';
+
+  @override
+  String get mealPlanUndoMessage => 'Plan regenerated successfully';
+
+  @override
+  String get mealPlanUndoAction => 'Undo';
 }

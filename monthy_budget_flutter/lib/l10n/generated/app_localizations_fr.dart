@@ -5033,4 +5033,10 @@ class SFr extends S {
 
   @override
   String get mealTasteProfileBoost => 'Profil de goût appliqué';
+
+  @override
+  String get mealPlanUndoMessage => 'Plan régénéré avec succès';
+
+  @override
+  String get mealPlanUndoAction => 'Annuler';
 }

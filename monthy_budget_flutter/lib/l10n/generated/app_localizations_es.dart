@@ -5021,4 +5021,10 @@ class SEs extends S {
 
   @override
   String get mealTasteProfileBoost => 'Perfil de gusto aplicado';
+
+  @override
+  String get mealPlanUndoMessage => 'Plan regenerado con éxito';
+
+  @override
+  String get mealPlanUndoAction => 'Deshacer';
 }

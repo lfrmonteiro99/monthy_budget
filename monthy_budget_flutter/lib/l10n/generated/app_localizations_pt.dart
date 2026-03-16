@@ -5019,4 +5019,10 @@ class SPt extends S {
 
   @override
   String get mealTasteProfileBoost => 'Perfil de gosto aplicado';
+
+  @override
+  String get mealPlanUndoMessage => 'Plano regenerado com sucesso';
+
+  @override
+  String get mealPlanUndoAction => 'Desfazer';
 }

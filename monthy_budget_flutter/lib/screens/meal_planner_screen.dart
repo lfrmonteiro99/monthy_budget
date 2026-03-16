@@ -179,6 +179,12 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       }
     }
 
+    // Save current plan for undo before regenerating
+    final hadPreviousPlan = _plan != null;
+    if (_plan != null) {
+      await _service.savePreviousPlan(_plan!);
+    }
+
     final plan = _service.generate(widget.settings, now,
       favorites: widget.favorites,
       previousFeedback: previousFeedback,
@@ -195,6 +201,41 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     });
     _enrichPlan(plan);
     _loadWeeklySummary(0, plan);
+    _recomputeBudgetInsight();
+
+    if (hadPreviousPlan && mounted) {
+      final l10n = S.of(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.mealPlanUndoMessage),
+          duration: const Duration(seconds: 8),
+          action: SnackBarAction(
+            label: l10n.mealPlanUndoAction,
+            onPressed: () => _undoRegeneration(),
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _undoRegeneration() async {
+    final plan = _plan;
+    if (plan == null) return;
+    final previous = await _service.loadPreviousPlan(plan.month, plan.year);
+    if (previous == null) return;
+
+    await _service.save(previous, widget.householdId);
+    await _service.clearPreviousPlan(previous.month, previous.year);
+
+    if (!mounted) return;
+    setState(() {
+      _plan = previous;
+      _selectedWeek = 0;
+      _expanded.clear();
+      _weeklySummaries.clear();
+    });
+
+    _enrichPlan(previous);
     _recomputeBudgetInsight();
   }
 

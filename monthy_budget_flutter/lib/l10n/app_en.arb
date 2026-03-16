@@ -2665,5 +2665,7 @@
         }
     },
     "mealPantryApply": "Apply & Generate",
-    "mealTasteProfileBoost": "Taste profile applied"
+    "mealTasteProfileBoost": "Taste profile applied",
+    "mealPlanUndoMessage": "Plan regenerated successfully",
+    "mealPlanUndoAction": "Undo"
 }
