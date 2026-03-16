@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2026.3.39 - 2026-03-16
+
+### Bug Fixes
+- Fix meal planner dedup collapse causing same recipe (sopa de legumes) for all meals #563
+
+### New Features
+- Expand recipe catalog from 48 to 128 recipes with 28 new ingredients #566
+- Ingredient substitution with AI-powered recipe adaptation #565
+- Pantry-first meal planning with ingredient selection UI #565
+- Taste profile system learning from feedback patterns #565
+
+### Improvements
+- Shopping list merge: case-insensitive matching + quantity merging #565
+- Soft-sort for new ingredient cap instead of hard-block #563
+- Consecutive-day dedup with base pool fallback #563
+
 ## v2026.3.38 - 2026-03-16
 
 ### Bug Fixes
