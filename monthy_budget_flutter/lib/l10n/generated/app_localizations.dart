@@ -9154,6 +9154,30 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Média diária'**
   String get nutritionDailyAvg;
+
+  /// Waste forecast section title
+  ///
+  /// In pt, this message translates to:
+  /// **'Desperdício estimado'**
+  String get mealWasteEstimate;
+
+  /// Excess quantity for an ingredient
+  ///
+  /// In pt, this message translates to:
+  /// **'{qty} {unit} em excesso'**
+  String mealWasteExcess(String qty, String unit);
+
+  /// Suggestion to reuse excess ingredient
+  ///
+  /// In pt, this message translates to:
+  /// **'Considere duplicar esta receita para usar {ingredient}'**
+  String mealWasteSuggestion(String ingredient);
+
+  /// Estimated waste cost chip label
+  ///
+  /// In pt, this message translates to:
+  /// **'~{cost} em desperdício'**
+  String mealWasteCost(String cost);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

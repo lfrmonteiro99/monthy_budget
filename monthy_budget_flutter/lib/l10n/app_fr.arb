@@ -2659,5 +2659,25 @@
     "nutritionFat": "Lipides",
     "nutritionFiber": "Fibres",
     "nutritionTopProteins": "Top protéines",
-    "nutritionDailyAvg": "Moyenne quotidienne"
+    "nutritionDailyAvg": "Moyenne quotidienne",
+    "mealWasteEstimate": "Gaspillage estimé",
+    "mealWasteExcess": "{qty} {unit} en excès",
+    "@mealWasteExcess": {
+        "placeholders": {
+            "qty": {"type": "String"},
+            "unit": {"type": "String"}
+        }
+    },
+    "mealWasteSuggestion": "Envisagez de doubler cette recette pour utiliser {ingredient}",
+    "@mealWasteSuggestion": {
+        "placeholders": {
+            "ingredient": {"type": "String"}
+        }
+    },
+    "mealWasteCost": "~{cost} gaspillage",
+    "@mealWasteCost": {
+        "placeholders": {
+            "cost": {"type": "String"}
+        }
+    }
 }

@@ -22,6 +22,7 @@ import '../widgets/nutrition_dashboard_card.dart';
 import '../onboarding/meals_tour.dart';
 import '../utils/pantry_matching.dart';
 import '../utils/rate_limiter.dart';
+import '../utils/waste_calculator.dart';
 import '../widgets/pantry_coverage_badge.dart';
 import '../widgets/pantry_quick_picker_sheet.dart';
 import '../widgets/pantry_summary_chip_row.dart';
@@ -155,6 +156,100 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       purchaseHistory: widget.purchaseHistory,
     );
     setState(() => _budgetInsight = insight);
+  }
+
+  List<WasteItem> _computeWasteItems() {
+    final plan = _plan;
+    if (plan == null) return [];
+    final weekDays = _getWeekDays(plan, _selectedWeek);
+    final totals = <String, double>{};
+    for (final day in weekDays) {
+      if (day.isLeftover || day.isFreeform) continue;
+      final recipe = _service.recipeMap[day.recipeId];
+      if (recipe == null) continue;
+      final dayGuests = plan.extraGuests[day.dayIndex] ?? 0;
+      final scale = (plan.nPessoas + dayGuests) / recipe.servings;
+      for (final ri in recipe.ingredients) {
+        final effectiveId = day.substitutions[ri.ingredientId] ?? ri.ingredientId;
+        totals.update(effectiveId, (v) => v + ri.quantity * scale,
+            ifAbsent: () => ri.quantity * scale);
+      }
+    }
+    return WasteCalculator.excessIngredients(totals, _service.ingredientMap);
+  }
+
+  void _showWasteDetails(List<WasteItem> items) {
+    final l10n = S.of(context);
+    final iMap = _service.ingredientMap;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.surface(context),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => DraggableScrollableSheet(
+        initialChildSize: 0.5,
+        maxChildSize: 0.85,
+        expand: false,
+        builder: (ctx, controller) => Column(
+          children: [
+            Container(
+              width: 40, height: 4,
+              margin: const EdgeInsets.symmetric(vertical: 12),
+              decoration: BoxDecoration(
+                color: AppColors.borderMuted(ctx),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Icon(Icons.delete_outline, size: 20, color: AppColors.warning(ctx)),
+                  const SizedBox(width: 8),
+                  Text(l10n.mealWasteEstimate,
+                      style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            Expanded(
+              child: ListView.separated(
+                controller: controller,
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                itemCount: items.length,
+                separatorBuilder: (_, _) => const Divider(height: 1),
+                itemBuilder: (ctx, i) {
+                  final item = items[i];
+                  final ingredient = iMap[item.ingredientId];
+                  final name = ingredient?.name ?? item.ingredientId;
+                  return ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(name, style: const TextStyle(fontSize: 14)),
+                    subtitle: Text(
+                      l10n.mealWasteExcess(
+                        item.excessQty.toStringAsFixed(2),
+                        item.unit,
+                      ),
+                      style: TextStyle(fontSize: 12, color: AppColors.textSecondary(ctx)),
+                    ),
+                    trailing: Text(
+                      '\u20AC${item.estimatedWasteCost.toStringAsFixed(2)}',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.warning(ctx),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _generatePlan() async {
@@ -1371,6 +1466,26 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             nPessoas: plan.nPessoas,
             settings: widget.settings.mealSettings,
           ),
+          Builder(builder: (_) {
+            final wasteItems = _computeWasteItems();
+            if (wasteItems.isEmpty) return const SizedBox.shrink();
+            final totalWaste = wasteItems.fold(0.0, (s, w) => s + w.estimatedWasteCost);
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: GestureDetector(
+                onTap: () => _showWasteDetails(wasteItems),
+                child: Chip(
+                  avatar: Icon(Icons.delete_outline, size: 16, color: AppColors.warning(context)),
+                  label: Text(
+                    l10n.mealWasteCost('\u20AC${totalWaste.toStringAsFixed(2)}'),
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  backgroundColor: AppColors.warningBackground(context),
+                  side: BorderSide(color: AppColors.warningBorder(context)),
+                ),
+              ),
+            );
+          }),
         ],
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

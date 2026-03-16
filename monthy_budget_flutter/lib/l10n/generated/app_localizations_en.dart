@@ -5071,4 +5071,22 @@ class SEn extends S {
 
   @override
   String get nutritionDailyAvg => 'Daily average';
+
+  @override
+  String get mealWasteEstimate => 'Estimated waste';
+
+  @override
+  String mealWasteExcess(String qty, String unit) {
+    return '$qty $unit excess';
+  }
+
+  @override
+  String mealWasteSuggestion(String ingredient) {
+    return 'Consider doubling this recipe to use $ingredient';
+  }
+
+  @override
+  String mealWasteCost(String cost) {
+    return '~$cost waste';
+  }
 }

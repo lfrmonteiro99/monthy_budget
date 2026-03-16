@@ -5120,4 +5120,22 @@ class SFr extends S {
 
   @override
   String get nutritionDailyAvg => 'Moyenne quotidienne';
+
+  @override
+  String get mealWasteEstimate => 'Gaspillage estimé';
+
+  @override
+  String mealWasteExcess(String qty, String unit) {
+    return '$qty $unit en excès';
+  }
+
+  @override
+  String mealWasteSuggestion(String ingredient) {
+    return 'Envisagez de doubler cette recette pour utiliser $ingredient';
+  }
+
+  @override
+  String mealWasteCost(String cost) {
+    return '~$cost gaspillage';
+  }
 }

@@ -5106,4 +5106,22 @@ class SPt extends S {
 
   @override
   String get nutritionDailyAvg => 'Média diária';
+
+  @override
+  String get mealWasteEstimate => 'Desperdício estimado';
+
+  @override
+  String mealWasteExcess(String qty, String unit) {
+    return '$qty $unit em excesso';
+  }
+
+  @override
+  String mealWasteSuggestion(String ingredient) {
+    return 'Considere duplicar esta receita para usar $ingredient';
+  }
+
+  @override
+  String mealWasteCost(String cost) {
+    return '~$cost em desperdício';
+  }
 }
