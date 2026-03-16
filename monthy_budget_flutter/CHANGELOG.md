@@ -2,63 +2,35 @@
 
 All notable changes to this project will be documented in this file.
 
-## v2026.3.39 - 2026-03-16
-
-### Bug Fixes
-- Fix meal planner dedup collapse causing same recipe (sopa de legumes) for all meals #563
-
-### New Features
-- Expand recipe catalog from 48 to 128 recipes with 28 new ingredients #566
-- Ingredient substitution with AI-powered recipe adaptation #565
-- Pantry-first meal planning with ingredient selection UI #565
-- Taste profile system learning from feedback patterns #565
-
-### Improvements
-- Shopping list merge: case-insensitive matching + quantity merging #565
-- Soft-sort for new ingredient cap instead of hard-block #563
-- Consecutive-day dedup with base pool fallback #563
-
-## v2026.3.38 - 2026-03-16
-
-### Bug Fixes
-- Fix expense tracker not syncing when parent data changes (missing didUpdateWidget) #557
-- Fix custom category colors not showing in expense tracker and add expense sheet #557
-- Fix ChoiceChip colors for unselected categories in add expense drawer #557
-- Add user-visible feedback (SnackBar) when attachment upload fails #557
-
-### Improvements
-- Income section: deduction breakdown (IRS/SS/Meal) below salary summary #557
-- Income section: monthly meal allowance total display #557
-- Income section: normalized subsidy button font size #557
-- Wire receipt scan button in expense tracker to actual scan flow (was "coming soon") #559
-
-## v2026.3.36 - 2026-03-15
-
-### New Features
-- 5 new dashboard cards: burn rate, top categories, cash flow forecast, savings rate, coach insight #548
-- Reorderable dashboard cards: drag-to-reorder + show/hide toggles in settings #548
-
-### Improvements
-- Income/salary section redesign with visual grouping, summary header (Gross → Net), and styled IRS table #549
-
-## v2026.3.35 - 2026-03-15
-
-### New Features
-- Daily expense reminder notification (ON by default) #532
-- Location search and manual address input for expenses #538
-
-### Bug Fixes
-- Fix custom category icon not displaying in expense list and dashboard #536
-- Fix expense attachment persistence and display #537
-
-### Improvements
-- Settings UX redesign: income section visual grouping and budget input vertical layout #533
-
-## v2026.3.34 - 2026-03-14
+## v2026.3.40 - 2026-03-16
 
 
 
 ### Other Changes
 
-- Fix trial to use account creation date instead of install date #527 (Fixes #527) (Fixes #527) ([object], [object], [object], [object])
+- Fix substitutions ignored in shopping list consolidation #571 (Fixes #571) ([object], [object], [object])
+
+- Migrate recipe catalog to Supabase with local fallback #575 (Fixes #575) ([object], [object], [object])
+
+- Fix extraGuests not propagated to calculations #572 (Fixes #572) ([object], [object], [object])
+
+- Meal plan history with undo after regeneration #578 (Fixes #578) ([object], [object], [object])
+
+- Unit conversion in shopping list merge #573 (Fixes #573) ([object], [object], [object])
+
+- Seasonal awareness via grocery pricing data #580 (Fixes #580) ([object], [object], [object])
+
+- Active vs passive prep time with split display #579 (Fixes #579) ([object], [object], [object])
+
+- Add missing L10n keys for cross-meal swap #581 (Fixes #581) ([object], [object], [object])
+
+- Add l10n keys for macro optimization lost during rebase #582 (Fixes #582) ([object], [object], [object])
+
+- Recipe rating system with 1-5 stars replacing binary feedback #577 (Fixes #577) ([object], [object], [object])
+
+- Pantry inventory tracking with quantities #576 (Fixes #576) ([object], [object], [object])
+
+- Weekly nutrition dashboard with progress bars and macro breakdown #574 (Fixes #574) ([object], [object], [object])
+
+- Waste forecasting with excess ingredient detection #583 (Fixes #583) ([object], [object], [object])
 
