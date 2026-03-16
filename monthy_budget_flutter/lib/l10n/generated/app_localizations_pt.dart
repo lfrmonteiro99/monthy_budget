@@ -1241,12 +1241,6 @@ class SPt extends S {
   String get mealAlternatives => 'Alternativas';
 
   @override
-  String get mealSwapSameType => 'Mesmo tipo';
-
-  @override
-  String get mealSwapAllTypes => 'Todos os tipos';
-
-  @override
   String mealTotalCost(String cost) {
     return '$cost€ total';
   }
@@ -5064,4 +5058,28 @@ class SPt extends S {
 
   @override
   String get mealApplySwap => 'Aplicar';
+
+  @override
+  String get mealSwapSameType => 'Mesmo tipo';
+
+  @override
+  String get mealSwapAllTypes => 'Todos os tipos';
+
+  @override
+  String get pantryManagerTitle => 'Despensa';
+
+  @override
+  String get pantryManagerSave => 'Guardar';
+
+  @override
+  String get pantryLowStock => 'Stock baixo';
+
+  @override
+  String get pantryDepleted => 'Esgotado';
+
+  @override
+  String get pantryRestock => 'Repor';
+
+  @override
+  String get pantryQuantity => 'Quantidade';
 }

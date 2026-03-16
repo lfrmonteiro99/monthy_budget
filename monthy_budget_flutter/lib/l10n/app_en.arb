@@ -741,8 +741,6 @@
     "mealConsolidatedList": "View consolidated list",
     "mealConsolidatedTitle": "Consolidated List",
     "mealAlternatives": "Alternatives",
-    "mealSwapSameType": "Same type",
-    "mealSwapAllTypes": "All types",
     "mealTotalCost": "{cost}€ total",
     "@mealTotalCost": {
         "placeholders": {
@@ -2705,5 +2703,11 @@
     },
     "mealApplySwap": "Apply",
     "mealSwapSameType": "Same type",
-    "mealSwapAllTypes": "All types"
+    "mealSwapAllTypes": "All types",
+    "pantryManagerTitle": "Pantry",
+    "pantryManagerSave": "Save",
+    "pantryLowStock": "Low stock",
+    "pantryDepleted": "Depleted",
+    "pantryRestock": "Restock",
+    "pantryQuantity": "Quantity"
 }
