@@ -5039,4 +5039,10 @@ class SFr extends S {
 
   @override
   String get mealPlanUndoAction => 'Annuler';
+
+  @override
+  String get mealActiveTime => 'actif';
+
+  @override
+  String get mealPassiveTime => 'four/attente';
 }

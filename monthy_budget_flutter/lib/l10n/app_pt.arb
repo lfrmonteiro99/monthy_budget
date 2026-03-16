@@ -5063,5 +5063,9 @@
     "mealPlanUndoMessage": "Plano regenerado com sucesso",
     "@mealPlanUndoMessage": {"description": "Message shown after plan regeneration"},
     "mealPlanUndoAction": "Desfazer",
-    "@mealPlanUndoAction": {"description": "Undo button label on regeneration snackbar"}
+    "@mealPlanUndoAction": {"description": "Undo button label on regeneration snackbar"},
+    "mealActiveTime": "ativo",
+    "@mealActiveTime": {"description": "Label for active/hands-on prep time"},
+    "mealPassiveTime": "forno/espera",
+    "@mealPassiveTime": {"description": "Label for passive prep time (oven, marinating, etc.)"}
 }

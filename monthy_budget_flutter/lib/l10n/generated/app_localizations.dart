@@ -9004,6 +9004,18 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Desfazer'**
   String get mealPlanUndoAction;
+
+  /// Label for active/hands-on prep time
+  ///
+  /// In pt, this message translates to:
+  /// **'ativo'**
+  String get mealActiveTime;
+
+  /// Label for passive prep time (oven, marinating, etc.)
+  ///
+  /// In pt, this message translates to:
+  /// **'forno/espera'**
+  String get mealPassiveTime;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

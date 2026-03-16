@@ -156,6 +156,8 @@ class Recipe {
   final List<String> seasons; // empty = all seasons
   final NutritionInfo? nutrition;
   final List<String> prepSteps;
+  final int? activeMinutes;   // hands-on time
+  final int? passiveMinutes;  // oven, marinating, resting, etc.
 
   const Recipe({
     required this.id,
@@ -181,6 +183,8 @@ class Recipe {
     this.seasons = const [],
     this.nutrition,
     this.prepSteps = const [],
+    this.activeMinutes,
+    this.passiveMinutes,
   });
 
   factory Recipe.fromJson(Map<String, dynamic> json) => Recipe(
@@ -214,6 +218,8 @@ class Recipe {
             ? NutritionInfo.fromJson(json['nutrition'] as Map<String, dynamic>)
             : null,
         prepSteps: List<String>.from(json['prepSteps'] ?? []),
+        activeMinutes: json['activeMinutes'] as int?,
+        passiveMinutes: json['passiveMinutes'] as int?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -240,6 +246,8 @@ class Recipe {
         'seasons': seasons,
         if (nutrition != null) 'nutrition': nutrition!.toJson(),
         if (prepSteps.isNotEmpty) 'prepSteps': prepSteps,
+        if (activeMinutes != null) 'activeMinutes': activeMinutes,
+        if (passiveMinutes != null) 'passiveMinutes': passiveMinutes,
       };
 }
 

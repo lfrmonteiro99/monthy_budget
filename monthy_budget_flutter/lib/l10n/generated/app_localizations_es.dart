@@ -5027,4 +5027,10 @@ class SEs extends S {
 
   @override
   String get mealPlanUndoAction => 'Deshacer';
+
+  @override
+  String get mealActiveTime => 'activo';
+
+  @override
+  String get mealPassiveTime => 'horno/espera';
 }
