@@ -2668,6 +2668,17 @@ class SPt extends S {
   String get mealFeedbackSkip => 'Saltar';
 
   @override
+  String get mealRateRecipe => 'Avaliar receita';
+
+  @override
+  String mealRatingLabel(int rating) {
+    return '$rating estrelas';
+  }
+
+  @override
+  String get mealRatingUnrated => 'Sem avaliacao';
+
+  @override
   String get notifications => 'Notificações';
 
   @override

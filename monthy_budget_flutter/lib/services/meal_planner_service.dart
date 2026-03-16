@@ -238,7 +238,7 @@ class MealPlannerService {
     return map;
   }
 
-  MealPlan generate(AppSettings settings, DateTime forMonth, {List<String> favorites = const [], Map<String, MealFeedback> previousFeedback = const {}, Map<String, double>? groceryPrices}) {
+  MealPlan generate(AppSettings settings, DateTime forMonth, {List<String> favorites = const [], Map<String, MealFeedback> previousFeedback = const {}, Map<String, int> previousRatings = const {}, Map<String, double>? groceryPrices}) {
     assert(_catalogLoaded, 'Call loadCatalog() first');
     final ms = settings.mealSettings;
     final np = nPessoas(settings);
@@ -256,9 +256,9 @@ class MealPlannerService {
       ...ms.weeklyPantryIngredients,
     };
 
-    // Build taste profile from previous feedback
-    final tasteProfile = previousFeedback.isNotEmpty
-        ? TasteProfile.fromFeedback(feedback: previousFeedback, recipeMap: recipeMap)
+    // Build taste profile from previous feedback and ratings
+    final tasteProfile = (previousFeedback.isNotEmpty || previousRatings.isNotEmpty)
+        ? TasteProfile.fromFeedback(feedback: previousFeedback, recipeMap: recipeMap, ratings: previousRatings)
         : const TasteProfile();
 
     // Pre-compute average price map for price-based seasonal boost

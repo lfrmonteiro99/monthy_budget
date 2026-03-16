@@ -4937,6 +4937,24 @@ abstract class S {
   /// **'Saltar'**
   String get mealFeedbackSkip;
 
+  /// Rate recipe accessibility label
+  ///
+  /// In pt, this message translates to:
+  /// **'Avaliar receita'**
+  String get mealRateRecipe;
+
+  /// Rating label
+  ///
+  /// In pt, this message translates to:
+  /// **'{rating} estrelas'**
+  String mealRatingLabel(int rating);
+
+  /// Unrated label
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem avaliacao'**
+  String get mealRatingUnrated;
+
   /// Notifications title
   ///
   /// In pt, this message translates to:
