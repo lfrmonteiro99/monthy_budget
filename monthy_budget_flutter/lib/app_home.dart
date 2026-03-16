@@ -21,6 +21,7 @@ import 'services/purchase_history_service.dart';
 import 'services/products_service.dart';
 import 'services/expense_snapshot_service.dart';
 import 'services/local_config_service.dart';
+import 'services/meal_planner_service.dart';
 import 'services/actual_expense_service.dart';
 import 'services/monthly_budget_service.dart';
 import 'models/actual_expense.dart';
@@ -148,6 +149,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   Map<String, List<ExpenseSnapshot>> _expenseHistory = {};
   bool _loaded = false;
   bool _groceryLoading = false;
+  bool _hasMealPlan = false;
   int _currentIndex = 0;
 
   /// Lifecycle debounce: skip refresh if resumed within this duration.
@@ -299,6 +301,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     _loadActualExpenseHistory();
     _loadMonthlyBudgets();
     _loadNotificationPrefs();
+    _loadMealPlanState();
     await _loadSavingsGoals();
     _syncRevenueCat();
     _checkDowngrade();
@@ -470,6 +473,14 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     }
   }
 
+  Future<void> _loadMealPlanState() async {
+    final now = DateTime.now();
+    final plan = await MealPlannerService().load(widget.householdId, now.month, now.year);
+    if (mounted) {
+      setState(() => _hasMealPlan = plan != null);
+    }
+  }
+
   double _currentBudgetUsagePercent() {
     final totalBudget = _settings.expenses
         .where((e) => e.enabled)
@@ -517,7 +528,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       prefs: _notificationPrefs,
       recurringExpenses: _recurringExpenses,
       budgetUsagePercent: _currentBudgetUsagePercent(),
-      hasMealPlan: true, // TODO: wire with generated meal plan state.
+      hasMealPlan: _hasMealPlan,
       topCategoryName: topCategory?.category,
       topCategoryUsagePercent: topCategory?.percent,
     ));
@@ -840,7 +851,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           onTourComplete: () => _markTourDone('meals'),
         ),
       ),
-    );
+    ).then((_) => _loadMealPlanState());
   }
 
   void _openConfidenceCenter() {
