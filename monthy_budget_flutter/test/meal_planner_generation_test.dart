@@ -950,6 +950,63 @@ void main() {
       expect(plan.days.length, 28 * 2);
     });
 
+    test('soup limit: max 2 soups per week', () {
+      final ms = const MealSettings(
+        enabledMeals: {MealType.dinner},
+        batchCookingEnabled: false,
+      );
+      final plan = service.generate(_settings(ms: ms), march2026);
+      final rMap = service.recipeMap;
+      // Group by week and count soups
+      final weeklySoups = <int, int>{};
+      for (final d in plan.days) {
+        if (d.isLeftover) continue;
+        final r = rMap[d.recipeId];
+        if (r != null && r.isSoup) {
+          final week = ((d.dayIndex - 1) / 7).floor();
+          weeklySoups[week] = (weeklySoups[week] ?? 0) + 1;
+        }
+      }
+      for (final entry in weeklySoups.entries) {
+        expect(entry.value, lessThanOrEqualTo(2),
+            reason: 'Week ${entry.key} has ${entry.value} soups, max is 2');
+      }
+    });
+
+    test('low-protein soups excluded from main meals when pool is large enough', () {
+      final ms = const MealSettings(
+        enabledMeals: {MealType.lunch, MealType.dinner},
+      );
+      final plan = service.generate(_settings(ms: ms), march2026);
+      final rMap = service.recipeMap;
+      int lowProteinSoups = 0;
+      for (final d in plan.days) {
+        if (d.isLeftover) continue;
+        final r = rMap[d.recipeId];
+        if (r != null && r.isSoup && r.nutrition != null &&
+            r.nutrition!.proteinG < Recipe.mainMealMinProteinG) {
+          lowProteinSoups++;
+        }
+      }
+      expect(lowProteinSoups, 0,
+          reason: 'Low-protein soups should not appear as main meals');
+    });
+
+    test('soups only appear at dinner, not lunch', () {
+      final ms = const MealSettings(
+        enabledMeals: {MealType.lunch, MealType.dinner},
+        batchCookingEnabled: false,
+      );
+      final plan = service.generate(_settings(ms: ms), march2026);
+      final rMap = service.recipeMap;
+      final lunchSoups = plan.days.where((d) =>
+          d.mealType == MealType.lunch &&
+          !d.isLeftover &&
+          rMap[d.recipeId]?.isSoup == true).toList();
+      expect(lunchSoups.length, 0,
+          reason: 'Soups should not appear at lunch');
+    });
+
     test('summer month with seasonal preference picks summer recipes', () {
       final ms = const MealSettings(preferSeasonal: true, enabledMeals: {MealType.dinner});
       final july = DateTime(2026, 7);

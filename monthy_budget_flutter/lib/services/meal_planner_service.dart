@@ -423,6 +423,8 @@ class MealPlannerService {
     final weeklyFishCount = <int, int>{}; // weekNumber -> count
     final weeklyLegumeCount = <int, int>{};
     final weeklyRedMeatCount = <int, int>{};
+    final weeklySoupCount = <int, int>{}; // weekNumber -> count
+    const maxSoupsPerWeek = 2;
 
     for (int day = 1; day <= daysInMonth; day++) {
       usedRecipesPerDay[day] = {};
@@ -579,6 +581,19 @@ class MealPlannerService {
             if (noRed.isNotEmpty) pool = noRed;
           }
         }
+
+        // Soup limit: max 2 soups per week
+        final soupsSoFar = weeklySoupCount[weekNum] ?? 0;
+        if (soupsSoFar >= maxSoupsPerWeek) {
+          final noSoup = pool.where((r) => !r.isSoup).toList();
+          if (noSoup.isNotEmpty) pool = noSoup;
+        }
+
+        // Minimum protein: exclude low-protein soups/sides from main meals
+        final highProtein = pool.where((r) =>
+          r.nutrition == null ||
+          r.nutrition!.proteinG >= Recipe.mainMealMinProteinG).toList();
+        if (highProtein.length >= 3) pool = highProtein;
 
         // Pick recipe: dedup + protein diversity + favorites boost
         final usedToday = usedRecipesPerDay[day]!;
@@ -760,6 +775,9 @@ class MealPlannerService {
           weeklyLegumeCount[weekNum] = (weeklyLegumeCount[weekNum] ?? 0) + 1;
         } else if (rType == RecipeType.carne && const {'porco', 'carne_picada'}.contains(recipe.proteinId)) {
           weeklyRedMeatCount[weekNum] = (weeklyRedMeatCount[weekNum] ?? 0) + 1;
+        }
+        if (recipe.isSoup) {
+          weeklySoupCount[weekNum] = (weeklySoupCount[weekNum] ?? 0) + 1;
         }
 
         days.add(MealDay(

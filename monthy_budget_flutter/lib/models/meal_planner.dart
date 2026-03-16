@@ -249,6 +249,13 @@ class Recipe {
         if (activeMinutes != null) 'activeMinutes': activeMinutes,
         if (passiveMinutes != null) 'passiveMinutes': passiveMinutes,
       };
+
+  /// Whether this recipe is a soup/broth (detected by ID convention).
+  bool get isSoup => _soupPattern.hasMatch(id);
+  static final _soupPattern = RegExp(r'sopa|caldo|canja|creme');
+
+  /// Minimum protein (g) to qualify as a standalone main meal.
+  static const mainMealMinProteinG = 10.0;
 }
 
 class MealDay {

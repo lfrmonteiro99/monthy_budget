@@ -1816,7 +1816,7 @@ class _DayCard extends StatelessWidget {
                       child: OutlinedButton.icon(
                         onPressed: onToggleExpand,
                         icon: Icon(
-                          isExpanded ? Icons.expand_less : Icons.expand_more,
+                          isExpanded ? Icons.expand_less : Icons.swap_horiz,
                           size: 16,
                         ),
                         label: Text(
@@ -1824,8 +1824,12 @@ class _DayCard extends StatelessWidget {
                           style: const TextStyle(fontSize: 12),
                         ),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.textSecondary(context),
-                          side: BorderSide(color: AppColors.border(context)),
+                          foregroundColor: isExpanded
+                              ? AppColors.textSecondary(context)
+                              : AppColors.primary(context),
+                          side: BorderSide(color: isExpanded
+                              ? AppColors.border(context)
+                              : AppColors.primary(context).withValues(alpha: 0.5)),
                           padding: const EdgeInsets.symmetric(vertical: 8),
                         ),
                       ),
