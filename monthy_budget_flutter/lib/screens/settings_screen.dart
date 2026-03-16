@@ -313,6 +313,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
+  /// All valid category keys (predefined enum names + custom category names).
+  Set<String> _allCategoryKeys() => {
+    ...ExpenseCategory.values.map((c) => c.name),
+    ..._customCategoriesDraft.map((c) => c.name),
+  };
+
   int _autoHouseholdSize() {
     final titulares = _draft.salaries
         .where((s) => s.enabled)
@@ -1421,21 +1427,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     _label(l10n.settingsCategoryLabel),
                     const SizedBox(height: 8),
                     DropdownButtonFormField<String>(
-                      value: expense.category,
+                      value: _allCategoryKeys().contains(expense.category) ? expense.category : null,
                       isExpanded: true,
                       style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
                       decoration: _inputDecoration(l10n.settingsExpenseCategory),
-                      items: ExpenseCategory.values.map((c) {
-                        final cc = AppColors.categoryColor(c);
-                        return DropdownMenuItem(
-                          value: c.name,
-                          child: Row(children: [
-                            Icon(categoryIconByName(c.name), size: 16, color: cc),
-                            const SizedBox(width: 8),
-                            Text(c.localizedLabel(l10n)),
-                          ]),
-                        );
-                      }).toList(),
+                      items: [
+                        ...ExpenseCategory.values.map((c) {
+                          final cc = AppColors.categoryColor(c);
+                          return DropdownMenuItem(
+                            value: c.name,
+                            child: Row(children: [
+                              Icon(categoryIconByName(c.name), size: 16, color: cc),
+                              const SizedBox(width: 8),
+                              Text(c.localizedLabel(l10n)),
+                            ]),
+                          );
+                        }),
+                        ..._customCategoriesDraft.map((cat) {
+                          final cc = categoryColorByNameFull(cat.name, customCategories: _customCategoriesDraft);
+                          return DropdownMenuItem(
+                            value: cat.name,
+                            child: Row(children: [
+                              Icon(getCategoryIcon(cat.iconName), size: 16, color: cc),
+                              const SizedBox(width: 8),
+                              Text(cat.name),
+                            ]),
+                          );
+                        }),
+                      ],
                       onChanged: (v) {
                         if (v != null) _updateExpense(expense.id, (e) => e.copyWith(category: v));
                       },
