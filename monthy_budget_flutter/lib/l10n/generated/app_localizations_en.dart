@@ -5047,4 +5047,28 @@ class SEn extends S {
 
   @override
   String get pantryQuantity => 'Quantity';
+
+  @override
+  String get nutritionDashboardTitle => 'Weekly Nutrition';
+
+  @override
+  String get nutritionCalories => 'Calories';
+
+  @override
+  String get nutritionProtein => 'Protein';
+
+  @override
+  String get nutritionCarbs => 'Carbs';
+
+  @override
+  String get nutritionFat => 'Fat';
+
+  @override
+  String get nutritionFiber => 'Fiber';
+
+  @override
+  String get nutritionTopProteins => 'Top proteins';
+
+  @override
+  String get nutritionDailyAvg => 'Daily average';
 }

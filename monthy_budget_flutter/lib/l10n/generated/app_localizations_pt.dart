@@ -5082,4 +5082,28 @@ class SPt extends S {
 
   @override
   String get pantryQuantity => 'Quantidade';
+
+  @override
+  String get nutritionDashboardTitle => 'Nutrição Semanal';
+
+  @override
+  String get nutritionCalories => 'Calorias';
+
+  @override
+  String get nutritionProtein => 'Proteína';
+
+  @override
+  String get nutritionCarbs => 'Hidratos';
+
+  @override
+  String get nutritionFat => 'Gordura';
+
+  @override
+  String get nutritionFiber => 'Fibra';
+
+  @override
+  String get nutritionTopProteins => 'Top proteínas';
+
+  @override
+  String get nutritionDailyAvg => 'Média diária';
 }

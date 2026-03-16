@@ -2651,5 +2651,13 @@
     "pantryLowStock": "Stock faible",
     "pantryDepleted": "Épuisé",
     "pantryRestock": "Réapprovisionner",
-    "pantryQuantity": "Quantité"
+    "pantryQuantity": "Quantité",
+    "nutritionDashboardTitle": "Nutrition Hebdomadaire",
+    "nutritionCalories": "Calories",
+    "nutritionProtein": "Protéines",
+    "nutritionCarbs": "Glucides",
+    "nutritionFat": "Lipides",
+    "nutritionFiber": "Fibres",
+    "nutritionTopProteins": "Top protéines",
+    "nutritionDailyAvg": "Moyenne quotidienne"
 }

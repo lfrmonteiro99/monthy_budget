@@ -5111,5 +5111,21 @@
     "pantryLowStock": "Stock baixo",
     "pantryDepleted": "Esgotado",
     "pantryRestock": "Repor",
-    "pantryQuantity": "Quantidade"
+    "pantryQuantity": "Quantidade",
+    "nutritionDashboardTitle": "Nutrição Semanal",
+    "@nutritionDashboardTitle": {"description": "Title for the weekly nutrition dashboard card"},
+    "nutritionCalories": "Calorias",
+    "@nutritionCalories": {"description": "Calories label"},
+    "nutritionProtein": "Proteína",
+    "@nutritionProtein": {"description": "Protein label"},
+    "nutritionCarbs": "Hidratos",
+    "@nutritionCarbs": {"description": "Carbs label"},
+    "nutritionFat": "Gordura",
+    "@nutritionFat": {"description": "Fat label"},
+    "nutritionFiber": "Fibra",
+    "@nutritionFiber": {"description": "Fiber label"},
+    "nutritionTopProteins": "Top proteínas",
+    "@nutritionTopProteins": {"description": "Top protein sources label"},
+    "nutritionDailyAvg": "Média diária",
+    "@nutritionDailyAvg": {"description": "Daily average label"}
 }

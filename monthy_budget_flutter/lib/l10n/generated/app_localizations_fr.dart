@@ -5096,4 +5096,28 @@ class SFr extends S {
 
   @override
   String get pantryQuantity => 'Quantité';
+
+  @override
+  String get nutritionDashboardTitle => 'Nutrition Hebdomadaire';
+
+  @override
+  String get nutritionCalories => 'Calories';
+
+  @override
+  String get nutritionProtein => 'Protéines';
+
+  @override
+  String get nutritionCarbs => 'Glucides';
+
+  @override
+  String get nutritionFat => 'Lipides';
+
+  @override
+  String get nutritionFiber => 'Fibres';
+
+  @override
+  String get nutritionTopProteins => 'Top protéines';
+
+  @override
+  String get nutritionDailyAvg => 'Moyenne quotidienne';
 }

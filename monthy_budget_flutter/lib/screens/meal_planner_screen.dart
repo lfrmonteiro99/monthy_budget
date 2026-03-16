@@ -18,6 +18,7 @@ import '../widgets/meal_feedback_button.dart';
 import '../widgets/star_rating_row.dart';
 import '../widgets/meal_plan_budget_card.dart';
 import '../widgets/meal_plan_budget_sheet.dart';
+import '../widgets/nutrition_dashboard_card.dart';
 import '../onboarding/meals_tour.dart';
 import '../utils/pantry_matching.dart';
 import '../utils/rate_limiter.dart';
@@ -1363,6 +1364,13 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 },
               ),
             ),
+          NutritionDashboardCard(
+            weekDays: _getWeekDays(plan, _selectedWeek),
+            recipeMap: _service.recipeMap,
+            ingredientMap: _service.ingredientMap,
+            nPessoas: plan.nPessoas,
+            settings: widget.settings.mealSettings,
+          ),
         ],
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
