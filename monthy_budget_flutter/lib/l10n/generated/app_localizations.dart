@@ -9106,6 +9106,54 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Quantidade'**
   String get pantryQuantity;
+
+  /// Title for the weekly nutrition dashboard card
+  ///
+  /// In pt, this message translates to:
+  /// **'Nutrição Semanal'**
+  String get nutritionDashboardTitle;
+
+  /// Calories label
+  ///
+  /// In pt, this message translates to:
+  /// **'Calorias'**
+  String get nutritionCalories;
+
+  /// Protein label
+  ///
+  /// In pt, this message translates to:
+  /// **'Proteína'**
+  String get nutritionProtein;
+
+  /// Carbs label
+  ///
+  /// In pt, this message translates to:
+  /// **'Hidratos'**
+  String get nutritionCarbs;
+
+  /// Fat label
+  ///
+  /// In pt, this message translates to:
+  /// **'Gordura'**
+  String get nutritionFat;
+
+  /// Fiber label
+  ///
+  /// In pt, this message translates to:
+  /// **'Fibra'**
+  String get nutritionFiber;
+
+  /// Top protein sources label
+  ///
+  /// In pt, this message translates to:
+  /// **'Top proteínas'**
+  String get nutritionTopProteins;
+
+  /// Daily average label
+  ///
+  /// In pt, this message translates to:
+  /// **'Média diária'**
+  String get nutritionDailyAvg;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

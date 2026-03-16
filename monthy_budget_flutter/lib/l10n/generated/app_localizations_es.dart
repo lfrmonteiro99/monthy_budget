@@ -5084,4 +5084,28 @@ class SEs extends S {
 
   @override
   String get pantryQuantity => 'Cantidad';
+
+  @override
+  String get nutritionDashboardTitle => 'Nutrición Semanal';
+
+  @override
+  String get nutritionCalories => 'Calorías';
+
+  @override
+  String get nutritionProtein => 'Proteína';
+
+  @override
+  String get nutritionCarbs => 'Carbohidratos';
+
+  @override
+  String get nutritionFat => 'Grasa';
+
+  @override
+  String get nutritionFiber => 'Fibra';
+
+  @override
+  String get nutritionTopProteins => 'Top proteínas';
+
+  @override
+  String get nutritionDailyAvg => 'Promedio diario';
 }

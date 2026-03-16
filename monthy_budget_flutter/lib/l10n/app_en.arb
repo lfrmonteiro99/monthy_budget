@@ -2709,5 +2709,13 @@
     "pantryLowStock": "Low stock",
     "pantryDepleted": "Depleted",
     "pantryRestock": "Restock",
-    "pantryQuantity": "Quantity"
+    "pantryQuantity": "Quantity",
+    "nutritionDashboardTitle": "Weekly Nutrition",
+    "nutritionCalories": "Calories",
+    "nutritionProtein": "Protein",
+    "nutritionCarbs": "Carbs",
+    "nutritionFat": "Fat",
+    "nutritionFiber": "Fiber",
+    "nutritionTopProteins": "Top proteins",
+    "nutritionDailyAvg": "Daily average"
 }
