@@ -129,7 +129,8 @@ else
       if (( CURRENT_YEAR > PREV_YEAR || (CURRENT_YEAR == PREV_YEAR && CURRENT_MONTH > PREV_MONTH) )); then
         YEAR="$CURRENT_YEAR"; MONTH="$CURRENT_MONTH"
       else
-        YEAR="$PREV_YEAR"; MONTH="$PREV_MONTH"
+        YEAR="$PREV_YEAR"; MONTH=$((PREV_MONTH + 1))
+        if (( MONTH > 12 )); then YEAR=$((YEAR + 1)); MONTH=1; fi
       fi
       PATCH=0 ;;
     patch)
