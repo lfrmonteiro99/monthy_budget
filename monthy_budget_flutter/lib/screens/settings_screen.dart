@@ -2448,24 +2448,56 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _groupLabel(String title) => Padding(
-    padding: const EdgeInsets.only(top: 20, bottom: 8),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Divider(color: AppColors.border(context)),
-        const SizedBox(height: 8),
-        Text(title,
-          style: TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w700,
-            color: AppColors.primary(context),
-            letterSpacing: 1.0,
-          ),
+  Widget _mealCard({required IconData icon, required String title, required List<Widget> children, String? subtitle}) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: AppColors.border(context)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(children: [
+              Icon(icon, size: 18, color: AppColors.primary(context)),
+              const SizedBox(width: 8),
+              Expanded(child: Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700))),
+            ]),
+            if (subtitle != null) Padding(
+              padding: const EdgeInsets.only(top: 4, left: 26),
+              child: Text(subtitle, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+            ),
+            const SizedBox(height: 12),
+            ...children,
+          ],
         ),
-      ],
-    ),
-  );
+      ),
+    );
+  }
+
+  Widget _mealExpansionCard({required IconData icon, required String title, required List<Widget> children, String? subtitle, bool initiallyExpanded = false}) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: AppColors.border(context)),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: ExpansionTile(
+        initiallyExpanded: initiallyExpanded,
+        tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        leading: Icon(icon, size: 18, color: AppColors.primary(context)),
+        title: Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+        subtitle: subtitle != null ? Text(subtitle, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))) : null,
+        children: children,
+      ),
+    );
+  }
 
   Widget _buildMealsSection() {
     final l10n = S.of(context);
@@ -2476,740 +2508,828 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Group A: AGREGADO (no divider, first group) ──
           _helpTip(l10n.settingsMealHouseholdTip),
-          _label(l10n.settingsHouseholdPeople),
-          const SizedBox(height: 8),
-          Row(
+
+          // ── Section 1: Quem come? (Household) ──
+          _mealCard(
+            icon: Icons.people_outline,
+            title: 'Quem come?',
+            subtitle: 'Agregado familiar e membros',
             children: [
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.border(context)),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: TextFormField(
-                    initialValue: ms.householdSize?.toString() ?? '',
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: _autoHouseholdSize().toString(),
-                      hintStyle: TextStyle(color: Colors.grey.shade400),
-                      suffixText: ms.householdSize == null ? l10n.settingsAutomatic : null,
-                      suffixStyle: TextStyle(fontSize: 12, color: Colors.grey.shade400),
+              _label(l10n.settingsHouseholdPeople),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: AppColors.border(context)),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: TextFormField(
+                        initialValue: ms.householdSize?.toString() ?? '',
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: _autoHouseholdSize().toString(),
+                          hintStyle: TextStyle(color: Colors.grey.shade400),
+                          suffixText: ms.householdSize == null ? l10n.settingsAutomatic : null,
+                          suffixStyle: TextStyle(fontSize: 12, color: Colors.grey.shade400),
+                        ),
+                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                        onChanged: (v) {
+                          final parsed = int.tryParse(v);
+                          setState(() => _draft = _draft.copyWith(
+                              mealSettings: ms.copyWith(
+                                  householdSize: (parsed != null && parsed > 0) ? parsed : null)));
+                        },
+                      ),
                     ),
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  ),
+                  if (ms.householdSize != null) ...[
+                    const SizedBox(width: 8),
+                    IconButton(
+                      icon: Icon(Icons.restart_alt, size: 20, color: AppColors.textMuted(context)),
+                      tooltip: l10n.settingsUseAutoValue,
+                      onPressed: () => setState(() => _draft = _draft.copyWith(
+                          mealSettings: ms.copyWith(householdSize: null))),
+                    ),
+                  ],
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 4, bottom: 16),
+                child: Text(
+                  ms.householdSize != null
+                      ? l10n.settingsManualValue(ms.householdSize!)
+                      : l10n.settingsAutoValue(_autoHouseholdSize()),
+                  style: TextStyle(fontSize: 11, color: Colors.grey.shade400),
+                ),
+              ),
+              _label(l10n.settingsHouseholdMembers),
+              const SizedBox(height: 8),
+              if (ms.householdMembers.isNotEmpty) ...[
+                ...ms.householdMembers.asMap().entries.map((entry) {
+                  final i = entry.key;
+                  final m = entry.value;
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(m.name,
+                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                              Text(
+                                '${m.ageGroup.localizedLabel(l10n)} \u2022 ${m.activityLevel.localizedLabel(l10n)} \u2022 ${m.portionEquivalent.toStringAsFixed(2)} ${l10n.settingsPortions}',
+                                style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.close, size: 18, color: AppColors.error(context)),
+                          onPressed: () {
+                            final updated = List<HouseholdMember>.from(ms.householdMembers)..removeAt(i);
+                            setState(() => _draft = _draft.copyWith(
+                                mealSettings: ms.copyWith(householdMembers: updated)));
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    l10n.settingsTotalEquivalent(ms.householdMembers.fold(0.0, (sum, m) => sum + m.portionEquivalent).toStringAsFixed(1)),
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.primary(context)),
+                  ),
+                ),
+              ],
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () => _showAddMemberDialog(),
+                  icon: const Icon(Icons.person_add_outlined, size: 18),
+                  label: Text(l10n.settingsAddMember, style: const TextStyle(fontSize: 13)),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.primary(context),
+                    side: BorderSide(color: AppColors.border(context)),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          // ── Section 2: Objetivo (Goals) ──
+          _mealCard(
+            icon: Icons.track_changes,
+            title: 'Objetivo',
+            subtitle: 'Planeamento e refeicoes ativas',
+            children: [
+              _label(l10n.settingsObjective),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.border(context)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<MealObjective>(
+                    value: ms.objective,
+                    isExpanded: true,
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textLabel(context)),
+                    items: MealObjective.values
+                        .map((o) =>
+                            DropdownMenuItem(value: o, child: Text(o.localizedLabel(l10n))))
+                        .toList(),
                     onChanged: (v) {
-                      final parsed = int.tryParse(v);
-                      setState(() => _draft = _draft.copyWith(
-                          mealSettings: ms.copyWith(
-                              householdSize: (parsed != null && parsed > 0) ? parsed : null)));
+                      if (v == null) return;
+                      var updated = ms.copyWith(objective: v);
+                      if (v == MealObjective.vegetarian) {
+                        updated = updated.copyWith(veggieDaysPerWeek: 7);
+                      }
+                      setState(() =>
+                          _draft = _draft.copyWith(mealSettings: updated));
                     },
                   ),
                 ),
               ),
-              if (ms.householdSize != null) ...[
-                const SizedBox(width: 8),
-                IconButton(
-                  icon: Icon(Icons.restart_alt, size: 20, color: AppColors.textMuted(context)),
-                  tooltip: l10n.settingsUseAutoValue,
-                  onPressed: () => setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(householdSize: null))),
-                ),
-              ],
+              Padding(
+                padding: const EdgeInsets.only(left: 16, top: 4),
+                child: Text(l10n.helperMealObjective, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+              ),
+              const SizedBox(height: 16),
+              _label(l10n.settingsActiveMeals),
+              const SizedBox(height: 8),
+              ...MealType.values.map((mt) => SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(mt.localizedLabel(l10n),
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w500)),
+                    subtitle: Text(l10n.subtitleMealTypeInclude, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+                    value: ms.enabledMeals.contains(mt),
+                    activeTrackColor: AppColors.primary(context),
+                    onChanged: (v) {
+                      final newSet = Set<MealType>.from(ms.enabledMeals);
+                      if (v) {
+                        newSet.add(mt);
+                      } else {
+                        newSet.remove(mt);
+                      }
+                      if (newSet.isEmpty) return;
+                      setState(() => _draft = _draft.copyWith(
+                          mealSettings: ms.copyWith(enabledMeals: newSet)));
+                    },
+                  )),
+              const SizedBox(height: 8),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(l10n.settingsPreferSeasonal,
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                subtitle: Text(l10n.settingsPreferSeasonalDesc,
+                    style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+                value: ms.preferSeasonal,
+                activeTrackColor: AppColors.primary(context),
+                onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(preferSeasonal: v))),
+              ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 4, bottom: 16),
-            child: Text(
-              ms.householdSize != null
-                  ? l10n.settingsManualValue(ms.householdSize!)
-                  : l10n.settingsAutoValue(_autoHouseholdSize()),
-              style: TextStyle(fontSize: 11, color: Colors.grey.shade400),
-            ),
-          ),
-          _label(l10n.settingsHouseholdMembers),
-          const SizedBox(height: 8),
-          if (ms.householdMembers.isNotEmpty) ...[
-            ...ms.householdMembers.asMap().entries.map((entry) {
-              final i = entry.key;
-              final m = entry.value;
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 6),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(m.name,
-                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                          Text(
-                            '${m.ageGroup.localizedLabel(l10n)} \u2022 ${m.activityLevel.localizedLabel(l10n)} \u2022 ${m.portionEquivalent.toStringAsFixed(2)} ${l10n.settingsPortions}',
-                            style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
-                          ),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.close, size: 18, color: AppColors.error(context)),
-                      onPressed: () {
-                        final updated = List<HouseholdMember>.from(ms.householdMembers)..removeAt(i);
+
+          // ── Section 3: Refeicoes fora (Eating Out) ──
+          _mealCard(
+            icon: Icons.restaurant_outlined,
+            title: 'Refeicoes fora',
+            subtitle: 'Dias fora e dias vegetarianos',
+            children: [
+              _label(l10n.settingsEatingOutDays),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: [
+                  for (final entry in {1: l10n.wizardWeekdayMon, 2: l10n.wizardWeekdayTue, 3: l10n.wizardWeekdayWed, 4: l10n.wizardWeekdayThu, 5: l10n.wizardWeekdayFri, 6: l10n.wizardWeekdaySat, 7: l10n.wizardWeekdaySun}.entries)
+                    FilterChip(
+                      label: Text(entry.value, style: const TextStyle(fontSize: 13)),
+                      selected: ms.eatingOutWeekdays.contains(entry.key),
+                      selectedColor: AppColors.primary(context).withValues(alpha: 0.15),
+                      checkmarkColor: AppColors.primary(context),
+                      onSelected: (v) {
+                        final updated = Set<int>.from(ms.eatingOutWeekdays);
+                        if (v) { updated.add(entry.key); } else { updated.remove(entry.key); }
                         setState(() => _draft = _draft.copyWith(
-                            mealSettings: ms.copyWith(householdMembers: updated)));
+                            mealSettings: ms.copyWith(eatingOutWeekdays: updated)));
                       },
                     ),
-                  ],
-                ),
-              );
-            }),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Text(
-                l10n.settingsTotalEquivalent(ms.householdMembers.fold(0.0, (sum, m) => sum + m.portionEquivalent).toStringAsFixed(1)),
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.primary(context)),
+                ],
               ),
-            ),
-          ],
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: () => _showAddMemberDialog(),
-              icon: const Icon(Icons.person_add_outlined, size: 18),
-              label: Text(l10n.settingsAddMember, style: const TextStyle(fontSize: 13)),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.primary(context),
-                side: BorderSide(color: AppColors.border(context)),
-                padding: const EdgeInsets.symmetric(vertical: 10),
+              const SizedBox(height: 16),
+              _label(l10n.settingsVeggieDays),
+              Slider(
+                value: ms.veggieDaysPerWeek.toDouble(),
+                min: 0,
+                max: 7,
+                divisions: 7,
+                label: '${ms.veggieDaysPerWeek}',
+                activeColor: AppColors.primary(context),
+                onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(veggieDaysPerWeek: v.round()))),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, bottom: 8),
+                child: Text(l10n.helperVeggieDays, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+              ),
+            ],
           ),
 
-          // ── Group B: OBJETIVO E REFEICOES ──
-          _groupLabel('OBJETIVO E REFEIÇÕES'),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(l10n.settingsPreferSeasonal,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-            subtitle: Text(l10n.settingsPreferSeasonalDesc,
-                style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
-            value: ms.preferSeasonal,
-            activeTrackColor: AppColors.primary(context),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                mealSettings: ms.copyWith(preferSeasonal: v))),
-          ),
-          const SizedBox(height: 16),
-          _label(l10n.settingsObjective),
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              border: Border.all(color: AppColors.border(context)),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<MealObjective>(
-                value: ms.objective,
-                isExpanded: true,
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textLabel(context)),
-                items: MealObjective.values
-                    .map((o) =>
-                        DropdownMenuItem(value: o, child: Text(o.localizedLabel(l10n))))
-                    .toList(),
-                onChanged: (v) {
-                  if (v == null) return;
-                  var updated = ms.copyWith(objective: v);
-                  if (v == MealObjective.vegetarian) {
-                    updated = updated.copyWith(veggieDaysPerWeek: 7);
-                  }
-                  setState(() =>
-                      _draft = _draft.copyWith(mealSettings: updated));
-                },
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16, top: 4),
-            child: Text(l10n.helperMealObjective, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
-          ),
-          const SizedBox(height: 16),
-          _label(l10n.settingsActiveMeals),
-          const SizedBox(height: 8),
-          ...MealType.values.map((mt) => SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(mt.localizedLabel(l10n),
-                    style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w500)),
-                subtitle: Text(l10n.subtitleMealTypeInclude, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
-                value: ms.enabledMeals.contains(mt),
-                activeTrackColor: AppColors.primary(context),
-                onChanged: (v) {
-                  final newSet = Set<MealType>.from(ms.enabledMeals);
-                  if (v) {
-                    newSet.add(mt);
-                  } else {
-                    newSet.remove(mt);
-                  }
-                  if (newSet.isEmpty) return;
-                  setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(enabledMeals: newSet)));
-                },
-              )),
-          const SizedBox(height: 16),
-          _label(l10n.settingsVeggieDays),
-          Slider(
-            value: ms.veggieDaysPerWeek.toDouble(),
-            min: 0,
-            max: 7,
-            divisions: 7,
-            label: '${ms.veggieDaysPerWeek}',
-            activeColor: AppColors.primary(context),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                mealSettings: ms.copyWith(veggieDaysPerWeek: v.round()))),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16, bottom: 8),
-            child: Text(l10n.helperVeggieDays, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
-          ),
-          const SizedBox(height: 8),
-          _label(l10n.settingsEatingOutDays),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 4,
+          // ── Section 4: Restricoes alimentares (Dietary) ──
+          _mealCard(
+            icon: Icons.block_outlined,
+            title: 'Restricoes alimentares',
+            subtitle: 'Alergias, intolerancias e preferencias',
             children: [
-              for (final entry in {1: l10n.wizardWeekdayMon, 2: l10n.wizardWeekdayTue, 3: l10n.wizardWeekdayWed, 4: l10n.wizardWeekdayThu, 5: l10n.wizardWeekdayFri, 6: l10n.wizardWeekdaySat, 7: l10n.wizardWeekdaySun}.entries)
-                FilterChip(
-                  label: Text(entry.value, style: const TextStyle(fontSize: 13)),
-                  selected: ms.eatingOutWeekdays.contains(entry.key),
+              _label(l10n.settingsDietaryRestrictions),
+              ...[
+                (l10n.wizardGlutenFree, ms.glutenFree,
+                    (bool v) => setState(() => _draft = _draft.copyWith(
+                        mealSettings: ms.copyWith(glutenFree: v)))),
+                (l10n.wizardLactoseFree, ms.lactoseFree,
+                    (bool v) => setState(() => _draft = _draft.copyWith(
+                        mealSettings: ms.copyWith(lactoseFree: v)))),
+                (l10n.wizardNutFree, ms.nutFree,
+                    (bool v) => setState(() => _draft = _draft.copyWith(
+                        mealSettings: ms.copyWith(nutFree: v)))),
+                (l10n.wizardShellfishFree, ms.shellfishFree,
+                    (bool v) => setState(() => _draft = _draft.copyWith(
+                        mealSettings: ms.copyWith(shellfishFree: v)))),
+                (l10n.settingsEggFree, ms.eggFree,
+                    (bool v) => setState(() => _draft = _draft.copyWith(
+                        mealSettings: ms.copyWith(eggFree: v)))),
+              ].map((item) => CheckboxListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(item.$1,
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w500)),
+                    value: item.$2,
+                    activeColor: AppColors.primary(context),
+                    controlAffinity: ListTileControlAffinity.leading,
+                    onChanged: (v) => item.$3(v ?? false),
+                  )),
+              const SizedBox(height: 16),
+              _label(l10n.settingsSodiumPref),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.border(context)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<SodiumPreference>(
+                    value: ms.sodiumPreference,
+                    isExpanded: true,
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
+                    items: SodiumPreference.values
+                        .map((s) => DropdownMenuItem(value: s, child: Text(s.localizedLabel(l10n))))
+                        .toList(),
+                    onChanged: (v) {
+                      if (v == null) return;
+                      setState(() => _draft = _draft.copyWith(
+                          mealSettings: ms.copyWith(sodiumPreference: v)));
+                    },
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, top: 4),
+                child: Text(l10n.helperSodiumPreference, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+              ),
+              const SizedBox(height: 16),
+              _label(l10n.settingsDislikedIngredients),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: [
+                  ...ms.dislikedIngredients.map((d) => Chip(
+                    label: Text(d, style: const TextStyle(fontSize: 13)),
+                    deleteIcon: const Icon(Icons.close, size: 16),
+                    onDeleted: () {
+                      final updated = List<String>.from(ms.dislikedIngredients)..remove(d);
+                      setState(() => _draft = _draft.copyWith(
+                          mealSettings: ms.copyWith(dislikedIngredients: updated)));
+                    },
+                  )),
+                  ActionChip(
+                    avatar: const Icon(Icons.add, size: 16),
+                    label: Text(l10n.settingsAddButton, style: const TextStyle(fontSize: 13)),
+                    onPressed: () => _showAddDislikedDialog(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              _label(l10n.settingsExcludedProteins),
+              const SizedBox(height: 8),
+              ...{
+                'frango': l10n.settingsProteinChicken,
+                'carne_picada': l10n.settingsProteinGroundMeat,
+                'porco': l10n.settingsProteinPork,
+                'pescada': l10n.settingsProteinHake,
+                'bacalhau': l10n.settingsProteinCod,
+                'sardinha': l10n.settingsProteinSardine,
+                'atum_lata': l10n.settingsProteinTuna,
+                'ovo': l10n.settingsProteinEgg,
+              }.entries.map((entry) => CheckboxListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(entry.value,
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w500)),
+                    value: ms.excludedProteins.contains(entry.key),
+                    activeColor: AppColors.primary(context),
+                    controlAffinity: ListTileControlAffinity.leading,
+                    onChanged: (v) {
+                      final updated = List<String>.from(ms.excludedProteins);
+                      if (v == true) {
+                        updated.add(entry.key);
+                      } else {
+                        updated.remove(entry.key);
+                      }
+                      setState(() => _draft = _draft.copyWith(
+                          mealSettings: ms.copyWith(excludedProteins: updated)));
+                    },
+                  )),
+            ],
+          ),
+
+          // ── Section 5: Preparacao (Prep & Kitchen) ──
+          _mealCard(
+            icon: Icons.kitchen_outlined,
+            title: 'Preparacao',
+            subtitle: 'Tempo, complexidade e equipamento',
+            children: [
+              _label(l10n.settingsMaxPrepTime),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                children: [15, 30, 45, 60].map((v) => ChoiceChip(
+                  label: Text(v == 60 ? '60+ min' : '$v min', style: const TextStyle(fontSize: 13)),
+                  selected: ms.maxPrepMinutes == v,
+                  selectedColor: AppColors.primary(context).withValues(alpha: 0.15),
+                  onSelected: (_) => setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(maxPrepMinutes: v))),
+                )).toList(),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, top: 4, bottom: 8),
+                child: Text(l10n.helperMaxPrepTime, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+              ),
+              const SizedBox(height: 8),
+              _label(l10n.settingsMaxComplexity(ms.maxComplexity)),
+              Slider(
+                value: ms.maxComplexity.toDouble(),
+                min: 1,
+                max: 5,
+                divisions: 4,
+                label: '${ms.maxComplexity}',
+                activeColor: AppColors.primary(context),
+                onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(maxComplexity: v.round()))),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Facil', style: TextStyle(fontSize: 10, color: AppColors.textMuted(context))),
+                  Text('Pro', style: TextStyle(fontSize: 10, color: AppColors.textMuted(context))),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, bottom: 8),
+                child: Text(l10n.helperMaxComplexity, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+              ),
+              const SizedBox(height: 12),
+              _label(l10n.settingsWeekendPrepTime),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                children: [30, 60, 90, 120].map((v) => ChoiceChip(
+                  label: Text(v >= 120 ? '120+ min' : '$v min', style: const TextStyle(fontSize: 13)),
+                  selected: ms.maxPrepMinutesWeekend == v,
+                  selectedColor: AppColors.primary(context).withValues(alpha: 0.15),
+                  onSelected: (_) => setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(maxPrepMinutesWeekend: v))),
+                )).toList(),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, top: 4, bottom: 8),
+                child: Text(l10n.helperWeekendPrepTime, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+              ),
+              const SizedBox(height: 8),
+              _label(l10n.settingsWeekendComplexity(ms.maxComplexityWeekend)),
+              Slider(
+                value: ms.maxComplexityWeekend.toDouble(),
+                min: 1,
+                max: 5,
+                divisions: 4,
+                label: '${ms.maxComplexityWeekend}',
+                activeColor: AppColors.primary(context),
+                onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(maxComplexityWeekend: v.round()))),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Facil', style: TextStyle(fontSize: 10, color: AppColors.textMuted(context))),
+                  Text('Pro', style: TextStyle(fontSize: 10, color: AppColors.textMuted(context))),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, bottom: 8),
+                child: Text(l10n.helperWeekendComplexity, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+              ),
+              const SizedBox(height: 12),
+              _label(l10n.settingsAvailableEquipment),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: KitchenEquipment.values.map((eq) => FilterChip(
+                  label: Text(eq.localizedLabel(l10n), style: const TextStyle(fontSize: 13)),
+                  selected: ms.availableEquipment.contains(eq),
                   selectedColor: AppColors.primary(context).withValues(alpha: 0.15),
                   checkmarkColor: AppColors.primary(context),
                   onSelected: (v) {
-                    final updated = Set<int>.from(ms.eatingOutWeekdays);
-                    if (v) { updated.add(entry.key); } else { updated.remove(entry.key); }
+                    final updated =
+                        Set<KitchenEquipment>.from(ms.availableEquipment);
+                    if (v) {
+                      updated.add(eq);
+                    } else {
+                      updated.remove(eq);
+                    }
                     setState(() => _draft = _draft.copyWith(
-                        mealSettings: ms.copyWith(eatingOutWeekdays: updated)));
+                        mealSettings: ms.copyWith(availableEquipment: updated)));
                   },
+                )).toList(),
+              ),
+            ],
+          ),
+
+          // ── Section 6: Estrategias (Smart Strategies) ──
+          _mealCard(
+            icon: Icons.lightbulb_outline,
+            title: 'Estrategias',
+            subtitle: 'Eficiencia, custos e aproveitamento',
+            children: [
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(l10n.settingsBatchCooking,
+                    style:
+                        const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                subtitle: Text(l10n.subtitleBatchCooking, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+                value: ms.batchCookingEnabled,
+                activeTrackColor: AppColors.primary(context),
+                onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(batchCookingEnabled: v))),
+              ),
+              if (ms.batchCookingEnabled) ...[
+                _label(l10n.settingsMaxBatchDays),
+                Slider(
+                  value: ms.maxBatchDays.toDouble(),
+                  min: 1,
+                  max: 4,
+                  divisions: 3,
+                  label: '${ms.maxBatchDays}',
+                  activeColor: AppColors.primary(context),
+                  onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(maxBatchDays: v.round()))),
                 ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          _label(l10n.settingsWeeklyDistribution),
-          const SizedBox(height: 4),
-          Text(l10n.settingsFishPerWeek(ms.fishDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.fishDaysPerWeek}'),
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-          Slider(
-            value: ms.fishDaysPerWeek.toDouble(),
-            min: 0, max: 5, divisions: 5,
-            label: ms.fishDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.fishDaysPerWeek}',
-            activeColor: AppColors.primary(context),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                mealSettings: ms.copyWith(fishDaysPerWeek: v.round()))),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16, bottom: 8),
-            child: Text(l10n.helperFishDays, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
-          ),
-          Text(l10n.settingsLegumePerWeek(ms.legumeDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.legumeDaysPerWeek}'),
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-          Slider(
-            value: ms.legumeDaysPerWeek.toDouble(),
-            min: 0, max: 5, divisions: 5,
-            label: ms.legumeDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.legumeDaysPerWeek}',
-            activeColor: AppColors.primary(context),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                mealSettings: ms.copyWith(legumeDaysPerWeek: v.round()))),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16, bottom: 8),
-            child: Text(l10n.helperLegumeDays, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
-          ),
-          Text(l10n.settingsRedMeatPerWeek(ms.redMeatMaxPerWeek >= 7 ? l10n.settingsNoLimit : '${ms.redMeatMaxPerWeek}'),
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-          Slider(
-            value: ms.redMeatMaxPerWeek.toDouble(),
-            min: 0, max: 7, divisions: 7,
-            label: ms.redMeatMaxPerWeek >= 7 ? l10n.settingsNoLimit : '${ms.redMeatMaxPerWeek}',
-            activeColor: AppColors.primary(context),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                mealSettings: ms.copyWith(redMeatMaxPerWeek: v.round()))),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16, bottom: 8),
-            child: Text(l10n.helperRedMeatDays, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
-          ),
-
-          // ── Group C: RESTRICOES E PREFERENCIAS ──
-          _groupLabel('RESTRIÇÕES E PREFERÊNCIAS'),
-          _label(l10n.settingsDietaryRestrictions),
-          ...[
-            (l10n.wizardGlutenFree, ms.glutenFree,
-                (bool v) => setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(glutenFree: v)))),
-            (l10n.wizardLactoseFree, ms.lactoseFree,
-                (bool v) => setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(lactoseFree: v)))),
-            (l10n.wizardNutFree, ms.nutFree,
-                (bool v) => setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(nutFree: v)))),
-            (l10n.wizardShellfishFree, ms.shellfishFree,
-                (bool v) => setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(shellfishFree: v)))),
-            (l10n.settingsEggFree, ms.eggFree,
-                (bool v) => setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(eggFree: v)))),
-          ].map((item) => CheckboxListTile(
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, bottom: 8),
+                  child: Text(l10n.helperMaxBatchDays, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+                ),
+              ],
+              SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text(item.$1,
-                    style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w500)),
-                value: item.$2,
-                activeColor: AppColors.primary(context),
-                controlAffinity: ListTileControlAffinity.leading,
-                onChanged: (v) => item.$3(v ?? false),
-              )),
-          const SizedBox(height: 16),
-          _label(l10n.settingsSodiumPref),
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              border: Border.all(color: AppColors.border(context)),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<SodiumPreference>(
-                value: ms.sodiumPreference,
-                isExpanded: true,
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
-                items: SodiumPreference.values
-                    .map((s) => DropdownMenuItem(value: s, child: Text(s.localizedLabel(l10n))))
-                    .toList(),
-                onChanged: (v) {
-                  if (v == null) return;
-                  setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(sodiumPreference: v)));
-                },
+                title: Text(l10n.settingsReuseLeftovers,
+                    style:
+                        const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                subtitle: Text(l10n.subtitleReuseLeftovers, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+                value: ms.reuseLeftovers,
+                activeTrackColor: AppColors.primary(context),
+                onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(reuseLeftovers: v))),
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16, top: 4),
-            child: Text(l10n.helperSodiumPreference, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
-          ),
-          const SizedBox(height: 16),
-          _label(l10n.settingsDislikedIngredients),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 4,
-            children: [
-              ...ms.dislikedIngredients.map((d) => Chip(
-                label: Text(d, style: const TextStyle(fontSize: 13)),
-                deleteIcon: const Icon(Icons.close, size: 16),
-                onDeleted: () {
-                  final updated = List<String>.from(ms.dislikedIngredients)..remove(d);
-                  setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(dislikedIngredients: updated)));
-                },
-              )),
-              ActionChip(
-                avatar: const Icon(Icons.add, size: 16),
-                label: Text(l10n.settingsAddButton, style: const TextStyle(fontSize: 13)),
-                onPressed: () => _showAddDislikedDialog(),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          _label(l10n.settingsExcludedProteins),
-          const SizedBox(height: 8),
-          ...{
-            'frango': l10n.settingsProteinChicken,
-            'carne_picada': l10n.settingsProteinGroundMeat,
-            'porco': l10n.settingsProteinPork,
-            'pescada': l10n.settingsProteinHake,
-            'bacalhau': l10n.settingsProteinCod,
-            'sardinha': l10n.settingsProteinSardine,
-            'atum_lata': l10n.settingsProteinTuna,
-            'ovo': l10n.settingsProteinEgg,
-          }.entries.map((entry) => CheckboxListTile(
+              SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text(entry.value,
-                    style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w500)),
-                value: ms.excludedProteins.contains(entry.key),
-                activeColor: AppColors.primary(context),
-                controlAffinity: ListTileControlAffinity.leading,
-                onChanged: (v) {
-                  final updated = List<String>.from(ms.excludedProteins);
-                  if (v == true) {
-                    updated.add(entry.key);
-                  } else {
-                    updated.remove(entry.key);
-                  }
-                  setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(excludedProteins: updated)));
-                },
-              )),
-
-          // ── Group D: NUTRICAO E SAUDE ──
-          _groupLabel('NUTRIÇÃO E SAÚDE'),
-          _label(l10n.settingsNutritionalGoals),
-          const SizedBox(height: 8),
-          TextFormField(
-            initialValue: ms.dailyCalorieTarget?.toString() ?? '',
-            keyboardType: TextInputType.number,
-            decoration: _inputDecoration(l10n.settingsCalorieHint, suffix: l10n.settingsKcalPerDay, helperText: l10n.helperCalorieTarget).copyWith(
-              suffixIcon: ms.dailyCalorieTarget != null
-                  ? IconButton(
-                      icon: Icon(Icons.close, size: 18, color: AppColors.textMuted(context)),
-                      onPressed: () => setState(() => _draft = _draft.copyWith(
-                          mealSettings: ms.copyWith(dailyCalorieTarget: null))),
-                    )
-                  : null,
-            ),
-            onChanged: (v) {
-              final parsed = int.tryParse(v);
-              setState(() => _draft = _draft.copyWith(
-                  mealSettings: ms.copyWith(
-                      dailyCalorieTarget: (parsed != null && parsed > 0) ? parsed : null)));
-            },
-          ),
-          const SizedBox(height: 8),
-          TextFormField(
-            initialValue: ms.dailyProteinTargetG?.toString() ?? '',
-            keyboardType: TextInputType.number,
-            decoration: _inputDecoration(l10n.settingsProteinHint, suffix: l10n.settingsGramsPerDay, helperText: l10n.helperProteinTarget).copyWith(
-              labelText: l10n.settingsDailyProtein,
-              labelStyle: TextStyle(fontSize: 13, color: Colors.grey.shade500),
-              suffixIcon: ms.dailyProteinTargetG != null
-                  ? IconButton(
-                      icon: Icon(Icons.close, size: 18, color: AppColors.textMuted(context)),
-                      onPressed: () => setState(() => _draft = _draft.copyWith(
-                          mealSettings: ms.copyWith(dailyProteinTargetG: null))),
-                    )
-                  : null,
-            ),
-            onChanged: (v) {
-              final parsed = int.tryParse(v);
-              setState(() => _draft = _draft.copyWith(
-                  mealSettings: ms.copyWith(
-                      dailyProteinTargetG: (parsed != null && parsed > 0) ? parsed : null)));
-            },
-          ),
-          const SizedBox(height: 8),
-          TextFormField(
-            initialValue: ms.dailyFiberTargetG?.toString() ?? '',
-            keyboardType: TextInputType.number,
-            decoration: _inputDecoration(l10n.settingsFiberHint, suffix: l10n.settingsGramsPerDay, helperText: l10n.helperFiberTarget).copyWith(
-              labelText: l10n.settingsDailyFiber,
-              labelStyle: TextStyle(fontSize: 13, color: Colors.grey.shade500),
-              suffixIcon: ms.dailyFiberTargetG != null
-                  ? IconButton(
-                      icon: Icon(Icons.close, size: 18, color: AppColors.textMuted(context)),
-                      onPressed: () => setState(() => _draft = _draft.copyWith(
-                          mealSettings: ms.copyWith(dailyFiberTargetG: null))),
-                    )
-                  : null,
-            ),
-            onChanged: (v) {
-              final parsed = int.tryParse(v);
-              setState(() => _draft = _draft.copyWith(
-                  mealSettings: ms.copyWith(
-                      dailyFiberTargetG: (parsed != null && parsed > 0) ? parsed : null)));
-            },
-          ),
-          const SizedBox(height: 16),
-          _label(l10n.settingsMedicalConditions),
-          const SizedBox(height: 8),
-          ...MedicalCondition.values.map((mc) => CheckboxListTile(
+                title: Text(l10n.settingsMinimizeWaste,
+                    style:
+                        const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                subtitle: Text(l10n.subtitleMinimizeWaste, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+                value: ms.minimizeWaste,
+                activeTrackColor: AppColors.primary(context),
+                onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(minimizeWaste: v))),
+              ),
+              if (ms.minimizeWaste) ...[
+                _label(l10n.settingsNewIngredientsPerWeek(ms.maxNewIngredientsPerWeek)),
+                Slider(
+                  value: ms.maxNewIngredientsPerWeek.toDouble(),
+                  min: 3,
+                  max: 10,
+                  divisions: 7,
+                  label: ms.maxNewIngredientsPerWeek == 10 ? l10n.settingsNoLimit : '${ms.maxNewIngredientsPerWeek}',
+                  activeColor: AppColors.primary(context),
+                  onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(maxNewIngredientsPerWeek: v.round()))),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, bottom: 8),
+                  child: Text(l10n.helperNewIngredients, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+                ),
+              ],
+              SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text(mc.localizedLabel(l10n),
-                    style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w500)),
-                value: ms.medicalConditions.contains(mc),
-                activeColor: AppColors.primary(context),
-                controlAffinity: ListTileControlAffinity.leading,
-                onChanged: (v) {
-                  final updated = Set<MedicalCondition>.from(ms.medicalConditions);
-                  if (v == true) {
-                    updated.add(mc);
-                  } else {
-                    updated.remove(mc);
-                  }
-                  setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(medicalConditions: updated)));
-                },
-              )),
-
-          // ── Group E: PREPARACAO E COZINHA ──
-          _groupLabel('PREPARAÇÃO E COZINHA'),
-          _label(l10n.settingsMaxPrepTime),
-          Slider(
-            value: ms.maxPrepMinutes.toDouble(),
-            min: 15,
-            max: 60,
-            divisions: 3,
-            label: ms.maxPrepMinutes == 60 ? '60+' : '${ms.maxPrepMinutes}',
-            activeColor: AppColors.primary(context),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                mealSettings: ms.copyWith(maxPrepMinutes: v.round()))),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16, bottom: 8),
-            child: Text(l10n.helperMaxPrepTime, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
-          ),
-          _label(l10n.settingsMaxComplexity(ms.maxComplexity)),
-          Slider(
-            value: ms.maxComplexity.toDouble(),
-            min: 1,
-            max: 5,
-            divisions: 4,
-            label: '${ms.maxComplexity}',
-            activeColor: AppColors.primary(context),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                mealSettings: ms.copyWith(maxComplexity: v.round()))),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16, bottom: 8),
-            child: Text(l10n.helperMaxComplexity, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
-          ),
-          const SizedBox(height: 8),
-          _label(l10n.settingsWeekendPrepTime),
-          Slider(
-            value: ms.maxPrepMinutesWeekend.toDouble(),
-            min: 15,
-            max: 120,
-            divisions: 7,
-            label: ms.maxPrepMinutesWeekend >= 120 ? '120+' : '${ms.maxPrepMinutesWeekend}',
-            activeColor: AppColors.primary(context),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                mealSettings: ms.copyWith(maxPrepMinutesWeekend: v.round()))),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16, bottom: 8),
-            child: Text(l10n.helperWeekendPrepTime, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
-          ),
-          _label(l10n.settingsWeekendComplexity(ms.maxComplexityWeekend)),
-          Slider(
-            value: ms.maxComplexityWeekend.toDouble(),
-            min: 1,
-            max: 5,
-            divisions: 4,
-            label: '${ms.maxComplexityWeekend}',
-            activeColor: AppColors.primary(context),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                mealSettings: ms.copyWith(maxComplexityWeekend: v.round()))),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16, bottom: 8),
-            child: Text(l10n.helperWeekendComplexity, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
-          ),
-          const SizedBox(height: 8),
-          _label(l10n.settingsAvailableEquipment),
-          ...KitchenEquipment.values.map((eq) => CheckboxListTile(
+                title: Text(l10n.settingsPrioritizeLowCost,
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                subtitle: Text(l10n.settingsPrioritizeLowCostDesc,
+                    style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+                value: ms.prioritizeLowCost,
+                activeTrackColor: AppColors.primary(context),
+                onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(prioritizeLowCost: v))),
+              ),
+              SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text(eq.localizedLabel(l10n),
-                    style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w500)),
-                value: ms.availableEquipment.contains(eq),
+                title: Text(l10n.settingsLunchboxLunches,
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                subtitle: Text(l10n.settingsLunchboxLunchesDesc,
+                    style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+                value: ms.lunchboxLunches,
+                activeTrackColor: AppColors.primary(context),
+                onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(lunchboxLunches: v))),
+              ),
+            ],
+          ),
+
+          // ── Section 7: Variedade de proteina (Protein Variety) ──
+          _mealExpansionCard(
+            icon: Icons.egg_outlined,
+            title: 'Variedade de proteina',
+            subtitle: 'Peixe, leguminosas e carne vermelha',
+            children: [
+              _label(l10n.settingsWeeklyDistribution),
+              const SizedBox(height: 4),
+              Text(l10n.settingsFishPerWeek(ms.fishDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.fishDaysPerWeek}'),
+                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+              Slider(
+                value: ms.fishDaysPerWeek.toDouble(),
+                min: 0, max: 5, divisions: 5,
+                label: ms.fishDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.fishDaysPerWeek}',
                 activeColor: AppColors.primary(context),
-                controlAffinity: ListTileControlAffinity.leading,
+                onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(fishDaysPerWeek: v.round()))),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, bottom: 8),
+                child: Text(l10n.helperFishDays, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+              ),
+              Text(l10n.settingsLegumePerWeek(ms.legumeDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.legumeDaysPerWeek}'),
+                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+              Slider(
+                value: ms.legumeDaysPerWeek.toDouble(),
+                min: 0, max: 5, divisions: 5,
+                label: ms.legumeDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.legumeDaysPerWeek}',
+                activeColor: AppColors.primary(context),
+                onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(legumeDaysPerWeek: v.round()))),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, bottom: 8),
+                child: Text(l10n.helperLegumeDays, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+              ),
+              Text(l10n.settingsRedMeatPerWeek(ms.redMeatMaxPerWeek >= 7 ? l10n.settingsNoLimit : '${ms.redMeatMaxPerWeek}'),
+                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+              Slider(
+                value: ms.redMeatMaxPerWeek.toDouble(),
+                min: 0, max: 7, divisions: 7,
+                label: ms.redMeatMaxPerWeek >= 7 ? l10n.settingsNoLimit : '${ms.redMeatMaxPerWeek}',
+                activeColor: AppColors.primary(context),
+                onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(redMeatMaxPerWeek: v.round()))),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, bottom: 8),
+                child: Text(l10n.helperRedMeatDays, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+              ),
+            ],
+          ),
+
+          // ── Section 8: Nutricao e saude (Nutrition & Health) ──
+          _mealExpansionCard(
+            icon: Icons.health_and_safety_outlined,
+            title: 'Nutricao e saude',
+            subtitle: 'Calorias, proteina, fibra e condicoes medicas',
+            children: [
+              _label(l10n.settingsNutritionalGoals),
+              const SizedBox(height: 8),
+              TextFormField(
+                initialValue: ms.dailyCalorieTarget?.toString() ?? '',
+                keyboardType: TextInputType.number,
+                decoration: _inputDecoration(l10n.settingsCalorieHint, suffix: l10n.settingsKcalPerDay, helperText: l10n.helperCalorieTarget).copyWith(
+                  suffixIcon: ms.dailyCalorieTarget != null
+                      ? IconButton(
+                          icon: Icon(Icons.close, size: 18, color: AppColors.textMuted(context)),
+                          onPressed: () => setState(() => _draft = _draft.copyWith(
+                              mealSettings: ms.copyWith(dailyCalorieTarget: null))),
+                        )
+                      : null,
+                ),
                 onChanged: (v) {
-                  final updated =
-                      Set<KitchenEquipment>.from(ms.availableEquipment);
-                  if (v == true) {
-                    updated.add(eq);
-                  } else {
-                    updated.remove(eq);
-                  }
+                  final parsed = int.tryParse(v);
                   setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(availableEquipment: updated)));
+                      mealSettings: ms.copyWith(
+                          dailyCalorieTarget: (parsed != null && parsed > 0) ? parsed : null)));
                 },
-              )),
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                initialValue: ms.dailyProteinTargetG?.toString() ?? '',
+                keyboardType: TextInputType.number,
+                decoration: _inputDecoration(l10n.settingsProteinHint, suffix: l10n.settingsGramsPerDay, helperText: l10n.helperProteinTarget).copyWith(
+                  labelText: l10n.settingsDailyProtein,
+                  labelStyle: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+                  suffixIcon: ms.dailyProteinTargetG != null
+                      ? IconButton(
+                          icon: Icon(Icons.close, size: 18, color: AppColors.textMuted(context)),
+                          onPressed: () => setState(() => _draft = _draft.copyWith(
+                              mealSettings: ms.copyWith(dailyProteinTargetG: null))),
+                        )
+                      : null,
+                ),
+                onChanged: (v) {
+                  final parsed = int.tryParse(v);
+                  setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(
+                          dailyProteinTargetG: (parsed != null && parsed > 0) ? parsed : null)));
+                },
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                initialValue: ms.dailyFiberTargetG?.toString() ?? '',
+                keyboardType: TextInputType.number,
+                decoration: _inputDecoration(l10n.settingsFiberHint, suffix: l10n.settingsGramsPerDay, helperText: l10n.helperFiberTarget).copyWith(
+                  labelText: l10n.settingsDailyFiber,
+                  labelStyle: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+                  suffixIcon: ms.dailyFiberTargetG != null
+                      ? IconButton(
+                          icon: Icon(Icons.close, size: 18, color: AppColors.textMuted(context)),
+                          onPressed: () => setState(() => _draft = _draft.copyWith(
+                              mealSettings: ms.copyWith(dailyFiberTargetG: null))),
+                        )
+                      : null,
+                ),
+                onChanged: (v) {
+                  final parsed = int.tryParse(v);
+                  setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(
+                          dailyFiberTargetG: (parsed != null && parsed > 0) ? parsed : null)));
+                },
+              ),
+              const SizedBox(height: 16),
+              _label(l10n.settingsMedicalConditions),
+              const SizedBox(height: 8),
+              ...MedicalCondition.values.map((mc) => CheckboxListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(mc.localizedLabel(l10n),
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w500)),
+                    value: ms.medicalConditions.contains(mc),
+                    activeColor: AppColors.primary(context),
+                    controlAffinity: ListTileControlAffinity.leading,
+                    onChanged: (v) {
+                      final updated = Set<MedicalCondition>.from(ms.medicalConditions);
+                      if (v == true) {
+                        updated.add(mc);
+                      } else {
+                        updated.remove(mc);
+                      }
+                      setState(() => _draft = _draft.copyWith(
+                          mealSettings: ms.copyWith(medicalConditions: updated)));
+                    },
+                  )),
+            ],
+          ),
 
-          // ── Group F: EFICIENCIA E CUSTOS ──
-          _groupLabel('EFICIÊNCIA E CUSTOS'),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(l10n.settingsBatchCooking,
-                style:
-                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-            subtitle: Text(l10n.subtitleBatchCooking, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
-            value: ms.batchCookingEnabled,
-            activeTrackColor: AppColors.primary(context),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                mealSettings: ms.copyWith(batchCookingEnabled: v))),
-          ),
-          if (ms.batchCookingEnabled) ...[
-            _label(l10n.settingsMaxBatchDays),
-            Slider(
-              value: ms.maxBatchDays.toDouble(),
-              min: 1,
-              max: 4,
-              divisions: 3,
-              label: '${ms.maxBatchDays}',
-              activeColor: AppColors.primary(context),
-              onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                  mealSettings: ms.copyWith(maxBatchDays: v.round()))),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 16, bottom: 8),
-              child: Text(l10n.helperMaxBatchDays, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
-            ),
-          ],
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(l10n.settingsReuseLeftovers,
-                style:
-                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-            subtitle: Text(l10n.subtitleReuseLeftovers, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
-            value: ms.reuseLeftovers,
-            activeTrackColor: AppColors.primary(context),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                mealSettings: ms.copyWith(reuseLeftovers: v))),
-          ),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(l10n.settingsMinimizeWaste,
-                style:
-                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-            subtitle: Text(l10n.subtitleMinimizeWaste, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
-            value: ms.minimizeWaste,
-            activeTrackColor: AppColors.primary(context),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                mealSettings: ms.copyWith(minimizeWaste: v))),
-          ),
-          if (ms.minimizeWaste) ...[
-            _label(l10n.settingsNewIngredientsPerWeek(ms.maxNewIngredientsPerWeek)),
-            Slider(
-              value: ms.maxNewIngredientsPerWeek.toDouble(),
-              min: 3,
-              max: 10,
-              divisions: 7,
-              label: ms.maxNewIngredientsPerWeek == 10 ? l10n.settingsNoLimit : '${ms.maxNewIngredientsPerWeek}',
-              activeColor: AppColors.primary(context),
-              onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                  mealSettings: ms.copyWith(maxNewIngredientsPerWeek: v.round()))),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 16, bottom: 8),
-              child: Text(l10n.helperNewIngredients, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
-            ),
-          ],
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(l10n.settingsPrioritizeLowCost,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-            subtitle: Text(l10n.settingsPrioritizeLowCostDesc,
-                style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
-            value: ms.prioritizeLowCost,
-            activeTrackColor: AppColors.primary(context),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                mealSettings: ms.copyWith(prioritizeLowCost: v))),
-          ),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(l10n.settingsLunchboxLunches,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-            subtitle: Text(l10n.settingsLunchboxLunchesDesc,
-                style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
-            value: ms.lunchboxLunches,
-            activeTrackColor: AppColors.primary(context),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                mealSettings: ms.copyWith(lunchboxLunches: v))),
-          ),
-          const SizedBox(height: 16),
-          _label(l10n.pantryStaples),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 4,
+          // ── Section 9: Despensa (Pantry) ──
+          _mealExpansionCard(
+            icon: Icons.inventory_2_outlined,
+            title: 'Despensa',
+            subtitle: 'Ingredientes base, semanais e gerais',
             children: [
-              ...ms.stapleIngredients.map((p) => Chip(
-                label: Text(p, style: const TextStyle(fontSize: 13)),
-                deleteIcon: const Icon(Icons.close, size: 16),
-                onDeleted: () {
-                  final updated = List<String>.from(ms.stapleIngredients)..remove(p);
-                  setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(stapleIngredients: updated)));
-                },
-              )),
-              ActionChip(
-                avatar: const Icon(Icons.add, size: 16),
-                label: Text(l10n.settingsAddButton, style: const TextStyle(fontSize: 13)),
-                onPressed: () => _showAddPantryDialog(isStaple: true),
+              _label(l10n.pantryStaples),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: [
+                  ...ms.stapleIngredients.map((p) => Chip(
+                    label: Text(p, style: const TextStyle(fontSize: 13)),
+                    deleteIcon: const Icon(Icons.close, size: 16),
+                    onDeleted: () {
+                      final updated = List<String>.from(ms.stapleIngredients)..remove(p);
+                      setState(() => _draft = _draft.copyWith(
+                          mealSettings: ms.copyWith(stapleIngredients: updated)));
+                    },
+                  )),
+                  ActionChip(
+                    avatar: const Icon(Icons.add, size: 16),
+                    label: Text(l10n.settingsAddButton, style: const TextStyle(fontSize: 13)),
+                    onPressed: () => _showAddPantryDialog(isStaple: true),
+                  ),
+                ],
               ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          _label(l10n.pantryWeekly),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 4,
-            children: [
-              ...ms.weeklyPantryIngredients.map((p) => Chip(
-                label: Text(p, style: const TextStyle(fontSize: 13)),
-                deleteIcon: const Icon(Icons.close, size: 16),
-                onDeleted: () {
-                  final updated = List<String>.from(ms.weeklyPantryIngredients)..remove(p);
-                  setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(weeklyPantryIngredients: updated)));
-                },
-              )),
-              ActionChip(
-                avatar: const Icon(Icons.add, size: 16),
-                label: Text(l10n.settingsAddButton, style: const TextStyle(fontSize: 13)),
-                onPressed: () => _showAddPantryDialog(isStaple: false),
+              const SizedBox(height: 16),
+              _label(l10n.pantryWeekly),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: [
+                  ...ms.weeklyPantryIngredients.map((p) => Chip(
+                    label: Text(p, style: const TextStyle(fontSize: 13)),
+                    deleteIcon: const Icon(Icons.close, size: 16),
+                    onDeleted: () {
+                      final updated = List<String>.from(ms.weeklyPantryIngredients)..remove(p);
+                      setState(() => _draft = _draft.copyWith(
+                          mealSettings: ms.copyWith(weeklyPantryIngredients: updated)));
+                    },
+                  )),
+                  ActionChip(
+                    avatar: const Icon(Icons.add, size: 16),
+                    label: Text(l10n.settingsAddButton, style: const TextStyle(fontSize: 13)),
+                    onPressed: () => _showAddPantryDialog(isStaple: false),
+                  ),
+                ],
               ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          _label(l10n.settingsPantry),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 4,
-            children: [
-              ...ms.pantryIngredients.map((p) => Chip(
-                label: Text(p, style: const TextStyle(fontSize: 13)),
-                deleteIcon: const Icon(Icons.close, size: 16),
-                onDeleted: () {
-                  final updated = List<String>.from(ms.pantryIngredients)..remove(p);
-                  setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(pantryIngredients: updated)));
-                },
-              )),
-              ActionChip(
-                avatar: const Icon(Icons.add, size: 16),
-                label: Text(l10n.settingsAddButton, style: const TextStyle(fontSize: 13)),
-                onPressed: () => _showAddPantryDialog(),
+              const SizedBox(height: 16),
+              _label(l10n.settingsPantry),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: [
+                  ...ms.pantryIngredients.map((p) => Chip(
+                    label: Text(p, style: const TextStyle(fontSize: 13)),
+                    deleteIcon: const Icon(Icons.close, size: 16),
+                    onDeleted: () {
+                      final updated = List<String>.from(ms.pantryIngredients)..remove(p);
+                      setState(() => _draft = _draft.copyWith(
+                          mealSettings: ms.copyWith(pantryIngredients: updated)));
+                    },
+                  )),
+                  ActionChip(
+                    avatar: const Icon(Icons.add, size: 16),
+                    label: Text(l10n.settingsAddButton, style: const TextStyle(fontSize: 13)),
+                    onPressed: () => _showAddPantryDialog(),
+                  ),
+                ],
               ),
             ],
           ),
 
-          // ── Group G: ASSISTANT ──
-          _groupLabel(l10n.settingsAssistantGroup),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: () => setState(() => _draft = _draft.copyWith(
-                  mealSettings: ms.copyWith(wizardCompleted: false))),
-              icon: const Icon(Icons.restart_alt, size: 18),
-              label: Text(l10n.settingsResetWizard),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.textSecondary(context),
-                side: BorderSide(color: AppColors.border(context)),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                padding: const EdgeInsets.symmetric(vertical: 12),
+          // ── Section 10: Avancado ──
+          _mealExpansionCard(
+            icon: Icons.settings_outlined,
+            title: 'Avancado',
+            subtitle: 'Reiniciar assistente de configuracao',
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () => setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(wizardCompleted: false))),
+                  icon: const Icon(Icons.restart_alt, size: 18),
+                  label: Text(l10n.settingsResetWizard),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.textSecondary(context),
+                    side: BorderSide(color: AppColors.border(context)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         ],
       ),
