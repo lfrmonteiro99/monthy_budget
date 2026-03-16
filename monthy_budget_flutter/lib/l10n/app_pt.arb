@@ -1551,6 +1551,14 @@
     "@mealAlternatives": {
         "description": "Meal detail: alternatives section"
     },
+    "mealSwapSameType": "Mesmo tipo",
+    "@mealSwapSameType": {
+        "description": "Filter chip: show alternatives of same meal type"
+    },
+    "mealSwapAllTypes": "Todos os tipos",
+    "@mealSwapAllTypes": {
+        "description": "Filter chip: show alternatives from all meal types"
+    },
     "mealTotalCost": "{cost}€ total",
     "@mealTotalCost": {
         "description": "Meal planner total cost display",

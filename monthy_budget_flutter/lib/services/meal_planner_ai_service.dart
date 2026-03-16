@@ -187,6 +187,68 @@ Score 1-10 where 10 is excellent balance. Max 3 highlights, max 3 concerns. Be s
     return null;
   }
 
+  /// Suggest recipe swaps to improve weekly macro balance toward targets.
+  /// Returns a list of up to 3 swap suggestions, or null on failure.
+  Future<List<MacroSwapSuggestion>?> suggestMacroSwaps({
+    required String apiKey,
+    required List<MapEntry<int, Recipe>> weekMeals,
+    required int nPessoas,
+    required Map<String, double> currentMacros,
+    required Map<String, double> targetMacros,
+    required List<Recipe> availableRecipes,
+    required String locale,
+  }) async {
+    if (weekMeals.isEmpty) return null;
+
+    final mealsSummary = weekMeals.map((e) =>
+      'Day ${e.key}: ${e.value.id} - ${e.value.name} '
+      '(${e.value.nutrition?.kcal ?? 0} kcal, '
+      '${e.value.nutrition?.proteinG ?? 0}g prot, '
+      '${e.value.nutrition?.carbsG ?? 0}g carbs, '
+      '${e.value.nutrition?.fatG ?? 0}g fat, '
+      '${e.value.nutrition?.fiberG ?? 0}g fiber)'
+    ).join('\n');
+
+    final availableSummary = availableRecipes.take(30).map((r) =>
+      '${r.id}: ${r.name} (${r.nutrition?.kcal ?? 0} kcal, '
+      '${r.nutrition?.proteinG ?? 0}g prot, '
+      '${r.nutrition?.carbsG ?? 0}g carbs, '
+      '${r.nutrition?.fatG ?? 0}g fat)'
+    ).join('\n');
+
+    final prompt = '''Given this week's meals for $nPessoas people:
+$mealsSummary
+
+Current daily averages: ${currentMacros['kcal']?.round() ?? 0} kcal, ${currentMacros['proteinG']?.round() ?? 0}g protein, ${currentMacros['carbsG']?.round() ?? 0}g carbs, ${currentMacros['fatG']?.round() ?? 0}g fat, ${currentMacros['fiberG']?.round() ?? 0}g fiber
+Targets: ${targetMacros['kcal']?.round() ?? 0} kcal, ${targetMacros['proteinG']?.round() ?? 0}g protein, ${targetMacros['fiberG']?.round() ?? 0}g fiber
+
+Available replacement recipes:
+$availableSummary
+
+Suggest up to 3 recipe swaps to improve macro balance toward targets. Return JSON array:
+[{"dayIndex": int, "currentRecipeId": "string", "suggestedRecipeId": "string", "reason": "string"}]
+Only return the JSON array, no other text.''';
+
+    try {
+      final content = await _requestChatCompletion(
+        messages: [
+          {'role': 'system', 'content': _systemPrompt(locale)},
+          {'role': 'user', 'content': prompt},
+        ],
+        maxTokens: 500,
+        temperature: 0.5,
+      );
+      final clean = content.replaceAll(RegExp(r'```json|```'), '').trim();
+      final parsed = jsonDecode(clean) as List<dynamic>;
+      return parsed
+          .map((e) => MacroSwapSuggestion.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } catch (_) {
+      // Best-effort; return null on failure
+    }
+    return null;
+  }
+
   /// Generate batch cooking prep plan for the week.
   Future<BatchCookingPlan?> generateBatchPlan({
     required String apiKey,
