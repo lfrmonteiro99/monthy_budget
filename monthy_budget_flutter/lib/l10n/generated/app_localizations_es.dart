@@ -5055,10 +5055,4 @@ class SEs extends S {
 
   @override
   String get mealApplySwap => 'Aplicar';
-
-  @override
-  String get mealSwapSameType => 'Mismo tipo';
-
-  @override
-  String get mealSwapAllTypes => 'Todos los tipos';
 }

@@ -5018,10 +5018,4 @@ class SEn extends S {
 
   @override
   String get mealApplySwap => 'Apply';
-
-  @override
-  String get mealSwapSameType => 'Same type';
-
-  @override
-  String get mealSwapAllTypes => 'All types';
 }

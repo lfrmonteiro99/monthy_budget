@@ -2297,13 +2297,13 @@ abstract class S {
   /// **'Alternativas'**
   String get mealAlternatives;
 
-  /// Filter chip: show alternatives of same meal type
+  /// Filter chip label for same meal type
   ///
   /// In pt, this message translates to:
   /// **'Mesmo tipo'**
   String get mealSwapSameType;
 
-  /// Filter chip: show alternatives from all meal types
+  /// Filter chip label for all meal types
   ///
   /// In pt, this message translates to:
   /// **'Todos os tipos'**
@@ -9052,18 +9052,6 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Aplicar'**
   String get mealApplySwap;
-
-  /// Filter chip label for same meal type
-  ///
-  /// In pt, this message translates to:
-  /// **'Mesmo tipo'**
-  String get mealSwapSameType;
-
-  /// Filter chip label for all meal types
-  ///
-  /// In pt, this message translates to:
-  /// **'Todos os tipos'**
-  String get mealSwapAllTypes;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
