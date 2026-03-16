@@ -350,13 +350,23 @@ class MealPlannerService {
           if (reuse.length >= 3) pool = reuse;
         }
 
-        // Max new ingredients cap
+        // Max new ingredients cap — soft: prefer fewer new ingredients, don't hard-block
         if (ms.maxNewIngredientsPerWeek < 10) {
           final remaining = ms.maxNewIngredientsPerWeek - (newIngredientCountThisWeek[mealType] ?? 0);
           if (remaining <= 0) {
+            // Prefer recipes with zero new ingredients
             final noNew = pool.where((r) =>
                 r.ingredients.every((ri) => globalUsedIngredientsThisWeek.contains(ri.ingredientId))).toList();
-            if (noNew.length >= 2) pool = noNew;
+            if (noNew.length >= 2) {
+              pool = noNew;
+            } else {
+              // Fallback: sort by fewest new ingredients instead of hard-blocking
+              pool.sort((a, b) {
+                final aNew = a.ingredients.where((ri) => !globalUsedIngredientsThisWeek.contains(ri.ingredientId)).length;
+                final bNew = b.ingredients.where((ri) => !globalUsedIngredientsThisWeek.contains(ri.ingredientId)).length;
+                return aNew.compareTo(bNew);
+              });
+            }
           }
         }
 
@@ -394,13 +404,22 @@ class MealPlannerService {
 
         // Consecutive-day dedup: avoid same recipe as yesterday for this mealType
         final prevRecipe = recentRecipePerMealType[mealType];
-        if (prevRecipe != null && available.length > 1) {
-          available.removeWhere((r) => r.id == prevRecipe);
+        if (prevRecipe != null) {
+          final deduped = available.where((r) => r.id != prevRecipe).toList();
+          if (deduped.isNotEmpty) {
+            available = deduped;
+          } else {
+            // Pool collapsed to a single repeated recipe — widen to base pool
+            final fallback = basePool(mealType, isWeekend)
+                .where((r) => r.id != prevRecipe && !usedToday.contains(r.id))
+                .toList();
+            if (fallback.isNotEmpty) available = fallback;
+          }
         }
 
         // Protein diversity: avoid same protein as last 2 days for this mealType
         final recentProteins = recentProteinPerMealType[mealType] ?? [];
-        if (recentProteins.isNotEmpty && available.length > 1) {
+        if (recentProteins.isNotEmpty) {
           final diverse = available.where((r) => !recentProteins.contains(r.proteinId)).toList();
           if (diverse.isNotEmpty) available = diverse;
         }
