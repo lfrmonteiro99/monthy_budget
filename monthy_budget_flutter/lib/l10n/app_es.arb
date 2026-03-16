@@ -2618,5 +2618,20 @@
     "mealPlanUndoMessage": "Plan regenerado con éxito",
     "mealPlanUndoAction": "Deshacer",
     "mealActiveTime": "activo",
-    "mealPassiveTime": "horno/espera"
+    "mealPassiveTime": "horno/espera",
+    "mealOptimizeMacros": "Optimizar macros",
+    "mealSwapSuggestion": "Cambiar {current} por {suggested}",
+    "@mealSwapSuggestion": {
+        "placeholders": {
+            "current": {"type": "String"},
+            "suggested": {"type": "String"}
+        }
+    },
+    "mealSwapReason": "Motivo: {reason}",
+    "@mealSwapReason": {
+        "placeholders": {
+            "reason": {"type": "String"}
+        }
+    },
+    "mealApplySwap": "Aplicar"
 }

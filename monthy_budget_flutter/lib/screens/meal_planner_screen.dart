@@ -861,19 +861,29 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
   void _swapRecipe(int dayIndex, MealType mealType, String currentRecipeId) {
     final plan = _plan!;
-    final alternatives = _service.alternativesFor(currentRecipeId, plan.nPessoas, ms: widget.settings.mealSettings);
     final iMap = _service.ingredientMap;
 
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (_) => _SwapSheet(
-        alternatives: alternatives,
         currentRecipeId: currentRecipeId,
         nPessoas: plan.nPessoas,
         ingredientMap: iMap,
         service: _service,
+        mealSettings: widget.settings.mealSettings,
+        currentMealType: mealType,
         onSelect: (newRecipeId) {
-          final updated = _service.swapDay(plan, dayIndex, mealType, newRecipeId);
+          final newRecipe = _service.recipeMap[newRecipeId];
+          // If cross-type swap: update mealType when recipe doesn't fit current type
+          MealType? newMealType;
+          if (newRecipe != null && !newRecipe.suitableMealTypes.contains(mealType.name)) {
+            newMealType = MealType.values.firstWhere(
+              (t) => newRecipe.suitableMealTypes.contains(t.name),
+              orElse: () => mealType,
+            );
+          }
+          final updated = _service.swapDay(plan, dayIndex, mealType, newRecipeId, newMealType: newMealType);
           _service.save(updated, widget.householdId);
           setState(() => _plan = updated);
           _enrichPlan(updated);
@@ -1986,29 +1996,60 @@ class _DayCard extends StatelessWidget {
 
 // -- Swap Bottom Sheet --------------------------------------------------------
 
-class _SwapSheet extends StatelessWidget {
-  final List<Recipe> alternatives;
+class _SwapSheet extends StatefulWidget {
   final String currentRecipeId;
   final int nPessoas;
   final Map<String, Ingredient> ingredientMap;
   final MealPlannerService service;
+  final MealSettings mealSettings;
+  final MealType currentMealType;
   final void Function(String) onSelect;
 
   const _SwapSheet({
-    required this.alternatives,
     required this.currentRecipeId,
     required this.nPessoas,
     required this.ingredientMap,
     required this.service,
+    required this.mealSettings,
+    required this.currentMealType,
     required this.onSelect,
   });
 
   @override
+  State<_SwapSheet> createState() => _SwapSheetState();
+}
+
+class _SwapSheetState extends State<_SwapSheet> {
+  bool _showAllMealTypes = false;
+  late List<Recipe> _alternatives;
+
+  @override
+  void initState() {
+    super.initState();
+    _alternatives = widget.service.alternativesFor(
+      widget.currentRecipeId,
+      widget.nPessoas,
+      ms: widget.mealSettings,
+    );
+  }
+
+  void _refreshAlternatives() {
+    setState(() {
+      _alternatives = widget.service.alternativesFor(
+        widget.currentRecipeId,
+        widget.nPessoas,
+        ms: widget.mealSettings,
+        crossType: _showAllMealTypes,
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    final currentRecipe = service.recipeMap[currentRecipeId];
+    final currentRecipe = widget.service.recipeMap[widget.currentRecipeId];
     final currentCost = currentRecipe != null
-        ? service.recipeCost(currentRecipe, nPessoas, ingredientMap)
+        ? widget.service.recipeCost(currentRecipe, widget.nPessoas, widget.ingredientMap)
         : 0.0;
 
     return SafeArea(
@@ -2020,18 +2061,59 @@ class _SwapSheet extends StatelessWidget {
           children: [
             Text(l10n.mealAlternatives,
                 style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
-            const SizedBox(height: 16),
-            ...alternatives.take(6).map((r) {
-              final cost = service.recipeCost(r, nPessoas, ingredientMap);
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                FilterChip(
+                  label: Text(l10n.mealSwapSameType),
+                  selected: !_showAllMealTypes,
+                  onSelected: (_) {
+                    _showAllMealTypes = false;
+                    _refreshAlternatives();
+                  },
+                ),
+                const SizedBox(width: 8),
+                FilterChip(
+                  label: Text(l10n.mealSwapAllTypes),
+                  selected: _showAllMealTypes,
+                  onSelected: (_) {
+                    _showAllMealTypes = true;
+                    _refreshAlternatives();
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            ..._alternatives.take(6).map((r) {
+              final cost = widget.service.recipeCost(r, widget.nPessoas, widget.ingredientMap);
               final delta = cost - currentCost;
               final deltaStr = delta >= 0
                   ? '+${delta.toStringAsFixed(2)}${currencySymbol()}'
                   : '${delta.toStringAsFixed(2)}${currencySymbol()}';
               final deltaColor =
                   delta > 0 ? Colors.red : const Color(0xFF16A34A);
+              // Show meal type badge for cross-type results
+              final isCrossType = !r.suitableMealTypes.contains(widget.currentMealType.name);
               return ListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text(r.name, style: const TextStyle(fontSize: 14)),
+                title: Row(
+                  children: [
+                    Expanded(child: Text(r.name, style: const TextStyle(fontSize: 14))),
+                    if (_showAllMealTypes && isCrossType)
+                      Container(
+                        margin: const EdgeInsets.only(left: 6),
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary(context).withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          r.suitableMealTypes.first,
+                          style: TextStyle(fontSize: 10, color: AppColors.primary(context)),
+                        ),
+                      ),
+                  ],
+                ),
                 subtitle: Text(
                   l10n.mealTotalCost(cost.toStringAsFixed(2)),
                   style: TextStyle(fontSize: 12, color: AppColors.textSecondary(context)),
@@ -2045,7 +2127,7 @@ class _SwapSheet extends StatelessWidget {
                 ),
                 onTap: () {
                   Navigator.pop(context);
-                  onSelect(r.id);
+                  widget.onSelect(r.id);
                 },
               );
             }),

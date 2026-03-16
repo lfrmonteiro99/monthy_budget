@@ -5033,4 +5033,20 @@ class SEs extends S {
 
   @override
   String get mealPassiveTime => 'horno/espera';
+
+  @override
+  String get mealOptimizeMacros => 'Optimizar macros';
+
+  @override
+  String mealSwapSuggestion(String current, String suggested) {
+    return 'Cambiar $current por $suggested';
+  }
+
+  @override
+  String mealSwapReason(String reason) {
+    return 'Motivo: $reason';
+  }
+
+  @override
+  String get mealApplySwap => 'Aplicar';
 }

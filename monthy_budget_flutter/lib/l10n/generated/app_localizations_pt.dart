@@ -5031,4 +5031,20 @@ class SPt extends S {
 
   @override
   String get mealPassiveTime => 'forno/espera';
+
+  @override
+  String get mealOptimizeMacros => 'Otimizar macros';
+
+  @override
+  String mealSwapSuggestion(String current, String suggested) {
+    return 'Trocar $current por $suggested';
+  }
+
+  @override
+  String mealSwapReason(String reason) {
+    return 'Motivo: $reason';
+  }
+
+  @override
+  String get mealApplySwap => 'Aplicar';
 }

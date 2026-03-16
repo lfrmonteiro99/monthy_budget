@@ -5067,5 +5067,22 @@
     "mealActiveTime": "ativo",
     "@mealActiveTime": {"description": "Label for active/hands-on prep time"},
     "mealPassiveTime": "forno/espera",
-    "@mealPassiveTime": {"description": "Label for passive prep time (oven, marinating, etc.)"}
+    "@mealPassiveTime": {"description": "Label for passive prep time (oven, marinating, etc.)"},
+    "mealOptimizeMacros": "Otimizar macros",
+    "@mealOptimizeMacros": {"description": "Button label to trigger AI macro optimization"},
+    "mealSwapSuggestion": "Trocar {current} por {suggested}",
+    "@mealSwapSuggestion": {
+        "placeholders": {
+            "current": {"type": "String"},
+            "suggested": {"type": "String"}
+        }
+    },
+    "mealSwapReason": "Motivo: {reason}",
+    "@mealSwapReason": {
+        "placeholders": {
+            "reason": {"type": "String"}
+        }
+    },
+    "mealApplySwap": "Aplicar",
+    "@mealApplySwap": {"description": "Button label to apply a macro swap suggestion"}
 }
