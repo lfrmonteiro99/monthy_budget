@@ -5045,4 +5045,26 @@ class SFr extends S {
 
   @override
   String get mealPassiveTime => 'four/attente';
+
+  @override
+  String get mealOptimizeMacros => 'Optimiser macros';
+
+  @override
+  String mealSwapSuggestion(String current, String suggested) {
+    return 'Remplacer $current par $suggested';
+  }
+
+  @override
+  String mealSwapReason(String reason) {
+    return 'Raison : $reason';
+  }
+
+  @override
+  String get mealApplySwap => 'Appliquer';
+
+  @override
+  String get mealSwapSameType => 'Même type';
+
+  @override
+  String get mealSwapAllTypes => 'Tous les types';
 }

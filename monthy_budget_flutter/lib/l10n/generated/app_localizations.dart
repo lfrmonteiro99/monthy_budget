@@ -9016,6 +9016,42 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'forno/espera'**
   String get mealPassiveTime;
+
+  /// Button label to trigger AI macro optimization
+  ///
+  /// In pt, this message translates to:
+  /// **'Otimizar macros'**
+  String get mealOptimizeMacros;
+
+  /// No description provided for @mealSwapSuggestion.
+  ///
+  /// In pt, this message translates to:
+  /// **'Trocar {current} por {suggested}'**
+  String mealSwapSuggestion(String current, String suggested);
+
+  /// No description provided for @mealSwapReason.
+  ///
+  /// In pt, this message translates to:
+  /// **'Motivo: {reason}'**
+  String mealSwapReason(String reason);
+
+  /// Button label to apply a macro swap suggestion
+  ///
+  /// In pt, this message translates to:
+  /// **'Aplicar'**
+  String get mealApplySwap;
+
+  /// Filter chip label for same meal type
+  ///
+  /// In pt, this message translates to:
+  /// **'Mesmo tipo'**
+  String get mealSwapSameType;
+
+  /// Filter chip label for all meal types
+  ///
+  /// In pt, this message translates to:
+  /// **'Todos os tipos'**
+  String get mealSwapAllTypes;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

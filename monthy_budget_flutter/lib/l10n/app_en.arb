@@ -2669,5 +2669,22 @@
     "mealPlanUndoMessage": "Plan regenerated successfully",
     "mealPlanUndoAction": "Undo",
     "mealActiveTime": "active",
-    "mealPassiveTime": "oven/wait"
+    "mealPassiveTime": "oven/wait",
+    "mealOptimizeMacros": "Optimize macros",
+    "mealSwapSuggestion": "Swap {current} for {suggested}",
+    "@mealSwapSuggestion": {
+        "placeholders": {
+            "current": {"type": "String"},
+            "suggested": {"type": "String"}
+        }
+    },
+    "mealSwapReason": "Reason: {reason}",
+    "@mealSwapReason": {
+        "placeholders": {
+            "reason": {"type": "String"}
+        }
+    },
+    "mealApplySwap": "Apply",
+    "mealSwapSameType": "Same type",
+    "mealSwapAllTypes": "All types"
 }

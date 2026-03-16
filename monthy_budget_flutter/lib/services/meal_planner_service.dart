@@ -905,12 +905,20 @@ class MealPlannerService {
 
   // --- Swap ---
 
-  List<Recipe> alternativesFor(String recipeId, int np, {MealSettings? ms}) {
+  List<Recipe> alternativesFor(String recipeId, int np, {MealSettings? ms, bool crossType = false}) {
     final current = recipeMap[recipeId];
     if (current == null) return [];
     final iMap = ingredientMap;
     final excludedSet = ms?.excludedProteins.toSet();
     var pool = _recipes.where((r) => r.id != recipeId).toList();
+
+    // When crossType is false, restrict to recipes sharing at least one
+    // suitableMealType with the current recipe (same-type swap).
+    if (!crossType && current.suitableMealTypes.isNotEmpty) {
+      final types = current.suitableMealTypes.toSet();
+      pool = pool.where((r) => r.suitableMealTypes.any(types.contains)).toList();
+    }
+
     if (ms != null) {
       pool = pool.where((r) {
         if (ms.glutenFree && !r.glutenFree) return false;
@@ -936,13 +944,17 @@ class MealPlannerService {
     return pool;
   }
 
-  MealPlan swapDay(MealPlan plan, int dayIndex, MealType mealType, String newRecipeId) {
+  MealPlan swapDay(MealPlan plan, int dayIndex, MealType mealType, String newRecipeId, {MealType? newMealType}) {
     final iMap = ingredientMap;
     final newRecipe = recipeMap[newRecipeId]!;
     final newCost = recipeCost(newRecipe, plan.nPessoas, iMap);
     final updatedDays = plan.days.map((d) {
       if (d.dayIndex == dayIndex && d.mealType == mealType) {
-        return d.copyWith(recipeId: newRecipeId, costEstimate: newCost);
+        return d.copyWith(
+          recipeId: newRecipeId,
+          costEstimate: newCost,
+          mealType: newMealType,
+        );
       }
       return d;
     }).toList();

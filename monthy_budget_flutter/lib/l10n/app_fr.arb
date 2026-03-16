@@ -2618,5 +2618,22 @@
     "mealPlanUndoMessage": "Plan régénéré avec succès",
     "mealPlanUndoAction": "Annuler",
     "mealActiveTime": "actif",
-    "mealPassiveTime": "four/attente"
+    "mealPassiveTime": "four/attente",
+    "mealOptimizeMacros": "Optimiser macros",
+    "mealSwapSuggestion": "Remplacer {current} par {suggested}",
+    "@mealSwapSuggestion": {
+        "placeholders": {
+            "current": {"type": "String"},
+            "suggested": {"type": "String"}
+        }
+    },
+    "mealSwapReason": "Raison : {reason}",
+    "@mealSwapReason": {
+        "placeholders": {
+            "reason": {"type": "String"}
+        }
+    },
+    "mealApplySwap": "Appliquer",
+    "mealSwapSameType": "Même type",
+    "mealSwapAllTypes": "Tous les types"
 }

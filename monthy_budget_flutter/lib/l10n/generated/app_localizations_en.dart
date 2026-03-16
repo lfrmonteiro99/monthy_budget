@@ -4996,4 +4996,26 @@ class SEn extends S {
 
   @override
   String get mealPassiveTime => 'oven/wait';
+
+  @override
+  String get mealOptimizeMacros => 'Optimize macros';
+
+  @override
+  String mealSwapSuggestion(String current, String suggested) {
+    return 'Swap $current for $suggested';
+  }
+
+  @override
+  String mealSwapReason(String reason) {
+    return 'Reason: $reason';
+  }
+
+  @override
+  String get mealApplySwap => 'Apply';
+
+  @override
+  String get mealSwapSameType => 'Same type';
+
+  @override
+  String get mealSwapAllTypes => 'All types';
 }
