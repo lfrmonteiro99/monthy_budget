@@ -39,6 +39,8 @@ class MainActivity : FlutterFragmentActivity() {
         val actionType = when {
             uri.host == "quick-add" && uri.path == "/expense" -> "quick_add_expense"
             uri.host == "quick-add" && uri.path == "/shopping" -> "quick_add_shopping"
+            uri.host == "quick-add" && uri.path == "/receipt" -> "scan_receipt"
+            uri.host == "quick-add" -> "quick_add_expense" // default for bare quick-add
             uri.host == "meals" -> "open_meals"
             uri.host == "assistant" -> "open_assistant"
             else -> return
