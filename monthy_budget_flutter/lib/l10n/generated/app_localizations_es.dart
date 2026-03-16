@@ -4985,4 +4985,40 @@ class SEs extends S {
   String settingsMealMonthlyTotal(String amount) {
     return 'Total mensual: $amount';
   }
+
+  @override
+  String get mealSubstituteIngredient => 'Sustituir ingrediente';
+
+  @override
+  String mealSubstituteTitle(String name) {
+    return 'Sustituir $name';
+  }
+
+  @override
+  String mealSubstitutionApplied(String oldName, String newName) {
+    return '$oldName sustituido por $newName';
+  }
+
+  @override
+  String get mealSubstitutionAdapting => 'Adaptando receta...';
+
+  @override
+  String get mealPlanWithPantry => 'Planificar con lo que tengo';
+
+  @override
+  String get mealPantrySelectTitle => 'Seleccionar ingredientes de la despensa';
+
+  @override
+  String get mealPantrySelectHint => 'Elige ingredientes que tienes en casa';
+
+  @override
+  String mealPantrySelected(int count) {
+    return '$count seleccionados';
+  }
+
+  @override
+  String get mealPantryApply => 'Aplicar y generar';
+
+  @override
+  String get mealTasteProfileBoost => 'Perfil de gusto aplicado';
 }

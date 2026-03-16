@@ -247,6 +247,8 @@ class MealDay {
   final double? freeformEstimatedCost;
   final List<String> freeformTags;
   final List<FreeformMealItem> freeformShoppingItems;
+  /// Ingredient substitutions: key = original ingredientId, value = replacement ingredientId
+  final Map<String, String> substitutions;
 
   const MealDay({
     required this.dayIndex,
@@ -261,6 +263,7 @@ class MealDay {
     this.freeformEstimatedCost,
     this.freeformTags = const [],
     this.freeformShoppingItems = const [],
+    this.substitutions = const {},
   });
 
   bool get isFreeform => mealKind == MealKind.freeform;
@@ -279,6 +282,7 @@ class MealDay {
     double? freeformEstimatedCost,
     List<String>? freeformTags,
     List<FreeformMealItem>? freeformShoppingItems,
+    Map<String, String>? substitutions,
   }) =>
       MealDay(
         dayIndex: dayIndex,
@@ -293,6 +297,7 @@ class MealDay {
         freeformEstimatedCost: freeformEstimatedCost ?? this.freeformEstimatedCost,
         freeformTags: freeformTags ?? this.freeformTags,
         freeformShoppingItems: freeformShoppingItems ?? this.freeformShoppingItems,
+        substitutions: substitutions ?? this.substitutions,
       );
 
   /// Backward-compatible: old plans without mealKind default to recipe when
@@ -333,6 +338,9 @@ class MealDay {
               ?.map((e) => FreeformMealItem.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
+      substitutions: json['substitutions'] != null
+          ? Map<String, String>.from(json['substitutions'] as Map)
+          : const {},
     );
   }
 
@@ -350,6 +358,7 @@ class MealDay {
         if (freeformTags.isNotEmpty) 'freeformTags': freeformTags,
         if (freeformShoppingItems.isNotEmpty)
           'freeformShoppingItems': freeformShoppingItems.map((e) => e.toJson()).toList(),
+        if (substitutions.isNotEmpty) 'substitutions': substitutions,
       };
 }
 

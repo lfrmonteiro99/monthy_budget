@@ -4983,4 +4983,40 @@ class SPt extends S {
   String settingsMealMonthlyTotal(String amount) {
     return 'Total mensal: $amount';
   }
+
+  @override
+  String get mealSubstituteIngredient => 'Substituir ingrediente';
+
+  @override
+  String mealSubstituteTitle(String name) {
+    return 'Substituir $name';
+  }
+
+  @override
+  String mealSubstitutionApplied(String oldName, String newName) {
+    return '$oldName substituído por $newName';
+  }
+
+  @override
+  String get mealSubstitutionAdapting => 'A adaptar receita...';
+
+  @override
+  String get mealPlanWithPantry => 'Planear com o que tenho';
+
+  @override
+  String get mealPantrySelectTitle => 'Selecionar ingredientes da despensa';
+
+  @override
+  String get mealPantrySelectHint => 'Escolha ingredientes que tem em casa';
+
+  @override
+  String mealPantrySelected(int count) {
+    return '$count selecionados';
+  }
+
+  @override
+  String get mealPantryApply => 'Aplicar e gerar';
+
+  @override
+  String get mealTasteProfileBoost => 'Perfil de gosto aplicado';
 }

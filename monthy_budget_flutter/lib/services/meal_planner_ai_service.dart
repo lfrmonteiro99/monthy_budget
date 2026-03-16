@@ -238,6 +238,57 @@ Optimize for parallel cooking (e.g. while rice cooks, prep vegetables). Be speci
     );
   }
 
+  /// Adapt a recipe's prep steps and quantities after substituting an ingredient.
+  /// Returns adapted prep steps or null on failure.
+  Future<List<String>?> adaptRecipeForSubstitution({
+    required String apiKey,
+    required Recipe recipe,
+    required Ingredient oldIngredient,
+    required Ingredient newIngredient,
+    required Map<String, Ingredient> ingredientMap,
+    required int nPessoas,
+    String locale = 'pt',
+  }) async {
+    final ingList = recipe.ingredients.map((ri) {
+      final ing = ingredientMap[ri.ingredientId];
+      if (ing == null) return '';
+      final scaled = ri.quantity * nPessoas / recipe.servings;
+      final name = ri.ingredientId == oldIngredient.id ? newIngredient.name : ing.name;
+      return '$name ${scaled.toStringAsFixed(1)} ${ing.unit}';
+    }).where((s) => s.isNotEmpty).join(', ');
+
+    final prompt = '''
+Recipe: ${recipe.name}
+For $nPessoas people.
+Original ingredient: ${oldIngredient.name}
+Replacement ingredient: ${newIngredient.name}
+Updated ingredients: $ingList
+
+Adapt the cooking steps for this substitution. Respond ONLY with valid JSON:
+{
+  "steps": ["step 1", "step 2", "step 3"]
+}
+''';
+
+    try {
+      final content = await _requestChatCompletion(
+        messages: [
+          {'role': 'system', 'content': _systemPrompt(locale)},
+          {'role': 'user', 'content': prompt},
+        ],
+        maxTokens: 400,
+        temperature: 0.6,
+      );
+      final clean = content.replaceAll(RegExp(r'```json|```'), '').trim();
+      final parsed = jsonDecode(clean) as Map<String, dynamic>;
+      final steps = (parsed['steps'] as List<dynamic>?)?.cast<String>();
+      return steps;
+    } catch (_) {
+      // Best-effort; return null on failure
+    }
+    return null;
+  }
+
   Future<String> _requestChatCompletion({
     required List<Map<String, String>> messages,
     int maxTokens = 600,

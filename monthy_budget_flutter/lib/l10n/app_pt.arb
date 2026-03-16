@@ -5033,5 +5033,31 @@
         "placeholders": {
             "amount": {"type": "String"}
         }
-    }
+    },
+    "mealSubstituteIngredient": "Substituir ingrediente",
+    "mealSubstituteTitle": "Substituir {name}",
+    "@mealSubstituteTitle": {
+        "placeholders": {
+            "name": {"type": "String"}
+        }
+    },
+    "mealSubstitutionApplied": "{oldName} substituído por {newName}",
+    "@mealSubstitutionApplied": {
+        "placeholders": {
+            "oldName": {"type": "String"},
+            "newName": {"type": "String"}
+        }
+    },
+    "mealSubstitutionAdapting": "A adaptar receita...",
+    "mealPlanWithPantry": "Planear com o que tenho",
+    "mealPantrySelectTitle": "Selecionar ingredientes da despensa",
+    "mealPantrySelectHint": "Escolha ingredientes que tem em casa",
+    "mealPantrySelected": "{count} selecionados",
+    "@mealPantrySelected": {
+        "placeholders": {
+            "count": {"type": "int"}
+        }
+    },
+    "mealPantryApply": "Aplicar e gerar",
+    "mealTasteProfileBoost": "Perfil de gosto aplicado"
 }

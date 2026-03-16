@@ -582,6 +582,242 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     );
   }
 
+  void _showPlanWithPantrySheet() {
+    final ms = widget.settings.mealSettings;
+    final selected = Set<String>.from(ms.pantryIngredients);
+    final allIngredients = _service.ingredients.toList()
+      ..sort((a, b) => a.name.compareTo(b.name));
+    final l10n = S.of(context);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.surface(context),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => StatefulBuilder(
+        builder: (ctx, setSheetState) => DraggableScrollableSheet(
+          initialChildSize: 0.7,
+          maxChildSize: 0.95,
+          expand: false,
+          builder: (_, controller) => Column(
+            children: [
+              Container(
+                width: 40, height: 4,
+                margin: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: AppColors.borderMuted(ctx),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.mealPantrySelectTitle,
+                        style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+                    const SizedBox(height: 4),
+                    Text(l10n.mealPantrySelectHint,
+                        style: TextStyle(fontSize: 13, color: AppColors.textSecondary(ctx))),
+                    const SizedBox(height: 4),
+                    Text(l10n.mealPantrySelected(selected.length),
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.primary(ctx))),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              Expanded(
+                child: ListView.builder(
+                  controller: controller,
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                  itemCount: allIngredients.length,
+                  itemBuilder: (_, i) {
+                    final ing = allIngredients[i];
+                    final isSelected = selected.contains(ing.id);
+                    return CheckboxListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(ing.name, style: const TextStyle(fontSize: 14)),
+                      subtitle: Text(ing.category.name,
+                          style: TextStyle(fontSize: 12, color: AppColors.textMuted(ctx))),
+                      value: isSelected,
+                      activeColor: AppColors.primary(ctx),
+                      onChanged: (v) {
+                        setSheetState(() {
+                          if (v == true) {
+                            selected.add(ing.id);
+                          } else {
+                            selected.remove(ing.id);
+                          }
+                        });
+                      },
+                    );
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                      // Save pantry selection
+                      final updated = ms.copyWith(pantryIngredients: selected.toList());
+                      widget.onSaveSettings(
+                          widget.settings.copyWith(mealSettings: updated));
+                      // Generate plan with pantry boost
+                      _generatePlan();
+                    },
+                    icon: const Icon(Icons.auto_awesome),
+                    label: Text(l10n.mealPantryApply),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppColors.primary(ctx),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showIngredientSubstitutionSheet(MealDay day, String ingredientId) {
+    final recipe = _service.recipeMap[day.recipeId];
+    if (recipe == null) return;
+    final iMap = _service.ingredientMap;
+    final ingredient = iMap[ingredientId];
+    if (ingredient == null) return;
+    final l10n = S.of(context);
+
+    // Find same-category alternatives
+    final alternatives = _service.ingredients
+        .where((i) => i.category == ingredient.category && i.id != ingredientId)
+        .toList()
+      ..sort((a, b) => a.name.compareTo(b.name));
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.surface(context),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => DraggableScrollableSheet(
+        initialChildSize: 0.5,
+        maxChildSize: 0.8,
+        expand: false,
+        builder: (ctx, controller) => Column(
+          children: [
+            Container(
+              width: 40, height: 4,
+              margin: const EdgeInsets.symmetric(vertical: 12),
+              decoration: BoxDecoration(
+                color: AppColors.borderMuted(ctx),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(l10n.mealSubstituteTitle(ingredient.name),
+                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Expanded(
+              child: ListView.builder(
+                controller: controller,
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                itemCount: alternatives.length,
+                itemBuilder: (_, i) {
+                  final alt = alternatives[i];
+                  return ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(alt.name, style: const TextStyle(fontSize: 14)),
+                    subtitle: Text(
+                      '${alt.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${alt.unit}',
+                      style: TextStyle(fontSize: 12, color: AppColors.textSecondary(ctx)),
+                    ),
+                    trailing: Icon(Icons.swap_horiz, size: 18, color: AppColors.primary(ctx)),
+                    onTap: () {
+                      Navigator.pop(ctx);
+                      _applySubstitution(day, ingredientId, alt.id);
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _applySubstitution(MealDay day, String oldIngredientId, String newIngredientId) {
+    final plan = _plan;
+    if (plan == null) return;
+    final l10n = S.of(context);
+    final iMap = _service.ingredientMap;
+    final oldIng = iMap[oldIngredientId];
+    final newIng = iMap[newIngredientId];
+
+    final newSubs = Map<String, String>.from(day.substitutions);
+    newSubs[oldIngredientId] = newIngredientId;
+
+    final updatedDays = plan.days.map((d) {
+      if (d.dayIndex == day.dayIndex && d.mealType == day.mealType) {
+        return d.copyWith(substitutions: newSubs);
+      }
+      return d;
+    }).toList();
+    final updated = plan.copyWithDays(updatedDays);
+    _service.save(updated, widget.householdId);
+    setState(() => _plan = updated);
+
+    if (oldIng != null && newIng != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.mealSubstitutionApplied(oldIng.name, newIng.name))),
+      );
+    }
+
+    // Fire-and-forget AI adaptation
+    final recipe = _service.recipeMap[day.recipeId];
+    if (recipe != null && oldIng != null && newIng != null && widget.apiKey.isNotEmpty) {
+      final locale = Localizations.localeOf(context).languageCode;
+      _aiService.adaptRecipeForSubstitution(
+        apiKey: widget.apiKey,
+        recipe: recipe,
+        oldIngredient: oldIng,
+        newIngredient: newIng,
+        ingredientMap: iMap,
+        nPessoas: plan.nPessoas,
+        locale: locale,
+      ).then((steps) {
+        if (!mounted || steps == null) return;
+        // Update AI content cache with adapted steps
+        final existing = _aiContent[recipe.id];
+        if (existing != null) {
+          setState(() {
+            _aiContent[recipe.id] = RecipeAiContent(
+              steps: steps,
+              tip: existing.tip,
+              variation: existing.variation,
+              leftoverIdea: existing.leftoverIdea,
+              pairingSuggestion: existing.pairingSuggestion,
+              storageInfo: existing.storageInfo,
+            );
+          });
+        }
+      });
+    }
+  }
+
   void _swapRecipe(int dayIndex, MealType mealType, String currentRecipeId) {
     final plan = _plan!;
     final alternatives = _service.alternativesFor(currentRecipeId, plan.nPessoas, ms: widget.settings.mealSettings);
@@ -805,6 +1041,11 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.kitchen_outlined),
+            tooltip: l10n.mealPlanWithPantry,
+            onPressed: _showPlanWithPantrySheet,
+          ),
           if (_plan != null)
             IconButton(
               icon: const Icon(Icons.receipt_long_outlined),
@@ -1123,6 +1364,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     onFeedback: (fb) => _setFeedback(day.dayIndex, day.mealType, fb),
                     onViewPrepGuide: () => _showMealPrepGuide(day),
                     activePantryIds: resolveActivePantry(widget.settings.mealSettings),
+                    onSubstituteIngredient: (ingredientId) =>
+                        _showIngredientSubstitutionSheet(day, ingredientId),
                   );
                 },
               ),
@@ -1183,6 +1426,7 @@ class _DayCard extends StatelessWidget {
   final ValueChanged<MealFeedback> onFeedback;
   final VoidCallback onViewPrepGuide;
   final Set<String> activePantryIds;
+  final void Function(String ingredientId) onSubstituteIngredient;
 
   const _DayCard({
     required this.mealDay,
@@ -1196,6 +1440,7 @@ class _DayCard extends StatelessWidget {
     required this.onAddIngredientToList,
     required this.onFeedback,
     required this.onViewPrepGuide,
+    required this.onSubstituteIngredient,
     this.activePantryIds = const {},
   });
 
@@ -1452,8 +1697,11 @@ class _DayCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   ...recipe.ingredients.map((ri) {
-                    final ing = iMap[ri.ingredientId];
+                    // Apply substitution if present
+                    final effectiveId = mealDay.substitutions[ri.ingredientId] ?? ri.ingredientId;
+                    final ing = iMap[effectiveId] ?? iMap[ri.ingredientId];
                     if (ing == null) return const SizedBox();
+                    final isSubstituted = mealDay.substitutions.containsKey(ri.ingredientId);
                     final scale = plan.nPessoas / recipe.servings;
                     final qty = ri.quantity * scale;
                     final cost = qty * ing.avgPricePerUnit;
@@ -1462,8 +1710,24 @@ class _DayCard extends StatelessWidget {
                       child: Row(
                         children: [
                           Expanded(
-                            child: Text(ing.name,
-                                style: const TextStyle(fontSize: 13)),
+                            child: GestureDetector(
+                              onTap: () => onSubstituteIngredient(ri.ingredientId),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Flexible(
+                                    child: Text(ing.name,
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          decoration: isSubstituted ? TextDecoration.underline : null,
+                                          color: isSubstituted ? AppColors.primary(context) : null,
+                                        )),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Icon(Icons.swap_horiz, size: 14, color: AppColors.textMuted(context)),
+                                ],
+                              ),
+                            ),
                           ),
                           Text(
                             '${_fmt(qty)} ${ing.unit}',

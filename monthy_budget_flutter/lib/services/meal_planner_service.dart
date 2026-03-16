@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/meal_planner.dart';
 import '../models/app_settings.dart';
 import '../models/meal_settings.dart';
+import '../utils/taste_profile.dart';
 
 class MealPlannerService {
 
@@ -90,6 +91,18 @@ class MealPlannerService {
     final daysInMonth = DateTime(forMonth.year, forMonth.month + 1, 0).day;
 
     final rng = Random();
+
+    // Resolve active pantry IDs for pantry-first boost
+    final pantryIds = <String>{
+      ...ms.pantryIngredients,
+      ...ms.stapleIngredients,
+      ...ms.weeklyPantryIngredients,
+    };
+
+    // Build taste profile from previous feedback
+    final tasteProfile = previousFeedback.isNotEmpty
+        ? TasteProfile.fromFeedback(feedback: previousFeedback, recipeMap: recipeMap)
+        : const TasteProfile();
 
     // Pre-compute cost cache: recipeId -> cost for this np
     final costCache = <String, double>{};
@@ -338,6 +351,15 @@ class MealPlannerService {
           if (veg.isNotEmpty) pool = veg;
         }
 
+        // Pantry-first boost: soft-sort recipes by pantry ingredient count (desc)
+        if (pantryIds.isNotEmpty) {
+          pool.sort((a, b) {
+            final aCount = a.ingredients.where((ri) => pantryIds.contains(ri.ingredientId)).length;
+            final bCount = b.ingredients.where((ri) => pantryIds.contains(ri.ingredientId)).length;
+            return bCount.compareTo(aCount); // more pantry matches first
+          });
+        }
+
         // Sort by objective
         if (ms.objective == MealObjective.minimizeCost || ms.prioritizeLowCost) {
           pool.sort((a, b) => cachedCost(a).compareTo(cachedCost(b)));
@@ -513,6 +535,22 @@ class MealPlannerService {
           }
           if (seasonal.isNotEmpty) {
             available = [...seasonal, ...nonSeasonal];
+          }
+        }
+
+        // Taste profile boost: partition into profile-matching and rest
+        if (!tasteProfile.isEmpty && available.length > 1) {
+          final profiled = <Recipe>[];
+          final profileRest = <Recipe>[];
+          for (final r in available) {
+            if (tasteProfile.scoreRecipe(r) >= 0.6) {
+              profiled.add(r);
+            } else {
+              profileRest.add(r);
+            }
+          }
+          if (profiled.isNotEmpty) {
+            available = [...profiled, ...profileRest];
           }
         }
 

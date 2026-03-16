@@ -4995,4 +4995,42 @@ class SFr extends S {
   String settingsMealMonthlyTotal(String amount) {
     return 'Total mensuel : $amount';
   }
+
+  @override
+  String get mealSubstituteIngredient => 'Remplacer l\'ingrédient';
+
+  @override
+  String mealSubstituteTitle(String name) {
+    return 'Remplacer $name';
+  }
+
+  @override
+  String mealSubstitutionApplied(String oldName, String newName) {
+    return '$oldName remplacé par $newName';
+  }
+
+  @override
+  String get mealSubstitutionAdapting => 'Adaptation de la recette...';
+
+  @override
+  String get mealPlanWithPantry => 'Planifier avec ce que j\'ai';
+
+  @override
+  String get mealPantrySelectTitle =>
+      'Sélectionner les ingrédients du garde-manger';
+
+  @override
+  String get mealPantrySelectHint =>
+      'Choisissez les ingrédients que vous avez chez vous';
+
+  @override
+  String mealPantrySelected(int count) {
+    return '$count sélectionnés';
+  }
+
+  @override
+  String get mealPantryApply => 'Appliquer et générer';
+
+  @override
+  String get mealTasteProfileBoost => 'Profil de goût appliqué';
 }

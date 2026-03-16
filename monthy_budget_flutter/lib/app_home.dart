@@ -916,10 +916,44 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   void _addToShoppingList(ShoppingItem item) async {
-    final exists = _shoppingList.any(
-      (e) => e.productName == item.productName,
+    final match = _shoppingList.cast<ShoppingItem?>().firstWhere(
+      (e) => e!.productName.toLowerCase() == item.productName.toLowerCase(),
+      orElse: () => null,
     );
-    if (exists) return;
+    if (match != null) {
+      // Merge quantities and prices into the existing item
+      final mergedQuantity = match.quantity != null && item.quantity != null
+          ? match.quantity! + item.quantity!
+          : match.quantity ?? item.quantity;
+      final mergedPrice = match.price + item.price;
+      final mergedLabels = {...match.sourceMealLabels, ...item.sourceMealLabels}.toList();
+      await _shoppingListService.updateItem(
+        match.id,
+        price: mergedPrice,
+        quantity: mergedQuantity,
+      );
+      // Optimistic local update — Realtime will reconcile
+      setState(() {
+        _shoppingList = _shoppingList.map((e) {
+          if (e.id != match.id) return e;
+          return ShoppingItem(
+            id: match.id,
+            productName: match.productName,
+            store: match.store,
+            price: mergedPrice,
+            unitPrice: match.unitPrice ?? item.unitPrice,
+            checked: match.checked,
+            sourceMealLabels: mergedLabels,
+            preferredStore: match.preferredStore,
+            cheapestKnownStore: match.cheapestKnownStore,
+            cheapestKnownPrice: match.cheapestKnownPrice,
+            quantity: mergedQuantity,
+            unit: match.unit ?? item.unit,
+          );
+        }).toList();
+      });
+      return;
+    }
     await _shoppingListService.add(item, widget.householdId);
   }
 
