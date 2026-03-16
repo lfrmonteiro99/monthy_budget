@@ -10,6 +10,7 @@ import 'models/shopping_item.dart';
 import 'models/purchase_record.dart';
 import 'utils/calculations.dart';
 import 'utils/formatters.dart';
+import 'utils/unit_converter.dart';
 import 'data/tax/tax_factory.dart';
 import 'data/tax/tax_system.dart';
 import 'services/settings_service.dart';
@@ -917,20 +918,37 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
   void _addToShoppingList(ShoppingItem item) async {
     final match = _shoppingList.cast<ShoppingItem?>().firstWhere(
-      (e) => e!.productName.toLowerCase() == item.productName.toLowerCase(),
+      (e) => e!.productName.toLowerCase() == item.productName.toLowerCase()
+          && (e.unit == null || item.unit == null || UnitConverter.compatible(e.unit!, item.unit!)),
       orElse: () => null,
     );
     if (match != null) {
-      // Merge quantities and prices into the existing item
-      final mergedQuantity = match.quantity != null && item.quantity != null
-          ? match.quantity! + item.quantity!
-          : match.quantity ?? item.quantity;
+      // Merge quantities with unit conversion when both have compatible units
+      double? mergedQuantity;
+      String? mergedUnit = match.unit ?? item.unit;
+      if (match.quantity != null && item.quantity != null) {
+        if (match.unit != null && item.unit != null && UnitConverter.compatible(match.unit!, item.unit!)) {
+          final converted = UnitConverter.convert(item.quantity!, item.unit!, match.unit!);
+          mergedQuantity = match.quantity! + (converted ?? item.quantity!);
+        } else {
+          mergedQuantity = match.quantity! + item.quantity!;
+        }
+      } else {
+        mergedQuantity = match.quantity ?? item.quantity;
+      }
+      // Apply display-friendly normalization (e.g. 1500 g → 1.5 kg)
+      if (mergedQuantity != null && mergedUnit != null) {
+        final (displayQty, displayUnit) = UnitConverter.displayFriendly(mergedQuantity, mergedUnit);
+        mergedQuantity = displayQty;
+        mergedUnit = displayUnit;
+      }
       final mergedPrice = match.price + item.price;
       final mergedLabels = {...match.sourceMealLabels, ...item.sourceMealLabels}.toList();
       await _shoppingListService.updateItem(
         match.id,
         price: mergedPrice,
         quantity: mergedQuantity,
+        unit: mergedUnit,
       );
       // Optimistic local update — Realtime will reconcile
       setState(() {
@@ -948,7 +966,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
             cheapestKnownStore: match.cheapestKnownStore,
             cheapestKnownPrice: match.cheapestKnownPrice,
             quantity: mergedQuantity,
-            unit: match.unit ?? item.unit,
+            unit: mergedUnit,
           );
         }).toList();
       });
