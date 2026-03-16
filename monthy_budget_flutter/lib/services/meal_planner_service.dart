@@ -210,7 +210,35 @@ class MealPlannerService {
 
   // --- Plan generation ---
 
-  MealPlan generate(AppSettings settings, DateTime forMonth, {List<String> favorites = const [], Map<String, MealFeedback> previousFeedback = const {}}) {
+  /// Check if an ingredient is seasonally cheap (current price < 80% of its
+  /// average price from the meal planner catalog).
+  @visibleForTesting
+  static bool isSeasonallyCheap(
+    String ingredientName,
+    Map<String, double> currentPrices,
+    Map<String, double> avgPrices,
+  ) {
+    final key = ingredientName.toLowerCase();
+    final current = currentPrices[key];
+    final avg = avgPrices[key];
+    if (current == null || avg == null || avg == 0) return false;
+    return current < avg * 0.8;
+  }
+
+  /// Builds a map of ingredient name (lowercase) -> avgPricePerUnit from the
+  /// loaded ingredient catalog. Used as the baseline for seasonal price
+  /// comparison.
+  Map<String, double> _buildAvgPriceMap() {
+    final map = <String, double>{};
+    for (final ing in _ingredients) {
+      if (ing.avgPricePerUnit > 0) {
+        map[ing.name.toLowerCase()] = ing.avgPricePerUnit;
+      }
+    }
+    return map;
+  }
+
+  MealPlan generate(AppSettings settings, DateTime forMonth, {List<String> favorites = const [], Map<String, MealFeedback> previousFeedback = const {}, Map<String, double>? groceryPrices}) {
     assert(_catalogLoaded, 'Call loadCatalog() first');
     final ms = settings.mealSettings;
     final np = nPessoas(settings);
@@ -232,6 +260,9 @@ class MealPlannerService {
     final tasteProfile = previousFeedback.isNotEmpty
         ? TasteProfile.fromFeedback(feedback: previousFeedback, recipeMap: recipeMap)
         : const TasteProfile();
+
+    // Pre-compute average price map for price-based seasonal boost
+    final avgPriceMap = groceryPrices != null ? _buildAvgPriceMap() : <String, double>{};
 
     // Pre-compute cost cache: recipeId -> cost for this np
     final costCache = <String, double>{};
@@ -664,6 +695,34 @@ class MealPlannerService {
           }
           if (seasonal.isNotEmpty) {
             available = [...seasonal, ...nonSeasonal];
+          }
+        }
+
+        // Price-based seasonal boost: prefer recipes with cheap ingredients
+        if (groceryPrices != null && groceryPrices.isNotEmpty && available.length > 1) {
+          int cheapCount(Recipe r) {
+            int count = 0;
+            for (final ri in r.ingredients) {
+              final name = ingredientNameLower[ri.ingredientId];
+              if (name != null && isSeasonallyCheap(name, groceryPrices, avgPriceMap)) {
+                count++;
+              }
+            }
+            return count;
+          }
+          final boosted = <Recipe>[];
+          final rest = <Recipe>[];
+          for (final r in available) {
+            if (cheapCount(r) > 0) {
+              boosted.add(r);
+            } else {
+              rest.add(r);
+            }
+          }
+          if (boosted.isNotEmpty && boosted.length < available.length) {
+            // Sort boosted recipes by number of cheap ingredients (desc)
+            boosted.sort((a, b) => cheapCount(b).compareTo(cheapCount(a)));
+            available = [...boosted, ...rest];
           }
         }
 

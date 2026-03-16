@@ -164,4 +164,22 @@ class GroceryService {
     urls.add('$_remoteBaseUrl/assets/grocery/$normalized/catalog.json');
     return urls;
   }
+
+  /// Extracts a map of product name (lowercase) to current price from loaded
+  /// grocery data. Useful for cross-referencing with meal planner ingredients.
+  ///
+  /// Returns an empty map when [data] has no products.
+  static Map<String, double> extractCurrentPrices(GroceryData data) {
+    final prices = <String, double>{};
+    for (final product in data.products) {
+      if (product.name.isEmpty || product.price <= 0) continue;
+      final key = product.name.toLowerCase();
+      // If duplicate names exist, keep the cheapest price (conservative).
+      final existing = prices[key];
+      if (existing == null || product.price < existing) {
+        prices[key] = product.price;
+      }
+    }
+    return prices;
+  }
 }
