@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2026.3.38 - 2026-03-16
+
+### Bug Fixes
+- Fix expense tracker not syncing when parent data changes (missing didUpdateWidget) #557
+- Fix custom category colors not showing in expense tracker and add expense sheet #557
+- Fix ChoiceChip colors for unselected categories in add expense drawer #557
+- Add user-visible feedback (SnackBar) when attachment upload fails #557
+
+### Improvements
+- Income section: deduction breakdown (IRS/SS/Meal) below salary summary #557
+- Income section: monthly meal allowance total display #557
+- Income section: normalized subsidy button font size #557
+- Wire receipt scan button in expense tracker to actual scan flow (was "coming soon") #559
+
 ## v2026.3.36 - 2026-03-15
 
 ### New Features
