@@ -68,6 +68,15 @@ class Ingredient {
         avgPricePerUnit: (json['avgPricePerUnit'] as num).toDouble(),
         minPurchaseQty: (json['minPurchaseQty'] as num).toDouble(),
       );
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'category': category.name,
+        'unit': unit,
+        'avgPricePerUnit': avgPricePerUnit,
+        'minPurchaseQty': minPurchaseQty,
+      };
 }
 
 class RecipeIngredient {

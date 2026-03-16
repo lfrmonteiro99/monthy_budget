@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/meal_planner.dart';
 import '../models/app_settings.dart';
@@ -10,17 +11,145 @@ import '../utils/taste_profile.dart';
 
 class MealPlannerService {
 
+  static const _recipeCacheKey = 'cached_recipes_json';
+  static const _ingredientCacheKey = 'cached_ingredients_json';
+
   List<Ingredient> _ingredients = [];
   List<Recipe> _recipes = [];
   bool _catalogLoaded = false;
   Map<String, Ingredient>? _ingredientMapCache;
   Map<String, Recipe>? _recipeMapCache;
 
+  /// Loads the recipe catalog using a three-tier strategy:
+  /// 1. Supabase (remote, authoritative)
+  /// 2. SharedPreferences cache (offline fallback)
+  /// 3. Local bundled asset JSON (final fallback)
   Future<void> loadCatalog() async {
     if (_catalogLoaded) return;
-    final ingJson = await rootBundle.loadString('assets/meal_planner/ingredients.json');
-    final recJson = await rootBundle.loadString('assets/meal_planner/recipes.json');
+
+    final loaded = await _tryLoadFromSupabase();
+    if (!loaded) {
+      final cachedLoaded = await _tryLoadFromCache();
+      if (!cachedLoaded) {
+        await _loadFromAssets();
+      }
+    }
+  }
+
+  Future<bool> _tryLoadFromSupabase() async {
+    try {
+      final client = Supabase.instance.client;
+      final recipesData = await client
+          .from('recipes')
+          .select('*, recipe_ingredients(*)')
+          .order('name');
+
+      if ((recipesData as List).isEmpty) return false;
+
+      _recipes = recipesData.map<Recipe>((r) {
+        final ingredients =
+            (r['recipe_ingredients'] as List? ?? []).map<RecipeIngredient>((ri) =>
+              RecipeIngredient(
+                ingredientId: ri['ingredient_id'] as String,
+                quantity: (ri['quantity'] as num).toDouble(),
+              ),
+            ).toList();
+
+        return Recipe(
+          id: r['id'] as String,
+          name: r['name'] as String,
+          proteinId: r['protein_id'] as String? ?? '',
+          type: RecipeType.values.firstWhere(
+            (t) => t.name == r['type'],
+            orElse: () => RecipeType.carne,
+          ),
+          complexity: r['complexity'] as int? ?? 3,
+          prepMinutes: r['prep_minutes'] as int? ?? 30,
+          servings: r['servings'] as int? ?? 4,
+          ingredients: ingredients,
+          isVegetarian: r['is_vegetarian'] as bool? ?? false,
+          isHighProtein: r['is_high_protein'] as bool? ?? false,
+          isLowCarb: r['is_low_carb'] as bool? ?? false,
+          glutenFree: r['gluten_free'] as bool? ?? false,
+          lactoseFree: r['lactose_free'] as bool? ?? false,
+          nutFree: r['nut_free'] as bool? ?? true,
+          shellfishFree: r['shellfish_free'] as bool? ?? true,
+          batchCookable: r['batch_cookable'] as bool? ?? false,
+          maxBatchDays: r['max_batch_days'] as int? ?? 2,
+          isPortable: r['is_portable'] as bool? ?? false,
+          suitableMealTypes:
+              (r['suitable_meal_types'] as List?)?.cast<String>() ??
+                  ['lunch', 'dinner'],
+          seasons: (r['seasons'] as List?)?.cast<String>() ?? [],
+          requiresEquipment:
+              (r['requires_equipment'] as List?)?.cast<String>() ?? [],
+          nutrition: r['nutrition'] != null
+              ? NutritionInfo.fromJson(
+                  r['nutrition'] is String
+                      ? jsonDecode(r['nutrition'] as String)
+                          as Map<String, dynamic>
+                      : r['nutrition'] as Map<String, dynamic>,
+                )
+              : null,
+          prepSteps: (r['prep_steps'] as List?)?.cast<String>() ?? [],
+        );
+      }).toList();
+
+      // Ingredients are simpler and change rarely -- load from assets
+      final ingJson =
+          await rootBundle.loadString('assets/meal_planner/ingredients.json');
+      _ingredients = (jsonDecode(ingJson) as List<dynamic>)
+          .map((e) => Ingredient.fromJson(e as Map<String, dynamic>))
+          .toList();
+
+      _catalogLoaded = true;
+      _ingredientMapCache = null;
+      _recipeMapCache = null;
+
+      // Cache for offline use (fire-and-forget)
+      _cacheCurrentCatalog();
+
+      return true;
+    } catch (e) {
+      debugPrint('Supabase recipe load failed: $e');
+      return false;
+    }
+  }
+
+  Future<bool> _tryLoadFromCache() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final cachedRecipes = prefs.getString(_recipeCacheKey);
+      final cachedIngredients = prefs.getString(_ingredientCacheKey);
+      if (cachedRecipes != null && cachedIngredients != null) {
+        loadCatalogFromJson(cachedIngredients, cachedRecipes);
+        return true;
+      }
+      return false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<void> _loadFromAssets() async {
+    final ingJson =
+        await rootBundle.loadString('assets/meal_planner/ingredients.json');
+    final recJson =
+        await rootBundle.loadString('assets/meal_planner/recipes.json');
     loadCatalogFromJson(ingJson, recJson);
+  }
+
+  Future<void> _cacheCurrentCatalog() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final recJson = jsonEncode(_recipes.map((r) => r.toJson()).toList());
+      final ingJson =
+          jsonEncode(_ingredients.map((i) => i.toJson()).toList());
+      await prefs.setString(_recipeCacheKey, recJson);
+      await prefs.setString(_ingredientCacheKey, ingJson);
+    } catch (_) {
+      // Cache failure is non-critical
+    }
   }
 
   @visibleForTesting
