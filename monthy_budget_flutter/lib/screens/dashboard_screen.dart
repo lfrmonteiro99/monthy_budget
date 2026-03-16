@@ -440,7 +440,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Quick actions',
+            l10n.settingsDashQuickActions,
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w700,

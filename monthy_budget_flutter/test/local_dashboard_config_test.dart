@@ -16,6 +16,59 @@ void main() {
       expect(config.cardOrder, LocalDashboardConfig.defaultCardOrder);
     });
 
+    test('Tier 1 cards enabled by default', () {
+      const config = LocalDashboardConfig();
+
+      expect(config.showCashFlowForecast, isTrue);
+      expect(config.showBurnRate, isTrue);
+      expect(config.showTopCategories, isTrue);
+      expect(config.showSavingsRate, isTrue);
+      expect(config.showCoachInsight, isTrue);
+    });
+
+    test('Tier 1 cards included in default card order', () {
+      expect(LocalDashboardConfig.defaultCardOrder, contains('cashFlowForecast'));
+      expect(LocalDashboardConfig.defaultCardOrder, contains('burnRate'));
+      expect(LocalDashboardConfig.defaultCardOrder, contains('topCategories'));
+      expect(LocalDashboardConfig.defaultCardOrder, contains('savingsRate'));
+      expect(LocalDashboardConfig.defaultCardOrder, contains('coachInsight'));
+    });
+
+    test('Tier 1 cards visible via isCardVisible', () {
+      const config = LocalDashboardConfig();
+
+      expect(config.isCardVisible('cashFlowForecast'), isTrue);
+      expect(config.isCardVisible('burnRate'), isTrue);
+      expect(config.isCardVisible('topCategories'), isTrue);
+      expect(config.isCardVisible('savingsRate'), isTrue);
+      expect(config.isCardVisible('coachInsight'), isTrue);
+    });
+
+    test('Tier 1 cards toggled off via setCardVisible', () {
+      const config = LocalDashboardConfig();
+      final updated = config.setCardVisible('burnRate', false);
+      expect(updated.isCardVisible('burnRate'), isFalse);
+      expect(updated.isCardVisible('topCategories'), isTrue);
+    });
+
+    test('Tier 1 cards survive JSON roundtrip', () {
+      const config = LocalDashboardConfig(
+        showCashFlowForecast: false,
+        showBurnRate: true,
+        showTopCategories: false,
+        showSavingsRate: true,
+        showCoachInsight: false,
+      );
+
+      final decoded = LocalDashboardConfig.fromJsonString(config.toJsonString());
+
+      expect(decoded.showCashFlowForecast, isFalse);
+      expect(decoded.showBurnRate, isTrue);
+      expect(decoded.showTopCategories, isFalse);
+      expect(decoded.showSavingsRate, isTrue);
+      expect(decoded.showCoachInsight, isFalse);
+    });
+
     test('minimalist preset disables most widgets', () {
       final config = LocalDashboardConfig.minimalist();
 
