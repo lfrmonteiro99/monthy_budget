@@ -2633,5 +2633,7 @@
             "reason": {"type": "String"}
         }
     },
-    "mealApplySwap": "Appliquer"
+    "mealApplySwap": "Appliquer",
+    "mealSwapSameType": "Même type",
+    "mealSwapAllTypes": "Tous les types"
 }

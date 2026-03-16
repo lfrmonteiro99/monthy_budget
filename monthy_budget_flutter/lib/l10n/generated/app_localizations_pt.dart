@@ -5047,4 +5047,10 @@ class SPt extends S {
 
   @override
   String get mealApplySwap => 'Aplicar';
+
+  @override
+  String get mealSwapSameType => 'Mesmo tipo';
+
+  @override
+  String get mealSwapAllTypes => 'Todos os tipos';
 }

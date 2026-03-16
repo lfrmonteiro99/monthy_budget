@@ -5061,4 +5061,10 @@ class SFr extends S {
 
   @override
   String get mealApplySwap => 'Appliquer';
+
+  @override
+  String get mealSwapSameType => 'Même type';
+
+  @override
+  String get mealSwapAllTypes => 'Tous les types';
 }

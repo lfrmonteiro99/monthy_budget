@@ -5084,5 +5084,9 @@
         }
     },
     "mealApplySwap": "Aplicar",
-    "@mealApplySwap": {"description": "Button label to apply a macro swap suggestion"}
+    "@mealApplySwap": {"description": "Button label to apply a macro swap suggestion"},
+    "mealSwapSameType": "Mesmo tipo",
+    "@mealSwapSameType": {"description": "Filter chip label for same meal type"},
+    "mealSwapAllTypes": "Todos os tipos",
+    "@mealSwapAllTypes": {"description": "Filter chip label for all meal types"}
 }

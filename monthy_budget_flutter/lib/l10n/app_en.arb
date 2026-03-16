@@ -2684,5 +2684,7 @@
             "reason": {"type": "String"}
         }
     },
-    "mealApplySwap": "Apply"
+    "mealApplySwap": "Apply",
+    "mealSwapSameType": "Same type",
+    "mealSwapAllTypes": "All types"
 }
