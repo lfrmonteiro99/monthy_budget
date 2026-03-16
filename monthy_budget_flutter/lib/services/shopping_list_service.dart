@@ -24,13 +24,14 @@ class ShoppingListService {
     return ShoppingItem.fromSupabase(row);
   }
 
-  /// Updates an existing item's quantity and price (used for aggregation).
-  Future<void> updateItem(String id, {required double price, double? quantity}) async {
+  /// Updates an existing item's quantity, price and optionally unit (used for aggregation).
+  Future<void> updateItem(String id, {required double price, double? quantity, String? unit}) async {
     final data = <String, dynamic>{
       'price': price,
       'updated_at': DateTime.now().toIso8601String(),
     };
     if (quantity != null) data['quantity'] = quantity;
+    if (unit != null) data['unit'] = unit;
     await _client.from('shopping_items').update(data).eq('id', id);
   }
 
