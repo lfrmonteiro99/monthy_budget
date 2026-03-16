@@ -70,30 +70,47 @@ class TasteProfile {
   }
 
   /// Build a TasteProfile from feedback history and the recipe catalog.
+  ///
+  /// [ratings] maps recipeId to 1-5 star rating. When present, ratings
+  /// override feedback: rating >= 4 counts as liked, rating <= 2 as disliked.
+  /// 5-star ratings give 2x weight to protein preference counting.
   static TasteProfile fromFeedback({
     required Map<String, MealFeedback> feedback,
     required Map<String, Recipe> recipeMap,
+    Map<String, int> ratings = const {},
   }) {
-    if (feedback.isEmpty) return const TasteProfile();
+    if (feedback.isEmpty && ratings.isEmpty) return const TasteProfile();
 
     final likedRecipes = <Recipe>[];
     final dislikedRecipes = <Recipe>[];
 
-    for (final entry in feedback.entries) {
-      final recipe = recipeMap[entry.key];
+    // Collect all recipe IDs from both feedback and ratings
+    final allIds = <String>{...feedback.keys, ...ratings.keys};
+    for (final id in allIds) {
+      final recipe = recipeMap[id];
       if (recipe == null) continue;
-      if (entry.value == MealFeedback.liked) likedRecipes.add(recipe);
-      if (entry.value == MealFeedback.disliked) dislikedRecipes.add(recipe);
+      final rating = ratings[id];
+      final fb = feedback[id];
+      if (rating != null) {
+        // Rating takes precedence
+        if (rating >= 4) likedRecipes.add(recipe);
+        if (rating <= 2) dislikedRecipes.add(recipe);
+      } else if (fb != null) {
+        if (fb == MealFeedback.liked) likedRecipes.add(recipe);
+        if (fb == MealFeedback.disliked) dislikedRecipes.add(recipe);
+      }
     }
 
     if (likedRecipes.isEmpty && dislikedRecipes.isEmpty) {
       return const TasteProfile();
     }
 
-    // Preferred proteins: frequency-sorted from liked recipes
-    final proteinCounts = <String, int>{};
+    // Preferred proteins: frequency-sorted from liked recipes, weighted by rating
+    final proteinCounts = <String, double>{};
     for (final r in likedRecipes) {
-      proteinCounts.update(r.proteinId, (v) => v + 1, ifAbsent: () => 1);
+      final rating = ratings[r.id] ?? 4; // default liked = 4
+      final weight = rating >= 5 ? 2.0 : 1.0; // 5-star = 2x weight
+      proteinCounts.update(r.proteinId, (v) => v + weight, ifAbsent: () => weight);
     }
     final preferredProteins = proteinCounts.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));

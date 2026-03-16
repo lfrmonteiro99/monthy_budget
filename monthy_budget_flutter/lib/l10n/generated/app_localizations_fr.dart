@@ -2675,6 +2675,17 @@ class SFr extends S {
   String get mealFeedbackSkip => 'Passer';
 
   @override
+  String get mealRateRecipe => 'Noter la recette';
+
+  @override
+  String mealRatingLabel(int rating) {
+    return '$rating etoiles';
+  }
+
+  @override
+  String get mealRatingUnrated => 'Non note';
+
+  @override
   String get notifications => 'Notifications';
 
   @override

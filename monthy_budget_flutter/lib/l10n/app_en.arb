@@ -1471,6 +1471,23 @@
     "@mealFeedbackSkip": {
         "description": "Label for skipped meal feedback button"
     },
+    "mealRateRecipe": "Rate recipe",
+    "@mealRateRecipe": {
+        "description": "Rate recipe accessibility label"
+    },
+    "mealRatingLabel": "{rating} stars",
+    "@mealRatingLabel": {
+        "description": "Rating label",
+        "placeholders": {
+            "rating": {
+                "type": "int"
+            }
+        }
+    },
+    "mealRatingUnrated": "Unrated",
+    "@mealRatingUnrated": {
+        "description": "Unrated label"
+    },
     "notifications": "Notifications",
     "notificationSettings": "Notification Settings",
     "notificationPreferredTime": "Preferred time",

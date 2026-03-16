@@ -266,6 +266,8 @@ class MealDay {
   final List<FreeformMealItem> freeformShoppingItems;
   /// Ingredient substitutions: key = original ingredientId, value = replacement ingredientId
   final Map<String, String> substitutions;
+  /// 1-5 star rating, null = unrated
+  final int? rating;
 
   const MealDay({
     required this.dayIndex,
@@ -281,12 +283,26 @@ class MealDay {
     this.freeformTags = const [],
     this.freeformShoppingItems = const [],
     this.substitutions = const {},
+    this.rating,
   });
 
   bool get isFreeform => mealKind == MealKind.freeform;
 
   /// Display name: recipe name must be resolved externally; freeform uses title.
   String get displayTitle => isFreeform ? (freeformTitle ?? '') : '';
+
+  /// Maps old feedback to approximate rating for backward compat.
+  int? get effectiveRating {
+    if (rating != null) return rating;
+    switch (feedback) {
+      case MealFeedback.liked:
+        return 4;
+      case MealFeedback.disliked:
+        return 2;
+      default:
+        return null;
+    }
+  }
 
   MealDay copyWith({
     MealKind? mealKind,
@@ -300,6 +316,7 @@ class MealDay {
     List<String>? freeformTags,
     List<FreeformMealItem>? freeformShoppingItems,
     Map<String, String>? substitutions,
+    int? rating,
   }) =>
       MealDay(
         dayIndex: dayIndex,
@@ -315,6 +332,7 @@ class MealDay {
         freeformTags: freeformTags ?? this.freeformTags,
         freeformShoppingItems: freeformShoppingItems ?? this.freeformShoppingItems,
         substitutions: substitutions ?? this.substitutions,
+        rating: rating ?? this.rating,
       );
 
   /// Backward-compatible: old plans without mealKind default to recipe when
@@ -358,6 +376,7 @@ class MealDay {
       substitutions: json['substitutions'] != null
           ? Map<String, String>.from(json['substitutions'] as Map)
           : const {},
+      rating: json['rating'] as int?,
     );
   }
 
@@ -376,6 +395,7 @@ class MealDay {
         if (freeformShoppingItems.isNotEmpty)
           'freeformShoppingItems': freeformShoppingItems.map((e) => e.toJson()).toList(),
         if (substitutions.isNotEmpty) 'substitutions': substitutions,
+        if (rating != null) 'rating': rating,
       };
 }
 

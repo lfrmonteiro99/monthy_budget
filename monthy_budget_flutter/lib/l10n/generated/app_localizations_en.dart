@@ -2658,6 +2658,17 @@ class SEn extends S {
   String get mealFeedbackSkip => 'Skip';
 
   @override
+  String get mealRateRecipe => 'Rate recipe';
+
+  @override
+  String mealRatingLabel(int rating) {
+    return '$rating stars';
+  }
+
+  @override
+  String get mealRatingUnrated => 'Unrated';
+
+  @override
   String get notifications => 'Notifications';
 
   @override

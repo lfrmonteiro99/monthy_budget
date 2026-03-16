@@ -3465,6 +3465,23 @@
     "@mealFeedbackSkip": {
         "description": "Label for skipped meal feedback button"
     },
+    "mealRateRecipe": "Avaliar receita",
+    "@mealRateRecipe": {
+        "description": "Rate recipe accessibility label"
+    },
+    "mealRatingLabel": "{rating} estrelas",
+    "@mealRatingLabel": {
+        "description": "Rating label",
+        "placeholders": {
+            "rating": {
+                "type": "int"
+            }
+        }
+    },
+    "mealRatingUnrated": "Sem avaliacao",
+    "@mealRatingUnrated": {
+        "description": "Unrated label"
+    },
     "notifications": "Notificações",
     "@notifications": {
         "description": "Notifications title"

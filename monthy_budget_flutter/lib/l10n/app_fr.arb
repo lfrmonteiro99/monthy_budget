@@ -1396,6 +1396,16 @@
     "mealFeedbackLike": "J'aime",
     "mealFeedbackDislike": "Je n'aime pas",
     "mealFeedbackSkip": "Passer",
+    "mealRateRecipe": "Noter la recette",
+    "mealRatingLabel": "{rating} etoiles",
+    "@mealRatingLabel": {
+        "placeholders": {
+            "rating": {
+                "type": "int"
+            }
+        }
+    },
+    "mealRatingUnrated": "Non note",
     "notifications": "Notifications",
     "notificationSettings": "Paramètres de Notifications",
     "notificationPreferredTime": "Heure préférée",

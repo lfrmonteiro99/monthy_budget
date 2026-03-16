@@ -2669,6 +2669,17 @@ class SEs extends S {
   String get mealFeedbackSkip => 'Saltar';
 
   @override
+  String get mealRateRecipe => 'Valorar receta';
+
+  @override
+  String mealRatingLabel(int rating) {
+    return '$rating estrellas';
+  }
+
+  @override
+  String get mealRatingUnrated => 'Sin valoracion';
+
+  @override
   String get notifications => 'Notificaciones';
 
   @override

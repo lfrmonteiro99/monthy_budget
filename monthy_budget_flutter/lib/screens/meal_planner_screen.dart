@@ -15,6 +15,7 @@ import '../models/meal_budget_insight.dart';
 import '../utils/meal_budget_insights.dart';
 import '../widgets/meal_cost_reconciliation_sheet.dart';
 import '../widgets/meal_feedback_button.dart';
+import '../widgets/star_rating_row.dart';
 import '../widgets/meal_plan_budget_card.dart';
 import '../widgets/meal_plan_budget_sheet.dart';
 import '../onboarding/meals_tour.dart';
@@ -169,12 +170,16 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     setState(() => _loading = true);
     final now = DateTime.now();
 
-    // Collect feedback from previous plan
+    // Collect feedback and ratings from previous plan
     final previousFeedback = <String, MealFeedback>{};
+    final previousRatings = <String, int>{};
     if (_plan != null) {
       for (final day in _plan!.days) {
         if (day.feedback != MealFeedback.none) {
           previousFeedback[day.recipeId] = day.feedback;
+        }
+        if (day.effectiveRating != null) {
+          previousRatings[day.recipeId] = day.effectiveRating!;
         }
       }
     }
@@ -188,6 +193,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final plan = _service.generate(widget.settings, now,
       favorites: widget.favorites,
       previousFeedback: previousFeedback,
+      previousRatings: previousRatings,
     );
     await _service.save(plan, widget.householdId);
     if (!mounted) return;
@@ -586,6 +592,25 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         return d.copyWith(feedback: d.feedback == feedback ? MealFeedback.none : feedback);
       }
       return d;
+    }).toList();
+    final updated = plan.copyWithDays(updatedDays);
+    _service.save(updated, widget.householdId);
+    setState(() => _plan = updated);
+    _recomputeBudgetInsight();
+  }
+
+  void _setRating(int dayIndex, MealType mealType, int rating) {
+    final plan = _plan;
+    if (plan == null) return;
+    final updatedDays = plan.days.map((d) {
+      if (d.dayIndex != dayIndex || d.mealType != mealType) return d;
+      // Sync feedback for backward compat
+      final feedback = rating >= 4
+          ? MealFeedback.liked
+          : rating <= 2
+              ? MealFeedback.disliked
+              : MealFeedback.none;
+      return d.copyWith(rating: rating, feedback: feedback);
     }).toList();
     final updated = plan.copyWithDays(updatedDays);
     _service.save(updated, widget.householdId);
@@ -1413,6 +1438,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     onReplaceFreeform: () => _replaceMealWithFreeform(day),
                     onAddIngredientToList: widget.onAddToShoppingList,
                     onFeedback: (fb) => _setFeedback(day.dayIndex, day.mealType, fb),
+                    onRating: (rating) => _setRating(day.dayIndex, day.mealType, rating),
                     onViewPrepGuide: () => _showMealPrepGuide(day),
                     activePantryIds: resolveActivePantry(widget.settings.mealSettings),
                     onSubstituteIngredient: (ingredientId) =>
@@ -1475,6 +1501,7 @@ class _DayCard extends StatelessWidget {
   final VoidCallback onReplaceFreeform;
   final void Function(ShoppingItem) onAddIngredientToList;
   final ValueChanged<MealFeedback> onFeedback;
+  final ValueChanged<int> onRating;
   final VoidCallback onViewPrepGuide;
   final Set<String> activePantryIds;
   final void Function(String ingredientId) onSubstituteIngredient;
@@ -1490,6 +1517,7 @@ class _DayCard extends StatelessWidget {
     required this.onReplaceFreeform,
     required this.onAddIngredientToList,
     required this.onFeedback,
+    required this.onRating,
     required this.onViewPrepGuide,
     required this.onSubstituteIngredient,
     this.activePantryIds = const {},
@@ -1712,22 +1740,9 @@ class _DayCard extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      MealFeedbackButton(
-                        icon: Icons.thumb_up_outlined,
-                        activeIcon: Icons.thumb_up,
-                        isActive: mealDay.feedback == MealFeedback.liked,
-                        color: const Color(0xFF16A34A),
-                        label: l10n.mealFeedbackLike,
-                        onTap: () => onFeedback(MealFeedback.liked),
-                      ),
-                      const SizedBox(width: 10),
-                      MealFeedbackButton(
-                        icon: Icons.thumb_down_outlined,
-                        activeIcon: Icons.thumb_down,
-                        isActive: mealDay.feedback == MealFeedback.disliked,
-                        color: AppColors.error(context),
-                        label: l10n.mealFeedbackDislike,
-                        onTap: () => onFeedback(MealFeedback.disliked),
+                      StarRatingRow(
+                        currentRating: mealDay.effectiveRating,
+                        onRate: onRating,
                       ),
                       const SizedBox(width: 10),
                       MealFeedbackButton(
