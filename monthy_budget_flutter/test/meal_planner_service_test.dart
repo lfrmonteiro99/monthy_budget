@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:monthly_management/models/meal_planner.dart';
 import 'package:monthly_management/models/app_settings.dart';
@@ -195,6 +196,147 @@ void main() {
       );
       final json = recipe.toJson();
       expect(json.containsKey('prepSteps'), isFalse);
+    });
+  });
+
+  group('consolidatedIngredients substitution handling', () {
+    late MealPlannerService svc;
+
+    setUp(() {
+      svc = MealPlannerService();
+
+      final ingredientsJson = jsonEncode([
+        {
+          'id': 'frango',
+          'name': 'Frango',
+          'category': 'proteina',
+          'unit': 'kg',
+          'avgPricePerUnit': 3.50,
+          'minPurchaseQty': 1.0,
+        },
+        {
+          'id': 'peixe',
+          'name': 'Peixe',
+          'category': 'proteina',
+          'unit': 'kg',
+          'avgPricePerUnit': 5.00,
+          'minPurchaseQty': 0.5,
+        },
+        {
+          'id': 'batata',
+          'name': 'Batata',
+          'category': 'vegetal',
+          'unit': 'kg',
+          'avgPricePerUnit': 0.60,
+          'minPurchaseQty': 1.5,
+        },
+      ]);
+
+      final recipesJson = jsonEncode([
+        {
+          'id': 'frango_assado',
+          'name': 'Frango Assado',
+          'proteinId': 'frango',
+          'type': 'carne',
+          'complexity': 1,
+          'prepMinutes': 15,
+          'servings': 4,
+          'ingredients': [
+            {'ingredientId': 'frango', 'quantity': 1.0},
+            {'ingredientId': 'batata', 'quantity': 0.6},
+          ],
+        },
+      ]);
+
+      svc.loadCatalogFromJson(ingredientsJson, recipesJson);
+    });
+
+    test('uses substituted ingredient ID when substitution exists', () {
+      final plan = MealPlan(
+        month: 3,
+        year: 2026,
+        nPessoas: 4,
+        monthlyBudget: 300,
+        days: [
+          MealDay(
+            dayIndex: 0,
+            recipeId: 'frango_assado',
+            costEstimate: 3.86,
+            substitutions: {'frango': 'peixe'},
+          ),
+        ],
+        totalEstimatedCost: 3.86,
+        generatedAt: DateTime(2026, 3, 1),
+      );
+
+      final totals = svc.consolidatedIngredients(plan);
+
+      // frango was substituted by peixe, so frango should not appear
+      expect(totals.containsKey('frango'), isFalse);
+      // peixe should have the quantity that was originally frango's (1.0 * 4/4 = 1.0)
+      expect(totals['peixe'], closeTo(1.0, 0.001));
+      // batata was not substituted, so it remains (0.6 * 4/4 = 0.6)
+      expect(totals['batata'], closeTo(0.6, 0.001));
+    });
+
+    test('unsubstituted ingredients remain unchanged', () {
+      final plan = MealPlan(
+        month: 3,
+        year: 2026,
+        nPessoas: 4,
+        monthlyBudget: 300,
+        days: [
+          MealDay(
+            dayIndex: 0,
+            recipeId: 'frango_assado',
+            costEstimate: 3.86,
+          ),
+        ],
+        totalEstimatedCost: 3.86,
+        generatedAt: DateTime(2026, 3, 1),
+      );
+
+      final totals = svc.consolidatedIngredients(plan);
+
+      // No substitutions — original IDs should be present
+      expect(totals['frango'], closeTo(1.0, 0.001));
+      expect(totals['batata'], closeTo(0.6, 0.001));
+      expect(totals.containsKey('peixe'), isFalse);
+    });
+
+    test('substitution merges quantities when replacement already exists', () {
+      // Two meals on same day: one uses frango_assado with frango->peixe sub,
+      // another also contributes peixe. Both should merge under peixe.
+      final plan = MealPlan(
+        month: 3,
+        year: 2026,
+        nPessoas: 4,
+        monthlyBudget: 300,
+        days: [
+          MealDay(
+            dayIndex: 0,
+            recipeId: 'frango_assado',
+            costEstimate: 3.86,
+            substitutions: {'frango': 'peixe'},
+          ),
+          MealDay(
+            dayIndex: 1,
+            recipeId: 'frango_assado',
+            costEstimate: 3.86,
+            substitutions: {'frango': 'peixe'},
+          ),
+        ],
+        totalEstimatedCost: 7.72,
+        generatedAt: DateTime(2026, 3, 1),
+      );
+
+      final totals = svc.consolidatedIngredients(plan);
+
+      // Two days both substitute frango->peixe: 1.0 + 1.0 = 2.0
+      expect(totals['peixe'], closeTo(2.0, 0.001));
+      expect(totals.containsKey('frango'), isFalse);
+      // batata: 0.6 + 0.6 = 1.2
+      expect(totals['batata'], closeTo(1.2, 0.001));
     });
   });
 }

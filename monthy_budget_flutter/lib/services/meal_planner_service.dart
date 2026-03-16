@@ -772,8 +772,9 @@ class MealPlannerService {
       if (recipe == null) continue;
       final scale = plan.nPessoas / recipe.servings;
       for (final ri in recipe.ingredients) {
+        final effectiveId = day.substitutions[ri.ingredientId] ?? ri.ingredientId;
         totals.update(
-          ri.ingredientId,
+          effectiveId,
           (v) => v + ri.quantity * scale,
           ifAbsent: () => ri.quantity * scale,
         );
