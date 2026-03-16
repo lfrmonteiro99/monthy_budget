@@ -5108,4 +5108,22 @@ class SEs extends S {
 
   @override
   String get nutritionDailyAvg => 'Promedio diario';
+
+  @override
+  String get mealWasteEstimate => 'Desperdicio estimado';
+
+  @override
+  String mealWasteExcess(String qty, String unit) {
+    return '$qty $unit de exceso';
+  }
+
+  @override
+  String mealWasteSuggestion(String ingredient) {
+    return 'Considere duplicar esta receta para usar $ingredient';
+  }
+
+  @override
+  String mealWasteCost(String cost) {
+    return '~$cost desperdicio';
+  }
 }

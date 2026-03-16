@@ -2659,5 +2659,25 @@
     "nutritionFat": "Grasa",
     "nutritionFiber": "Fibra",
     "nutritionTopProteins": "Top proteínas",
-    "nutritionDailyAvg": "Promedio diario"
+    "nutritionDailyAvg": "Promedio diario",
+    "mealWasteEstimate": "Desperdicio estimado",
+    "mealWasteExcess": "{qty} {unit} de exceso",
+    "@mealWasteExcess": {
+        "placeholders": {
+            "qty": {"type": "String"},
+            "unit": {"type": "String"}
+        }
+    },
+    "mealWasteSuggestion": "Considere duplicar esta receta para usar {ingredient}",
+    "@mealWasteSuggestion": {
+        "placeholders": {
+            "ingredient": {"type": "String"}
+        }
+    },
+    "mealWasteCost": "~{cost} desperdicio",
+    "@mealWasteCost": {
+        "placeholders": {
+            "cost": {"type": "String"}
+        }
+    }
 }

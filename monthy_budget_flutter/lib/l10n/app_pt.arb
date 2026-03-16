@@ -5127,5 +5127,29 @@
     "nutritionTopProteins": "Top proteínas",
     "@nutritionTopProteins": {"description": "Top protein sources label"},
     "nutritionDailyAvg": "Média diária",
-    "@nutritionDailyAvg": {"description": "Daily average label"}
+    "@nutritionDailyAvg": {"description": "Daily average label"},
+    "mealWasteEstimate": "Desperdício estimado",
+    "@mealWasteEstimate": {"description": "Waste forecast section title"},
+    "mealWasteExcess": "{qty} {unit} em excesso",
+    "@mealWasteExcess": {
+        "description": "Excess quantity for an ingredient",
+        "placeholders": {
+            "qty": {"type": "String"},
+            "unit": {"type": "String"}
+        }
+    },
+    "mealWasteSuggestion": "Considere duplicar esta receita para usar {ingredient}",
+    "@mealWasteSuggestion": {
+        "description": "Suggestion to reuse excess ingredient",
+        "placeholders": {
+            "ingredient": {"type": "String"}
+        }
+    },
+    "mealWasteCost": "~{cost} em desperdício",
+    "@mealWasteCost": {
+        "description": "Estimated waste cost chip label",
+        "placeholders": {
+            "cost": {"type": "String"}
+        }
+    }
 }
