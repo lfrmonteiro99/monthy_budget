@@ -434,6 +434,28 @@ class WeeklyNutritionSummary {
       );
 }
 
+class MacroSwapSuggestion {
+  final int dayIndex;
+  final String currentRecipeId;
+  final String suggestedRecipeId;
+  final String reason;
+
+  const MacroSwapSuggestion({
+    required this.dayIndex,
+    required this.currentRecipeId,
+    required this.suggestedRecipeId,
+    required this.reason,
+  });
+
+  factory MacroSwapSuggestion.fromJson(Map<String, dynamic> json) =>
+      MacroSwapSuggestion(
+        dayIndex: json['dayIndex'] as int,
+        currentRecipeId: json['currentRecipeId'] as String,
+        suggestedRecipeId: json['suggestedRecipeId'] as String,
+        reason: json['reason'] as String? ?? '',
+      );
+}
+
 class BatchCookingPlan {
   final List<String> prepOrder;
   final String totalTimeEstimate;

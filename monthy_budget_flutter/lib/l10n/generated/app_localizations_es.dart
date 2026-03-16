@@ -1244,6 +1244,12 @@ class SEs extends S {
   String get mealAlternatives => 'Alternativas';
 
   @override
+  String get mealSwapSameType => 'Mismo tipo';
+
+  @override
+  String get mealSwapAllTypes => 'Todos los tipos';
+
+  @override
   String mealTotalCost(String cost) {
     return '$costâ‚¬ total';
   }

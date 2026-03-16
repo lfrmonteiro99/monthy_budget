@@ -699,6 +699,8 @@
     "mealConsolidatedList": "Ver lista consolidada",
     "mealConsolidatedTitle": "Lista Consolidada",
     "mealAlternatives": "Alternativas",
+    "mealSwapSameType": "Mismo tipo",
+    "mealSwapAllTypes": "Todos los tipos",
     "mealTotalCost": "{cost}â‚¬ total",
     "@mealTotalCost": {
         "placeholders": {

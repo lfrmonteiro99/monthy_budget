@@ -1241,6 +1241,12 @@ class SPt extends S {
   String get mealAlternatives => 'Alternativas';
 
   @override
+  String get mealSwapSameType => 'Mesmo tipo';
+
+  @override
+  String get mealSwapAllTypes => 'Todos os tipos';
+
+  @override
   String mealTotalCost(String cost) {
     return '$cost€ total';
   }

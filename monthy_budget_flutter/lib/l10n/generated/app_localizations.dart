@@ -2297,6 +2297,18 @@ abstract class S {
   /// **'Alternativas'**
   String get mealAlternatives;
 
+  /// Filter chip: show alternatives of same meal type
+  ///
+  /// In pt, this message translates to:
+  /// **'Mesmo tipo'**
+  String get mealSwapSameType;
+
+  /// Filter chip: show alternatives from all meal types
+  ///
+  /// In pt, this message translates to:
+  /// **'Todos os tipos'**
+  String get mealSwapAllTypes;
+
   /// Meal planner total cost display
   ///
   /// In pt, this message translates to:
