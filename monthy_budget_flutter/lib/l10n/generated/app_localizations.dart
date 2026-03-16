@@ -8932,6 +8932,66 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Total mensal: {amount}'**
   String settingsMealMonthlyTotal(String amount);
+
+  /// No description provided for @mealSubstituteIngredient.
+  ///
+  /// In pt, this message translates to:
+  /// **'Substituir ingrediente'**
+  String get mealSubstituteIngredient;
+
+  /// No description provided for @mealSubstituteTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Substituir {name}'**
+  String mealSubstituteTitle(String name);
+
+  /// No description provided for @mealSubstitutionApplied.
+  ///
+  /// In pt, this message translates to:
+  /// **'{oldName} substituído por {newName}'**
+  String mealSubstitutionApplied(String oldName, String newName);
+
+  /// No description provided for @mealSubstitutionAdapting.
+  ///
+  /// In pt, this message translates to:
+  /// **'A adaptar receita...'**
+  String get mealSubstitutionAdapting;
+
+  /// No description provided for @mealPlanWithPantry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Planear com o que tenho'**
+  String get mealPlanWithPantry;
+
+  /// No description provided for @mealPantrySelectTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecionar ingredientes da despensa'**
+  String get mealPantrySelectTitle;
+
+  /// No description provided for @mealPantrySelectHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolha ingredientes que tem em casa'**
+  String get mealPantrySelectHint;
+
+  /// No description provided for @mealPantrySelected.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} selecionados'**
+  String mealPantrySelected(int count);
+
+  /// No description provided for @mealPantryApply.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aplicar e gerar'**
+  String get mealPantryApply;
+
+  /// No description provided for @mealTasteProfileBoost.
+  ///
+  /// In pt, this message translates to:
+  /// **'Perfil de gosto aplicado'**
+  String get mealTasteProfileBoost;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

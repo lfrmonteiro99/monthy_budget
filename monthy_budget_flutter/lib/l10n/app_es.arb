@@ -2588,5 +2588,31 @@
     "settingsDeductionIrs": "IRPF",
     "settingsDeductionSs": "SS",
     "settingsDeductionMeal": "Comida",
-    "settingsMealMonthlyTotal": "Total mensual: {amount}"
+    "settingsMealMonthlyTotal": "Total mensual: {amount}",
+    "mealSubstituteIngredient": "Sustituir ingrediente",
+    "mealSubstituteTitle": "Sustituir {name}",
+    "@mealSubstituteTitle": {
+        "placeholders": {
+            "name": {"type": "String"}
+        }
+    },
+    "mealSubstitutionApplied": "{oldName} sustituido por {newName}",
+    "@mealSubstitutionApplied": {
+        "placeholders": {
+            "oldName": {"type": "String"},
+            "newName": {"type": "String"}
+        }
+    },
+    "mealSubstitutionAdapting": "Adaptando receta...",
+    "mealPlanWithPantry": "Planificar con lo que tengo",
+    "mealPantrySelectTitle": "Seleccionar ingredientes de la despensa",
+    "mealPantrySelectHint": "Elige ingredientes que tienes en casa",
+    "mealPantrySelected": "{count} seleccionados",
+    "@mealPantrySelected": {
+        "placeholders": {
+            "count": {"type": "int"}
+        }
+    },
+    "mealPantryApply": "Aplicar y generar",
+    "mealTasteProfileBoost": "Perfil de gusto aplicado"
 }

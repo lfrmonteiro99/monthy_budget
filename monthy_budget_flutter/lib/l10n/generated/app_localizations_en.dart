@@ -4948,4 +4948,40 @@ class SEn extends S {
   String settingsMealMonthlyTotal(String amount) {
     return 'Monthly total: $amount';
   }
+
+  @override
+  String get mealSubstituteIngredient => 'Substitute ingredient';
+
+  @override
+  String mealSubstituteTitle(String name) {
+    return 'Replace $name';
+  }
+
+  @override
+  String mealSubstitutionApplied(String oldName, String newName) {
+    return '$oldName replaced with $newName';
+  }
+
+  @override
+  String get mealSubstitutionAdapting => 'Adapting recipe...';
+
+  @override
+  String get mealPlanWithPantry => 'Plan with what I have';
+
+  @override
+  String get mealPantrySelectTitle => 'Select pantry ingredients';
+
+  @override
+  String get mealPantrySelectHint => 'Pick ingredients you have at home';
+
+  @override
+  String mealPantrySelected(int count) {
+    return '$count selected';
+  }
+
+  @override
+  String get mealPantryApply => 'Apply & Generate';
+
+  @override
+  String get mealTasteProfileBoost => 'Taste profile applied';
 }

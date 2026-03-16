@@ -2639,5 +2639,31 @@
     "settingsDeductionIrs": "IRS",
     "settingsDeductionSs": "SS",
     "settingsDeductionMeal": "Meal",
-    "settingsMealMonthlyTotal": "Monthly total: {amount}"
+    "settingsMealMonthlyTotal": "Monthly total: {amount}",
+    "mealSubstituteIngredient": "Substitute ingredient",
+    "mealSubstituteTitle": "Replace {name}",
+    "@mealSubstituteTitle": {
+        "placeholders": {
+            "name": {"type": "String"}
+        }
+    },
+    "mealSubstitutionApplied": "{oldName} replaced with {newName}",
+    "@mealSubstitutionApplied": {
+        "placeholders": {
+            "oldName": {"type": "String"},
+            "newName": {"type": "String"}
+        }
+    },
+    "mealSubstitutionAdapting": "Adapting recipe...",
+    "mealPlanWithPantry": "Plan with what I have",
+    "mealPantrySelectTitle": "Select pantry ingredients",
+    "mealPantrySelectHint": "Pick ingredients you have at home",
+    "mealPantrySelected": "{count} selected",
+    "@mealPantrySelected": {
+        "placeholders": {
+            "count": {"type": "int"}
+        }
+    },
+    "mealPantryApply": "Apply & Generate",
+    "mealTasteProfileBoost": "Taste profile applied"
 }

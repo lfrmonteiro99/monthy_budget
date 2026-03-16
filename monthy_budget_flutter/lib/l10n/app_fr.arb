@@ -2588,5 +2588,31 @@
     "settingsDeductionIrs": "IR",
     "settingsDeductionSs": "SS",
     "settingsDeductionMeal": "Repas",
-    "settingsMealMonthlyTotal": "Total mensuel : {amount}"
+    "settingsMealMonthlyTotal": "Total mensuel : {amount}",
+    "mealSubstituteIngredient": "Remplacer l'ingrédient",
+    "mealSubstituteTitle": "Remplacer {name}",
+    "@mealSubstituteTitle": {
+        "placeholders": {
+            "name": {"type": "String"}
+        }
+    },
+    "mealSubstitutionApplied": "{oldName} remplacé par {newName}",
+    "@mealSubstitutionApplied": {
+        "placeholders": {
+            "oldName": {"type": "String"},
+            "newName": {"type": "String"}
+        }
+    },
+    "mealSubstitutionAdapting": "Adaptation de la recette...",
+    "mealPlanWithPantry": "Planifier avec ce que j'ai",
+    "mealPantrySelectTitle": "Sélectionner les ingrédients du garde-manger",
+    "mealPantrySelectHint": "Choisissez les ingrédients que vous avez chez vous",
+    "mealPantrySelected": "{count} sélectionnés",
+    "@mealPantrySelected": {
+        "placeholders": {
+            "count": {"type": "int"}
+        }
+    },
+    "mealPantryApply": "Appliquer et générer",
+    "mealTasteProfileBoost": "Profil de goût appliqué"
 }
