@@ -5025,4 +5025,10 @@ class SPt extends S {
 
   @override
   String get mealPlanUndoAction => 'Desfazer';
+
+  @override
+  String get mealActiveTime => 'ativo';
+
+  @override
+  String get mealPassiveTime => 'forno/espera';
 }

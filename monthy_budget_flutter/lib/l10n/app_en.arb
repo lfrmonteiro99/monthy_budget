@@ -2667,5 +2667,7 @@
     "mealPantryApply": "Apply & Generate",
     "mealTasteProfileBoost": "Taste profile applied",
     "mealPlanUndoMessage": "Plan regenerated successfully",
-    "mealPlanUndoAction": "Undo"
+    "mealPlanUndoAction": "Undo",
+    "mealActiveTime": "active",
+    "mealPassiveTime": "oven/wait"
 }

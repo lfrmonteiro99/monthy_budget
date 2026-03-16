@@ -2616,5 +2616,7 @@
     "mealPantryApply": "Aplicar y generar",
     "mealTasteProfileBoost": "Perfil de gusto aplicado",
     "mealPlanUndoMessage": "Plan regenerado con éxito",
-    "mealPlanUndoAction": "Deshacer"
+    "mealPlanUndoAction": "Deshacer",
+    "mealActiveTime": "activo",
+    "mealPassiveTime": "horno/espera"
 }

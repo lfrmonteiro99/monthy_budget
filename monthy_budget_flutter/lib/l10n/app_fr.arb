@@ -2616,5 +2616,7 @@
     "mealPantryApply": "Appliquer et générer",
     "mealTasteProfileBoost": "Profil de goût appliqué",
     "mealPlanUndoMessage": "Plan régénéré avec succès",
-    "mealPlanUndoAction": "Annuler"
+    "mealPlanUndoAction": "Annuler",
+    "mealActiveTime": "actif",
+    "mealPassiveTime": "four/attente"
 }

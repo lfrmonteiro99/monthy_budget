@@ -4990,4 +4990,10 @@ class SEn extends S {
 
   @override
   String get mealPlanUndoAction => 'Undo';
+
+  @override
+  String get mealActiveTime => 'active';
+
+  @override
+  String get mealPassiveTime => 'oven/wait';
 }
