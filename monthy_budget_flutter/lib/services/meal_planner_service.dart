@@ -210,7 +210,35 @@ class MealPlannerService {
 
   // --- Plan generation ---
 
-  MealPlan generate(AppSettings settings, DateTime forMonth, {List<String> favorites = const [], Map<String, MealFeedback> previousFeedback = const {}, Map<String, int> previousRatings = const {}}) {
+  /// Check if an ingredient is seasonally cheap (current price < 80% of its
+  /// average price from the meal planner catalog).
+  @visibleForTesting
+  static bool isSeasonallyCheap(
+    String ingredientName,
+    Map<String, double> currentPrices,
+    Map<String, double> avgPrices,
+  ) {
+    final key = ingredientName.toLowerCase();
+    final current = currentPrices[key];
+    final avg = avgPrices[key];
+    if (current == null || avg == null || avg == 0) return false;
+    return current < avg * 0.8;
+  }
+
+  /// Builds a map of ingredient name (lowercase) -> avgPricePerUnit from the
+  /// loaded ingredient catalog. Used as the baseline for seasonal price
+  /// comparison.
+  Map<String, double> _buildAvgPriceMap() {
+    final map = <String, double>{};
+    for (final ing in _ingredients) {
+      if (ing.avgPricePerUnit > 0) {
+        map[ing.name.toLowerCase()] = ing.avgPricePerUnit;
+      }
+    }
+    return map;
+  }
+
+  MealPlan generate(AppSettings settings, DateTime forMonth, {List<String> favorites = const [], Map<String, MealFeedback> previousFeedback = const {}, Map<String, int> previousRatings = const {}, Map<String, double>? groceryPrices}) {
     assert(_catalogLoaded, 'Call loadCatalog() first');
     final ms = settings.mealSettings;
     final np = nPessoas(settings);
@@ -232,6 +260,9 @@ class MealPlannerService {
     final tasteProfile = (previousFeedback.isNotEmpty || previousRatings.isNotEmpty)
         ? TasteProfile.fromFeedback(feedback: previousFeedback, recipeMap: recipeMap, ratings: previousRatings)
         : const TasteProfile();
+
+    // Pre-compute average price map for price-based seasonal boost
+    final avgPriceMap = groceryPrices != null ? _buildAvgPriceMap() : <String, double>{};
 
     // Pre-compute cost cache: recipeId -> cost for this np
     final costCache = <String, double>{};
@@ -667,6 +698,34 @@ class MealPlannerService {
           }
         }
 
+        // Price-based seasonal boost: prefer recipes with cheap ingredients
+        if (groceryPrices != null && groceryPrices.isNotEmpty && available.length > 1) {
+          int cheapCount(Recipe r) {
+            int count = 0;
+            for (final ri in r.ingredients) {
+              final name = ingredientNameLower[ri.ingredientId];
+              if (name != null && isSeasonallyCheap(name, groceryPrices, avgPriceMap)) {
+                count++;
+              }
+            }
+            return count;
+          }
+          final boosted = <Recipe>[];
+          final rest = <Recipe>[];
+          for (final r in available) {
+            if (cheapCount(r) > 0) {
+              boosted.add(r);
+            } else {
+              rest.add(r);
+            }
+          }
+          if (boosted.isNotEmpty && boosted.length < available.length) {
+            // Sort boosted recipes by number of cheap ingredients (desc)
+            boosted.sort((a, b) => cheapCount(b).compareTo(cheapCount(a)));
+            available = [...boosted, ...rest];
+          }
+        }
+
         // Taste profile boost: partition into profile-matching and rest
         if (!tasteProfile.isEmpty && available.length > 1) {
           final profiled = <Recipe>[];
@@ -846,12 +905,20 @@ class MealPlannerService {
 
   // --- Swap ---
 
-  List<Recipe> alternativesFor(String recipeId, int np, {MealSettings? ms}) {
+  List<Recipe> alternativesFor(String recipeId, int np, {MealSettings? ms, bool crossType = false}) {
     final current = recipeMap[recipeId];
     if (current == null) return [];
     final iMap = ingredientMap;
     final excludedSet = ms?.excludedProteins.toSet();
     var pool = _recipes.where((r) => r.id != recipeId).toList();
+
+    // When crossType is false, restrict to recipes sharing at least one
+    // suitableMealType with the current recipe (same-type swap).
+    if (!crossType && current.suitableMealTypes.isNotEmpty) {
+      final types = current.suitableMealTypes.toSet();
+      pool = pool.where((r) => r.suitableMealTypes.any(types.contains)).toList();
+    }
+
     if (ms != null) {
       pool = pool.where((r) {
         if (ms.glutenFree && !r.glutenFree) return false;
@@ -877,13 +944,17 @@ class MealPlannerService {
     return pool;
   }
 
-  MealPlan swapDay(MealPlan plan, int dayIndex, MealType mealType, String newRecipeId) {
+  MealPlan swapDay(MealPlan plan, int dayIndex, MealType mealType, String newRecipeId, {MealType? newMealType}) {
     final iMap = ingredientMap;
     final newRecipe = recipeMap[newRecipeId]!;
     final newCost = recipeCost(newRecipe, plan.nPessoas, iMap);
     final updatedDays = plan.days.map((d) {
       if (d.dayIndex == dayIndex && d.mealType == mealType) {
-        return d.copyWith(recipeId: newRecipeId, costEstimate: newCost);
+        return d.copyWith(
+          recipeId: newRecipeId,
+          costEstimate: newCost,
+          mealType: newMealType,
+        );
       }
       return d;
     }).toList();
@@ -975,5 +1046,35 @@ class MealPlannerService {
         .eq('household_id', householdId)
         .eq('month', month)
         .eq('year', year);
+  }
+
+  // --- Undo support ---
+
+  /// Save a plan as the "previous" plan for undo capability.
+  /// Only keeps one previous plan per month/year.
+  Future<void> savePreviousPlan(MealPlan plan) async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'meal_plan_previous_${plan.month}_${plan.year}';
+    await prefs.setString(key, plan.toJsonString());
+  }
+
+  /// Load the previous plan for a given month/year, if any.
+  Future<MealPlan?> loadPreviousPlan(int month, int year) async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'meal_plan_previous_${month}_$year';
+    final json = prefs.getString(key);
+    if (json == null) return null;
+    try {
+      return MealPlan.fromJsonString(json);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Clear the previous plan backup.
+  Future<void> clearPreviousPlan(int month, int year) async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'meal_plan_previous_${month}_$year';
+    await prefs.remove(key);
   }
 }
