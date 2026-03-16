@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:monthly_management/models/meal_planner.dart';
 import 'package:monthly_management/models/app_settings.dart';
@@ -485,6 +487,100 @@ void main() {
       expect(restored.nutrition?.kcal, recipe.nutrition?.kcal);
       expect(restored.prepSteps, recipe.prepSteps);
       expect(restored.ingredients.length, recipe.ingredients.length);
+    });
+  });
+
+  group('extraGuests', () {
+    MealPlan _makePlan({Map<int, int> extraGuests = const {}}) => MealPlan(
+          month: 3,
+          year: 2026,
+          nPessoas: 2,
+          monthlyBudget: 300.0,
+          days: [
+            const MealDay(dayIndex: 0, costEstimate: 5.0, recipeId: 'frango_assado'),
+            const MealDay(dayIndex: 1, costEstimate: 3.0, recipeId: 'frango_assado'),
+          ],
+          totalEstimatedCost: 8.0,
+          generatedAt: DateTime(2026, 3, 1),
+          extraGuests: extraGuests,
+        );
+
+    test('serialization round-trip preserves extraGuests', () {
+      final plan = _makePlan(extraGuests: {0: 2, 3: 4});
+      final json = plan.toJson();
+      final restored = MealPlan.fromJson(json);
+      expect(restored.extraGuests, {0: 2, 3: 4});
+    });
+
+    test('toJson omits extraGuests when empty', () {
+      final plan = _makePlan();
+      final json = plan.toJson();
+      expect(json.containsKey('extraGuests'), isFalse);
+    });
+
+    test('fromJson handles missing extraGuests gracefully', () {
+      final json = {
+        'month': 3,
+        'year': 2026,
+        'nPessoas': 2,
+        'monthlyBudget': 300.0,
+        'days': <Map<String, dynamic>>[],
+        'totalEstimatedCost': 0.0,
+        'generatedAt': '2026-03-01T00:00:00.000',
+      };
+      final plan = MealPlan.fromJson(json);
+      expect(plan.extraGuests, isEmpty);
+    });
+
+    test('copyWith preserves extraGuests by default', () {
+      final plan = _makePlan(extraGuests: {0: 3});
+      final updated = plan.copyWith(days: plan.days);
+      expect(updated.extraGuests, {0: 3});
+    });
+
+    test('copyWithDays preserves extraGuests', () {
+      final plan = _makePlan(extraGuests: {1: 5});
+      final updated = plan.copyWithDays(plan.days);
+      expect(updated.extraGuests, {1: 5});
+    });
+
+    test('copyWith can override extraGuests', () {
+      final plan = _makePlan(extraGuests: {0: 3});
+      final updated = plan.copyWith(extraGuests: {1: 7});
+      expect(updated.extraGuests, {1: 7});
+    });
+
+    test('consolidation with extraGuests yields higher quantities', () {
+      // Load real catalog so recipeMap resolves frango_assado
+      final svc = MealPlannerService();
+      final ingJson = File('assets/meal_planner/ingredients.json').readAsStringSync();
+      final recJson = File('assets/meal_planner/recipes.json').readAsStringSync();
+      svc.loadCatalogFromJson(ingJson, recJson);
+
+      // Recipe: frango_assado, servings=4, frango qty=1.0, batata qty=0.6
+      // nPessoas=2, extraGuests day0=2 -> scale day0 = (2+2)/4 = 1.0
+      // day1 no extra -> scale day1 = 2/4 = 0.5
+      final plan = _makePlan(extraGuests: {0: 2});
+      final totals = svc.consolidatedIngredients(plan);
+      // frango: day0: 1.0*1.0 + day1: 1.0*0.5 = 1.5
+      expect(totals['frango'], closeTo(1.5, 0.001));
+      // batata: day0: 0.6*1.0 + day1: 0.6*0.5 = 0.9
+      expect(totals['batata'], closeTo(0.9, 0.001));
+    });
+
+    test('consolidation without extraGuests uses nPessoas only', () {
+      final svc = MealPlannerService();
+      final ingJson = File('assets/meal_planner/ingredients.json').readAsStringSync();
+      final recJson = File('assets/meal_planner/recipes.json').readAsStringSync();
+      svc.loadCatalogFromJson(ingJson, recJson);
+
+      final plan = _makePlan();
+      final totals = svc.consolidatedIngredients(plan);
+      // Both days: scale = 2/4 = 0.5
+      // frango: 1.0*0.5 + 1.0*0.5 = 1.0
+      expect(totals['frango'], closeTo(1.0, 0.001));
+      // batata: 0.6*0.5 + 0.6*0.5 = 0.6
+      expect(totals['batata'], closeTo(0.6, 0.001));
     });
   });
 }

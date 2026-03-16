@@ -899,7 +899,8 @@ class MealPlannerService {
       if (day.isFreeform) continue; // freeform items handled separately
       final recipe = recipeMap[day.recipeId];
       if (recipe == null) continue;
-      final scale = plan.nPessoas / recipe.servings;
+      final dayGuests = plan.extraGuests[day.dayIndex] ?? 0;
+      final scale = (plan.nPessoas + dayGuests) / recipe.servings;
       for (final ri in recipe.ingredients) {
         final effectiveId = day.substitutions[ri.ingredientId] ?? ri.ingredientId;
         totals.update(

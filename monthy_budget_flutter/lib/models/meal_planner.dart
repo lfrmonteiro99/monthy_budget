@@ -465,15 +465,28 @@ class MealPlan {
     this.extraGuests = const {},
   });
 
-  MealPlan copyWithDays(List<MealDay> days) => MealPlan(
-        month: month,
-        year: year,
-        nPessoas: nPessoas,
-        monthlyBudget: monthlyBudget,
-        days: days,
-        totalEstimatedCost: days.fold(0.0, (s, d) => s + d.costEstimate),
-        generatedAt: generatedAt,
-      );
+  MealPlan copyWith({
+    List<MealDay>? days,
+    Map<int, int>? extraGuests,
+    double? totalEstimatedCost,
+  }) {
+    final effectiveDays = days ?? this.days;
+    return MealPlan(
+      month: month,
+      year: year,
+      nPessoas: nPessoas,
+      monthlyBudget: monthlyBudget,
+      days: effectiveDays,
+      totalEstimatedCost: totalEstimatedCost ??
+          (days != null
+              ? days.fold(0.0, (s, d) => s + d.costEstimate)
+              : this.totalEstimatedCost),
+      generatedAt: generatedAt,
+      extraGuests: extraGuests ?? this.extraGuests,
+    );
+  }
+
+  MealPlan copyWithDays(List<MealDay> days) => copyWith(days: days);
 
   factory MealPlan.fromJson(Map<String, dynamic> json) => MealPlan(
         month: json['month'] as int,
@@ -485,6 +498,9 @@ class MealPlan {
             .toList(),
         totalEstimatedCost: (json['totalEstimatedCost'] as num).toDouble(),
         generatedAt: DateTime.parse(json['generatedAt'] as String),
+        extraGuests: (json['extraGuests'] as Map<String, dynamic>?)
+                ?.map((k, v) => MapEntry(int.parse(k), v as int)) ??
+            const {},
       );
 
   Map<String, dynamic> toJson() => {
@@ -495,6 +511,8 @@ class MealPlan {
         'days': days.map((d) => d.toJson()).toList(),
         'totalEstimatedCost': totalEstimatedCost,
         'generatedAt': generatedAt.toIso8601String(),
+        if (extraGuests.isNotEmpty)
+          'extraGuests': extraGuests.map((k, v) => MapEntry(k.toString(), v)),
       };
 
   String toJsonString() => jsonEncode(toJson());
