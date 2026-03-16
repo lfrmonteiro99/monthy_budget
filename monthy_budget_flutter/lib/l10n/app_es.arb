@@ -699,8 +699,6 @@
     "mealConsolidatedList": "Ver lista consolidada",
     "mealConsolidatedTitle": "Lista Consolidada",
     "mealAlternatives": "Alternativas",
-    "mealSwapSameType": "Mismo tipo",
-    "mealSwapAllTypes": "Todos los tipos",
     "mealTotalCost": "{cost}â‚¬ total",
     "@mealTotalCost": {
         "placeholders": {
@@ -2647,5 +2645,11 @@
     },
     "mealApplySwap": "Aplicar",
     "mealSwapSameType": "Mismo tipo",
-    "mealSwapAllTypes": "Todos los tipos"
+    "mealSwapAllTypes": "Todos los tipos",
+    "pantryManagerTitle": "Despensa",
+    "pantryManagerSave": "Guardar",
+    "pantryLowStock": "Stock bajo",
+    "pantryDepleted": "Agotado",
+    "pantryRestock": "Reponer",
+    "pantryQuantity": "Cantidad"
 }

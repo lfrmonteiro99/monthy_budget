@@ -1238,12 +1238,6 @@ class SEn extends S {
   String get mealAlternatives => 'Alternatives';
 
   @override
-  String get mealSwapSameType => 'Same type';
-
-  @override
-  String get mealSwapAllTypes => 'All types';
-
-  @override
   String mealTotalCost(String cost) {
     return '$cost€ total';
   }
@@ -5029,4 +5023,28 @@ class SEn extends S {
 
   @override
   String get mealApplySwap => 'Apply';
+
+  @override
+  String get mealSwapSameType => 'Same type';
+
+  @override
+  String get mealSwapAllTypes => 'All types';
+
+  @override
+  String get pantryManagerTitle => 'Pantry';
+
+  @override
+  String get pantryManagerSave => 'Save';
+
+  @override
+  String get pantryLowStock => 'Low stock';
+
+  @override
+  String get pantryDepleted => 'Depleted';
+
+  @override
+  String get pantryRestock => 'Restock';
+
+  @override
+  String get pantryQuantity => 'Quantity';
 }

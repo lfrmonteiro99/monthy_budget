@@ -1551,14 +1551,6 @@
     "@mealAlternatives": {
         "description": "Meal detail: alternatives section"
     },
-    "mealSwapSameType": "Mesmo tipo",
-    "@mealSwapSameType": {
-        "description": "Filter chip: show alternatives of same meal type"
-    },
-    "mealSwapAllTypes": "Todos os tipos",
-    "@mealSwapAllTypes": {
-        "description": "Filter chip: show alternatives from all meal types"
-    },
     "mealTotalCost": "{cost}€ total",
     "@mealTotalCost": {
         "description": "Meal planner total cost display",
@@ -5113,5 +5105,11 @@
     "mealSwapSameType": "Mesmo tipo",
     "@mealSwapSameType": {"description": "Filter chip label for same meal type"},
     "mealSwapAllTypes": "Todos os tipos",
-    "@mealSwapAllTypes": {"description": "Filter chip label for all meal types"}
+    "@mealSwapAllTypes": {"description": "Filter chip label for all meal types"},
+    "pantryManagerTitle": "Despensa",
+    "pantryManagerSave": "Guardar",
+    "pantryLowStock": "Stock baixo",
+    "pantryDepleted": "Esgotado",
+    "pantryRestock": "Repor",
+    "pantryQuantity": "Quantidade"
 }

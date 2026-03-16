@@ -1,4 +1,5 @@
 import '../l10n/generated/app_localizations.dart';
+import 'pantry_item.dart';
 
 enum MealType {
   breakfast,
@@ -291,6 +292,7 @@ class MealSettings {
   final int? dailyProteinTargetG;
   final int? dailyFiberTargetG;
   final Set<MedicalCondition> medicalConditions;
+  final List<PantryItem> pantryItems;
 
   const MealSettings({
     this.householdSize,
@@ -337,6 +339,7 @@ class MealSettings {
     this.dailyProteinTargetG,
     this.dailyFiberTargetG,
     this.medicalConditions = const {},
+    this.pantryItems = const [],
   });
 
   static const Object _sentinel = Object();
@@ -383,6 +386,7 @@ class MealSettings {
     Object? dailyProteinTargetG = _sentinel,
     Object? dailyFiberTargetG = _sentinel,
     Set<MedicalCondition>? medicalConditions,
+    List<PantryItem>? pantryItems,
   }) {
     return MealSettings(
       householdSize: householdSize == _sentinel
@@ -432,6 +436,7 @@ class MealSettings {
       dailyProteinTargetG: dailyProteinTargetG == _sentinel ? this.dailyProteinTargetG : dailyProteinTargetG as int?,
       dailyFiberTargetG: dailyFiberTargetG == _sentinel ? this.dailyFiberTargetG : dailyFiberTargetG as int?,
       medicalConditions: medicalConditions ?? this.medicalConditions,
+      pantryItems: pantryItems ?? this.pantryItems,
     );
   }
 
@@ -477,6 +482,7 @@ class MealSettings {
     'dailyProteinTargetG': dailyProteinTargetG,
     'dailyFiberTargetG': dailyFiberTargetG,
     'medicalConditions': medicalConditions.map((c) => c.name).toList(),
+    'pantryItems': pantryItems.map((e) => e.toJson()).toList(),
   };
 
   factory MealSettings.fromJson(Map<String, dynamic> json) {
@@ -565,6 +571,10 @@ class MealSettings {
                   ))
               .toSet()
           : const {},
+      pantryItems: (json['pantryItems'] as List<dynamic>?)
+              ?.map((e) => PantryItem.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
   }
 }

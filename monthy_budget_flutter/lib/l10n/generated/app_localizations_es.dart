@@ -1244,12 +1244,6 @@ class SEs extends S {
   String get mealAlternatives => 'Alternativas';
 
   @override
-  String get mealSwapSameType => 'Mismo tipo';
-
-  @override
-  String get mealSwapAllTypes => 'Todos los tipos';
-
-  @override
   String mealTotalCost(String cost) {
     return '$costâ‚¬ total';
   }
@@ -5066,4 +5060,28 @@ class SEs extends S {
 
   @override
   String get mealApplySwap => 'Aplicar';
+
+  @override
+  String get mealSwapSameType => 'Mismo tipo';
+
+  @override
+  String get mealSwapAllTypes => 'Todos los tipos';
+
+  @override
+  String get pantryManagerTitle => 'Despensa';
+
+  @override
+  String get pantryManagerSave => 'Guardar';
+
+  @override
+  String get pantryLowStock => 'Stock bajo';
+
+  @override
+  String get pantryDepleted => 'Agotado';
+
+  @override
+  String get pantryRestock => 'Reponer';
+
+  @override
+  String get pantryQuantity => 'Cantidad';
 }

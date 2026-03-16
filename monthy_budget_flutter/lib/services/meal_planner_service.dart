@@ -7,7 +7,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/meal_planner.dart';
 import '../models/app_settings.dart';
 import '../models/meal_settings.dart';
+import '../models/pantry_item.dart';
 import '../utils/taste_profile.dart';
+import '../utils/unit_converter.dart';
 
 class MealPlannerService {
 
@@ -963,7 +965,11 @@ class MealPlannerService {
 
   // --- Consolidated ingredient list ---
 
-  Map<String, double> consolidatedIngredients(MealPlan plan, {List<String> pantryIngredients = const []}) {
+  Map<String, double> consolidatedIngredients(
+    MealPlan plan, {
+    List<String> pantryIngredients = const [],
+    List<PantryItem> pantryItems = const [],
+  }) {
     final totals = <String, double>{};
     for (final day in plan.days) {
       if (day.isLeftover) continue;
@@ -981,8 +987,29 @@ class MealPlannerService {
         );
       }
     }
+    // Legacy: remove pantry ingredient IDs entirely (no quantity awareness)
     for (final id in pantryIngredients) {
       totals.remove(id);
+    }
+    // Quantity-aware pantry subtraction
+    final iMap = ingredientMap;
+    for (final item in pantryItems) {
+      if (!totals.containsKey(item.ingredientId)) continue;
+      final needed = totals[item.ingredientId]!;
+      final ingredient = iMap[item.ingredientId];
+      double available = item.quantity;
+      // Convert pantry unit to recipe unit if compatible
+      if (ingredient != null && item.unit != ingredient.unit) {
+        final converted =
+            UnitConverter.convert(item.quantity, item.unit, ingredient.unit);
+        if (converted != null) available = converted;
+      }
+      final remaining = needed - available;
+      if (remaining <= 0) {
+        totals.remove(item.ingredientId);
+      } else {
+        totals[item.ingredientId] = remaining;
+      }
     }
     return totals;
   }

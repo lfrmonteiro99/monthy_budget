@@ -1247,12 +1247,6 @@ class SFr extends S {
   String get mealAlternatives => 'Alternatives';
 
   @override
-  String get mealSwapSameType => 'Même type';
-
-  @override
-  String get mealSwapAllTypes => 'Tous les types';
-
-  @override
   String mealTotalCost(String cost) {
     return '$costâ‚¬ total';
   }
@@ -5078,4 +5072,28 @@ class SFr extends S {
 
   @override
   String get mealApplySwap => 'Appliquer';
+
+  @override
+  String get mealSwapSameType => 'Même type';
+
+  @override
+  String get mealSwapAllTypes => 'Tous les types';
+
+  @override
+  String get pantryManagerTitle => 'Garde-manger';
+
+  @override
+  String get pantryManagerSave => 'Enregistrer';
+
+  @override
+  String get pantryLowStock => 'Stock faible';
+
+  @override
+  String get pantryDepleted => 'Épuisé';
+
+  @override
+  String get pantryRestock => 'Réapprovisionner';
+
+  @override
+  String get pantryQuantity => 'Quantité';
 }

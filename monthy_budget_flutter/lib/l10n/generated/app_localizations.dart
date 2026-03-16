@@ -2297,18 +2297,6 @@ abstract class S {
   /// **'Alternativas'**
   String get mealAlternatives;
 
-  /// Filter chip label for same meal type
-  ///
-  /// In pt, this message translates to:
-  /// **'Mesmo tipo'**
-  String get mealSwapSameType;
-
-  /// Filter chip label for all meal types
-  ///
-  /// In pt, this message translates to:
-  /// **'Todos os tipos'**
-  String get mealSwapAllTypes;
-
   /// Meal planner total cost display
   ///
   /// In pt, this message translates to:
@@ -9070,6 +9058,54 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Aplicar'**
   String get mealApplySwap;
+
+  /// Filter chip label for same meal type
+  ///
+  /// In pt, this message translates to:
+  /// **'Mesmo tipo'**
+  String get mealSwapSameType;
+
+  /// Filter chip label for all meal types
+  ///
+  /// In pt, this message translates to:
+  /// **'Todos os tipos'**
+  String get mealSwapAllTypes;
+
+  /// No description provided for @pantryManagerTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despensa'**
+  String get pantryManagerTitle;
+
+  /// No description provided for @pantryManagerSave.
+  ///
+  /// In pt, this message translates to:
+  /// **'Guardar'**
+  String get pantryManagerSave;
+
+  /// No description provided for @pantryLowStock.
+  ///
+  /// In pt, this message translates to:
+  /// **'Stock baixo'**
+  String get pantryLowStock;
+
+  /// No description provided for @pantryDepleted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esgotado'**
+  String get pantryDepleted;
+
+  /// No description provided for @pantryRestock.
+  ///
+  /// In pt, this message translates to:
+  /// **'Repor'**
+  String get pantryRestock;
+
+  /// No description provided for @pantryQuantity.
+  ///
+  /// In pt, this message translates to:
+  /// **'Quantidade'**
+  String get pantryQuantity;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
