@@ -1276,43 +1276,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           _helpTip(l10n.settingsExpensesTip),
           // ── Budget Summary Header ──
-          Container(
-            margin: const EdgeInsets.only(bottom: 16),
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: AppColors.primary(context).withValues(alpha: 0.06),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.primary(context).withValues(alpha: 0.15)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '${formatCurrency(totalBudget)} / ${l10n.settingsExpenseName}',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textLabel(context)),
-                    ),
-                    Text(
-                      '${activeExpenses.length} / ${_draft.expenses.length}',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textMuted(context)),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: LinearProgressIndicator(
-                    value: _draft.expenses.isEmpty ? 0.0 : activeExpenses.length / _draft.expenses.length,
-                    minHeight: 4,
-                    backgroundColor: AppColors.border(context),
-                    valueColor: AlwaysStoppedAnimation(AppColors.primary(context)),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          _buildBudgetSummaryHeader(l10n, totalBudget, activeExpenses.length, _draft.expenses.length),
           // ── Empty State ──
           if (_draft.expenses.isEmpty)
             Padding(
@@ -1533,37 +1497,58 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               );
 
-              return Container(
+              final borderColor = expense.enabled
+                  ? (isExpanded ? AppColors.primary(context) : AppColors.border(context))
+                  : AppColors.surfaceVariant(context);
+              final leftBorderWidth = isExpanded ? 3.0 : 1.0;
+
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeInOut,
                 margin: const EdgeInsets.only(bottom: 10),
                 decoration: BoxDecoration(
                   color: expense.enabled ? AppColors.surface(context) : AppColors.background(context),
                   borderRadius: BorderRadius.circular(14),
                   border: Border(
-                    top: BorderSide(color: expense.enabled ? AppColors.border(context) : AppColors.surfaceVariant(context)),
-                    right: BorderSide(color: expense.enabled ? AppColors.border(context) : AppColors.surfaceVariant(context)),
-                    bottom: BorderSide(color: expense.enabled ? AppColors.border(context) : AppColors.surfaceVariant(context)),
-                    left: BorderSide(
-                      color: isExpanded ? AppColors.primary(context) : (expense.enabled ? AppColors.border(context) : AppColors.surfaceVariant(context)),
-                      width: isExpanded ? 3.0 : 1.0,
-                    ),
+                    top: BorderSide(color: borderColor),
+                    right: BorderSide(color: borderColor),
+                    bottom: BorderSide(color: borderColor),
+                    left: BorderSide(color: isExpanded ? AppColors.primary(context) : borderColor, width: leftBorderWidth),
                   ),
                 ),
-                child: Opacity(
-                  opacity: expense.enabled ? 1.0 : 0.5,
-                  child: Column(
-                    children: [
-                      collapsedRow,
-                      AnimatedCrossFade(
-                        firstChild: const SizedBox.shrink(),
-                        secondChild: expandedFields,
-                        crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                        duration: const Duration(milliseconds: 250),
-                        firstCurve: Curves.easeInOut,
-                        secondCurve: Curves.easeInOut,
-                        sizeCurve: Curves.easeInOut,
+                child: Stack(
+                  children: [
+                    Column(
+                      children: [
+                        collapsedRow,
+                        AnimatedCrossFade(
+                          firstChild: const SizedBox.shrink(),
+                          secondChild: expandedFields,
+                          crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                          duration: const Duration(milliseconds: 250),
+                          firstCurve: Curves.easeInOut,
+                          secondCurve: Curves.easeInOut,
+                          sizeCurve: Curves.easeInOut,
+                        ),
+                      ],
+                    ),
+                    if (!expense.enabled)
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: AppColors.textMuted(context).withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            l10n.settingsPausedCategories,
+                            style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: AppColors.textMuted(context)),
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
+                  ],
                 ),
               );
             }),
@@ -1582,6 +1567,76 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBudgetSummaryHeader(S l10n, double totalBudget, int activeCount, int totalCount) {
+    final ratio = totalCount > 0 ? activeCount / totalCount : 0.0;
+    // Color coding: green (>80% active), amber (50-80%), red (<50%)
+    final healthColor = ratio >= 0.8
+        ? const Color(0xFF34D399)
+        : ratio >= 0.5
+            ? const Color(0xFFFBBF24)
+            : const Color(0xFFF87171);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [healthColor.withValues(alpha: 0.08), healthColor.withValues(alpha: 0.02)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: healthColor.withValues(alpha: 0.25)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.account_balance_wallet, size: 18, color: healthColor),
+                  const SizedBox(width: 6),
+                  Text(
+                    formatCurrency(totalBudget),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.textLabel(context)),
+                  ),
+                ],
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: healthColor.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  '$activeCount / $totalCount',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: healthColor),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0, end: ratio),
+            duration: const Duration(milliseconds: 600),
+            curve: Curves.easeOutCubic,
+            builder: (context, value, _) => ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: value,
+                minHeight: 5,
+                backgroundColor: AppColors.border(context),
+                valueColor: AlwaysStoppedAnimation(healthColor),
               ),
             ),
           ),
