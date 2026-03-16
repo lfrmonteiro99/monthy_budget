@@ -2,17 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
-## v2026.3.41 - 2026-03-16
+## v2026.4.0 - 2026-03-16
 
+
+
+### Bug Fixes
+
+- Release script minor bump same-month collision (Fixes #622) ([object], [object])
 
 
 ### Other Changes
 
-- Unify budget category dropdown with custom categories #491 (Fixes #491) ([object], [object], [object])
+- Fix meal plan notifications hardcoded to true #614 (Fixes #614) ([object], [object], [object])
 
-- Redesign budget settings section with dynamic health colors #502 (Fixes #502) ([object], [object], [object])
+- Localize coach mode recommender keywords for PT/EN/ES/FR #616 (Fixes #616) ([object], [object], [object])
 
-- Redesign salary settings with visual hierarchy and semantic states #549 (Fixes #549) ([object], [object], [object])
-
-- Fix hardcoded Quick Actions string and add Tier 1 card tests #548 (Fixes #548) ([object], [object], [object])
+- Fix deep links for quick-add, meals, and assistant #615 (Fixes #615) ([object], [object], [object])
 
