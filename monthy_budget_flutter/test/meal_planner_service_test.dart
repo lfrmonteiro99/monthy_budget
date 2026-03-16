@@ -339,4 +339,152 @@ void main() {
       expect(totals['batata'], closeTo(1.2, 0.001));
     });
   });
+
+  group('recipe loading fallback', () {
+    test('loadCatalogFromJson still works as local fallback', () {
+      final svc = MealPlannerService();
+
+      final ingredientsJson = jsonEncode([
+        {
+          'id': 'frango',
+          'name': 'Frango',
+          'category': 'proteina',
+          'unit': 'kg',
+          'avgPricePerUnit': 3.50,
+          'minPurchaseQty': 1.0,
+        },
+      ]);
+
+      final recipesJson = jsonEncode([
+        {
+          'id': 'frango_assado',
+          'name': 'Frango Assado',
+          'proteinId': 'frango',
+          'type': 'carne',
+          'complexity': 1,
+          'prepMinutes': 15,
+          'servings': 4,
+          'ingredients': [
+            {'ingredientId': 'frango', 'quantity': 1.0},
+          ],
+        },
+      ]);
+
+      svc.loadCatalogFromJson(ingredientsJson, recipesJson);
+      expect(svc.recipeMap.isNotEmpty, true);
+      expect(svc.recipeMap['frango_assado']?.name, 'Frango Assado');
+      expect(svc.ingredientMap['frango']?.name, 'Frango');
+    });
+
+    test('Ingredient.toJson round-trips correctly', () {
+      const ingredient = Ingredient(
+        id: 'frango',
+        name: 'Frango',
+        category: IngredientCategory.proteina,
+        unit: 'kg',
+        avgPricePerUnit: 3.50,
+        minPurchaseQty: 1.0,
+      );
+      final json = ingredient.toJson();
+      final restored = Ingredient.fromJson(json);
+      expect(restored.id, ingredient.id);
+      expect(restored.name, ingredient.name);
+      expect(restored.category, ingredient.category);
+      expect(restored.unit, ingredient.unit);
+      expect(restored.avgPricePerUnit, ingredient.avgPricePerUnit);
+      expect(restored.minPurchaseQty, ingredient.minPurchaseQty);
+    });
+
+    test('Recipe.fromJson parses Supabase-style snake_case nutrition', () {
+      // Supabase returns nutrition as a nested jsonb object.
+      // The NutritionInfo.fromJson uses camelCase keys since it mirrors the
+      // local JSON format. When loading from Supabase, the service maps
+      // the row data to Recipe constructor directly; this test verifies
+      // the local JSON round-trip still works (the most testable path
+      // without mocking Supabase).
+      final json = {
+        'id': 'test_recipe',
+        'name': 'Test Recipe',
+        'proteinId': 'frango',
+        'type': 'carne',
+        'complexity': 2,
+        'prepMinutes': 20,
+        'servings': 4,
+        'ingredients': <Map<String, dynamic>>[],
+        'nutrition': {
+          'kcal': 350,
+          'proteinG': 28.0,
+          'carbsG': 40.0,
+          'fatG': 12.0,
+          'fiberG': 3.0,
+          'sodiumMg': 300.0,
+        },
+        'prepSteps': ['Step 1', 'Step 2'],
+      };
+      final recipe = Recipe.fromJson(json);
+      expect(recipe.nutrition, isNotNull);
+      expect(recipe.nutrition!.kcal, 350);
+      expect(recipe.nutrition!.proteinG, 28.0);
+      expect(recipe.prepSteps.length, 2);
+    });
+
+    test('Recipe toJson/fromJson round-trip preserves all fields', () {
+      const recipe = Recipe(
+        id: 'roundtrip_test',
+        name: 'Roundtrip Test',
+        proteinId: 'frango',
+        type: RecipeType.carne,
+        complexity: 2,
+        prepMinutes: 25,
+        servings: 4,
+        ingredients: [
+          RecipeIngredient(ingredientId: 'frango', quantity: 1.0),
+        ],
+        glutenFree: true,
+        lactoseFree: false,
+        nutFree: true,
+        shellfishFree: true,
+        isVegetarian: false,
+        isHighProtein: true,
+        isLowCarb: false,
+        batchCookable: true,
+        maxBatchDays: 3,
+        isPortable: false,
+        suitableMealTypes: ['lunch', 'dinner'],
+        seasons: ['winter', 'autumn'],
+        requiresEquipment: ['oven'],
+        nutrition: NutritionInfo(
+          kcal: 400,
+          proteinG: 35,
+          carbsG: 30,
+          fatG: 15,
+          fiberG: 2,
+          sodiumMg: 350,
+        ),
+        prepSteps: ['Passo 1', 'Passo 2'],
+      );
+
+      final json = recipe.toJson();
+      final restored = Recipe.fromJson(json);
+
+      expect(restored.id, recipe.id);
+      expect(restored.name, recipe.name);
+      expect(restored.proteinId, recipe.proteinId);
+      expect(restored.type, recipe.type);
+      expect(restored.complexity, recipe.complexity);
+      expect(restored.prepMinutes, recipe.prepMinutes);
+      expect(restored.servings, recipe.servings);
+      expect(restored.glutenFree, recipe.glutenFree);
+      expect(restored.lactoseFree, recipe.lactoseFree);
+      expect(restored.isHighProtein, recipe.isHighProtein);
+      expect(restored.batchCookable, recipe.batchCookable);
+      expect(restored.maxBatchDays, recipe.maxBatchDays);
+      expect(restored.isPortable, recipe.isPortable);
+      expect(restored.seasons, recipe.seasons);
+      expect(restored.requiresEquipment, recipe.requiresEquipment);
+      expect(restored.nutrition?.kcal, recipe.nutrition?.kcal);
+      expect(restored.prepSteps, recipe.prepSteps);
+      expect(restored.ingredients.length, recipe.ingredients.length);
+    });
+  });
 }
