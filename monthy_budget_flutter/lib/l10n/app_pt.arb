@@ -5059,5 +5059,9 @@
         }
     },
     "mealPantryApply": "Aplicar e gerar",
-    "mealTasteProfileBoost": "Perfil de gosto aplicado"
+    "mealTasteProfileBoost": "Perfil de gosto aplicado",
+    "mealPlanUndoMessage": "Plano regenerado com sucesso",
+    "@mealPlanUndoMessage": {"description": "Message shown after plan regeneration"},
+    "mealPlanUndoAction": "Desfazer",
+    "@mealPlanUndoAction": {"description": "Undo button label on regeneration snackbar"}
 }

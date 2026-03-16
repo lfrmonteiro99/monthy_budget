@@ -2614,5 +2614,7 @@
         }
     },
     "mealPantryApply": "Aplicar y generar",
-    "mealTasteProfileBoost": "Perfil de gusto aplicado"
+    "mealTasteProfileBoost": "Perfil de gusto aplicado",
+    "mealPlanUndoMessage": "Plan regenerado con éxito",
+    "mealPlanUndoAction": "Deshacer"
 }

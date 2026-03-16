@@ -976,4 +976,34 @@ class MealPlannerService {
         .eq('month', month)
         .eq('year', year);
   }
+
+  // --- Undo support ---
+
+  /// Save a plan as the "previous" plan for undo capability.
+  /// Only keeps one previous plan per month/year.
+  Future<void> savePreviousPlan(MealPlan plan) async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'meal_plan_previous_${plan.month}_${plan.year}';
+    await prefs.setString(key, plan.toJsonString());
+  }
+
+  /// Load the previous plan for a given month/year, if any.
+  Future<MealPlan?> loadPreviousPlan(int month, int year) async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'meal_plan_previous_${month}_$year';
+    final json = prefs.getString(key);
+    if (json == null) return null;
+    try {
+      return MealPlan.fromJsonString(json);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Clear the previous plan backup.
+  Future<void> clearPreviousPlan(int month, int year) async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'meal_plan_previous_${month}_$year';
+    await prefs.remove(key);
+  }
 }

@@ -8992,6 +8992,18 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Perfil de gosto aplicado'**
   String get mealTasteProfileBoost;
+
+  /// Message shown after plan regeneration
+  ///
+  /// In pt, this message translates to:
+  /// **'Plano regenerado com sucesso'**
+  String get mealPlanUndoMessage;
+
+  /// Undo button label on regeneration snackbar
+  ///
+  /// In pt, this message translates to:
+  /// **'Desfazer'**
+  String get mealPlanUndoAction;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
