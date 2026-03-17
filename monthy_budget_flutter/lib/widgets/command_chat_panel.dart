@@ -87,6 +87,7 @@ class _CommandChatPanelState extends State<CommandChatPanel> {
 
     try {
       final parsed = await widget.onSendCommand(input);
+      if (!mounted) return;
 
       if (!parsed.hasAction) {
         setState(() {
@@ -99,6 +100,7 @@ class _CommandChatPanelState extends State<CommandChatPanel> {
         });
       } else {
         final result = await widget.onExecuteAction(parsed);
+        if (!mounted) return;
         if (result.succeeded) {
           setState(() {
             _messages.add(CommandChatMessage(
@@ -121,6 +123,7 @@ class _CommandChatPanelState extends State<CommandChatPanel> {
         }
       }
     } catch (_) {
+      if (!mounted) return;
       setState(() {
         _messages.add(CommandChatMessage(
           role: 'assistant',

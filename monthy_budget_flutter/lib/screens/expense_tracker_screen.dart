@@ -168,6 +168,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
         }
       }
       await widget.onAdd(expense);
+      if (!mounted) return;
       setState(() => _expenses = [..._expenses, expense]
         ..sort((a, b) => b.date.compareTo(a.date)));
     }
@@ -195,6 +196,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
       category: chosenCategory,
     );
     await widget.onAdd(expense);
+    if (!mounted) return;
     setState(() => _expenses = [..._expenses, expense]
       ..sort((a, b) => b.date.compareTo(a.date)));
   }
@@ -231,6 +233,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
         }
       }
       await widget.onUpdate(updated);
+      if (!mounted) return;
       setState(() {
         _expenses = _expenses
             .map((e) => e.id == updated.id ? updated : e)

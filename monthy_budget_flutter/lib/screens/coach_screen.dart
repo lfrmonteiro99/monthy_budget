@@ -218,6 +218,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     if (_messages.isEmpty && _subscription.isInEndowmentPeriod) {
       final updated =
           await _subscriptionService.incrementConversationCount(_subscription);
+      if (!mounted) return;
       _updateSubscription(updated);
     }
 
@@ -258,6 +259,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
       if (resolution.usedFallback && !_subscription.downgradeCardShown) {
         final marked =
             await _subscriptionService.markDowngradeCardShown(_subscription);
+        if (!mounted) return;
         _updateSubscription(marked);
         setState(() => _downgradeCardDismissed = false);
       }
@@ -288,6 +290,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
 
       // Parse delimiters from reply
       final cleanedReply = await _parseAndStoreDelimiters(reply, effectiveMode);
+      if (!mounted) return;
 
       final updated = [
         ..._messages,
@@ -417,6 +420,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     setState(() => _selectedMode = mode);
     final updated =
         await _subscriptionService.trackRecommendation(_subscription, accepted: true);
+    if (!mounted) return;
     _updateSubscription(updated);
     _dismissRecommendation();
   }
@@ -424,6 +428,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   Future<void> _declineRecommendation() async {
     final updated =
         await _subscriptionService.trackRecommendation(_subscription, accepted: false);
+    if (!mounted) return;
     _updateSubscription(updated);
     _dismissRecommendation();
   }
@@ -431,6 +436,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   // Feature #5: Micro-action follow-up handlers
   Future<void> _completeMicroAction() async {
     final updated = await _subscriptionService.clearLastMicroAction(_subscription);
+    if (!mounted) return;
     _updateSubscription(updated);
     setState(() => _microActionCardDismissed = true);
   }

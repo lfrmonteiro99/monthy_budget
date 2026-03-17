@@ -275,6 +275,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       _localConfigService.loadOnboardingState(),
       _subscriptionService.load(),
     ]);
+    if (!mounted) return;
     setState(() {
       _settings = settings;
       _favorites = results[0] as List<String>;
@@ -961,6 +962,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         quantity: mergedQuantity,
         unit: mergedUnit,
       );
+      if (!mounted) return;
       // Optimistic local update — Realtime will reconcile
       setState(() {
         _shoppingList = _shoppingList.map((e) {
@@ -1005,6 +1007,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     try {
       await _shoppingListService.toggle(item.id, !item.checked);
     } catch (_) {
+      if (!mounted) return;
       // Revert on failure — Realtime will correct on next emission anyway
       setState(() {
         _shoppingList = _shoppingList.map((i) {
@@ -1194,6 +1197,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       return true;
     } catch (e) {
       debugPrint('Failed to remove shopping item: $e');
+      if (!mounted) return false;
       setState(() => _shoppingList = previousItems);
       return false;
     }
@@ -1233,6 +1237,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       return true;
     } catch (e) {
       debugPrint('Failed to toggle shopping item: $e');
+      if (!mounted) return false;
       setState(() => _shoppingList = previousItems);
       return false;
     }
@@ -1266,6 +1271,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         contribution,
         widget.householdId,
       );
+      if (!mounted) return false;
       setState(() {
         _savingsGoals = _savingsGoals
             .map((g) => g.id == updatedGoal.id ? updatedGoal : g)
@@ -1312,6 +1318,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       return true;
     } catch (e) {
       debugPrint('Failed to delete expense by description: $e');
+      if (!mounted) return false;
       setState(() => _actualExpenses = previousExpenses);
       _refreshNotificationSchedules();
       return false;
