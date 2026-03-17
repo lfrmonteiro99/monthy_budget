@@ -86,6 +86,7 @@ import 'widgets/quick_add_launcher.dart';
 import 'widgets/receipt_review_sheet.dart';
 import 'widgets/receipt_scan_sheet.dart';
 import 'screens/product_updates_screen.dart';
+import 'constants/app_constants.dart';
 
 class AppHome extends StatefulWidget {
   final String householdId;
@@ -125,7 +126,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
   // Use a far-past date so trial is NOT active before load() completes.
   SubscriptionState _subscription =
-      SubscriptionState(trialStartDate: DateTime(2000));
+      SubscriptionState(trialStartDate: AppConstants.farPastDate);
   OnboardingState _onboardingState = const OnboardingState();
   final _fabKey = GlobalKey(debugLabel: 'tour_fab');
   final _navBarKey = GlobalKey(debugLabel: 'tour_nav_bar');
@@ -150,10 +151,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   bool _loaded = false;
   bool _groceryLoading = false;
   bool _hasMealPlan = false;
-  int _currentIndex = 0;
+  int _currentIndex = AppTab.dashboard.index;
 
   /// Lifecycle debounce: skip refresh if resumed within this duration.
-  static const _resumeDebounce = Duration(seconds: 30);
+  static const _resumeDebounce = AppConstants.resumeDebounce;
   DateTime _lastRefresh = DateTime.fromMillisecondsSinceEpoch(0);
   bool _refreshing = false;
 
@@ -714,16 +715,16 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         _openMealPlanner();
         break;
       case 'expense_tracker':
-        setState(() => _currentIndex = 1);
+        setState(() => _currentIndex = AppTab.expenses.index);
         break;
       case 'savings_goals':
         _openSavingsGoals();
         break;
       case 'shopping_list':
-        setState(() => _currentIndex = 2);
+        setState(() => _currentIndex = AppTab.planHub.index);
         break;
       case 'grocery_browser':
-        setState(() => _currentIndex = 2);
+        setState(() => _currentIndex = AppTab.planHub.index);
         break;
       case 'export':
         Navigator.of(context).push(
@@ -736,7 +737,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         );
         break;
       default:
-        setState(() => _currentIndex = 0);
+        setState(() => _currentIndex = AppTab.dashboard.index);
     }
   }
 
@@ -1066,15 +1067,15 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   void _handleCommandNavigation(String screen) {
     switch (screen) {
       case 'dashboard':
-        setState(() => _currentIndex = 0);
+        setState(() => _currentIndex = AppTab.dashboard.index);
       case 'expenses':
-        setState(() => _currentIndex = 1);
+        setState(() => _currentIndex = AppTab.expenses.index);
       case 'plan':
       case 'more':
       case 'grocery':
       case 'shopping_list':
       case 'meals':
-        setState(() => _currentIndex = 2);
+        setState(() => _currentIndex = AppTab.planHub.index);
       case 'coach':
         _openCoach();
       case 'settings':
@@ -1524,7 +1525,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         actualExpenses: _actualExpenses,
         onAddExpense: _openAddExpenseSheet,
         monthlyBudgets: _monthlyBudgets,
-        onOpenExpenseTracker: () => setState(() => _currentIndex = 1),
+        onOpenExpenseTracker: () => setState(() => _currentIndex = AppTab.expenses.index),
         onViewTrends: _openExpenseTrends,
         savingsGoals: _savingsGoals,
         savingsProjections: _savingsProjections,
@@ -1599,7 +1600,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     return Stack(
       children: [
         Scaffold(
-      body: _currentIndex == 0
+      body: _currentIndex == AppTab.dashboard.index
           ? Column(
               children: [
                 // Trial banner on dashboard
@@ -1626,14 +1627,14 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                   ).where((a) => a.severity == AlertSeverity.critical).length,
                   onTap: _openConfidenceCenter,
                 ),
-                Expanded(child: screens[0]),
+                Expanded(child: screens[AppTab.dashboard.index]),
                 AdBannerWidget(
                   showAd: AdService.shouldShowAds(_subscription),
                 ),
               ],
             )
           : screens[_currentIndex],
-      floatingActionButton: _currentIndex == 0
+      floatingActionButton: _currentIndex == AppTab.dashboard.index
           ? Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: QuickAddLauncher(
@@ -1751,7 +1752,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         // Command assistant FAB
         CommandChatFab(
           onTap: () => setState(() => _commandPanelOpen = !_commandPanelOpen),
-          isDashboard: _currentIndex == 0,
+          isDashboard: _currentIndex == AppTab.dashboard.index,
           isExpanded: _commandPanelOpen,
           showTour: !_onboardingState.isTourDone('command_assistant'),
           onTourComplete: () => _markTourDone('command_assistant'),

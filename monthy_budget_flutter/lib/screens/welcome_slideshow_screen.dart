@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/app_constants.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
 
@@ -103,7 +104,7 @@ class _WelcomeSlideshowScreenState extends State<WelcomeSlideshowScreen> {
                       onPressed: () {
                         if (_currentPage < slides.length - 1) {
                           _controller.nextPage(
-                            duration: const Duration(milliseconds: 300),
+                            duration: AppConstants.animPageTransition,
                             curve: Curves.easeInOut,
                           );
                         } else {

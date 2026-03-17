@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/app_constants.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/meal_settings.dart';
 import '../theme/app_colors.dart';
@@ -48,7 +49,7 @@ class _MealWizardScreenState extends State<MealWizardScreen> {
     if (_step < _totalSteps - 1) {
       setState(() => _step++);
       _pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
+        duration: AppConstants.animPageTransition,
         curve: Curves.easeInOut,
       );
     } else {
@@ -60,7 +61,7 @@ class _MealWizardScreenState extends State<MealWizardScreen> {
     if (_step > 0) {
       setState(() => _step--);
       _pageController.previousPage(
-        duration: const Duration(milliseconds: 300),
+        duration: AppConstants.animPageTransition,
         curve: Curves.easeInOut,
       );
     }

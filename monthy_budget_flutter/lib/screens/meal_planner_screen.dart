@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/app_constants.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/meal_planner.dart';
@@ -77,7 +78,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   final Map<int, WeeklyNutritionSummary> _weeklySummaries = {};
   final Set<int> _weeklySummaryPending = {};
   bool _batchPlanLoading = false;
-  final _rateLimiter = RateLimiter(minInterval: const Duration(seconds: 3));
+  final _rateLimiter = RateLimiter(minInterval: AppConstants.rateLimitInterval);
   MealPlanBudgetInsight? _budgetInsight;
   bool _showDetails = false; // Progressive disclosure toggle
 
@@ -132,7 +133,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     if (!widget.settings.mealSettings.wizardCompleted) return;
     _tourShown = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(milliseconds: 500), () {
+      Future.delayed(AppConstants.tourStartDelay, () {
         if (!mounted) return;
         buildMealsTour(
           context: context,
@@ -258,7 +259,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         SnackBar(
           content: Text(S.of(context).rateLimitMessage),
           behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 2),
+          duration: AppConstants.snackBarShort,
         ),
       );
       return;
@@ -310,7 +311,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(l10n.mealPlanUndoMessage),
-          duration: const Duration(seconds: 8),
+          duration: AppConstants.snackBarUndo,
           action: SnackBarAction(
             label: l10n.mealPlanUndoAction,
             onPressed: () => _undoRegeneration(),
@@ -406,7 +407,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         SnackBar(
           content: Text(S.of(context).rateLimitMessage),
           behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 2),
+          duration: AppConstants.snackBarShort,
         ),
       );
       return;
