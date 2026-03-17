@@ -80,6 +80,7 @@ import 'models/command_action.dart';
 import 'models/grocery_data.dart';
 import 'widgets/command_chat_fab.dart';
 import 'widgets/command_chat_panel.dart';
+import 'widgets/error_boundary.dart';
 import 'services/quick_action_service.dart';
 import 'services/receipt_scan_service.dart';
 import 'widgets/quick_add_launcher.dart';
@@ -1514,7 +1515,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     );
 
     final screens = [
-      DashboardScreen(
+      ErrorBoundary(
+        onError: (error, stack) =>
+            debugPrint('[ErrorBoundary:Dashboard] $error\n$stack'),
+        child: DashboardScreen(
         settings: _settings,
         summary: summary,
         purchaseHistory: _purchaseHistory,
@@ -1546,54 +1550,62 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         onOpenInsights: _openInsights,
         onOpenCoach: _openCoach,
         customCategories: _customCategories,
-      ),
-      ExpenseTrackerScreen(
-        settings: _settings,
-        expenses: _actualExpenses,
-        householdId: widget.householdId,
-        onAdd: _addActualExpense,
-        onUpdate: _updateActualExpense,
-        onDelete: _deleteActualExpense,
-        onLoadMonth: (monthKey) =>
-            _actualExpenseService.loadMonth(widget.householdId, monthKey),
-        onLoadHistory: () =>
-            _actualExpenseService.loadHistory(widget.householdId),
-        onOpenRecurring: _openRecurringExpenses,
-        showTour: !_onboardingState.isTourDone('expense_tracker'),
-        onTourComplete: () => _markTourDone('expense_tracker'),
-        customCategories: _customCategories,
-      ),
-      PlanAndShopScreen(
-        shoppingItems: _shoppingList,
-        onToggleChecked: _toggleShoppingItem,
-        onRemove: _removeShoppingItem,
-        onClearChecked: _clearCheckedItems,
-        onFinalize: _finalizeShopping,
-        purchaseHistory: _purchaseHistory,
-        onAddToShoppingList: _addToShoppingList,
-        products: _groceryData.toCatalogProducts().isNotEmpty ||
-                _settings.country != Country.pt
-            ? _groceryData.toCatalogProducts()
-            : _products,
-        groceryData: _groceryData,
-        groceryLoading: _groceryLoading,
-        settings: _settings,
-        apiKey: _openAiApiKey,
-        favorites: _favorites,
-        householdId: widget.householdId,
-        onSaveSettings: _saveSettings,
-        onOpenMealSettings: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => _buildSettingsScreen(initialSection: 'meals'),
-          ),
+      )),
+      ErrorBoundary(
+        onError: (error, stack) =>
+            debugPrint('[ErrorBoundary:Expenses] $error\n$stack'),
+        child: ExpenseTrackerScreen(
+          settings: _settings,
+          expenses: _actualExpenses,
+          householdId: widget.householdId,
+          onAdd: _addActualExpense,
+          onUpdate: _updateActualExpense,
+          onDelete: _deleteActualExpense,
+          onLoadMonth: (monthKey) =>
+              _actualExpenseService.loadMonth(widget.householdId, monthKey),
+          onLoadHistory: () =>
+              _actualExpenseService.loadHistory(widget.householdId),
+          onOpenRecurring: _openRecurringExpenses,
+          showTour: !_onboardingState.isTourDone('expense_tracker'),
+          onTourComplete: () => _markTourDone('expense_tracker'),
+          customCategories: _customCategories,
         ),
-        showShoppingTour: !_onboardingState.isTourDone('shopping'),
-        onShoppingTourComplete: () => _markTourDone('shopping'),
-        showGroceryTour: !_onboardingState.isTourDone('grocery'),
-        onGroceryTourComplete: () => _markTourDone('grocery'),
-        showMealsTour: !_onboardingState.isTourDone('meals'),
-        onMealsTourComplete: () => _markTourDone('meals'),
-        canAccessMeals: _subscription.hasPremiumAccess,
+      ),
+      ErrorBoundary(
+        onError: (error, stack) =>
+            debugPrint('[ErrorBoundary:PlanAndShop] $error\n$stack'),
+        child: PlanAndShopScreen(
+          shoppingItems: _shoppingList,
+          onToggleChecked: _toggleShoppingItem,
+          onRemove: _removeShoppingItem,
+          onClearChecked: _clearCheckedItems,
+          onFinalize: _finalizeShopping,
+          purchaseHistory: _purchaseHistory,
+          onAddToShoppingList: _addToShoppingList,
+          products: _groceryData.toCatalogProducts().isNotEmpty ||
+                  _settings.country != Country.pt
+              ? _groceryData.toCatalogProducts()
+              : _products,
+          groceryData: _groceryData,
+          groceryLoading: _groceryLoading,
+          settings: _settings,
+          apiKey: _openAiApiKey,
+          favorites: _favorites,
+          householdId: widget.householdId,
+          onSaveSettings: _saveSettings,
+          onOpenMealSettings: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => _buildSettingsScreen(initialSection: 'meals'),
+            ),
+          ),
+          showShoppingTour: !_onboardingState.isTourDone('shopping'),
+          onShoppingTourComplete: () => _markTourDone('shopping'),
+          showGroceryTour: !_onboardingState.isTourDone('grocery'),
+          onGroceryTourComplete: () => _markTourDone('grocery'),
+          showMealsTour: !_onboardingState.isTourDone('meals'),
+          onMealsTourComplete: () => _markTourDone('meals'),
+          canAccessMeals: _subscription.hasPremiumAccess,
+        ),
       ),
     ];
 
