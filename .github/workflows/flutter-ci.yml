@@ -173,3 +173,50 @@ jobs:
             monthy_budget_flutter/build/app/outputs/bundle/release/*.aab
           prerelease: true
           make_latest: false
+
+  # iOS compilation check: runs on push to main only (macOS runners are expensive).
+  # No code signing — just verifies the project compiles for iOS.
+  build-ios:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: macos-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: monthy_budget_flutter
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.2'
+          channel: stable
+          cache: true
+
+      - name: Validate Supabase secrets
+        run: |
+          if [ -z "${SUPABASE_URL}" ]; then
+            echo "::error::SUPABASE_URL secret is not set. Go to repo Settings > Secrets and variables > Actions and add it."
+            exit 1
+          fi
+          if [ -z "${SUPABASE_ANON_KEY}" ]; then
+            echo "::error::SUPABASE_ANON_KEY secret is not set. Go to repo Settings > Secrets and variables > Actions and add it."
+            exit 1
+          fi
+          echo "Supabase URL: ${SUPABASE_URL:0:30}... (truncated)"
+          echo "Anon key length: ${#SUPABASE_ANON_KEY} chars"
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate l10n
+        run: flutter gen-l10n
+
+      - name: Build iOS (no codesign)
+        run: |
+          flutter build ios --no-codesign --release \
+            --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+            --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
