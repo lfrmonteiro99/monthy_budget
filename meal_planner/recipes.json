@@ -5,7 +5,7 @@
     "proteinId": "frango",
     "type": "carne",
     "complexity": 1,
-    "prepMinutes": 15,
+    "prepMinutes": 65,
     "servings": 4,
     "glutenFree": true,
     "lactoseFree": true,
@@ -57,7 +57,9 @@
       "Corta as batatas em quartos e dispõe no tabuleiro à volta do frango.",
       "Rega tudo com um fio de azeite.",
       "Leva ao forno durante 45-50 minutos até o frango ficar dourado."
-    ]
+    ],
+    "activeMinutes": 15,
+    "passiveMinutes": 50
   },
   {
     "id": "frango_arroz",
@@ -184,7 +186,9 @@
       "Refoga a cebola em azeite, junta o frango e deixa selar.",
       "Adiciona a cenoura, o tomate pelado esmagado e um copo de água.",
       "Tampa e deixa estufar em lume brando durante 30-35 minutos."
-    ]
+    ],
+    "activeMinutes": 10,
+    "passiveMinutes": 20
   },
   {
     "id": "frango_grelhado",
@@ -420,7 +424,9 @@
       "Prepara o molho refogando cebola em azeite e juntando tomate pelado esmagado.",
       "Coloca as almôndegas no molho e deixa cozinhar 25-30 minutos em lume brando.",
       "Serve com arroz branco ou pão."
-    ]
+    ],
+    "activeMinutes": 15,
+    "passiveMinutes": 25
   },
   {
     "id": "empadao",
@@ -483,7 +489,9 @@
       "Refoga a cebola, junta a carne picada e cozinha até secar.",
       "Numa forma, coloca uma camada de puré, a carne e cobre com outra camada de puré.",
       "Leva ao forno 25-30 minutos até dourar por cima."
-    ]
+    ],
+    "activeMinutes": 25,
+    "passiveMinutes": 35
   },
   {
     "id": "hamburguer",
@@ -604,7 +612,9 @@
       "Numa forma, alterna camadas de folhas de lasanha com molho de carne.",
       "Termina com uma camada generosa de molho por cima.",
       "Cobre com papel de alumínio e leva ao forno 40 minutos. Retira o alumínio nos últimos 10."
-    ]
+    ],
+    "activeMinutes": 30,
+    "passiveMinutes": 45
   },
   {
     "id": "feijoada_simples",
@@ -792,7 +802,9 @@
       "Refoga a cebola em azeite, junta a cenoura.",
       "Adiciona as lentilhas, o tomate pelado e água até cobrir.",
       "Cozinha em lume brando 25-30 minutos até as lentilhas ficarem tenras."
-    ]
+    ],
+    "activeMinutes": 10,
+    "passiveMinutes": 20
   },
   {
     "id": "feijao_verde_batata",
@@ -869,9 +881,8 @@
     "isLowCarb": false,
     "requiresEquipment": [],
     "batchCookable": true,
-    "maxBatchDays": 3,
+    "maxBatchDays": 2,
     "suitableMealTypes": [
-      "lunch",
       "dinner"
     ],
     "ingredients": [
@@ -1094,7 +1105,9 @@
       "Bate os ovos com sal e pimenta.",
       "Mistura os espinafres com os ovos numa forma refratária.",
       "Leva ao forno 15-20 minutos até ficar firme e dourada."
-    ]
+    ],
+    "activeMinutes": 10,
+    "passiveMinutes": 10
   },
   {
     "id": "ovos_mexidos_tomate",
@@ -1271,7 +1284,9 @@
       "Dispõe as batatas e a cebola no fundo do tabuleiro.",
       "Coloca os filetes de pescada por cima, rega com azeite.",
       "Leva ao forno 40-45 minutos até o peixe estar cozido e as batatas tenras."
-    ]
+    ],
+    "activeMinutes": 15,
+    "passiveMinutes": 35
   },
   {
     "id": "peixe_grelhado",
@@ -1633,7 +1648,9 @@
       "Frita as batatas cortadas em cubos e reserva.",
       "Numa panela, cozinha a carne na marinada até ficar macia.",
       "Junta as batatas fritas à carne e mistura bem antes de servir."
-    ]
+    ],
+    "activeMinutes": 15,
+    "passiveMinutes": 30
   },
   {
     "id": "bifanas",
@@ -1751,7 +1768,9 @@
       "Corta as batatas em quartos e a cebola em gomos.",
       "Coloca tudo num tabuleiro e leva ao forno.",
       "Assa durante 50-60 minutos, regando de vez em quando com o próprio molho."
-    ]
+    ],
+    "activeMinutes": 15,
+    "passiveMinutes": 35
   },
   {
     "id": "feijoada_porco",
@@ -1816,7 +1835,9 @@
       "Corta a carne de porco em pedaços e o chouriço em rodelas.",
       "Junta a carne e o chouriço ao feijão e deixa cozinhar mais 30 minutos.",
       "Rectifica os temperos e serve com arroz branco."
-    ]
+    ],
+    "activeMinutes": 20,
+    "passiveMinutes": 40
   },
   {
     "id": "sardinhas_assadas",
@@ -2072,7 +2093,9 @@
       "Numa panela, faz camadas: batata, cebola, pimento, tomate e peixe.",
       "Rega com azeite e um pouco de água, tempera com sal.",
       "Cozinha em lume brando 35-40 minutos sem mexer (apenas agitar a panela)."
-    ]
+    ],
+    "activeMinutes": 15,
+    "passiveMinutes": 30
   },
   {
     "id": "pataniscas_bacalhau",
@@ -2592,9 +2615,8 @@
     "isLowCarb": false,
     "requiresEquipment": [],
     "batchCookable": true,
-    "maxBatchDays": 3,
+    "maxBatchDays": 2,
     "suitableMealTypes": [
-      "lunch",
       "dinner"
     ],
     "ingredients": [
@@ -2784,9 +2806,8 @@
     "isLowCarb": false,
     "requiresEquipment": [],
     "batchCookable": true,
-    "maxBatchDays": 4,
+    "maxBatchDays": 2,
     "suitableMealTypes": [
-      "lunch",
       "dinner"
     ],
     "ingredients": [
@@ -2895,6 +2916,5258 @@
       "Lava e corta a alface em pedaços.",
       "Mistura tudo numa saladeira.",
       "Tempera com azeite, vinagre, sal e ervas aromáticas a gosto."
+    ]
+  },
+  {
+    "id": "salmao_forno",
+    "name": "Salmão no Forno com Batata",
+    "proteinId": "salmao",
+    "type": "peixe",
+    "complexity": 1,
+    "prepMinutes": 35,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": false,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "salmao",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.6
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.01
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 480,
+      "proteinG": 32,
+      "carbsG": 35,
+      "fatG": 22,
+      "fiberG": 2.5,
+      "sodiumMg": 350
+    },
+    "prepSteps": [
+      "Pré-aquece o forno a 200°C.",
+      "Corta as batatas em rodelas finas e dispõe no tabuleiro.",
+      "Coloca os lombos de salmão por cima das batatas.",
+      "Tempera com alho picado, azeite, sal e pimenta.",
+      "Leva ao forno 25 minutos até o salmão ficar cozinhado."
+    ],
+    "activeMinutes": 10,
+    "passiveMinutes": 25
+  },
+  {
+    "id": "salmao_grelhado",
+    "name": "Salmão Grelhado com Legumes",
+    "proteinId": "salmao",
+    "type": "peixe",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "salmao",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "broculos",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 420,
+      "proteinG": 34,
+      "carbsG": 12,
+      "fatG": 24,
+      "fiberG": 4,
+      "sodiumMg": 320
+    },
+    "prepSteps": [
+      "Tempera o salmão com sal, pimenta e um fio de azeite.",
+      "Coze os brócolos e a cenoura ao vapor 8 minutos.",
+      "Grelha o salmão numa frigideira bem quente 4 minutos de cada lado.",
+      "Serve o salmão sobre os legumes e rega com azeite."
+    ]
+  },
+  {
+    "id": "dourada_forno",
+    "name": "Dourada no Forno",
+    "proteinId": "dourada",
+    "type": "peixe",
+    "complexity": 1,
+    "prepMinutes": 35,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": false,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "dourada",
+        "quantity": 0.6
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "pimento",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 400,
+      "proteinG": 30,
+      "carbsG": 32,
+      "fatG": 14,
+      "fiberG": 2.5,
+      "sodiumMg": 380
+    },
+    "prepSteps": [
+      "Pré-aquece o forno a 190°C.",
+      "Limpa a dourada e faz uns golpes na pele.",
+      "Dispõe as batatas em rodelas e a cebola em meias-luas no tabuleiro.",
+      "Coloca a dourada por cima, junta o pimento e rega com azeite.",
+      "Assa 30 minutos, virando a meio."
+    ],
+    "activeMinutes": 10,
+    "passiveMinutes": 25
+  },
+  {
+    "id": "dourada_grelhada",
+    "name": "Dourada Grelhada com Salada",
+    "proteinId": "dourada",
+    "type": "peixe",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "dourada",
+        "quantity": 0.6
+      },
+      {
+        "ingredientId": "alface",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "tomate",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": false,
+    "seasons": [
+      "spring",
+      "summer"
+    ],
+    "nutrition": {
+      "kcal": 340,
+      "proteinG": 32,
+      "carbsG": 8,
+      "fatG": 16,
+      "fiberG": 2,
+      "sodiumMg": 350
+    },
+    "prepSteps": [
+      "Tempera a dourada com sal grosso e azeite.",
+      "Grelha em lume forte 5-6 minutos de cada lado.",
+      "Prepara a salada com alface e tomate em cubos.",
+      "Serve a dourada com a salada e um fio de azeite."
+    ]
+  },
+  {
+    "id": "ameijoas_bulhao_pato",
+    "name": "Amêijoas à Bulhão Pato",
+    "proteinId": "ameijoas",
+    "type": "peixe",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": false,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "ameijoas",
+        "quantity": 0.8
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      },
+      {
+        "ingredientId": "coentros",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "vinho_branco",
+        "quantity": 0.1
+      }
+    ],
+    "isPortable": false,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 280,
+      "proteinG": 26,
+      "carbsG": 6,
+      "fatG": 14,
+      "fiberG": 0.5,
+      "sodiumMg": 620
+    },
+    "prepSteps": [
+      "Demolha as amêijoas em água com sal 2 horas para largar areia.",
+      "Aquece o azeite e frita o alho laminado.",
+      "Junta as amêijoas e o vinho branco, tampa.",
+      "Cozinha em lume forte 3-4 minutos até abrirem.",
+      "Polvilha com coentros picados e serve com pão."
+    ]
+  },
+  {
+    "id": "arroz_marisco",
+    "name": "Arroz de Marisco",
+    "proteinId": "camarao",
+    "type": "peixe",
+    "complexity": 3,
+    "prepMinutes": 45,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": false,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "camarao",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "ameijoas",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "pimento",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      },
+      {
+        "ingredientId": "coentros",
+        "quantity": 0.02
+      }
+    ],
+    "isPortable": false,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 450,
+      "proteinG": 28,
+      "carbsG": 48,
+      "fatG": 14,
+      "fiberG": 2,
+      "sodiumMg": 580
+    },
+    "prepSteps": [
+      "Refoga a cebola e o pimento em azeite.",
+      "Junta o tomate pelado esmagado e deixa apurar 5 minutos.",
+      "Adiciona água a ferver e o arroz.",
+      "A meio da cozedura junta as amêijoas e o camarão.",
+      "Cozinha até o arroz ficar malandrinho e polvilha com coentros."
+    ]
+  },
+  {
+    "id": "camarao_alho",
+    "name": "Camarão ao Alho",
+    "proteinId": "camarao",
+    "type": "peixe",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": false,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "camarao",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      },
+      {
+        "ingredientId": "pao",
+        "quantity": 1
+      }
+    ],
+    "isPortable": false,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 350,
+      "proteinG": 30,
+      "carbsG": 20,
+      "fatG": 16,
+      "fiberG": 1,
+      "sodiumMg": 520
+    },
+    "prepSteps": [
+      "Descasca o camarão, deixando a cauda.",
+      "Aquece o azeite e frita o alho laminado até dourar.",
+      "Junta o camarão e salteia em lume alto 3-4 minutos.",
+      "Tempera com sal, pimenta e um toque de malagueta.",
+      "Serve com pão para molhar no molho."
+    ]
+  },
+  {
+    "id": "polvo_lagareiro",
+    "name": "Polvo à Lagareiro",
+    "proteinId": "polvo",
+    "type": "peixe",
+    "complexity": 2,
+    "prepMinutes": 30,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "polvo",
+        "quantity": 0.6
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.6
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.06
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 440,
+      "proteinG": 30,
+      "carbsG": 34,
+      "fatG": 18,
+      "fiberG": 2.5,
+      "sodiumMg": 480
+    },
+    "prepSteps": [
+      "Coze o polvo em água sem sal cerca de 40 minutos (usar água da cozedura).",
+      "Coze as batatas com pele e depois esmaga levemente com a mão.",
+      "Dispõe o polvo cortado e as batatas num tabuleiro.",
+      "Rega generosamente com azeite e alho picado.",
+      "Leva ao forno a 220°C durante 15 minutos até dourar."
+    ],
+    "activeMinutes": 15,
+    "passiveMinutes": 15
+  },
+  {
+    "id": "polvo_arroz",
+    "name": "Arroz de Polvo",
+    "proteinId": "polvo",
+    "type": "peixe",
+    "complexity": 2,
+    "prepMinutes": 35,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "polvo",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      },
+      {
+        "ingredientId": "coentros",
+        "quantity": 0.02
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 430,
+      "proteinG": 28,
+      "carbsG": 46,
+      "fatG": 12,
+      "fiberG": 2,
+      "sodiumMg": 450
+    },
+    "prepSteps": [
+      "Coze o polvo e reserva a água da cozedura.",
+      "Refoga a cebola em azeite, junta o tomate pelado.",
+      "Adiciona a água do polvo e o arroz.",
+      "Corta o polvo em pedaços e junta a meio da cozedura.",
+      "Cozinha até ficar malandrinho e finaliza com coentros."
+    ]
+  },
+  {
+    "id": "lulas_grelhadas",
+    "name": "Lulas Grelhadas",
+    "proteinId": "lulas",
+    "type": "peixe",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "lulas",
+        "quantity": 0.6
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.01
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      },
+      {
+        "ingredientId": "alface",
+        "quantity": 1
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "spring",
+      "summer"
+    ],
+    "nutrition": {
+      "kcal": 300,
+      "proteinG": 28,
+      "carbsG": 6,
+      "fatG": 14,
+      "fiberG": 1.5,
+      "sodiumMg": 380
+    },
+    "prepSteps": [
+      "Limpa as lulas e tempera com alho picado, azeite, sal e pimenta.",
+      "Deixa marinar 15 minutos.",
+      "Grelha em lume muito forte 2-3 minutos de cada lado.",
+      "Serve com salada de alface e batata cozida."
+    ]
+  },
+  {
+    "id": "lulas_recheadas",
+    "name": "Lulas Recheadas",
+    "proteinId": "lulas",
+    "type": "peixe",
+    "complexity": 2,
+    "prepMinutes": 35,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "lulas",
+        "quantity": 0.6
+      },
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      },
+      {
+        "ingredientId": "salsa",
+        "quantity": 0.02
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 26,
+      "carbsG": 30,
+      "fatG": 14,
+      "fiberG": 2,
+      "sodiumMg": 420
+    },
+    "prepSteps": [
+      "Limpa as lulas, separando os tentáculos.",
+      "Pica os tentáculos e mistura com arroz cozido, cebola e salsa.",
+      "Recheia os tubos das lulas e fecha com palito.",
+      "Coloca num tabuleiro com molho de tomate.",
+      "Leva ao forno a 180°C durante 25 minutos."
+    ],
+    "activeMinutes": 15,
+    "passiveMinutes": 20
+  },
+  {
+    "id": "cataplana_peixe",
+    "name": "Cataplana de Peixe",
+    "proteinId": "dourada",
+    "type": "peixe",
+    "complexity": 2,
+    "prepMinutes": 30,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": false,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "dourada",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "ameijoas",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "camarao",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "pimento",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "tomate",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      },
+      {
+        "ingredientId": "coentros",
+        "quantity": 0.02
+      }
+    ],
+    "isPortable": false,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 420,
+      "proteinG": 32,
+      "carbsG": 30,
+      "fatG": 16,
+      "fiberG": 3,
+      "sodiumMg": 550
+    },
+    "prepSteps": [
+      "Faz camadas numa panela: batata em rodelas, cebola, pimento, tomate.",
+      "Coloca os pedaços de dourada e o camarão por cima.",
+      "Rega com azeite e vinho branco.",
+      "Tampa bem e cozinha em lume brando 25 minutos.",
+      "Junta as amêijoas nos últimos 5 minutos e polvilha com coentros."
+    ]
+  },
+  {
+    "id": "bacalhau_bras",
+    "name": "Bacalhau à Brás",
+    "proteinId": "bacalhau",
+    "type": "peixe",
+    "complexity": 2,
+    "prepMinutes": 30,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "bacalhau",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "ovo",
+        "quantity": 6
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.06
+      },
+      {
+        "ingredientId": "salsa",
+        "quantity": 0.02
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 520,
+      "proteinG": 34,
+      "carbsG": 32,
+      "fatG": 28,
+      "fiberG": 2,
+      "sodiumMg": 680
+    },
+    "prepSteps": [
+      "Desfia o bacalhau demolhado e seca bem.",
+      "Corta as batatas em palha fina e frita em azeite. Escorre.",
+      "Refoga a cebola em azeite, junta o bacalhau desfiado.",
+      "Mistura as batatas palha e os ovos batidos.",
+      "Mexe em lume brando até os ovos coalharem ligeiramente. Polvilha com salsa."
+    ]
+  },
+  {
+    "id": "bacalhau_natas",
+    "name": "Bacalhau com Natas",
+    "proteinId": "bacalhau",
+    "type": "peixe",
+    "complexity": 2,
+    "prepMinutes": 35,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "bacalhau",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "natas",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 550,
+      "proteinG": 32,
+      "carbsG": 34,
+      "fatG": 30,
+      "fiberG": 2,
+      "sodiumMg": 700
+    },
+    "prepSteps": [
+      "Coze o bacalhau e desfia. Coze as batatas e corta em rodelas.",
+      "Refoga a cebola em azeite e junta o bacalhau desfiado.",
+      "Num tabuleiro alterna camadas de batata e bacalhau.",
+      "Cobre com natas e leva ao forno a 200°C por 20 minutos.",
+      "Gratina os últimos 5 minutos até dourar."
+    ],
+    "activeMinutes": 15,
+    "passiveMinutes": 20
+  },
+  {
+    "id": "sopa_peixe",
+    "name": "Sopa de Peixe",
+    "proteinId": "pescada",
+    "type": "peixe",
+    "complexity": 2,
+    "prepMinutes": 30,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "pescada",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "tomate",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      },
+      {
+        "ingredientId": "coentros",
+        "quantity": 0.02
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 280,
+      "proteinG": 22,
+      "carbsG": 28,
+      "fatG": 8,
+      "fiberG": 3,
+      "sodiumMg": 420
+    },
+    "prepSteps": [
+      "Coze a pescada em água temperada com sal e louro. Reserva o caldo.",
+      "No caldo, coze a batata, cenoura e cebola até ficarem macias.",
+      "Tritura os legumes com a varinha mágica.",
+      "Junta o tomate picado e a pescada desfiada.",
+      "Cozinha mais 5 minutos e finaliza com coentros."
+    ]
+  },
+  {
+    "id": "peru_estufado",
+    "name": "Peru Estufado com Cenoura",
+    "proteinId": "peru",
+    "type": "carne",
+    "complexity": 2,
+    "prepMinutes": 30,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "peru",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 360,
+      "proteinG": 34,
+      "carbsG": 18,
+      "fatG": 12,
+      "fiberG": 3,
+      "sodiumMg": 380
+    },
+    "prepSteps": [
+      "Corta o peru em cubos e tempera com sal e pimenta.",
+      "Refoga a cebola em azeite até ficar translúcida.",
+      "Junta o peru e deixa selar de todos os lados.",
+      "Adiciona a cenoura em rodelas e o tomate pelado.",
+      "Tampa e estúfa em lume brando 25 minutos."
+    ],
+    "activeMinutes": 10,
+    "passiveMinutes": 20
+  },
+  {
+    "id": "peru_grelhado",
+    "name": "Bife de Peru Grelhado",
+    "proteinId": "peru",
+    "type": "carne",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "peru",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.25
+      },
+      {
+        "ingredientId": "alface",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 36,
+      "carbsG": 30,
+      "fatG": 10,
+      "fiberG": 1.5,
+      "sodiumMg": 320
+    },
+    "prepSteps": [
+      "Tempera os bifes de peru com alho, azeite e limão.",
+      "Deixa marinar 10 minutos.",
+      "Grelha os bifes 4 minutos de cada lado.",
+      "Serve com arroz cozido e salada de alface."
+    ]
+  },
+  {
+    "id": "vitela_estufada",
+    "name": "Vitela Estufada",
+    "proteinId": "vitela",
+    "type": "carne",
+    "complexity": 2,
+    "prepMinutes": 35,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "vitela",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 450,
+      "proteinG": 32,
+      "carbsG": 34,
+      "fatG": 18,
+      "fiberG": 3,
+      "sodiumMg": 420
+    },
+    "prepSteps": [
+      "Corta a vitela em cubos e tempera com sal e pimenta.",
+      "Sela a vitela em azeite bem quente. Reserva.",
+      "No mesmo tacho refoga a cebola, junta cenoura e tomate.",
+      "Volta a juntar a vitela, adiciona água e batata em cubos.",
+      "Tampa e cozinha em lume brando 40 minutos."
+    ],
+    "activeMinutes": 15,
+    "passiveMinutes": 20
+  },
+  {
+    "id": "arroz_pato",
+    "name": "Arroz de Pato",
+    "proteinId": "pato",
+    "type": "carne",
+    "complexity": 3,
+    "prepMinutes": 60,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "pato",
+        "quantity": 0.8
+      },
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.35
+      },
+      {
+        "ingredientId": "chourico",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 580,
+      "proteinG": 34,
+      "carbsG": 48,
+      "fatG": 26,
+      "fiberG": 1.5,
+      "sodiumMg": 520
+    },
+    "prepSteps": [
+      "Coze o pato com cebola, cenoura e louro até ficar tenro (~1h).",
+      "Desfia a carne e reserva o caldo.",
+      "Cozinha o arroz no caldo do pato até ficar quase seco.",
+      "Mistura o pato desfiado e o chouriço fatiado ao arroz.",
+      "Coloca num tabuleiro e leva ao forno a 200°C por 15 minutos até fazer crosta."
+    ],
+    "activeMinutes": 25,
+    "passiveMinutes": 35
+  },
+  {
+    "id": "coelho_caçador",
+    "name": "Coelho à Caçador",
+    "proteinId": "coelho",
+    "type": "carne",
+    "complexity": 2,
+    "prepMinutes": 40,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "coelho",
+        "quantity": 0.8
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "vinho_branco",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.01
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 36,
+      "carbsG": 14,
+      "fatG": 16,
+      "fiberG": 2.5,
+      "sodiumMg": 400
+    },
+    "prepSteps": [
+      "Corta o coelho em pedaços e tempera com sal, alho e vinho branco.",
+      "Deixa marinar 30 minutos.",
+      "Sela o coelho em azeite bem quente. Reserva.",
+      "No mesmo tacho refoga cebola e cenoura, junta o tomate.",
+      "Volta a juntar o coelho, tampa e cozinha em lume brando 45 minutos."
+    ],
+    "activeMinutes": 15,
+    "passiveMinutes": 25
+  },
+  {
+    "id": "chanfana",
+    "name": "Chanfana",
+    "proteinId": "coelho",
+    "type": "carne",
+    "complexity": 3,
+    "prepMinutes": 45,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "coelho",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "vinho_branco",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.5
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 460,
+      "proteinG": 38,
+      "carbsG": 24,
+      "fatG": 20,
+      "fiberG": 2,
+      "sodiumMg": 440
+    },
+    "prepSteps": [
+      "Corta o coelho e marina em vinho tinto, alho, louro e sal durante 2 horas.",
+      "Coloca tudo num tacho de barro com a cebola fatiada.",
+      "Cobre com a marinada e leva ao forno a 160°C.",
+      "Cozinha lentamente durante 2 horas, adicionando líquido se necessário.",
+      "Serve com batata cozida."
+    ],
+    "activeMinutes": 15,
+    "passiveMinutes": 30
+  },
+  {
+    "id": "cozido_portuguesa",
+    "name": "Cozido à Portuguesa",
+    "proteinId": "porco",
+    "type": "carne",
+    "complexity": 3,
+    "prepMinutes": 60,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "pressureCooker"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "porco",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "frango",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "chourico",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "couve",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "nabo",
+        "quantity": 0.2
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 550,
+      "proteinG": 38,
+      "carbsG": 36,
+      "fatG": 24,
+      "fiberG": 5,
+      "sodiumMg": 620
+    },
+    "prepSteps": [
+      "Coloca as carnes na panela de pressão com água e sal.",
+      "Cozinha 30 minutos sob pressão.",
+      "Retira as carnes e no mesmo caldo coze batata, cenoura e nabo.",
+      "Em separado coze a couve em água com sal.",
+      "Serve tudo travessado num prato, com o chouriço fatiado por cima."
+    ],
+    "activeMinutes": 20,
+    "passiveMinutes": 40
+  },
+  {
+    "id": "acorda_alentejana",
+    "name": "Açorda Alentejana",
+    "proteinId": "ovo",
+    "type": "ovos",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "pao",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "ovo",
+        "quantity": 4
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "coentros",
+        "quantity": 0.03
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.06
+      }
+    ],
+    "isPortable": false,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 16,
+      "carbsG": 36,
+      "fatG": 18,
+      "fiberG": 2,
+      "sodiumMg": 450
+    },
+    "prepSteps": [
+      "Ferve água com sal.",
+      "Esmaga o alho com sal num almofariz, junta coentros picados e azeite.",
+      "Parte o pão em pedaços numa terrina.",
+      "Escalfa os ovos na água a ferver.",
+      "Deita a água quente sobre o pão, mistura o preparado de alho e coloca os ovos por cima."
+    ]
+  },
+  {
+    "id": "migas_alentejanas",
+    "name": "Migas Alentejanas",
+    "proteinId": "porco",
+    "type": "carne",
+    "complexity": 2,
+    "prepMinutes": 25,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "porco",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "pao",
+        "quantity": 2
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.06
+      },
+      {
+        "ingredientId": "couve",
+        "quantity": 0.2
+      }
+    ],
+    "isPortable": false,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 520,
+      "proteinG": 30,
+      "carbsG": 42,
+      "fatG": 24,
+      "fiberG": 3,
+      "sodiumMg": 480
+    },
+    "prepSteps": [
+      "Frita a carne de porco em azeite até ficar bem dourada. Reserva.",
+      "Na gordura que ficou, frita o alho picado.",
+      "Coze a couve em água com sal e escorre.",
+      "Esmiga o pão duro e mistura com a couve, alho e azeite.",
+      "Mexe em lume brando até formar uma massa consistente. Serve com a carne."
+    ]
+  },
+  {
+    "id": "canja_galinha",
+    "name": "Canja de Galinha",
+    "proteinId": "frango",
+    "type": "carne",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "frango",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.02
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 280,
+      "proteinG": 24,
+      "carbsG": 28,
+      "fatG": 8,
+      "fiberG": 1.5,
+      "sodiumMg": 380
+    },
+    "prepSteps": [
+      "Coze o frango em água com cebola e cenoura até ficar tenro.",
+      "Retira o frango e desfia a carne.",
+      "No caldo coado, junta o arroz e cozinha 15 minutos.",
+      "Volta a juntar o frango desfiado.",
+      "Tempera com sal e serve bem quente."
+    ]
+  },
+  {
+    "id": "creme_cenoura",
+    "name": "Creme de Cenoura",
+    "proteinId": "cenoura",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 180,
+      "proteinG": 3,
+      "carbsG": 28,
+      "fatG": 6,
+      "fiberG": 5,
+      "sodiumMg": 300
+    },
+    "prepSteps": [
+      "Descasca e corta a cenoura, batata e cebola.",
+      "Coze tudo em água com sal até ficarem macias (~20 min).",
+      "Tritura com a varinha mágica até ficar cremoso.",
+      "Tempera com azeite e uma pitada de noz-moscada.",
+      "Serve quente com um fio de azeite."
+    ]
+  },
+  {
+    "id": "sopa_abobora",
+    "name": "Sopa de Abóbora",
+    "proteinId": "abobora",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "abobora",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 160,
+      "proteinG": 3,
+      "carbsG": 26,
+      "fatG": 5,
+      "fiberG": 4,
+      "sodiumMg": 280
+    },
+    "prepSteps": [
+      "Descasca a abóbora e corta em cubos.",
+      "Coze com a batata, cebola e cenoura em água com sal.",
+      "Quando tudo estiver macio, tritura com a varinha.",
+      "Ajusta o sal e serve com um fio de azeite."
+    ]
+  },
+  {
+    "id": "gazpacho",
+    "name": "Gazpacho",
+    "proteinId": "tomate",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": true,
+    "requiresEquipment": [
+      "foodProcessor"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "tomate",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "pepino",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "pimento",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.01
+      },
+      {
+        "ingredientId": "pao",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "spring",
+      "summer"
+    ],
+    "nutrition": {
+      "kcal": 200,
+      "proteinG": 5,
+      "carbsG": 28,
+      "fatG": 8,
+      "fiberG": 3.5,
+      "sodiumMg": 350
+    },
+    "prepSteps": [
+      "Demolha o miolo de pão em água.",
+      "Coloca o tomate, pepino, pimento, cebola e alho no processador.",
+      "Junta o pão demolhado e o azeite.",
+      "Tritura até ficar homogéneo.",
+      "Tempera com sal e vinagre a gosto. Serve bem frio."
+    ]
+  },
+  {
+    "id": "sopa_couve_flor",
+    "name": "Creme de Couve-Flor",
+    "proteinId": "couve_flor",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "couve_flor",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 150,
+      "proteinG": 5,
+      "carbsG": 22,
+      "fatG": 5,
+      "fiberG": 4,
+      "sodiumMg": 280
+    },
+    "prepSteps": [
+      "Separa a couve-flor em raminhos.",
+      "Coze com a batata e cebola em água com sal.",
+      "Tritura com a varinha mágica até ficar cremoso.",
+      "Serve com um fio de azeite."
+    ]
+  },
+  {
+    "id": "sopa_espinafres",
+    "name": "Sopa de Espinafres",
+    "proteinId": "espinafres",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "espinafres",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.01
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 160,
+      "proteinG": 5,
+      "carbsG": 24,
+      "fatG": 5,
+      "fiberG": 4.5,
+      "sodiumMg": 300
+    },
+    "prepSteps": [
+      "Coze a batata e cebola em água com sal até amolecerem.",
+      "Junta os espinafres e cozinha mais 5 minutos.",
+      "Tritura tudo com a varinha mágica.",
+      "Junta o alho picado refogado em azeite e serve."
+    ]
+  },
+  {
+    "id": "tofu_salteado",
+    "name": "Tofu Salteado com Legumes",
+    "proteinId": "tofu",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "tofu",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "pimento",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "courgette",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cogumelos",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 280,
+      "proteinG": 18,
+      "carbsG": 14,
+      "fatG": 16,
+      "fiberG": 4,
+      "sodiumMg": 320
+    },
+    "prepSteps": [
+      "Corta o tofu em cubos e seca com papel absorvente.",
+      "Frita o tofu em azeite até dourar de todos os lados. Reserva.",
+      "No mesmo azeite salteia a cebola, pimento e courgette.",
+      "Junta os cogumelos e salteia mais 3 minutos.",
+      "Volta a juntar o tofu, tempera com molho de soja e serve."
+    ]
+  },
+  {
+    "id": "tofu_arroz",
+    "name": "Tofu com Arroz e Brócolos",
+    "proteinId": "tofu",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 25,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "tofu",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.25
+      },
+      {
+        "ingredientId": "broculos",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.01
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 360,
+      "proteinG": 20,
+      "carbsG": 40,
+      "fatG": 12,
+      "fiberG": 4.5,
+      "sodiumMg": 300
+    },
+    "prepSteps": [
+      "Cozinha o arroz em água com sal.",
+      "Coze os brócolos ao vapor 6 minutos.",
+      "Corta o tofu em cubos e grelha em azeite com alho.",
+      "Serve o tofu sobre o arroz com os brócolos ao lado."
+    ]
+  },
+  {
+    "id": "beringela_recheada",
+    "name": "Beringela Recheada",
+    "proteinId": "beringela",
+    "type": "vegetariano",
+    "complexity": 2,
+    "prepMinutes": 35,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": true,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "beringela",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "tomate",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cogumelos",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "queijo",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "summer",
+      "autumn"
+    ],
+    "nutrition": {
+      "kcal": 250,
+      "proteinG": 10,
+      "carbsG": 18,
+      "fatG": 14,
+      "fiberG": 6,
+      "sodiumMg": 350
+    },
+    "prepSteps": [
+      "Corta as beringelas ao meio e faz cortes na polpa.",
+      "Assa no forno 15 min a 200°C, retira a polpa.",
+      "Refoga cebola, cogumelos e tomate picado.",
+      "Mistura com a polpa da beringela e recheia as metades.",
+      "Polvilha com queijo ralado e leva ao forno mais 15 minutos."
+    ],
+    "activeMinutes": 15,
+    "passiveMinutes": 20
+  },
+  {
+    "id": "wrap_vegetariano",
+    "name": "Wrap Vegetariano",
+    "proteinId": "grao",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "snack"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "tortilha_trigo",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "grao",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "alface",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "tomate",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.02
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 340,
+      "proteinG": 12,
+      "carbsG": 44,
+      "fatG": 12,
+      "fiberG": 6,
+      "sodiumMg": 380
+    },
+    "prepSteps": [
+      "Escorre o grão-de-bico e esmaga grosseiramente com um garfo.",
+      "Corta a alface em tiras, o tomate em cubos e a cenoura em palitos.",
+      "Aquece a tortilha numa frigideira seca.",
+      "Espalha o grão esmagado na tortilha.",
+      "Distribui os legumes, enrola bem e serve."
+    ]
+  },
+  {
+    "id": "wrap_atum",
+    "name": "Wrap de Atum",
+    "proteinId": "atum_lata",
+    "type": "peixe",
+    "complexity": 1,
+    "prepMinutes": 10,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "snack"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "tortilha_trigo",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "atum_lata",
+        "quantity": 2
+      },
+      {
+        "ingredientId": "alface",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "tomate",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "milho_lata",
+        "quantity": 1
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 24,
+      "carbsG": 42,
+      "fatG": 12,
+      "fiberG": 3,
+      "sodiumMg": 520
+    },
+    "prepSteps": [
+      "Escorre o atum e o milho.",
+      "Mistura o atum com o milho e tempera com azeite e limão.",
+      "Corta a alface e o tomate.",
+      "Aquece a tortilha e monta o wrap.",
+      "Enrola bem e corta ao meio."
+    ]
+  },
+  {
+    "id": "tosta_atum_queijo",
+    "name": "Tosta de Atum e Queijo",
+    "proteinId": "atum_lata",
+    "type": "peixe",
+    "complexity": 1,
+    "prepMinutes": 10,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "snack"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "pao_forma",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "atum_lata",
+        "quantity": 2
+      },
+      {
+        "ingredientId": "queijo",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "tomate",
+        "quantity": 0.1
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 350,
+      "proteinG": 22,
+      "carbsG": 32,
+      "fatG": 14,
+      "fiberG": 2,
+      "sodiumMg": 480
+    },
+    "prepSteps": [
+      "Escorre o atum e mistura com um fio de azeite.",
+      "Coloca o atum sobre as fatias de pão de forma.",
+      "Acrescenta rodelas de tomate e queijo por cima.",
+      "Leva ao forno a 200°C por 8-10 minutos até gratinar."
+    ],
+    "activeMinutes": 5,
+    "passiveMinutes": 5
+  },
+  {
+    "id": "crepes_fiambre_queijo",
+    "name": "Crepes de Fiambre e Queijo",
+    "proteinId": "fiambre",
+    "type": "carne",
+    "complexity": 2,
+    "prepMinutes": 25,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner",
+      "snack"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "farinha",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "ovo",
+        "quantity": 2
+      },
+      {
+        "ingredientId": "leite",
+        "quantity": 0.25
+      },
+      {
+        "ingredientId": "fiambre",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "queijo",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "manteiga",
+        "quantity": 0.02
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 22,
+      "carbsG": 30,
+      "fatG": 18,
+      "fiberG": 1,
+      "sodiumMg": 520
+    },
+    "prepSteps": [
+      "Mistura a farinha, ovos e leite até obter uma massa lisa.",
+      "Unta a frigideira com manteiga e faz crepes finos.",
+      "Recheia cada crepe com fiambre e queijo.",
+      "Dobra em quatro e serve."
+    ]
+  },
+  {
+    "id": "crepes_espinafres",
+    "name": "Crepes de Espinafres e Queijo",
+    "proteinId": "espinafres",
+    "type": "vegetariano",
+    "complexity": 2,
+    "prepMinutes": 30,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "farinha",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "ovo",
+        "quantity": 2
+      },
+      {
+        "ingredientId": "leite",
+        "quantity": 0.25
+      },
+      {
+        "ingredientId": "espinafres",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "queijo",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "natas",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "manteiga",
+        "quantity": 0.02
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 340,
+      "proteinG": 16,
+      "carbsG": 28,
+      "fatG": 18,
+      "fiberG": 3,
+      "sodiumMg": 420
+    },
+    "prepSteps": [
+      "Prepara a massa de crepes com farinha, ovos e leite.",
+      "Faz crepes finos na frigideira untada.",
+      "Refoga os espinafres com alho e mistura com natas.",
+      "Recheia os crepes, enrola e dispõe num tabuleiro.",
+      "Polvilha com queijo e gratina no forno 10 minutos."
+    ],
+    "activeMinutes": 15,
+    "passiveMinutes": 15
+  },
+  {
+    "id": "feijao_branco_chourico",
+    "name": "Feijão Branco com Chouriço",
+    "proteinId": "feijao_branco",
+    "type": "leguminosas",
+    "complexity": 2,
+    "prepMinutes": 25,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "feijao_branco",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "chourico",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "couve",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 420,
+      "proteinG": 22,
+      "carbsG": 38,
+      "fatG": 18,
+      "fiberG": 10,
+      "sodiumMg": 580
+    },
+    "prepSteps": [
+      "Coze o feijão branco até ficar tenro (ou usa de conserva).",
+      "Refoga a cebola em azeite, junta o chouriço fatiado.",
+      "Adiciona o tomate pelado esmagado e a couve cortada.",
+      "Junta o feijão cozido e um pouco de caldo.",
+      "Cozinha 15 minutos em lume brando até apurar."
+    ],
+    "activeMinutes": 10,
+    "passiveMinutes": 15
+  },
+  {
+    "id": "lentilhas_legumes",
+    "name": "Lentilhas com Legumes",
+    "proteinId": "lentilhas",
+    "type": "leguminosas",
+    "complexity": 1,
+    "prepMinutes": 25,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "lentilhas",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "courgette",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 320,
+      "proteinG": 18,
+      "carbsG": 44,
+      "fatG": 6,
+      "fiberG": 12,
+      "sodiumMg": 350
+    },
+    "prepSteps": [
+      "Lava as lentilhas e escorre.",
+      "Refoga a cebola em azeite, junta cenoura e courgette em cubos.",
+      "Adiciona o tomate pelado e as lentilhas.",
+      "Cobre com água e cozinha 20 minutos até as lentilhas ficarem macias.",
+      "Tempera com sal e serve."
+    ]
+  },
+  {
+    "id": "grao_curry",
+    "name": "Grão-de-Bico com Caril",
+    "proteinId": "grao",
+    "type": "leguminosas",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "grao",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "espinafres",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 340,
+      "proteinG": 16,
+      "carbsG": 42,
+      "fatG": 10,
+      "fiberG": 10,
+      "sodiumMg": 380
+    },
+    "prepSteps": [
+      "Refoga a cebola em azeite, junta caril em pó.",
+      "Adiciona o tomate pelado esmagado e cozinha 5 minutos.",
+      "Junta o grão-de-bico cozido e os espinafres.",
+      "Cozinha mais 10 minutos em lume brando.",
+      "Serve com arroz basmati."
+    ]
+  },
+  {
+    "id": "feijao_preto_arroz",
+    "name": "Feijão Preto com Arroz",
+    "proteinId": "feijao",
+    "type": "leguminosas",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "feijao",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.25
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "pimento",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.01
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 16,
+      "carbsG": 58,
+      "fatG": 8,
+      "fiberG": 10,
+      "sodiumMg": 340
+    },
+    "prepSteps": [
+      "Cozinha o arroz em água com sal.",
+      "Refoga a cebola, pimento e alho em azeite.",
+      "Junta o feijão cozido e tempera com cominhos.",
+      "Cozinha 10 minutos e serve com o arroz."
+    ]
+  },
+  {
+    "id": "cuscuz_legumes",
+    "name": "Cuscuz com Legumes",
+    "proteinId": "courgette",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "cuscuz",
+        "quantity": 0.25
+      },
+      {
+        "ingredientId": "courgette",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "pimento",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 300,
+      "proteinG": 10,
+      "carbsG": 48,
+      "fatG": 8,
+      "fiberG": 5,
+      "sodiumMg": 280
+    },
+    "prepSteps": [
+      "Hidrata o cuscuz com água a ferver e azeite. Tampa 5 minutos.",
+      "Corta todos os legumes em cubos pequenos.",
+      "Salteia os legumes em azeite até ficarem al dente.",
+      "Solta o cuscuz com um garfo e mistura os legumes.",
+      "Tempera com sal, pimenta e ervas a gosto."
+    ]
+  },
+  {
+    "id": "batata_doce_forno",
+    "name": "Batata-Doce Recheada",
+    "proteinId": "batata_doce",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "batata_doce",
+        "quantity": 0.8
+      },
+      {
+        "ingredientId": "espinafres",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "queijo",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "cogumelos",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.02
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 320,
+      "proteinG": 10,
+      "carbsG": 48,
+      "fatG": 10,
+      "fiberG": 6,
+      "sodiumMg": 300
+    },
+    "prepSteps": [
+      "Lava as batatas-doces e pica com um garfo.",
+      "Assa no forno a 200°C durante 40 minutos.",
+      "Salteia os espinafres e cogumelos em azeite.",
+      "Abre as batatas ao meio e recheia com os legumes.",
+      "Polvilha com queijo ralado e gratina 5 minutos."
+    ],
+    "activeMinutes": 10,
+    "passiveMinutes": 10
+  },
+  {
+    "id": "ovo_estrelado_arroz_feijao",
+    "name": "Ovo Estrelado com Arroz e Feijão",
+    "proteinId": "ovo",
+    "type": "ovos",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "ovo",
+        "quantity": 8
+      },
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.25
+      },
+      {
+        "ingredientId": "feijao",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      }
+    ],
+    "isPortable": false,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 450,
+      "proteinG": 22,
+      "carbsG": 48,
+      "fatG": 18,
+      "fiberG": 6,
+      "sodiumMg": 380
+    },
+    "prepSteps": [
+      "Cozinha o arroz em água com sal.",
+      "Aquece o feijão já cozido num tacho.",
+      "Frita os ovos em azeite com a gema mole.",
+      "Serve o arroz, feijão e ovos estrelados por cima."
+    ]
+  },
+  {
+    "id": "ovos_cozidos_espinafres",
+    "name": "Ovos Cozidos com Espinafres",
+    "proteinId": "ovo",
+    "type": "ovos",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "ovo",
+        "quantity": 8
+      },
+      {
+        "ingredientId": "espinafres",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.01
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 280,
+      "proteinG": 22,
+      "carbsG": 6,
+      "fatG": 18,
+      "fiberG": 3,
+      "sodiumMg": 360
+    },
+    "prepSteps": [
+      "Coze os ovos 10 minutos em água a ferver. Arrefece e descasca.",
+      "Salteia os espinafres com alho em azeite.",
+      "Corta os ovos ao meio.",
+      "Serve os ovos sobre a cama de espinafres."
+    ]
+  },
+  {
+    "id": "quiche_legumes",
+    "name": "Quiche de Legumes",
+    "proteinId": "ovo",
+    "type": "ovos",
+    "complexity": 2,
+    "prepMinutes": 40,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner",
+      "snack"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "ovo",
+        "quantity": 4
+      },
+      {
+        "ingredientId": "natas",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "farinha",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "manteiga",
+        "quantity": 0.05
+      },
+      {
+        "ingredientId": "broculos",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "queijo",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 18,
+      "carbsG": 26,
+      "fatG": 24,
+      "fiberG": 2.5,
+      "sodiumMg": 420
+    },
+    "prepSteps": [
+      "Faz a massa: mistura farinha, manteiga e um pouco de água. Forra a forma.",
+      "Pré-coze a base no forno a 180°C por 10 minutos.",
+      "Salteia a cebola e os brócolos em azeite.",
+      "Bate os ovos com as natas e tempera.",
+      "Coloca os legumes na base, verte o creme e polvilha com queijo. Assa 25 minutos."
+    ],
+    "activeMinutes": 20,
+    "passiveMinutes": 20
+  },
+  {
+    "id": "ovos_ninho",
+    "name": "Ovos no Ninho de Batata",
+    "proteinId": "ovo",
+    "type": "ovos",
+    "complexity": 2,
+    "prepMinutes": 30,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "ovo",
+        "quantity": 4
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.6
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "pimento",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 350,
+      "proteinG": 16,
+      "carbsG": 34,
+      "fatG": 16,
+      "fiberG": 3,
+      "sodiumMg": 360
+    },
+    "prepSteps": [
+      "Rala a batata grosseiramente e espreme para retirar água.",
+      "Mistura com cebola picada, pimento e azeite.",
+      "Distribui em formas individuais, criando um ninho.",
+      "Leva ao forno a 200°C por 15 minutos até dourar.",
+      "Parte um ovo em cada ninho e volta ao forno mais 8 minutos."
+    ],
+    "activeMinutes": 15,
+    "passiveMinutes": 15
+  },
+  {
+    "id": "panquecas_banana",
+    "name": "Panquecas de Banana e Aveia",
+    "proteinId": "banana",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "breakfast",
+      "snack"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "banana",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "aveia",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "ovo",
+        "quantity": 4
+      },
+      {
+        "ingredientId": "manteiga",
+        "quantity": 0.02
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 280,
+      "proteinG": 12,
+      "carbsG": 38,
+      "fatG": 10,
+      "fiberG": 3,
+      "sodiumMg": 180
+    },
+    "prepSteps": [
+      "Esmaga as bananas e mistura com a aveia e os ovos.",
+      "Aquece a frigideira com um pouco de manteiga.",
+      "Deita porções da massa e cozinha 2-3 minutos de cada lado.",
+      "Serve com fruta fresca ou mel."
+    ]
+  },
+  {
+    "id": "overnight_oats",
+    "name": "Aveia de Véspera com Fruta",
+    "proteinId": "aveia",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 10,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "breakfast"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "aveia",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "leite",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "iogurte",
+        "quantity": 4
+      },
+      {
+        "ingredientId": "banana",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "fruta",
+        "quantity": 0.2
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 300,
+      "proteinG": 12,
+      "carbsG": 46,
+      "fatG": 8,
+      "fiberG": 4,
+      "sodiumMg": 120
+    },
+    "prepSteps": [
+      "Mistura a aveia com o leite e o iogurte em frascos.",
+      "Adiciona a banana fatiada.",
+      "Tapa e guarda no frigorífico durante a noite.",
+      "De manhã, adiciona fruta fresca e serve."
+    ]
+  },
+  {
+    "id": "smoothie_bowl",
+    "name": "Smoothie Bowl de Fruta",
+    "proteinId": "banana",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 10,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "foodProcessor"
+    ],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "breakfast",
+      "snack"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "banana",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "fruta",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "iogurte",
+        "quantity": 4
+      },
+      {
+        "ingredientId": "aveia",
+        "quantity": 0.05
+      },
+      {
+        "ingredientId": "leite",
+        "quantity": 0.1
+      }
+    ],
+    "isPortable": false,
+    "seasons": [
+      "spring",
+      "summer"
+    ],
+    "nutrition": {
+      "kcal": 280,
+      "proteinG": 10,
+      "carbsG": 48,
+      "fatG": 6,
+      "fiberG": 4,
+      "sodiumMg": 100
+    },
+    "prepSteps": [
+      "Congela a banana fatiada na véspera.",
+      "Tritura a banana congelada, iogurte e leite no processador.",
+      "Deita numa taça.",
+      "Decora com fruta fresca fatiada e flocos de aveia."
+    ]
+  },
+  {
+    "id": "tosta_abacate_ovo",
+    "name": "Tosta de Ovo e Tomate",
+    "proteinId": "ovo",
+    "type": "ovos",
+    "complexity": 1,
+    "prepMinutes": 10,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "breakfast",
+      "snack"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "pao_forma",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "ovo",
+        "quantity": 4
+      },
+      {
+        "ingredientId": "tomate",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.02
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 300,
+      "proteinG": 16,
+      "carbsG": 30,
+      "fatG": 12,
+      "fiberG": 2,
+      "sodiumMg": 380
+    },
+    "prepSteps": [
+      "Tosta o pão de forma.",
+      "Frita ou coze os ovos a gosto.",
+      "Corta o tomate em rodelas.",
+      "Monta a tosta com tomate e ovo por cima. Rega com azeite."
+    ]
+  },
+  {
+    "id": "massa_atum_ervilhas",
+    "name": "Massa com Atum e Ervilhas",
+    "proteinId": "atum_lata",
+    "type": "peixe",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "massa",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "atum_lata",
+        "quantity": 2
+      },
+      {
+        "ingredientId": "ervilhas",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 420,
+      "proteinG": 26,
+      "carbsG": 52,
+      "fatG": 10,
+      "fiberG": 4,
+      "sodiumMg": 440
+    },
+    "prepSteps": [
+      "Coze a massa em água com sal. Escorre.",
+      "Refoga a cebola picada em azeite.",
+      "Junta as ervilhas e cozinha 5 minutos.",
+      "Mistura o atum escorrido e a massa.",
+      "Tempera e serve."
+    ]
+  },
+  {
+    "id": "arroz_feijao_legumes",
+    "name": "Arroz de Feijão com Legumes",
+    "proteinId": "feijao",
+    "type": "leguminosas",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "feijao",
+        "quantity": 0.25
+      },
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.25
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "courgette",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 14,
+      "carbsG": 58,
+      "fatG": 8,
+      "fiberG": 8,
+      "sodiumMg": 320
+    },
+    "prepSteps": [
+      "Refoga a cebola em azeite.",
+      "Junta cenoura e courgette em cubos pequenos.",
+      "Adiciona o arroz e o feijão cozido.",
+      "Cobre com água e cozinha até o arroz estar feito.",
+      "Tempera e serve."
+    ]
+  },
+  {
+    "id": "frango_caril",
+    "name": "Frango com Caril e Arroz",
+    "proteinId": "frango",
+    "type": "carne",
+    "complexity": 2,
+    "prepMinutes": 25,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "frango",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.25
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "natas",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 480,
+      "proteinG": 32,
+      "carbsG": 44,
+      "fatG": 18,
+      "fiberG": 2,
+      "sodiumMg": 400
+    },
+    "prepSteps": [
+      "Corta o frango em cubos e tempera com caril, sal e pimenta.",
+      "Refoga a cebola em azeite, junta o frango e sela.",
+      "Adiciona o tomate pelado e cozinha 10 minutos.",
+      "Junta as natas e deixa apurar mais 5 minutos.",
+      "Serve com arroz cozido."
+    ]
+  },
+  {
+    "id": "pescada_cozida",
+    "name": "Pescada Cozida com Legumes",
+    "proteinId": "pescada",
+    "type": "peixe",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "pescada",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "feijao_verde",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 360,
+      "proteinG": 30,
+      "carbsG": 32,
+      "fatG": 12,
+      "fiberG": 4,
+      "sodiumMg": 380
+    },
+    "prepSteps": [
+      "Coze as batatas, cenoura e feijão verde em água com sal.",
+      "Quando faltar 10 minutos, junta a pescada.",
+      "Escorre tudo com cuidado.",
+      "Serve regado com azeite e um pouco de vinagre."
+    ]
+  },
+  {
+    "id": "salmao_massa",
+    "name": "Massa com Salmão e Natas",
+    "proteinId": "salmao",
+    "type": "peixe",
+    "complexity": 2,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "salmao",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "massa",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "natas",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "espinafres",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 520,
+      "proteinG": 30,
+      "carbsG": 46,
+      "fatG": 24,
+      "fiberG": 2.5,
+      "sodiumMg": 420
+    },
+    "prepSteps": [
+      "Coze a massa em água com sal. Escorre.",
+      "Corta o salmão em cubos e grelha em azeite.",
+      "Refoga a cebola, junta os espinafres e as natas.",
+      "Mistura o salmão e a massa ao molho.",
+      "Serve imediatamente."
+    ]
+  },
+  {
+    "id": "porco_cogumelos",
+    "name": "Carne de Porco com Cogumelos",
+    "proteinId": "porco",
+    "type": "carne",
+    "complexity": 2,
+    "prepMinutes": 25,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "porco",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "cogumelos",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.01
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 32,
+      "carbsG": 8,
+      "fatG": 22,
+      "fiberG": 2,
+      "sodiumMg": 400
+    },
+    "prepSteps": [
+      "Corta a carne em tiras e tempera com sal e pimenta.",
+      "Sela em azeite bem quente. Reserva.",
+      "Refoga a cebola e o alho, junta os cogumelos fatiados.",
+      "Salteia até os cogumelos ficarem dourados.",
+      "Volta a juntar a carne e serve com arroz."
+    ]
+  },
+  {
+    "id": "carne_picada_ervilhas",
+    "name": "Carne Picada com Ervilhas",
+    "proteinId": "carne_picada",
+    "type": "carne",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "carne_picada",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "ervilhas",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      },
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.25
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 460,
+      "proteinG": 30,
+      "carbsG": 44,
+      "fatG": 16,
+      "fiberG": 4,
+      "sodiumMg": 420
+    },
+    "prepSteps": [
+      "Refoga a cebola em azeite.",
+      "Junta a carne picada e desfaz com uma colher.",
+      "Adiciona o tomate pelado e as ervilhas.",
+      "Cozinha 15 minutos em lume brando.",
+      "Serve com arroz cozido."
+    ]
+  },
+  {
+    "id": "vitela_forno",
+    "name": "Assado de Vitela",
+    "proteinId": "vitela",
+    "type": "carne",
+    "complexity": 2,
+    "prepMinutes": 30,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "vitela",
+        "quantity": 0.6
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.01
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.05
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 480,
+      "proteinG": 36,
+      "carbsG": 32,
+      "fatG": 20,
+      "fiberG": 3,
+      "sodiumMg": 400
+    },
+    "prepSteps": [
+      "Tempera a vitela com alho, azeite, sal e pimenta.",
+      "Coloca num tabuleiro com batata e cenoura em pedaços.",
+      "Rega com azeite e cobre com papel de alumínio.",
+      "Assa a 180°C durante 1h, retira o papel nos últimos 15 minutos.",
+      "Serve com os legumes assados."
+    ],
+    "activeMinutes": 15,
+    "passiveMinutes": 15
+  },
+  {
+    "id": "peru_massa",
+    "name": "Massa com Peru e Legumes",
+    "proteinId": "peru",
+    "type": "carne",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "peru",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "massa",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "courgette",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "tomate",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 420,
+      "proteinG": 32,
+      "carbsG": 46,
+      "fatG": 10,
+      "fiberG": 3,
+      "sodiumMg": 350
+    },
+    "prepSteps": [
+      "Coze a massa em água com sal.",
+      "Corta o peru em tiras e grelha em azeite.",
+      "Salteia a courgette em cubos e o tomate.",
+      "Mistura tudo com a massa escorrida.",
+      "Tempera e serve."
+    ]
+  },
+  {
+    "id": "arroz_cabidela",
+    "name": "Arroz de Cabidela",
+    "proteinId": "frango",
+    "type": "carne",
+    "complexity": 3,
+    "prepMinutes": 40,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "frango",
+        "quantity": 0.6
+      },
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 480,
+      "proteinG": 30,
+      "carbsG": 48,
+      "fatG": 16,
+      "fiberG": 1.5,
+      "sodiumMg": 420
+    },
+    "prepSteps": [
+      "Corta o frango em pedaços e tempera com sal e alho.",
+      "Refoga a cebola em azeite até dourar.",
+      "Junta o frango e deixa selar.",
+      "Adiciona água e vinagre, cozinha até o frango estar tenro.",
+      "Junta o arroz e cozinha até ficar malandrinho."
+    ]
+  },
+  {
+    "id": "massa_pesto_frango",
+    "name": "Massa com Frango e Pesto",
+    "proteinId": "frango",
+    "type": "carne",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "frango",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "massa",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "tomate",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.01
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 460,
+      "proteinG": 30,
+      "carbsG": 48,
+      "fatG": 14,
+      "fiberG": 2.5,
+      "sodiumMg": 380
+    },
+    "prepSteps": [
+      "Coze a massa. Escorre reservando um pouco de água.",
+      "Corta o frango em tiras e grelha em azeite com alho.",
+      "Mistura a massa com azeite, alho e tomate picado.",
+      "Junta o frango e mexe bem.",
+      "Serve com um fio de azeite."
+    ]
+  },
+  {
+    "id": "salada_atum_feijao",
+    "name": "Salada de Atum e Feijão",
+    "proteinId": "atum_lata",
+    "type": "peixe",
+    "complexity": 1,
+    "prepMinutes": 10,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "snack"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "atum_lata",
+        "quantity": 2
+      },
+      {
+        "ingredientId": "feijao_branco",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "tomate",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "alface",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "spring",
+      "summer"
+    ],
+    "nutrition": {
+      "kcal": 320,
+      "proteinG": 24,
+      "carbsG": 22,
+      "fatG": 14,
+      "fiberG": 6,
+      "sodiumMg": 480
+    },
+    "prepSteps": [
+      "Escorre o atum e o feijão.",
+      "Corta a cebola em meias-luas finas e o tomate em cubos.",
+      "Mistura tudo numa saladeira com a alface.",
+      "Tempera com azeite, vinagre e sal."
+    ]
+  },
+  {
+    "id": "frittata_batata",
+    "name": "Frittata de Batata e Chouriço",
+    "proteinId": "ovo",
+    "type": "ovos",
+    "complexity": 2,
+    "prepMinutes": 25,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner",
+      "snack"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "ovo",
+        "quantity": 6
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "chourico",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 22,
+      "carbsG": 22,
+      "fatG": 22,
+      "fiberG": 2,
+      "sodiumMg": 520
+    },
+    "prepSteps": [
+      "Coze a batata e corta em cubos pequenos.",
+      "Frita o chouriço e a cebola em azeite.",
+      "Bate os ovos e mistura com batata, chouriço e cebola.",
+      "Deita na frigideira e cozinha em lume brando 5 minutos.",
+      "Leva ao forno a 180°C por 10 minutos até ficar firme."
+    ],
+    "activeMinutes": 10,
+    "passiveMinutes": 15
+  },
+  {
+    "id": "cogumelos_recheados",
+    "name": "Cogumelos Recheados",
+    "proteinId": "cogumelos",
+    "type": "vegetariano",
+    "complexity": 2,
+    "prepMinutes": 25,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": true,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "dinner",
+      "snack"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "cogumelos",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "pao",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "queijo",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.01
+      },
+      {
+        "ingredientId": "salsa",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 240,
+      "proteinG": 10,
+      "carbsG": 22,
+      "fatG": 12,
+      "fiberG": 3,
+      "sodiumMg": 360
+    },
+    "prepSteps": [
+      "Retira os pés dos cogumelos e pica-os.",
+      "Mistura os pés picados com miolo de pão, alho, salsa e azeite.",
+      "Recheia os chapéus dos cogumelos.",
+      "Polvilha com queijo ralado.",
+      "Assa no forno a 200°C por 15 minutos."
+    ],
+    "activeMinutes": 10,
+    "passiveMinutes": 15
+  },
+  {
+    "id": "sopa_lentilhas",
+    "name": "Sopa de Lentilhas",
+    "proteinId": "lentilhas",
+    "type": "leguminosas",
+    "complexity": 1,
+    "prepMinutes": 25,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "lentilhas",
+        "quantity": 0.25
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 260,
+      "proteinG": 14,
+      "carbsG": 38,
+      "fatG": 6,
+      "fiberG": 10,
+      "sodiumMg": 350
+    },
+    "prepSteps": [
+      "Refoga a cebola em azeite.",
+      "Junta cenoura e batata em cubos, o tomate pelado e as lentilhas.",
+      "Cobre com água e cozinha 25 minutos.",
+      "Tritura parcialmente se quiser mais cremosa.",
+      "Tempera e serve com um fio de azeite."
+    ]
+  },
+  {
+    "id": "wrap_frango",
+    "name": "Wrap de Frango",
+    "proteinId": "frango",
+    "type": "carne",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "snack"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "tortilha_trigo",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "frango",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "alface",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "tomate",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.1
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 28,
+      "carbsG": 36,
+      "fatG": 12,
+      "fiberG": 3,
+      "sodiumMg": 420
+    },
+    "prepSteps": [
+      "Grelha o frango e corta em tiras.",
+      "Corta a alface, tomate e cenoura em palitos.",
+      "Aquece as tortilhas numa frigideira.",
+      "Monta os wraps com frango e legumes.",
+      "Enrola bem e serve."
+    ]
+  },
+  {
+    "id": "arroz_ervilhas_ovo",
+    "name": "Arroz de Ervilhas com Ovo",
+    "proteinId": "ovo",
+    "type": "ovos",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.25
+      },
+      {
+        "ingredientId": "ervilhas",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "ovo",
+        "quantity": 4
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 380,
+      "proteinG": 18,
+      "carbsG": 48,
+      "fatG": 12,
+      "fiberG": 4,
+      "sodiumMg": 340
+    },
+    "prepSteps": [
+      "Refoga a cebola em azeite.",
+      "Junta o arroz e a água, cozinha 10 minutos.",
+      "Adiciona as ervilhas e cozinha mais 8 minutos.",
+      "No final, mistura os ovos batidos e mexe até coalharem.",
+      "Serve imediatamente."
+    ]
+  },
+  {
+    "id": "pato_laranja",
+    "name": "Pato com Laranja",
+    "proteinId": "pato",
+    "type": "carne",
+    "complexity": 3,
+    "prepMinutes": 45,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "pato",
+        "quantity": 0.8
+      },
+      {
+        "ingredientId": "fruta",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "manteiga",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 520,
+      "proteinG": 32,
+      "carbsG": 38,
+      "fatG": 26,
+      "fiberG": 3,
+      "sodiumMg": 400
+    },
+    "prepSteps": [
+      "Tempera o pato com sal, pimenta e sumo de laranja.",
+      "Coloca no tabuleiro com cebola e batata cortada.",
+      "Assa a 180°C durante 1h30, regando com o molho.",
+      "Nos últimos 15 min, rega com sumo de laranja e manteiga.",
+      "Serve com a batata assada e o molho."
+    ],
+    "activeMinutes": 15,
+    "passiveMinutes": 30
+  },
+  {
+    "id": "massa_legumes_forno",
+    "name": "Massa Gratinada com Legumes",
+    "proteinId": "courgette",
+    "type": "vegetariano",
+    "complexity": 2,
+    "prepMinutes": 30,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "massa",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "courgette",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "broculos",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "natas",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "queijo",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.02
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 400,
+      "proteinG": 16,
+      "carbsG": 46,
+      "fatG": 18,
+      "fiberG": 4,
+      "sodiumMg": 380
+    },
+    "prepSteps": [
+      "Coze a massa al dente. Escorre.",
+      "Salteia a courgette e os brócolos em azeite.",
+      "Mistura a massa com os legumes e as natas.",
+      "Coloca num tabuleiro, polvilha com queijo.",
+      "Gratina no forno a 200°C por 15 minutos."
+    ],
+    "activeMinutes": 15,
+    "passiveMinutes": 15
+  },
+  {
+    "id": "bacalhau_espiritual",
+    "name": "Bacalhau Espiritual",
+    "proteinId": "bacalhau",
+    "type": "peixe",
+    "complexity": 3,
+    "prepMinutes": 45,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "bacalhau",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "pao",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "leite",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "natas",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "queijo",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 520,
+      "proteinG": 32,
+      "carbsG": 38,
+      "fatG": 26,
+      "fiberG": 2,
+      "sodiumMg": 650
+    },
+    "prepSteps": [
+      "Demolha o pão no leite morno.",
+      "Coze e desfia o bacalhau.",
+      "Refoga a cebola e cenoura em azeite.",
+      "Mistura o bacalhau, pão demolhado e natas. Coloca num tabuleiro.",
+      "Cobre com queijo ralado e gratina a 200°C por 20 minutos."
+    ],
+    "activeMinutes": 20,
+    "passiveMinutes": 25
+  },
+  {
+    "id": "sopa_grao",
+    "name": "Sopa de Grão com Espinafres",
+    "proteinId": "grao",
+    "type": "leguminosas",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "grao",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "espinafres",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.01
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 280,
+      "proteinG": 14,
+      "carbsG": 38,
+      "fatG": 8,
+      "fiberG": 8,
+      "sodiumMg": 340
+    },
+    "prepSteps": [
+      "Coze a batata e cebola em água com sal.",
+      "Tritura com metade do grão e a água da cozedura.",
+      "Junta o restante grão inteiro e os espinafres.",
+      "Cozinha mais 5 minutos.",
+      "Serve com um fio de azeite e alho picado."
+    ]
+  },
+  {
+    "id": "camarao_arroz",
+    "name": "Arroz de Camarão",
+    "proteinId": "camarao",
+    "type": "peixe",
+    "complexity": 2,
+    "prepMinutes": 25,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": false,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "camarao",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "tomate",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.01
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      },
+      {
+        "ingredientId": "coentros",
+        "quantity": 0.02
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 420,
+      "proteinG": 28,
+      "carbsG": 46,
+      "fatG": 12,
+      "fiberG": 1.5,
+      "sodiumMg": 500
+    },
+    "prepSteps": [
+      "Refoga a cebola e alho em azeite.",
+      "Junta o tomate picado e cozinha 5 minutos.",
+      "Adiciona o arroz e o caldo de camarão.",
+      "Quando faltar 5 minutos junta o camarão descascado.",
+      "Finaliza com coentros e serve malandrinho."
+    ]
+  },
+  {
+    "id": "couve_flor_gratinada",
+    "name": "Couve-Flor Gratinada",
+    "proteinId": "couve_flor",
+    "type": "vegetariano",
+    "complexity": 2,
+    "prepMinutes": 30,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": false,
+    "isLowCarb": true,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "couve_flor",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "natas",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "queijo",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "manteiga",
+        "quantity": 0.02
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 250,
+      "proteinG": 10,
+      "carbsG": 14,
+      "fatG": 16,
+      "fiberG": 4,
+      "sodiumMg": 380
+    },
+    "prepSteps": [
+      "Coze a couve-flor em raminhos até ficar al dente.",
+      "Prepara um molho com natas, manteiga e sal.",
+      "Coloca a couve-flor num tabuleiro e cobre com o molho.",
+      "Polvilha com queijo ralado.",
+      "Gratina no forno a 200°C por 15 minutos."
+    ],
+    "activeMinutes": 15,
+    "passiveMinutes": 15
+  },
+  {
+    "id": "lulas_estufadas",
+    "name": "Lulas Estufadas com Batata",
+    "proteinId": "lulas",
+    "type": "peixe",
+    "complexity": 2,
+    "prepMinutes": 30,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "lulas",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "batata",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "vinho_branco",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      },
+      {
+        "ingredientId": "salsa",
+        "quantity": 0.02
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 360,
+      "proteinG": 26,
+      "carbsG": 32,
+      "fatG": 12,
+      "fiberG": 3,
+      "sodiumMg": 420
+    },
+    "prepSteps": [
+      "Limpa as lulas e corta em anéis.",
+      "Refoga a cebola em azeite, junta as lulas e o vinho branco.",
+      "Adiciona o tomate pelado e a batata em cubos.",
+      "Tampa e cozinha em lume brando 25 minutos.",
+      "Polvilha com salsa e serve."
+    ],
+    "activeMinutes": 10,
+    "passiveMinutes": 20
+  },
+  {
+    "id": "feijao_branco_atum",
+    "name": "Salada de Feijão Branco com Atum",
+    "proteinId": "atum_lata",
+    "type": "leguminosas",
+    "complexity": 1,
+    "prepMinutes": 10,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "snack"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "feijao_branco",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "atum_lata",
+        "quantity": 2
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "salsa",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "spring",
+      "summer"
+    ],
+    "nutrition": {
+      "kcal": 340,
+      "proteinG": 26,
+      "carbsG": 30,
+      "fatG": 12,
+      "fiberG": 8,
+      "sodiumMg": 480
+    },
+    "prepSteps": [
+      "Escorre o feijão branco e o atum.",
+      "Pica a cebola finamente.",
+      "Mistura tudo numa tigela.",
+      "Tempera com azeite, vinagre e salsa picada."
+    ]
+  },
+  {
+    "id": "cuscuz_frango",
+    "name": "Cuscuz com Frango",
+    "proteinId": "frango",
+    "type": "carne",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [],
+    "batchCookable": true,
+    "maxBatchDays": 2,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "cuscuz",
+        "quantity": 0.25
+      },
+      {
+        "ingredientId": "frango",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "pimento",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "courgette",
+        "quantity": 0.15
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 420,
+      "proteinG": 30,
+      "carbsG": 42,
+      "fatG": 12,
+      "fiberG": 3,
+      "sodiumMg": 380
+    },
+    "prepSteps": [
+      "Hidrata o cuscuz com água a ferver e azeite.",
+      "Corta o frango em tiras e grelha em azeite.",
+      "Salteia o pimento, courgette e cebola.",
+      "Solta o cuscuz e mistura com os legumes e o frango.",
+      "Tempera e serve."
+    ]
+  },
+  {
+    "id": "porco_batata_doce",
+    "name": "Lombo de Porco com Batata-Doce",
+    "proteinId": "porco",
+    "type": "carne",
+    "complexity": 2,
+    "prepMinutes": 25,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": false,
+    "isHighProtein": true,
+    "isLowCarb": false,
+    "requiresEquipment": [
+      "oven"
+    ],
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "porco",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "batata_doce",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.01
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.04
+      }
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 440,
+      "proteinG": 32,
+      "carbsG": 36,
+      "fatG": 18,
+      "fiberG": 4,
+      "sodiumMg": 380
+    },
+    "prepSteps": [
+      "Tempera o lombo com alho, sal e pimenta.",
+      "Corta a batata-doce em cubos e dispõe no tabuleiro.",
+      "Coloca o lombo por cima e rega com azeite.",
+      "Assa a 190°C durante 35 minutos.",
+      "Fatia e serve com a batata-doce."
+    ],
+    "activeMinutes": 10,
+    "passiveMinutes": 15
+  },
+  {
+    "id": "ervilhas_ovos",
+    "name": "Ervilhas com Ovos Escalfados",
+    "proteinId": "ovo",
+    "type": "ovos",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "servings": 4,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isVegetarian": true,
+    "isHighProtein": true,
+    "isLowCarb": true,
+    "requiresEquipment": [],
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "ingredients": [
+      {
+        "ingredientId": "ervilhas",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "ovo",
+        "quantity": 4
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      }
+    ],
+    "isPortable": false,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 300,
+      "proteinG": 20,
+      "carbsG": 24,
+      "fatG": 14,
+      "fiberG": 6,
+      "sodiumMg": 400
+    },
+    "prepSteps": [
+      "Refoga a cebola em azeite.",
+      "Junta o tomate pelado esmagado e as ervilhas.",
+      "Cozinha 10 minutos em lume brando.",
+      "Faz pequenos buracos e parte os ovos para dentro.",
+      "Tampa e cozinha até os ovos estarem feitos (5 min)."
     ]
   }
 ]
