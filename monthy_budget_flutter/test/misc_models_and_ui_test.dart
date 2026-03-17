@@ -45,7 +45,8 @@ void main() {
   });
 
   test('AdConfig returns test banner id in test/debug mode', () {
-    expect(AdConfig.appId, isNotEmpty);
+    // appId is now injected via --dart-define; defaults to empty in tests
+    expect(AdConfig.appId, isEmpty);
     expect(AdConfig.bannerAdUnitId, 'ca-app-pub-3940256099942544/6300978111');
   });
 
