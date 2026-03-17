@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../exceptions/app_exceptions.dart' as app;
 import '../../l10n/generated/app_localizations.dart';
 import '../../services/auth_service.dart';
 import '../../theme/app_colors.dart';
@@ -59,18 +60,21 @@ class _LoginScreenState extends State<LoginScreen> {
   String _friendlyError(Object e) {
     final l10n = S.of(context);
 
+    // Unwrap app-level AuthException to inspect the original Supabase error.
+    final inner = e is app.AuthException ? (e.originalError ?? e) : e;
+
     // Network / DNS errors
-    if (e is SocketException ||
-        e.toString().contains('SocketException') ||
-        e.toString().contains('Failed host lookup') ||
-        e.toString().contains('Connection refused') ||
-        e.toString().contains('AuthRetryableFetchException')) {
+    if (inner is SocketException ||
+        inner.toString().contains('SocketException') ||
+        inner.toString().contains('Failed host lookup') ||
+        inner.toString().contains('Connection refused') ||
+        inner.toString().contains('AuthRetryableFetchException')) {
       return l10n.authErrorNetwork;
     }
 
     // Supabase auth errors
-    if (e is AuthException) {
-      final msg = e.message.toLowerCase();
+    if (inner is AuthException) {
+      final msg = inner.message.toLowerCase();
       if (msg.contains('invalid login credentials') ||
           msg.contains('invalid email or password')) {
         return l10n.authErrorInvalidCredentials;
