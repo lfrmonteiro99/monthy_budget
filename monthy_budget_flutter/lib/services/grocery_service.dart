@@ -4,6 +4,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../constants/app_constants.dart';
 import '../models/grocery_data.dart';
 
 typedef GroceryAssetLoader = Future<String> Function(String path);
@@ -69,7 +70,7 @@ class GroceryService {
       try {
         final response = await _httpClient
             .get(Uri.parse(remoteUrl))
-            .timeout(const Duration(seconds: 15));
+            .timeout(AppConstants.groceryFetchTimeout);
 
         if (response.statusCode != 200) continue;
 

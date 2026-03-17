@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import '../constants/app_constants.dart';
 import '../models/notification_preferences.dart';
 import '../models/recurring_expense.dart';
 
@@ -204,7 +205,7 @@ class NotificationService {
       // today has already started), schedule a near-future notification so the
       // user still gets warned.
       if (!reminderDate.isAfter(now) && dueDate.isAfter(now)) {
-        reminderDate = now.add(const Duration(minutes: 1));
+        reminderDate = now.add(AppConstants.nearFutureReminder);
       }
 
       if (!reminderDate.isAfter(now)) continue;

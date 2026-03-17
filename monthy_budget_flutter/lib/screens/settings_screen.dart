@@ -16,6 +16,7 @@ import '../services/household_service.dart';
 import '../models/meal_settings.dart';
 import '../models/local_dashboard_config.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../constants/app_constants.dart';
 import '../theme/app_colors.dart';
 import '../main.dart';
 import '../models/subscription_state.dart';
@@ -611,7 +612,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
+                          duration: AppConstants.animFast,
                           width: 44,
                           height: 44,
                           decoration: BoxDecoration(
@@ -1403,7 +1404,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       const SizedBox(width: 4),
                       AnimatedRotation(
                         turns: isExpanded ? 0.5 : 0.0,
-                        duration: const Duration(milliseconds: 250),
+                        duration: AppConstants.animStandard,
                         curve: Curves.easeInOut,
                         child: Icon(Icons.expand_more, size: 20, color: AppColors.textMuted(context)),
                       ),
@@ -1546,7 +1547,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               final leftBorderWidth = isExpanded ? 3.0 : 1.0;
 
               return AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
+                duration: AppConstants.animStandard,
                 curve: Curves.easeInOut,
                 margin: const EdgeInsets.only(bottom: 10),
                 decoration: BoxDecoration(
@@ -1568,7 +1569,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           firstChild: const SizedBox.shrink(),
                           secondChild: expandedFields,
                           crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                          duration: const Duration(milliseconds: 250),
+                          duration: AppConstants.animStandard,
                           firstCurve: Curves.easeInOut,
                           secondCurve: Curves.easeInOut,
                           sizeCurve: Curves.easeInOut,
@@ -1671,7 +1672,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 10),
           TweenAnimationBuilder<double>(
             tween: Tween(begin: 0, end: ratio),
-            duration: const Duration(milliseconds: 600),
+            duration: AppConstants.animHealthRing,
             curve: Curves.easeOutCubic,
             builder: (context, value, _) => ClipRRect(
               borderRadius: BorderRadius.circular(4),
@@ -1962,7 +1963,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('${S.of(context).authErrorGeneric}: $e'),
-            duration: const Duration(seconds: 5),
+            duration: AppConstants.snackBarLong,
           ),
         );
       }
@@ -3387,7 +3388,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       onTap: () => _toggleFavorite(label),
       borderRadius: BorderRadius.circular(20),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: AppConstants.animFast,
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/app_constants.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/shopping_item.dart';
 import '../models/purchase_record.dart';
@@ -74,7 +75,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   void _tryShowTour() {
     if (_tourShown || !mounted || widget.items.isEmpty) return;
     _tourShown = true;
-    Future.delayed(const Duration(milliseconds: 500), () {
+    Future.delayed(AppConstants.tourStartDelay, () {
       if (!mounted) return;
       buildShoppingTour(
         context: context,
@@ -444,7 +445,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(l10n.barcodeInvoiceDetected),
-          duration: const Duration(seconds: 4),
+          duration: AppConstants.snackBarMedium,
           behavior: SnackBarBehavior.floating,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -471,7 +472,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(l10n.barcodeAddedToList(item.productName)),
-            duration: const Duration(seconds: 2),
+            duration: AppConstants.snackBarShort,
             behavior: SnackBarBehavior.floating,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -506,7 +507,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(l10n.quickScanReceipt),
-                  duration: const Duration(seconds: 2),
+                  duration: AppConstants.snackBarShort,
                   behavior: SnackBarBehavior.floating,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 ),
@@ -825,7 +826,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(l10n.pantryMarkedAtHome(item.productName)),
-                            duration: const Duration(seconds: 2),
+                            duration: AppConstants.snackBarShort,
                             behavior: SnackBarBehavior.floating,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           ),

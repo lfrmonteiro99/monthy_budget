@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
+import '../constants/app_constants.dart';
 import '../l10n/generated/app_localizations.dart';
 import 'tour_step_content.dart';
 
@@ -97,7 +98,7 @@ TutorialCoachMark buildExpenseTrackerTour({
       if (ctx != null) {
         await Scrollable.ensureVisible(
           ctx,
-          duration: const Duration(milliseconds: 300),
+          duration: AppConstants.animPageTransition,
           alignment: 0.5,
         );
       }

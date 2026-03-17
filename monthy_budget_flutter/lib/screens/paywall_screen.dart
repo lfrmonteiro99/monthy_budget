@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../config/revenuecat_config.dart';
 import '../models/subscription_state.dart';
 import '../services/revenuecat_service.dart';
+import '../constants/app_constants.dart';
 import '../theme/app_colors.dart';
 
 const _termsOfServiceUrl =
@@ -433,7 +434,7 @@ class _BillingToggle extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: AppConstants.animFast,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
           color: selected ? AppColors.primary(context) : Colors.transparent,

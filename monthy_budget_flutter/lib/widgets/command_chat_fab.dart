@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../constants/app_constants.dart';
 import '../theme/app_colors.dart';
 import '../onboarding/command_assistant_tour.dart';
 
@@ -41,7 +42,7 @@ class _CommandChatFabState extends State<CommandChatFab>
     super.initState();
     _pulseController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
+      duration: AppConstants.animFabPulse,
     );
     _loadState();
   }
@@ -67,7 +68,7 @@ class _CommandChatFabState extends State<CommandChatFab>
     }
     if (!_firstUseDone) {
       _pulseController.repeat(reverse: true);
-      Future.delayed(const Duration(milliseconds: 3000), () {
+      Future.delayed(AppConstants.fabFirstUseDismiss, () {
         if (mounted) {
           _pulseController.stop();
           _pulseController.reset();
@@ -102,7 +103,7 @@ class _CommandChatFabState extends State<CommandChatFab>
     if (_tourShown || !mounted) return;
     _tourShown = true;
     // Delay slightly so the FAB is positioned on screen
-    Future.delayed(const Duration(milliseconds: 500), () {
+    Future.delayed(AppConstants.tourStartDelay, () {
       if (!mounted) return;
       buildCommandAssistantTour(
         context: context,
@@ -157,7 +158,7 @@ class _CommandChatFabState extends State<CommandChatFab>
     final clampedPos = _clampPosition(currentPos, screenSize);
 
     return AnimatedPositioned(
-      duration: _dragging ? Duration.zero : const Duration(milliseconds: 200),
+      duration: _dragging ? Duration.zero : AppConstants.animFast,
       curve: Curves.easeOut,
       left: clampedPos.dx,
       top: clampedPos.dy,
