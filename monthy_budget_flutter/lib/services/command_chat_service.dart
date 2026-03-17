@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../config/supabase_public_config.dart';
 import '../constants/app_constants.dart';
 import '../models/command_action.dart';
 import 'command_action_registry.dart';
+import 'log_service.dart';
 
 class CommandChatService {
   static const _edgeFunctionName = 'openai-chat';
@@ -24,7 +24,7 @@ class CommandChatService {
       final result = await _requestAiParse(userInput);
       if (result != null) return result;
     } catch (e) {
-      debugPrint('CommandChatService: AI parse failed: $e');
+      LogService.warning('CommandChatService: AI parse failed', e);
     }
 
     // Retry with stricter prompt
@@ -32,7 +32,7 @@ class CommandChatService {
       final result = await _requestAiParse(userInput, strict: true);
       if (result != null) return result;
     } catch (e) {
-      debugPrint('CommandChatService: AI strict retry failed: $e');
+      LogService.warning('CommandChatService: AI strict retry failed', e);
     }
 
     // Silent regex fallback

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/services.dart';
-import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/meal_planner.dart';
@@ -10,6 +9,7 @@ import '../models/meal_settings.dart';
 import '../models/pantry_item.dart';
 import '../utils/taste_profile.dart';
 import '../utils/unit_converter.dart';
+import 'log_service.dart';
 
 class MealPlannerService {
 
@@ -113,7 +113,7 @@ class MealPlannerService {
 
       return true;
     } catch (e) {
-      debugPrint('Supabase recipe load failed: $e');
+      LogService.error('Supabase recipe load failed', e);
       return false;
     }
   }

@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/actual_expense.dart';
+import 'log_service.dart';
 
 class ActualExpenseService {
   final _client = Supabase.instance.client;
@@ -70,7 +70,7 @@ class ActualExpenseService {
             _client.storage.from(bucket).getPublicUrl(storagePath);
         urls.add(publicUrl);
       } catch (e) {
-        debugPrint('Failed to upload attachment $fileName: $e');
+        LogService.error('Failed to upload attachment $fileName', e);
         // Continue with remaining files rather than aborting the whole batch.
       }
     }

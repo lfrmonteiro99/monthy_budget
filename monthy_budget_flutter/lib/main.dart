@@ -1,12 +1,15 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'config/supabase_public_config.dart';
 import 'services/local_config_service.dart';
+import 'services/log_service.dart';
 import 'services/notification_service.dart';
 import 'services/ad_service.dart';
 import 'services/revenuecat_service.dart';
@@ -49,7 +52,21 @@ Future<void> main() async {
 
   // Show UI immediately — splash removed, login visible
   FlutterNativeSplash.remove();
-  runApp(const OrcamentoMensalApp());
+
+  await SentryFlutter.init(
+    (options) {
+      options.dsn =
+          const String.fromEnvironment('SENTRY_DSN', defaultValue: '');
+      options.tracesSampleRate = 0.2;
+      options.environment = kReleaseMode ? 'production' : 'development';
+      options.beforeSend = (event, hint) {
+        // Don't send events if DSN is empty (local dev)
+        if (options.dsn?.isEmpty ?? true) return null;
+        return event;
+      };
+    },
+    appRunner: () => runApp(const OrcamentoMensalApp()),
+  );
 
   // --- Non-critical: defer to background after UI is on screen ---
   unawaited(_initDeferredServices());
@@ -81,21 +98,21 @@ Future<void> _initDeferredServices() async {
       try {
         await NotificationService().init();
       } catch (e) {
-        debugPrint('NotificationService initialization failed: $e');
+        LogService.warning('NotificationService initialization failed', e);
       }
     }),
     Future(() async {
       try {
         await AdService.initialize();
       } catch (e) {
-        debugPrint('AdService initialization failed: $e');
+        LogService.warning('AdService initialization failed', e);
       }
     }),
     Future(() async {
       try {
         await RevenueCatService.initialize();
       } catch (e) {
-        debugPrint('RevenueCatService initialization failed: $e');
+        LogService.warning('RevenueCatService initialization failed', e);
       }
     }),
   ]);
