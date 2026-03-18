@@ -197,7 +197,7 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
         ),
       ),
     );
-    if (updatedGoal != null) {
+    if (updatedGoal != null && mounted) {
       setState(() {
         _goals =
             _goals.map((g) => g.id == updatedGoal.id ? updatedGoal : g).toList();
@@ -1222,7 +1222,7 @@ class _AddContributionSheetState extends State<_AddContributionSheet> {
                         DateTime.now().subtract(const Duration(days: 365)),
                     lastDate: DateTime.now(),
                   );
-                  if (picked != null) {
+                  if (picked != null && mounted) {
                     setState(() => _selectedDate = picked);
                   }
                 },

@@ -84,6 +84,7 @@ class _ReceiptScanSheetState extends State<ReceiptScanSheet> {
       final picker = ImagePicker();
       final image = await picker.pickImage(source: ImageSource.camera);
       if (image == null) {
+        if (!mounted) return;
         setState(() => _processing = false);
         return;
       }

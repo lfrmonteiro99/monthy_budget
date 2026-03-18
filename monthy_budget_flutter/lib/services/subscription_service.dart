@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../exceptions/app_exceptions.dart';
 import '../models/subscription_state.dart';
 
 /// Manages subscription state, trial tracking, and feature discovery.
@@ -23,45 +24,60 @@ class SubscriptionService {
   }
 
   Future<SubscriptionState> load() async {
-    final prefs = await SharedPreferences.getInstance();
-    final json = prefs.getString(_key);
-    final accountDate = _accountCreatedAt();
-    if (json == null) {
-      // First launch: trial starts from account creation date
-      final initial = SubscriptionState(
-        trialStartDate: accountDate,
-        aiCredits: SubscriptionState.trialStarterCredits,
-        trialStarterCreditsGranted: true,
-      );
-      await save(initial);
-      return initial;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final json = prefs.getString(_key);
+      final accountDate = _accountCreatedAt();
+      if (json == null) {
+        // First launch: trial starts from account creation date
+        final initial = SubscriptionState(
+          trialStartDate: accountDate,
+          aiCredits: SubscriptionState.trialStarterCredits,
+          trialStarterCreditsGranted: true,
+        );
+        await save(initial);
+        return initial;
+      }
+      var loaded = SubscriptionState.fromJsonString(json);
+      // Migrate: if trialStartDate was set from local DateTime.now() instead
+      // of account creation, fix it. Account date is always <= local date.
+      if (loaded.trialStartDate.isAfter(accountDate)) {
+        loaded = loaded.copyWith(trialStartDate: accountDate);
+        await save(loaded);
+      }
+      if (!loaded.trialStarterCreditsGranted && loaded.isTrialActive) {
+        final upgraded = loaded.copyWith(
+          aiCredits: loaded.aiCredits + SubscriptionState.trialStarterCredits,
+          trialStarterCreditsGranted: true,
+        );
+        await save(upgraded);
+        return upgraded;
+      }
+      return loaded;
+    } catch (e, stack) {
+      throw SubscriptionException(
+          'Failed to load subscription state', e, stack);
     }
-    var loaded = SubscriptionState.fromJsonString(json);
-    // Migrate: if trialStartDate was set from local DateTime.now() instead
-    // of account creation, fix it. Account date is always <= local date.
-    if (loaded.trialStartDate.isAfter(accountDate)) {
-      loaded = loaded.copyWith(trialStartDate: accountDate);
-      await save(loaded);
-    }
-    if (!loaded.trialStarterCreditsGranted && loaded.isTrialActive) {
-      final upgraded = loaded.copyWith(
-        aiCredits: loaded.aiCredits + SubscriptionState.trialStarterCredits,
-        trialStarterCreditsGranted: true,
-      );
-      await save(upgraded);
-      return upgraded;
-    }
-    return loaded;
   }
 
   Future<void> save(SubscriptionState state) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_key, state.toJsonString());
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_key, state.toJsonString());
+    } catch (e, stack) {
+      throw SubscriptionException(
+          'Failed to save subscription state', e, stack);
+    }
   }
 
   Future<void> clear() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_key);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_key);
+    } catch (e, stack) {
+      throw SubscriptionException(
+          'Failed to clear subscription state', e, stack);
+    }
   }
 
   /// Record that the user explored a feature (for discovery tracking).
