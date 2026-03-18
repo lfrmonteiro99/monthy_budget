@@ -1,75 +1,68 @@
+import 'dart:async';
+
+import 'package:app_links/app_links.dart';
 import 'package:flutter/services.dart';
 
-/// Supported quick-action intents dispatched from Android app shortcuts
-/// or the in-app quick-add launcher.
-enum QuickAction {
-  addExpense('quick_add_expense'),
-  addShopping('quick_add_shopping'),
-  openMeals('open_meals'),
-  openAssistant('open_assistant'),
-  scanReceipt('scan_receipt');
+import '../navigation/app_route.dart';
 
-  const QuickAction(this.type);
-  final String type;
-
-  static QuickAction? fromType(String? type) {
-    if (type == null) return null;
-    for (final action in values) {
-      if (action.type == type) return action;
-    }
-    return null;
-  }
-}
-
-/// Listens for quick-action intents delivered via a platform [MethodChannel].
+/// Listens for incoming app links and converts them into typed app routes.
 ///
-/// On Android, static shortcuts declared in `shortcuts.xml` launch the app
-/// with an extra that is forwarded here through `MainActivity`.
+/// Deep links may arrive before the authenticated shell exists. In that case
+/// the route is held until [init] attaches a handler from [AppHome].
 class QuickActionService {
-  QuickActionService._();
-  static final instance = QuickActionService._();
+  QuickActionService({AppLinks? appLinks}) : _appLinks = appLinks ?? AppLinks();
 
-  static const _channel = MethodChannel('com.orcamentomensal/quick_actions');
+  static final instance = QuickActionService();
 
-  void Function(QuickAction action)? _handler;
+  final AppLinks _appLinks;
+  StreamSubscription<Uri>? _subscription;
+  void Function(AppRoute route)? _handler;
+  AppRoute? _pendingRoute;
+  bool _initialized = false;
 
-  /// The action that was pending when the handler was not yet attached.
-  QuickAction? _pending;
-
-  /// Start listening. Call once from [initState] of the shell widget.
-  void init({required void Function(QuickAction action) onAction}) {
+  Future<void> init({required void Function(AppRoute route) onAction}) async {
     _handler = onAction;
+    _dispatchPending();
 
-    // Deliver any action that arrived before init.
-    if (_pending != null) {
-      _handler?.call(_pending!);
-      _pending = null;
+    if (_initialized) return;
+    _initialized = true;
+
+    try {
+      final initialUri = await _appLinks.getInitialLink();
+      _queueRoute(AppRoute.fromUri(initialUri));
+    } on MissingPluginException {
+      return;
+    } on PlatformException {
+      return;
     }
 
-    _channel.setMethodCallHandler((call) async {
-      if (call.method == 'quickAction') {
-        final action = QuickAction.fromType(call.arguments as String?);
-        if (action != null) {
-          _handler?.call(action);
-        }
-      }
-    });
-  }
-
-  /// Deliver an action from cold-start (before handler is attached).
-  void deliverInitialAction(String? type) {
-    final action = QuickAction.fromType(type);
-    if (action == null) return;
-
-    if (_handler != null) {
-      _handler!(action);
-    } else {
-      _pending = action;
-    }
+    _subscription = _appLinks.uriLinkStream.listen(
+      (uri) => _queueRoute(AppRoute.fromUri(uri)),
+      onError: (_) {},
+    );
   }
 
   void dispose() {
     _handler = null;
-    _channel.setMethodCallHandler(null);
+    _subscription?.cancel();
+    _subscription = null;
+    _initialized = false;
+  }
+
+  static AppRoute? routeFromUri(Uri? uri) => AppRoute.fromUri(uri);
+
+  void _queueRoute(AppRoute? route) {
+    if (route == null) return;
+    if (_handler != null) {
+      _handler!(route);
+      return;
+    }
+    _pendingRoute = route;
+  }
+
+  void _dispatchPending() {
+    if (_handler == null || _pendingRoute == null) return;
+    _handler!(_pendingRoute!);
+    _pendingRoute = null;
   }
 }

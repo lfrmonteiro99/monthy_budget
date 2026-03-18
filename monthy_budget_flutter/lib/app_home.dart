@@ -39,8 +39,6 @@ import 'screens/grocery_screen.dart';
 import 'screens/setup_wizard_screen.dart';
 import 'screens/expense_trends_screen.dart';
 import 'screens/insights_screen.dart';
-import 'screens/more_screen.dart';
-import 'screens/plan_hub_screen.dart';
 import 'screens/plan_and_shop_screen.dart';
 import 'screens/notification_settings_screen.dart';
 import 'models/recurring_expense.dart';
@@ -59,7 +57,6 @@ import 'models/onboarding_state.dart';
 import 'models/subscription_state.dart';
 import 'services/subscription_service.dart';
 import 'services/grocery_service.dart';
-import 'screens/welcome_slideshow_screen.dart';
 import 'screens/paywall_screen.dart';
 import 'widgets/trial_banner.dart';
 import 'widgets/feature_discovery_card.dart';
@@ -88,6 +85,7 @@ import 'widgets/receipt_review_sheet.dart';
 import 'widgets/receipt_scan_sheet.dart';
 import 'screens/product_updates_screen.dart';
 import 'constants/app_constants.dart';
+import 'navigation/app_route.dart';
 
 class AppHome extends StatefulWidget {
   final String householdId;
@@ -149,7 +147,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   bool _loaded = false;
   bool _groceryLoading = false;
   bool _hasMealPlan = false;
-  int _currentIndex = AppTab.dashboard.index;
+  AppTab _currentTab = AppTab.dashboard;
 
   /// Lifecycle debounce: skip refresh if resumed within this duration.
   static const _resumeDebounce = AppConstants.resumeDebounce;
@@ -167,7 +165,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         .listen((items) => setState(() => _shoppingList = items));
     _loadAll();
     _commandPatternCache.load();
-    QuickActionService.instance.init(onAction: _handleQuickAction);
+    unawaited(QuickActionService.instance.init(onAction: _handleQuickAction));
     _dataHealthService.load();
   }
 
@@ -360,11 +358,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         if (action == TrialExpiredAction.upgrade) {
           _openPaywall();
         } else if (action == TrialExpiredAction.manageCategories) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => _buildSettingsScreen(initialSection: 'expenses'),
-            ),
-          );
+          _openSettings(section: SettingsSection.expenses);
         }
       });
     }
@@ -444,11 +438,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   void _openRecurringExpenses() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => _buildSettingsScreen(initialSection: 'expenses'),
-      ),
-    );
+    _openSettings(section: SettingsSection.expenses);
   }
 
   Future<void> _loadActualExpenseHistory() async {
@@ -729,41 +719,84 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     return false;
   }
 
+  void _selectTab(AppTab tab, {bool track = true}) {
+    if (track) _trackFeature(tab.featureKey);
+    if (!mounted) {
+      _currentTab = tab;
+      return;
+    }
+    setState(() => _currentTab = tab);
+  }
+
+  void _openSettings({SettingsSection? section}) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => _buildSettingsScreen(initialSection: section),
+      ),
+    );
+  }
+
+  void _navigate(AppRoute route, {bool trackTab = true}) {
+    switch (route.type) {
+      case AppRouteType.tab:
+        _selectTab(route.tab!, track: trackTab);
+        return;
+      case AppRouteType.addExpense:
+        _openAddExpenseSheet();
+        return;
+      case AppRouteType.shoppingList:
+        _openShoppingList();
+        return;
+      case AppRouteType.mealPlanner:
+        _openMealPlanner();
+        return;
+      case AppRouteType.assistant:
+        setState(() => _commandPanelOpen = true);
+        return;
+      case AppRouteType.scanReceipt:
+        _openReceiptScanner();
+        return;
+      case AppRouteType.settings:
+        _openSettings(section: route.settingsSection);
+        return;
+      case AppRouteType.expenseTrends:
+        _openExpenseTrends();
+        return;
+      case AppRouteType.savingsGoals:
+        _openSavingsGoals();
+        return;
+      case AppRouteType.productUpdates:
+        _openProductUpdates();
+        return;
+      case AppRouteType.notificationSettings:
+        _openNotificationSettings();
+        return;
+      case AppRouteType.coach:
+        _openCoach();
+        return;
+      case AppRouteType.insights:
+        _openInsights();
+        return;
+      case AppRouteType.grocery:
+        _openGrocery();
+        return;
+      case AppRouteType.confidenceCenter:
+        _openConfidenceCenter();
+        return;
+      case AppRouteType.taxSimulator:
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => TaxSimulatorScreen(settings: _settings),
+          ),
+        );
+        return;
+    }
+  }
+
   /// Navigate to a feature from the discovery card.
   void _navigateToFeature(String featureKey) {
     _trackFeature(featureKey);
-    switch (featureKey) {
-      case 'ai_coach':
-        _openCoach();
-        break;
-      case 'meal_planner':
-        _openMealPlanner();
-        break;
-      case 'expense_tracker':
-        setState(() => _currentIndex = AppTab.expenses.index);
-        break;
-      case 'savings_goals':
-        _openSavingsGoals();
-        break;
-      case 'shopping_list':
-        setState(() => _currentIndex = AppTab.planHub.index);
-        break;
-      case 'grocery_browser':
-        setState(() => _currentIndex = AppTab.planHub.index);
-        break;
-      case 'export':
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (_) => _buildSettingsScreen()));
-        break;
-      case 'tax_simulator':
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (_) => _buildSettingsScreen()));
-        break;
-      default:
-        setState(() => _currentIndex = AppTab.dashboard.index);
-    }
+    _navigate(AppRoute.fromFeatureKey(featureKey), trackTab: false);
   }
 
   void _openInsights() {
@@ -782,11 +815,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           summary: summary,
           onOpenExpenseTrends: _openExpenseTrends,
           onOpenSavingsGoals: _openSavingsGoals,
-          onOpenTaxSimulator: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => TaxSimulatorScreen(settings: _settings),
-            ),
-          ),
+          onOpenTaxSimulator: () => _navigate(const AppRoute.taxSimulator()),
         ),
       ),
     );
@@ -844,11 +873,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
             setState(() => _subscription = next);
           },
           onRestoreMemory: _openPaywall,
-          onOpenSettings: () {
-            Navigator.of(
-              context,
-            ).push(MaterialPageRoute(builder: (_) => _buildSettingsScreen()));
-          },
+          onOpenSettings: () => _navigate(const AppRoute.settings()),
           showTour: !_onboardingState.isTourDone('coach'),
           onTourComplete: () => _markTourDone('coach'),
         ),
@@ -869,11 +894,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
               householdId: widget.householdId,
               onSaveSettings: _saveSettings,
               purchaseHistory: _purchaseHistory,
-              onOpenMealSettings: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => _buildSettingsScreen(initialSection: 'meals'),
-                ),
-              ),
+              onOpenMealSettings: () =>
+                  _openSettings(section: SettingsSection.meals),
               showTour: !_onboardingState.isTourDone('meals'),
               onTourComplete: () => _markTourDone('meals'),
             ),
@@ -1106,28 +1128,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   void _handleCommandNavigation(String screen) {
-    switch (screen) {
-      case 'dashboard':
-        setState(() => _currentIndex = AppTab.dashboard.index);
-      case 'expenses':
-        setState(() => _currentIndex = AppTab.expenses.index);
-      case 'plan':
-      case 'more':
-      case 'grocery':
-      case 'shopping_list':
-      case 'meals':
-        setState(() => _currentIndex = AppTab.planHub.index);
-      case 'coach':
-        _openCoach();
-      case 'settings':
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (_) => _buildSettingsScreen()));
-      case 'insights':
-        _openInsights();
-      case 'savings_goals':
-        _openSavingsGoals();
-    }
+    _navigate(AppRoute.fromCommandTarget(screen));
     setState(() => _commandPanelOpen = false);
   }
 
@@ -1470,23 +1471,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     }
   }
 
-  void _handleQuickAction(QuickAction action) {
+  void _handleQuickAction(AppRoute action) {
     if (!_loaded) return;
-    switch (action) {
-      case QuickAction.addExpense:
-        _openAddExpenseSheet();
-      case QuickAction.addShopping:
-        _openShoppingList();
-      case QuickAction.openMeals:
-        _openMealPlanner();
-      case QuickAction.openAssistant:
-        setState(() => _commandPanelOpen = true);
-      case QuickAction.scanReceipt:
-        _openReceiptScanner();
-    }
+    _navigate(action);
   }
 
-  SettingsScreen _buildSettingsScreen({String? initialSection}) {
+  SettingsScreen _buildSettingsScreen({SettingsSection? initialSection}) {
     final l10n = S.of(context);
     return SettingsScreen(
       settings: _settings,
@@ -1532,7 +1522,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       onCustomCategoriesChanged: (updated) {
         setState(() => _customCategories = updated);
       },
-      initialSection: initialSection,
+      initialSection: initialSection?.key,
     );
   }
 
@@ -1570,8 +1560,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       monthlyBudgets: _monthlyBudgets,
     );
 
-    final screens = [
-      ErrorBoundary(
+    final screens = <AppTab, Widget>{
+      AppTab.dashboard: ErrorBoundary(
         onError: (error, stack) =>
             debugPrint('[ErrorBoundary:Dashboard] $error\n$stack'),
         child: DashboardScreen(
@@ -1585,8 +1575,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           actualExpenses: _actualExpenses,
           onAddExpense: _openAddExpenseSheet,
           monthlyBudgets: _monthlyBudgets,
-          onOpenExpenseTracker: () =>
-              setState(() => _currentIndex = AppTab.expenses.index),
+          onOpenExpenseTracker: () => _selectTab(AppTab.expenses),
           onViewTrends: _openExpenseTrends,
           savingsGoals: _savingsGoals,
           savingsProjections: _savingsProjections,
@@ -1595,11 +1584,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           actualExpenseHistory: _actualExpenseHistory,
           billReminderDaysBefore: _notificationPrefs.billReminderDaysBefore,
           onOpenRecurringExpenses: _openRecurringExpenses,
-          onOpenSettings: () {
-            Navigator.of(
-              context,
-            ).push(MaterialPageRoute(builder: (_) => _buildSettingsScreen()));
-          },
+          onOpenSettings: () => _navigate(const AppRoute.settings()),
           showTour: !_onboardingState.isTourDone('dashboard'),
           onTourComplete: () => _markTourDone('dashboard'),
           fabKey: _fabKey,
@@ -1609,7 +1594,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           customCategories: _customCategories,
         ),
       ),
-      ErrorBoundary(
+      AppTab.expenses: ErrorBoundary(
         onError: (error, stack) =>
             debugPrint('[ErrorBoundary:Expenses] $error\n$stack'),
         child: ExpenseTrackerScreen(
@@ -1629,7 +1614,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           customCategories: _customCategories,
         ),
       ),
-      ErrorBoundary(
+      AppTab.planHub: ErrorBoundary(
         onError: (error, stack) =>
             debugPrint('[ErrorBoundary:PlanAndShop] $error\n$stack'),
         child: PlanAndShopScreen(
@@ -1652,11 +1637,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           favorites: _favorites,
           householdId: widget.householdId,
           onSaveSettings: _saveSettings,
-          onOpenMealSettings: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => _buildSettingsScreen(initialSection: 'meals'),
-            ),
-          ),
+          onOpenMealSettings: () =>
+              _openSettings(section: SettingsSection.meals),
           showShoppingTour: !_onboardingState.isTourDone('shopping'),
           onShoppingTourComplete: () => _markTourDone('shopping'),
           showGroceryTour: !_onboardingState.isTourDone('grocery'),
@@ -1666,12 +1648,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           canAccessMeals: _subscription.hasPremiumAccess,
         ),
       ),
-    ];
+    };
 
     return Stack(
       children: [
         Scaffold(
-          body: _currentIndex == AppTab.dashboard.index
+          body: _currentTab == AppTab.dashboard
               ? Column(
                   children: [
                     // Trial banner on dashboard
@@ -1701,20 +1683,17 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                               .length,
                       onTap: _openConfidenceCenter,
                     ),
-                    Expanded(child: screens[AppTab.dashboard.index]),
+                    Expanded(child: screens[AppTab.dashboard]!),
                     AdBannerWidget(
                       showAd: AdService.shouldShowAds(_subscription),
                     ),
                   ],
                 )
-              : screens[_currentIndex],
-          floatingActionButton: _currentIndex == AppTab.dashboard.index
+              : screens[_currentTab]!,
+          floatingActionButton: _currentTab == AppTab.dashboard
               ? Padding(
                   padding: const EdgeInsets.only(bottom: 8),
-                  child: QuickAddLauncher(
-                    key: _fabKey,
-                    onAction: _handleQuickAction,
-                  ),
+                  child: QuickAddLauncher(key: _fabKey, onAction: _navigate),
                 )
               : null,
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -1724,16 +1703,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
               Container(height: 1, color: const Color(0xFFF1F5F9)),
               NavigationBar(
                 key: _navBarKey,
-                selectedIndex: _currentIndex,
+                selectedIndex: _currentTab.navigationIndex,
                 onDestinationSelected: (i) {
-                  const tabFeatures = [
-                    'dashboard',
-                    'expense_tracker',
-                    'plan_and_shop',
-                  ];
-                  if (i < tabFeatures.length) _trackFeature(tabFeatures[i]);
-
-                  setState(() => _currentIndex = i);
+                  _selectTab(AppTab.fromNavigationIndex(i));
                 },
                 backgroundColor: AppColors.surface(context),
                 indicatorColor: AppColors.navIndicator(context),
@@ -1834,7 +1806,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         // Command assistant FAB
         CommandChatFab(
           onTap: () => setState(() => _commandPanelOpen = !_commandPanelOpen),
-          isDashboard: _currentIndex == AppTab.dashboard.index,
+          isDashboard: _currentTab == AppTab.dashboard,
           isExpanded: _commandPanelOpen,
           showTour: !_onboardingState.isTourDone('command_assistant'),
           onTourComplete: () => _markTourDone('command_assistant'),

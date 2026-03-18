@@ -1,39 +1,70 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:monthly_management/constants/app_constants.dart';
+import 'package:monthly_management/navigation/app_route.dart';
 import 'package:monthly_management/services/quick_action_service.dart';
 
 void main() {
-  group('QuickAction.fromType', () {
-    test('returns correct action for each known type', () {
-      expect(QuickAction.fromType('quick_add_expense'), QuickAction.addExpense);
+  group('QuickActionService.routeFromUri', () {
+    test('parses supported deep links into typed routes', () {
       expect(
-          QuickAction.fromType('quick_add_shopping'), QuickAction.addShopping);
-      expect(QuickAction.fromType('open_meals'), QuickAction.openMeals);
-      expect(QuickAction.fromType('open_assistant'), QuickAction.openAssistant);
-      expect(QuickAction.fromType('scan_receipt'), QuickAction.scanReceipt);
+        QuickActionService.routeFromUri(
+          Uri.parse('orcamentomensal://quick-add/expense'),
+        ),
+        const AppRoute.addExpense(),
+      );
+      expect(
+        QuickActionService.routeFromUri(
+          Uri.parse('orcamentomensal://quick-add/shopping'),
+        ),
+        const AppRoute.shoppingList(),
+      );
+      expect(
+        QuickActionService.routeFromUri(Uri.parse('orcamentomensal://meals')),
+        const AppRoute.mealPlanner(),
+      );
+      expect(
+        QuickActionService.routeFromUri(
+          Uri.parse('orcamentomensal://dashboard'),
+        ),
+        const AppRoute.tab(AppTab.dashboard),
+      );
     });
 
-    test('returns null for unknown type', () {
-      expect(QuickAction.fromType('unknown'), isNull);
-      expect(QuickAction.fromType(''), isNull);
-    });
-
-    test('returns null for null input', () {
-      expect(QuickAction.fromType(null), isNull);
+    test('returns null for unsupported links', () {
+      expect(
+        QuickActionService.routeFromUri(Uri.parse('orcamentomensal://unknown')),
+        isNull,
+      );
+      expect(
+        QuickActionService.routeFromUri(Uri.parse('https://example.com')),
+        isNull,
+      );
     });
   });
 
-  group('QuickAction enum', () {
-    test('each value has a unique type string', () {
-      final types = QuickAction.values.map((a) => a.type).toSet();
-      expect(types.length, QuickAction.values.length);
+  group('AppRoute command and feature mapping', () {
+    test('maps command targets to typed routes', () {
+      expect(
+        AppRoute.fromCommandTarget('expenses'),
+        const AppRoute.tab(AppTab.expenses),
+      );
+      expect(AppRoute.fromCommandTarget('settings'), const AppRoute.settings());
+      expect(AppRoute.fromCommandTarget('coach'), const AppRoute.coach());
     });
 
-    test('scanReceipt enum value exists with correct type', () {
-      expect(QuickAction.scanReceipt.type, 'scan_receipt');
-    });
-
-    test('has 5 values', () {
-      expect(QuickAction.values, hasLength(5));
+    test('maps feature discovery targets to typed routes', () {
+      expect(
+        AppRoute.fromFeatureKey('meal_planner'),
+        const AppRoute.mealPlanner(),
+      );
+      expect(
+        AppRoute.fromFeatureKey('shopping_list'),
+        const AppRoute.tab(AppTab.planHub),
+      );
+      expect(
+        AppRoute.fromFeatureKey('tax_simulator'),
+        const AppRoute.settings(),
+      );
     });
   });
 }
