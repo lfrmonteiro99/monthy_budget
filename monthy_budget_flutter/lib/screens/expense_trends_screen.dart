@@ -5,6 +5,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../models/actual_expense.dart';
 import '../models/expense_snapshot.dart';
 import '../models/app_settings.dart';
+import '../constants/app_constants.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 
@@ -670,7 +671,7 @@ class _CategoryBar extends StatelessWidget {
                         ),
                       ),
                       AnimatedContainer(
-                        duration: const Duration(milliseconds: 400),
+                        duration: AppConstants.animProgressBar,
                         curve: Curves.easeOutCubic,
                         height: 14,
                         width: constraints.maxWidth * barFraction,

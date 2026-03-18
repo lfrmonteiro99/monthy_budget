@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/app_constants.dart';
 import '../models/grocery_data.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/product.dart';
@@ -70,7 +71,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
   void _tryShowTour() {
     if (_tourShown || !mounted || widget.products.isEmpty) return;
     _tourShown = true;
-    Future.delayed(const Duration(milliseconds: 500), () {
+    Future.delayed(AppConstants.tourStartDelay, () {
       if (!mounted) return;
       buildGroceryTour(
         context: context,
@@ -129,7 +130,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(l10n.barcodeInvoiceDetected),
-          duration: const Duration(seconds: 4),
+          duration: AppConstants.snackBarMedium,
           behavior: SnackBarBehavior.floating,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -156,7 +157,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(l10n.barcodeAddedToList(item.productName)),
-            duration: const Duration(seconds: 2),
+            duration: AppConstants.snackBarShort,
             behavior: SnackBarBehavior.floating,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -177,7 +178,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(l10n.groceryAddedToList(product.name)),
-        duration: const Duration(seconds: 2),
+        duration: AppConstants.snackBarShort,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),

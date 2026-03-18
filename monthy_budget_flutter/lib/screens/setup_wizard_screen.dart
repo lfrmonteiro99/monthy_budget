@@ -7,6 +7,7 @@ import '../data/tax/tax_factory.dart';
 import '../utils/calculations.dart';
 import '../utils/formatters.dart';
 import '../main.dart' show appLocaleNotifier;
+import '../constants/app_constants.dart';
 import '../theme/app_colors.dart';
 
 class SetupWizardScreen extends StatefulWidget {
@@ -102,7 +103,7 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
     if (_step < 2) {
       setState(() => _step++);
       _pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
+        duration: AppConstants.animPageTransition,
         curve: Curves.easeInOut,
       );
     }
@@ -112,7 +113,7 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
     if (_step > 0) {
       setState(() => _step--);
       _pageController.previousPage(
-        duration: const Duration(milliseconds: 300),
+        duration: AppConstants.animPageTransition,
         curve: Curves.easeInOut,
       );
     }
@@ -319,7 +320,7 @@ class _CompletionStepState extends State<_CompletionStep>
     super.initState();
     _animController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: AppConstants.animBounce,
     );
     _scaleAnim = CurvedAnimation(
       parent: _animController,
