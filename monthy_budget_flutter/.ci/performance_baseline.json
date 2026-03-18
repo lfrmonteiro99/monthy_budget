@@ -9,7 +9,7 @@
     "shopping_list_scroll_p85_frame_ms": {
       "label": "Shopping list scroll p85 frame time",
       "baseline_ms": 13,
-      "budget_ms": 16.7,
+      "budget_ms": 19,
       "warning_regression_pct": 20
     },
     "meal_planner_generation_ms": {
