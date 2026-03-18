@@ -93,11 +93,7 @@ class AppHome extends StatefulWidget {
   final String householdId;
   final bool isAdmin;
 
-  const AppHome({
-    super.key,
-    required this.householdId,
-    required this.isAdmin,
-  });
+  const AppHome({super.key, required this.householdId, required this.isAdmin});
 
   @override
   State<AppHome> createState() => _AppHomeState();
@@ -126,8 +122,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   bool _commandPanelOpen = false;
 
   // Use a far-past date so trial is NOT active before load() completes.
-  SubscriptionState _subscription =
-      SubscriptionState(trialStartDate: AppConstants.farPastDate);
+  SubscriptionState _subscription = SubscriptionState(
+    trialStartDate: AppConstants.farPastDate,
+  );
   OnboardingState _onboardingState = const OnboardingState();
   final _fabKey = GlobalKey(debugLabel: 'tour_fab');
   final _navBarKey = GlobalKey(debugLabel: 'tour_nav_bar');
@@ -221,8 +218,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         _favoritesService.load(widget.householdId),
         _purchaseHistoryService.load(widget.householdId),
         _loadGroceryData(settings.country, updateLoadingState: false),
-        _actualExpenseService.loadMonth(
-            widget.householdId, _currentMonthKey),
+        _actualExpenseService.loadMonth(widget.householdId, _currentMonthKey),
         _expenseSnapshotService.loadHistory(widget.householdId),
       ]);
       if (mounted) {
@@ -230,11 +226,11 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         final newHistory = results[1] as PurchaseHistory;
         final newGrocery = results[2] as GroceryData;
         final newExpenses = results[3] as List<ActualExpense>;
-        final newSnapshots =
-            results[4] as Map<String, List<ExpenseSnapshot>>;
+        final newSnapshots = results[4] as Map<String, List<ExpenseSnapshot>>;
 
         // Single setState — one rebuild instead of many.
-        final changed = !identical(_settings, settings) ||
+        final changed =
+            !identical(_settings, settings) ||
             !listEquals(_favorites, newFavorites) ||
             !identical(_purchaseHistory, newHistory) ||
             !identical(_groceryData, newGrocery) ||
@@ -340,7 +336,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         goals: _savingsGoals,
         onSaveSettings: _saveSettings,
         householdId: widget.householdId,
-        savingsGoalService: _savingsGoalService,
+        onSaveGoal: _savingsGoalService.saveGoal,
       );
       await _subscriptionService.markDowngradeApplied();
       // Reload goals after deactivation
@@ -380,7 +376,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       await RevenueCatService.login(user?.id);
       final remoteTier = await RevenueCatService.getCurrentTier();
       final updated = await _subscriptionService.syncFromRemoteTier(
-          _subscription, remoteTier);
+        _subscription,
+        remoteTier,
+      );
       if (mounted && updated != _subscription) {
         setState(() => _subscription = updated);
       }
@@ -397,7 +395,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   Future<void> _loadActualExpenses() async {
     try {
       final expenses = await _actualExpenseService.loadMonth(
-          widget.householdId, _currentMonthKey);
+        widget.householdId,
+        _currentMonthKey,
+      );
       if (mounted) {
         setState(() => _actualExpenses = expenses);
         _refreshNotificationSchedules();
@@ -411,8 +411,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
   Future<void> _loadRecurringExpenses() async {
     try {
-      final recurring =
-          await _recurringExpenseService.load(widget.householdId);
+      final recurring = await _recurringExpenseService.load(widget.householdId);
       if (mounted) {
         setState(() => _recurringExpenses = recurring);
         _refreshNotificationSchedules();
@@ -420,7 +419,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       _dataHealthService.recordLoad(SyncDomain.recurringExpenses);
       // Auto-populate recurring expenses for the current month
       final created = await _recurringExpenseService.populateMonthIfNeeded(
-          widget.householdId, _currentMonthKey);
+        widget.householdId,
+        _currentMonthKey,
+      );
       if (created.isNotEmpty) {
         _loadActualExpenses();
       }
@@ -432,8 +433,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
   Future<void> _loadCustomCategories() async {
     try {
-      final categories =
-          await _categoryService.load(widget.householdId);
+      final categories = await _categoryService.load(widget.householdId);
       if (mounted) {
         setState(() => _customCategories = categories);
       }
@@ -451,24 +451,24 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   Future<void> _loadActualExpenseHistory() async {
-    final history =
-        await _actualExpenseService.loadHistory(widget.householdId);
+    final history = await _actualExpenseService.loadHistory(widget.householdId);
     if (mounted) setState(() => _actualExpenseHistory = history);
   }
 
   Future<void> _loadMonthlyBudgets() async {
     final budgets = await _monthlyBudgetService.loadMonth(
-        widget.householdId, _currentMonthKey);
+      widget.householdId,
+      _currentMonthKey,
+    );
     if (mounted) {
-      setState(() => _monthlyBudgets = {
-        for (final b in budgets) b.category: b.amount,
-      });
+      setState(
+        () => _monthlyBudgets = {for (final b in budgets) b.category: b.amount},
+      );
     }
   }
 
   Future<void> _loadNotificationPrefs() async {
-    final prefs =
-        await _localConfigService.loadNotificationPreferences();
+    final prefs = await _localConfigService.loadNotificationPreferences();
     if (mounted) {
       setState(() => _notificationPrefs = prefs);
       _refreshNotificationSchedules();
@@ -477,7 +477,11 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
   Future<void> _loadMealPlanState() async {
     final now = DateTime.now();
-    final plan = await MealPlannerService().load(widget.householdId, now.month, now.year);
+    final plan = await MealPlannerService().load(
+      widget.householdId,
+      now.month,
+      now.year,
+    );
     if (mounted) {
       setState(() => _hasMealPlan = plan != null);
     }
@@ -489,25 +493,30 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         .fold<double>(0, (sum, e) => sum + e.amount);
     if (totalBudget <= 0) return 0;
 
-    final spent = _actualExpenses.fold<double>(
-      0,
-      (sum, e) => sum + e.amount,
-    );
+    final spent = _actualExpenses.fold<double>(0, (sum, e) => sum + e.amount);
     return (spent / totalBudget) * 100;
   }
 
   ({String category, double percent})? _topCategoryUsage() {
     final budgetByCategory = <String, double>{};
-    for (final item in _settings.expenses.where((e) => e.enabled && e.amount > 0)) {
-      budgetByCategory.update(item.category, (v) => v + item.amount,
-          ifAbsent: () => item.amount);
+    for (final item in _settings.expenses.where(
+      (e) => e.enabled && e.amount > 0,
+    )) {
+      budgetByCategory.update(
+        item.category,
+        (v) => v + item.amount,
+        ifAbsent: () => item.amount,
+      );
     }
     if (budgetByCategory.isEmpty) return null;
 
     final spentByCategory = <String, double>{};
     for (final expense in _actualExpenses) {
-      spentByCategory.update(expense.category, (v) => v + expense.amount,
-          ifAbsent: () => expense.amount);
+      spentByCategory.update(
+        expense.category,
+        (v) => v + expense.amount,
+        ifAbsent: () => expense.amount,
+      );
     }
 
     String? topCategory;
@@ -526,14 +535,16 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
   void _refreshNotificationSchedules() {
     final topCategory = _topCategoryUsage();
-    unawaited(NotificationService().refreshAllSchedules(
-      prefs: _notificationPrefs,
-      recurringExpenses: _recurringExpenses,
-      budgetUsagePercent: _currentBudgetUsagePercent(),
-      hasMealPlan: _hasMealPlan,
-      topCategoryName: topCategory?.category,
-      topCategoryUsagePercent: topCategory?.percent,
-    ));
+    unawaited(
+      NotificationService().refreshAllSchedules(
+        prefs: _notificationPrefs,
+        recurringExpenses: _recurringExpenses,
+        budgetUsagePercent: _currentBudgetUsagePercent(),
+        hasMealPlan: _hasMealPlan,
+        topCategoryName: topCategory?.category,
+        topCategoryUsagePercent: topCategory?.percent,
+      ),
+    );
   }
 
   void _openExpenseTrends() {
@@ -555,7 +566,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     _dataHealthService.recordLoad(SyncDomain.savingsGoals);
     // Load contributions and compute projections for dashboard card
     final allContribs = await _savingsGoalService.loadAllContributions(
-        widget.householdId, recentMonths: 6);
+      widget.householdId,
+      recentMonths: 6,
+    );
     final projections = <String, SavingsProjection>{};
     for (final goal in goals) {
       projections[goal.id] = calculateProjection(
@@ -586,11 +599,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   void _openProductUpdates() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => const ProductUpdatesScreen(),
-      ),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const ProductUpdatesScreen()));
   }
 
   void _openNotificationSettings() {
@@ -611,8 +622,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
   /// Track that a feature was explored during trial.
   void _trackFeature(String featureKey) async {
-    final updated =
-        await _subscriptionService.markFeatureExplored(_subscription, featureKey);
+    final updated = await _subscriptionService.markFeatureExplored(
+      _subscription,
+      featureKey,
+    );
     if (mounted) setState(() => _subscription = updated);
   }
 
@@ -637,8 +650,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           subscription: _subscription,
           blockedFeature: blockedFeature,
           onSelectTier: (tier) async {
-            final updated =
-                await _subscriptionService.upgradeTo(_subscription, tier);
+            final updated = await _subscriptionService.upgradeTo(
+              _subscription,
+              tier,
+            );
             if (tier != SubscriptionTier.free) {
               await _subscriptionService.resetDowngradeTracking();
             }
@@ -647,17 +662,21 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(tier == SubscriptionTier.free
-                      ? l10n.paywallContinueFree
-                      : l10n.paywallUpgradedPro),
+                  content: Text(
+                    tier == SubscriptionTier.free
+                        ? l10n.paywallContinueFree
+                        : l10n.paywallUpgradedPro,
+                  ),
                   behavior: SnackBarBehavior.floating,
                 ),
               );
             }
           },
           onPurchaseComplete: (tier) async {
-            final updated =
-                await _subscriptionService.upgradeTo(_subscription, tier);
+            final updated = await _subscriptionService.upgradeTo(
+              _subscription,
+              tier,
+            );
             await _subscriptionService.resetDowngradeTracking();
             if (mounted) {
               setState(() => _subscription = updated);
@@ -672,15 +691,19 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           },
           onRestoreComplete: (tier) async {
             final updated = await _subscriptionService.syncFromRemoteTier(
-                _subscription, tier);
+              _subscription,
+              tier,
+            );
             if (mounted) {
               setState(() => _subscription = updated);
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(tier == SubscriptionTier.free
-                      ? l10n.paywallNoRestore
-                      : l10n.paywallRestoredPro),
+                  content: Text(
+                    tier == SubscriptionTier.free
+                        ? l10n.paywallNoRestore
+                        : l10n.paywallRestoredPro,
+                  ),
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -728,14 +751,14 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         setState(() => _currentIndex = AppTab.planHub.index);
         break;
       case 'export':
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
-        );
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (_) => _buildSettingsScreen()));
         break;
       case 'tax_simulator':
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
-        );
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (_) => _buildSettingsScreen()));
         break;
       default:
         setState(() => _currentIndex = AppTab.dashboard.index);
@@ -772,8 +795,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     final countryProducts = _groceryData.toCatalogProducts();
     final effectiveProducts =
         countryProducts.isNotEmpty || _settings.country != Country.pt
-            ? countryProducts
-            : _products;
+        ? countryProducts
+        : _products;
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => GroceryScreen(
@@ -821,9 +844,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           },
           onRestoreMemory: _openPaywall,
           onOpenSettings: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
-            );
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => _buildSettingsScreen()));
           },
           showTour: !_onboardingState.isTourDone('coach'),
           onTourComplete: () => _markTourDone('coach'),
@@ -834,32 +857,32 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
   void _openMealPlanner() {
     if (!_gateFeature(PremiumFeature.mealPlanner)) return;
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => MealPlannerScreen(
-          settings: _settings,
-          apiKey: _openAiApiKey,
-          favorites: _favorites,
-          onAddToShoppingList: _addToShoppingList,
-          householdId: widget.householdId,
-          onSaveSettings: _saveSettings,
-          purchaseHistory: _purchaseHistory,
-          onOpenMealSettings: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => _buildSettingsScreen(initialSection: 'meals'),
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (_) => MealPlannerScreen(
+              settings: _settings,
+              apiKey: _openAiApiKey,
+              favorites: _favorites,
+              onAddToShoppingList: _addToShoppingList,
+              householdId: widget.householdId,
+              onSaveSettings: _saveSettings,
+              purchaseHistory: _purchaseHistory,
+              onOpenMealSettings: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => _buildSettingsScreen(initialSection: 'meals'),
+                ),
+              ),
+              showTour: !_onboardingState.isTourDone('meals'),
+              onTourComplete: () => _markTourDone('meals'),
             ),
           ),
-          showTour: !_onboardingState.isTourDone('meals'),
-          onTourComplete: () => _markTourDone('meals'),
-        ),
-      ),
-    ).then((_) => _loadMealPlanState());
+        )
+        .then((_) => _loadMealPlanState());
   }
 
   void _openConfidenceCenter() {
-    final alerts = buildAlerts(
-      statuses: _dataHealthService.statuses,
-    );
+    final alerts = buildAlerts(statuses: _dataHealthService.statuses);
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => ConfidenceCenterScreen(
@@ -915,8 +938,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         .snapshotIfNeeded(widget.householdId, monthKey, _settings.expenses)
         .then((_) => _expenseSnapshotService.loadHistory(widget.householdId))
         .then((history) {
-      if (mounted) setState(() => _expenseHistory = history);
-    });
+          if (mounted) setState(() => _expenseHistory = history);
+        });
   }
 
   void _saveFavorites(List<String> favorites) {
@@ -931,8 +954,11 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
   void _addToShoppingList(ShoppingItem item) async {
     final match = _shoppingList.cast<ShoppingItem?>().firstWhere(
-      (e) => e!.productName.toLowerCase() == item.productName.toLowerCase()
-          && (e.unit == null || item.unit == null || UnitConverter.compatible(e.unit!, item.unit!)),
+      (e) =>
+          e!.productName.toLowerCase() == item.productName.toLowerCase() &&
+          (e.unit == null ||
+              item.unit == null ||
+              UnitConverter.compatible(e.unit!, item.unit!)),
       orElse: () => null,
     );
     if (match != null) {
@@ -940,8 +966,14 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       double? mergedQuantity;
       String? mergedUnit = match.unit ?? item.unit;
       if (match.quantity != null && item.quantity != null) {
-        if (match.unit != null && item.unit != null && UnitConverter.compatible(match.unit!, item.unit!)) {
-          final converted = UnitConverter.convert(item.quantity!, item.unit!, match.unit!);
+        if (match.unit != null &&
+            item.unit != null &&
+            UnitConverter.compatible(match.unit!, item.unit!)) {
+          final converted = UnitConverter.convert(
+            item.quantity!,
+            item.unit!,
+            match.unit!,
+          );
           mergedQuantity = match.quantity! + (converted ?? item.quantity!);
         } else {
           mergedQuantity = match.quantity! + item.quantity!;
@@ -951,12 +983,18 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       }
       // Apply display-friendly normalization (e.g. 1500 g → 1.5 kg)
       if (mergedQuantity != null && mergedUnit != null) {
-        final (displayQty, displayUnit) = UnitConverter.displayFriendly(mergedQuantity, mergedUnit);
+        final (displayQty, displayUnit) = UnitConverter.displayFriendly(
+          mergedQuantity,
+          mergedUnit,
+        );
         mergedQuantity = displayQty;
         mergedUnit = displayUnit;
       }
       final mergedPrice = match.price + item.price;
-      final mergedLabels = {...match.sourceMealLabels, ...item.sourceMealLabels}.toList();
+      final mergedLabels = {
+        ...match.sourceMealLabels,
+        ...item.sourceMealLabels,
+      }.toList();
       await _shoppingListService.updateItem(
         match.id,
         price: mergedPrice,
@@ -1080,9 +1118,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       case 'coach':
         _openCoach();
       case 'settings':
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
-        );
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (_) => _buildSettingsScreen()));
       case 'insights':
         _openInsights();
       case 'savings_goals':
@@ -1092,12 +1130,14 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   Future<void> _finalizeShopping(
-      double? amount, List<ShoppingItem> checkedItems, {bool isMealPurchase = false}) async {
+    double? amount,
+    List<ShoppingItem> checkedItems, {
+    bool isMealPurchase = false,
+  }) async {
     if (checkedItems.isEmpty) return;
     try {
       final estimated = checkedItems.fold(0.0, (s, i) => s + i.price);
-      final totalAmount =
-          (amount != null && amount > 0) ? amount : estimated;
+      final totalAmount = (amount != null && amount > 0) ? amount : estimated;
       final record = PurchaseRecord(
         id: 'purchase_${DateTime.now().millisecondsSinceEpoch}',
         date: DateTime.now(),
@@ -1108,8 +1148,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       );
       await _purchaseHistoryService.saveRecord(record, widget.householdId);
       await _shoppingListService.clearChecked(widget.householdId);
-      final updated =
-          PurchaseHistory(records: [record, ..._purchaseHistory.records]);
+      final updated = PurchaseHistory(
+        records: [record, ..._purchaseHistory.records],
+      );
       if (mounted) {
         setState(() {
           _purchaseHistory = updated;
@@ -1154,9 +1195,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _addRecurringExpenseFromCommand(
-    RecurringExpense expense,
-  ) async {
+  Future<void> _addRecurringExpenseFromCommand(RecurringExpense expense) async {
     setState(() {
       _recurringExpenses = [..._recurringExpenses, expense]
         ..sort((a, b) {
@@ -1180,9 +1219,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         .where((item) => item.productName.trim().toLowerCase() == query)
         .cast<ShoppingItem?>()
         .firstWhere((item) => item != null, orElse: () => null);
-    final fallback = match ??
+    final fallback =
+        match ??
         _shoppingList
-            .where((item) => item.productName.trim().toLowerCase().contains(query))
+            .where(
+              (item) => item.productName.trim().toLowerCase().contains(query),
+            )
             .cast<ShoppingItem?>()
             .firstWhere((item) => item != null, orElse: () => null);
     final item = fallback;
@@ -1210,7 +1252,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         .where((item) => item.productName.trim().toLowerCase() == query)
         .cast<ShoppingItem?>()
         .firstWhere((item) => item != null, orElse: () => null);
-    final item = exact ??
+    final item =
+        exact ??
         _shoppingList
             .where((i) => i.productName.trim().toLowerCase().contains(query))
             .cast<ShoppingItem?>()
@@ -1249,7 +1292,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         .where((goal) => goal.name.trim().toLowerCase() == query)
         .cast<SavingsGoal?>()
         .firstWhere((goal) => goal != null, orElse: () => null);
-    final goal = exact ??
+    final goal =
+        exact ??
         _savingsGoals
             .where((g) => g.name.trim().toLowerCase().contains(query))
             .cast<SavingsGoal?>()
@@ -1294,7 +1338,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         })
         .cast<ActualExpense?>()
         .firstWhere((expense) => expense != null, orElse: () => null);
-    final expense = exact ??
+    final expense =
+        exact ??
         _actualExpenses
             .where((e) {
               final desc = (e.description ?? '').trim().toLowerCase();
@@ -1306,7 +1351,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     if (expense == null) return false;
     final previousExpenses = List<ActualExpense>.from(_actualExpenses);
     setState(() {
-      _actualExpenses = _actualExpenses.where((e) => e.id != expense.id).toList();
+      _actualExpenses = _actualExpenses
+          .where((e) => e.id != expense.id)
+          .toList();
     });
     _refreshNotificationSchedules();
     try {
@@ -1322,8 +1369,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
   Future<void> _updateActualExpense(ActualExpense expense) async {
     setState(() {
-      _actualExpenses =
-          _actualExpenses.map((e) => e.id == expense.id ? expense : e).toList();
+      _actualExpenses = _actualExpenses
+          .map((e) => e.id == expense.id ? expense : e)
+          .toList();
     });
     _refreshNotificationSchedules();
     await _actualExpenseService.update(expense);
@@ -1365,10 +1413,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           expense.id,
         );
         if (urls.isNotEmpty) {
-          final allUrls = [
-            ...?expense.attachmentUrls,
-            ...urls,
-          ];
+          final allUrls = [...?expense.attachmentUrls, ...urls];
           expense = expense.copyWith(attachmentUrls: allUrls);
         }
       }
@@ -1380,8 +1425,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     final receipt = await ReceiptScanSheet.show(context);
     if (receipt == null || !mounted) return;
 
-    final categories =
-        _settings.expenses.map((e) => e.label).toList();
+    final categories = _settings.expenses.map((e) => e.label).toList();
 
     final chosenCategory = await ReceiptReviewSheet.show(
       context,
@@ -1398,19 +1442,23 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
     if (mounted) {
       final l10n = S.of(context);
-      final merchantLabel = receipt.merchantName ??
+      final merchantLabel =
+          receipt.merchantName ??
           (receipt.merchantNif.isNotEmpty
               ? 'NIF ${receipt.merchantNif}'
               : l10n.receiptMerchantUnknown);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l10n.receiptScanSuccess(
-            formatCurrency(receipt.totalAmount),
-            merchantLabel,
-          )),
+          content: Text(
+            l10n.receiptScanSuccess(
+              formatCurrency(receipt.totalAmount),
+              merchantLabel,
+            ),
+          ),
           behavior: SnackBarBehavior.floating,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
       );
     }
@@ -1453,16 +1501,18 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       subscriptionLabel: _subscription.isTrialActive
           ? l10n.subscriptionTrialLabel(_subscription.trialDaysRemaining)
           : _subscription.tier == SubscriptionTier.free
-              ? l10n.subscriptionFree
-              : l10n.subscriptionPro,
+          ? l10n.subscriptionFree
+          : l10n.subscriptionPro,
       monthlyBudgets: _monthlyBudgets,
       onSaveMonthlyBudgets: (budgetMap) async {
         final budgets = budgetMap.entries
-            .map((e) => MonthlyBudget.create(
-                  category: e.key,
-                  amount: e.value,
-                  monthKey: _currentMonthKey,
-                ))
+            .map(
+              (e) => MonthlyBudget.create(
+                category: e.key,
+                amount: e.value,
+                monthKey: _currentMonthKey,
+              ),
+            )
             .toList();
         await _monthlyBudgetService.saveAll(budgets, widget.householdId);
         _loadMonthlyBudgets();
@@ -1519,38 +1569,40 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         onError: (error, stack) =>
             debugPrint('[ErrorBoundary:Dashboard] $error\n$stack'),
         child: DashboardScreen(
-        settings: _settings,
-        summary: summary,
-        purchaseHistory: _purchaseHistory,
-        onSaveSettings: _saveSettings,
-        dashboardConfig: _dashboardConfig,
-        expenseHistory: _expenseHistory,
-        onSnapshotExpenses: _snapshotExpenses,
-        actualExpenses: _actualExpenses,
-        onAddExpense: _openAddExpenseSheet,
-        monthlyBudgets: _monthlyBudgets,
-        onOpenExpenseTracker: () => setState(() => _currentIndex = AppTab.expenses.index),
-        onViewTrends: _openExpenseTrends,
-        savingsGoals: _savingsGoals,
-        savingsProjections: _savingsProjections,
-        onOpenSavingsGoals: _openSavingsGoals,
-        recurringExpenses: _recurringExpenses,
-        actualExpenseHistory: _actualExpenseHistory,
-        billReminderDaysBefore: _notificationPrefs.billReminderDaysBefore,
-        onOpenRecurringExpenses: _openRecurringExpenses,
-        onOpenSettings: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => _buildSettingsScreen()),
-          );
-        },
-        showTour: !_onboardingState.isTourDone('dashboard'),
-        onTourComplete: () => _markTourDone('dashboard'),
-        fabKey: _fabKey,
-        navBarKey: _navBarKey,
-        onOpenInsights: _openInsights,
-        onOpenCoach: _openCoach,
-        customCategories: _customCategories,
-      )),
+          settings: _settings,
+          summary: summary,
+          purchaseHistory: _purchaseHistory,
+          onSaveSettings: _saveSettings,
+          dashboardConfig: _dashboardConfig,
+          expenseHistory: _expenseHistory,
+          onSnapshotExpenses: _snapshotExpenses,
+          actualExpenses: _actualExpenses,
+          onAddExpense: _openAddExpenseSheet,
+          monthlyBudgets: _monthlyBudgets,
+          onOpenExpenseTracker: () =>
+              setState(() => _currentIndex = AppTab.expenses.index),
+          onViewTrends: _openExpenseTrends,
+          savingsGoals: _savingsGoals,
+          savingsProjections: _savingsProjections,
+          onOpenSavingsGoals: _openSavingsGoals,
+          recurringExpenses: _recurringExpenses,
+          actualExpenseHistory: _actualExpenseHistory,
+          billReminderDaysBefore: _notificationPrefs.billReminderDaysBefore,
+          onOpenRecurringExpenses: _openRecurringExpenses,
+          onOpenSettings: () {
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => _buildSettingsScreen()));
+          },
+          showTour: !_onboardingState.isTourDone('dashboard'),
+          onTourComplete: () => _markTourDone('dashboard'),
+          fabKey: _fabKey,
+          navBarKey: _navBarKey,
+          onOpenInsights: _openInsights,
+          onOpenCoach: _openCoach,
+          customCategories: _customCategories,
+        ),
+      ),
       ErrorBoundary(
         onError: (error, stack) =>
             debugPrint('[ErrorBoundary:Expenses] $error\n$stack'),
@@ -1582,7 +1634,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           onFinalize: _finalizeShopping,
           purchaseHistory: _purchaseHistory,
           onAddToShoppingList: _addToShoppingList,
-          products: _groceryData.toCatalogProducts().isNotEmpty ||
+          products:
+              _groceryData.toCatalogProducts().isNotEmpty ||
                   _settings.country != Country.pt
               ? _groceryData.toCatalogProducts()
               : _products,
@@ -1612,124 +1665,138 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     return Stack(
       children: [
         Scaffold(
-      body: _currentIndex == AppTab.dashboard.index
-          ? Column(
-              children: [
-                // Trial banner on dashboard
-                if (_subscription.isTrialActive)
-                  TrialBanner(
-                    subscription: _subscription,
-                    onUpgrade: _openPaywall,
+          body: _currentIndex == AppTab.dashboard.index
+              ? Column(
+                  children: [
+                    // Trial banner on dashboard
+                    if (_subscription.isTrialActive)
+                      TrialBanner(
+                        subscription: _subscription,
+                        onUpgrade: _openPaywall,
+                      ),
+                    // Feature discovery nudge
+                    if (_subscription.isTrialActive &&
+                        _subscription.nextFeatureToDiscover != null)
+                      FeatureDiscoveryCard(
+                        subscription: _subscription,
+                        onExploreFeature: _navigateToFeature,
+                        onDismiss: () {
+                          // Skip this feature in discovery
+                          final next = _subscription.nextFeatureToDiscover;
+                          if (next != null) _trackFeature(next);
+                        },
+                      ),
+                    CriticalAlertBanner(
+                      criticalCount:
+                          buildAlerts(statuses: _dataHealthService.statuses)
+                              .where(
+                                (a) => a.severity == AlertSeverity.critical,
+                              )
+                              .length,
+                      onTap: _openConfidenceCenter,
+                    ),
+                    Expanded(child: screens[AppTab.dashboard.index]),
+                    AdBannerWidget(
+                      showAd: AdService.shouldShowAds(_subscription),
+                    ),
+                  ],
+                )
+              : screens[_currentIndex],
+          floatingActionButton: _currentIndex == AppTab.dashboard.index
+              ? Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: QuickAddLauncher(
+                    key: _fabKey,
+                    onAction: _handleQuickAction,
                   ),
-                // Feature discovery nudge
-                if (_subscription.isTrialActive &&
-                    _subscription.nextFeatureToDiscover != null)
-                  FeatureDiscoveryCard(
-                    subscription: _subscription,
-                    onExploreFeature: _navigateToFeature,
-                    onDismiss: () {
-                      // Skip this feature in discovery
-                      final next = _subscription.nextFeatureToDiscover;
-                      if (next != null) _trackFeature(next);
-                    },
-                  ),
-                CriticalAlertBanner(
-                  criticalCount: buildAlerts(
-                    statuses: _dataHealthService.statuses,
-                  ).where((a) => a.severity == AlertSeverity.critical).length,
-                  onTap: _openConfidenceCenter,
-                ),
-                Expanded(child: screens[AppTab.dashboard.index]),
-                AdBannerWidget(
-                  showAd: AdService.shouldShowAds(_subscription),
-                ),
-              ],
-            )
-          : screens[_currentIndex],
-      floatingActionButton: _currentIndex == AppTab.dashboard.index
-          ? Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: QuickAddLauncher(
-                key: _fabKey,
-                onAction: _handleQuickAction,
-              ),
-            )
-          : null,
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            height: 1,
-            color: const Color(0xFFF1F5F9),
-          ),
-          NavigationBar(
-            key: _navBarKey,
-            selectedIndex: _currentIndex,
-            onDestinationSelected: (i) {
-              const tabFeatures = ['dashboard', 'expense_tracker', 'plan_and_shop'];
-              if (i < tabFeatures.length) _trackFeature(tabFeatures[i]);
+                )
+              : null,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+          bottomNavigationBar: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(height: 1, color: const Color(0xFFF1F5F9)),
+              NavigationBar(
+                key: _navBarKey,
+                selectedIndex: _currentIndex,
+                onDestinationSelected: (i) {
+                  const tabFeatures = [
+                    'dashboard',
+                    'expense_tracker',
+                    'plan_and_shop',
+                  ];
+                  if (i < tabFeatures.length) _trackFeature(tabFeatures[i]);
 
-              setState(() => _currentIndex = i);
-            },
-            backgroundColor: AppColors.surface(context),
-            indicatorColor: AppColors.navIndicator(context),
-            height: 72,
-            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-            destinations: [
-              NavigationDestination(
-                icon: const Icon(Icons.dashboard_outlined),
-                selectedIcon: Icon(Icons.dashboard, color: AppColors.primary(context)),
-                label: l10n.navHome,
-                tooltip: l10n.navHomeTip,
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.receipt_long_outlined),
-                selectedIcon:
-                    Icon(Icons.receipt_long, color: AppColors.primary(context)),
-                label: l10n.navTrack,
-                tooltip: l10n.navTrackTip,
-              ),
-              NavigationDestination(
-                icon: Badge(
-                  isLabelVisible: _shoppingList.any((i) => !i.checked),
-                  backgroundColor: const Color(0xFFEF4444),
-                  label: Text(
-                    '${_shoppingList.where((i) => !i.checked).length}',
-                    style: const TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                  setState(() => _currentIndex = i);
+                },
+                backgroundColor: AppColors.surface(context),
+                indicatorColor: AppColors.navIndicator(context),
+                height: 72,
+                labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+                destinations: [
+                  NavigationDestination(
+                    icon: const Icon(Icons.dashboard_outlined),
+                    selectedIcon: Icon(
+                      Icons.dashboard,
+                      color: AppColors.primary(context),
                     ),
+                    label: l10n.navHome,
+                    tooltip: l10n.navHomeTip,
                   ),
-                  child: const Icon(Icons.shopping_basket_outlined),
-                ),
-                selectedIcon: Badge(
-                  isLabelVisible: _shoppingList.any((i) => !i.checked),
-                  backgroundColor: const Color(0xFFEF4444),
-                  label: Text(
-                    '${_shoppingList.where((i) => !i.checked).length}',
-                    style: const TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                  NavigationDestination(
+                    icon: const Icon(Icons.receipt_long_outlined),
+                    selectedIcon: Icon(
+                      Icons.receipt_long,
+                      color: AppColors.primary(context),
                     ),
+                    label: l10n.navTrack,
+                    tooltip: l10n.navTrackTip,
                   ),
-                  child: Icon(Icons.shopping_basket, color: AppColors.primary(context)),
-                ),
-                label: l10n.navPlanAndShop,
-                tooltip: l10n.navPlanAndShopTip,
+                  NavigationDestination(
+                    icon: Badge(
+                      isLabelVisible: _shoppingList.any((i) => !i.checked),
+                      backgroundColor: const Color(0xFFEF4444),
+                      label: Text(
+                        '${_shoppingList.where((i) => !i.checked).length}',
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                      child: const Icon(Icons.shopping_basket_outlined),
+                    ),
+                    selectedIcon: Badge(
+                      isLabelVisible: _shoppingList.any((i) => !i.checked),
+                      backgroundColor: const Color(0xFFEF4444),
+                      label: Text(
+                        '${_shoppingList.where((i) => !i.checked).length}',
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.shopping_basket,
+                        color: AppColors.primary(context),
+                      ),
+                    ),
+                    label: l10n.navPlanAndShop,
+                    tooltip: l10n.navPlanAndShopTip,
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
         ),
         // Command assistant scrim
         if (_commandPanelOpen)
           GestureDetector(
             onTap: () => setState(() => _commandPanelOpen = false),
-            child: Container(color: Theme.of(context).shadowColor.withValues(alpha: 0.3)),
+            child: Container(
+              color: Theme.of(context).shadowColor.withValues(alpha: 0.3),
+            ),
           ),
         // Command assistant panel
         if (_commandPanelOpen)
@@ -1748,10 +1815,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
             },
             onExecuteAction: (action) async {
               final registry = _buildCommandRegistry();
-              return registry.execute(
-                action.action!,
-                action.params ?? {},
-              );
+              return registry.execute(action.action!, action.params ?? {});
             },
             onCachePattern: (input, action, params) {
               _commandPatternCache.store(
