@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -32,6 +34,24 @@ Future<void> main() async {
   final binding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: binding);
 
+  // --- Global error handlers ---
+
+  // Catch Flutter framework errors (build, layout, paint).
+  FlutterError.onError = (FlutterErrorDetails details) {
+    // TODO(#future): forward to Sentry / Crashlytics
+    debugPrint('[FlutterError] ${details.exceptionAsString()}');
+    debugPrint('${details.stack}');
+  };
+
+  // Catch unhandled async errors that escape Zones and Futures.
+  PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
+    // TODO(#future): forward to Sentry / Crashlytics
+    debugPrint('[PlatformDispatcher] Unhandled error: $error');
+    debugPrint('$stack');
+    // Return true to prevent the runtime from terminating the app.
+    return true;
+  };
+
   // --- Critical path: only what's needed to show the login screen ---
 
   // Supabase + theme config in parallel
@@ -49,10 +69,20 @@ Future<void> main() async {
 
   // Show UI immediately — splash removed, login visible
   FlutterNativeSplash.remove();
-  runApp(const OrcamentoMensalApp());
 
-  // --- Non-critical: defer to background after UI is on screen ---
-  unawaited(_initDeferredServices());
+  // Zone guard: last-resort catcher for errors that bypass all other handlers.
+  runZonedGuarded(
+    () {
+      runApp(const OrcamentoMensalApp());
+      // Non-critical: defer to background after UI is on screen
+      unawaited(_initDeferredServices());
+    },
+    (Object error, StackTrace stack) {
+      // TODO(#future): forward to Sentry / Crashlytics
+      debugPrint('[Zone] Unhandled error: $error');
+      debugPrint('$stack');
+    },
+  );
 }
 
 Future<void> _initSupabase() async {

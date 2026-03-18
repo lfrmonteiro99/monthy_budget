@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../config/supabase_public_config.dart';
+import '../constants/app_constants.dart';
 import '../models/command_action.dart';
 import 'command_action_registry.dart';
 
@@ -73,7 +74,7 @@ class CommandChatService {
             'temperature': 0.1,
           }),
         )
-        .timeout(const Duration(seconds: 12));
+        .timeout(AppConstants.commandChatTimeout);
 
     if (response.statusCode != 200) return null;
 

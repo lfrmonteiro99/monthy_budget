@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/app_constants.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/command_action.dart';
 import '../theme/app_colors.dart';
@@ -42,7 +43,7 @@ class _CommandChatPanelState extends State<CommandChatPanel> {
   final _scrollController = ScrollController();
   final _messages = <CommandChatMessage>[];
   bool _loading = false;
-  final _rateLimiter = RateLimiter(minInterval: const Duration(seconds: 3));
+  final _rateLimiter = RateLimiter(minInterval: AppConstants.rateLimitInterval);
 
   @override
   void dispose() {
@@ -56,7 +57,7 @@ class _CommandChatPanelState extends State<CommandChatPanel> {
       if (!_scrollController.hasClients) return;
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 200),
+        duration: AppConstants.animFast,
         curve: Curves.easeOut,
       );
     });

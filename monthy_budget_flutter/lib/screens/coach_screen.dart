@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
+import '../constants/app_constants.dart';
 import '../data/tax/tax_factory.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
@@ -63,7 +64,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   late CoachMode _selectedMode;
   bool _tourShown = false;
   bool _ecoBannerCollapsed = false;
-  final _rateLimiter = RateLimiter(minInterval: const Duration(seconds: 3));
+  final _rateLimiter = RateLimiter(minInterval: AppConstants.rateLimitInterval);
 
   // Welcome card for first-time users
   bool _welcomeCardDismissed = false;
@@ -107,7 +108,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (_tourShown || !mounted) return;
         _tourShown = true;
-        Future.delayed(const Duration(milliseconds: 500), () {
+        Future.delayed(AppConstants.tourStartDelay, () {
           if (!mounted) return;
           buildCoachTour(
             context: context,
@@ -208,7 +209,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         SnackBar(
           content: Text(S.of(context).rateLimitMessage),
           behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 2),
+          duration: AppConstants.snackBarShort,
         ),
       );
       return;
@@ -370,7 +371,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
       if (!_scrollController.hasClients) return;
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 220),
+        duration: AppConstants.animScrollToBottom,
         curve: Curves.easeOut,
       );
     });
@@ -391,7 +392,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         _showRecommendation = true;
       });
       _recommendationTimer?.cancel();
-      _recommendationTimer = Timer(const Duration(seconds: 8), () {
+      _recommendationTimer = Timer(AppConstants.recommendationAutoDismiss, () {
         if (mounted) _dismissRecommendation();
       });
     } else if (recommended == _selectedMode) {

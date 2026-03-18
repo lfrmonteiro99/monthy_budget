@@ -12,6 +12,7 @@ import '../utils/category_helpers.dart';
 import '../utils/formatters.dart';
 import '../utils/stress_index.dart';
 import '../utils/budget_streaks.dart';
+import '../constants/app_constants.dart';
 import '../data/tax/tax_system.dart';
 import '../data/tax/tax_deductions.dart';
 import '../widgets/charts/budget_charts.dart';
@@ -126,7 +127,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!_tourShown && mounted) {
           _tourShown = true;
-          Future.delayed(const Duration(milliseconds: 500), () {
+          Future.delayed(AppConstants.tourStartDelay, () {
             if (!mounted) return;
             _activeTour = buildDashboardTour(
               context: context,

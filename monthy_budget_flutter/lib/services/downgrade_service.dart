@@ -1,6 +1,5 @@
 import '../models/app_settings.dart';
 import '../models/savings_goal.dart';
-import '../services/savings_goal_service.dart';
 
 /// Handles deactivation of items that exceed free-tier limits when a user
 /// transitions from trial/premium to the free plan.
@@ -16,7 +15,8 @@ class DowngradeService {
     required List<SavingsGoal> goals,
     required void Function(AppSettings) onSaveSettings,
     required String householdId,
-    required SavingsGoalService savingsGoalService,
+    required Future<void> Function(SavingsGoal goal, String householdId)
+    onSaveGoal,
   }) async {
     bool changed = false;
 
@@ -44,7 +44,7 @@ class DowngradeService {
     if (activeGoals.length > maxFreeSavingsGoals) {
       for (int i = maxFreeSavingsGoals; i < activeGoals.length; i++) {
         final goal = goals[activeGoals[i]].copyWith(isActive: false);
-        await savingsGoalService.saveGoal(goal, householdId);
+        await onSaveGoal(goal, householdId);
         changed = true;
       }
     }
@@ -66,7 +66,9 @@ class DowngradeService {
 
   /// Whether the user has items exceeding free-tier limits.
   static bool hasExcessItems(
-      List<ExpenseItem> expenses, List<SavingsGoal> goals) {
+    List<ExpenseItem> expenses,
+    List<SavingsGoal> goals,
+  ) {
     return excessCategories(expenses) > 0 || excessSavingsGoals(goals) > 0;
   }
 
