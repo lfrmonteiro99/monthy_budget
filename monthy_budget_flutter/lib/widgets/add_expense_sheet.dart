@@ -578,7 +578,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                           .subtract(const Duration(days: 365)),
                       lastDate: DateTime.now(),
                     );
-                    if (picked != null) {
+                    if (picked != null && mounted) {
                       setState(() => _selectedDate = picked);
                     }
                   },

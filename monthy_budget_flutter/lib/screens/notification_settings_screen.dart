@@ -42,7 +42,7 @@ class _NotificationSettingsScreenState
 
   Future<void> _addCustomReminder() async {
     final result = await _showCustomReminderSheet();
-    if (result == null) return;
+    if (result == null || !mounted) return;
     _update(_prefs.copyWith(
       customReminders: [..._prefs.customReminders, result],
     ));
@@ -68,7 +68,7 @@ class _NotificationSettingsScreenState
         ],
       ),
     );
-    if (confirmed != true) return;
+    if (confirmed != true || !mounted) return;
     final updated = List<CustomReminder>.from(_prefs.customReminders)
       ..removeAt(index);
     _update(_prefs.copyWith(customReminders: updated));
@@ -520,7 +520,7 @@ class _AddCustomReminderSheetState extends State<_AddCustomReminderSheet> {
                     context: context,
                     initialTime: _time,
                   );
-                  if (picked != null) setState(() => _time = picked);
+                  if (picked != null && mounted) setState(() => _time = picked);
                 },
                 borderRadius: BorderRadius.circular(12),
                 child: Container(

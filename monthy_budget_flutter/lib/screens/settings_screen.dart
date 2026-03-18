@@ -1724,7 +1724,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       existing: existingRecurring.isNotEmpty ? existingRecurring.first : null,
                       preselectedCategory: categoryName,
                     );
-                    if (result != null) {
+                    if (result != null && mounted) {
                       setState(() {
                         final idx = _recurringDraft.indexWhere((r) => r.id == result.id);
                         if (idx >= 0) {
@@ -1771,7 +1771,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       context,
                       existing: existingRecurring.first,
                     );
-                    if (result != null) {
+                    if (result != null && mounted) {
                       setState(() {
                         final idx = _recurringDraft.indexWhere((r) => r.id == result.id);
                         if (idx >= 0) {
