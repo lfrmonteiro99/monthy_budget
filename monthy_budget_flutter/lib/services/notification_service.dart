@@ -6,6 +6,28 @@ import '../constants/app_constants.dart';
 import '../models/notification_preferences.dart';
 import '../models/recurring_expense.dart';
 
+class NotificationRefreshDecision {
+  final bool scheduleBillReminders;
+  final bool scheduleDailyExpenseReminder;
+  final bool scheduleMealPlanReminder;
+  final int customReminderCount;
+  final bool shouldShowBudgetAlert;
+  final bool shouldResetBudgetAlertTrigger;
+  final int? budgetAlertUsagePercent;
+  final String? budgetAlertCategoryName;
+
+  const NotificationRefreshDecision({
+    required this.scheduleBillReminders,
+    required this.scheduleDailyExpenseReminder,
+    required this.scheduleMealPlanReminder,
+    required this.customReminderCount,
+    required this.shouldShowBudgetAlert,
+    required this.shouldResetBudgetAlertTrigger,
+    this.budgetAlertUsagePercent,
+    this.budgetAlertCategoryName,
+  });
+}
+
 class NotificationService {
   static final NotificationService _instance = NotificationService._();
   factory NotificationService() => _instance;
@@ -38,8 +60,9 @@ class NotificationService {
 
     tz.initializeTimeZones();
 
-    const androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
 
     const initSettings = InitializationSettings(android: androidSettings);
 
@@ -50,8 +73,10 @@ class NotificationService {
   }
 
   Future<bool> requestPermission() async {
-    final android = _plugin.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
+    final android = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
     if (android != null) {
       final granted = await android.requestNotificationsPermission();
       return granted ?? false;
@@ -78,18 +103,20 @@ class NotificationService {
         return; // init() never called — skip silently
       }
     }
-    _refreshChain = _refreshChain.then((_) async {
-      await _refreshAllSchedulesImpl(
-        prefs: prefs,
-        recurringExpenses: recurringExpenses,
-        budgetUsagePercent: budgetUsagePercent,
-        hasMealPlan: hasMealPlan,
-        topCategoryName: topCategoryName,
-        topCategoryUsagePercent: topCategoryUsagePercent,
-      );
-    }).catchError((e) {
-      debugPrint('Failed to refresh notification schedules: $e');
-    });
+    _refreshChain = _refreshChain
+        .then((_) async {
+          await _refreshAllSchedulesImpl(
+            prefs: prefs,
+            recurringExpenses: recurringExpenses,
+            budgetUsagePercent: budgetUsagePercent,
+            hasMealPlan: hasMealPlan,
+            topCategoryName: topCategoryName,
+            topCategoryUsagePercent: topCategoryUsagePercent,
+          );
+        })
+        .catchError((e) {
+          debugPrint('Failed to refresh notification schedules: $e');
+        });
     await _refreshChain;
   }
 
@@ -103,7 +130,16 @@ class NotificationService {
   }) async {
     await cancelAll();
 
-    if (prefs.billReminders) {
+    final decision = buildRefreshDecision(
+      prefs: prefs,
+      budgetUsagePercent: budgetUsagePercent,
+      hasMealPlan: hasMealPlan,
+      topCategoryName: topCategoryName,
+      topCategoryUsagePercent: topCategoryUsagePercent,
+      budgetAlertAlreadyTriggered: _budgetAlertTriggered,
+    );
+
+    if (decision.scheduleBillReminders) {
       await _scheduleBillReminders(
         recurringExpenses: recurringExpenses,
         daysBefore: prefs.billReminderDaysBefore,
@@ -112,45 +148,75 @@ class NotificationService {
       );
     }
 
-    final threshold = prefs.budgetAlertThreshold;
-    final categoryExceeded =
-        (topCategoryUsagePercent ?? 0) >= threshold;
-    final overallExceeded = budgetUsagePercent >= threshold;
-    final shouldAlert = prefs.budgetAlerts && (overallExceeded || categoryExceeded);
-
-    if (!shouldAlert) {
+    if (decision.shouldResetBudgetAlertTrigger) {
       _budgetAlertTriggered = false;
-    } else if (!_budgetAlertTriggered) {
+    } else if (decision.shouldShowBudgetAlert &&
+        decision.budgetAlertUsagePercent != null) {
       await _showBudgetAlert(
-        usagePercent: overallExceeded
-            ? budgetUsagePercent.round()
-            : (topCategoryUsagePercent ?? budgetUsagePercent).round(),
-        categoryName: categoryExceeded ? topCategoryName : null,
+        usagePercent: decision.budgetAlertUsagePercent!,
+        categoryName: decision.budgetAlertCategoryName,
       );
       _budgetAlertTriggered = true;
     }
 
-    if (prefs.dailyExpenseReminder) {
+    if (decision.scheduleDailyExpenseReminder) {
       await _scheduleDailyExpenseReminder(prefs);
     }
 
-    if (prefs.mealPlanReminders && !hasMealPlan) {
+    if (decision.scheduleMealPlanReminder) {
       await _scheduleMealPlanReminder(
         hour: prefs.preferredHour,
         minute: prefs.preferredMinute,
       );
     }
 
-    for (int i = 0; i < prefs.customReminders.length; i++) {
+    for (int i = 0; i < decision.customReminderCount; i++) {
       await _scheduleCustomReminder(prefs.customReminders[i], i);
     }
   }
 
+  @visibleForTesting
+  static NotificationRefreshDecision buildRefreshDecision({
+    required NotificationPreferences prefs,
+    required double budgetUsagePercent,
+    required bool hasMealPlan,
+    String? topCategoryName,
+    double? topCategoryUsagePercent,
+    bool budgetAlertAlreadyTriggered = false,
+  }) {
+    final threshold = prefs.budgetAlertThreshold;
+    final categoryExceeded = (topCategoryUsagePercent ?? 0) >= threshold;
+    final overallExceeded = budgetUsagePercent >= threshold;
+    final shouldAlert =
+        prefs.budgetAlerts && (overallExceeded || categoryExceeded);
+
+    return NotificationRefreshDecision(
+      scheduleBillReminders: prefs.billReminders,
+      scheduleDailyExpenseReminder: prefs.dailyExpenseReminder,
+      scheduleMealPlanReminder: prefs.mealPlanReminders && !hasMealPlan,
+      customReminderCount: prefs.customReminders.length,
+      shouldShowBudgetAlert: shouldAlert && !budgetAlertAlreadyTriggered,
+      shouldResetBudgetAlertTrigger: !shouldAlert,
+      budgetAlertUsagePercent: shouldAlert
+          ? (overallExceeded
+                ? budgetUsagePercent.round()
+                : (topCategoryUsagePercent ?? budgetUsagePercent).round())
+          : null,
+      budgetAlertCategoryName: categoryExceeded ? topCategoryName : null,
+    );
+  }
+
   Future<void> _scheduleDailyExpenseReminder(
-      NotificationPreferences prefs) async {
+    NotificationPreferences prefs,
+  ) async {
     final now = DateTime.now();
-    var scheduledDate =
-        DateTime(now.year, now.month, now.day, prefs.preferredHour, prefs.preferredMinute);
+    var scheduledDate = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      prefs.preferredHour,
+      prefs.preferredMinute,
+    );
 
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
@@ -268,12 +334,16 @@ class NotificationService {
     // Schedule for next Monday at preferred time
     final now = DateTime.now();
     var nextMonday = now.add(Duration(days: (8 - now.weekday) % 7));
-    if (nextMonday.isBefore(now) ||
-        nextMonday.difference(now).inHours < 1) {
+    if (nextMonday.isBefore(now) || nextMonday.difference(now).inHours < 1) {
       nextMonday = nextMonday.add(const Duration(days: 7));
     }
-    final scheduledDate =
-        DateTime(nextMonday.year, nextMonday.month, nextMonday.day, hour, minute);
+    final scheduledDate = DateTime(
+      nextMonday.year,
+      nextMonday.month,
+      nextMonday.day,
+      hour,
+      minute,
+    );
 
     try {
       await _plugin.zonedSchedule(
@@ -310,13 +380,21 @@ class NotificationService {
     int preferredHour = 10,
     int preferredMinute = 0,
   }) async {
-    final reminderDate = trialEndDate.subtract(Duration(days: daysBeforeExpiry));
+    final reminderDate = trialEndDate.subtract(
+      Duration(days: daysBeforeExpiry),
+    );
     final now = DateTime.now();
 
     if (!reminderDate.isAfter(now)) return;
 
-    final excessCats = (activeCategories - maxFreeCategories).clamp(0, activeCategories);
-    final excessGoals = (activeSavingsGoals - maxFreeSavingsGoals).clamp(0, activeSavingsGoals);
+    final excessCats = (activeCategories - maxFreeCategories).clamp(
+      0,
+      activeCategories,
+    );
+    final excessGoals = (activeSavingsGoals - maxFreeSavingsGoals).clamp(
+      0,
+      activeSavingsGoals,
+    );
 
     final parts = <String>[];
     if (excessCats > 0) parts.add('$excessCats categories');
@@ -332,7 +410,13 @@ class NotificationService {
         'Trial ending soon',
         body,
         tz.TZDateTime.from(
-          DateTime(reminderDate.year, reminderDate.month, reminderDate.day, preferredHour, preferredMinute),
+          DateTime(
+            reminderDate.year,
+            reminderDate.month,
+            reminderDate.day,
+            preferredHour,
+            preferredMinute,
+          ),
           tz.local,
         ),
         NotificationDetails(
@@ -360,10 +444,14 @@ class NotificationService {
     required int maxFreeCategories,
     required int maxFreeSavingsGoals,
   }) {
-    final excessCats =
-        (activeCategories - maxFreeCategories).clamp(0, activeCategories);
-    final excessGoals =
-        (activeSavingsGoals - maxFreeSavingsGoals).clamp(0, activeSavingsGoals);
+    final excessCats = (activeCategories - maxFreeCategories).clamp(
+      0,
+      activeCategories,
+    );
+    final excessGoals = (activeSavingsGoals - maxFreeSavingsGoals).clamp(
+      0,
+      activeSavingsGoals,
+    );
 
     final parts = <String>[];
     if (excessCats > 0) parts.add('$excessCats categories');
@@ -376,10 +464,17 @@ class NotificationService {
   }
 
   Future<void> _scheduleCustomReminder(
-      CustomReminder reminder, int index) async {
+    CustomReminder reminder,
+    int index,
+  ) async {
     final now = DateTime.now();
     var scheduledDate = DateTime(
-        now.year, now.month, now.day, reminder.hour, reminder.minute);
+      now.year,
+      now.month,
+      now.day,
+      reminder.hour,
+      reminder.minute,
+    );
 
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
