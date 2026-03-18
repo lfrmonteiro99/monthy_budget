@@ -107,9 +107,30 @@ class AppConstants {
 
 /// Bottom-navigation tab indices.
 ///
-/// Use [AppTab.index] wherever raw `0`, `1`, `2` tab integers appeared.
+/// Use [AppTab.navigationIndex] instead of storing raw `0`, `1`, `2` integers.
 enum AppTab {
   dashboard, // 0
   expenses, // 1
-  planHub, // 2
+  planHub; // 2
+
+  int get navigationIndex => switch (this) {
+    AppTab.dashboard => 0,
+    AppTab.expenses => 1,
+    AppTab.planHub => 2,
+  };
+
+  String get featureKey => switch (this) {
+    AppTab.dashboard => 'dashboard',
+    AppTab.expenses => 'expense_tracker',
+    AppTab.planHub => 'plan_and_shop',
+  };
+
+  static AppTab fromNavigationIndex(int index) {
+    return switch (index) {
+      0 => AppTab.dashboard,
+      1 => AppTab.expenses,
+      2 => AppTab.planHub,
+      _ => throw RangeError.range(index, 0, 2, 'index'),
+    };
+  }
 }
