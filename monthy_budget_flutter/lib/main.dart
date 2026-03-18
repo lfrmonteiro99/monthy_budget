@@ -1,31 +1,22 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'l10n/generated/app_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'app_home.dart';
+import 'app_shell.dart';
 import 'config/supabase_public_config.dart';
+import 'l10n/generated/app_localizations.dart';
+import 'screens/auth/auth_gate.dart';
+import 'services/ad_service.dart';
 import 'services/local_config_service.dart';
 import 'services/notification_service.dart';
-import 'services/ad_service.dart';
 import 'services/revenuecat_service.dart';
-import 'theme/app_theme.dart';
 import 'theme/app_colors.dart';
-import 'screens/auth/auth_gate.dart';
-import 'app_home.dart';
-
-/// Global notifier for reactive locale changes from settings.
-final appLocaleNotifier = ValueNotifier<Locale?>(null);
-
-/// Global notifier for reactive theme changes.
-final appThemeModeNotifier = ValueNotifier<ThemeMode>(ThemeMode.system);
-
-/// Global notifier for reactive color palette changes.
-final appColorPaletteNotifier =
-    ValueNotifier<AppColorPalette>(AppColorPalette.ocean);
+import 'theme/app_theme.dart';
 
 /// Non-null when Supabase failed to initialise (bad credentials, network, etc.).
 String? supabaseInitError;
@@ -61,19 +52,18 @@ Future<void> main() async {
     configService.loadThemeMode(),
     configService.loadColorPalette(),
   ]);
+  final appShellController = AppShellController(
+    themeMode: results[1] as ThemeMode,
+    colorPalette: results[2] as AppColorPalette,
+  );
 
-  appThemeModeNotifier.value = results[1] as ThemeMode;
-  final palette = results[2] as AppColorPalette;
-  appColorPaletteNotifier.value = palette;
-  AppColors.palette = palette;
-
-  // Show UI immediately — splash removed, login visible
+  // Show UI immediately - splash removed, login visible
   FlutterNativeSplash.remove();
 
   // Zone guard: last-resort catcher for errors that bypass all other handlers.
   runZonedGuarded(
     () {
-      runApp(const OrcamentoMensalApp());
+      runApp(OrcamentoMensalApp(controller: appShellController));
       // Non-critical: defer to background after UI is on screen
       unawaited(_initDeferredServices());
     },
@@ -131,44 +121,63 @@ Future<void> _initDeferredServices() async {
   ]);
 }
 
-class OrcamentoMensalApp extends StatelessWidget {
-  const OrcamentoMensalApp({super.key});
+class OrcamentoMensalApp extends StatefulWidget {
+  final AppShellController? controller;
+
+  const OrcamentoMensalApp({super.key, this.controller});
+
+  @override
+  State<OrcamentoMensalApp> createState() => _OrcamentoMensalAppState();
+}
+
+class _OrcamentoMensalAppState extends State<OrcamentoMensalApp> {
+  late final AppShellController _controller;
+  late final bool _ownsController;
+
+  @override
+  void initState() {
+    super.initState();
+    _ownsController = widget.controller == null;
+    _controller = widget.controller ?? AppShellController();
+  }
+
+  @override
+  void dispose() {
+    if (_ownsController) {
+      _controller.dispose();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: appThemeModeNotifier,
-      builder: (_, themeMode, _) => ValueListenableBuilder<AppColorPalette>(
-        valueListenable: appColorPaletteNotifier,
-        builder: (_, palette, _) {
-          AppColors.palette = palette;
-          return ValueListenableBuilder<Locale?>(
-            valueListenable: appLocaleNotifier,
-            builder: (_, locale, _) => MaterialApp(
-              title: 'Orçamento Mensal',
-              debugShowCheckedModeBanner: false,
-              locale: locale,
-              localizationsDelegates: const [
-                S.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: S.supportedLocales,
-              theme: lightTheme(palette),
-              darkTheme: darkTheme(palette),
-              themeMode: themeMode,
-              home: supabaseInitError != null
-                  ? _SupabaseErrorScreen(error: supabaseInitError!)
-                  : AuthGate(
-                      appBuilder: (profile) => AppHome(
-                        householdId: profile.householdId,
-                        isAdmin: profile.role == 'admin',
-                      ),
-                    ),
-            ),
-          );
-        },
+    return AppShellScope(
+      controller: _controller,
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (_, _) => MaterialApp(
+          title: 'Orçamento Mensal',
+          debugShowCheckedModeBanner: false,
+          locale: _controller.locale,
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.supportedLocales,
+          theme: lightTheme(_controller.colorPalette),
+          darkTheme: darkTheme(_controller.colorPalette),
+          themeMode: _controller.themeMode,
+          home: supabaseInitError != null
+              ? _SupabaseErrorScreen(error: supabaseInitError!)
+              : AuthGate(
+                  appBuilder: (profile) => AppHome(
+                    householdId: profile.householdId,
+                    isAdmin: profile.role == 'admin',
+                  ),
+                ),
+        ),
       ),
     );
   }
@@ -176,6 +185,7 @@ class OrcamentoMensalApp extends StatelessWidget {
 
 class _SupabaseErrorScreen extends StatelessWidget {
   final String error;
+
   const _SupabaseErrorScreen({required this.error});
 
   @override
@@ -187,7 +197,11 @@ class _SupabaseErrorScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.error_outline, size: 64, color: AppColors.error(context)),
+              Icon(
+                Icons.error_outline,
+                size: 64,
+                color: AppColors.error(context),
+              ),
               const SizedBox(height: 16),
               // Hardcoded: l10n is unavailable here because this screen renders
               // before MaterialApp (and its localization delegates) are built.
@@ -199,7 +213,10 @@ class _SupabaseErrorScreen extends StatelessWidget {
               Text(
                 error,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 13, color: AppColors.textSecondary(context)),
+                style: TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textSecondary(context),
+                ),
               ),
             ],
           ),

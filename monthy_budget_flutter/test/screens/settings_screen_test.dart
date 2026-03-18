@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:monthly_management/app_shell.dart';
 import 'package:monthly_management/models/app_settings.dart';
 import 'package:monthly_management/screens/settings_screen.dart';
 import 'package:monthly_management/services/household_service.dart';
@@ -12,8 +13,9 @@ void main() {
   GoogleFonts.config.allowRuntimeFetching = false;
 
   SettingsScreen buildScreen({
+    String? initialSection,
     Future<List<AssociatedHouseholdMember>> Function(String householdId)?
-        loadAssociatedMembers,
+    loadAssociatedMembers,
     Future<String> Function(String householdId)? generateInviteCode,
   }) {
     return SettingsScreen(
@@ -25,7 +27,7 @@ void main() {
       onSaveApiKey: (_) {},
       isAdmin: true,
       householdId: 'hh_1',
-      initialSection: 'household',
+      initialSection: initialSection ?? 'household',
       loadAssociatedMembers: loadAssociatedMembers,
       generateInviteCode: generateInviteCode,
     );
@@ -75,23 +77,38 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    // The household detail page is auto-opened via initialSection.
-    // The invite section shows a FilledButton with "Generate invite code".
-    final generateButton =
-        find.widgetWithText(FilledButton, 'Generate invite code');
+    final generateButton = find.widgetWithText(
+      FilledButton,
+      'Generate invite code',
+    );
     expect(generateButton, findsOneWidget);
     await tester.ensureVisible(generateButton);
     await tester.tap(generateButton);
     await tester.pumpAndSettle();
 
-    // Verify the generateInviteCode callback was invoked exactly once.
     expect(calls, 1);
+  });
 
-    // NOTE: The household section is rendered inside a Navigator-pushed
-    // MaterialPageRoute. The invite code state (_inviteCode) lives in
-    // _SettingsScreenState, but setState there does not trigger a rebuild
-    // of the pushed route's widget tree. This is a known architectural
-    // limitation — the code display and "New code" label cannot be
-    // verified via widget tests in this navigation setup.
+  testWidgets('appearance section updates app shell theme mode', (
+    tester,
+  ) async {
+    final controller = AppShellController(locale: const Locale('en'));
+
+    await tester.pumpWidget(
+      wrapWithTestApp(
+        buildScreen(
+          initialSection: 'appearance',
+          loadAssociatedMembers: (_) async => const [],
+        ),
+        controller: controller,
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Dark'));
+    await tester.pumpAndSettle();
+
+    expect(controller.themeMode, ThemeMode.dark);
   });
 }

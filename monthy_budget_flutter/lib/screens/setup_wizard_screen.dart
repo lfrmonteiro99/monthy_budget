@@ -4,9 +4,9 @@ import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../data/tax/tax_system.dart';
 import '../data/tax/tax_factory.dart';
+import '../app_shell.dart';
 import '../utils/calculations.dart';
 import '../utils/formatters.dart';
-import '../main.dart' show appLocaleNotifier;
 import '../constants/app_constants.dart';
 import '../theme/app_colors.dart';
 
@@ -697,6 +697,7 @@ class _WelcomeAndCountryStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
+    final appShell = AppShellScope.of(context);
     return SafeArea(
       child: Column(
         children: [
@@ -738,8 +739,7 @@ class _WelcomeAndCountryStep extends StatelessWidget {
                             country: country,
                             localeOverride: newLocale,
                           ));
-                          appLocaleNotifier.value =
-                              newLocale != null ? Locale(newLocale) : null;
+                          appShell.setLocaleCode(newLocale);
                         },
                         borderRadius: BorderRadius.circular(12),
                         child: Container(

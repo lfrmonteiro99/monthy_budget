@@ -15,10 +15,10 @@ import '../utils/calculations.dart';
 import '../services/household_service.dart';
 import '../models/meal_settings.dart';
 import '../models/local_dashboard_config.dart';
+import '../app_shell.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../constants/app_constants.dart';
 import '../theme/app_colors.dart';
-import '../main.dart';
 import '../models/subscription_state.dart';
 import '../services/downgrade_service.dart';
 import '../services/biometric_service.dart';
@@ -547,121 +547,115 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildAppearanceSection() {
     final l10n = S.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final appShell = AppShellScope.of(context);
     return Container(
       color: AppColors.surface(context),
       padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ValueListenableBuilder<ThemeMode>(
-            valueListenable: appThemeModeNotifier,
-            builder: (context, currentMode, _) {
-              return SegmentedButton<ThemeMode>(
-                segments: [
-                  ButtonSegment<ThemeMode>(
-                    value: ThemeMode.system,
-                    label: Text(l10n.themeSystem),
-                    icon: const Icon(Icons.brightness_auto),
-                  ),
-                  ButtonSegment<ThemeMode>(
-                    value: ThemeMode.light,
-                    label: Text(l10n.themeLight),
-                    icon: const Icon(Icons.light_mode),
-                  ),
-                  ButtonSegment<ThemeMode>(
-                    value: ThemeMode.dark,
-                    label: Text(l10n.themeDark),
-                    icon: const Icon(Icons.dark_mode),
-                  ),
-                ],
-                selected: {currentMode},
-                onSelectionChanged: (newSelection) {
-                  final newMode = newSelection.first;
-                  appThemeModeNotifier.value = newMode;
-                  LocalConfigService().saveThemeMode(newMode);
-                },
-              );
-            },
-          ),
-          const SizedBox(height: 24),
-          Text(
-            l10n.settingsColorPalette.toUpperCase(),
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textSecondary(context),
-              letterSpacing: 0.5,
+      child: AnimatedBuilder(
+        animation: appShell,
+        builder: (context, _) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SegmentedButton<ThemeMode>(
+              segments: [
+                ButtonSegment<ThemeMode>(
+                  value: ThemeMode.system,
+                  label: Text(l10n.themeSystem),
+                  icon: const Icon(Icons.brightness_auto),
+                ),
+                ButtonSegment<ThemeMode>(
+                  value: ThemeMode.light,
+                  label: Text(l10n.themeLight),
+                  icon: const Icon(Icons.light_mode),
+                ),
+                ButtonSegment<ThemeMode>(
+                  value: ThemeMode.dark,
+                  label: Text(l10n.themeDark),
+                  icon: const Icon(Icons.dark_mode),
+                ),
+              ],
+              selected: {appShell.themeMode},
+              onSelectionChanged: (newSelection) {
+                final newMode = newSelection.first;
+                appShell.setThemeMode(newMode);
+                LocalConfigService().saveThemeMode(newMode);
+              },
             ),
-          ),
-          const SizedBox(height: 12),
-          ValueListenableBuilder<AppColorPalette>(
-            valueListenable: appColorPaletteNotifier,
-            builder: (context, currentPalette, _) {
-              return Wrap(
-                spacing: 16,
-                runSpacing: 12,
-                children: AppColorPalette.values.map((p) {
-                  final isSelected = p == currentPalette;
-                  final color = AppColors.primaryStatic(p, isDark);
-                  return GestureDetector(
-                    onTap: () {
-                      appColorPaletteNotifier.value = p;
-                      LocalConfigService().saveColorPalette(p);
-                    },
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        AnimatedContainer(
-                          duration: AppConstants.animFast,
-                          width: 44,
-                          height: 44,
-                          decoration: BoxDecoration(
-                            color: color,
-                            shape: BoxShape.circle,
-                            border: isSelected
-                                ? Border.all(
-                                    color: AppColors.textPrimary(context),
-                                    width: 2.5,
-                                  )
-                                : Border.all(
-                                    color: AppColors.border(context),
-                                    width: 1,
-                                  ),
-                          ),
-                          child: isSelected
-                              ? Icon(
-                                  Icons.check,
-                                  size: 20,
-                                  color: AppColors.primaryStatic(
-                                    p,
-                                    isDark,
-                                  ).computeLuminance() > 0.5
-                                      ? Colors.black
-                                      : Colors.white,
+            const SizedBox(height: 24),
+            Text(
+              l10n.settingsColorPalette.toUpperCase(),
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary(context),
+                letterSpacing: 0.5,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 16,
+              runSpacing: 12,
+              children: AppColorPalette.values.map((p) {
+                final isSelected = p == appShell.colorPalette;
+                final color = AppColors.primaryStatic(p, isDark);
+                return GestureDetector(
+                  onTap: () {
+                    appShell.setColorPalette(p);
+                    LocalConfigService().saveColorPalette(p);
+                  },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AnimatedContainer(
+                        duration: AppConstants.animFast,
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                          border: isSelected
+                              ? Border.all(
+                                  color: AppColors.textPrimary(context),
+                                  width: 2.5,
                                 )
-                              : null,
+                              : Border.all(
+                                  color: AppColors.border(context),
+                                  width: 1,
+                                ),
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          _paletteLabel(p, l10n),
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: isSelected
-                                ? FontWeight.w600
-                                : FontWeight.w400,
-                            color: isSelected
-                                ? AppColors.textPrimary(context)
-                                : AppColors.textSecondary(context),
-                          ),
+                        child: isSelected
+                            ? Icon(
+                                Icons.check,
+                                size: 20,
+                                color: AppColors.primaryStatic(
+                                  p,
+                                  isDark,
+                                ).computeLuminance() > 0.5
+                                    ? Colors.black
+                                    : Colors.white,
+                              )
+                            : null,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _paletteLabel(p, l10n),
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.w400,
+                          color: isSelected
+                              ? AppColors.textPrimary(context)
+                              : AppColors.textSecondary(context),
                         ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              );
-            },
-          ),
-        ],
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
       ),
     );
   }

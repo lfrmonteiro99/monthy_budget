@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'app_shell.dart';
 import 'l10n/generated/app_localizations.dart';
-import 'main.dart';
 import 'models/app_settings.dart';
 import 'models/product.dart';
 import 'models/shopping_item.dart';
@@ -904,11 +904,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
   void _syncLocaleAndFormatter(AppSettings settings) {
     setFormatterCountry(settings.country);
-    if (settings.localeOverride != null) {
-      appLocaleNotifier.value = Locale(settings.localeOverride!);
-    } else {
-      appLocaleNotifier.value = null; // system default
-    }
+    AppShellScope.read(context).setLocaleCode(settings.localeOverride);
   }
 
   void _saveSettings(AppSettings settings) {
@@ -1080,6 +1076,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   CommandActionRegistry _buildCommandRegistry() {
+    final appShell = AppShellScope.read(context);
     return CommandActionRegistry(
       onAddExpense: _addActualExpense,
       onAddShoppingItem: (item) async => _addToShoppingList(item),
@@ -1092,10 +1089,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           _addSavingsContributionByGoalNameFromCommand,
       onDeleteExpenseByDescription: _deleteExpenseByDescriptionFromCommand,
       onDeleteExpense: _deleteActualExpense,
-      onSetThemeMode: (mode) => appThemeModeNotifier.value = mode,
+      onSetThemeMode: (mode) {
+        appShell.setThemeMode(mode);
+        _localConfigService.saveThemeMode(mode);
+      },
       onSetColorPalette: (palette) {
-        AppColors.palette = palette;
-        appColorPaletteNotifier.value = palette;
+        appShell.setColorPalette(palette);
         _localConfigService.saveColorPalette(palette);
       },
       onSetLanguage: (localeCode) {

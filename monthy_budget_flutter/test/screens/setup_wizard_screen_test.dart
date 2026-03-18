@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:monthly_management/app_shell.dart';
 import 'package:monthly_management/models/app_settings.dart';
 import 'package:monthly_management/screens/setup_wizard_screen.dart';
 
@@ -9,29 +11,22 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   GoogleFonts.config.allowRuntimeFetching = false;
 
-  testWidgets('shows welcome step and advances to country step',
-      (tester) async {
-    // Welcome and country selection are now combined into a single step.
-    // Verify both sections are visible on the first page, then advance.
+  testWidgets('shows welcome step and advances to country step', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       wrapWithTestApp(
-        SetupWizardScreen(
-          initial: const AppSettings(),
-          onComplete: (_) {},
-        ),
+        SetupWizardScreen(initial: const AppSettings(), onComplete: (_) {}),
       ),
     );
     await tester.pumpAndSettle();
 
-    // Both welcome title and country title appear on the same combined step.
     expect(find.text('Welcome to your budget'), findsOneWidget);
     expect(find.text('Where do you live?'), findsOneWidget);
 
-    // Tap "Continue" to advance to the salary/expenses step.
     await tester.tap(find.text('Continue'));
     await tester.pumpAndSettle();
 
-    // After advancing, welcome text should no longer be visible.
     expect(find.text('Welcome to your budget'), findsNothing);
   });
 
@@ -50,5 +45,22 @@ void main() {
     await tester.tap(find.text('Skip setup'));
     await tester.pumpAndSettle();
     expect(called, isTrue);
+  });
+
+  testWidgets('country selection updates the scoped locale', (tester) async {
+    final controller = AppShellController(locale: const Locale('en'));
+
+    await tester.pumpWidget(
+      wrapWithTestApp(
+        SetupWizardScreen(initial: const AppSettings(), onComplete: (_) {}),
+        controller: controller,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Spain'));
+    await tester.pumpAndSettle();
+
+    expect(controller.locale, const Locale('es'));
   });
 }
