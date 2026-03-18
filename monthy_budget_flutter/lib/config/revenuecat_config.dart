@@ -1,6 +1,9 @@
 // RevenueCat configuration.
 
-const revenueCatApiKey = 'test_lXDJiTQVVkodjxxXGcAZKLcPucG';
+const revenueCatApiKey = String.fromEnvironment(
+  'REVENUECAT_API_KEY',
+  defaultValue: '',
+);
 
 const revenueCatDebugLogsEnabled = false;
 

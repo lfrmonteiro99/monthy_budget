@@ -26,6 +26,20 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        // Extract ADMOB_APP_ID from --dart-define for AndroidManifest placeholder.
+        // dart-defines are passed as a comma-separated, base64-encoded list in
+        // the Gradle property "dart-defines".
+        val dartDefines = (project.findProperty("dart-defines") as? String)
+            ?.split(",")
+            ?.associate { encoded ->
+                val decoded = String(java.util.Base64.getDecoder().decode(encoded))
+                val parts = decoded.split("=", limit = 2)
+                parts[0] to (parts.getOrNull(1) ?: "")
+            } ?: emptyMap()
+
+        val admobAppId = dartDefines["ADMOB_APP_ID"] ?: ""
+        manifestPlaceholders["admobAppId"] = admobAppId
     }
 
     val keystoreFile = rootProject.file("keystore.jks")
