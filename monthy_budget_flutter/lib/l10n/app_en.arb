@@ -2376,6 +2376,8 @@
     "receiptScanQrMode": "QR Code",
     "receiptScanPhotoMode": "Photo",
     "receiptScanHint": "Point camera at the receipt QR code",
+    "receiptScanPhotoHint": "Position the receipt and tap the button to capture",
+    "receiptScanProcessing": "Reading receipt…",
     "receiptScanSuccess": "Expense of {amount} at {store} recorded",
     "@receiptScanSuccess": {
         "placeholders": {

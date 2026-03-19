@@ -2318,6 +2318,8 @@
     "receiptScanQrMode": "Código QR",
     "receiptScanPhotoMode": "Foto",
     "receiptScanHint": "Apunte la cámara al código QR del recibo",
+    "receiptScanPhotoHint": "Coloque el recibo y pulse el botón para capturar",
+    "receiptScanProcessing": "Leyendo recibo…",
     "receiptScanSuccess": "Gasto de {amount} en {store} registrado",
     "@receiptScanSuccess": {
         "placeholders": {

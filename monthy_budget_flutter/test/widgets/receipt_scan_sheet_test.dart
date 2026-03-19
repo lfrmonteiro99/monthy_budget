@@ -52,7 +52,7 @@ void main() {
       );
     });
 
-    testWidgets('switching to photo mode shows camera button', (tester) async {
+    testWidgets('switching to photo mode shows photo hint', (tester) async {
       await tester.pumpWidget(_wrap(const ReceiptScanSheet()));
       await tester.pumpAndSettle(const Duration(milliseconds: 100));
 
@@ -62,8 +62,11 @@ void main() {
       // indicator animates continuously and would cause a timeout.
       await tester.pump(const Duration(milliseconds: 100));
 
-      // Photo mode shows camera icon button
-      expect(find.byIcon(Icons.camera_alt), findsWidgets);
+      // Photo mode shows in-app camera hint
+      expect(
+        find.text('Position the receipt and tap the button to capture'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('static show method exists', (tester) async {
