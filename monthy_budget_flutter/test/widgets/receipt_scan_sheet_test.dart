@@ -58,7 +58,9 @@ void main() {
 
       // Tap the Photo segment
       await tester.tap(find.text('Photo'));
-      await tester.pumpAndSettle(const Duration(milliseconds: 100));
+      // Use pump instead of pumpAndSettle because the camera loading
+      // indicator animates continuously and would cause a timeout.
+      await tester.pump(const Duration(milliseconds: 100));
 
       // Photo mode shows camera icon button
       expect(find.byIcon(Icons.camera_alt), findsWidgets);
