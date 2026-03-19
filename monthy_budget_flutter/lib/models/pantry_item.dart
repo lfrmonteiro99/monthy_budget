@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'pantry_item.g.dart';
+
+@JsonSerializable(includeIfNull: false)
 class PantryItem {
   final String ingredientId;
   final double quantity;
@@ -30,22 +35,8 @@ class PantryItem {
         lowThreshold: lowThreshold ?? this.lowThreshold,
       );
 
-  factory PantryItem.fromJson(Map<String, dynamic> json) => PantryItem(
-        ingredientId: json['ingredientId'] as String,
-        quantity: (json['quantity'] as num).toDouble(),
-        unit: json['unit'] as String,
-        lastRestocked: json['lastRestocked'] != null
-            ? DateTime.parse(json['lastRestocked'] as String)
-            : null,
-        lowThreshold: (json['lowThreshold'] as num?)?.toDouble(),
-      );
+  factory PantryItem.fromJson(Map<String, dynamic> json) =>
+      _$PantryItemFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        'ingredientId': ingredientId,
-        'quantity': quantity,
-        'unit': unit,
-        if (lastRestocked != null)
-          'lastRestocked': lastRestocked!.toIso8601String(),
-        if (lowThreshold != null) 'lowThreshold': lowThreshold,
-      };
+  Map<String, dynamic> toJson() => _$PantryItemToJson(this);
 }

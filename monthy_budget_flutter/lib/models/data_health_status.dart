@@ -1,5 +1,9 @@
 import 'dart:convert';
 
+import 'package:json_annotation/json_annotation.dart';
+
+part 'data_health_status.g.dart';
+
 enum SyncDomain {
   settings,
   shopping,
@@ -23,7 +27,9 @@ enum AlertSeverity {
       };
 }
 
+@JsonSerializable()
 class SyncDomainStatus {
+  @JsonKey(unknownEnumValue: SyncDomain.settings)
   final SyncDomain domain;
   final DateTime? lastLoadAt;
   final DateTime? lastSaveAt;
@@ -31,6 +37,7 @@ class SyncDomainStatus {
   final String? lastErrorMessage;
 
   /// How long after last load/save before the domain is considered stale.
+  @JsonKey(fromJson: _durationFromJson, toJson: _durationToJson)
   final Duration staleAfter;
 
   const SyncDomainStatus({
@@ -92,40 +99,23 @@ class SyncDomainStatus {
     );
   }
 
-  Map<String, dynamic> toJson() => {
-        'domain': domain.name,
-        'lastLoadAt': lastLoadAt?.toIso8601String(),
-        'lastSaveAt': lastSaveAt?.toIso8601String(),
-        'lastErrorAt': lastErrorAt?.toIso8601String(),
-        'lastErrorMessage': lastErrorMessage,
-        'staleAfterMs': staleAfter.inMilliseconds,
-      };
+  Map<String, dynamic> toJson() => _$SyncDomainStatusToJson(this);
 
-  factory SyncDomainStatus.fromJson(Map<String, dynamic> json) {
-    return SyncDomainStatus(
-      domain: SyncDomain.values.firstWhere(
-        (d) => d.name == json['domain'],
-        orElse: () => SyncDomain.settings,
-      ),
-      lastLoadAt: json['lastLoadAt'] != null
-          ? DateTime.parse(json['lastLoadAt'] as String)
-          : null,
-      lastSaveAt: json['lastSaveAt'] != null
-          ? DateTime.parse(json['lastSaveAt'] as String)
-          : null,
-      lastErrorAt: json['lastErrorAt'] != null
-          ? DateTime.parse(json['lastErrorAt'] as String)
-          : null,
-      lastErrorMessage: json['lastErrorMessage'] as String?,
-      staleAfter:
-          Duration(milliseconds: (json['staleAfterMs'] as int?) ?? 86400000),
-    );
-  }
+  factory SyncDomainStatus.fromJson(Map<String, dynamic> json) =>
+      _$SyncDomainStatusFromJson(json);
+
+  static Duration _durationFromJson(Object? value) =>
+      Duration(milliseconds: (value as int?) ?? 86400000);
+
+  static int _durationToJson(Duration value) => value.inMilliseconds;
 }
 
+@JsonSerializable(includeIfNull: false)
 class DataAlert {
   final String id;
+  @JsonKey(unknownEnumValue: AlertSeverity.info)
   final AlertSeverity severity;
+  @JsonKey(unknownEnumValue: SyncDomain.settings)
   final SyncDomain? domain;
   final String title;
   final String body;
@@ -142,35 +132,10 @@ class DataAlert {
     required this.createdAt,
   });
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'severity': severity.name,
-        'domain': domain?.name,
-        'title': title,
-        'body': body,
-        'recommendedAction': recommendedAction,
-        'createdAt': createdAt.toIso8601String(),
-      };
+  Map<String, dynamic> toJson() => _$DataAlertToJson(this);
 
-  factory DataAlert.fromJson(Map<String, dynamic> json) {
-    return DataAlert(
-      id: json['id'] as String,
-      severity: AlertSeverity.values.firstWhere(
-        (s) => s.name == json['severity'],
-        orElse: () => AlertSeverity.info,
-      ),
-      domain: json['domain'] != null
-          ? SyncDomain.values.firstWhere(
-              (d) => d.name == json['domain'],
-              orElse: () => SyncDomain.settings,
-            )
-          : null,
-      title: json['title'] as String,
-      body: json['body'] as String,
-      recommendedAction: json['recommendedAction'] as String?,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-    );
-  }
+  factory DataAlert.fromJson(Map<String, dynamic> json) =>
+      _$DataAlertFromJson(json);
 }
 
 /// Convenience for persisting a list of [SyncDomainStatus] as JSON.

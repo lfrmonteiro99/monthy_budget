@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'whats_new_entry.g.dart';
+
+@JsonSerializable(includeIfNull: false)
 class WhatsNewEntry {
   final String id;
   final String version;
@@ -13,21 +18,8 @@ class WhatsNewEntry {
     this.featureKey,
   });
 
-  factory WhatsNewEntry.fromJson(Map<String, dynamic> json) {
-    return WhatsNewEntry(
-      id: json['id'] as String,
-      version: json['version'] as String,
-      title: json['title'] as String,
-      body: json['body'] as String,
-      featureKey: json['featureKey'] as String?,
-    );
-  }
+  factory WhatsNewEntry.fromJson(Map<String, dynamic> json) =>
+      _$WhatsNewEntryFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'version': version,
-        'title': title,
-        'body': body,
-        if (featureKey != null) 'featureKey': featureKey,
-      };
+  Map<String, dynamic> toJson() => _$WhatsNewEntryToJson(this);
 }

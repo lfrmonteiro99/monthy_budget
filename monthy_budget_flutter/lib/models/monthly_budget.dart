@@ -1,6 +1,12 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'monthly_budget.g.dart';
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MonthlyBudget {
   final String id;
   final String category;
+  @JsonKey(fromJson: _amountFromJson)
   final double amount;
   final String monthKey;
 
@@ -36,22 +42,12 @@ class MonthlyBudget {
     );
   }
 
-  factory MonthlyBudget.fromSupabase(Map<String, dynamic> map) {
-    final rawAmount = (map['amount'] as num).toDouble();
-    return MonthlyBudget(
-      id: map['id'] as String,
-      category: map['category'] as String,
-      amount: rawAmount < 0 ? 0 : rawAmount,
-      monthKey: map['month_key'] as String,
-    );
-  }
+  factory MonthlyBudget.fromSupabase(Map<String, dynamic> map) =>
+      MonthlyBudget.fromJson(map);
 
   Map<String, dynamic> toSupabase(String householdId) => {
-        'id': id,
+        ...toJson(),
         'household_id': householdId,
-        'category': category,
-        'amount': amount,
-        'month_key': monthKey,
       };
 
   MonthlyBudget copyWith({
@@ -66,5 +62,15 @@ class MonthlyBudget {
       amount: amount ?? this.amount,
       monthKey: monthKey ?? this.monthKey,
     );
+  }
+
+  factory MonthlyBudget.fromJson(Map<String, dynamic> json) =>
+      _$MonthlyBudgetFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MonthlyBudgetToJson(this);
+
+  static double _amountFromJson(Object? value) {
+    final rawAmount = (value as num?)?.toDouble() ?? 0;
+    return rawAmount < 0 ? 0 : rawAmount;
   }
 }

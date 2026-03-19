@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'product.g.dart';
+
+@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class Product {
   final String id;
   final String name;
@@ -29,21 +34,8 @@ class Product {
   @override
   int get hashCode => Object.hash(id, name, category, avgPrice, unit, barcode);
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'category': category,
-        'avg_price': avgPrice,
-        'unit': unit,
-        if (barcode != null) 'barcode': barcode,
-      };
+  Map<String, dynamic> toJson() => _$ProductToJson(this);
 
-  factory Product.fromJson(Map<String, dynamic> json) => Product(
-        id: json['id'] as String,
-        name: json['name'] as String,
-        category: json['category'] as String,
-        avgPrice: (json['avg_price'] as num).toDouble(),
-        unit: json['unit'] as String,
-        barcode: json['barcode'] as String?,
-      );
+  factory Product.fromJson(Map<String, dynamic> json) =>
+      _$ProductFromJson(json);
 }

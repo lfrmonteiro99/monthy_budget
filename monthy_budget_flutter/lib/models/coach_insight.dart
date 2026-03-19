@@ -1,5 +1,10 @@
 import 'dart:convert';
 
+import 'package:json_annotation/json_annotation.dart';
+
+part 'coach_insight.g.dart';
+
+@JsonSerializable()
 class CoachInsight {
   final String id;
   final DateTime timestamp;
@@ -25,19 +30,10 @@ class CoachInsight {
   @override
   int get hashCode => Object.hash(id, timestamp, content, stressScore);
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'timestamp': timestamp.toIso8601String(),
-        'content': content,
-        'stressScore': stressScore,
-      };
+  Map<String, dynamic> toJson() => _$CoachInsightToJson(this);
 
-  factory CoachInsight.fromJson(Map<String, dynamic> json) => CoachInsight(
-        id: json['id'] as String,
-        timestamp: DateTime.parse(json['timestamp'] as String),
-        content: json['content'] as String,
-        stressScore: (json['stressScore'] as num).toInt(),
-      );
+  factory CoachInsight.fromJson(Map<String, dynamic> json) =>
+      _$CoachInsightFromJson(json);
 
   static List<CoachInsight> listFromJsonString(String s) {
     final list = jsonDecode(s) as List<dynamic>;

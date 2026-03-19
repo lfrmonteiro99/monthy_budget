@@ -1,5 +1,10 @@
 import 'dart:convert';
 
+import 'package:json_annotation/json_annotation.dart';
+
+part 'purchase_record.g.dart';
+
+@JsonSerializable()
 class PurchaseRecord {
   final String id;
   final DateTime date;
@@ -31,28 +36,13 @@ class PurchaseRecord {
   int get hashCode =>
       Object.hash(id, date, amount, itemCount, isMealPurchase);
 
-  factory PurchaseRecord.fromJson(Map<String, dynamic> json) => PurchaseRecord(
-        id: json['id'] as String,
-        date: DateTime.parse(json['date'] as String),
-        amount: (json['amount'] as num).toDouble(),
-        itemCount: json['itemCount'] as int,
-        items: (json['items'] as List<dynamic>?)
-                ?.map((e) => e as String)
-                .toList() ??
-            [],
-        isMealPurchase: json['isMealPurchase'] as bool? ?? false,
-      );
+  factory PurchaseRecord.fromJson(Map<String, dynamic> json) =>
+      _$PurchaseRecordFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'date': date.toIso8601String(),
-        'amount': amount,
-        'itemCount': itemCount,
-        'items': items,
-        'isMealPurchase': isMealPurchase,
-      };
+  Map<String, dynamic> toJson() => _$PurchaseRecordToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class PurchaseHistory {
   final List<PurchaseRecord> records;
 
@@ -83,10 +73,11 @@ class PurchaseHistory {
 
   factory PurchaseHistory.fromJsonString(String s) {
     final list = jsonDecode(s) as List<dynamic>;
-    return PurchaseHistory(
-      records: list
-          .map((e) => PurchaseRecord.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
+    return PurchaseHistory.fromJson({'records': list});
   }
+
+  factory PurchaseHistory.fromJson(Map<String, dynamic> json) =>
+      _$PurchaseHistoryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PurchaseHistoryToJson(this);
 }

@@ -1,7 +1,13 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'roadmap_entry.g.dart';
+
 enum RoadmapLane { now, next, later }
 
+@JsonSerializable()
 class RoadmapEntry {
   final String id;
+  @JsonKey(unknownEnumValue: RoadmapLane.later)
   final RoadmapLane lane;
   final String title;
   final String body;
@@ -15,24 +21,8 @@ class RoadmapEntry {
     this.isHighlighted = false,
   });
 
-  factory RoadmapEntry.fromJson(Map<String, dynamic> json) {
-    return RoadmapEntry(
-      id: json['id'] as String,
-      lane: RoadmapLane.values.firstWhere(
-        (l) => l.name == json['lane'],
-        orElse: () => RoadmapLane.later,
-      ),
-      title: json['title'] as String,
-      body: json['body'] as String,
-      isHighlighted: json['isHighlighted'] as bool? ?? false,
-    );
-  }
+  factory RoadmapEntry.fromJson(Map<String, dynamic> json) =>
+      _$RoadmapEntryFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'lane': lane.name,
-        'title': title,
-        'body': body,
-        'isHighlighted': isHighlighted,
-      };
+  Map<String, dynamic> toJson() => _$RoadmapEntryToJson(this);
 }

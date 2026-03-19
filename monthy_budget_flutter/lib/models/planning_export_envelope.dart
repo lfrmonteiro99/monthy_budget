@@ -1,7 +1,12 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'planning_export_envelope.g.dart';
+
 /// Envelope wrapper for all planning artifact import/export operations.
 ///
 /// Provides schema versioning, timestamp, artifact type, and optional locale
 /// so that exported files are self-describing and forward-compatible.
+@JsonSerializable(includeIfNull: false)
 class PlanningExportEnvelope {
   static const int currentSchemaVersion = 1;
 
@@ -32,13 +37,7 @@ class PlanningExportEnvelope {
     typeFreeformMeals,
   ];
 
-  Map<String, dynamic> toJson() => {
-        'schemaVersion': schemaVersion,
-        'exportedAt': exportedAt.toIso8601String(),
-        'artifactType': artifactType,
-        if (locale != null) 'locale': locale,
-        'payload': payload,
-      };
+  Map<String, dynamic> toJson() => _$PlanningExportEnvelopeToJson(this);
 
   factory PlanningExportEnvelope.fromJson(Map<String, dynamic> json) {
     final version = json['schemaVersion'];
@@ -69,13 +68,7 @@ class PlanningExportEnvelope {
       throw const FormatException('Missing or invalid payload');
     }
 
-    return PlanningExportEnvelope(
-      schemaVersion: version,
-      exportedAt: DateTime.parse(exportedAtRaw),
-      artifactType: artifactType,
-      locale: json['locale'] as String?,
-      payload: payload,
-    );
+    return _$PlanningExportEnvelopeFromJson(json);
   }
 }
 
@@ -83,6 +76,7 @@ class PlanningExportEnvelope {
 ///
 /// This is not backed by the AI planner; it represents user-entered
 /// ad-hoc meals (e.g. "leftover pasta", "eat out").
+@JsonSerializable(includeIfNull: false)
 class FreeformMeal {
   final String name;
   final String? notes;
@@ -96,17 +90,8 @@ class FreeformMeal {
     required this.mealType,
   });
 
-  Map<String, dynamic> toJson() => {
-        'name': name,
-        if (notes != null) 'notes': notes,
-        'dayIndex': dayIndex,
-        'mealType': mealType,
-      };
+  Map<String, dynamic> toJson() => _$FreeformMealToJson(this);
 
-  factory FreeformMeal.fromJson(Map<String, dynamic> json) => FreeformMeal(
-        name: json['name'] as String? ?? '',
-        notes: json['notes'] as String?,
-        dayIndex: json['dayIndex'] as int? ?? 0,
-        mealType: json['mealType'] as String? ?? 'dinner',
-      );
+  factory FreeformMeal.fromJson(Map<String, dynamic> json) =>
+      _$FreeformMealFromJson(json);
 }

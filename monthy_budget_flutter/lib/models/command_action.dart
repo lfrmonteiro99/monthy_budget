@@ -1,6 +1,12 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'command_action.g.dart';
+
+@JsonSerializable(includeIfNull: false)
 class CommandAction {
   final String? action;
   final Map<String, dynamic>? params;
+  @JsonKey(defaultValue: '')
   final String message;
 
   const CommandAction({
@@ -21,13 +27,8 @@ class CommandAction {
 
   bool get hasAction => action != null && action!.isNotEmpty;
 
-  factory CommandAction.fromJson(Map<String, dynamic> json) {
-    return CommandAction(
-      action: json['action'] as String?,
-      params: json['params'] as Map<String, dynamic>?,
-      message: (json['message'] as String?) ?? '',
-    );
-  }
+  factory CommandAction.fromJson(Map<String, dynamic> json) =>
+      _$CommandActionFromJson(json);
 
   factory CommandAction.conversational(String message) {
     return CommandAction(message: message);
@@ -44,6 +45,8 @@ class CommandAction {
       message: message,
     );
   }
+
+  Map<String, dynamic> toJson() => _$CommandActionToJson(this);
 }
 
 class CommandResult {

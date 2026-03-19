@@ -1,6 +1,20 @@
 import 'dart:convert';
+
+import 'package:json_annotation/json_annotation.dart';
+
 import 'app_settings.dart';
 
+part 'local_dashboard_config.g.dart';
+
+const _defaultDashboardCardOrder = [
+  'heroCard', 'stressIndex', 'budgetStreaks', 'monthReview',
+  'upcomingBills', 'burnRate', 'topCategories', 'cashFlowForecast',
+  'savingsRate', 'coachInsight', 'quickActions', 'summaryCards',
+  'salaryBreakdown', 'budgetVsActual', 'savingsGoals', 'taxDeductions',
+  'purchaseHistory', 'expensesBreakdown', 'charts',
+];
+
+@JsonSerializable()
 class LocalDashboardConfig {
   final bool showHeroCard;
   final bool showStressIndex;
@@ -21,16 +35,11 @@ class LocalDashboardConfig {
   final bool showSavingsRate;
   final bool showCoachInsight;
   final bool showQuickActions;
+  @JsonKey(fromJson: _enabledChartsFromJson, toJson: _enabledChartsToJson)
   final List<ChartType> enabledCharts;
   final List<String> cardOrder;
 
-  static const defaultCardOrder = [
-    'heroCard', 'stressIndex', 'budgetStreaks', 'monthReview',
-    'upcomingBills', 'burnRate', 'topCategories', 'cashFlowForecast',
-    'savingsRate', 'coachInsight', 'quickActions', 'summaryCards',
-    'salaryBreakdown', 'budgetVsActual', 'savingsGoals', 'taxDeductions',
-    'purchaseHistory', 'expensesBreakdown', 'charts',
-  ];
+  static const defaultCardOrder = _defaultDashboardCardOrder;
 
   const LocalDashboardConfig({
     this.showHeroCard = true,
@@ -58,7 +67,7 @@ class LocalDashboardConfig {
       ChartType.deductionsBreakdown,
       ChartType.savingsRate,
     ],
-    this.cardOrder = defaultCardOrder,
+    this.cardOrder = _defaultDashboardCardOrder,
   });
 
   factory LocalDashboardConfig.minimalist() => const LocalDashboardConfig(
@@ -160,66 +169,10 @@ class LocalDashboardConfig {
     );
   }
 
-  Map<String, dynamic> toJson() => {
-        'showHeroCard': showHeroCard,
-        'showStressIndex': showStressIndex,
-        'showMonthReview': showMonthReview,
-        'showSummaryCards': showSummaryCards,
-        'showSalaryBreakdown': showSalaryBreakdown,
-        'showPurchaseHistory': showPurchaseHistory,
-        'showExpensesBreakdown': showExpensesBreakdown,
-        'showCharts': showCharts,
-        'showBudgetVsActual': showBudgetVsActual,
-        'showSavingsGoals': showSavingsGoals,
-        'showTaxDeductions': showTaxDeductions,
-        'showUpcomingBills': showUpcomingBills,
-        'showBudgetStreaks': showBudgetStreaks,
-        'showCashFlowForecast': showCashFlowForecast,
-        'showBurnRate': showBurnRate,
-        'showTopCategories': showTopCategories,
-        'showSavingsRate': showSavingsRate,
-        'showCoachInsight': showCoachInsight,
-        'showQuickActions': showQuickActions,
-        'enabledCharts': enabledCharts.map((c) => c.jsonValue).toList(),
-        'cardOrder': cardOrder,
-      };
+  Map<String, dynamic> toJson() => _$LocalDashboardConfigToJson(this);
 
-  factory LocalDashboardConfig.fromJson(Map<String, dynamic> json) {
-    return LocalDashboardConfig(
-      showHeroCard: json['showHeroCard'] ?? true,
-      showStressIndex: json['showStressIndex'] ?? true,
-      showMonthReview: json['showMonthReview'] ?? true,
-      showSummaryCards: json['showSummaryCards'] ?? true,
-      showSalaryBreakdown: json['showSalaryBreakdown'] ?? false,
-      showPurchaseHistory: json['showPurchaseHistory'] ?? false,
-      showExpensesBreakdown: json['showExpensesBreakdown'] ?? false,
-      showCharts: json['showCharts'] ?? false,
-      showBudgetVsActual: json['showBudgetVsActual'] ?? true,
-      showSavingsGoals: json['showSavingsGoals'] ?? false,
-      showTaxDeductions: json['showTaxDeductions'] ?? false,
-      showUpcomingBills: json['showUpcomingBills'] ?? true,
-      showBudgetStreaks: json['showBudgetStreaks'] ?? false,
-      showCashFlowForecast: json['showCashFlowForecast'] ?? true,
-      showBurnRate: json['showBurnRate'] ?? true,
-      showTopCategories: json['showTopCategories'] ?? true,
-      showSavingsRate: json['showSavingsRate'] ?? true,
-      showCoachInsight: json['showCoachInsight'] ?? true,
-      showQuickActions: json['showQuickActions'] ?? true,
-      enabledCharts: (json['enabledCharts'] as List<dynamic>?)
-              ?.map((e) => ChartType.fromJson(e as String))
-              .toList() ??
-          const [
-            ChartType.expensesPie,
-            ChartType.incomeVsExpenses,
-            ChartType.deductionsBreakdown,
-            ChartType.savingsRate,
-          ],
-      cardOrder: (json['cardOrder'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          defaultCardOrder,
-    );
-  }
+  factory LocalDashboardConfig.fromJson(Map<String, dynamic> json) =>
+      _$LocalDashboardConfigFromJson(json);
 
   bool isCardVisible(String cardId) {
     switch (cardId) {
@@ -279,5 +232,22 @@ class LocalDashboardConfig {
     } catch (_) {
       return const LocalDashboardConfig();
     }
+  }
+
+  static List<ChartType> _enabledChartsFromJson(Object? value) {
+    final rawValues = value as List<dynamic>?;
+    if (rawValues == null) {
+      return const [
+        ChartType.expensesPie,
+        ChartType.incomeVsExpenses,
+        ChartType.deductionsBreakdown,
+        ChartType.savingsRate,
+      ];
+    }
+    return rawValues.map((entry) => ChartType.fromJson(entry as String)).toList();
+  }
+
+  static List<String> _enabledChartsToJson(List<ChartType> value) {
+    return value.map((entry) => entry.jsonValue).toList();
   }
 }

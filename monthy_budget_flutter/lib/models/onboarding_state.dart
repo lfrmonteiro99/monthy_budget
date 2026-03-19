@@ -1,5 +1,10 @@
 import 'dart:convert';
 
+import 'package:json_annotation/json_annotation.dart';
+
+part 'onboarding_state.g.dart';
+
+@JsonSerializable()
 class OnboardingState {
   final bool welcomeSeen;
   final Map<String, bool> toursCompleted;
@@ -39,19 +44,10 @@ class OnboardingState {
     );
   }
 
-  Map<String, dynamic> toJson() => {
-        'welcomeSeen': welcomeSeen,
-        'toursCompleted': toursCompleted,
-      };
+  Map<String, dynamic> toJson() => _$OnboardingStateToJson(this);
 
-  factory OnboardingState.fromJson(Map<String, dynamic> json) {
-    return OnboardingState(
-      welcomeSeen: json['welcomeSeen'] as bool? ?? false,
-      toursCompleted: (json['toursCompleted'] as Map<String, dynamic>?)
-              ?.map((k, v) => MapEntry(k, v as bool)) ??
-          const {},
-    );
-  }
+  factory OnboardingState.fromJson(Map<String, dynamic> json) =>
+      _$OnboardingStateFromJson(json);
 
   factory OnboardingState.fromJsonString(String s) =>
       OnboardingState.fromJson(jsonDecode(s) as Map<String, dynamic>);
