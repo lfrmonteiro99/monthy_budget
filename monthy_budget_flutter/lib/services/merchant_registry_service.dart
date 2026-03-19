@@ -25,23 +25,29 @@ class MerchantInfo {
 }
 
 class MerchantRegistryService {
-  final AuthRepository _authRepository;
-  final MerchantRepository _repository;
+  AuthRepository? _authRepository;
+  MerchantRepository? _repository;
 
   MerchantRegistryService({
     AuthRepository? authRepository,
     MerchantRepository? repository,
-  }) : _authRepository = authRepository ?? SupabaseAuthRepository(),
-       _repository = repository ?? SupabaseMerchantRepository();
+  }) : _authRepository = authRepository,
+       _repository = repository;
+
+  AuthRepository get _resolvedAuthRepository =>
+      _authRepository ??= SupabaseAuthRepository();
+
+  MerchantRepository get _resolvedRepository =>
+      _repository ??= SupabaseMerchantRepository();
 
   Future<MerchantInfo?> lookup(String nif) async {
-    final row = await _repository.lookup(nif);
+    final row = await _resolvedRepository.lookup(nif);
     if (row == null) return null;
     return MerchantInfo.fromSupabase(row);
   }
 
   Future<void> confirm(String nif) {
-    return _repository.confirm(nif);
+    return _resolvedRepository.confirm(nif);
   }
 
   Future<void> register({
@@ -50,12 +56,12 @@ class MerchantRegistryService {
     String? chain,
     String category = 'outro',
   }) {
-    return _repository.register(
+    return _resolvedRepository.register(
       nif: nif,
       name: name,
       chain: chain,
       category: category,
-      createdBy: _authRepository.currentUserId,
+      createdBy: _resolvedAuthRepository.currentUserId,
     );
   }
 }

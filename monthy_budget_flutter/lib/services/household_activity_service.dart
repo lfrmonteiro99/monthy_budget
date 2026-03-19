@@ -3,14 +3,20 @@ import '../repositories/auth_repository.dart';
 import '../repositories/household_repository.dart';
 
 class HouseholdActivityService {
-  final AuthRepository _authRepository;
-  final HouseholdActivityRepository _repository;
+  AuthRepository? _authRepository;
+  HouseholdActivityRepository? _repository;
 
   HouseholdActivityService({
     AuthRepository? authRepository,
     HouseholdActivityRepository? repository,
-  }) : _authRepository = authRepository ?? SupabaseAuthRepository(),
-       _repository = repository ?? SupabaseHouseholdActivityRepository();
+  }) : _authRepository = authRepository,
+       _repository = repository;
+
+  AuthRepository get _resolvedAuthRepository =>
+      _authRepository ??= SupabaseAuthRepository();
+
+  HouseholdActivityRepository get _resolvedRepository =>
+      _repository ??= SupabaseHouseholdActivityRepository();
 
   Future<void> append({
     required String householdId,
@@ -20,7 +26,7 @@ class HouseholdActivityService {
     required String subjectLabel,
     Map<String, dynamic> metadata = const {},
   }) async {
-    final user = _authRepository.currentUser;
+    final user = _resolvedAuthRepository.currentUser;
     if (user == null) return;
 
     final displayName =
@@ -28,7 +34,7 @@ class HouseholdActivityService {
         user.email ??
         'Unknown';
 
-    await _repository.append(
+    await _resolvedRepository.append(
       householdId: householdId,
       actorUserId: user.id,
       actorDisplayName: displayName,
@@ -44,7 +50,7 @@ class HouseholdActivityService {
     String householdId, {
     int limit = 50,
   }) {
-    return _repository.getRecent(householdId, limit: limit);
+    return _resolvedRepository.getRecent(householdId, limit: limit);
   }
 
   Future<List<HouseholdActivityEvent>> getByDomain(
@@ -52,6 +58,6 @@ class HouseholdActivityService {
     ActivityDomain domain, {
     int limit = 50,
   }) {
-    return _repository.getByDomain(householdId, domain, limit: limit);
+    return _resolvedRepository.getByDomain(householdId, domain, limit: limit);
   }
 }

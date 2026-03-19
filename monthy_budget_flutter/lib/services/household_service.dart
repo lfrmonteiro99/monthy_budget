@@ -28,20 +28,26 @@ class AssociatedHouseholdMember {
 }
 
 class HouseholdService {
-  final AuthRepository _authRepository;
-  final HouseholdRepository _repository;
+  AuthRepository? _authRepository;
+  HouseholdRepository? _repository;
 
   HouseholdService({
     AuthRepository? authRepository,
     HouseholdRepository? repository,
-  }) : _authRepository = authRepository ?? SupabaseAuthRepository(),
-       _repository = repository ?? SupabaseHouseholdRepository();
+  }) : _authRepository = authRepository,
+       _repository = repository;
+
+  AuthRepository get _resolvedAuthRepository =>
+      _authRepository ??= SupabaseAuthRepository();
+
+  HouseholdRepository get _resolvedRepository =>
+      _repository ??= SupabaseHouseholdRepository();
 
   Future<HouseholdProfile?> getProfile() async {
-    final userId = _authRepository.currentUserId;
+    final userId = _resolvedAuthRepository.currentUserId;
     if (userId == null) return null;
 
-    final row = await _repository.getProfileRow(userId);
+    final row = await _resolvedRepository.getProfileRow(userId);
     if (row == null || row['household_id'] == null) return null;
 
     return HouseholdProfile(
@@ -54,7 +60,7 @@ class HouseholdService {
   Future<List<AssociatedHouseholdMember>> getAssociatedMembers(
     String householdId,
   ) async {
-    final rows = await _repository.getAssociatedMemberRows(householdId);
+    final rows = await _resolvedRepository.getAssociatedMemberRows(householdId);
     return rows
         .map(
           (row) => AssociatedHouseholdMember(
@@ -69,7 +75,7 @@ class HouseholdService {
   }
 
   Future<HouseholdProfile> createHousehold(String name) async {
-    final result = await _repository.createHousehold(name);
+    final result = await _resolvedRepository.createHousehold(name);
     return HouseholdProfile(
       householdId: result['household_id'] as String,
       householdName: result['name'] as String,
@@ -78,7 +84,7 @@ class HouseholdService {
   }
 
   Future<HouseholdProfile> joinHousehold(String inviteCode) async {
-    final result = await _repository.joinHousehold(inviteCode);
+    final result = await _resolvedRepository.joinHousehold(inviteCode);
     return HouseholdProfile(
       householdId: result['household_id'] as String,
       householdName: result['name'] as String,
@@ -87,13 +93,13 @@ class HouseholdService {
   }
 
   Future<String> generateInviteCode(String householdId) async {
-    final userId = _authRepository.currentUserId;
+    final userId = _resolvedAuthRepository.currentUserId;
     if (userId == null) {
       throw StateError('Cannot generate invite code without an authenticated user.');
     }
     final code = _randomCode();
     final expiresAt = DateTime.now().add(const Duration(days: 7));
-    await _repository.saveInviteCode(
+    await _resolvedRepository.saveInviteCode(
       householdId: householdId,
       code: code,
       createdBy: userId,

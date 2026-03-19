@@ -10,16 +10,19 @@ class SubscriptionService {
   static const _trialEndNoticeKey = 'trial_end_notice_seen';
   static const _downgradeAppliedKey = 'downgrade_applied';
 
-  final AuthRepository _authRepository;
+  AuthRepository? _authRepository;
 
   SubscriptionService({AuthRepository? authRepository})
-    : _authRepository = authRepository ?? SupabaseAuthRepository();
+    : _authRepository = authRepository;
+
+  AuthRepository get _resolvedAuthRepository =>
+      _authRepository ??= SupabaseAuthRepository();
 
   /// Returns the account creation date from Supabase auth.
   /// Falls back to [DateTime.now()] if unavailable (e.g. in tests).
   DateTime _accountCreatedAt() {
     try {
-      final user = _authRepository.currentUser;
+      final user = _resolvedAuthRepository.currentUser;
       if (user != null && user.createdAt.isNotEmpty) {
         return DateTime.parse(user.createdAt);
       }

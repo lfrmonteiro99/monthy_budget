@@ -4,19 +4,23 @@ import '../exceptions/app_exceptions.dart' as app;
 import '../repositories/auth_repository.dart';
 
 class AuthService {
-  final AuthRepository _authRepository;
+  AuthRepository? _authRepository;
 
   AuthService({AuthRepository? authRepository})
-    : _authRepository = authRepository ?? SupabaseAuthRepository();
+    : _authRepository = authRepository;
 
-  User? get currentUser => _authRepository.currentUser;
-  String? get currentUserId => _authRepository.currentUserId;
+  AuthRepository get _resolvedAuthRepository =>
+      _authRepository ??= SupabaseAuthRepository();
 
-  Stream<AuthState> get onAuthStateChange => _authRepository.onAuthStateChange;
+  User? get currentUser => _resolvedAuthRepository.currentUser;
+  String? get currentUserId => _resolvedAuthRepository.currentUserId;
+
+  Stream<AuthState> get onAuthStateChange =>
+      _resolvedAuthRepository.onAuthStateChange;
 
   Future<void> signIn(String email, String password) async {
     try {
-      await _authRepository.signIn(email, password);
+      await _resolvedAuthRepository.signIn(email, password);
     } catch (e, stack) {
       throw app.AuthException('Sign-in failed', e, stack);
     }
@@ -24,7 +28,7 @@ class AuthService {
 
   Future<void> signUp(String email, String password) async {
     try {
-      await _authRepository.signUp(email, password);
+      await _resolvedAuthRepository.signUp(email, password);
     } catch (e, stack) {
       throw app.AuthException('Sign-up failed', e, stack);
     }
@@ -32,7 +36,7 @@ class AuthService {
 
   Future<void> signOut() async {
     try {
-      await _authRepository.signOut();
+      await _resolvedAuthRepository.signOut();
     } catch (e, stack) {
       throw app.AuthException('Sign-out failed', e, stack);
     }
