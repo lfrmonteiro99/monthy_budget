@@ -1,29 +1,24 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/custom_category.dart';
+import '../repositories/settings_repository.dart';
 
 class CategoryService {
-  SupabaseClient get _client => Supabase.instance.client;
+  SettingsRepository? _repository;
 
-  Future<List<CustomCategory>> load(String householdId) async {
-    final rows = await _client
-        .from('custom_categories')
-        .select()
-        .eq('household_id', householdId)
-        .order('sort_order');
+  CategoryService({SettingsRepository? repository})
+    : _repository = repository;
 
-    return (rows as List<dynamic>)
-        .map((r) =>
-            CustomCategory.fromSupabase(r as Map<String, dynamic>))
-        .toList();
+  SettingsRepository get _resolvedRepository =>
+      _repository ??= SupabaseSettingsRepository();
+
+  Future<List<CustomCategory>> load(String householdId) {
+    return _resolvedRepository.loadCategories(householdId);
   }
 
-  Future<void> save(CustomCategory category, String householdId) async {
-    await _client
-        .from('custom_categories')
-        .upsert(category.toSupabase(householdId));
+  Future<void> save(CustomCategory category, String householdId) {
+    return _resolvedRepository.saveCategory(category, householdId);
   }
 
-  Future<void> delete(String id) async {
-    await _client.from('custom_categories').delete().eq('id', id);
+  Future<void> delete(String id) {
+    return _resolvedRepository.deleteCategory(id);
   }
 }

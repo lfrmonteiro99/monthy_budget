@@ -1,21 +1,20 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/product.dart';
+import '../repositories/product_repository.dart';
 
 class ProductsService {
-  final _client = Supabase.instance.client;
+  ProductRepository? _repository;
   List<Product> _cache = [];
   bool _loaded = false;
 
+  ProductsService({ProductRepository? repository})
+    : _repository = repository;
+
+  ProductRepository get _resolvedRepository =>
+      _repository ??= SupabaseProductRepository();
+
   Future<List<Product>> load() async {
     if (_loaded) return _cache;
-    final rows = await _client
-        .from('products')
-        .select()
-        .order('category')
-        .order('name');
-    _cache = (rows as List<dynamic>)
-        .map((r) => Product.fromJson(r as Map<String, dynamic>))
-        .toList();
+    _cache = await _resolvedRepository.load();
     _loaded = true;
     return _cache;
   }

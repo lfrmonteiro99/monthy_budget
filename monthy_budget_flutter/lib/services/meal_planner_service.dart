@@ -3,11 +3,11 @@ import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/meal_planner.dart';
 import '../models/app_settings.dart';
 import '../models/meal_settings.dart';
 import '../models/pantry_item.dart';
+import '../repositories/meal_repository.dart';
 import 'log_service.dart';
 import '../utils/taste_profile.dart';
 import '../utils/unit_converter.dart';
@@ -22,6 +22,13 @@ class MealPlannerService {
   bool _catalogLoaded = false;
   Map<String, Ingredient>? _ingredientMapCache;
   Map<String, Recipe>? _recipeMapCache;
+  MealPlanRepository? _repository;
+
+  MealPlannerService({MealPlanRepository? repository})
+    : _repository = repository;
+
+  MealPlanRepository get _mealPlanRepository =>
+      _repository ??= SupabaseMealPlanRepository();
 
   /// Loads the recipe catalog using a three-tier strategy:
   /// 1. Supabase (remote, authoritative)
@@ -41,13 +48,9 @@ class MealPlannerService {
 
   Future<bool> _tryLoadFromSupabase() async {
     try {
-      final client = Supabase.instance.client;
-      final recipesData = await client
-          .from('recipes')
-          .select('*, recipe_ingredients(*)')
-          .order('name');
+      final recipesData = await _mealPlanRepository.loadRecipeRows();
 
-      if ((recipesData as List).isEmpty) return false;
+      if (recipesData.isEmpty) return false;
 
       _recipes = recipesData.map<Recipe>((r) {
         final ingredients =
@@ -1060,42 +1063,15 @@ class MealPlannerService {
   // --- Persistence ---
 
   Future<MealPlan?> load(String householdId, int month, int year) async {
-    final client = Supabase.instance.client;
-    final row = await client
-        .from('meal_plans')
-        .select('plan_json')
-        .eq('household_id', householdId)
-        .eq('month', month)
-        .eq('year', year)
-        .maybeSingle();
-
-    if (row == null) return null;
-    try {
-      return MealPlan.fromJsonString(row['plan_json'] as String);
-    } catch (_) {
-      return null;
-    }
+    return _mealPlanRepository.loadPlan(householdId, month, year);
   }
 
   Future<void> save(MealPlan plan, String householdId) async {
-    final client = Supabase.instance.client;
-    await client.from('meal_plans').upsert({
-      'household_id': householdId,
-      'month': plan.month,
-      'year': plan.year,
-      'plan_json': plan.toJsonString(),
-      'updated_at': DateTime.now().toIso8601String(),
-    });
+    await _mealPlanRepository.savePlan(plan, householdId);
   }
 
   Future<void> clear(String householdId, int month, int year) async {
-    final client = Supabase.instance.client;
-    await client
-        .from('meal_plans')
-        .delete()
-        .eq('household_id', householdId)
-        .eq('month', month)
-        .eq('year', year);
+    await _mealPlanRepository.clearPlan(householdId, month, year);
   }
 
   // --- Undo support ---
