@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../config/supabase_public_config.dart';
 import '../constants/app_constants.dart';
 import '../models/command_action.dart';
 import 'command_action_registry.dart';
+import 'log_service.dart';
 
 class CommandChatService {
   static const _edgeFunctionName = 'openai-chat';
@@ -15,7 +15,7 @@ class CommandChatService {
   final http.Client _httpClient;
 
   CommandChatService({http.Client? httpClient})
-      : _httpClient = httpClient ?? http.Client();
+    : _httpClient = httpClient ?? http.Client();
 
   /// Parse a user command via AI, with retry and regex fallback.
   Future<CommandAction> parseCommand(String userInput) async {
@@ -24,7 +24,11 @@ class CommandChatService {
       final result = await _requestAiParse(userInput);
       if (result != null) return result;
     } catch (e) {
-      debugPrint('CommandChatService: AI parse failed: $e');
+      LogService.warning(
+        'AI command parse failed',
+        error: e,
+        category: 'service.command_chat',
+      );
     }
 
     // Retry with stricter prompt
@@ -32,7 +36,11 @@ class CommandChatService {
       final result = await _requestAiParse(userInput, strict: true);
       if (result != null) return result;
     } catch (e) {
-      debugPrint('CommandChatService: AI strict retry failed: $e');
+      LogService.warning(
+        'AI command strict retry failed',
+        error: e,
+        category: 'service.command_chat',
+      );
     }
 
     // Silent regex fallback
@@ -49,8 +57,8 @@ class CommandChatService {
   }) async {
     final systemPrompt = strict
         ? '${buildSystemPrompt()}\n\nIMPORTANT: Your previous response was '
-            'not valid JSON. Return ONLY a JSON object with keys: action, '
-            'params, message. No other text.'
+              'not valid JSON. Return ONLY a JSON object with keys: action, '
+              'params, message. No other text.'
         : buildSystemPrompt();
 
     final anonKey = supabaseAnonKey.trim();
@@ -117,8 +125,9 @@ class CommandChatService {
       caseSensitive: false,
     ).firstMatch(text);
     if (expenseMatch != null) {
-      final amount =
-          double.tryParse(expenseMatch.group(1)!.replaceAll(',', '.'));
+      final amount = double.tryParse(
+        expenseMatch.group(1)!.replaceAll(',', '.'),
+      );
       final rawCategory = expenseMatch.group(2)!.trim();
       final category = _resolveCategory(rawCategory);
       if (amount != null && amount > 0 && category != null) {

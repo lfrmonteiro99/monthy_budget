@@ -8,6 +8,7 @@ import '../models/meal_planner.dart';
 import '../models/app_settings.dart';
 import '../models/meal_settings.dart';
 import '../models/pantry_item.dart';
+import 'log_service.dart';
 import '../utils/taste_profile.dart';
 import '../utils/unit_converter.dart';
 
@@ -113,7 +114,11 @@ class MealPlannerService {
 
       return true;
     } catch (e) {
-      debugPrint('Supabase recipe load failed: $e');
+      LogService.warning(
+        'Supabase recipe load failed, falling back to cache/assets',
+        error: e,
+        category: 'service.meal_planner',
+      );
       return false;
     }
   }

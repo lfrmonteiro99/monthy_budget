@@ -21,6 +21,7 @@ import 'services/purchase_history_service.dart';
 import 'services/products_service.dart';
 import 'services/expense_snapshot_service.dart';
 import 'services/local_config_service.dart';
+import 'services/log_service.dart';
 import 'services/meal_planner_service.dart';
 import 'services/actual_expense_service.dart';
 import 'services/monthly_budget_service.dart';
@@ -314,7 +315,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     try {
       return await _groceryService.load(countryCode: country.name);
     } catch (e) {
-      debugPrint('Failed to load grocery data for ${country.name}: $e');
+      LogService.error(
+        'Failed to load grocery data',
+        error: e,
+        category: 'service.grocery',
+        data: {'country': country.name},
+      );
       return const GroceryData();
     } finally {
       if (updateLoadingState && mounted) {
@@ -378,7 +384,11 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         setState(() => _subscription = updated);
       }
     } catch (e) {
-      debugPrint('RevenueCat sync error: $e');
+      LogService.error(
+        'RevenueCat sync failed',
+        error: e,
+        category: 'service.revenuecat',
+      );
     }
   }
 
@@ -433,7 +443,11 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         setState(() => _customCategories = categories);
       }
     } catch (e) {
-      debugPrint('Failed to load custom categories: $e');
+      LogService.error(
+        'Failed to load custom categories',
+        error: e,
+        category: 'service.categories',
+      );
     }
   }
 
@@ -737,6 +751,16 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   void _navigate(AppRoute route, {bool trackTab = true}) {
+    LogService.breadcrumb(
+      'Navigate',
+      category: 'navigation',
+      data: {
+        'route': route.type.name,
+        if (route.tab != null) 'tab': route.tab!.name,
+        if (route.settingsSection != null)
+          'settings_section': route.settingsSection!.key,
+      },
+    );
     switch (route.type) {
       case AppRouteType.tab:
         _selectTab(route.tab!, track: trackTab);
@@ -934,6 +958,14 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     final countryChanged = settings.country != _settings.country;
     setState(() => _settings = settings);
     _syncLocaleAndFormatter(settings);
+    LogService.breadcrumb(
+      'Saved settings',
+      category: 'settings',
+      data: {
+        'country': settings.country.name,
+        'has_locale_override': settings.localeOverride != null,
+      },
+    );
     _settingsService.save(settings, widget.householdId);
     _dataHealthService.recordSave(SyncDomain.settings);
     _refreshNotificationSchedules();
@@ -1141,6 +1173,15 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     try {
       final estimated = checkedItems.fold(0.0, (s, i) => s + i.price);
       final totalAmount = (amount != null && amount > 0) ? amount : estimated;
+      LogService.breadcrumb(
+        'Finalized shopping',
+        category: 'shopping',
+        data: {
+          'checked_items': checkedItems.length,
+          'is_meal_purchase': isMealPurchase,
+          'amount': totalAmount,
+        },
+      );
       final record = PurchaseRecord(
         id: 'purchase_${DateTime.now().millisecondsSinceEpoch}',
         date: DateTime.now(),
@@ -1176,10 +1217,20 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   Future<void> _addActualExpense(ActualExpense expense) async {
     setState(() => _actualExpenses = [expense, ..._actualExpenses]);
     _refreshNotificationSchedules();
+    LogService.breadcrumb(
+      'Added expense',
+      category: 'expense',
+      data: {'category': expense.category, 'amount': expense.amount},
+    );
     try {
       await _actualExpenseService.add(expense, widget.householdId);
     } catch (e) {
-      debugPrint('Failed to add expense: $e');
+      LogService.error(
+        'Failed to add expense',
+        error: e,
+        category: 'expense',
+        data: {'category': expense.category, 'amount': expense.amount},
+      );
       // Reload from Supabase to get the real state
       _loadActualExpenses();
     }
@@ -1190,10 +1241,20 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       _savingsGoals = [..._savingsGoals, goal]
         ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
     });
+    LogService.breadcrumb(
+      'Created savings goal',
+      category: 'savings',
+      data: {'goal': goal.name, 'target': goal.targetAmount},
+    );
     try {
       await _savingsGoalService.saveGoal(goal, widget.householdId);
     } catch (e) {
-      debugPrint('Failed to add savings goal: $e');
+      LogService.error(
+        'Failed to add savings goal',
+        error: e,
+        category: 'savings',
+        data: {'goal': goal.name, 'target': goal.targetAmount},
+      );
       _loadSavingsGoals();
     }
   }
@@ -1211,7 +1272,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     try {
       await _recurringExpenseService.save(expense, widget.householdId);
     } catch (e) {
-      debugPrint('Failed to add recurring expense: $e');
+      LogService.error(
+        'Failed to add recurring expense',
+        error: e,
+        category: 'expense.recurring',
+        data: {'description': expense.description, 'amount': expense.amount},
+      );
       _loadRecurringExpenses();
     }
   }
@@ -1240,7 +1306,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       await _shoppingListService.remove(item.id);
       return true;
     } catch (e) {
-      debugPrint('Failed to remove shopping item: $e');
+      LogService.error(
+        'Failed to remove shopping item',
+        error: e,
+        category: 'shopping',
+        data: {'item': item.productName},
+      );
       if (!mounted) return false;
       setState(() => _shoppingList = previousItems);
       return false;
@@ -1281,7 +1352,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       await _shoppingListService.toggle(item.id, checked);
       return true;
     } catch (e) {
-      debugPrint('Failed to toggle shopping item: $e');
+      LogService.error(
+        'Failed to toggle shopping item',
+        error: e,
+        category: 'shopping',
+        data: {'item': item.productName, 'checked': checked},
+      );
       if (!mounted) return false;
       setState(() => _shoppingList = previousItems);
       return false;
@@ -1325,7 +1401,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       });
       return true;
     } catch (e) {
-      debugPrint('Failed to add savings contribution: $e');
+      LogService.error(
+        'Failed to add savings contribution',
+        error: e,
+        category: 'savings',
+        data: {'goal': goal.name, 'amount': amount},
+      );
       _loadSavingsGoals();
       return false;
     }
@@ -1366,7 +1447,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       await _actualExpenseService.delete(expense.id);
       return true;
     } catch (e) {
-      debugPrint('Failed to delete expense by description: $e');
+      LogService.error(
+        'Failed to delete expense by description',
+        error: e,
+        category: 'expense',
+        data: {'description': description, 'category': category},
+      );
       if (!mounted) return false;
       setState(() => _actualExpenses = previousExpenses);
       _refreshNotificationSchedules();
@@ -1562,8 +1648,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
     final screens = <AppTab, Widget>{
       AppTab.dashboard: ErrorBoundary(
-        onError: (error, stack) =>
-            debugPrint('[ErrorBoundary:Dashboard] $error\n$stack'),
+        onError: (error, stack) => LogService.error(
+          'Dashboard subtree error',
+          error: error,
+          stackTrace: stack,
+          category: 'ui.dashboard',
+        ),
         child: DashboardScreen(
           settings: _settings,
           summary: summary,
@@ -1595,8 +1685,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         ),
       ),
       AppTab.expenses: ErrorBoundary(
-        onError: (error, stack) =>
-            debugPrint('[ErrorBoundary:Expenses] $error\n$stack'),
+        onError: (error, stack) => LogService.error(
+          'Expenses subtree error',
+          error: error,
+          stackTrace: stack,
+          category: 'ui.expenses',
+        ),
         child: ExpenseTrackerScreen(
           settings: _settings,
           expenses: _actualExpenses,
@@ -1615,8 +1709,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         ),
       ),
       AppTab.planHub: ErrorBoundary(
-        onError: (error, stack) =>
-            debugPrint('[ErrorBoundary:PlanAndShop] $error\n$stack'),
+        onError: (error, stack) => LogService.error(
+          'Plan and shop subtree error',
+          error: error,
+          stackTrace: stack,
+          category: 'ui.plan_and_shop',
+        ),
         child: PlanAndShopScreen(
           shoppingItems: _shoppingList,
           onToggleChecked: _toggleShoppingItem,

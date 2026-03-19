@@ -23,6 +23,7 @@ import '../models/subscription_state.dart';
 import '../services/downgrade_service.dart';
 import '../services/biometric_service.dart';
 import '../services/local_config_service.dart';
+import '../services/log_service.dart';
 import '../widgets/limit_reached_dialog.dart';
 import 'recurring_expenses_screen.dart' show showEditRecurringSheet;
 
@@ -1429,7 +1430,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     _label(l10n.settingsCategoryLabel),
                     const SizedBox(height: 8),
                     DropdownButtonFormField<String>(
-                      value: _allCategoryKeys().contains(expense.category) ? expense.category : null,
+                      initialValue: _allCategoryKeys().contains(expense.category) ? expense.category : null,
                       isExpanded: true,
                       style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
                       decoration: _inputDecoration(l10n.settingsExpenseCategory),
@@ -1952,7 +1953,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     try {
       await _categoryService.save(result, widget.householdId);
     } catch (e) {
-      debugPrint('CategoryService.save error: $e');
+      LogService.error(
+        'CategoryService.save failed',
+        error: e,
+        category: 'settings.categories',
+      );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
