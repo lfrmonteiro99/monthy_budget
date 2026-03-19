@@ -5,6 +5,7 @@ This directory contains browser-level smoke tests for the Flutter web app.
 Current checked-in smoke specs:
 
 - `auth-flow.smoke.spec.ts`
+- `dashboard.smoke.spec.ts`
 - `expense-tracker.smoke.spec.ts`
 - `meal-planner-settings.smoke.spec.ts`
 - `shopping-list.smoke.spec.ts`
