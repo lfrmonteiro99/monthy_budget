@@ -56,6 +56,7 @@ import 'utils/savings_projections.dart';
 import 'theme/app_colors.dart';
 import 'models/onboarding_state.dart';
 import 'models/subscription_state.dart';
+import 'onboarding/onboarding_tour_completion.dart';
 import 'services/subscription_service.dart';
 import 'services/grocery_service.dart';
 import 'screens/paywall_screen.dart';
@@ -1125,11 +1126,13 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   void _markTourDone(String key) {
-    final updated = _onboardingState.copyWith(
-      toursCompleted: {..._onboardingState.toursCompleted, key: true},
+    markOnboardingTourDone(
+      key: key,
+      currentState: _onboardingState,
+      mounted: mounted,
+      applyState: (updated) => setState(() => _onboardingState = updated),
+      persistState: _localConfigService.saveOnboardingState,
     );
-    setState(() => _onboardingState = updated);
-    _localConfigService.saveOnboardingState(updated);
   }
 
   void _syncLocaleAndFormatter(AppSettings settings) {
