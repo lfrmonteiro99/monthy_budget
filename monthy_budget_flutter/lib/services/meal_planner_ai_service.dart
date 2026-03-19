@@ -1,16 +1,21 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/meal_planner.dart';
+import '../repositories/meal_repository.dart';
 
 class MealPlannerAiService {
   static const _edgeFunctionName = 'openai-chat';
   static const _model = 'gpt-4o-mini';
   static const _cacheKey = 'ai_recipe_cache';
-  final _client = Supabase.instance.client;
+  final MealPlannerAiRepository _repository;
 
   // In-memory cache: recipeId -> content
   final Map<String, RecipeAiContent> _cache = {};
+
+  MealPlannerAiService({MealPlannerAiRepository? repository})
+    : _repository =
+          repository ??
+          SupabaseMealPlannerAiRepository(edgeFunctionName: _edgeFunctionName);
 
   static String _systemPrompt(String locale) {
     switch (locale) {
@@ -356,17 +361,12 @@ Adapt the cooking steps for this substitution. Respond ONLY with valid JSON:
     int maxTokens = 600,
     double temperature = 0.6,
   }) async {
-    final authHeaders = _buildEdgeAuthHeaders();
-    final response = await _client.functions.invoke(
-      _edgeFunctionName,
-      headers: authHeaders,
-      body: {
-        'model': _model,
-        'messages': messages,
-        'max_tokens': maxTokens,
-        'temperature': temperature,
-      },
-    );
+    final response = await _repository.invokeChat({
+      'model': _model,
+      'messages': messages,
+      'max_tokens': maxTokens,
+      'temperature': temperature,
+    });
     final data = response.data;
     if (response.status != 200 || data is! Map<String, dynamic>) {
       throw Exception('Falha ao processar pedido de IA');
@@ -376,17 +376,6 @@ Adapt the cooking steps for this substitution. Respond ONLY with valid JSON:
       throw Exception('Resposta vazia da IA');
     }
     return content;
-  }
-
-  Map<String, String> _buildEdgeAuthHeaders() {
-    final accessToken = _client.auth.currentSession?.accessToken;
-    if (accessToken == null || accessToken.trim().isEmpty) {
-      throw Exception(
-        'Sessao expirada ou utilizador nao autenticado. '
-        'Inicie sessao novamente para usar o Planeador de Refeicoes.',
-      );
-    }
-    return {'Authorization': 'Bearer $accessToken'};
   }
 
   static BatchCookingPlan buildLocalBatchPlan({

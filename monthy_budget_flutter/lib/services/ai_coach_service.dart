@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../config/supabase_public_config.dart';
 import '../models/app_settings.dart';
 import '../models/budget_summary.dart';
 import '../models/coach_insight.dart';
 import '../models/purchase_record.dart';
+import '../repositories/household_repository.dart';
 import '../utils/category_helpers.dart';
 import '../utils/stress_index.dart';
 import 'revenuecat_service.dart';
@@ -59,13 +59,14 @@ class AiCoachService {
   static const _chatPrefKeyPrefix = 'coach_chat_v2_messages_';
   static const _maxUserMessageLength = 2000;
 
-  final SupabaseClient _client;
+  final CoachInsightRepository _insightRepository;
   final http.Client _httpClient;
 
   AiCoachService({
-    SupabaseClient? client,
+    CoachInsightRepository? insightRepository,
     http.Client? httpClient,
-  })  : _client = client ?? Supabase.instance.client,
+  })  : _insightRepository =
+           insightRepository ?? SupabaseCoachInsightRepository(),
         _httpClient = httpClient ?? http.Client();
 
   /// Sanitize user input before interpolating into prompts.
@@ -116,21 +117,10 @@ class AiCoachService {
 
   Future<List<CoachInsight>> loadInsights(String householdId) async {
     try {
-      final rows = await _client
-          .from('household_coach_insights')
-          .select()
-          .eq('household_id', householdId)
-          .order('created_at', ascending: false)
-          .limit(_maxInsights);
-      return (rows as List<dynamic>).map((r) {
-        final m = r as Map<String, dynamic>;
-        return CoachInsight(
-          id: m['id'] as String,
-          timestamp: DateTime.parse(m['created_at'] as String),
-          content: m['content'] as String,
-          stressScore: (m['stress_score'] as num).toInt(),
-        );
-      }).toList();
+      return await _insightRepository.loadInsights(
+        householdId,
+        limit: _maxInsights,
+      );
     } catch (_) {
       return [];
     }
@@ -138,27 +128,16 @@ class AiCoachService {
 
   Future<List<CoachInsight>> _persistInsight(
       CoachInsight insight, String householdId) async {
-    await _client.from('household_coach_insights').insert({
-      'id': insight.id,
-      'household_id': householdId,
-      'created_at': insight.timestamp.toIso8601String(),
-      'content': insight.content,
-      'stress_score': insight.stressScore,
-    });
-    return loadInsights(householdId);
+    return _insightRepository.saveInsight(insight, householdId);
   }
 
   Future<List<CoachInsight>> deleteInsight(
       String id, String householdId) async {
-    await _client.from('household_coach_insights').delete().eq('id', id);
-    return loadInsights(householdId);
+    return _insightRepository.deleteInsight(id, householdId);
   }
 
   Future<void> clearInsights(String householdId) async {
-    await _client
-        .from('household_coach_insights')
-        .delete()
-        .eq('household_id', householdId);
+    await _insightRepository.clearInsights(householdId);
   }
 
   Future<List<CoachChatMessage>> loadConversation(String householdId) async {

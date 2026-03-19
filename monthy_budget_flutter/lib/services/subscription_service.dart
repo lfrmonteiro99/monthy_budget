@@ -1,7 +1,8 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+
 import '../exceptions/app_exceptions.dart';
 import '../models/subscription_state.dart';
+import '../repositories/auth_repository.dart';
 
 /// Manages subscription state, trial tracking, and feature discovery.
 class SubscriptionService {
@@ -9,16 +10,21 @@ class SubscriptionService {
   static const _trialEndNoticeKey = 'trial_end_notice_seen';
   static const _downgradeAppliedKey = 'downgrade_applied';
 
+  final AuthRepository _authRepository;
+
+  SubscriptionService({AuthRepository? authRepository})
+    : _authRepository = authRepository ?? SupabaseAuthRepository();
+
   /// Returns the account creation date from Supabase auth.
   /// Falls back to [DateTime.now()] if unavailable (e.g. in tests).
   DateTime _accountCreatedAt() {
     try {
-      final user = Supabase.instance.client.auth.currentUser;
+      final user = _authRepository.currentUser;
       if (user != null && user.createdAt.isNotEmpty) {
         return DateTime.parse(user.createdAt);
       }
     } catch (_) {
-      // Supabase not initialized (unit tests) — fall through to default.
+      // Supabase not initialized (unit tests) - fall through to default.
     }
     return DateTime.now();
   }
@@ -29,7 +35,6 @@ class SubscriptionService {
       final json = prefs.getString(_key);
       final accountDate = _accountCreatedAt();
       if (json == null) {
-        // First launch: trial starts from account creation date
         final initial = SubscriptionState(
           trialStartDate: accountDate,
           aiCredits: SubscriptionState.trialStarterCredits,
@@ -39,8 +44,6 @@ class SubscriptionService {
         return initial;
       }
       var loaded = SubscriptionState.fromJsonString(json);
-      // Migrate: if trialStartDate was set from local DateTime.now() instead
-      // of account creation, fix it. Account date is always <= local date.
       if (loaded.trialStartDate.isAfter(accountDate)) {
         loaded = loaded.copyWith(trialStartDate: accountDate);
         await save(loaded);
@@ -56,7 +59,10 @@ class SubscriptionService {
       return loaded;
     } catch (e, stack) {
       throw SubscriptionException(
-          'Failed to load subscription state', e, stack);
+        'Failed to load subscription state',
+        e,
+        stack,
+      );
     }
   }
 
@@ -66,7 +72,10 @@ class SubscriptionService {
       await prefs.setString(_key, state.toJsonString());
     } catch (e, stack) {
       throw SubscriptionException(
-          'Failed to save subscription state', e, stack);
+        'Failed to save subscription state',
+        e,
+        stack,
+      );
     }
   }
 
@@ -76,13 +85,17 @@ class SubscriptionService {
       await prefs.remove(_key);
     } catch (e, stack) {
       throw SubscriptionException(
-          'Failed to clear subscription state', e, stack);
+        'Failed to clear subscription state',
+        e,
+        stack,
+      );
     }
   }
 
-  /// Record that the user explored a feature (for discovery tracking).
   Future<SubscriptionState> markFeatureExplored(
-      SubscriptionState current, String featureKey) async {
+    SubscriptionState current,
+    String featureKey,
+  ) async {
     if (current.featuresExplored.contains(featureKey)) return current;
     final updated = current.copyWith(
       featuresExplored: {...current.featuresExplored, featureKey},
@@ -91,20 +104,19 @@ class SubscriptionService {
     return updated;
   }
 
-  /// Upgrade to a paid tier (called after successful payment).
   Future<SubscriptionState> upgradeTo(
-      SubscriptionState current, SubscriptionTier tier) async {
+    SubscriptionState current,
+    SubscriptionTier tier,
+  ) async {
     final updated = current.copyWith(tier: tier, trialUsed: true);
     await save(updated);
     return updated;
   }
 
-  /// Sync local state with a remote tier from RevenueCat.
-  ///
-  /// If tiers match, returns [current] unchanged.
-  /// If different, updates the tier (and marks trial as used for paid tiers).
   Future<SubscriptionState> syncFromRemoteTier(
-      SubscriptionState current, SubscriptionTier remoteTier) async {
+    SubscriptionState current,
+    SubscriptionTier remoteTier,
+  ) async {
     if (current.tier == remoteTier) return current;
     final updated = current.copyWith(
       tier: remoteTier,
@@ -116,42 +128,35 @@ class SubscriptionService {
     return updated;
   }
 
-  /// Downgrade to free tier (e.g., subscription cancelled).
   Future<SubscriptionState> downgrade(SubscriptionState current) async {
-    final updated =
-        current.copyWith(tier: SubscriptionTier.free, trialUsed: true);
+    final updated = current.copyWith(
+      tier: SubscriptionTier.free,
+      trialUsed: true,
+    );
     await save(updated);
     return updated;
   }
 
-  /// Whether the trial-end notice bottom sheet has been shown.
   Future<bool> isTrialEndNoticeSeen() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(_trialEndNoticeKey) ?? false;
   }
 
-  /// Mark the trial-end notice as shown.
   Future<void> markTrialEndNoticeSeen() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_trialEndNoticeKey, true);
   }
 
-  /// Whether the downgrade limits have already been applied for this cycle.
   Future<bool> isDowngradeApplied() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(_downgradeAppliedKey) ?? false;
   }
 
-  /// Mark that downgrade limits have been applied.
   Future<void> markDowngradeApplied() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_downgradeAppliedKey, true);
   }
 
-  /// Extend the trial by [SubscriptionState.trialExtensionDays] days (one-time).
-  ///
-  /// Returns the updated state with `trialExtensionUsed = true`.
-  /// If the extension has already been used, returns [current] unchanged.
   Future<SubscriptionState> extendTrial(SubscriptionState current) async {
     if (current.trialExtensionUsed) return current;
     final updated = current.copyWith(
@@ -162,7 +167,6 @@ class SubscriptionService {
     return updated;
   }
 
-  /// Reset downgrade tracking (called when user upgrades to premium).
   Future<void> resetDowngradeTracking() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_downgradeAppliedKey, false);
@@ -170,17 +174,23 @@ class SubscriptionService {
   }
 
   Future<SubscriptionState> setPreferredCoachMode(
-      SubscriptionState current, CoachMode mode) async {
+    SubscriptionState current,
+    CoachMode mode,
+  ) async {
     final updated = current.copyWith(preferredCoachMode: mode);
     await save(updated);
     return updated;
   }
 
   Future<SubscriptionState> addAiCredits(
-      SubscriptionState current, int amount) async {
+    SubscriptionState current,
+    int amount,
+  ) async {
     if (amount <= 0) return current;
-    final capped = (current.aiCredits + amount)
-        .clamp(0, SubscriptionState.maxCreditCap);
+    final capped = (current.aiCredits + amount).clamp(
+      0,
+      SubscriptionState.maxCreditCap,
+    );
     final updated = current.copyWith(
       aiCredits: capped,
       downgradeCardShown: false,
@@ -190,7 +200,9 @@ class SubscriptionService {
   }
 
   Future<SubscriptionState> consumeAiCredits(
-      SubscriptionState current, int amount) async {
+    SubscriptionState current,
+    int amount,
+  ) async {
     if (amount <= 0) return current;
     final next = current.aiCredits - amount;
     final updated = current.copyWith(aiCredits: next < 0 ? 0 : next);
@@ -199,11 +211,10 @@ class SubscriptionService {
   }
 
   Future<({SubscriptionState state, CoachModeResolution resolution})>
-      resolveAndConsumeCoachMode(
+  resolveAndConsumeCoachMode(
     SubscriptionState current, {
     CoachMode? requestedMode,
   }) async {
-    // Feature #2: Endowment Plus bypass
     final requested = requestedMode ?? current.preferredCoachMode;
     if (current.isInEndowmentPeriod && requested == CoachMode.plus) {
       final resolution = CoachModeResolution(
@@ -220,21 +231,24 @@ class SubscriptionService {
       return (state: current, resolution: resolution);
     }
 
-    final updated = await consumeAiCredits(current, resolution.estimatedCreditCost);
+    final updated = await consumeAiCredits(
+      current,
+      resolution.estimatedCreditCost,
+    );
     return (state: updated, resolution: resolution);
   }
 
-  // Feature #1: Downgrade Transition Card
   Future<SubscriptionState> markDowngradeCardShown(
-      SubscriptionState current) async {
+    SubscriptionState current,
+  ) async {
     final updated = current.copyWith(downgradeCardShown: true);
     await save(updated);
     return updated;
   }
 
-  // Feature #2: Endowment Plus
   Future<SubscriptionState> incrementConversationCount(
-      SubscriptionState current) async {
+    SubscriptionState current,
+  ) async {
     final newCount = current.coachConversationCount + 1;
     final completed = newCount >= SubscriptionState.endowmentConversations;
     final updated = current.copyWith(
@@ -245,9 +259,10 @@ class SubscriptionService {
     return updated;
   }
 
-  // Feature #3: Smart Mode Recommendation
   Future<SubscriptionState> trackRecommendation(
-      SubscriptionState current, {required bool accepted}) async {
+    SubscriptionState current, {
+    required bool accepted,
+  }) async {
     final updated = current.copyWith(
       recommendationsShown: current.recommendationsShown + 1,
       recommendationsAccepted: accepted
@@ -258,9 +273,11 @@ class SubscriptionService {
     return updated;
   }
 
-  // Feature #4: ROI Framing
   Future<SubscriptionState> setSessionInsight(
-      SubscriptionState current, String insight, String? value) async {
+    SubscriptionState current,
+    String insight,
+    String? value,
+  ) async {
     final updated = current.copyWith(
       lastSessionInsight: insight,
       lastSessionInsightValue: value,
@@ -270,7 +287,9 @@ class SubscriptionService {
   }
 
   Future<SubscriptionState> trackSessionCompleted(
-      SubscriptionState current, CoachMode mode) async {
+    SubscriptionState current,
+    CoachMode mode,
+  ) async {
     final updated = current.copyWith(
       totalProSessions: mode == CoachMode.pro
           ? current.totalProSessions + 1
@@ -283,9 +302,10 @@ class SubscriptionService {
     return updated;
   }
 
-  // Feature #5: Micro-Action Follow-up
   Future<SubscriptionState> setLastMicroAction(
-      SubscriptionState current, String action) async {
+    SubscriptionState current,
+    String action,
+  ) async {
     final updated = current.copyWith(
       lastMicroAction: action,
       lastMicroActionDate: DateTime.now(),
@@ -295,7 +315,8 @@ class SubscriptionService {
   }
 
   Future<SubscriptionState> clearLastMicroAction(
-      SubscriptionState current) async {
+    SubscriptionState current,
+  ) async {
     final updated = SubscriptionState(
       tier: current.tier,
       trialStartDate: current.trialStartDate,
@@ -314,13 +335,11 @@ class SubscriptionService {
       lastSessionInsightValue: current.lastSessionInsightValue,
       totalProSessions: current.totalProSessions,
       totalPlusSessions: current.totalPlusSessions,
-      // lastMicroAction and lastMicroActionDate intentionally null
     );
     await save(updated);
     return updated;
   }
 
-  /// Returns a human-readable label for a feature key.
   static String featureLabel(String featureKey) {
     switch (featureKey) {
       case 'dashboard':
@@ -346,7 +365,6 @@ class SubscriptionService {
     }
   }
 
-  /// Returns the icon for a feature key.
   static String featureIcon(String featureKey) {
     switch (featureKey) {
       case 'dashboard':

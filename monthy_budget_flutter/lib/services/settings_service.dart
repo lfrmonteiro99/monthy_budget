@@ -1,29 +1,17 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/app_settings.dart';
+import '../repositories/settings_repository.dart';
 
 class SettingsService {
-  final _client = Supabase.instance.client;
+  final SettingsRepository _repository;
 
-  Future<AppSettings> load(String householdId) async {
-    final row = await _client
-        .from('household_settings')
-        .select('settings_json')
-        .eq('household_id', householdId)
-        .maybeSingle();
+  SettingsService({SettingsRepository? repository})
+    : _repository = repository ?? SupabaseSettingsRepository();
 
-    if (row == null) return const AppSettings();
-    try {
-      return AppSettings.fromJsonString(row['settings_json'] as String);
-    } catch (_) {
-      return const AppSettings();
-    }
+  Future<AppSettings> load(String householdId) {
+    return _repository.loadSettings(householdId);
   }
 
-  Future<void> save(AppSettings settings, String householdId) async {
-    await _client.from('household_settings').upsert({
-      'household_id': householdId,
-      'settings_json': settings.toJsonString(),
-      'updated_at': DateTime.now().toIso8601String(),
-    });
+  Future<void> save(AppSettings settings, String householdId) {
+    return _repository.saveSettings(settings, householdId);
   }
 }

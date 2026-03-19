@@ -1,29 +1,16 @@
-import 'dart:convert';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import '../repositories/settings_repository.dart';
 
 class FavoritesService {
-  final _client = Supabase.instance.client;
+  final SettingsRepository _repository;
 
-  Future<List<String>> load(String householdId) async {
-    final row = await _client
-        .from('household_favorites')
-        .select('favorites_json')
-        .eq('household_id', householdId)
-        .maybeSingle();
+  FavoritesService({SettingsRepository? repository})
+    : _repository = repository ?? SupabaseSettingsRepository();
 
-    if (row == null) return [];
-    try {
-      return List<String>.from(jsonDecode(row['favorites_json'] as String));
-    } catch (_) {
-      return [];
-    }
+  Future<List<String>> load(String householdId) {
+    return _repository.loadFavorites(householdId);
   }
 
-  Future<void> save(List<String> favorites, String householdId) async {
-    await _client.from('household_favorites').upsert({
-      'household_id': householdId,
-      'favorites_json': jsonEncode(favorites),
-      'updated_at': DateTime.now().toIso8601String(),
-    });
+  Future<void> save(List<String> favorites, String householdId) {
+    return _repository.saveFavorites(favorites, householdId);
   }
 }

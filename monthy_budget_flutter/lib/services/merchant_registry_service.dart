@@ -1,4 +1,5 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
+import '../repositories/auth_repository.dart';
+import '../repositories/product_repository.dart';
 
 class MerchantInfo {
   final String nif;
@@ -24,23 +25,23 @@ class MerchantInfo {
 }
 
 class MerchantRegistryService {
-  final _client = Supabase.instance.client;
+  final AuthRepository _authRepository;
+  final MerchantRepository _repository;
+
+  MerchantRegistryService({
+    AuthRepository? authRepository,
+    MerchantRepository? repository,
+  }) : _authRepository = authRepository ?? SupabaseAuthRepository(),
+       _repository = repository ?? SupabaseMerchantRepository();
 
   Future<MerchantInfo?> lookup(String nif) async {
-    final rows = await _client
-        .from('merchant_nif_registry')
-        .select()
-        .eq('nif', nif)
-        .limit(1);
-    if (rows.isEmpty) return null;
-    return MerchantInfo.fromSupabase(rows.first);
+    final row = await _repository.lookup(nif);
+    if (row == null) return null;
+    return MerchantInfo.fromSupabase(row);
   }
 
-  Future<void> confirm(String nif) async {
-    await _client.rpc(
-      'increment_merchant_confirmed',
-      params: {'merchant_nif': nif},
-    );
+  Future<void> confirm(String nif) {
+    return _repository.confirm(nif);
   }
 
   Future<void> register({
@@ -48,15 +49,13 @@ class MerchantRegistryService {
     required String name,
     String? chain,
     String category = 'outro',
-  }) async {
-    final userId = _client.auth.currentUser?.id;
-    await _client.from('merchant_nif_registry').upsert({
-      'nif': nif,
-      'name': name,
-      'chain': chain,
-      'category': category,
-      'confirmed_count': 1,
-      'created_by': userId,
-    });
+  }) {
+    return _repository.register(
+      nif: nif,
+      name: name,
+      chain: chain,
+      category: category,
+      createdBy: _authRepository.currentUserId,
+    );
   }
 }

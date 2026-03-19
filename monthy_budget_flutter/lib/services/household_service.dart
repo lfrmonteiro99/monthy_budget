@@ -1,11 +1,12 @@
 import 'dart:math';
 
-import 'package:supabase_flutter/supabase_flutter.dart';
+import '../repositories/auth_repository.dart';
+import '../repositories/household_repository.dart';
 
 class HouseholdProfile {
   final String householdId;
   final String householdName;
-  final String role; // 'admin' | 'member'
+  final String role;
 
   const HouseholdProfile({
     required this.householdId,
@@ -17,7 +18,7 @@ class HouseholdProfile {
 class AssociatedHouseholdMember {
   final String id;
   final String email;
-  final String role; // 'admin' | 'member'
+  final String role;
 
   const AssociatedHouseholdMember({
     required this.id,
@@ -27,56 +28,48 @@ class AssociatedHouseholdMember {
 }
 
 class HouseholdService {
-  final _client = Supabase.instance.client;
+  final AuthRepository _authRepository;
+  final HouseholdRepository _repository;
 
-  /// Returns null if the current user has no household yet.
+  HouseholdService({
+    AuthRepository? authRepository,
+    HouseholdRepository? repository,
+  }) : _authRepository = authRepository ?? SupabaseAuthRepository(),
+       _repository = repository ?? SupabaseHouseholdRepository();
+
   Future<HouseholdProfile?> getProfile() async {
-    final userId = _client.auth.currentUser?.id;
+    final userId = _authRepository.currentUserId;
     if (userId == null) return null;
 
-    final row = await _client
-        .from('profiles')
-        .select('household_id, role, households(name)')
-        .eq('id', userId)
-        .maybeSingle();
-
+    final row = await _repository.getProfileRow(userId);
     if (row == null || row['household_id'] == null) return null;
 
     return HouseholdProfile(
       householdId: row['household_id'] as String,
-      householdName:
-          (row['households'] as Map<String, dynamic>)['name'] as String,
+      householdName: (row['households'] as Map<String, dynamic>)['name'] as String,
       role: row['role'] as String,
     );
   }
 
-  /// Lists all profiles associated with a household.
   Future<List<AssociatedHouseholdMember>> getAssociatedMembers(
-      String householdId) async {
-    final rows = await _client
-        .from('profiles')
-        .select('id, email, role')
-        .eq('household_id', householdId)
-        .order('created_at', ascending: true);
-
-    return (rows as List<dynamic>)
-        .map((row) => AssociatedHouseholdMember(
-              id: row['id'] as String,
-              email: (row['email'] as String?)?.trim().isNotEmpty == true
-                  ? row['email'] as String
-                  : '-',
-              role: (row['role'] as String?) ?? 'member',
-            ))
+    String householdId,
+  ) async {
+    final rows = await _repository.getAssociatedMemberRows(householdId);
+    return rows
+        .map(
+          (row) => AssociatedHouseholdMember(
+            id: row['id'] as String,
+            email: (row['email'] as String?)?.trim().isNotEmpty == true
+                ? row['email'] as String
+                : '-',
+            role: (row['role'] as String?) ?? 'member',
+          ),
+        )
         .toList();
   }
 
-  /// Creates a new household; assigns current user as admin.
   Future<HouseholdProfile> createHousehold(String name) async {
-    final result = await _client.rpc(
-      'create_household',
-      params: {'p_name': name},
-    ) as Map<String, dynamic>;
-
+    final result = await _repository.createHousehold(name);
     return HouseholdProfile(
       householdId: result['household_id'] as String,
       householdName: result['name'] as String,
@@ -84,13 +77,8 @@ class HouseholdService {
     );
   }
 
-  /// Joins an existing household via 6-char invite code.
   Future<HouseholdProfile> joinHousehold(String inviteCode) async {
-    final result = await _client.rpc(
-      'join_household',
-      params: {'p_code': inviteCode.trim().toUpperCase()},
-    ) as Map<String, dynamic>;
-
+    final result = await _repository.joinHousehold(inviteCode);
     return HouseholdProfile(
       householdId: result['household_id'] as String,
       householdName: result['name'] as String,
@@ -98,27 +86,29 @@ class HouseholdService {
     );
   }
 
-  /// Admin only: generates and persists a 6-char invite code.
   Future<String> generateInviteCode(String householdId) async {
-    final userId = _client.auth.currentUser!.id;
+    final userId = _authRepository.currentUserId;
+    if (userId == null) {
+      throw StateError('Cannot generate invite code without an authenticated user.');
+    }
     final code = _randomCode();
     final expiresAt = DateTime.now().add(const Duration(days: 7));
-    await _client.from('household_invites').insert({
-      'household_id': householdId,
-      'code': code,
-      'created_by': userId,
-      'expires_at': expiresAt.toIso8601String(),
-    });
+    await _repository.saveInviteCode(
+      householdId: householdId,
+      code: code,
+      createdBy: userId,
+      expiresAt: expiresAt,
+    );
     return code;
   }
 
   String _randomCode() {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     final rng = Random.secure();
-    final buf = StringBuffer();
+    final buffer = StringBuffer();
     for (int i = 0; i < 6; i++) {
-      buf.write(chars[rng.nextInt(chars.length)]);
+      buffer.write(chars[rng.nextInt(chars.length)]);
     }
-    return buf.toString();
+    return buffer.toString();
   }
 }
