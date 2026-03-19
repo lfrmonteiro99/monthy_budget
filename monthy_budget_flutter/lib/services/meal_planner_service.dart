@@ -22,10 +22,13 @@ class MealPlannerService {
   bool _catalogLoaded = false;
   Map<String, Ingredient>? _ingredientMapCache;
   Map<String, Recipe>? _recipeMapCache;
-  final MealPlanRepository _repository;
+  MealPlanRepository? _repository;
 
   MealPlannerService({MealPlanRepository? repository})
-    : _repository = repository ?? SupabaseMealPlanRepository();
+    : _repository = repository;
+
+  MealPlanRepository get _mealPlanRepository =>
+      _repository ??= SupabaseMealPlanRepository();
 
   /// Loads the recipe catalog using a three-tier strategy:
   /// 1. Supabase (remote, authoritative)
@@ -45,7 +48,7 @@ class MealPlannerService {
 
   Future<bool> _tryLoadFromSupabase() async {
     try {
-      final recipesData = await _repository.loadRecipeRows();
+      final recipesData = await _mealPlanRepository.loadRecipeRows();
 
       if (recipesData.isEmpty) return false;
 
@@ -1060,15 +1063,15 @@ class MealPlannerService {
   // --- Persistence ---
 
   Future<MealPlan?> load(String householdId, int month, int year) async {
-    return _repository.loadPlan(householdId, month, year);
+    return _mealPlanRepository.loadPlan(householdId, month, year);
   }
 
   Future<void> save(MealPlan plan, String householdId) async {
-    await _repository.savePlan(plan, householdId);
+    await _mealPlanRepository.savePlan(plan, householdId);
   }
 
   Future<void> clear(String householdId, int month, int year) async {
-    await _repository.clearPlan(householdId, month, year);
+    await _mealPlanRepository.clearPlan(householdId, month, year);
   }
 
   // --- Undo support ---
