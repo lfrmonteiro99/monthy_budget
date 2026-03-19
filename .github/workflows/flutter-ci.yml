@@ -45,7 +45,7 @@ jobs:
     needs: changes
     if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     defaults:
       run:
         working-directory: monthy_budget_flutter
@@ -85,10 +85,94 @@ jobs:
       - name: Run tests
         run: flutter test
 
+      - name: Determine Playwright CI mode
+        id: playwright-mode
+        shell: bash
+        env:
+          SUPABASE_URL_SECRET: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY_SECRET: ${{ secrets.SUPABASE_ANON_KEY }}
+          E2E_EMAIL_SECRET: ${{ secrets.E2E_EMAIL }}
+          E2E_PASSWORD_SECRET: ${{ secrets.E2E_PASSWORD }}
+        run: |
+          missing=()
+          [ -z "${SUPABASE_URL_SECRET}" ] && missing+=("SUPABASE_URL")
+          [ -z "${SUPABASE_ANON_KEY_SECRET}" ] && missing+=("SUPABASE_ANON_KEY")
+          [ -z "${E2E_EMAIL_SECRET}" ] && missing+=("E2E_EMAIL")
+          [ -z "${E2E_PASSWORD_SECRET}" ] && missing+=("E2E_PASSWORD")
+
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "mode=list-only" >> "$GITHUB_OUTPUT"
+            echo "::notice::Authenticated Playwright smoke is disabled for this run because these secrets are unavailable: ${missing[*]}. This is expected on contexts like forked pull requests."
+          else
+            echo "mode=authenticated" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Validate Playwright suite loads
+        if: steps.playwright-mode.outputs.mode == 'list-only'
         run: |
           npm ci
           npx playwright test --list
+
+      - name: Install Playwright browser dependencies
+        if: steps.playwright-mode.outputs.mode == 'authenticated'
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Build Flutter web app for Playwright
+        if: steps.playwright-mode.outputs.mode == 'authenticated'
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          flutter build web --release \
+            --dart-define=SUPABASE_URL=${SUPABASE_URL} \
+            --dart-define=SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+
+      - name: Serve Flutter web build for Playwright
+        if: steps.playwright-mode.outputs.mode == 'authenticated'
+        shell: bash
+        run: |
+          python3 -m http.server 7357 --directory build/web > /tmp/monthy-budget-playwright-web.log 2>&1 &
+          echo $! > /tmp/monthy-budget-playwright-web.pid
+
+          for attempt in {1..60}; do
+            if curl -fsS http://127.0.0.1:7357 > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+
+          echo "::error::Flutter web build did not become reachable on http://127.0.0.1:7357"
+          cat /tmp/monthy-budget-playwright-web.log
+          exit 1
+
+      - name: Run Playwright smoke tests
+        if: steps.playwright-mode.outputs.mode == 'authenticated'
+        env:
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:7357
+          E2E_EMAIL: ${{ secrets.E2E_EMAIL }}
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+        run: npx playwright test
+
+      - name: Upload Playwright artifacts
+        if: always() && steps.playwright-mode.outputs.mode == 'authenticated'
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-smoke-artifacts
+          path: |
+            monthy_budget_flutter/output/playwright/report
+            monthy_budget_flutter/output/playwright/test-results
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Stop Playwright web server
+        if: always() && steps.playwright-mode.outputs.mode == 'authenticated'
+        shell: bash
+        run: |
+          if [ -f /tmp/monthy-budget-playwright-web.pid ]; then
+            kill "$(cat /tmp/monthy-budget-playwright-web.pid)" || true
+          fi
 
   performance:
     needs: [changes, test]
