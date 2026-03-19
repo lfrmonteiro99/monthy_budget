@@ -11,9 +11,11 @@ const homeTabPattern = /Home|In[i\u00ed]cio|Accueil/i;
 const dashboardTitlePattern =
   /Monthly Budget|Or\u00e7amento Mensal|Budget Mensuel|Presupuesto Mensual/i;
 const insightsTitlePattern =
-  /Insights|An\u00e1lise|Analyses|An\u00e1lisis/i;
+  /^Insights$|^An\u00e1lise$|^Analyses$|^An\u00e1lisis$/i;
 const savingsGoalsPattern =
   /Savings Goals|Objetivos de Poupan\u00e7a|Objectifs d'\u00c9pargne|Objetivos de Ahorro/i;
+const savingsGoalsActionPattern =
+  /^(Savings Goals|Objetivos de Poupan\u00e7a|Objectifs d'\u00c9pargne|Objetivos de Ahorro)(\s.+)?$/i;
 const savingsEmptyStatePattern =
   /No savings goals|Sem objetivos de poupan\u00e7a|Aucun objectif d'\u00e9pargne|Sin objetivos de ahorro/i;
 const savingsGoalProgressPattern =
@@ -39,13 +41,13 @@ async function openInsights(page: Page) {
   await commandInput.fill('open insights');
   await commandInput.press('Enter');
 
-  await page.waitForTimeout(1500);
-  await waitForSemanticMatch(page, insightsTitlePattern);
+  await waitForSemanticMatch(page, insightsTitlePattern, 35_000);
+  await waitForSemanticMatch(page, savingsGoalsActionPattern, 10_000);
 }
 
 async function openSavingsGoals(page: Page) {
   await openInsights(page);
-  await clickSemantic(page, savingsGoalsPattern, { role: 'button' });
+  await clickSemantic(page, savingsGoalsActionPattern, { role: 'button' });
 
   await expect
     .poll(async () => {
