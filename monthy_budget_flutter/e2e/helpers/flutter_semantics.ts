@@ -12,10 +12,12 @@ async function findSemanticLocator(
   const candidates: Locator[] = options.role
     ? [page.getByRole(options.role as never, { name: labelPattern })]
     : [
-        page.getByLabel(labelPattern),
         page.getByRole('button', { name: labelPattern }),
         page.getByRole('tab', { name: labelPattern }),
         page.getByRole('link', { name: labelPattern }),
+        page.getByRole('menuitem', { name: labelPattern }),
+        page.getByRole('option', { name: labelPattern }),
+        page.getByLabel(labelPattern),
         page.getByText(labelPattern),
       ];
 
@@ -39,7 +41,7 @@ async function findSemanticLocator(
   return null;
 }
 
-async function clickLocatorCenter(page: Page, locator: Locator) {
+async function activateLocator(page: Page, locator: Locator) {
   await locator.evaluate((element) => {
     element.scrollIntoView({ block: 'center', inline: 'center' });
   });
@@ -47,7 +49,43 @@ async function clickLocatorCenter(page: Page, locator: Locator) {
   const box = await locator.boundingBox();
   expect(box, 'Semantic element has no clickable bounding box').not.toBeNull();
 
-  await page.mouse.click(box!.x + box!.width / 2, box!.y + box!.height / 2);
+  const activators = [
+    async () => {
+      await locator.evaluate((element) => {
+        if (element instanceof HTMLElement) {
+          element.click();
+          return;
+        }
+
+        element.dispatchEvent(
+          new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            composed: true,
+          }),
+        );
+      });
+    },
+    async () => {
+      await locator.click({ force: true, timeout: 3_000 });
+    },
+    async () => {
+      await page.mouse.click(box!.x + box!.width / 2, box!.y + box!.height / 2);
+    },
+  ];
+
+  let lastError: unknown;
+  for (const activate of activators) {
+    try {
+      await activate();
+      await page.waitForTimeout(250);
+      return;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError ?? new Error('Unable to activate semantic element');
 }
 
 export async function enableFlutterSemantics(page: Page) {
@@ -94,7 +132,7 @@ export async function clickSemantic(
 ) {
   const locator = await findSemanticLocator(page, labelPattern, options);
   expect(locator, `No semantic element matched ${labelPattern}`).not.toBeNull();
-  await clickLocatorCenter(page, locator!);
+  await activateLocator(page, locator!);
 }
 
 export async function tryClickSemantic(
@@ -107,7 +145,7 @@ export async function tryClickSemantic(
     return false;
   }
 
-  await clickLocatorCenter(page, locator);
+  await activateLocator(page, locator);
   return true;
 }
 

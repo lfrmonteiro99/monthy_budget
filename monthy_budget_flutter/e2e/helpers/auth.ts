@@ -10,6 +10,8 @@ import {
 
 const email = process.env.E2E_EMAIL;
 const password = process.env.E2E_PASSWORD;
+const settingsTitlePattern =
+  /^Settings$|^Definições$|^Paramètres$|^Configuración$/i;
 
 export function hasAuthCredentials() {
   return Boolean(email && password);
@@ -58,10 +60,10 @@ export async function logout(page: Page) {
     })) || (await tryClickSemantic(page, /Settings|Defini/i));
 
   expect(openedSettings, 'Could not open settings before logout').toBeTruthy();
-
-  await page.waitForTimeout(1500);
-  await clickSemantic(page, /Sign out|Terminar sess(?:ao|\u00e3o)|Sair/i);
-  await page.waitForTimeout(1500);
+  await waitForSemanticMatch(page, settingsTitlePattern, 15_000);
+  await clickSemantic(page, /Sign out|Terminar sess(?:ao|\u00e3o)|Sair/i, {
+    role: 'button',
+  });
   await enableFlutterSemantics(page);
   await waitForSemanticMatch(page, /Sign in|Entrar na conta|Entrar/i);
 }
