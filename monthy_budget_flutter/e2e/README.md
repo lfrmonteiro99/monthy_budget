@@ -6,6 +6,7 @@ Current checked-in smoke specs:
 
 - `auth-flow.smoke.spec.ts`
 - `meal-planner-settings.smoke.spec.ts`
+- `shopping-list.smoke.spec.ts`
 
 ## Prerequisites
 
