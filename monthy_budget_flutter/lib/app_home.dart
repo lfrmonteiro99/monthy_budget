@@ -62,6 +62,7 @@ import 'screens/paywall_screen.dart';
 import 'widgets/trial_banner.dart';
 import 'widgets/feature_discovery_card.dart';
 import 'services/ad_service.dart';
+import 'services/analytics_service.dart';
 import 'services/downgrade_service.dart';
 import 'services/revenuecat_service.dart';
 import 'widgets/ad_banner_widget.dart';
@@ -175,6 +176,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     _shoppingListSub.cancel();
     QuickActionService.instance.dispose();
+    unawaited(AnalyticsService.instance.reset());
     RevenueCatService.logout();
     super.dispose();
   }
@@ -190,6 +192,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       case AppLifecycleState.resumed:
         // Resume realtime stream.
         _shoppingListSub.resume();
+        unawaited(AnalyticsService.instance.trackAppOpened());
         // Debounce: skip data refresh if we were backgrounded briefly.
         final elapsed = DateTime.now().difference(_lastRefresh);
         if (elapsed >= _resumeDebounce && !_refreshing) {
@@ -290,6 +293,13 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     _dataHealthService.recordLoad(SyncDomain.purchaseHistory);
     _dataHealthService.recordLoad(SyncDomain.shopping);
     _syncLocaleAndFormatter(_settings);
+    _refreshAnalyticsContext();
+    unawaited(
+      AnalyticsService.instance.trackScreen(
+        _currentTab.featureKey,
+        properties: {'surface': 'main_tab'},
+      ),
+    );
     _expenseSnapshotService.loadHistory(widget.householdId).then((history) {
       if (mounted) setState(() => _expenseHistory = history);
     });
@@ -303,6 +313,66 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     await _loadSavingsGoals();
     _syncRevenueCat();
     _checkDowngrade();
+  }
+
+  Future<T?> _pushScreen<T>(String screenName, WidgetBuilder builder) {
+    return Navigator.of(context).push<T>(
+      MaterialPageRoute<T>(
+        settings: RouteSettings(name: screenName),
+        builder: builder,
+      ),
+    );
+  }
+
+  void _refreshAnalyticsContext() {
+    if (!mounted) return;
+    final appShell = AppShellScope.read(context);
+    unawaited(
+      AnalyticsService.instance.updateContext(
+        settings: _settings,
+        subscription: _subscription,
+        themeMode: appShell.themeMode,
+        colorPalette: appShell.colorPalette,
+        isAdmin: widget.isAdmin,
+      ),
+    );
+  }
+
+  void _trackSubscriptionTransition(
+    SubscriptionTier previousTier,
+    SubscriptionTier nextTier, {
+    required String source,
+    PremiumFeature? blockedFeature,
+  }) {
+    if (previousTier == nextTier) return;
+    if (previousTier == SubscriptionTier.free &&
+        nextTier != SubscriptionTier.free) {
+      unawaited(
+        AnalyticsService.instance.trackEvent(
+          'subscription_started',
+          properties: {
+            'source': source,
+            'from_tier': previousTier.name,
+            'to_tier': nextTier.name,
+            if (blockedFeature != null) 'blocked_feature': blockedFeature.name,
+          },
+        ),
+      );
+      return;
+    }
+    if (previousTier != SubscriptionTier.free &&
+        nextTier == SubscriptionTier.free) {
+      unawaited(
+        AnalyticsService.instance.trackEvent(
+          'subscription_cancelled',
+          properties: {
+            'source': source,
+            'from_tier': previousTier.name,
+            'to_tier': nextTier.name,
+          },
+        ),
+      );
+    }
   }
 
   Future<GroceryData> _loadGroceryData(
@@ -374,14 +444,21 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   Future<void> _syncRevenueCat() async {
     try {
       final user = Supabase.instance.client.auth.currentUser;
+      final previousTier = _subscription.tier;
       await RevenueCatService.login(user?.id);
       final remoteTier = await RevenueCatService.getCurrentTier();
       final updated = await _subscriptionService.syncFromRemoteTier(
         _subscription,
         remoteTier,
       );
+      _trackSubscriptionTransition(
+        previousTier,
+        updated.tier,
+        source: 'revenuecat_sync',
+      );
       if (mounted && updated != _subscription) {
         setState(() => _subscription = updated);
+        _refreshAnalyticsContext();
       }
     } catch (e) {
       LogService.error(
@@ -555,12 +632,11 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   void _openExpenseTrends() {
     if (!_gateFeature(PremiumFeature.expenseTrends)) return;
     _trackFeature('expense_tracker');
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => ExpenseTrendsScreen(
-          actualExpenseHistory: _actualExpenseHistory,
-          expenseHistory: _expenseHistory,
-        ),
+    _pushScreen(
+      'expense_trends',
+      (_) => ExpenseTrendsScreen(
+        actualExpenseHistory: _actualExpenseHistory,
+        expenseHistory: _expenseHistory,
       ),
     );
   }
@@ -585,40 +661,36 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   void _openSavingsGoals() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => SavingsGoalsScreen(
-          householdId: widget.householdId,
-          goals: _savingsGoals,
-          onChanged: (updated) {
-            setState(() => _savingsGoals = updated);
-            _loadSavingsGoals();
-          },
-          subscription: _subscription,
-          onUpgrade: _openPaywall,
-          showTour: !_onboardingState.isTourDone('savings_goals'),
-          onTourComplete: () => _markTourDone('savings_goals'),
-        ),
+    _pushScreen(
+      'savings_goals',
+      (_) => SavingsGoalsScreen(
+        householdId: widget.householdId,
+        goals: _savingsGoals,
+        onChanged: (updated) {
+          setState(() => _savingsGoals = updated);
+          _loadSavingsGoals();
+        },
+        subscription: _subscription,
+        onUpgrade: _openPaywall,
+        showTour: !_onboardingState.isTourDone('savings_goals'),
+        onTourComplete: () => _markTourDone('savings_goals'),
       ),
     );
   }
 
   void _openProductUpdates() {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (_) => const ProductUpdatesScreen()));
+    _pushScreen('product_updates', (_) => const ProductUpdatesScreen());
   }
 
   void _openNotificationSettings() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => NotificationSettingsScreen(
-          preferences: _notificationPrefs,
-          onSave: (prefs) {
-            setState(() => _notificationPrefs = prefs);
-            _refreshNotificationSchedules();
-          },
-        ),
+    _pushScreen(
+      'notification_settings',
+      (_) => NotificationSettingsScreen(
+        preferences: _notificationPrefs,
+        onSave: (prefs) {
+          setState(() => _notificationPrefs = prefs);
+          _refreshNotificationSchedules();
+        },
       ),
     );
   }
@@ -631,6 +703,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       _subscription,
       featureKey,
     );
+    unawaited(
+      AnalyticsService.instance.trackEvent(
+        'feature_explored',
+        properties: {'feature_key': featureKey},
+      ),
+    );
     if (mounted) setState(() => _subscription = updated);
   }
 
@@ -640,6 +718,31 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     // Try the RevenueCat-hosted paywall first.
     final result = await RevenueCatService.presentPaywall();
     if (result != null) {
+      unawaited(
+        AnalyticsService.instance.trackEvent(
+          'paywall_shown',
+          properties: {
+            'surface': 'revenuecat_hosted',
+            if (blockedFeature != null) 'blocked_feature': blockedFeature.name,
+            'subscription_tier': _subscription.tier.name,
+            'trial_active': _subscription.isTrialActive,
+          },
+        ),
+      );
+      final resultName = result.name;
+      if (resultName.contains('cancel') || resultName.contains('not')) {
+        unawaited(
+          AnalyticsService.instance.trackEvent(
+            'paywall_dismissed',
+            properties: {
+              'surface': 'revenuecat_hosted',
+              'reason': resultName,
+              if (blockedFeature != null)
+                'blocked_feature': blockedFeature.name,
+            },
+          ),
+        );
+      }
       // RC paywall was shown. Sync tier regardless of outcome — the user
       // may have purchased, restored, or dismissed.
       await _syncRevenueCat();
@@ -649,78 +752,163 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     // Fallback: custom paywall (simulate mode or RC not configured).
     if (!mounted) return;
     final l10n = S.of(context);
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => PaywallScreen(
-          subscription: _subscription,
-          blockedFeature: blockedFeature,
-          onSelectTier: (tier) async {
-            final updated = await _subscriptionService.upgradeTo(
-              _subscription,
-              tier,
-            );
-            if (tier != SubscriptionTier.free) {
-              await _subscriptionService.resetDowngradeTracking();
-            }
-            if (mounted) {
-              setState(() => _subscription = updated);
-              Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    tier == SubscriptionTier.free
-                        ? l10n.paywallContinueFree
-                        : l10n.paywallUpgradedPro,
-                  ),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            }
-          },
-          onPurchaseComplete: (tier) async {
-            final updated = await _subscriptionService.upgradeTo(
-              _subscription,
-              tier,
-            );
-            await _subscriptionService.resetDowngradeTracking();
-            if (mounted) {
-              setState(() => _subscription = updated);
-              Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(l10n.paywallUpgradedPro),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            }
-          },
-          onRestoreComplete: (tier) async {
-            final updated = await _subscriptionService.syncFromRemoteTier(
-              _subscription,
-              tier,
-            );
-            if (mounted) {
-              setState(() => _subscription = updated);
-              Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    tier == SubscriptionTier.free
-                        ? l10n.paywallNoRestore
-                        : l10n.paywallRestoredPro,
-                  ),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            }
-          },
-        ),
+    var paywallHandled = false;
+    unawaited(
+      AnalyticsService.instance.trackEvent(
+        'paywall_shown',
+        properties: {
+          'surface': 'custom',
+          if (blockedFeature != null) 'blocked_feature': blockedFeature.name,
+          'subscription_tier': _subscription.tier.name,
+          'trial_active': _subscription.isTrialActive,
+        },
       ),
     );
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            settings: const RouteSettings(name: 'paywall'),
+            builder: (_) => PaywallScreen(
+              subscription: _subscription,
+              blockedFeature: blockedFeature,
+              onSelectTier: (tier) async {
+                paywallHandled = true;
+                if (tier == SubscriptionTier.free) {
+                  unawaited(
+                    AnalyticsService.instance.trackEvent(
+                      'paywall_dismissed',
+                      properties: {
+                        'surface': 'custom',
+                        'reason': 'continue_free',
+                        if (blockedFeature != null)
+                          'blocked_feature': blockedFeature.name,
+                      },
+                    ),
+                  );
+                }
+                final previousTier = _subscription.tier;
+                final updated = await _subscriptionService.upgradeTo(
+                  _subscription,
+                  tier,
+                );
+                if (tier != SubscriptionTier.free) {
+                  await _subscriptionService.resetDowngradeTracking();
+                  _trackSubscriptionTransition(
+                    previousTier,
+                    updated.tier,
+                    source: 'custom_paywall',
+                    blockedFeature: blockedFeature,
+                  );
+                }
+                if (mounted) {
+                  setState(() => _subscription = updated);
+                  _refreshAnalyticsContext();
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        tier == SubscriptionTier.free
+                            ? l10n.paywallContinueFree
+                            : l10n.paywallUpgradedPro,
+                      ),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              },
+              onPurchaseComplete: (tier) async {
+                paywallHandled = true;
+                final previousTier = _subscription.tier;
+                final updated = await _subscriptionService.upgradeTo(
+                  _subscription,
+                  tier,
+                );
+                await _subscriptionService.resetDowngradeTracking();
+                _trackSubscriptionTransition(
+                  previousTier,
+                  updated.tier,
+                  source: 'custom_paywall',
+                  blockedFeature: blockedFeature,
+                );
+                if (mounted) {
+                  setState(() => _subscription = updated);
+                  _refreshAnalyticsContext();
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(l10n.paywallUpgradedPro),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              },
+              onRestoreComplete: (tier) async {
+                paywallHandled = true;
+                final previousTier = _subscription.tier;
+                final updated = await _subscriptionService.syncFromRemoteTier(
+                  _subscription,
+                  tier,
+                );
+                if (tier != SubscriptionTier.free) {
+                  unawaited(
+                    AnalyticsService.instance.trackEvent(
+                      'subscription_restored',
+                      properties: {
+                        'surface': 'custom_paywall',
+                        'to_tier': tier.name,
+                      },
+                    ),
+                  );
+                }
+                _trackSubscriptionTransition(
+                  previousTier,
+                  updated.tier,
+                  source: 'custom_paywall_restore',
+                  blockedFeature: blockedFeature,
+                );
+                if (mounted) {
+                  setState(() => _subscription = updated);
+                  _refreshAnalyticsContext();
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        tier == SubscriptionTier.free
+                            ? l10n.paywallNoRestore
+                            : l10n.paywallRestoredPro,
+                      ),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+        )
+        .then((_) {
+          if (paywallHandled) return;
+          unawaited(
+            AnalyticsService.instance.trackEvent(
+              'paywall_dismissed',
+              properties: {
+                'surface': 'custom',
+                'reason': 'closed',
+                if (blockedFeature != null)
+                  'blocked_feature': blockedFeature.name,
+              },
+            ),
+          );
+        });
   }
 
   /// Open the RevenueCat Customer Center for subscription management.
   void _openCustomerCenter() async {
+    unawaited(
+      AnalyticsService.instance.trackEvent(
+        'customer_center_opened',
+        properties: {'subscription_tier': _subscription.tier.name},
+      ),
+    );
     await RevenueCatService.presentCustomerCenter();
     // Sync after Customer Center closes — user may have changed subscription.
     await _syncRevenueCat();
@@ -735,6 +923,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
   void _selectTab(AppTab tab, {bool track = true}) {
     if (track) _trackFeature(tab.featureKey);
+    unawaited(
+      AnalyticsService.instance.trackScreen(
+        tab.featureKey,
+        properties: {'surface': 'main_tab'},
+      ),
+    );
     if (!mounted) {
       _currentTab = tab;
       return;
@@ -743,10 +937,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   void _openSettings({SettingsSection? section}) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => _buildSettingsScreen(initialSection: section),
-      ),
+    _pushScreen(
+      'settings',
+      (_) => _buildSettingsScreen(initialSection: section),
     );
   }
 
@@ -808,10 +1001,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         _openConfidenceCenter();
         return;
       case AppRouteType.taxSimulator:
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => TaxSimulatorScreen(settings: _settings),
-          ),
+        _pushScreen(
+          'tax_simulator',
+          (_) => TaxSimulatorScreen(settings: _settings),
         );
         return;
     }
@@ -832,15 +1024,14 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       taxSystem,
       monthlyBudgets: _monthlyBudgets,
     );
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => InsightsScreen(
-          settings: _settings,
-          summary: summary,
-          onOpenExpenseTrends: _openExpenseTrends,
-          onOpenSavingsGoals: _openSavingsGoals,
-          onOpenTaxSimulator: () => _navigate(const AppRoute.taxSimulator()),
-        ),
+    _pushScreen(
+      'insights',
+      (_) => InsightsScreen(
+        settings: _settings,
+        summary: summary,
+        onOpenExpenseTrends: _openExpenseTrends,
+        onOpenSavingsGoals: _openSavingsGoals,
+        onOpenTaxSimulator: () => _navigate(const AppRoute.taxSimulator()),
       ),
     );
   }
@@ -851,91 +1042,84 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         countryProducts.isNotEmpty || _settings.country != Country.pt
         ? countryProducts
         : _products;
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => GroceryScreen(
-          products: effectiveProducts,
-          groceryData: _groceryData,
-          isLoading: _groceryLoading,
-          onAddToShoppingList: _addToShoppingList,
-          showTour: !_onboardingState.isTourDone('grocery'),
-          onTourComplete: () => _markTourDone('grocery'),
-        ),
+    _pushScreen(
+      'grocery',
+      (_) => GroceryScreen(
+        products: effectiveProducts,
+        groceryData: _groceryData,
+        isLoading: _groceryLoading,
+        onAddToShoppingList: _addToShoppingList,
+        showTour: !_onboardingState.isTourDone('grocery'),
+        onTourComplete: () => _markTourDone('grocery'),
       ),
     );
   }
 
   void _openShoppingList() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => ShoppingListScreen(
-          items: _shoppingList,
-          onToggleChecked: _toggleShoppingItem,
-          onRemove: _removeShoppingItem,
-          onClearChecked: _clearCheckedItems,
-          onFinalize: _finalizeShopping,
-          purchaseHistory: _purchaseHistory,
-          showTour: !_onboardingState.isTourDone('shopping'),
-          onTourComplete: () => _markTourDone('shopping'),
-        ),
+    _pushScreen(
+      'shopping_list',
+      (_) => ShoppingListScreen(
+        items: _shoppingList,
+        onToggleChecked: _toggleShoppingItem,
+        onRemove: _removeShoppingItem,
+        onClearChecked: _clearCheckedItems,
+        onFinalize: _finalizeShopping,
+        purchaseHistory: _purchaseHistory,
+        showTour: !_onboardingState.isTourDone('shopping'),
+        onTourComplete: () => _markTourDone('shopping'),
       ),
     );
   }
 
   void _openCoach() {
     if (!_gateFeature(PremiumFeature.aiCoach)) return;
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => CoachScreen(
-          settings: _settings,
-          purchaseHistory: _purchaseHistory,
-          apiKey: _openAiApiKey,
-          householdId: widget.householdId,
-          subscription: _subscription,
-          onSubscriptionChanged: (next) {
-            if (!mounted) return;
-            setState(() => _subscription = next);
-          },
-          onRestoreMemory: _openPaywall,
-          onOpenSettings: () => _navigate(const AppRoute.settings()),
-          showTour: !_onboardingState.isTourDone('coach'),
-          onTourComplete: () => _markTourDone('coach'),
-        ),
+    _pushScreen(
+      'coach',
+      (_) => CoachScreen(
+        settings: _settings,
+        purchaseHistory: _purchaseHistory,
+        apiKey: _openAiApiKey,
+        householdId: widget.householdId,
+        subscription: _subscription,
+        onSubscriptionChanged: (next) {
+          if (!mounted) return;
+          setState(() => _subscription = next);
+          _refreshAnalyticsContext();
+        },
+        onRestoreMemory: _openPaywall,
+        onOpenSettings: () => _navigate(const AppRoute.settings()),
+        showTour: !_onboardingState.isTourDone('coach'),
+        onTourComplete: () => _markTourDone('coach'),
       ),
     );
   }
 
   void _openMealPlanner() {
     if (!_gateFeature(PremiumFeature.mealPlanner)) return;
-    Navigator.of(context)
-        .push(
-          MaterialPageRoute(
-            builder: (_) => MealPlannerScreen(
-              settings: _settings,
-              apiKey: _openAiApiKey,
-              favorites: _favorites,
-              onAddToShoppingList: _addToShoppingList,
-              householdId: widget.householdId,
-              onSaveSettings: _saveSettings,
-              purchaseHistory: _purchaseHistory,
-              onOpenMealSettings: () =>
-                  _openSettings(section: SettingsSection.meals),
-              showTour: !_onboardingState.isTourDone('meals'),
-              onTourComplete: () => _markTourDone('meals'),
-            ),
-          ),
-        )
-        .then((_) => _loadMealPlanState());
+    _pushScreen(
+      'meal_planner',
+      (_) => MealPlannerScreen(
+        settings: _settings,
+        apiKey: _openAiApiKey,
+        favorites: _favorites,
+        onAddToShoppingList: _addToShoppingList,
+        householdId: widget.householdId,
+        onSaveSettings: _saveSettings,
+        purchaseHistory: _purchaseHistory,
+        onOpenMealSettings: () => _openSettings(section: SettingsSection.meals),
+        showTour: !_onboardingState.isTourDone('meals'),
+        onTourComplete: () => _markTourDone('meals'),
+      ),
+    ).then((_) => _loadMealPlanState());
   }
 
   void _openConfidenceCenter() {
     final alerts = buildAlerts(statuses: _dataHealthService.statuses);
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => ConfidenceCenterScreen(
-          statuses: _dataHealthService.statuses,
-          alerts: alerts,
-        ),
+    _pushScreen(
+      'confidence_center',
+      (_) => ConfidenceCenterScreen(
+        statuses: _dataHealthService.statuses,
+        alerts: alerts,
       ),
     );
   }
@@ -969,6 +1153,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     _settingsService.save(settings, widget.householdId);
     _dataHealthService.recordSave(SyncDomain.settings);
     _refreshNotificationSchedules();
+    _refreshAnalyticsContext();
     if (countryChanged) {
       _loadGroceryData(settings.country).then((data) {
         if (!mounted) return;
@@ -1052,6 +1237,17 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         quantity: mergedQuantity,
         unit: mergedUnit,
       );
+      unawaited(
+        AnalyticsService.instance.trackEvent(
+          'shopping_item_added',
+          properties: {
+            'source': 'merge',
+            'product_name': item.productName,
+            'quantity': mergedQuantity,
+            'has_meal_source': item.sourceMealLabels.isNotEmpty,
+          },
+        ),
+      );
       if (!mounted) return;
       // Optimistic local update — Realtime will reconcile
       setState(() {
@@ -1076,6 +1272,17 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       return;
     }
     await _shoppingListService.add(item, widget.householdId);
+    unawaited(
+      AnalyticsService.instance.trackEvent(
+        'shopping_item_added',
+        properties: {
+          'source': 'new',
+          'product_name': item.productName,
+          'quantity': item.quantity,
+          'has_meal_source': item.sourceMealLabels.isNotEmpty,
+        },
+      ),
+    );
   }
 
   void _toggleShoppingItem(ShoppingItem item) async {
@@ -1146,10 +1353,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       onSetThemeMode: (mode) {
         appShell.setThemeMode(mode);
         _localConfigService.saveThemeMode(mode);
+        _refreshAnalyticsContext();
       },
       onSetColorPalette: (palette) {
         appShell.setColorPalette(palette);
         _localConfigService.saveColorPalette(palette);
+        _refreshAnalyticsContext();
       },
       onSetLanguage: (localeCode) {
         _saveSettings(_settings.copyWith(localeOverride: localeCode));
@@ -1224,6 +1433,16 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     );
     try {
       await _actualExpenseService.add(expense, widget.householdId);
+      unawaited(
+        AnalyticsService.instance.trackEvent(
+          'expense_added',
+          properties: {
+            'category': expense.category,
+            'amount': expense.amount,
+            'has_attachments': (expense.attachmentUrls?.isNotEmpty ?? false),
+          },
+        ),
+      );
     } catch (e) {
       LogService.error(
         'Failed to add expense',
@@ -1248,6 +1467,16 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     );
     try {
       await _savingsGoalService.saveGoal(goal, widget.householdId);
+      unawaited(
+        AnalyticsService.instance.trackEvent(
+          'goal_created',
+          properties: {
+            'goal_name': goal.name,
+            'target_amount': goal.targetAmount,
+            'is_active': goal.isActive,
+          },
+        ),
+      );
     } catch (e) {
       LogService.error(
         'Failed to add savings goal',
@@ -1445,6 +1674,16 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     _refreshNotificationSchedules();
     try {
       await _actualExpenseService.delete(expense.id);
+      unawaited(
+        AnalyticsService.instance.trackEvent(
+          'expense_deleted',
+          properties: {
+            'category': expense.category,
+            'amount': expense.amount,
+            'source': 'command',
+          },
+        ),
+      );
       return true;
     } catch (e) {
       LogService.error(
@@ -1477,6 +1716,18 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     });
     _refreshNotificationSchedules();
     await _actualExpenseService.delete(id);
+    if (deleted != null) {
+      unawaited(
+        AnalyticsService.instance.trackEvent(
+          'expense_deleted',
+          properties: {
+            'category': deleted.category,
+            'amount': deleted.amount,
+            'source': 'ui',
+          },
+        ),
+      );
+    }
     if (!mounted || deleted == null) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../config/ad_config.dart';
+import '../services/analytics_service.dart';
 
 class AdBannerWidget extends StatefulWidget {
   final bool showAd;
@@ -58,7 +61,9 @@ class _AdBannerWidgetState extends State<AdBannerWidget> {
     _bannerAd = null;
     _isLoaded = false;
 
-    final size = await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(width);
+    final size = await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
+      width,
+    );
     if (size == null || !mounted) {
       _isLoading = false;
       return;
@@ -71,6 +76,12 @@ class _AdBannerWidgetState extends State<AdBannerWidget> {
       listener: BannerAdListener(
         onAdLoaded: (ad) {
           _isLoading = false;
+          unawaited(
+            AnalyticsService.instance.trackEvent(
+              'ad_impression',
+              properties: {'format': 'adaptive_banner', 'width': width},
+            ),
+          );
           if (mounted) setState(() => _isLoaded = true);
         },
         onAdFailedToLoad: (ad, error) {
