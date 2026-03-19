@@ -15,6 +15,7 @@ import '../services/receipt_scan_service.dart';
 import '../widgets/receipt_scan_sheet.dart';
 import '../widgets/receipt_review_sheet.dart';
 import '../widgets/info_icon_button.dart';
+import '../widgets/expense_detail_sheet.dart';
 import '../services/export_service.dart';
 import '../services/actual_expense_service.dart';
 import '../onboarding/expense_tracker_tour.dart';
@@ -127,8 +128,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
       _currentMonth = next;
       _loading = true;
     });
-    final newMonthKey =
-        '${next.year}-${next.month.toString().padLeft(2, '0')}';
+    final newMonthKey = '${next.year}-${next.month.toString().padLeft(2, '0')}';
     final loaded = await widget.onLoadMonth(newMonthKey);
     if (mounted) {
       setState(() {
@@ -154,23 +154,27 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
           expense.id,
         );
         if (urls.isNotEmpty) {
-          final allUrls = [
-            ...?expense.attachmentUrls,
-            ...urls,
-          ];
+          final allUrls = [...?expense.attachmentUrls, ...urls];
           expense = expense.copyWith(attachmentUrls: allUrls);
         } else if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(S.of(context).expenseAttachUploadFailed),
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          ));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(S.of(context).expenseAttachUploadFailed),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          );
         }
       }
       await widget.onAdd(expense);
       if (!mounted) return;
-      setState(() => _expenses = [..._expenses, expense]
-        ..sort((a, b) => b.date.compareTo(a.date)));
+      setState(
+        () =>
+            _expenses = [..._expenses, expense]
+              ..sort((a, b) => b.date.compareTo(a.date)),
+      );
     }
   }
 
@@ -181,8 +185,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
     final categories = {
       ...widget.settings.expenses.map((e) => e.category),
       ...widget.customCategories.map((c) => c.name),
-    }.toList()
-      ..sort();
+    }.toList()..sort();
 
     final chosenCategory = await ReceiptReviewSheet.show(
       context,
@@ -197,8 +200,11 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
     );
     await widget.onAdd(expense);
     if (!mounted) return;
-    setState(() => _expenses = [..._expenses, expense]
-      ..sort((a, b) => b.date.compareTo(a.date)));
+    setState(
+      () =>
+          _expenses = [..._expenses, expense]
+            ..sort((a, b) => b.date.compareTo(a.date)),
+    );
   }
 
   Future<void> _editExpense(ActualExpense expense) async {
@@ -219,27 +225,51 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
           updated.id,
         );
         if (urls.isNotEmpty) {
-          final allUrls = [
-            ...?updated.attachmentUrls,
-            ...urls,
-          ];
+          final allUrls = [...?updated.attachmentUrls, ...urls];
           updated = updated.copyWith(attachmentUrls: allUrls);
         } else if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(S.of(context).expenseAttachUploadFailed),
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          ));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(S.of(context).expenseAttachUploadFailed),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          );
         }
       }
       await widget.onUpdate(updated);
       if (!mounted) return;
       setState(() {
-        _expenses = _expenses
-            .map((e) => e.id == updated.id ? updated : e)
-            .toList()
-          ..sort((a, b) => b.date.compareTo(a.date));
+        _expenses =
+            _expenses.map((e) => e.id == updated.id ? updated : e).toList()
+              ..sort((a, b) => b.date.compareTo(a.date));
       });
+    }
+  }
+
+  Future<void> _showExpenseDetail(ActualExpense expense) async {
+    final l10n = S.of(context);
+    final action = await showExpenseDetailSheet(
+      context: context,
+      expense: expense,
+      categoryLabel: _localizedCategory(expense.category, l10n),
+      categoryIcon: categoryIconByName(
+        expense.category,
+        customCategories: widget.customCategories,
+      ),
+      categoryColor: categoryColorByNameFull(
+        expense.category,
+        customCategories: widget.customCategories,
+      ),
+    );
+    if (!mounted || action == null) return;
+
+    switch (action) {
+      case ExpenseDetailAction.edit:
+        await _editExpense(expense);
+        break;
     }
   }
 
@@ -260,7 +290,6 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
       return catName;
     }
   }
-
 
   String _monthLabel(S l10n) {
     final monthNames = [
@@ -395,8 +424,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
         return false;
       }
       return true;
-    }).toList()
-      ..sort((a, b) => b.date.compareTo(a.date));
+    }).toList()..sort((a, b) => b.date.compareTo(a.date));
 
     setState(() => _searchResults = filtered);
   }
@@ -469,8 +497,10 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
         scrolledUnderElevation: 1,
         actions: [
           IconButton(
-            icon: Icon(Icons.document_scanner,
-                color: AppColors.textMuted(context)),
+            icon: Icon(
+              Icons.document_scanner,
+              color: AppColors.textMuted(context),
+            ),
             tooltip: l10n.quickScanReceipt,
             onPressed: _scanReceipt,
           ),
@@ -594,42 +624,48 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
           Expanded(
             child: _loading
                 ? Center(
-                    child:
-                        CircularProgressIndicator(color: AppColors.primary(context)))
+                    child: CircularProgressIndicator(
+                      color: AppColors.primary(context),
+                    ),
+                  )
                 : _expenses.isEmpty
-                    ? Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(32),
-                          child: Text(
-                            l10n.expenseTrackerEmpty,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: AppColors.textMuted(context),
-                              height: 1.5,
-                            ),
-                          ),
-                        ),
-                      )
-                    : ListView.builder(
-                        key: ExpenseTrackerTourKeys.categoryList,
-                        padding: const EdgeInsets.all(16),
-                        itemCount: summaries.length,
-                        itemBuilder: (_, i) => _CategorySection(
-                          summary: summaries[i],
-                          expenses: _expenses
-                              .where(
-                                  (e) => e.category == summaries[i].category)
-                              .toList(),
-                          icon: categoryIconByName(summaries[i].category, customCategories: widget.customCategories),
-                          categoryColor: categoryColorByNameFull(summaries[i].category, customCategories: widget.customCategories),
-                          label:
-                              _localizedCategory(summaries[i].category, l10n),
-                          onEdit: _editExpense,
-                          onDelete: _deleteExpense,
-                          l10n: l10n,
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(32),
+                      child: Text(
+                        l10n.expenseTrackerEmpty,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppColors.textMuted(context),
+                          height: 1.5,
                         ),
                       ),
+                    ),
+                  )
+                : ListView.builder(
+                    key: ExpenseTrackerTourKeys.categoryList,
+                    padding: const EdgeInsets.all(16),
+                    itemCount: summaries.length,
+                    itemBuilder: (_, i) => _CategorySection(
+                      summary: summaries[i],
+                      expenses: _expenses
+                          .where((e) => e.category == summaries[i].category)
+                          .toList(),
+                      icon: categoryIconByName(
+                        summaries[i].category,
+                        customCategories: widget.customCategories,
+                      ),
+                      categoryColor: categoryColorByNameFull(
+                        summaries[i].category,
+                        customCategories: widget.customCategories,
+                      ),
+                      label: _localizedCategory(summaries[i].category, l10n),
+                      onOpenDetails: _showExpenseDetail,
+                      onDelete: _deleteExpense,
+                      l10n: l10n,
+                    ),
+                  ),
           ),
         ],
       ),
@@ -666,10 +702,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
               fontSize: 16,
             ),
           ),
-          style: TextStyle(
-            color: AppColors.textPrimary(context),
-            fontSize: 16,
-          ),
+          style: TextStyle(color: AppColors.textPrimary(context), fontSize: 16),
           onChanged: (value) {
             _searchQuery = value;
             _applyFilters();
@@ -690,7 +723,9 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
       body: _loadingHistory
           ? Center(
               child: CircularProgressIndicator(
-                  color: AppColors.primary(context)))
+                color: AppColors.primary(context),
+              ),
+            )
           : Column(
               children: [
                 // Category chips + date range
@@ -708,8 +743,10 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
 
                 // Result count
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   child: Row(
                     children: [
                       Text(
@@ -744,9 +781,18 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                             return _SearchResultTile(
                               expense: expense,
                               categoryLabel: _localizedCategory(
-                                  expense.category, l10n),
-                              categoryIcon: categoryIconByName(expense.category, customCategories: widget.customCategories),
-                              categoryColor: categoryColorByNameFull(expense.category, customCategories: widget.customCategories),
+                                expense.category,
+                                l10n,
+                              ),
+                              categoryIcon: categoryIconByName(
+                                expense.category,
+                                customCategories: widget.customCategories,
+                              ),
+                              categoryColor: categoryColorByNameFull(
+                                expense.category,
+                                customCategories: widget.customCategories,
+                              ),
+                              onTap: () => _showExpenseDetail(expense),
                             );
                           },
                         ),
@@ -829,8 +875,11 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                         });
                         _applyFilters();
                       },
-                      child: Icon(Icons.clear, size: 16,
-                          color: AppColors.textMuted(context)),
+                      child: Icon(
+                        Icons.clear,
+                        size: 16,
+                        color: AppColors.textMuted(context),
+                      ),
                     ),
                   ),
               ],
@@ -847,12 +896,14 @@ class _SearchResultTile extends StatelessWidget {
   final String categoryLabel;
   final IconData categoryIcon;
   final Color categoryColor;
+  final VoidCallback? onTap;
 
   const _SearchResultTile({
     required this.expense,
     required this.categoryLabel,
     required this.categoryIcon,
     required this.categoryColor,
+    this.onTap,
   });
 
   @override
@@ -862,6 +913,7 @@ class _SearchResultTile extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 4),
       child: ListTile(
+        onTap: onTap,
         dense: true,
         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
         leading: CircleAvatar(
@@ -890,8 +942,7 @@ class _SearchResultTile extends StatelessWidget {
         ),
         subtitle: Text(
           '$dateStr  •  $categoryLabel',
-          style:
-              TextStyle(fontSize: 12, color: AppColors.textMuted(context)),
+          style: TextStyle(fontSize: 12, color: AppColors.textMuted(context)),
         ),
       ),
     );
@@ -941,7 +992,7 @@ class _CategorySection extends StatelessWidget {
   final IconData icon;
   final Color categoryColor;
   final String label;
-  final Future<void> Function(ActualExpense) onEdit;
+  final Future<void> Function(ActualExpense) onOpenDetails;
   final Future<void> Function(ActualExpense) onDelete;
   final S l10n;
 
@@ -951,7 +1002,7 @@ class _CategorySection extends StatelessWidget {
     required this.icon,
     required this.categoryColor,
     required this.label,
-    required this.onEdit,
+    required this.onOpenDetails,
     required this.onDelete,
     required this.l10n,
   });
@@ -961,8 +1012,8 @@ class _CategorySection extends StatelessWidget {
     final progressColor = summary.isOver
         ? AppColors.error(context)
         : summary.progress > 0.8
-            ? AppColors.warning(context)
-            : AppColors.success(context);
+        ? AppColors.warning(context)
+        : AppColors.success(context);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -1045,8 +1096,10 @@ class _CategorySection extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () => Navigator.pop(ctx, true),
-                      child: Text(l10n.delete,
-                          style: TextStyle(color: AppColors.error(context))),
+                      child: Text(
+                        l10n.delete,
+                        style: TextStyle(color: AppColors.error(context)),
+                      ),
                     ),
                   ],
                 ),
@@ -1058,12 +1111,20 @@ class _CategorySection extends StatelessWidget {
               alignment: Alignment.centerRight,
               padding: const EdgeInsets.only(right: 16),
               color: AppColors.errorBackground(context),
-              child:
-                  Icon(Icons.delete, color: AppColors.error(context), size: 20),
+              child: Icon(
+                Icons.delete,
+                color: AppColors.error(context),
+                size: 20,
+              ),
             ),
             child: ListTile(
-              onTap: () => onEdit(expense),
+              onTap: () => onOpenDetails(expense),
               dense: true,
+              trailing: Icon(
+                Icons.chevron_right,
+                size: 18,
+                color: AppColors.textMuted(context),
+              ),
               title: Row(
                 children: [
                   Expanded(
@@ -1086,7 +1147,9 @@ class _CategorySection extends StatelessWidget {
               subtitle: Text(
                 '${expense.date.day.toString().padLeft(2, '0')}/${expense.date.month.toString().padLeft(2, '0')}/${expense.date.year}',
                 style: TextStyle(
-                    fontSize: 12, color: AppColors.textMuted(context)),
+                  fontSize: 12,
+                  color: AppColors.textMuted(context),
+                ),
               ),
             ),
           );
