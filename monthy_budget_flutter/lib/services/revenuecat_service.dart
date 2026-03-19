@@ -1,9 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 import '../config/revenuecat_config.dart';
 import '../models/subscription_state.dart';
+import 'log_service.dart';
 
 /// Wraps the RevenueCat SDK for purchase, restore, paywall, and entitlement
 /// checks.
@@ -33,7 +33,11 @@ class RevenueCatService {
       _available = false;
     } catch (e) {
       _available = false;
-      debugPrint('RevenueCat initialize error: $e');
+      LogService.error(
+        'RevenueCat initialize failed',
+        error: e,
+        category: 'service.revenuecat',
+      );
     }
   }
 
@@ -50,7 +54,11 @@ class RevenueCatService {
     try {
       await Purchases.logOut();
     } catch (e) {
-      debugPrint('RevenueCat logout error: $e');
+      LogService.error(
+        'RevenueCat logout failed',
+        error: e,
+        category: 'service.revenuecat',
+      );
     }
   }
 
@@ -68,7 +76,11 @@ class RevenueCatService {
       final info = await Purchases.getCustomerInfo();
       return _tierFromCustomerInfo(info);
     } catch (e) {
-      debugPrint('RevenueCat getCurrentTier error: $e');
+      LogService.error(
+        'RevenueCat getCurrentTier failed',
+        error: e,
+        category: 'service.revenuecat',
+      );
       return SubscriptionTier.free;
     }
   }
@@ -90,7 +102,11 @@ class RevenueCatService {
     try {
       return await Purchases.getOfferings();
     } catch (e) {
-      debugPrint('RevenueCat getOfferings error: $e');
+      LogService.error(
+        'RevenueCat getOfferings failed',
+        error: e,
+        category: 'service.revenuecat',
+      );
       return null;
     }
   }
@@ -107,11 +123,13 @@ class RevenueCatService {
   static Future<PaywallResult?> presentPaywall() async {
     if (revenueCatSimulateMode || !_initialized || !_available) return null;
     try {
-      return await RevenueCatUI.presentPaywallIfNeeded(
-        revenueCatEntitlementId,
-      );
+      return await RevenueCatUI.presentPaywallIfNeeded(revenueCatEntitlementId);
     } catch (e) {
-      debugPrint('RevenueCat presentPaywall error: $e');
+      LogService.error(
+        'RevenueCat presentPaywall failed',
+        error: e,
+        category: 'service.revenuecat',
+      );
       return null;
     }
   }
@@ -124,13 +142,20 @@ class RevenueCatService {
   /// custom UI. No-op in simulate mode.
   static Future<void> presentCustomerCenter() async {
     if (revenueCatSimulateMode || !_initialized || !_available) {
-      debugPrint('Customer Center not available in simulate mode');
+      LogService.warning(
+        'Customer Center not available in simulate mode',
+        category: 'service.revenuecat',
+      );
       return;
     }
     try {
       await RevenueCatUI.presentCustomerCenter();
     } catch (e) {
-      debugPrint('RevenueCat presentCustomerCenter error: $e');
+      LogService.error(
+        'RevenueCat presentCustomerCenter failed',
+        error: e,
+        category: 'service.revenuecat',
+      );
     }
   }
 
@@ -150,12 +175,15 @@ class RevenueCatService {
   static Future<bool> purchaseConsumable(String productId) async {
     if (revenueCatSimulateMode || !_initialized || !_available) return false;
     try {
-      final products = await Purchases.getProducts(
-        [productId],
-        productCategory: ProductCategory.nonSubscription,
-      );
+      final products = await Purchases.getProducts([
+        productId,
+      ], productCategory: ProductCategory.nonSubscription);
       if (products.isEmpty) {
-        debugPrint('RevenueCat: product $productId not found');
+        LogService.warning(
+          'RevenueCat product not found',
+          category: 'service.revenuecat',
+          data: {'product_id': productId},
+        );
         return false;
       }
       await Purchases.purchaseStoreProduct(products.first);
@@ -175,7 +203,11 @@ class RevenueCatService {
       final info = await Purchases.restorePurchases();
       return _tierFromCustomerInfo(info);
     } catch (e) {
-      debugPrint('RevenueCat restorePurchases error: $e');
+      LogService.error(
+        'RevenueCat restorePurchases failed',
+        error: e,
+        category: 'service.revenuecat',
+      );
       return SubscriptionTier.free;
     }
   }

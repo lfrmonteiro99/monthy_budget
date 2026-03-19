@@ -38,10 +38,12 @@ dependencies:
   google_mlkit_text_recognition: ^0.14.0
   collection: ^1.19.1
   google_fonts: ^6.2.1
+  logger: ^2.6.2
   local_auth: ^2.3.0
   geolocator: ^13.0.0
   geocoding: ^3.0.0
   app_links: ^6.4.1
+  sentry_flutter: ^8.14.0
   flutter_map: ^7.0.2
   latlong2: ^0.9.1
 

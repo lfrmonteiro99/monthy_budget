@@ -5,6 +5,7 @@ import 'package:timezone/timezone.dart' as tz;
 import '../constants/app_constants.dart';
 import '../models/notification_preferences.dart';
 import '../models/recurring_expense.dart';
+import 'log_service.dart';
 
 class NotificationRefreshDecision {
   final bool scheduleBillReminders;
@@ -115,7 +116,11 @@ class NotificationService {
           );
         })
         .catchError((e) {
-          debugPrint('Failed to refresh notification schedules: $e');
+          LogService.error(
+            'Failed to refresh notification schedules',
+            error: e,
+            category: 'service.notifications',
+          );
         });
     await _refreshChain;
   }
@@ -240,7 +245,11 @@ class NotificationService {
         matchDateTimeComponents: DateTimeComponents.time,
       );
     } catch (e) {
-      debugPrint('Failed to schedule daily expense reminder: $e');
+      LogService.error(
+        'Failed to schedule daily expense reminder',
+        error: e,
+        category: 'service.notifications',
+      );
     }
   }
 
@@ -296,7 +305,11 @@ class NotificationService {
           matchDateTimeComponents: DateTimeComponents.dayOfMonthAndTime,
         );
       } catch (e) {
-        debugPrint('Failed to schedule bill reminder: $e');
+        LogService.error(
+          'Failed to schedule bill reminder',
+          error: e,
+          category: 'service.notifications',
+        );
       }
     }
   }
@@ -323,7 +336,11 @@ class NotificationService {
         ),
       );
     } catch (e) {
-      debugPrint('Failed to show budget alert: $e');
+      LogService.error(
+        'Failed to show budget alert',
+        error: e,
+        category: 'service.notifications',
+      );
     }
   }
 
@@ -362,7 +379,11 @@ class NotificationService {
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       );
     } catch (e) {
-      debugPrint('Failed to schedule meal plan reminder: $e');
+      LogService.error(
+        'Failed to schedule meal plan reminder',
+        error: e,
+        category: 'service.notifications',
+      );
     }
   }
 
@@ -430,7 +451,11 @@ class NotificationService {
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       );
     } catch (e) {
-      debugPrint('Failed to schedule trial expiry reminder: $e');
+      LogService.error(
+        'Failed to schedule trial expiry reminder',
+        error: e,
+        category: 'service.notifications',
+      );
     }
   }
 
@@ -505,7 +530,11 @@ class NotificationService {
         matchDateTimeComponents: matchDateTimeComponents,
       );
     } catch (e) {
-      debugPrint('Failed to schedule custom reminder: $e');
+      LogService.error(
+        'Failed to schedule custom reminder',
+        error: e,
+        category: 'service.notifications',
+      );
     }
   }
 }

@@ -13,6 +13,7 @@ import 'l10n/generated/app_localizations.dart';
 import 'screens/auth/auth_gate.dart';
 import 'services/ad_service.dart';
 import 'services/local_config_service.dart';
+import 'services/log_service.dart';
 import 'services/notification_service.dart';
 import 'services/revenuecat_service.dart';
 import 'theme/app_colors.dart';
@@ -29,16 +30,23 @@ Future<void> main() async {
 
   // Catch Flutter framework errors (build, layout, paint).
   FlutterError.onError = (FlutterErrorDetails details) {
-    // TODO(#future): forward to Sentry / Crashlytics
-    debugPrint('[FlutterError] ${details.exceptionAsString()}');
-    debugPrint('${details.stack}');
+    FlutterError.presentError(details);
+    LogService.error(
+      'Unhandled Flutter framework error',
+      error: details.exception,
+      stackTrace: details.stack,
+      category: 'runtime.flutter',
+    );
   };
 
   // Catch unhandled async errors that escape Zones and Futures.
   PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
-    // TODO(#future): forward to Sentry / Crashlytics
-    debugPrint('[PlatformDispatcher] Unhandled error: $error');
-    debugPrint('$stack');
+    LogService.error(
+      'Unhandled platform dispatcher error',
+      error: error,
+      stackTrace: stack,
+      category: 'runtime.platform',
+    );
     // Return true to prevent the runtime from terminating the app.
     return true;
   };
@@ -60,19 +68,24 @@ Future<void> main() async {
   // Show UI immediately - splash removed, login visible
   FlutterNativeSplash.remove();
 
-  // Zone guard: last-resort catcher for errors that bypass all other handlers.
-  runZonedGuarded(
-    () {
-      runApp(OrcamentoMensalApp(controller: appShellController));
-      // Non-critical: defer to background after UI is on screen
-      unawaited(_initDeferredServices());
-    },
-    (Object error, StackTrace stack) {
-      // TODO(#future): forward to Sentry / Crashlytics
-      debugPrint('[Zone] Unhandled error: $error');
-      debugPrint('$stack');
-    },
-  );
+  await LogService.initApp(() async {
+    // Zone guard: last-resort catcher for errors that bypass all other handlers.
+    runZonedGuarded(
+      () {
+        runApp(OrcamentoMensalApp(controller: appShellController));
+        // Non-critical: defer to background after UI is on screen
+        unawaited(_initDeferredServices());
+      },
+      (Object error, StackTrace stack) {
+        LogService.error(
+          'Unhandled zone error',
+          error: error,
+          stackTrace: stack,
+          category: 'runtime.zone',
+        );
+      },
+    );
+  });
 }
 
 Future<void> _initSupabase() async {
@@ -90,6 +103,11 @@ Future<void> _initSupabase() async {
     try {
       await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
     } catch (e) {
+      LogService.error(
+        'Supabase initialization failed',
+        error: e,
+        category: 'service.supabase',
+      );
       supabaseInitError = 'Supabase init failed: $e';
     }
   }
@@ -101,21 +119,33 @@ Future<void> _initDeferredServices() async {
       try {
         await NotificationService().init();
       } catch (e) {
-        debugPrint('NotificationService initialization failed: $e');
+        LogService.error(
+          'NotificationService initialization failed',
+          error: e,
+          category: 'service.notifications',
+        );
       }
     }),
     Future(() async {
       try {
         await AdService.initialize();
       } catch (e) {
-        debugPrint('AdService initialization failed: $e');
+        LogService.error(
+          'AdService initialization failed',
+          error: e,
+          category: 'service.ads',
+        );
       }
     }),
     Future(() async {
       try {
         await RevenueCatService.initialize();
       } catch (e) {
-        debugPrint('RevenueCatService initialization failed: $e');
+        LogService.error(
+          'RevenueCatService initialization failed',
+          error: e,
+          category: 'service.revenuecat',
+        );
       }
     }),
   ]);
