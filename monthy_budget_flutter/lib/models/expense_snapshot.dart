@@ -1,8 +1,14 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'expense_snapshot.g.dart';
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class ExpenseSnapshot {
   final String expenseId;
   final String label;
   final String category;
   final double amount;
+  @JsonKey(defaultValue: true)
   final bool enabled;
 
   const ExpenseSnapshot({
@@ -26,19 +32,8 @@ class ExpenseSnapshot {
   @override
   int get hashCode => Object.hash(expenseId, label, category, amount, enabled);
 
-  Map<String, dynamic> toJson() => {
-        'expense_id': expenseId,
-        'label': label,
-        'category': category,
-        'amount': amount,
-        'enabled': enabled,
-      };
+  Map<String, dynamic> toJson() => _$ExpenseSnapshotToJson(this);
 
-  factory ExpenseSnapshot.fromJson(Map<String, dynamic> json) => ExpenseSnapshot(
-        expenseId: json['expense_id'] as String,
-        label: json['label'] as String,
-        category: json['category'] as String,
-        amount: (json['amount'] as num).toDouble(),
-        enabled: json['enabled'] as bool? ?? true,
-      );
+  factory ExpenseSnapshot.fromJson(Map<String, dynamic> json) =>
+      _$ExpenseSnapshotFromJson(json);
 }

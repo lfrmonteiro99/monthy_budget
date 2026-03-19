@@ -1,6 +1,12 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'recurring_expense.g.dart';
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class RecurringExpense {
   final String id;
   final String category;
+  @JsonKey(fromJson: _amountFromJson)
   final double amount;
   final String? description;
   final int? dayOfMonth;
@@ -48,24 +54,21 @@ class RecurringExpense {
     );
   }
 
-  factory RecurringExpense.fromSupabase(Map<String, dynamic> map) {
-    return RecurringExpense(
-      id: map['id'] as String,
-      category: map['category'] as String,
-      amount: (map['amount'] as num).toDouble(),
-      description: map['description'] as String?,
-      dayOfMonth: map['day_of_month'] as int?,
-      isActive: map['is_active'] as bool? ?? true,
-    );
-  }
+  factory RecurringExpense.fromSupabase(Map<String, dynamic> map) =>
+      RecurringExpense.fromJson(map);
 
   Map<String, dynamic> toSupabase(String householdId) => {
-        'id': id,
+        ...toJson(),
         'household_id': householdId,
-        'category': category,
-        'amount': amount,
-        'description': description,
-        'day_of_month': dayOfMonth,
-        'is_active': isActive,
       };
+
+  factory RecurringExpense.fromJson(Map<String, dynamic> json) =>
+      _$RecurringExpenseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RecurringExpenseToJson(this);
+
+  static double _amountFromJson(Object? value) {
+    final rawAmount = (value as num?)?.toDouble() ?? 0;
+    return rawAmount < 0 ? 0 : rawAmount;
+  }
 }

@@ -1,13 +1,19 @@
 import 'dart:convert';
 
+import 'package:json_annotation/json_annotation.dart';
+
+part 'notification_preferences.g.dart';
+
 enum ReminderRepeat { none, daily, weekly, monthly }
 
+@JsonSerializable()
 class CustomReminder {
   final String id;
   final String title;
   final String body;
   final int hour;
   final int minute;
+  @JsonKey(unknownEnumValue: ReminderRepeat.none)
   final ReminderRepeat repeat;
   final List<int> repeatDays; // 1=Mon..7=Sun for weekly
 
@@ -35,39 +41,19 @@ class CustomReminder {
   @override
   int get hashCode => Object.hash(id, title, body, hour, minute, repeat);
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'title': title,
-        'body': body,
-        'hour': hour,
-        'minute': minute,
-        'repeat': repeat.name,
-        'repeatDays': repeatDays,
-      };
-
   factory CustomReminder.fromJson(Map<String, dynamic> json) =>
-      CustomReminder(
-        id: json['id'] as String,
-        title: json['title'] as String,
-        body: json['body'] as String,
-        hour: json['hour'] as int? ?? 9,
-        minute: json['minute'] as int? ?? 0,
-        repeat: ReminderRepeat.values.firstWhere(
-          (r) => r.name == (json['repeat'] as String?),
-          orElse: () => ReminderRepeat.none,
-        ),
-        repeatDays: (json['repeatDays'] as List<dynamic>?)
-                ?.map((e) => e as int)
-                .toList() ??
-            [],
-      );
+      _$CustomReminderFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CustomReminderToJson(this);
 }
 
+@JsonSerializable()
 class NotificationPreferences {
   final bool dailyExpenseReminder;
   final bool billReminders;
   final int billReminderDaysBefore;
   final bool budgetAlerts;
+  @JsonKey(fromJson: _budgetAlertThresholdFromJson)
   final int budgetAlertThreshold; // percentage 0-100
   final bool mealPlanReminders;
   final List<CustomReminder> customReminders;
@@ -137,36 +123,20 @@ class NotificationPreferences {
   }
 
   String toJsonString() => jsonEncode({
-        'dailyExpenseReminder': dailyExpenseReminder,
-        'billReminders': billReminders,
-        'billReminderDaysBefore': billReminderDaysBefore,
-        'budgetAlerts': budgetAlerts,
-        'budgetAlertThreshold': budgetAlertThreshold,
-        'mealPlanReminders': mealPlanReminders,
-        'customReminders':
-            customReminders.map((r) => r.toJson()).toList(),
-        'preferredHour': preferredHour,
-        'preferredMinute': preferredMinute,
+        ...toJson(),
       });
 
   factory NotificationPreferences.fromJsonString(String s) {
-    final json = jsonDecode(s) as Map<String, dynamic>;
-    final rawThreshold = json['budgetAlertThreshold'] as int? ?? 80;
-    return NotificationPreferences(
-      dailyExpenseReminder: json['dailyExpenseReminder'] as bool? ?? true,
-      billReminders: json['billReminders'] as bool? ?? false,
-      billReminderDaysBefore:
-          json['billReminderDaysBefore'] as int? ?? 1,
-      budgetAlerts: json['budgetAlerts'] as bool? ?? false,
-      budgetAlertThreshold: rawThreshold.clamp(0, 100),
-      mealPlanReminders: json['mealPlanReminders'] as bool? ?? false,
-      customReminders: (json['customReminders'] as List<dynamic>?)
-              ?.map((e) =>
-                  CustomReminder.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          [],
-      preferredHour: json['preferredHour'] as int? ?? 9,
-      preferredMinute: json['preferredMinute'] as int? ?? 0,
-    );
+    return NotificationPreferences.fromJson(jsonDecode(s) as Map<String, dynamic>);
+  }
+
+  factory NotificationPreferences.fromJson(Map<String, dynamic> json) =>
+      _$NotificationPreferencesFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NotificationPreferencesToJson(this);
+
+  static int _budgetAlertThresholdFromJson(Object? value) {
+    final rawValue = value as int? ?? 80;
+    return rawValue.clamp(0, 100);
   }
 }
