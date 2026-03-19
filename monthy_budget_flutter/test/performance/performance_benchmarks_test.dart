@@ -28,6 +28,14 @@ const _dashboardRenderBudgetMs = 500.0;
 // smaller regressions from the recorded baseline.
 const _shoppingScrollBudgetMs = 19.0;
 const _mealPlannerBudgetMs = 2000.0;
+const _perfResultsPathEnv = 'PERF_RESULTS_PATH';
+
+// Coverage runs add enough instrumentation overhead to make stopwatch-based
+// frame budgets noisy. The dedicated performance workflow opts in explicitly
+// via PERF_RESULTS_PATH, while local runs stay enabled by default.
+final _shouldRunBenchmarks =
+    !Platform.environment.containsKey('CI') ||
+    Platform.environment.containsKey(_perfResultsPathEnv);
 
 final _recordedMetrics = <String, Map<String, dynamic>>{};
 
@@ -37,7 +45,7 @@ void main() {
 
   tearDownAll(() {
     final benchmarkResultsPath =
-        Platform.environment['PERF_RESULTS_PATH'] ??
+        Platform.environment[_perfResultsPathEnv] ??
         'build/performance/performance_results.json';
     if (_recordedMetrics.isEmpty) {
       return;
@@ -84,7 +92,7 @@ void main() {
       samplesMs: samplesMs.skip(1).toList(),
       metadata: const {'screen': 'dashboard', 'fixture': 'full_dashboard'},
     );
-  });
+  }, skip: !_shouldRunBenchmarks);
 
   testWidgets('shopping list scroll stays within frame budget', (tester) async {
     _configureLargeViewport(tester);
@@ -131,7 +139,7 @@ void main() {
       samplesMs: frameSamplesMs,
       metadata: const {'items': 600, 'group_mode': 'items'},
     );
-  });
+  }, skip: !_shouldRunBenchmarks);
 
   test('meal planner generation stays within budget', () {
     final service = MealPlannerService()
@@ -174,7 +182,7 @@ void main() {
       samplesMs: samplesMs.skip(1).toList(),
       metadata: const {'month': '2026-03', 'enabled_meals': 4},
     );
-  });
+  }, skip: !_shouldRunBenchmarks);
 }
 
 Future<void> _pumpDashboardBenchmark(WidgetTester tester) {
