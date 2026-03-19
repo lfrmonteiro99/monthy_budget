@@ -28,6 +28,17 @@ async function findSemanticLocator(
   return null;
 }
 
+async function clickLocatorCenter(page: Page, locator: Locator) {
+  await locator.evaluate((element) => {
+    element.scrollIntoView({ block: 'center', inline: 'center' });
+  });
+
+  const box = await locator.boundingBox();
+  expect(box, 'Semantic element has no clickable bounding box').not.toBeNull();
+
+  await page.mouse.click(box!.x + box!.width / 2, box!.y + box!.height / 2);
+}
+
 export async function enableFlutterSemantics(page: Page) {
   await page.evaluate(() => {
     const target =
@@ -72,8 +83,7 @@ export async function clickSemantic(
 ) {
   const locator = await findSemanticLocator(page, labelPattern, options);
   expect(locator, `No semantic element matched ${labelPattern}`).not.toBeNull();
-  await locator!.scrollIntoViewIfNeeded();
-  await locator!.click();
+  await clickLocatorCenter(page, locator!);
 }
 
 export async function tryClickSemantic(
@@ -86,8 +96,7 @@ export async function tryClickSemantic(
     return false;
   }
 
-  await locator.scrollIntoViewIfNeeded();
-  await locator.click();
+  await clickLocatorCenter(page, locator);
   return true;
 }
 
