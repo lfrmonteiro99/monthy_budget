@@ -1,0 +1,16 @@
+{
+  "name": "monthy_budget_flutter",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "e2e": "playwright test",
+    "e2e:headed": "playwright test --headed",
+    "e2e:install": "playwright install chromium",
+    "e2e:list": "playwright test --list"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.58.2"
+  }
+}
