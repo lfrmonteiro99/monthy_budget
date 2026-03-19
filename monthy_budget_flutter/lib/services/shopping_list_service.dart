@@ -3,18 +3,21 @@ import '../models/shopping_item.dart';
 import '../repositories/shopping_repository.dart';
 
 class ShoppingListService {
-  final ShoppingRepository _repository;
+  ShoppingRepository? _repository;
 
   ShoppingListService({ShoppingRepository? repository})
-    : _repository = repository ?? SupabaseShoppingRepository();
+    : _repository = repository;
+
+  ShoppingRepository get _resolvedRepository =>
+      _repository ??= SupabaseShoppingRepository();
 
   Stream<List<ShoppingItem>> stream(String householdId) {
-    return _repository.stream(householdId);
+    return _resolvedRepository.stream(householdId);
   }
 
   Future<ShoppingItem> add(ShoppingItem item, String householdId) async {
     try {
-      return await _repository.add(item, householdId);
+      return await _resolvedRepository.add(item, householdId);
     } catch (e, stack) {
       throw DataException('Failed to add shopping item', e, stack);
     }
@@ -27,7 +30,7 @@ class ShoppingListService {
     String? unit,
   }) async {
     try {
-      await _repository.updateItem(
+      await _resolvedRepository.updateItem(
         id,
         price: price,
         quantity: quantity,
@@ -40,7 +43,7 @@ class ShoppingListService {
 
   Future<void> toggle(String id, bool checked) async {
     try {
-      await _repository.toggle(id, checked);
+      await _resolvedRepository.toggle(id, checked);
     } catch (e, stack) {
       throw DataException('Failed to toggle shopping item $id', e, stack);
     }
@@ -48,7 +51,7 @@ class ShoppingListService {
 
   Future<void> remove(String id) async {
     try {
-      await _repository.remove(id);
+      await _resolvedRepository.remove(id);
     } catch (e, stack) {
       throw DataException('Failed to remove shopping item $id', e, stack);
     }
@@ -56,7 +59,7 @@ class ShoppingListService {
 
   Future<void> clearChecked(String householdId) async {
     try {
-      await _repository.clearChecked(householdId);
+      await _resolvedRepository.clearChecked(householdId);
     } catch (e, stack) {
       throw DataException('Failed to clear checked shopping items', e, stack);
     }

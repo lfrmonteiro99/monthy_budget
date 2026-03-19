@@ -2,39 +2,42 @@ import '../models/savings_goal.dart';
 import '../repositories/savings_repository.dart';
 
 class SavingsGoalService {
-  final SavingsRepository _repository;
+  SavingsRepository? _repository;
 
   SavingsGoalService({SavingsRepository? repository})
-    : _repository = repository ?? SupabaseSavingsRepository();
+    : _repository = repository;
+
+  SavingsRepository get _resolvedRepository =>
+      _repository ??= SupabaseSavingsRepository();
 
   Future<List<SavingsGoal>> loadGoals(String householdId) {
-    return _repository.loadGoals(householdId);
+    return _resolvedRepository.loadGoals(householdId);
   }
 
   Future<void> saveGoal(SavingsGoal goal, String householdId) {
-    return _repository.saveGoal(goal, householdId);
+    return _resolvedRepository.saveGoal(goal, householdId);
   }
 
   Future<void> deleteGoal(String id) {
-    return _repository.deleteGoal(id);
+    return _resolvedRepository.deleteGoal(id);
   }
 
   Future<List<SavingsContribution>> loadContributions(String goalId) {
-    return _repository.loadContributions(goalId);
+    return _resolvedRepository.loadContributions(goalId);
   }
 
   Future<SavingsGoal> addContribution(
     SavingsContribution contribution,
     String householdId,
   ) {
-    return _repository.addContribution(contribution, householdId);
+    return _resolvedRepository.addContribution(contribution, householdId);
   }
 
   Future<Map<String, List<SavingsContribution>>> loadAllContributions(
     String householdId, {
     int? recentMonths,
   }) {
-    return _repository.loadAllContributions(
+    return _resolvedRepository.loadAllContributions(
       householdId,
       recentMonths: recentMonths,
     );
@@ -44,6 +47,6 @@ class SavingsGoalService {
     SavingsContribution contribution,
     String householdId,
   ) {
-    return _repository.deleteContribution(contribution, householdId);
+    return _resolvedRepository.deleteContribution(contribution, householdId);
   }
 }

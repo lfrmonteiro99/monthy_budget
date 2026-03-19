@@ -3,14 +3,17 @@ import '../models/purchase_record.dart';
 import '../repositories/shopping_repository.dart';
 
 class PurchaseHistoryService {
-  final PurchaseRepository _repository;
+  PurchaseRepository? _repository;
 
   PurchaseHistoryService({PurchaseRepository? repository})
-    : _repository = repository ?? SupabasePurchaseRepository();
+    : _repository = repository;
+
+  PurchaseRepository get _resolvedRepository =>
+      _repository ??= SupabasePurchaseRepository();
 
   Future<PurchaseHistory> load(String householdId) async {
     try {
-      return await _repository.load(householdId);
+      return await _resolvedRepository.load(householdId);
     } catch (e, stack) {
       throw DataException('Failed to load purchase history', e, stack);
     }
@@ -18,7 +21,7 @@ class PurchaseHistoryService {
 
   Future<void> saveRecord(PurchaseRecord record, String householdId) async {
     try {
-      await _repository.saveRecord(record, householdId);
+      await _resolvedRepository.saveRecord(record, householdId);
     } catch (e, stack) {
       throw DataException('Failed to save purchase history record', e, stack);
     }

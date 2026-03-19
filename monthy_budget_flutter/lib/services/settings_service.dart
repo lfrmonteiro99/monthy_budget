@@ -2,16 +2,19 @@ import '../models/app_settings.dart';
 import '../repositories/settings_repository.dart';
 
 class SettingsService {
-  final SettingsRepository _repository;
+  SettingsRepository? _repository;
 
   SettingsService({SettingsRepository? repository})
-    : _repository = repository ?? SupabaseSettingsRepository();
+    : _repository = repository;
+
+  SettingsRepository get _resolvedRepository =>
+      _repository ??= SupabaseSettingsRepository();
 
   Future<AppSettings> load(String householdId) {
-    return _repository.loadSettings(householdId);
+    return _resolvedRepository.loadSettings(householdId);
   }
 
   Future<void> save(AppSettings settings, String householdId) {
-    return _repository.saveSettings(settings, householdId);
+    return _resolvedRepository.saveSettings(settings, householdId);
   }
 }

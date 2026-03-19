@@ -3,23 +3,26 @@ import '../models/expense_snapshot.dart';
 import '../repositories/expense_repository.dart';
 
 class ExpenseSnapshotService {
-  final ExpenseSnapshotRepository _repository;
+  ExpenseSnapshotRepository? _repository;
 
   ExpenseSnapshotService({ExpenseSnapshotRepository? repository})
-    : _repository = repository ?? SupabaseExpenseSnapshotRepository();
+    : _repository = repository;
+
+  ExpenseSnapshotRepository get _resolvedRepository =>
+      _repository ??= SupabaseExpenseSnapshotRepository();
 
   Future<void> snapshotIfNeeded(
     String householdId,
     String month,
     List<ExpenseItem> expenses,
   ) {
-    return _repository.snapshotIfNeeded(householdId, month, expenses);
+    return _resolvedRepository.snapshotIfNeeded(householdId, month, expenses);
   }
 
   Future<Map<String, List<ExpenseSnapshot>>> loadHistory(
     String householdId, {
     int months = 12,
   }) {
-    return _repository.loadHistory(householdId, months: months);
+    return _resolvedRepository.loadHistory(householdId, months: months);
   }
 }

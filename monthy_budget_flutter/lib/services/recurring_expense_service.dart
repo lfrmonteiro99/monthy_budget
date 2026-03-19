@@ -3,33 +3,38 @@ import '../models/recurring_expense.dart';
 import '../repositories/expense_repository.dart';
 
 class RecurringExpenseService {
-  final RecurringExpenseRepository _recurringRepository;
-  final ExpenseRepository _expenseRepository;
+  RecurringExpenseRepository? _recurringRepository;
+  ExpenseRepository? _expenseRepository;
 
   RecurringExpenseService({
     RecurringExpenseRepository? recurringRepository,
     ExpenseRepository? expenseRepository,
-  }) : _recurringRepository =
-           recurringRepository ?? SupabaseRecurringExpenseRepository(),
-       _expenseRepository = expenseRepository ?? SupabaseExpenseRepository();
+  }) : _recurringRepository = recurringRepository,
+       _expenseRepository = expenseRepository;
+
+  RecurringExpenseRepository get _resolvedRecurringRepository =>
+      _recurringRepository ??= SupabaseRecurringExpenseRepository();
+
+  ExpenseRepository get _resolvedExpenseRepository =>
+      _expenseRepository ??= SupabaseExpenseRepository();
 
   Future<List<RecurringExpense>> load(String householdId) {
-    return _recurringRepository.load(householdId);
+    return _resolvedRecurringRepository.load(householdId);
   }
 
   Future<void> save(RecurringExpense expense, String householdId) {
-    return _recurringRepository.save(expense, householdId);
+    return _resolvedRecurringRepository.save(expense, householdId);
   }
 
   Future<void> delete(String id) {
-    return _recurringRepository.delete(id);
+    return _resolvedRecurringRepository.delete(id);
   }
 
   Future<List<ActualExpense>> populateMonthIfNeeded(
     String householdId,
     String monthKey,
   ) async {
-    final alreadyRan = await _recurringRepository.hasRunForMonth(
+    final alreadyRan = await _resolvedRecurringRepository.hasRunForMonth(
       householdId,
       monthKey,
     );
@@ -65,9 +70,9 @@ class RecurringExpenseService {
     }
 
     if (created.isNotEmpty) {
-      await _expenseRepository.addAll(created, householdId);
+      await _resolvedExpenseRepository.addAll(created, householdId);
     }
-    await _recurringRepository.markRunForMonth(householdId, monthKey);
+    await _resolvedRecurringRepository.markRunForMonth(householdId, monthKey);
 
     return created;
   }
