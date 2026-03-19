@@ -1,0 +1,37 @@
+title = "Monthy Budget gitleaks config"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "revenuecat-api-key"
+description = "RevenueCat public SDK keys"
+regex = '''\b(?:test|prod)_[A-Za-z0-9]{20,}\b'''
+tags = ["key", "revenuecat"]
+
+[[rules]]
+id = "admob-app-id"
+description = "AdMob application identifiers"
+regex = '''ca-app-pub-[0-9]{16}~[0-9]{10}'''
+tags = ["admob"]
+
+[[rules]]
+id = "admob-ad-unit-id"
+description = "AdMob ad unit identifiers"
+regex = '''ca-app-pub-[0-9]{16}/[0-9]{10}'''
+tags = ["admob"]
+
+[[allowlists]]
+description = "Historical commits that originally introduced the now-removed RevenueCat and AdMob values"
+commits = [
+  "5395f283ae4c1f2f08e68fef69caafc1eb33c6b9",
+  "4e5ef4da16b30dc6e2a528725192a1e66888d939",
+]
+
+[[allowlists]]
+description = "Official Google Mobile Ads test identifiers kept in source for debug and test builds"
+regexTarget = "match"
+regexes = [
+  '''ca-app-pub-3940256099942544/6300978111''',
+  '''ca-app-pub-3940256099942544~3347511713''',
+]
