@@ -1,42 +1,10 @@
 import { expect, Page, test } from '@playwright/test';
 
+import { hasAuthCredentials, login, openApp } from './helpers/auth';
 import {
   clickSemantic,
   collectSemanticNamesWhileScrolling,
-  enableFlutterSemantics,
-  getSemanticNames,
 } from './helpers/flutter_semantics';
-
-const email = process.env.E2E_EMAIL;
-const password = process.env.E2E_PASSWORD;
-const hasCredentials = Boolean(email && password);
-
-async function login(page: Page) {
-  await page.goto('/');
-  await page.waitForTimeout(3000);
-  await enableFlutterSemantics(page);
-
-  const names = await getSemanticNames(page);
-  if (names.some((name) => /Home|Track|Shop/i.test(name))) {
-    return;
-  }
-
-  const viewport = page.viewportSize();
-  expect(viewport).not.toBeNull();
-
-  await page.mouse.click(viewport!.width / 2, 475);
-  await page.waitForTimeout(300);
-  await page.keyboard.press('Control+a');
-  await page.keyboard.type(email!, { delay: 10 });
-  await page.keyboard.press('Tab');
-  await page.waitForTimeout(300);
-  await page.keyboard.type(password!, { delay: 10 });
-  await page.mouse.click(viewport!.width / 2, 590);
-  await page.waitForTimeout(1000);
-  await page.keyboard.press('Enter');
-  await page.waitForTimeout(12_000);
-  await enableFlutterSemantics(page);
-}
 
 async function openMealPlannerSettings(page: Page) {
   await page.keyboard.press('Escape');
@@ -51,11 +19,12 @@ async function openMealPlannerSettings(page: Page) {
 
 test.describe('Meal planner settings smoke', () => {
   test.skip(
-    !hasCredentials,
+    !hasAuthCredentials(),
     'Set E2E_EMAIL and E2E_PASSWORD to run authenticated Playwright smoke tests.',
   );
 
   test('shows the reorganized meal settings sections', async ({ page }) => {
+    await openApp(page);
     await login(page);
     await openMealPlannerSettings(page);
 

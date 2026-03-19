@@ -31,7 +31,7 @@ export async function getSemanticNames(page: Page): Promise<string[]> {
   });
 }
 
-export async function clickSemantic(
+async function findSemanticCenter(
   page: Page,
   labelPattern: RegExp,
   options: SemanticOptions = {},
@@ -58,8 +58,30 @@ export async function clickSemantic(
     },
   );
 
+  return result;
+}
+
+export async function clickSemantic(
+  page: Page,
+  labelPattern: RegExp,
+  options: SemanticOptions = {},
+) {
+  const result = await findSemanticCenter(page, labelPattern, options);
   expect(result, `No semantic element matched ${labelPattern}`).not.toBeNull();
   await page.mouse.click(result!.x, result!.y);
+}
+
+export async function tryClickSemantic(
+  page: Page,
+  labelPattern: RegExp,
+  options: SemanticOptions = {},
+) {
+  const result = await findSemanticCenter(page, labelPattern, options);
+  if (!result) {
+    return false;
+  }
+  await page.mouse.click(result.x, result.y);
+  return true;
 }
 
 export async function collectSemanticNamesWhileScrolling(
@@ -74,4 +96,28 @@ export async function collectSemanticNamesWhileScrolling(
     await page.waitForTimeout(250);
   }
   return [...seen];
+}
+
+export async function hasSemanticMatch(page: Page, pattern: RegExp) {
+  const names = await getSemanticNames(page);
+  return names.some((name) => pattern.test(name));
+}
+
+export async function waitForSemanticMatch(
+  page: Page,
+  pattern: RegExp,
+  timeoutMs = 20_000,
+) {
+  const startedAt = Date.now();
+  while (Date.now() - startedAt < timeoutMs) {
+    if (await hasSemanticMatch(page, pattern)) {
+      return;
+    }
+    await page.waitForTimeout(500);
+  }
+
+  const names = await getSemanticNames(page);
+  throw new Error(
+    `Timed out waiting for semantic match ${pattern}. Current semantics: ${names.join(' | ')}`,
+  );
 }
