@@ -1,8 +1,32 @@
-import { expect, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 
 type SemanticOptions = {
   role?: string;
 };
+
+async function findSemanticLocator(
+  page: Page,
+  labelPattern: RegExp,
+  options: SemanticOptions = {},
+) {
+  const candidates: Locator[] = options.role
+    ? [page.getByRole(options.role as never, { name: labelPattern }).first()]
+    : [
+        page.getByLabel(labelPattern).first(),
+        page.getByRole('button', { name: labelPattern }).first(),
+        page.getByRole('tab', { name: labelPattern }).first(),
+        page.getByRole('link', { name: labelPattern }).first(),
+        page.getByText(labelPattern).first(),
+      ];
+
+  for (const locator of candidates) {
+    if ((await locator.count()) > 0) {
+      return locator;
+    }
+  }
+
+  return null;
+}
 
 export async function enableFlutterSemantics(page: Page) {
   await page.evaluate(() => {
@@ -20,45 +44,25 @@ export async function enableFlutterSemantics(page: Page) {
 
 export async function getSemanticNames(page: Page): Promise<string[]> {
   return page.evaluate(() => {
-    const names: string[] = [];
-    document.querySelectorAll('[aria-label], [role]').forEach((element) => {
-      const label = element.getAttribute('aria-label');
-      if (label && label.trim()) {
-        names.push(label.trim());
-      }
+    const labels = new Set<string>();
+    const addText = (value?: string | null) => {
+      value
+        ?.split('\n')
+        .map((part) => part.replace(/\s+/g, ' ').trim())
+        .filter(Boolean)
+        .forEach((part) => labels.add(part));
+    };
+
+    addText(document.body?.innerText);
+
+    document.querySelectorAll('body *').forEach((element) => {
+      addText(element.getAttribute('aria-label'));
+      addText((element as HTMLElement).innerText);
+      addText(element.textContent);
     });
-    return names;
+
+    return [...labels];
   });
-}
-
-async function findSemanticCenter(
-  page: Page,
-  labelPattern: RegExp,
-  options: SemanticOptions = {},
-) {
-  const selector = options.role ? `[role="${options.role}"]` : '[aria-label]';
-  const result = await page.evaluate(
-    ({ pattern, patternFlags, selectorValue }) => {
-      const regex = new RegExp(pattern, patternFlags);
-      for (const element of document.querySelectorAll(selectorValue)) {
-        const label = element.getAttribute('aria-label') ?? '';
-        if (!regex.test(label)) continue;
-        const rect = element.getBoundingClientRect();
-        return {
-          x: rect.x + rect.width / 2,
-          y: rect.y + rect.height / 2,
-        };
-      }
-      return null;
-    },
-    {
-      pattern: labelPattern.source,
-      patternFlags: labelPattern.flags,
-      selectorValue: selector,
-    },
-  );
-
-  return result;
 }
 
 export async function clickSemantic(
@@ -66,9 +70,10 @@ export async function clickSemantic(
   labelPattern: RegExp,
   options: SemanticOptions = {},
 ) {
-  const result = await findSemanticCenter(page, labelPattern, options);
-  expect(result, `No semantic element matched ${labelPattern}`).not.toBeNull();
-  await page.mouse.click(result!.x, result!.y);
+  const locator = await findSemanticLocator(page, labelPattern, options);
+  expect(locator, `No semantic element matched ${labelPattern}`).not.toBeNull();
+  await locator!.scrollIntoViewIfNeeded();
+  await locator!.click();
 }
 
 export async function tryClickSemantic(
@@ -76,11 +81,13 @@ export async function tryClickSemantic(
   labelPattern: RegExp,
   options: SemanticOptions = {},
 ) {
-  const result = await findSemanticCenter(page, labelPattern, options);
-  if (!result) {
+  const locator = await findSemanticLocator(page, labelPattern, options);
+  if (!locator) {
     return false;
   }
-  await page.mouse.click(result.x, result.y);
+
+  await locator.scrollIntoViewIfNeeded();
+  await locator.click();
   return true;
 }
 
