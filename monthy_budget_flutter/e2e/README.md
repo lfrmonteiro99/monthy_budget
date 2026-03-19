@@ -2,6 +2,11 @@
 
 This directory contains browser-level smoke tests for the Flutter web app.
 
+Current checked-in smoke specs:
+
+- `auth-flow.smoke.spec.ts`
+- `meal-planner-settings.smoke.spec.ts`
+
 ## Prerequisites
 
 - Node.js 18+ with npm/npx available
