@@ -7,19 +7,20 @@ import {
   waitForSemanticMatch,
 } from './helpers/flutter_semantics';
 
-const homeTabPattern = /Home|In[ií]cio|Accueil/i;
+const homeTabPattern = /Home|In[i\u00ed]cio|Accueil/i;
 const dashboardTitlePattern =
-  /Monthly Budget|Orçamento Mensal|Budget Mensuel|Presupuesto Mensual/i;
-const trendsPattern = /Trends|Evolução|Évolution|Evolución/i;
-const insightsTitlePattern = /Insights|Análise|Analyses|Análisis/i;
+  /Monthly Budget|Or\u00e7amento Mensal|Budget Mensuel|Presupuesto Mensual/i;
+const insightsTitlePattern =
+  /Insights|An\u00e1lise|Analyses|An\u00e1lisis/i;
 const savingsGoalsPattern =
-  /Savings Goals|Objetivos de Poupança|Objectifs d'Épargne|Objetivos de Ahorro/i;
+  /Savings Goals|Objetivos de Poupan\u00e7a|Objectifs d'\u00c9pargne|Objetivos de Ahorro/i;
 const savingsEmptyStatePattern =
-  /No savings goals|Sem objetivos de poupança|Aucun objectif d'épargne|Sin objetivos de ahorro/i;
+  /No savings goals|Sem objetivos de poupan\u00e7a|Aucun objectif d'\u00e9pargne|Sin objetivos de ahorro/i;
 const savingsGoalProgressPattern =
-  /\d+%\s+(reached|alcançad[oa]?|atteint|alcanzado)/i;
+  /\d+%\s+(reached|alcan\u00e7ad[oa]?|atteint|alcanzado)/i;
 const howItWorksPattern =
-  /How does it work|Como funciona|Comment ça marche|Cómo funciona/i;
+  /How does it work|Como funciona|Comment \u00e7a marche|C\u00f3mo funciona/i;
+const openCommandAssistantPattern = /Open command assistant/i;
 
 async function openDashboard(page: Page) {
   await page.keyboard.press('Escape');
@@ -29,11 +30,21 @@ async function openDashboard(page: Page) {
   await waitForSemanticMatch(page, dashboardTitlePattern);
 }
 
-async function openSavingsGoals(page: Page) {
+async function openInsights(page: Page) {
   await openDashboard(page);
-  await clickSemantic(page, trendsPattern, { role: 'button' });
+  await clickSemantic(page, openCommandAssistantPattern, { role: 'button' });
+
+  const commandInput = page.getByRole('textbox').first();
+  await expect(commandInput).toBeVisible();
+  await commandInput.fill('open insights');
+  await commandInput.press('Enter');
+
   await page.waitForTimeout(1500);
   await waitForSemanticMatch(page, insightsTitlePattern);
+}
+
+async function openSavingsGoals(page: Page) {
+  await openInsights(page);
   await clickSemantic(page, savingsGoalsPattern, { role: 'button' });
 
   await expect
