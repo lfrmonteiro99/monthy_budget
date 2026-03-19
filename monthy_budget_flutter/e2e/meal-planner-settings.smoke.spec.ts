@@ -13,7 +13,7 @@ async function openMealPlannerSettings(page: Page) {
   await page.waitForTimeout(2000);
   await clickSemantic(page, /Meal Planner|Refei/i, { role: 'tab' });
   await page.waitForTimeout(2500);
-  await clickSemantic(page, /Settings|Defini/i);
+  await clickSemantic(page, /Settings|Defini/i, { role: 'button' });
   await page.waitForTimeout(2500);
 }
 
