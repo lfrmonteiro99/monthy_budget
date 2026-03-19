@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../constants/app_constants.dart';
 import '../l10n/generated/app_localizations.dart';
@@ -6,6 +8,7 @@ import '../models/meal_planner.dart';
 import '../models/meal_settings.dart';
 import '../models/purchase_record.dart';
 import '../models/shopping_item.dart';
+import '../services/analytics_service.dart';
 import '../services/meal_planner_service.dart';
 import '../services/meal_planner_ai_service.dart';
 import '../theme/app_colors.dart';
@@ -27,7 +30,6 @@ import '../utils/waste_calculator.dart';
 import '../widgets/pantry_coverage_badge.dart';
 import '../widgets/pantry_quick_picker_sheet.dart';
 import '../widgets/pantry_summary_chip_row.dart';
-import 'meal_wizard_screen.dart';
 
 class MealPlannerScreen extends StatefulWidget {
   final AppSettings settings;
@@ -108,10 +110,11 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     if (saved != null) {
       // Pre-populate AI content from persisted cache for immediate render
       final locale = Localizations.localeOf(context).languageCode;
-      for (final recipeId in saved.days
-          .where((d) => !d.isFreeform && d.recipeId.isNotEmpty)
-          .map((d) => d.recipeId)
-          .toSet()) {
+      for (final recipeId
+          in saved.days
+              .where((d) => !d.isFreeform && d.recipeId.isNotEmpty)
+              .map((d) => d.recipeId)
+              .toSet()) {
         final cached = _aiService.getCached(recipeId, locale: locale);
         if (cached != null) _aiContent[recipeId] = cached;
       }
@@ -171,9 +174,13 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       final dayGuests = plan.extraGuests[day.dayIndex] ?? 0;
       final scale = (plan.nPessoas + dayGuests) / recipe.servings;
       for (final ri in recipe.ingredients) {
-        final effectiveId = day.substitutions[ri.ingredientId] ?? ri.ingredientId;
-        totals.update(effectiveId, (v) => v + ri.quantity * scale,
-            ifAbsent: () => ri.quantity * scale);
+        final effectiveId =
+            day.substitutions[ri.ingredientId] ?? ri.ingredientId;
+        totals.update(
+          effectiveId,
+          (v) => v + ri.quantity * scale,
+          ifAbsent: () => ri.quantity * scale,
+        );
       }
     }
     return WasteCalculator.excessIngredients(totals, _service.ingredientMap);
@@ -196,7 +203,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         builder: (ctx, controller) => Column(
           children: [
             Container(
-              width: 40, height: 4,
+              width: 40,
+              height: 4,
               margin: const EdgeInsets.symmetric(vertical: 12),
               decoration: BoxDecoration(
                 color: AppColors.borderMuted(ctx),
@@ -207,10 +215,19 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
-                  Icon(Icons.delete_outline, size: 20, color: AppColors.warning(ctx)),
+                  Icon(
+                    Icons.delete_outline,
+                    size: 20,
+                    color: AppColors.warning(ctx),
+                  ),
                   const SizedBox(width: 8),
-                  Text(l10n.mealWasteEstimate,
-                      style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+                  Text(
+                    l10n.mealWasteEstimate,
+                    style: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -233,7 +250,10 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                         item.excessQty.toStringAsFixed(2),
                         item.unit,
                       ),
-                      style: TextStyle(fontSize: 12, color: AppColors.textSecondary(ctx)),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary(ctx),
+                      ),
                     ),
                     trailing: Text(
                       '\u20AC${item.estimatedWasteCost.toStringAsFixed(2)}',
@@ -287,12 +307,24 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       await _service.savePreviousPlan(_plan!);
     }
 
-    final plan = _service.generate(widget.settings, now,
+    final plan = _service.generate(
+      widget.settings,
+      now,
       favorites: widget.favorites,
       previousFeedback: previousFeedback,
       previousRatings: previousRatings,
     );
     await _service.save(plan, widget.householdId);
+    unawaited(
+      AnalyticsService.instance.trackEvent(
+        'meal_plan_generated',
+        properties: {
+          'days_planned': plan.days.length,
+          'favorite_count': widget.favorites.length,
+          'had_previous_plan': hadPreviousPlan,
+        },
+      ),
+    );
     if (!mounted) return;
     setState(() {
       _plan = plan;
@@ -350,27 +382,34 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         .map((d) => d.recipeId)
         .toSet();
     for (final recipeId in uniqueRecipeIds) {
-      if (_aiContent.containsKey(recipeId) || _aiPending.contains(recipeId)) continue;
+      if (_aiContent.containsKey(recipeId) || _aiPending.contains(recipeId)) {
+        continue;
+      }
       _aiPending.add(recipeId);
       final recipe = _service.recipeMap[recipeId];
       if (recipe == null) continue;
-      _aiService.enrichRecipe(
-        apiKey: widget.apiKey,
-        recipe: recipe,
-        ingredientMap: iMap,
-        nPessoas: plan.nPessoas,
-        locale: locale,
-      ).then((content) {
-        if (content != null && mounted) {
-          setState(() => _aiContent[recipeId] = content);
-        }
-        _aiPending.remove(recipeId);
-      });
+      _aiService
+          .enrichRecipe(
+            apiKey: widget.apiKey,
+            recipe: recipe,
+            ingredientMap: iMap,
+            nPessoas: plan.nPessoas,
+            locale: locale,
+          )
+          .then((content) {
+            if (content != null && mounted) {
+              setState(() => _aiContent[recipeId] = content);
+            }
+            _aiPending.remove(recipeId);
+          });
     }
   }
 
   void _loadWeeklySummary(int weekIndex, MealPlan plan) {
-    if (_weeklySummaries.containsKey(weekIndex) || _weeklySummaryPending.contains(weekIndex)) return;
+    if (_weeklySummaries.containsKey(weekIndex) ||
+        _weeklySummaryPending.contains(weekIndex)) {
+      return;
+    }
     _weeklySummaryPending.add(weekIndex);
     final weekDays = _getWeekDays(plan, weekIndex);
     final recipes = weekDays
@@ -379,17 +418,19 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         .whereType<Recipe>()
         .toList();
     final locale = Localizations.localeOf(context).languageCode;
-    _aiService.analyzeWeeklyNutrition(
-      apiKey: widget.apiKey,
-      weekRecipes: recipes,
-      nPessoas: plan.nPessoas,
-      locale: locale,
-    ).then((summary) {
-      _weeklySummaryPending.remove(weekIndex);
-      if (summary != null && mounted) {
-        setState(() => _weeklySummaries[weekIndex] = summary);
-      }
-    });
+    _aiService
+        .analyzeWeeklyNutrition(
+          apiKey: widget.apiKey,
+          weekRecipes: recipes,
+          nPessoas: plan.nPessoas,
+          locale: locale,
+        )
+        .then((summary) {
+          _weeklySummaryPending.remove(weekIndex);
+          if (summary != null && mounted) {
+            setState(() => _weeklySummaries[weekIndex] = summary);
+          }
+        });
   }
 
   bool _weekHasBatchCooking(MealPlan plan, int weekIndex) {
@@ -424,16 +465,18 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
     setState(() => _batchPlanLoading = true);
     final locale = Localizations.localeOf(context).languageCode;
-    _aiService.generateBatchPlan(
-      apiKey: widget.apiKey,
-      batchRecipes: batchRecipes,
-      nPessoas: plan.nPessoas,
-      locale: locale,
-    ).then((result) {
-      if (!mounted) return;
-      setState(() => _batchPlanLoading = false);
-      if (result != null) _showBatchPlanSheet(result);
-    });
+    _aiService
+        .generateBatchPlan(
+          apiKey: widget.apiKey,
+          batchRecipes: batchRecipes,
+          nPessoas: plan.nPessoas,
+          locale: locale,
+        )
+        .then((result) {
+          if (!mounted) return;
+          setState(() => _batchPlanLoading = false);
+          if (result != null) _showBatchPlanSheet(result);
+        });
   }
 
   void _showBatchPlanSheet(BatchCookingPlan plan) {
@@ -448,7 +491,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         builder: (_, controller) => Column(
           children: [
             Container(
-              width: 40, height: 4,
+              width: 40,
+              height: 4,
               margin: const EdgeInsets.symmetric(vertical: 12),
               decoration: BoxDecoration(
                 color: AppColors.borderMuted(context),
@@ -460,12 +504,22 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l10n.mealBatchPrepGuide,
-                      style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+                  Text(
+                    l10n.mealBatchPrepGuide,
+                    style: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                   if (plan.totalTimeEstimate.isNotEmpty) ...[
                     const SizedBox(height: 4),
-                    Text(l10n.mealBatchTotalTime(plan.totalTimeEstimate),
-                        style: TextStyle(fontSize: 13, color: AppColors.textSecondary(context))),
+                    Text(
+                      l10n.mealBatchTotalTime(plan.totalTimeEstimate),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.textSecondary(context),
+                      ),
+                    ),
                   ],
                 ],
               ),
@@ -476,42 +530,73 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 controller: controller,
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                 children: [
-                  ...plan.prepOrder.asMap().entries.map((e) => Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 24, height: 24,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: AppColors.primary(context),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text('${e.key + 1}',
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.onPrimary(context))),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(child: Text(e.value, style: const TextStyle(fontSize: 13))),
-                      ],
-                    ),
-                  )),
-                  if (plan.parallelTips.isNotEmpty) ...[
-                    const SizedBox(height: 16),
-                    Text(l10n.mealBatchParallelTips,
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondary(context))),
-                    const SizedBox(height: 8),
-                    ...plan.parallelTips.map((tip) => Padding(
-                      padding: const EdgeInsets.only(bottom: 6),
+                  ...plan.prepOrder.asMap().entries.map(
+                    (e) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.tips_and_updates_outlined, size: 16, color: AppColors.warning(context)),
-                          const SizedBox(width: 8),
-                          Expanded(child: Text(tip, style: const TextStyle(fontSize: 13))),
+                          Container(
+                            width: 24,
+                            height: 24,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary(context),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              '${e.key + 1}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.onPrimary(context),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              e.value,
+                              style: const TextStyle(fontSize: 13),
+                            ),
+                          ),
                         ],
                       ),
-                    )),
+                    ),
+                  ),
+                  if (plan.parallelTips.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    Text(
+                      l10n.mealBatchParallelTips,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textSecondary(context),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    ...plan.parallelTips.map(
+                      (tip) => Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.tips_and_updates_outlined,
+                              size: 16,
+                              color: AppColors.warning(context),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                tip,
+                                style: const TextStyle(fontSize: 13),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ],
               ),
@@ -547,7 +632,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         builder: (ctx, controller) => Column(
           children: [
             Container(
-              width: 40, height: 4,
+              width: 40,
+              height: 4,
               margin: const EdgeInsets.symmetric(vertical: 12),
               decoration: BoxDecoration(
                 color: AppColors.borderMuted(ctx),
@@ -559,14 +645,29 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l10n.mealPrepGuideTitle,
-                      style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+                  Text(
+                    l10n.mealPrepGuideTitle,
+                    style: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                   const SizedBox(height: 4),
-                  Text(recipe.name,
-                      style: TextStyle(fontSize: 14, color: AppColors.textSecondary(ctx))),
+                  Text(
+                    recipe.name,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.textSecondary(ctx),
+                    ),
+                  ),
                   const SizedBox(height: 2),
-                  Text(l10n.mealPrepTime(recipe.prepMinutes.toString()),
-                      style: TextStyle(fontSize: 12, color: AppColors.textMuted(ctx))),
+                  Text(
+                    l10n.mealPrepTime(recipe.prepMinutes.toString()),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textMuted(ctx),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -576,29 +677,43 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 controller: controller,
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                 children: [
-                  ...steps.asMap().entries.map((e) => Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 26, height: 26,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: AppColors.primary(ctx),
-                            borderRadius: BorderRadius.circular(13),
+                  ...steps.asMap().entries.map(
+                    (e) => Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 26,
+                            height: 26,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary(ctx),
+                              borderRadius: BorderRadius.circular(13),
+                            ),
+                            child: Text(
+                              '${e.key + 1}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.onPrimary(ctx),
+                              ),
+                            ),
                           ),
-                          child: Text('${e.key + 1}',
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.onPrimary(ctx))),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(child: Padding(
-                          padding: const EdgeInsets.only(top: 3),
-                          child: Text(e.value, style: const TextStyle(fontSize: 14)),
-                        )),
-                      ],
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 3),
+                              child: Text(
+                                e.value,
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  )),
+                  ),
                   // Show AI-enriched extras if available
                   if (aiContent != null) ...[
                     if (aiContent.tip.isNotEmpty) ...[
@@ -612,10 +727,21 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(Icons.lightbulb_outline, size: 18, color: AppColors.warning(ctx)),
+                            Icon(
+                              Icons.lightbulb_outline,
+                              size: 18,
+                              color: AppColors.warning(ctx),
+                            ),
                             const SizedBox(width: 10),
-                            Expanded(child: Text(aiContent.tip,
-                                style: const TextStyle(fontSize: 13, color: Color(0xFF92400E)))),
+                            Expanded(
+                              child: Text(
+                                aiContent.tip,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Color(0xFF92400E),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -631,17 +757,32 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(Icons.shuffle, size: 18, color: AppColors.primary(ctx)),
+                            Icon(
+                              Icons.shuffle,
+                              size: 18,
+                              color: AppColors.primary(ctx),
+                            ),
                             const SizedBox(width: 10),
-                            Expanded(child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(l10n.mealVariation,
-                                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.primary(ctx))),
-                                const SizedBox(height: 2),
-                                Text(aiContent.variation, style: const TextStyle(fontSize: 13)),
-                              ],
-                            )),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    l10n.mealVariation,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.primary(ctx),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    aiContent.variation,
+                                    style: const TextStyle(fontSize: 13),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -657,17 +798,32 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(Icons.kitchen, size: 18, color: AppColors.textSecondary(ctx)),
+                            Icon(
+                              Icons.kitchen,
+                              size: 18,
+                              color: AppColors.textSecondary(ctx),
+                            ),
                             const SizedBox(width: 10),
-                            Expanded(child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(l10n.mealStorage,
-                                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textSecondary(ctx))),
-                                const SizedBox(height: 2),
-                                Text(aiContent.storageInfo, style: const TextStyle(fontSize: 13)),
-                              ],
-                            )),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    l10n.mealStorage,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.textSecondary(ctx),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    aiContent.storageInfo,
+                                    style: const TextStyle(fontSize: 13),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -686,7 +842,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final plan = _plan!;
     final updatedDays = plan.days.map((d) {
       if (d.dayIndex == dayIndex && d.mealType == mealType) {
-        return d.copyWith(feedback: d.feedback == feedback ? MealFeedback.none : feedback);
+        return d.copyWith(
+          feedback: d.feedback == feedback ? MealFeedback.none : feedback,
+        );
       }
       return d;
     }).toList();
@@ -705,8 +863,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       final feedback = rating >= 4
           ? MealFeedback.liked
           : rating <= 2
-              ? MealFeedback.disliked
-              : MealFeedback.none;
+          ? MealFeedback.disliked
+          : MealFeedback.none;
       return d.copyWith(rating: rating, feedback: feedback);
     }).toList();
     final updated = plan.copyWithDays(updatedDays);
@@ -731,7 +889,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         onStaplesChanged: (ids) {
           final updated = ms.copyWith(stapleIngredients: ids.toList());
           widget.onSaveSettings(
-              widget.settings.copyWith(mealSettings: updated));
+            widget.settings.copyWith(mealSettings: updated),
+          );
         },
         onWeeklyChanged: (ids) {
           final updated = ms.copyWith(
@@ -739,7 +898,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             weeklyPantryUpdatedAt: DateTime.now(),
           );
           widget.onSaveSettings(
-              widget.settings.copyWith(mealSettings: updated));
+            widget.settings.copyWith(mealSettings: updated),
+          );
         },
       ),
     );
@@ -767,7 +927,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           builder: (_, controller) => Column(
             children: [
               Container(
-                width: 40, height: 4,
+                width: 40,
+                height: 4,
                 margin: const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
                   color: AppColors.borderMuted(ctx),
@@ -779,14 +940,30 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(l10n.mealPantrySelectTitle,
-                        style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+                    Text(
+                      l10n.mealPantrySelectTitle,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                     const SizedBox(height: 4),
-                    Text(l10n.mealPantrySelectHint,
-                        style: TextStyle(fontSize: 13, color: AppColors.textSecondary(ctx))),
+                    Text(
+                      l10n.mealPantrySelectHint,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.textSecondary(ctx),
+                      ),
+                    ),
                     const SizedBox(height: 4),
-                    Text(l10n.mealPantrySelected(selected.length),
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.primary(ctx))),
+                    Text(
+                      l10n.mealPantrySelected(selected.length),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primary(ctx),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -801,9 +978,17 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     final isSelected = selected.contains(ing.id);
                     return CheckboxListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: Text(ing.name, style: const TextStyle(fontSize: 14)),
-                      subtitle: Text(ing.category.name,
-                          style: TextStyle(fontSize: 12, color: AppColors.textMuted(ctx))),
+                      title: Text(
+                        ing.name,
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                      subtitle: Text(
+                        ing.category.name,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textMuted(ctx),
+                        ),
+                      ),
                       value: isSelected,
                       activeColor: AppColors.primary(ctx),
                       onChanged: (v) {
@@ -827,9 +1012,12 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     onPressed: () {
                       Navigator.pop(ctx);
                       // Save pantry selection
-                      final updated = ms.copyWith(pantryIngredients: selected.toList());
+                      final updated = ms.copyWith(
+                        pantryIngredients: selected.toList(),
+                      );
                       widget.onSaveSettings(
-                          widget.settings.copyWith(mealSettings: updated));
+                        widget.settings.copyWith(mealSettings: updated),
+                      );
                       // Generate plan with pantry boost
                       _generatePlan();
                     },
@@ -858,10 +1046,13 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final l10n = S.of(context);
 
     // Find same-category alternatives
-    final alternatives = _service.ingredients
-        .where((i) => i.category == ingredient.category && i.id != ingredientId)
-        .toList()
-      ..sort((a, b) => a.name.compareTo(b.name));
+    final alternatives =
+        _service.ingredients
+            .where(
+              (i) => i.category == ingredient.category && i.id != ingredientId,
+            )
+            .toList()
+          ..sort((a, b) => a.name.compareTo(b.name));
 
     showModalBottomSheet(
       context: context,
@@ -877,7 +1068,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         builder: (ctx, controller) => Column(
           children: [
             Container(
-              width: 40, height: 4,
+              width: 40,
+              height: 4,
               margin: const EdgeInsets.symmetric(vertical: 12),
               decoration: BoxDecoration(
                 color: AppColors.borderMuted(ctx),
@@ -888,8 +1080,13 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text(l10n.mealSubstituteTitle(ingredient.name),
-                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+                child: Text(
+                  l10n.mealSubstituteTitle(ingredient.name),
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 12),
@@ -905,9 +1102,16 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     title: Text(alt.name, style: const TextStyle(fontSize: 14)),
                     subtitle: Text(
                       '${alt.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${alt.unit}',
-                      style: TextStyle(fontSize: 12, color: AppColors.textSecondary(ctx)),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary(ctx),
+                      ),
                     ),
-                    trailing: Icon(Icons.swap_horiz, size: 18, color: AppColors.primary(ctx)),
+                    trailing: Icon(
+                      Icons.swap_horiz,
+                      size: 18,
+                      color: AppColors.primary(ctx),
+                    ),
                     onTap: () {
                       Navigator.pop(ctx);
                       _applySubstitution(day, ingredientId, alt.id);
@@ -922,7 +1126,11 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     );
   }
 
-  void _applySubstitution(MealDay day, String oldIngredientId, String newIngredientId) {
+  void _applySubstitution(
+    MealDay day,
+    String oldIngredientId,
+    String newIngredientId,
+  ) {
     final plan = _plan;
     if (plan == null) return;
     final l10n = S.of(context);
@@ -945,39 +1153,46 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
     if (oldIng != null && newIng != null && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.mealSubstitutionApplied(oldIng.name, newIng.name))),
+        SnackBar(
+          content: Text(l10n.mealSubstitutionApplied(oldIng.name, newIng.name)),
+        ),
       );
     }
 
     // Fire-and-forget AI adaptation
     final recipe = _service.recipeMap[day.recipeId];
-    if (recipe != null && oldIng != null && newIng != null && widget.apiKey.isNotEmpty) {
+    if (recipe != null &&
+        oldIng != null &&
+        newIng != null &&
+        widget.apiKey.isNotEmpty) {
       final locale = Localizations.localeOf(context).languageCode;
-      _aiService.adaptRecipeForSubstitution(
-        apiKey: widget.apiKey,
-        recipe: recipe,
-        oldIngredient: oldIng,
-        newIngredient: newIng,
-        ingredientMap: iMap,
-        nPessoas: plan.nPessoas,
-        locale: locale,
-      ).then((steps) {
-        if (!mounted || steps == null) return;
-        // Update AI content cache with adapted steps
-        final existing = _aiContent[recipe.id];
-        if (existing != null) {
-          setState(() {
-            _aiContent[recipe.id] = RecipeAiContent(
-              steps: steps,
-              tip: existing.tip,
-              variation: existing.variation,
-              leftoverIdea: existing.leftoverIdea,
-              pairingSuggestion: existing.pairingSuggestion,
-              storageInfo: existing.storageInfo,
-            );
+      _aiService
+          .adaptRecipeForSubstitution(
+            apiKey: widget.apiKey,
+            recipe: recipe,
+            oldIngredient: oldIng,
+            newIngredient: newIng,
+            ingredientMap: iMap,
+            nPessoas: plan.nPessoas,
+            locale: locale,
+          )
+          .then((steps) {
+            if (!mounted || steps == null) return;
+            // Update AI content cache with adapted steps
+            final existing = _aiContent[recipe.id];
+            if (existing != null) {
+              setState(() {
+                _aiContent[recipe.id] = RecipeAiContent(
+                  steps: steps,
+                  tip: existing.tip,
+                  variation: existing.variation,
+                  leftoverIdea: existing.leftoverIdea,
+                  pairingSuggestion: existing.pairingSuggestion,
+                  storageInfo: existing.storageInfo,
+                );
+              });
+            }
           });
-        }
-      });
     }
   }
 
@@ -999,13 +1214,20 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           final newRecipe = _service.recipeMap[newRecipeId];
           // If cross-type swap: update mealType when recipe doesn't fit current type
           MealType? newMealType;
-          if (newRecipe != null && !newRecipe.suitableMealTypes.contains(mealType.name)) {
+          if (newRecipe != null &&
+              !newRecipe.suitableMealTypes.contains(mealType.name)) {
             newMealType = MealType.values.firstWhere(
               (t) => newRecipe.suitableMealTypes.contains(t.name),
               orElse: () => mealType,
             );
           }
-          final updated = _service.swapDay(plan, dayIndex, mealType, newRecipeId, newMealType: newMealType);
+          final updated = _service.swapDay(
+            plan,
+            dayIndex,
+            mealType,
+            newRecipeId,
+            newMealType: newMealType,
+          );
           _service.save(updated, widget.householdId);
           setState(() => _plan = updated);
           _enrichPlan(updated);
@@ -1028,8 +1250,11 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       if (recipe == null) continue;
       final scale = plan.nPessoas / recipe.servings;
       for (final ri in recipe.ingredients) {
-        totals.update(ri.ingredientId, (v) => v + ri.quantity * scale,
-            ifAbsent: () => ri.quantity * scale);
+        totals.update(
+          ri.ingredientId,
+          (v) => v + ri.quantity * scale,
+          ifAbsent: () => ri.quantity * scale,
+        );
         (mealLabels[ri.ingredientId] ??= {}).add(recipe.name);
       }
     }
@@ -1039,31 +1264,36 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       final ing = iMap[entry.key];
       if (ing == null) continue;
       final cost = entry.value * ing.avgPricePerUnit;
-      widget.onAddToShoppingList(ShoppingItem(
-        productName: ing.name,
-        store: '',
-        price: cost,
-        unitPrice: '${ing.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${ing.unit}',
-        quantity: entry.value,
-        unit: ing.unit,
-        sourceMealLabels: mealLabels[entry.key]?.toList() ?? const [],
-      ));
+      widget.onAddToShoppingList(
+        ShoppingItem(
+          productName: ing.name,
+          store: '',
+          price: cost,
+          unitPrice:
+              '${ing.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${ing.unit}',
+          quantity: entry.value,
+          unit: ing.unit,
+          sourceMealLabels: mealLabels[entry.key]?.toList() ?? const [],
+        ),
+      );
       count++;
     }
     // Add freeform shopping items
     final freeformItems = _service.freeformShoppingItemsForWeek(plan, weekDays);
     for (final item in freeformItems) {
-      widget.onAddToShoppingList(ShoppingItem(
-        productName: item.name,
-        store: item.store ?? '',
-        price: item.estimatedPrice ?? 0,
-      ));
+      widget.onAddToShoppingList(
+        ShoppingItem(
+          productName: item.name,
+          store: item.store ?? '',
+          price: item.estimatedPrice ?? 0,
+        ),
+      );
       count++;
     }
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.mealIngredientsAdded(count))),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.mealIngredientsAdded(count))));
     }
   }
 
@@ -1095,15 +1325,15 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     showModalBottomSheet<dynamic>(
       context: context,
       isScrollControlled: true,
-      builder: (_) => FreeformMealSheet(
-        dayIndex: dayIndex,
-        mealType: mealType,
-      ),
+      builder: (_) => FreeformMealSheet(dayIndex: dayIndex, mealType: mealType),
     ).then((result) {
       if (result is MealDay && _plan != null) {
         final updatedDays = [
-          ..._plan!.days.where((d) =>
-              !(d.dayIndex == result.dayIndex && d.mealType == result.mealType)),
+          ..._plan!.days.where(
+            (d) =>
+                !(d.dayIndex == result.dayIndex &&
+                    d.mealType == result.mealType),
+          ),
           result,
         ];
         final updated = _plan!.copyWithDays(updatedDays);
@@ -1126,9 +1356,12 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       if (_plan == null) return;
       if (result == 'delete') {
         final updatedDays = _plan!.days
-            .where((d) => !(d.dayIndex == mealDay.dayIndex &&
-                d.mealType == mealDay.mealType &&
-                d.isFreeform))
+            .where(
+              (d) =>
+                  !(d.dayIndex == mealDay.dayIndex &&
+                      d.mealType == mealDay.mealType &&
+                      d.isFreeform),
+            )
             .toList();
         final updated = _plan!.copyWithDays(updatedDays);
         _service.save(updated, widget.householdId);
@@ -1160,7 +1393,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     ).then((result) {
       if (result is MealDay && _plan != null) {
         final updatedDays = _plan!.days.map((d) {
-          if (d.dayIndex == existing.dayIndex && d.mealType == existing.mealType) {
+          if (d.dayIndex == existing.dayIndex &&
+              d.mealType == existing.mealType) {
             return result;
           }
           return d;
@@ -1172,11 +1406,17 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     });
   }
 
-  void _setFreeformFeedback(int dayIndex, MealType mealType, MealFeedback feedback) {
+  void _setFreeformFeedback(
+    int dayIndex,
+    MealType mealType,
+    MealFeedback feedback,
+  ) {
     final plan = _plan!;
     final updatedDays = plan.days.map((d) {
       if (d.dayIndex == dayIndex && d.mealType == mealType && d.isFreeform) {
-        return d.copyWith(feedback: d.feedback == feedback ? MealFeedback.none : feedback);
+        return d.copyWith(
+          feedback: d.feedback == feedback ? MealFeedback.none : feedback,
+        );
       }
       return d;
     }).toList();
@@ -1197,10 +1437,12 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     }
     final l10n = S.of(context);
     final bodyContent = !_catalogReady
-        ? Center(child: CircularProgressIndicator(color: AppColors.primary(context)))
+        ? Center(
+            child: CircularProgressIndicator(color: AppColors.primary(context)),
+          )
         : _plan == null
-            ? _buildEmptyState()
-            : _buildPlanView();
+        ? _buildEmptyState()
+        : _buildPlanView();
 
     if (widget.embedded) return bodyContent;
 
@@ -1254,14 +1496,21 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.restaurant_outlined, size: 64, color: AppColors.textMuted(context)),
+            Icon(
+              Icons.restaurant_outlined,
+              size: 64,
+              color: AppColors.textMuted(context),
+            ),
             const SizedBox(height: 24),
             Text(
               monthName,
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 24),
-            _InfoRow(label: l10n.mealBudgetLabel, value: '${budget.toStringAsFixed(2)}${currencySymbol()}'),
+            _InfoRow(
+              label: l10n.mealBudgetLabel,
+              value: '${budget.toStringAsFixed(2)}${currencySymbol()}',
+            ),
             const SizedBox(height: 8),
             _InfoRow(label: l10n.mealPeopleLabel, value: '$np'),
             const SizedBox(height: 20),
@@ -1286,10 +1535,15 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     ? SizedBox(
                         width: 18,
                         height: 18,
-                        child: CircularProgressIndicator(color: AppColors.onPrimary(context), strokeWidth: 2),
+                        child: CircularProgressIndicator(
+                          color: AppColors.onPrimary(context),
+                          strokeWidth: 2,
+                        ),
                       )
                     : const Icon(Icons.auto_awesome),
-                label: Text(_loading ? l10n.mealGenerating : l10n.mealGeneratePlan),
+                label: Text(
+                  _loading ? l10n.mealGenerating : l10n.mealGeneratePlan,
+                ),
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.primary(context),
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -1323,7 +1577,10 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 children: [
                   Text(
                     '${plan.totalEstimatedCost.toStringAsFixed(2)}${currencySymbol()} / ${plan.monthlyBudget.toStringAsFixed(2)}${currencySymbol()}',
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   TextButton.icon(
                     onPressed: () async {
@@ -1346,12 +1603,18 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                       );
                       if (confirmed == true && mounted) {
                         setState(() => _plan = null);
-                        _service.clear(widget.householdId, plan.month, plan.year);
+                        _service.clear(
+                          widget.householdId,
+                          plan.month,
+                          plan.year,
+                        );
                       }
                     },
                     icon: const Icon(Icons.refresh, size: 16),
                     label: Text(l10n.mealRegenerate),
-                    style: TextButton.styleFrom(foregroundColor: AppColors.textSecondary(context)),
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.textSecondary(context),
+                    ),
                   ),
                 ],
               ),
@@ -1365,45 +1628,60 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               ),
               const SizedBox(height: 12),
               // Week navigator (← Week N →) — replaces W1-W4 tabs
-              Builder(builder: (_) {
-                final daysInMonth = DateTime(plan.year, plan.month + 1, 0).day;
-                final weekCount = (daysInMonth / 7).ceil();
-                if (_selectedWeek >= weekCount) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    if (mounted) setState(() => _selectedWeek = weekCount - 1);
-                  });
-                }
-                return Row(
-                key: MealsTourKeys.weekTabs,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.chevron_left),
-                    onPressed: _selectedWeek > 0
-                        ? () {
-                            setState(() => _selectedWeek--);
-                            if (_plan != null) _loadWeeklySummary(_selectedWeek, _plan!);
-                            _recomputeBudgetInsight();
-                          }
-                        : null,
-                  ),
-                  Text(
-                    l10n.mealWeekLabel(_selectedWeek + 1),
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.chevron_right),
-                    onPressed: _selectedWeek < weekCount - 1
-                        ? () {
-                            setState(() => _selectedWeek++);
-                            if (_plan != null) _loadWeeklySummary(_selectedWeek, _plan!);
-                            _recomputeBudgetInsight();
-                          }
-                        : null,
-                  ),
-                ],
-              );
-              }),
+              Builder(
+                builder: (_) {
+                  final daysInMonth = DateTime(
+                    plan.year,
+                    plan.month + 1,
+                    0,
+                  ).day;
+                  final weekCount = (daysInMonth / 7).ceil();
+                  if (_selectedWeek >= weekCount) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (mounted) {
+                        setState(() => _selectedWeek = weekCount - 1);
+                      }
+                    });
+                  }
+                  return Row(
+                    key: MealsTourKeys.weekTabs,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.chevron_left),
+                        onPressed: _selectedWeek > 0
+                            ? () {
+                                setState(() => _selectedWeek--);
+                                if (_plan != null) {
+                                  _loadWeeklySummary(_selectedWeek, _plan!);
+                                }
+                                _recomputeBudgetInsight();
+                              }
+                            : null,
+                      ),
+                      Text(
+                        l10n.mealWeekLabel(_selectedWeek + 1),
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.chevron_right),
+                        onPressed: _selectedWeek < weekCount - 1
+                            ? () {
+                                setState(() => _selectedWeek++);
+                                if (_plan != null) {
+                                  _loadWeeklySummary(_selectedWeek, _plan!);
+                                }
+                                _recomputeBudgetInsight();
+                              }
+                            : null,
+                      ),
+                    ],
+                  );
+                },
+              ),
               const SizedBox(height: 12),
             ],
           ),
@@ -1416,10 +1694,14 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             child: TextButton.icon(
               onPressed: () => setState(() => _showDetails = !_showDetails),
               icon: Icon(
-                _showDetails ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                _showDetails
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
                 size: 16,
               ),
-              label: Text(_showDetails ? l10n.mealHideDetails : l10n.mealShowDetails),
+              label: Text(
+                _showDetails ? l10n.mealHideDetails : l10n.mealShowDetails,
+              ),
               style: TextButton.styleFrom(
                 foregroundColor: AppColors.textSecondary(context),
                 textStyle: const TextStyle(fontSize: 12),
@@ -1467,26 +1749,40 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             nPessoas: plan.nPessoas,
             settings: widget.settings.mealSettings,
           ),
-          Builder(builder: (_) {
-            final wasteItems = _computeWasteItems();
-            if (wasteItems.isEmpty) return const SizedBox.shrink();
-            final totalWaste = wasteItems.fold(0.0, (s, w) => s + w.estimatedWasteCost);
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              child: GestureDetector(
-                onTap: () => _showWasteDetails(wasteItems),
-                child: Chip(
-                  avatar: Icon(Icons.delete_outline, size: 16, color: AppColors.warning(context)),
-                  label: Text(
-                    l10n.mealWasteCost('\u20AC${totalWaste.toStringAsFixed(2)}'),
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                  backgroundColor: AppColors.warningBackground(context),
-                  side: BorderSide(color: AppColors.warningBorder(context)),
+          Builder(
+            builder: (_) {
+              final wasteItems = _computeWasteItems();
+              if (wasteItems.isEmpty) return const SizedBox.shrink();
+              final totalWaste = wasteItems.fold(
+                0.0,
+                (s, w) => s + w.estimatedWasteCost,
+              );
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 4,
                 ),
-              ),
-            );
-          }),
+                child: GestureDetector(
+                  onTap: () => _showWasteDetails(wasteItems),
+                  child: Chip(
+                    avatar: Icon(
+                      Icons.delete_outline,
+                      size: 16,
+                      color: AppColors.warning(context),
+                    ),
+                    label: Text(
+                      l10n.mealWasteCost(
+                        '\u20AC${totalWaste.toStringAsFixed(2)}',
+                      ),
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                    backgroundColor: AppColors.warningBackground(context),
+                    side: BorderSide(color: AppColors.warningBorder(context)),
+                  ),
+                ),
+              );
+            },
+          ),
         ],
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -1502,7 +1798,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.primary(context),
                       side: BorderSide(color: AppColors.primary(context)),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                   ),
@@ -1511,17 +1809,30 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               if (_weekHasBatchCooking(plan, _selectedWeek)) ...[
                 const SizedBox(width: 8),
                 OutlinedButton.icon(
-                  onPressed: _batchPlanLoading ? null : () => _showBatchPrepGuide(plan, _selectedWeek),
+                  onPressed: _batchPlanLoading
+                      ? null
+                      : () => _showBatchPrepGuide(plan, _selectedWeek),
                   icon: _batchPlanLoading
-                      ? SizedBox(width: 16, height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary(context)))
+                      ? SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.primary(context),
+                          ),
+                        )
                       : const Icon(Icons.kitchen, size: 18),
                   label: Text(l10n.mealBatchPrepGuide),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.primary(context),
                     side: BorderSide(color: AppColors.primary(context)),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 12,
+                    ),
                   ),
                 ),
               ],
@@ -1541,7 +1852,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                       mealDay: day,
                       onEdit: () => _editFreeformMeal(day),
                       onAddToShoppingList: widget.onAddToShoppingList,
-                      onFeedback: (fb) => _setFreeformFeedback(day.dayIndex, day.mealType, fb),
+                      onFeedback: (fb) =>
+                          _setFreeformFeedback(day.dayIndex, day.mealType, fb),
                     );
                   }
                   return _DayCard(
@@ -1549,7 +1861,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     plan: plan,
                     service: _service,
                     aiContent: _aiContent[day.recipeId],
-                    isExpanded: _expanded.contains('${day.dayIndex}_${day.mealType.name}'),
+                    isExpanded: _expanded.contains(
+                      '${day.dayIndex}_${day.mealType.name}',
+                    ),
                     onToggleExpand: () => setState(() {
                       final key = '${day.dayIndex}_${day.mealType.name}';
                       if (_expanded.contains(key)) {
@@ -1558,13 +1872,18 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                         _expanded.add(key);
                       }
                     }),
-                    onSwap: () => _swapRecipe(day.dayIndex, day.mealType, day.recipeId),
+                    onSwap: () =>
+                        _swapRecipe(day.dayIndex, day.mealType, day.recipeId),
                     onReplaceFreeform: () => _replaceMealWithFreeform(day),
                     onAddIngredientToList: widget.onAddToShoppingList,
-                    onFeedback: (fb) => _setFeedback(day.dayIndex, day.mealType, fb),
-                    onRating: (rating) => _setRating(day.dayIndex, day.mealType, rating),
+                    onFeedback: (fb) =>
+                        _setFeedback(day.dayIndex, day.mealType, fb),
+                    onRating: (rating) =>
+                        _setRating(day.dayIndex, day.mealType, rating),
                     onViewPrepGuide: () => _showMealPrepGuide(day),
-                    activePantryIds: resolveActivePantry(widget.settings.mealSettings),
+                    activePantryIds: resolveActivePantry(
+                      widget.settings.mealSettings,
+                    ),
                     onSubstituteIngredient: (ingredientId) =>
                         _showIngredientSubstitutionSheet(day, ingredientId),
                   );
@@ -1592,7 +1911,10 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                       heroTag: 'addFreeform',
                       onPressed: () => _showFreeformDayPicker(plan),
                       backgroundColor: AppColors.primary(context),
-                      child: Icon(Icons.edit_note, color: AppColors.onPrimary(context)),
+                      child: Icon(
+                        Icons.edit_note,
+                        color: AppColors.onPrimary(context),
+                      ),
                     ),
                   ],
                 ),
@@ -1608,7 +1930,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final start = weekIndex * 7 + 1;
     final daysInMonth = DateTime(plan.year, plan.month + 1, 0).day;
     final end = (weekIndex + 1) * 7 < daysInMonth ? start + 6 : daysInMonth;
-    return plan.days.where((d) => d.dayIndex >= start && d.dayIndex <= end).toList();
+    return plan.days
+        .where((d) => d.dayIndex >= start && d.dayIndex <= end)
+        .toList();
   }
 }
 
@@ -1675,7 +1999,10 @@ class _DayCard extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.infoBackground(context),
                         borderRadius: BorderRadius.circular(6),
@@ -1683,14 +2010,18 @@ class _DayCard extends StatelessWidget {
                       child: Text(
                         l10n.mealDayLabel(mealDay.dayIndex),
                         style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.primary(context)),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primary(context),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 6),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFFF0FDF4),
                         borderRadius: BorderRadius.circular(6),
@@ -1698,15 +2029,19 @@ class _DayCard extends StatelessWidget {
                       child: Text(
                         mealDay.mealType.localizedLabel(l10n),
                         style: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF16A34A)),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF16A34A),
+                        ),
                       ),
                     ),
                     if (mealDay.isLeftover) ...[
                       const SizedBox(width: 6),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFFFEF3C7),
                           borderRadius: BorderRadius.circular(6),
@@ -1714,14 +2049,19 @@ class _DayCard extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.recycling, size: 12, color: Color(0xFF92400E)),
+                            const Icon(
+                              Icons.recycling,
+                              size: 12,
+                              color: Color(0xFF92400E),
+                            ),
                             const SizedBox(width: 4),
                             Text(
                               l10n.mealLeftover,
                               style: const TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xFF92400E)),
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF92400E),
+                              ),
                             ),
                           ],
                         ),
@@ -1740,12 +2080,17 @@ class _DayCard extends StatelessWidget {
                     Text(
                       '${mealDay.costEstimate.toStringAsFixed(2)}${currencySymbol()}',
                       style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary(context)),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary(context),
+                      ),
                     ),
                     PopupMenuButton<String>(
-                      icon: Icon(Icons.more_vert, size: 18, color: AppColors.textMuted(context)),
+                      icon: Icon(
+                        Icons.more_vert,
+                        size: 18,
+                        color: AppColors.textMuted(context),
+                      ),
                       padding: EdgeInsets.zero,
                       itemBuilder: (_) => [
                         PopupMenuItem(
@@ -1762,50 +2107,110 @@ class _DayCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   recipe.name,
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 6),
                 Row(
                   children: [
                     _Stars(recipe.complexity),
                     const SizedBox(width: 10),
-                    if (recipe.activeMinutes != null && recipe.passiveMinutes != null) ...[
-                      Icon(Icons.timer_outlined, size: 14, color: AppColors.textMuted(context)),
+                    if (recipe.activeMinutes != null &&
+                        recipe.passiveMinutes != null) ...[
+                      Icon(
+                        Icons.timer_outlined,
+                        size: 14,
+                        color: AppColors.textMuted(context),
+                      ),
                       const SizedBox(width: 3),
-                      Text('${recipe.activeMinutes} ${l10n.mealActiveTime}',
-                          style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+                      Text(
+                        '${recipe.activeMinutes} ${l10n.mealActiveTime}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textMuted(context),
+                        ),
+                      ),
                       const SizedBox(width: 4),
-                      Icon(Icons.local_fire_department_outlined, size: 14, color: AppColors.textMuted(context)),
+                      Icon(
+                        Icons.local_fire_department_outlined,
+                        size: 14,
+                        color: AppColors.textMuted(context),
+                      ),
                       const SizedBox(width: 3),
-                      Text('+ ${recipe.passiveMinutes} ${l10n.mealPassiveTime}',
-                          style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+                      Text(
+                        '+ ${recipe.passiveMinutes} ${l10n.mealPassiveTime}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textMuted(context),
+                        ),
+                      ),
                     ] else ...[
-                      Icon(Icons.timer_outlined, size: 14, color: AppColors.textMuted(context)),
+                      Icon(
+                        Icons.timer_outlined,
+                        size: 14,
+                        color: AppColors.textMuted(context),
+                      ),
                       const SizedBox(width: 3),
-                      Text('${recipe.prepMinutes}min',
-                          style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+                      Text(
+                        '${recipe.prepMinutes}min',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textMuted(context),
+                        ),
+                      ),
                     ],
                     const SizedBox(width: 10),
-                    Icon(Icons.person_outline, size: 14, color: AppColors.textMuted(context)),
+                    Icon(
+                      Icons.person_outline,
+                      size: 14,
+                      color: AppColors.textMuted(context),
+                    ),
                     const SizedBox(width: 3),
-                    Text(l10n.mealCostPerPerson(costPerPerson.toStringAsFixed(2)),
-                        style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+                    Text(
+                      l10n.mealCostPerPerson(costPerPerson.toStringAsFixed(2)),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textMuted(context),
+                      ),
+                    ),
                   ],
                 ),
                 if (recipe.nutrition != null) ...[
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      _NutriBadge('${recipe.nutrition!.kcal}', 'kcal', AppColors.error(context)),
+                      _NutriBadge(
+                        '${recipe.nutrition!.kcal}',
+                        'kcal',
+                        AppColors.error(context),
+                      ),
                       const SizedBox(width: 6),
-                      _NutriBadge('${recipe.nutrition!.proteinG.round()}g', l10n.mealNutriProt, AppColors.primary(context)),
+                      _NutriBadge(
+                        '${recipe.nutrition!.proteinG.round()}g',
+                        l10n.mealNutriProt,
+                        AppColors.primary(context),
+                      ),
                       const SizedBox(width: 6),
-                      _NutriBadge('${recipe.nutrition!.carbsG.round()}g', l10n.mealNutriCarbs, AppColors.warning(context)),
+                      _NutriBadge(
+                        '${recipe.nutrition!.carbsG.round()}g',
+                        l10n.mealNutriCarbs,
+                        AppColors.warning(context),
+                      ),
                       const SizedBox(width: 6),
-                      _NutriBadge('${recipe.nutrition!.fatG.round()}g', l10n.mealNutriFat, const Color(0xFF8B5CF6)),
+                      _NutriBadge(
+                        '${recipe.nutrition!.fatG.round()}g',
+                        l10n.mealNutriFat,
+                        const Color(0xFF8B5CF6),
+                      ),
                       if (recipe.nutrition!.fiberG >= 5) ...[
                         const SizedBox(width: 6),
-                        _NutriBadge('${recipe.nutrition!.fiberG.round()}g', l10n.mealNutriFiber, AppColors.success(context)),
+                        _NutriBadge(
+                          '${recipe.nutrition!.fiberG.round()}g',
+                          l10n.mealNutriFiber,
+                          AppColors.success(context),
+                        ),
                       ],
                     ],
                   ),
@@ -1828,9 +2233,13 @@ class _DayCard extends StatelessWidget {
                           foregroundColor: isExpanded
                               ? AppColors.textSecondary(context)
                               : AppColors.primary(context),
-                          side: BorderSide(color: isExpanded
-                              ? AppColors.border(context)
-                              : AppColors.primary(context).withValues(alpha: 0.5)),
+                          side: BorderSide(
+                            color: isExpanded
+                                ? AppColors.border(context)
+                                : AppColors.primary(
+                                    context,
+                                  ).withValues(alpha: 0.5),
+                          ),
                           padding: const EdgeInsets.symmetric(vertical: 8),
                         ),
                       ),
@@ -1840,10 +2249,17 @@ class _DayCard extends StatelessWidget {
                       child: OutlinedButton.icon(
                         onPressed: onViewPrepGuide,
                         icon: const Icon(Icons.menu_book_outlined, size: 16),
-                        label: Text(l10n.mealViewPrepGuide, style: const TextStyle(fontSize: 12)),
+                        label: Text(
+                          l10n.mealViewPrepGuide,
+                          style: const TextStyle(fontSize: 12),
+                        ),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppColors.primary(context),
-                          side: BorderSide(color: AppColors.primary(context).withValues(alpha: 0.5)),
+                          side: BorderSide(
+                            color: AppColors.primary(
+                              context,
+                            ).withValues(alpha: 0.5),
+                          ),
                           padding: const EdgeInsets.symmetric(vertical: 8),
                         ),
                       ),
@@ -1853,7 +2269,10 @@ class _DayCard extends StatelessWidget {
                       child: OutlinedButton.icon(
                         onPressed: onSwap,
                         icon: const Icon(Icons.swap_horiz, size: 16),
-                        label: Text(l10n.mealSwap, style: const TextStyle(fontSize: 12)),
+                        label: Text(
+                          l10n.mealSwap,
+                          style: const TextStyle(fontSize: 12),
+                        ),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppColors.textSecondary(context),
                           side: BorderSide(color: AppColors.border(context)),
@@ -1897,17 +2316,22 @@ class _DayCard extends StatelessWidget {
                   Text(
                     l10n.mealIngredients,
                     style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textSecondary(context)),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textSecondary(context),
+                    ),
                   ),
                   const SizedBox(height: 8),
                   ...recipe.ingredients.map((ri) {
                     // Apply substitution if present
-                    final effectiveId = mealDay.substitutions[ri.ingredientId] ?? ri.ingredientId;
+                    final effectiveId =
+                        mealDay.substitutions[ri.ingredientId] ??
+                        ri.ingredientId;
                     final ing = iMap[effectiveId] ?? iMap[ri.ingredientId];
                     if (ing == null) return const SizedBox();
-                    final isSubstituted = mealDay.substitutions.containsKey(ri.ingredientId);
+                    final isSubstituted = mealDay.substitutions.containsKey(
+                      ri.ingredientId,
+                    );
                     final scale = plan.nPessoas / recipe.servings;
                     final qty = ri.quantity * scale;
                     final cost = qty * ing.avgPricePerUnit;
@@ -1917,20 +2341,31 @@ class _DayCard extends StatelessWidget {
                         children: [
                           Expanded(
                             child: GestureDetector(
-                              onTap: () => onSubstituteIngredient(ri.ingredientId),
+                              onTap: () =>
+                                  onSubstituteIngredient(ri.ingredientId),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Flexible(
-                                    child: Text(ing.name,
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          decoration: isSubstituted ? TextDecoration.underline : null,
-                                          color: isSubstituted ? AppColors.primary(context) : null,
-                                        )),
+                                    child: Text(
+                                      ing.name,
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        decoration: isSubstituted
+                                            ? TextDecoration.underline
+                                            : null,
+                                        color: isSubstituted
+                                            ? AppColors.primary(context)
+                                            : null,
+                                      ),
+                                    ),
                                   ),
                                   const SizedBox(width: 4),
-                                  Icon(Icons.swap_horiz, size: 14, color: AppColors.textMuted(context)),
+                                  Icon(
+                                    Icons.swap_horiz,
+                                    size: 14,
+                                    color: AppColors.textMuted(context),
+                                  ),
                                 ],
                               ),
                             ),
@@ -1938,31 +2373,39 @@ class _DayCard extends StatelessWidget {
                           Text(
                             '${_fmt(qty)} ${ing.unit}',
                             style: TextStyle(
-                                fontSize: 13, color: AppColors.textSecondary(context)),
+                              fontSize: 13,
+                              color: AppColors.textSecondary(context),
+                            ),
                           ),
                           const SizedBox(width: 12),
                           Semantics(
                             button: true,
                             label: l10n.addToList(ing.name),
                             child: SizedBox(
-                            width: 40,
-                            height: 40,
-                            child: Material(
-                              color: AppColors.primary(context),
-                              borderRadius: BorderRadius.circular(10),
-                              child: InkWell(
-                                onTap: () => onAddIngredientToList(ShoppingItem(
-                                  productName: ing.name,
-                                  store: '',
-                                  price: cost,
-                                  unitPrice:
-                                      '${ing.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${ing.unit}',
-                                )),
+                              width: 40,
+                              height: 40,
+                              child: Material(
+                                color: AppColors.primary(context),
                                 borderRadius: BorderRadius.circular(10),
-                                child: Icon(Icons.add, size: 18, color: AppColors.onPrimary(context)),
+                                child: InkWell(
+                                  onTap: () => onAddIngredientToList(
+                                    ShoppingItem(
+                                      productName: ing.name,
+                                      store: '',
+                                      price: cost,
+                                      unitPrice:
+                                          '${ing.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${ing.unit}',
+                                    ),
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Icon(
+                                    Icons.add,
+                                    size: 18,
+                                    color: AppColors.onPrimary(context),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
                           ),
                         ],
                       ),
@@ -1973,18 +2416,21 @@ class _DayCard extends StatelessWidget {
                     Text(
                       l10n.mealPreparation,
                       style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textSecondary(context)),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textSecondary(context),
+                      ),
                     ),
                     const SizedBox(height: 6),
-                    ...aiContent!.steps.asMap().entries.map((e) => Padding(
-                          padding: const EdgeInsets.only(bottom: 4),
-                          child: Text(
-                            '${e.key + 1}. ${e.value}',
-                            style: const TextStyle(fontSize: 13),
-                          ),
-                        )),
+                    ...aiContent!.steps.asMap().entries.map(
+                      (e) => Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Text(
+                          '${e.key + 1}. ${e.value}',
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                      ),
+                    ),
                     if (aiContent!.tip.isNotEmpty) ...[
                       const SizedBox(height: 8),
                       Container(
@@ -1995,14 +2441,19 @@ class _DayCard extends StatelessWidget {
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.lightbulb_outline,
-                                size: 16, color: AppColors.warning(context)),
+                            Icon(
+                              Icons.lightbulb_outline,
+                              size: 16,
+                              color: AppColors.warning(context),
+                            ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 aiContent!.tip,
                                 style: const TextStyle(
-                                    fontSize: 12, color: Color(0xFF92400E)),
+                                  fontSize: 12,
+                                  color: Color(0xFF92400E),
+                                ),
                               ),
                             ),
                           ],
@@ -2020,16 +2471,29 @@ class _DayCard extends StatelessWidget {
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.shuffle, size: 16, color: AppColors.primary(context)),
+                            Icon(
+                              Icons.shuffle,
+                              size: 16,
+                              color: AppColors.primary(context),
+                            ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(l10n.mealVariation,
-                                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.primary(context))),
+                                  Text(
+                                    l10n.mealVariation,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.primary(context),
+                                    ),
+                                  ),
                                   const SizedBox(height: 2),
-                                  Text(aiContent!.variation, style: const TextStyle(fontSize: 12)),
+                                  Text(
+                                    aiContent!.variation,
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
                                 ],
                               ),
                             ),
@@ -2048,16 +2512,29 @@ class _DayCard extends StatelessWidget {
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.restaurant, size: 16, color: AppColors.success(context)),
+                            Icon(
+                              Icons.restaurant,
+                              size: 16,
+                              color: AppColors.success(context),
+                            ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(l10n.mealPairing,
-                                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.success(context))),
+                                  Text(
+                                    l10n.mealPairing,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.success(context),
+                                    ),
+                                  ),
                                   const SizedBox(height: 2),
-                                  Text(aiContent!.pairingSuggestion, style: const TextStyle(fontSize: 12)),
+                                  Text(
+                                    aiContent!.pairingSuggestion,
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
                                 ],
                               ),
                             ),
@@ -2076,16 +2553,29 @@ class _DayCard extends StatelessWidget {
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.kitchen, size: 16, color: AppColors.textSecondary(context)),
+                            Icon(
+                              Icons.kitchen,
+                              size: 16,
+                              color: AppColors.textSecondary(context),
+                            ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(l10n.mealStorage,
-                                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textSecondary(context))),
+                                  Text(
+                                    l10n.mealStorage,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.textSecondary(context),
+                                    ),
+                                  ),
                                   const SizedBox(height: 2),
-                                  Text(aiContent!.storageInfo, style: const TextStyle(fontSize: 12)),
+                                  Text(
+                                    aiContent!.storageInfo,
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
                                 ],
                               ),
                             ),
@@ -2094,7 +2584,8 @@ class _DayCard extends StatelessWidget {
                       ),
                     ],
                     // Leftover transformation idea
-                    if (mealDay.isLeftover && aiContent!.leftoverIdea.isNotEmpty) ...[
+                    if (mealDay.isLeftover &&
+                        aiContent!.leftoverIdea.isNotEmpty) ...[
                       const SizedBox(height: 8),
                       Container(
                         padding: const EdgeInsets.all(10),
@@ -2104,16 +2595,32 @@ class _DayCard extends StatelessWidget {
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.auto_fix_high, size: 16, color: Color(0xFF92400E)),
+                            const Icon(
+                              Icons.auto_fix_high,
+                              size: 16,
+                              color: Color(0xFF92400E),
+                            ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(l10n.mealLeftoverIdea,
-                                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF92400E))),
+                                  Text(
+                                    l10n.mealLeftoverIdea,
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xFF92400E),
+                                    ),
+                                  ),
                                   const SizedBox(height: 2),
-                                  Text(aiContent!.leftoverIdea, style: const TextStyle(fontSize: 12, color: Color(0xFF92400E))),
+                                  Text(
+                                    aiContent!.leftoverIdea,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Color(0xFF92400E),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -2192,7 +2699,11 @@ class _SwapSheetState extends State<_SwapSheet> {
     final l10n = S.of(context);
     final currentRecipe = widget.service.recipeMap[widget.currentRecipeId];
     final currentCost = currentRecipe != null
-        ? widget.service.recipeCost(currentRecipe, widget.nPessoas, widget.ingredientMap)
+        ? widget.service.recipeCost(
+            currentRecipe,
+            widget.nPessoas,
+            widget.ingredientMap,
+          )
         : 0.0;
 
     return SafeArea(
@@ -2202,8 +2713,10 @@ class _SwapSheetState extends State<_SwapSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.mealAlternatives,
-                style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+            Text(
+              l10n.mealAlternatives,
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+            ),
             const SizedBox(height: 12),
             Row(
               children: [
@@ -2228,45 +2741,66 @@ class _SwapSheetState extends State<_SwapSheet> {
             ),
             const SizedBox(height: 12),
             ..._alternatives.take(6).map((r) {
-              final cost = widget.service.recipeCost(r, widget.nPessoas, widget.ingredientMap);
+              final cost = widget.service.recipeCost(
+                r,
+                widget.nPessoas,
+                widget.ingredientMap,
+              );
               final delta = cost - currentCost;
               final deltaStr = delta >= 0
                   ? '+${delta.toStringAsFixed(2)}${currencySymbol()}'
                   : '${delta.toStringAsFixed(2)}${currencySymbol()}';
-              final deltaColor =
-                  delta > 0 ? Colors.red : const Color(0xFF16A34A);
+              final deltaColor = delta > 0
+                  ? Colors.red
+                  : const Color(0xFF16A34A);
               // Show meal type badge for cross-type results
-              final isCrossType = !r.suitableMealTypes.contains(widget.currentMealType.name);
+              final isCrossType = !r.suitableMealTypes.contains(
+                widget.currentMealType.name,
+              );
               return ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Row(
                   children: [
-                    Expanded(child: Text(r.name, style: const TextStyle(fontSize: 14))),
+                    Expanded(
+                      child: Text(r.name, style: const TextStyle(fontSize: 14)),
+                    ),
                     if (_showAllMealTypes && isCrossType)
                       Container(
                         margin: const EdgeInsets.only(left: 6),
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
-                          color: AppColors.primary(context).withValues(alpha: 0.12),
+                          color: AppColors.primary(
+                            context,
+                          ).withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
                           r.suitableMealTypes.first,
-                          style: TextStyle(fontSize: 10, color: AppColors.primary(context)),
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: AppColors.primary(context),
+                          ),
                         ),
                       ),
                   ],
                 ),
                 subtitle: Text(
                   l10n.mealTotalCost(cost.toStringAsFixed(2)),
-                  style: TextStyle(fontSize: 12, color: AppColors.textSecondary(context)),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary(context),
+                  ),
                 ),
                 trailing: Text(
                   deltaStr,
                   style: TextStyle(
-                      fontSize: 13,
-                      color: deltaColor,
-                      fontWeight: FontWeight.w600),
+                    fontSize: 13,
+                    color: deltaColor,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 onTap: () {
                   Navigator.pop(context);
@@ -2339,9 +2873,13 @@ class _ConsolidatedSheet extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text(l10n.mealConsolidatedTitle,
-                  style: const
-                      TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+              child: Text(
+                l10n.mealConsolidatedTitle,
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 8),
@@ -2357,10 +2895,11 @@ class _ConsolidatedSheet extends StatelessWidget {
                   Text(
                     _categoryLabel(cat, l10n).toUpperCase(),
                     style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textMuted(context),
-                        letterSpacing: 0.8),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textMuted(context),
+                      letterSpacing: 0.8,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   ...items.map((entry) {
@@ -2371,42 +2910,55 @@ class _ConsolidatedSheet extends StatelessWidget {
                       child: Row(
                         children: [
                           Expanded(
-                              child: Text(ing.name,
-                                  style: const TextStyle(fontSize: 14))),
+                            child: Text(
+                              ing.name,
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          ),
                           Text(
                             '${_fmt(entry.value)} ${ing.unit}',
                             style: TextStyle(
-                                fontSize: 13, color: AppColors.textSecondary(context)),
+                              fontSize: 13,
+                              color: AppColors.textSecondary(context),
+                            ),
                           ),
                           const SizedBox(width: 8),
                           Text(
                             '${cost.toStringAsFixed(2)}${currencySymbol()}',
                             style: const TextStyle(
-                                fontSize: 13, fontWeight: FontWeight.w600),
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                           const SizedBox(width: 10),
                           Semantics(
                             button: true,
                             label: l10n.addToList(ing.name),
                             child: SizedBox(
-                            width: 40,
-                            height: 40,
-                            child: Material(
-                              color: AppColors.primary(context),
-                              borderRadius: BorderRadius.circular(10),
-                              child: InkWell(
-                                onTap: () => onAddToShoppingList(ShoppingItem(
-                                  productName: ing.name,
-                                  store: '',
-                                  price: cost,
-                                  unitPrice:
-                                      '${ing.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${ing.unit}',
-                                )),
+                              width: 40,
+                              height: 40,
+                              child: Material(
+                                color: AppColors.primary(context),
                                 borderRadius: BorderRadius.circular(10),
-                                child: Icon(Icons.add, size: 18, color: AppColors.onPrimary(context)),
+                                child: InkWell(
+                                  onTap: () => onAddToShoppingList(
+                                    ShoppingItem(
+                                      productName: ing.name,
+                                      store: '',
+                                      price: cost,
+                                      unitPrice:
+                                          '${ing.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${ing.unit}',
+                                    ),
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Icon(
+                                    Icons.add,
+                                    size: 18,
+                                    color: AppColors.onPrimary(context),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
                           ),
                         ],
                       ),
@@ -2454,11 +3006,17 @@ class _InfoRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label,
-            style: TextStyle(color: AppColors.textSecondary(context), fontSize: 14)),
-        Text(value,
-            style: const TextStyle(
-                fontWeight: FontWeight.w700, fontSize: 14)),
+        Text(
+          label,
+          style: TextStyle(
+            color: AppColors.textSecondary(context),
+            fontSize: 14,
+          ),
+        ),
+        Text(
+          value,
+          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+        ),
       ],
     );
   }
@@ -2500,7 +3058,11 @@ class _NutriBadge extends StatelessWidget {
       ),
       child: Text(
         '$value $label',
-        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: color),
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+          color: color,
+        ),
       ),
     );
   }
@@ -2516,8 +3078,8 @@ class _WeeklySummaryCard extends StatelessWidget {
     final scoreColor = summary.overallScore >= 7
         ? AppColors.success(context)
         : summary.overallScore >= 4
-            ? AppColors.warning(context)
-            : AppColors.error(context);
+        ? AppColors.warning(context)
+        : AppColors.error(context);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
@@ -2535,51 +3097,83 @@ class _WeeklySummaryCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(Icons.analytics_outlined, size: 18, color: AppColors.textSecondary(context)),
+                  Icon(
+                    Icons.analytics_outlined,
+                    size: 18,
+                    color: AppColors.textSecondary(context),
+                  ),
                   const SizedBox(width: 8),
-                  Text(l10n.mealWeeklySummary,
-                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                  Text(
+                    l10n.mealWeeklySummary,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   const Spacer(),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
                       color: scoreColor.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
                       '${summary.overallScore}/10',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: scoreColor),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: scoreColor,
+                      ),
                     ),
                   ),
                 ],
               ),
               if (summary.highlights.isNotEmpty) ...[
                 const SizedBox(height: 8),
-                ...summary.highlights.map((h) => Padding(
-                  padding: const EdgeInsets.only(bottom: 3),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(Icons.check_circle_outline, size: 14, color: AppColors.success(context)),
-                      const SizedBox(width: 6),
-                      Expanded(child: Text(h, style: const TextStyle(fontSize: 12))),
-                    ],
+                ...summary.highlights.map(
+                  (h) => Padding(
+                    padding: const EdgeInsets.only(bottom: 3),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.check_circle_outline,
+                          size: 14,
+                          color: AppColors.success(context),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(h, style: const TextStyle(fontSize: 12)),
+                        ),
+                      ],
+                    ),
                   ),
-                )),
+                ),
               ],
               if (summary.concerns.isNotEmpty) ...[
                 const SizedBox(height: 4),
-                ...summary.concerns.map((c) => Padding(
-                  padding: const EdgeInsets.only(bottom: 3),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(Icons.warning_amber_outlined, size: 14, color: AppColors.warning(context)),
-                      const SizedBox(width: 6),
-                      Expanded(child: Text(c, style: const TextStyle(fontSize: 12))),
-                    ],
+                ...summary.concerns.map(
+                  (c) => Padding(
+                    padding: const EdgeInsets.only(bottom: 3),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.warning_amber_outlined,
+                          size: 14,
+                          color: AppColors.warning(context),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(c, style: const TextStyle(fontSize: 12)),
+                        ),
+                      ],
+                    ),
                   ),
-                )),
+                ),
               ],
             ],
           ),

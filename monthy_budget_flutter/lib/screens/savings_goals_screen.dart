@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/savings_goal.dart';
 import '../models/subscription_state.dart';
+import '../services/analytics_service.dart';
 import '../services/downgrade_service.dart';
 import '../services/savings_goal_service.dart';
 import '../theme/app_colors.dart';
@@ -105,16 +108,30 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
 
     try {
       await _service.saveGoal(goalToSave, widget.householdId);
+      if (existing == null) {
+        unawaited(
+          AnalyticsService.instance.trackEvent(
+            'goal_created',
+            properties: {
+              'goal_name': goalToSave.name,
+              'target_amount': goalToSave.targetAmount,
+              'is_active': goalToSave.isActive,
+            },
+          ),
+        );
+      }
       await _reloadGoals();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(S.of(context).savingsGoalSaved)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(S.of(context).savingsGoalSaved)));
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(S.of(context).savingsGoalSaveError(e.toString()))),
+          SnackBar(
+            content: Text(S.of(context).savingsGoalSaveError(e.toString())),
+          ),
         );
       }
     }
@@ -134,8 +151,10 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.delete,
-                style: TextStyle(color: AppColors.error(context))),
+            child: Text(
+              l10n.delete,
+              style: TextStyle(color: AppColors.error(context)),
+            ),
           ),
         ],
       ),
@@ -148,7 +167,9 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(S.of(context).savingsGoalDeleteError(e.toString()))),
+          SnackBar(
+            content: Text(S.of(context).savingsGoalDeleteError(e.toString())),
+          ),
         );
       }
     }
@@ -179,7 +200,9 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(S.of(context).savingsGoalUpdateError(e.toString()))),
+          SnackBar(
+            content: Text(S.of(context).savingsGoalUpdateError(e.toString())),
+          ),
         );
       }
     }
@@ -199,8 +222,9 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
     );
     if (updatedGoal != null && mounted) {
       setState(() {
-        _goals =
-            _goals.map((g) => g.id == updatedGoal.id ? updatedGoal : g).toList();
+        _goals = _goals
+            .map((g) => g.id == updatedGoal.id ? updatedGoal : g)
+            .toList();
       });
       _notify();
       await _reloadGoals();
@@ -251,9 +275,11 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.savings_outlined,
-                              size: 48,
-                              color: AppColors.textMuted(context)),
+                          Icon(
+                            Icons.savings_outlined,
+                            size: 48,
+                            color: AppColors.textMuted(context),
+                          ),
                           const SizedBox(height: 16),
                           Text(
                             l10n.savingsGoalEmpty,
@@ -266,41 +292,46 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
                           const SizedBox(height: 16),
                           TextButton.icon(
                             onPressed: () => setState(() => _showHelp = true),
-                            icon: Icon(Icons.help_outline,
-                                size: 18,
-                                color: AppColors.primary(context)),
+                            icon: Icon(
+                              Icons.help_outline,
+                              size: 18,
+                              color: AppColors.primary(context),
+                            ),
                             label: Text(
                               l10n.savingsGoalHowItWorksTitle,
                               style: TextStyle(
-                                  color: AppColors.primary(context)),
+                                color: AppColors.primary(context),
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
                   )
-                : Builder(builder: (_) {
-                    // Sort: active first, then paused
-                    final sorted = List<SavingsGoal>.from(_goals)
-                      ..sort((a, b) {
-                        if (a.isActive == b.isActive) return 0;
-                        return a.isActive ? -1 : 1;
-                      });
-                    return ListView.separated(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: sorted.length,
-                      separatorBuilder: (_, _) => const SizedBox(height: 8),
-                      itemBuilder: (_, i) => _GoalCard(
-                        key: i == 0 ? SavingsGoalsTourKeys.goalCard : null,
-                        goal: sorted[i],
-                        isFreeUser: _isFreeUser,
-                        onTap: () => _openGoalDetail(sorted[i]),
-                        onEdit: () => _addOrEditGoal(sorted[i]),
-                        onToggle: () => _toggleActive(sorted[i]),
-                        onDelete: () => _deleteGoal(sorted[i]),
-                      ),
-                    );
-                  }),
+                : Builder(
+                    builder: (_) {
+                      // Sort: active first, then paused
+                      final sorted = List<SavingsGoal>.from(_goals)
+                        ..sort((a, b) {
+                          if (a.isActive == b.isActive) return 0;
+                          return a.isActive ? -1 : 1;
+                        });
+                      return ListView.separated(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: sorted.length,
+                        separatorBuilder: (_, _) => const SizedBox(height: 8),
+                        itemBuilder: (_, i) => _GoalCard(
+                          key: i == 0 ? SavingsGoalsTourKeys.goalCard : null,
+                          goal: sorted[i],
+                          isFreeUser: _isFreeUser,
+                          onTap: () => _openGoalDetail(sorted[i]),
+                          onEdit: () => _addOrEditGoal(sorted[i]),
+                          onToggle: () => _toggleActive(sorted[i]),
+                          onDelete: () => _deleteGoal(sorted[i]),
+                        ),
+                      );
+                    },
+                  ),
           ),
         ],
       ),
@@ -345,8 +376,11 @@ class _HowItWorksCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.lightbulb_outline,
-                  size: 18, color: AppColors.primary(context)),
+              Icon(
+                Icons.lightbulb_outline,
+                size: 18,
+                color: AppColors.primary(context),
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -360,8 +394,11 @@ class _HowItWorksCard extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: onClose,
-                child: Icon(Icons.close,
-                    size: 18, color: AppColors.textMuted(context)),
+                child: Icon(
+                  Icons.close,
+                  size: 18,
+                  color: AppColors.textMuted(context),
+                ),
               ),
             ],
           ),
@@ -379,8 +416,11 @@ class _HowItWorksCard extends StatelessWidget {
                       color: AppColors.primary(context).withValues(alpha: 0.12),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(icons[i],
-                        size: 14, color: AppColors.primary(context)),
+                    child: Icon(
+                      icons[i],
+                      size: 14,
+                      color: AppColors.primary(context),
+                    ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -450,8 +490,11 @@ class _GoalCard extends StatelessWidget {
               Row(
                 children: [
                   if (isPaused && isFreeUser)
-                    Icon(Icons.lock_outline,
-                        size: 12, color: AppColors.textMuted(context))
+                    Icon(
+                      Icons.lock_outline,
+                      size: 12,
+                      color: AppColors.textMuted(context),
+                    )
                   else
                     Container(
                       width: 12,
@@ -477,7 +520,9 @@ class _GoalCard extends StatelessWidget {
                   if (showProBadge)
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 6, vertical: 2),
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.primary(context),
                         borderRadius: BorderRadius.circular(4),
@@ -494,7 +539,9 @@ class _GoalCard extends StatelessWidget {
                   if (!showProBadge && goal.isCompleted)
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 2),
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.successBackground(context),
                         borderRadius: BorderRadius.circular(8),
@@ -526,15 +573,18 @@ class _GoalCard extends StatelessWidget {
                       ),
                       PopupMenuItem(
                         value: 'toggle',
-                        child: Text(goal.isActive
-                            ? l10n.savingsGoalInactive
-                            : l10n.savingsGoalActive),
+                        child: Text(
+                          goal.isActive
+                              ? l10n.savingsGoalInactive
+                              : l10n.savingsGoalActive,
+                        ),
                       ),
                       PopupMenuItem(
                         value: 'delete',
-                        child: Text(l10n.delete,
-                            style:
-                                TextStyle(color: AppColors.error(context))),
+                        child: Text(
+                          l10n.delete,
+                          style: TextStyle(color: AppColors.error(context)),
+                        ),
                       ),
                     ],
                   ),
@@ -551,8 +601,8 @@ class _GoalCard extends StatelessWidget {
                   color: goal.isCompleted
                       ? AppColors.success(context)
                       : (isPaused && isFreeUser)
-                          ? AppColors.border(context)
-                          : goalColor,
+                      ? AppColors.border(context)
+                      : goalColor,
                   minHeight: 6,
                 ),
               ),
@@ -574,7 +624,8 @@ class _GoalCard extends StatelessWidget {
                   ),
                   Text(
                     l10n.savingsGoalProgress(
-                        '${(goal.progress * 100).toStringAsFixed(0)}%'),
+                      '${(goal.progress * 100).toStringAsFixed(0)}%',
+                    ),
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -670,8 +721,7 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
   }
 
   Future<void> _loadContributions() async {
-    final contributions =
-        await widget.service.loadContributions(_goal.id);
+    final contributions = await widget.service.loadContributions(_goal.id);
     if (mounted) {
       setState(() {
         _contributions = contributions;
@@ -693,8 +743,10 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
     );
     if (result == null) return;
 
-    final updatedGoal =
-        await widget.service.addContribution(result, widget.householdId);
+    final updatedGoal = await widget.service.addContribution(
+      result,
+      widget.householdId,
+    );
     if (mounted) {
       final updated = [result, ..._contributions];
       setState(() {
@@ -725,8 +777,10 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.delete,
-                style: TextStyle(color: AppColors.error(context))),
+            child: Text(
+              l10n.delete,
+              style: TextStyle(color: AppColors.error(context)),
+            ),
           ),
         ],
       ),
@@ -738,7 +792,10 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
       setState(() {
         _contributions = _contributions.where((x) => x.id != c.id).toList();
         _goal = _goal.copyWith(
-          currentAmount: (_goal.currentAmount - c.amount).clamp(0, double.infinity),
+          currentAmount: (_goal.currentAmount - c.amount).clamp(
+            0,
+            double.infinity,
+          ),
         );
       });
     }
@@ -779,7 +836,8 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
               Expanded(
                 child: Text(
                   l10n.savingsProjectionAvgContribution(
-                      formatCurrency(p.averageMonthlyContribution)),
+                    formatCurrency(p.averageMonthlyContribution),
+                  ),
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
@@ -802,7 +860,8 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
                 const SizedBox(width: 6),
                 Text(
                   l10n.savingsProjectionReachedBy(
-                      '${p.projectedDate!.month.toString().padLeft(2, '0')}/${p.projectedDate!.year}'),
+                    '${p.projectedDate!.month.toString().padLeft(2, '0')}/${p.projectedDate!.year}',
+                  ),
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
@@ -846,13 +905,17 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
             const SizedBox(height: 6),
             Row(
               children: [
-                Icon(Icons.flag_outlined, size: 14,
-                    color: AppColors.textSecondary(context)),
+                Icon(
+                  Icons.flag_outlined,
+                  size: 14,
+                  color: AppColors.textSecondary(context),
+                ),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
                     l10n.savingsProjectionNeedPerMonth(
-                        formatCurrency(p.requiredMonthlyContribution!)),
+                      formatCurrency(p.requiredMonthlyContribution!),
+                    ),
                     style: TextStyle(
                       fontSize: 12,
                       color: AppColors.textSecondary(context),
@@ -876,8 +939,8 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
               color: p.onTrack == null
                   ? goalColor
                   : p.onTrack!
-                      ? AppColors.success(context)
-                      : AppColors.warning(context),
+                  ? AppColors.success(context)
+                  : AppColors.warning(context),
               minHeight: 4,
             ),
           ),
@@ -964,7 +1027,8 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
                   if (!_goal.isCompleted)
                     Text(
                       l10n.savingsGoalRemaining(
-                          formatCurrency(_goal.remaining)),
+                        formatCurrency(_goal.remaining),
+                      ),
                       style: TextStyle(
                         fontSize: 13,
                         color: AppColors.textSecondary(context),
@@ -1023,73 +1087,80 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
               child: _loading
                   ? Center(
                       child: CircularProgressIndicator(
-                          color: AppColors.primary(context)))
+                        color: AppColors.primary(context),
+                      ),
+                    )
                   : _contributions.isEmpty
-                      ? Center(
-                          child: Text(
-                            l10n.savingsGoalEmpty,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: AppColors.textMuted(context),
+                  ? Center(
+                      child: Text(
+                        l10n.savingsGoalEmpty,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppColors.textMuted(context),
+                        ),
+                      ),
+                    )
+                  : ListView.separated(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      itemCount: _contributions.length,
+                      separatorBuilder: (_, _) => const SizedBox(height: 6),
+                      itemBuilder: (_, i) {
+                        final c = _contributions[i];
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.surface(context),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: AppColors.border(context),
                             ),
                           ),
-                        )
-                      : ListView.separated(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          itemCount: _contributions.length,
-                          separatorBuilder: (_, _) =>
-                              const SizedBox(height: 6),
-                          itemBuilder: (_, i) {
-                            final c = _contributions[i];
-                            return Container(
-                              decoration: BoxDecoration(
-                                color: AppColors.surface(context),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                    color: AppColors.border(context)),
+                          child: ListTile(
+                            dense: true,
+                            leading: CircleAvatar(
+                              radius: 16,
+                              backgroundColor: goalColor.withValues(
+                                alpha: 0.15,
                               ),
-                              child: ListTile(
-                                dense: true,
-                                leading: CircleAvatar(
-                                  radius: 16,
-                                  backgroundColor:
-                                      goalColor.withValues(alpha: 0.15),
-                                  child: Icon(Icons.arrow_upward,
-                                      size: 16, color: goalColor),
-                                ),
-                                title: Text(
-                                  formatCurrency(c.amount),
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.textPrimary(context),
-                                  ),
-                                ),
-                                subtitle: Text(
-                                  [
-                                    '${c.contributionDate.day.toString().padLeft(2, '0')}/${c.contributionDate.month.toString().padLeft(2, '0')}/${c.contributionDate.year}',
-                                    if (c.note != null &&
-                                        c.note!.isNotEmpty)
-                                      c.note!,
-                                  ].join(' - '),
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color:
-                                        AppColors.textSecondary(context),
-                                  ),
-                                ),
-                                trailing: IconButton(
-                                  icon: Icon(Icons.delete_outline,
-                                      size: 18,
-                                      color: AppColors.textMuted(context)),
-                                  onPressed: () =>
-                                      _deleteContribution(c),
-                                ),
+                              child: Icon(
+                                Icons.arrow_upward,
+                                size: 16,
+                                color: goalColor,
                               ),
-                            );
-                          },
-                        ),
+                            ),
+                            title: Text(
+                              formatCurrency(c.amount),
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textPrimary(context),
+                              ),
+                            ),
+                            subtitle: Text(
+                              [
+                                '${c.contributionDate.day.toString().padLeft(2, '0')}/${c.contributionDate.month.toString().padLeft(2, '0')}/${c.contributionDate.year}',
+                                if (c.note != null && c.note!.isNotEmpty)
+                                  c.note!,
+                              ].join(' - '),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.textSecondary(context),
+                              ),
+                            ),
+                            trailing: IconButton(
+                              icon: Icon(
+                                Icons.delete_outline,
+                                size: 18,
+                                color: AppColors.textMuted(context),
+                              ),
+                              onPressed: () => _deleteContribution(c),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
             ),
           ],
         ),
@@ -1129,8 +1200,7 @@ class _AddContributionSheetState extends State<_AddContributionSheet> {
 
   void _save() {
     if (!_formKey.currentState!.validate()) return;
-    final amount =
-        double.tryParse(_amountController.text.replaceAll(',', '.'));
+    final amount = double.tryParse(_amountController.text.replaceAll(',', '.'));
     if (amount == null || amount <= 0) return;
 
     final note = _noteController.text.trim();
@@ -1189,19 +1259,21 @@ class _AddContributionSheetState extends State<_AddContributionSheet> {
               const SizedBox(height: 8),
               TextFormField(
                 controller: _amountController,
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 decoration: InputDecoration(
                   prefixText: currencySymbol(),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 12),
+                    horizontal: 12,
+                    vertical: 12,
+                  ),
                 ),
                 validator: (v) {
-                  final val =
-                      double.tryParse((v ?? '').replaceAll(',', '.'));
+                  final val = double.tryParse((v ?? '').replaceAll(',', '.'));
                   if (val == null || val <= 0) {
                     return l10n.savingsGoalContributionAmount;
                   }
@@ -1218,8 +1290,9 @@ class _AddContributionSheetState extends State<_AddContributionSheet> {
                   final picked = await showDatePicker(
                     context: context,
                     initialDate: _selectedDate,
-                    firstDate:
-                        DateTime.now().subtract(const Duration(days: 365)),
+                    firstDate: DateTime.now().subtract(
+                      const Duration(days: 365),
+                    ),
                     lastDate: DateTime.now(),
                   );
                   if (picked != null && mounted) {
@@ -1229,17 +1302,20 @@ class _AddContributionSheetState extends State<_AddContributionSheet> {
                 borderRadius: BorderRadius.circular(12),
                 child: Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 14),
+                    horizontal: 12,
+                    vertical: 14,
+                  ),
                   decoration: BoxDecoration(
-                    border:
-                        Border.all(color: AppColors.borderMuted(context)),
+                    border: Border.all(color: AppColors.borderMuted(context)),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.calendar_today,
-                          size: 18,
-                          color: AppColors.textSecondary(context)),
+                      Icon(
+                        Icons.calendar_today,
+                        size: 18,
+                        color: AppColors.textSecondary(context),
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         '${_selectedDate.day.toString().padLeft(2, '0')}/${_selectedDate.month.toString().padLeft(2, '0')}/${_selectedDate.year}',
@@ -1265,7 +1341,9 @@ class _AddContributionSheetState extends State<_AddContributionSheet> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 12),
+                    horizontal: 12,
+                    vertical: 12,
+                  ),
                 ),
                 textCapitalization: TextCapitalization.sentences,
               ),
@@ -1281,13 +1359,16 @@ class _AddContributionSheetState extends State<_AddContributionSheet> {
                     backgroundColor: AppColors.primary(context),
                     foregroundColor: AppColors.onPrimary(context),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     elevation: 0,
                   ),
                   child: Text(
                     l10n.save,
                     style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w600),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
@@ -1321,7 +1402,9 @@ Color _hexToColor(String hex) {
 String? _deadlineLabel(SavingsGoal goal, S l10n) {
   if (goal.deadline == null) return null;
   final now = DateTime.now();
-  final diff = goal.deadline!.difference(DateTime(now.year, now.month, now.day));
+  final diff = goal.deadline!.difference(
+    DateTime(now.year, now.month, now.day),
+  );
   if (diff.isNegative) return l10n.savingsGoalOverdue;
   return l10n.savingsGoalDaysLeft('${diff.inDays}');
 }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'analytics_service.dart';
 
 class LogService {
   LogService._();
@@ -80,6 +81,14 @@ class LogService {
       category: category,
       data: data,
       level: SentryLevel.error,
+    );
+
+    unawaited(
+      AnalyticsService.instance.trackError(
+        category: category,
+        error: error,
+        properties: data,
+      ),
     );
 
     if (!sentryEnabled) return;

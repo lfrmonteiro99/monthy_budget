@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
@@ -5,6 +7,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../l10n/generated/app_localizations.dart';
 import '../models/parsed_receipt.dart';
+import '../services/analytics_service.dart';
 import '../services/receipt_scan_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/atcud_parser.dart';
@@ -71,6 +74,17 @@ class _ReceiptScanSheetState extends State<ReceiptScanSheet> {
     if (receipt == null) return;
 
     _scanned = true;
+    unawaited(
+      AnalyticsService.instance.trackEvent(
+        'receipt_scanned',
+        properties: {
+          'source': 'qr',
+          'line_item_count': receipt.lineItems.length,
+          'has_line_items': receipt.hasLineItems,
+          'total_amount': receipt.totalAmount,
+        },
+      ),
+    );
     Navigator.of(context).pop(receipt);
   }
 
@@ -93,11 +107,24 @@ class _ReceiptScanSheetState extends State<ReceiptScanSheet> {
       final recognizer = TextRecognizer();
       try {
         final recognised = await recognizer.processImage(inputImage);
-        final lines =
-            recognised.blocks.expand((b) => b.lines).map((l) => l.text).toList();
+        final lines = recognised.blocks
+            .expand((b) => b.lines)
+            .map((l) => l.text)
+            .toList();
 
         final receipt = ReceiptScanService.processOcrText(textLines: lines);
         if (receipt != null && mounted) {
+          unawaited(
+            AnalyticsService.instance.trackEvent(
+              'receipt_scanned',
+              properties: {
+                'source': 'photo',
+                'line_item_count': receipt.lineItems.length,
+                'has_line_items': receipt.hasLineItems,
+                'total_amount': receipt.totalAmount,
+              },
+            ),
+          );
           Navigator.of(context).pop(receipt);
           return;
         }
@@ -162,7 +189,9 @@ class _ReceiptScanSheetState extends State<ReceiptScanSheet> {
                 Text(
                   l10n.receiptScanTitle,
                   style: const TextStyle(
-                      fontSize: 17, fontWeight: FontWeight.w700),
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 IconButton(
                   onPressed: () => Navigator.of(context).pop(),

@@ -12,6 +12,7 @@ import 'config/supabase_public_config.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'screens/auth/auth_gate.dart';
 import 'services/ad_service.dart';
+import 'services/analytics_service.dart';
 import 'services/local_config_service.dart';
 import 'services/log_service.dart';
 import 'services/notification_service.dart';
@@ -117,6 +118,17 @@ Future<void> _initDeferredServices() async {
   await Future.wait([
     Future(() async {
       try {
+        await AnalyticsService.instance.init();
+      } catch (e) {
+        LogService.error(
+          'AnalyticsService initialization failed',
+          error: e,
+          category: 'service.analytics',
+        );
+      }
+    }),
+    Future(() async {
+      try {
         await NotificationService().init();
       } catch (e) {
         LogService.error(
@@ -188,6 +200,7 @@ class _OrcamentoMensalAppState extends State<OrcamentoMensalApp> {
         builder: (_, _) => MaterialApp(
           title: 'Orçamento Mensal',
           debugShowCheckedModeBanner: false,
+          navigatorObservers: [AnalyticsService.instance.navigatorObserver],
           locale: _controller.locale,
           localizationsDelegates: const [
             S.delegate,
