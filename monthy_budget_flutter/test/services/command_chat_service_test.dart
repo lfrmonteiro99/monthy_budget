@@ -153,6 +153,13 @@ void main() {
       expect(result.params?['screen'], isNotNull);
     });
 
+    test('parses navigate_to from English', () {
+      final result = CommandChatService.regexParse('open insights');
+      expect(result, isNotNull);
+      expect(result!.action, 'navigate_to');
+      expect(result.params?['screen'], 'insights');
+    });
+
     test('parses clear_checked_items', () {
       final result = CommandChatService.regexParse('limpa a lista');
       expect(result, isNotNull);
