@@ -8,6 +8,7 @@ Current checked-in smoke specs:
 - `dashboard.smoke.spec.ts`
 - `expense-tracker.smoke.spec.ts`
 - `meal-planner-settings.smoke.spec.ts`
+- `savings-goals.smoke.spec.ts`
 - `shopping-list.smoke.spec.ts`
 
 ## Prerequisites
