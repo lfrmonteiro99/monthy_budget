@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../../models/app_settings.dart';
 import '../../services/household_service.dart';
+import '../../services/settings_service.dart';
 import '../../theme/app_colors.dart';
 
 class HouseholdSetupScreen extends StatefulWidget {
   final void Function(HouseholdProfile profile) onSetupComplete;
-  const HouseholdSetupScreen({super.key, required this.onSetupComplete});
+  final Future<HouseholdProfile> Function(String name)? createHousehold;
+  final Future<HouseholdProfile> Function(String inviteCode)? joinHousehold;
+  final Future<void> Function(AppSettings settings, String householdId)?
+      saveSettings;
+
+  const HouseholdSetupScreen({
+    super.key,
+    required this.onSetupComplete,
+    this.createHousehold,
+    this.joinHousehold,
+    this.saveSettings,
+  });
 
   @override
   State<HouseholdSetupScreen> createState() => _HouseholdSetupScreenState();
 }
 
 class _HouseholdSetupScreenState extends State<HouseholdSetupScreen> {
-  final _service = HouseholdService();
   final _nameCtrl = TextEditingController();
   final _codeCtrl = TextEditingController();
   bool _creating = true;
@@ -36,9 +48,21 @@ class _HouseholdSetupScreenState extends State<HouseholdSetupScreen> {
       if (_creating) {
         final name = _nameCtrl.text.trim();
         if (name.isEmpty) throw Exception(S.of(context).householdNameRequired);
-        profile = await _service.createHousehold(name);
+        profile = widget.createHousehold != null
+            ? await widget.createHousehold!(name)
+            : await HouseholdService().createHousehold(name);
+        // Explicitly write setupWizardCompleted: false so the wizard
+        // is guaranteed to appear regardless of what the RPC seeds.
+        if (widget.saveSettings != null) {
+          await widget.saveSettings!(const AppSettings(), profile.householdId);
+        } else {
+          await SettingsService().save(const AppSettings(), profile.householdId);
+        }
       } else {
-        profile = await _service.joinHousehold(_codeCtrl.text.trim());
+        final inviteCode = _codeCtrl.text.trim();
+        profile = widget.joinHousehold != null
+            ? await widget.joinHousehold!(inviteCode)
+            : await HouseholdService().joinHousehold(inviteCode);
       }
       widget.onSetupComplete(profile);
     } catch (e) {
