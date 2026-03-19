@@ -62,11 +62,30 @@ void main() {
       expect(updated.localeOverride, isNull);
     });
 
-    test('fromJsonString defaults setupWizardCompleted to true for legacy rows', () {
+    test('fromJsonString keeps setup wizard pending for empty legacy rows', () {
       const legacyJson = '''
 {
   "personalInfo": {},
   "salaries": [],
+  "expenses": [],
+  "country": "pt"
+}
+''';
+      final decoded = AppSettings.fromJsonString(legacyJson);
+      expect(decoded.setupWizardCompleted, isFalse);
+    });
+
+    test('fromJsonString marks setup wizard complete for configured legacy rows', () {
+      const legacyJson = '''
+{
+  "personalInfo": {},
+  "salaries": [
+    {
+      "label": "Salary 1",
+      "grossAmount": 1800,
+      "enabled": true
+    }
+  ],
   "expenses": [],
   "country": "pt"
 }
