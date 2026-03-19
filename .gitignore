@@ -34,5 +34,11 @@ monthy_budget_flutter/ios/Pods/
 monthy_budget_flutter/ios/.symlinks/
 monthy_budget_flutter/.pub-cache/
 monthy_budget_flutter/.packages
+monthy_budget_flutter/.playwright-mcp/
+monthy_budget_flutter/playwright-report/
+monthy_budget_flutter/test-results/
+monthy_budget_flutter/output/
+monthy_budget_flutter/e2e/screenshots/
+monthy_budget_flutter/e2e/.auth/
 __pycache__/
 *.pyc
