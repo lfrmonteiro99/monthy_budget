@@ -10,18 +10,29 @@ async function findSemanticLocator(
   options: SemanticOptions = {},
 ) {
   const candidates: Locator[] = options.role
-    ? [page.getByRole(options.role as never, { name: labelPattern }).first()]
+    ? [page.getByRole(options.role as never, { name: labelPattern })]
     : [
-        page.getByLabel(labelPattern).first(),
-        page.getByRole('button', { name: labelPattern }).first(),
-        page.getByRole('tab', { name: labelPattern }).first(),
-        page.getByRole('link', { name: labelPattern }).first(),
-        page.getByText(labelPattern).first(),
+        page.getByLabel(labelPattern),
+        page.getByRole('button', { name: labelPattern }),
+        page.getByRole('tab', { name: labelPattern }),
+        page.getByRole('link', { name: labelPattern }),
+        page.getByText(labelPattern),
       ];
 
   for (const locator of candidates) {
-    if ((await locator.count()) > 0) {
-      return locator;
+    const count = await locator.count();
+
+    for (let index = 0; index < count; index += 1) {
+      const candidate = locator.nth(index);
+      const box = await candidate.boundingBox();
+
+      if (box && box.width > 0 && box.height > 0) {
+        return candidate;
+      }
+    }
+
+    if (count > 0) {
+      return locator.first();
     }
   }
 
