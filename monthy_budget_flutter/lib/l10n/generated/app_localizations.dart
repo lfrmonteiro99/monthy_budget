@@ -7973,6 +7973,18 @@ abstract class S {
   /// **'Aponte a câmara para o QR code do recibo'**
   String get receiptScanHint;
 
+  /// No description provided for @receiptScanPhotoHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Posicione o recibo e toque no botão para capturar'**
+  String get receiptScanPhotoHint;
+
+  /// No description provided for @receiptScanProcessing.
+  ///
+  /// In pt, this message translates to:
+  /// **'A ler recibo…'**
+  String get receiptScanProcessing;
+
   /// No description provided for @receiptScanSuccess.
   ///
   /// In pt, this message translates to:

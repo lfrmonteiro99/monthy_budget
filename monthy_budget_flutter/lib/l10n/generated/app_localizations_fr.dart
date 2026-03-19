@@ -4443,6 +4443,12 @@ class SFr extends S {
   String get receiptScanHint => 'Pointez la caméra vers le QR code du reçu';
 
   @override
+  String get receiptScanPhotoHint => 'Positionnez le reçu et appuyez sur le bouton pour capturer';
+
+  @override
+  String get receiptScanProcessing => 'Lecture du reçu\u2026';
+
+  @override
   String receiptScanSuccess(String amount, String store) {
     return 'Dépense de $amount chez $store enregistrée';
   }

@@ -4431,6 +4431,12 @@ class SPt extends S {
   String get receiptScanHint => 'Aponte a câmara para o QR code do recibo';
 
   @override
+  String get receiptScanPhotoHint => 'Posicione o recibo e toque no botão para capturar';
+
+  @override
+  String get receiptScanProcessing => 'A ler recibo\u2026';
+
+  @override
   String receiptScanSuccess(String amount, String store) {
     return 'Despesa de $amount no $store registada';
   }
