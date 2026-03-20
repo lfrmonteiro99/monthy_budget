@@ -7,6 +7,7 @@ import '../models/shopping_item.dart';
 
 abstract class ShoppingRepository {
   Stream<List<ShoppingItem>> stream(String householdId);
+  Future<List<ShoppingItem>> load(String householdId);
   Future<ShoppingItem> add(ShoppingItem item, String householdId);
   Future<void> updateItem(
     String id, {
@@ -33,6 +34,18 @@ class SupabaseShoppingRepository implements ShoppingRepository {
         .eq('household_id', householdId)
         .order('created_at')
         .map((rows) => rows.map((row) => ShoppingItem.fromSupabase(row)).toList());
+  }
+
+  @override
+  Future<List<ShoppingItem>> load(String householdId) async {
+    final rows = await _client
+        .from('shopping_items')
+        .select()
+        .eq('household_id', householdId)
+        .order('created_at');
+    return (rows as List<dynamic>)
+        .map((row) => ShoppingItem.fromSupabase(row as Map<String, dynamic>))
+        .toList();
   }
 
   @override

@@ -69,6 +69,7 @@ import 'services/revenuecat_service.dart';
 import 'widgets/ad_banner_widget.dart';
 import 'widgets/trial_expired_bottom_sheet.dart';
 import 'widgets/branded_loading.dart';
+import 'widgets/offline_banner.dart';
 import 'services/command_chat_service.dart';
 import 'services/command_pattern_cache.dart';
 import 'services/command_action_registry.dart';
@@ -89,6 +90,10 @@ import 'widgets/receipt_scan_sheet.dart';
 import 'screens/product_updates_screen.dart';
 import 'constants/app_constants.dart';
 import 'navigation/app_route.dart';
+import 'repositories/local/app_database.dart';
+import 'repositories/local/local_shopping_repository.dart';
+import 'services/connectivity_service.dart';
+import 'services/sync_service.dart';
 
 class AppHome extends StatefulWidget {
   final String householdId;
@@ -103,7 +108,7 @@ class AppHome extends StatefulWidget {
 class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   final _settingsService = SettingsService();
   final _favoritesService = FavoritesService();
-  final _shoppingListService = ShoppingListService();
+  late final ShoppingListService _shoppingListService;
   final _aiCoachService = AiCoachService();
   final _purchaseHistoryService = PurchaseHistoryService();
   final _productsService = ProductsService();
@@ -120,7 +125,14 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   final _commandChatService = CommandChatService();
   final _commandPatternCache = CommandPatternCache();
   final _dataHealthService = DataHealthService();
+  final AppDatabase _appDatabase = AppDatabase.instance;
+  final ConnectivityService _connectivityService = ConnectivityService();
+  late final SyncService _syncService;
   bool _commandPanelOpen = false;
+  bool _isOffline = false;
+  int _pendingSyncCount = 0;
+  StreamSubscription<bool>? _connectivitySubscription;
+  StreamSubscription<int>? _pendingSyncSubscription;
 
   // Use a far-past date so trial is NOT active before load() completes.
   SubscriptionState _subscription = SubscriptionState(
@@ -163,9 +175,42 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _syncService = SyncService(
+      database: _appDatabase,
+      connectivity: _connectivityService,
+    );
+    _shoppingListService = ShoppingListService(
+      repository: LocalShoppingRepository(
+        database: _appDatabase,
+        syncService: _syncService,
+      ),
+    );
     _shoppingListSub = _shoppingListService
         .stream(widget.householdId)
         .listen((items) => setState(() => _shoppingList = items));
+    _pendingSyncSubscription = _syncService
+        .watchPendingCount(widget.householdId)
+        .listen((count) {
+          if (!mounted || _pendingSyncCount == count) return;
+          setState(() => _pendingSyncCount = count);
+        });
+    _connectivityService.checkConnectivity().then((online) {
+      if (!mounted) return;
+      setState(() => _isOffline = !online);
+    });
+    _connectivitySubscription = _connectivityService.onStatusChange.listen((
+      online,
+    ) {
+      if (!mounted) return;
+      final offline = !online;
+      if (_isOffline == offline) return;
+      setState(() => _isOffline = offline);
+      if (online) {
+        _syncService.syncPending();
+      }
+    });
+    _syncService.start();
+    _syncService.refreshShoppingForHousehold(widget.householdId);
     _loadAll();
     _commandPatternCache.load();
     unawaited(QuickActionService.instance.init(onAction: _handleQuickAction));
@@ -176,6 +221,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _shoppingListSub.cancel();
+    _connectivitySubscription?.cancel();
+    _pendingSyncSubscription?.cancel();
+    _syncService.dispose();
+    _connectivityService.dispose();
     QuickActionService.instance.dispose();
     unawaited(AnalyticsService.instance.reset());
     RevenueCatService.logout();
@@ -2002,46 +2051,48 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       ),
     };
 
+    final dashboardBody = Column(
+      children: [
+        if (_subscription.isTrialActive)
+          TrialBanner(subscription: _subscription, onUpgrade: _openPaywall),
+        if (_subscription.isTrialActive &&
+            _subscription.nextFeatureToDiscover != null)
+          FeatureDiscoveryCard(
+            subscription: _subscription,
+            onExploreFeature: _navigateToFeature,
+            onDismiss: () {
+              final next = _subscription.nextFeatureToDiscover;
+              if (next != null) _trackFeature(next);
+            },
+          ),
+        CriticalAlertBanner(
+          criticalCount: buildAlerts(
+            statuses: _dataHealthService.statuses,
+          ).where((a) => a.severity == AlertSeverity.critical).length,
+          onTap: _openConfidenceCenter,
+        ),
+        Expanded(child: screens[AppTab.dashboard]!),
+        AdBannerWidget(showAd: AdService.shouldShowAds(_subscription)),
+      ],
+    );
+
+    final content = _currentTab == AppTab.dashboard
+        ? dashboardBody
+        : screens[_currentTab]!;
+
     return Stack(
       children: [
         Scaffold(
-          body: _currentTab == AppTab.dashboard
-              ? Column(
-                  children: [
-                    // Trial banner on dashboard
-                    if (_subscription.isTrialActive)
-                      TrialBanner(
-                        subscription: _subscription,
-                        onUpgrade: _openPaywall,
-                      ),
-                    // Feature discovery nudge
-                    if (_subscription.isTrialActive &&
-                        _subscription.nextFeatureToDiscover != null)
-                      FeatureDiscoveryCard(
-                        subscription: _subscription,
-                        onExploreFeature: _navigateToFeature,
-                        onDismiss: () {
-                          // Skip this feature in discovery
-                          final next = _subscription.nextFeatureToDiscover;
-                          if (next != null) _trackFeature(next);
-                        },
-                      ),
-                    CriticalAlertBanner(
-                      criticalCount:
-                          buildAlerts(statuses: _dataHealthService.statuses)
-                              .where(
-                                (a) => a.severity == AlertSeverity.critical,
-                              )
-                              .length,
-                      onTap: _openConfidenceCenter,
-                    ),
-                    Expanded(child: screens[AppTab.dashboard]!),
-                    AdBannerWidget(
-                      showAd: AdService.shouldShowAds(_subscription),
-                    ),
-                  ],
-                )
-              : screens[_currentTab]!,
+          body: Column(
+            children: [
+              if (_isOffline)
+                OfflineBanner(
+                  message: l10n.offlineBannerMessage,
+                  pendingCount: _pendingSyncCount,
+                ),
+              Expanded(child: content),
+            ],
+          ),
           floatingActionButton: _currentTab == AppTab.dashboard
               ? Padding(
                   padding: const EdgeInsets.only(bottom: 8),

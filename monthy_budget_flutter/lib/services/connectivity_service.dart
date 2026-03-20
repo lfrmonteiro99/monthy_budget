@@ -2,32 +2,41 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 
-/// Tracks the current connectivity status and exposes a broadcast stream.
-class ConnectivityService {
-  static final ConnectivityService _instance = ConnectivityService._internals();
+abstract class ConnectivityStateSource {
+  Stream<bool> get onStatusChange;
+  Future<bool> checkConnectivity();
+}
 
-  final Connectivity _connectivity = Connectivity();
-  final StreamController<bool> _statusController = StreamController<bool>.broadcast();
-
-  ConnectivityService._internals() {
-    _connectivity.onConnectivityChanged.listen((result) {
-      _statusController.add(_convert(result));
+class ConnectivityService implements ConnectivityStateSource {
+  ConnectivityService({Connectivity? connectivity})
+      : _connectivity = connectivity ?? Connectivity() {
+    _subscription = _connectivity.onConnectivityChanged.listen((result) {
+      if (!_statusController.isClosed) {
+        _statusController.add(_convert(result));
+      }
     });
   }
 
-  factory ConnectivityService() => _instance;
+  final Connectivity _connectivity;
+  final _statusController = StreamController<bool>.broadcast();
+  StreamSubscription<ConnectivityResult>? _subscription;
 
+  @override
   Stream<bool> get onStatusChange => _statusController.stream;
 
+  @override
   Future<bool> checkConnectivity() async {
     final result = await _connectivity.checkConnectivity();
     return _convert(result);
   }
 
   bool _convert(ConnectivityResult result) =>
-      result != ConnectivityResult.none && result != ConnectivityResult.bluetooth;
+      result != ConnectivityResult.none &&
+      result != ConnectivityResult.bluetooth;
 
-  void dispose() {
-    _statusController.close();
+  Future<void> dispose() async {
+    await _subscription?.cancel();
+    _subscription = null;
+    await _statusController.close();
   }
 }

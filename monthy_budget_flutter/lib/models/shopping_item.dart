@@ -26,6 +26,7 @@ class ShoppingItem {
 
   /// Optional: unit of measurement (e.g. kg, g, un, L, mL).
   final String? unit;
+  final bool pendingSync;
 
   ShoppingItem({
     this.id = '',
@@ -40,6 +41,7 @@ class ShoppingItem {
     this.cheapestKnownPrice,
     this.quantity,
     this.unit,
+    this.pendingSync = false,
   }) : assert(price >= 0, 'price must be non-negative');
 
   static const _listEquality = ListEquality<String>();
@@ -59,13 +61,15 @@ class ShoppingItem {
           cheapestKnownStore == other.cheapestKnownStore &&
           cheapestKnownPrice == other.cheapestKnownPrice &&
           quantity == other.quantity &&
-          unit == other.unit;
+          unit == other.unit &&
+          pendingSync == other.pendingSync;
 
   @override
   int get hashCode => Object.hash(
       id, productName, store, price, unitPrice,
       checked, _listEquality.hash(sourceMealLabels), preferredStore,
-      cheapestKnownStore, cheapestKnownPrice, quantity, unit);
+      cheapestKnownStore, cheapestKnownPrice, quantity, unit,
+      pendingSync);
 
   factory ShoppingItem.fromJson(Map<String, dynamic> json) {
     final rawPrice = (json['price'] as num?)?.toDouble() ?? 0;
@@ -95,6 +99,7 @@ class ShoppingItem {
           rawCheapest != null && rawCheapest < 0 ? 0 : rawCheapest,
       quantity: (json['quantity'] as num?)?.toDouble(),
       unit: json['unit'] as String?,
+      pendingSync: json['pendingSync'] as bool? ?? false,
     );
   }
 
@@ -113,7 +118,40 @@ class ShoppingItem {
           'cheapestKnownPrice': cheapestKnownPrice,
         if (quantity != null) 'quantity': quantity,
         if (unit != null) 'unit': unit,
+        'pendingSync': pendingSync,
       };
+
+  ShoppingItem copyWith({
+    String? id,
+    String? productName,
+    String? store,
+    double? price,
+    String? unitPrice,
+    bool? checked,
+    List<String>? sourceMealLabels,
+    String? preferredStore,
+    String? cheapestKnownStore,
+    double? cheapestKnownPrice,
+    double? quantity,
+    String? unit,
+    bool? pendingSync,
+  }) {
+    return ShoppingItem(
+      id: id ?? this.id,
+      productName: productName ?? this.productName,
+      store: store ?? this.store,
+      price: price ?? this.price,
+      unitPrice: unitPrice ?? this.unitPrice,
+      checked: checked ?? this.checked,
+      sourceMealLabels: sourceMealLabels ?? this.sourceMealLabels,
+      preferredStore: preferredStore ?? this.preferredStore,
+      cheapestKnownStore: cheapestKnownStore ?? this.cheapestKnownStore,
+      cheapestKnownPrice: cheapestKnownPrice ?? this.cheapestKnownPrice,
+      quantity: quantity ?? this.quantity,
+      unit: unit ?? this.unit,
+      pendingSync: pendingSync ?? this.pendingSync,
+    );
+  }
 
   factory ShoppingItem.fromSupabase(Map<String, dynamic> row) {
     final rawPrice = (row['price'] as num?)?.toDouble() ?? 0;
@@ -143,6 +181,7 @@ class ShoppingItem {
           rawCheapest != null && rawCheapest < 0 ? 0 : rawCheapest,
       quantity: (row['quantity'] as num?)?.toDouble(),
       unit: row['unit'] as String?,
+      pendingSync: false,
     );
   }
 

@@ -222,10 +222,10 @@ class SEn extends S {
   String get enumSodiumLow => 'Low sodium';
 
   @override
-  String get enumAge0to3 => '0–3 years';
+  String get enumAge0to3 => '0â€“3 years';
 
   @override
-  String get enumAge4to10 => '4–10 years';
+  String get enumAge4to10 => '4â€“10 years';
 
   @override
   String get enumAgeTeen => 'Teenager';
@@ -303,17 +303,17 @@ class SEn extends S {
 
   @override
   String monthReviewFoodExceeded(String percent) {
-    return 'Food exceeded budget by $percent% — consider reviewing portions or shopping frequency.';
+    return 'Food exceeded budget by $percent% â€” consider reviewing portions or shopping frequency.';
   }
 
   @override
   String monthReviewExpensesExceeded(String amount) {
-    return 'Actual expenses exceeded planned by $amount€ — adjust values in settings?';
+    return 'Actual expenses exceeded planned by $amountâ‚¬ â€” adjust values in settings?';
   }
 
   @override
   String monthReviewSavedMore(String amount) {
-    return 'Saved $amount€ more than expected — consider boosting emergency fund.';
+    return 'Saved $amountâ‚¬ more than expected â€” consider boosting emergency fund.';
   }
 
   @override
@@ -506,11 +506,11 @@ class SEn extends S {
 
   @override
   String dashboardPaceValue(String actual, String expected) {
-    return '$actual€/day vs $expected€/day';
+    return '$actualâ‚¬/day vs $expectedâ‚¬/day';
   }
 
   @override
-  String get dashboardSummaryLabel => '— SUMMARY';
+  String get dashboardSummaryLabel => 'â€” SUMMARY';
 
   @override
   String get dashboardViewMonthSummary => 'View month summary';
@@ -519,7 +519,7 @@ class SEn extends S {
   String get coachTitle => 'Financial Coach';
 
   @override
-  String get coachSubtitle => 'AI · GPT-4o mini';
+  String get coachSubtitle => 'AI Â· GPT-4o mini';
 
   @override
   String get coachApiKeyRequired =>
@@ -530,7 +530,7 @@ class SEn extends S {
 
   @override
   String get coachAnalysisDescription =>
-      'General positioning · Critical factors of the Serenity Index · Immediate opportunity. Based on your real budget, expense and purchase history data.';
+      'General positioning Â· Critical factors of the Serenity Index Â· Immediate opportunity. Based on your real budget, expense and purchase history data.';
 
   @override
   String get coachConfigureApiKey => 'Configure API key in Settings';
@@ -603,7 +603,7 @@ class SEn extends S {
   String get coachMemory => 'Memory';
 
   @override
-  String get coachCostFree => 'Eco mode — no credits used.';
+  String get coachCostFree => 'Eco mode â€” no credits used.';
 
   @override
   String coachCostCredits(int cost) {
@@ -798,7 +798,7 @@ class SEn extends S {
 
   @override
   String groceryAvgPrice(String unit) {
-    return '$unit · average price';
+    return '$unit Â· average price';
   }
 
   @override
@@ -811,7 +811,7 @@ class SEn extends S {
 
   @override
   String groceryAvailabilitySummary(int fresh, int partial, int failed) {
-    return '$fresh fresh · $partial partial · $failed unavailable';
+    return '$fresh fresh Â· $partial partial Â· $failed unavailable';
   }
 
   @override
@@ -836,7 +836,7 @@ class SEn extends S {
 
   @override
   String shoppingItemsRemaining(int count, String total) {
-    return '$count to buy · $total';
+    return '$count to buy Â· $total';
   }
 
   @override
@@ -882,6 +882,9 @@ class SEn extends S {
   }
 
   @override
+  String get shoppingPendingSync => 'Pending sync';
+
+  @override
   String get shoppingViewItems => 'Items';
 
   @override
@@ -889,6 +892,10 @@ class SEn extends S {
 
   @override
   String get shoppingViewStores => 'Stores';
+
+  @override
+  String get offlineBannerMessage =>
+      'Offline mode: changes will sync once you reconnect.';
 
   @override
   String get shoppingGroupOther => 'Other';
@@ -1039,7 +1046,7 @@ class SEn extends S {
 
   @override
   String projectionTitle(String month, String year) {
-    return 'Projection — $month $year';
+    return 'Projection â€” $month $year';
   }
 
   @override
@@ -1077,7 +1084,7 @@ class SEn extends S {
   String get projectionExpenses => 'EXPENSES';
 
   @override
-  String get projectionSimulation => 'Simulation — not saved';
+  String get projectionSimulation => 'Simulation â€” not saved';
 
   @override
   String get projectionReduceAll => 'Reduce all by ';
@@ -1143,7 +1150,7 @@ class SEn extends S {
 
   @override
   String monthReviewTitle(String month) {
-    return 'Summary — $month';
+    return 'Summary â€” $month';
   }
 
   @override
@@ -1239,7 +1246,7 @@ class SEn extends S {
 
   @override
   String mealTotalCost(String cost) {
-    return '$cost€ total';
+    return '$costâ‚¬ total';
   }
 
   @override
@@ -1259,7 +1266,7 @@ class SEn extends S {
 
   @override
   String mealCostPerPerson(String cost) {
-    return '$cost€/pp';
+    return '$costâ‚¬/pp';
   }
 
   @override
@@ -1385,7 +1392,7 @@ class SEn extends S {
 
   @override
   String get wizardSettingsInfo =>
-      'You can change planner settings anytime in Settings → Meals.';
+      'You can change planner settings anytime in Settings â†’ Meals.';
 
   @override
   String get wizardContinue => 'Continue';
@@ -1655,7 +1662,7 @@ class SEn extends S {
 
   @override
   String get settingsFavTip =>
-      'Favorite products influence the meal plan — recipes with those ingredients get priority.';
+      'Favorite products influence the meal plan â€” recipes with those ingredients get priority.';
 
   @override
   String get settingsMyFavorites => 'MY FAVORITES';
@@ -1879,7 +1886,7 @@ class SEn extends S {
 
   @override
   String get settingsApiKeyInfo =>
-      'The key is stored locally on the device and never shared. Uses GPT-4o mini model (~€0.00008 per analysis).';
+      'The key is stored locally on the device and never shared. Uses GPT-4o mini model (~â‚¬0.00008 per analysis).';
 
   @override
   String get settingsInviteCodeLabel => 'INVITE CODE';
@@ -1924,16 +1931,16 @@ class SEn extends S {
   String get countryUK => 'United Kingdom';
 
   @override
-  String get langPT => 'Português';
+  String get langPT => 'PortuguÃªs';
 
   @override
   String get langEN => 'English';
 
   @override
-  String get langFR => 'Français';
+  String get langFR => 'FranÃ§ais';
 
   @override
-  String get langES => 'Español';
+  String get langES => 'EspaÃ±ol';
 
   @override
   String get langSystem => 'System';
@@ -1979,7 +1986,7 @@ class SEn extends S {
 
   @override
   String get aiCoachSystemPrompt =>
-      'You are a personal financial analyst for Portuguese users. Always respond in European Portuguese. Be direct and analytical — always use concrete numbers from the provided context. Structure the response exactly in the 3 requested parts. Do not introduce external data, benchmarks, or references not provided.';
+      'You are a personal financial analyst for Portuguese users. Always respond in European Portuguese. Be direct and analytical â€” always use concrete numbers from the provided context. Structure the response exactly in the 3 requested parts. Do not introduce external data, benchmarks, or references not provided.';
 
   @override
   String get aiCoachInvalidApiKey => 'Invalid API key. Check in Settings.';
@@ -2394,7 +2401,7 @@ class SEn extends S {
 
   @override
   String billsPerMonth(int count, String amount) {
-    return '$count payments Â· $amount/mo';
+    return '$count payments Ã‚Â· $amount/mo';
   }
 
   @override
@@ -2529,7 +2536,7 @@ class SEn extends S {
 
   @override
   String savingsGoalSurplusSuggestion(String amount) {
-    return 'You had $amount surplus last month â€” allocate to a goal?';
+    return 'You had $amount surplus last month Ã¢â‚¬â€ allocate to a goal?';
   }
 
   @override
@@ -2888,7 +2895,7 @@ class SEn extends S {
 
   @override
   String get onbSlide3Body =>
-      'Get a 3-part analysis based on your actual budget — not generic advice.';
+      'Get a 3-part analysis based on your actual budget â€” not generic advice.';
 
   @override
   String get onbSlide4Title => 'Plan meals in budget';
@@ -2918,7 +2925,7 @@ class SEn extends S {
 
   @override
   String get onbTourDash2Body =>
-      'Your financial health score 0–100. Tap to see the factors.';
+      'Your financial health score 0â€“100. Tap to see the factors.';
 
   @override
   String get onbTourDash3Title => 'Budget vs actual';
@@ -3073,7 +3080,7 @@ class SEn extends S {
 
   @override
   String get onbTourAssistant1Body =>
-      'Your shortcut to quick actions. Tap to add expenses, change settings, navigate, and more — just type what you need.';
+      'Your shortcut to quick actions. Tap to add expenses, change settings, navigate, and more â€” just type what you need.';
 
   @override
   String get taxDeductionTitle => 'IRS Tax Deductions';
@@ -3178,7 +3185,7 @@ class SEn extends S {
   String get taxSimPresets => 'QUICK PRESETS';
 
   @override
-  String get taxSimPresetRaise => '+â‚¬200 raise';
+  String get taxSimPresetRaise => '+Ã¢â€šÂ¬200 raise';
 
   @override
   String get taxSimPresetMeal => 'Card vs cash meal';
@@ -3686,7 +3693,7 @@ class SEn extends S {
 
   @override
   String get savingsGoalHowItWorksStep1 =>
-      'Create a goal with a name and the amount you want to save (e.g. \"Vacation — €2,000\").';
+      'Create a goal with a name and the amount you want to save (e.g. \"Vacation â€” â‚¬2,000\").';
 
   @override
   String get savingsGoalHowItWorksStep2 =>
@@ -4403,10 +4410,11 @@ class SEn extends S {
   String get receiptScanHint => 'Point camera at the receipt QR code';
 
   @override
-  String get receiptScanPhotoHint => 'Position the receipt and tap the button to capture';
+  String get receiptScanPhotoHint =>
+      'Position the receipt and tap the button to capture';
 
   @override
-  String get receiptScanProcessing => 'Reading receipt\u2026';
+  String get receiptScanProcessing => 'Reading receiptâ€¦';
 
   @override
   String receiptScanSuccess(String amount, String store) {
@@ -4552,7 +4560,7 @@ class SEn extends S {
   String get paywallContinueFree => 'Continuing with Free plan';
 
   @override
-  String get paywallUpgradedPro => 'Upgraded to Pro — thank you!';
+  String get paywallUpgradedPro => 'Upgraded to Pro â€” thank you!';
 
   @override
   String get paywallNoRestore => 'No previous purchases found';
@@ -4619,23 +4627,23 @@ class SEn extends S {
 
   @override
   String get stressZoneCritical =>
-      '0–39: High financial pressure, urgent action needed';
+      '0â€“39: High financial pressure, urgent action needed';
 
   @override
   String get stressZoneWarning =>
-      '40–59: Some risks present, improvements recommended';
+      '40â€“59: Some risks present, improvements recommended';
 
   @override
   String get stressZoneGood =>
-      '60–79: Healthy finances, minor optimizations possible';
+      '60â€“79: Healthy finances, minor optimizations possible';
 
   @override
   String get stressZoneExcellent =>
-      '80–100: Strong financial position, well managed';
+      '80â€“100: Strong financial position, well managed';
 
   @override
   String get projectionStressHint =>
-      'How this spending scenario affects your overall financial health score (0–100)';
+      'How this spending scenario affects your overall financial health score (0â€“100)';
 
   @override
   String get coachWelcomeTitle => 'Your AI Financial Coach';
