@@ -378,6 +378,61 @@ Adapt the cooking steps for this substitution. Respond ONLY with valid JSON:
     return content;
   }
 
+  /// Generate deterministic local prep steps for a single recipe when AI
+  /// content and [Recipe.prepSteps] are both unavailable.
+  static List<String> buildLocalPrepSteps({
+    required Recipe recipe,
+    required int nPessoas,
+    String locale = 'pt',
+  }) {
+    final scale = nPessoas / recipe.servings;
+    final hasOven = recipe.requiresEquipment.contains('oven');
+    final ingredients = recipe.ingredients
+        .map((ri) => ri.ingredientId.replaceAll('_', ' '))
+        .toList();
+
+    final steps = <String>[
+      if (hasOven)
+        _batchText(
+          locale,
+          pt: 'Pré-aquece o forno à temperatura adequada para ${recipe.name}.',
+          en: 'Preheat the oven to the appropriate temperature for ${recipe.name}.',
+          es: 'Precalienta el horno a la temperatura adecuada para ${recipe.name}.',
+          fr: 'Préchauffe le four à la température appropriée pour ${recipe.name}.',
+        ),
+      _batchText(
+        locale,
+        pt: 'Prepara e separa todos os ingredientes para $nPessoas pessoas: ${ingredients.join(", ")}.',
+        en: 'Gather and measure all ingredients for $nPessoas servings: ${ingredients.join(", ")}.',
+        es: 'Prepara y separa todos los ingredientes para $nPessoas personas: ${ingredients.join(", ")}.',
+        fr: 'Prépare et mesure tous les ingrédients pour $nPessoas personnes : ${ingredients.join(", ")}.',
+      ),
+      if (scale != 1.0)
+        _batchText(
+          locale,
+          pt: 'Ajusta as quantidades: a receita original serve ${recipe.servings}, escala para $nPessoas.',
+          en: 'Adjust quantities: the original recipe serves ${recipe.servings}, scale to $nPessoas.',
+          es: 'Ajusta las cantidades: la receta original es para ${recipe.servings}, escala a $nPessoas.',
+          fr: 'Ajuste les quantités : la recette originale est pour ${recipe.servings}, adapte pour $nPessoas.',
+        ),
+      _batchText(
+        locale,
+        pt: 'Segue os passos habituais para ${recipe.name} (${recipe.prepMinutes} min de preparação).',
+        en: 'Follow the usual steps to cook ${recipe.name} (${recipe.prepMinutes} min prep time).',
+        es: 'Sigue los pasos habituales para ${recipe.name} (${recipe.prepMinutes} min de preparación).',
+        fr: 'Suis les étapes habituelles pour ${recipe.name} (${recipe.prepMinutes} min de préparation).',
+      ),
+      _batchText(
+        locale,
+        pt: 'Verifica a cozedura, tempera a gosto e serve.',
+        en: 'Check doneness, season to taste, and serve.',
+        es: 'Verifica la cocción, sazona al gusto y sirve.',
+        fr: 'Vérifie la cuisson, assaisonne et sers.',
+      ),
+    ];
+    return steps;
+  }
+
   static BatchCookingPlan buildLocalBatchPlan({
     required List<Recipe> batchRecipes,
     required int nPessoas,
