@@ -5161,5 +5161,18 @@
         "placeholders": {
             "cost": {"type": "String"}
         }
+    },
+
+    "groceryStorePartialFallback": "{storeName} tem dados parciais — os preços podem estar desatualizados",
+    "@groceryStorePartialFallback": {
+        "placeholders": {
+            "storeName": {"type": "String"}
+        }
+    },
+    "groceryStoreFailedFallback": "{storeName} está indisponível — excluída das comparações",
+    "@groceryStoreFailedFallback": {
+        "placeholders": {
+            "storeName": {"type": "String"}
+        }
     }
 }

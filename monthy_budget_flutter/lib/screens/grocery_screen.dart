@@ -444,7 +444,44 @@ class _GroceryScreenState extends State<GroceryScreen> {
                 color: AppColors.textSecondary(context),
               ),
             ),
+            const SizedBox(height: 8),
+            ...groceryData.degradedStoreSummaries.map(
+              (store) => _buildStoreFallbackRow(l10n, store),
+            ),
           ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStoreFallbackRow(S l10n, GroceryStoreSummary store) {
+    final isPartial = store.status == GroceryStoreStatus.partial;
+    final message = isPartial
+        ? l10n.groceryStorePartialFallback(store.storeName)
+        : l10n.groceryStoreFailedFallback(store.storeName);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.warning_amber_rounded,
+            size: 14,
+            color: isPartial
+                ? AppColors.warning(context)
+                : AppColors.error(context),
+          ),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(
+              message,
+              style: TextStyle(
+                fontSize: 11,
+                color: AppColors.textSecondary(context),
+              ),
+            ),
+          ),
         ],
       ),
     );

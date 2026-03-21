@@ -2747,5 +2747,18 @@
         "placeholders": {
             "cost": {"type": "String"}
         }
+    },
+
+    "groceryStorePartialFallback": "{storeName} has partial data — prices may be outdated",
+    "@groceryStorePartialFallback": {
+        "placeholders": {
+            "storeName": {"type": "String"}
+        }
+    },
+    "groceryStoreFailedFallback": "{storeName} is unavailable — excluded from comparisons",
+    "@groceryStoreFailedFallback": {
+        "placeholders": {
+            "storeName": {"type": "String"}
+        }
     }
 }

@@ -5153,4 +5153,14 @@ class SFr extends S {
   String mealWasteCost(String cost) {
     return '~$cost gaspillage';
   }
+
+  @override
+  String groceryStorePartialFallback(String storeName) {
+    return '$storeName a des donnees partielles — les prix peuvent etre obsoletes';
+  }
+
+  @override
+  String groceryStoreFailedFallback(String storeName) {
+    return '$storeName est indisponible — exclue des comparaisons';
+  }
 }
