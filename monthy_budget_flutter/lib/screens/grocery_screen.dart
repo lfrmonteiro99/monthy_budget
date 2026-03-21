@@ -47,6 +47,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
   String _searchQuery = '';
   String? _selectedCategory;
   bool _tourShown = false;
+  bool _hideStaleStores = false;
 
   @override
   void initState() {
@@ -81,14 +82,26 @@ class _GroceryScreenState extends State<GroceryScreen> {
     });
   }
 
+  bool get _canFilterStaleStores =>
+      widget.groceryData != null &&
+      widget.groceryData!.hasDegradedStores &&
+      widget.products.isNotEmpty;
+
+  List<Product> get _effectiveProducts {
+    if (_hideStaleStores && _canFilterStaleStores) {
+      return widget.groceryData!.filterByFreshStores().toCatalogProducts();
+    }
+    return widget.products;
+  }
+
   List<String> get _categories {
-    final cats = widget.products.map((p) => p.category).toSet().toList();
+    final cats = _effectiveProducts.map((p) => p.category).toSet().toList();
     cats.sort();
     return cats;
   }
 
   List<Product> get _filtered {
-    var list = widget.products;
+    var list = _effectiveProducts;
     if (_selectedCategory != null) {
       list = list.where((p) => p.category == _selectedCategory).toList();
     }
@@ -258,6 +271,39 @@ class _GroceryScreenState extends State<GroceryScreen> {
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
                     children: [
+                      if (_canFilterStaleStores) ...[
+                        FilterChip(
+                          label: Text(
+                            l10n.groceryHideStaleStores,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: _hideStaleStores
+                                  ? AppColors.onPrimary(context)
+                                  : AppColors.textSecondary(context),
+                            ),
+                          ),
+                          selected: _hideStaleStores,
+                          onSelected: (value) =>
+                              setState(() => _hideStaleStores = value),
+                          selectedColor: AppColors.warning(context),
+                          backgroundColor: AppColors.surface(context),
+                          side: BorderSide(
+                            color: _hideStaleStores
+                                ? AppColors.warning(context)
+                                : AppColors.border(context),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          showCheckmark: false,
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          visualDensity: VisualDensity.compact,
+                        ),
+                        const SizedBox(width: 8),
+                      ],
                       _chip(l10n.groceryAll, _selectedCategory == null,
                           () => setState(() => _selectedCategory = null)),
                       ..._categories.map((cat) => Padding(
