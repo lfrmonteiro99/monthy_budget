@@ -13,6 +13,12 @@ class GroceryData {
   final String generatedAt;
   final List<GroceryStoreSummary> storeSummaries;
 
+  /// Raw listings retained for re-derivation during filtering.
+  final List<GroceryBundleListing> _listings;
+
+  /// Catalog product index retained for re-derivation during filtering.
+  final Map<String, GroceryCatalogProduct> _catalogProducts;
+
   const GroceryData({
     this.metadata = const GroceryMetadata(),
     this.decoIndex = const DecoIndex(),
@@ -23,7 +29,10 @@ class GroceryData {
     this.currencyCode = '',
     this.generatedAt = '',
     this.storeSummaries = const [],
-  });
+    List<GroceryBundleListing> listings = const [],
+    Map<String, GroceryCatalogProduct> catalogProducts = const {},
+  })  : _listings = listings,
+        _catalogProducts = catalogProducts;
 
   factory GroceryData.fromJson(Map<String, dynamic> json) {
     if (_looksLikeCountryBundle(json)) {
@@ -101,6 +110,8 @@ class GroceryData {
       currencyCode: currencyCode,
       generatedAt: generatedAt,
       storeSummaries: statuses,
+      listings: listings,
+      catalogProducts: catalogProducts,
     );
   }
 
@@ -283,7 +294,6 @@ class GroceryData {
   /// when there are no stores.
   GroceryStoreStatus get overallFreshness {
     if (storeSummaries.isEmpty) return GroceryStoreStatus.fresh;
-    // Enum declaration order matches severity: fresh(0) < stale(1) < partial(2) < failed(3)
     var worst = GroceryStoreStatus.fresh;
     for (final summary in storeSummaries) {
       if (summary.status.index > worst.index) {
@@ -291,6 +301,51 @@ class GroceryData {
       }
     }
     return worst;
+  }
+
+  /// Store names with [GroceryStoreStatus.fresh] status.
+  Set<String> get freshStoreNames => {
+        for (final summary in storeSummaries)
+          if (summary.status == GroceryStoreStatus.fresh) summary.storeName,
+      };
+
+  /// Returns a new [GroceryData] containing only listings from fresh stores.
+  GroceryData filterByFreshStores() {
+    if (!hasStoreSummaries || !hasDegradedStores) return this;
+
+    final freshIds = {
+      for (final summary in storeSummaries)
+        if (summary.status == GroceryStoreStatus.fresh) summary.storeId,
+    };
+
+    final filteredListings =
+        _listings.where((l) => freshIds.contains(l.storeId)).toList();
+
+    final filteredProducts =
+        _deriveProducts(filteredListings, _catalogProducts);
+    final filteredComparisons =
+        _deriveComparisons(filteredListings, _catalogProducts);
+    final filteredCategorySummary =
+        _deriveCategorySummary(filteredListings, _catalogProducts);
+    final filteredMetadata = GroceryMetadata(
+      scrapedAt: metadata.scrapedAt,
+      totalProducts: filteredProducts.length,
+      totalComparisons: filteredComparisons.length,
+    );
+
+    return GroceryData(
+      metadata: filteredMetadata,
+      decoIndex: decoIndex,
+      products: filteredProducts,
+      comparisons: filteredComparisons,
+      categorySummary: filteredCategorySummary,
+      countryCode: countryCode,
+      currencyCode: currencyCode,
+      generatedAt: generatedAt,
+      storeSummaries: storeSummaries,
+      listings: _listings,
+      catalogProducts: _catalogProducts,
+    );
   }
 
   List<Product> toCatalogProducts() {
