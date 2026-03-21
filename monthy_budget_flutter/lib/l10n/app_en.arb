@@ -90,8 +90,8 @@
     "enumSodiumNoRestriction": "No restriction",
     "enumSodiumReduced": "Reduced sodium",
     "enumSodiumLow": "Low sodium",
-    "enumAge0to3": "0–3 years",
-    "enumAge4to10": "4–10 years",
+    "enumAge0to3": "0â€“3 years",
+    "enumAge4to10": "4â€“10 years",
     "enumAgeTeen": "Teenager",
     "enumAgeAdult": "Adult",
     "enumAgeSenior": "Senior (65+)",
@@ -123,7 +123,7 @@
         }
     },
     "stressNA": "N/A",
-    "monthReviewFoodExceeded": "Food exceeded budget by {percent}% — consider reviewing portions or shopping frequency.",
+    "monthReviewFoodExceeded": "Food exceeded budget by {percent}% â€” consider reviewing portions or shopping frequency.",
     "@monthReviewFoodExceeded": {
         "placeholders": {
             "percent": {
@@ -131,7 +131,7 @@
             }
         }
     },
-    "monthReviewExpensesExceeded": "Actual expenses exceeded planned by {amount}€ — adjust values in settings?",
+    "monthReviewExpensesExceeded": "Actual expenses exceeded planned by {amount}â‚¬ â€” adjust values in settings?",
     "@monthReviewExpensesExceeded": {
         "placeholders": {
             "amount": {
@@ -139,7 +139,7 @@
             }
         }
     },
-    "monthReviewSavedMore": "Saved {amount}€ more than expected — consider boosting emergency fund.",
+    "monthReviewSavedMore": "Saved {amount}â‚¬ more than expected â€” consider boosting emergency fund.",
     "@monthReviewSavedMore": {
         "placeholders": {
             "amount": {
@@ -273,7 +273,7 @@
     "dashboardPaceCritical": "Risk of exceeding food budget",
     "dashboardPace": "Pace",
     "dashboardProjection": "Projection",
-    "dashboardPaceValue": "{actual}€/day vs {expected}€/day",
+    "dashboardPaceValue": "{actual}â‚¬/day vs {expected}â‚¬/day",
     "@dashboardPaceValue": {
         "placeholders": {
             "actual": {
@@ -284,7 +284,7 @@
             }
         }
     },
-    "dashboardSummaryLabel": "— SUMMARY",
+    "dashboardSummaryLabel": "â€” SUMMARY",
     "dashboardViewMonthSummary": "View month summary",
     "coachTitle": "Financial Coach",
     "coachSubtitle": "AI · GPT-4o mini",
@@ -348,7 +348,7 @@
     "@coachMemory": {
         "description": "Memory section header"
     },
-    "coachCostFree": "Eco mode — no credits used.",
+    "coachCostFree": "Eco mode â€” no credits used.",
     "@coachCostFree": {
         "description": "Cost info when mode is free"
     },
@@ -529,9 +529,17 @@
             }
         }
     },
+    "shoppingPendingSync": "Pending sync",
+    "@shoppingPendingSync": {
+        "description": "Label displayed next to shopping items waiting for server sync."
+    },
     "shoppingViewItems": "Items",
     "shoppingViewMeals": "Meals",
     "shoppingViewStores": "Stores",
+    "offlineBannerMessage": "Offline mode: changes will sync once you reconnect.",
+    "@offlineBannerMessage": {
+        "description": "Banner text shown when the app detects loss of connectivity."
+    },
     "shoppingGroupOther": "Other",
     "shoppingGroupCount": "{count, plural, =1{1 item} other{{count} items}}",
     "@shoppingGroupCount": {
@@ -599,7 +607,7 @@
     "chartIRS": "Income Tax",
     "chartSocialSecurity": "Social Sec.",
     "chartSavings": "savings",
-    "projectionTitle": "Projection — {month} {year}",
+    "projectionTitle": "Projection â€” {month} {year}",
     "@projectionTitle": {
         "placeholders": {
             "month": {
@@ -640,7 +648,7 @@
     "projectionRemaining": "Projected remaining",
     "projectionStressImpact": "Index impact",
     "projectionExpenses": "EXPENSES",
-    "projectionSimulation": "Simulation — not saved",
+    "projectionSimulation": "Simulation â€” not saved",
     "projectionReduceAll": "Reduce all by ",
     "projectionSimLiquidity": "Simulated liquidity",
     "projectionDelta": "Delta",
@@ -668,7 +676,7 @@
     "trendCatHealth": "Health",
     "trendCatLeisure": "Leisure",
     "trendCatOther": "Other",
-    "monthReviewTitle": "Summary — {month}",
+    "monthReviewTitle": "Summary â€” {month}",
     "@monthReviewTitle": {
         "placeholders": {
             "month": {
@@ -741,7 +749,7 @@
     "mealConsolidatedList": "View consolidated list",
     "mealConsolidatedTitle": "Consolidated List",
     "mealAlternatives": "Alternatives",
-    "mealTotalCost": "{cost}€ total",
+    "mealTotalCost": "{cost}â‚¬ total",
     "@mealTotalCost": {
         "placeholders": {
             "cost": {
@@ -754,7 +762,7 @@
     "mealCatCarbs": "Carbs",
     "mealCatFats": "Fats",
     "mealCatCondiments": "Condiments",
-    "mealCostPerPerson": "{cost}€/pp",
+    "mealCostPerPerson": "{cost}â‚¬/pp",
     "@mealCostPerPerson": {
         "placeholders": {
             "cost": {
@@ -820,7 +828,7 @@
     "wizardNoLimit": "No limit",
     "wizardMinimizeWaste": "Minimize waste",
     "wizardMinimizeWasteDesc": "Prefer recipes that reuse ingredients already used",
-    "wizardSettingsInfo": "You can change planner settings anytime in Settings → Meals.",
+    "wizardSettingsInfo": "You can change planner settings anytime in Settings â†’ Meals.",
     "wizardContinue": "Continue",
     "wizardGeneratePlan": "Generate Plan",
     "wizardStepOf": "Step {current} of {total}",
@@ -940,7 +948,7 @@
     "dashGroupHistory": "HISTORY",
     "dashGroupCharts": "CHARTS",
     "settingsVisibleCharts": "VISIBLE CHARTS",
-    "settingsFavTip": "Favorite products influence the meal plan — recipes with those ingredients get priority.",
+    "settingsFavTip": "Favorite products influence the meal plan â€” recipes with those ingredients get priority.",
     "settingsMyFavorites": "MY FAVORITES",
     "settingsProductCatalog": "PRODUCT CATALOG",
     "settingsSearchProduct": "Search product...",
@@ -1071,7 +1079,7 @@
     "settingsLunchboxLunchesDesc": "Only portable recipes for lunch",
     "settingsPantry": "PANTRY (ALWAYS IN STOCK)",
     "settingsResetWizard": "Reset Wizard",
-    "settingsApiKeyInfo": "The key is stored locally on the device and never shared. Uses GPT-4o mini model (~€0.00008 per analysis).",
+    "settingsApiKeyInfo": "The key is stored locally on the device and never shared. Uses GPT-4o mini model (~â‚¬0.00008 per analysis).",
     "settingsInviteCodeLabel": "INVITE CODE",
     "settingsGenerateInvite": "Generate invite code",
     "settingsShareWithMembers": "Share with household members",
@@ -1110,7 +1118,7 @@
     "enumSubsidyEsNone": "No extra payments",
     "enumSubsidyEsFull": "With extra payments",
     "enumSubsidyEsHalf": "50% extra payments",
-    "aiCoachSystemPrompt": "You are a personal financial analyst for Portuguese users. Always respond in European Portuguese. Be direct and analytical — always use concrete numbers from the provided context. Structure the response exactly in the 3 requested parts. Do not introduce external data, benchmarks, or references not provided.",
+    "aiCoachSystemPrompt": "You are a personal financial analyst for Portuguese users. Always respond in European Portuguese. Be direct and analytical â€” always use concrete numbers from the provided context. Structure the response exactly in the 3 requested parts. Do not introduce external data, benchmarks, or references not provided.",
     "aiCoachInvalidApiKey": "Invalid API key. Check in Settings.",
     "aiCoachMidMonthSystem": "You are a Portuguese household budget consultant. Always respond in European Portuguese. Be practical and direct.",
     "aiMealPlannerSystem": "You are a Portuguese chef. Always respond in European Portuguese. Respond ONLY with valid JSON, no extra text.",
@@ -1290,7 +1298,7 @@
         }
     },
     "billsNone": "No recurring payments",
-    "billsPerMonth": "{count} payments Â· {amount}/mo",
+    "billsPerMonth": "{count} payments Ã‚· {amount}/mo",
     "@billsPerMonth": {
         "placeholders": {
             "count": {
@@ -1363,7 +1371,7 @@
     "savingsGoalContributionDate": "Date",
     "savingsGoalContributionHistory": "Contribution History",
     "savingsGoalSeeAll": "See all",
-    "savingsGoalSurplusSuggestion": "You had {amount} surplus last month â€” allocate to a goal?",
+    "savingsGoalSurplusSuggestion": "You had {amount} surplus last month ââ‚¬â€ allocate to a goal?",
     "@savingsGoalSurplusSuggestion": {
         "placeholders": {
             "amount": {
@@ -1390,7 +1398,7 @@
     "@savingsGoalHowItWorksTitle": {
         "description": "How it works section title"
     },
-    "savingsGoalHowItWorksStep1": "Create a goal with a name and the amount you want to save (e.g. \"Vacation — €2,000\").",
+    "savingsGoalHowItWorksStep1": "Create a goal with a name and the amount you want to save (e.g. \"Vacation â€” â‚¬2,000\").",
     "@savingsGoalHowItWorksStep1": {
         "description": "How it works step 1"
     },
@@ -1612,7 +1620,7 @@
     "onbSlide2Title": "Shop with a list",
     "onbSlide2Body": "Browse products, build a list, then finalize to record your spend automatically.",
     "onbSlide3Title": "Your AI financial coach",
-    "onbSlide3Body": "Get a 3-part analysis based on your actual budget — not generic advice.",
+    "onbSlide3Body": "Get a 3-part analysis based on your actual budget â€” not generic advice.",
     "onbSlide4Title": "Plan meals in budget",
     "onbSlide4Body": "Generate a monthly meal plan tuned to your food budget and household size.",
     "onbTourSkip": "Skip tour",
@@ -1621,7 +1629,7 @@
     "onbTourDash1Title": "Monthly liquidity",
     "onbTourDash1Body": "Income minus all expenses. Green means positive balance.",
     "onbTourDash2Title": "Serenity Index",
-    "onbTourDash2Body": "Your financial health score 0–100. Tap to see the factors.",
+    "onbTourDash2Body": "Your financial health score 0â€“100. Tap to see the factors.",
     "onbTourDash3Title": "Budget vs actual",
     "onbTourDash3Body": "Planned vs real spending per category.",
     "onbTourDash4Title": "Add expense",
@@ -1667,7 +1675,7 @@
     "onbTourRecurring2Title": "Add recurring",
     "onbTourRecurring2Body": "Tap + to register a new recurring expense with amount and due day.",
     "onbTourAssistant1Title": "Command assistant",
-    "onbTourAssistant1Body": "Your shortcut to quick actions. Tap to add expenses, change settings, navigate, and more — just type what you need.",
+    "onbTourAssistant1Body": "Your shortcut to quick actions. Tap to add expenses, change settings, navigate, and more â€” just type what you need.",
     "taxDeductionTitle": "IRS Tax Deductions",
     "taxDeductionSeeDetail": "See detail",
     "taxDeductionEstimated": "estimated deduction",
@@ -1749,7 +1757,7 @@
     },
     "taxSimTitle": "Tax Simulator",
     "taxSimPresets": "QUICK PRESETS",
-    "taxSimPresetRaise": "+â‚¬200 raise",
+    "taxSimPresetRaise": "+ââ€šÂ¬200 raise",
     "taxSimPresetMeal": "Card vs cash meal",
     "taxSimPresetTitular": "Joint vs separate",
     "taxSimParameters": "PARAMETERS",
@@ -2377,7 +2385,7 @@
     "receiptScanPhotoMode": "Photo",
     "receiptScanHint": "Point camera at the receipt QR code",
     "receiptScanPhotoHint": "Position the receipt and tap the button to capture",
-    "receiptScanProcessing": "Reading receipt…",
+    "receiptScanProcessing": "Reading receiptâ€¦",
     "receiptScanSuccess": "Expense of {amount} at {store} recorded",
     "@receiptScanSuccess": {
         "placeholders": {
@@ -2472,7 +2480,7 @@
     "navMoreTip": "Settings and insights",
 
     "paywallContinueFree": "Continuing with Free plan",
-    "paywallUpgradedPro": "Upgraded to Pro — thank you!",
+    "paywallUpgradedPro": "Upgraded to Pro â€” thank you!",
     "paywallNoRestore": "No previous purchases found",
     "paywallRestoredPro": "Restored Pro subscription!",
     "subscriptionPro": "Pro",
@@ -2502,11 +2510,11 @@
     "taxSimMealTypeHint": "Card: tax-free up to the legal limit. Cash: taxed as income.",
     "taxSimIRSFull": "IRS (Income Tax) retention",
     "taxSimSSFull": "SS (Social Security)",
-    "stressZoneCritical": "0–39: High financial pressure, urgent action needed",
-    "stressZoneWarning": "40–59: Some risks present, improvements recommended",
-    "stressZoneGood": "60–79: Healthy finances, minor optimizations possible",
-    "stressZoneExcellent": "80–100: Strong financial position, well managed",
-    "projectionStressHint": "How this spending scenario affects your overall financial health score (0–100)",
+    "stressZoneCritical": "0â€“39: High financial pressure, urgent action needed",
+    "stressZoneWarning": "40â€“59: Some risks present, improvements recommended",
+    "stressZoneGood": "60â€“79: Healthy finances, minor optimizations possible",
+    "stressZoneExcellent": "80â€“100: Strong financial position, well managed",
+    "projectionStressHint": "How this spending scenario affects your overall financial health score (0â€“100)",
     "coachWelcomeTitle": "Your AI Financial Coach",
     "coachWelcomeBody": "Ask questions about your budget, expenses, or savings. The coach analyzes your real financial data to provide personalized advice.",
     "coachWelcomeCredits": "Credits are used for Plus and Pro modes. Eco mode is always free.",

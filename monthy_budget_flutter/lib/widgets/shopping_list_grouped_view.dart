@@ -206,6 +206,24 @@ class _ShoppingListGroupedViewState extends State<ShoppingListGroupedView> {
                             ),
                           ),
                         ),
+                      if (item.pendingSync)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 6),
+                          child: Row(
+                            children: [
+                              Icon(Icons.sync, size: 12, color: AppColors.warning(context)),
+                              const SizedBox(width: 4),
+                              Text(
+                                l10n.shoppingPendingSync,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.warning(context),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       if (item.cheapestKnownStore != null &&
                           item.cheapestKnownPrice != null)
                         Padding(
