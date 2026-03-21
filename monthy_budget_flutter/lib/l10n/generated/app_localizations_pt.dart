@@ -5148,4 +5148,26 @@ class SPt extends S {
   String groceryStoreFailedFallback(String storeName) {
     return '$storeName está indisponível — excluída das comparações';
   }
+
+  @override
+  String get groceryStoreFreshLabel => 'Atualizado';
+
+  @override
+  String get groceryStoreStaleLabel => 'Desatualizado';
+
+  @override
+  String get groceryStorePartialLabel => 'Parcial';
+
+  @override
+  String get groceryStoreFailedLabel => 'Indisponível';
+
+  @override
+  String groceryStoreUpdatedHoursAgo(int hours) {
+    return 'Atualizado há ${hours}h';
+  }
+
+  @override
+  String groceryStoreUpdatedDaysAgo(int days) {
+    return 'Atualizado há ${days}d';
+  }
 }

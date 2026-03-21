@@ -9214,6 +9214,42 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'{storeName} está indisponível — excluída das comparações'**
   String groceryStoreFailedFallback(String storeName);
+
+  /// No description provided for @groceryStoreFreshLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atualizado'**
+  String get groceryStoreFreshLabel;
+
+  /// No description provided for @groceryStoreStaleLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Desatualizado'**
+  String get groceryStoreStaleLabel;
+
+  /// No description provided for @groceryStorePartialLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Parcial'**
+  String get groceryStorePartialLabel;
+
+  /// No description provided for @groceryStoreFailedLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Indisponível'**
+  String get groceryStoreFailedLabel;
+
+  /// No description provided for @groceryStoreUpdatedHoursAgo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atualizado há {hours}h'**
+  String groceryStoreUpdatedHoursAgo(int hours);
+
+  /// No description provided for @groceryStoreUpdatedDaysAgo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atualizado há {days}d'**
+  String groceryStoreUpdatedDaysAgo(int days);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

@@ -5174,5 +5174,22 @@
         "placeholders": {
             "storeName": {"type": "String"}
         }
+    },
+
+    "groceryStoreFreshLabel": "Atualizado",
+    "groceryStoreStaleLabel": "Desatualizado",
+    "groceryStorePartialLabel": "Parcial",
+    "groceryStoreFailedLabel": "Indisponível",
+    "groceryStoreUpdatedHoursAgo": "Atualizado há {hours}h",
+    "@groceryStoreUpdatedHoursAgo": {
+        "placeholders": {
+            "hours": {"type": "int"}
+        }
+    },
+    "groceryStoreUpdatedDaysAgo": "Atualizado há {days}d",
+    "@groceryStoreUpdatedDaysAgo": {
+        "placeholders": {
+            "days": {"type": "int"}
+        }
     }
 }

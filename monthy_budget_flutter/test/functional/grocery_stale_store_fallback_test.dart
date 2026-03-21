@@ -32,7 +32,7 @@ void main() {
     Product(id: 'p2', name: 'Apple', category: 'Frutas', avgPrice: 2.1, unit: 'kg'),
   ];
 
-  testWidgets('partial store shows stale fallback message with store name',
+  testWidgets('partial store shows store name with Partial status badge',
       (tester) async {
     await tester.pumpWidget(
       wrapWithTestApp(
@@ -48,14 +48,12 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // The partial store should show a specific fallback message with its name
-    expect(
-      find.textContaining('Pingo Doce has partial data'),
-      findsOneWidget,
-    );
+    // The partial store should show its name and a Partial status badge
+    expect(find.text('Pingo Doce'), findsOneWidget);
+    expect(find.text('Partial'), findsOneWidget);
   });
 
-  testWidgets('failed store shows unavailable fallback message with store name',
+  testWidgets('failed store shows store name with Unavailable status badge',
       (tester) async {
     await tester.pumpWidget(
       wrapWithTestApp(
@@ -71,14 +69,12 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // The failed store should show a specific unavailable fallback message
-    expect(
-      find.textContaining('Auchan is unavailable'),
-      findsOneWidget,
-    );
+    // The failed store should show its name and an Unavailable status badge
+    expect(find.text('Auchan'), findsOneWidget);
+    expect(find.text('Unavailable'), findsOneWidget);
   });
 
-  testWidgets('both partial and failed stores show distinct fallback messages',
+  testWidgets('both partial and failed stores show distinct status badges',
       (tester) async {
     await tester.pumpWidget(
       wrapWithTestApp(
@@ -94,9 +90,11 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // Both degraded stores should have individual fallback messaging
-    expect(find.textContaining('Pingo Doce has partial data'), findsOneWidget);
-    expect(find.textContaining('Auchan is unavailable'), findsOneWidget);
+    // Both degraded stores should have individual status badges
+    expect(find.text('Pingo Doce'), findsOneWidget);
+    expect(find.text('Partial'), findsOneWidget);
+    expect(find.text('Auchan'), findsOneWidget);
+    expect(find.text('Unavailable'), findsOneWidget);
   });
 
   testWidgets('grocery list remains browsable with degraded store data',
@@ -165,7 +163,7 @@ void main() {
     expect(find.byIcon(Icons.warning_amber_rounded), findsNothing);
   });
 
-  testWidgets('warning icon shown for degraded stores in availability card',
+  testWidgets('degraded stores show status badges in availability card',
       (tester) async {
     await tester.pumpWidget(
       wrapWithTestApp(
@@ -181,7 +179,9 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // Warning icons should be present for degraded stores
-    expect(find.byIcon(Icons.warning_amber_rounded), findsWidgets);
+    // Each store should have a visible status badge
+    expect(find.text('Fresh'), findsOneWidget);
+    expect(find.text('Partial'), findsOneWidget);
+    expect(find.text('Unavailable'), findsOneWidget);
   });
 }
