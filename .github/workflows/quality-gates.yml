@@ -48,6 +48,13 @@ jobs:
       - name: Run tests with coverage
         run: flutter test --coverage
 
+      - name: Strip generated code from coverage
+        run: |
+          sudo apt-get -qq install -y lcov > /dev/null 2>&1 || true
+          lcov --remove coverage/lcov.info \
+            '*/generated/*' '*.g.dart' \
+            -o coverage/lcov.info --ignore-errors unused
+
       - name: Enforce minimum coverage
         uses: VeryGoodOpenSource/very_good_coverage@v3
         with:
