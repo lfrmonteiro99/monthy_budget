@@ -1,4 +1,4 @@
-﻿{
+{
     "@@locale": "en",
     "navBudget": "Budget",
     "navGrocery": "Grocery",
@@ -287,10 +287,10 @@
     "dashboardSummaryLabel": "â€” SUMMARY",
     "dashboardViewMonthSummary": "View month summary",
     "coachTitle": "Financial Coach",
-    "coachSubtitle": "AI Â· GPT-4o mini",
+    "coachSubtitle": "AI · GPT-4o mini",
     "coachApiKeyRequired": "Add your OpenAI API key in Settings to use this feature.",
     "coachAnalysisTitle": "Financial analysis in 3 parts",
-    "coachAnalysisDescription": "General positioning Â· Critical factors of the Serenity Index Â· Immediate opportunity. Based on your real budget, expense and purchase history data.",
+    "coachAnalysisDescription": "General positioning · Critical factors of the Serenity Index · Immediate opportunity. Based on your real budget, expense and purchase history data.",
     "coachConfigureApiKey": "Configure API key in Settings",
     "coachApiKeyConfigured": "API key configured",
     "coachAnalyzeButton": "Analyze my budget",
@@ -450,7 +450,7 @@
             }
         }
     },
-    "groceryAvgPrice": "{unit} Â· average price",
+    "groceryAvgPrice": "{unit} · average price",
     "@groceryAvgPrice": {
         "placeholders": {
             "unit": {
@@ -467,7 +467,7 @@
             }
         }
     },
-    "groceryAvailabilitySummary": "{fresh} fresh Â· {partial} partial Â· {failed} unavailable",
+    "groceryAvailabilitySummary": "{fresh} fresh · {partial} partial · {failed} unavailable",
     "@groceryAvailabilitySummary": {
         "placeholders": {
             "fresh": {
@@ -487,7 +487,7 @@
     "shoppingTitle": "Shopping List",
     "shoppingEmpty": "Empty list",
     "shoppingEmptyMessage": "Add products from the\nGrocery screen.",
-    "shoppingItemsRemaining": "{count} to buy Â· {total}",
+    "shoppingItemsRemaining": "{count} to buy · {total}",
     "@shoppingItemsRemaining": {
         "placeholders": {
             "count": {
@@ -1100,10 +1100,10 @@
     "countryES": "Spain",
     "countryFR": "France",
     "countryUK": "United Kingdom",
-    "langPT": "PortuguÃªs",
+    "langPT": "Português",
     "langEN": "English",
-    "langFR": "FranÃ§ais",
-    "langES": "EspaÃ±ol",
+    "langFR": "Français",
+    "langES": "Español",
     "langSystem": "System",
     "taxIncomeTax": "Income tax",
     "taxSocialContribution": "Social contribution",
@@ -1298,7 +1298,7 @@
         }
     },
     "billsNone": "No recurring payments",
-    "billsPerMonth": "{count} payments Ã‚Â· {amount}/mo",
+    "billsPerMonth": "{count} payments Ã‚· {amount}/mo",
     "@billsPerMonth": {
         "placeholders": {
             "count": {
@@ -1371,7 +1371,7 @@
     "savingsGoalContributionDate": "Date",
     "savingsGoalContributionHistory": "Contribution History",
     "savingsGoalSeeAll": "See all",
-    "savingsGoalSurplusSuggestion": "You had {amount} surplus last month Ã¢â‚¬â€ allocate to a goal?",
+    "savingsGoalSurplusSuggestion": "You had {amount} surplus last month ââ‚¬â€ allocate to a goal?",
     "@savingsGoalSurplusSuggestion": {
         "placeholders": {
             "amount": {
@@ -1757,7 +1757,7 @@
     },
     "taxSimTitle": "Tax Simulator",
     "taxSimPresets": "QUICK PRESETS",
-    "taxSimPresetRaise": "+Ã¢â€šÂ¬200 raise",
+    "taxSimPresetRaise": "+ââ€šÂ¬200 raise",
     "taxSimPresetMeal": "Card vs cash meal",
     "taxSimPresetTitular": "Joint vs separate",
     "taxSimParameters": "PARAMETERS",

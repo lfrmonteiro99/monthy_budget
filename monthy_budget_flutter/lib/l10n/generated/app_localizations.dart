@@ -104,7 +104,7 @@ abstract class S {
   /// Bottom nav label for budget tab
   ///
   /// In pt, this message translates to:
-  /// **'OrÃ§amento'**
+  /// **'Orçamento'**
   String get navBudget;
 
   /// Bottom nav label for grocery tab
@@ -128,19 +128,19 @@ abstract class S {
   /// Bottom nav label for meal planner tab
   ///
   /// In pt, this message translates to:
-  /// **'RefeiÃ§Ãµes'**
+  /// **'Refeições'**
   String get navMeals;
 
   /// Tooltip for budget nav item
   ///
   /// In pt, this message translates to:
-  /// **'Resumo do orÃ§amento mensal'**
+  /// **'Resumo do orçamento mensal'**
   String get navBudgetTooltip;
 
   /// Tooltip for grocery nav item
   ///
   /// In pt, this message translates to:
-  /// **'CatÃ¡logo de produtos'**
+  /// **'Catálogo de produtos'**
   String get navGroceryTooltip;
 
   /// Tooltip for shopping list nav item
@@ -158,13 +158,13 @@ abstract class S {
   /// Tooltip for meals nav item
   ///
   /// In pt, this message translates to:
-  /// **'Planeador de refeiÃ§Ãµes'**
+  /// **'Planeador de refeições'**
   String get navMealsTooltip;
 
   /// App title shown in app bar
   ///
   /// In pt, this message translates to:
-  /// **'OrÃ§amento Mensal'**
+  /// **'Orçamento Mensal'**
   String get appTitle;
 
   /// Generic loading text
@@ -176,7 +176,7 @@ abstract class S {
   /// Loading text shown on app startup
   ///
   /// In pt, this message translates to:
-  /// **'A carregar a aplicaÃ§Ã£o'**
+  /// **'A carregar a aplicação'**
   String get loadingApp;
 
   /// Cancel button label
@@ -266,19 +266,19 @@ abstract class S {
   /// Subsidy mode: no twelfths
   ///
   /// In pt, this message translates to:
-  /// **'Sem duodÃ©cimos'**
+  /// **'Sem duodécimos'**
   String get enumSubsidyNone;
 
   /// Subsidy mode: full twelfths
   ///
   /// In pt, this message translates to:
-  /// **'Com duodÃ©cimos'**
+  /// **'Com duodécimos'**
   String get enumSubsidyFull;
 
   /// Subsidy mode: half twelfths
   ///
   /// In pt, this message translates to:
-  /// **'50% duodÃ©cimos'**
+  /// **'50% duodécimos'**
   String get enumSubsidyHalf;
 
   /// Subsidy mode short label: none
@@ -320,7 +320,7 @@ abstract class S {
   /// Expense category: telecommunications
   ///
   /// In pt, this message translates to:
-  /// **'TelecomunicaÃ§Ãµes'**
+  /// **'Telecomunicações'**
   String get enumCatTelecomunicacoes;
 
   /// Expense category: energy
@@ -338,19 +338,19 @@ abstract class S {
   /// Expense category: food
   ///
   /// In pt, this message translates to:
-  /// **'AlimentaÃ§Ã£o'**
+  /// **'Alimentação'**
   String get enumCatAlimentacao;
 
   /// Expense category: education
   ///
   /// In pt, this message translates to:
-  /// **'EducaÃ§Ã£o'**
+  /// **'Educação'**
   String get enumCatEducacao;
 
   /// Expense category: housing
   ///
   /// In pt, this message translates to:
-  /// **'HabitaÃ§Ã£o'**
+  /// **'Habitação'**
   String get enumCatHabitacao;
 
   /// Expense category: transport
@@ -362,7 +362,7 @@ abstract class S {
   /// Expense category: health
   ///
   /// In pt, this message translates to:
-  /// **'SaÃºde'**
+  /// **'Saúde'**
   String get enumCatSaude;
 
   /// Expense category: leisure
@@ -392,7 +392,7 @@ abstract class S {
   /// Chart type: net income
   ///
   /// In pt, this message translates to:
-  /// **'Rendimento LÃ­quido'**
+  /// **'Rendimento Líquido'**
   String get enumChartNetIncome;
 
   /// Chart type: deductions
@@ -404,19 +404,19 @@ abstract class S {
   /// Chart type: savings rate
   ///
   /// In pt, this message translates to:
-  /// **'Taxa de PoupanÃ§a'**
+  /// **'Taxa de Poupança'**
   String get enumChartSavingsRate;
 
   /// Meal type: breakfast
   ///
   /// In pt, this message translates to:
-  /// **'Pequeno-almoÃ§o'**
+  /// **'Pequeno-almoço'**
   String get enumMealBreakfast;
 
   /// Meal type: lunch
   ///
   /// In pt, this message translates to:
-  /// **'AlmoÃ§o'**
+  /// **'Almoço'**
   String get enumMealLunch;
 
   /// Meal type: snack
@@ -440,13 +440,13 @@ abstract class S {
   /// Meal objective: balanced health
   ///
   /// In pt, this message translates to:
-  /// **'EquilÃ­brio custo/saÃºde'**
+  /// **'Equilíbrio custo/saúde'**
   String get enumObjBalancedHealth;
 
   /// Meal objective: high protein
   ///
   /// In pt, this message translates to:
-  /// **'Alta proteÃ­na'**
+  /// **'Alta proteína'**
   String get enumObjHighProtein;
 
   /// Meal objective: low carb
@@ -482,7 +482,7 @@ abstract class S {
   /// Kitchen equipment: pressure cooker
   ///
   /// In pt, this message translates to:
-  /// **'Panela de pressÃ£o'**
+  /// **'Panela de pressão'**
   String get enumEquipPressureCooker;
 
   /// Kitchen equipment: microwave
@@ -500,19 +500,19 @@ abstract class S {
   /// Sodium preference: no restriction
   ///
   /// In pt, this message translates to:
-  /// **'Sem restriÃ§Ã£o'**
+  /// **'Sem restrição'**
   String get enumSodiumNoRestriction;
 
   /// Sodium preference: reduced
   ///
   /// In pt, this message translates to:
-  /// **'SÃ³dio reduzido'**
+  /// **'Sódio reduzido'**
   String get enumSodiumReduced;
 
   /// Sodium preference: low
   ///
   /// In pt, this message translates to:
-  /// **'Baixo sÃ³dio'**
+  /// **'Baixo sódio'**
   String get enumSodiumLow;
 
   /// Age group: 0 to 3 years
@@ -542,13 +542,13 @@ abstract class S {
   /// Age group: senior
   ///
   /// In pt, this message translates to:
-  /// **'SÃ©nior (65+)'**
+  /// **'Sénior (65+)'**
   String get enumAgeSenior;
 
   /// Activity level: sedentary
   ///
   /// In pt, this message translates to:
-  /// **'SedentÃ¡rio'**
+  /// **'Sedentário'**
   String get enumActivitySedentary;
 
   /// Activity level: moderate
@@ -578,7 +578,7 @@ abstract class S {
   /// Medical condition: hypertension
   ///
   /// In pt, this message translates to:
-  /// **'HipertensÃ£o'**
+  /// **'Hipertensão'**
   String get enumMedHypertension;
 
   /// Medical condition: high cholesterol
@@ -596,7 +596,7 @@ abstract class S {
   /// Medical condition: IBS
   ///
   /// In pt, this message translates to:
-  /// **'SÃ­ndrome do intestino irritÃ¡vel'**
+  /// **'Síndrome do intestino irritável'**
   String get enumMedIbs;
 
   /// Stress index level: excellent
@@ -614,31 +614,31 @@ abstract class S {
   /// Stress index level: warning
   ///
   /// In pt, this message translates to:
-  /// **'AtenÃ§Ã£o'**
+  /// **'Atenção'**
   String get stressWarning;
 
   /// Stress index level: critical
   ///
   /// In pt, this message translates to:
-  /// **'CrÃ­tico'**
+  /// **'Crítico'**
   String get stressCritical;
 
   /// Stress factor: savings rate
   ///
   /// In pt, this message translates to:
-  /// **'Taxa de poupanÃ§a'**
+  /// **'Taxa de poupança'**
   String get stressFactorSavings;
 
   /// Stress factor: safety margin
   ///
   /// In pt, this message translates to:
-  /// **'Margem de seguranÃ§a'**
+  /// **'Margem de segurança'**
   String get stressFactorSafety;
 
   /// Stress factor: food budget
   ///
   /// In pt, this message translates to:
-  /// **'OrÃ§amento alimentaÃ§Ã£o'**
+  /// **'Orçamento alimentação'**
   String get stressFactorFood;
 
   /// Stress factor: expense stability
@@ -650,7 +650,7 @@ abstract class S {
   /// Stability label: stable
   ///
   /// In pt, this message translates to:
-  /// **'EstÃ¡vel'**
+  /// **'Estável'**
   String get stressStable;
 
   /// Stability label: high
@@ -674,37 +674,37 @@ abstract class S {
   /// Month review insight: food budget exceeded
   ///
   /// In pt, this message translates to:
-  /// **'AlimentaÃ§Ã£o excedeu o orÃ§amento em {percent}% â€” considere rever porÃ§Ãµes ou frequÃªncia de compras.'**
+  /// **'Alimentação excedeu o orçamento em {percent}% â€” considere rever porções ou frequência de compras.'**
   String monthReviewFoodExceeded(String percent);
 
   /// Month review insight: expenses exceeded plan
   ///
   /// In pt, this message translates to:
-  /// **'Despesas reais superaram o planeado em {amount}â‚¬ â€” ajustar valores nas definiÃ§Ãµes?'**
+  /// **'Despesas reais superaram o planeado em {amount}â‚¬ â€” ajustar valores nas definições?'**
   String monthReviewExpensesExceeded(String amount);
 
   /// Month review insight: saved more than expected
   ///
   /// In pt, this message translates to:
-  /// **'Poupou {amount}â‚¬ mais do que previsto â€” pode reforÃ§ar fundo de emergÃªncia.'**
+  /// **'Poupou {amount}â‚¬ mais do que previsto â€” pode reforçar fundo de emergência.'**
   String monthReviewSavedMore(String amount);
 
   /// Month review insight: on track
   ///
   /// In pt, this message translates to:
-  /// **'Despesas dentro do previsto. Bom controlo orÃ§amental.'**
+  /// **'Despesas dentro do previsto. Bom controlo orçamental.'**
   String get monthReviewOnTrack;
 
   /// Dashboard screen title
   ///
   /// In pt, this message translates to:
-  /// **'OrÃ§amento Mensal'**
+  /// **'Orçamento Mensal'**
   String get dashboardTitle;
 
   /// No description provided for @dashboardViewFullReport.
   ///
   /// In pt, this message translates to:
-  /// **'Ver RelatÃ³rio Completo'**
+  /// **'Ver Relatório Completo'**
   String get dashboardViewFullReport;
 
   /// Stress index card title
@@ -716,7 +716,7 @@ abstract class S {
   /// Dashboard tension label
   ///
   /// In pt, this message translates to:
-  /// **'TensÃ£o'**
+  /// **'Tensão'**
   String get dashboardTension;
 
   /// Dashboard liquidity label
@@ -728,13 +728,13 @@ abstract class S {
   /// Dashboard final position label
   ///
   /// In pt, this message translates to:
-  /// **'PosiÃ§Ã£o Final'**
+  /// **'Posição Final'**
   String get dashboardFinalPosition;
 
   /// Dashboard month label
   ///
   /// In pt, this message translates to:
-  /// **'MÃªs'**
+  /// **'Mês'**
   String get dashboardMonth;
 
   /// Dashboard gross income label
@@ -746,7 +746,7 @@ abstract class S {
   /// Dashboard net income label
   ///
   /// In pt, this message translates to:
-  /// **'LÃ­quido'**
+  /// **'Líquido'**
   String get dashboardNet;
 
   /// Dashboard expenses label
@@ -758,19 +758,19 @@ abstract class S {
   /// Dashboard savings rate label
   ///
   /// In pt, this message translates to:
-  /// **'Taxa PoupanÃ§a'**
+  /// **'Taxa Poupança'**
   String get dashboardSavingsRate;
 
   /// Dashboard view trends button
   ///
   /// In pt, this message translates to:
-  /// **'Ver evoluÃ§Ã£o'**
+  /// **'Ver evolução'**
   String get dashboardViewTrends;
 
   /// Dashboard view projection button
   ///
   /// In pt, this message translates to:
-  /// **'Ver projeÃ§Ã£o'**
+  /// **'Ver projeção'**
   String get dashboardViewProjection;
 
   /// Dashboard subtitle label
@@ -782,7 +782,7 @@ abstract class S {
   /// Accessibility label for settings button
   ///
   /// In pt, this message translates to:
-  /// **'Abrir definiÃ§Ãµes'**
+  /// **'Abrir definições'**
   String get dashboardOpenSettings;
 
   /// Hero card monthly liquidity label
@@ -818,7 +818,7 @@ abstract class S {
   /// Empty state settings button label
   ///
   /// In pt, this message translates to:
-  /// **'Abrir DefiniÃ§Ãµes'**
+  /// **'Abrir Definições'**
   String get dashboardOpenSettingsButton;
 
   /// Summary card gross income label
@@ -830,7 +830,7 @@ abstract class S {
   /// Summary card net income label
   ///
   /// In pt, this message translates to:
-  /// **'Rendimento LÃ­quido'**
+  /// **'Rendimento Líquido'**
   String get dashboardNetIncome;
 
   /// Summary card meal allowance sublabel
@@ -884,7 +884,7 @@ abstract class S {
   /// Food card budgeted label
   ///
   /// In pt, this message translates to:
-  /// **'OrÃ§ado'**
+  /// **'Orçado'**
   String get dashboardBudgeted;
 
   /// Food card spent label
@@ -950,7 +950,7 @@ abstract class S {
   /// Gross with subsidies label
   ///
   /// In pt, this message translates to:
-  /// **'Bruto c/ duodÃ©c.'**
+  /// **'Bruto c/ duodéc.'**
   String get dashboardGrossWithSubsidy;
 
   /// IRS with rate label
@@ -968,7 +968,7 @@ abstract class S {
   /// Meal allowance label in salary breakdown
   ///
   /// In pt, this message translates to:
-  /// **'Sub. AlimentaÃ§Ã£o'**
+  /// **'Sub. Alimentação'**
   String get dashboardMealAllowance;
 
   /// Exempt income label
@@ -986,19 +986,19 @@ abstract class S {
   /// Stress index delta vs last month
   ///
   /// In pt, this message translates to:
-  /// **'{delta} vs mÃªs passado'**
+  /// **'{delta} vs mês passado'**
   String dashboardVsLastMonth(String delta);
 
   /// Budget pace warning title
   ///
   /// In pt, this message translates to:
-  /// **'A gastar mais rÃ¡pido que o previsto'**
+  /// **'A gastar mais rápido que o previsto'**
   String get dashboardPaceWarning;
 
   /// Budget pace critical title
   ///
   /// In pt, this message translates to:
-  /// **'Risco de ultrapassar orÃ§amento alimentar'**
+  /// **'Risco de ultrapassar orçamento alimentar'**
   String get dashboardPaceCritical;
 
   /// Pace label in budget pace alert
@@ -1010,7 +1010,7 @@ abstract class S {
   /// Projection label in budget pace alert
   ///
   /// In pt, this message translates to:
-  /// **'ProjeÃ§Ã£o'**
+  /// **'Projeção'**
   String get dashboardProjection;
 
   /// Budget pace comparison value
@@ -1028,7 +1028,7 @@ abstract class S {
   /// Accessibility label for month review card
   ///
   /// In pt, this message translates to:
-  /// **'Ver resumo do mÃªs'**
+  /// **'Ver resumo do mês'**
   String get dashboardViewMonthSummary;
 
   /// Coach screen title
@@ -1040,31 +1040,31 @@ abstract class S {
   /// Coach screen subtitle
   ///
   /// In pt, this message translates to:
-  /// **'IA Â· GPT-4o mini'**
+  /// **'IA · GPT-4o mini'**
   String get coachSubtitle;
 
   /// Coach API key required message
   ///
   /// In pt, this message translates to:
-  /// **'Adiciona a tua OpenAI API key nas DefiniÃ§Ãµes para usar esta funcionalidade.'**
+  /// **'Adiciona a tua OpenAI API key nas Definições para usar esta funcionalidade.'**
   String get coachApiKeyRequired;
 
   /// Coach analysis card title
   ///
   /// In pt, this message translates to:
-  /// **'AnÃ¡lise financeira em 3 partes'**
+  /// **'Análise financeira em 3 partes'**
   String get coachAnalysisTitle;
 
   /// Coach analysis card description
   ///
   /// In pt, this message translates to:
-  /// **'Posicionamento geral Â· Factores crÃ­ticos do Ãndice de Tranquilidade Â· Oportunidade imediata. Baseado nos teus dados reais de orÃ§amento, despesas e histÃ³rico de compras.'**
+  /// **'Posicionamento geral · Factores críticos do Ãndice de Tranquilidade · Oportunidade imediata. Baseado nos teus dados reais de orçamento, despesas e histórico de compras.'**
   String get coachAnalysisDescription;
 
   /// Coach configure API key button
   ///
   /// In pt, this message translates to:
-  /// **'Configurar API key nas DefiniÃ§Ãµes'**
+  /// **'Configurar API key nas Definições'**
   String get coachConfigureApiKey;
 
   /// Coach API key configured label
@@ -1076,7 +1076,7 @@ abstract class S {
   /// Coach analyze button label
   ///
   /// In pt, this message translates to:
-  /// **'Analisar o meu orÃ§amento'**
+  /// **'Analisar o meu orçamento'**
   String get coachAnalyzeButton;
 
   /// Coach analyzing state text
@@ -1088,13 +1088,13 @@ abstract class S {
   /// Coach custom analysis label
   ///
   /// In pt, this message translates to:
-  /// **'AnÃ¡lise personalizada'**
+  /// **'Análise personalizada'**
   String get coachCustomAnalysis;
 
   /// Coach new analysis button
   ///
   /// In pt, this message translates to:
-  /// **'Gerar nova anÃ¡lise'**
+  /// **'Gerar nova análise'**
   String get coachNewAnalysis;
 
   /// Coach history section header
@@ -1112,19 +1112,19 @@ abstract class S {
   /// Coach clear history dialog title
   ///
   /// In pt, this message translates to:
-  /// **'Limpar histÃ³rico'**
+  /// **'Limpar histórico'**
   String get coachClearTitle;
 
   /// Coach clear history dialog content
   ///
   /// In pt, this message translates to:
-  /// **'Tens a certeza que queres apagar todas as anÃ¡lises guardadas?'**
+  /// **'Tens a certeza que queres apagar todas as análises guardadas?'**
   String get coachClearContent;
 
   /// Coach delete analysis label
   ///
   /// In pt, this message translates to:
-  /// **'Eliminar anÃ¡lise'**
+  /// **'Eliminar análise'**
   String get coachDeleteLabel;
 
   /// Coach delete tooltip
@@ -1538,7 +1538,7 @@ abstract class S {
   /// Product card average price label
   ///
   /// In pt, this message translates to:
-  /// **'{unit} Â· preÃ§o mÃ©dio'**
+  /// **'{unit} · preço médio'**
   String groceryAvgPrice(String unit);
 
   /// Grocery data availability card title
@@ -1556,25 +1556,25 @@ abstract class S {
   /// Grocery store status count summary
   ///
   /// In pt, this message translates to:
-  /// **'{fresh} frescas Â· {partial} parciais Â· {failed} indisponÃ­veis'**
+  /// **'{fresh} frescas · {partial} parciais · {failed} indisponíveis'**
   String groceryAvailabilitySummary(int fresh, int partial, int failed);
 
   /// Warning shown when grocery market data is degraded
   ///
   /// In pt, this message translates to:
-  /// **'Algumas lojas tÃªm dados parciais ou desatualizados. As comparaÃ§Ãµes podem estar incompletas.'**
+  /// **'Algumas lojas têm dados parciais ou desatualizados. As comparações podem estar incompletas.'**
   String get groceryAvailabilityWarning;
 
   /// Grocery empty state title
   ///
   /// In pt, this message translates to:
-  /// **'Sem dados de supermercado disponÃ­veis'**
+  /// **'Sem dados de supermercado disponíveis'**
   String get groceryEmptyStateTitle;
 
   /// Grocery empty state message
   ///
   /// In pt, this message translates to:
-  /// **'Tenta novamente mais tarde ou muda de mercado nas definiÃ§Ãµes.'**
+  /// **'Tenta novamente mais tarde ou muda de mercado nas definições.'**
   String get groceryEmptyStateMessage;
 
   /// Shopping list screen title
@@ -1592,13 +1592,13 @@ abstract class S {
   /// Shopping list empty state message
   ///
   /// In pt, this message translates to:
-  /// **'Adiciona produtos a partir do\necrÃ£ Supermercado.'**
+  /// **'Adiciona produtos a partir do\necrã Supermercado.'**
   String get shoppingEmptyMessage;
 
   /// Shopping list items remaining summary
   ///
   /// In pt, this message translates to:
-  /// **'{count} por comprar Â· {total}'**
+  /// **'{count} por comprar · {total}'**
   String shoppingItemsRemaining(int count, String total);
 
   /// Shopping list clear button
@@ -1634,13 +1634,13 @@ abstract class S {
   /// Shopping list history tooltip
   ///
   /// In pt, this message translates to:
-  /// **'HistÃ³rico de compras'**
+  /// **'Histórico de compras'**
   String get shoppingHistoryTooltip;
 
   /// Shopping history screen title
   ///
   /// In pt, this message translates to:
-  /// **'HistÃ³rico de Compras'**
+  /// **'Histórico de Compras'**
   String get shoppingHistoryTitle;
 
   /// Accessibility label for checked shopping item
@@ -1760,31 +1760,31 @@ abstract class S {
   /// Auth switch to login link
   ///
   /// In pt, this message translates to:
-  /// **'JÃ¡ tenho conta'**
+  /// **'Já tenho conta'**
   String get authSwitchToLogin;
 
   /// Registration success message
   ///
   /// In pt, this message translates to:
-  /// **'Conta criada! Verifique o seu email para confirmar a conta antes de iniciar sessÃ£o.'**
+  /// **'Conta criada! Verifique o seu email para confirmar a conta antes de iniciar sessão.'**
   String get authRegistrationSuccess;
 
   /// No description provided for @authErrorNetwork.
   ///
   /// In pt, this message translates to:
-  /// **'NÃ£o foi possÃ­vel ligar ao servidor. Verifique a sua ligaÃ§Ã£o Ã  internet e tente novamente.'**
+  /// **'Não foi possível ligar ao servidor. Verifique a sua ligação Ã  internet e tente novamente.'**
   String get authErrorNetwork;
 
   /// No description provided for @authErrorInvalidCredentials.
   ///
   /// In pt, this message translates to:
-  /// **'Email ou palavra-passe invÃ¡lidos. Tente novamente.'**
+  /// **'Email ou palavra-passe inválidos. Tente novamente.'**
   String get authErrorInvalidCredentials;
 
   /// No description provided for @authErrorEmailNotConfirmed.
   ///
   /// In pt, this message translates to:
-  /// **'Verifique o seu email antes de iniciar sessÃ£o.'**
+  /// **'Verifique o seu email antes de iniciar sessão.'**
   String get authErrorEmailNotConfirmed;
 
   /// No description provided for @authErrorTooManyRequests.
@@ -1814,7 +1814,7 @@ abstract class S {
   /// Household join tab label
   ///
   /// In pt, this message translates to:
-  /// **'Entrar com cÃ³digo'**
+  /// **'Entrar com código'**
   String get householdJoinWithCode;
 
   /// Household name field label
@@ -1826,13 +1826,13 @@ abstract class S {
   /// Household name field hint
   ///
   /// In pt, this message translates to:
-  /// **'ex: FamÃ­lia Silva'**
+  /// **'ex: Família Silva'**
   String get householdNameHint;
 
   /// Household invite code field label
   ///
   /// In pt, this message translates to:
-  /// **'CÃ³digo de convite'**
+  /// **'Código de convite'**
   String get householdCodeLabel;
 
   /// Household invite code field hint
@@ -1874,19 +1874,19 @@ abstract class S {
   /// Chart title: deductions
   ///
   /// In pt, this message translates to:
-  /// **'Descontos (IRS + SeguranÃ§a Social)'**
+  /// **'Descontos (IRS + Segurança Social)'**
   String get chartDeductions;
 
   /// Chart title: gross vs net
   ///
   /// In pt, this message translates to:
-  /// **'Rendimento Bruto vs LÃ­quido'**
+  /// **'Rendimento Bruto vs Líquido'**
   String get chartGrossVsNet;
 
   /// Chart title: savings rate
   ///
   /// In pt, this message translates to:
-  /// **'Taxa de PoupanÃ§a'**
+  /// **'Taxa de Poupança'**
   String get chartSavingsRate;
 
   /// Chart label: net income abbreviated
@@ -1922,13 +1922,13 @@ abstract class S {
   /// Chart label: net
   ///
   /// In pt, this message translates to:
-  /// **'LÃ­quido'**
+  /// **'Líquido'**
   String get chartNet;
 
   /// Chart label: net salary
   ///
   /// In pt, this message translates to:
-  /// **'Sal. LÃ­quido'**
+  /// **'Sal. Líquido'**
   String get chartNetSalary;
 
   /// Chart label: IRS tax
@@ -1946,13 +1946,13 @@ abstract class S {
   /// Chart label: savings
   ///
   /// In pt, this message translates to:
-  /// **'poupanÃ§a'**
+  /// **'poupança'**
   String get chartSavings;
 
   /// Projection sheet title
   ///
   /// In pt, this message translates to:
-  /// **'ProjeÃ§Ã£o â€” {month} {year}'**
+  /// **'Projeção â€” {month} {year}'**
   String projectionTitle(String month, String year);
 
   /// Projection sheet subtitle
@@ -1988,13 +1988,13 @@ abstract class S {
   /// Projection daily spend estimate
   ///
   /// In pt, this message translates to:
-  /// **'Gasto diÃ¡rio estimado: {amount}/dia'**
+  /// **'Gasto diário estimado: {amount}/dia'**
   String projectionDailySpend(String amount);
 
   /// Projection end of month label
   ///
   /// In pt, this message translates to:
-  /// **'ProjeÃ§Ã£o fim de mÃªs'**
+  /// **'Projeção fim de mês'**
   String get projectionEndOfMonth;
 
   /// Projection remaining label
@@ -2018,7 +2018,7 @@ abstract class S {
   /// Projection simulation disclaimer
   ///
   /// In pt, this message translates to:
-  /// **'SimulaÃ§Ã£o â€” nÃ£o guardado'**
+  /// **'Simulação â€” não guardado'**
   String get projectionSimulation;
 
   /// Projection reduce all expenses label
@@ -2042,7 +2042,7 @@ abstract class S {
   /// Projection simulated savings rate label
   ///
   /// In pt, this message translates to:
-  /// **'Taxa poupanÃ§a simulada'**
+  /// **'Taxa poupança simulada'**
   String get projectionSimSavingsRate;
 
   /// Projection simulated stress index label
@@ -2054,7 +2054,7 @@ abstract class S {
   /// Trend sheet title
   ///
   /// In pt, this message translates to:
-  /// **'EvoluÃ§Ã£o'**
+  /// **'Evolução'**
   String get trendTitle;
 
   /// Trend section: stress index
@@ -2102,19 +2102,19 @@ abstract class S {
   /// Trend category: food
   ///
   /// In pt, this message translates to:
-  /// **'AlimentaÃ§Ã£o'**
+  /// **'Alimentação'**
   String get trendCatFood;
 
   /// Trend category: education
   ///
   /// In pt, this message translates to:
-  /// **'EducaÃ§Ã£o'**
+  /// **'Educação'**
   String get trendCatEducation;
 
   /// Trend category: housing
   ///
   /// In pt, this message translates to:
-  /// **'HabitaÃ§Ã£o'**
+  /// **'Habitação'**
   String get trendCatHousing;
 
   /// Trend category: transport
@@ -2126,7 +2126,7 @@ abstract class S {
   /// Trend category: health
   ///
   /// In pt, this message translates to:
-  /// **'SaÃºde'**
+  /// **'Saúde'**
   String get trendCatHealth;
 
   /// Trend category: leisure
@@ -2162,13 +2162,13 @@ abstract class S {
   /// Month review column: difference
   ///
   /// In pt, this message translates to:
-  /// **'DiferenÃ§a'**
+  /// **'Diferença'**
   String get monthReviewDifference;
 
   /// Month review row: food
   ///
   /// In pt, this message translates to:
-  /// **'AlimentaÃ§Ã£o'**
+  /// **'Alimentação'**
   String get monthReviewFood;
 
   /// Month review food value display
@@ -2192,19 +2192,19 @@ abstract class S {
   /// Month review AI analysis button
   ///
   /// In pt, this message translates to:
-  /// **'AnÃ¡lise AI detalhada'**
+  /// **'Análise AI detalhada'**
   String get monthReviewAiAnalysis;
 
   /// Meal planner screen title
   ///
   /// In pt, this message translates to:
-  /// **'Planeador de RefeiÃ§Ãµes'**
+  /// **'Planeador de Refeições'**
   String get mealPlannerTitle;
 
   /// Meal planner budget label
   ///
   /// In pt, this message translates to:
-  /// **'OrÃ§amento alimentaÃ§Ã£o'**
+  /// **'Orçamento alimentação'**
   String get mealBudgetLabel;
 
   /// Meal planner people count label
@@ -2234,7 +2234,7 @@ abstract class S {
   /// Meal planner regenerate dialog content
   ///
   /// In pt, this message translates to:
-  /// **'O plano atual serÃ¡ substituÃ­do.'**
+  /// **'O plano atual será substituído.'**
   String get mealRegenerateContent;
 
   /// Meal planner regenerate button
@@ -2282,7 +2282,7 @@ abstract class S {
   /// Meal detail: preparation section
   ///
   /// In pt, this message translates to:
-  /// **'PreparaÃ§Ã£o'**
+  /// **'Preparação'**
   String get mealPreparation;
 
   /// Meal detail: swap button
@@ -2318,7 +2318,7 @@ abstract class S {
   /// Meal ingredient category: proteins
   ///
   /// In pt, this message translates to:
-  /// **'ProteÃ­nas'**
+  /// **'Proteínas'**
   String get mealCatProteins;
 
   /// Meal ingredient category: vegetables
@@ -2378,7 +2378,7 @@ abstract class S {
   /// Wizard step label: meals
   ///
   /// In pt, this message translates to:
-  /// **'RefeiÃ§Ãµes'**
+  /// **'Refeições'**
   String get wizardStepMeals;
 
   /// Wizard step label: objective
@@ -2390,7 +2390,7 @@ abstract class S {
   /// Wizard step label: restrictions
   ///
   /// In pt, this message translates to:
-  /// **'RestriÃ§Ãµes'**
+  /// **'Restrições'**
   String get wizardStepRestrictions;
 
   /// Wizard step label: kitchen
@@ -2402,25 +2402,25 @@ abstract class S {
   /// Wizard step label: strategy
   ///
   /// In pt, this message translates to:
-  /// **'EstratÃ©gia'**
+  /// **'Estratégia'**
   String get wizardStepStrategy;
 
   /// Wizard meals step question
   ///
   /// In pt, this message translates to:
-  /// **'Quais refeiÃ§Ãµes queres incluir no plano diÃ¡rio?'**
+  /// **'Quais refeições queres incluir no plano diário?'**
   String get wizardMealsQuestion;
 
   /// Wizard budget weight display
   ///
   /// In pt, this message translates to:
-  /// **'{weight} do orÃ§amento'**
+  /// **'{weight} do orçamento'**
   String wizardBudgetWeight(String weight);
 
   /// Wizard objective step question
   ///
   /// In pt, this message translates to:
-  /// **'Qual Ã© o objetivo principal do teu plano alimentar?'**
+  /// **'Qual é o objetivo principal do teu plano alimentar?'**
   String get wizardObjectiveQuestion;
 
   /// Wizard accessibility label for selected item
@@ -2438,7 +2438,7 @@ abstract class S {
   /// Wizard dietary restriction: gluten free
   ///
   /// In pt, this message translates to:
-  /// **'Sem glÃºten'**
+  /// **'Sem glúten'**
   String get wizardGlutenFree;
 
   /// Wizard dietary restriction: lactose free
@@ -2468,7 +2468,7 @@ abstract class S {
   /// Wizard disliked ingredients hint
   ///
   /// In pt, this message translates to:
-  /// **'ex: atum, brÃ³colos'**
+  /// **'ex: atum, brócolos'**
   String get wizardDislikedHint;
 
   /// Wizard max prep time section header
@@ -2486,19 +2486,19 @@ abstract class S {
   /// Wizard complexity level: easy
   ///
   /// In pt, this message translates to:
-  /// **'FÃ¡cil'**
+  /// **'Fácil'**
   String get wizardComplexityEasy;
 
   /// Wizard complexity level: medium
   ///
   /// In pt, this message translates to:
-  /// **'MÃ©dio'**
+  /// **'Médio'**
   String get wizardComplexityMedium;
 
   /// Wizard complexity level: advanced
   ///
   /// In pt, this message translates to:
-  /// **'AvanÃ§ado'**
+  /// **'Avançado'**
   String get wizardComplexityAdvanced;
 
   /// Wizard equipment section header
@@ -2516,7 +2516,7 @@ abstract class S {
   /// Wizard strategy: batch cooking description
   ///
   /// In pt, this message translates to:
-  /// **'Cozinhar para vÃ¡rios dias de uma vez'**
+  /// **'Cozinhar para vários dias de uma vez'**
   String get wizardBatchCookingDesc;
 
   /// Wizard max batch days section header
@@ -2546,7 +2546,7 @@ abstract class S {
   /// Wizard strategy: reuse leftovers description
   ///
   /// In pt, this message translates to:
-  /// **'Jantar de ontem = almoÃ§o de hoje (custo 0)'**
+  /// **'Jantar de ontem = almoço de hoje (custo 0)'**
   String get wizardReuseLeftoversDesc;
 
   /// Wizard max new ingredients section header
@@ -2564,19 +2564,19 @@ abstract class S {
   /// Wizard strategy: minimize waste toggle
   ///
   /// In pt, this message translates to:
-  /// **'Minimizar desperdÃ­cio'**
+  /// **'Minimizar desperdício'**
   String get wizardMinimizeWaste;
 
   /// Wizard strategy: minimize waste description
   ///
   /// In pt, this message translates to:
-  /// **'Prefere receitas que reutilizam ingredientes jÃ¡ usados'**
+  /// **'Prefere receitas que reutilizam ingredientes já usados'**
   String get wizardMinimizeWasteDesc;
 
   /// Wizard settings info text
   ///
   /// In pt, this message translates to:
-  /// **'Podes alterar as definiÃ§Ãµes do planeador em qualquer altura em DefiniÃ§Ãµes â†’ RefeiÃ§Ãµes.'**
+  /// **'Podes alterar as definições do planeador em qualquer altura em Definições â†’ Refeições.'**
   String get wizardSettingsInfo;
 
   /// Wizard continue button
@@ -2630,7 +2630,7 @@ abstract class S {
   /// Weekday abbreviation: Saturday
   ///
   /// In pt, this message translates to:
-  /// **'SÃ¡b'**
+  /// **'Sáb'**
   String get wizardWeekdaySat;
 
   /// Weekday abbreviation: Sunday
@@ -2654,7 +2654,7 @@ abstract class S {
   /// Settings screen title
   ///
   /// In pt, this message translates to:
-  /// **'DefiniÃ§Ãµes'**
+  /// **'Definições'**
   String get settingsTitle;
 
   /// Settings section: personal data
@@ -2666,13 +2666,13 @@ abstract class S {
   /// Settings section: salaries
   ///
   /// In pt, this message translates to:
-  /// **'SalÃ¡rios'**
+  /// **'Salários'**
   String get settingsSalaries;
 
   /// Settings section: expenses
   ///
   /// In pt, this message translates to:
-  /// **'OrÃ§amento e Pagamentos Recorrentes'**
+  /// **'Orçamento e Pagamentos Recorrentes'**
   String get settingsExpenses;
 
   /// Settings section: AI coach
@@ -2690,19 +2690,19 @@ abstract class S {
   /// Settings section: meals
   ///
   /// In pt, this message translates to:
-  /// **'RefeiÃ§Ãµes'**
+  /// **'Refeições'**
   String get settingsMeals;
 
   /// Settings section: region and language
   ///
   /// In pt, this message translates to:
-  /// **'RegiÃ£o e Idioma'**
+  /// **'Região e Idioma'**
   String get settingsRegion;
 
   /// Settings field: country
   ///
   /// In pt, this message translates to:
-  /// **'PaÃ­s'**
+  /// **'País'**
   String get settingsCountry;
 
   /// Settings field: language
@@ -2732,7 +2732,7 @@ abstract class S {
   /// Settings field: gross salary
   ///
   /// In pt, this message translates to:
-  /// **'SalÃ¡rio bruto'**
+  /// **'Salário bruto'**
   String get settingsGrossSalary;
 
   /// Settings field: titulares (tax holders)
@@ -2744,13 +2744,13 @@ abstract class S {
   /// Settings field: subsidy mode
   ///
   /// In pt, this message translates to:
-  /// **'DuodÃ©cimos'**
+  /// **'Duodécimos'**
   String get settingsSubsidyMode;
 
   /// Settings field: meal allowance
   ///
   /// In pt, this message translates to:
-  /// **'SubsÃ­dio de alimentaÃ§Ã£o'**
+  /// **'Subsídio de alimentação'**
   String get settingsMealAllowance;
 
   /// Settings field: meal allowance per day
@@ -2762,7 +2762,7 @@ abstract class S {
   /// Settings field: working days per month
   ///
   /// In pt, this message translates to:
-  /// **'Dias Ãºteis/mÃªs'**
+  /// **'Dias úteis/mês'**
   String get settingsWorkingDays;
 
   /// Settings field: other exempt income
@@ -2774,7 +2774,7 @@ abstract class S {
   /// Settings add salary button
   ///
   /// In pt, this message translates to:
-  /// **'Adicionar salÃ¡rio'**
+  /// **'Adicionar salário'**
   String get settingsAddSalary;
 
   /// Settings add expense button
@@ -2810,7 +2810,7 @@ abstract class S {
   /// Settings field: invite code
   ///
   /// In pt, this message translates to:
-  /// **'CÃ³digo de convite'**
+  /// **'Código de convite'**
   String get settingsInviteCode;
 
   /// Settings copy code button
@@ -2822,37 +2822,37 @@ abstract class S {
   /// Settings code copied snackbar
   ///
   /// In pt, this message translates to:
-  /// **'CÃ³digo copiado!'**
+  /// **'Código copiado!'**
   String get settingsCodeCopied;
 
   /// Settings admin only warning
   ///
   /// In pt, this message translates to:
-  /// **'Apenas o administrador pode editar as definiÃ§Ãµes.'**
+  /// **'Apenas o administrador pode editar as definições.'**
   String get settingsAdminOnly;
 
   /// Settings toggle: show summary cards
   ///
   /// In pt, this message translates to:
-  /// **'Mostrar cartÃµes resumo'**
+  /// **'Mostrar cartões resumo'**
   String get settingsShowSummaryCards;
 
   /// Settings section: enabled charts
   ///
   /// In pt, this message translates to:
-  /// **'GrÃ¡ficos ativos'**
+  /// **'Gráficos ativos'**
   String get settingsEnabledCharts;
 
   /// Settings logout button
   ///
   /// In pt, this message translates to:
-  /// **'Terminar sessÃ£o'**
+  /// **'Terminar sessão'**
   String get settingsLogout;
 
   /// Settings logout dialog title
   ///
   /// In pt, this message translates to:
-  /// **'Terminar sessÃ£o'**
+  /// **'Terminar sessão'**
   String get settingsLogoutConfirmTitle;
 
   /// Settings logout dialog content
@@ -2876,7 +2876,7 @@ abstract class S {
   /// Settings section header: monthly expenses
   ///
   /// In pt, this message translates to:
-  /// **'OrÃ§amento e Pagamentos Recorrentes'**
+  /// **'Orçamento e Pagamentos Recorrentes'**
   String get settingsExpensesMonthly;
 
   /// Settings section header: favorite products
@@ -2912,7 +2912,7 @@ abstract class S {
   /// Settings social security rate display
   ///
   /// In pt, this message translates to:
-  /// **'SeguranÃ§a Social: {rate}'**
+  /// **'Segurança Social: {rate}'**
   String settingsSocialSecurityRate(String rate);
 
   /// Settings salary active toggle label
@@ -2984,7 +2984,7 @@ abstract class S {
   /// Settings device local storage info
   ///
   /// In pt, this message translates to:
-  /// **'Estas definiÃ§Ãµes sÃ£o guardadas neste dispositivo.'**
+  /// **'Estas definições são guardadas neste dispositivo.'**
   String get settingsDeviceLocal;
 
   /// Settings label: visible sections
@@ -3020,7 +3020,7 @@ abstract class S {
   /// Settings dashboard toggle: summary cards
   ///
   /// In pt, this message translates to:
-  /// **'CartÃµes de resumo'**
+  /// **'Cartões de resumo'**
   String get settingsDashSummaryCards;
 
   /// Settings dashboard toggle: salary breakdown
@@ -3032,13 +3032,13 @@ abstract class S {
   /// Settings dashboard toggle: food spending
   ///
   /// In pt, this message translates to:
-  /// **'AlimentaÃ§Ã£o'**
+  /// **'Alimentação'**
   String get settingsDashFood;
 
   /// Settings dashboard toggle: purchase history
   ///
   /// In pt, this message translates to:
-  /// **'HistÃ³rico de compras'**
+  /// **'Histórico de compras'**
   String get settingsDashPurchaseHistory;
 
   /// Settings dashboard toggle: expenses breakdown
@@ -3050,13 +3050,13 @@ abstract class S {
   /// Settings dashboard toggle: month review
   ///
   /// In pt, this message translates to:
-  /// **'RevisÃ£o do mÃªs'**
+  /// **'Revisão do mês'**
   String get settingsDashMonthReview;
 
   /// Settings dashboard toggle: charts
   ///
   /// In pt, this message translates to:
-  /// **'GrÃ¡ficos'**
+  /// **'Gráficos'**
   String get settingsDashCharts;
 
   /// Dashboard settings group label: overview
@@ -3092,7 +3092,7 @@ abstract class S {
   /// Settings favorites tip text
   ///
   /// In pt, this message translates to:
-  /// **'Os produtos favoritos influenciam o plano de refeiÃ§Ãµes â€” receitas com esses ingredientes ficam em prioridade.'**
+  /// **'Os produtos favoritos influenciam o plano de refeições â€” receitas com esses ingredientes ficam em prioridade.'**
   String get settingsFavTip;
 
   /// Settings label: my favorites
@@ -3158,7 +3158,7 @@ abstract class S {
   /// Settings tooltip: use automatic value
   ///
   /// In pt, this message translates to:
-  /// **'Usar valor automÃ¡tico'**
+  /// **'Usar valor automático'**
   String get settingsUseAutoValue;
 
   /// Settings manual household value
@@ -3182,13 +3182,13 @@ abstract class S {
   /// Settings portions unit label
   ///
   /// In pt, this message translates to:
-  /// **'porÃ§Ãµes'**
+  /// **'porções'**
   String get settingsPortions;
 
   /// Settings total portion equivalent
   ///
   /// In pt, this message translates to:
-  /// **'Equivalente total: {total} porÃ§Ãµes'**
+  /// **'Equivalente total: {total} porções'**
   String settingsTotalEquivalent(String total);
 
   /// Settings add member button/dialog title
@@ -3206,7 +3206,7 @@ abstract class S {
   /// Settings toggle description: seasonal
   ///
   /// In pt, this message translates to:
-  /// **'Prioriza receitas da Ã©poca atual'**
+  /// **'Prioriza receitas da época atual'**
   String get settingsPreferSeasonalDesc;
 
   /// Settings label: nutritional goals
@@ -3248,13 +3248,13 @@ abstract class S {
   /// Settings field: daily protein
   ///
   /// In pt, this message translates to:
-  /// **'ProteÃ­na diÃ¡ria'**
+  /// **'Proteína diária'**
   String get settingsDailyProtein;
 
   /// Settings field: daily fiber
   ///
   /// In pt, this message translates to:
-  /// **'Fibra diÃ¡ria'**
+  /// **'Fibra diária'**
   String get settingsDailyFiber;
 
   /// Settings label: medical conditions
@@ -3404,7 +3404,7 @@ abstract class S {
   /// Settings no minimum label
   ///
   /// In pt, this message translates to:
-  /// **'sem mÃ­nimo'**
+  /// **'sem mínimo'**
   String get settingsNoMinimum;
 
   /// Settings legume days per week display
@@ -3416,7 +3416,7 @@ abstract class S {
   /// Settings red meat max per week display
   ///
   /// In pt, this message translates to:
-  /// **'Carne vermelha mÃ¡x/semana: {count}'**
+  /// **'Carne vermelha máx/semana: {count}'**
   String settingsRedMeatPerWeek(String count);
 
   /// Settings no limit label
@@ -3452,7 +3452,7 @@ abstract class S {
   /// Settings toggle: minimize waste
   ///
   /// In pt, this message translates to:
-  /// **'Minimizar desperdÃ­cio'**
+  /// **'Minimizar desperdício'**
   String get settingsMinimizeWaste;
 
   /// Settings toggle: prioritize low cost
@@ -3464,7 +3464,7 @@ abstract class S {
   /// Settings toggle desc: prioritize low cost
   ///
   /// In pt, this message translates to:
-  /// **'Preferir receitas mais econÃ³micas'**
+  /// **'Preferir receitas mais económicas'**
   String get settingsPrioritizeLowCostDesc;
 
   /// Settings label: new ingredients per week
@@ -3476,13 +3476,13 @@ abstract class S {
   /// Settings toggle: lunchbox lunches
   ///
   /// In pt, this message translates to:
-  /// **'AlmoÃ§os de marmita'**
+  /// **'Almoços de marmita'**
   String get settingsLunchboxLunches;
 
   /// Settings toggle desc: lunchbox lunches
   ///
   /// In pt, this message translates to:
-  /// **'Apenas receitas transportÃ¡veis ao almoÃ§o'**
+  /// **'Apenas receitas transportáveis ao almoço'**
   String get settingsLunchboxLunchesDesc;
 
   /// Settings label: pantry
@@ -3500,7 +3500,7 @@ abstract class S {
   /// Settings API key info text
   ///
   /// In pt, this message translates to:
-  /// **'A key Ã© guardada localmente no dispositivo e nunca Ã© partilhada. Usa o modelo GPT-4o mini (~â‚¬0,00008 por anÃ¡lise).'**
+  /// **'A key é guardada localmente no dispositivo e nunca é partilhada. Usa o modelo GPT-4o mini (~â‚¬0,00008 por análise).'**
   String get settingsApiKeyInfo;
 
   /// Settings label: invite code
@@ -3512,7 +3512,7 @@ abstract class S {
   /// Settings generate invite code
   ///
   /// In pt, this message translates to:
-  /// **'Gerar cÃ³digo de convite'**
+  /// **'Gerar código de convite'**
   String get settingsGenerateInvite;
 
   /// Settings share invite code info
@@ -3524,13 +3524,13 @@ abstract class S {
   /// Settings new code tooltip
   ///
   /// In pt, this message translates to:
-  /// **'Novo cÃ³digo'**
+  /// **'Novo código'**
   String get settingsNewCode;
 
   /// Settings invite code validity info
   ///
   /// In pt, this message translates to:
-  /// **'O cÃ³digo Ã© vÃ¡lido por 7 dias. Partilha-o com quem queres adicionar ao agregado.'**
+  /// **'O código é válido por 7 dias. Partilha-o com quem queres adicionar ao agregado.'**
   String get settingsCodeValidInfo;
 
   /// Settings field: name
@@ -3542,13 +3542,13 @@ abstract class S {
   /// Settings field: age group
   ///
   /// In pt, this message translates to:
-  /// **'Faixa etÃ¡ria'**
+  /// **'Faixa etária'**
   String get settingsAgeGroup;
 
   /// Settings field: activity level
   ///
   /// In pt, this message translates to:
-  /// **'NÃ­vel de atividade'**
+  /// **'Nível de atividade'**
   String get settingsActivityLevel;
 
   /// Settings salary number placeholder
@@ -3572,7 +3572,7 @@ abstract class S {
   /// Country name: France
   ///
   /// In pt, this message translates to:
-  /// **'FranÃ§a'**
+  /// **'França'**
   String get countryFR;
 
   /// Country name: United Kingdom
@@ -3584,7 +3584,7 @@ abstract class S {
   /// Language name: Portuguese
   ///
   /// In pt, this message translates to:
-  /// **'PortuguÃªs'**
+  /// **'Português'**
   String get langPT;
 
   /// Language name: English
@@ -3596,13 +3596,13 @@ abstract class S {
   /// Language name: French
   ///
   /// In pt, this message translates to:
-  /// **'FranÃ§ais'**
+  /// **'Français'**
   String get langFR;
 
   /// Language name: Spanish
   ///
   /// In pt, this message translates to:
-  /// **'EspaÃ±ol'**
+  /// **'Español'**
   String get langES;
 
   /// Language option: system default
@@ -3620,7 +3620,7 @@ abstract class S {
   /// Tax label: social contribution (generic)
   ///
   /// In pt, this message translates to:
-  /// **'ContribuiÃ§Ã£o social'**
+  /// **'Contribuição social'**
   String get taxSocialContribution;
 
   /// Tax label: IRS (Portugal)
@@ -3632,7 +3632,7 @@ abstract class S {
   /// Tax label: Social Security (Portugal)
   ///
   /// In pt, this message translates to:
-  /// **'SeguranÃ§a Social'**
+  /// **'Segurança Social'**
   String get taxSS;
 
   /// Tax label: IRPF (Spain)
@@ -3692,25 +3692,25 @@ abstract class S {
   /// AI coach system prompt for financial analysis
   ///
   /// In pt, this message translates to:
-  /// **'Ã‰s um analista financeiro pessoal para utilizadores portugueses. Responde sempre em portuguÃªs europeu. SÃª directo e analÃ­tico â€” usa sempre nÃºmeros concretos do contexto fornecido. Estrutura a resposta exactamente nas 3 partes pedidas. NÃ£o introduzas dados, benchmarks ou referÃªncias externas que nÃ£o foram fornecidos.'**
+  /// **'Ã‰s um analista financeiro pessoal para utilizadores portugueses. Responde sempre em português europeu. Sê directo e analítico â€” usa sempre números concretos do contexto fornecido. Estrutura a resposta exactamente nas 3 partes pedidas. Não introduzas dados, benchmarks ou referências externas que não foram fornecidos.'**
   String get aiCoachSystemPrompt;
 
   /// AI coach invalid API key error
   ///
   /// In pt, this message translates to:
-  /// **'API key invÃ¡lida. Verifica nas DefiniÃ§Ãµes.'**
+  /// **'API key inválida. Verifica nas Definições.'**
   String get aiCoachInvalidApiKey;
 
   /// AI coach mid-month system prompt
   ///
   /// In pt, this message translates to:
-  /// **'Ã‰s um consultor de orÃ§amento domÃ©stico portuguÃªs. Responde sempre em portuguÃªs europeu. SÃª prÃ¡tico e directo.'**
+  /// **'Ã‰s um consultor de orçamento doméstico português. Responde sempre em português europeu. Sê prático e directo.'**
   String get aiCoachMidMonthSystem;
 
   /// AI meal planner system prompt
   ///
   /// In pt, this message translates to:
-  /// **'Ã‰s um chef portuguÃªs. Responde sempre em portuguÃªs europeu. Responde APENAS com JSON vÃ¡lido, sem texto extra.'**
+  /// **'Ã‰s um chef português. Responde sempre em português europeu. Responde APENAS com JSON válido, sem texto extra.'**
   String get aiMealPlannerSystem;
 
   /// Month abbreviation: January
@@ -3800,7 +3800,7 @@ abstract class S {
   /// Full month name: March
   ///
   /// In pt, this message translates to:
-  /// **'MarÃ§o'**
+  /// **'Março'**
   String get monthFullMar;
 
   /// Full month name: April
@@ -3860,7 +3860,7 @@ abstract class S {
   /// Setup wizard welcome screen title
   ///
   /// In pt, this message translates to:
-  /// **'Bem-vindo ao seu orÃ§amento'**
+  /// **'Bem-vindo ao seu orçamento'**
   String get setupWizardWelcomeTitle;
 
   /// Setup wizard welcome screen subtitle
@@ -3872,7 +3872,7 @@ abstract class S {
   /// Setup wizard welcome bullet 1
   ///
   /// In pt, this message translates to:
-  /// **'Calcular o seu salÃ¡rio lÃ­quido'**
+  /// **'Calcular o seu salário líquido'**
   String get setupWizardBullet1;
 
   /// Setup wizard welcome bullet 2
@@ -3884,25 +3884,25 @@ abstract class S {
   /// Setup wizard welcome bullet 3
   ///
   /// In pt, this message translates to:
-  /// **'Ver quanto sobra cada mÃªs'**
+  /// **'Ver quanto sobra cada mês'**
   String get setupWizardBullet3;
 
   /// Reassurance text shown on welcome screen
   ///
   /// In pt, this message translates to:
-  /// **'Pode alterar tudo mais tarde nas definiÃ§Ãµes.'**
+  /// **'Pode alterar tudo mais tarde nas definições.'**
   String get setupWizardReassurance;
 
   /// Start button on welcome screen
   ///
   /// In pt, this message translates to:
-  /// **'ComeÃ§ar'**
+  /// **'Começar'**
   String get setupWizardStart;
 
   /// Skip all button on welcome screen
   ///
   /// In pt, this message translates to:
-  /// **'Saltar configuraÃ§Ã£o'**
+  /// **'Saltar configuração'**
   String get setupWizardSkipAll;
 
   /// Step progress indicator
@@ -3938,7 +3938,7 @@ abstract class S {
   /// System default language option
   ///
   /// In pt, this message translates to:
-  /// **'PredefiniÃ§Ã£o do sistema'**
+  /// **'Predefinição do sistema'**
   String get setupWizardLangSystem;
 
   /// Portugal country name
@@ -3956,7 +3956,7 @@ abstract class S {
   /// France country name
   ///
   /// In pt, this message translates to:
-  /// **'FranÃ§a'**
+  /// **'França'**
   String get setupWizardCountryFR;
 
   /// UK country name
@@ -3968,19 +3968,19 @@ abstract class S {
   /// Personal info step title
   ///
   /// In pt, this message translates to:
-  /// **'InformaÃ§Ã£o pessoal'**
+  /// **'Informação pessoal'**
   String get setupWizardPersonalTitle;
 
   /// Personal info step subtitle
   ///
   /// In pt, this message translates to:
-  /// **'Usamos isto para calcular os seus impostos com mais precisÃ£o.'**
+  /// **'Usamos isto para calcular os seus impostos com mais precisão.'**
   String get setupWizardPersonalSubtitle;
 
   /// Privacy note on personal info step
   ///
   /// In pt, this message translates to:
-  /// **'Os seus dados ficam na sua conta e nunca sÃ£o partilhados.'**
+  /// **'Os seus dados ficam na sua conta e nunca são partilhados.'**
   String get setupWizardPrivacyNote;
 
   /// Single marital status card
@@ -4010,25 +4010,25 @@ abstract class S {
   /// Salary step title
   ///
   /// In pt, this message translates to:
-  /// **'Qual Ã© o seu salÃ¡rio?'**
+  /// **'Qual é o seu salário?'**
   String get setupWizardSalaryTitle;
 
   /// Salary step subtitle
   ///
   /// In pt, this message translates to:
-  /// **'Introduza o valor bruto mensal. Calculamos o lÃ­quido automaticamente.'**
+  /// **'Introduza o valor bruto mensal. Calculamos o líquido automaticamente.'**
   String get setupWizardSalarySubtitle;
 
   /// Gross salary field label
   ///
   /// In pt, this message translates to:
-  /// **'SalÃ¡rio bruto mensal'**
+  /// **'Salário bruto mensal'**
   String get setupWizardSalaryGross;
 
   /// Inline net salary estimate
   ///
   /// In pt, this message translates to:
-  /// **'LÃ­quido estimado: {amount}'**
+  /// **'Líquido estimado: {amount}'**
   String setupWizardNetEstimate(String amount);
 
   /// Info text on salary step
@@ -4040,13 +4040,13 @@ abstract class S {
   /// No description provided for @setupWizardSalaryRequired.
   ///
   /// In pt, this message translates to:
-  /// **'Por favor insira o seu salÃ¡rio'**
+  /// **'Por favor insira o seu salário'**
   String get setupWizardSalaryRequired;
 
   /// No description provided for @setupWizardSalaryPositive.
   ///
   /// In pt, this message translates to:
-  /// **'O salÃ¡rio deve ser um nÃºmero positivo'**
+  /// **'O salário deve ser um número positivo'**
   String get setupWizardSalaryPositive;
 
   /// Skip button on salary step
@@ -4064,7 +4064,7 @@ abstract class S {
   /// Expenses step subtitle
   ///
   /// In pt, this message translates to:
-  /// **'Valores sugeridos para o seu paÃ­s. Ajuste conforme necessÃ¡rio.'**
+  /// **'Valores sugeridos para o seu país. Ajuste conforme necessário.'**
   String get setupWizardExpensesSubtitle;
 
   /// Info text on expenses step
@@ -4076,7 +4076,7 @@ abstract class S {
   /// Net salary label on expenses step
   ///
   /// In pt, this message translates to:
-  /// **'LÃ­quido: {amount}'**
+  /// **'Líquido: {amount}'**
   String setupWizardNetLabel(String amount);
 
   /// Total expenses label
@@ -4088,7 +4088,7 @@ abstract class S {
   /// Available amount label on completion screen
   ///
   /// In pt, this message translates to:
-  /// **'DisponÃ­vel: {amount}'**
+  /// **'Disponível: {amount}'**
   String setupWizardAvailableLabel(String amount);
 
   /// Finish button on expenses step
@@ -4106,31 +4106,31 @@ abstract class S {
   /// Reassurance text on completion screen
   ///
   /// In pt, this message translates to:
-  /// **'O seu orÃ§amento estÃ¡ configurado. Pode ajustar tudo nas definiÃ§Ãµes a qualquer momento.'**
+  /// **'O seu orçamento está configurado. Pode ajustar tudo nas definições a qualquer momento.'**
   String get setupWizardCompleteReassurance;
 
   /// Button to go to dashboard from completion screen
   ///
   /// In pt, this message translates to:
-  /// **'Ver o meu orÃ§amento'**
+  /// **'Ver o meu orçamento'**
   String get setupWizardGoToDashboard;
 
   /// Hint when salary not configured
   ///
   /// In pt, this message translates to:
-  /// **'Configure o seu salÃ¡rio nas definiÃ§Ãµes para ver o cÃ¡lculo completo.'**
+  /// **'Configure o seu salário nas definições para ver o cálculo completo.'**
   String get setupWizardConfigureSalaryHint;
 
   /// Rent expense category
   ///
   /// In pt, this message translates to:
-  /// **'Renda / PrestaÃ§Ã£o'**
+  /// **'Renda / Prestação'**
   String get setupWizardExpRent;
 
   /// Groceries expense category
   ///
   /// In pt, this message translates to:
-  /// **'AlimentaÃ§Ã£o'**
+  /// **'Alimentação'**
   String get setupWizardExpGroceries;
 
   /// Transport expense category
@@ -4142,19 +4142,19 @@ abstract class S {
   /// Utilities expense category
   ///
   /// In pt, this message translates to:
-  /// **'Utilidades (luz, Ã¡gua, gÃ¡s)'**
+  /// **'Utilidades (luz, água, gás)'**
   String get setupWizardExpUtilities;
 
   /// Telecom expense category
   ///
   /// In pt, this message translates to:
-  /// **'TelecomunicaÃ§Ãµes'**
+  /// **'Telecomunicações'**
   String get setupWizardExpTelecom;
 
   /// Health expense category
   ///
   /// In pt, this message translates to:
-  /// **'SaÃºde'**
+  /// **'Saúde'**
   String get setupWizardExpHealth;
 
   /// Leisure expense category
@@ -4172,7 +4172,7 @@ abstract class S {
   /// Budgeted label
   ///
   /// In pt, this message translates to:
-  /// **'OrÃ§amentado'**
+  /// **'Orçamentado'**
   String get expenseTrackerBudgeted;
 
   /// Actual label
@@ -4190,7 +4190,7 @@ abstract class S {
   /// Over budget label
   ///
   /// In pt, this message translates to:
-  /// **'Acima do orÃ§amento'**
+  /// **'Acima do orçamento'**
   String get expenseTrackerOver;
 
   /// View all link
@@ -4226,7 +4226,7 @@ abstract class S {
   /// Empty state for tracker screen
   ///
   /// In pt, this message translates to:
-  /// **'Sem despesas este mÃªs.\nToca + para adicionar a primeira.'**
+  /// **'Sem despesas este mês.\nToca + para adicionar a primeira.'**
   String get expenseTrackerEmpty;
 
   /// Add expense sheet title
@@ -4262,7 +4262,7 @@ abstract class S {
   /// Description field label
   ///
   /// In pt, this message translates to:
-  /// **'DescriÃ§Ã£o (opcional)'**
+  /// **'Descrição (opcional)'**
   String get addExpenseDescription;
 
   /// Custom category hint
@@ -4274,7 +4274,7 @@ abstract class S {
   /// Invalid amount error
   ///
   /// In pt, this message translates to:
-  /// **'Introduza um valor vÃ¡lido'**
+  /// **'Introduza um valor válido'**
   String get addExpenseInvalidAmount;
 
   /// FAB tooltip
@@ -4298,13 +4298,13 @@ abstract class S {
   /// Settings dashboard toggle: budget vs actual
   ///
   /// In pt, this message translates to:
-  /// **'OrÃ§amento vs Real'**
+  /// **'Orçamento vs Real'**
   String get settingsDashBudgetVsActual;
 
   /// Settings section: appearance
   ///
   /// In pt, this message translates to:
-  /// **'AparÃªncia'**
+  /// **'Aparência'**
   String get settingsAppearance;
 
   /// Theme setting label
@@ -4364,7 +4364,7 @@ abstract class S {
   /// Description field
   ///
   /// In pt, this message translates to:
-  /// **'DescriÃ§Ã£o (opcional)'**
+  /// **'Descrição (opcional)'**
   String get recurringExpenseDescription;
 
   /// Day of month field
@@ -4418,7 +4418,7 @@ abstract class S {
   /// Snackbar when recurring populated
   ///
   /// In pt, this message translates to:
-  /// **'Pagamentos recorrentes gerados para este mÃªs'**
+  /// **'Pagamentos recorrentes gerados para este mês'**
   String get recurringExpensePopulated;
 
   /// Hint for day of month field
@@ -4460,13 +4460,13 @@ abstract class S {
   /// No description provided for @billsPerMonth.
   ///
   /// In pt, this message translates to:
-  /// **'{count} pagamentos Â· {amount}/mÃªs'**
+  /// **'{count} pagamentos · {amount}/mês'**
   String billsPerMonth(int count, String amount);
 
   /// No description provided for @billsExceedBudget.
   ///
   /// In pt, this message translates to:
-  /// **'Contas ({amount}) excedem orÃ§amento'**
+  /// **'Contas ({amount}) excedem orçamento'**
   String billsExceedBudget(String amount);
 
   /// No description provided for @billsAddBill.
@@ -4478,7 +4478,7 @@ abstract class S {
   /// No description provided for @billsBudgetSettings.
   ///
   /// In pt, this message translates to:
-  /// **'ConfiguraÃ§Ã£o do OrÃ§amento'**
+  /// **'Configuração do Orçamento'**
   String get billsBudgetSettings;
 
   /// No description provided for @billsRecurringBills.
@@ -4490,7 +4490,7 @@ abstract class S {
   /// No description provided for @billsDescription.
   ///
   /// In pt, this message translates to:
-  /// **'DescriÃ§Ã£o'**
+  /// **'Descrição'**
   String get billsDescription;
 
   /// No description provided for @billsAmount.
@@ -4514,13 +4514,13 @@ abstract class S {
   /// Expense trends screen title
   ///
   /// In pt, this message translates to:
-  /// **'TendÃªncias de Despesas'**
+  /// **'Tendências de Despesas'**
   String get expenseTrends;
 
   /// Button to open trends
   ///
   /// In pt, this message translates to:
-  /// **'Ver TendÃªncias'**
+  /// **'Ver Tendências'**
   String get expenseTrendsViewTrends;
 
   /// 3 months chip
@@ -4544,7 +4544,7 @@ abstract class S {
   /// Budgeted line label
   ///
   /// In pt, this message translates to:
-  /// **'OrÃ§amentado'**
+  /// **'Orçamentado'**
   String get expenseTrendsBudgeted;
 
   /// Actual line label
@@ -4562,7 +4562,7 @@ abstract class S {
   /// No data message
   ///
   /// In pt, this message translates to:
-  /// **'Sem dados suficientes para mostrar tendÃªncias.'**
+  /// **'Sem dados suficientes para mostrar tendências.'**
   String get expenseTrendsNoData;
 
   /// Total label
@@ -4574,13 +4574,13 @@ abstract class S {
   /// Average label
   ///
   /// In pt, this message translates to:
-  /// **'MÃ©dia'**
+  /// **'Média'**
   String get expenseTrendsAverage;
 
   /// Overview tab label
   ///
   /// In pt, this message translates to:
-  /// **'VisÃ£o Geral'**
+  /// **'Visão Geral'**
   String get expenseTrendsOverview;
 
   /// Monthly label
@@ -4592,7 +4592,7 @@ abstract class S {
   /// Savings goals title
   ///
   /// In pt, this message translates to:
-  /// **'Objetivos de PoupanÃ§a'**
+  /// **'Objetivos de Poupança'**
   String get savingsGoals;
 
   /// Add savings goal
@@ -4646,7 +4646,7 @@ abstract class S {
   /// Progress percentage
   ///
   /// In pt, this message translates to:
-  /// **'{percent}% alcanÃ§ado'**
+  /// **'{percent}% alcançado'**
   String savingsGoalProgress(String percent);
 
   /// Remaining amount
@@ -4658,13 +4658,13 @@ abstract class S {
   /// Goal completed message
   ///
   /// In pt, this message translates to:
-  /// **'Objetivo alcanÃ§ado!'**
+  /// **'Objetivo alcançado!'**
   String get savingsGoalCompleted;
 
   /// Empty state
   ///
   /// In pt, this message translates to:
-  /// **'Sem objetivos de poupanÃ§a.\nCrie um para acompanhar o progresso.'**
+  /// **'Sem objetivos de poupança.\nCrie um para acompanhar o progresso.'**
   String get savingsGoalEmpty;
 
   /// Delete confirmation
@@ -4682,7 +4682,7 @@ abstract class S {
   /// Contribution amount field
   ///
   /// In pt, this message translates to:
-  /// **'Valor da contribuiÃ§Ã£o'**
+  /// **'Valor da contribuição'**
   String get savingsGoalContributionAmount;
 
   /// Contribution note field
@@ -4700,7 +4700,7 @@ abstract class S {
   /// Contribution history header
   ///
   /// In pt, this message translates to:
-  /// **'HistÃ³rico de ContribuiÃ§Ãµes'**
+  /// **'Histórico de Contribuições'**
   String get savingsGoalContributionHistory;
 
   /// See all goals button
@@ -4712,7 +4712,7 @@ abstract class S {
   /// Surplus suggestion card
   ///
   /// In pt, this message translates to:
-  /// **'Tiveste {amount} de excedente no mÃªs passado â€” queres alocar a um objetivo?'**
+  /// **'Tiveste {amount} de excedente no mês passado â€” queres alocar a um objetivo?'**
   String savingsGoalSurplusSuggestion(String amount);
 
   /// Allocate button
@@ -4730,13 +4730,13 @@ abstract class S {
   /// Snackbar on contribution
   ///
   /// In pt, this message translates to:
-  /// **'ContribuiÃ§Ã£o registada'**
+  /// **'Contribuição registada'**
   String get savingsGoalContributionSaved;
 
   /// Dashboard toggle for savings goals
   ///
   /// In pt, this message translates to:
-  /// **'Objetivos de PoupanÃ§a'**
+  /// **'Objetivos de Poupança'**
   String get settingsDashSavingsGoals;
 
   /// Active label
@@ -4766,7 +4766,7 @@ abstract class S {
   /// Meal cost reconciliation title
   ///
   /// In pt, this message translates to:
-  /// **'Custos de RefeiÃ§Ãµes'**
+  /// **'Custos de Refeições'**
   String get mealCostReconciliation;
 
   /// Estimated cost label
@@ -4790,13 +4790,13 @@ abstract class S {
   /// Monthly total label
   ///
   /// In pt, this message translates to:
-  /// **'Total do MÃªs'**
+  /// **'Total do Mês'**
   String get mealCostTotal;
 
   /// Savings indicator
   ///
   /// In pt, this message translates to:
-  /// **'PoupanÃ§a'**
+  /// **'Poupança'**
   String get mealCostSavings;
 
   /// Overrun indicator
@@ -4808,7 +4808,7 @@ abstract class S {
   /// No meal purchase data
   ///
   /// In pt, this message translates to:
-  /// **'Sem dados de compras para refeiÃ§Ãµes.'**
+  /// **'Sem dados de compras para refeições.'**
   String get mealCostNoData;
 
   /// Button to open reconciliation
@@ -4820,37 +4820,37 @@ abstract class S {
   /// Checkbox label in finalize
   ///
   /// In pt, this message translates to:
-  /// **'Compra para refeiÃ§Ãµes'**
+  /// **'Compra para refeições'**
   String get mealCostIsMealPurchase;
 
   /// Vs budget label
   ///
   /// In pt, this message translates to:
-  /// **'vs orÃ§amento'**
+  /// **'vs orçamento'**
   String get mealCostVsBudget;
 
   /// On track message
   ///
   /// In pt, this message translates to:
-  /// **'Dentro do orÃ§amento'**
+  /// **'Dentro do orçamento'**
   String get mealCostOnTrack;
 
   /// Over budget message
   ///
   /// In pt, this message translates to:
-  /// **'Acima do orÃ§amento'**
+  /// **'Acima do orçamento'**
   String get mealCostOver;
 
   /// Under budget message
   ///
   /// In pt, this message translates to:
-  /// **'Abaixo do orÃ§amento'**
+  /// **'Abaixo do orçamento'**
   String get mealCostUnder;
 
   /// Variation label for AI recipe content
   ///
   /// In pt, this message translates to:
-  /// **'VariaÃ§Ã£o'**
+  /// **'Variação'**
   String get mealVariation;
 
   /// Pairing suggestion label
@@ -4862,7 +4862,7 @@ abstract class S {
   /// Storage info label
   ///
   /// In pt, this message translates to:
-  /// **'ConservaÃ§Ã£o'**
+  /// **'Conservação'**
   String get mealStorage;
 
   /// Leftover badge label
@@ -4880,7 +4880,7 @@ abstract class S {
   /// Weekly nutrition summary header
   ///
   /// In pt, this message translates to:
-  /// **'NutriÃ§Ã£o Semanal'**
+  /// **'Nutrição Semanal'**
   String get mealWeeklySummary;
 
   /// Batch cooking prep guide button
@@ -4892,7 +4892,7 @@ abstract class S {
   /// Per-meal preparation guide button
   ///
   /// In pt, this message translates to:
-  /// **'PreparaÃ§Ã£o'**
+  /// **'Preparação'**
   String get mealViewPrepGuide;
 
   /// Title for the per-meal preparation guide sheet
@@ -4928,7 +4928,7 @@ abstract class S {
   /// Label for disliked meal feedback button
   ///
   /// In pt, this message translates to:
-  /// **'NÃ£o gostei'**
+  /// **'Não gostei'**
   String get mealFeedbackDislike;
 
   /// Label for skipped meal feedback button
@@ -4958,13 +4958,13 @@ abstract class S {
   /// Notifications title
   ///
   /// In pt, this message translates to:
-  /// **'NotificaÃ§Ãµes'**
+  /// **'Notificações'**
   String get notifications;
 
   /// Notification settings title
   ///
   /// In pt, this message translates to:
-  /// **'DefiniÃ§Ãµes de NotificaÃ§Ãµes'**
+  /// **'Definições de Notificações'**
   String get notificationSettings;
 
   /// Preferred notification time label
@@ -4976,7 +4976,7 @@ abstract class S {
   /// Preferred notification time description
   ///
   /// In pt, this message translates to:
-  /// **'NotificaÃ§Ãµes agendadas usarÃ£o esta hora (exceto lembretes personalizados)'**
+  /// **'Notificações agendadas usarão esta hora (exceto lembretes personalizados)'**
   String get notificationPreferredTimeDesc;
 
   /// Bill reminders toggle
@@ -4994,7 +4994,7 @@ abstract class S {
   /// Budget alerts toggle
   ///
   /// In pt, this message translates to:
-  /// **'Alertas de orÃ§amento'**
+  /// **'Alertas de orçamento'**
   String get notificationBudgetAlerts;
 
   /// Budget alert threshold
@@ -5006,13 +5006,13 @@ abstract class S {
   /// Meal plan reminder toggle
   ///
   /// In pt, this message translates to:
-  /// **'Lembrete de plano de refeiÃ§Ãµes'**
+  /// **'Lembrete de plano de refeições'**
   String get notificationMealPlanReminder;
 
   /// Meal plan reminder description
   ///
   /// In pt, this message translates to:
-  /// **'Notifica se nÃ£o hÃ¡ plano para o mÃªs atual'**
+  /// **'Notifica se não há plano para o mês atual'**
   String get notificationMealPlanReminderDesc;
 
   /// Custom reminders section
@@ -5030,7 +5030,7 @@ abstract class S {
   /// Custom reminder title field
   ///
   /// In pt, this message translates to:
-  /// **'TÃ­tulo'**
+  /// **'Título'**
   String get notificationCustomTitle;
 
   /// Custom reminder body field
@@ -5054,7 +5054,7 @@ abstract class S {
   /// Daily repeat option
   ///
   /// In pt, this message translates to:
-  /// **'DiÃ¡rio'**
+  /// **'Diário'**
   String get notificationCustomRepeatDaily;
 
   /// Weekly repeat option
@@ -5072,7 +5072,7 @@ abstract class S {
   /// No repeat option
   ///
   /// In pt, this message translates to:
-  /// **'NÃ£o repetir'**
+  /// **'Não repetir'**
   String get notificationCustomRepeatNone;
 
   /// Custom reminder saved
@@ -5108,31 +5108,31 @@ abstract class S {
   /// Budget alert title
   ///
   /// In pt, this message translates to:
-  /// **'Alerta de orÃ§amento'**
+  /// **'Alerta de orçamento'**
   String get notificationBudgetTitle;
 
   /// Budget alert body
   ///
   /// In pt, this message translates to:
-  /// **'JÃ¡ gastaste {percent}% do orÃ§amento mensal'**
+  /// **'Já gastaste {percent}% do orçamento mensal'**
   String notificationBudgetBody(String percent);
 
   /// Meal plan notification title
   ///
   /// In pt, this message translates to:
-  /// **'Plano de refeiÃ§Ãµes'**
+  /// **'Plano de refeições'**
   String get notificationMealPlanTitle;
 
   /// Meal plan notification body
   ///
   /// In pt, this message translates to:
-  /// **'Ainda nÃ£o geraste o plano de refeiÃ§Ãµes deste mÃªs'**
+  /// **'Ainda não geraste o plano de refeições deste mês'**
   String get notificationMealPlanBody;
 
   /// Permission required message
   ///
   /// In pt, this message translates to:
-  /// **'PermissÃ£o de notificaÃ§Ãµes necessÃ¡ria'**
+  /// **'Permissão de notificações necessária'**
   String get notificationPermissionRequired;
 
   /// Select days label
@@ -5168,7 +5168,7 @@ abstract class S {
   /// Teal palette name
   ///
   /// In pt, this message translates to:
-  /// **'Azul-petrÃ³leo'**
+  /// **'Azul-petróleo'**
   String get paletteTeal;
 
   /// Sunset palette name
@@ -5186,19 +5186,19 @@ abstract class S {
   /// Export sheet title
   ///
   /// In pt, this message translates to:
-  /// **'Exportar mÃªs'**
+  /// **'Exportar mês'**
   String get exportTitle;
 
   /// PDF export option
   ///
   /// In pt, this message translates to:
-  /// **'RelatÃ³rio PDF'**
+  /// **'Relatório PDF'**
   String get exportPdf;
 
   /// PDF export description
   ///
   /// In pt, this message translates to:
-  /// **'RelatÃ³rio formatado com orÃ§amento vs real'**
+  /// **'Relatório formatado com orçamento vs real'**
   String get exportPdfDesc;
 
   /// CSV export option
@@ -5210,19 +5210,19 @@ abstract class S {
   /// CSV export description
   ///
   /// In pt, this message translates to:
-  /// **'Dados brutos para folha de cÃ¡lculo'**
+  /// **'Dados brutos para folha de cálculo'**
   String get exportCsvDesc;
 
   /// PDF report title
   ///
   /// In pt, this message translates to:
-  /// **'RelatÃ³rio Mensal de Despesas'**
+  /// **'Relatório Mensal de Despesas'**
   String get exportReportTitle;
 
   /// Budget vs actual section header
   ///
   /// In pt, this message translates to:
-  /// **'OrÃ§amento vs Real'**
+  /// **'Orçamento vs Real'**
   String get exportBudgetVsActual;
 
   /// Expense detail section header
@@ -5240,13 +5240,13 @@ abstract class S {
   /// Search field hint
   ///
   /// In pt, this message translates to:
-  /// **'Pesquisar por descriÃ§Ã£o...'**
+  /// **'Pesquisar por descrição...'**
   String get searchExpensesHint;
 
   /// Date range label
   ///
   /// In pt, this message translates to:
-  /// **'PerÃ­odo'**
+  /// **'Período'**
   String get searchDateRange;
 
   /// No search results message
@@ -5270,31 +5270,31 @@ abstract class S {
   /// Variable expense type label
   ///
   /// In pt, this message translates to:
-  /// **'VariÃ¡vel'**
+  /// **'Variável'**
   String get expenseVariable;
 
   /// Monthly budget hint with month name
   ///
   /// In pt, this message translates to:
-  /// **'OrÃ§amento para {month}'**
+  /// **'Orçamento para {month}'**
   String monthlyBudgetHint(String month);
 
   /// Warning for unset variable budgets
   ///
   /// In pt, this message translates to:
-  /// **'{count} orÃ§amentos variÃ¡veis por definir'**
+  /// **'{count} orçamentos variáveis por definir'**
   String unsetBudgetsWarning(int count);
 
   /// CTA to set budgets in settings
   ///
   /// In pt, this message translates to:
-  /// **'Definir nas definiÃ§Ãµes'**
+  /// **'Definir nas definições'**
   String get unsetBudgetsCta;
 
   /// Projected spending amount
   ///
   /// In pt, this message translates to:
-  /// **'ProjeÃ§Ã£o: {amount}'**
+  /// **'Projeção: {amount}'**
   String paceProjected(String amount);
 
   /// No description provided for @onbSkip.
@@ -5312,13 +5312,13 @@ abstract class S {
   /// No description provided for @onbGetStarted.
   ///
   /// In pt, this message translates to:
-  /// **'ComeÃ§ar'**
+  /// **'Começar'**
   String get onbGetStarted;
 
   /// No description provided for @onbSlide0Title.
   ///
   /// In pt, this message translates to:
-  /// **'O seu orÃ§amento, num relance'**
+  /// **'O seu orçamento, num relance'**
   String get onbSlide0Title;
 
   /// No description provided for @onbSlide0Body.
@@ -5360,19 +5360,19 @@ abstract class S {
   /// No description provided for @onbSlide3Body.
   ///
   /// In pt, this message translates to:
-  /// **'Obtenha uma anÃ¡lise em 3 partes baseada no seu orÃ§amento real â€” nÃ£o conselhos genÃ©ricos.'**
+  /// **'Obtenha uma análise em 3 partes baseada no seu orçamento real â€” não conselhos genéricos.'**
   String get onbSlide3Body;
 
   /// No description provided for @onbSlide4Title.
   ///
   /// In pt, this message translates to:
-  /// **'Planeie refeiÃ§Ãµes no orÃ§amento'**
+  /// **'Planeie refeições no orçamento'**
   String get onbSlide4Title;
 
   /// No description provided for @onbSlide4Body.
   ///
   /// In pt, this message translates to:
-  /// **'Gere um plano mensal ajustado ao seu orÃ§amento alimentar e agregado familiar.'**
+  /// **'Gere um plano mensal ajustado ao seu orçamento alimentar e agregado familiar.'**
   String get onbSlide4Body;
 
   /// No description provided for @onbTourSkip.
@@ -5414,13 +5414,13 @@ abstract class S {
   /// No description provided for @onbTourDash2Body.
   ///
   /// In pt, this message translates to:
-  /// **'PontuaÃ§Ã£o de saÃºde financeira 0â€“100. Toque para ver os fatores.'**
+  /// **'Pontuação de saúde financeira 0â€“100. Toque para ver os fatores.'**
   String get onbTourDash2Body;
 
   /// No description provided for @onbTourDash3Title.
   ///
   /// In pt, this message translates to:
-  /// **'OrÃ§amento vs real'**
+  /// **'Orçamento vs real'**
   String get onbTourDash3Title;
 
   /// No description provided for @onbTourDash3Body.
@@ -5444,13 +5444,13 @@ abstract class S {
   /// No description provided for @onbTourDash5Title.
   ///
   /// In pt, this message translates to:
-  /// **'NavegaÃ§Ã£o'**
+  /// **'Navegação'**
   String get onbTourDash5Title;
 
   /// No description provided for @onbTourDash5Body.
   ///
   /// In pt, this message translates to:
-  /// **'5 secÃ§Ãµes: OrÃ§amento, Supermercado, Lista, Coach, RefeiÃ§Ãµes.'**
+  /// **'5 secções: Orçamento, Supermercado, Lista, Coach, Refeições.'**
   String get onbTourDash5Body;
 
   /// No description provided for @onbTourGrocery1Title.
@@ -5516,37 +5516,37 @@ abstract class S {
   /// No description provided for @onbTourShopping3Title.
   ///
   /// In pt, this message translates to:
-  /// **'HistÃ³rico de compras'**
+  /// **'Histórico de compras'**
   String get onbTourShopping3Title;
 
   /// No description provided for @onbTourShopping3Body.
   ///
   /// In pt, this message translates to:
-  /// **'Veja todas as sessÃµes de compras anteriores aqui.'**
+  /// **'Veja todas as sessões de compras anteriores aqui.'**
   String get onbTourShopping3Body;
 
   /// No description provided for @onbTourCoach1Title.
   ///
   /// In pt, this message translates to:
-  /// **'Analisar o meu orÃ§amento'**
+  /// **'Analisar o meu orçamento'**
   String get onbTourCoach1Title;
 
   /// No description provided for @onbTourCoach1Body.
   ///
   /// In pt, this message translates to:
-  /// **'Toque para gerar uma anÃ¡lise baseada nos seus dados reais.'**
+  /// **'Toque para gerar uma análise baseada nos seus dados reais.'**
   String get onbTourCoach1Body;
 
   /// No description provided for @onbTourCoach2Title.
   ///
   /// In pt, this message translates to:
-  /// **'HistÃ³rico de anÃ¡lises'**
+  /// **'Histórico de análises'**
   String get onbTourCoach2Title;
 
   /// No description provided for @onbTourCoach2Body.
   ///
   /// In pt, this message translates to:
-  /// **'As anÃ¡lises guardadas aparecem aqui, mais recentes primeiro.'**
+  /// **'As análises guardadas aparecem aqui, mais recentes primeiro.'**
   String get onbTourCoach2Body;
 
   /// No description provided for @onbTourMeals1Title.
@@ -5558,7 +5558,7 @@ abstract class S {
   /// No description provided for @onbTourMeals1Body.
   ///
   /// In pt, this message translates to:
-  /// **'Cria um mÃªs completo de refeiÃ§Ãµes dentro do orÃ§amento alimentar.'**
+  /// **'Cria um mês completo de refeições dentro do orçamento alimentar.'**
   String get onbTourMeals1Body;
 
   /// No description provided for @onbTourMeals2Title.
@@ -5570,7 +5570,7 @@ abstract class S {
   /// No description provided for @onbTourMeals2Body.
   ///
   /// In pt, this message translates to:
-  /// **'Navegue refeiÃ§Ãµes por semana. Toque num dia para ver a receita.'**
+  /// **'Navegue refeições por semana. Toque num dia para ver a receita.'**
   String get onbTourMeals2Body;
 
   /// No description provided for @onbTourMeals3Title.
@@ -5588,25 +5588,25 @@ abstract class S {
   /// No description provided for @onbTourExpenseTracker1Title.
   ///
   /// In pt, this message translates to:
-  /// **'NavegaÃ§Ã£o mensal'**
+  /// **'Navegação mensal'**
   String get onbTourExpenseTracker1Title;
 
   /// No description provided for @onbTourExpenseTracker1Body.
   ///
   /// In pt, this message translates to:
-  /// **'Alterne entre meses para ver ou adicionar despesas de qualquer perÃ­odo.'**
+  /// **'Alterne entre meses para ver ou adicionar despesas de qualquer período.'**
   String get onbTourExpenseTracker1Body;
 
   /// No description provided for @onbTourExpenseTracker2Title.
   ///
   /// In pt, this message translates to:
-  /// **'Resumo do orÃ§amento'**
+  /// **'Resumo do orçamento'**
   String get onbTourExpenseTracker2Title;
 
   /// No description provided for @onbTourExpenseTracker2Body.
   ///
   /// In pt, this message translates to:
-  /// **'Veja o orÃ§ado vs real e o saldo restante de relance.'**
+  /// **'Veja o orçado vs real e o saldo restante de relance.'**
   String get onbTourExpenseTracker2Body;
 
   /// No description provided for @onbTourExpenseTracker3Title.
@@ -5642,7 +5642,7 @@ abstract class S {
   /// No description provided for @onbTourSavings1Body.
   ///
   /// In pt, this message translates to:
-  /// **'Cada cartÃ£o mostra o progresso em direÃ§Ã£o ao objetivo. Toque para ver detalhes e adicionar contribuiÃ§Ãµes.'**
+  /// **'Cada cartão mostra o progresso em direção ao objetivo. Toque para ver detalhes e adicionar contribuições.'**
   String get onbTourSavings1Body;
 
   /// No description provided for @onbTourSavings2Title.
@@ -5654,7 +5654,7 @@ abstract class S {
   /// No description provided for @onbTourSavings2Body.
   ///
   /// In pt, this message translates to:
-  /// **'Toque + para definir um novo objetivo de poupanÃ§a com valor alvo e prazo opcional.'**
+  /// **'Toque + para definir um novo objetivo de poupança com valor alvo e prazo opcional.'**
   String get onbTourSavings2Body;
 
   /// No description provided for @onbTourRecurring1Title.
@@ -5666,7 +5666,7 @@ abstract class S {
   /// No description provided for @onbTourRecurring1Body.
   ///
   /// In pt, this message translates to:
-  /// **'Contas fixas mensais como renda, subscriÃ§Ãµes e serviÃ§os. SÃ£o incluÃ­das automaticamente no orÃ§amento.'**
+  /// **'Contas fixas mensais como renda, subscrições e serviços. São incluídas automaticamente no orçamento.'**
   String get onbTourRecurring1Body;
 
   /// No description provided for @onbTourRecurring2Title.
@@ -5690,13 +5690,13 @@ abstract class S {
   /// No description provided for @onbTourAssistant1Body.
   ///
   /// In pt, this message translates to:
-  /// **'O seu atalho para aÃ§Ãµes rÃ¡pidas. Toque para adicionar despesas, mudar definiÃ§Ãµes, navegar e mais â€” basta escrever o que precisa.'**
+  /// **'O seu atalho para ações rápidas. Toque para adicionar despesas, mudar definições, navegar e mais â€” basta escrever o que precisa.'**
   String get onbTourAssistant1Body;
 
   /// No description provided for @taxDeductionTitle.
   ///
   /// In pt, this message translates to:
-  /// **'DeduÃ§Ãµes IRS'**
+  /// **'Deduções IRS'**
   String get taxDeductionTitle;
 
   /// No description provided for @taxDeductionSeeDetail.
@@ -5708,19 +5708,19 @@ abstract class S {
   /// No description provided for @taxDeductionEstimated.
   ///
   /// In pt, this message translates to:
-  /// **'deduÃ§Ã£o estimada'**
+  /// **'dedução estimada'**
   String get taxDeductionEstimated;
 
   /// No description provided for @taxDeductionMaxOf.
   ///
   /// In pt, this message translates to:
-  /// **'MÃ¡x. de {amount}'**
+  /// **'Máx. de {amount}'**
   String taxDeductionMaxOf(String amount);
 
   /// No description provided for @taxDeductionDetailTitle.
   ///
   /// In pt, this message translates to:
-  /// **'DeduÃ§Ãµes IRS â€” Detalhe'**
+  /// **'Deduções IRS â€” Detalhe'**
   String get taxDeductionDetailTitle;
 
   /// No description provided for @taxDeductionDeductibleTitle.
@@ -5756,43 +5756,43 @@ abstract class S {
   /// No description provided for @taxDeductionNotDeductible.
   ///
   /// In pt, this message translates to:
-  /// **'NÃ£o dedutÃ­vel'**
+  /// **'Não dedutível'**
   String get taxDeductionNotDeductible;
 
   /// No description provided for @taxDeductionDisclaimer.
   ///
   /// In pt, this message translates to:
-  /// **'Estes valores sÃ£o estimativas baseadas nas despesas registadas. As deduÃ§Ãµes reais dependem das faturas registadas no e-Fatura. Consulte um profissional fiscal para valores definitivos.'**
+  /// **'Estes valores são estimativas baseadas nas despesas registadas. As deduções reais dependem das faturas registadas no e-Fatura. Consulte um profissional fiscal para valores definitivos.'**
   String get taxDeductionDisclaimer;
 
   /// No description provided for @settingsDashTaxDeductions.
   ///
   /// In pt, this message translates to:
-  /// **'DeduÃ§Ãµes fiscais (PT)'**
+  /// **'Deduções fiscais (PT)'**
   String get settingsDashTaxDeductions;
 
   /// No description provided for @settingsDashUpcomingBills.
   ///
   /// In pt, this message translates to:
-  /// **'PrÃ³ximos pagamentos'**
+  /// **'Próximos pagamentos'**
   String get settingsDashUpcomingBills;
 
   /// No description provided for @settingsDashBudgetStreaks.
   ///
   /// In pt, this message translates to:
-  /// **'SÃ©ries de orÃ§amento'**
+  /// **'Séries de orçamento'**
   String get settingsDashBudgetStreaks;
 
   /// No description provided for @settingsDashQuickActions.
   ///
   /// In pt, this message translates to:
-  /// **'AÃ§Ãµes rÃ¡pidas'**
+  /// **'Ações rápidas'**
   String get settingsDashQuickActions;
 
   /// No description provided for @upcomingBillsTitle.
   ///
   /// In pt, this message translates to:
-  /// **'PrÃ³ximos Pagamentos'**
+  /// **'Próximos Pagamentos'**
   String get upcomingBillsTitle;
 
   /// No description provided for @upcomingBillsManage.
@@ -5810,7 +5810,7 @@ abstract class S {
   /// No description provided for @billDueTomorrow.
   ///
   /// In pt, this message translates to:
-  /// **'AmanhÃ£'**
+  /// **'Amanhã'**
   String get billDueTomorrow;
 
   /// No description provided for @billDueInDays.
@@ -5822,13 +5822,13 @@ abstract class S {
   /// No description provided for @savingsProjectionReachedBy.
   ///
   /// In pt, this message translates to:
-  /// **'Atingido atÃ© {date}'**
+  /// **'Atingido até {date}'**
   String savingsProjectionReachedBy(String date);
 
   /// No description provided for @savingsProjectionNeedPerMonth.
   ///
   /// In pt, this message translates to:
-  /// **'Precisa {amount}/mÃªs para cumprir prazo'**
+  /// **'Precisa {amount}/mês para cumprir prazo'**
   String savingsProjectionNeedPerMonth(String amount);
 
   /// No description provided for @savingsProjectionOnTrack.
@@ -5846,13 +5846,13 @@ abstract class S {
   /// No description provided for @savingsProjectionNoData.
   ///
   /// In pt, this message translates to:
-  /// **'Adicione contribuiÃ§Ãµes para ver projeÃ§Ã£o'**
+  /// **'Adicione contribuições para ver projeção'**
   String get savingsProjectionNoData;
 
   /// No description provided for @savingsProjectionAvgContribution.
   ///
   /// In pt, this message translates to:
-  /// **'MÃ©dia {amount}/mÃªs'**
+  /// **'Média {amount}/mês'**
   String savingsProjectionAvgContribution(String amount);
 
   /// No description provided for @taxSimTitle.
@@ -5876,7 +5876,7 @@ abstract class S {
   /// No description provided for @taxSimPresetMeal.
   ///
   /// In pt, this message translates to:
-  /// **'CartÃ£o vs dinheiro'**
+  /// **'Cartão vs dinheiro'**
   String get taxSimPresetMeal;
 
   /// No description provided for @taxSimPresetTitular.
@@ -5894,7 +5894,7 @@ abstract class S {
   /// No description provided for @taxSimGross.
   ///
   /// In pt, this message translates to:
-  /// **'SalÃ¡rio bruto'**
+  /// **'Salário bruto'**
   String get taxSimGross;
 
   /// No description provided for @taxSimMarital.
@@ -5918,13 +5918,13 @@ abstract class S {
   /// No description provided for @taxSimMealType.
   ///
   /// In pt, this message translates to:
-  /// **'Tipo de subsÃ­dio de alimentaÃ§Ã£o'**
+  /// **'Tipo de subsídio de alimentação'**
   String get taxSimMealType;
 
   /// No description provided for @taxSimMealAmount.
   ///
   /// In pt, this message translates to:
-  /// **'SubsÃ­dio alim./dia'**
+  /// **'Subsídio alim./dia'**
   String get taxSimMealAmount;
 
   /// No description provided for @taxSimComparison.
@@ -5936,25 +5936,25 @@ abstract class S {
   /// No description provided for @taxSimNetTakeHome.
   ///
   /// In pt, this message translates to:
-  /// **'LÃ­quido a receber'**
+  /// **'Líquido a receber'**
   String get taxSimNetTakeHome;
 
   /// No description provided for @taxSimIRS.
   ///
   /// In pt, this message translates to:
-  /// **'RetenÃ§Ã£o IRS'**
+  /// **'Retenção IRS'**
   String get taxSimIRS;
 
   /// No description provided for @taxSimSS.
   ///
   /// In pt, this message translates to:
-  /// **'SeguranÃ§a social'**
+  /// **'Segurança social'**
   String get taxSimSS;
 
   /// No description provided for @taxSimDelta.
   ///
   /// In pt, this message translates to:
-  /// **'DiferenÃ§a mensal:'**
+  /// **'Diferença mensal:'**
   String get taxSimDelta;
 
   /// No description provided for @taxSimButton.
@@ -5966,7 +5966,7 @@ abstract class S {
   /// No description provided for @streakTitle.
   ///
   /// In pt, this message translates to:
-  /// **'SÃ©ries de OrÃ§amento'**
+  /// **'Séries de Orçamento'**
   String get streakTitle;
 
   /// No description provided for @streakBronze.
@@ -5996,7 +5996,7 @@ abstract class S {
   /// No description provided for @streakSilverDesc.
   ///
   /// In pt, this message translates to:
-  /// **'Dentro do orÃ§amento'**
+  /// **'Dentro do orçamento'**
   String get streakSilverDesc;
 
   /// No description provided for @streakGoldDesc.
@@ -6032,43 +6032,43 @@ abstract class S {
   /// No description provided for @expenseAdjustMonthHint.
   ///
   /// In pt, this message translates to:
-  /// **'Deixe vazio para usar o orÃ§amento base'**
+  /// **'Deixe vazio para usar o orçamento base'**
   String get expenseAdjustMonthHint;
 
   /// No description provided for @settingsPersonalTip.
   ///
   /// In pt, this message translates to:
-  /// **'O estado civil e dependentes afetam o escalÃ£o de IRS, que determina o imposto retido no salÃ¡rio.'**
+  /// **'O estado civil e dependentes afetam o escalão de IRS, que determina o imposto retido no salário.'**
   String get settingsPersonalTip;
 
   /// No description provided for @settingsSalariesTip.
   ///
   /// In pt, this message translates to:
-  /// **'O salÃ¡rio bruto Ã© usado para calcular o rendimento lÃ­quido apÃ³s impostos e seguranÃ§a social. Adicione vÃ¡rios salÃ¡rios se o agregado tiver mais que um rendimento.'**
+  /// **'O salário bruto é usado para calcular o rendimento líquido após impostos e segurança social. Adicione vários salários se o agregado tiver mais que um rendimento.'**
   String get settingsSalariesTip;
 
   /// No description provided for @settingsExpensesTip.
   ///
   /// In pt, this message translates to:
-  /// **'Defina o orÃ§amento mensal para cada categoria. Pode ajustar para meses especÃ­ficos na vista de detalhe da categoria.'**
+  /// **'Defina o orçamento mensal para cada categoria. Pode ajustar para meses específicos na vista de detalhe da categoria.'**
   String get settingsExpensesTip;
 
   /// No description provided for @settingsMealHouseholdTip.
   ///
   /// In pt, this message translates to:
-  /// **'NÃºmero de pessoas que fazem refeiÃ§Ãµes em casa. Isto ajusta receitas e porÃ§Ãµes no plano alimentar.'**
+  /// **'Número de pessoas que fazem refeições em casa. Isto ajusta receitas e porções no plano alimentar.'**
   String get settingsMealHouseholdTip;
 
   /// No description provided for @settingsHouseholdTip.
   ///
   /// In pt, this message translates to:
-  /// **'Convide membros da famÃ­lia para partilhar dados do orÃ§amento entre dispositivos. Todos veem as mesmas despesas e orÃ§amentos.'**
+  /// **'Convide membros da família para partilhar dados do orçamento entre dispositivos. Todos veem as mesmas despesas e orçamentos.'**
   String get settingsHouseholdTip;
 
   /// Subscription section title
   ///
   /// In pt, this message translates to:
-  /// **'SubscriÃ§Ã£o'**
+  /// **'Subscrição'**
   String get subscriptionTitle;
 
   /// Free tier label
@@ -6086,13 +6086,13 @@ abstract class S {
   /// Family tier label
   ///
   /// In pt, this message translates to:
-  /// **'FamÃ­lia'**
+  /// **'Família'**
   String get subscriptionFamily;
 
   /// Trial active label
   ///
   /// In pt, this message translates to:
-  /// **'PerÃ­odo de teste ativo'**
+  /// **'Período de teste ativo'**
   String get subscriptionTrialActive;
 
   /// No description provided for @subscriptionTrialDaysLeft.
@@ -6104,7 +6104,7 @@ abstract class S {
   /// Trial expired label
   ///
   /// In pt, this message translates to:
-  /// **'PerÃ­odo de teste expirado'**
+  /// **'Período de teste expirado'**
   String get subscriptionTrialExpired;
 
   /// Upgrade button label
@@ -6128,7 +6128,7 @@ abstract class S {
   /// Manage subscription label
   ///
   /// In pt, this message translates to:
-  /// **'Gerir SubscriÃ§Ã£o'**
+  /// **'Gerir Subscrição'**
   String get subscriptionManage;
 
   /// No description provided for @subscriptionFeatureExplored.
@@ -6206,7 +6206,7 @@ abstract class S {
   /// Per month label
   ///
   /// In pt, this message translates to:
-  /// **'/mÃªs'**
+  /// **'/mês'**
   String get subscriptionPerMonth;
 
   /// Per year label
@@ -6224,13 +6224,13 @@ abstract class S {
   /// Start premium button
   ///
   /// In pt, this message translates to:
-  /// **'ComeÃ§ar Premium'**
+  /// **'Começar Premium'**
   String get subscriptionStartPremium;
 
   /// Start family button
   ///
   /// In pt, this message translates to:
-  /// **'ComeÃ§ar FamÃ­lia'**
+  /// **'Começar Família'**
   String get subscriptionStartFamily;
 
   /// Continue free button
@@ -6242,7 +6242,7 @@ abstract class S {
   /// Trial ended title
   ///
   /// In pt, this message translates to:
-  /// **'O seu perÃ­odo de teste terminou'**
+  /// **'O seu período de teste terminou'**
   String get subscriptionTrialEnded;
 
   /// Choose plan subtitle
@@ -6254,13 +6254,13 @@ abstract class S {
   /// Unlock subtitle
   ///
   /// In pt, this message translates to:
-  /// **'Desbloqueie todo o poder do seu orÃ§amento'**
+  /// **'Desbloqueie todo o poder do seu orçamento'**
   String get subscriptionUnlockPower;
 
   /// No description provided for @subscriptionRequiresPaid.
   ///
   /// In pt, this message translates to:
-  /// **'{feature} requer uma subscriÃ§Ã£o paga'**
+  /// **'{feature} requer uma subscrição paga'**
   String subscriptionRequiresPaid(String feature);
 
   /// No description provided for @subscriptionTryFeature.
@@ -6278,13 +6278,13 @@ abstract class S {
   /// No description provided for @subtitleBatchCooking.
   ///
   /// In pt, this message translates to:
-  /// **'Sugere receitas que podem ser preparadas com antecedÃªncia para vÃ¡rias refeiÃ§Ãµes'**
+  /// **'Sugere receitas que podem ser preparadas com antecedência para várias refeições'**
   String get subtitleBatchCooking;
 
   /// No description provided for @subtitleReuseLeftovers.
   ///
   /// In pt, this message translates to:
-  /// **'Planeia refeiÃ§Ãµes que reutilizam ingredientes de dias anteriores'**
+  /// **'Planeia refeições que reutilizam ingredientes de dias anteriores'**
   String get subtitleReuseLeftovers;
 
   /// No description provided for @subtitleMinimizeWaste.
@@ -6296,67 +6296,67 @@ abstract class S {
   /// No description provided for @subtitleMealTypeInclude.
   ///
   /// In pt, this message translates to:
-  /// **'Incluir esta refeiÃ§Ã£o no plano semanal'**
+  /// **'Incluir esta refeição no plano semanal'**
   String get subtitleMealTypeInclude;
 
   /// No description provided for @subtitleShowHeroCard.
   ///
   /// In pt, this message translates to:
-  /// **'Resumo da liquidez lÃ­quida no topo'**
+  /// **'Resumo da liquidez líquida no topo'**
   String get subtitleShowHeroCard;
 
   /// No description provided for @subtitleShowStressIndex.
   ///
   /// In pt, this message translates to:
-  /// **'PontuaÃ§Ã£o (0-100) que mede a pressÃ£o de despesas vs rendimento'**
+  /// **'Pontuação (0-100) que mede a pressão de despesas vs rendimento'**
   String get subtitleShowStressIndex;
 
   /// No description provided for @subtitleShowMonthReview.
   ///
   /// In pt, this message translates to:
-  /// **'Resumo comparativo deste mÃªs com os anteriores'**
+  /// **'Resumo comparativo deste mês com os anteriores'**
   String get subtitleShowMonthReview;
 
   /// No description provided for @subtitleShowUpcomingBills.
   ///
   /// In pt, this message translates to:
-  /// **'Despesas recorrentes nos prÃ³ximos 30 dias'**
+  /// **'Despesas recorrentes nos próximos 30 dias'**
   String get subtitleShowUpcomingBills;
 
   /// No description provided for @subtitleShowSummaryCards.
   ///
   /// In pt, this message translates to:
-  /// **'Rendimento, deduÃ§Ãµes, despesas e taxa de poupanÃ§a'**
+  /// **'Rendimento, deduções, despesas e taxa de poupança'**
   String get subtitleShowSummaryCards;
 
   /// No description provided for @subtitleShowBudgetVsActual.
   ///
   /// In pt, this message translates to:
-  /// **'ComparaÃ§Ã£o lado a lado por categoria de despesa'**
+  /// **'Comparação lado a lado por categoria de despesa'**
   String get subtitleShowBudgetVsActual;
 
   /// No description provided for @subtitleShowExpensesBreakdown.
   ///
   /// In pt, this message translates to:
-  /// **'GrÃ¡fico circular de despesas por categoria'**
+  /// **'Gráfico circular de despesas por categoria'**
   String get subtitleShowExpensesBreakdown;
 
   /// No description provided for @subtitleShowSavingsGoals.
   ///
   /// In pt, this message translates to:
-  /// **'Progresso em relaÃ§Ã£o aos seus objetivos de poupanÃ§a'**
+  /// **'Progresso em relação aos seus objetivos de poupança'**
   String get subtitleShowSavingsGoals;
 
   /// No description provided for @subtitleShowTaxDeductions.
   ///
   /// In pt, this message translates to:
-  /// **'DeduÃ§Ãµes fiscais elegÃ­veis estimadas este ano'**
+  /// **'Deduções fiscais elegíveis estimadas este ano'**
   String get subtitleShowTaxDeductions;
 
   /// No description provided for @subtitleShowBudgetStreaks.
   ///
   /// In pt, this message translates to:
-  /// **'Quantos meses consecutivos ficou dentro do orÃ§amento'**
+  /// **'Quantos meses consecutivos ficou dentro do orçamento'**
   String get subtitleShowBudgetStreaks;
 
   /// No description provided for @subtitleShowQuickActions.
@@ -6374,13 +6374,13 @@ abstract class S {
   /// No description provided for @subtitleShowCharts.
   ///
   /// In pt, this message translates to:
-  /// **'GrÃ¡ficos de tendÃªncia de orÃ§amento, despesas e rendimento'**
+  /// **'Gráficos de tendência de orçamento, despesas e rendimento'**
   String get subtitleShowCharts;
 
   /// No description provided for @subtitleChartExpensesPie.
   ///
   /// In pt, this message translates to:
-  /// **'DistribuiÃ§Ã£o de despesas por categoria'**
+  /// **'Distribuição de despesas por categoria'**
   String get subtitleChartExpensesPie;
 
   /// No description provided for @subtitleChartIncomeVsExpenses.
@@ -6392,61 +6392,61 @@ abstract class S {
   /// No description provided for @subtitleChartDeductions.
   ///
   /// In pt, this message translates to:
-  /// **'DiscriminaÃ§Ã£o de despesas dedutÃ­veis nos impostos'**
+  /// **'Discriminação de despesas dedutíveis nos impostos'**
   String get subtitleChartDeductions;
 
   /// No description provided for @subtitleChartNetIncome.
   ///
   /// In pt, this message translates to:
-  /// **'TendÃªncia do rendimento lÃ­quido ao longo do tempo'**
+  /// **'Tendência do rendimento líquido ao longo do tempo'**
   String get subtitleChartNetIncome;
 
   /// No description provided for @subtitleChartSavingsRate.
   ///
   /// In pt, this message translates to:
-  /// **'Percentagem de rendimento poupado por mÃªs'**
+  /// **'Percentagem de rendimento poupado por mês'**
   String get subtitleChartSavingsRate;
 
   /// No description provided for @helperCountry.
   ///
   /// In pt, this message translates to:
-  /// **'Determina o sistema fiscal, moeda e taxas de seguranÃ§a social'**
+  /// **'Determina o sistema fiscal, moeda e taxas de segurança social'**
   String get helperCountry;
 
   /// No description provided for @helperLanguage.
   ///
   /// In pt, this message translates to:
-  /// **'Substituir o idioma do sistema. \"Sistema\" segue a definiÃ§Ã£o do dispositivo'**
+  /// **'Substituir o idioma do sistema. \"Sistema\" segue a definição do dispositivo'**
   String get helperLanguage;
 
   /// No description provided for @helperMaritalStatus.
   ///
   /// In pt, this message translates to:
-  /// **'Afeta o cÃ¡lculo do escalÃ£o de IRS'**
+  /// **'Afeta o cálculo do escalão de IRS'**
   String get helperMaritalStatus;
 
   /// No description provided for @helperMealObjective.
   ///
   /// In pt, this message translates to:
-  /// **'Define o padrÃ£o alimentar: omnÃ­voro, vegetariano, pescatariano, etc.'**
+  /// **'Define o padrão alimentar: omnívoro, vegetariano, pescatariano, etc.'**
   String get helperMealObjective;
 
   /// No description provided for @helperSodiumPreference.
   ///
   /// In pt, this message translates to:
-  /// **'Filtra receitas pelo nÃ­vel de teor de sÃ³dio'**
+  /// **'Filtra receitas pelo nível de teor de sódio'**
   String get helperSodiumPreference;
 
   /// No description provided for @subtitleDietaryRestriction.
   ///
   /// In pt, this message translates to:
-  /// **'Exclui receitas que contÃªm {ingredient}'**
+  /// **'Exclui receitas que contêm {ingredient}'**
   String subtitleDietaryRestriction(String ingredient);
 
   /// No description provided for @subtitleExcludedProtein.
   ///
   /// In pt, this message translates to:
-  /// **'Remove {protein} de todas as sugestÃµes de refeiÃ§Ãµes'**
+  /// **'Remove {protein} de todas as sugestões de refeições'**
   String subtitleExcludedProtein(String protein);
 
   /// No description provided for @subtitleKitchenEquipment.
@@ -6458,7 +6458,7 @@ abstract class S {
   /// No description provided for @helperVeggieDays.
   ///
   /// In pt, this message translates to:
-  /// **'NÃºmero de dias totalmente vegetarianos por semana'**
+  /// **'Número de dias totalmente vegetarianos por semana'**
   String get helperVeggieDays;
 
   /// No description provided for @helperFishDays.
@@ -6476,37 +6476,37 @@ abstract class S {
   /// No description provided for @helperRedMeatDays.
   ///
   /// In pt, this message translates to:
-  /// **'Recomendado: mÃ¡ximo 2 vezes por semana'**
+  /// **'Recomendado: máximo 2 vezes por semana'**
   String get helperRedMeatDays;
 
   /// No description provided for @helperMaxPrepTime.
   ///
   /// In pt, this message translates to:
-  /// **'Tempo mÃ¡ximo de confeÃ§Ã£o para refeiÃ§Ãµes de semana (minutos)'**
+  /// **'Tempo máximo de confeção para refeições de semana (minutos)'**
   String get helperMaxPrepTime;
 
   /// No description provided for @helperMaxComplexity.
   ///
   /// In pt, this message translates to:
-  /// **'NÃ­vel de dificuldade das receitas para dias de semana'**
+  /// **'Nível de dificuldade das receitas para dias de semana'**
   String get helperMaxComplexity;
 
   /// No description provided for @helperWeekendPrepTime.
   ///
   /// In pt, this message translates to:
-  /// **'Tempo mÃ¡ximo de confeÃ§Ã£o para refeiÃ§Ãµes de fim de semana (minutos)'**
+  /// **'Tempo máximo de confeção para refeições de fim de semana (minutos)'**
   String get helperWeekendPrepTime;
 
   /// No description provided for @helperWeekendComplexity.
   ///
   /// In pt, this message translates to:
-  /// **'NÃ­vel de dificuldade das receitas para fins de semana'**
+  /// **'Nível de dificuldade das receitas para fins de semana'**
   String get helperWeekendComplexity;
 
   /// No description provided for @helperMaxBatchDays.
   ///
   /// In pt, this message translates to:
-  /// **'Quantos dias uma refeiÃ§Ã£o preparada em lote pode ser reutilizada'**
+  /// **'Quantos dias uma refeição preparada em lote pode ser reutilizada'**
   String get helperMaxBatchDays;
 
   /// No description provided for @helperNewIngredients.
@@ -6518,25 +6518,25 @@ abstract class S {
   /// No description provided for @helperGrossSalary.
   ///
   /// In pt, this message translates to:
-  /// **'SalÃ¡rio total antes de impostos e deduÃ§Ãµes'**
+  /// **'Salário total antes de impostos e deduções'**
   String get helperGrossSalary;
 
   /// No description provided for @helperExemptIncome.
   ///
   /// In pt, this message translates to:
-  /// **'Rendimento adicional nÃ£o sujeito a IRS (ex.: subsÃ­dios)'**
+  /// **'Rendimento adicional não sujeito a IRS (ex.: subsídios)'**
   String get helperExemptIncome;
 
   /// No description provided for @helperMealAllowance.
   ///
   /// In pt, this message translates to:
-  /// **'SubsÃ­dio de refeiÃ§Ã£o diÃ¡rio do empregador'**
+  /// **'Subsídio de refeição diário do empregador'**
   String get helperMealAllowance;
 
   /// No description provided for @helperWorkingDays.
   ///
   /// In pt, this message translates to:
-  /// **'TÃ­pico: 22. Afeta o cÃ¡lculo do subsÃ­dio de refeiÃ§Ã£o'**
+  /// **'Típico: 22. Afeta o cálculo do subsídio de refeição'**
   String get helperWorkingDays;
 
   /// No description provided for @helperSalaryLabel.
@@ -6548,7 +6548,7 @@ abstract class S {
   /// No description provided for @helperExpenseAmount.
   ///
   /// In pt, this message translates to:
-  /// **'Montante mensal orÃ§amentado para esta categoria'**
+  /// **'Montante mensal orçamentado para esta categoria'**
   String get helperExpenseAmount;
 
   /// No description provided for @helperCalorieTarget.
@@ -6572,73 +6572,73 @@ abstract class S {
   /// No description provided for @infoStressIndex.
   ///
   /// In pt, this message translates to:
-  /// **'Compara os gastos reais com o seu orÃ§amento. Intervalos de pontuaÃ§Ã£o:\n\n0-30: ConfortÃ¡vel - gastos bem dentro do orÃ§amento\n30-60: Moderado - a aproximar-se dos limites do orÃ§amento\n60-100: CrÃ­tico - gastos excedem significativamente o orÃ§amento'**
+  /// **'Compara os gastos reais com o seu orçamento. Intervalos de pontuação:\n\n0-30: Confortável - gastos bem dentro do orçamento\n30-60: Moderado - a aproximar-se dos limites do orçamento\n60-100: Crítico - gastos excedem significativamente o orçamento'**
   String get infoStressIndex;
 
   /// No description provided for @infoBudgetStreak.
   ///
   /// In pt, this message translates to:
-  /// **'Meses consecutivos em que a despesa total ficou dentro do orÃ§amento total.'**
+  /// **'Meses consecutivos em que a despesa total ficou dentro do orçamento total.'**
   String get infoBudgetStreak;
 
   /// No description provided for @infoUpcomingBills.
   ///
   /// In pt, this message translates to:
-  /// **'Mostra despesas recorrentes nos prÃ³ximos 30 dias com base nas suas despesas mensais.'**
+  /// **'Mostra despesas recorrentes nos próximos 30 dias com base nas suas despesas mensais.'**
   String get infoUpcomingBills;
 
   /// No description provided for @infoSalaryBreakdown.
   ///
   /// In pt, this message translates to:
-  /// **'Mostra como o salÃ¡rio bruto Ã© dividido em imposto IRS, contribuiÃ§Ãµes para a seguranÃ§a social, rendimento lÃ­quido e subsÃ­dio de refeiÃ§Ã£o.'**
+  /// **'Mostra como o salário bruto é dividido em imposto IRS, contribuições para a segurança social, rendimento líquido e subsídio de refeição.'**
   String get infoSalaryBreakdown;
 
   /// No description provided for @infoBudgetVsActual.
   ///
   /// In pt, this message translates to:
-  /// **'Compara o que orÃ§amentou por categoria com o que realmente gastou. Verde significa abaixo do orÃ§amento, vermelho significa acima do orÃ§amento.'**
+  /// **'Compara o que orçamentou por categoria com o que realmente gastou. Verde significa abaixo do orçamento, vermelho significa acima do orçamento.'**
   String get infoBudgetVsActual;
 
   /// No description provided for @infoSavingsGoals.
   ///
   /// In pt, this message translates to:
-  /// **'Progresso em relaÃ§Ã£o a cada objetivo de poupanÃ§a com base nas contribuiÃ§Ãµes efetuadas.'**
+  /// **'Progresso em relação a cada objetivo de poupança com base nas contribuições efetuadas.'**
   String get infoSavingsGoals;
 
   /// No description provided for @infoTaxDeductions.
   ///
   /// In pt, this message translates to:
-  /// **'Despesas dedutÃ­veis estimadas (saÃºde, educaÃ§Ã£o, habitaÃ§Ã£o). Estas sÃ£o apenas estimativas - consulte um profissional fiscal para valores precisos.'**
+  /// **'Despesas dedutíveis estimadas (saúde, educação, habitação). Estas são apenas estimativas - consulte um profissional fiscal para valores precisos.'**
   String get infoTaxDeductions;
 
   /// No description provided for @infoPurchaseHistory.
   ///
   /// In pt, this message translates to:
-  /// **'Total gasto em compras da lista de compras este mÃªs.'**
+  /// **'Total gasto em compras da lista de compras este mês.'**
   String get infoPurchaseHistory;
 
   /// No description provided for @infoExpensesBreakdown.
   ///
   /// In pt, this message translates to:
-  /// **'DiscriminaÃ§Ã£o visual das suas despesas por categoria no mÃªs atual.'**
+  /// **'Discriminação visual das suas despesas por categoria no mês atual.'**
   String get infoExpensesBreakdown;
 
   /// No description provided for @infoCharts.
   ///
   /// In pt, this message translates to:
-  /// **'Dados de tendÃªncia ao longo do tempo. Toque em qualquer grÃ¡fico para uma vista detalhada.'**
+  /// **'Dados de tendência ao longo do tempo. Toque em qualquer gráfico para uma vista detalhada.'**
   String get infoCharts;
 
   /// No description provided for @infoExpenseTrackerSummary.
   ///
   /// In pt, this message translates to:
-  /// **'OrÃ§amentado = despesa mensal planeada. Real = o que gastou atÃ© agora. Restante = orÃ§amento menos real.'**
+  /// **'Orçamentado = despesa mensal planeada. Real = o que gastou até agora. Restante = orçamento menos real.'**
   String get infoExpenseTrackerSummary;
 
   /// No description provided for @infoExpenseTrackerProgress.
   ///
   /// In pt, this message translates to:
-  /// **'Verde: abaixo de 75% do orÃ§amento. Amarelo: 75-100%. Vermelho: acima do orÃ§amento.'**
+  /// **'Verde: abaixo de 75% do orçamento. Amarelo: 75-100%. Vermelho: acima do orçamento.'**
   String get infoExpenseTrackerProgress;
 
   /// No description provided for @infoExpenseTrackerFilter.
@@ -6650,61 +6650,61 @@ abstract class S {
   /// No description provided for @infoSavingsProjection.
   ///
   /// In pt, this message translates to:
-  /// **'Baseado nas suas contribuiÃ§Ãµes mensais mÃ©dias. \"No caminho certo\" significa que o ritmo atual atinge o objetivo no prazo. \"Atrasado\" significa que precisa de aumentar as contribuiÃ§Ãµes.'**
+  /// **'Baseado nas suas contribuições mensais médias. \"No caminho certo\" significa que o ritmo atual atinge o objetivo no prazo. \"Atrasado\" significa que precisa de aumentar as contribuições.'**
   String get infoSavingsProjection;
 
   /// No description provided for @infoSavingsRequired.
   ///
   /// In pt, this message translates to:
-  /// **'O montante que precisa de poupar por mÃªs a partir de agora para atingir o objetivo no prazo.'**
+  /// **'O montante que precisa de poupar por mês a partir de agora para atingir o objetivo no prazo.'**
   String get infoSavingsRequired;
 
   /// No description provided for @infoCoachModes.
   ///
   /// In pt, this message translates to:
-  /// **'Eco: gratuito, sem memÃ³ria de conversa.\nPlus: 1 crÃ©dito por mensagem, lembra as Ãºltimas 5 mensagens.\nPro: 2 crÃ©ditos por mensagem, memÃ³ria de conversa completa.'**
+  /// **'Eco: gratuito, sem memória de conversa.\nPlus: 1 crédito por mensagem, lembra as últimas 5 mensagens.\nPro: 2 créditos por mensagem, memória de conversa completa.'**
   String get infoCoachModes;
 
   /// No description provided for @infoCoachCredits.
   ///
   /// In pt, this message translates to:
-  /// **'Os crÃ©ditos sÃ£o usados nos modos Plus e Pro. Recebe crÃ©ditos iniciais ao registar-se. O modo Eco Ã© sempre gratuito.'**
+  /// **'Os créditos são usados nos modos Plus e Pro. Recebe créditos iniciais ao registar-se. O modo Eco é sempre gratuito.'**
   String get infoCoachCredits;
 
   /// No description provided for @helperWizardGrossSalary.
   ///
   /// In pt, this message translates to:
-  /// **'O seu salÃ¡rio mensal total antes de impostos'**
+  /// **'O seu salário mensal total antes de impostos'**
   String get helperWizardGrossSalary;
 
   /// No description provided for @helperWizardMealAllowance.
   ///
   /// In pt, this message translates to:
-  /// **'SubsÃ­dio de refeiÃ§Ã£o diÃ¡rio do empregador (se aplicÃ¡vel)'**
+  /// **'Subsídio de refeição diário do empregador (se aplicável)'**
   String get helperWizardMealAllowance;
 
   /// No description provided for @helperWizardRent.
   ///
   /// In pt, this message translates to:
-  /// **'Pagamento mensal de habitaÃ§Ã£o'**
+  /// **'Pagamento mensal de habitação'**
   String get helperWizardRent;
 
   /// No description provided for @helperWizardGroceries.
   ///
   /// In pt, this message translates to:
-  /// **'OrÃ§amento mensal de alimentaÃ§Ã£o e produtos domÃ©sticos'**
+  /// **'Orçamento mensal de alimentação e produtos domésticos'**
   String get helperWizardGroceries;
 
   /// No description provided for @helperWizardTransport.
   ///
   /// In pt, this message translates to:
-  /// **'Custos mensais de transporte (combustÃ­vel, transportes pÃºblicos, etc.)'**
+  /// **'Custos mensais de transporte (combustível, transportes públicos, etc.)'**
   String get helperWizardTransport;
 
   /// No description provided for @helperWizardUtilities.
   ///
   /// In pt, this message translates to:
-  /// **'Eletricidade, Ã¡gua e gÃ¡s mensais'**
+  /// **'Eletricidade, água e gás mensais'**
   String get helperWizardUtilities;
 
   /// No description provided for @helperWizardTelecom.
@@ -6722,31 +6722,31 @@ abstract class S {
   /// How it works step 1
   ///
   /// In pt, this message translates to:
-  /// **'Crie um objetivo com um nome e o valor que pretende atingir (ex: \"FÃ©rias â€” 2 000 â‚¬\").'**
+  /// **'Crie um objetivo com um nome e o valor que pretende atingir (ex: \"Férias â€” 2 000 â‚¬\").'**
   String get savingsGoalHowItWorksStep1;
 
   /// How it works step 2
   ///
   /// In pt, this message translates to:
-  /// **'Opcionalmente defina uma data limite para ter um prazo de referÃªncia.'**
+  /// **'Opcionalmente defina uma data limite para ter um prazo de referência.'**
   String get savingsGoalHowItWorksStep2;
 
   /// How it works step 3
   ///
   /// In pt, this message translates to:
-  /// **'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuiÃ§Ã£o com o valor e a data.'**
+  /// **'Sempre que poupar dinheiro, toque no objetivo e registe uma contribuição com o valor e a data.'**
   String get savingsGoalHowItWorksStep3;
 
   /// How it works step 4
   ///
   /// In pt, this message translates to:
-  /// **'Acompanhe o progresso: a barra mostra quanto jÃ¡ poupou e a projeÃ§Ã£o estima quando atingirÃ¡ o objetivo.'**
+  /// **'Acompanhe o progresso: a barra mostra quanto já poupou e a projeção estima quando atingirá o objetivo.'**
   String get savingsGoalHowItWorksStep4;
 
   /// Dashboard hint text
   ///
   /// In pt, this message translates to:
-  /// **'Toque num objetivo para ver detalhes e registar contribuiÃ§Ãµes.'**
+  /// **'Toque num objetivo para ver detalhes e registar contribuições.'**
   String get savingsGoalDashboardHint;
 
   /// No description provided for @rateLimitMessage.
@@ -6782,13 +6782,13 @@ abstract class S {
   /// No description provided for @planningExportMealPlan.
   ///
   /// In pt, this message translates to:
-  /// **'Exportar plano de refeiÃ§Ãµes'**
+  /// **'Exportar plano de refeições'**
   String get planningExportMealPlan;
 
   /// No description provided for @planningImportMealPlan.
   ///
   /// In pt, this message translates to:
-  /// **'Importar plano de refeiÃ§Ãµes'**
+  /// **'Importar plano de refeições'**
   String get planningImportMealPlan;
 
   /// No description provided for @planningExportPantry.
@@ -6806,13 +6806,13 @@ abstract class S {
   /// No description provided for @planningExportFreeformMeals.
   ///
   /// In pt, this message translates to:
-  /// **'Exportar refeiÃ§Ãµes livres'**
+  /// **'Exportar refeições livres'**
   String get planningExportFreeformMeals;
 
   /// No description provided for @planningImportFreeformMeals.
   ///
   /// In pt, this message translates to:
-  /// **'Importar refeiÃ§Ãµes livres'**
+  /// **'Importar refeições livres'**
   String get planningImportFreeformMeals;
 
   /// No description provided for @planningFormatCsv.
@@ -6836,7 +6836,7 @@ abstract class S {
   /// No description provided for @planningImportError.
   ///
   /// In pt, this message translates to:
-  /// **'ImportaÃ§Ã£o falhou: {error}'**
+  /// **'Importação falhou: {error}'**
   String planningImportError(String error);
 
   /// No description provided for @planningExportSuccess.
@@ -6860,7 +6860,7 @@ abstract class S {
   /// No description provided for @mealBudgetInsightTitle.
   ///
   /// In pt, this message translates to:
-  /// **'VisÃ£o do OrÃ§amento'**
+  /// **'Visão do Orçamento'**
   String get mealBudgetInsightTitle;
 
   /// No description provided for @mealBudgetStatusSafe.
@@ -6872,13 +6872,13 @@ abstract class S {
   /// No description provided for @mealBudgetStatusWatch.
   ///
   /// In pt, this message translates to:
-  /// **'AtenÃ§Ã£o'**
+  /// **'Atenção'**
   String get mealBudgetStatusWatch;
 
   /// No description provided for @mealBudgetStatusOver.
   ///
   /// In pt, this message translates to:
-  /// **'Acima do orÃ§amento'**
+  /// **'Acima do orçamento'**
   String get mealBudgetStatusOver;
 
   /// No description provided for @mealBudgetWeeklyCost.
@@ -6890,25 +6890,25 @@ abstract class S {
   /// No description provided for @mealBudgetProjectedMonthly.
   ///
   /// In pt, this message translates to:
-  /// **'ProjeÃ§Ã£o mensal'**
+  /// **'Projeção mensal'**
   String get mealBudgetProjectedMonthly;
 
   /// No description provided for @mealBudgetMonthlyBudget.
   ///
   /// In pt, this message translates to:
-  /// **'OrÃ§amento mensal de alimentaÃ§Ã£o'**
+  /// **'Orçamento mensal de alimentação'**
   String get mealBudgetMonthlyBudget;
 
   /// No description provided for @mealBudgetRemaining.
   ///
   /// In pt, this message translates to:
-  /// **'OrÃ§amento restante'**
+  /// **'Orçamento restante'**
   String get mealBudgetRemaining;
 
   /// No description provided for @mealBudgetTopExpensive.
   ///
   /// In pt, this message translates to:
-  /// **'RefeiÃ§Ãµes mais caras'**
+  /// **'Refeições mais caras'**
   String get mealBudgetTopExpensive;
 
   /// No description provided for @mealBudgetSuggestedSwaps.
@@ -6938,7 +6938,7 @@ abstract class S {
   /// No description provided for @mealBudgetDailyBreakdown.
   ///
   /// In pt, this message translates to:
-  /// **'Custo diÃ¡rio detalhado'**
+  /// **'Custo diário detalhado'**
   String get mealBudgetDailyBreakdown;
 
   /// No description provided for @mealBudgetShoppingImpact.
@@ -6950,7 +6950,7 @@ abstract class S {
   /// No description provided for @mealBudgetUniqueIngredients.
   ///
   /// In pt, this message translates to:
-  /// **'Ingredientes Ãºnicos'**
+  /// **'Ingredientes únicos'**
   String get mealBudgetUniqueIngredients;
 
   /// No description provided for @mealBudgetEstShoppingCost.
@@ -7028,13 +7028,13 @@ abstract class S {
   /// No description provided for @confidenceCenterTitle.
   ///
   /// In pt, this message translates to:
-  /// **'Centro de ConfianÃ§a'**
+  /// **'Centro de Confiança'**
   String get confidenceCenterTitle;
 
   /// No description provided for @confidenceSyncHealth.
   ///
   /// In pt, this message translates to:
-  /// **'Estado de SincronizaÃ§Ã£o'**
+  /// **'Estado de Sincronização'**
   String get confidenceSyncHealth;
 
   /// No description provided for @confidenceDataAlerts.
@@ -7046,19 +7046,19 @@ abstract class S {
   /// No description provided for @confidenceRecommendedActions.
   ///
   /// In pt, this message translates to:
-  /// **'AÃ§Ãµes Recomendadas'**
+  /// **'Ações Recomendadas'**
   String get confidenceRecommendedActions;
 
   /// No description provided for @confidenceCenterSubtitle.
   ///
   /// In pt, this message translates to:
-  /// **'Frescura dos dados e saÃºde do sistema'**
+  /// **'Frescura dos dados e saúde do sistema'**
   String get confidenceCenterSubtitle;
 
   /// No description provided for @confidenceCenterTile.
   ///
   /// In pt, this message translates to:
-  /// **'Centro de ConfianÃ§a'**
+  /// **'Centro de Confiança'**
   String get confidenceCenterTile;
 
   /// No description provided for @pantryPickerTitle.
@@ -7106,7 +7106,7 @@ abstract class S {
   /// No description provided for @pantryMarkAtHome.
   ///
   /// In pt, this message translates to:
-  /// **'JÃ¡ tenho em casa'**
+  /// **'Já tenho em casa'**
   String get pantryMarkAtHome;
 
   /// No description provided for @pantryHaveIt.
@@ -7142,13 +7142,13 @@ abstract class S {
   /// No description provided for @pantryRemovedFromList.
   ///
   /// In pt, this message translates to:
-  /// **'{name} removido da lista (jÃ¡ em casa)'**
+  /// **'{name} removido da lista (já em casa)'**
   String pantryRemovedFromList(String name);
 
   /// No description provided for @pantryMarkedAtHome.
   ///
   /// In pt, this message translates to:
-  /// **'{name} marcado como jÃ¡ em casa'**
+  /// **'{name} marcado como já em casa'**
   String pantryMarkedAtHome(String name);
 
   /// No description provided for @householdActivityTitle.
@@ -7172,7 +7172,7 @@ abstract class S {
   /// No description provided for @householdActivityFilterMeals.
   ///
   /// In pt, this message translates to:
-  /// **'RefeiÃ§Ãµes'**
+  /// **'Refeições'**
   String get householdActivityFilterMeals;
 
   /// No description provided for @householdActivityFilterExpenses.
@@ -7190,7 +7190,7 @@ abstract class S {
   /// No description provided for @householdActivityFilterSettings.
   ///
   /// In pt, this message translates to:
-  /// **'DefiniÃ§Ãµes'**
+  /// **'Definições'**
   String get householdActivityFilterSettings;
 
   /// No description provided for @householdActivityEmpty.
@@ -7202,7 +7202,7 @@ abstract class S {
   /// No description provided for @householdActivityEmptyMessage.
   ///
   /// In pt, this message translates to:
-  /// **'As aÃ§Ãµes partilhadas do seu agregado aparecerÃ£o aqui.'**
+  /// **'As ações partilhadas do seu agregado aparecerão aqui.'**
   String get householdActivityEmptyMessage;
 
   /// No description provided for @householdActivityToday.
@@ -7238,19 +7238,19 @@ abstract class S {
   /// No description provided for @householdActivityMinutesAgo.
   ///
   /// In pt, this message translates to:
-  /// **'{count} min atrÃ¡s'**
+  /// **'{count} min atrás'**
   String householdActivityMinutesAgo(int count);
 
   /// No description provided for @householdActivityHoursAgo.
   ///
   /// In pt, this message translates to:
-  /// **'{count}h atrÃ¡s'**
+  /// **'{count}h atrás'**
   String householdActivityHoursAgo(int count);
 
   /// No description provided for @householdActivityDaysAgo.
   ///
   /// In pt, this message translates to:
-  /// **'{count}d atrÃ¡s'**
+  /// **'{count}d atrás'**
   String householdActivityDaysAgo(int count);
 
   /// No description provided for @householdActivityAddedBy.
@@ -7352,7 +7352,7 @@ abstract class S {
   /// No description provided for @barcodeInvoiceDetected.
   ///
   /// In pt, this message translates to:
-  /// **'Este Ã© um cÃ³digo de fatura, nÃ£o de produto'**
+  /// **'Este é um código de fatura, não de produto'**
   String get barcodeInvoiceDetected;
 
   /// No description provided for @barcodeInvoiceAction.
@@ -7364,7 +7364,7 @@ abstract class S {
   /// No description provided for @quickAddTooltip.
   ///
   /// In pt, this message translates to:
-  /// **'AÃ§Ãµes rÃ¡pidas'**
+  /// **'Ações rápidas'**
   String get quickAddTooltip;
 
   /// No description provided for @quickAddExpense.
@@ -7382,7 +7382,7 @@ abstract class S {
   /// No description provided for @quickOpenMeals.
   ///
   /// In pt, this message translates to:
-  /// **'Planeador de refeiÃ§Ãµes'**
+  /// **'Planeador de refeições'**
   String get quickOpenMeals;
 
   /// No description provided for @quickOpenAssistant.
@@ -7400,19 +7400,19 @@ abstract class S {
   /// No description provided for @freeformCreateTitle.
   ///
   /// In pt, this message translates to:
-  /// **'Adicionar refeiÃ§Ã£o livre'**
+  /// **'Adicionar refeição livre'**
   String get freeformCreateTitle;
 
   /// No description provided for @freeformEditTitle.
   ///
   /// In pt, this message translates to:
-  /// **'Editar refeiÃ§Ã£o livre'**
+  /// **'Editar refeição livre'**
   String get freeformEditTitle;
 
   /// No description provided for @freeformTitleLabel.
   ///
   /// In pt, this message translates to:
-  /// **'TÃ­tulo da refeiÃ§Ã£o'**
+  /// **'Título da refeição'**
   String get freeformTitleLabel;
 
   /// No description provided for @freeformTitleHint.
@@ -7430,7 +7430,7 @@ abstract class S {
   /// No description provided for @freeformNoteHint.
   ///
   /// In pt, this message translates to:
-  /// **'Detalhes sobre esta refeiÃ§Ã£o'**
+  /// **'Detalhes sobre esta refeição'**
   String get freeformNoteHint;
 
   /// No description provided for @freeformCostLabel.
@@ -7466,7 +7466,7 @@ abstract class S {
   /// No description provided for @freeformTagQuickMeal.
   ///
   /// In pt, this message translates to:
-  /// **'RefeiÃ§Ã£o rÃ¡pida'**
+  /// **'Refeição rápida'**
   String get freeformTagQuickMeal;
 
   /// No description provided for @freeformShoppingItemsLabel.
@@ -7502,7 +7502,7 @@ abstract class S {
   /// No description provided for @freeformItemPrice.
   ///
   /// In pt, this message translates to:
-  /// **'PreÃ§o est.'**
+  /// **'Preço est.'**
   String get freeformItemPrice;
 
   /// No description provided for @freeformItemStore.
@@ -7520,19 +7520,19 @@ abstract class S {
   /// No description provided for @freeformAddToSlot.
   ///
   /// In pt, this message translates to:
-  /// **'Adicionar refeiÃ§Ã£o livre'**
+  /// **'Adicionar refeição livre'**
   String get freeformAddToSlot;
 
   /// No description provided for @freeformReplace.
   ///
   /// In pt, this message translates to:
-  /// **'Substituir por refeiÃ§Ã£o livre'**
+  /// **'Substituir por refeição livre'**
   String get freeformReplace;
 
   /// Title for the Insights screen
   ///
   /// In pt, this message translates to:
-  /// **'AnÃ¡lise'**
+  /// **'Análise'**
   String get insightsTitle;
 
   /// Subtitle for expense trends tile
@@ -7568,7 +7568,7 @@ abstract class S {
   /// Detailed dashboard tile subtitle
   ///
   /// In pt, this message translates to:
-  /// **'Abrir painel financeiro completo com todos os cartÃµes'**
+  /// **'Abrir painel financeiro completo com todos os cartões'**
   String get moreDetailedDashboardSubtitle;
 
   /// Savings goals tile subtitle
@@ -7580,25 +7580,25 @@ abstract class S {
   /// Notifications tile subtitle
   ///
   /// In pt, this message translates to:
-  /// **'OrÃ§amentos, contas e lembretes'**
+  /// **'Orçamentos, contas e lembretes'**
   String get moreNotificationsSubtitle;
 
   /// Settings tile subtitle
   ///
   /// In pt, this message translates to:
-  /// **'PreferÃªncias, perfil e painel'**
+  /// **'Preferências, perfil e painel'**
   String get moreSettingsSubtitle;
 
   /// Free plan label
   ///
   /// In pt, this message translates to:
-  /// **'Plano GrÃ¡tis'**
+  /// **'Plano Grátis'**
   String get morePlanFree;
 
   /// Trial active label
   ///
   /// In pt, this message translates to:
-  /// **'PerÃ­odo de Teste Ativo'**
+  /// **'Período de Teste Ativo'**
   String get morePlanTrial;
 
   /// Pro plan label
@@ -7610,19 +7610,19 @@ abstract class S {
   /// Family plan label
   ///
   /// In pt, this message translates to:
-  /// **'Plano FamÃ­lia'**
+  /// **'Plano Família'**
   String get morePlanFamily;
 
   /// Manage plan subtitle
   ///
   /// In pt, this message translates to:
-  /// **'Gerir o teu plano e faturaÃ§Ã£o'**
+  /// **'Gerir o teu plano e faturação'**
   String get morePlanManage;
 
   /// Free plan limits summary
   ///
   /// In pt, this message translates to:
-  /// **'{categories} categorias • {goals} meta de poupanÃ§a'**
+  /// **'{categories} categorias • {goals} meta de poupança'**
   String morePlanLimits(int categories, int goals);
 
   /// Count of paused items on subscription tile
@@ -7646,7 +7646,7 @@ abstract class S {
   /// Grocery tile subtitle
   ///
   /// In pt, this message translates to:
-  /// **'Explorar produtos e preÃ§os'**
+  /// **'Explorar produtos e preços'**
   String get planGrocerySubtitle;
 
   /// Shopping list tile title
@@ -7664,19 +7664,19 @@ abstract class S {
   /// Meal planner tile subtitle
   ///
   /// In pt, this message translates to:
-  /// **'Gerar planos semanais acessÃ­veis'**
+  /// **'Gerar planos semanais acessíveis'**
   String get planMealSubtitle;
 
   /// Active memory status line in coach mode card
   ///
   /// In pt, this message translates to:
-  /// **'MemÃ³ria ativa: {mode} ({percent}%)'**
+  /// **'Memória ativa: {mode} ({percent}%)'**
   String coachActiveMemory(String mode, int percent);
 
   /// Note about credit cost per message
   ///
   /// In pt, this message translates to:
-  /// **'Custo por mensagem enviada. A resposta do coach nÃ£o consome crÃ©ditos.'**
+  /// **'Custo por mensagem enviada. A resposta do coach não consome créditos.'**
   String get coachCostPerMessageNote;
 
   /// Tooltip for expanding fallback card
@@ -7724,7 +7724,7 @@ abstract class S {
   /// Meal Planner feature name
   ///
   /// In pt, this message translates to:
-  /// **'Planeador de RefeiÃ§Ãµes'**
+  /// **'Planeador de Refeições'**
   String get featureNameMealPlanner;
 
   /// Expense Tracker feature name
@@ -7736,7 +7736,7 @@ abstract class S {
   /// Savings Goals feature name
   ///
   /// In pt, this message translates to:
-  /// **'Metas de PoupanÃ§a'**
+  /// **'Metas de Poupança'**
   String get featureNameSavingsGoals;
 
   /// Shopping List feature name
@@ -7754,7 +7754,7 @@ abstract class S {
   /// Export Reports feature name
   ///
   /// In pt, this message translates to:
-  /// **'Exportar RelatÃ³rios'**
+  /// **'Exportar Relatórios'**
   String get featureNameExportReports;
 
   /// Tax Simulator feature name
@@ -7778,7 +7778,7 @@ abstract class S {
   /// Meal Planner tagline
   ///
   /// In pt, this message translates to:
-  /// **'Poupa dinheiro na alimentaÃ§Ã£o'**
+  /// **'Poupa dinheiro na alimentação'**
   String get featureTagMealPlanner;
 
   /// Expense Tracker tagline
@@ -7802,49 +7802,49 @@ abstract class S {
   /// Grocery Browser tagline
   ///
   /// In pt, this message translates to:
-  /// **'Compara preÃ§os instantaneamente'**
+  /// **'Compara preços instantaneamente'**
   String get featureTagGroceryBrowser;
 
   /// Export Reports tagline
   ///
   /// In pt, this message translates to:
-  /// **'RelatÃ³rios profissionais de orÃ§amento'**
+  /// **'Relatórios profissionais de orçamento'**
   String get featureTagExportReports;
 
   /// Tax Simulator tagline
   ///
   /// In pt, this message translates to:
-  /// **'Planeamento fiscal multi-paÃ­s'**
+  /// **'Planeamento fiscal multi-país'**
   String get featureTagTaxSimulator;
 
   /// Dashboard tagline
   ///
   /// In pt, this message translates to:
-  /// **'A tua visÃ£o financeira geral'**
+  /// **'A tua visão financeira geral'**
   String get featureTagDashboard;
 
   /// AI Coach description
   ///
   /// In pt, this message translates to:
-  /// **'ObtÃ©m insights personalizados sobre os teus hÃ¡bitos de gastos, dicas de poupanÃ§a e otimizaÃ§Ã£o do orÃ§amento com IA.'**
+  /// **'Obtém insights personalizados sobre os teus hábitos de gastos, dicas de poupança e otimização do orçamento com IA.'**
   String get featureDescAiCoach;
 
   /// Meal Planner description
   ///
   /// In pt, this message translates to:
-  /// **'Planeia refeiÃ§Ãµes semanais dentro do teu orÃ§amento. A IA gera receitas com base nas tuas preferÃªncias e necessidades alimentares.'**
+  /// **'Planeia refeições semanais dentro do teu orçamento. A IA gera receitas com base nas tuas preferências e necessidades alimentares.'**
   String get featureDescMealPlanner;
 
   /// Expense Tracker description
   ///
   /// In pt, this message translates to:
-  /// **'Acompanha despesas reais vs. orÃ§amento em tempo real. VÃª onde gastas demais e onde podes poupar.'**
+  /// **'Acompanha despesas reais vs. orçamento em tempo real. Vê onde gastas demais e onde podes poupar.'**
   String get featureDescExpenseTracker;
 
   /// Savings Goals description
   ///
   /// In pt, this message translates to:
-  /// **'Define metas de poupanÃ§a com prazos, acompanha contribuiÃ§Ãµes e vÃª projeÃ§Ãµes de quando atingirÃ¡s os teus objetivos.'**
+  /// **'Define metas de poupança com prazos, acompanha contribuições e vê projeções de quando atingirás os teus objetivos.'**
   String get featureDescSavingsGoals;
 
   /// Shopping List description
@@ -7856,49 +7856,49 @@ abstract class S {
   /// Grocery Browser description
   ///
   /// In pt, this message translates to:
-  /// **'Explora produtos de vÃ¡rias lojas, compara preÃ§os e adiciona as melhores ofertas diretamente Ã  tua lista de compras.'**
+  /// **'Explora produtos de várias lojas, compara preços e adiciona as melhores ofertas diretamente Ã  tua lista de compras.'**
   String get featureDescGroceryBrowser;
 
   /// Export Reports description
   ///
   /// In pt, this message translates to:
-  /// **'Exporta o teu orÃ§amento, despesas e resumos financeiros em PDF ou CSV para os teus registos ou contabilista.'**
+  /// **'Exporta o teu orçamento, despesas e resumos financeiros em PDF ou CSV para os teus registos ou contabilista.'**
   String get featureDescExportReports;
 
   /// Tax Simulator description
   ///
   /// In pt, this message translates to:
-  /// **'Compara obrigaÃ§Ãµes fiscais entre paÃ­ses. Perfeito para expatriados e quem considera mudanÃ§a de paÃ­s.'**
+  /// **'Compara obrigações fiscais entre países. Perfeito para expatriados e quem considera mudança de país.'**
   String get featureDescTaxSimulator;
 
   /// Dashboard description
   ///
   /// In pt, this message translates to:
-  /// **'VÃª o resumo completo do orÃ§amento, grÃ¡ficos e saÃºde financeira de relance.'**
+  /// **'Vê o resumo completo do orçamento, gráficos e saúde financeira de relance.'**
   String get featureDescDashboard;
 
   /// Early phase trial headline
   ///
   /// In pt, this message translates to:
-  /// **'PerÃ­odo de Teste Premium Ativo'**
+  /// **'Período de Teste Premium Ativo'**
   String get trialPremiumActive;
 
   /// Mid phase trial headline
   ///
   /// In pt, this message translates to:
-  /// **'O teu perÃ­odo de teste estÃ¡ a meio'**
+  /// **'O teu período de teste está a meio'**
   String get trialHalfway;
 
   /// Urgent phase headline with days count
   ///
   /// In pt, this message translates to:
-  /// **'{count} dias restantes no teu perÃ­odo de teste!'**
+  /// **'{count} dias restantes no teu período de teste!'**
   String trialDaysLeftInTrial(int count);
 
   /// Last day urgent headline
   ///
   /// In pt, this message translates to:
-  /// **'Ãšltimo dia do teu perÃ­odo de teste grÃ¡tis!'**
+  /// **'Ãšltimo dia do teu período de teste grátis!'**
   String get trialLastDay;
 
   /// CTA button text early/mid phase
@@ -7910,25 +7910,25 @@ abstract class S {
   /// CTA button text urgent phase
   ///
   /// In pt, this message translates to:
-  /// **'Upgrade Agora — MantÃ©m os Teus Dados'**
+  /// **'Upgrade Agora — Mantém os Teus Dados'**
   String get trialUpgradeNow;
 
   /// Urgent phase subtitle
   ///
   /// In pt, this message translates to:
-  /// **'O teu acesso premium termina em breve. Faz upgrade para manter o Coach IA, Planeador de RefeiÃ§Ãµes e todos os teus dados.'**
+  /// **'O teu acesso premium termina em breve. Faz upgrade para manter o Coach IA, Planeador de Refeições e todos os teus dados.'**
   String get trialSubtitleUrgent;
 
   /// Mid phase subtitle suggesting next feature
   ///
   /// In pt, this message translates to:
-  /// **'JÃ¡ experimentaste o {name}? Aproveita ao mÃ¡ximo o teu perÃ­odo de teste!'**
+  /// **'Já experimentaste o {name}? Aproveita ao máximo o teu período de teste!'**
   String trialSubtitleMidFeature(String name);
 
   /// Mid phase subtitle when all features explored
   ///
   /// In pt, this message translates to:
-  /// **'EstÃ¡s a fazer Ã³timo progresso! Continua a explorar funcionalidades premium.'**
+  /// **'Estás a fazer ótimo progresso! Continua a explorar funcionalidades premium.'**
   String get trialSubtitleMidProgress;
 
   /// Early phase subtitle
@@ -7982,13 +7982,13 @@ abstract class S {
   /// No description provided for @receiptScanHint.
   ///
   /// In pt, this message translates to:
-  /// **'Aponte a cÃ¢mara para o QR code do recibo'**
+  /// **'Aponte a câmara para o QR code do recibo'**
   String get receiptScanHint;
 
   /// No description provided for @receiptScanPhotoHint.
   ///
   /// In pt, this message translates to:
-  /// **'Posicione o recibo e toque no botÃ£o para capturar'**
+  /// **'Posicione o recibo e toque no botão para capturar'**
   String get receiptScanPhotoHint;
 
   /// No description provided for @receiptScanProcessing.
@@ -8006,7 +8006,7 @@ abstract class S {
   /// No description provided for @receiptScanFailed.
   ///
   /// In pt, this message translates to:
-  /// **'NÃ£o foi possÃ­vel ler o recibo'**
+  /// **'Não foi possível ler o recibo'**
   String get receiptScanFailed;
 
   /// No description provided for @receiptScanPrompt.
@@ -8090,13 +8090,13 @@ abstract class S {
   /// No description provided for @receiptCameraPermissionTitle.
   ///
   /// In pt, this message translates to:
-  /// **'Acesso Ã  CÃ¢mara'**
+  /// **'Acesso Ã  Câmara'**
   String get receiptCameraPermissionTitle;
 
   /// No description provided for @receiptCameraPermissionBody.
   ///
   /// In pt, this message translates to:
-  /// **'Ã‰ necessÃ¡rio acesso Ã  cÃ¢mara para digitalizar recibos e cÃ³digos de barras.'**
+  /// **'Ã‰ necessário acesso Ã  câmara para digitalizar recibos e códigos de barras.'**
   String get receiptCameraPermissionBody;
 
   /// No description provided for @receiptCameraPermissionAllow.
@@ -8108,25 +8108,25 @@ abstract class S {
   /// No description provided for @receiptCameraPermissionDeny.
   ///
   /// In pt, this message translates to:
-  /// **'Agora nÃ£o'**
+  /// **'Agora não'**
   String get receiptCameraPermissionDeny;
 
   /// No description provided for @receiptCameraBlockedTitle.
   ///
   /// In pt, this message translates to:
-  /// **'CÃ¢mara Bloqueada'**
+  /// **'Câmara Bloqueada'**
   String get receiptCameraBlockedTitle;
 
   /// No description provided for @receiptCameraBlockedBody.
   ///
   /// In pt, this message translates to:
-  /// **'A permissÃ£o da cÃ¢mara foi negada permanentemente. Abra as definiÃ§Ãµes para a ativar.'**
+  /// **'A permissão da câmara foi negada permanentemente. Abra as definições para a ativar.'**
   String get receiptCameraBlockedBody;
 
   /// No description provided for @receiptCameraBlockedSettings.
   ///
   /// In pt, this message translates to:
-  /// **'Abrir DefiniÃ§Ãµes'**
+  /// **'Abrir Definições'**
   String get receiptCameraBlockedSettings;
 
   /// No description provided for @groceryMarketData.
@@ -8174,7 +8174,7 @@ abstract class S {
   /// No description provided for @navHome.
   ///
   /// In pt, this message translates to:
-  /// **'InÃ­cio'**
+  /// **'Início'**
   String get navHome;
 
   /// No description provided for @navHomeTip.
@@ -8204,7 +8204,7 @@ abstract class S {
   /// No description provided for @navPlanTip.
   ///
   /// In pt, this message translates to:
-  /// **'Mercearia, lista e plano de refeiÃ§Ãµes'**
+  /// **'Mercearia, lista e plano de refeições'**
   String get navPlanTip;
 
   /// No description provided for @navPlanAndShop.
@@ -8216,7 +8216,7 @@ abstract class S {
   /// No description provided for @navPlanAndShopTip.
   ///
   /// In pt, this message translates to:
-  /// **'Lista de compras, mercearia e refeiÃ§Ãµes'**
+  /// **'Lista de compras, mercearia e refeições'**
   String get navPlanAndShopTip;
 
   /// No description provided for @navMore.
@@ -8228,7 +8228,7 @@ abstract class S {
   /// No description provided for @navMoreTip.
   ///
   /// In pt, this message translates to:
-  /// **'DefiniÃ§Ãµes e anÃ¡lises'**
+  /// **'Definições e análises'**
   String get navMoreTip;
 
   /// No description provided for @paywallContinueFree.
@@ -8252,7 +8252,7 @@ abstract class S {
   /// No description provided for @paywallRestoredPro.
   ///
   /// In pt, this message translates to:
-  /// **'SubscriÃ§Ã£o Pro restaurada!'**
+  /// **'Subscrição Pro restaurada!'**
   String get paywallRestoredPro;
 
   /// No description provided for @subscriptionPro.
@@ -8270,7 +8270,7 @@ abstract class S {
   /// No description provided for @authConnectionError.
   ///
   /// In pt, this message translates to:
-  /// **'Erro de ligaÃ§Ã£o'**
+  /// **'Erro de ligação'**
   String get authConnectionError;
 
   /// No description provided for @authRetry.
@@ -8282,7 +8282,7 @@ abstract class S {
   /// No description provided for @authSignOut.
   ///
   /// In pt, this message translates to:
-  /// **'Terminar sessÃ£o'**
+  /// **'Terminar sessão'**
   String get authSignOut;
 
   /// No description provided for @actionRetry.
@@ -8318,7 +8318,7 @@ abstract class S {
   /// No description provided for @settingsManageSubscription.
   ///
   /// In pt, this message translates to:
-  /// **'Gerir SubscriÃ§Ã£o'**
+  /// **'Gerir Subscrição'**
   String get settingsManageSubscription;
 
   /// No description provided for @settingsAbout.
@@ -8342,31 +8342,31 @@ abstract class S {
   /// No description provided for @taxSimTitularesHint.
   ///
   /// In pt, this message translates to:
-  /// **'NÃºmero de titulares de rendimento no agregado familiar'**
+  /// **'Número de titulares de rendimento no agregado familiar'**
   String get taxSimTitularesHint;
 
   /// No description provided for @taxSimMealTypeHint.
   ///
   /// In pt, this message translates to:
-  /// **'CartÃ£o: isento de imposto atÃ© ao limite legal. Dinheiro: tributado como rendimento.'**
+  /// **'Cartão: isento de imposto até ao limite legal. Dinheiro: tributado como rendimento.'**
   String get taxSimMealTypeHint;
 
   /// No description provided for @taxSimIRSFull.
   ///
   /// In pt, this message translates to:
-  /// **'IRS (Imposto sobre o Rendimento) retenÃ§Ã£o'**
+  /// **'IRS (Imposto sobre o Rendimento) retenção'**
   String get taxSimIRSFull;
 
   /// No description provided for @taxSimSSFull.
   ///
   /// In pt, this message translates to:
-  /// **'SS (SeguranÃ§a Social)'**
+  /// **'SS (Segurança Social)'**
   String get taxSimSSFull;
 
   /// No description provided for @stressZoneCritical.
   ///
   /// In pt, this message translates to:
-  /// **'0â€“39: PressÃ£o financeira elevada, aÃ§Ã£o urgente necessÃ¡ria'**
+  /// **'0â€“39: Pressão financeira elevada, ação urgente necessária'**
   String get stressZoneCritical;
 
   /// No description provided for @stressZoneWarning.
@@ -8378,19 +8378,19 @@ abstract class S {
   /// No description provided for @stressZoneGood.
   ///
   /// In pt, this message translates to:
-  /// **'60â€“79: FinanÃ§as saudÃ¡veis, pequenas otimizaÃ§Ãµes possÃ­veis'**
+  /// **'60â€“79: Finanças saudáveis, pequenas otimizações possíveis'**
   String get stressZoneGood;
 
   /// No description provided for @stressZoneExcellent.
   ///
   /// In pt, this message translates to:
-  /// **'80â€“100: PosiÃ§Ã£o financeira forte, bem gerida'**
+  /// **'80â€“100: Posição financeira forte, bem gerida'**
   String get stressZoneExcellent;
 
   /// No description provided for @projectionStressHint.
   ///
   /// In pt, this message translates to:
-  /// **'Como este cenÃ¡rio de gastos afeta a sua pontuaÃ§Ã£o geral de saÃºde financeira (0â€“100)'**
+  /// **'Como este cenário de gastos afeta a sua pontuação geral de saúde financeira (0â€“100)'**
   String get projectionStressHint;
 
   /// No description provided for @coachWelcomeTitle.
@@ -8402,13 +8402,13 @@ abstract class S {
   /// No description provided for @coachWelcomeBody.
   ///
   /// In pt, this message translates to:
-  /// **'FaÃ§a perguntas sobre o seu orÃ§amento, despesas ou poupanÃ§as. O coach analisa os seus dados financeiros reais para dar conselhos personalizados.'**
+  /// **'Faça perguntas sobre o seu orçamento, despesas ou poupanças. O coach analisa os seus dados financeiros reais para dar conselhos personalizados.'**
   String get coachWelcomeBody;
 
   /// No description provided for @coachWelcomeCredits.
   ///
   /// In pt, this message translates to:
-  /// **'Os crÃ©ditos sÃ£o usados nos modos Plus e Pro. O modo Eco Ã© sempre gratuito.'**
+  /// **'Os créditos são usados nos modos Plus e Pro. O modo Eco é sempre gratuito.'**
   String get coachWelcomeCredits;
 
   /// No description provided for @coachWelcomeRateLimit.
@@ -8426,7 +8426,7 @@ abstract class S {
   /// No description provided for @coachBuyCredits.
   ///
   /// In pt, this message translates to:
-  /// **'Comprar crÃ©ditos'**
+  /// **'Comprar créditos'**
   String get coachBuyCredits;
 
   /// No description provided for @coachContinueEco.
@@ -8444,13 +8444,13 @@ abstract class S {
   /// No description provided for @coachNotYet.
   ///
   /// In pt, this message translates to:
-  /// **'Ainda nÃ£o'**
+  /// **'Ainda não'**
   String get coachNotYet;
 
   /// No description provided for @coachCreditsAdded.
   ///
   /// In pt, this message translates to:
-  /// **'+{count} crÃ©ditos adicionados'**
+  /// **'+{count} créditos adicionados'**
   String coachCreditsAdded(int count);
 
   /// No description provided for @coachPurchaseError.
@@ -8492,7 +8492,7 @@ abstract class S {
   /// No description provided for @settingsSubscription.
   ///
   /// In pt, this message translates to:
-  /// **'SubscriÃ§Ã£o'**
+  /// **'Subscrição'**
   String get settingsSubscription;
 
   /// No description provided for @settingsSubscriptionFree.
@@ -8546,13 +8546,13 @@ abstract class S {
   /// No description provided for @configurationError.
   ///
   /// In pt, this message translates to:
-  /// **'Erro de ConfiguraÃ§Ã£o'**
+  /// **'Erro de Configuração'**
   String get configurationError;
 
   /// No description provided for @confidenceAllHealthy.
   ///
   /// In pt, this message translates to:
-  /// **'Todos os sistemas saudÃ¡veis. Nenhuma aÃ§Ã£o necessÃ¡ria.'**
+  /// **'Todos os sistemas saudáveis. Nenhuma ação necessária.'**
   String get confidenceAllHealthy;
 
   /// No description provided for @confidenceNoAlerts.
@@ -8576,7 +8576,7 @@ abstract class S {
   /// No description provided for @expenseTrendsChartLabel.
   ///
   /// In pt, this message translates to:
-  /// **'GrÃ¡fico de tendÃªncias de despesas mostrando orÃ§amento versus gastos reais'**
+  /// **'Gráfico de tendências de despesas mostrando orçamento versus gastos reais'**
   String get expenseTrendsChartLabel;
 
   /// Custom categories section title
@@ -8642,13 +8642,13 @@ abstract class S {
   /// Category in use error message
   ///
   /// In pt, this message translates to:
-  /// **'Categoria em uso, nÃ£o pode ser eliminada'**
+  /// **'Categoria em uso, não pode ser eliminada'**
   String get customCategoryInUse;
 
   /// Hint for predefined categories section
   ///
   /// In pt, this message translates to:
-  /// **'Categorias predefinidas usadas em toda a aplicaÃ§Ã£o'**
+  /// **'Categorias predefinidas usadas em toda a aplicação'**
   String get customCategoryPredefinedHint;
 
   /// Badge for predefined categories
@@ -8660,7 +8660,7 @@ abstract class S {
   /// Location permission denied message
   ///
   /// In pt, this message translates to:
-  /// **'PermissÃ£o de localizaÃ§Ã£o negada'**
+  /// **'Permissão de localização negada'**
   String get expenseLocationPermissionDenied;
 
   /// Attach photo label
@@ -8672,7 +8672,7 @@ abstract class S {
   /// Camera option label
   ///
   /// In pt, this message translates to:
-  /// **'CÃ¢mara'**
+  /// **'Câmara'**
   String get expenseAttachCamera;
 
   /// Gallery option label
@@ -8684,7 +8684,7 @@ abstract class S {
   /// Attachment upload failure message
   ///
   /// In pt, this message translates to:
-  /// **'Falha ao carregar anexos. Verifique a sua ligaÃ§Ã£o.'**
+  /// **'Falha ao carregar anexos. Verifique a sua ligação.'**
   String get expenseAttachUploadFailed;
 
   /// Extras toggle label
@@ -8696,7 +8696,7 @@ abstract class S {
   /// Detect location button label
   ///
   /// In pt, this message translates to:
-  /// **'Detetar localizaÃ§Ã£o'**
+  /// **'Detetar localização'**
   String get expenseLocationDetect;
 
   /// Biometric lock setting title
@@ -8708,7 +8708,7 @@ abstract class S {
   /// Biometric lock setting subtitle
   ///
   /// In pt, this message translates to:
-  /// **'Exigir autenticaÃ§Ã£o ao abrir a aplicaÃ§Ã£o'**
+  /// **'Exigir autenticação ao abrir a aplicação'**
   String get biometricLockSubtitle;
 
   /// Biometric lock screen prompt
@@ -8720,7 +8720,7 @@ abstract class S {
   /// Biometric authentication reason
   ///
   /// In pt, this message translates to:
-  /// **'Verifique a sua identidade para desbloquear a aplicaÃ§Ã£o'**
+  /// **'Verifique a sua identidade para desbloquear a aplicação'**
   String get biometricReason;
 
   /// Biometric retry button
@@ -8732,7 +8732,7 @@ abstract class S {
   /// Daily expense reminder toggle label
   ///
   /// In pt, this message translates to:
-  /// **'Lembrete diÃ¡rio de despesas'**
+  /// **'Lembrete diário de despesas'**
   String get notifDailyExpenseReminder;
 
   /// Daily expense reminder description
@@ -8744,7 +8744,7 @@ abstract class S {
   /// Daily expense notification title
   ///
   /// In pt, this message translates to:
-  /// **'NÃ£o se esqueÃ§a das despesas!'**
+  /// **'Não se esqueça das despesas!'**
   String get notifDailyExpenseTitle;
 
   /// Daily expense notification body
@@ -8786,7 +8786,7 @@ abstract class S {
   /// Address search field hint
   ///
   /// In pt, this message translates to:
-  /// **'Pesquisar endereÃ§o...'**
+  /// **'Pesquisar endereço...'**
   String get expenseLocationSearchHint;
 
   /// Burn rate card title
@@ -8798,7 +8798,7 @@ abstract class S {
   /// Burn rate card subtitle for settings
   ///
   /// In pt, this message translates to:
-  /// **'MÃ©dia diÃ¡ria vs orÃ§amento disponÃ­vel'**
+  /// **'Média diária vs orçamento disponível'**
   String get dashboardBurnRateSubtitle;
 
   /// On track pace label
@@ -8840,19 +8840,19 @@ abstract class S {
   /// Top categories subtitle for settings
   ///
   /// In pt, this message translates to:
-  /// **'Categorias com mais despesas este mÃªs'**
+  /// **'Categorias com mais despesas este mês'**
   String get dashboardTopCategoriesSubtitle;
 
   /// Cash flow forecast card title
   ///
   /// In pt, this message translates to:
-  /// **'PrevisÃ£o de Fluxo'**
+  /// **'Previsão de Fluxo'**
   String get dashboardCashFlowTitle;
 
   /// Cash flow subtitle for settings
   ///
   /// In pt, this message translates to:
-  /// **'ProjeÃ§Ã£o de saldo atÃ© ao fim do mÃªs'**
+  /// **'Projeção de saldo até ao fim do mês'**
   String get dashboardCashFlowSubtitle;
 
   /// Projected spend label
@@ -8876,7 +8876,7 @@ abstract class S {
   /// Savings rate card title
   ///
   /// In pt, this message translates to:
-  /// **'Taxa de PoupanÃ§a'**
+  /// **'Taxa de Poupança'**
   String get dashboardSavingsRateTitle;
 
   /// Savings rate subtitle for settings
@@ -8888,7 +8888,7 @@ abstract class S {
   /// Saved amount message
   ///
   /// In pt, this message translates to:
-  /// **'Poupado este mÃªs: {amount}'**
+  /// **'Poupado este mês: {amount}'**
   String dashboardSavingsRateSaved(String amount);
 
   /// Coach insight card title
@@ -8900,43 +8900,43 @@ abstract class S {
   /// Coach insight subtitle for settings
   ///
   /// In pt, this message translates to:
-  /// **'SugestÃ£o personalizada do assistente financeiro'**
+  /// **'Sugestão personalizada do assistente financeiro'**
   String get dashboardCoachInsightSubtitle;
 
   /// Low savings coach tip
   ///
   /// In pt, this message translates to:
-  /// **'A sua taxa de poupanÃ§a estÃ¡ abaixo de 10%. Identifique uma despesa que pode reduzir este mÃªs.'**
+  /// **'A sua taxa de poupança está abaixo de 10%. Identifique uma despesa que pode reduzir este mês.'**
   String get dashboardCoachLowSavings;
 
   /// High spending coach tip
   ///
   /// In pt, this message translates to:
-  /// **'Os gastos estÃ£o a aproximar-se do rendimento. Reveja as despesas nÃ£o essenciais.'**
+  /// **'Os gastos estão a aproximar-se do rendimento. Reveja as despesas não essenciais.'**
   String get dashboardCoachHighSpending;
 
   /// Good savings coach tip
   ///
   /// In pt, this message translates to:
-  /// **'Excelente! EstÃ¡ a poupar mais de 20%. Continue assim!'**
+  /// **'Excelente! Está a poupar mais de 20%. Continue assim!'**
   String get dashboardCoachGoodSavings;
 
   /// General coach tip
   ///
   /// In pt, this message translates to:
-  /// **'Toque para obter anÃ¡lises personalizadas do seu orÃ§amento.'**
+  /// **'Toque para obter análises personalizadas do seu orçamento.'**
   String get dashboardCoachGeneral;
 
   /// Insights group label in dashboard settings
   ///
   /// In pt, this message translates to:
-  /// **'AnÃ¡lise'**
+  /// **'Análise'**
   String get dashGroupInsights;
 
   /// Hint text for drag-to-reorder in dashboard card settings
   ///
   /// In pt, this message translates to:
-  /// **'Arraste para reordenar os cartÃµes'**
+  /// **'Arraste para reordenar os cartões'**
   String get dashReorderHint;
 
   /// Label for gross amount in salary summary row
@@ -8948,7 +8948,7 @@ abstract class S {
   /// Label for net amount in salary summary row
   ///
   /// In pt, this message translates to:
-  /// **'LÃ­quido'**
+  /// **'Líquido'**
   String get settingsSalarySummaryNet;
 
   /// IRS deduction label in salary breakdown
@@ -8990,7 +8990,7 @@ abstract class S {
   /// No description provided for @mealSubstitutionApplied.
   ///
   /// In pt, this message translates to:
-  /// **'{oldName} substituÃ­do por {newName}'**
+  /// **'{oldName} substituído por {newName}'**
   String mealSubstitutionApplied(String oldName, String newName);
 
   /// No description provided for @mealSubstitutionAdapting.
@@ -9134,7 +9134,7 @@ abstract class S {
   /// Title for the weekly nutrition dashboard card
   ///
   /// In pt, this message translates to:
-  /// **'NutriÃ§Ã£o Semanal'**
+  /// **'Nutrição Semanal'**
   String get nutritionDashboardTitle;
 
   /// Calories label
@@ -9146,7 +9146,7 @@ abstract class S {
   /// Protein label
   ///
   /// In pt, this message translates to:
-  /// **'ProteÃ­na'**
+  /// **'Proteína'**
   String get nutritionProtein;
 
   /// Carbs label
@@ -9170,19 +9170,19 @@ abstract class S {
   /// Top protein sources label
   ///
   /// In pt, this message translates to:
-  /// **'Top proteÃ­nas'**
+  /// **'Top proteínas'**
   String get nutritionTopProteins;
 
   /// Daily average label
   ///
   /// In pt, this message translates to:
-  /// **'MÃ©dia diÃ¡ria'**
+  /// **'Média diária'**
   String get nutritionDailyAvg;
 
   /// Waste forecast section title
   ///
   /// In pt, this message translates to:
-  /// **'DesperdÃ­cio estimado'**
+  /// **'Desperdício estimado'**
   String get mealWasteEstimate;
 
   /// Excess quantity for an ingredient
@@ -9200,7 +9200,7 @@ abstract class S {
   /// Estimated waste cost chip label
   ///
   /// In pt, this message translates to:
-  /// **'~{cost} em desperdÃ­cio'**
+  /// **'~{cost} em desperdício'**
   String mealWasteCost(String cost);
 }
 

@@ -519,7 +519,7 @@ class SEn extends S {
   String get coachTitle => 'Financial Coach';
 
   @override
-  String get coachSubtitle => 'AI Â· GPT-4o mini';
+  String get coachSubtitle => 'AI · GPT-4o mini';
 
   @override
   String get coachApiKeyRequired =>
@@ -530,7 +530,7 @@ class SEn extends S {
 
   @override
   String get coachAnalysisDescription =>
-      'General positioning Â· Critical factors of the Serenity Index Â· Immediate opportunity. Based on your real budget, expense and purchase history data.';
+      'General positioning · Critical factors of the Serenity Index · Immediate opportunity. Based on your real budget, expense and purchase history data.';
 
   @override
   String get coachConfigureApiKey => 'Configure API key in Settings';
@@ -798,7 +798,7 @@ class SEn extends S {
 
   @override
   String groceryAvgPrice(String unit) {
-    return '$unit Â· average price';
+    return '$unit · average price';
   }
 
   @override
@@ -811,7 +811,7 @@ class SEn extends S {
 
   @override
   String groceryAvailabilitySummary(int fresh, int partial, int failed) {
-    return '$fresh fresh Â· $partial partial Â· $failed unavailable';
+    return '$fresh fresh · $partial partial · $failed unavailable';
   }
 
   @override
@@ -836,7 +836,7 @@ class SEn extends S {
 
   @override
   String shoppingItemsRemaining(int count, String total) {
-    return '$count to buy Â· $total';
+    return '$count to buy · $total';
   }
 
   @override
@@ -1931,16 +1931,16 @@ class SEn extends S {
   String get countryUK => 'United Kingdom';
 
   @override
-  String get langPT => 'PortuguÃªs';
+  String get langPT => 'Português';
 
   @override
   String get langEN => 'English';
 
   @override
-  String get langFR => 'FranÃ§ais';
+  String get langFR => 'Français';
 
   @override
-  String get langES => 'EspaÃ±ol';
+  String get langES => 'Español';
 
   @override
   String get langSystem => 'System';
@@ -2401,7 +2401,7 @@ class SEn extends S {
 
   @override
   String billsPerMonth(int count, String amount) {
-    return '$count payments Ã‚Â· $amount/mo';
+    return '$count payments Ã‚· $amount/mo';
   }
 
   @override
@@ -2536,7 +2536,7 @@ class SEn extends S {
 
   @override
   String savingsGoalSurplusSuggestion(String amount) {
-    return 'You had $amount surplus last month Ã¢â‚¬â€ allocate to a goal?';
+    return 'You had $amount surplus last month ââ‚¬â€ allocate to a goal?';
   }
 
   @override
@@ -3185,7 +3185,7 @@ class SEn extends S {
   String get taxSimPresets => 'QUICK PRESETS';
 
   @override
-  String get taxSimPresetRaise => '+Ã¢â€šÂ¬200 raise';
+  String get taxSimPresetRaise => '+ââ€šÂ¬200 raise';
 
   @override
   String get taxSimPresetMeal => 'Card vs cash meal';
