@@ -5113,4 +5113,26 @@ class SEn extends S {
   String groceryStoreFailedFallback(String storeName) {
     return '$storeName is unavailable — excluded from comparisons';
   }
+
+  @override
+  String get groceryStoreFreshLabel => 'Fresh';
+
+  @override
+  String get groceryStoreStaleLabel => 'Stale';
+
+  @override
+  String get groceryStorePartialLabel => 'Partial';
+
+  @override
+  String get groceryStoreFailedLabel => 'Unavailable';
+
+  @override
+  String groceryStoreUpdatedHoursAgo(int hours) {
+    return 'Updated ${hours}h ago';
+  }
+
+  @override
+  String groceryStoreUpdatedDaysAgo(int days) {
+    return 'Updated ${days}d ago';
+  }
 }

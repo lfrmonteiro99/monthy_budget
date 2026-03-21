@@ -5163,4 +5163,26 @@ class SFr extends S {
   String groceryStoreFailedFallback(String storeName) {
     return '$storeName est indisponible — exclue des comparaisons';
   }
+
+  @override
+  String get groceryStoreFreshLabel => 'A jour';
+
+  @override
+  String get groceryStoreStaleLabel => 'Obsolete';
+
+  @override
+  String get groceryStorePartialLabel => 'Partiel';
+
+  @override
+  String get groceryStoreFailedLabel => 'Indisponible';
+
+  @override
+  String groceryStoreUpdatedHoursAgo(int hours) {
+    return 'Mis a jour il y a ${hours}h';
+  }
+
+  @override
+  String groceryStoreUpdatedDaysAgo(int days) {
+    return 'Mis a jour il y a ${days}d';
+  }
 }

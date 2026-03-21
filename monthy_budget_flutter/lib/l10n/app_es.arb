@@ -2702,5 +2702,22 @@
         "placeholders": {
             "storeName": {"type": "String"}
         }
+    },
+
+    "groceryStoreFreshLabel": "Actualizado",
+    "groceryStoreStaleLabel": "Desactualizado",
+    "groceryStorePartialLabel": "Parcial",
+    "groceryStoreFailedLabel": "No disponible",
+    "groceryStoreUpdatedHoursAgo": "Actualizado hace {hours}h",
+    "@groceryStoreUpdatedHoursAgo": {
+        "placeholders": {
+            "hours": {"type": "int"}
+        }
+    },
+    "groceryStoreUpdatedDaysAgo": "Actualizado hace {days}d",
+    "@groceryStoreUpdatedDaysAgo": {
+        "placeholders": {
+            "days": {"type": "int"}
+        }
     }
 }

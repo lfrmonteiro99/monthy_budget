@@ -490,41 +490,102 @@ class _GroceryScreenState extends State<GroceryScreen> {
                 color: AppColors.textSecondary(context),
               ),
             ),
-            const SizedBox(height: 8),
-            ...groceryData.degradedStoreSummaries.map(
-              (store) => _buildStoreFallbackRow(l10n, store),
-            ),
           ],
+          const SizedBox(height: 8),
+          ...groceryData.storeSummaries.map(
+            (store) => _buildStoreHealthRow(l10n, store),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildStoreFallbackRow(S l10n, GroceryStoreSummary store) {
-    final isPartial = store.status == GroceryStoreStatus.partial;
-    final message = isPartial
-        ? l10n.groceryStorePartialFallback(store.storeName)
-        : l10n.groceryStoreFailedFallback(store.storeName);
+  Color _storeStatusColor(GroceryStoreStatus status) {
+    switch (status) {
+      case GroceryStoreStatus.fresh:
+        return AppColors.success(context);
+      case GroceryStoreStatus.stale:
+        return AppColors.warning(context);
+      case GroceryStoreStatus.partial:
+        return AppColors.warning(context);
+      case GroceryStoreStatus.failed:
+        return AppColors.error(context);
+    }
+  }
+
+  String _storeStatusLabel(S l10n, GroceryStoreStatus status) {
+    switch (status) {
+      case GroceryStoreStatus.fresh:
+        return l10n.groceryStoreFreshLabel;
+      case GroceryStoreStatus.stale:
+        return l10n.groceryStoreStaleLabel;
+      case GroceryStoreStatus.partial:
+        return l10n.groceryStorePartialLabel;
+      case GroceryStoreStatus.failed:
+        return l10n.groceryStoreFailedLabel;
+    }
+  }
+
+  String? _freshnessAgeText(S l10n, GroceryStoreSummary store) {
+    final age = store.freshnessAge;
+    if (age == null) return null;
+    final totalHours = age.inHours;
+    if (totalHours >= 24) {
+      return l10n.groceryStoreUpdatedDaysAgo(totalHours ~/ 24);
+    }
+    return l10n.groceryStoreUpdatedHoursAgo(totalHours);
+  }
+
+  Widget _buildStoreHealthRow(S l10n, GroceryStoreSummary store) {
+    final color = _storeStatusColor(store.status);
+    final label = _storeStatusLabel(l10n, store.status);
+    final ageText = _freshnessAgeText(l10n, store);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.warning_amber_rounded,
-            size: 14,
-            color: isPartial
-                ? AppColors.warning(context)
-                : AppColors.error(context),
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+            ),
           ),
-          const SizedBox(width: 6),
+          const SizedBox(width: 8),
           Expanded(
             child: Text(
-              message,
+              store.storeName,
               style: TextStyle(
-                fontSize: 11,
-                color: AppColors.textSecondary(context),
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textPrimary(context),
+              ),
+            ),
+          ),
+          if (ageText != null) ...[
+            Text(
+              ageText,
+              style: TextStyle(
+                fontSize: 10,
+                color: AppColors.textMuted(context),
+              ),
+            ),
+            const SizedBox(width: 8),
+          ],
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+                color: color,
               ),
             ),
           ),
