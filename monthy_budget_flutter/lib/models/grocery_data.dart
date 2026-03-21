@@ -271,10 +271,27 @@ class GroceryData {
   bool get hasDegradedStores => degradedStoreSummaries.isNotEmpty;
   int get freshStoreCount =>
       storeSummaries.where((summary) => summary.status == GroceryStoreStatus.fresh).length;
+  int get staleStoreCount =>
+      storeSummaries.where((summary) => summary.status == GroceryStoreStatus.stale).length;
   int get partialStoreCount =>
       storeSummaries.where((summary) => summary.status == GroceryStoreStatus.partial).length;
   int get failedStoreCount =>
       storeSummaries.where((summary) => summary.status == GroceryStoreStatus.failed).length;
+
+  /// Returns the worst status across all stores, using severity ordering:
+  /// failed > partial > stale > fresh. Defaults to [GroceryStoreStatus.fresh]
+  /// when there are no stores.
+  GroceryStoreStatus get overallFreshness {
+    if (storeSummaries.isEmpty) return GroceryStoreStatus.fresh;
+    // Enum declaration order matches severity: fresh(0) < stale(1) < partial(2) < failed(3)
+    var worst = GroceryStoreStatus.fresh;
+    for (final summary in storeSummaries) {
+      if (summary.status.index > worst.index) {
+        worst = summary.status;
+      }
+    }
+    return worst;
+  }
 
   List<Product> toCatalogProducts() {
     return products
@@ -488,7 +505,7 @@ class StoreCategoryStats {
   }
 }
 
-enum GroceryStoreStatus { fresh, partial, failed }
+enum GroceryStoreStatus { fresh, stale, partial, failed }
 
 class GroceryStoreSummary {
   final String countryCode;
@@ -524,6 +541,7 @@ class GroceryStoreSummary {
       storeId: json['store_id'] as String? ?? '',
       storeName: json['store_name'] as String? ?? '',
       status: switch (rawStatus) {
+        'stale' => GroceryStoreStatus.stale,
         'partial' => GroceryStoreStatus.partial,
         'failed' => GroceryStoreStatus.failed,
         _ => GroceryStoreStatus.fresh,
@@ -542,7 +560,26 @@ class GroceryStoreSummary {
     );
   }
 
+  bool get isFresh => status == GroceryStoreStatus.fresh;
+  bool get isStale => status == GroceryStoreStatus.stale;
+  bool get isPartial => status == GroceryStoreStatus.partial;
+  bool get isFailed => status == GroceryStoreStatus.failed;
   bool get isDegraded => status != GroceryStoreStatus.fresh;
+
+  /// Parses [lastUpdatedAt] as a [DateTime]. Returns null when the field is
+  /// empty or cannot be parsed (safe degradation).
+  DateTime? get lastUpdatedDateTime {
+    if (lastUpdatedAt.isEmpty) return null;
+    return DateTime.tryParse(lastUpdatedAt);
+  }
+
+  /// How long ago the store data was last updated. Returns null when
+  /// [lastUpdatedAt] is missing or malformed.
+  Duration? get freshnessAge {
+    final dt = lastUpdatedDateTime;
+    if (dt == null) return null;
+    return DateTime.now().toUtc().difference(dt);
+  }
 }
 
 class GroceryBundleStore {
