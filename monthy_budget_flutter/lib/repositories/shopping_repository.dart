@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../exceptions/app_exceptions.dart';
 import '../models/purchase_record.dart';
 import '../models/shopping_item.dart';
 
@@ -54,7 +55,10 @@ class SupabaseShoppingRepository implements ShoppingRepository {
         .from('shopping_items')
         .insert(item.toSupabase(householdId))
         .select()
-        .single();
+        .maybeSingle();
+    if (row == null) {
+      throw const DataException('Insert returned no row');
+    }
     return ShoppingItem.fromSupabase(row);
   }
 
