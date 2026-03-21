@@ -475,7 +475,14 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         .then((result) {
           if (!mounted) return;
           setState(() => _batchPlanLoading = false);
-          if (result != null) _showBatchPlanSheet(result);
+          // Use AI result or build a deterministic local plan as fallback.
+          final guide = result ??
+              MealPlannerAiService.buildLocalBatchPlan(
+                batchRecipes: batchRecipes,
+                nPessoas: plan.nPessoas,
+                locale: locale,
+              );
+          _showBatchPlanSheet(guide);
         });
   }
 
@@ -612,11 +619,18 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     if (recipe == null) return;
     final l10n = S.of(context);
     final aiContent = _aiContent[mealDay.recipeId];
-    // Use local prepSteps as primary source, fall back to AI steps
+    // Use local prepSteps as primary source, fall back to AI steps,
+    // then deterministic local fallback so the guide never fails silently.
+    final locale = Localizations.localeOf(context).languageCode;
     final steps = recipe.prepSteps.isNotEmpty
         ? recipe.prepSteps
-        : (aiContent?.steps ?? []);
-    if (steps.isEmpty) return;
+        : (aiContent?.steps != null && aiContent!.steps.isNotEmpty)
+            ? aiContent.steps
+            : MealPlannerAiService.buildLocalPrepSteps(
+                recipe: recipe,
+                nPessoas: _plan?.nPessoas ?? 2,
+                locale: locale,
+              );
 
     showModalBottomSheet(
       context: context,
@@ -2292,6 +2306,24 @@ class _DayCard extends StatelessWidget {
                         onRate: onRating,
                       ),
                       const SizedBox(width: 10),
+                      MealFeedbackButton(
+                        icon: Icons.thumb_up_outlined,
+                        activeIcon: Icons.thumb_up,
+                        isActive: mealDay.feedback == MealFeedback.liked,
+                        color: AppColors.success(context),
+                        label: l10n.mealFeedbackLike,
+                        onTap: () => onFeedback(MealFeedback.liked),
+                      ),
+                      const SizedBox(width: 4),
+                      MealFeedbackButton(
+                        icon: Icons.thumb_down_outlined,
+                        activeIcon: Icons.thumb_down,
+                        isActive: mealDay.feedback == MealFeedback.disliked,
+                        color: AppColors.error(context),
+                        label: l10n.mealFeedbackDislike,
+                        onTap: () => onFeedback(MealFeedback.disliked),
+                      ),
+                      const SizedBox(width: 4),
                       MealFeedbackButton(
                         icon: Icons.skip_next_outlined,
                         activeIcon: Icons.skip_next,
