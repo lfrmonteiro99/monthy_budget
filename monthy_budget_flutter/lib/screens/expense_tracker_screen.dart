@@ -19,6 +19,9 @@ import '../widgets/expense_detail_sheet.dart';
 import '../services/export_service.dart';
 import '../services/actual_expense_service.dart';
 import '../onboarding/expense_tracker_tour.dart';
+import '../data/tax/tax_deductions.dart';
+import '../widgets/irs_deduction_banner.dart';
+import 'tax_deduction_detail_screen.dart';
 
 class ExpenseTrackerScreen extends StatefulWidget {
   final AppSettings settings;
@@ -33,6 +36,7 @@ class ExpenseTrackerScreen extends StatefulWidget {
   final bool showTour;
   final VoidCallback? onTourComplete;
   final List<CustomCategory> customCategories;
+  final YearlyDeductionSummary? irsDeductionSummary;
 
   const ExpenseTrackerScreen({
     super.key,
@@ -48,6 +52,7 @@ class ExpenseTrackerScreen extends StatefulWidget {
     this.showTour = false,
     this.onTourComplete,
     this.customCategories = const [],
+    this.irsDeductionSummary,
   });
 
   @override
@@ -596,6 +601,19 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
           ),
 
           const Divider(height: 1),
+
+          // IRS deduction banner (Portugal only)
+          if (widget.irsDeductionSummary != null)
+            IrsDeductionBanner(
+              summary: widget.irsDeductionSummary,
+              onSeeDetail: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => TaxDeductionDetailScreen(
+                    summary: widget.irsDeductionSummary!,
+                  ),
+                ),
+              ),
+            ),
 
           // Category progress info
           if (_expenses.isNotEmpty)
