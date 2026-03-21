@@ -9202,6 +9202,18 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'~{cost} em desperdício'**
   String mealWasteCost(String cost);
+
+  /// No description provided for @groceryStorePartialFallback.
+  ///
+  /// In pt, this message translates to:
+  /// **'{storeName} tem dados parciais — os preços podem estar desatualizados'**
+  String groceryStorePartialFallback(String storeName);
+
+  /// No description provided for @groceryStoreFailedFallback.
+  ///
+  /// In pt, this message translates to:
+  /// **'{storeName} está indisponível — excluída das comparações'**
+  String groceryStoreFailedFallback(String storeName);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

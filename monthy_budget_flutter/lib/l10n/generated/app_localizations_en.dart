@@ -5103,4 +5103,14 @@ class SEn extends S {
   String mealWasteCost(String cost) {
     return '~$cost waste';
   }
+
+  @override
+  String groceryStorePartialFallback(String storeName) {
+    return '$storeName has partial data — prices may be outdated';
+  }
+
+  @override
+  String groceryStoreFailedFallback(String storeName) {
+    return '$storeName is unavailable — excluded from comparisons';
+  }
 }

@@ -5138,4 +5138,14 @@ class SPt extends S {
   String mealWasteCost(String cost) {
     return '~$cost em desperdício';
   }
+
+  @override
+  String groceryStorePartialFallback(String storeName) {
+    return '$storeName tem dados parciais — os preços podem estar desatualizados';
+  }
+
+  @override
+  String groceryStoreFailedFallback(String storeName) {
+    return '$storeName está indisponível — excluída das comparações';
+  }
 }
