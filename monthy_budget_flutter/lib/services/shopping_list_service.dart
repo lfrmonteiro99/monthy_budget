@@ -1,6 +1,7 @@
 import '../exceptions/app_exceptions.dart';
 import '../models/shopping_item.dart';
 import '../repositories/shopping_repository.dart';
+import 'log_service.dart';
 
 class ShoppingListService {
   ShoppingRepository? _repository;
@@ -19,6 +20,12 @@ class ShoppingListService {
     try {
       return await _resolvedRepository.add(item, householdId);
     } catch (e, stack) {
+      LogService.error(
+        'Failed to add shopping item',
+        error: e,
+        stackTrace: stack,
+        category: 'service.shopping_list',
+      );
       throw DataException('Failed to add shopping item', e, stack);
     }
   }
@@ -37,6 +44,12 @@ class ShoppingListService {
         unit: unit,
       );
     } catch (e, stack) {
+      LogService.error(
+        'Failed to update shopping item $id',
+        error: e,
+        stackTrace: stack,
+        category: 'service.shopping_list',
+      );
       throw DataException('Failed to update shopping item $id', e, stack);
     }
   }
@@ -45,6 +58,12 @@ class ShoppingListService {
     try {
       await _resolvedRepository.toggle(id, checked);
     } catch (e, stack) {
+      LogService.error(
+        'Failed to toggle shopping item $id',
+        error: e,
+        stackTrace: stack,
+        category: 'service.shopping_list',
+      );
       throw DataException('Failed to toggle shopping item $id', e, stack);
     }
   }
@@ -53,6 +72,12 @@ class ShoppingListService {
     try {
       await _resolvedRepository.remove(id);
     } catch (e, stack) {
+      LogService.error(
+        'Failed to remove shopping item $id',
+        error: e,
+        stackTrace: stack,
+        category: 'service.shopping_list',
+      );
       throw DataException('Failed to remove shopping item $id', e, stack);
     }
   }
@@ -61,6 +86,12 @@ class ShoppingListService {
     try {
       await _resolvedRepository.clearChecked(householdId);
     } catch (e, stack) {
+      LogService.error(
+        'Failed to clear checked shopping items',
+        error: e,
+        stackTrace: stack,
+        category: 'service.shopping_list',
+      );
       throw DataException('Failed to clear checked shopping items', e, stack);
     }
   }

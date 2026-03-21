@@ -1,6 +1,7 @@
 import '../exceptions/app_exceptions.dart';
 import '../models/purchase_record.dart';
 import '../repositories/shopping_repository.dart';
+import 'log_service.dart';
 
 class PurchaseHistoryService {
   PurchaseRepository? _repository;
@@ -15,6 +16,12 @@ class PurchaseHistoryService {
     try {
       return await _resolvedRepository.load(householdId);
     } catch (e, stack) {
+      LogService.error(
+        'Failed to load purchase history',
+        error: e,
+        stackTrace: stack,
+        category: 'service.purchase_history',
+      );
       throw DataException('Failed to load purchase history', e, stack);
     }
   }
@@ -23,6 +30,12 @@ class PurchaseHistoryService {
     try {
       await _resolvedRepository.saveRecord(record, householdId);
     } catch (e, stack) {
+      LogService.error(
+        'Failed to save purchase history record',
+        error: e,
+        stackTrace: stack,
+        category: 'service.purchase_history',
+      );
       throw DataException('Failed to save purchase history record', e, stack);
     }
   }
