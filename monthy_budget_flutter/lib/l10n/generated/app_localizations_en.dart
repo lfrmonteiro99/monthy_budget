@@ -4863,6 +4863,9 @@ class SEn extends S {
       'Failed to upload attachments. Check your connection.';
 
   @override
+  String get expenseReceiptsLabel => 'Receipts';
+
+  @override
   String get expenseExtras => 'Extras';
 
   @override

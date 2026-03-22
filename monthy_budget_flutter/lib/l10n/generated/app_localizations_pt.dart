@@ -4895,6 +4895,9 @@ class SPt extends S {
       'Falha ao carregar anexos. Verifique a sua ligação.';
 
   @override
+  String get expenseReceiptsLabel => 'Recibos';
+
+  @override
   String get expenseExtras => 'Extras';
 
   @override

@@ -2579,6 +2579,7 @@
     "expenseAttachCamera": "Appareil photo",
     "expenseAttachGallery": "Galerie",
     "expenseAttachUploadFailed": "Ã‰chec du téléchargement des pièces jointes. Vérifiez votre connexion.",
+    "expenseReceiptsLabel": "Reçus",
     "expenseExtras": "Extras",
     "expenseLocationDetect": "Détecter la position",
     "biometricLockTitle": "Verrouillage de l'app",

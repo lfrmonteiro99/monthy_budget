@@ -4899,6 +4899,9 @@ class SEs extends S {
       'Error al subir anexos. Verifique su conexión.';
 
   @override
+  String get expenseReceiptsLabel => 'Recibos';
+
+  @override
   String get expenseExtras => 'Extras';
 
   @override

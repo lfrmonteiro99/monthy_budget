@@ -4908,6 +4908,9 @@ class SFr extends S {
       'Ã‰chec du téléchargement des pièces jointes. Vérifiez votre connexion.';
 
   @override
+  String get expenseReceiptsLabel => 'Reçus';
+
+  @override
   String get expenseExtras => 'Extras';
 
   @override

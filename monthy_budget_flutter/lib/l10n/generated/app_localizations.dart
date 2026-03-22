@@ -8777,6 +8777,12 @@ abstract class S {
   /// **'Falha ao carregar anexos. Verifique a sua ligação.'**
   String get expenseAttachUploadFailed;
 
+  /// Receipts section label in expense detail
+  ///
+  /// In pt, this message translates to:
+  /// **'Recibos'**
+  String get expenseReceiptsLabel;
+
   /// Extras toggle label
   ///
   /// In pt, this message translates to:
