@@ -15,6 +15,7 @@ import 'package:monthly_management/services/actual_expense_service.dart';
 import 'package:monthly_management/services/category_service.dart';
 import 'package:monthly_management/services/monthly_budget_service.dart';
 import 'package:monthly_management/services/recurring_expense_service.dart';
+import 'package:monthly_management/services/settings_service.dart';
 import 'package:monthly_management/services/shopping_list_service.dart';
 import 'package:monthly_management/models/app_settings.dart';
 
@@ -599,6 +600,29 @@ void main() {
       await service.delete('cat_del');
       final loaded = await repo.loadCategories('hh_1');
       expect(loaded.any((c) => c.id == 'cat_del'), false);
+    });
+  });
+
+  group('SettingsService', () {
+    late _MemSettingsRepo repo;
+    late SettingsService service;
+
+    setUp(() {
+      repo = _MemSettingsRepo();
+      service = SettingsService(repository: repo);
+    });
+
+    test('load returns settings from repository', () async {
+      final settings = await service.load('hh_1');
+      expect(settings, isA<AppSettings>());
+    });
+
+    test('save delegates to repository', () async {
+      const settings = AppSettings(
+        personalInfo: PersonalInfo(dependentes: 2),
+      );
+      await service.save(settings, 'hh_1');
+      // No exception = success
     });
   });
 }
