@@ -751,7 +751,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                   children: [
                     Expanded(child: _buildFilterBar(l10n)),
                     InfoIconButton(
-                      title: 'Filter',
+                      title: l10n.filter,
                       body: l10n.infoExpenseTrackerFilter,
                     ),
                     const SizedBox(width: 8),

@@ -6,6 +6,7 @@ import '../config/revenuecat_config.dart';
 import '../models/subscription_state.dart';
 import '../services/revenuecat_service.dart';
 import '../constants/app_constants.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
 
 const _termsOfServiceUrl =
@@ -155,6 +156,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final trialExpired =
         widget.subscription.trialUsed || !widget.subscription.isTrialActive;
 
@@ -222,7 +224,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
 
                   // Pro card — single paid tier (maps to family internally)
                   _TierCard(
-                    title: 'Gestão Mensal Pro',
+                    title: '${l10n.appTitle} Pro',
                     price: _yearlyBilling
                         ? _priceForTier(true, '€2.49')
                         : _priceForTier(false, '€3.99'),
@@ -247,15 +249,15 @@ class _PaywallScreenState extends State<PaywallScreen> {
                         widget.subscription.tier != SubscriptionTier.free,
                     // Single entitlement → maps to family (highest tier).
                     onSelect: () => _handlePurchase(SubscriptionTier.family),
-                    ctaLabel: 'Start Pro',
+                    ctaLabel: l10n.paywallStartPro,
                     isPrimary: true,
-                    badge: 'Best Value',
+                    badge: l10n.paywallBestValue,
                     showPriceAsIs: _offerings != null,
                   ),
                   const SizedBox(height: 12),
                   // Free tier card
                   _TierCard(
-                    title: 'Free',
+                    title: l10n.paywallFree,
                     price: '0',
                     period: 'forever',
                     features: const [
@@ -269,7 +271,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
                         widget.subscription.tier == SubscriptionTier.free &&
                             !widget.subscription.isTrialActive,
                     onSelect: () => _handlePurchase(SubscriptionTier.free),
-                    ctaLabel: 'Continue Free',
+                    ctaLabel: l10n.paywallContinueFree,
                     isPrimary: false,
                   ),
 

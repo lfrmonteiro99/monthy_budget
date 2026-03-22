@@ -2723,5 +2723,22 @@
         "placeholders": {
             "days": {"type": "int"}
         }
-    }
+    },
+    "upgradeToPro": "Passer a Pro",
+    "createAsPaused": "Créer en pause",
+    "categoryLimitReached": "Limite de catégories atteinte",
+    "savingsGoalLimitReached": "Limite d'objectifs d'épargne atteinte",
+    "limitSwapActive": "Échanger l'active",
+    "limitChooseActiveGoal": "Choisir l'objectif actif",
+    "errorBoundarySomethingWentWrong": "Une erreur est survenue",
+    "errorBoundaryDescription": "Cette section a rencontré une erreur.\nLe reste de l'application n'est pas affecté.",
+    "retry": "Réessayer",
+    "monthReview": "Bilan du mois",
+    "filter": "Filtre",
+    "paywallFree": "Gratuit",
+    "paywallStartPro": "Démarrer Pro",
+    "paywallContinueFree": "Continuer gratuitement",
+    "paywallBestValue": "Meilleur rapport qualité-prix",
+    "complexityEasy": "Facile",
+    "complexityPro": "Pro"
 }

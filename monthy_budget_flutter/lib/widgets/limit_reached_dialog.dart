@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
 
 /// Result of the limit-reached dialog interaction.
@@ -21,6 +22,7 @@ class LimitReachedDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return AlertDialog(
       title: Text(
         title,
@@ -50,7 +52,7 @@ class LimitReachedDialog extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10)),
               elevation: 0,
             ),
-            child: const Text('Upgrade to Pro'),
+            child: Text(l10n.upgradeToPro),
           ),
         ),
         if (swapLabel != null && !showCreatePaused)
@@ -80,7 +82,7 @@ class LimitReachedDialog extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
               ),
-              child: const Text('Create as Paused'),
+              child: Text(l10n.createAsPaused),
             ),
           ),
         Center(
@@ -88,7 +90,7 @@ class LimitReachedDialog extends StatelessWidget {
             onPressed: () =>
                 Navigator.of(context).pop(LimitReachedAction.cancel),
             child: Text(
-              showCreatePaused ? 'Cancel' : 'Close',
+              showCreatePaused ? l10n.cancel : l10n.close,
               style: TextStyle(color: AppColors.textSecondary(context)),
             ),
           ),
@@ -101,14 +103,15 @@ class LimitReachedDialog extends StatelessWidget {
 /// Show a dialog when the category limit is reached (trying to activate).
 Future<LimitReachedAction?> showCategoryLimitDialog(
     BuildContext context, String categoryName) {
+  final l10n = S.of(context);
   return showDialog<LimitReachedAction>(
     context: context,
     builder: (_) => LimitReachedDialog(
-      title: 'Category limit reached',
+      title: l10n.categoryLimitReached,
       message:
           'The free plan allows 8 active categories. To activate "$categoryName", '
           'deactivate another category first, or upgrade to Pro for unlimited categories.',
-      swapLabel: 'Swap Active',
+      swapLabel: l10n.limitSwapActive,
     ),
   );
 }
@@ -116,10 +119,11 @@ Future<LimitReachedAction?> showCategoryLimitDialog(
 /// Show a dialog when the category limit is reached (trying to create new).
 Future<LimitReachedAction?> showCategoryCreateLimitDialog(
     BuildContext context) {
+  final l10n = S.of(context);
   return showDialog<LimitReachedAction>(
     context: context,
     builder: (_) => LimitReachedDialog(
-      title: 'Category limit reached',
+      title: l10n.categoryLimitReached,
       message:
           'You have 8 active categories, the maximum for the free plan. '
           'To add a new category, deactivate an existing one first, or upgrade to Pro.',
@@ -131,24 +135,26 @@ Future<LimitReachedAction?> showCategoryCreateLimitDialog(
 /// Show a dialog when the savings goal limit is reached (trying to activate).
 Future<LimitReachedAction?> showGoalLimitDialog(
     BuildContext context, String goalName) {
+  final l10n = S.of(context);
   return showDialog<LimitReachedAction>(
     context: context,
     builder: (_) => LimitReachedDialog(
-      title: 'Savings goal limit reached',
+      title: l10n.savingsGoalLimitReached,
       message:
           'The free plan allows 1 active savings goal. To activate "$goalName", '
           'deactivate your current active goal first, or upgrade to Pro for unlimited goals.',
-      swapLabel: 'Choose Active Goal',
+      swapLabel: l10n.limitChooseActiveGoal,
     ),
   );
 }
 
 /// Show a dialog when the savings goal limit is reached (trying to create new).
 Future<LimitReachedAction?> showGoalCreateLimitDialog(BuildContext context) {
+  final l10n = S.of(context);
   return showDialog<LimitReachedAction>(
     context: context,
     builder: (_) => LimitReachedDialog(
-      title: 'Savings goal limit reached',
+      title: l10n.savingsGoalLimitReached,
       message:
           'The free plan allows 1 active savings goal. You can still create this '
           'goal — it will be saved as paused until you upgrade or deactivate your current active goal.',

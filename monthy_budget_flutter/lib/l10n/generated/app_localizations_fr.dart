@@ -1163,7 +1163,7 @@ class SFr extends S {
   }
 
   @override
-  String get monthReview => 'Bilan Mensuel';
+  String get monthReview => 'Bilan du mois';
 
   @override
   String get monthReviewPlanned => 'Prévu';
@@ -4601,7 +4601,7 @@ class SFr extends S {
   String get navMoreTip => 'Paramètres et analyses';
 
   @override
-  String get paywallContinueFree => 'Continuation avec le plan gratuit';
+  String get paywallContinueFree => 'Continuer gratuitement';
 
   @override
   String get paywallUpgradedPro => 'Mis Ã  jour vers Pro â€” merci !';
@@ -5188,4 +5188,51 @@ class SFr extends S {
   String groceryStoreUpdatedDaysAgo(int days) {
     return 'Mis a jour il y a ${days}d';
   }
+
+  @override
+  String get upgradeToPro => 'Passer a Pro';
+
+  @override
+  String get createAsPaused => 'Créer en pause';
+
+  @override
+  String get categoryLimitReached => 'Limite de catégories atteinte';
+
+  @override
+  String get savingsGoalLimitReached =>
+      'Limite d\'objectifs d\'épargne atteinte';
+
+  @override
+  String get limitSwapActive => 'Échanger l\'active';
+
+  @override
+  String get limitChooseActiveGoal => 'Choisir l\'objectif actif';
+
+  @override
+  String get errorBoundarySomethingWentWrong => 'Une erreur est survenue';
+
+  @override
+  String get errorBoundaryDescription =>
+      'Cette section a rencontré une erreur.\nLe reste de l\'application n\'est pas affecté.';
+
+  @override
+  String get retry => 'Réessayer';
+
+  @override
+  String get filter => 'Filtre';
+
+  @override
+  String get paywallFree => 'Gratuit';
+
+  @override
+  String get paywallStartPro => 'Démarrer Pro';
+
+  @override
+  String get paywallBestValue => 'Meilleur rapport qualité-prix';
+
+  @override
+  String get complexityEasy => 'Facile';
+
+  @override
+  String get complexityPro => 'Pro';
 }

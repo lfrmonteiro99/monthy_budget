@@ -2781,5 +2781,22 @@
         "placeholders": {
             "days": {"type": "int"}
         }
-    }
+    },
+    "upgradeToPro": "Upgrade to Pro",
+    "createAsPaused": "Create as Paused",
+    "categoryLimitReached": "Category limit reached",
+    "savingsGoalLimitReached": "Savings goal limit reached",
+    "limitSwapActive": "Swap Active",
+    "limitChooseActiveGoal": "Choose Active Goal",
+    "errorBoundarySomethingWentWrong": "Something went wrong",
+    "errorBoundaryDescription": "This section encountered an error.\nThe rest of the app is unaffected.",
+    "retry": "Retry",
+    "monthReview": "Month Review",
+    "filter": "Filter",
+    "paywallFree": "Free",
+    "paywallStartPro": "Start Pro",
+    "paywallContinueFree": "Continue Free",
+    "paywallBestValue": "Best Value",
+    "complexityEasy": "Easy",
+    "complexityPro": "Pro"
 }

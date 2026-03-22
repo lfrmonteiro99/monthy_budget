@@ -2147,10 +2147,10 @@ abstract class S {
   /// **'Resumo â€” {month}'**
   String monthReviewTitle(String month);
 
-  /// Titulo do resumo mensal
+  /// Title for the month review section on the dashboard
   ///
   /// In pt, this message translates to:
-  /// **'Resumo Mensal'**
+  /// **'Resumo do mês'**
   String get monthReview;
 
   /// Month review column: planned
@@ -8237,10 +8237,10 @@ abstract class S {
   /// **'Definições e análises'**
   String get navMoreTip;
 
-  /// No description provided for @paywallContinueFree.
+  /// CTA button to continue with free plan
   ///
   /// In pt, this message translates to:
-  /// **'A continuar com o plano gratuito'**
+  /// **'Continuar grátis'**
   String get paywallContinueFree;
 
   /// No description provided for @paywallUpgradedPro.
@@ -9256,6 +9256,96 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Atualizado há {days}d'**
   String groceryStoreUpdatedDaysAgo(int days);
+
+  /// Button label to upgrade to Pro plan
+  ///
+  /// In pt, this message translates to:
+  /// **'Atualizar para Pro'**
+  String get upgradeToPro;
+
+  /// Button label to create an item in paused state
+  ///
+  /// In pt, this message translates to:
+  /// **'Criar como pausado'**
+  String get createAsPaused;
+
+  /// Title when category limit is reached
+  ///
+  /// In pt, this message translates to:
+  /// **'Limite de categorias atingido'**
+  String get categoryLimitReached;
+
+  /// Title when savings goal limit is reached
+  ///
+  /// In pt, this message translates to:
+  /// **'Limite de objetivos de poupança atingido'**
+  String get savingsGoalLimitReached;
+
+  /// Button label to swap the active item
+  ///
+  /// In pt, this message translates to:
+  /// **'Trocar ativa'**
+  String get limitSwapActive;
+
+  /// Button label to choose the active savings goal
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolher objetivo ativo'**
+  String get limitChooseActiveGoal;
+
+  /// Title shown when an error boundary catches an error
+  ///
+  /// In pt, this message translates to:
+  /// **'Algo correu mal'**
+  String get errorBoundarySomethingWentWrong;
+
+  /// Description shown below the error boundary title
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta secção encontrou um erro.\nO resto da app não foi afetado.'**
+  String get errorBoundaryDescription;
+
+  /// Button label to retry an action
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get retry;
+
+  /// Label for filter controls
+  ///
+  /// In pt, this message translates to:
+  /// **'Filtro'**
+  String get filter;
+
+  /// Free tier label on paywall screen
+  ///
+  /// In pt, this message translates to:
+  /// **'Grátis'**
+  String get paywallFree;
+
+  /// CTA button to start pro subscription
+  ///
+  /// In pt, this message translates to:
+  /// **'Iniciar Pro'**
+  String get paywallStartPro;
+
+  /// Badge label on the best-value plan
+  ///
+  /// In pt, this message translates to:
+  /// **'Melhor valor'**
+  String get paywallBestValue;
+
+  /// Label for easy complexity level on slider
+  ///
+  /// In pt, this message translates to:
+  /// **'Fácil'**
+  String get complexityEasy;
+
+  /// Label for pro/advanced complexity level on slider
+  ///
+  /// In pt, this message translates to:
+  /// **'Pro'**
+  String get complexityPro;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

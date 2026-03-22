@@ -1157,7 +1157,7 @@ class SPt extends S {
   }
 
   @override
-  String get monthReview => 'Resumo Mensal';
+  String get monthReview => 'Resumo do mês';
 
   @override
   String get monthReviewPlanned => 'Planeado';
@@ -4588,7 +4588,7 @@ class SPt extends S {
   String get navMoreTip => 'Definições e análises';
 
   @override
-  String get paywallContinueFree => 'A continuar com o plano gratuito';
+  String get paywallContinueFree => 'Continuar grátis';
 
   @override
   String get paywallUpgradedPro => 'Atualizado para Pro â€” obrigado!';
@@ -5173,4 +5173,51 @@ class SPt extends S {
   String groceryStoreUpdatedDaysAgo(int days) {
     return 'Atualizado há ${days}d';
   }
+
+  @override
+  String get upgradeToPro => 'Atualizar para Pro';
+
+  @override
+  String get createAsPaused => 'Criar como pausado';
+
+  @override
+  String get categoryLimitReached => 'Limite de categorias atingido';
+
+  @override
+  String get savingsGoalLimitReached =>
+      'Limite de objetivos de poupança atingido';
+
+  @override
+  String get limitSwapActive => 'Trocar ativa';
+
+  @override
+  String get limitChooseActiveGoal => 'Escolher objetivo ativo';
+
+  @override
+  String get errorBoundarySomethingWentWrong => 'Algo correu mal';
+
+  @override
+  String get errorBoundaryDescription =>
+      'Esta secção encontrou um erro.\nO resto da app não foi afetado.';
+
+  @override
+  String get retry => 'Tentar novamente';
+
+  @override
+  String get filter => 'Filtro';
+
+  @override
+  String get paywallFree => 'Grátis';
+
+  @override
+  String get paywallStartPro => 'Iniciar Pro';
+
+  @override
+  String get paywallBestValue => 'Melhor valor';
+
+  @override
+  String get complexityEasy => 'Fácil';
+
+  @override
+  String get complexityPro => 'Pro';
 }
