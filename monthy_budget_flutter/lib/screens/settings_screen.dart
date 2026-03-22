@@ -1463,6 +1463,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       },
                     ),
                     const SizedBox(height: 12),
+                    // ── Expense Type (Fixed / Variable) ──
+                    _label(l10n.expenseTypeLabel),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        _expenseTypeChip(
+                          label: l10n.expenseFixed,
+                          selected: expense.isFixed,
+                          onTap: () => _updateExpense(expense.id, (e) => e.copyWith(isFixed: true)),
+                        ),
+                        const SizedBox(width: 8),
+                        _expenseTypeChip(
+                          label: l10n.expenseVariable,
+                          selected: !expense.isFixed,
+                          onTap: () => _updateExpense(expense.id, (e) => e.copyWith(isFixed: false)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
                     // ── Monthly Budget ──
                     _label(l10n.settingsMonthlyBudgetLabel),
                     const SizedBox(height: 8),
@@ -3554,6 +3573,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
         text,
         style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondary(context), letterSpacing: 0.5),
       );
+
+  Widget _expenseTypeChip({
+    required String label,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: selected ? AppColors.primaryLight(context) : AppColors.background(context),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: selected ? AppColors.primary(context) : AppColors.border(context),
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+            color: selected ? AppColors.primary(context) : AppColors.textSecondary(context),
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget _salarySectionHeader(IconData icon, String title) {
     return Row(

@@ -2858,6 +2858,9 @@ class SFr extends S {
   }
 
   @override
+  String get expenseTypeLabel => 'TYPE';
+
+  @override
   String get expenseFixed => 'Fixe';
 
   @override

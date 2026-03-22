@@ -2840,6 +2840,9 @@ class SEn extends S {
   }
 
   @override
+  String get expenseTypeLabel => 'TYPE';
+
+  @override
   String get expenseFixed => 'Fixed';
 
   @override
