@@ -2824,5 +2824,29 @@
     "rolloverToggleLabel": "Rollover",
     "rolloverHelperText": "Carry unspent or overspent budget to next month",
     "settingsDashSpendingAnomalies": "Spending anomalies",
-    "subtitleShowSpendingAnomalies": "Highlights categories that deviate from recent spending patterns"
+    "subtitleShowSpendingAnomalies": "Highlights categories that deviate from recent spending patterns",
+    "yearlySummaryTitle": "Yearly Summary",
+    "yearlySummaryIncome": "Total Income",
+    "yearlySummaryExpenses": "Total Expenses",
+    "yearlySummaryNetSavings": "Net Savings",
+    "yearlySummarySavingsRate": "Savings rate: {rate}%",
+    "@yearlySummarySavingsRate": {
+        "placeholders": {
+            "rate": {"type": "String"}
+        }
+    },
+    "yearlySummaryHighlights": "Highlights",
+    "yearlySummaryBestMonth": "Best month ({month})",
+    "@yearlySummaryBestMonth": {
+        "placeholders": {
+            "month": {"type": "String"}
+        }
+    },
+    "yearlySummaryWorstMonth": "Worst month ({month})",
+    "@yearlySummaryWorstMonth": {
+        "placeholders": {
+            "month": {"type": "String"}
+        }
+    },
+    "yearlySummaryCategoryBreakdown": "Category Breakdown"
 }

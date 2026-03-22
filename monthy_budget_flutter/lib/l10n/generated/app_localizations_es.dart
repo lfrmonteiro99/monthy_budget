@@ -5293,4 +5293,37 @@ class SEs extends S {
   @override
   String get subtitleShowSpendingAnomalies =>
       'Destaca categorias que se desvian de los patrones de gasto recientes';
+
+  @override
+  String get yearlySummaryTitle => 'Resumen Anual';
+
+  @override
+  String get yearlySummaryIncome => 'Ingresos Totales';
+
+  @override
+  String get yearlySummaryExpenses => 'Gastos Totales';
+
+  @override
+  String get yearlySummaryNetSavings => 'Ahorro Neto';
+
+  @override
+  String yearlySummarySavingsRate(String rate) {
+    return 'Tasa de ahorro: $rate%';
+  }
+
+  @override
+  String get yearlySummaryHighlights => 'Destacados';
+
+  @override
+  String yearlySummaryBestMonth(String month) {
+    return 'Mejor mes ($month)';
+  }
+
+  @override
+  String yearlySummaryWorstMonth(String month) {
+    return 'Peor mes ($month)';
+  }
+
+  @override
+  String get yearlySummaryCategoryBreakdown => 'Desglose por Categoria';
 }

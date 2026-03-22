@@ -5334,5 +5334,29 @@
     "subtitleShowSpendingAnomalies": "Destaca categorias que se desviam dos padrões de gastos recentes",
     "@subtitleShowSpendingAnomalies": {
         "description": "Settings subtitle for spending anomaly card"
-    }
+    },
+    "yearlySummaryTitle": "Resumo Anual",
+    "yearlySummaryIncome": "Rendimento Total",
+    "yearlySummaryExpenses": "Despesas Totais",
+    "yearlySummaryNetSavings": "Poupanca Liquida",
+    "yearlySummarySavingsRate": "Taxa de poupanca: {rate}%",
+    "@yearlySummarySavingsRate": {
+        "placeholders": {
+            "rate": {"type": "String"}
+        }
+    },
+    "yearlySummaryHighlights": "Destaques",
+    "yearlySummaryBestMonth": "Melhor mes ({month})",
+    "@yearlySummaryBestMonth": {
+        "placeholders": {
+            "month": {"type": "String"}
+        }
+    },
+    "yearlySummaryWorstMonth": "Pior mes ({month})",
+    "@yearlySummaryWorstMonth": {
+        "placeholders": {
+            "month": {"type": "String"}
+        }
+    },
+    "yearlySummaryCategoryBreakdown": "Distribuicao por Categoria"
 }
