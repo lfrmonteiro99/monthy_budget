@@ -2840,6 +2840,40 @@ class SPt extends S {
   String get exportExpenseDetail => 'Detalhe de Despesas';
 
   @override
+  String get exportMonthlySummary => 'Resumo Mensal';
+
+  @override
+  String get exportMonthlySummaryDesc =>
+      'Rendimentos, orçamento vs real e taxa de poupança';
+
+  @override
+  String get exportSectionIncome => 'Rendimentos';
+
+  @override
+  String get exportSectionSummary => 'Resumo Mensal';
+
+  @override
+  String get exportLabelTotalIncome => 'Rendimento Líquido Total';
+
+  @override
+  String get exportLabelGrossIncome => 'Rendimento Bruto';
+
+  @override
+  String get exportLabelDeductions => 'Descontos';
+
+  @override
+  String get exportLabelTotalExpenses => 'Total de Despesas';
+
+  @override
+  String get exportLabelNetLiquidity => 'Liquidez Mensal';
+
+  @override
+  String get exportLabelSavingsRate => 'Taxa de Poupança';
+
+  @override
+  String get exportLabelTotal => 'Total';
+
+  @override
   String get searchExpenses => 'Pesquisar';
 
   @override

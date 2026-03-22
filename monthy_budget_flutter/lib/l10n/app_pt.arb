@@ -3701,6 +3701,50 @@
     "@exportExpenseDetail": {
         "description": "Expense detail section header"
     },
+    "exportMonthlySummary": "Resumo Mensal",
+    "@exportMonthlySummary": {
+        "description": "Monthly summary export option"
+    },
+    "exportMonthlySummaryDesc": "Rendimentos, orçamento vs real e taxa de poupança",
+    "@exportMonthlySummaryDesc": {
+        "description": "Monthly summary export description"
+    },
+    "exportSectionIncome": "Rendimentos",
+    "@exportSectionIncome": {
+        "description": "Income section header in export"
+    },
+    "exportSectionSummary": "Resumo Mensal",
+    "@exportSectionSummary": {
+        "description": "Summary section header in export"
+    },
+    "exportLabelTotalIncome": "Rendimento Líquido Total",
+    "@exportLabelTotalIncome": {
+        "description": "Total net income label in export"
+    },
+    "exportLabelGrossIncome": "Rendimento Bruto",
+    "@exportLabelGrossIncome": {
+        "description": "Gross income label in export"
+    },
+    "exportLabelDeductions": "Descontos",
+    "@exportLabelDeductions": {
+        "description": "Deductions label in export"
+    },
+    "exportLabelTotalExpenses": "Total de Despesas",
+    "@exportLabelTotalExpenses": {
+        "description": "Total expenses label in export"
+    },
+    "exportLabelNetLiquidity": "Liquidez Mensal",
+    "@exportLabelNetLiquidity": {
+        "description": "Net liquidity label in export"
+    },
+    "exportLabelSavingsRate": "Taxa de Poupança",
+    "@exportLabelSavingsRate": {
+        "description": "Savings rate label in export"
+    },
+    "exportLabelTotal": "Total",
+    "@exportLabelTotal": {
+        "description": "Total row label in export"
+    },
     "searchExpenses": "Pesquisar",
     "@searchExpenses": {
         "description": "Search button label"

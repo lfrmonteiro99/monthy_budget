@@ -2842,6 +2842,40 @@ class SEs extends S {
   String get exportExpenseDetail => 'Detalle de Gastos';
 
   @override
+  String get exportMonthlySummary => 'Resumen Mensual';
+
+  @override
+  String get exportMonthlySummaryDesc =>
+      'Ingresos, presupuesto vs real y tasa de ahorro';
+
+  @override
+  String get exportSectionIncome => 'Ingresos';
+
+  @override
+  String get exportSectionSummary => 'Resumen Mensual';
+
+  @override
+  String get exportLabelTotalIncome => 'Ingreso Neto Total';
+
+  @override
+  String get exportLabelGrossIncome => 'Ingreso Bruto';
+
+  @override
+  String get exportLabelDeductions => 'Deducciones';
+
+  @override
+  String get exportLabelTotalExpenses => 'Total de Gastos';
+
+  @override
+  String get exportLabelNetLiquidity => 'Liquidez Mensual';
+
+  @override
+  String get exportLabelSavingsRate => 'Tasa de Ahorro';
+
+  @override
+  String get exportLabelTotal => 'Total';
+
+  @override
   String get searchExpenses => 'Buscar';
 
   @override

@@ -2056,6 +2056,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           onTourComplete: () => _markTourDone('expense_tracker'),
           customCategories: _customCategories,
           irsDeductionSummary: irsDeductionSummary,
+          budgetSummary: summary,
         ),
       ),
       AppTab.planHub: ErrorBoundary(
