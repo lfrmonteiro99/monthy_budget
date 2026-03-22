@@ -5283,4 +5283,11 @@ class SPt extends S {
   @override
   String get rolloverHelperText =>
       'Transferir orçamento não gasto ou em excesso para o próximo mês';
+
+  @override
+  String get settingsDashSpendingAnomalies => 'Anomalias de gastos';
+
+  @override
+  String get subtitleShowSpendingAnomalies =>
+      'Destaca categorias que se desviam dos padrões de gastos recentes';
 }

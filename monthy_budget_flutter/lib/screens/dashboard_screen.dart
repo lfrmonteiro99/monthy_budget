@@ -20,6 +20,8 @@ import '../widgets/trend_sheet.dart';
 import '../widgets/tax_deduction_card.dart';
 import '../widgets/upcoming_bills_card.dart';
 import '../widgets/budget_streak_card.dart';
+import '../widgets/spending_anomaly_card.dart';
+import '../services/spending_anomaly_service.dart';
 import '../models/local_dashboard_config.dart';
 import '../models/expense_snapshot.dart';
 import '../utils/month_review.dart';
@@ -341,6 +343,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
               monthlyBudgets: monthlyBudgets,
             ),
           ),
+          const SizedBox(height: 16),
+        ];
+      case 'spendingAnomalies':
+        final now = DateTime.now();
+        final anomalyMonthKey = '${now.year}-${now.month.toString().padLeft(2, '0')}';
+        final anomalies = SpendingAnomalyService.detectAnomalies(
+          actualExpenseHistory: actualExpenseHistory,
+          currentMonthKey: anomalyMonthKey,
+        );
+        if (anomalies.isEmpty) return const [];
+        return [
+          SpendingAnomalyCard(anomalies: anomalies),
           const SizedBox(height: 16),
         ];
       case 'monthReview':

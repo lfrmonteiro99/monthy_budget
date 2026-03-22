@@ -5286,4 +5286,11 @@ class SEs extends S {
   @override
   String get rolloverHelperText =>
       'Transferir presupuesto no gastado o excedido al próximo mes';
+
+  @override
+  String get settingsDashSpendingAnomalies => 'Anomalias de gasto';
+
+  @override
+  String get subtitleShowSpendingAnomalies =>
+      'Destaca categorias que se desvian de los patrones de gasto recientes';
 }

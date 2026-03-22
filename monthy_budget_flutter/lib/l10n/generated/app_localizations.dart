@@ -9460,6 +9460,18 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Transferir orçamento não gasto ou em excesso para o próximo mês'**
   String get rolloverHelperText;
+
+  /// Settings label for spending anomaly card toggle
+  ///
+  /// In pt, this message translates to:
+  /// **'Anomalias de gastos'**
+  String get settingsDashSpendingAnomalies;
+
+  /// Settings subtitle for spending anomaly card
+  ///
+  /// In pt, this message translates to:
+  /// **'Destaca categorias que se desviam dos padrões de gastos recentes'**
+  String get subtitleShowSpendingAnomalies;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

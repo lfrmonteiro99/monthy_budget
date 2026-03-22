@@ -5298,4 +5298,11 @@ class SFr extends S {
   @override
   String get rolloverHelperText =>
       'Reporter le budget non dépensé ou dépassé au mois suivant';
+
+  @override
+  String get settingsDashSpendingAnomalies => 'Anomalies de depenses';
+
+  @override
+  String get subtitleShowSpendingAnomalies =>
+      'Met en evidence les categories qui s\'ecartent des habitudes de depenses recentes';
 }

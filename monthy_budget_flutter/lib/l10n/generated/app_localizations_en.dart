@@ -5246,4 +5246,11 @@ class SEn extends S {
   @override
   String get rolloverHelperText =>
       'Carry unspent or overspent budget to next month';
+
+  @override
+  String get settingsDashSpendingAnomalies => 'Spending anomalies';
+
+  @override
+  String get subtitleShowSpendingAnomalies =>
+      'Highlights categories that deviate from recent spending patterns';
 }
