@@ -9,6 +9,7 @@ import '../models/budget_summary.dart';
 import '../models/custom_category.dart';
 import '../theme/app_colors.dart';
 import '../utils/category_helpers.dart';
+import '../utils/expense_filter.dart';
 import '../utils/formatters.dart';
 import '../widgets/add_expense_sheet.dart';
 import '../widgets/export_bottom_sheet.dart';
@@ -454,23 +455,13 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
     if (_historyCache == null) return;
 
     final allExpenses = _historyCache!.values.expand((l) => l).toList();
-    final query = _searchQuery.toLowerCase();
-
-    final filtered = allExpenses.where((e) {
-      if (query.isNotEmpty) {
-        final desc = (e.description ?? '').toLowerCase();
-        if (!desc.contains(query)) return false;
-      }
-      if (_selectedCategories.isNotEmpty) {
-        if (!_selectedCategories.contains(e.category)) return false;
-      }
-      if (_dateFrom != null && e.date.isBefore(_dateFrom!)) return false;
-      if (_dateTo != null &&
-          e.date.isAfter(_dateTo!.add(const Duration(days: 1)))) {
-        return false;
-      }
-      return true;
-    }).toList()..sort((a, b) => b.date.compareTo(a.date));
+    final filtered = filterExpenses(
+      allExpenses,
+      query: _searchQuery,
+      selectedCategories: _selectedCategories,
+      dateFrom: _dateFrom,
+      dateTo: _dateTo,
+    );
 
     setState(() => _searchResults = filtered);
   }
@@ -507,10 +498,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
 
   Set<String> _allCategories() {
     if (_historyCache == null) return {};
-    return _historyCache!.values
-        .expand((l) => l)
-        .map((e) => e.category)
-        .toSet();
+    return extractCategories(_historyCache!);
   }
 
   // --- Build ---
