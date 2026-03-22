@@ -9472,6 +9472,60 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Destaca categorias que se desviam dos padrões de gastos recentes'**
   String get subtitleShowSpendingAnomalies;
+
+  /// No description provided for @yearlySummaryTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Resumo Anual'**
+  String get yearlySummaryTitle;
+
+  /// No description provided for @yearlySummaryIncome.
+  ///
+  /// In pt, this message translates to:
+  /// **'Rendimento Total'**
+  String get yearlySummaryIncome;
+
+  /// No description provided for @yearlySummaryExpenses.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas Totais'**
+  String get yearlySummaryExpenses;
+
+  /// No description provided for @yearlySummaryNetSavings.
+  ///
+  /// In pt, this message translates to:
+  /// **'Poupanca Liquida'**
+  String get yearlySummaryNetSavings;
+
+  /// No description provided for @yearlySummarySavingsRate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Taxa de poupanca: {rate}%'**
+  String yearlySummarySavingsRate(String rate);
+
+  /// No description provided for @yearlySummaryHighlights.
+  ///
+  /// In pt, this message translates to:
+  /// **'Destaques'**
+  String get yearlySummaryHighlights;
+
+  /// No description provided for @yearlySummaryBestMonth.
+  ///
+  /// In pt, this message translates to:
+  /// **'Melhor mes ({month})'**
+  String yearlySummaryBestMonth(String month);
+
+  /// No description provided for @yearlySummaryWorstMonth.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pior mes ({month})'**
+  String yearlySummaryWorstMonth(String month);
+
+  /// No description provided for @yearlySummaryCategoryBreakdown.
+  ///
+  /// In pt, this message translates to:
+  /// **'Distribuicao por Categoria'**
+  String get yearlySummaryCategoryBreakdown;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

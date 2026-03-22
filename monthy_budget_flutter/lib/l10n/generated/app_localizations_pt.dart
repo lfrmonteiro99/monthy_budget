@@ -5290,4 +5290,37 @@ class SPt extends S {
   @override
   String get subtitleShowSpendingAnomalies =>
       'Destaca categorias que se desviam dos padrões de gastos recentes';
+
+  @override
+  String get yearlySummaryTitle => 'Resumo Anual';
+
+  @override
+  String get yearlySummaryIncome => 'Rendimento Total';
+
+  @override
+  String get yearlySummaryExpenses => 'Despesas Totais';
+
+  @override
+  String get yearlySummaryNetSavings => 'Poupanca Liquida';
+
+  @override
+  String yearlySummarySavingsRate(String rate) {
+    return 'Taxa de poupanca: $rate%';
+  }
+
+  @override
+  String get yearlySummaryHighlights => 'Destaques';
+
+  @override
+  String yearlySummaryBestMonth(String month) {
+    return 'Melhor mes ($month)';
+  }
+
+  @override
+  String yearlySummaryWorstMonth(String month) {
+    return 'Pior mes ($month)';
+  }
+
+  @override
+  String get yearlySummaryCategoryBreakdown => 'Distribuicao por Categoria';
 }

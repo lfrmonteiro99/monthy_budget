@@ -2766,5 +2766,29 @@
     "rolloverToggleLabel": "Report",
     "rolloverHelperText": "Reporter le budget non dépensé ou dépassé au mois suivant",
     "settingsDashSpendingAnomalies": "Anomalies de depenses",
-    "subtitleShowSpendingAnomalies": "Met en evidence les categories qui s'ecartent des habitudes de depenses recentes"
+    "subtitleShowSpendingAnomalies": "Met en evidence les categories qui s'ecartent des habitudes de depenses recentes",
+    "yearlySummaryTitle": "Bilan Annuel",
+    "yearlySummaryIncome": "Revenus Totaux",
+    "yearlySummaryExpenses": "Depenses Totales",
+    "yearlySummaryNetSavings": "Epargne Nette",
+    "yearlySummarySavingsRate": "Taux d'epargne: {rate}%",
+    "@yearlySummarySavingsRate": {
+        "placeholders": {
+            "rate": {"type": "String"}
+        }
+    },
+    "yearlySummaryHighlights": "Points Forts",
+    "yearlySummaryBestMonth": "Meilleur mois ({month})",
+    "@yearlySummaryBestMonth": {
+        "placeholders": {
+            "month": {"type": "String"}
+        }
+    },
+    "yearlySummaryWorstMonth": "Pire mois ({month})",
+    "@yearlySummaryWorstMonth": {
+        "placeholders": {
+            "month": {"type": "String"}
+        }
+    },
+    "yearlySummaryCategoryBreakdown": "Repartition par Categorie"
 }

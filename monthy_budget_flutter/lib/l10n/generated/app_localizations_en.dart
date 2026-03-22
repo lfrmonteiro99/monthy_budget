@@ -5253,4 +5253,37 @@ class SEn extends S {
   @override
   String get subtitleShowSpendingAnomalies =>
       'Highlights categories that deviate from recent spending patterns';
+
+  @override
+  String get yearlySummaryTitle => 'Yearly Summary';
+
+  @override
+  String get yearlySummaryIncome => 'Total Income';
+
+  @override
+  String get yearlySummaryExpenses => 'Total Expenses';
+
+  @override
+  String get yearlySummaryNetSavings => 'Net Savings';
+
+  @override
+  String yearlySummarySavingsRate(String rate) {
+    return 'Savings rate: $rate%';
+  }
+
+  @override
+  String get yearlySummaryHighlights => 'Highlights';
+
+  @override
+  String yearlySummaryBestMonth(String month) {
+    return 'Best month ($month)';
+  }
+
+  @override
+  String yearlySummaryWorstMonth(String month) {
+    return 'Worst month ($month)';
+  }
+
+  @override
+  String get yearlySummaryCategoryBreakdown => 'Category Breakdown';
 }

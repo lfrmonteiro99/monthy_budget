@@ -5305,4 +5305,37 @@ class SFr extends S {
   @override
   String get subtitleShowSpendingAnomalies =>
       'Met en evidence les categories qui s\'ecartent des habitudes de depenses recentes';
+
+  @override
+  String get yearlySummaryTitle => 'Bilan Annuel';
+
+  @override
+  String get yearlySummaryIncome => 'Revenus Totaux';
+
+  @override
+  String get yearlySummaryExpenses => 'Depenses Totales';
+
+  @override
+  String get yearlySummaryNetSavings => 'Epargne Nette';
+
+  @override
+  String yearlySummarySavingsRate(String rate) {
+    return 'Taux d\'epargne: $rate%';
+  }
+
+  @override
+  String get yearlySummaryHighlights => 'Points Forts';
+
+  @override
+  String yearlySummaryBestMonth(String month) {
+    return 'Meilleur mois ($month)';
+  }
+
+  @override
+  String yearlySummaryWorstMonth(String month) {
+    return 'Pire mois ($month)';
+  }
+
+  @override
+  String get yearlySummaryCategoryBreakdown => 'Repartition par Categorie';
 }

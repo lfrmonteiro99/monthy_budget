@@ -2766,5 +2766,29 @@
     "rolloverToggleLabel": "Transferencia",
     "rolloverHelperText": "Transferir presupuesto no gastado o excedido al próximo mes",
     "settingsDashSpendingAnomalies": "Anomalias de gasto",
-    "subtitleShowSpendingAnomalies": "Destaca categorias que se desvian de los patrones de gasto recientes"
+    "subtitleShowSpendingAnomalies": "Destaca categorias que se desvian de los patrones de gasto recientes",
+    "yearlySummaryTitle": "Resumen Anual",
+    "yearlySummaryIncome": "Ingresos Totales",
+    "yearlySummaryExpenses": "Gastos Totales",
+    "yearlySummaryNetSavings": "Ahorro Neto",
+    "yearlySummarySavingsRate": "Tasa de ahorro: {rate}%",
+    "@yearlySummarySavingsRate": {
+        "placeholders": {
+            "rate": {"type": "String"}
+        }
+    },
+    "yearlySummaryHighlights": "Destacados",
+    "yearlySummaryBestMonth": "Mejor mes ({month})",
+    "@yearlySummaryBestMonth": {
+        "placeholders": {
+            "month": {"type": "String"}
+        }
+    },
+    "yearlySummaryWorstMonth": "Peor mes ({month})",
+    "@yearlySummaryWorstMonth": {
+        "placeholders": {
+            "month": {"type": "String"}
+        }
+    },
+    "yearlySummaryCategoryBreakdown": "Desglose por Categoria"
 }
