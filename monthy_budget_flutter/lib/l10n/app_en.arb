@@ -2849,5 +2849,24 @@
             "month": {"type": "String"}
         }
     },
-    "yearlySummaryCategoryBreakdown": "Category Breakdown"
+    "yearlySummaryCategoryBreakdown": "Category Breakdown",
+    "mealSectionHousehold": "Who eats?",
+    "mealSectionHouseholdSub": "Household and members",
+    "mealSectionGoals": "Goals",
+    "mealSectionGoalsSub": "Planning and active meals",
+    "mealSectionEatingOut": "Eating out",
+    "mealSectionEatingOutSub": "Days out and veggie days",
+    "mealSectionDietary": "Dietary restrictions",
+    "mealSectionDietarySub": "Allergies, intolerances and preferences",
+    "mealSectionPrep": "Preparation",
+    "mealSectionPrepSub": "Time, complexity and equipment",
+    "mealSectionStrategies": "Strategies",
+    "mealSectionStrategiesSub": "Efficiency, costs and usage",
+    "mealSectionProtein": "Protein variety",
+    "mealSectionProteinSub": "Fish, legumes and red meat",
+    "mealSectionNutrition": "Nutrition & health",
+    "mealSectionNutritionSub": "Calories, protein, fiber and medical conditions",
+    "mealSectionPantry": "Pantry",
+    "mealSectionPantrySub": "Staple, weekly and general ingredients",
+    "complexityMedium": "Medium"
 }

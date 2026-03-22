@@ -2502,6 +2502,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  /// Map legacy 1-5 complexity to nearest SegmentedButton value (1, 3, 5).
+  static int _nearestComplexity(int v) => v <= 2 ? 1 : (v <= 4 ? 3 : 5);
+
   Widget _mealCard({required IconData icon, required String title, required List<Widget> children, String? subtitle}) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -2567,8 +2570,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // ── Section 1: Quem come? (Household) ──
           _mealCard(
             icon: Icons.people_outline,
-            title: 'Quem come?',
-            subtitle: 'Agregado familiar e membros',
+            title: l10n.mealSectionHousehold,
+            subtitle: l10n.mealSectionHouseholdSub,
             children: [
               _label(l10n.settingsHouseholdPeople),
               const SizedBox(height: 8),
@@ -2683,8 +2686,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // ── Section 2: Objetivo (Goals) ──
           _mealCard(
             icon: Icons.track_changes,
-            title: 'Objetivo',
-            subtitle: 'Planeamento e refeicoes ativas',
+            title: l10n.mealSectionGoals,
+            subtitle: l10n.mealSectionGoalsSub,
             children: [
               _label(l10n.settingsObjective),
               const SizedBox(height: 8),
@@ -2763,8 +2766,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // ── Section 3: Refeicoes fora (Eating Out) ──
           _mealCard(
             icon: Icons.restaurant_outlined,
-            title: 'Refeicoes fora',
-            subtitle: 'Dias fora e dias vegetarianos',
+            title: l10n.mealSectionEatingOut,
+            subtitle: l10n.mealSectionEatingOutSub,
             children: [
               _label(l10n.settingsEatingOutDays),
               const SizedBox(height: 8),
@@ -2809,8 +2812,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // ── Section 4: Restricoes alimentares (Dietary) ──
           _mealCard(
             icon: Icons.block_outlined,
-            title: 'Restricoes alimentares',
-            subtitle: 'Alergias, intolerancias e preferencias',
+            title: l10n.mealSectionDietary,
+            subtitle: l10n.mealSectionDietarySub,
             children: [
               _label(l10n.settingsDietaryRestrictions),
               ...[
@@ -2928,8 +2931,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // ── Section 5: Preparacao (Prep & Kitchen) ──
           _mealCard(
             icon: Icons.kitchen_outlined,
-            title: 'Preparacao',
-            subtitle: 'Tempo, complexidade e equipamento',
+            title: l10n.mealSectionPrep,
+            subtitle: l10n.mealSectionPrepSub,
             children: [
               _label(l10n.settingsMaxPrepTime),
               const SizedBox(height: 8),
@@ -2949,25 +2952,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               const SizedBox(height: 8),
               _label(l10n.settingsMaxComplexity(ms.maxComplexity)),
-              Slider(
-                value: ms.maxComplexity.toDouble(),
-                min: 1,
-                max: 5,
-                divisions: 4,
-                label: '${ms.maxComplexity}',
-                activeColor: AppColors.primary(context),
-                onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(maxComplexity: v.round()))),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(l10n.complexityEasy, style: TextStyle(fontSize: 10, color: AppColors.textMuted(context))),
-                  Text(l10n.complexityPro, style: TextStyle(fontSize: 10, color: AppColors.textMuted(context))),
-                ],
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: SegmentedButton<int>(
+                  segments: [
+                    ButtonSegment(value: 1, label: Text(l10n.complexityEasy)),
+                    ButtonSegment(value: 3, label: Text(l10n.complexityMedium)),
+                    ButtonSegment(value: 5, label: Text(l10n.complexityPro)),
+                  ],
+                  selected: {_nearestComplexity(ms.maxComplexity)},
+                  onSelectionChanged: (v) => setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(maxComplexity: v.first))),
+                  style: ButtonStyle(
+                    textStyle: WidgetStatePropertyAll(const TextStyle(fontSize: 13)),
+                  ),
+                ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 16, bottom: 8),
+                padding: const EdgeInsets.only(left: 16, top: 4, bottom: 8),
                 child: Text(l10n.helperMaxComplexity, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
               ),
               const SizedBox(height: 12),
@@ -2989,25 +2992,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               const SizedBox(height: 8),
               _label(l10n.settingsWeekendComplexity(ms.maxComplexityWeekend)),
-              Slider(
-                value: ms.maxComplexityWeekend.toDouble(),
-                min: 1,
-                max: 5,
-                divisions: 4,
-                label: '${ms.maxComplexityWeekend}',
-                activeColor: AppColors.primary(context),
-                onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(maxComplexityWeekend: v.round()))),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(l10n.complexityEasy, style: TextStyle(fontSize: 10, color: AppColors.textMuted(context))),
-                  Text(l10n.complexityPro, style: TextStyle(fontSize: 10, color: AppColors.textMuted(context))),
-                ],
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: SegmentedButton<int>(
+                  segments: [
+                    ButtonSegment(value: 1, label: Text(l10n.complexityEasy)),
+                    ButtonSegment(value: 3, label: Text(l10n.complexityMedium)),
+                    ButtonSegment(value: 5, label: Text(l10n.complexityPro)),
+                  ],
+                  selected: {_nearestComplexity(ms.maxComplexityWeekend)},
+                  onSelectionChanged: (v) => setState(() => _draft = _draft.copyWith(
+                      mealSettings: ms.copyWith(maxComplexityWeekend: v.first))),
+                  style: ButtonStyle(
+                    textStyle: WidgetStatePropertyAll(const TextStyle(fontSize: 13)),
+                  ),
+                ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 16, bottom: 8),
+                padding: const EdgeInsets.only(left: 16, top: 4, bottom: 8),
                 child: Text(l10n.helperWeekendComplexity, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
               ),
               const SizedBox(height: 12),
@@ -3040,8 +3043,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // ── Section 6: Estrategias (Smart Strategies) ──
           _mealCard(
             icon: Icons.lightbulb_outline,
-            title: 'Estrategias',
-            subtitle: 'Eficiencia, custos e aproveitamento',
+            title: l10n.mealSectionStrategies,
+            subtitle: l10n.mealSectionStrategiesSub,
             children: [
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
@@ -3138,8 +3141,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // ── Section 7: Variedade de proteina (Protein Variety) ──
           _mealExpansionCard(
             icon: Icons.egg_outlined,
-            title: 'Variedade de proteina',
-            subtitle: 'Peixe, leguminosas e carne vermelha',
+            title: l10n.mealSectionProtein,
+            subtitle: l10n.mealSectionProteinSub,
             children: [
               _label(l10n.settingsWeeklyDistribution),
               const SizedBox(height: 4),
@@ -3191,8 +3194,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // ── Section 8: Nutricao e saude (Nutrition & Health) ──
           _mealExpansionCard(
             icon: Icons.health_and_safety_outlined,
-            title: 'Nutricao e saude',
-            subtitle: 'Calorias, proteina, fibra e condicoes medicas',
+            title: l10n.mealSectionNutrition,
+            subtitle: l10n.mealSectionNutritionSub,
             children: [
               _label(l10n.settingsNutritionalGoals),
               const SizedBox(height: 8),
@@ -3287,8 +3290,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // ── Section 9: Despensa (Pantry) ──
           _mealExpansionCard(
             icon: Icons.inventory_2_outlined,
-            title: 'Despensa',
-            subtitle: 'Ingredientes base, semanais e gerais',
+            title: l10n.mealSectionPantry,
+            subtitle: l10n.mealSectionPantrySub,
             children: [
               _label(l10n.pantryStaples),
               const SizedBox(height: 8),

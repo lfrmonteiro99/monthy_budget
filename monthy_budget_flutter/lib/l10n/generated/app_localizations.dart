@@ -9532,6 +9532,120 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Distribuicao por Categoria'**
   String get yearlySummaryCategoryBreakdown;
+
+  /// No description provided for @mealSectionHousehold.
+  ///
+  /// In pt, this message translates to:
+  /// **'Quem come?'**
+  String get mealSectionHousehold;
+
+  /// No description provided for @mealSectionHouseholdSub.
+  ///
+  /// In pt, this message translates to:
+  /// **'Agregado familiar e membros'**
+  String get mealSectionHouseholdSub;
+
+  /// No description provided for @mealSectionGoals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Objetivo'**
+  String get mealSectionGoals;
+
+  /// No description provided for @mealSectionGoalsSub.
+  ///
+  /// In pt, this message translates to:
+  /// **'Planeamento e refeicoes ativas'**
+  String get mealSectionGoalsSub;
+
+  /// No description provided for @mealSectionEatingOut.
+  ///
+  /// In pt, this message translates to:
+  /// **'Refeicoes fora'**
+  String get mealSectionEatingOut;
+
+  /// No description provided for @mealSectionEatingOutSub.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dias fora e dias vegetarianos'**
+  String get mealSectionEatingOutSub;
+
+  /// No description provided for @mealSectionDietary.
+  ///
+  /// In pt, this message translates to:
+  /// **'Restricoes alimentares'**
+  String get mealSectionDietary;
+
+  /// No description provided for @mealSectionDietarySub.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alergias, intolerancias e preferencias'**
+  String get mealSectionDietarySub;
+
+  /// No description provided for @mealSectionPrep.
+  ///
+  /// In pt, this message translates to:
+  /// **'Preparacao'**
+  String get mealSectionPrep;
+
+  /// No description provided for @mealSectionPrepSub.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tempo, complexidade e equipamento'**
+  String get mealSectionPrepSub;
+
+  /// No description provided for @mealSectionStrategies.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estrategias'**
+  String get mealSectionStrategies;
+
+  /// No description provided for @mealSectionStrategiesSub.
+  ///
+  /// In pt, this message translates to:
+  /// **'Eficiencia, custos e aproveitamento'**
+  String get mealSectionStrategiesSub;
+
+  /// No description provided for @mealSectionProtein.
+  ///
+  /// In pt, this message translates to:
+  /// **'Variedade de proteina'**
+  String get mealSectionProtein;
+
+  /// No description provided for @mealSectionProteinSub.
+  ///
+  /// In pt, this message translates to:
+  /// **'Peixe, leguminosas e carne vermelha'**
+  String get mealSectionProteinSub;
+
+  /// No description provided for @mealSectionNutrition.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nutricao e saude'**
+  String get mealSectionNutrition;
+
+  /// No description provided for @mealSectionNutritionSub.
+  ///
+  /// In pt, this message translates to:
+  /// **'Calorias, proteina, fibra e condicoes medicas'**
+  String get mealSectionNutritionSub;
+
+  /// No description provided for @mealSectionPantry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despensa'**
+  String get mealSectionPantry;
+
+  /// No description provided for @mealSectionPantrySub.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ingredientes base, semanais e gerais'**
+  String get mealSectionPantrySub;
+
+  /// No description provided for @complexityMedium.
+  ///
+  /// In pt, this message translates to:
+  /// **'Medio'**
+  String get complexityMedium;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

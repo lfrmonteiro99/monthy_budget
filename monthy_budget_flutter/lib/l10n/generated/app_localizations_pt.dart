@@ -5326,4 +5326,62 @@ class SPt extends S {
 
   @override
   String get yearlySummaryCategoryBreakdown => 'Distribuicao por Categoria';
+
+  @override
+  String get mealSectionHousehold => 'Quem come?';
+
+  @override
+  String get mealSectionHouseholdSub => 'Agregado familiar e membros';
+
+  @override
+  String get mealSectionGoals => 'Objetivo';
+
+  @override
+  String get mealSectionGoalsSub => 'Planeamento e refeicoes ativas';
+
+  @override
+  String get mealSectionEatingOut => 'Refeicoes fora';
+
+  @override
+  String get mealSectionEatingOutSub => 'Dias fora e dias vegetarianos';
+
+  @override
+  String get mealSectionDietary => 'Restricoes alimentares';
+
+  @override
+  String get mealSectionDietarySub => 'Alergias, intolerancias e preferencias';
+
+  @override
+  String get mealSectionPrep => 'Preparacao';
+
+  @override
+  String get mealSectionPrepSub => 'Tempo, complexidade e equipamento';
+
+  @override
+  String get mealSectionStrategies => 'Estrategias';
+
+  @override
+  String get mealSectionStrategiesSub => 'Eficiencia, custos e aproveitamento';
+
+  @override
+  String get mealSectionProtein => 'Variedade de proteina';
+
+  @override
+  String get mealSectionProteinSub => 'Peixe, leguminosas e carne vermelha';
+
+  @override
+  String get mealSectionNutrition => 'Nutricao e saude';
+
+  @override
+  String get mealSectionNutritionSub =>
+      'Calorias, proteina, fibra e condicoes medicas';
+
+  @override
+  String get mealSectionPantry => 'Despensa';
+
+  @override
+  String get mealSectionPantrySub => 'Ingredientes base, semanais e gerais';
+
+  @override
+  String get complexityMedium => 'Medio';
 }

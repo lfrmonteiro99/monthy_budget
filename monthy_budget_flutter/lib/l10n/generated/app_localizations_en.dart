@@ -5289,4 +5289,62 @@ class SEn extends S {
 
   @override
   String get yearlySummaryCategoryBreakdown => 'Category Breakdown';
+
+  @override
+  String get mealSectionHousehold => 'Who eats?';
+
+  @override
+  String get mealSectionHouseholdSub => 'Household and members';
+
+  @override
+  String get mealSectionGoals => 'Goals';
+
+  @override
+  String get mealSectionGoalsSub => 'Planning and active meals';
+
+  @override
+  String get mealSectionEatingOut => 'Eating out';
+
+  @override
+  String get mealSectionEatingOutSub => 'Days out and veggie days';
+
+  @override
+  String get mealSectionDietary => 'Dietary restrictions';
+
+  @override
+  String get mealSectionDietarySub => 'Allergies, intolerances and preferences';
+
+  @override
+  String get mealSectionPrep => 'Preparation';
+
+  @override
+  String get mealSectionPrepSub => 'Time, complexity and equipment';
+
+  @override
+  String get mealSectionStrategies => 'Strategies';
+
+  @override
+  String get mealSectionStrategiesSub => 'Efficiency, costs and usage';
+
+  @override
+  String get mealSectionProtein => 'Protein variety';
+
+  @override
+  String get mealSectionProteinSub => 'Fish, legumes and red meat';
+
+  @override
+  String get mealSectionNutrition => 'Nutrition & health';
+
+  @override
+  String get mealSectionNutritionSub =>
+      'Calories, protein, fiber and medical conditions';
+
+  @override
+  String get mealSectionPantry => 'Pantry';
+
+  @override
+  String get mealSectionPantrySub => 'Staple, weekly and general ingredients';
+
+  @override
+  String get complexityMedium => 'Medium';
 }

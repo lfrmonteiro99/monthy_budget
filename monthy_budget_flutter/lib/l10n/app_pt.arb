@@ -5360,5 +5360,24 @@
             "month": {"type": "String"}
         }
     },
-    "yearlySummaryCategoryBreakdown": "Distribuicao por Categoria"
+    "yearlySummaryCategoryBreakdown": "Distribuicao por Categoria",
+    "mealSectionHousehold": "Quem come?",
+    "mealSectionHouseholdSub": "Agregado familiar e membros",
+    "mealSectionGoals": "Objetivo",
+    "mealSectionGoalsSub": "Planeamento e refeicoes ativas",
+    "mealSectionEatingOut": "Refeicoes fora",
+    "mealSectionEatingOutSub": "Dias fora e dias vegetarianos",
+    "mealSectionDietary": "Restricoes alimentares",
+    "mealSectionDietarySub": "Alergias, intolerancias e preferencias",
+    "mealSectionPrep": "Preparacao",
+    "mealSectionPrepSub": "Tempo, complexidade e equipamento",
+    "mealSectionStrategies": "Estrategias",
+    "mealSectionStrategiesSub": "Eficiencia, custos e aproveitamento",
+    "mealSectionProtein": "Variedade de proteina",
+    "mealSectionProteinSub": "Peixe, leguminosas e carne vermelha",
+    "mealSectionNutrition": "Nutricao e saude",
+    "mealSectionNutritionSub": "Calorias, proteina, fibra e condicoes medicas",
+    "mealSectionPantry": "Despensa",
+    "mealSectionPantrySub": "Ingredientes base, semanais e gerais",
+    "complexityMedium": "Medio"
 }

@@ -5329,4 +5329,62 @@ class SEs extends S {
 
   @override
   String get yearlySummaryCategoryBreakdown => 'Desglose por Categoria';
+
+  @override
+  String get mealSectionHousehold => 'Quien come?';
+
+  @override
+  String get mealSectionHouseholdSub => 'Hogar y miembros';
+
+  @override
+  String get mealSectionGoals => 'Objetivo';
+
+  @override
+  String get mealSectionGoalsSub => 'Planificacion y comidas activas';
+
+  @override
+  String get mealSectionEatingOut => 'Comer fuera';
+
+  @override
+  String get mealSectionEatingOutSub => 'Dias fuera y dias vegetarianos';
+
+  @override
+  String get mealSectionDietary => 'Restricciones alimentarias';
+
+  @override
+  String get mealSectionDietarySub => 'Alergias, intolerancias y preferencias';
+
+  @override
+  String get mealSectionPrep => 'Preparacion';
+
+  @override
+  String get mealSectionPrepSub => 'Tiempo, complejidad y equipamiento';
+
+  @override
+  String get mealSectionStrategies => 'Estrategias';
+
+  @override
+  String get mealSectionStrategiesSub => 'Eficiencia, costes y aprovechamiento';
+
+  @override
+  String get mealSectionProtein => 'Variedad de proteina';
+
+  @override
+  String get mealSectionProteinSub => 'Pescado, legumbres y carne roja';
+
+  @override
+  String get mealSectionNutrition => 'Nutricion y salud';
+
+  @override
+  String get mealSectionNutritionSub =>
+      'Calorias, proteina, fibra y condiciones medicas';
+
+  @override
+  String get mealSectionPantry => 'Despensa';
+
+  @override
+  String get mealSectionPantrySub => 'Ingredientes base, semanales y generales';
+
+  @override
+  String get complexityMedium => 'Medio';
 }

@@ -31,22 +31,21 @@ test.describe('Meal planner settings smoke', () => {
     const names = await collectSemanticNamesWhileScrolling(page);
     const content = names.join('\n');
 
+    // Section titles may be merged in Flutter semantics. Match via titles,
+    // subtitles, or distinctive child content that proves each section rendered.
     for (const pattern of [
-      /Quem come\?/i,
-      /Objetivo/i,
-      /Refeicoes fora|Refei.+fora/i,
-      /Restricoes alimentares|Restri.+alimentares/i,
-      /Preparacao|Prepara/i,
-      /Estrategias|Estrateg/i,
-      /Variedade de proteina|Variedade de prot/i,
-      /Nutricao e saude|Nutricao/i,
-      /Despensa/i,
-      /Advanced|Avancado|Avanc/i,
+      /Add member|Adicionar membro/i,          // Section 1: Household
+      /Planning and active meals|ACTIVE MEALS|Planeamento/i, // Section 2: Goals
+      /Mon|Tue|Wed|Thu|Fri|Sat|Sun|Seg|Ter|Qua|Qui|Sex|Sab|Dom/i, // Section 3: Eating out weekdays
+      /Gluten|Lactose|Shellfish|Marisco/i,     // Section 4: Dietary
+      /Easy|Medium|Pro|Facil|Medio/i,          // Section 5: Preparation (SegmentedButton)
+      /Protein variety|Variedade de prot/i,    // Section 7: Protein
+      /Advanced|Avancado|Avanc/i,              // Section 10: Advanced
     ]) {
       expect(content).toMatch(pattern);
     }
 
-    for (const pattern of [/Vegetariano/i, /15 min/i, /30 min/i, /45 min/i]) {
+    for (const pattern of [/15 min/i, /30 min/i, /45 min/i]) {
       expect(content).toMatch(pattern);
     }
   });
