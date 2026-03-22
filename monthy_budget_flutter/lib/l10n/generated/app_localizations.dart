@@ -3503,6 +3503,18 @@ abstract class S {
   /// **'Repor Wizard'**
   String get settingsResetWizard;
 
+  /// Settings meals advanced section title
+  ///
+  /// In pt, this message translates to:
+  /// **'Avançado'**
+  String get settingsMealAdvanced;
+
+  /// Settings meals advanced section subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Reiniciar assistente de configuração'**
+  String get settingsMealAdvancedSubtitle;
+
   /// Settings API key info text
   ///
   /// In pt, this message translates to:

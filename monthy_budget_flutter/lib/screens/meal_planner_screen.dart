@@ -30,6 +30,7 @@ import '../utils/waste_calculator.dart';
 import '../widgets/pantry_coverage_badge.dart';
 import '../widgets/pantry_quick_picker_sheet.dart';
 import '../widgets/pantry_summary_chip_row.dart';
+import 'meal_wizard_screen.dart';
 
 class MealPlannerScreen extends StatefulWidget {
   final AppSettings settings;
@@ -1441,13 +1442,17 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Auto-complete wizard with sensible defaults instead of blocking access.
-    // Users can fine-tune via Settings > Meals.
+    // Show the meal wizard when it hasn't been completed yet (#16).
     if (!_localSettings.mealSettings.wizardCompleted) {
-      final ms = _localSettings.mealSettings.copyWith(wizardCompleted: true);
-      final updated = _localSettings.copyWith(mealSettings: ms);
-      widget.onSaveSettings(updated);
-      _localSettings = updated;
+      return MealWizardScreen(
+        initial: _localSettings.mealSettings,
+        onComplete: (ms) {
+          final updated = _localSettings.copyWith(mealSettings: ms);
+          widget.onSaveSettings(updated);
+          setState(() => _localSettings = updated);
+          _init();
+        },
+      );
     }
     final l10n = S.of(context);
     final bodyContent = !_catalogReady

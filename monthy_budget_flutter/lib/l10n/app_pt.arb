@@ -2451,6 +2451,14 @@
     "@settingsResetWizard": {
         "description": "Settings reset wizard button"
     },
+    "settingsMealAdvanced": "Avançado",
+    "@settingsMealAdvanced": {
+        "description": "Settings meals advanced section title"
+    },
+    "settingsMealAdvancedSubtitle": "Reiniciar assistente de configuração",
+    "@settingsMealAdvancedSubtitle": {
+        "description": "Settings meals advanced section subtitle"
+    },
     "settingsApiKeyInfo": "A key é guardada localmente no dispositivo e nunca é partilhada. Usa o modelo GPT-4o mini (~â‚¬0,00008 por análise).",
     "@settingsApiKeyInfo": {
         "description": "Settings API key info text"

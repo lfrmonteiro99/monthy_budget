@@ -1083,6 +1083,8 @@
     "settingsLunchboxLunchesDesc": "Only portable recipes for lunch",
     "settingsPantry": "PANTRY (ALWAYS IN STOCK)",
     "settingsResetWizard": "Reset Wizard",
+    "settingsMealAdvanced": "Advanced",
+    "settingsMealAdvancedSubtitle": "Reset meal setup wizard",
     "settingsApiKeyInfo": "The key is stored locally on the device and never shared. Uses GPT-4o mini model (~â‚¬0.00008 per analysis).",
     "settingsInviteCodeLabel": "INVITE CODE",
     "settingsGenerateInvite": "Generate invite code",

@@ -1893,6 +1893,13 @@ class SPt extends S {
   String get settingsResetWizard => 'Repor Wizard';
 
   @override
+  String get settingsMealAdvanced => 'Avançado';
+
+  @override
+  String get settingsMealAdvancedSubtitle =>
+      'Reiniciar assistente de configuração';
+
+  @override
   String get settingsApiKeyInfo =>
       'A key é guardada localmente no dispositivo e nunca é partilhada. Usa o modelo GPT-4o mini (~â‚¬0,00008 por análise).';
 

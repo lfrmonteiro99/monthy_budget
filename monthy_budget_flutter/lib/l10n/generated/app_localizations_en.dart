@@ -1888,6 +1888,12 @@ class SEn extends S {
   String get settingsResetWizard => 'Reset Wizard';
 
   @override
+  String get settingsMealAdvanced => 'Advanced';
+
+  @override
+  String get settingsMealAdvancedSubtitle => 'Reset meal setup wizard';
+
+  @override
   String get settingsApiKeyInfo =>
       'The key is stored locally on the device and never shared. Uses GPT-4o mini model (~â‚¬0.00008 per analysis).';
 

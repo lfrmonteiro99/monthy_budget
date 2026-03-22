@@ -1041,6 +1041,8 @@
     "settingsLunchboxLunchesDesc": "Uniquement des recettes transportables pour le déjeuner",
     "settingsPantry": "GARDE-MANGER (TOUJOURS EN STOCK)",
     "settingsResetWizard": "Réinitialiser l'Assistant",
+    "settingsMealAdvanced": "Avancé",
+    "settingsMealAdvancedSubtitle": "Réinitialiser l'assistant de configuration",
     "settingsApiKeyInfo": "La clé est stockée localement sur l'appareil et n'est jamais partagée. Utilise le modèle GPT-4o mini (~â‚¬0,00008 par analyse).",
     "settingsInviteCodeLabel": "CODE D'INVITATION",
     "settingsGenerateInvite": "Générer un code d'invitation",
