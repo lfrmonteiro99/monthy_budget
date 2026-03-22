@@ -56,5 +56,32 @@ void main() {
 
     expect(selected, ExportFormat.csv);
   });
+
+  testWidgets('selecting Monthly Summary returns ExportFormat.monthlySummary',
+      (tester) async {
+    ExportFormat? selected;
+
+    await tester.pumpWidget(
+      wrapWithTestApp(
+        Builder(
+          builder: (context) => Scaffold(
+            body: ElevatedButton(
+              onPressed: () async {
+                selected = await showExportSheet(context);
+              },
+              child: const Text('open'),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.summarize));
+    await tester.pumpAndSettle();
+
+    expect(selected, ExportFormat.monthlySummary);
+  });
 }
 

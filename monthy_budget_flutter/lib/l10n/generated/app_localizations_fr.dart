@@ -2848,6 +2848,40 @@ class SFr extends S {
   String get exportExpenseDetail => 'Détail des Dépenses';
 
   @override
+  String get exportMonthlySummary => 'Résumé Mensuel';
+
+  @override
+  String get exportMonthlySummaryDesc =>
+      'Revenus, budget vs réel et taux d\'épargne';
+
+  @override
+  String get exportSectionIncome => 'Revenus';
+
+  @override
+  String get exportSectionSummary => 'Résumé Mensuel';
+
+  @override
+  String get exportLabelTotalIncome => 'Revenu Net Total';
+
+  @override
+  String get exportLabelGrossIncome => 'Revenu Brut';
+
+  @override
+  String get exportLabelDeductions => 'Déductions';
+
+  @override
+  String get exportLabelTotalExpenses => 'Total des Dépenses';
+
+  @override
+  String get exportLabelNetLiquidity => 'Liquidité Mensuelle';
+
+  @override
+  String get exportLabelSavingsRate => 'Taux d\'Épargne';
+
+  @override
+  String get exportLabelTotal => 'Total';
+
+  @override
   String get searchExpenses => 'Rechercher';
 
   @override

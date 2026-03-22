@@ -5249,6 +5249,72 @@ abstract class S {
   /// **'Detalhe de Despesas'**
   String get exportExpenseDetail;
 
+  /// Monthly summary export option
+  ///
+  /// In pt, this message translates to:
+  /// **'Resumo Mensal'**
+  String get exportMonthlySummary;
+
+  /// Monthly summary export description
+  ///
+  /// In pt, this message translates to:
+  /// **'Rendimentos, orçamento vs real e taxa de poupança'**
+  String get exportMonthlySummaryDesc;
+
+  /// Income section header in export
+  ///
+  /// In pt, this message translates to:
+  /// **'Rendimentos'**
+  String get exportSectionIncome;
+
+  /// Summary section header in export
+  ///
+  /// In pt, this message translates to:
+  /// **'Resumo Mensal'**
+  String get exportSectionSummary;
+
+  /// Total net income label in export
+  ///
+  /// In pt, this message translates to:
+  /// **'Rendimento Líquido Total'**
+  String get exportLabelTotalIncome;
+
+  /// Gross income label in export
+  ///
+  /// In pt, this message translates to:
+  /// **'Rendimento Bruto'**
+  String get exportLabelGrossIncome;
+
+  /// Deductions label in export
+  ///
+  /// In pt, this message translates to:
+  /// **'Descontos'**
+  String get exportLabelDeductions;
+
+  /// Total expenses label in export
+  ///
+  /// In pt, this message translates to:
+  /// **'Total de Despesas'**
+  String get exportLabelTotalExpenses;
+
+  /// Net liquidity label in export
+  ///
+  /// In pt, this message translates to:
+  /// **'Liquidez Mensal'**
+  String get exportLabelNetLiquidity;
+
+  /// Savings rate label in export
+  ///
+  /// In pt, this message translates to:
+  /// **'Taxa de Poupança'**
+  String get exportLabelSavingsRate;
+
+  /// Total row label in export
+  ///
+  /// In pt, this message translates to:
+  /// **'Total'**
+  String get exportLabelTotal;
+
   /// Search button label
   ///
   /// In pt, this message translates to:
