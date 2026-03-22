@@ -5279,4 +5279,23 @@ class SFr extends S {
 
   @override
   String get complexityPro => 'Pro';
+
+  @override
+  String get spendingAnomalyTitle => 'Anomalies de Dépenses';
+
+  @override
+  String get spendingAnomalyInfo =>
+      'Catégories où les dépenses actuelles dévient de plus de 30% par rapport à la moyenne des 3 derniers mois.';
+
+  @override
+  String spendingAnomalyAvg(String amount) {
+    return 'Moy: $amount';
+  }
+
+  @override
+  String get rolloverToggleLabel => 'Report';
+
+  @override
+  String get rolloverHelperText =>
+      'Reporter le budget non dépensé ou dépassé au mois suivant';
 }

@@ -5264,4 +5264,23 @@ class SPt extends S {
 
   @override
   String get complexityPro => 'Pro';
+
+  @override
+  String get spendingAnomalyTitle => 'Anomalias de Gastos';
+
+  @override
+  String get spendingAnomalyInfo =>
+      'Categorias onde o gasto atual desvia mais de 30% da média dos últimos 3 meses.';
+
+  @override
+  String spendingAnomalyAvg(String amount) {
+    return 'Média: $amount';
+  }
+
+  @override
+  String get rolloverToggleLabel => 'Transição';
+
+  @override
+  String get rolloverHelperText =>
+      'Transferir orçamento não gasto ou em excesso para o próximo mês';
 }

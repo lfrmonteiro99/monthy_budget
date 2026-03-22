@@ -55,6 +55,7 @@ ExpenseItem makeExpense({
   String category = 'habitacao',
   bool enabled = true,
   bool isFixed = true,
+  bool rolloverEnabled = false,
 }) =>
     ExpenseItem(
       id: id,
@@ -63,6 +64,7 @@ ExpenseItem makeExpense({
       category: category,
       enabled: enabled,
       isFixed: isFixed,
+      rolloverEnabled: rolloverEnabled,
     );
 
 AppSettings makeSettings({

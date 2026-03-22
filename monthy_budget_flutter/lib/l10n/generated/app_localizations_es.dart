@@ -5267,4 +5267,23 @@ class SEs extends S {
 
   @override
   String get complexityPro => 'Pro';
+
+  @override
+  String get spendingAnomalyTitle => 'Anomalías de Gastos';
+
+  @override
+  String get spendingAnomalyInfo =>
+      'Categorías donde el gasto actual se desvía más del 30% del promedio de los últimos 3 meses.';
+
+  @override
+  String spendingAnomalyAvg(String amount) {
+    return 'Prom: $amount';
+  }
+
+  @override
+  String get rolloverToggleLabel => 'Transferencia';
+
+  @override
+  String get rolloverHelperText =>
+      'Transferir presupuesto no gastado o excedido al próximo mes';
 }

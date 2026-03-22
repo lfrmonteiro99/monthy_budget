@@ -2754,5 +2754,15 @@
     "paywallContinueFree": "Continuer gratuitement",
     "paywallBestValue": "Meilleur rapport qualité-prix",
     "complexityEasy": "Facile",
-    "complexityPro": "Pro"
+    "complexityPro": "Pro",
+    "spendingAnomalyTitle": "Anomalies de Dépenses",
+    "spendingAnomalyInfo": "Catégories où les dépenses actuelles dévient de plus de 30% par rapport à la moyenne des 3 derniers mois.",
+    "spendingAnomalyAvg": "Moy: {amount}",
+    "@spendingAnomalyAvg": {
+        "placeholders": {
+            "amount": { "type": "String" }
+        }
+    },
+    "rolloverToggleLabel": "Report",
+    "rolloverHelperText": "Reporter le budget non dépensé ou dépassé au mois suivant"
 }
