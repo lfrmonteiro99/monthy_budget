@@ -1157,6 +1157,9 @@ class SPt extends S {
   }
 
   @override
+  String get monthReview => 'Resumo Mensal';
+
+  @override
   String get monthReviewPlanned => 'Planeado';
 
   @override

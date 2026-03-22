@@ -1163,6 +1163,9 @@ class SFr extends S {
   }
 
   @override
+  String get monthReview => 'Bilan Mensuel';
+
+  @override
   String get monthReviewPlanned => 'Prévu';
 
   @override

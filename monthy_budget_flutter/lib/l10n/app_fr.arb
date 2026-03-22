@@ -642,6 +642,10 @@
             }
         }
     },
+    "monthReview": "Bilan Mensuel",
+    "@monthReview": {
+        "description": "Titre du bilan mensuel"
+    },
     "monthReviewPlanned": "Prévu",
     "monthReviewActual": "Réel",
     "monthReviewDifference": "Différence",
