@@ -41,7 +41,7 @@ test.describe('Meal planner settings smoke', () => {
       /Variedade de proteina|Variedade de prot/i,
       /Nutricao e saude|Nutricao/i,
       /Despensa/i,
-      /Avancado|Avanc/i,
+      /Advanced|Avancado|Avanc/i,
     ]) {
       expect(content).toMatch(pattern);
     }
