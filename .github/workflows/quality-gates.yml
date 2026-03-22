@@ -59,7 +59,7 @@ jobs:
         uses: VeryGoodOpenSource/very_good_coverage@v3
         with:
           path: monthy_budget_flutter/coverage/lcov.info
-          min_coverage: 40
+          min_coverage: 45
 
       - name: Upload coverage report
         if: always()
