@@ -9430,6 +9430,36 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Pro'**
   String get complexityPro;
+
+  /// No description provided for @spendingAnomalyTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Anomalias de Gastos'**
+  String get spendingAnomalyTitle;
+
+  /// No description provided for @spendingAnomalyInfo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categorias onde o gasto atual desvia mais de 30% da média dos últimos 3 meses.'**
+  String get spendingAnomalyInfo;
+
+  /// No description provided for @spendingAnomalyAvg.
+  ///
+  /// In pt, this message translates to:
+  /// **'Média: {amount}'**
+  String spendingAnomalyAvg(String amount);
+
+  /// No description provided for @rolloverToggleLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Transição'**
+  String get rolloverToggleLabel;
+
+  /// No description provided for @rolloverHelperText.
+  ///
+  /// In pt, this message translates to:
+  /// **'Transferir orçamento não gasto ou em excesso para o próximo mês'**
+  String get rolloverHelperText;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

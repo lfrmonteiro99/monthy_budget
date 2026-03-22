@@ -208,6 +208,7 @@ class CategoryBudgetSummary {
     List<ExpenseItem> budgetItems,
     List<ActualExpense> actuals, {
     Map<String, double> monthlyBudgets = const {},
+    Map<String, double> rolloverAmounts = const {},
     double foodPurchaseSpent = 0,
     DateTime? now,
   }) {
@@ -237,7 +238,11 @@ class CategoryBudgetSummary {
     }
     final budgetByCategory = <String, double>{};
     for (final entry in defaultByCategory.entries) {
-      budgetByCategory[entry.key] = monthlyBudgets[entry.key] ?? entry.value;
+      final base = monthlyBudgets[entry.key] ?? entry.value;
+      final rollover = rolloverAmounts[entry.key] ?? 0;
+      // Apply rollover but never let budget go below zero
+      final adjusted = base + rollover;
+      budgetByCategory[entry.key] = adjusted < 0 ? 0 : adjusted;
     }
 
     final allCategories = <String>{

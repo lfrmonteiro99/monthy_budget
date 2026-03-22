@@ -2812,5 +2812,15 @@
     "paywallContinueFree": "Continue Free",
     "paywallBestValue": "Best Value",
     "complexityEasy": "Easy",
-    "complexityPro": "Pro"
+    "complexityPro": "Pro",
+    "spendingAnomalyTitle": "Spending Anomalies",
+    "spendingAnomalyInfo": "Categories where current spending deviates more than 30% from the 3-month rolling average.",
+    "spendingAnomalyAvg": "Avg: {amount}",
+    "@spendingAnomalyAvg": {
+        "placeholders": {
+            "amount": { "type": "String" }
+        }
+    },
+    "rolloverToggleLabel": "Rollover",
+    "rolloverHelperText": "Carry unspent or overspent budget to next month"
 }

@@ -5227,4 +5227,23 @@ class SEn extends S {
 
   @override
   String get complexityPro => 'Pro';
+
+  @override
+  String get spendingAnomalyTitle => 'Spending Anomalies';
+
+  @override
+  String get spendingAnomalyInfo =>
+      'Categories where current spending deviates more than 30% from the 3-month rolling average.';
+
+  @override
+  String spendingAnomalyAvg(String amount) {
+    return 'Avg: $amount';
+  }
+
+  @override
+  String get rolloverToggleLabel => 'Rollover';
+
+  @override
+  String get rolloverHelperText =>
+      'Carry unspent or overspent budget to next month';
 }

@@ -2754,5 +2754,15 @@
     "paywallContinueFree": "Continuar gratis",
     "paywallBestValue": "Mejor valor",
     "complexityEasy": "Fácil",
-    "complexityPro": "Pro"
+    "complexityPro": "Pro",
+    "spendingAnomalyTitle": "Anomalías de Gastos",
+    "spendingAnomalyInfo": "Categorías donde el gasto actual se desvía más del 30% del promedio de los últimos 3 meses.",
+    "spendingAnomalyAvg": "Prom: {amount}",
+    "@spendingAnomalyAvg": {
+        "placeholders": {
+            "amount": { "type": "String" }
+        }
+    },
+    "rolloverToggleLabel": "Transferencia",
+    "rolloverHelperText": "Transferir presupuesto no gastado o excedido al próximo mes"
 }

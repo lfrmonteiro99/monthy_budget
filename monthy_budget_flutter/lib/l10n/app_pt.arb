@@ -5316,5 +5316,15 @@
     "complexityPro": "Pro",
     "@complexityPro": {
         "description": "Label for pro/advanced complexity level on slider"
-    }
+    },
+    "spendingAnomalyTitle": "Anomalias de Gastos",
+    "spendingAnomalyInfo": "Categorias onde o gasto atual desvia mais de 30% da média dos últimos 3 meses.",
+    "spendingAnomalyAvg": "Média: {amount}",
+    "@spendingAnomalyAvg": {
+        "placeholders": {
+            "amount": { "type": "String" }
+        }
+    },
+    "rolloverToggleLabel": "Transição",
+    "rolloverHelperText": "Transferir orçamento não gasto ou em excesso para o próximo mês"
 }

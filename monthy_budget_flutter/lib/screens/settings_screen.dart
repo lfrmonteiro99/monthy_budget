@@ -1495,6 +1495,39 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     // Recurring payment toggle
                     _buildRecurringPaymentToggle(expense, l10n),
                     const SizedBox(height: 8),
+                    // ── Budget Rollover Toggle ──
+                    Row(
+                      children: [
+                        Icon(Icons.sync_alt, size: 16, color: AppColors.textMuted(context)),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            l10n.rolloverToggleLabel,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textSecondary(context),
+                            ),
+                          ),
+                        ),
+                        Switch.adaptive(
+                          value: expense.rolloverEnabled,
+                          onChanged: (v) => _updateExpense(
+                            expense.id,
+                            (e) => e.copyWith(rolloverEnabled: v),
+                          ),
+                          activeTrackColor: AppColors.primary(context),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      l10n.rolloverHelperText,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: AppColors.textMuted(context),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
                     // Enable/disable + delete row
                     Row(
                       children: [
