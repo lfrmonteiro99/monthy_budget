@@ -5326,5 +5326,13 @@
         }
     },
     "rolloverToggleLabel": "Transição",
-    "rolloverHelperText": "Transferir orçamento não gasto ou em excesso para o próximo mês"
+    "rolloverHelperText": "Transferir orçamento não gasto ou em excesso para o próximo mês",
+    "settingsDashSpendingAnomalies": "Anomalias de gastos",
+    "@settingsDashSpendingAnomalies": {
+        "description": "Settings label for spending anomaly card toggle"
+    },
+    "subtitleShowSpendingAnomalies": "Destaca categorias que se desviam dos padrões de gastos recentes",
+    "@subtitleShowSpendingAnomalies": {
+        "description": "Settings subtitle for spending anomaly card"
+    }
 }

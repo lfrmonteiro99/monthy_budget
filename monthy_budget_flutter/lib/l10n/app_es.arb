@@ -2764,5 +2764,7 @@
         }
     },
     "rolloverToggleLabel": "Transferencia",
-    "rolloverHelperText": "Transferir presupuesto no gastado o excedido al próximo mes"
+    "rolloverHelperText": "Transferir presupuesto no gastado o excedido al próximo mes",
+    "settingsDashSpendingAnomalies": "Anomalias de gasto",
+    "subtitleShowSpendingAnomalies": "Destaca categorias que se desvian de los patrones de gasto recientes"
 }

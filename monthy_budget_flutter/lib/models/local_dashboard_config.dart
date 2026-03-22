@@ -7,11 +7,11 @@ import 'app_settings.dart';
 part 'local_dashboard_config.g.dart';
 
 const _defaultDashboardCardOrder = [
-  'heroCard', 'stressIndex', 'budgetStreaks', 'monthReview',
-  'upcomingBills', 'burnRate', 'topCategories', 'cashFlowForecast',
-  'savingsRate', 'coachInsight', 'quickActions', 'summaryCards',
-  'salaryBreakdown', 'budgetVsActual', 'savingsGoals', 'taxDeductions',
-  'purchaseHistory', 'expensesBreakdown', 'charts',
+  'heroCard', 'stressIndex', 'budgetStreaks', 'spendingAnomalies',
+  'monthReview', 'upcomingBills', 'burnRate', 'topCategories',
+  'cashFlowForecast', 'savingsRate', 'coachInsight', 'quickActions',
+  'summaryCards', 'salaryBreakdown', 'budgetVsActual', 'savingsGoals',
+  'taxDeductions', 'purchaseHistory', 'expensesBreakdown', 'charts',
 ];
 
 @JsonSerializable()
@@ -35,6 +35,7 @@ class LocalDashboardConfig {
   final bool showSavingsRate;
   final bool showCoachInsight;
   final bool showQuickActions;
+  final bool showSpendingAnomalies;
   @JsonKey(fromJson: _enabledChartsFromJson, toJson: _enabledChartsToJson)
   final List<ChartType> enabledCharts;
   final List<String> cardOrder;
@@ -61,6 +62,7 @@ class LocalDashboardConfig {
     this.showSavingsRate = true,
     this.showCoachInsight = true,
     this.showQuickActions = true,
+    this.showSpendingAnomalies = true,
     this.enabledCharts = const [
       ChartType.expensesPie,
       ChartType.incomeVsExpenses,
@@ -90,6 +92,7 @@ class LocalDashboardConfig {
     showSavingsRate: false,
     showCoachInsight: false,
     showQuickActions: false,
+    showSpendingAnomalies: false,
     enabledCharts: [],
   );
 
@@ -113,6 +116,7 @@ class LocalDashboardConfig {
     showSavingsRate: true,
     showCoachInsight: true,
     showQuickActions: true,
+    showSpendingAnomalies: true,
     enabledCharts: [
       ChartType.expensesPie,
       ChartType.incomeVsExpenses,
@@ -141,6 +145,7 @@ class LocalDashboardConfig {
     bool? showSavingsRate,
     bool? showCoachInsight,
     bool? showQuickActions,
+    bool? showSpendingAnomalies,
     List<ChartType>? enabledCharts,
     List<String>? cardOrder,
   }) {
@@ -164,6 +169,7 @@ class LocalDashboardConfig {
       showSavingsRate: showSavingsRate ?? this.showSavingsRate,
       showCoachInsight: showCoachInsight ?? this.showCoachInsight,
       showQuickActions: showQuickActions ?? this.showQuickActions,
+      showSpendingAnomalies: showSpendingAnomalies ?? this.showSpendingAnomalies,
       enabledCharts: enabledCharts ?? this.enabledCharts,
       cardOrder: cardOrder ?? this.cardOrder,
     );
@@ -195,6 +201,7 @@ class LocalDashboardConfig {
       case 'savingsRate': return showSavingsRate;
       case 'coachInsight': return showCoachInsight;
       case 'quickActions': return showQuickActions;
+      case 'spendingAnomalies': return showSpendingAnomalies;
       default: return false;
     }
   }
@@ -220,6 +227,7 @@ class LocalDashboardConfig {
       case 'savingsRate': return copyWith(showSavingsRate: value);
       case 'coachInsight': return copyWith(showCoachInsight: value);
       case 'quickActions': return copyWith(showQuickActions: value);
+      case 'spendingAnomalies': return copyWith(showSpendingAnomalies: value);
       default: return this;
     }
   }

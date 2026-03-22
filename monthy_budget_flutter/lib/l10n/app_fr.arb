@@ -2764,5 +2764,7 @@
         }
     },
     "rolloverToggleLabel": "Report",
-    "rolloverHelperText": "Reporter le budget non dépensé ou dépassé au mois suivant"
+    "rolloverHelperText": "Reporter le budget non dépensé ou dépassé au mois suivant",
+    "settingsDashSpendingAnomalies": "Anomalies de depenses",
+    "subtitleShowSpendingAnomalies": "Met en evidence les categories qui s'ecartent des habitudes de depenses recentes"
 }

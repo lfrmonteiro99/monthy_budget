@@ -28,6 +28,7 @@ LocalDashboardConfig _$LocalDashboardConfigFromJson(
   showSavingsRate: json['showSavingsRate'] as bool? ?? true,
   showCoachInsight: json['showCoachInsight'] as bool? ?? true,
   showQuickActions: json['showQuickActions'] as bool? ?? true,
+  showSpendingAnomalies: json['showSpendingAnomalies'] as bool? ?? true,
   enabledCharts: json['enabledCharts'] == null
       ? const [
           ChartType.expensesPie,
@@ -63,6 +64,7 @@ Map<String, dynamic> _$LocalDashboardConfigToJson(
   'showSavingsRate': instance.showSavingsRate,
   'showCoachInsight': instance.showCoachInsight,
   'showQuickActions': instance.showQuickActions,
+  'showSpendingAnomalies': instance.showSpendingAnomalies,
   'enabledCharts': LocalDashboardConfig._enabledChartsToJson(
     instance.enabledCharts,
   ),

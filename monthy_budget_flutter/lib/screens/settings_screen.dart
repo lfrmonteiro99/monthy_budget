@@ -2283,6 +2283,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case 'purchaseHistory': return l10n.settingsDashPurchaseHistory;
       case 'charts': return l10n.settingsDashCharts;
       case 'quickActions': return l10n.settingsDashQuickActions;
+      case 'spendingAnomalies': return l10n.settingsDashSpendingAnomalies;
       default: return cardId;
     }
   }
@@ -2307,6 +2308,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case 'purchaseHistory': return l10n.subtitleShowPurchaseHistory;
       case 'charts': return l10n.subtitleShowCharts;
       case 'quickActions': return l10n.subtitleShowQuickActions;
+      case 'spendingAnomalies': return l10n.subtitleShowSpendingAnomalies;
       default: return null;
     }
   }

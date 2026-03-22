@@ -2822,5 +2822,7 @@
         }
     },
     "rolloverToggleLabel": "Rollover",
-    "rolloverHelperText": "Carry unspent or overspent budget to next month"
+    "rolloverHelperText": "Carry unspent or overspent budget to next month",
+    "settingsDashSpendingAnomalies": "Spending anomalies",
+    "subtitleShowSpendingAnomalies": "Highlights categories that deviate from recent spending patterns"
 }
