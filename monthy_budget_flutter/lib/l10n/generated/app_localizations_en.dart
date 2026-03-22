@@ -1154,6 +1154,9 @@ class SEn extends S {
   }
 
   @override
+  String get monthReview => 'Month Review';
+
+  @override
   String get monthReviewPlanned => 'Planned';
 
   @override

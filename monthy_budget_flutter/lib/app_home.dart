@@ -1215,9 +1215,15 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           (spentByCategory['alimentacao'] ?? 0) + foodSpent;
     }
 
+    final familyType = FamilyType.fromMaritalStatus(
+      _settings.personalInfo.maritalStatus.jsonValue,
+      _settings.personalInfo.dependentes,
+    );
+
     return deductionSystem.calculate(
       spentByCategory: spentByCategory,
       year: now.year,
+      familyType: familyType,
     );
   }
 

@@ -684,6 +684,10 @@
             }
         }
     },
+    "monthReview": "Month Review",
+    "@monthReview": {
+        "description": "Monthly review title"
+    },
     "monthReviewPlanned": "Planned",
     "monthReviewActual": "Actual",
     "monthReviewDifference": "Difference",

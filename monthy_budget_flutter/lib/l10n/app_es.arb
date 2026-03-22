@@ -642,6 +642,10 @@
             }
         }
     },
+    "monthReview": "Resumen Mensual",
+    "@monthReview": {
+        "description": "Titulo del resumen mensual"
+    },
     "monthReviewPlanned": "Planificado",
     "monthReviewActual": "Real",
     "monthReviewDifference": "Diferencia",

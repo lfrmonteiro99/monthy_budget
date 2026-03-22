@@ -1156,9 +1156,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final deductionSystem = getTaxDeductionSystem(settings.country);
     if (deductionSystem == null) return const SizedBox.shrink();
 
+    final familyType = FamilyType.fromMaritalStatus(
+      settings.personalInfo.maritalStatus.jsonValue,
+      settings.personalInfo.dependentes,
+    );
+
     final deductionSummary = deductionSystem.calculate(
       spentByCategory: spentByCategory,
       year: now.year,
+      familyType: familyType,
     );
 
     return TaxDeductionCard(
@@ -2136,7 +2142,7 @@ class _MonthReviewCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                InfoIconButton(title: 'Month Review', body: l10n.infoCharts),
+                InfoIconButton(title: l10n.monthReview, body: l10n.infoCharts),
                 Icon(Icons.chevron_right, size: 18, color: AppColors.textSecondary(context)),
               ],
             ),

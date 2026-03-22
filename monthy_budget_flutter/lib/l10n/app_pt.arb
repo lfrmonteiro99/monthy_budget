@@ -1423,6 +1423,10 @@
             }
         }
     },
+    "monthReview": "Resumo Mensal",
+    "@monthReview": {
+        "description": "Titulo do resumo mensal"
+    },
     "monthReviewPlanned": "Planeado",
     "@monthReviewPlanned": {
         "description": "Month review column: planned"

@@ -2147,6 +2147,12 @@ abstract class S {
   /// **'Resumo â€” {month}'**
   String monthReviewTitle(String month);
 
+  /// Titulo do resumo mensal
+  ///
+  /// In pt, this message translates to:
+  /// **'Resumo Mensal'**
+  String get monthReview;
+
   /// Month review column: planned
   ///
   /// In pt, this message translates to:

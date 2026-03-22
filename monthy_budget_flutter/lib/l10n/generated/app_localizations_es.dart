@@ -1160,6 +1160,9 @@ class SEs extends S {
   }
 
   @override
+  String get monthReview => 'Resumen Mensual';
+
+  @override
   String get monthReviewPlanned => 'Planificado';
 
   @override
