@@ -12,6 +12,7 @@ import 'utils/calculations.dart';
 import 'utils/formatters.dart';
 import 'utils/unit_converter.dart';
 import 'data/tax/tax_factory.dart';
+import 'data/tax/tax_deductions.dart';
 import 'data/tax/tax_system.dart';
 import 'services/settings_service.dart';
 import 'services/favorites_service.dart';
@@ -1184,6 +1185,42 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     );
   }
 
+  YearlyDeductionSummary? _computeIrsDeductionSummary() {
+    final deductionSystem = getTaxDeductionSystem(_settings.country);
+    if (deductionSystem == null) return null;
+
+    final now = DateTime.now();
+    final spentByCategory = <String, double>{};
+    for (final entry in _actualExpenseHistory.entries) {
+      final parts = entry.key.split('-');
+      if (parts.length < 2) continue;
+      final year = int.tryParse(parts[0]);
+      if (year != now.year) continue;
+      for (final expense in entry.value) {
+        spentByCategory[expense.category] =
+            (spentByCategory[expense.category] ?? 0) + expense.amount;
+      }
+    }
+    for (final expense in _actualExpenses) {
+      if (expense.date.year == now.year) {
+        spentByCategory[expense.category] =
+            (spentByCategory[expense.category] ?? 0) + expense.amount;
+      }
+    }
+    final foodSpent = _purchaseHistory.records
+        .where((r) => r.date.year == now.year)
+        .fold(0.0, (s, r) => s + r.amount);
+    if (foodSpent > 0) {
+      spentByCategory['alimentacao'] =
+          (spentByCategory['alimentacao'] ?? 0) + foodSpent;
+    }
+
+    return deductionSystem.calculate(
+      spentByCategory: spentByCategory,
+      year: now.year,
+    );
+  }
+
   void _syncLocaleAndFormatter(AppSettings settings) {
     setFormatterCountry(settings.country);
     AppShellScope.read(context).setLocaleCode(settings.localeOverride);
@@ -1949,6 +1986,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       monthlyBudgets: _monthlyBudgets,
     );
 
+    // Compute IRS deduction summary for screens that need it
+    final irsDeductionSummary = _computeIrsDeductionSummary();
+
     final screens = <AppTab, Widget>{
       AppTab.dashboard: ErrorBoundary(
         onError: (error, stack) => LogService.error(
@@ -2009,6 +2049,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           showTour: !_onboardingState.isTourDone('expense_tracker'),
           onTourComplete: () => _markTourDone('expense_tracker'),
           customCategories: _customCategories,
+          irsDeductionSummary: irsDeductionSummary,
         ),
       ),
       AppTab.planHub: ErrorBoundary(
