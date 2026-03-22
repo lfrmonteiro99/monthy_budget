@@ -3718,6 +3718,7 @@
             }
         }
     },
+    "expenseTypeLabel": "TIPO",
     "expenseFixed": "Fixo",
     "@expenseFixed": {
         "description": "Fixed expense type label"

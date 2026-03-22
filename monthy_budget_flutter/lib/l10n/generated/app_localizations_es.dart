@@ -2852,6 +2852,9 @@ class SEs extends S {
   }
 
   @override
+  String get expenseTypeLabel => 'TIPO';
+
+  @override
   String get expenseFixed => 'Fijo';
 
   @override

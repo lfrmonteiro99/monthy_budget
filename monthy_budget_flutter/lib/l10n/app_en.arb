@@ -1587,6 +1587,7 @@
             }
         }
     },
+    "expenseTypeLabel": "TYPE",
     "expenseFixed": "Fixed",
     "expenseVariable": "Variable",
     "monthlyBudgetHint": "Budget for {month}",
