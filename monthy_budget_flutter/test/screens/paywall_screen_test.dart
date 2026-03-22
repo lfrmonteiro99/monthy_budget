@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:monthly_management/l10n/generated/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:monthly_management/models/subscription_state.dart';
 import 'package:monthly_management/screens/paywall_screen.dart';
 
 Widget _wrap(Widget child) {
-  return MaterialApp(home: child);
+  return MaterialApp(
+    localizationsDelegates: S.localizationsDelegates,
+    supportedLocales: S.supportedLocales,
+    locale: const Locale('en'),
+    home: child,
+  );
 }
 
 void main() {
@@ -70,7 +76,7 @@ void main() {
         ));
 
         expect(find.text('Free'), findsOneWidget);
-        expect(find.text('Gestão Mensal Pro'), findsOneWidget);
+        expect(find.text('Monthly Budget Pro'), findsOneWidget);
       });
 
       testWidgets('shows "Best Value" badge on Pro', (tester) async {

@@ -2908,8 +2908,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Facil', style: TextStyle(fontSize: 10, color: AppColors.textMuted(context))),
-                  Text('Pro', style: TextStyle(fontSize: 10, color: AppColors.textMuted(context))),
+                  Text(l10n.complexityEasy, style: TextStyle(fontSize: 10, color: AppColors.textMuted(context))),
+                  Text(l10n.complexityPro, style: TextStyle(fontSize: 10, color: AppColors.textMuted(context))),
                 ],
               ),
               Padding(
@@ -2948,8 +2948,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Facil', style: TextStyle(fontSize: 10, color: AppColors.textMuted(context))),
-                  Text('Pro', style: TextStyle(fontSize: 10, color: AppColors.textMuted(context))),
+                  Text(l10n.complexityEasy, style: TextStyle(fontSize: 10, color: AppColors.textMuted(context))),
+                  Text(l10n.complexityPro, style: TextStyle(fontSize: 10, color: AppColors.textMuted(context))),
                 ],
               ),
               Padding(

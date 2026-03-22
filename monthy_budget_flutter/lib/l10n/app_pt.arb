@@ -5195,5 +5195,73 @@
         "placeholders": {
             "days": {"type": "int"}
         }
+    },
+    "upgradeToPro": "Atualizar para Pro",
+    "@upgradeToPro": {
+        "description": "Button label to upgrade to Pro plan"
+    },
+    "createAsPaused": "Criar como pausado",
+    "@createAsPaused": {
+        "description": "Button label to create an item in paused state"
+    },
+    "categoryLimitReached": "Limite de categorias atingido",
+    "@categoryLimitReached": {
+        "description": "Title when category limit is reached"
+    },
+    "savingsGoalLimitReached": "Limite de objetivos de poupança atingido",
+    "@savingsGoalLimitReached": {
+        "description": "Title when savings goal limit is reached"
+    },
+    "limitSwapActive": "Trocar ativa",
+    "@limitSwapActive": {
+        "description": "Button label to swap the active item"
+    },
+    "limitChooseActiveGoal": "Escolher objetivo ativo",
+    "@limitChooseActiveGoal": {
+        "description": "Button label to choose the active savings goal"
+    },
+    "errorBoundarySomethingWentWrong": "Algo correu mal",
+    "@errorBoundarySomethingWentWrong": {
+        "description": "Title shown when an error boundary catches an error"
+    },
+    "errorBoundaryDescription": "Esta secção encontrou um erro.\nO resto da app não foi afetado.",
+    "@errorBoundaryDescription": {
+        "description": "Description shown below the error boundary title"
+    },
+    "retry": "Tentar novamente",
+    "@retry": {
+        "description": "Button label to retry an action"
+    },
+    "monthReview": "Resumo do mês",
+    "@monthReview": {
+        "description": "Title for the month review section on the dashboard"
+    },
+    "filter": "Filtro",
+    "@filter": {
+        "description": "Label for filter controls"
+    },
+    "paywallFree": "Grátis",
+    "@paywallFree": {
+        "description": "Free tier label on paywall screen"
+    },
+    "paywallStartPro": "Iniciar Pro",
+    "@paywallStartPro": {
+        "description": "CTA button to start pro subscription"
+    },
+    "paywallContinueFree": "Continuar grátis",
+    "@paywallContinueFree": {
+        "description": "CTA button to continue with free plan"
+    },
+    "paywallBestValue": "Melhor valor",
+    "@paywallBestValue": {
+        "description": "Badge label on the best-value plan"
+    },
+    "complexityEasy": "Fácil",
+    "@complexityEasy": {
+        "description": "Label for easy complexity level on slider"
+    },
+    "complexityPro": "Pro",
+    "@complexityPro": {
+        "description": "Label for pro/advanced complexity level on slider"
     }
 }

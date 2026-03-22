@@ -4560,7 +4560,7 @@ class SEn extends S {
   String get navMoreTip => 'Settings and insights';
 
   @override
-  String get paywallContinueFree => 'Continuing with Free plan';
+  String get paywallContinueFree => 'Continue Free';
 
   @override
   String get paywallUpgradedPro => 'Upgraded to Pro â€” thank you!';
@@ -5138,4 +5138,50 @@ class SEn extends S {
   String groceryStoreUpdatedDaysAgo(int days) {
     return 'Updated ${days}d ago';
   }
+
+  @override
+  String get upgradeToPro => 'Upgrade to Pro';
+
+  @override
+  String get createAsPaused => 'Create as Paused';
+
+  @override
+  String get categoryLimitReached => 'Category limit reached';
+
+  @override
+  String get savingsGoalLimitReached => 'Savings goal limit reached';
+
+  @override
+  String get limitSwapActive => 'Swap Active';
+
+  @override
+  String get limitChooseActiveGoal => 'Choose Active Goal';
+
+  @override
+  String get errorBoundarySomethingWentWrong => 'Something went wrong';
+
+  @override
+  String get errorBoundaryDescription =>
+      'This section encountered an error.\nThe rest of the app is unaffected.';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get filter => 'Filter';
+
+  @override
+  String get paywallFree => 'Free';
+
+  @override
+  String get paywallStartPro => 'Start Pro';
+
+  @override
+  String get paywallBestValue => 'Best Value';
+
+  @override
+  String get complexityEasy => 'Easy';
+
+  @override
+  String get complexityPro => 'Pro';
 }

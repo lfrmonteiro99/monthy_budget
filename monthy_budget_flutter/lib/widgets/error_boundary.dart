@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
 
 /// Catches errors in its child widget tree and displays a user-friendly
@@ -60,6 +61,7 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     if (_error != null) {
       return _ErrorFallback(
         error: _error!,
@@ -81,6 +83,7 @@ class _ErrorFallback extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -94,14 +97,14 @@ class _ErrorFallback extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              'Something went wrong',
+              l10n.errorBoundarySomethingWentWrong,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
             ),
             const SizedBox(height: 8),
             Text(
-              'This section encountered an error.\nThe rest of the app is unaffected.',
+              l10n.errorBoundaryDescription,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: AppColors.textSecondary(context),
@@ -111,7 +114,7 @@ class _ErrorFallback extends StatelessWidget {
             FilledButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh, size: 18),
-              label: const Text('Retry'),
+              label: Text(l10n.retry),
             ),
           ],
         ),
