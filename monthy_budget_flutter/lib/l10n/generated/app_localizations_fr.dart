@@ -1901,6 +1901,13 @@ class SFr extends S {
   String get settingsResetWizard => 'Réinitialiser l\'Assistant';
 
   @override
+  String get settingsMealAdvanced => 'Avancé';
+
+  @override
+  String get settingsMealAdvancedSubtitle =>
+      'Réinitialiser l\'assistant de configuration';
+
+  @override
   String get settingsApiKeyInfo =>
       'La clé est stockée localement sur l\'appareil et n\'est jamais partagée. Utilise le modèle GPT-4o mini (~â‚¬0,00008 par analyse).';
 

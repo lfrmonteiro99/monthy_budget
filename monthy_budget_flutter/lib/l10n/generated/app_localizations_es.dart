@@ -1896,6 +1896,13 @@ class SEs extends S {
   String get settingsResetWizard => 'Restablecer Asistente';
 
   @override
+  String get settingsMealAdvanced => 'Avanzado';
+
+  @override
+  String get settingsMealAdvancedSubtitle =>
+      'Reiniciar asistente de configuración';
+
+  @override
   String get settingsApiKeyInfo =>
       'La clave se guarda localmente en el dispositivo y nunca se comparte. Usa el modelo GPT-4o mini (~â‚¬0,00008 por análisis).';
 

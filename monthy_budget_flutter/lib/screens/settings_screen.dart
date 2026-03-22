@@ -3329,8 +3329,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // ── Section 10: Avancado ──
           _mealExpansionCard(
             icon: Icons.settings_outlined,
-            title: 'Avancado',
-            subtitle: 'Reiniciar assistente de configuracao',
+            title: l10n.settingsMealAdvanced,
+            subtitle: l10n.settingsMealAdvancedSubtitle,
             children: [
               SizedBox(
                 width: double.infinity,
