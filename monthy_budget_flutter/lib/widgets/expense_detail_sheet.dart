@@ -219,6 +219,45 @@ class ExpenseDetailSheet extends StatelessWidget {
                   ),
                 ),
               ],
+              if (expense.attachmentUrls != null &&
+                  expense.attachmentUrls!.isNotEmpty) ...[
+                const SizedBox(height: 20),
+                Text(
+                  l10n.expenseReceiptsLabel,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textMuted(context),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 80,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: expense.attachmentUrls!.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 8),
+                    itemBuilder: (_, i) => ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        expense.attachmentUrls![i],
+                        width: 72,
+                        height: 72,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          width: 72,
+                          height: 72,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: AppColors.border(context),
+                          ),
+                          child: const Icon(Icons.broken_image, size: 32),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
               const SizedBox(height: 20),
               Row(
                 children: [

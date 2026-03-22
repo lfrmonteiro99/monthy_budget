@@ -2579,6 +2579,7 @@
     "expenseAttachCamera": "Cámara",
     "expenseAttachGallery": "Galería",
     "expenseAttachUploadFailed": "Error al subir anexos. Verifique su conexión.",
+    "expenseReceiptsLabel": "Recibos",
     "expenseExtras": "Extras",
     "expenseLocationDetect": "Detectar ubicación",
     "biometricLockTitle": "Bloqueo de App",

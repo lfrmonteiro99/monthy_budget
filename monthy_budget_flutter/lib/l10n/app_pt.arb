@@ -5017,6 +5017,8 @@
     "@expenseAttachGallery": {"description": "Gallery option label"},
     "expenseAttachUploadFailed": "Falha ao carregar anexos. Verifique a sua ligação.",
     "@expenseAttachUploadFailed": {"description": "Attachment upload failure message"},
+    "expenseReceiptsLabel": "Recibos",
+    "@expenseReceiptsLabel": {"description": "Receipts section label in expense detail"},
     "expenseExtras": "Extras",
     "@expenseExtras": {"description": "Extras toggle label"},
     "expenseLocationDetect": "Detetar localização",

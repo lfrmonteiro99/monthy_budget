@@ -2637,6 +2637,7 @@
     "expenseAttachCamera": "Camera",
     "expenseAttachGallery": "Gallery",
     "expenseAttachUploadFailed": "Failed to upload attachments. Check your connection.",
+    "expenseReceiptsLabel": "Receipts",
     "expenseExtras": "Extras",
     "expenseLocationDetect": "Detect location",
     "biometricLockTitle": "App Lock",
