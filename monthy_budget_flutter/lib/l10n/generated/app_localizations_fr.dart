@@ -5341,4 +5341,63 @@ class SFr extends S {
 
   @override
   String get yearlySummaryCategoryBreakdown => 'Repartition par Categorie';
+
+  @override
+  String get mealSectionHousehold => 'Qui mange ?';
+
+  @override
+  String get mealSectionHouseholdSub => 'Foyer et membres';
+
+  @override
+  String get mealSectionGoals => 'Objectif';
+
+  @override
+  String get mealSectionGoalsSub => 'Planification et repas actifs';
+
+  @override
+  String get mealSectionEatingOut => 'Repas a l\'exterieur';
+
+  @override
+  String get mealSectionEatingOutSub => 'Jours dehors et jours vegetariens';
+
+  @override
+  String get mealSectionDietary => 'Restrictions alimentaires';
+
+  @override
+  String get mealSectionDietarySub => 'Allergies, intolerances et preferences';
+
+  @override
+  String get mealSectionPrep => 'Preparation';
+
+  @override
+  String get mealSectionPrepSub => 'Temps, complexite et equipement';
+
+  @override
+  String get mealSectionStrategies => 'Strategies';
+
+  @override
+  String get mealSectionStrategiesSub => 'Efficacite, couts et utilisation';
+
+  @override
+  String get mealSectionProtein => 'Variete de proteines';
+
+  @override
+  String get mealSectionProteinSub => 'Poisson, legumineuses et viande rouge';
+
+  @override
+  String get mealSectionNutrition => 'Nutrition et sante';
+
+  @override
+  String get mealSectionNutritionSub =>
+      'Calories, proteines, fibres et conditions medicales';
+
+  @override
+  String get mealSectionPantry => 'Garde-manger';
+
+  @override
+  String get mealSectionPantrySub =>
+      'Ingredients de base, hebdomadaires et generaux';
+
+  @override
+  String get complexityMedium => 'Moyen';
 }

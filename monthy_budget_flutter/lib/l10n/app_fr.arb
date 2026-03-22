@@ -2791,5 +2791,24 @@
             "month": {"type": "String"}
         }
     },
-    "yearlySummaryCategoryBreakdown": "Repartition par Categorie"
+    "yearlySummaryCategoryBreakdown": "Repartition par Categorie",
+    "mealSectionHousehold": "Qui mange ?",
+    "mealSectionHouseholdSub": "Foyer et membres",
+    "mealSectionGoals": "Objectif",
+    "mealSectionGoalsSub": "Planification et repas actifs",
+    "mealSectionEatingOut": "Repas a l'exterieur",
+    "mealSectionEatingOutSub": "Jours dehors et jours vegetariens",
+    "mealSectionDietary": "Restrictions alimentaires",
+    "mealSectionDietarySub": "Allergies, intolerances et preferences",
+    "mealSectionPrep": "Preparation",
+    "mealSectionPrepSub": "Temps, complexite et equipement",
+    "mealSectionStrategies": "Strategies",
+    "mealSectionStrategiesSub": "Efficacite, couts et utilisation",
+    "mealSectionProtein": "Variete de proteines",
+    "mealSectionProteinSub": "Poisson, legumineuses et viande rouge",
+    "mealSectionNutrition": "Nutrition et sante",
+    "mealSectionNutritionSub": "Calories, proteines, fibres et conditions medicales",
+    "mealSectionPantry": "Garde-manger",
+    "mealSectionPantrySub": "Ingredients de base, hebdomadaires et generaux",
+    "complexityMedium": "Moyen"
 }
