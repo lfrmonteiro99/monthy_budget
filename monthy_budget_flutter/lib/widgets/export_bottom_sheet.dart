@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
 
-enum ExportFormat { pdf, csv }
+enum ExportFormat { pdf, csv, monthlySummary }
 
 Future<ExportFormat?> showExportSheet(BuildContext context) {
   final l10n = S.of(context);
@@ -51,6 +51,18 @@ Future<ExportFormat?> showExportSheet(BuildContext context) {
               ),
             ),
             onTap: () => Navigator.pop(ctx, ExportFormat.csv),
+          ),
+          ListTile(
+            leading: Icon(Icons.summarize, color: AppColors.primary(ctx)),
+            title: Text(l10n.exportMonthlySummary),
+            subtitle: Text(
+              l10n.exportMonthlySummaryDesc,
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.textSecondary(ctx),
+              ),
+            ),
+            onTap: () => Navigator.pop(ctx, ExportFormat.monthlySummary),
           ),
           const SizedBox(height: 8),
         ],

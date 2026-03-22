@@ -5,6 +5,7 @@ import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/actual_expense.dart';
+import '../models/budget_summary.dart';
 import '../models/custom_category.dart';
 import '../theme/app_colors.dart';
 import '../utils/category_helpers.dart';
@@ -37,6 +38,7 @@ class ExpenseTrackerScreen extends StatefulWidget {
   final VoidCallback? onTourComplete;
   final List<CustomCategory> customCategories;
   final YearlyDeductionSummary? irsDeductionSummary;
+  final BudgetSummary? budgetSummary;
 
   const ExpenseTrackerScreen({
     super.key,
@@ -53,6 +55,7 @@ class ExpenseTrackerScreen extends StatefulWidget {
     this.onTourComplete,
     this.customCategories = const [],
     this.irsDeductionSummary,
+    this.budgetSummary,
   });
 
   @override
@@ -328,6 +331,9 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
     final label = _monthLabel(l10n);
     String catLabel(String name) => _localizedCategory(name, l10n);
 
+    final monthSuffix =
+        '${_currentMonth.year}_${_currentMonth.month.toString().padLeft(2, '0')}';
+
     if (format == ExportFormat.pdf) {
       final bytes = await _exportService.generatePdf(
         monthLabel: label,
@@ -350,8 +356,43 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
         expenseDetailTitle: l10n.exportExpenseDetail,
       );
       final file = await _exportService.writeTempFile(
-        'expenses_${_currentMonth.year}_${_currentMonth.month.toString().padLeft(2, '0')}.pdf',
+        'expenses_$monthSuffix.pdf',
         bytes,
+      );
+      await Share.shareXFiles([XFile(file.path)]);
+    } else if (format == ExportFormat.monthlySummary) {
+      final budgetSummary =
+          widget.budgetSummary ?? const BudgetSummary();
+      final csv = _exportService.generateMonthlySummaryCsv(
+        monthLabel: label,
+        budgetSummary: budgetSummary,
+        categorySummaries: summaries,
+        expenses: _expenses,
+        categoryLabelMap: catLabel,
+        formatCurrency: formatCurrency,
+        sectionIncome: l10n.exportSectionIncome,
+        sectionBudgetVsActual: l10n.exportBudgetVsActual,
+        sectionExpenses: l10n.exportExpenseDetail,
+        sectionSummary: l10n.exportSectionSummary,
+        headerCategory: l10n.addExpenseCategory,
+        headerBudgeted: l10n.expenseTrackerBudgeted,
+        headerActual: l10n.expenseTrackerActual,
+        headerRemaining: l10n.expenseTrackerRemaining,
+        headerDate: l10n.addExpenseDate,
+        headerDescription: l10n.addExpenseDescription
+            .replaceAll(RegExp(r'\s*\(.*\)'), ''),
+        headerAmount: l10n.addExpenseAmount,
+        labelTotalIncome: l10n.exportLabelTotalIncome,
+        labelGrossIncome: l10n.exportLabelGrossIncome,
+        labelDeductions: l10n.exportLabelDeductions,
+        labelTotalExpenses: l10n.exportLabelTotalExpenses,
+        labelNetLiquidity: l10n.exportLabelNetLiquidity,
+        labelSavingsRate: l10n.exportLabelSavingsRate,
+        labelTotal: l10n.exportLabelTotal,
+      );
+      final file = await _exportService.writeTempFile(
+        'monthly_summary_$monthSuffix.csv',
+        utf8.encode(csv),
       );
       await Share.shareXFiles([XFile(file.path)]);
     } else {
@@ -366,7 +407,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
         ],
       );
       final file = await _exportService.writeTempFile(
-        'expenses_${_currentMonth.year}_${_currentMonth.month.toString().padLeft(2, '0')}.csv',
+        'expenses_$monthSuffix.csv',
         utf8.encode(csv),
       );
       await Share.shareXFiles([XFile(file.path)]);
@@ -413,23 +454,13 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
     if (_historyCache == null) return;
 
     final allExpenses = _historyCache!.values.expand((l) => l).toList();
-    final query = _searchQuery.toLowerCase();
-
-    final filtered = allExpenses.where((e) {
-      if (query.isNotEmpty) {
-        final desc = (e.description ?? '').toLowerCase();
-        if (!desc.contains(query)) return false;
-      }
-      if (_selectedCategories.isNotEmpty) {
-        if (!_selectedCategories.contains(e.category)) return false;
-      }
-      if (_dateFrom != null && e.date.isBefore(_dateFrom!)) return false;
-      if (_dateTo != null &&
-          e.date.isAfter(_dateTo!.add(const Duration(days: 1)))) {
-        return false;
-      }
-      return true;
-    }).toList()..sort((a, b) => b.date.compareTo(a.date));
+    final filtered = filterExpenses(
+      allExpenses,
+      query: _searchQuery,
+      selectedCategories: _selectedCategories,
+      dateFrom: _dateFrom,
+      dateTo: _dateTo,
+    );
 
     setState(() => _searchResults = filtered);
   }
@@ -466,10 +497,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
 
   Set<String> _allCategories() {
     if (_historyCache == null) return {};
-    return _historyCache!.values
-        .expand((l) => l)
-        .map((e) => e.category)
-        .toSet();
+    return extractCategories(_historyCache!);
   }
 
   // --- Build ---

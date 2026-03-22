@@ -5,6 +5,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:csv/csv.dart';
 import 'package:path_provider/path_provider.dart';
 import '../models/actual_expense.dart';
+import '../models/budget_summary.dart';
 
 class ExportService {
   Future<Uint8List> generatePdf({
@@ -159,6 +160,116 @@ class ExportService {
     ];
 
     return const ListToCsvConverter().convert(rows);
+  }
+
+  /// Generates a multi-section CSV with income, budget vs actual,
+  /// expense detail, and a monthly summary including savings rate.
+  String generateMonthlySummaryCsv({
+    required String monthLabel,
+    required BudgetSummary budgetSummary,
+    required List<CategoryBudgetSummary> categorySummaries,
+    required List<ActualExpense> expenses,
+    required String Function(String) categoryLabelMap,
+    required String Function(double) formatCurrency,
+    required String sectionIncome,
+    required String sectionBudgetVsActual,
+    required String sectionExpenses,
+    required String sectionSummary,
+    required String headerCategory,
+    required String headerBudgeted,
+    required String headerActual,
+    required String headerRemaining,
+    required String headerDate,
+    required String headerDescription,
+    required String headerAmount,
+    required String labelTotalIncome,
+    required String labelGrossIncome,
+    required String labelDeductions,
+    required String labelTotalExpenses,
+    required String labelNetLiquidity,
+    required String labelSavingsRate,
+    required String labelTotal,
+  }) {
+    const converter = ListToCsvConverter();
+    final rows = <List<String>>[];
+
+    // Title row
+    rows.add([monthLabel]);
+    rows.add([]);
+
+    // --- Income section ---
+    rows.add([sectionIncome]);
+    rows.add([labelGrossIncome, formatCurrency(budgetSummary.totalGross)]);
+    rows.add([labelDeductions, formatCurrency(budgetSummary.totalDeductions)]);
+    rows.add([
+      labelTotalIncome,
+      formatCurrency(budgetSummary.totalNetWithMeal),
+    ]);
+    rows.add([]);
+
+    // --- Budget vs Actual section ---
+    rows.add([sectionBudgetVsActual]);
+    rows.add([headerCategory, headerBudgeted, headerActual, headerRemaining]);
+
+    final totalBudgeted =
+        categorySummaries.fold(0.0, (s, e) => s + e.budgeted);
+    final totalActual = categorySummaries.fold(0.0, (s, e) => s + e.actual);
+    final totalRemaining = totalBudgeted - totalActual;
+
+    for (final s in categorySummaries) {
+      rows.add([
+        categoryLabelMap(s.category),
+        formatCurrency(s.budgeted),
+        formatCurrency(s.actual),
+        formatCurrency(s.remaining),
+      ]);
+    }
+    rows.add([
+      labelTotal,
+      formatCurrency(totalBudgeted),
+      formatCurrency(totalActual),
+      formatCurrency(totalRemaining),
+    ]);
+    rows.add([]);
+
+    // --- Expense Detail section ---
+    rows.add([sectionExpenses]);
+    rows.add([headerDate, headerCategory, headerDescription, headerAmount]);
+
+    final sortedExpenses = List<ActualExpense>.from(expenses)
+      ..sort((a, b) => b.date.compareTo(a.date));
+    for (final e in sortedExpenses) {
+      final dateStr =
+          '${e.date.year}-${e.date.month.toString().padLeft(2, '0')}-${e.date.day.toString().padLeft(2, '0')}';
+      rows.add([
+        dateStr,
+        categoryLabelMap(e.category),
+        e.description ?? '',
+        formatCurrency(e.amount),
+      ]);
+    }
+    rows.add([]);
+
+    // --- Monthly Summary section ---
+    rows.add([sectionSummary]);
+    rows.add([
+      labelTotalIncome,
+      formatCurrency(budgetSummary.totalNetWithMeal),
+    ]);
+    rows.add([
+      labelTotalExpenses,
+      formatCurrency(totalActual),
+    ]);
+    rows.add([
+      labelNetLiquidity,
+      formatCurrency(budgetSummary.netLiquidity),
+    ]);
+    rows.add([
+      labelSavingsRate,
+      '${(budgetSummary.savingsRate * 100).toStringAsFixed(2)}%',
+    ]);
+
+    return converter.convert(rows);
   }
 
   Future<File> writeTempFile(String filename, List<int> bytes) async {

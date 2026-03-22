@@ -2829,6 +2829,40 @@ class SEn extends S {
   String get exportExpenseDetail => 'Expense Detail';
 
   @override
+  String get exportMonthlySummary => 'Monthly Summary';
+
+  @override
+  String get exportMonthlySummaryDesc =>
+      'Income, budget vs actual, and savings rate';
+
+  @override
+  String get exportSectionIncome => 'Income';
+
+  @override
+  String get exportSectionSummary => 'Monthly Summary';
+
+  @override
+  String get exportLabelTotalIncome => 'Total Net Income';
+
+  @override
+  String get exportLabelGrossIncome => 'Gross Income';
+
+  @override
+  String get exportLabelDeductions => 'Deductions';
+
+  @override
+  String get exportLabelTotalExpenses => 'Total Expenses';
+
+  @override
+  String get exportLabelNetLiquidity => 'Net Liquidity';
+
+  @override
+  String get exportLabelSavingsRate => 'Savings Rate';
+
+  @override
+  String get exportLabelTotal => 'Total';
+
+  @override
   String get searchExpenses => 'Search';
 
   @override
