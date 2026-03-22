@@ -1,6 +1,42 @@
 import 'dart:math' as math;
 import 'tax_system.dart';
 
+/// Family type for IRS deduction cap calculation.
+///
+/// Affects the "despesas gerais familiares" cap:
+/// - single: 250 per taxpayer
+/// - couple: 500 (joint taxation)
+/// - singleParent: 335 (familia monoparental)
+enum FamilyType {
+  single,
+  couple,
+  singleParent;
+
+  /// Cap for "despesas gerais familiares" based on family type.
+  double get despesasGeraisCap {
+    switch (this) {
+      case FamilyType.single:
+        return 250;
+      case FamilyType.couple:
+        return 500;
+      case FamilyType.singleParent:
+        return 335;
+    }
+  }
+
+  /// Derives [FamilyType] from marital status string and number of dependents.
+  static FamilyType fromMaritalStatus(
+      String maritalStatus, int dependentes) {
+    if (maritalStatus == 'casado' || maritalStatus == 'uniao_facto') {
+      return FamilyType.couple;
+    }
+    if (dependentes > 0) {
+      return FamilyType.singleParent;
+    }
+    return FamilyType.single;
+  }
+}
+
 /// A single IRS deduction rule for an expense category.
 class DeductionRule {
   final String category; // ExpenseCategory.name
@@ -84,6 +120,7 @@ abstract class TaxDeductionSystem {
   YearlyDeductionSummary calculate({
     required Map<String, double> spentByCategory,
     required int year,
+    FamilyType familyType = FamilyType.single,
   });
 }
 
@@ -98,7 +135,14 @@ TaxDeductionSystem? getTaxDeductionSystem(Country country) {
   }
 }
 
-/// Portuguese IRS tax deduction system (2025/2026 rules).
+/// Portuguese IRS 2026 tax deduction system.
+///
+/// Categories and rules (Art. 78 CIRS):
+/// 1. Despesas gerais familiares: 35%, cap 250/500/335 by family type
+/// 2. Saude: 15%, cap 1000
+/// 3. Educacao: 30%, cap 800
+/// 4. Habitacao (rendas): 15%, cap 700
+/// 5. IVA setorial: 15% of VAT, cap 250
 class PtTaxDeductionSystem extends TaxDeductionSystem {
   @override
   Country get country => Country.pt;
@@ -107,21 +151,21 @@ class PtTaxDeductionSystem extends TaxDeductionSystem {
   List<DeductionRule> get rules => const [
         DeductionRule(
           category: 'saude',
-          irsCategory: 'Saúde',
+          irsCategory: 'Saude',
           rate: 0.15,
           annualCap: 1000,
         ),
         DeductionRule(
           category: 'educacao',
-          irsCategory: 'Educação',
+          irsCategory: 'Educacao',
           rate: 0.30,
           annualCap: 800,
         ),
         DeductionRule(
           category: 'habitacao',
-          irsCategory: 'Habitação',
+          irsCategory: 'Habitacao',
           rate: 0.15,
-          annualCap: 502,
+          annualCap: 700,
         ),
         DeductionRule(
           category: 'transportes',
@@ -139,7 +183,7 @@ class PtTaxDeductionSystem extends TaxDeductionSystem {
         ),
         DeductionRule(
           category: 'alimentacao',
-          irsCategory: 'Restauração',
+          irsCategory: 'IVA Setorial',
           rate: 0.15,
           annualCap: 250,
           isVatBased: true,
@@ -172,13 +216,20 @@ class PtTaxDeductionSystem extends TaxDeductionSystem {
         ),
       ];
 
-  static const double maxPossible = 2802; // sum of all caps
+  /// Computes total max possible deductions for a given family type.
+  /// saude(1000) + educacao(800) + habitacao(700) + despesasGerais(cap) + iva(250)
+  static double maxPossibleForFamily(FamilyType familyType) {
+    return 1000 + 800 + 700 + familyType.despesasGeraisCap + 250;
+  }
 
   @override
   YearlyDeductionSummary calculate({
     required Map<String, double> spentByCategory,
     required int year,
+    FamilyType familyType = FamilyType.single,
   }) {
+    final despesasGeraisCap = familyType.despesasGeraisCap;
+
     // Pass 1: per-category raw deduction
     final results = <String, _IntermediateResult>{};
     for (final rule in rules) {
@@ -191,7 +242,12 @@ class PtTaxDeductionSystem extends TaxDeductionSystem {
           raw = spent * rule.rate;
         }
       }
-      final capped = rule.annualCap > 0 ? math.min(raw, rule.annualCap) : raw;
+      // Use family-type-aware cap for shared group members
+      final effectiveCap = rule.sharedCapGroup == 'despesas_gerais'
+          ? despesasGeraisCap
+          : rule.annualCap;
+
+      final capped = effectiveCap > 0 ? math.min(raw, effectiveCap) : raw;
       results[rule.category] = _IntermediateResult(
         rule: rule,
         spent: spent,
@@ -213,8 +269,12 @@ class PtTaxDeductionSystem extends TaxDeductionSystem {
     }
 
     for (final group in groupTotals.keys) {
-      final sharedCap =
-          results[groupMembers[group]!.first]!.rule.annualCap; // All members share same cap
+      // Use family-type-aware cap for despesas_gerais group
+      final sharedCap = group == 'despesas_gerais'
+          ? despesasGeraisCap
+          : rules
+              .firstWhere((r) => r.sharedCapGroup == group)
+              .annualCap;
       final total = groupTotals[group]!;
       if (total > sharedCap) {
         final ratio = sharedCap / total;
@@ -228,6 +288,9 @@ class PtTaxDeductionSystem extends TaxDeductionSystem {
     // Build results
     final categoryResults = results.entries.map((e) {
       final r = e.value;
+      final effectiveCap = r.rule.sharedCapGroup == 'despesas_gerais'
+          ? despesasGeraisCap
+          : r.rule.annualCap;
       return CategoryDeductionResult(
         category: r.rule.category,
         irsCategory: r.rule.irsCategory,
@@ -235,7 +298,7 @@ class PtTaxDeductionSystem extends TaxDeductionSystem {
         rawDeduction: r.raw,
         cappedDeduction: r.capped,
         finalDeduction: _round2(r.final_),
-        annualCap: r.rule.annualCap,
+        annualCap: effectiveCap,
         isDeductible: r.rule.isDeductible,
       );
     }).toList();
@@ -247,7 +310,7 @@ class PtTaxDeductionSystem extends TaxDeductionSystem {
       year: year,
       categories: categoryResults,
       totalDeduction: _round2(totalDeduction),
-      maxPossibleDeduction: maxPossible,
+      maxPossibleDeduction: maxPossibleForFamily(familyType),
     );
   }
 }
