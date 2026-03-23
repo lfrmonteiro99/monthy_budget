@@ -213,7 +213,12 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     final text = _composerController.text.trim();
     if (text.isEmpty || _loading) return;
 
+    // Set loading synchronously BEFORE any async work to prevent
+    // double credit deduction from rapid chip taps (#759).
+    setState(() => _loading = true);
+
     if (!_rateLimiter.tryCall()) {
+      setState(() => _loading = false);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(S.of(context).rateLimitMessage),
@@ -245,7 +250,6 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
 
     _composerController.clear();
     setState(() {
-      _loading = true;
       _error = null;
       _messages = [..._messages, userMessage];
     });

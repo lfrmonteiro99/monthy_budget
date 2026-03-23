@@ -320,25 +320,7 @@ class SubscriptionService {
   Future<SubscriptionState> clearLastMicroAction(
     SubscriptionState current,
   ) async {
-    final updated = SubscriptionState(
-      tier: current.tier,
-      trialStartDate: current.trialStartDate,
-      trialUsed: current.trialUsed,
-      featuresExplored: current.featuresExplored,
-      aiCredits: current.aiCredits,
-      preferredCoachMode: current.preferredCoachMode,
-      trialStarterCreditsGranted: current.trialStarterCreditsGranted,
-      trialExtensionUsed: current.trialExtensionUsed,
-      downgradeCardShown: current.downgradeCardShown,
-      coachConversationCount: current.coachConversationCount,
-      endowmentPlusCompleted: current.endowmentPlusCompleted,
-      recommendationsAccepted: current.recommendationsAccepted,
-      recommendationsShown: current.recommendationsShown,
-      lastSessionInsight: current.lastSessionInsight,
-      lastSessionInsightValue: current.lastSessionInsightValue,
-      totalProSessions: current.totalProSessions,
-      totalPlusSessions: current.totalPlusSessions,
-    );
+    final updated = current.copyWith(clearLastMicroAction: true);
     await save(updated);
     return updated;
   }
