@@ -182,6 +182,251 @@ void main() {
     });
   });
 
+  group('French command regex (#750)', () {
+    test('parses add_expense from French', () {
+      final result =
+          CommandChatService.regexParse('ajoute 45 euros en alimentacao');
+      expect(result, isNotNull);
+      expect(result!.action, 'add_expense');
+      expect(result.params?['amount'], 45.0);
+      expect(result.params?['category'], 'alimentacao');
+    });
+
+    test('parses add_shopping_item from French', () {
+      final result = CommandChatService.regexParse(
+        'ajoute pain a la liste de courses',
+      );
+      expect(result, isNotNull);
+      expect(result!.action, 'add_shopping_item');
+      expect(result.params?['name'], 'pain');
+    });
+
+    test('parses remove_shopping_item from French', () {
+      final result = CommandChatService.regexParse(
+        'retire beurre de la liste de courses',
+      );
+      expect(result, isNotNull);
+      expect(result!.action, 'remove_shopping_item');
+      expect(result.params?['name'], 'beurre');
+    });
+
+    test('parses toggle_shopping_item checked from French', () {
+      final result = CommandChatService.regexParse(
+        'coche lait dans la liste de courses',
+      );
+      expect(result, isNotNull);
+      expect(result!.action, 'toggle_shopping_item_checked');
+      expect(result.params?['name'], 'lait');
+      expect(result.params?['checked'], isTrue);
+    });
+
+    test('parses toggle_shopping_item unchecked from French', () {
+      final result = CommandChatService.regexParse(
+        'decoche lait dans la liste de courses',
+      );
+      expect(result, isNotNull);
+      expect(result!.action, 'toggle_shopping_item_checked');
+      expect(result.params?['name'], 'lait');
+      expect(result.params?['checked'], isFalse);
+    });
+
+    test('parses delete_expense from French', () {
+      final result =
+          CommandChatService.regexParse('supprime la depense netflix');
+      expect(result, isNotNull);
+      expect(result!.action, 'delete_expense');
+      expect(result.params?['description'], 'netflix');
+    });
+
+    test('parses add_savings_goal from French', () {
+      final result = CommandChatService.regexParse(
+        "cree objectif d'epargne vacances de 1500",
+      );
+      expect(result, isNotNull);
+      expect(result!.action, 'add_savings_goal');
+      expect(result.params?['name'], 'vacances');
+      expect(result.params?['target_amount'], 1500.0);
+    });
+
+    test('parses add_recurring_expense from French', () {
+      final result = CommandChatService.regexParse(
+        'ajoute depense recurrente 35 en telecomunicacoes jour 10',
+      );
+      expect(result, isNotNull);
+      expect(result!.action, 'add_recurring_expense');
+      expect(result.params?['amount'], 35.0);
+      expect(result.params?['category'], 'telecomunicacoes');
+      expect(result.params?['day_of_month'], 10);
+    });
+
+    test('parses navigate_to from French', () {
+      final result = CommandChatService.regexParse('ouvre les parametres');
+      expect(result, isNotNull);
+      expect(result!.action, 'navigate_to');
+    });
+
+    test('parses set_theme_mode from French', () {
+      final result = CommandChatService.regexParse('theme sombre');
+      expect(result, isNotNull);
+      expect(result!.action, 'set_theme_mode');
+      expect(result.params?['mode'], 'dark');
+    });
+
+    test('parses set_language from French', () {
+      final result = CommandChatService.regexParse('langue francais');
+      expect(result, isNotNull);
+      expect(result!.action, 'set_language');
+      expect(result.params?['locale'], 'fr');
+    });
+
+    test('parses clear_checked_items from French', () {
+      final result = CommandChatService.regexParse('effacer les coches');
+      expect(result, isNotNull);
+      expect(result!.action, 'clear_checked_items');
+    });
+  });
+
+  group('Spanish command regex (#750)', () {
+    test('parses add_expense from Spanish', () {
+      final result =
+          CommandChatService.regexParse('anade 25 euros en alimentacao');
+      expect(result, isNotNull);
+      expect(result!.action, 'add_expense');
+      expect(result.params?['amount'], 25.0);
+      expect(result.params?['category'], 'alimentacao');
+    });
+
+    test('parses add_shopping_item from Spanish', () {
+      final result = CommandChatService.regexParse(
+        'anade leche a la lista de compras',
+      );
+      expect(result, isNotNull);
+      expect(result!.action, 'add_shopping_item');
+      expect(result.params?['name'], 'leche');
+    });
+
+    test('parses remove_shopping_item from Spanish', () {
+      final result = CommandChatService.regexParse(
+        'quita mantequilla de la lista de compras',
+      );
+      expect(result, isNotNull);
+      expect(result!.action, 'remove_shopping_item');
+      expect(result.params?['name'], 'mantequilla');
+    });
+
+    test('parses toggle_shopping_item checked from Spanish', () {
+      final result = CommandChatService.regexParse(
+        'marca huevos en la lista de compras',
+      );
+      expect(result, isNotNull);
+      expect(result!.action, 'toggle_shopping_item_checked');
+      expect(result.params?['name'], 'huevos');
+      expect(result.params?['checked'], isTrue);
+    });
+
+    test('parses toggle_shopping_item unchecked from Spanish', () {
+      final result = CommandChatService.regexParse(
+        'desmarca huevos en la lista de compras',
+      );
+      expect(result, isNotNull);
+      expect(result!.action, 'toggle_shopping_item_checked');
+      expect(result.params?['name'], 'huevos');
+      expect(result.params?['checked'], isFalse);
+    });
+
+    test('parses delete_expense from Spanish', () {
+      final result =
+          CommandChatService.regexParse('elimina el gasto netflix');
+      expect(result, isNotNull);
+      expect(result!.action, 'delete_expense');
+      expect(result.params?['description'], 'netflix');
+    });
+
+    test('parses add_savings_goal from Spanish', () {
+      final result = CommandChatService.regexParse(
+        'crea objetivo de ahorro vacaciones de 2000',
+      );
+      expect(result, isNotNull);
+      expect(result!.action, 'add_savings_goal');
+      expect(result.params?['name'], 'vacaciones');
+      expect(result.params?['target_amount'], 2000.0);
+    });
+
+    test('parses add_recurring_expense from Spanish', () {
+      final result = CommandChatService.regexParse(
+        'anade gasto recurrente 50 en energia dia 15',
+      );
+      expect(result, isNotNull);
+      expect(result!.action, 'add_recurring_expense');
+      expect(result.params?['amount'], 50.0);
+      expect(result.params?['category'], 'energia');
+      expect(result.params?['day_of_month'], 15);
+    });
+
+    test('parses navigate_to from Spanish', () {
+      final result = CommandChatService.regexParse('abre los ajustes');
+      expect(result, isNotNull);
+      expect(result!.action, 'navigate_to');
+    });
+
+    test('parses set_theme_mode from Spanish', () {
+      final result = CommandChatService.regexParse('tema oscuro');
+      expect(result, isNotNull);
+      expect(result!.action, 'set_theme_mode');
+      expect(result.params?['mode'], 'dark');
+    });
+
+    test('parses set_language from Spanish', () {
+      final result = CommandChatService.regexParse('lengua espanol');
+      expect(result, isNotNull);
+      expect(result!.action, 'set_language');
+      expect(result.params?['locale'], 'es');
+    });
+
+    test('parses clear_checked_items from Spanish', () {
+      final result = CommandChatService.regexParse('limpiar los marcados');
+      expect(result, isNotNull);
+      expect(result!.action, 'clear_checked_items');
+    });
+  });
+
+  group('Help command regex (#755)', () {
+    test('parses help in English', () {
+      final result = CommandChatService.regexParse('help');
+      expect(result, isNotNull);
+      expect(result!.action, 'show_help');
+    });
+
+    test('parses ajuda in Portuguese', () {
+      final result = CommandChatService.regexParse('ajuda');
+      expect(result, isNotNull);
+      expect(result!.action, 'show_help');
+    });
+
+    test('parses aide in French', () {
+      final result = CommandChatService.regexParse('aide');
+      expect(result, isNotNull);
+      expect(result!.action, 'show_help');
+    });
+
+    test('parses ayuda in Spanish', () {
+      final result = CommandChatService.regexParse('ayuda');
+      expect(result, isNotNull);
+      expect(result!.action, 'show_help');
+    });
+
+    test('parses help with leading/trailing spaces', () {
+      final result = CommandChatService.regexParse('  help  ');
+      expect(result, isNotNull);
+      expect(result!.action, 'show_help');
+    });
+
+    test('system prompt includes show_help action', () {
+      final prompt = CommandChatService.buildSystemPrompt();
+      expect(prompt, contains('show_help'));
+    });
+  });
+
   group('CommandChatService system prompt', () {
     test('buildSystemPrompt returns non-empty string with all actions', () {
       final prompt = CommandChatService.buildSystemPrompt();

@@ -657,6 +657,12 @@ class SFr extends S {
   String get cmdTemplateAddExpense => 'Ajoute [montant] euros en [categorie]';
 
   @override
+  String get cmdTemplateOpenList => 'Ouvre la liste de courses';
+
+  @override
+  String get cmdTemplateOpenSettings => 'Ouvre les parametres';
+
+  @override
   String get cmdTemplateChangeTheme => 'Change le theme en [clair/sombre]';
 
   @override
@@ -5604,4 +5610,8 @@ class SFr extends S {
   @override
   String get cmdParseError =>
       'Desole, je n\'ai pas compris votre demande. Veuillez reformuler.';
+
+  @override
+  String get cmdHelpOutput =>
+      'Commandes disponibles :\n- Ajouter depense : ajoute [montant] en [categorie]\n- Liste de courses : ajoute [article] a la liste de courses\n- Retirer de la liste : retire [article] de la liste de courses\n- Cocher article : coche [article] dans la liste de courses\n- Objectif d\'epargne : cree objectif d\'epargne [nom] de [montant]\n- Ajouter a l\'objectif : ajoute [montant] a l\'objectif [nom]\n- Depense recurrente : ajoute depense recurrente [montant] en [categorie]\n- Supprimer depense : supprime la depense [description]\n- Theme : theme [clair/sombre/systeme]\n- Palette : couleur [ocean/emerald/violet/teal/sunset]\n- Langue : langue [anglais/portugais/espagnol/francais]\n- Naviguer : ouvre [ecran]\n- Effacer coches : effacer les coches\n- Aide : aide';
 }

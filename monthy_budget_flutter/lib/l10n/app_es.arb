@@ -352,6 +352,8 @@
     "cmdSuggestionChangeTheme": "Cambiar tema",
     "cmdSuggestionOpenSettings": "Ir a ajustes",
     "cmdTemplateAddExpense": "Anade [cantidad] euros en [categoria]",
+    "cmdTemplateOpenList": "Abre la lista de compras",
+    "cmdTemplateOpenSettings": "Abre los ajustes",
     "cmdTemplateChangeTheme": "Cambia el tema a [claro/oscuro]",
     "cmdExecutionFailed": "Entendi el pedido, pero no pude ejecutarlo. Intenta de nuevo.",
     "cmdNotUnderstood": "No entendi. Puedes reformular?",
@@ -2859,5 +2861,6 @@
     "cmdLanguageSet": "Idioma configurado a {locale}",
     "cmdNavigatedTo": "Navegado a {screen}",
     "cmdCheckedItemsCleared": "Articulos marcados limpiados",
-    "cmdParseError": "Lo siento, no pude entender tu solicitud. Intenta reformularla."
+    "cmdParseError": "Lo siento, no pude entender tu solicitud. Intenta reformularla.",
+    "cmdHelpOutput": "Comandos disponibles:\n- Anadir gasto: anade [cantidad] en [categoria]\n- Lista de compras: anade [articulo] a la lista de compras\n- Quitar de la lista: quita [articulo] de la lista de compras\n- Marcar articulo: marca [articulo] en la lista de compras\n- Objetivo de ahorro: crea objetivo de ahorro [nombre] de [cantidad]\n- Anadir al objetivo: anade [cantidad] al objetivo [nombre]\n- Gasto recurrente: anade gasto recurrente [cantidad] en [categoria]\n- Eliminar gasto: elimina el gasto [descripcion]\n- Tema: tema [claro/oscuro/sistema]\n- Paleta: color [ocean/emerald/violet/teal/sunset]\n- Idioma: lengua [ingles/portugues/espanol/frances]\n- Navegar: abre [pantalla]\n- Limpiar marcados: limpiar los marcados\n- Ayuda: ayuda"
 }

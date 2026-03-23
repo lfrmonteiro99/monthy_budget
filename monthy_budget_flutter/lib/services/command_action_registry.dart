@@ -72,13 +72,25 @@ class CommandActionRegistry {
     'planner': 'meals',
     'settings': 'settings',
     'definicoes': 'settings',
+    'ajustes': 'settings',
+    'parametres': 'settings',
+    'reglages': 'settings',
+    'configuracion': 'settings',
     'insights': 'insights',
     'tendencias': 'insights',
     'trends': 'insights',
+    'tendances': 'insights',
     'savings_goals': 'savings_goals',
     'poupanca': 'savings_goals',
     'goals': 'savings_goals',
     'objetivos': 'savings_goals',
+    'ahorro': 'savings_goals',
+    'epargne': 'savings_goals',
+    'repas': 'meals',
+    'comidas': 'meals',
+    'courses': 'shopping_list',
+    'gastos': 'expenses',
+    'depenses': 'expenses',
   };
 
   static const _validCategories = <String>{
@@ -151,6 +163,8 @@ class CommandActionRegistry {
         return _validateNavigateTo(params);
       case 'clear_checked_items':
         return true;
+      case 'show_help':
+        return true;
       default:
         return false;
     }
@@ -195,6 +209,8 @@ class CommandActionRegistry {
         return _executeNavigateTo(params, l10n);
       case 'clear_checked_items':
         return _executeClearCheckedItems(l10n);
+      case 'show_help':
+        return _executeShowHelp(l10n);
       default:
         return CommandResult.failure(
           message: l10n?.cmdUnknownAction(action) ??
@@ -457,6 +473,28 @@ class CommandActionRegistry {
       message: l10n?.cmdCheckedItemsCleared ?? 'Checked items cleared',
     );
   }
+
+  Future<CommandResult> _executeShowHelp(S? l10n) async {
+    final message = l10n?.cmdHelpOutput ?? _defaultHelpOutput;
+    return CommandResult.success(message: message);
+  }
+
+  static const _defaultHelpOutput =
+      'Available commands:\n'
+      '- Add expense: add [amount] in [category]\n'
+      '- Add to shopping list: add [item] to shopping list\n'
+      '- Remove from shopping list: remove [item] from shopping list\n'
+      '- Check/uncheck item: check [item] on shopping list\n'
+      '- Create savings goal: create savings goal [name] with [amount]\n'
+      '- Add to goal: add [amount] to goal [name]\n'
+      '- Recurring expense: add recurring expense [amount] in [category]\n'
+      '- Delete expense: delete expense [description]\n'
+      '- Theme: theme [light/dark/system]\n'
+      '- Palette: color [ocean/emerald/violet/teal/sunset]\n'
+      '- Language: language [english/portuguese/spanish/french]\n'
+      '- Navigate: open [screen]\n'
+      '- Clear checked: clear checked\n'
+      '- Help: help';
 
   // -- Parsing ------------------------------------------------------------
 
