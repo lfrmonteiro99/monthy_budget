@@ -82,6 +82,9 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   bool _showRecommendation = false;
   Timer? _recommendationTimer;
 
+  // Debounce timer for _checkRecommendation (#765)
+  Timer? _recommendationDebounce;
+
   // Feature #5: Micro-action follow-up card
   bool _microActionCardDismissed = false;
   // Track last parsed micro-action for inline display
@@ -135,6 +138,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     _composerController.dispose();
     _scrollController.dispose();
     _recommendationTimer?.cancel();
+    _recommendationDebounce?.cancel();
     super.dispose();
   }
 
@@ -399,33 +403,37 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     });
   }
 
-  // Feature #3: Handle recommendation
+  // Feature #3: Handle recommendation (debounced — #765)
   void _checkRecommendation(String text) {
+    _recommendationDebounce?.cancel();
     if (text.trim().isEmpty) {
       _dismissRecommendation();
       return;
     }
-    final locale = Localizations.localeOf(context).languageCode;
-    final recommended = recommendMode(text, locale: locale);
-    if (recommended.index > _selectedMode.index &&
-        _subscription.aiCredits >=
-            _subscription.creditCostForMode(recommended)) {
-      setState(() {
-        _pendingRecommendation = recommended;
-        _showRecommendation = true;
-      });
-      _recommendationTimer?.cancel();
-      _recommendationTimer = Timer(AppConstants.recommendationAutoDismiss, () {
-        if (mounted) _dismissRecommendation();
-      });
-    } else if (recommended == _selectedMode) {
-      setState(() {
-        _pendingRecommendation = null;
-        _showRecommendation = false;
-      });
-    } else {
-      _dismissRecommendation();
-    }
+    _recommendationDebounce = Timer(const Duration(milliseconds: 300), () {
+      if (!mounted) return;
+      final locale = Localizations.localeOf(context).languageCode;
+      final recommended = recommendMode(text, locale: locale);
+      if (recommended.index > _selectedMode.index &&
+          _subscription.aiCredits >=
+              _subscription.creditCostForMode(recommended)) {
+        setState(() {
+          _pendingRecommendation = recommended;
+          _showRecommendation = true;
+        });
+        _recommendationTimer?.cancel();
+        _recommendationTimer = Timer(AppConstants.recommendationAutoDismiss, () {
+          if (mounted) _dismissRecommendation();
+        });
+      } else if (recommended == _selectedMode) {
+        setState(() {
+          _pendingRecommendation = null;
+          _showRecommendation = false;
+        });
+      } else {
+        _dismissRecommendation();
+      }
+    });
   }
 
   void _dismissRecommendation() {

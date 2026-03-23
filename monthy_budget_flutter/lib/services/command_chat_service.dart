@@ -12,17 +12,37 @@ import 'log_service.dart';
 class CommandChatService {
   static const _edgeFunctionName = 'openai-chat';
   static const _model = 'gpt-4o-mini';
+  static const _maxUserMessageLength = 2000;
 
   final http.Client _httpClient;
 
   CommandChatService({http.Client? httpClient})
     : _httpClient = httpClient ?? http.Client();
 
+  /// Sanitize user input before interpolating into prompts.
+  ///
+  /// Truncates to [_maxUserMessageLength] and strips sequences that could
+  /// be mistaken for prompt boundaries (e.g. system-role injections).
+  static String sanitizeUserInput(String input) {
+    var sanitized = input.trim();
+    if (sanitized.length > _maxUserMessageLength) {
+      sanitized = sanitized.substring(0, _maxUserMessageLength);
+    }
+    // Strip common prompt-injection patterns
+    sanitized = sanitized.replaceAll(RegExp(r'```system\b', caseSensitive: false), '');
+    sanitized = sanitized.replaceAll(RegExp(r'\[SYSTEM\]', caseSensitive: false), '');
+    sanitized = sanitized.replaceAll(RegExp(r'\[INST\]', caseSensitive: false), '');
+    sanitized = sanitized.replaceAll(RegExp(r'<\|im_start\|>', caseSensitive: false), '');
+    sanitized = sanitized.replaceAll(RegExp(r'<\|im_end\|>', caseSensitive: false), '');
+    return sanitized;
+  }
+
   /// Parse a user command via AI, with retry and regex fallback.
   Future<CommandAction> parseCommand(String userInput, {S? l10n}) async {
+    final safeInput = sanitizeUserInput(userInput);
     // Try AI first
     try {
-      final result = await _requestAiParse(userInput);
+      final result = await _requestAiParse(safeInput);
       if (result != null) return result;
     } catch (e) {
       LogService.warning(
@@ -34,7 +54,7 @@ class CommandChatService {
 
     // Retry with stricter prompt
     try {
-      final result = await _requestAiParse(userInput, strict: true);
+      final result = await _requestAiParse(safeInput, strict: true);
       if (result != null) return result;
     } catch (e) {
       LogService.warning(
@@ -45,7 +65,7 @@ class CommandChatService {
     }
 
     // Silent regex fallback
-    final regexResult = regexParse(userInput);
+    final regexResult = regexParse(safeInput);
     if (regexResult != null) return regexResult;
 
     // All failed -- return localized error message
