@@ -5347,4 +5347,207 @@ class SEn extends S {
 
   @override
   String get complexityMedium => 'Medium';
+
+  @override
+  String get coachDowngradeTitle => 'Mode changed to Eco';
+
+  @override
+  String get coachCompareWithPlus => 'With Plus';
+
+  @override
+  String get coachCompareMemory20 => 'Memory: 20 msgs';
+
+  @override
+  String get coachCompareDetailedReplies => 'Detailed replies';
+
+  @override
+  String get coachCompareFinancialContext => 'Financial context';
+
+  @override
+  String get coachCompareWithEco => 'With Eco';
+
+  @override
+  String get coachCompareMemory6 => 'Memory: 6 msgs';
+
+  @override
+  String get coachCompareShortReplies => 'Short replies';
+
+  @override
+  String get coachCompareLimitedContext => 'Limited context';
+
+  @override
+  String coachEndowmentBanner(int remaining) {
+    return 'You are using Plus mode for free — the coach remembers the last 20 messages ($remaining remaining)';
+  }
+
+  @override
+  String coachRecommendPro(int cost) {
+    return 'Complex question detected — Pro would provide a more detailed analysis ($cost cr.)';
+  }
+
+  @override
+  String coachRecommendPlus(int cost) {
+    return 'Plus provides more context for this analysis ($cost cr.)';
+  }
+
+  @override
+  String get coachNextStep => 'NEXT STEP';
+
+  @override
+  String get coachPendingAction => 'Pending action from last session';
+
+  @override
+  String coachSuggestedDaysAgo(int daysAgo) {
+    String _temp0 = intl.Intl.pluralLogic(
+      daysAgo,
+      locale: localeName,
+      other: 'days',
+      one: 'day',
+    );
+    return 'Suggested $daysAgo $_temp0 ago';
+  }
+
+  @override
+  String get coachCapWarning =>
+      'Maximum reached (150). Use your credits before the next renewal!';
+
+  @override
+  String coachPackSessions(int plus, int pro) {
+    return '$plus Plus sessions or $pro Pro sessions';
+  }
+
+  @override
+  String get coachCreditsTitle => 'AI Coach Credits';
+
+  @override
+  String coachCreditsRemaining(int count) {
+    return '$count remaining';
+  }
+
+  @override
+  String get coachRoiInsightPrefix => 'In the last Pro session, we discussed ';
+
+  @override
+  String get coachRoiPotential => '. Potential: ';
+
+  @override
+  String get coachRoiCost => '. Cost 5 credits (€0.05).';
+
+  @override
+  String coachCapWarningSheet(int max) {
+    return 'Maximum reached ($max). Use credits before buying more.';
+  }
+
+  @override
+  String get coachCreditsLabel => 'credits';
+
+  @override
+  String get coachBestValue => 'BEST VALUE';
+
+  @override
+  String coachWastedCredits(int wasted) {
+    return 'You would lose $wasted credits';
+  }
+
+  @override
+  String coachRecommendedPack(int credits) {
+    return 'We recommend the $credits credits pack';
+  }
+
+  @override
+  String cmdInvalidAction(String action) {
+    return 'Invalid action or parameters: $action';
+  }
+
+  @override
+  String cmdUnknownAction(String action) {
+    return 'Unknown action: $action';
+  }
+
+  @override
+  String cmdExpenseAdded(String amount, String category) {
+    return 'Expense added: $amount in $category';
+  }
+
+  @override
+  String cmdShoppingItemAdded(String name) {
+    return 'Shopping item added: $name';
+  }
+
+  @override
+  String cmdSavingsGoalAdded(String name) {
+    return 'Savings goal added: $name';
+  }
+
+  @override
+  String cmdRecurringExpenseAdded(String amount, String category) {
+    return 'Recurring expense added: $amount in $category';
+  }
+
+  @override
+  String cmdShoppingItemNotFound(String name) {
+    return 'Could not find shopping item: $name';
+  }
+
+  @override
+  String cmdShoppingItemRemoved(String name) {
+    return 'Shopping item removed: $name';
+  }
+
+  @override
+  String cmdSavingsGoalNotFound(String name) {
+    return 'Could not find savings goal: $name';
+  }
+
+  @override
+  String cmdContributionAdded(String amount, String name) {
+    return 'Contribution added: $amount to $name';
+  }
+
+  @override
+  String cmdShoppingItemChecked(String name) {
+    return 'Shopping item checked: $name';
+  }
+
+  @override
+  String cmdShoppingItemUnchecked(String name) {
+    return 'Shopping item unchecked: $name';
+  }
+
+  @override
+  String cmdExpenseNotFound(String description) {
+    return 'Could not find expense: $description';
+  }
+
+  @override
+  String cmdExpenseDeleted(String description) {
+    return 'Expense deleted: $description';
+  }
+
+  @override
+  String cmdThemeSet(String mode) {
+    return 'Theme set to $mode';
+  }
+
+  @override
+  String cmdPaletteSet(String palette) {
+    return 'Color palette set to $palette';
+  }
+
+  @override
+  String cmdLanguageSet(String locale) {
+    return 'Language set to $locale';
+  }
+
+  @override
+  String cmdNavigatedTo(String screen) {
+    return 'Navigated to $screen';
+  }
+
+  @override
+  String get cmdCheckedItemsCleared => 'Checked items cleared';
+
+  @override
+  String get cmdParseError =>
+      'Sorry, I could not understand your request. Please try rephrasing.';
 }

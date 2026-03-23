@@ -17,6 +17,7 @@ import '../services/revenuecat_service.dart';
 import '../services/subscription_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/calculations.dart';
+import '../utils/coach_delimiter_parser.dart';
 import '../utils/coach_mode_recommender.dart';
 import '../utils/rate_limiter.dart';
 import '../widgets/info_icon_button.dart';
@@ -86,13 +87,9 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   // Track last parsed micro-action for inline display
   String? _lastParsedMicroAction;
 
-  // Regex for parsing LLM delimiters
-  static final _sessionInsightRegex = RegExp(
-    r'\[SESSION_INSIGHT\](.*?)\|(.*?)\[/SESSION_INSIGHT\]',
-  );
-  static final _microActionRegex = RegExp(
-    r'\[MICRO_ACTION\](.*?)\[/MICRO_ACTION\]',
-  );
+  // Regex for parsing LLM delimiters (shared from coach_delimiter_parser.dart)
+  static final _sessionInsightRegex = sessionInsightRegex;
+  static final _microActionRegex = microActionRegex;
 
   List<String> _quickPrompts(S l10n) => [
     l10n.coachQuickPrompt1,
@@ -576,6 +573,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
 
   // Feature #1: Downgrade transition card
   Widget _buildDowngradeTransitionCard() {
+    final l10n = S.of(context);
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -589,7 +587,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Modo alterado para Eco',
+            l10n.coachDowngradeTitle,
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w700,
@@ -601,22 +599,22 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
             children: [
               Expanded(
                 child: _buildCompareColumn(
-                  title: 'Com Plus',
+                  title: l10n.coachCompareWithPlus,
                   items: [
-                    ('Memória: 20 msgs', true),
-                    ('Respostas detalhadas', true),
-                    ('Contexto financeiro', true),
+                    (l10n.coachCompareMemory20, true),
+                    (l10n.coachCompareDetailedReplies, true),
+                    (l10n.coachCompareFinancialContext, true),
                   ],
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: _buildCompareColumn(
-                  title: 'Com Eco',
+                  title: l10n.coachCompareWithEco,
                   items: [
-                    ('Memória: 6 msgs', false),
-                    ('Respostas curtas', false),
-                    ('Contexto limitado', false),
+                    (l10n.coachCompareMemory6, false),
+                    (l10n.coachCompareShortReplies, false),
+                    (l10n.coachCompareLimitedContext, false),
                   ],
                 ),
               ),
@@ -704,6 +702,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
 
   // Feature #2: Endowment Plus banner
   Widget _buildEndowmentBanner() {
+    final l10n = S.of(context);
     final remaining =
         SubscriptionState.endowmentConversations -
         _subscription.coachConversationCount;
@@ -720,8 +719,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         children: [
           Expanded(
             child: Text(
-              'Estás a usar o modo Plus gratuitamente — '
-              'o coach lembra as últimas 20 mensagens ($remaining restantes)',
+              l10n.coachEndowmentBanner(remaining),
               style: TextStyle(
                 fontSize: 12,
                 color: AppColors.primary(context),
@@ -742,6 +740,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
 
   // Feature #3: Smart mode recommendation
   Widget _buildRecommendationWidget() {
+    final l10n = S.of(context);
     final rec = _pendingRecommendation!;
     final isPro = rec == CoachMode.pro;
     final cost = _subscription.creditCostForMode(rec);
@@ -753,8 +752,8 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         : AppColors.primary(context).withValues(alpha: 0.06);
 
     final text = isPro
-        ? 'Pergunta complexa detetada — Pro daria uma análise mais detalhada ($cost cr.)'
-        : 'Plus dá mais contexto para esta análise ($cost cr.)';
+        ? l10n.coachRecommendPro(cost)
+        : l10n.coachRecommendPlus(cost);
 
     return Container(
       margin: const EdgeInsets.fromLTRB(12, 4, 12, 0),
@@ -850,7 +849,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'PRÓXIMO PASSO',
+                    S.of(context).coachNextStep,
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
@@ -877,6 +876,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildMicroActionCard() {
+    final l10n = S.of(context);
     final action = _subscription.lastMicroAction!;
     final date = _subscription.lastMicroActionDate;
     final daysAgo = date != null ? DateTime.now().difference(date).inDays : 0;
@@ -916,7 +916,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      'Ação pendente da última sessão',
+                      l10n.coachPendingAction,
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
@@ -929,7 +929,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                   Padding(
                     padding: const EdgeInsets.only(top: 2),
                     child: Text(
-                      'Sugerido há $daysAgo dia${daysAgo == 1 ? '' : 's'}',
+                      l10n.coachSuggestedDaysAgo(daysAgo),
                       style: TextStyle(
                         fontSize: 11,
                         color: AppColors.textMuted(context),
@@ -1370,7 +1370,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
-                        'Máximo atingido (150). Usa os teus créditos antes da próxima renovação!',
+                        l10n.coachCapWarning,
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
@@ -1725,10 +1725,10 @@ class _CreditPacksSheet extends StatelessWidget {
     required this.onPurchase,
   });
 
-  String _packSessions(CreditPack pack) {
+  String _packSessions(BuildContext context, CreditPack pack) {
     final plus = pack.credits ~/ coachModeCreditCost[CoachMode.plus]!;
     final pro = pack.credits ~/ coachModeCreditCost[CoachMode.pro]!;
-    return '$plus consultas Plus ou $pro consultas Pro';
+    return S.of(context).coachPackSessions(plus, pro);
   }
 
   int _recommendedPackIndex() {
@@ -1740,6 +1740,7 @@ class _CreditPacksSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final recommended = _recommendedPackIndex();
     final insight = subscription.lastSessionInsight;
     final insightValue = subscription.lastSessionInsightValue;
@@ -1755,7 +1756,7 @@ class _CreditPacksSheet extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'Créditos AI Coach',
+                  l10n.coachCreditsTitle,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
@@ -1773,7 +1774,7 @@ class _CreditPacksSheet extends StatelessWidget {
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: Text(
-                    '${subscription.aiCredits} restantes',
+                    l10n.coachCreditsRemaining(subscription.aiCredits),
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -1814,8 +1815,8 @@ class _CreditPacksSheet extends StatelessWidget {
                             color: AppColors.textSecondary(context),
                           ),
                           children: [
-                            const TextSpan(
-                              text: 'Na última sessão Pro, discutimos ',
+                            TextSpan(
+                              text: l10n.coachRoiInsightPrefix,
                             ),
                             TextSpan(
                               text: insight,
@@ -1826,7 +1827,7 @@ class _CreditPacksSheet extends StatelessWidget {
                             ),
                             if (insightValue != null &&
                                 insightValue.isNotEmpty) ...[
-                              const TextSpan(text: '. Potencial: '),
+                              TextSpan(text: l10n.coachRoiPotential),
                               TextSpan(
                                 text: insightValue,
                                 style: TextStyle(
@@ -1835,8 +1836,8 @@ class _CreditPacksSheet extends StatelessWidget {
                                 ),
                               ),
                             ],
-                            const TextSpan(
-                              text: '. Custou 5 créditos (€0,05).',
+                            TextSpan(
+                              text: l10n.coachRoiCost,
                             ),
                           ],
                         ),
@@ -1869,8 +1870,7 @@ class _CreditPacksSheet extends StatelessWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'Máximo atingido (${SubscriptionState.maxCreditCap}). '
-                        'Usa os créditos antes de comprar mais.',
+                        l10n.coachCapWarningSheet(SubscriptionState.maxCreditCap),
                         style: TextStyle(
                           fontSize: 12,
                           color: AppColors.textPrimary(context),
@@ -1921,7 +1921,7 @@ class _CreditPacksSheet extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'créditos',
+                          l10n.coachCreditsLabel,
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w500,
@@ -1945,7 +1945,7 @@ class _CreditPacksSheet extends StatelessWidget {
                               borderRadius: BorderRadius.circular(100),
                             ),
                             child: Text(
-                              'MELHOR VALOR',
+                              l10n.coachBestValue,
                               style: TextStyle(
                                 fontSize: 9,
                                 fontWeight: FontWeight.w700,
@@ -1955,7 +1955,7 @@ class _CreditPacksSheet extends StatelessWidget {
                             ),
                           ),
                         Text(
-                          _packSessions(pack),
+                          _packSessions(context, pack),
                           style: TextStyle(
                             fontSize: 12,
                             color: wasted > 0
@@ -1965,7 +1965,7 @@ class _CreditPacksSheet extends StatelessWidget {
                         ),
                         if (wasted > 0)
                           Text(
-                            'Perderias $wasted créditos',
+                            l10n.coachWastedCredits(wasted),
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
@@ -2008,7 +2008,7 @@ class _CreditPacksSheet extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  'Recomendamos o pacote de ${creditPacks[recommended].credits} créditos',
+                  l10n.coachRecommendedPack(creditPacks[recommended].credits),
                   style: TextStyle(
                     fontSize: 12,
                     color: AppColors.textSecondary(context),

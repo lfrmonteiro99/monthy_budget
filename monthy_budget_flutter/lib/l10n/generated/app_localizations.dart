@@ -9646,6 +9646,288 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Medio'**
   String get complexityMedium;
+
+  /// Title of the downgrade transition card
+  ///
+  /// In pt, this message translates to:
+  /// **'Modo alterado para Eco'**
+  String get coachDowngradeTitle;
+
+  /// Column header for Plus features in downgrade comparison
+  ///
+  /// In pt, this message translates to:
+  /// **'Com Plus'**
+  String get coachCompareWithPlus;
+
+  /// Plus memory feature
+  ///
+  /// In pt, this message translates to:
+  /// **'Memoria: 20 msgs'**
+  String get coachCompareMemory20;
+
+  /// Plus detailed replies feature
+  ///
+  /// In pt, this message translates to:
+  /// **'Respostas detalhadas'**
+  String get coachCompareDetailedReplies;
+
+  /// Plus financial context feature
+  ///
+  /// In pt, this message translates to:
+  /// **'Contexto financeiro'**
+  String get coachCompareFinancialContext;
+
+  /// Column header for Eco features in downgrade comparison
+  ///
+  /// In pt, this message translates to:
+  /// **'Com Eco'**
+  String get coachCompareWithEco;
+
+  /// Eco memory feature
+  ///
+  /// In pt, this message translates to:
+  /// **'Memoria: 6 msgs'**
+  String get coachCompareMemory6;
+
+  /// Eco short replies feature
+  ///
+  /// In pt, this message translates to:
+  /// **'Respostas curtas'**
+  String get coachCompareShortReplies;
+
+  /// Eco limited context feature
+  ///
+  /// In pt, this message translates to:
+  /// **'Contexto limitado'**
+  String get coachCompareLimitedContext;
+
+  /// Endowment Plus banner text
+  ///
+  /// In pt, this message translates to:
+  /// **'Estas a usar o modo Plus gratuitamente — o coach lembra as ultimas 20 mensagens ({remaining} restantes)'**
+  String coachEndowmentBanner(int remaining);
+
+  /// Smart recommendation for Pro mode
+  ///
+  /// In pt, this message translates to:
+  /// **'Pergunta complexa detetada — Pro daria uma analise mais detalhada ({cost} cr.)'**
+  String coachRecommendPro(int cost);
+
+  /// Smart recommendation for Plus mode
+  ///
+  /// In pt, this message translates to:
+  /// **'Plus da mais contexto para esta analise ({cost} cr.)'**
+  String coachRecommendPlus(int cost);
+
+  /// Label for inline micro-action next step
+  ///
+  /// In pt, this message translates to:
+  /// **'PROXIMO PASSO'**
+  String get coachNextStep;
+
+  /// Header for micro-action follow-up card
+  ///
+  /// In pt, this message translates to:
+  /// **'Acao pendente da ultima sessao'**
+  String get coachPendingAction;
+
+  /// How many days ago the micro-action was suggested
+  ///
+  /// In pt, this message translates to:
+  /// **'Sugerido ha {daysAgo} {daysAgo, plural, =1{dia} other{dias}}'**
+  String coachSuggestedDaysAgo(int daysAgo);
+
+  /// Credit cap warning in mode selector panel
+  ///
+  /// In pt, this message translates to:
+  /// **'Maximo atingido (150). Usa os teus creditos antes da proxima renovacao!'**
+  String get coachCapWarning;
+
+  /// How many sessions a credit pack provides
+  ///
+  /// In pt, this message translates to:
+  /// **'{plus} consultas Plus ou {pro} consultas Pro'**
+  String coachPackSessions(int plus, int pro);
+
+  /// Title of the credit packs bottom sheet
+  ///
+  /// In pt, this message translates to:
+  /// **'Creditos AI Coach'**
+  String get coachCreditsTitle;
+
+  /// Remaining credits badge
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} restantes'**
+  String coachCreditsRemaining(int count);
+
+  /// Prefix for ROI insight in credit sheet
+  ///
+  /// In pt, this message translates to:
+  /// **'Na ultima sessao Pro, discutimos '**
+  String get coachRoiInsightPrefix;
+
+  /// Potential label in ROI insight
+  ///
+  /// In pt, this message translates to:
+  /// **'. Potencial: '**
+  String get coachRoiPotential;
+
+  /// Cost suffix in ROI insight
+  ///
+  /// In pt, this message translates to:
+  /// **'. Custou 5 creditos (€0,05).'**
+  String get coachRoiCost;
+
+  /// Credit cap warning in the credit packs sheet
+  ///
+  /// In pt, this message translates to:
+  /// **'Maximo atingido ({max}). Usa os creditos antes de comprar mais.'**
+  String coachCapWarningSheet(int max);
+
+  /// Label below credit count in pack card
+  ///
+  /// In pt, this message translates to:
+  /// **'creditos'**
+  String get coachCreditsLabel;
+
+  /// Badge on recommended credit pack
+  ///
+  /// In pt, this message translates to:
+  /// **'MELHOR VALOR'**
+  String get coachBestValue;
+
+  /// Warning about wasted credits when buying a pack
+  ///
+  /// In pt, this message translates to:
+  /// **'Perderias {wasted} creditos'**
+  String coachWastedCredits(int wasted);
+
+  /// Personalized pack recommendation
+  ///
+  /// In pt, this message translates to:
+  /// **'Recomendamos o pacote de {credits} creditos'**
+  String coachRecommendedPack(int credits);
+
+  /// No description provided for @cmdInvalidAction.
+  ///
+  /// In pt, this message translates to:
+  /// **'Acao ou parametros invalidos: {action}'**
+  String cmdInvalidAction(String action);
+
+  /// No description provided for @cmdUnknownAction.
+  ///
+  /// In pt, this message translates to:
+  /// **'Acao desconhecida: {action}'**
+  String cmdUnknownAction(String action);
+
+  /// No description provided for @cmdExpenseAdded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesa adicionada: {amount} em {category}'**
+  String cmdExpenseAdded(String amount, String category);
+
+  /// No description provided for @cmdShoppingItemAdded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Artigo adicionado: {name}'**
+  String cmdShoppingItemAdded(String name);
+
+  /// No description provided for @cmdSavingsGoalAdded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Objetivo de poupanca adicionado: {name}'**
+  String cmdSavingsGoalAdded(String name);
+
+  /// No description provided for @cmdRecurringExpenseAdded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesa recorrente adicionada: {amount} em {category}'**
+  String cmdRecurringExpenseAdded(String amount, String category);
+
+  /// No description provided for @cmdShoppingItemNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Artigo nao encontrado: {name}'**
+  String cmdShoppingItemNotFound(String name);
+
+  /// No description provided for @cmdShoppingItemRemoved.
+  ///
+  /// In pt, this message translates to:
+  /// **'Artigo removido: {name}'**
+  String cmdShoppingItemRemoved(String name);
+
+  /// No description provided for @cmdSavingsGoalNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Objetivo de poupanca nao encontrado: {name}'**
+  String cmdSavingsGoalNotFound(String name);
+
+  /// No description provided for @cmdContributionAdded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Contribuicao adicionada: {amount} a {name}'**
+  String cmdContributionAdded(String amount, String name);
+
+  /// No description provided for @cmdShoppingItemChecked.
+  ///
+  /// In pt, this message translates to:
+  /// **'Artigo marcado: {name}'**
+  String cmdShoppingItemChecked(String name);
+
+  /// No description provided for @cmdShoppingItemUnchecked.
+  ///
+  /// In pt, this message translates to:
+  /// **'Artigo desmarcado: {name}'**
+  String cmdShoppingItemUnchecked(String name);
+
+  /// No description provided for @cmdExpenseNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesa nao encontrada: {description}'**
+  String cmdExpenseNotFound(String description);
+
+  /// No description provided for @cmdExpenseDeleted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesa eliminada: {description}'**
+  String cmdExpenseDeleted(String description);
+
+  /// No description provided for @cmdThemeSet.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tema definido para {mode}'**
+  String cmdThemeSet(String mode);
+
+  /// No description provided for @cmdPaletteSet.
+  ///
+  /// In pt, this message translates to:
+  /// **'Paleta de cores definida para {palette}'**
+  String cmdPaletteSet(String palette);
+
+  /// No description provided for @cmdLanguageSet.
+  ///
+  /// In pt, this message translates to:
+  /// **'Idioma definido para {locale}'**
+  String cmdLanguageSet(String locale);
+
+  /// No description provided for @cmdNavigatedTo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Navegado para {screen}'**
+  String cmdNavigatedTo(String screen);
+
+  /// No description provided for @cmdCheckedItemsCleared.
+  ///
+  /// In pt, this message translates to:
+  /// **'Itens marcados limpos'**
+  String get cmdCheckedItemsCleared;
+
+  /// No description provided for @cmdParseError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Desculpe, nao consegui entender o seu pedido. Tente reformular.'**
+  String get cmdParseError;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
