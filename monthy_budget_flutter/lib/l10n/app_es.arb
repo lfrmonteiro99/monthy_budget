@@ -2866,5 +2866,20 @@
     "coachOfflineBanner": "Sin conexion. El coach de IA requiere conexion a internet.",
     "coachOfflineSendDisabled": "Enviar esta desactivado mientras no hay conexion.",
     "cmdOfflineBanner": "Sin conexion. Solo los comandos locales (tema, navegacion) funcionan.",
-    "cmdOfflineBlocked": "Este comando requiere conexion a internet. Prueba un comando local como cambiar el tema o navegar."
+    "cmdOfflineBlocked": "Este comando requiere conexion a internet. Prueba un comando local como cambiar el tema o navegar.",
+    "coachFreeTrialRemaining": "{count} pregunta(s) gratuita(s) restante(s) este mes",
+    "@coachFreeTrialRemaining": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "coachFreeTrialExhausted": "Has agotado tus preguntas gratuitas este mes. Actualiza para seguir usando el AI Coach.",
+    "coachFreeTrialUpgrade": "Actualizar para coaching ilimitado",
+    "coachFreeTrialBanner": "Prueba gratuita: {used}/{total} preguntas usadas este mes",
+    "@coachFreeTrialBanner": {
+        "placeholders": {
+            "used": { "type": "int" },
+            "total": { "type": "int" }
+        }
+    }
 }

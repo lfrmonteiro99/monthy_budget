@@ -90,12 +90,33 @@ class SyncQueueEntries extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// Coach chat messages table (#763).
+///
+/// Replaces SharedPreferences JSON blob with a proper relational table
+/// to support pruning (max 100 per household) and efficient queries.
+class CoachMessages extends Table {
+  TextColumn get id => text()();
+  TextColumn get householdId => text()();
+  TextColumn get role => text()();
+  TextColumn get content => text()();
+  DateTimeColumn get timestamp => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 LazyDatabase _openConnection() {
   return LazyDatabase(() async => db_connection.openDatabaseConnection());
 }
 
 @DriftDatabase(
-  tables: [LocalShoppingItems, LocalExpenses, LocalMealPlans, SyncQueueEntries],
+  tables: [
+    LocalShoppingItems,
+    LocalExpenses,
+    LocalMealPlans,
+    SyncQueueEntries,
+    CoachMessages,
+  ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase._internal() : super(_openConnection());
@@ -104,5 +125,15 @@ class AppDatabase extends _$AppDatabase {
   static final AppDatabase instance = AppDatabase._internal();
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (Migrator m) => m.createAll(),
+        onUpgrade: (Migrator m, int from, int to) async {
+          if (from < 2) {
+            await m.createTable(coachMessages);
+          }
+        },
+      );
 }

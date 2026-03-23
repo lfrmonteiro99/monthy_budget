@@ -5613,4 +5613,21 @@ class SPt extends S {
   @override
   String get cmdOfflineBlocked =>
       'Este comando precisa de ligacao a internet. Tente um comando local como mudar o tema ou navegar.';
+
+  @override
+  String coachFreeTrialRemaining(int count) {
+    return '$count pergunta(s) gratuita(s) restante(s) este mes';
+  }
+
+  @override
+  String get coachFreeTrialExhausted =>
+      'Utilizou todas as suas perguntas gratuitas este mes. Atualize para continuar a usar o AI Coach.';
+
+  @override
+  String get coachFreeTrialUpgrade => 'Atualizar para coaching ilimitado';
+
+  @override
+  String coachFreeTrialBanner(int used, int total) {
+    return 'Periodo gratuito: $used/$total perguntas usadas este mes';
+  }
 }

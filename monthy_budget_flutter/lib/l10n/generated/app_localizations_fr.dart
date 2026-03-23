@@ -5629,4 +5629,22 @@ class SFr extends S {
   @override
   String get cmdOfflineBlocked =>
       'Cette commande necessite une connexion internet. Essayez une commande locale comme changer le theme ou naviguer.';
+
+  @override
+  String coachFreeTrialRemaining(int count) {
+    return '$count question(s) gratuite(s) restante(s) ce mois';
+  }
+
+  @override
+  String get coachFreeTrialExhausted =>
+      'Vous avez utilise toutes vos questions gratuites ce mois. Passez a la version superieure pour continuer a utiliser le coach IA.';
+
+  @override
+  String get coachFreeTrialUpgrade =>
+      'Passer a la version superieure pour un coaching illimite';
+
+  @override
+  String coachFreeTrialBanner(int used, int total) {
+    return 'Essai gratuit : $used/$total questions utilisees ce mois';
+  }
 }

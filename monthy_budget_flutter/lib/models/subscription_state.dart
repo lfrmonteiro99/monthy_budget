@@ -13,7 +13,7 @@ const coachModeCreditCost = <CoachMode, int>{
 };
 
 const coachModeMessageWindow = <CoachMode, int>{
-  CoachMode.eco: 6,
+  CoachMode.eco: 5,
   CoachMode.plus: 20,
   CoachMode.pro: 40,
 };

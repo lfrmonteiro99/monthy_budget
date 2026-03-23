@@ -10,6 +10,8 @@ import '../models/budget_summary.dart';
 import '../models/coach_insight.dart';
 import '../models/purchase_record.dart';
 import '../repositories/household_repository.dart';
+import '../repositories/local/app_database.dart';
+import '../repositories/local/coach_message_storage.dart';
 import '../utils/category_helpers.dart';
 import '../utils/stress_index.dart';
 import 'edge_function_client.dart';
@@ -39,7 +41,16 @@ class AiCoachService {
   static const _maxInsights = 20;
   static final _uuid = Uuid();
   static const _chatPrefKeyPrefix = 'coach_chat_v2_messages_';
+  /// SharedPreferences key that flags migration has been completed (#763).
+  static const _chatMigratedPrefKey = 'coach_chat_migrated_to_sqlite';
   static const _maxUserMessageLength = 2000;
+
+  /// SharedPreferences key prefix for free coaching trial usage (#770).
+  static const _freeTrialUsagePrefKey = 'coach_free_trial_usage';
+  static const _freeTrialMonthPrefKey = 'coach_free_trial_month';
+
+  /// Maximum free coaching interactions per month for free-tier users (#770).
+  static const maxFreeInteractionsPerMonth = 3;
 
   /// HTTP request timeout for AI coach API calls.
   @visibleForTesting
@@ -51,16 +62,20 @@ class AiCoachService {
   final CoachInsightRepository _insightRepository;
   final EdgeFunctionClient _edgeClient;
   final http.Client _httpClient;
+  final CoachMessageStorage _messageStorage;
 
   AiCoachService({
     CoachInsightRepository? insightRepository,
     http.Client? httpClient,
     EdgeFunctionClient? edgeClient,
+    CoachMessageStorage? messageStorage,
   })  : _insightRepository =
            insightRepository ?? SupabaseCoachInsightRepository(),
         _httpClient = httpClient ?? http.Client(),
         _edgeClient = edgeClient ??
-            EdgeFunctionClient(httpClient: httpClient ?? http.Client());
+            EdgeFunctionClient(httpClient: httpClient ?? http.Client()),
+        _messageStorage =
+            messageStorage ?? CoachMessageStorage(AppDatabase.instance);
 
   /// Sanitize user input before interpolating into prompts.
   ///
@@ -163,39 +178,130 @@ class AiCoachService {
     await _insightRepository.clearInsights(householdId);
   }
 
+  /// Load conversation from SQLite, migrating from SharedPreferences on first
+  /// call if legacy data exists (#763).
   Future<List<CoachChatMessage>> loadConversation(String householdId) async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString('$_chatPrefKeyPrefix$householdId');
-    if (raw == null || raw.trim().isEmpty) return [];
-    try {
-      final decoded = jsonDecode(raw);
-      if (decoded is! List) return [];
-      return decoded
-          .whereType<Map>()
-          .map((item) => CoachChatMessage.fromJson(
-                item.map((key, value) => MapEntry(key.toString(), value)),
-              ))
-          .toList();
-    } catch (_) {
-      return [];
-    }
+    await _migrateConversationIfNeeded(householdId);
+    final rows = await _messageStorage.loadMessages(householdId);
+    return rows
+        .map((r) => CoachChatMessage(
+              role: r.role,
+              content: r.content,
+              timestamp: r.timestamp,
+            ))
+        .toList();
   }
 
   Future<void> saveConversation(
     String householdId,
     List<CoachChatMessage> messages,
   ) async {
-    final prefs = await SharedPreferences.getInstance();
-    final payload = messages.map((m) => m.toJson()).toList();
-    await prefs.setString(
-      '$_chatPrefKeyPrefix$householdId',
-      jsonEncode(payload),
-    );
+    await _messageStorage.clearMessages(householdId);
+    final companions = messages
+        .map((m) => CoachMessagesCompanion.insert(
+              id: _uuid.v4(),
+              householdId: householdId,
+              role: m.role,
+              content: m.content,
+              timestamp: m.timestamp,
+            ))
+        .toList();
+    await _messageStorage.insertAll(companions);
+    await _messageStorage.pruneMessages(householdId);
   }
 
   Future<void> clearConversation(String householdId) async {
+    await _messageStorage.clearMessages(householdId);
+  }
+
+  /// Migrate legacy SharedPreferences conversation to SQLite (#763).
+  Future<void> _migrateConversationIfNeeded(String householdId) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('$_chatPrefKeyPrefix$householdId');
+    final migrationKey = '$_chatMigratedPrefKey:$householdId';
+    if (prefs.getBool(migrationKey) == true) return;
+
+    final raw = prefs.getString('$_chatPrefKeyPrefix$householdId');
+    if (raw != null && raw.trim().isNotEmpty) {
+      try {
+        final decoded = jsonDecode(raw);
+        if (decoded is List) {
+          final messages = decoded
+              .whereType<Map>()
+              .map((item) => CoachChatMessage.fromJson(
+                    item.map(
+                        (key, value) => MapEntry(key.toString(), value)),
+                  ))
+              .toList();
+          if (messages.isNotEmpty) {
+            final companions = messages
+                .map((m) => CoachMessagesCompanion.insert(
+                      id: _uuid.v4(),
+                      householdId: householdId,
+                      role: m.role,
+                      content: m.content,
+                      timestamp: m.timestamp,
+                    ))
+                .toList();
+            await _messageStorage.insertAll(companions);
+            await _messageStorage.pruneMessages(householdId);
+          }
+        }
+      } catch (_) {
+        // Corrupt data -- skip migration, start fresh
+      }
+      await prefs.remove('$_chatPrefKeyPrefix$householdId');
+    }
+    await prefs.setBool(migrationKey, true);
+  }
+
+  // -- Free coaching trial (#770) ---------------------------------------------
+
+  /// Returns the number of free interactions used this month.
+  Future<int> getFreeTrialUsage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final currentMonth = _currentMonthKey();
+    final storedMonth = prefs.getString(_freeTrialMonthPrefKey) ?? '';
+    if (storedMonth != currentMonth) return 0;
+    return prefs.getInt(_freeTrialUsagePrefKey) ?? 0;
+  }
+
+  /// Returns remaining free interactions this month.
+  Future<int> getFreeTrialRemaining() async {
+    final used = await getFreeTrialUsage();
+    return (maxFreeInteractionsPerMonth - used)
+        .clamp(0, maxFreeInteractionsPerMonth);
+  }
+
+  /// Consume one free interaction. Returns true if successful, false if
+  /// exhausted.
+  Future<bool> consumeFreeTrialInteraction() async {
+    final prefs = await SharedPreferences.getInstance();
+    final currentMonth = _currentMonthKey();
+    final storedMonth = prefs.getString(_freeTrialMonthPrefKey) ?? '';
+
+    int used;
+    if (storedMonth != currentMonth) {
+      used = 0;
+      await prefs.setString(_freeTrialMonthPrefKey, currentMonth);
+    } else {
+      used = prefs.getInt(_freeTrialUsagePrefKey) ?? 0;
+    }
+
+    if (used >= maxFreeInteractionsPerMonth) return false;
+
+    await prefs.setInt(_freeTrialUsagePrefKey, used + 1);
+    return true;
+  }
+
+  /// Whether the free tier user has remaining trial interactions this month.
+  Future<bool> hasFreeTrialRemaining() async {
+    final remaining = await getFreeTrialRemaining();
+    return remaining > 0;
+  }
+
+  static String _currentMonthKey() {
+    final now = DateTime.now();
+    return '${now.year}-${now.month.toString().padLeft(2, '0')}';
   }
 
   Future<String> sendChatMessage({

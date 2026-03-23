@@ -9970,6 +9970,30 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Este comando precisa de ligacao a internet. Tente um comando local como mudar o tema ou navegar.'**
   String get cmdOfflineBlocked;
+
+  /// No description provided for @coachFreeTrialRemaining.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} pergunta(s) gratuita(s) restante(s) este mes'**
+  String coachFreeTrialRemaining(int count);
+
+  /// No description provided for @coachFreeTrialExhausted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Utilizou todas as suas perguntas gratuitas este mes. Atualize para continuar a usar o AI Coach.'**
+  String get coachFreeTrialExhausted;
+
+  /// No description provided for @coachFreeTrialUpgrade.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atualizar para coaching ilimitado'**
+  String get coachFreeTrialUpgrade;
+
+  /// No description provided for @coachFreeTrialBanner.
+  ///
+  /// In pt, this message translates to:
+  /// **'Periodo gratuito: {used}/{total} perguntas usadas este mes'**
+  String coachFreeTrialBanner(int used, int total);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
