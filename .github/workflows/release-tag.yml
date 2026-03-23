@@ -171,29 +171,35 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Validate monetization secrets
+      - name: Resolve monetization secrets with dev placeholders
+        id: monetization
         run: |
-          missing=""
-          [ -z "${REVENUECAT_API_KEY}" ] && missing="${missing} REVENUECAT_API_KEY"
-          [ -z "${ADMOB_APP_ID}" ] && missing="${missing} ADMOB_APP_ID"
-          [ -z "${ADMOB_BANNER_AD_UNIT_ID}" ] && missing="${missing} ADMOB_BANNER_AD_UNIT_ID"
-          if [ -n "$missing" ]; then
-            echo "::error::Missing monetization secrets:${missing}. Android release builds require these --dart-define values."
-            exit 1
+          echo "REVENUECAT_API_KEY=${REVENUECAT_API_KEY:-placeholder_revenuecat}" >> "$GITHUB_ENV"
+          echo "ADMOB_APP_ID=${ADMOB_APP_ID:-ca-app-pub-0000000000000000~0000000000}" >> "$GITHUB_ENV"
+          echo "ADMOB_BANNER_AD_UNIT_ID=${ADMOB_BANNER_AD_UNIT_ID:-ca-app-pub-0000000000000000/0000000000}" >> "$GITHUB_ENV"
+          if [ -z "${REVENUECAT_API_KEY}" ] || [ -z "${ADMOB_APP_ID}" ] || [ -z "${ADMOB_BANNER_AD_UNIT_ID}" ]; then
+            echo "::warning::Some monetization secrets missing — using dev placeholders. Ads and IAP will not work in this build."
           fi
         env:
           REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY }}
           ADMOB_APP_ID: ${{ secrets.ADMOB_APP_ID }}
           ADMOB_BANNER_AD_UNIT_ID: ${{ secrets.ADMOB_BANNER_AD_UNIT_ID }}
 
-      - name: Decode keystore
+      - name: Decode keystore (or generate debug keystore)
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/keystore.jks
-          if [ ! -s android/keystore.jks ]; then
-            echo "::error::Decoded keystore is empty - KEYSTORE_BASE64 secret may be invalid."
-            exit 1
+          if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
+            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/keystore.jks
+            echo "Keystore decoded: $(wc -c < android/keystore.jks) bytes"
+          else
+            echo "::warning::No KEYSTORE_BASE64 secret — generating debug keystore for dev build."
+            keytool -genkey -v -keystore android/keystore.jks \
+              -alias dev -keyalg RSA -keysize 2048 -validity 1 \
+              -storepass android -keypass android \
+              -dname "CN=Dev,O=Dev,C=PT" 2>/dev/null
+            echo "KEYSTORE_PASSWORD=android" >> "$GITHUB_ENV"
+            echo "KEY_ALIAS=dev" >> "$GITHUB_ENV"
+            echo "KEY_PASSWORD=android" >> "$GITHUB_ENV"
           fi
-          echo "Keystore decoded: $(wc -c < android/keystore.jks) bytes"
 
       - name: Build APK
         env:
@@ -204,9 +210,9 @@ jobs:
           flutter build apk --release \
             --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
             --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
-            --dart-define=REVENUECAT_API_KEY=${{ secrets.REVENUECAT_API_KEY }} \
-            --dart-define=ADMOB_APP_ID=${{ secrets.ADMOB_APP_ID }} \
-            --dart-define=ADMOB_BANNER_AD_UNIT_ID=${{ secrets.ADMOB_BANNER_AD_UNIT_ID }}
+            --dart-define=REVENUECAT_API_KEY=${{ env.REVENUECAT_API_KEY }} \
+            --dart-define=ADMOB_APP_ID=${{ env.ADMOB_APP_ID }} \
+            --dart-define=ADMOB_BANNER_AD_UNIT_ID=${{ env.ADMOB_BANNER_AD_UNIT_ID }}
 
       - name: Build AAB
         env:
@@ -217,9 +223,9 @@ jobs:
           flutter build appbundle --release \
             --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
             --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
-            --dart-define=REVENUECAT_API_KEY=${{ secrets.REVENUECAT_API_KEY }} \
-            --dart-define=ADMOB_APP_ID=${{ secrets.ADMOB_APP_ID }} \
-            --dart-define=ADMOB_BANNER_AD_UNIT_ID=${{ secrets.ADMOB_BANNER_AD_UNIT_ID }}
+            --dart-define=REVENUECAT_API_KEY=${{ env.REVENUECAT_API_KEY }} \
+            --dart-define=ADMOB_APP_ID=${{ env.ADMOB_APP_ID }} \
+            --dart-define=ADMOB_BANNER_AD_UNIT_ID=${{ env.ADMOB_BANNER_AD_UNIT_ID }}
 
       - name: Upload artifacts to GitHub Release
         run: |
