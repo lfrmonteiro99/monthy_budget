@@ -5575,4 +5575,21 @@ class SEn extends S {
   @override
   String get cmdOfflineBlocked =>
       'This command requires an internet connection. Try a local command like changing the theme or navigating.';
+
+  @override
+  String coachFreeTrialRemaining(int count) {
+    return '$count free question(s) remaining this month';
+  }
+
+  @override
+  String get coachFreeTrialExhausted =>
+      'You have used all your free questions this month. Upgrade to continue using the AI Coach.';
+
+  @override
+  String get coachFreeTrialUpgrade => 'Upgrade for unlimited coaching';
+
+  @override
+  String coachFreeTrialBanner(int used, int total) {
+    return 'Free trial: $used/$total questions used this month';
+  }
 }

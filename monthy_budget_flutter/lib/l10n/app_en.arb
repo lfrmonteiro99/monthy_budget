@@ -2923,5 +2923,20 @@
     "coachOfflineBanner": "You are offline. AI coach requires an internet connection.",
     "coachOfflineSendDisabled": "Send is disabled while offline.",
     "cmdOfflineBanner": "You are offline. Only local commands (theme, navigation) work.",
-    "cmdOfflineBlocked": "This command requires an internet connection. Try a local command like changing the theme or navigating."
+    "cmdOfflineBlocked": "This command requires an internet connection. Try a local command like changing the theme or navigating.",
+    "coachFreeTrialRemaining": "{count} free question(s) remaining this month",
+    "@coachFreeTrialRemaining": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "coachFreeTrialExhausted": "You have used all your free questions this month. Upgrade to continue using the AI Coach.",
+    "coachFreeTrialUpgrade": "Upgrade for unlimited coaching",
+    "coachFreeTrialBanner": "Free trial: {used}/{total} questions used this month",
+    "@coachFreeTrialBanner": {
+        "placeholders": {
+            "used": { "type": "int" },
+            "total": { "type": "int" }
+        }
+    }
 }

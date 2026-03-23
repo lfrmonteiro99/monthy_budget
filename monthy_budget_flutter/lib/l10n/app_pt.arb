@@ -5601,5 +5601,20 @@
     "coachOfflineBanner": "Sem ligacao. O coach de IA precisa de ligacao a internet.",
     "coachOfflineSendDisabled": "Envio desativado enquanto esta sem ligacao.",
     "cmdOfflineBanner": "Sem ligacao. Apenas comandos locais (tema, navegacao) funcionam.",
-    "cmdOfflineBlocked": "Este comando precisa de ligacao a internet. Tente um comando local como mudar o tema ou navegar."
+    "cmdOfflineBlocked": "Este comando precisa de ligacao a internet. Tente um comando local como mudar o tema ou navegar.",
+    "coachFreeTrialRemaining": "{count} pergunta(s) gratuita(s) restante(s) este mes",
+    "@coachFreeTrialRemaining": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "coachFreeTrialExhausted": "Utilizou todas as suas perguntas gratuitas este mes. Atualize para continuar a usar o AI Coach.",
+    "coachFreeTrialUpgrade": "Atualizar para coaching ilimitado",
+    "coachFreeTrialBanner": "Periodo gratuito: {used}/{total} perguntas usadas este mes",
+    "@coachFreeTrialBanner": {
+        "placeholders": {
+            "used": { "type": "int" },
+            "total": { "type": "int" }
+        }
+    }
 }

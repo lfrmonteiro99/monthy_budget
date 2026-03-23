@@ -5616,4 +5616,21 @@ class SEs extends S {
   @override
   String get cmdOfflineBlocked =>
       'Este comando requiere conexion a internet. Prueba un comando local como cambiar el tema o navegar.';
+
+  @override
+  String coachFreeTrialRemaining(int count) {
+    return '$count pregunta(s) gratuita(s) restante(s) este mes';
+  }
+
+  @override
+  String get coachFreeTrialExhausted =>
+      'Has agotado tus preguntas gratuitas este mes. Actualiza para seguir usando el AI Coach.';
+
+  @override
+  String get coachFreeTrialUpgrade => 'Actualizar para coaching ilimitado';
+
+  @override
+  String coachFreeTrialBanner(int used, int total) {
+    return 'Prueba gratuita: $used/$total preguntas usadas este mes';
+  }
 }

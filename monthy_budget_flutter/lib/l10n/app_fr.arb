@@ -2866,5 +2866,20 @@
     "coachOfflineBanner": "Hors ligne. Le coach IA necessite une connexion internet.",
     "coachOfflineSendDisabled": "L'envoi est desactive hors ligne.",
     "cmdOfflineBanner": "Hors ligne. Seules les commandes locales (theme, navigation) fonctionnent.",
-    "cmdOfflineBlocked": "Cette commande necessite une connexion internet. Essayez une commande locale comme changer le theme ou naviguer."
+    "cmdOfflineBlocked": "Cette commande necessite une connexion internet. Essayez une commande locale comme changer le theme ou naviguer.",
+    "coachFreeTrialRemaining": "{count} question(s) gratuite(s) restante(s) ce mois",
+    "@coachFreeTrialRemaining": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "coachFreeTrialExhausted": "Vous avez utilise toutes vos questions gratuites ce mois. Passez a la version superieure pour continuer a utiliser le coach IA.",
+    "coachFreeTrialUpgrade": "Passer a la version superieure pour un coaching illimite",
+    "coachFreeTrialBanner": "Essai gratuit : {used}/{total} questions utilisees ce mois",
+    "@coachFreeTrialBanner": {
+        "placeholders": {
+            "used": { "type": "int" },
+            "total": { "type": "int" }
+        }
+    }
 }
