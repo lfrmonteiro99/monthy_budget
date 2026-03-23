@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
 import 'package:monthly_management/services/command_chat_service.dart';
 
 void main() {
@@ -197,4 +200,64 @@ void main() {
       expect(prompt, contains('EXACTLY ONE action'));
     });
   });
+
+  group('extractJsonObject (#753)', () {
+    test('extracts simple JSON object', () {
+      const input = '{"action":"add_expense","params":{"amount":10}}';
+      expect(CommandChatService.extractJsonObject(input), input);
+    });
+
+    test('extracts JSON from surrounding text', () {
+      const input = 'Here is the result: {"action":"nav","params":{}} done';
+      expect(
+        CommandChatService.extractJsonObject(input),
+        '{"action":"nav","params":{}}',
+      );
+    });
+
+    test('handles nested braces correctly', () {
+      const input = '{"action":"add","params":{"nested":{"deep":1}},"message":"ok"}';
+      expect(CommandChatService.extractJsonObject(input), input);
+    });
+
+    test('ignores braces inside strings', () {
+      const input = '{"msg":"a { b } c","val":1}';
+      expect(CommandChatService.extractJsonObject(input), input);
+    });
+
+    test('returns null for no braces', () {
+      expect(CommandChatService.extractJsonObject('no json here'), isNull);
+    });
+
+    test('returns null for unbalanced braces', () {
+      expect(CommandChatService.extractJsonObject('{unclosed'), isNull);
+    });
+
+    test('stops at first balanced object (does not greedily match)', () {
+      const input = '{"a":1} some text {"b":2}';
+      expect(CommandChatService.extractJsonObject(input), '{"a":1}');
+    });
+
+    test('handles escaped quotes in strings', () {
+      const input = r'{"msg":"say \"hello\"","v":1}';
+      expect(CommandChatService.extractJsonObject(input), input);
+    });
+  });
+
+  group('parseCommand fallback (#758)', () {
+    test('returns meaningful error when all parsing fails', () async {
+      final service = CommandChatService(httpClient: _NoopClient());
+      final result = await service.parseCommand('xyzzy gibberish');
+      expect(result.action, isNull);
+      expect(result.message, isNotEmpty);
+      expect(result.message, isNot(equals('')));
+    });
+  });
+}
+
+class _NoopClient extends http.BaseClient {
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) async {
+    return http.StreamedResponse(Stream.value([]), 500);
+  }
 }

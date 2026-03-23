@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 
 import '../config/supabase_public_config.dart';
 import '../constants/app_constants.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../models/command_action.dart';
 import 'command_action_registry.dart';
 import 'log_service.dart';
@@ -18,7 +19,7 @@ class CommandChatService {
     : _httpClient = httpClient ?? http.Client();
 
   /// Parse a user command via AI, with retry and regex fallback.
-  Future<CommandAction> parseCommand(String userInput) async {
+  Future<CommandAction> parseCommand(String userInput, {S? l10n}) async {
     // Try AI first
     try {
       final result = await _requestAiParse(userInput);
@@ -47,8 +48,10 @@ class CommandChatService {
     final regexResult = regexParse(userInput);
     if (regexResult != null) return regexResult;
 
-    // All failed
-    return CommandAction.conversational('');
+    // All failed -- return localized error message
+    final errorMessage = l10n?.cmdParseError ??
+        'Sorry, I could not understand your request. Please try rephrasing.';
+    return CommandAction.conversational(errorMessage);
   }
 
   Future<CommandAction?> _requestAiParse(
@@ -99,11 +102,12 @@ class CommandChatService {
         return CommandAction.fromJson(parsed);
       }
     } catch (_) {
-      // Not valid JSON — try extracting outermost JSON object
-      final jsonMatch = RegExp(r'\{.*\}', dotAll: true).firstMatch(content);
-      if (jsonMatch != null) {
+      // Not valid JSON -- try extracting outermost JSON object with
+      // brace-depth counting (safe alternative to greedy regex).
+      final jsonStr = extractJsonObject(content);
+      if (jsonStr != null) {
         try {
-          final parsed = jsonDecode(jsonMatch.group(0)!);
+          final parsed = jsonDecode(jsonStr);
           if (parsed is Map<String, dynamic>) {
             return CommandAction.fromJson(parsed);
           }
@@ -423,6 +427,44 @@ class CommandChatService {
       'misc': 'outros',
     };
     return aliases[raw.toLowerCase().trim()];
+  }
+
+  /// Extracts the first balanced JSON object from [text] using brace-depth
+  /// counting. Returns null when no balanced object is found.
+  static String? extractJsonObject(String text) {
+    bool inString = false;
+    bool escaped = false;
+    int? start;
+    int depth = 0;
+
+    for (int i = 0; i < text.length; i++) {
+      final c = text[i];
+
+      if (escaped) {
+        escaped = false;
+        continue;
+      }
+      if (c == r'\' && inString) {
+        escaped = true;
+        continue;
+      }
+      if (c == '"') {
+        inString = !inString;
+        continue;
+      }
+      if (inString) continue;
+
+      if (c == '{') {
+        if (depth == 0) start = i;
+        depth++;
+      } else if (c == '}') {
+        depth--;
+        if (depth == 0 && start != null) {
+          return text.substring(start, i + 1);
+        }
+      }
+    }
+    return null;
   }
 
   /// Builds the system prompt that instructs the AI to parse commands.
