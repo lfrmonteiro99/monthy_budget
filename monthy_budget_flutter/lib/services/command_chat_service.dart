@@ -2,22 +2,22 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import '../config/supabase_public_config.dart';
 import '../constants/app_constants.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/command_action.dart';
 import 'command_action_registry.dart';
+import 'edge_function_client.dart';
 import 'log_service.dart';
 
 class CommandChatService {
-  static const _edgeFunctionName = 'openai-chat';
   static const _model = 'gpt-4o-mini';
   static const _maxUserMessageLength = 2000;
 
-  final http.Client _httpClient;
+  final EdgeFunctionClient _edgeClient;
 
-  CommandChatService({http.Client? httpClient})
-    : _httpClient = httpClient ?? http.Client();
+  CommandChatService({http.Client? httpClient, EdgeFunctionClient? edgeClient})
+    : _edgeClient = edgeClient ??
+          EdgeFunctionClient(httpClient: httpClient ?? http.Client());
 
   /// Sanitize user input before interpolating into prompts.
   ///
@@ -84,57 +84,47 @@ class CommandChatService {
               'params, message. No other text.'
         : buildSystemPrompt();
 
-    final anonKey = supabaseAnonKey.trim();
-    if (anonKey.isEmpty) return null;
-
-    final response = await _httpClient
-        .post(
-          Uri.parse('$supabaseUrl/functions/v1/$_edgeFunctionName'),
-          headers: {
-            'Authorization': 'Bearer $anonKey',
-            'apikey': supabaseAnonKey,
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode({
-            'model': _model,
-            'messages': [
-              {'role': 'system', 'content': systemPrompt},
-              {'role': 'user', 'content': userInput},
-            ],
-            'max_tokens': 200,
-            'temperature': 0.1,
-          }),
-        )
-        .timeout(AppConstants.commandChatTimeout);
-
-    if (response.statusCode != 200) return null;
-
-    final data = jsonDecode(response.body);
-    if (data is! Map<String, dynamic>) return null;
-
-    final content = data['content']?.toString().trim() ?? '';
-    if (content.isEmpty) return null;
-
-    // Try to parse as JSON
+    final savedTimeout = EdgeFunctionClient.httpTimeout;
+    EdgeFunctionClient.httpTimeout = AppConstants.commandChatTimeout;
     try {
-      final parsed = jsonDecode(content);
-      if (parsed is Map<String, dynamic>) {
-        return CommandAction.fromJson(parsed);
+      final response = await _edgeClient.invoke({
+        'model': _model,
+        'messages': [
+          {'role': 'system', 'content': systemPrompt},
+          {'role': 'user', 'content': userInput},
+        ],
+        'max_tokens': 200,
+        'temperature': 0.1,
+      });
+
+      if (response.status != 200) return null;
+
+      final data = response.data;
+      if (data is! Map<String, dynamic>) return null;
+
+      final content = data['content']?.toString().trim() ?? '';
+      if (content.isEmpty) return null;
+
+      try {
+        final parsed = jsonDecode(content);
+        if (parsed is Map<String, dynamic>) {
+          return CommandAction.fromJson(parsed);
+        }
+      } catch (_) {
+        final jsonStr = extractJsonObject(content);
+        if (jsonStr != null) {
+          try {
+            final parsed = jsonDecode(jsonStr);
+            if (parsed is Map<String, dynamic>) {
+              return CommandAction.fromJson(parsed);
+            }
+          } catch (_) {}
+        }
       }
-    } catch (_) {
-      // Not valid JSON -- try extracting outermost JSON object with
-      // brace-depth counting (safe alternative to greedy regex).
-      final jsonStr = extractJsonObject(content);
-      if (jsonStr != null) {
-        try {
-          final parsed = jsonDecode(jsonStr);
-          if (parsed is Map<String, dynamic>) {
-            return CommandAction.fromJson(parsed);
-          }
-        } catch (_) {}
-      }
+      return null;
+    } finally {
+      EdgeFunctionClient.httpTimeout = savedTimeout;
     }
-    return null;
   }
 
   /// Regex fallback parser. Returns null if no pattern matches.

@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
-import '../config/supabase_public_config.dart';
 import '../models/app_settings.dart';
 import '../models/budget_summary.dart';
 import '../models/coach_insight.dart';
@@ -13,52 +12,29 @@ import '../models/purchase_record.dart';
 import '../repositories/household_repository.dart';
 import '../utils/category_helpers.dart';
 import '../utils/stress_index.dart';
+import 'edge_function_client.dart';
 import 'revenuecat_service.dart';
 import '../models/subscription_state.dart';
 
-bool shouldFallbackFromEdgeFunctionError(Object error) {
-  final raw = error.toString().toLowerCase();
-  return raw.contains('functionexception') &&
-      (raw.contains('status: 404') ||
-          raw.contains('not_found') ||
-          raw.contains('404'));
-}
+/// Delegates to [EdgeFunctionClient.isFunctionNotFoundError].
+bool shouldFallbackFromEdgeFunctionError(Object error) =>
+    EdgeFunctionClient.isFunctionNotFoundError(error);
 
-bool isEdgeFunctionAuthError(Object error) {
-  final raw = error.toString().toLowerCase();
-  return raw.contains('status: 401') ||
-      raw.contains('status: 403') ||
-      raw.contains('unauthorized') ||
-      raw.contains('jwt') ||
-      raw.contains('invalid token');
-}
+/// Delegates to [EdgeFunctionClient.isAuthError].
+bool isEdgeFunctionAuthError(Object error) =>
+    EdgeFunctionClient.isAuthError(error);
 
+/// Delegates to [EdgeFunctionClient.buildErrorMessage].
 String buildAiCoachRequestErrorMessage(
   Object error, {
   required bool hasApiKey,
-}) {
-  final raw = error.toString().replaceFirst('Exception: ', '').trim();
-  if (isEdgeFunctionAuthError(error)) {
-    return 'Sessao expirada ou utilizador nao autenticado. '
-        'Inicie sessao novamente para usar o AI Coach.';
-  }
-  if (shouldFallbackFromEdgeFunctionError(error)) {
-    if (hasApiKey) {
-      return 'Serviço de IA indisponível no servidor. Verifique se a Edge Function '
-          '"openai-chat" está publicada no projeto Supabase.';
-    }
-    return 'Serviço de IA indisponível no servidor. Adicione uma API key OpenAI '
-        'em Definições > AI Coach ou publique a Edge Function "openai-chat".';
-  }
-  if (raw.isEmpty) return 'Falha ao processar pedido de IA.';
-  return raw;
-}
+}) =>
+    EdgeFunctionClient.buildErrorMessage(error, hasApiKey: hasApiKey);
 
 class AiCoachService {
   static const _apiKeyPref = 'openai_api_key';
   // Key used to store obfuscated API key (#769)
   static const _apiKeyObfuscatedPref = 'openai_api_key_b64';
-  static const _edgeFunctionName = 'openai-chat';
   static const _model = 'gpt-4o-mini';
   static const _maxInsights = 20;
   static final _uuid = Uuid();
@@ -67,17 +43,24 @@ class AiCoachService {
 
   /// HTTP request timeout for AI coach API calls.
   @visibleForTesting
-  static Duration httpTimeout = const Duration(seconds: 15);
+  static Duration get httpTimeout => EdgeFunctionClient.httpTimeout;
+  @visibleForTesting
+  static set httpTimeout(Duration value) =>
+      EdgeFunctionClient.httpTimeout = value;
 
   final CoachInsightRepository _insightRepository;
+  final EdgeFunctionClient _edgeClient;
   final http.Client _httpClient;
 
   AiCoachService({
     CoachInsightRepository? insightRepository,
     http.Client? httpClient,
+    EdgeFunctionClient? edgeClient,
   })  : _insightRepository =
            insightRepository ?? SupabaseCoachInsightRepository(),
-        _httpClient = httpClient ?? http.Client();
+        _httpClient = httpClient ?? http.Client(),
+        _edgeClient = edgeClient ??
+            EdgeFunctionClient(httpClient: httpClient ?? http.Client());
 
   /// Sanitize user input before interpolating into prompts.
   ///
@@ -491,33 +474,8 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
   Future<({int status, Object? data})> _invokeEdgeFunctionDirect({
     required Map<String, dynamic> body,
   }) async {
-    final headers = _buildEdgeAuthHeaders();
-    final response = await _httpClient.post(
-      Uri.parse('$supabaseUrl/functions/v1/$_edgeFunctionName'),
-      headers: {
-        ...headers,
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode(body),
-    ).timeout(httpTimeout);
-    Object? data;
-    try {
-      data = jsonDecode(response.body);
-    } catch (_) {
-      data = {'error': response.body};
-    }
-    return (status: response.statusCode, data: data);
-  }
-
-  Map<String, String> _buildEdgeAuthHeaders() {
-    final jwt = supabaseAnonKey.trim();
-    if (jwt.isEmpty) {
-      throw Exception('JWT indisponivel para autenticar chamada ao AI Coach.');
-    }
-    return {
-      'Authorization': 'Bearer $jwt',
-      'apikey': supabaseAnonKey,
-    };
+    final response = await _edgeClient.invoke(body);
+    return (status: response.status, data: response.data);
   }
 
   Future<String> _requestDirectOpenAiCompletion({
