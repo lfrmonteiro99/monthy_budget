@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../constants/app_constants.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/command_action.dart';
+import '../services/command_chat_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/rate_limiter.dart';
 
@@ -25,6 +26,7 @@ class CommandChatPanel extends StatefulWidget {
   final Future<CommandResult> Function(CommandAction action) onExecuteAction;
   final void Function(String input, String action, Map<String, dynamic> params)
       onCachePattern;
+  final bool isOffline;
 
   const CommandChatPanel({
     super.key,
@@ -32,6 +34,7 @@ class CommandChatPanel extends StatefulWidget {
     required this.onSendCommand,
     required this.onExecuteAction,
     required this.onCachePattern,
+    this.isOffline = false,
   });
 
   @override
@@ -45,6 +48,18 @@ class _CommandChatPanelState extends State<CommandChatPanel> {
   bool _loading = false;
   final _rateLimiter = RateLimiter(minInterval: AppConstants.rateLimitInterval);
 
+  /// Actions that work offline (no AI or network needed).
+  static const _localActions = {
+    'set_theme_mode',
+    'set_color_palette',
+    'set_language',
+    'navigate_to',
+    'clear_checked_items',
+  };
+
+  static bool _isLocalAction(String? action) =>
+      action != null && _localActions.contains(action);
+
   @override
   void dispose() {
     _controller.dispose();
@@ -54,6 +69,8 @@ class _CommandChatPanelState extends State<CommandChatPanel> {
 
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // #767: Guard against callback firing after dispose
+      if (!mounted) return;
       if (!_scrollController.hasClients) return;
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
@@ -87,7 +104,25 @@ class _CommandChatPanelState extends State<CommandChatPanel> {
     _scrollToBottom();
 
     try {
-      final parsed = await widget.onSendCommand(input);
+      // #754: When offline, use regex-only parsing for local commands
+      final CommandAction parsed;
+      if (widget.isOffline) {
+        final regexResult = CommandChatService.regexParse(input);
+        if (regexResult != null && _isLocalAction(regexResult.action)) {
+          parsed = regexResult;
+        } else {
+          setState(() {
+            _messages.add(CommandChatMessage(
+              role: 'assistant',
+              content: S.of(context).cmdOfflineBlocked,
+              isError: true,
+            ));
+          });
+          return;
+        }
+      } else {
+        parsed = await widget.onSendCommand(input);
+      }
       if (!mounted) return;
 
       if (!parsed.hasAction) {
@@ -344,6 +379,36 @@ class _CommandChatPanelState extends State<CommandChatPanel> {
         child: Column(
           children: [
             _buildHeader(l10n),
+            // #754: Offline notice for command assistant
+            if (widget.isOffline)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                color: AppColors.warning(context).withValues(alpha: 0.12),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.cloud_off_outlined,
+                      size: 16,
+                      color: AppColors.warning(context),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        l10n.cmdOfflineBanner,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.warning(context),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             Expanded(
               child: _messages.isEmpty
                   ? _buildSuggestions(l10n)

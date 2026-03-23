@@ -1141,6 +1141,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         onOpenSettings: () => _navigate(const AppRoute.settings()),
         showTour: !_onboardingState.isTourDone('coach'),
         onTourComplete: () => _markTourDone('coach'),
+        isOffline: _isOffline,
       ),
     );
   }
@@ -2230,6 +2231,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         // Command assistant panel
         if (_commandPanelOpen)
           CommandChatPanel(
+            isOffline: _isOffline,
             onMinimize: () => setState(() => _commandPanelOpen = false),
             onSendCommand: (input) async {
               final cached = _commandPatternCache.match(input);

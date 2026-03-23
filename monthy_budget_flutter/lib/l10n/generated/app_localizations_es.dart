@@ -5600,4 +5600,20 @@ class SEs extends S {
   @override
   String get cmdHelpOutput =>
       'Comandos disponibles:\n- Anadir gasto: anade [cantidad] en [categoria]\n- Lista de compras: anade [articulo] a la lista de compras\n- Quitar de la lista: quita [articulo] de la lista de compras\n- Marcar articulo: marca [articulo] en la lista de compras\n- Objetivo de ahorro: crea objetivo de ahorro [nombre] de [cantidad]\n- Anadir al objetivo: anade [cantidad] al objetivo [nombre]\n- Gasto recurrente: anade gasto recurrente [cantidad] en [categoria]\n- Eliminar gasto: elimina el gasto [descripcion]\n- Tema: tema [claro/oscuro/sistema]\n- Paleta: color [ocean/emerald/violet/teal/sunset]\n- Idioma: lengua [ingles/portugues/espanol/frances]\n- Navegar: abre [pantalla]\n- Limpiar marcados: limpiar los marcados\n- Ayuda: ayuda';
+
+  @override
+  String get coachOfflineBanner =>
+      'Sin conexion. El coach de IA requiere conexion a internet.';
+
+  @override
+  String get coachOfflineSendDisabled =>
+      'Enviar esta desactivado mientras no hay conexion.';
+
+  @override
+  String get cmdOfflineBanner =>
+      'Sin conexion. Solo los comandos locales (tema, navegacion) funcionan.';
+
+  @override
+  String get cmdOfflineBlocked =>
+      'Este comando requiere conexion a internet. Prueba un comando local como cambiar el tema o navegar.';
 }

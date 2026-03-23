@@ -5597,4 +5597,20 @@ class SPt extends S {
   @override
   String get cmdHelpOutput =>
       'Comandos disponiveis:\n- Adicionar despesa: adiciona [valor] em [categoria]\n- Lista de compras: adiciona [item] a lista de compras\n- Remover da lista: remove [item] da lista de compras\n- Marcar item: marca [item] na lista de compras\n- Objetivo de poupanca: cria objetivo de poupanca [nome] de [valor]\n- Adicionar ao objetivo: adiciona [valor] ao objetivo [nome]\n- Despesa recorrente: adiciona despesa recorrente [valor] em [categoria]\n- Apagar despesa: apaga a despesa [descricao]\n- Tema: tema [claro/escuro/sistema]\n- Paleta: cor [ocean/emerald/violet/teal/sunset]\n- Idioma: idioma [ingles/portugues/espanhol/frances]\n- Navegar: abre [ecra]\n- Limpar marcados: limpa a lista\n- Ajuda: ajuda';
+
+  @override
+  String get coachOfflineBanner =>
+      'Sem ligacao. O coach de IA precisa de ligacao a internet.';
+
+  @override
+  String get coachOfflineSendDisabled =>
+      'Envio desativado enquanto esta sem ligacao.';
+
+  @override
+  String get cmdOfflineBanner =>
+      'Sem ligacao. Apenas comandos locais (tema, navegacao) funcionam.';
+
+  @override
+  String get cmdOfflineBlocked =>
+      'Este comando precisa de ligacao a internet. Tente um comando local como mudar o tema ou navegar.';
 }
