@@ -655,6 +655,12 @@ class SEs extends S {
   String get cmdTemplateAddExpense => 'Anade [cantidad] euros en [categoria]';
 
   @override
+  String get cmdTemplateOpenList => 'Abre la lista de compras';
+
+  @override
+  String get cmdTemplateOpenSettings => 'Abre los ajustes';
+
+  @override
   String get cmdTemplateChangeTheme => 'Cambia el tema a [claro/oscuro]';
 
   @override
@@ -5590,4 +5596,8 @@ class SEs extends S {
   @override
   String get cmdParseError =>
       'Lo siento, no pude entender tu solicitud. Intenta reformularla.';
+
+  @override
+  String get cmdHelpOutput =>
+      'Comandos disponibles:\n- Anadir gasto: anade [cantidad] en [categoria]\n- Lista de compras: anade [articulo] a la lista de compras\n- Quitar de la lista: quita [articulo] de la lista de compras\n- Marcar articulo: marca [articulo] en la lista de compras\n- Objetivo de ahorro: crea objetivo de ahorro [nombre] de [cantidad]\n- Anadir al objetivo: anade [cantidad] al objetivo [nombre]\n- Gasto recurrente: anade gasto recurrente [cantidad] en [categoria]\n- Eliminar gasto: elimina el gasto [descripcion]\n- Tema: tema [claro/oscuro/sistema]\n- Paleta: color [ocean/emerald/violet/teal/sunset]\n- Idioma: lengua [ingles/portugues/espanol/frances]\n- Navegar: abre [pantalla]\n- Limpiar marcados: limpiar los marcados\n- Ayuda: ayuda';
 }

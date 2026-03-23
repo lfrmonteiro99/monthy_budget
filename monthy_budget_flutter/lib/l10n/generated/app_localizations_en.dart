@@ -653,6 +653,12 @@ class SEn extends S {
   String get cmdTemplateAddExpense => 'Add [amount] euros in [category]';
 
   @override
+  String get cmdTemplateOpenList => 'Open shopping list';
+
+  @override
+  String get cmdTemplateOpenSettings => 'Open settings';
+
+  @override
   String get cmdTemplateChangeTheme => 'Change theme to [light/dark]';
 
   @override
@@ -5550,4 +5556,8 @@ class SEn extends S {
   @override
   String get cmdParseError =>
       'Sorry, I could not understand your request. Please try rephrasing.';
+
+  @override
+  String get cmdHelpOutput =>
+      'Available commands:\n- Add expense: add [amount] in [category]\n- Shopping list: add [item] to shopping list\n- Remove from list: remove [item] from shopping list\n- Check item: check [item] on shopping list\n- Savings goal: create savings goal [name] with [amount]\n- Add to goal: add [amount] to goal [name]\n- Recurring expense: add recurring expense [amount] in [category]\n- Delete expense: delete expense [description]\n- Theme: theme [light/dark/system]\n- Palette: color [ocean/emerald/violet/teal/sunset]\n- Language: language [english/portuguese/spanish/french]\n- Navigate: open [screen]\n- Clear checked: clear checked\n- Help: help';
 }

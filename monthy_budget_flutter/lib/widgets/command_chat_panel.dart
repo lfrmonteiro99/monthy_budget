@@ -409,9 +409,9 @@ class _CommandChatPanelState extends State<CommandChatPanel> {
   Widget _buildSuggestions(S l10n) {
     final suggestions = [
       (l10n.cmdSuggestionAddExpense, l10n.cmdTemplateAddExpense, false),
-      (l10n.cmdSuggestionOpenList, 'Abre a lista de compras', true),
+      (l10n.cmdSuggestionOpenList, l10n.cmdTemplateOpenList, true),
       (l10n.cmdSuggestionChangeTheme, l10n.cmdTemplateChangeTheme, false),
-      (l10n.cmdSuggestionOpenSettings, 'Abre as definicoes', true),
+      (l10n.cmdSuggestionOpenSettings, l10n.cmdTemplateOpenSettings, true),
     ];
 
     return Center(

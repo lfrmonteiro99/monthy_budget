@@ -1283,6 +1283,18 @@ abstract class S {
   /// **'Adiciona [valor] euros em [categoria]'**
   String get cmdTemplateAddExpense;
 
+  /// No description provided for @cmdTemplateOpenList.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abre a lista de compras'**
+  String get cmdTemplateOpenList;
+
+  /// No description provided for @cmdTemplateOpenSettings.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abre as definicoes'**
+  String get cmdTemplateOpenSettings;
+
   /// No description provided for @cmdTemplateChangeTheme.
   ///
   /// In pt, this message translates to:
@@ -9928,6 +9940,12 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Desculpe, nao consegui entender o seu pedido. Tente reformular.'**
   String get cmdParseError;
+
+  /// No description provided for @cmdHelpOutput.
+  ///
+  /// In pt, this message translates to:
+  /// **'Comandos disponiveis:\n- Adicionar despesa: adiciona [valor] em [categoria]\n- Lista de compras: adiciona [item] a lista de compras\n- Remover da lista: remove [item] da lista de compras\n- Marcar item: marca [item] na lista de compras\n- Objetivo de poupanca: cria objetivo de poupanca [nome] de [valor]\n- Adicionar ao objetivo: adiciona [valor] ao objetivo [nome]\n- Despesa recorrente: adiciona despesa recorrente [valor] em [categoria]\n- Apagar despesa: apaga a despesa [descricao]\n- Tema: tema [claro/escuro/sistema]\n- Paleta: cor [ocean/emerald/violet/teal/sunset]\n- Idioma: idioma [ingles/portugues/espanhol/frances]\n- Navegar: abre [ecra]\n- Limpar marcados: limpa a lista\n- Ajuda: ajuda'**
+  String get cmdHelpOutput;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

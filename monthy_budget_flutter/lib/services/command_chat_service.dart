@@ -121,6 +121,15 @@ class CommandChatService {
   static CommandAction? regexParse(String input) {
     final text = input.toLowerCase().trim();
 
+    // show_help (#755) -- exact-match keywords, checked early
+    if (RegExp(r'^(?:help|ajuda|aide|ayuda)$').hasMatch(text)) {
+      return CommandAction.withAction(
+        action: 'show_help',
+        params: {},
+        message: '',
+      );
+    }
+
     // add_expense
     final expenseMatch = RegExp(
       r'(?:adiciona|add|anade|ajoute|mete|poe|coloca)\s+'
@@ -143,12 +152,12 @@ class CommandChatService {
       }
     }
 
-    // add_shopping_item
+    // add_shopping_item (PT/EN/FR/ES)
     final shoppingMatch = RegExp(
       r'(?:adiciona|add|anade|ajoute|mete|poe|coloca)\s+'
       r'(.+?)\s+'
-      r'(?:na|no|to|a|à|ao)\s+'
-      r'(?:lista(?:\s+de\s+compras)?|shopping\s+list|liste\s+de\s+courses)',
+      r'(?:na|no|to|a|à|ao|al)\s+'
+      r'(?:la\s+)?(?:lista(?:\s+de\s+(?:compras|courses))?|shopping\s+list|liste\s+de\s+courses)',
       caseSensitive: false,
     ).firstMatch(text);
     if (shoppingMatch != null) {
@@ -162,12 +171,12 @@ class CommandChatService {
       }
     }
 
-    // remove_shopping_item
+    // remove_shopping_item (PT/EN/FR/ES)
     final removeShoppingMatch = RegExp(
-      r'(?:remove|remover|apaga|delete|tira)\s+'
+      r'(?:remove|remover|apaga|delete|tira|retire|retirer|quita|quitar|elimina|eliminar|supprime|supprimer)\s+'
       r'(.+?)\s+'
       r'(?:da|de|from)\s+'
-      r'(?:lista(?:\s+de\s+compras)?|shopping\s+list|liste\s+de\s+courses)',
+      r'(?:la\s+)?(?:lista(?:\s+de\s+(?:compras|courses))?|shopping\s+list|liste\s+de\s+courses)',
       caseSensitive: false,
     ).firstMatch(text);
     if (removeShoppingMatch != null) {
@@ -181,17 +190,19 @@ class CommandChatService {
       }
     }
 
-    // toggle_shopping_item_checked
+    // toggle_shopping_item_checked (PT/EN/FR/ES)
     final toggleShoppingMatch = RegExp(
-      r'(?:marca|mark|check|desmarca|uncheck)\s+'
+      r'(?:marca|mark|check|desmarca|uncheck|coche|decoche|marcar|desmarcar)\s+'
       r'(.+?)\s+'
-      r'(?:na|no|from|on|da|de)\s+'
-      r'(?:lista(?:\s+de\s+compras)?|shopping\s+list|liste\s+de\s+courses)',
+      r'(?:na|no|from|on|da|de|dans|en)\s+'
+      r'(?:la\s+)?(?:lista(?:\s+de\s+(?:compras|courses))?|shopping\s+list|liste\s+de\s+courses)',
       caseSensitive: false,
     ).firstMatch(text);
     if (toggleShoppingMatch != null) {
       final name = toggleShoppingMatch.group(1)!.trim();
-      final checked = !text.contains('desmarca') && !text.contains('uncheck');
+      final checked = !text.contains('desmarca') &&
+          !text.contains('uncheck') &&
+          !text.contains('decoche');
       if (name.isNotEmpty) {
         return CommandAction.withAction(
           action: 'toggle_shopping_item_checked',
@@ -201,10 +212,10 @@ class CommandChatService {
       }
     }
 
-    // add_savings_goal
+    // add_savings_goal (PT/EN/FR/ES)
     final savingsGoalMatch = RegExp(
-      r'(?:cria|create|add|adiciona|ajoute)\s+'
-      r"(?:um\s+)?(?:objetivo\s+de\s+poupanca|savings\s+goal|objectif\s+d'epargne)\s+"
+      r'(?:cria|cree|crea|create|add|adiciona|ajoute|anade)\s+'
+      r"(?:um\s+)?(?:objetivo\s+de\s+(?:poupanca|ahorro)|savings\s+goal|objectif\s+d'epargne)\s+"
       r'(.+?)\s+'
       r'(?:de|with|com)\s+'
       r'(\d+(?:[.,]\d+)?)',
@@ -224,11 +235,11 @@ class CommandChatService {
       }
     }
 
-    // add_savings_contribution
+    // add_savings_contribution (PT/EN/FR/ES)
     final savingsContributionMatch = RegExp(
-      r'(?:adiciona|add|mete|ajoute)\s+'
+      r'(?:adiciona|add|mete|ajoute|anade)\s+'
       r'(\d+(?:[.,]\d+)?)\s*(?:euros?|eur|€)?\s+'
-      r'(?:ao|a|to)\s+'
+      r'(?:ao|a|to|al)\s+'
       r'(?:objetivo|goal|objectif)\s+'
       r'(.+)',
       caseSensitive: false,
@@ -247,10 +258,10 @@ class CommandChatService {
       }
     }
 
-    // delete_expense
+    // delete_expense (PT/EN/FR/ES)
     final deleteExpenseMatch = RegExp(
-      r'(?:apaga|delete|remove|remover)\s+'
-      r'(?:a\s+)?(?:despesa|expense)\s+'
+      r'(?:apaga|delete|remove|remover|supprime|supprimer|elimina|eliminar|borra|borrar)\s+'
+      r'(?:a\s+|la\s+|el\s+)?(?:despesa|expense|depense|gasto)\s+'
       r'(.+)',
       caseSensitive: false,
     ).firstMatch(text);
@@ -265,12 +276,12 @@ class CommandChatService {
       }
     }
 
-    // add_recurring_expense
+    // add_recurring_expense (PT/EN/FR/ES)
     final recurringMatch = RegExp(
-      r'(?:adiciona|add|ajoute|cria|create)\s+'
-      r'(?:uma\s+)?(?:despesa\s+recorrente|recurring\s+expense|depense\s+recurrente)\s+'
+      r'(?:adiciona|add|ajoute|anade|cria|cree|crea|create)\s+'
+      r'(?:uma?\s+)?(?:despesa\s+recorrente|recurring\s+expense|depense\s+recurrente|gasto\s+recurrente)\s+'
       r'(\d+(?:[.,]\d+)?)\s*(?:euros?|eur|€)?\s*'
-      r'(?:em|in|en|de)?\s*(\w+)(?:.*?(?:dia|day)\s+(\d{1,2}))?',
+      r'(?:em|in|en|de)?\s*(\w+)(?:.*?(?:dia|day|jour)\s+(\d{1,2}))?',
       caseSensitive: false,
     ).firstMatch(text);
     if (recurringMatch != null) {
@@ -329,11 +340,11 @@ class CommandChatService {
       );
     }
 
-    // set_language
+    // set_language (PT/EN/FR/ES)
     final languageMatch = RegExp(
       r'(?:idioma|language|langue|lengua)\s+'
       r'(?:para|to|a|en)?\s*'
-      r'(portugues|portuguese|pt|ingles|english|en|espanhol|spanish|es|frances|french|fr|sistema|system)',
+      r'(portugues|portuguese|pt|ingles|english|en|espanhol|espanol|spanish|es|frances|francais|french|fr|sistema|system|systeme)',
       caseSensitive: false,
     ).firstMatch(text);
     if (languageMatch != null) {
@@ -341,8 +352,8 @@ class CommandChatService {
       final locale = switch (raw) {
         'portugues' || 'portuguese' || 'pt' => 'pt',
         'ingles' || 'english' || 'en' => 'en',
-        'espanhol' || 'spanish' || 'es' => 'es',
-        'frances' || 'french' || 'fr' => 'fr',
+        'espanhol' || 'espanol' || 'spanish' || 'es' => 'es',
+        'frances' || 'francais' || 'french' || 'fr' => 'fr',
         _ => 'system',
       };
       return CommandAction.withAction(
@@ -352,10 +363,10 @@ class CommandChatService {
       );
     }
 
-    // clear_checked_items
+    // clear_checked_items (PT/EN/FR/ES)
     final clearMatch = RegExp(
-      r'(?:limpa|clear|limpiar|effacer)\s+(?:a\s+)?'
-      r'(?:lista|list|checked|itens)',
+      r'(?:limpa|clear|limpiar|effacer)\s+(?:a\s+|os\s+|los\s+|les\s+)?'
+      r'(?:lista|list|checked|itens|marcados|coches|elementos)',
       caseSensitive: false,
     ).firstMatch(text);
     if (clearMatch != null) {
@@ -366,10 +377,10 @@ class CommandChatService {
       );
     }
 
-    // navigate_to
+    // navigate_to (PT/EN/FR/ES)
     final navMatch = RegExp(
       r'(?:vai|abre|open|go|ir|navega|abrir|ouvre|ouvrir|aller)\s+'
-      r'(?:para?\s+)?(?:as?\s+|os?\s+|o\s+|les?\s+|la\s+|al\s+)?(.+)',
+      r'(?:para?\s+)?(?:as?\s+|os?\s+|o\s+|les?\s+|la\s+|al\s+|los\s+|aux?\s+)?(.+)',
       caseSensitive: false,
     ).firstMatch(text);
     if (navMatch != null) {
@@ -494,6 +505,7 @@ class CommandChatService {
         '"grocery" | "shopping_list" | "meals" | "settings" | "insights" | '
         '"savings_goals"}\n'
         '- clear_checked_items: {}\n'
+        '- show_help: {} (user says help/ajuda/aide/ayuda)\n'
         '\n'
         'RULES:\n'
         '- ALWAYS return valid JSON with keys: action, params, message\n'

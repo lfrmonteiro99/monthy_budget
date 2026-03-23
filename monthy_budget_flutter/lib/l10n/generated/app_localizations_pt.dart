@@ -655,6 +655,12 @@ class SPt extends S {
   String get cmdTemplateAddExpense => 'Adiciona [valor] euros em [categoria]';
 
   @override
+  String get cmdTemplateOpenList => 'Abre a lista de compras';
+
+  @override
+  String get cmdTemplateOpenSettings => 'Abre as definicoes';
+
+  @override
   String get cmdTemplateChangeTheme => 'Muda o tema para [claro/escuro]';
 
   @override
@@ -5587,4 +5593,8 @@ class SPt extends S {
   @override
   String get cmdParseError =>
       'Desculpe, nao consegui entender o seu pedido. Tente reformular.';
+
+  @override
+  String get cmdHelpOutput =>
+      'Comandos disponiveis:\n- Adicionar despesa: adiciona [valor] em [categoria]\n- Lista de compras: adiciona [item] a lista de compras\n- Remover da lista: remove [item] da lista de compras\n- Marcar item: marca [item] na lista de compras\n- Objetivo de poupanca: cria objetivo de poupanca [nome] de [valor]\n- Adicionar ao objetivo: adiciona [valor] ao objetivo [nome]\n- Despesa recorrente: adiciona despesa recorrente [valor] em [categoria]\n- Apagar despesa: apaga a despesa [descricao]\n- Tema: tema [claro/escuro/sistema]\n- Paleta: cor [ocean/emerald/violet/teal/sunset]\n- Idioma: idioma [ingles/portugues/espanhol/frances]\n- Navegar: abre [ecra]\n- Limpar marcados: limpa a lista\n- Ajuda: ajuda';
 }
