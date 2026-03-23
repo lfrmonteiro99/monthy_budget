@@ -5379,5 +5379,220 @@
     "mealSectionNutritionSub": "Calorias, proteina, fibra e condicoes medicas",
     "mealSectionPantry": "Despensa",
     "mealSectionPantrySub": "Ingredientes base, semanais e gerais",
-    "complexityMedium": "Medio"
+    "complexityMedium": "Medio",
+
+    "coachDowngradeTitle": "Modo alterado para Eco",
+    "@coachDowngradeTitle": { "description": "Title of the downgrade transition card" },
+    "coachCompareWithPlus": "Com Plus",
+    "@coachCompareWithPlus": { "description": "Column header for Plus features in downgrade comparison" },
+    "coachCompareMemory20": "Memoria: 20 msgs",
+    "@coachCompareMemory20": { "description": "Plus memory feature" },
+    "coachCompareDetailedReplies": "Respostas detalhadas",
+    "@coachCompareDetailedReplies": { "description": "Plus detailed replies feature" },
+    "coachCompareFinancialContext": "Contexto financeiro",
+    "@coachCompareFinancialContext": { "description": "Plus financial context feature" },
+    "coachCompareWithEco": "Com Eco",
+    "@coachCompareWithEco": { "description": "Column header for Eco features in downgrade comparison" },
+    "coachCompareMemory6": "Memoria: 6 msgs",
+    "@coachCompareMemory6": { "description": "Eco memory feature" },
+    "coachCompareShortReplies": "Respostas curtas",
+    "@coachCompareShortReplies": { "description": "Eco short replies feature" },
+    "coachCompareLimitedContext": "Contexto limitado",
+    "@coachCompareLimitedContext": { "description": "Eco limited context feature" },
+    "coachEndowmentBanner": "Estas a usar o modo Plus gratuitamente — o coach lembra as ultimas 20 mensagens ({remaining} restantes)",
+    "@coachEndowmentBanner": {
+        "description": "Endowment Plus banner text",
+        "placeholders": {
+            "remaining": { "type": "int" }
+        }
+    },
+    "coachRecommendPro": "Pergunta complexa detetada — Pro daria uma analise mais detalhada ({cost} cr.)",
+    "@coachRecommendPro": {
+        "description": "Smart recommendation for Pro mode",
+        "placeholders": {
+            "cost": { "type": "int" }
+        }
+    },
+    "coachRecommendPlus": "Plus da mais contexto para esta analise ({cost} cr.)",
+    "@coachRecommendPlus": {
+        "description": "Smart recommendation for Plus mode",
+        "placeholders": {
+            "cost": { "type": "int" }
+        }
+    },
+    "coachNextStep": "PROXIMO PASSO",
+    "@coachNextStep": { "description": "Label for inline micro-action next step" },
+    "coachPendingAction": "Acao pendente da ultima sessao",
+    "@coachPendingAction": { "description": "Header for micro-action follow-up card" },
+    "coachSuggestedDaysAgo": "Sugerido ha {daysAgo} {daysAgo, plural, =1{dia} other{dias}}",
+    "@coachSuggestedDaysAgo": {
+        "description": "How many days ago the micro-action was suggested",
+        "placeholders": {
+            "daysAgo": { "type": "int" }
+        }
+    },
+    "coachCapWarning": "Maximo atingido (150). Usa os teus creditos antes da proxima renovacao!",
+    "@coachCapWarning": { "description": "Credit cap warning in mode selector panel" },
+    "coachPackSessions": "{plus} consultas Plus ou {pro} consultas Pro",
+    "@coachPackSessions": {
+        "description": "How many sessions a credit pack provides",
+        "placeholders": {
+            "plus": { "type": "int" },
+            "pro": { "type": "int" }
+        }
+    },
+    "coachCreditsTitle": "Creditos AI Coach",
+    "@coachCreditsTitle": { "description": "Title of the credit packs bottom sheet" },
+    "coachCreditsRemaining": "{count} restantes",
+    "@coachCreditsRemaining": {
+        "description": "Remaining credits badge",
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "coachRoiInsightPrefix": "Na ultima sessao Pro, discutimos ",
+    "@coachRoiInsightPrefix": { "description": "Prefix for ROI insight in credit sheet" },
+    "coachRoiPotential": ". Potencial: ",
+    "@coachRoiPotential": { "description": "Potential label in ROI insight" },
+    "coachRoiCost": ". Custou 5 creditos (€0,05).",
+    "@coachRoiCost": { "description": "Cost suffix in ROI insight" },
+    "coachCapWarningSheet": "Maximo atingido ({max}). Usa os creditos antes de comprar mais.",
+    "@coachCapWarningSheet": {
+        "description": "Credit cap warning in the credit packs sheet",
+        "placeholders": {
+            "max": { "type": "int" }
+        }
+    },
+    "coachCreditsLabel": "creditos",
+    "@coachCreditsLabel": { "description": "Label below credit count in pack card" },
+    "coachBestValue": "MELHOR VALOR",
+    "@coachBestValue": { "description": "Badge on recommended credit pack" },
+    "coachWastedCredits": "Perderias {wasted} creditos",
+    "@coachWastedCredits": {
+        "description": "Warning about wasted credits when buying a pack",
+        "placeholders": {
+            "wasted": { "type": "int" }
+        }
+    },
+    "coachRecommendedPack": "Recomendamos o pacote de {credits} creditos",
+    "@coachRecommendedPack": {
+        "description": "Personalized pack recommendation",
+        "placeholders": {
+            "credits": { "type": "int" }
+        }
+    },
+
+    "cmdInvalidAction": "Acao ou parametros invalidos: {action}",
+    "@cmdInvalidAction": {
+        "placeholders": {
+            "action": { "type": "String" }
+        }
+    },
+    "cmdUnknownAction": "Acao desconhecida: {action}",
+    "@cmdUnknownAction": {
+        "placeholders": {
+            "action": { "type": "String" }
+        }
+    },
+    "cmdExpenseAdded": "Despesa adicionada: {amount} em {category}",
+    "@cmdExpenseAdded": {
+        "placeholders": {
+            "amount": { "type": "String" },
+            "category": { "type": "String" }
+        }
+    },
+    "cmdShoppingItemAdded": "Artigo adicionado: {name}",
+    "@cmdShoppingItemAdded": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "cmdSavingsGoalAdded": "Objetivo de poupanca adicionado: {name}",
+    "@cmdSavingsGoalAdded": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "cmdRecurringExpenseAdded": "Despesa recorrente adicionada: {amount} em {category}",
+    "@cmdRecurringExpenseAdded": {
+        "placeholders": {
+            "amount": { "type": "String" },
+            "category": { "type": "String" }
+        }
+    },
+    "cmdShoppingItemNotFound": "Artigo nao encontrado: {name}",
+    "@cmdShoppingItemNotFound": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "cmdShoppingItemRemoved": "Artigo removido: {name}",
+    "@cmdShoppingItemRemoved": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "cmdSavingsGoalNotFound": "Objetivo de poupanca nao encontrado: {name}",
+    "@cmdSavingsGoalNotFound": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "cmdContributionAdded": "Contribuicao adicionada: {amount} a {name}",
+    "@cmdContributionAdded": {
+        "placeholders": {
+            "amount": { "type": "String" },
+            "name": { "type": "String" }
+        }
+    },
+    "cmdShoppingItemChecked": "Artigo marcado: {name}",
+    "@cmdShoppingItemChecked": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "cmdShoppingItemUnchecked": "Artigo desmarcado: {name}",
+    "@cmdShoppingItemUnchecked": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "cmdExpenseNotFound": "Despesa nao encontrada: {description}",
+    "@cmdExpenseNotFound": {
+        "placeholders": {
+            "description": { "type": "String" }
+        }
+    },
+    "cmdExpenseDeleted": "Despesa eliminada: {description}",
+    "@cmdExpenseDeleted": {
+        "placeholders": {
+            "description": { "type": "String" }
+        }
+    },
+    "cmdThemeSet": "Tema definido para {mode}",
+    "@cmdThemeSet": {
+        "placeholders": {
+            "mode": { "type": "String" }
+        }
+    },
+    "cmdPaletteSet": "Paleta de cores definida para {palette}",
+    "@cmdPaletteSet": {
+        "placeholders": {
+            "palette": { "type": "String" }
+        }
+    },
+    "cmdLanguageSet": "Idioma definido para {locale}",
+    "@cmdLanguageSet": {
+        "placeholders": {
+            "locale": { "type": "String" }
+        }
+    },
+    "cmdNavigatedTo": "Navegado para {screen}",
+    "@cmdNavigatedTo": {
+        "placeholders": {
+            "screen": { "type": "String" }
+        }
+    },
+    "cmdCheckedItemsCleared": "Itens marcados limpos",
+    "cmdParseError": "Desculpe, nao consegui entender o seu pedido. Tente reformular."
 }

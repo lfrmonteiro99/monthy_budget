@@ -5387,4 +5387,207 @@ class SEs extends S {
 
   @override
   String get complexityMedium => 'Medio';
+
+  @override
+  String get coachDowngradeTitle => 'Modo cambiado a Eco';
+
+  @override
+  String get coachCompareWithPlus => 'Con Plus';
+
+  @override
+  String get coachCompareMemory20 => 'Memoria: 20 msgs';
+
+  @override
+  String get coachCompareDetailedReplies => 'Respuestas detalladas';
+
+  @override
+  String get coachCompareFinancialContext => 'Contexto financiero';
+
+  @override
+  String get coachCompareWithEco => 'Con Eco';
+
+  @override
+  String get coachCompareMemory6 => 'Memoria: 6 msgs';
+
+  @override
+  String get coachCompareShortReplies => 'Respuestas cortas';
+
+  @override
+  String get coachCompareLimitedContext => 'Contexto limitado';
+
+  @override
+  String coachEndowmentBanner(int remaining) {
+    return 'Estas usando el modo Plus gratis — el coach recuerda los ultimos 20 mensajes ($remaining restantes)';
+  }
+
+  @override
+  String coachRecommendPro(int cost) {
+    return 'Pregunta compleja detectada — Pro daria un analisis mas detallado ($cost cr.)';
+  }
+
+  @override
+  String coachRecommendPlus(int cost) {
+    return 'Plus ofrece mas contexto para este analisis ($cost cr.)';
+  }
+
+  @override
+  String get coachNextStep => 'PROXIMO PASO';
+
+  @override
+  String get coachPendingAction => 'Accion pendiente de la ultima sesion';
+
+  @override
+  String coachSuggestedDaysAgo(int daysAgo) {
+    String _temp0 = intl.Intl.pluralLogic(
+      daysAgo,
+      locale: localeName,
+      other: 'dias',
+      one: 'dia',
+    );
+    return 'Sugerido hace $daysAgo $_temp0';
+  }
+
+  @override
+  String get coachCapWarning =>
+      'Maximo alcanzado (150). Usa tus creditos antes de la proxima renovacion!';
+
+  @override
+  String coachPackSessions(int plus, int pro) {
+    return '$plus consultas Plus o $pro consultas Pro';
+  }
+
+  @override
+  String get coachCreditsTitle => 'Creditos AI Coach';
+
+  @override
+  String coachCreditsRemaining(int count) {
+    return '$count restantes';
+  }
+
+  @override
+  String get coachRoiInsightPrefix => 'En la ultima sesion Pro, discutimos ';
+
+  @override
+  String get coachRoiPotential => '. Potencial: ';
+
+  @override
+  String get coachRoiCost => '. Costo 5 creditos (€0,05).';
+
+  @override
+  String coachCapWarningSheet(int max) {
+    return 'Maximo alcanzado ($max). Usa los creditos antes de comprar mas.';
+  }
+
+  @override
+  String get coachCreditsLabel => 'creditos';
+
+  @override
+  String get coachBestValue => 'MEJOR VALOR';
+
+  @override
+  String coachWastedCredits(int wasted) {
+    return 'Perderias $wasted creditos';
+  }
+
+  @override
+  String coachRecommendedPack(int credits) {
+    return 'Recomendamos el paquete de $credits creditos';
+  }
+
+  @override
+  String cmdInvalidAction(String action) {
+    return 'Accion o parametros invalidos: $action';
+  }
+
+  @override
+  String cmdUnknownAction(String action) {
+    return 'Accion desconocida: $action';
+  }
+
+  @override
+  String cmdExpenseAdded(String amount, String category) {
+    return 'Gasto anadido: $amount en $category';
+  }
+
+  @override
+  String cmdShoppingItemAdded(String name) {
+    return 'Articulo anadido: $name';
+  }
+
+  @override
+  String cmdSavingsGoalAdded(String name) {
+    return 'Objetivo de ahorro anadido: $name';
+  }
+
+  @override
+  String cmdRecurringExpenseAdded(String amount, String category) {
+    return 'Gasto recurrente anadido: $amount en $category';
+  }
+
+  @override
+  String cmdShoppingItemNotFound(String name) {
+    return 'Articulo no encontrado: $name';
+  }
+
+  @override
+  String cmdShoppingItemRemoved(String name) {
+    return 'Articulo eliminado: $name';
+  }
+
+  @override
+  String cmdSavingsGoalNotFound(String name) {
+    return 'Objetivo de ahorro no encontrado: $name';
+  }
+
+  @override
+  String cmdContributionAdded(String amount, String name) {
+    return 'Contribucion anadida: $amount a $name';
+  }
+
+  @override
+  String cmdShoppingItemChecked(String name) {
+    return 'Articulo marcado: $name';
+  }
+
+  @override
+  String cmdShoppingItemUnchecked(String name) {
+    return 'Articulo desmarcado: $name';
+  }
+
+  @override
+  String cmdExpenseNotFound(String description) {
+    return 'Gasto no encontrado: $description';
+  }
+
+  @override
+  String cmdExpenseDeleted(String description) {
+    return 'Gasto eliminado: $description';
+  }
+
+  @override
+  String cmdThemeSet(String mode) {
+    return 'Tema configurado a $mode';
+  }
+
+  @override
+  String cmdPaletteSet(String palette) {
+    return 'Paleta de colores configurada a $palette';
+  }
+
+  @override
+  String cmdLanguageSet(String locale) {
+    return 'Idioma configurado a $locale';
+  }
+
+  @override
+  String cmdNavigatedTo(String screen) {
+    return 'Navegado a $screen';
+  }
+
+  @override
+  String get cmdCheckedItemsCleared => 'Articulos marcados limpiados';
+
+  @override
+  String get cmdParseError =>
+      'Lo siento, no pude entender tu solicitud. Intenta reformularla.';
 }
