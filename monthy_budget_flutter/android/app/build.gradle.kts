@@ -1,5 +1,3 @@
-import java.util.Base64
-
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -29,19 +27,10 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
-        // Extract ADMOB_APP_ID from --dart-define for AndroidManifest placeholder.
-        // dart-defines are passed as a comma-separated, base64-encoded list in
-        // the Gradle property "dart-defines".
-        val dartDefines: Map<String, String> = (project.findProperty("dart-defines") as? String)
-            ?.split(",")
-            ?.associate { encoded: String ->
-                val decoded = String(Base64.getDecoder().decode(encoded))
-                val parts = decoded.split("=", limit = 2)
-                parts[0] to (parts.getOrNull(1) ?: "")
-            } ?: emptyMap<String, String>()
-
-        val admobAppId = dartDefines["ADMOB_APP_ID"] ?: ""
-        manifestPlaceholders["admobAppId"] = admobAppId
+        // AdMob App ID for AndroidManifest placeholder.
+        // Falls back to a test ID when not configured via --dart-define.
+        manifestPlaceholders["admobAppId"] =
+            System.getenv("ADMOB_APP_ID") ?: "ca-app-pub-3940256099942544~3347511713"
     }
 
     val keystoreFile = rootProject.file("keystore.jks")
