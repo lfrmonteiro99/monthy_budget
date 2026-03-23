@@ -21,6 +21,7 @@ import '../utils/coach_delimiter_parser.dart';
 import '../utils/coach_mode_recommender.dart';
 import '../utils/rate_limiter.dart';
 import '../widgets/info_icon_button.dart';
+import '../widgets/offline_banner.dart';
 
 class CoachScreen extends StatefulWidget {
   final AppSettings settings;
@@ -33,6 +34,7 @@ class CoachScreen extends StatefulWidget {
   final VoidCallback? onRestoreMemory;
   final bool showTour;
   final VoidCallback? onTourComplete;
+  final bool isOffline;
 
   const CoachScreen({
     super.key,
@@ -46,6 +48,7 @@ class CoachScreen extends StatefulWidget {
     this.onRestoreMemory,
     this.showTour = false,
     this.onTourComplete,
+    this.isOffline = false,
   });
 
   @override
@@ -394,6 +397,8 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
 
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // #767: Guard against callback firing after dispose
+      if (!mounted) return;
       if (!_scrollController.hasClients) return;
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
@@ -449,7 +454,8 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   Future<void> _acceptRecommendation() async {
     if (_pendingRecommendation == null) return;
     final mode = _pendingRecommendation!;
-    setState(() => _selectedMode = mode);
+    // #756: Persist mode via _setPreferredMode instead of transient setState
+    await _setPreferredMode(mode);
     final updated = await _subscriptionService.trackRecommendation(
       _subscription,
       accepted: true,
@@ -525,6 +531,10 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
       body: SafeArea(
         child: Column(
           children: [
+            // #754: Offline banner
+            if (widget.isOffline)
+              OfflineBanner(message: l10n.coachOfflineBanner),
+
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
               child: _buildModeCard(),
@@ -1240,7 +1250,9 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
               ),
               const SizedBox(width: 8),
               FilledButton(
-                onPressed: _loading ? null : _sendCurrentMessage,
+                onPressed: (_loading || widget.isOffline)
+                    ? null
+                    : _sendCurrentMessage,
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.all(14),
                   shape: RoundedRectangleBorder(

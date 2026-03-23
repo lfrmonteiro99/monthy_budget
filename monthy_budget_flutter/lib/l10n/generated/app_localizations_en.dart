@@ -5560,4 +5560,19 @@ class SEn extends S {
   @override
   String get cmdHelpOutput =>
       'Available commands:\n- Add expense: add [amount] in [category]\n- Shopping list: add [item] to shopping list\n- Remove from list: remove [item] from shopping list\n- Check item: check [item] on shopping list\n- Savings goal: create savings goal [name] with [amount]\n- Add to goal: add [amount] to goal [name]\n- Recurring expense: add recurring expense [amount] in [category]\n- Delete expense: delete expense [description]\n- Theme: theme [light/dark/system]\n- Palette: color [ocean/emerald/violet/teal/sunset]\n- Language: language [english/portuguese/spanish/french]\n- Navigate: open [screen]\n- Clear checked: clear checked\n- Help: help';
+
+  @override
+  String get coachOfflineBanner =>
+      'You are offline. AI coach requires an internet connection.';
+
+  @override
+  String get coachOfflineSendDisabled => 'Send is disabled while offline.';
+
+  @override
+  String get cmdOfflineBanner =>
+      'You are offline. Only local commands (theme, navigation) work.';
+
+  @override
+  String get cmdOfflineBlocked =>
+      'This command requires an internet connection. Try a local command like changing the theme or navigating.';
 }

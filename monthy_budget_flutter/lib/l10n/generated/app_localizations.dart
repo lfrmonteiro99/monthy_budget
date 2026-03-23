@@ -9946,6 +9946,30 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Comandos disponiveis:\n- Adicionar despesa: adiciona [valor] em [categoria]\n- Lista de compras: adiciona [item] a lista de compras\n- Remover da lista: remove [item] da lista de compras\n- Marcar item: marca [item] na lista de compras\n- Objetivo de poupanca: cria objetivo de poupanca [nome] de [valor]\n- Adicionar ao objetivo: adiciona [valor] ao objetivo [nome]\n- Despesa recorrente: adiciona despesa recorrente [valor] em [categoria]\n- Apagar despesa: apaga a despesa [descricao]\n- Tema: tema [claro/escuro/sistema]\n- Paleta: cor [ocean/emerald/violet/teal/sunset]\n- Idioma: idioma [ingles/portugues/espanhol/frances]\n- Navegar: abre [ecra]\n- Limpar marcados: limpa a lista\n- Ajuda: ajuda'**
   String get cmdHelpOutput;
+
+  /// No description provided for @coachOfflineBanner.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem ligacao. O coach de IA precisa de ligacao a internet.'**
+  String get coachOfflineBanner;
+
+  /// No description provided for @coachOfflineSendDisabled.
+  ///
+  /// In pt, this message translates to:
+  /// **'Envio desativado enquanto esta sem ligacao.'**
+  String get coachOfflineSendDisabled;
+
+  /// No description provided for @cmdOfflineBanner.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem ligacao. Apenas comandos locais (tema, navegacao) funcionam.'**
+  String get cmdOfflineBanner;
+
+  /// No description provided for @cmdOfflineBlocked.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este comando precisa de ligacao a internet. Tente um comando local como mudar o tema ou navegar.'**
+  String get cmdOfflineBlocked;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
