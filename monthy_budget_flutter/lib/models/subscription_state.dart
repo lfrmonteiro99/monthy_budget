@@ -337,6 +337,8 @@ class SubscriptionState {
     int? totalPlusSessions,
     String? lastMicroAction,
     DateTime? lastMicroActionDate,
+    bool clearLastMicroAction = false,
+    bool clearLastSessionInsight = false,
   }) {
     return SubscriptionState(
       tier: tier ?? this.tier,
@@ -356,13 +358,20 @@ class SubscriptionState {
       recommendationsAccepted:
           recommendationsAccepted ?? this.recommendationsAccepted,
       recommendationsShown: recommendationsShown ?? this.recommendationsShown,
-      lastSessionInsight: lastSessionInsight ?? this.lastSessionInsight,
-      lastSessionInsightValue:
-          lastSessionInsightValue ?? this.lastSessionInsightValue,
+      lastSessionInsight: clearLastSessionInsight
+          ? null
+          : (lastSessionInsight ?? this.lastSessionInsight),
+      lastSessionInsightValue: clearLastSessionInsight
+          ? null
+          : (lastSessionInsightValue ?? this.lastSessionInsightValue),
       totalProSessions: totalProSessions ?? this.totalProSessions,
       totalPlusSessions: totalPlusSessions ?? this.totalPlusSessions,
-      lastMicroAction: lastMicroAction ?? this.lastMicroAction,
-      lastMicroActionDate: lastMicroActionDate ?? this.lastMicroActionDate,
+      lastMicroAction: clearLastMicroAction
+          ? null
+          : (lastMicroAction ?? this.lastMicroAction),
+      lastMicroActionDate: clearLastMicroAction
+          ? null
+          : (lastMicroActionDate ?? this.lastMicroActionDate),
     );
   }
 

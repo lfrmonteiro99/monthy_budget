@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../config/supabase_public_config.dart';
@@ -58,6 +60,10 @@ class AiCoachService {
   static const _maxInsights = 20;
   static const _chatPrefKeyPrefix = 'coach_chat_v2_messages_';
   static const _maxUserMessageLength = 2000;
+
+  /// HTTP request timeout for AI coach API calls.
+  @visibleForTesting
+  static Duration httpTimeout = const Duration(seconds: 15);
 
   final CoachInsightRepository _insightRepository;
   final http.Client _httpClient;
@@ -459,7 +465,7 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
         'Content-Type': 'application/json',
       },
       body: jsonEncode(body),
-    );
+    ).timeout(httpTimeout);
     Object? data;
     try {
       data = jsonDecode(response.body);
@@ -498,7 +504,7 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
         'max_tokens': maxTokens,
         'temperature': temperature,
       }),
-    );
+    ).timeout(httpTimeout);
 
     Map<String, dynamic>? data;
     try {
@@ -768,6 +774,28 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
       {'role': 'user', 'content': userMessage.trim()},
     ];
   }
+
+  /// Exposes [_invokeEdgeFunctionDirect] for timeout testing.
+  @visibleForTesting
+  Future<({int status, Object? data})> invokeEdgeFunctionForTest({
+    required Map<String, dynamic> body,
+  }) =>
+      _invokeEdgeFunctionDirect(body: body);
+
+  /// Exposes [_requestDirectOpenAiCompletion] for timeout testing.
+  @visibleForTesting
+  Future<String> requestOpenAiCompletionForTest({
+    required String apiKey,
+    required List<Map<String, String>> messages,
+    required int maxTokens,
+    required double temperature,
+  }) =>
+      _requestDirectOpenAiCompletion(
+        apiKey: apiKey,
+        messages: messages,
+        maxTokens: maxTokens,
+        temperature: temperature,
+      );
 }
 
 class CoachChatMessage {
