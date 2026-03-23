@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 import '../config/supabase_public_config.dart';
 import '../models/app_settings.dart';
 import '../models/budget_summary.dart';
@@ -55,9 +56,12 @@ String buildAiCoachRequestErrorMessage(
 
 class AiCoachService {
   static const _apiKeyPref = 'openai_api_key';
+  // Key used to store obfuscated API key (#769)
+  static const _apiKeyObfuscatedPref = 'openai_api_key_b64';
   static const _edgeFunctionName = 'openai-chat';
   static const _model = 'gpt-4o-mini';
   static const _maxInsights = 20;
+  static final _uuid = Uuid();
   static const _chatPrefKeyPrefix = 'coach_chat_v2_messages_';
   static const _maxUserMessageLength = 2000;
 
@@ -93,16 +97,46 @@ class AiCoachService {
     return sanitized;
   }
 
-  // ── API key (device-local) ─────────────────────────────────────────────────
+  // ── API key (device-local, base64-obfuscated) ─────────────────────────────
+  // TODO(#769): Migrate to flutter_secure_storage for proper at-rest encryption.
+  //             Base64 is only obfuscation — not cryptographic protection.
+
+  /// Encode an API key for storage (base64 obfuscation).
+  static String encodeApiKey(String key) => base64Encode(utf8.encode(key));
+
+  /// Decode a stored API key. Handles legacy plain-text keys gracefully.
+  static String decodeApiKey(String stored) {
+    if (stored.isEmpty) return '';
+    try {
+      return utf8.decode(base64Decode(stored));
+    } catch (_) {
+      // Legacy plain-text key — return as-is for backward compatibility
+      return stored;
+    }
+  }
 
   Future<String> loadApiKey() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_apiKeyPref) ?? '';
+    // Try new obfuscated key first
+    final obfuscated = prefs.getString(_apiKeyObfuscatedPref);
+    if (obfuscated != null && obfuscated.isNotEmpty) {
+      return decodeApiKey(obfuscated);
+    }
+    // Migrate legacy plain-text key if present
+    final legacy = prefs.getString(_apiKeyPref) ?? '';
+    if (legacy.isNotEmpty) {
+      await prefs.setString(_apiKeyObfuscatedPref, encodeApiKey(legacy));
+      await prefs.remove(_apiKeyPref);
+    }
+    return legacy;
   }
 
   Future<void> saveApiKey(String key) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_apiKeyPref, key.trim());
+    final trimmed = key.trim();
+    await prefs.setString(_apiKeyObfuscatedPref, encodeApiKey(trimmed));
+    // Remove legacy plain-text key if it exists
+    await prefs.remove(_apiKeyPref);
   }
 
   /// Gate for AI features.
@@ -331,7 +365,7 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
     );
 
     final insight = CoachInsight(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      id: _uuid.v4(),
       timestamp: DateTime.now(),
       content: content,
       stressScore: stress.score,
@@ -385,7 +419,7 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
     );
 
     final insight = CoachInsight(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      id: _uuid.v4(),
       timestamp: DateTime.now(),
       content: content,
       stressScore: stress.score,
