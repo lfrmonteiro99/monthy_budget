@@ -190,5 +190,25 @@ void main() {
       await cache2.load();
       expect(cache2.match('go to settings'), isNull);
     });
+
+    test('load gracefully handles corrupted JSON (#757)', () async {
+      SharedPreferences.setMockInitialValues({
+        'command_pattern_cache': 'this is not json {{{',
+      });
+      final cache = CommandPatternCache();
+      await cache.load();
+      expect(cache.match('anything'), isNull);
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getString('command_pattern_cache'), isNull);
+    });
+
+    test('load gracefully handles invalid structure (#757)', () async {
+      SharedPreferences.setMockInitialValues({
+        'command_pattern_cache': '["array","not","map"]',
+      });
+      final cache = CommandPatternCache();
+      await cache.load();
+      expect(cache.match('anything'), isNull);
+    });
   });
 }

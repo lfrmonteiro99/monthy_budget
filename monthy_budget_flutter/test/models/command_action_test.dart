@@ -84,6 +84,54 @@ void main() {
         expect(cmd.hasAction, true);
       });
     });
+
+    group('equality (#752)', () {
+      test('equal when action, message and params match', () {
+        final a = CommandAction.withAction(
+          action: 'add_expense',
+          params: {'amount': 10.0, 'category': 'food'},
+          message: 'ok',
+        );
+        final b = CommandAction.withAction(
+          action: 'add_expense',
+          params: {'amount': 10.0, 'category': 'food'},
+          message: 'ok',
+        );
+        expect(a, equals(b));
+        expect(a.hashCode, equals(b.hashCode));
+      });
+
+      test('not equal when params differ', () {
+        final a = CommandAction.withAction(
+          action: 'add_expense',
+          params: {'amount': 10.0, 'category': 'food'},
+          message: 'ok',
+        );
+        final b = CommandAction.withAction(
+          action: 'add_expense',
+          params: {'amount': 20.0, 'category': 'food'},
+          message: 'ok',
+        );
+        expect(a, isNot(equals(b)));
+      });
+
+      test('equal when both params are null', () {
+        final a = CommandAction.conversational('hi');
+        final b = CommandAction.conversational('hi');
+        expect(a, equals(b));
+        expect(a.hashCode, equals(b.hashCode));
+      });
+
+      test('not equal when one has params and other does not', () {
+        const a = CommandAction(action: 'x', params: null, message: 'ok');
+        final b = CommandAction.withAction(
+          action: 'x',
+          params: {'key': 'val'},
+          message: 'ok',
+        );
+        expect(a, isNot(equals(b)));
+      });
+    });
   });
 
   group('CommandResult', () {

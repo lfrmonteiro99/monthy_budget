@@ -2240,11 +2240,15 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                   message: '',
                 );
               }
-              return _commandChatService.parseCommand(input);
+              return _commandChatService.parseCommand(input, l10n: S.of(context));
             },
             onExecuteAction: (action) async {
               final registry = _buildCommandRegistry();
-              return registry.execute(action.action!, action.params ?? {});
+              return registry.execute(
+                action.action!,
+                action.params ?? {},
+                l10n: S.of(context),
+              );
             },
             onCachePattern: (input, action, params) {
               _commandPatternCache.store(

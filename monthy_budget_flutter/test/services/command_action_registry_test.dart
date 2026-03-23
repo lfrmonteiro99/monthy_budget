@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:monthly_management/l10n/generated/app_localizations.dart';
+import 'package:monthly_management/l10n/generated/app_localizations_en.dart';
 import 'package:monthly_management/models/actual_expense.dart';
 import 'package:monthly_management/models/recurring_expense.dart';
 import 'package:monthly_management/models/savings_goal.dart';
@@ -534,6 +536,57 @@ void main() {
     test('returns null for unknown screen', () {
       expect(CommandActionRegistry.resolveScreenAlias('unknown_page'), isNull);
       expect(CommandActionRegistry.resolveScreenAlias(''), isNull);
+    });
+  });
+
+  group('execute with l10n (#749)', () {
+    late S l10n;
+
+    setUp(() {
+      l10n = SEn();
+    });
+
+    test('add_expense uses localized message', () async {
+      final result = await registry.execute(
+        'add_expense',
+        {'category': 'alimentacao', 'amount': 42.5},
+        l10n: l10n,
+      );
+      expect(result.succeeded, isTrue);
+      expect(result.message, l10n.cmdExpenseAdded('42.5', 'alimentacao'));
+    });
+
+    test('invalid action uses localized error', () async {
+      final result = await registry.execute(
+        'add_expense',
+        {'category': 'alimentacao', 'amount': -1},
+        l10n: l10n,
+      );
+      expect(result.succeeded, isFalse);
+      expect(result.message, l10n.cmdInvalidAction('add_expense'));
+    });
+
+    test('unknown action uses localized invalid action error', () async {
+      final result = await registry.execute('fly_to_moon', {}, l10n: l10n);
+      expect(result.succeeded, isFalse);
+      expect(result.message, l10n.cmdInvalidAction('fly_to_moon'));
+    });
+
+    test('clear_checked_items uses localized message', () async {
+      final result = await registry.execute('clear_checked_items', {}, l10n: l10n);
+      expect(result.succeeded, isTrue);
+      expect(result.message, l10n.cmdCheckedItemsCleared);
+    });
+
+    test('navigate_to uses localized message', () async {
+      final result = await registry.execute('navigate_to', {'screen': 'settings'}, l10n: l10n);
+      expect(result.succeeded, isTrue);
+      expect(result.message, l10n.cmdNavigatedTo('settings'));
+    });
+
+    test('execute without l10n falls back to English strings', () async {
+      final result = await registry.execute('clear_checked_items', {});
+      expect(result.message, 'Checked items cleared');
     });
   });
 }

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
+import '../l10n/generated/app_localizations.dart';
 import '../models/actual_expense.dart';
 import '../models/command_action.dart';
 import '../models/recurring_expense.dart';
 import '../models/savings_goal.dart';
 import '../models/shopping_item.dart';
 import '../theme/app_colors.dart';
-import 'package:uuid/uuid.dart';
 
 class CommandActionRegistry {
   final Future<void> Function(ActualExpense expense) onAddExpense;
@@ -44,7 +45,7 @@ class CommandActionRegistry {
     required this.onClearCheckedItems,
   });
 
-  // ── Screen alias map ───────────────────────────────────────────────
+  // -- Screen alias map ---------------------------------------------------
 
   static const _screenAliases = <String, String>{
     'dashboard': 'dashboard',
@@ -115,7 +116,7 @@ class CommandActionRegistry {
     'fr',
   };
 
-  // ── Public API ─────────────────────────────────────────────────────
+  // -- Public API ---------------------------------------------------------
 
   static String? resolveScreenAlias(String input) {
     final key = input.toLowerCase().trim();
@@ -157,55 +158,58 @@ class CommandActionRegistry {
 
   Future<CommandResult> execute(
     String action,
-    Map<String, dynamic> params,
-  ) async {
+    Map<String, dynamic> params, {
+    S? l10n,
+  }) async {
     if (!validate(action, params)) {
       return CommandResult.failure(
-        message: 'Invalid action or parameters: $action',
+        message: l10n?.cmdInvalidAction(action) ??
+            'Invalid action or parameters: $action',
       );
     }
 
     switch (action) {
       case 'add_expense':
-        return _executeAddExpense(params);
+        return _executeAddExpense(params, l10n);
       case 'add_shopping_item':
-        return _executeAddShoppingItem(params);
+        return _executeAddShoppingItem(params, l10n);
       case 'add_savings_goal':
-        return _executeAddSavingsGoal(params);
+        return _executeAddSavingsGoal(params, l10n);
       case 'add_recurring_expense':
-        return _executeAddRecurringExpense(params);
+        return _executeAddRecurringExpense(params, l10n);
       case 'remove_shopping_item':
-        return _executeRemoveShoppingItem(params);
+        return _executeRemoveShoppingItem(params, l10n);
       case 'add_savings_contribution':
-        return _executeAddSavingsContribution(params);
+        return _executeAddSavingsContribution(params, l10n);
       case 'toggle_shopping_item_checked':
-        return _executeToggleShoppingItemChecked(params);
+        return _executeToggleShoppingItemChecked(params, l10n);
       case 'delete_expense':
-        return _executeDeleteExpense(params);
+        return _executeDeleteExpense(params, l10n);
       case 'set_theme_mode':
-        return _executeSetThemeMode(params);
+        return _executeSetThemeMode(params, l10n);
       case 'set_color_palette':
-        return _executeSetColorPalette(params);
+        return _executeSetColorPalette(params, l10n);
       case 'set_language':
-        return _executeSetLanguage(params);
+        return _executeSetLanguage(params, l10n);
       case 'navigate_to':
-        return _executeNavigateTo(params);
+        return _executeNavigateTo(params, l10n);
       case 'clear_checked_items':
-        return _executeClearCheckedItems();
+        return _executeClearCheckedItems(l10n);
       default:
-        return CommandResult.failure(message: 'Unknown action: $action');
+        return CommandResult.failure(
+          message: l10n?.cmdUnknownAction(action) ??
+              'Unknown action: $action',
+        );
     }
   }
 
-  // ── Validation helpers ─────────────────────────────────────────────
+  // -- Validation helpers -------------------------------------------------
 
   bool _validateAddExpense(Map<String, dynamic> params) {
     final category = params['category'] as String?;
     if (category == null || !_validCategories.contains(category)) return false;
-
     final parsed = _parseDouble(params['amount']);
     if (parsed == null || parsed <= 0) return false;
-
     return true;
   }
 
@@ -255,9 +259,7 @@ class CommandActionRegistry {
   bool _validateToggleShoppingItemChecked(Map<String, dynamic> params) {
     final name = params['name'] as String?;
     final checked = params['checked'];
-    return name != null &&
-        name.trim().isNotEmpty &&
-        checked is bool;
+    return name != null && name.trim().isNotEmpty && checked is bool;
   }
 
   bool _validateDeleteExpense(Map<String, dynamic> params) {
@@ -288,31 +290,27 @@ class CommandActionRegistry {
     return screen != null && resolveScreenAlias(screen) != null;
   }
 
-  // ── Execution helpers ──────────────────────────────────────────────
+  // -- Execution helpers --------------------------------------------------
 
-  Future<CommandResult> _executeAddExpense(Map<String, dynamic> params) async {
+  Future<CommandResult> _executeAddExpense(Map<String, dynamic> params, S? l10n) async {
     final category = params['category'] as String;
     final amount = _parseDouble(params['amount'])!;
     final description = params['description'] as String?;
-
     final expense = ActualExpense.create(
       category: category,
       amount: amount,
       date: DateTime.now(),
       description: description,
     );
-
     await onAddExpense(expense);
-
     return CommandResult.success(
-      message: 'Expense added: $amount in $category',
+      message: l10n?.cmdExpenseAdded('$amount', category) ??
+          'Expense added: $amount in $category',
       undoAction: () => onDeleteExpense(expense.id),
     );
   }
 
-  Future<CommandResult> _executeAddShoppingItem(
-    Map<String, dynamic> params,
-  ) async {
+  Future<CommandResult> _executeAddShoppingItem(Map<String, dynamic> params, S? l10n) async {
     final name = (params['name'] as String).trim();
     final item = ShoppingItem(
       productName: name,
@@ -321,12 +319,12 @@ class CommandActionRegistry {
       unitPrice: params['unitPrice'] as String?,
     );
     await onAddShoppingItem(item);
-    return CommandResult.success(message: 'Shopping item added: $name');
+    return CommandResult.success(
+      message: l10n?.cmdShoppingItemAdded(name) ?? 'Shopping item added: $name',
+    );
   }
 
-  Future<CommandResult> _executeAddSavingsGoal(
-    Map<String, dynamic> params,
-  ) async {
+  Future<CommandResult> _executeAddSavingsGoal(Map<String, dynamic> params, S? l10n) async {
     final name = (params['name'] as String).trim();
     final goal = SavingsGoal(
       id: const Uuid().v4(),
@@ -334,12 +332,12 @@ class CommandActionRegistry {
       targetAmount: _parseDouble(params['target_amount'])!,
     );
     await onAddSavingsGoal(goal);
-    return CommandResult.success(message: 'Savings goal added: $name');
+    return CommandResult.success(
+      message: l10n?.cmdSavingsGoalAdded(name) ?? 'Savings goal added: $name',
+    );
   }
 
-  Future<CommandResult> _executeAddRecurringExpense(
-    Map<String, dynamic> params,
-  ) async {
+  Future<CommandResult> _executeAddRecurringExpense(Map<String, dynamic> params, S? l10n) async {
     final day = params['day_of_month'];
     final parsedDay = day is int
         ? day
@@ -356,114 +354,111 @@ class CommandActionRegistry {
     );
     await onAddRecurringExpense(expense);
     return CommandResult.success(
-      message: 'Recurring expense added: ${expense.amount} in ${expense.category}',
+      message: l10n?.cmdRecurringExpenseAdded('${expense.amount}', expense.category) ??
+          'Recurring expense added: ${expense.amount} in ${expense.category}',
     );
   }
 
-  Future<CommandResult> _executeRemoveShoppingItem(
-    Map<String, dynamic> params,
-  ) async {
+  Future<CommandResult> _executeRemoveShoppingItem(Map<String, dynamic> params, S? l10n) async {
     final name = (params['name'] as String).trim();
     final removed = await onRemoveShoppingItemByName(name);
     if (!removed) {
       return CommandResult.failure(
-        message: 'Could not find shopping item: $name',
+        message: l10n?.cmdShoppingItemNotFound(name) ?? 'Could not find shopping item: $name',
       );
     }
-    return CommandResult.success(message: 'Shopping item removed: $name');
+    return CommandResult.success(
+      message: l10n?.cmdShoppingItemRemoved(name) ?? 'Shopping item removed: $name',
+    );
   }
 
-  Future<CommandResult> _executeAddSavingsContribution(
-    Map<String, dynamic> params,
-  ) async {
+  Future<CommandResult> _executeAddSavingsContribution(Map<String, dynamic> params, S? l10n) async {
     final goalName = (params['goal_name'] as String).trim();
     final amount = _parseDouble(params['amount'])!;
     final applied = await onAddSavingsContributionByGoalName(goalName, amount);
     if (!applied) {
       return CommandResult.failure(
-        message: 'Could not find savings goal: $goalName',
+        message: l10n?.cmdSavingsGoalNotFound(goalName) ?? 'Could not find savings goal: $goalName',
       );
     }
     return CommandResult.success(
-      message: 'Contribution added: $amount to $goalName',
+      message: l10n?.cmdContributionAdded('$amount', goalName) ??
+          'Contribution added: $amount to $goalName',
     );
   }
 
-  Future<CommandResult> _executeToggleShoppingItemChecked(
-    Map<String, dynamic> params,
-  ) async {
+  Future<CommandResult> _executeToggleShoppingItemChecked(Map<String, dynamic> params, S? l10n) async {
     final name = (params['name'] as String).trim();
     final checked = params['checked'] as bool;
     final updated = await onToggleShoppingItemCheckedByName(name, checked);
     if (!updated) {
       return CommandResult.failure(
-        message: 'Could not find shopping item: $name',
+        message: l10n?.cmdShoppingItemNotFound(name) ?? 'Could not find shopping item: $name',
       );
     }
     return CommandResult.success(
       message: checked
-          ? 'Shopping item checked: $name'
-          : 'Shopping item unchecked: $name',
+          ? (l10n?.cmdShoppingItemChecked(name) ?? 'Shopping item checked: $name')
+          : (l10n?.cmdShoppingItemUnchecked(name) ?? 'Shopping item unchecked: $name'),
     );
   }
 
-  Future<CommandResult> _executeDeleteExpense(
-    Map<String, dynamic> params,
-  ) async {
+  Future<CommandResult> _executeDeleteExpense(Map<String, dynamic> params, S? l10n) async {
     final description = (params['description'] as String).trim();
     final category = params['category'] as String?;
-    final deleted = await onDeleteExpenseByDescription(
-      description,
-      category: category,
-    );
+    final deleted = await onDeleteExpenseByDescription(description, category: category);
     if (!deleted) {
       return CommandResult.failure(
-        message: 'Could not find expense: $description',
+        message: l10n?.cmdExpenseNotFound(description) ?? 'Could not find expense: $description',
       );
     }
-    return CommandResult.success(message: 'Expense deleted: $description');
-  }
-
-  Future<CommandResult> _executeSetThemeMode(
-    Map<String, dynamic> params,
-  ) async {
-    final mode = _validThemeModes[params['mode'] as String]!;
-    onSetThemeMode(mode);
-    return CommandResult.success(message: 'Theme set to ${params['mode']}');
-  }
-
-  Future<CommandResult> _executeSetColorPalette(
-    Map<String, dynamic> params,
-  ) async {
-    final palette = _validPalettes[params['palette'] as String]!;
-    onSetColorPalette(palette);
     return CommandResult.success(
-      message: 'Color palette set to ${params['palette']}',
+      message: l10n?.cmdExpenseDeleted(description) ?? 'Expense deleted: $description',
     );
   }
 
-  Future<CommandResult> _executeSetLanguage(
-    Map<String, dynamic> params,
-  ) async {
+  Future<CommandResult> _executeSetThemeMode(Map<String, dynamic> params, S? l10n) async {
+    final modeStr = params['mode'] as String;
+    final mode = _validThemeModes[modeStr]!;
+    onSetThemeMode(mode);
+    return CommandResult.success(
+      message: l10n?.cmdThemeSet(modeStr) ?? 'Theme set to $modeStr',
+    );
+  }
+
+  Future<CommandResult> _executeSetColorPalette(Map<String, dynamic> params, S? l10n) async {
+    final paletteStr = params['palette'] as String;
+    final palette = _validPalettes[paletteStr]!;
+    onSetColorPalette(palette);
+    return CommandResult.success(
+      message: l10n?.cmdPaletteSet(paletteStr) ?? 'Color palette set to $paletteStr',
+    );
+  }
+
+  Future<CommandResult> _executeSetLanguage(Map<String, dynamic> params, S? l10n) async {
     final locale = params['locale'] as String;
     onSetLanguage(locale == 'system' ? null : locale);
-    return CommandResult.success(message: 'Language set to $locale');
+    return CommandResult.success(
+      message: l10n?.cmdLanguageSet(locale) ?? 'Language set to $locale',
+    );
   }
 
-  Future<CommandResult> _executeNavigateTo(
-    Map<String, dynamic> params,
-  ) async {
+  Future<CommandResult> _executeNavigateTo(Map<String, dynamic> params, S? l10n) async {
     final canonical = resolveScreenAlias(params['screen'] as String)!;
     onNavigateTo(canonical);
-    return CommandResult.success(message: 'Navigated to $canonical');
+    return CommandResult.success(
+      message: l10n?.cmdNavigatedTo(canonical) ?? 'Navigated to $canonical',
+    );
   }
 
-  Future<CommandResult> _executeClearCheckedItems() async {
+  Future<CommandResult> _executeClearCheckedItems(S? l10n) async {
     onClearCheckedItems();
-    return CommandResult.success(message: 'Checked items cleared');
+    return CommandResult.success(
+      message: l10n?.cmdCheckedItemsCleared ?? 'Checked items cleared',
+    );
   }
 
-  // ── Parsing ────────────────────────────────────────────────────────
+  // -- Parsing ------------------------------------------------------------
 
   static double? _parseDouble(dynamic value) {
     if (value is double) return value;

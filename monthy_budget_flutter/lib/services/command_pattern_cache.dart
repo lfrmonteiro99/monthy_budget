@@ -28,18 +28,24 @@ class CommandPatternCache {
 
   CommandPatternCache({this.maxEntries = 100});
 
-  // ── Public API ─────────────────────────────────────────────────────
+  // -- Public API ---------------------------------------------------------
 
   Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
     final raw = prefs.getString(_prefsKey);
     if (raw == null) return;
 
-    final map = jsonDecode(raw) as Map<String, dynamic>;
-    _cache.clear();
-    for (final entry in map.entries) {
-      _cache[entry.key] =
-          CachedPattern.fromJson(entry.value as Map<String, dynamic>);
+    try {
+      final map = jsonDecode(raw) as Map<String, dynamic>;
+      _cache.clear();
+      for (final entry in map.entries) {
+        _cache[entry.key] =
+            CachedPattern.fromJson(entry.value as Map<String, dynamic>);
+      }
+    } catch (_) {
+      // Corrupted cache -- clear and continue gracefully.
+      _cache.clear();
+      await prefs.remove(_prefsKey);
     }
   }
 
@@ -88,7 +94,7 @@ class CommandPatternCache {
     await prefs.remove(_prefsKey);
   }
 
-  // ── Private helpers ────────────────────────────────────────────────
+  // -- Private helpers ----------------------------------------------------
 
   String _normalize(String input) {
     return input
