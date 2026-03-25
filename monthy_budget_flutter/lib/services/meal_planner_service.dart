@@ -597,6 +597,14 @@ class MealPlannerService {
           if (noSoup.isNotEmpty) pool = noSoup;
         }
 
+        // When multi-course is enabled, the main course pool must exclude
+        // soups/starters and desserts — those are picked separately.
+        if (ms.includeSoupOrStarter || ms.includeDessert) {
+          final mainOnly = pool.where((r) =>
+            !r.isSoupOrStarter && !r.isDessert).toList();
+          if (mainOnly.isNotEmpty) pool = mainOnly;
+        }
+
         // Minimum protein: exclude low-protein soups/sides from main meals
         final highProtein = pool.where((r) =>
           r.nutrition == null ||
@@ -788,12 +796,86 @@ class MealPlannerService {
           weeklySoupCount[weekNum] = (weeklySoupCount[weekNum] ?? 0) + 1;
         }
 
+        // --- Multi-course meal generation ---
+        // If soup/starter is enabled and this is a main meal (lunch/dinner),
+        // pick a soup/starter BEFORE the main course.
+        if (ms.includeSoupOrStarter &&
+            (mealType == MealType.lunch || mealType == MealType.dinner)) {
+          final soupPool = _recipes.where((r) {
+            if (!r.isSoupOrStarter) return false;
+            if (!r.suitableMealTypes.contains(mealType.name)) return false;
+            if (ms.glutenFree && !r.glutenFree) return false;
+            if (ms.lactoseFree && !r.lactoseFree) return false;
+            return true;
+          }).toList();
+          if (soupPool.isNotEmpty) {
+            soupPool.shuffle(rng);
+            // Avoid repeating yesterday's soup
+            final prevSoup = days.where(
+              (d) => d.courseType == CourseType.soupOrStarter &&
+                     d.dayIndex == day - 1 &&
+                     d.mealType == mealType,
+            ).firstOrNull;
+            Recipe soupRecipe;
+            if (prevSoup != null) {
+              final deduped = soupPool.where((r) => r.id != prevSoup.recipeId).toList();
+              soupRecipe = deduped.isNotEmpty ? deduped.first : soupPool.first;
+            } else {
+              soupRecipe = soupPool.first;
+            }
+            days.add(MealDay(
+              dayIndex: day,
+              recipeId: soupRecipe.id,
+              costEstimate: cachedCost(soupRecipe),
+              mealType: mealType,
+              courseType: CourseType.soupOrStarter,
+            ));
+          }
+        }
+
+        // Main course
         days.add(MealDay(
           dayIndex: day,
           recipeId: recipe.id,
           costEstimate: cachedCost(recipe),
           mealType: mealType,
+          courseType: CourseType.mainCourse,
         ));
+
+        // If dessert is enabled, pick a dessert AFTER the main course
+        if (ms.includeDessert &&
+            (mealType == MealType.lunch || mealType == MealType.dinner)) {
+          final dessertPool = _recipes.where((r) {
+            if (!r.isDessert) return false;
+            if (!r.suitableMealTypes.contains(mealType.name)) return false;
+            if (ms.glutenFree && !r.glutenFree) return false;
+            if (ms.lactoseFree && !r.lactoseFree) return false;
+            return true;
+          }).toList();
+          if (dessertPool.isNotEmpty) {
+            dessertPool.shuffle(rng);
+            // Avoid repeating yesterday's dessert
+            final prevDessert = days.where(
+              (d) => d.courseType == CourseType.dessert &&
+                     d.dayIndex == day - 1 &&
+                     d.mealType == mealType,
+            ).firstOrNull;
+            Recipe dessertRecipe;
+            if (prevDessert != null) {
+              final deduped = dessertPool.where((r) => r.id != prevDessert.recipeId).toList();
+              dessertRecipe = deduped.isNotEmpty ? deduped.first : dessertPool.first;
+            } else {
+              dessertRecipe = dessertPool.first;
+            }
+            days.add(MealDay(
+              dayIndex: day,
+              recipeId: dessertRecipe.id,
+              costEstimate: cachedCost(dessertRecipe),
+              mealType: mealType,
+              courseType: CourseType.dessert,
+            ));
+          }
+        }
 
         // Update ingredient tracking
         int newCount = newIngredientCountThisWeek[mealType] ?? 0;
@@ -933,12 +1015,24 @@ class MealPlannerService {
 
   // --- Swap ---
 
-  List<Recipe> alternativesFor(String recipeId, int np, {MealSettings? ms, bool crossType = false}) {
+  List<Recipe> alternativesFor(String recipeId, int np, {MealSettings? ms, bool crossType = false, CourseType? courseType}) {
     final current = recipeMap[recipeId];
     if (current == null) return [];
     final iMap = ingredientMap;
     final excludedSet = ms?.excludedProteins.toSet();
     var pool = _recipes.where((r) => r.id != recipeId).toList();
+
+    // Filter by course type: soups swap with soups, desserts with desserts, etc.
+    if (courseType != null) {
+      switch (courseType) {
+        case CourseType.soupOrStarter:
+          pool = pool.where((r) => r.isSoupOrStarter).toList();
+        case CourseType.dessert:
+          pool = pool.where((r) => r.isDessert).toList();
+        case CourseType.mainCourse:
+          pool = pool.where((r) => !r.isSoupOrStarter && !r.isDessert).toList();
+      }
+    }
 
     // When crossType is false, restrict to recipes sharing at least one
     // suitableMealType with the current recipe (same-type swap).
@@ -972,12 +1066,13 @@ class MealPlannerService {
     return pool;
   }
 
-  MealPlan swapDay(MealPlan plan, int dayIndex, MealType mealType, String newRecipeId, {MealType? newMealType}) {
+  MealPlan swapDay(MealPlan plan, int dayIndex, MealType mealType, String newRecipeId, {MealType? newMealType, CourseType? courseType}) {
     final iMap = ingredientMap;
     final newRecipe = recipeMap[newRecipeId]!;
     final newCost = recipeCost(newRecipe, plan.nPessoas, iMap);
     final updatedDays = plan.days.map((d) {
-      if (d.dayIndex == dayIndex && d.mealType == mealType) {
+      if (d.dayIndex == dayIndex && d.mealType == mealType &&
+          (courseType == null || d.courseType == courseType)) {
         return d.copyWith(
           recipeId: newRecipeId,
           costEstimate: newCost,

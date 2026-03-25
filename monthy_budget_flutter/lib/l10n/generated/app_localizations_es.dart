@@ -5633,4 +5633,37 @@ class SEs extends S {
   String coachFreeTrialBanner(int used, int total) {
     return 'Prueba gratuita: $used/$total preguntas usadas este mes';
   }
+
+  @override
+  String get mealCourseSoupStarter => 'Sopa / Entrada';
+
+  @override
+  String get mealCourseMain => 'Plato Principal';
+
+  @override
+  String get mealCourseDessert => 'Postre';
+
+  @override
+  String get mealSubstituteHint => 'Toca un ingrediente para sustituirlo por otro';
+
+  @override
+  String get mealSubstituteSameCategory => 'Misma categoria';
+
+  @override
+  String get mealSubstituteOtherCategories => 'Otras categorias';
+
+  @override
+  String get wizardCourseStructure => 'Estructura de la comida';
+
+  @override
+  String get wizardIncludeSoupStarter => 'Incluir sopa o entrada';
+
+  @override
+  String get wizardSoupStarterHint => 'Anade una sopa o entrada como primer plato';
+
+  @override
+  String get wizardIncludeDessert => 'Incluir postre';
+
+  @override
+  String get wizardDessertHint => 'Anade fruta, dulce u otro postre como ultimo plato';
 }

@@ -5647,4 +5647,37 @@ class SFr extends S {
   String coachFreeTrialBanner(int used, int total) {
     return 'Essai gratuit : $used/$total questions utilisees ce mois';
   }
+
+  @override
+  String get mealCourseSoupStarter => 'Soupe / Entree';
+
+  @override
+  String get mealCourseMain => 'Plat Principal';
+
+  @override
+  String get mealCourseDessert => 'Dessert';
+
+  @override
+  String get mealSubstituteHint => 'Appuyez sur un ingredient pour le remplacer';
+
+  @override
+  String get mealSubstituteSameCategory => 'Meme categorie';
+
+  @override
+  String get mealSubstituteOtherCategories => 'Autres categories';
+
+  @override
+  String get wizardCourseStructure => 'Structure du repas';
+
+  @override
+  String get wizardIncludeSoupStarter => 'Inclure soupe ou entree';
+
+  @override
+  String get wizardSoupStarterHint => 'Ajoute une soupe ou entree en premier plat';
+
+  @override
+  String get wizardIncludeDessert => 'Inclure dessert';
+
+  @override
+  String get wizardDessertHint => 'Ajoute fruit, dessert ou autre en dernier plat';
 }

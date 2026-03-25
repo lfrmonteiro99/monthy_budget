@@ -5630,4 +5630,37 @@ class SPt extends S {
   String coachFreeTrialBanner(int used, int total) {
     return 'Periodo gratuito: $used/$total perguntas usadas este mes';
   }
+
+  @override
+  String get mealCourseSoupStarter => 'Sopa / Entrada';
+
+  @override
+  String get mealCourseMain => 'Prato Principal';
+
+  @override
+  String get mealCourseDessert => 'Sobremesa';
+
+  @override
+  String get mealSubstituteHint => 'Toque num ingrediente para o substituir por outro';
+
+  @override
+  String get mealSubstituteSameCategory => 'Mesma categoria';
+
+  @override
+  String get mealSubstituteOtherCategories => 'Outras categorias';
+
+  @override
+  String get wizardCourseStructure => 'Estrutura da refeicao';
+
+  @override
+  String get wizardIncludeSoupStarter => 'Incluir sopa ou entrada';
+
+  @override
+  String get wizardSoupStarterHint => 'Adiciona uma sopa ou entrada como primeiro prato';
+
+  @override
+  String get wizardIncludeDessert => 'Incluir sobremesa';
+
+  @override
+  String get wizardDessertHint => 'Adiciona fruta, doce ou outra sobremesa como ultimo prato';
 }

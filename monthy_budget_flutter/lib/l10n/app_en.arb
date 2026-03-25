@@ -2938,5 +2938,16 @@
             "used": { "type": "int" },
             "total": { "type": "int" }
         }
-    }
+    },
+    "mealCourseSoupStarter": "Soup / Starter",
+    "mealCourseMain": "Main Course",
+    "mealCourseDessert": "Dessert",
+    "mealSubstituteHint": "Tap an ingredient to replace it with another",
+    "mealSubstituteSameCategory": "Same category",
+    "mealSubstituteOtherCategories": "Other categories",
+    "wizardCourseStructure": "Meal structure",
+    "wizardIncludeSoupStarter": "Include soup or starter",
+    "wizardSoupStarterHint": "Adds a soup or starter as the first course",
+    "wizardIncludeDessert": "Include dessert",
+    "wizardDessertHint": "Adds fruit, sweet or other dessert as the last course"
 }

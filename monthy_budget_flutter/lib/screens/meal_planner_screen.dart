@@ -1056,18 +1056,24 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final recipe = _service.recipeMap[day.recipeId];
     if (recipe == null) return;
     final iMap = _service.ingredientMap;
-    final ingredient = iMap[ingredientId];
+    // Resolve effective ingredient (may already be substituted)
+    final effectiveId = day.substitutions[ingredientId] ?? ingredientId;
+    final ingredient = iMap[effectiveId] ?? iMap[ingredientId];
     if (ingredient == null) return;
     final l10n = S.of(context);
 
-    // Find same-category alternatives
-    final alternatives =
-        _service.ingredients
-            .where(
-              (i) => i.category == ingredient.category && i.id != ingredientId,
-            )
-            .toList()
-          ..sort((a, b) => a.name.compareTo(b.name));
+    // Group all ingredients by category, prioritizing same category first
+    final sameCategory = _service.ingredients
+        .where((i) => i.category == ingredient.category && i.id != effectiveId)
+        .toList()
+      ..sort((a, b) => a.name.compareTo(b.name));
+    final otherCategories = _service.ingredients
+        .where((i) => i.category != ingredient.category && i.id != effectiveId)
+        .toList()
+      ..sort((a, b) {
+        final catCmp = a.category.name.compareTo(b.category.name);
+        return catCmp != 0 ? catCmp : a.name.compareTo(b.name);
+      });
 
     showModalBottomSheet(
       context: context,
@@ -1077,8 +1083,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (_) => DraggableScrollableSheet(
-        initialChildSize: 0.5,
-        maxChildSize: 0.8,
+        initialChildSize: 0.6,
+        maxChildSize: 0.9,
         expand: false,
         builder: (ctx, controller) => Column(
           children: [
@@ -1104,35 +1110,94 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 ),
               ),
             ),
+            const SizedBox(height: 4),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  l10n.mealSubstituteHint,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary(ctx),
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(height: 12),
             Expanded(
-              child: ListView.builder(
+              child: ListView(
                 controller: controller,
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                itemCount: alternatives.length,
-                itemBuilder: (_, i) {
-                  final alt = alternatives[i];
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(alt.name, style: const TextStyle(fontSize: 14)),
-                    subtitle: Text(
-                      '${alt.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${alt.unit}',
+                children: [
+                  // Same category header
+                  if (sameCategory.isNotEmpty) ...[
+                    Text(
+                      l10n.mealSubstituteSameCategory.toUpperCase(),
                       style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.textSecondary(ctx),
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primary(ctx),
+                        letterSpacing: 0.8,
                       ),
                     ),
-                    trailing: Icon(
-                      Icons.swap_horiz,
-                      size: 18,
-                      color: AppColors.primary(ctx),
+                    const SizedBox(height: 4),
+                    ...sameCategory.map((alt) => ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(alt.name, style: const TextStyle(fontSize: 14)),
+                      subtitle: Text(
+                        '${alt.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${alt.unit}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary(ctx),
+                        ),
+                      ),
+                      trailing: Icon(
+                        Icons.swap_horiz,
+                        size: 18,
+                        color: AppColors.primary(ctx),
+                      ),
+                      onTap: () {
+                        Navigator.pop(ctx);
+                        _applySubstitution(day, ingredientId, alt.id);
+                      },
+                    )),
+                  ],
+                  // Other categories
+                  if (otherCategories.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    Text(
+                      l10n.mealSubstituteOtherCategories.toUpperCase(),
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textMuted(ctx),
+                        letterSpacing: 0.8,
+                      ),
                     ),
-                    onTap: () {
-                      Navigator.pop(ctx);
-                      _applySubstitution(day, ingredientId, alt.id);
-                    },
-                  );
-                },
+                    const SizedBox(height: 4),
+                    ...otherCategories.map((alt) => ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(alt.name, style: const TextStyle(fontSize: 14)),
+                      subtitle: Text(
+                        '${alt.category.name} · ${alt.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${alt.unit}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary(ctx),
+                        ),
+                      ),
+                      trailing: Icon(
+                        Icons.swap_horiz,
+                        size: 18,
+                        color: AppColors.textMuted(ctx),
+                      ),
+                      onTap: () {
+                        Navigator.pop(ctx);
+                        _applySubstitution(day, ingredientId, alt.id);
+                      },
+                    )),
+                  ],
+                ],
               ),
             ),
           ],
@@ -1157,7 +1222,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     newSubs[oldIngredientId] = newIngredientId;
 
     final updatedDays = plan.days.map((d) {
-      if (d.dayIndex == day.dayIndex && d.mealType == day.mealType) {
+      if (d.dayIndex == day.dayIndex &&
+          d.mealType == day.mealType &&
+          d.courseType == day.courseType) {
         return d.copyWith(substitutions: newSubs);
       }
       return d;
@@ -1209,6 +1276,38 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             }
           });
     }
+  }
+
+  void _swapRecipeCourse(int dayIndex, MealType mealType, String currentRecipeId, CourseType courseType) {
+    final plan = _plan!;
+    final iMap = _service.ingredientMap;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => _SwapSheet(
+        currentRecipeId: currentRecipeId,
+        nPessoas: plan.nPessoas,
+        ingredientMap: iMap,
+        service: _service,
+        mealSettings: widget.settings.mealSettings,
+        currentMealType: mealType,
+        courseType: courseType,
+        onSelect: (newRecipeId) {
+          final updated = _service.swapDay(
+            plan,
+            dayIndex,
+            mealType,
+            newRecipeId,
+            courseType: courseType,
+          );
+          _service.save(updated, widget.householdId);
+          setState(() => _plan = updated);
+          _enrichPlan(updated);
+          _recomputeBudgetInsight();
+        },
+      ),
+    );
   }
 
   void _swapRecipe(int dayIndex, MealType mealType, String currentRecipeId) {
@@ -1263,14 +1362,17 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       if (day.isLeftover || day.isFreeform) continue;
       final recipe = _service.recipeMap[day.recipeId];
       if (recipe == null) continue;
-      final scale = plan.nPessoas / recipe.servings;
+      final dayGuests = plan.extraGuests[day.dayIndex] ?? 0;
+      final scale = (plan.nPessoas + dayGuests) / recipe.servings;
       for (final ri in recipe.ingredients) {
+        // BUG FIX: apply ingredient substitutions to shopping list
+        final effectiveId = day.substitutions[ri.ingredientId] ?? ri.ingredientId;
         totals.update(
-          ri.ingredientId,
+          effectiveId,
           (v) => v + ri.quantity * scale,
           ifAbsent: () => ri.quantity * scale,
         );
-        (mealLabels[ri.ingredientId] ??= {}).add(recipe.name);
+        (mealLabels[effectiveId] ??= {}).add(recipe.name);
       }
     }
     final l10n = S.of(context);
@@ -1861,53 +1963,82 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         Expanded(
           child: Stack(
             children: [
-              ListView.builder(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
-                itemCount: weekDays.length,
-                itemBuilder: (_, i) {
-                  final day = weekDays[i];
-                  if (day.isFreeform) {
-                    return FreeformMealCard(
-                      mealDay: day,
-                      onEdit: () => _editFreeformMeal(day),
-                      onAddToShoppingList: widget.onAddToShoppingList,
-                      onFeedback: (fb) =>
-                          _setFreeformFeedback(day.dayIndex, day.mealType, fb),
+              Builder(builder: (_) {
+                // Group courses by (dayIndex, mealType) for multi-course display
+                final grouped = <String, List<MealDay>>{};
+                for (final day in weekDays) {
+                  final key = '${day.dayIndex}_${day.mealType.name}';
+                  (grouped[key] ??= []).add(day);
+                }
+                // Sort courses within each group: soup first, main, dessert last
+                const courseOrder = {
+                  CourseType.soupOrStarter: 0,
+                  CourseType.mainCourse: 1,
+                  CourseType.dessert: 2,
+                };
+                for (final group in grouped.values) {
+                  group.sort((a, b) =>
+                    (courseOrder[a.courseType] ?? 1).compareTo(courseOrder[b.courseType] ?? 1));
+                }
+                final groupKeys = grouped.keys.toList();
+                return ListView.builder(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+                  itemCount: groupKeys.length,
+                  itemBuilder: (_, i) {
+                    final courses = grouped[groupKeys[i]]!;
+                    final mainDay = courses.firstWhere(
+                      (d) => d.courseType == CourseType.mainCourse,
+                      orElse: () => courses.first,
                     );
-                  }
-                  return _DayCard(
-                    mealDay: day,
-                    plan: plan,
-                    service: _service,
-                    aiContent: _aiContent[day.recipeId],
-                    isExpanded: _expanded.contains(
-                      '${day.dayIndex}_${day.mealType.name}',
-                    ),
-                    onToggleExpand: () => setState(() {
-                      final key = '${day.dayIndex}_${day.mealType.name}';
-                      if (_expanded.contains(key)) {
-                        _expanded.remove(key);
-                      } else {
-                        _expanded.add(key);
-                      }
-                    }),
-                    onSwap: () =>
-                        _swapRecipe(day.dayIndex, day.mealType, day.recipeId),
-                    onReplaceFreeform: () => _replaceMealWithFreeform(day),
-                    onAddIngredientToList: widget.onAddToShoppingList,
-                    onFeedback: (fb) =>
-                        _setFeedback(day.dayIndex, day.mealType, fb),
-                    onRating: (rating) =>
-                        _setRating(day.dayIndex, day.mealType, rating),
-                    onViewPrepGuide: () => _showMealPrepGuide(day),
-                    activePantryIds: resolveActivePantry(
-                      widget.settings.mealSettings,
-                    ),
-                    onSubstituteIngredient: (ingredientId) =>
-                        _showIngredientSubstitutionSheet(day, ingredientId),
-                  );
-                },
-              ),
+                    if (mainDay.isFreeform) {
+                      return FreeformMealCard(
+                        mealDay: mainDay,
+                        onEdit: () => _editFreeformMeal(mainDay),
+                        onAddToShoppingList: widget.onAddToShoppingList,
+                        onFeedback: (fb) =>
+                            _setFreeformFeedback(mainDay.dayIndex, mainDay.mealType, fb),
+                      );
+                    }
+                    return _DayCard(
+                      mealDay: mainDay,
+                      allCourses: courses,
+                      plan: plan,
+                      service: _service,
+                      aiContent: _aiContent[mainDay.recipeId],
+                      allAiContent: _aiContent,
+                      isExpanded: _expanded.contains(
+                        '${mainDay.dayIndex}_${mainDay.mealType.name}',
+                      ),
+                      onToggleExpand: () => setState(() {
+                        final key = '${mainDay.dayIndex}_${mainDay.mealType.name}';
+                        if (_expanded.contains(key)) {
+                          _expanded.remove(key);
+                        } else {
+                          _expanded.add(key);
+                        }
+                      }),
+                      onSwap: () =>
+                          _swapRecipe(mainDay.dayIndex, mainDay.mealType, mainDay.recipeId),
+                      onSwapCourse: (day) =>
+                          _swapRecipeCourse(day.dayIndex, day.mealType, day.recipeId, day.courseType),
+                      onReplaceFreeform: () => _replaceMealWithFreeform(mainDay),
+                      onAddIngredientToList: widget.onAddToShoppingList,
+                      onFeedback: (fb) =>
+                          _setFeedback(mainDay.dayIndex, mainDay.mealType, fb),
+                      onRating: (rating) =>
+                          _setRating(mainDay.dayIndex, mainDay.mealType, rating),
+                      onViewPrepGuide: () => _showMealPrepGuide(mainDay),
+                      activePantryIds: resolveActivePantry(
+                        widget.settings.mealSettings,
+                      ),
+                      onSubstituteIngredient: (ingredientId) =>
+                          _showIngredientSubstitutionSheet(mainDay, ingredientId),
+                      onSubstituteCourseIngredient: (day, ingredientId) =>
+                          _showIngredientSubstitutionSheet(day, ingredientId),
+                    );
+                  },
+                );
+              }),
               Positioned(
                 bottom: 16,
                 left: 16,
@@ -1959,12 +2090,17 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
 class _DayCard extends StatelessWidget {
   final MealDay mealDay;
+  /// All courses for this day+mealType group (soup, main, dessert).
+  final List<MealDay> allCourses;
   final MealPlan plan;
   final MealPlannerService service;
   final RecipeAiContent? aiContent;
+  /// AI content map for all recipes (needed for course AI content).
+  final Map<String, RecipeAiContent> allAiContent;
   final bool isExpanded;
   final VoidCallback onToggleExpand;
   final VoidCallback onSwap;
+  final void Function(MealDay day) onSwapCourse;
   final VoidCallback onReplaceFreeform;
   final void Function(ShoppingItem) onAddIngredientToList;
   final ValueChanged<MealFeedback> onFeedback;
@@ -1972,21 +2108,26 @@ class _DayCard extends StatelessWidget {
   final VoidCallback onViewPrepGuide;
   final Set<String> activePantryIds;
   final void Function(String ingredientId) onSubstituteIngredient;
+  final void Function(MealDay day, String ingredientId) onSubstituteCourseIngredient;
 
   const _DayCard({
     required this.mealDay,
+    this.allCourses = const [],
     required this.plan,
     required this.service,
     required this.aiContent,
+    this.allAiContent = const {},
     required this.isExpanded,
     required this.onToggleExpand,
     required this.onSwap,
+    required this.onSwapCourse,
     required this.onReplaceFreeform,
     required this.onAddIngredientToList,
     required this.onFeedback,
     required this.onRating,
     required this.onViewPrepGuide,
     required this.onSubstituteIngredient,
+    required this.onSubstituteCourseIngredient,
     this.activePantryIds = const {},
   });
 
@@ -1996,9 +2137,12 @@ class _DayCard extends StatelessWidget {
     final recipe = service.recipeMap[mealDay.recipeId];
     if (recipe == null) return const SizedBox();
     final iMap = service.ingredientMap;
+    // Total cost for all courses in this meal slot
+    final totalMealCost = allCourses.fold(0.0, (sum, c) => sum + c.costEstimate);
+    final displayCost = allCourses.length > 1 ? totalMealCost : mealDay.costEstimate;
     final costPerPerson = plan.nPessoas > 0
-        ? mealDay.costEstimate / plan.nPessoas
-        : mealDay.costEstimate;
+        ? displayCost / plan.nPessoas
+        : displayCost;
 
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
@@ -2097,7 +2241,7 @@ class _DayCard extends StatelessWidget {
                     ],
                     const Spacer(),
                     Text(
-                      '${mealDay.costEstimate.toStringAsFixed(2)}${currencySymbol()}',
+                      '${displayCost.toStringAsFixed(2)}${currencySymbol()}',
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
@@ -2124,13 +2268,8 @@ class _DayCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  recipe.name,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                // Multi-course display: show all courses for this meal slot
+                ..._buildCourseRows(context, l10n, recipe, iMap),
                 const SizedBox(height: 6),
                 Row(
                   children: [
@@ -2350,103 +2489,126 @@ class _DayCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    l10n.mealIngredients,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary(context),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  ...recipe.ingredients.map((ri) {
-                    // Apply substitution if present
-                    final effectiveId =
-                        mealDay.substitutions[ri.ingredientId] ??
-                        ri.ingredientId;
-                    final ing = iMap[effectiveId] ?? iMap[ri.ingredientId];
-                    if (ing == null) return const SizedBox();
-                    final isSubstituted = mealDay.substitutions.containsKey(
-                      ri.ingredientId,
-                    );
-                    final scale = plan.nPessoas / recipe.servings;
-                    final qty = ri.quantity * scale;
-                    final cost = qty * ing.avgPricePerUnit;
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 3),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () =>
-                                  onSubstituteIngredient(ri.ingredientId),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Flexible(
-                                    child: Text(
-                                      ing.name,
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        decoration: isSubstituted
-                                            ? TextDecoration.underline
-                                            : null,
-                                        color: isSubstituted
-                                            ? AppColors.primary(context)
-                                            : null,
+                  // Show ingredients for ALL courses in this meal slot
+                  ...allCourses.expand((course) {
+                    final courseRecipe = service.recipeMap[course.recipeId];
+                    if (courseRecipe == null) return <Widget>[];
+                    final courseLabel = allCourses.length > 1
+                        ? _courseLabel(course.courseType, l10n)
+                        : null;
+                    return [
+                      if (courseLabel != null) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          courseLabel,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textMuted(context),
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                      ] else ...[
+                        Text(
+                          l10n.mealIngredients,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textSecondary(context),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                      ...courseRecipe.ingredients.map((ri) {
+                        final effectiveId =
+                            course.substitutions[ri.ingredientId] ??
+                            ri.ingredientId;
+                        final ing = iMap[effectiveId] ?? iMap[ri.ingredientId];
+                        if (ing == null) return const SizedBox();
+                        final isSubstituted = course.substitutions.containsKey(
+                          ri.ingredientId,
+                        );
+                        final scale = plan.nPessoas / courseRecipe.servings;
+                        final qty = ri.quantity * scale;
+                        final cost = qty * ing.avgPricePerUnit;
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 3),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () =>
+                                      onSubstituteCourseIngredient(course, ri.ingredientId),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          ing.name,
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            decoration: isSubstituted
+                                                ? TextDecoration.underline
+                                                : null,
+                                            color: isSubstituted
+                                                ? AppColors.primary(context)
+                                                : null,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Icon(
-                                    Icons.swap_horiz,
-                                    size: 14,
-                                    color: AppColors.textMuted(context),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Text(
-                            '${_fmt(qty)} ${ing.unit}',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: AppColors.textSecondary(context),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Semantics(
-                            button: true,
-                            label: l10n.addToList(ing.name),
-                            child: SizedBox(
-                              width: 40,
-                              height: 40,
-                              child: Material(
-                                color: AppColors.primary(context),
-                                borderRadius: BorderRadius.circular(10),
-                                child: InkWell(
-                                  onTap: () => onAddIngredientToList(
-                                    ShoppingItem(
-                                      productName: ing.name,
-                                      store: '',
-                                      price: cost,
-                                      unitPrice:
-                                          '${ing.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${ing.unit}',
-                                    ),
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Icon(
-                                    Icons.add,
-                                    size: 18,
-                                    color: AppColors.onPrimary(context),
+                                      const SizedBox(width: 4),
+                                      Icon(
+                                        Icons.swap_horiz,
+                                        size: 14,
+                                        color: AppColors.textMuted(context),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
-                            ),
+                              Text(
+                                '${_fmt(qty)} ${ing.unit}',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: AppColors.textSecondary(context),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Semantics(
+                                button: true,
+                                label: l10n.addToList(ing.name),
+                                child: SizedBox(
+                                  width: 40,
+                                  height: 40,
+                                  child: Material(
+                                    color: AppColors.primary(context),
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: InkWell(
+                                      onTap: () => onAddIngredientToList(
+                                        ShoppingItem(
+                                          productName: ing.name,
+                                          store: '',
+                                          price: cost,
+                                          unitPrice:
+                                              '${ing.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${ing.unit}',
+                                        ),
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Icon(
+                                        Icons.add,
+                                        size: 18,
+                                        color: AppColors.onPrimary(context),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    );
+                        );
+                      }),
+                    ];
                   }),
                   if (aiContent != null) ...[
                     const SizedBox(height: 12),
@@ -2675,9 +2837,151 @@ class _DayCard extends StatelessWidget {
     );
   }
 
+  String _courseLabel(CourseType ct, S l10n) {
+    switch (ct) {
+      case CourseType.soupOrStarter:
+        return l10n.mealCourseSoupStarter.toUpperCase();
+      case CourseType.mainCourse:
+        return l10n.mealCourseMain.toUpperCase();
+      case CourseType.dessert:
+        return l10n.mealCourseDessert.toUpperCase();
+    }
+  }
+
+  /// Builds the course rows for the meal card.
+  /// Shows soup/starter as first line, main course, and dessert as last line.
+  List<Widget> _buildCourseRows(
+    BuildContext context,
+    S l10n,
+    Recipe mainRecipe,
+    Map<String, Ingredient> iMap,
+  ) {
+    final widgets = <Widget>[];
+    final hasCourses = allCourses.length > 1;
+
+    // Soup/starter course
+    for (final course in allCourses) {
+      if (course.courseType == CourseType.soupOrStarter) {
+        final soupRecipe = service.recipeMap[course.recipeId];
+        if (soupRecipe != null) {
+          widgets.add(_CourseRow(
+            icon: Icons.soup_kitchen,
+            label: l10n.mealCourseSoupStarter,
+            recipeName: soupRecipe.name,
+            color: const Color(0xFFE67E22),
+            onSwap: () => onSwapCourse(course),
+          ));
+          widgets.add(const SizedBox(height: 4));
+        }
+      }
+    }
+
+    // Main course (always shown)
+    if (hasCourses) {
+      widgets.add(Row(
+        children: [
+          Icon(Icons.restaurant, size: 14, color: AppColors.primary(context)),
+          const SizedBox(width: 6),
+          Text(
+            l10n.mealCourseMain,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: AppColors.primary(context),
+            ),
+          ),
+        ],
+      ));
+      widgets.add(const SizedBox(height: 2));
+    }
+    widgets.add(Text(
+      mainRecipe.name,
+      style: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+      ),
+    ));
+
+    // Dessert course
+    for (final course in allCourses) {
+      if (course.courseType == CourseType.dessert) {
+        final dessertRecipe = service.recipeMap[course.recipeId];
+        if (dessertRecipe != null) {
+          widgets.add(const SizedBox(height: 4));
+          widgets.add(_CourseRow(
+            icon: Icons.icecream,
+            label: l10n.mealCourseDessert,
+            recipeName: dessertRecipe.name,
+            color: const Color(0xFF9B59B6),
+            onSwap: () => onSwapCourse(course),
+          ));
+        }
+      }
+    }
+
+    return widgets;
+  }
+
   String _fmt(double v) {
     if (v == v.roundToDouble()) return v.round().toString();
     return v.toStringAsFixed(1);
+  }
+}
+
+/// Compact row for a companion course (soup/starter or dessert).
+class _CourseRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String recipeName;
+  final Color color;
+  final VoidCallback onSwap;
+
+  const _CourseRow({
+    required this.icon,
+    required this.label,
+    required this.recipeName,
+    required this.color,
+    required this.onSwap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 16, color: color),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+              color: color,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              recipeName,
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+            ),
+          ),
+          GestureDetector(
+            onTap: onSwap,
+            child: Icon(
+              Icons.swap_horiz,
+              size: 18,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -2690,6 +2994,7 @@ class _SwapSheet extends StatefulWidget {
   final MealPlannerService service;
   final MealSettings mealSettings;
   final MealType currentMealType;
+  final CourseType? courseType;
   final void Function(String) onSelect;
 
   const _SwapSheet({
@@ -2699,6 +3004,7 @@ class _SwapSheet extends StatefulWidget {
     required this.service,
     required this.mealSettings,
     required this.currentMealType,
+    this.courseType,
     required this.onSelect,
   });
 
@@ -2717,6 +3023,7 @@ class _SwapSheetState extends State<_SwapSheet> {
       widget.currentRecipeId,
       widget.nPessoas,
       ms: widget.mealSettings,
+      courseType: widget.courseType,
     );
   }
 
@@ -2727,6 +3034,7 @@ class _SwapSheetState extends State<_SwapSheet> {
         widget.nPessoas,
         ms: widget.mealSettings,
         crossType: _showAllMealTypes,
+        courseType: widget.courseType,
       );
     });
   }
