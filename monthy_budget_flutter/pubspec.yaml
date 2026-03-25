@@ -2,7 +2,7 @@ name: monthly_management
 description: "Calculadora de Orcamento Mensal - Portuguese monthly budget calculator with IRS tax tables"
 publish_to: 'none'
 
-version: 2026.4.6+260400006
+version: 2026.5.0+260500000
 
 environment:
   sdk: ^3.11.0
