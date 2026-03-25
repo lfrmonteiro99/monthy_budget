@@ -250,6 +250,59 @@ class _Step1Meals extends StatelessWidget {
             ),
           );
         }),
+        const SizedBox(height: 20),
+        Text(
+          l10n.wizardCourseStructure,
+          style: TextStyle(fontSize: 15, color: AppColors.textLabel(context)),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          decoration: BoxDecoration(
+            color: AppColors.surface(context),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.border(context)),
+          ),
+          child: SwitchListTile(
+            value: draft.includeSoupOrStarter,
+            onChanged: (v) =>
+                onChanged(draft.copyWith(includeSoupOrStarter: v)),
+            title: Text(
+              l10n.wizardIncludeSoupStarter,
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+            ),
+            subtitle: Text(
+              l10n.wizardSoupStarterHint,
+              style: TextStyle(
+                  fontSize: 12, color: AppColors.textMuted(context)),
+            ),
+            activeTrackColor: AppColors.primary(context),
+            secondary: const Icon(Icons.soup_kitchen, size: 22),
+          ),
+        ),
+        const SizedBox(height: 10),
+        Container(
+          decoration: BoxDecoration(
+            color: AppColors.surface(context),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.border(context)),
+          ),
+          child: SwitchListTile(
+            value: draft.includeDessert,
+            onChanged: (v) =>
+                onChanged(draft.copyWith(includeDessert: v)),
+            title: Text(
+              l10n.wizardIncludeDessert,
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+            ),
+            subtitle: Text(
+              l10n.wizardDessertHint,
+              style: TextStyle(
+                  fontSize: 12, color: AppColors.textMuted(context)),
+            ),
+            activeTrackColor: AppColors.primary(context),
+            secondary: const Icon(Icons.icecream, size: 22),
+          ),
+        ),
       ],
     );
   }

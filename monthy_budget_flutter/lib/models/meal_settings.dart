@@ -294,6 +294,12 @@ class MealSettings {
   final Set<MedicalCondition> medicalConditions;
   final List<PantryItem> pantryItems;
 
+  /// When true, each main meal includes a soup or starter as the first course.
+  final bool includeSoupOrStarter;
+
+  /// When true, each main meal includes a dessert as the third course.
+  final bool includeDessert;
+
   const MealSettings({
     this.householdSize,
     this.enabledMeals = const {MealType.lunch, MealType.dinner},
@@ -340,6 +346,8 @@ class MealSettings {
     this.dailyFiberTargetG,
     this.medicalConditions = const {},
     this.pantryItems = const [],
+    this.includeSoupOrStarter = false,
+    this.includeDessert = false,
   });
 
   static const Object _sentinel = Object();
@@ -387,6 +395,8 @@ class MealSettings {
     Object? dailyFiberTargetG = _sentinel,
     Set<MedicalCondition>? medicalConditions,
     List<PantryItem>? pantryItems,
+    bool? includeSoupOrStarter,
+    bool? includeDessert,
   }) {
     return MealSettings(
       householdSize: householdSize == _sentinel
@@ -437,6 +447,8 @@ class MealSettings {
       dailyFiberTargetG: dailyFiberTargetG == _sentinel ? this.dailyFiberTargetG : dailyFiberTargetG as int?,
       medicalConditions: medicalConditions ?? this.medicalConditions,
       pantryItems: pantryItems ?? this.pantryItems,
+      includeSoupOrStarter: includeSoupOrStarter ?? this.includeSoupOrStarter,
+      includeDessert: includeDessert ?? this.includeDessert,
     );
   }
 
@@ -483,6 +495,8 @@ class MealSettings {
     'dailyFiberTargetG': dailyFiberTargetG,
     'medicalConditions': medicalConditions.map((c) => c.name).toList(),
     'pantryItems': pantryItems.map((e) => e.toJson()).toList(),
+    'includeSoupOrStarter': includeSoupOrStarter,
+    'includeDessert': includeDessert,
   };
 
   factory MealSettings.fromJson(Map<String, dynamic> json) {
@@ -575,6 +589,8 @@ class MealSettings {
               ?.map((e) => PantryItem.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      includeSoupOrStarter: json['includeSoupOrStarter'] ?? false,
+      includeDessert: json['includeDessert'] ?? false,
     );
   }
 }

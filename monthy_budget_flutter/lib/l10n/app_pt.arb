@@ -5616,5 +5616,16 @@
             "used": { "type": "int" },
             "total": { "type": "int" }
         }
-    }
+    },
+    "mealCourseSoupStarter": "Sopa / Entrada",
+    "mealCourseMain": "Prato Principal",
+    "mealCourseDessert": "Sobremesa",
+    "mealSubstituteHint": "Toque num ingrediente para o substituir por outro",
+    "mealSubstituteSameCategory": "Mesma categoria",
+    "mealSubstituteOtherCategories": "Outras categorias",
+    "wizardCourseStructure": "Estrutura da refeicao",
+    "wizardIncludeSoupStarter": "Incluir sopa ou entrada",
+    "wizardSoupStarterHint": "Adiciona uma sopa ou entrada como primeiro prato",
+    "wizardIncludeDessert": "Incluir sobremesa",
+    "wizardDessertHint": "Adiciona fruta, doce ou outra sobremesa como ultimo prato"
 }

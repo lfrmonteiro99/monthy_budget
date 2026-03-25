@@ -5592,4 +5592,37 @@ class SEn extends S {
   String coachFreeTrialBanner(int used, int total) {
     return 'Free trial: $used/$total questions used this month';
   }
+
+  @override
+  String get mealCourseSoupStarter => 'Soup / Starter';
+
+  @override
+  String get mealCourseMain => 'Main Course';
+
+  @override
+  String get mealCourseDessert => 'Dessert';
+
+  @override
+  String get mealSubstituteHint => 'Tap an ingredient to replace it with another';
+
+  @override
+  String get mealSubstituteSameCategory => 'Same category';
+
+  @override
+  String get mealSubstituteOtherCategories => 'Other categories';
+
+  @override
+  String get wizardCourseStructure => 'Meal structure';
+
+  @override
+  String get wizardIncludeSoupStarter => 'Include soup or starter';
+
+  @override
+  String get wizardSoupStarterHint => 'Adds a soup or starter as the first course';
+
+  @override
+  String get wizardIncludeDessert => 'Include dessert';
+
+  @override
+  String get wizardDessertHint => 'Adds fruit, sweet or other dessert as the last course';
 }

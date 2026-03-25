@@ -3040,6 +3040,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
 
+          // ── Course Structure ──
+          _mealCard(
+            icon: Icons.restaurant_menu,
+            title: l10n.wizardCourseStructure,
+            subtitle: l10n.mealSubstituteHint,
+            children: [
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(l10n.wizardIncludeSoupStarter,
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                subtitle: Text(l10n.wizardSoupStarterHint, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+                secondary: const Icon(Icons.soup_kitchen, size: 22),
+                value: ms.includeSoupOrStarter,
+                activeTrackColor: AppColors.primary(context),
+                onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(includeSoupOrStarter: v))),
+              ),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(l10n.wizardIncludeDessert,
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                subtitle: Text(l10n.wizardDessertHint, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+                secondary: const Icon(Icons.icecream, size: 22),
+                value: ms.includeDessert,
+                activeTrackColor: AppColors.primary(context),
+                onChanged: (v) => setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(includeDessert: v))),
+              ),
+            ],
+          ),
+
           // ── Section 6: Estrategias (Smart Strategies) ──
           _mealCard(
             icon: Icons.lightbulb_outline,

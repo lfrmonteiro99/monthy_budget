@@ -9994,6 +9994,72 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Periodo gratuito: {used}/{total} perguntas usadas este mes'**
   String coachFreeTrialBanner(int used, int total);
+
+  /// No description provided for @mealCourseSoupStarter.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sopa / Entrada'**
+  String get mealCourseSoupStarter;
+
+  /// No description provided for @mealCourseMain.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prato Principal'**
+  String get mealCourseMain;
+
+  /// No description provided for @mealCourseDessert.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sobremesa'**
+  String get mealCourseDessert;
+
+  /// No description provided for @mealSubstituteHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque num ingrediente para o substituir por outro'**
+  String get mealSubstituteHint;
+
+  /// No description provided for @mealSubstituteSameCategory.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mesma categoria'**
+  String get mealSubstituteSameCategory;
+
+  /// No description provided for @mealSubstituteOtherCategories.
+  ///
+  /// In pt, this message translates to:
+  /// **'Outras categorias'**
+  String get mealSubstituteOtherCategories;
+
+  /// No description provided for @wizardCourseStructure.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estrutura da refeicao'**
+  String get wizardCourseStructure;
+
+  /// No description provided for @wizardIncludeSoupStarter.
+  ///
+  /// In pt, this message translates to:
+  /// **'Incluir sopa ou entrada'**
+  String get wizardIncludeSoupStarter;
+
+  /// No description provided for @wizardSoupStarterHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adiciona uma sopa ou entrada como primeiro prato'**
+  String get wizardSoupStarterHint;
+
+  /// No description provided for @wizardIncludeDessert.
+  ///
+  /// In pt, this message translates to:
+  /// **'Incluir sobremesa'**
+  String get wizardIncludeDessert;
+
+  /// No description provided for @wizardDessertHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adiciona fruta, doce ou outra sobremesa como ultimo prato'**
+  String get wizardDessertHint;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

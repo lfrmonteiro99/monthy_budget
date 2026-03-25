@@ -7,6 +7,20 @@ enum MealKind { recipe, freeform }
 enum IngredientCategory { proteina, carbo, vegetal, gordura, condimento }
 enum RecipeType { carne, peixe, vegetariano, ovos, leguminosas }
 
+/// Identifies the role of a dish within a multi-course meal.
+enum CourseType {
+  /// Soup, broth, or light starter/entrada.
+  soupOrStarter,
+
+  /// Main dish (protein + sides). Default for backward-compatible plans.
+  mainCourse,
+
+  /// Dessert: fruit, sweet, yogurt, etc.
+  dessert;
+
+  String get jsonValue => name;
+}
+
 class FreeformMealItem {
   final String name;
   final double? quantity;
@@ -254,6 +268,28 @@ class Recipe {
   bool get isSoup => _soupPattern.hasMatch(id);
   static final _soupPattern = RegExp(r'sopa|caldo|canja|creme');
 
+  /// Whether this recipe qualifies as a soup or starter/entrada.
+  bool get isSoupOrStarter =>
+      isSoup ||
+      _starterPattern.hasMatch(id) ||
+      (nutrition != null && nutrition!.kcal <= 200 && nutrition!.proteinG < Recipe.mainMealMinProteinG);
+  static final _starterPattern = RegExp(r'entrada|salada_simples|bruschetta|croquete');
+
+  /// Whether this recipe is a dessert.
+  bool get isDessert => _dessertPattern.hasMatch(id);
+  static final _dessertPattern = RegExp(
+    r'sobremesa|fruta|doce|mousse|pudim|gelado|bolo|tarte|'
+    r'arroz_doce|leite_creme|iogurte_fruta|fruta_iogurte|'
+    r'compota|gelatina|natas_ceu|aletria|rabanada|salada_fruta',
+  );
+
+  /// Inferred course type based on recipe characteristics.
+  CourseType get inferredCourseType {
+    if (isDessert) return CourseType.dessert;
+    if (isSoupOrStarter) return CourseType.soupOrStarter;
+    return CourseType.mainCourse;
+  }
+
   /// Minimum protein (g) to qualify as a standalone main meal.
   static const mainMealMinProteinG = 10.0;
 }
@@ -275,6 +311,9 @@ class MealDay {
   final Map<String, String> substitutions;
   /// 1-5 star rating, null = unrated
   final int? rating;
+  /// Course type within a multi-course meal (soup/starter, main, dessert).
+  /// Defaults to mainCourse for backward compatibility with existing plans.
+  final CourseType courseType;
 
   const MealDay({
     required this.dayIndex,
@@ -291,6 +330,7 @@ class MealDay {
     this.freeformShoppingItems = const [],
     this.substitutions = const {},
     this.rating,
+    this.courseType = CourseType.mainCourse,
   });
 
   bool get isFreeform => mealKind == MealKind.freeform;
@@ -324,6 +364,7 @@ class MealDay {
     List<FreeformMealItem>? freeformShoppingItems,
     Map<String, String>? substitutions,
     int? rating,
+    CourseType? courseType,
   }) =>
       MealDay(
         dayIndex: dayIndex,
@@ -340,6 +381,7 @@ class MealDay {
         freeformShoppingItems: freeformShoppingItems ?? this.freeformShoppingItems,
         substitutions: substitutions ?? this.substitutions,
         rating: rating ?? this.rating,
+        courseType: courseType ?? this.courseType,
       );
 
   /// Backward-compatible: old plans without mealKind default to recipe when
@@ -384,6 +426,10 @@ class MealDay {
           ? Map<String, String>.from(json['substitutions'] as Map)
           : const {},
       rating: json['rating'] as int?,
+      courseType: CourseType.values.firstWhere(
+        (e) => e.name == (json['courseType'] ?? 'mainCourse'),
+        orElse: () => CourseType.mainCourse,
+      ),
     );
   }
 
@@ -395,6 +441,7 @@ class MealDay {
         'costEstimate': costEstimate,
         'mealType': mealType.name,
         'feedback': feedback.name,
+        'courseType': courseType.jsonValue,
         if (freeformTitle != null) 'freeformTitle': freeformTitle,
         if (freeformNote != null) 'freeformNote': freeformNote,
         if (freeformEstimatedCost != null) 'freeformEstimatedCost': freeformEstimatedCost,
