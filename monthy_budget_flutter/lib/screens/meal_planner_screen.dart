@@ -20,7 +20,6 @@ import '../utils/meal_budget_insights.dart';
 import '../widgets/meal_cost_reconciliation_sheet.dart';
 import '../widgets/meal_feedback_button.dart';
 import '../widgets/star_rating_row.dart';
-import '../widgets/meal_plan_budget_card.dart';
 import '../widgets/meal_plan_budget_sheet.dart';
 import '../widgets/nutrition_dashboard_card.dart';
 import '../onboarding/meals_tour.dart';
@@ -1912,7 +1911,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   child: ActionChip(
                     avatar: const Icon(Icons.account_balance_wallet_outlined, size: 14),
                     label: Text(
-                      '${_budgetInsight!.weekSpent.toStringAsFixed(0)}${currencySymbol()}',
+                      '${_budgetInsight!.weeklyEstimatedCost.toStringAsFixed(0)}${currencySymbol()}',
                     ),
                     labelStyle: const TextStyle(fontSize: 11),
                     padding: EdgeInsets.zero,
