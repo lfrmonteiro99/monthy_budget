@@ -1,9 +1,8 @@
 name: Meal Planner Validation
 
-# Dedicated workflow to validate meal generation logic.
-# Runs the Dart test that exercises MealPlannerService.generate() with
-# 7 different configurations and checks course types, diversity, nutrition,
-# cost sanity, and completeness.
+# Comprehensive meal planner validation:
+#   1. Unit/integration tests (Dart) — generation, substitution, shopping list
+#   2. E2E smoke tests (Playwright) — UI flow, multi-course display, swap, add to list
 #
 # Trigger manually via workflow_dispatch or on changes to meal planner code.
 on:
@@ -14,14 +13,17 @@ on:
       - 'monthy_budget_flutter/lib/models/meal_planner.dart'
       - 'monthy_budget_flutter/lib/models/meal_settings.dart'
       - 'monthy_budget_flutter/lib/services/meal_planner_service.dart'
+      - 'monthy_budget_flutter/lib/screens/meal_planner_screen.dart'
       - 'monthy_budget_flutter/assets/meal_planner/**'
       - 'monthy_budget_flutter/test/meal_generation_validation_test.dart'
+      - 'monthy_budget_flutter/e2e/meal-planner.smoke.spec.ts'
       - '.github/workflows/meal-planner-validation.yml'
 
 permissions:
   contents: read
 
 jobs:
+  # ── Job 1: Dart unit & integration tests ────────────────────────────────
   validate-meal-generation:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -56,7 +58,14 @@ jobs:
       - name: Run meal generation validation tests
         run: |
           echo "========================================"
-          echo "  Meal Planner Generation Validation"
+          echo "  Meal Planner — Dart Validation"
+          echo "========================================"
+          echo ""
+          echo "Part 1: Generation (7 configs)"
+          echo "Part 2: Ingredient substitution"
+          echo "Part 3: Shopping list with substitutions"
+          echo "Part 4: Recipe swap"
+          echo "Part 5: Edge cases & serialization"
           echo "========================================"
           flutter test test/meal_generation_validation_test.dart --reporter expanded 2>&1 | tee meal_validation_output.txt
           EXIT_CODE=${PIPESTATUS[0]}
@@ -65,14 +74,148 @@ jobs:
           echo "========================================"
           echo "  Test Summary"
           echo "========================================"
-          grep -E '(Config|PASS|FAIL|✅|❌|unique|Top|Soup|Dessert|Main)' meal_validation_output.txt || true
+          grep -cE '^\+\d+' meal_validation_output.txt | xargs -I{} echo "Tests passed: {}" || true
+          grep -E '(Config|PASS|FAIL|✅|❌|unique|Top|Soup|Dessert|Main|Catalog)' meal_validation_output.txt || true
 
           exit $EXIT_CODE
 
-      - name: Upload test output
+      - name: Upload Dart test output
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: meal-validation-results
+          name: meal-dart-validation-results
           path: monthy_budget_flutter/meal_validation_output.txt
           retention-days: 7
+
+  # ── Job 2: E2E Playwright smoke tests ───────────────────────────────────
+  e2e-meal-planner:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: monthy_budget_flutter
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check E2E credentials
+        id: e2e-mode
+        run: |
+          missing=()
+          [ -z "${SUPABASE_URL}" ] && missing+=("SUPABASE_URL")
+          [ -z "${SUPABASE_ANON_KEY}" ] && missing+=("SUPABASE_ANON_KEY")
+          [ -z "${E2E_EMAIL}" ] && missing+=("E2E_EMAIL")
+          [ -z "${E2E_PASSWORD}" ] && missing+=("E2E_PASSWORD")
+
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "mode=skip" >> "$GITHUB_OUTPUT"
+            echo "::notice::E2E skipped — missing secrets: ${missing[*]}"
+          else
+            echo "mode=run" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          E2E_EMAIL: ${{ secrets.E2E_EMAIL }}
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+
+      - uses: subosito/flutter-action@v2
+        if: steps.e2e-mode.outputs.mode == 'run'
+        with:
+          flutter-version: '3.41.2'
+          channel: stable
+          cache: true
+
+      - uses: actions/setup-node@v4
+        if: steps.e2e-mode.outputs.mode == 'run'
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: monthy_budget_flutter/package-lock.json
+
+      - name: Create Supabase config stub
+        if: steps.e2e-mode.outputs.mode == 'run'
+        run: |
+          mkdir -p lib/config
+          if [ ! -f lib/config/supabase_config.dart ]; then
+            cat > lib/config/supabase_config.dart << 'DART'
+            const supabaseUrl = 'https://placeholder.supabase.co';
+            const supabaseAnonKey = 'placeholder';
+          DART
+          fi
+
+      - name: Install Flutter dependencies
+        if: steps.e2e-mode.outputs.mode == 'run'
+        run: flutter pub get
+
+      - name: Generate l10n
+        if: steps.e2e-mode.outputs.mode == 'run'
+        run: flutter gen-l10n
+
+      - name: Install Playwright
+        if: steps.e2e-mode.outputs.mode == 'run'
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Build Flutter web
+        if: steps.e2e-mode.outputs.mode == 'run'
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          flutter build web --release \
+            --dart-define=SUPABASE_URL=${SUPABASE_URL} \
+            --dart-define=SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+
+      - name: Serve Flutter web build
+        if: steps.e2e-mode.outputs.mode == 'run'
+        run: |
+          python3 -m http.server 7357 --directory build/web > /tmp/meal-e2e-server.log 2>&1 &
+          echo $! > /tmp/meal-e2e-server.pid
+
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:7357 > /dev/null 2>&1; then
+              echo "Server ready"
+              break
+            fi
+            sleep 1
+          done
+
+      - name: Run meal planner E2E tests
+        if: steps.e2e-mode.outputs.mode == 'run'
+        env:
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:7357
+          E2E_EMAIL: ${{ secrets.E2E_EMAIL }}
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+        run: |
+          echo "========================================"
+          echo "  Meal Planner — E2E Smoke Tests"
+          echo "========================================"
+          npx playwright test e2e/meal-planner.smoke.spec.ts --reporter list 2>&1 | tee meal_e2e_output.txt
+          EXIT_CODE=${PIPESTATUS[0]}
+          exit $EXIT_CODE
+
+      - name: Upload E2E artifacts
+        if: always() && steps.e2e-mode.outputs.mode == 'run'
+        uses: actions/upload-artifact@v4
+        with:
+          name: meal-e2e-artifacts
+          path: |
+            monthy_budget_flutter/output/playwright/report
+            monthy_budget_flutter/output/playwright/test-results
+            monthy_budget_flutter/meal_e2e_output.txt
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: Stop web server
+        if: always() && steps.e2e-mode.outputs.mode == 'run'
+        run: |
+          if [ -f /tmp/meal-e2e-server.pid ]; then
+            kill "$(cat /tmp/meal-e2e-server.pid)" || true
+          fi
+
+      - name: E2E skipped notice
+        if: steps.e2e-mode.outputs.mode == 'skip'
+        run: |
+          echo "::notice::Meal planner E2E tests skipped — missing auth secrets."
+          echo "To enable: add SUPABASE_URL, SUPABASE_ANON_KEY, E2E_EMAIL, E2E_PASSWORD to repo secrets."
