@@ -849,22 +849,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     );
   }
 
-  void _setFeedback(int dayIndex, MealType mealType, MealFeedback feedback) {
-    final plan = _plan!;
-    final updatedDays = plan.days.map((d) {
-      if (d.dayIndex == dayIndex && d.mealType == mealType) {
-        return d.copyWith(
-          feedback: d.feedback == feedback ? MealFeedback.none : feedback,
-        );
-      }
-      return d;
-    }).toList();
-    final updated = plan.copyWithDays(updatedDays);
-    _service.save(updated, widget.householdId);
-    setState(() => _plan = updated);
-    _recomputeBudgetInsight();
-  }
-
   void _setRating(int dayIndex, MealType mealType, int rating) {
     final plan = _plan;
     if (plan == null) return;
