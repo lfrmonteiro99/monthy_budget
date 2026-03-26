@@ -434,6 +434,12 @@ class MealPlannerService {
     final weeklySoupCount = <int, int>{}; // weekNumber -> count
     const maxSoupsPerWeek = 2;
 
+    // Track recent soup/dessert recipes for multi-day dedup
+    final recentSoupRecipes = <String>[]; // last N soup recipe IDs (across days)
+    final recentDessertRecipes = <String>[]; // last N dessert recipe IDs (across days)
+    // Track the recipe used 2 days ago per meal type for extended main course dedup
+    final prevPrevRecipePerMealType = <MealType, String>{};
+
     for (int day = 1; day <= daysInMonth; day++) {
       usedRecipesPerDay[day] = {};
       // Reset weekly tracking on Mondays (weekday 1)
@@ -593,7 +599,7 @@ class MealPlannerService {
         // Soup limit: max 2 soups per week
         final soupsSoFar = weeklySoupCount[weekNum] ?? 0;
         if (soupsSoFar >= maxSoupsPerWeek) {
-          final noSoup = pool.where((r) => !r.isSoup).toList();
+          final noSoup = pool.where((r) => !(r.courseType == CourseType.soupOrStarter && RegExp(r'sopa|caldo|canja|creme').hasMatch(r.id))).toList();
           if (noSoup.isNotEmpty) pool = noSoup;
         }
 
@@ -601,7 +607,7 @@ class MealPlannerService {
         // soups/starters and desserts — those are picked separately.
         if (ms.includeSoupOrStarter || ms.includeDessert) {
           final mainOnly = pool.where((r) =>
-            !r.isSoupOrStarter && !r.isDessert).toList();
+            r.courseType != CourseType.soupOrStarter && r.courseType != CourseType.dessert).toList();
           if (mainOnly.isNotEmpty) pool = mainOnly;
         }
 
@@ -617,16 +623,21 @@ class MealPlannerService {
         if (available.isEmpty) available = pool.toList();
         if (available.isEmpty) available = _recipes.toList();
 
-        // Consecutive-day dedup: avoid same recipe as yesterday for this mealType
+        // Consecutive-day dedup: avoid same recipe as yesterday AND 2 days ago for this mealType
         final prevRecipe = recentRecipePerMealType[mealType];
-        if (prevRecipe != null) {
-          final deduped = available.where((r) => r.id != prevRecipe).toList();
+        final prevPrevRecipe = prevPrevRecipePerMealType[mealType];
+        final recentMainRecipes = <String>{
+          if (prevRecipe != null) prevRecipe,
+          if (prevPrevRecipe != null) prevPrevRecipe,
+        };
+        if (recentMainRecipes.isNotEmpty) {
+          final deduped = available.where((r) => !recentMainRecipes.contains(r.id)).toList();
           if (deduped.isNotEmpty) {
             available = deduped;
           } else {
-            // Pool collapsed to a single repeated recipe — widen to base pool
+            // Pool collapsed to repeated recipes — widen to base pool
             final fallback = basePool(mealType, isWeekend)
-                .where((r) => r.id != prevRecipe && !usedToday.contains(r.id))
+                .where((r) => !recentMainRecipes.contains(r.id) && !usedToday.contains(r.id))
                 .toList();
             if (fallback.isNotEmpty) available = fallback;
           }
@@ -777,6 +788,11 @@ class MealPlannerService {
 
         final recipe = available.first;
         usedToday.add(recipe.id);
+        // Track prev-prev before overwriting prev for extended 2-day dedup
+        final oldPrev = recentRecipePerMealType[mealType];
+        if (oldPrev != null) {
+          prevPrevRecipePerMealType[mealType] = oldPrev;
+        }
         recentRecipePerMealType[mealType] = recipe.id;
         final rpList = List<String>.from(recentProteinPerMealType[mealType] ?? []);
         rpList.add(recipe.proteinId);
@@ -809,20 +825,21 @@ class MealPlannerService {
             return true;
           }).toList();
           if (soupPool.isNotEmpty) {
-            soupPool.shuffle(rng);
-            // Avoid repeating yesterday's soup
-            final prevSoup = days.where(
-              (d) => d.courseType == CourseType.soupOrStarter &&
-                     d.dayIndex == day - 1 &&
-                     d.mealType == mealType,
-            ).firstOrNull;
-            Recipe soupRecipe;
-            if (prevSoup != null) {
-              final deduped = soupPool.where((r) => r.id != prevSoup.recipeId).toList();
-              soupRecipe = deduped.isNotEmpty ? deduped.first : soupPool.first;
-            } else {
-              soupRecipe = soupPool.first;
+            // Filter out recipes already used today (cross-course dedup)
+            var filteredSoups = soupPool.where((r) => !usedToday.contains(r.id)).toList();
+            if (filteredSoups.isEmpty) filteredSoups = soupPool;
+            // Filter out soups used in the previous 3 days
+            if (recentSoupRecipes.isNotEmpty) {
+              final recentSoupSet = recentSoupRecipes.toSet();
+              final dedupedSoups = filteredSoups.where((r) => !recentSoupSet.contains(r.id)).toList();
+              if (dedupedSoups.isNotEmpty) filteredSoups = dedupedSoups;
             }
+            filteredSoups.shuffle(rng);
+            final soupRecipe = filteredSoups.first;
+            usedToday.add(soupRecipe.id);
+            // Track recent soups (keep last 3 for 3-day dedup window)
+            recentSoupRecipes.add(soupRecipe.id);
+            if (recentSoupRecipes.length > 3) recentSoupRecipes.removeAt(0);
             days.add(MealDay(
               dayIndex: day,
               recipeId: soupRecipe.id,
@@ -853,20 +870,21 @@ class MealPlannerService {
             return true;
           }).toList();
           if (dessertPool.isNotEmpty) {
-            dessertPool.shuffle(rng);
-            // Avoid repeating yesterday's dessert
-            final prevDessert = days.where(
-              (d) => d.courseType == CourseType.dessert &&
-                     d.dayIndex == day - 1 &&
-                     d.mealType == mealType,
-            ).firstOrNull;
-            Recipe dessertRecipe;
-            if (prevDessert != null) {
-              final deduped = dessertPool.where((r) => r.id != prevDessert.recipeId).toList();
-              dessertRecipe = deduped.isNotEmpty ? deduped.first : dessertPool.first;
-            } else {
-              dessertRecipe = dessertPool.first;
+            // Filter out recipes already used today (cross-course dedup)
+            var filteredDesserts = dessertPool.where((r) => !usedToday.contains(r.id)).toList();
+            if (filteredDesserts.isEmpty) filteredDesserts = dessertPool;
+            // Filter out desserts used in the previous 2 days
+            if (recentDessertRecipes.isNotEmpty) {
+              final recentDessertSet = recentDessertRecipes.toSet();
+              final dedupedDesserts = filteredDesserts.where((r) => !recentDessertSet.contains(r.id)).toList();
+              if (dedupedDesserts.isNotEmpty) filteredDesserts = dedupedDesserts;
             }
+            filteredDesserts.shuffle(rng);
+            final dessertRecipe = filteredDesserts.first;
+            usedToday.add(dessertRecipe.id);
+            // Track recent desserts (keep last 2 for 2-day dedup window)
+            recentDessertRecipes.add(dessertRecipe.id);
+            if (recentDessertRecipes.length > 2) recentDessertRecipes.removeAt(0);
             days.add(MealDay(
               dayIndex: day,
               recipeId: dessertRecipe.id,
