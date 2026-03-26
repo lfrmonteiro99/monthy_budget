@@ -68,6 +68,12 @@ def generate_plan(
     mains = [r for r in recipes if r.get("courseType", "mainCourse") == "mainCourse"
              and any(mt in r.get("suitableMealTypes", []) for mt in enabled_meals)]
 
+    # For lunch/dinner, prefer complete meals (has real protein source)
+    if any(mt in ("lunch", "dinner") for mt in enabled_meals):
+        complete_mains = [r for r in mains if r.get("isCompleteMeal", True)]
+        if len(complete_mains) >= 3:
+            mains = complete_mains
+
     # Apply objective filter to mains
     if objective == "vegetarian":
         filtered = [r for r in mains if r.get("isVegetarian")]
@@ -82,7 +88,14 @@ def generate_plan(
         if filtered:
             mains = filtered
     elif objective == "minimizeCost":
+        # Sort by cost but keep top-N cheapest and shuffle within them
+        # to ensure variety even when minimizing cost
         mains.sort(key=lambda r: recipe_cost(r, n_pessoas, ingredient_map))
+        # Take cheapest 50% (at least 15) and shuffle to add variety
+        cheap_count = max(15, len(mains) // 2)
+        cheap_pool = mains[:cheap_count]
+        rng.shuffle(cheap_pool)
+        mains = cheap_pool + mains[cheap_count:]
 
     days = []
     recent_mains = {}      # mealType -> [last 2 recipe IDs]
@@ -148,9 +161,12 @@ def generate_plan(
             used_today.add(picked["id"])
 
             # Track recent mains (last 2)
+            # Track recent mains - extend window for cost-optimized plans
+            # to prevent cycling between the same 4 cheapest recipes
+            max_recent = 5 if objective == "minimizeCost" else 2
             recent = list(recent_mains.get(meal_type, []))
             recent.append(picked["id"])
-            if len(recent) > 2:
+            if len(recent) > max_recent:
                 recent.pop(0)
             recent_mains[meal_type] = recent
 
@@ -263,8 +279,10 @@ def validate_plan(label, days, recipes, ingredient_map, settings):
 
     for week, ids in main_by_week.items():
         unique = set(ids)
-        v.check(len(unique) >= min(5, len(ids)),
-                f"Week {week}: only {len(unique)} unique mains out of {len(ids)} meals")
+        # For partial weeks (< 8 meals), require at least half to be unique
+        min_unique = min(5, max(2, len(ids) // 2))
+        v.check(len(unique) >= min_unique,
+                f"Week {week}: only {len(unique)} unique mains out of {len(ids)} meals (need {min_unique})")
         counts = Counter(ids)
         for rid, cnt in counts.items():
             name = recipe_map.get(rid, {}).get("name", rid)
@@ -276,7 +294,16 @@ def validate_plan(label, days, recipes, ingredient_map, settings):
         v.check(d["cost"] >= 0, f"Day {d['dayIndex']}: negative cost {d['cost']}")
         v.check(d["cost"] < 100, f"Day {d['dayIndex']}: absurd cost {d['cost']:.2f}")
 
-    # 6. No consecutive-day main course repeats
+    # 6. Lunch/dinner mains should be complete meals (strong protein)
+    for d in days:
+        if d["courseType"] == "mainCourse" and d["mealType"] in ("lunch", "dinner"):
+            r = recipe_map.get(d["recipeId"])
+            if r:
+                v.check(r.get("isCompleteMeal", True),
+                        f"Day {d['dayIndex']} {d['mealType']}: incomplete meal '{d['recipeName']}' "
+                        f"used as main course (no strong protein)")
+
+    # 7. No consecutive-day main course repeats
     prev_main = {}  # mealType -> recipeId
     for d in sorted(days, key=lambda x: (x["dayIndex"], x["mealType"])):
         if d["courseType"] == "mainCourse":

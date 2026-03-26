@@ -60,7 +60,8 @@
     ],
     "activeMinutes": 15,
     "passiveMinutes": 50,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "frango_arroz",
@@ -123,7 +124,8 @@
       "Adiciona a cenoura ralada e o arroz, mexendo bem.",
       "Cobre com água (2x o volume do arroz) e deixa cozinhar em lume brando 18 minutos."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "frango_estufado",
@@ -191,7 +193,8 @@
     ],
     "activeMinutes": 10,
     "passiveMinutes": 20,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "frango_grelhado",
@@ -250,7 +253,8 @@
       "Grelha o frango 4-5 minutos de cada lado.",
       "Serve com arroz cozido e salada de alface temperada."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "frango_broculos",
@@ -309,7 +313,8 @@
       "Junta o frango e salteia em lume alto até dourar.",
       "Adiciona os brócolos, tampa e cozinha 5-6 minutos até ficarem tenros."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "esparguete_bolonhesa",
@@ -372,7 +377,8 @@
       "Adiciona o tomate pelado esmagado, tempera e deixa cozinhar 20 minutos em lume brando.",
       "Cozinha a massa em água com sal e escorre. Serve com o molho por cima."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "almondegas",
@@ -433,7 +439,8 @@
     ],
     "activeMinutes": 15,
     "passiveMinutes": 25,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "empadao",
@@ -499,7 +506,8 @@
     ],
     "activeMinutes": 25,
     "passiveMinutes": 35,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "hamburguer",
@@ -558,7 +566,8 @@
       "Cozinha os hambúrgueres 4 minutos de cada lado.",
       "Monta no pão com tomate fatiado e os condimentos que preferires."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "lasanha",
@@ -624,7 +633,8 @@
     ],
     "activeMinutes": 30,
     "passiveMinutes": 45,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "feijoada_simples",
@@ -690,7 +700,8 @@
       "Junta o chouriço, a cenoura e o feijão cozido.",
       "Adiciona água até cobrir, tempera e deixa cozinhar 20-25 minutos."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "grao_espinafres",
@@ -749,7 +760,8 @@
       "Junta os espinafres e deixa murchar 2-3 minutos.",
       "Adiciona o grão, tempera com sal e azeite e aquece bem."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "lentilhas_estufadas",
@@ -817,7 +829,8 @@
     ],
     "activeMinutes": 10,
     "passiveMinutes": 20,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "feijao_verde_batata",
@@ -876,7 +889,8 @@
       "Escorre e tempera com alho picado e azeite a gosto.",
       "Serve quente como prato principal ou acompanhamento."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "sopa_feijao",
@@ -1001,7 +1015,8 @@
       "Deita os ovos batidos por cima e cozinha em lume médio.",
       "Quando a base estiver firme, dobra ao meio e serve."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "tortilha",
@@ -1061,7 +1076,8 @@
       "Mistura as batatas com os ovos e deita numa frigideira com um fio de azeite.",
       "Cozinha em lume brando, vira com a ajuda de um prato e cozinha do outro lado."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "frittata_espinafres",
@@ -1125,7 +1141,8 @@
     ],
     "activeMinutes": 10,
     "passiveMinutes": 10,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "ovos_mexidos_tomate",
@@ -1185,7 +1202,8 @@
       "Adiciona os ovos e mexe em lume brando até ficarem cremosos.",
       "Serve imediatamente com pão torrado."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "ovo_arroz",
@@ -1244,7 +1262,8 @@
       "Junta o arroz cozido e mistura bem.",
       "Faz um ovo estrelado ou mexido e serve por cima do arroz."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "pescada_forno",
@@ -1307,7 +1326,8 @@
     ],
     "activeMinutes": 15,
     "passiveMinutes": 35,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "peixe_grelhado",
@@ -1366,7 +1386,8 @@
       "Salteia os legumes separadamente em azeite.",
       "Serve o peixe com os legumes grelhados."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "arroz_peixe",
@@ -1429,7 +1450,8 @@
       "Adiciona água, e quando ferver, junta o arroz e o peixe.",
       "Cozinha em lume brando 18-20 minutos. Deve ficar caldoso."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "bacalhau_cozido",
@@ -1495,7 +1517,8 @@
       "Descasca as batatas e corta os ovos ao meio.",
       "Serve tudo junto, regado com azeite a gosto e cebola picada."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "bacalhau_grao",
@@ -1557,7 +1580,8 @@
       "Mistura o bacalhau desfiado com o grão num prato.",
       "Tempera generosamente com azeite, alho picado e salsa."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "costeletas_porco",
@@ -1616,7 +1640,8 @@
       "Grelha as costeletas 5-6 minutos de cada lado.",
       "Serve com batatas cozidas temperadas com azeite."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "porco_alentejana",
@@ -1677,7 +1702,8 @@
     ],
     "activeMinutes": 15,
     "passiveMinutes": 30,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "bifanas",
@@ -1736,7 +1762,8 @@
       "Frita as bifanas rapidamente em lume alto, 2 minutos de cada lado.",
       "Serve no pão com o molho da frigideira."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "porco_assado",
@@ -1799,7 +1826,8 @@
     ],
     "activeMinutes": 15,
     "passiveMinutes": 35,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "feijoada_porco",
@@ -1867,7 +1895,8 @@
     ],
     "activeMinutes": 20,
     "passiveMinutes": 40,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "sardinhas_assadas",
@@ -1928,7 +1957,8 @@
       "Coze as batatas e corta o pimento em tiras.",
       "Serve as sardinhas com as batatas e pimento assado."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "atum_salada",
@@ -1994,7 +2024,8 @@
       "Monta a salada com alface, tomate, cebola e atum por cima.",
       "Tempera com azeite, vinagre e sal a gosto."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "atum_arroz",
@@ -2057,7 +2088,8 @@
       "Quando o arroz estiver quase cozido, junta o atum escorrido.",
       "Mexe delicadamente e serve quando o arroz absorver a água."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "caldeirada",
@@ -2129,7 +2161,8 @@
     ],
     "activeMinutes": 15,
     "passiveMinutes": 30,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "pataniscas_bacalhau",
@@ -2195,7 +2228,8 @@
       "Aquece azeite numa frigideira.",
       "Deita colheradas da massa no azeite quente e frita até dourar de ambos os lados."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "papas_aveia",
@@ -2249,7 +2283,8 @@
       "Corta a banana em rodelas.",
       "Serve as papas numa taça e decora com a fruta por cima."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "torradas_queijo",
@@ -2308,7 +2343,8 @@
       "Leva à torradeira ou ao forno até o queijo derreter.",
       "Serve quente."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "cereais_leite",
@@ -2362,7 +2398,8 @@
       "Junta a fruta por cima.",
       "Serve imediatamente para manter os cereais crocantes."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "iogurte_fruta",
@@ -2417,7 +2454,8 @@
       "Polvilha com aveia por cima.",
       "Mistura levemente e serve."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "ovos_pequeno_almoco",
@@ -2471,7 +2509,8 @@
       "Retira quando ainda estiverem ligeiramente cremosos.",
       "Tosta o pão de forma e serve os ovos por cima ou ao lado."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "panquecas",
@@ -2530,7 +2569,8 @@
       "Deita pequenas porções de massa e cozinha 2 minutos de cada lado.",
       "Serve com fruta fresca ou mel."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "tosta_mista",
@@ -2585,7 +2625,8 @@
       "Corta ao meio na diagonal.",
       "Serve quente."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "fruta_iogurte",
@@ -2639,7 +2680,8 @@
       "Dispõe a fruta e a banana sobre o iogurte.",
       "Serve fresco."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "caldo_verde",
@@ -2767,7 +2809,8 @@
       "Adiciona água (2x o volume do arroz) e sal.",
       "Cozinha em lume brando 18 minutos até o arroz estar cozido."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "massa_cogumelos",
@@ -2833,7 +2876,8 @@
       "Adiciona as natas, tempera e deixa apurar 3 minutos.",
       "Cozinha a massa, escorre e mistura com o molho de cogumelos."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "sopa_legumes",
@@ -2964,7 +3008,8 @@
       "Mistura tudo numa saladeira.",
       "Tempera com azeite, vinagre, sal e ervas aromáticas a gosto."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "salmao_forno",
@@ -3031,7 +3076,8 @@
     ],
     "activeMinutes": 10,
     "passiveMinutes": 25,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "salmao_grelhado",
@@ -3089,7 +3135,8 @@
       "Grelha o salmão numa frigideira bem quente 4 minutos de cada lado.",
       "Serve o salmão sobre os legumes e rega com azeite."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "dourada_forno",
@@ -3156,7 +3203,8 @@
     ],
     "activeMinutes": 10,
     "passiveMinutes": 25,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "dourada_grelhada",
@@ -3217,7 +3265,8 @@
       "Prepara a salada com alface e tomate em cubos.",
       "Serve a dourada com a salada e um fio de azeite."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "ameijoas_bulhao_pato",
@@ -3279,7 +3328,8 @@
       "Cozinha em lume forte 3-4 minutos até abrirem.",
       "Polvilha com coentros picados e serve com pão."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "arroz_marisco",
@@ -3354,7 +3404,8 @@
       "A meio da cozedura junta as amêijoas e o camarão.",
       "Cozinha até o arroz ficar malandrinho e polvilha com coentros."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "camarao_alho",
@@ -3412,7 +3463,8 @@
       "Tempera com sal, pimenta e um toque de malagueta.",
       "Serve com pão para molhar no molho."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "polvo_lagareiro",
@@ -3475,7 +3527,8 @@
     ],
     "activeMinutes": 15,
     "passiveMinutes": 15,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "polvo_arroz",
@@ -3542,7 +3595,8 @@
       "Corta o polvo em pedaços e junta a meio da cozedura.",
       "Cozinha até ficar malandrinho e finaliza com coentros."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "lulas_grelhadas",
@@ -3603,7 +3657,8 @@
       "Grelha em lume muito forte 2-3 minutos de cada lado.",
       "Serve com salada de alface e batata cozida."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "lulas_recheadas",
@@ -3674,7 +3729,8 @@
     ],
     "activeMinutes": 15,
     "passiveMinutes": 20,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "cataplana_peixe",
@@ -3752,7 +3808,8 @@
       "Tampa bem e cozinha em lume brando 25 minutos.",
       "Junta as amêijoas nos últimos 5 minutos e polvilha com coentros."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "bacalhau_bras",
@@ -3819,7 +3876,8 @@
       "Mistura as batatas palha e os ovos batidos.",
       "Mexe em lume brando até os ovos coalharem ligeiramente. Polvilha com salsa."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "bacalhau_natas",
@@ -3886,7 +3944,8 @@
     ],
     "activeMinutes": 15,
     "passiveMinutes": 20,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "sopa_peixe",
@@ -4024,7 +4083,8 @@
     ],
     "activeMinutes": 10,
     "passiveMinutes": 20,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "peru_grelhado",
@@ -4082,7 +4142,8 @@
       "Grelha os bifes 4 minutos de cada lado.",
       "Serve com arroz cozido e salada de alface."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "vitela_estufada",
@@ -4154,7 +4215,8 @@
     ],
     "activeMinutes": 15,
     "passiveMinutes": 20,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "arroz_pato",
@@ -4228,7 +4290,8 @@
     ],
     "activeMinutes": 25,
     "passiveMinutes": 35,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "coelho_caçador",
@@ -4304,7 +4367,8 @@
     ],
     "activeMinutes": 15,
     "passiveMinutes": 25,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "chanfana",
@@ -4378,7 +4442,8 @@
     ],
     "activeMinutes": 15,
     "passiveMinutes": 30,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "cozido_portuguesa",
@@ -4456,7 +4521,8 @@
     ],
     "activeMinutes": 20,
     "passiveMinutes": 40,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "acorda_alentejana",
@@ -4519,7 +4585,8 @@
       "Escalfa os ovos na água a ferver.",
       "Deita a água quente sobre o pão, mistura o preparado de alho e coloca os ovos por cima."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "migas_alentejanas",
@@ -4585,7 +4652,8 @@
       "Esmiga o pão duro e mistura com a couve, alho e azeite.",
       "Mexe em lume brando até formar uma massa consistente. Serve com a carne."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "canja_galinha",
@@ -5036,7 +5104,8 @@
       "Junta os cogumelos e salteia mais 3 minutos.",
       "Volta a juntar o tofu, tempera com molho de soja e serve."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "tofu_arroz",
@@ -5098,7 +5167,8 @@
       "Corta o tofu em cubos e grelha em azeite com alho.",
       "Serve o tofu sobre o arroz com os brócolos ao lado."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "beringela_recheada",
@@ -5172,7 +5242,8 @@
     ],
     "activeMinutes": 15,
     "passiveMinutes": 20,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "wrap_vegetariano",
@@ -5193,7 +5264,6 @@
     "batchCookable": false,
     "maxBatchDays": 1,
     "suitableMealTypes": [
-      "lunch",
       "snack"
     ],
     "ingredients": [
@@ -5239,7 +5309,8 @@
       "Espalha o grão esmagado na tortilha.",
       "Distribui os legumes, enrola bem e serve."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "wrap_atum",
@@ -5302,7 +5373,8 @@
       "Aquece a tortilha e monta o wrap.",
       "Enrola bem e corta ao meio."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "tosta_atum_queijo",
@@ -5364,7 +5436,8 @@
     ],
     "activeMinutes": 5,
     "passiveMinutes": 5,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "crepes_fiambre_queijo",
@@ -5431,7 +5504,8 @@
       "Recheia cada crepe com fiambre e queijo.",
       "Dobra em quatro e serve."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "crepes_espinafres",
@@ -5506,7 +5580,8 @@
     ],
     "activeMinutes": 15,
     "passiveMinutes": 15,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "feijao_branco_chourico",
@@ -5578,7 +5653,8 @@
     ],
     "activeMinutes": 10,
     "passiveMinutes": 15,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "lentilhas_legumes",
@@ -5645,7 +5721,8 @@
       "Cobre com água e cozinha 20 minutos até as lentilhas ficarem macias.",
       "Tempera com sal e serve."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "grao_curry",
@@ -5708,7 +5785,8 @@
       "Cozinha mais 10 minutos em lume brando.",
       "Serve com arroz basmati."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "feijao_preto_arroz",
@@ -5774,7 +5852,8 @@
       "Junta o feijão cozido e tempera com cominhos.",
       "Cozinha 10 minutos e serve com o arroz."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "cuscuz_legumes",
@@ -5841,7 +5920,8 @@
       "Solta o cuscuz com um garfo e mistura os legumes.",
       "Tempera com sal, pimenta e ervas a gosto."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "batata_doce_forno",
@@ -5911,7 +5991,8 @@
     ],
     "activeMinutes": 10,
     "passiveMinutes": 10,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "ovo_estrelado_arroz_feijao",
@@ -5969,7 +6050,8 @@
       "Frita os ovos em azeite com a gema mole.",
       "Serve o arroz, feijão e ovos estrelados por cima."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "ovos_cozidos_espinafres",
@@ -6027,7 +6109,8 @@
       "Corta os ovos ao meio.",
       "Serve os ovos sobre a cama de espinafres."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "quiche_legumes",
@@ -6103,7 +6186,8 @@
     ],
     "activeMinutes": 20,
     "passiveMinutes": 20,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "ovos_ninho",
@@ -6170,7 +6254,8 @@
     ],
     "activeMinutes": 15,
     "passiveMinutes": 15,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "panquecas_banana",
@@ -6228,7 +6313,8 @@
       "Deita porções da massa e cozinha 2-3 minutos de cada lado.",
       "Serve com fruta fresca ou mel."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "overnight_oats",
@@ -6289,7 +6375,8 @@
       "Tapa e guarda no frigorífico durante a noite.",
       "De manhã, adiciona fruta fresca e serve."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "smoothie_bowl",
@@ -6356,7 +6443,8 @@
       "Deita numa taça.",
       "Decora com fruta fresca fatiada e flocos de aveia."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "tosta_abacate_ovo",
@@ -6414,7 +6502,8 @@
       "Corta o tomate em rodelas.",
       "Monta a tosta com tomate e ovo por cima. Rega com azeite."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "massa_atum_ervilhas",
@@ -6477,7 +6566,8 @@
       "Mistura o atum escorrido e a massa.",
       "Tempera e serve."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "arroz_feijao_legumes",
@@ -6544,7 +6634,8 @@
       "Cobre com água e cozinha até o arroz estar feito.",
       "Tempera e serve."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "frango_caril",
@@ -6611,7 +6702,8 @@
       "Junta as natas e deixa apurar mais 5 minutos.",
       "Serve com arroz cozido."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "pescada_cozida",
@@ -6673,7 +6765,8 @@
       "Escorre tudo com cuidado.",
       "Serve regado com azeite e um pouco de vinagre."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "salmao_massa",
@@ -6740,7 +6833,8 @@
       "Mistura o salmão e a massa ao molho.",
       "Serve imediatamente."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "porco_cogumelos",
@@ -6803,7 +6897,8 @@
       "Salteia até os cogumelos ficarem dourados.",
       "Volta a juntar a carne e serve com arroz."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "carne_picada_ervilhas",
@@ -6870,7 +6965,8 @@
       "Cozinha 15 minutos em lume brando.",
       "Serve com arroz cozido."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "vitela_forno",
@@ -6941,7 +7037,8 @@
     ],
     "activeMinutes": 15,
     "passiveMinutes": 15,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "peru_massa",
@@ -7004,7 +7101,8 @@
       "Mistura tudo com a massa escorrida.",
       "Tempera e serve."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "arroz_cabidela",
@@ -7067,7 +7165,8 @@
       "Adiciona água e vinagre, cozinha até o frango estar tenro.",
       "Junta o arroz e cozinha até ficar malandrinho."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "massa_pesto_frango",
@@ -7130,7 +7229,8 @@
       "Junta o frango e mexe bem.",
       "Serve com um fio de azeite."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "salada_atum_feijao",
@@ -7199,7 +7299,8 @@
       "Mistura tudo numa saladeira com a alface.",
       "Tempera com azeite, vinagre e sal."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "frittata_batata",
@@ -7267,7 +7368,8 @@
     ],
     "activeMinutes": 10,
     "passiveMinutes": 15,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "cogumelos_recheados",
@@ -7290,7 +7392,6 @@
     "batchCookable": false,
     "maxBatchDays": 1,
     "suitableMealTypes": [
-      "dinner",
       "snack"
     ],
     "ingredients": [
@@ -7338,7 +7439,8 @@
     ],
     "activeMinutes": 10,
     "passiveMinutes": 15,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "sopa_lentilhas",
@@ -7470,7 +7572,8 @@
       "Monta os wraps com frango e legumes.",
       "Enrola bem e serve."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "arroz_ervilhas_ovo",
@@ -7533,7 +7636,8 @@
       "No final, mistura os ovos batidos e mexe até coalharem.",
       "Serve imediatamente."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "pato_laranja",
@@ -7602,7 +7706,8 @@
     ],
     "activeMinutes": 15,
     "passiveMinutes": 30,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "massa_legumes_forno",
@@ -7673,7 +7778,8 @@
     ],
     "activeMinutes": 15,
     "passiveMinutes": 15,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "bacalhau_espiritual",
@@ -7752,7 +7858,8 @@
     ],
     "activeMinutes": 20,
     "passiveMinutes": 25,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "sopa_grao",
@@ -7892,7 +7999,8 @@
       "Quando faltar 5 minutos junta o camarão descascado.",
       "Finaliza com coentros e serve malandrinho."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "couve_flor_gratinada",
@@ -7958,7 +8066,8 @@
     ],
     "activeMinutes": 15,
     "passiveMinutes": 15,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": false
   },
   {
     "id": "lulas_estufadas",
@@ -8031,7 +8140,8 @@
     ],
     "activeMinutes": 10,
     "passiveMinutes": 20,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "feijao_branco_atum",
@@ -8096,7 +8206,8 @@
       "Mistura tudo numa tigela.",
       "Tempera com azeite, vinagre e salsa picada."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "cuscuz_frango",
@@ -8163,7 +8274,8 @@
       "Solta o cuscuz e mistura com os legumes e o frango.",
       "Tempera e serve."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "porco_batata_doce",
@@ -8233,7 +8345,8 @@
     ],
     "activeMinutes": 10,
     "passiveMinutes": 15,
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "ervilhas_ovos",
@@ -8296,7 +8409,8 @@
       "Faz pequenos buracos e parte os ovos para dentro.",
       "Tampa e cozinha até os ovos estarem feitos (5 min)."
     ],
-    "courseType": "mainCourse"
+    "courseType": "mainCourse",
+    "isCompleteMeal": true
   },
   {
     "id": "sobremesa_fruta_epoca",

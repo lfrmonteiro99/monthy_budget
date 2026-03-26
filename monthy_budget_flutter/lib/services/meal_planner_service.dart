@@ -81,6 +81,7 @@ class MealPlannerService {
           nutFree: r['nut_free'] as bool? ?? true,
           shellfishFree: r['shellfish_free'] as bool? ?? true,
           batchCookable: r['batch_cookable'] as bool? ?? false,
+          isCompleteMeal: r['is_complete_meal'] as bool? ?? true,
           maxBatchDays: r['max_batch_days'] as int? ?? 2,
           isPortable: r['is_portable'] as bool? ?? false,
           suitableMealTypes:
@@ -620,6 +621,14 @@ class MealPlannerService {
           r.nutrition == null ||
           r.nutrition!.proteinG >= Recipe.mainMealMinProteinG).toList();
         if (highProtein.length >= 3) pool = highProtein;
+
+        // Complete meal filter: for lunch/dinner, strongly prefer recipes
+        // with a real protein source (meat, fish, eggs, tofu) over
+        // legume-only or dairy-only dishes.
+        if (mealType == MealType.lunch || mealType == MealType.dinner) {
+          final complete = pool.where((r) => r.isCompleteMeal).toList();
+          if (complete.length >= 3) pool = complete;
+        }
 
         // Pick recipe: dedup + protein diversity + favorites boost
         final usedToday = usedRecipesPerDay[day]!;

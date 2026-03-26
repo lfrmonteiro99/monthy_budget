@@ -164,6 +164,11 @@ class Recipe {
   final bool isLowCarb;
   final List<String> requiresEquipment;
   final bool batchCookable;
+  /// Whether this recipe constitutes a complete, balanced meal
+  /// (has strong protein source like meat, fish, eggs, tofu).
+  /// Incomplete meals (legume-only, dairy-only) should not be used
+  /// as standalone main courses for lunch/dinner.
+  final bool isCompleteMeal;
   final int maxBatchDays;
   final List<String> suitableMealTypes;
   final bool isPortable;
@@ -192,6 +197,7 @@ class Recipe {
     this.isLowCarb = false,
     this.requiresEquipment = const [],
     this.batchCookable = false,
+    this.isCompleteMeal = true,
     this.maxBatchDays = 1,
     this.suitableMealTypes = const ['lunch', 'dinner'],
     this.isPortable = true,
@@ -226,6 +232,7 @@ class Recipe {
         isLowCarb: json['isLowCarb'] ?? false,
         requiresEquipment: List<String>.from(json['requiresEquipment'] ?? []),
         batchCookable: json['batchCookable'] ?? false,
+        isCompleteMeal: json['isCompleteMeal'] ?? true,
         maxBatchDays: json['maxBatchDays'] ?? 1,
         suitableMealTypes: List<String>.from(json['suitableMealTypes'] ?? ['lunch', 'dinner']),
         isPortable: json['isPortable'] ?? true,
@@ -260,6 +267,7 @@ class Recipe {
         'isLowCarb': isLowCarb,
         'requiresEquipment': requiresEquipment,
         'batchCookable': batchCookable,
+        'isCompleteMeal': isCompleteMeal,
         'maxBatchDays': maxBatchDays,
         'suitableMealTypes': suitableMealTypes,
         'isPortable': isPortable,
