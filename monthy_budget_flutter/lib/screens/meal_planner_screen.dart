@@ -18,7 +18,6 @@ import '../widgets/freeform_meal_sheet.dart';
 import '../models/meal_budget_insight.dart';
 import '../utils/meal_budget_insights.dart';
 import '../widgets/meal_cost_reconciliation_sheet.dart';
-import '../widgets/meal_feedback_button.dart';
 import '../widgets/star_rating_row.dart';
 import '../widgets/meal_plan_budget_card.dart';
 import '../widgets/meal_plan_budget_sheet.dart';
@@ -29,7 +28,6 @@ import '../utils/rate_limiter.dart';
 import '../utils/waste_calculator.dart';
 import '../widgets/pantry_coverage_badge.dart';
 import '../widgets/pantry_quick_picker_sheet.dart';
-import '../widgets/pantry_summary_chip_row.dart';
 import 'meal_wizard_screen.dart';
 
 class MealPlannerScreen extends StatefulWidget {
@@ -83,7 +81,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   bool _batchPlanLoading = false;
   final _rateLimiter = RateLimiter(minInterval: AppConstants.rateLimitInterval);
   MealPlanBudgetInsight? _budgetInsight;
-  bool _showDetails = false; // Progressive disclosure toggle
 
   late AppSettings _localSettings;
 
@@ -2156,7 +2153,7 @@ class _DayCard extends StatelessWidget {
         : displayCost;
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: const EdgeInsets.only(bottom: 8),
       color: AppColors.surface(context),
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -2166,7 +2163,7 @@ class _DayCard extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.fromLTRB(12, 10, 4, 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -2174,8 +2171,8 @@ class _DayCard extends StatelessWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 3,
+                        horizontal: 6,
+                        vertical: 2,
                       ),
                       decoration: BoxDecoration(
                         color: AppColors.infoBackground(context),
@@ -2190,11 +2187,11 @@ class _DayCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: 4),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 3,
+                        horizontal: 6,
+                        vertical: 2,
                       ),
                       decoration: BoxDecoration(
                         color: const Color(0xFFF0FDF4),
@@ -2210,11 +2207,11 @@ class _DayCard extends StatelessWidget {
                       ),
                     ),
                     if (mealDay.isLeftover) ...[
-                      const SizedBox(width: 6),
+                      const SizedBox(width: 4),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 3,
+                          horizontal: 6,
+                          vertical: 2,
                         ),
                         decoration: BoxDecoration(
                           color: const Color(0xFFFEF3C7),
@@ -2225,14 +2222,14 @@ class _DayCard extends StatelessWidget {
                           children: [
                             const Icon(
                               Icons.recycling,
-                              size: 12,
+                              size: 11,
                               color: Color(0xFF92400E),
                             ),
-                            const SizedBox(width: 4),
+                            const SizedBox(width: 3),
                             Text(
                               l10n.mealLeftover,
                               style: const TextStyle(
-                                fontSize: 11,
+                                fontSize: 10,
                                 fontWeight: FontWeight.w600,
                                 color: Color(0xFF92400E),
                               ),
@@ -2242,7 +2239,7 @@ class _DayCard extends StatelessWidget {
                       ),
                     ],
                     if (activePantryIds.isNotEmpty) ...[
-                      const SizedBox(width: 6),
+                      const SizedBox(width: 4),
                       PantryCoverageBadge(
                         coverageRatio: computePantryCoverage(
                           recipe,
@@ -2278,69 +2275,44 @@ class _DayCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                // Multi-course display: show all courses for this meal slot
-                ..._buildCourseRows(context, l10n, recipe, iMap),
                 const SizedBox(height: 6),
+                // Compact course display
+                ..._buildCourseRows(context, l10n, recipe, iMap),
+                const SizedBox(height: 4),
+                // Compact info row: stars + time + cost/person
                 Row(
                   children: [
                     _Stars(recipe.complexity),
-                    const SizedBox(width: 10),
-                    if (recipe.activeMinutes != null &&
-                        recipe.passiveMinutes != null) ...[
-                      Icon(
-                        Icons.timer_outlined,
-                        size: 14,
-                        color: AppColors.textMuted(context),
-                      ),
-                      const SizedBox(width: 3),
-                      Text(
-                        '${recipe.activeMinutes} ${l10n.mealActiveTime}',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textMuted(context),
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Icon(
-                        Icons.local_fire_department_outlined,
-                        size: 14,
-                        color: AppColors.textMuted(context),
-                      ),
-                      const SizedBox(width: 3),
-                      Text(
-                        '+ ${recipe.passiveMinutes} ${l10n.mealPassiveTime}',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textMuted(context),
-                        ),
-                      ),
-                    ] else ...[
-                      Icon(
-                        Icons.timer_outlined,
-                        size: 14,
-                        color: AppColors.textMuted(context),
-                      ),
-                      const SizedBox(width: 3),
-                      Text(
-                        '${recipe.prepMinutes}min',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textMuted(context),
-                        ),
-                      ),
-                    ],
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 8),
                     Icon(
-                      Icons.person_outline,
-                      size: 14,
+                      Icons.timer_outlined,
+                      size: 13,
                       color: AppColors.textMuted(context),
                     ),
-                    const SizedBox(width: 3),
+                    const SizedBox(width: 2),
                     Text(
-                      l10n.mealCostPerPerson(costPerPerson.toStringAsFixed(2)),
+                      recipe.activeMinutes != null &&
+                              recipe.passiveMinutes != null
+                          ? '${recipe.activeMinutes}+${recipe.passiveMinutes}min'
+                          : '${recipe.prepMinutes}min',
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 11,
+                        color: AppColors.textMuted(context),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Icon(
+                      Icons.person_outline,
+                      size: 13,
+                      color: AppColors.textMuted(context),
+                    ),
+                    const SizedBox(width: 2),
+                    Text(
+                      l10n.mealCostPerPerson(
+                        costPerPerson.toStringAsFixed(2),
+                      ),
+                      style: TextStyle(
+                        fontSize: 11,
                         color: AppColors.textMuted(context),
                       ),
                     ),
