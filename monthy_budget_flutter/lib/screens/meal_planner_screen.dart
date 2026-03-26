@@ -18,6 +18,7 @@ import '../widgets/freeform_meal_sheet.dart';
 import '../models/meal_budget_insight.dart';
 import '../utils/meal_budget_insights.dart';
 import '../widgets/meal_cost_reconciliation_sheet.dart';
+import '../widgets/meal_feedback_button.dart';
 import '../widgets/star_rating_row.dart';
 import '../widgets/meal_plan_budget_card.dart';
 import '../widgets/meal_plan_budget_sheet.dart';
