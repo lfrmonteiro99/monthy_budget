@@ -1966,54 +1966,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          child: Row(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  key: MealsTourKeys.addToListButton,
-                  height: 36,
-                  child: OutlinedButton.icon(
-                    onPressed: () => _addWeekToShoppingList(_selectedWeek),
-                    icon: const Icon(Icons.add_shopping_cart, size: 16),
-                    label: Text(l10n.mealAddWeekToList, style: const TextStyle(fontSize: 12)),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.primary(context),
-                      side: BorderSide(color: AppColors.primary(context)),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                    ),
-                  ),
-                ),
-              ),
-              if (_weekHasBatchCooking(plan, _selectedWeek)) ...[
-                const SizedBox(width: 6),
-                SizedBox(
-                  height: 36,
-                  child: OutlinedButton.icon(
-                    onPressed: _batchPlanLoading
-                        ? null
-                        : () => _showBatchPrepGuide(plan, _selectedWeek),
-                    icon: _batchPlanLoading
-                        ? SizedBox(
-                            width: 14, height: 14,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2, color: AppColors.primary(context)))
-                        : const Icon(Icons.kitchen, size: 16),
-                    label: Text(l10n.mealBatchPrepGuide, style: const TextStyle(fontSize: 12)),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.primary(context),
-                      side: BorderSide(color: AppColors.primary(context)),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                    ),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
         Expanded(
           child: Stack(
             children: [
