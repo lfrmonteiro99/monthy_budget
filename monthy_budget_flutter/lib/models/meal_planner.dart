@@ -172,6 +172,7 @@ class Recipe {
   final List<String> prepSteps;
   final int? activeMinutes;   // hands-on time
   final int? passiveMinutes;  // oven, marinating, resting, etc.
+  final CourseType courseType;
 
   const Recipe({
     required this.id,
@@ -199,6 +200,7 @@ class Recipe {
     this.prepSteps = const [],
     this.activeMinutes,
     this.passiveMinutes,
+    this.courseType = CourseType.mainCourse,
   });
 
   factory Recipe.fromJson(Map<String, dynamic> json) => Recipe(
@@ -234,6 +236,10 @@ class Recipe {
         prepSteps: List<String>.from(json['prepSteps'] ?? []),
         activeMinutes: json['activeMinutes'] as int?,
         passiveMinutes: json['passiveMinutes'] as int?,
+        courseType: CourseType.values.firstWhere(
+          (e) => e.name == (json['courseType'] ?? 'mainCourse'),
+          orElse: () => CourseType.mainCourse,
+        ),
       );
 
   Map<String, dynamic> toJson() => {
@@ -262,37 +268,21 @@ class Recipe {
         if (prepSteps.isNotEmpty) 'prepSteps': prepSteps,
         if (activeMinutes != null) 'activeMinutes': activeMinutes,
         if (passiveMinutes != null) 'passiveMinutes': passiveMinutes,
+        'courseType': courseType.jsonValue,
       };
 
   /// Whether this recipe is a soup/broth (detected by ID convention).
-  bool get isSoup => _soupPattern.hasMatch(id);
+  bool get isSoup => courseType == CourseType.soupOrStarter && _soupPattern.hasMatch(id);
   static final _soupPattern = RegExp(r'sopa|caldo|canja|creme');
 
   /// Whether this recipe qualifies as a soup or starter/entrada.
-  /// Excludes desserts even if they match the nutrition threshold.
-  bool get isSoupOrStarter =>
-      !isDessert &&
-      (isSoup ||
-       _starterPattern.hasMatch(id) ||
-       (nutrition != null && nutrition!.kcal <= 200 && nutrition!.proteinG < Recipe.mainMealMinProteinG));
-  static final _starterPattern = RegExp(r'entrada|salada_simples|bruschetta|croquete');
+  bool get isSoupOrStarter => courseType == CourseType.soupOrStarter;
 
   /// Whether this recipe is a dessert.
-  /// Uses `sobremesa_` prefix (canonical) plus specific known dessert IDs.
-  bool get isDessert => _dessertPattern.hasMatch(id);
-  static final _dessertPattern = RegExp(
-    r'^sobremesa_|'                            // canonical prefix
-    r'^(mousse|pudim|gelado|tarte|aletria|rabanada)_|'  // dessert-type prefix
-    r'^(arroz_doce|leite_creme|natas_ceu|salada_fruta|compota)$|'
-    r'^(arroz_doce|leite_creme|natas_ceu|salada_fruta|compota)_',
-  );
+  bool get isDessert => courseType == CourseType.dessert;
 
-  /// Inferred course type based on recipe characteristics.
-  CourseType get inferredCourseType {
-    if (isDessert) return CourseType.dessert;
-    if (isSoupOrStarter) return CourseType.soupOrStarter;
-    return CourseType.mainCourse;
-  }
+  /// Course type for this recipe.
+  CourseType get inferredCourseType => courseType;
 
   /// Minimum protein (g) to qualify as a standalone main meal.
   static const mainMealMinProteinG = 10.0;

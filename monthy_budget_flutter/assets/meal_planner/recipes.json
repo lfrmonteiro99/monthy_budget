@@ -59,7 +59,8 @@
       "Leva ao forno durante 45-50 minutos até o frango ficar dourado."
     ],
     "activeMinutes": 15,
-    "passiveMinutes": 50
+    "passiveMinutes": 50,
+    "courseType": "mainCourse"
   },
   {
     "id": "frango_arroz",
@@ -121,7 +122,8 @@
       "Junta o frango e deixa selar de todos os lados.",
       "Adiciona a cenoura ralada e o arroz, mexendo bem.",
       "Cobre com água (2x o volume do arroz) e deixa cozinhar em lume brando 18 minutos."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "frango_estufado",
@@ -188,7 +190,8 @@
       "Tampa e deixa estufar em lume brando durante 30-35 minutos."
     ],
     "activeMinutes": 10,
-    "passiveMinutes": 20
+    "passiveMinutes": 20,
+    "courseType": "mainCourse"
   },
   {
     "id": "frango_grelhado",
@@ -246,7 +249,8 @@
       "Aquece a grelha ou frigideira antiaderente em lume alto.",
       "Grelha o frango 4-5 minutos de cada lado.",
       "Serve com arroz cozido e salada de alface temperada."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "frango_broculos",
@@ -304,7 +308,8 @@
       "Refoga o alho laminado em azeite numa frigideira grande.",
       "Junta o frango e salteia em lume alto até dourar.",
       "Adiciona os brócolos, tampa e cozinha 5-6 minutos até ficarem tenros."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "esparguete_bolonhesa",
@@ -366,7 +371,8 @@
       "Junta a carne picada e deixa selar, desfazendo com uma colher de pau.",
       "Adiciona o tomate pelado esmagado, tempera e deixa cozinhar 20 minutos em lume brando.",
       "Cozinha a massa em água com sal e escorre. Serve com o molho por cima."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "almondegas",
@@ -426,7 +432,8 @@
       "Serve com arroz branco ou pão."
     ],
     "activeMinutes": 15,
-    "passiveMinutes": 25
+    "passiveMinutes": 25,
+    "courseType": "mainCourse"
   },
   {
     "id": "empadao",
@@ -491,7 +498,8 @@
       "Leva ao forno 25-30 minutos até dourar por cima."
     ],
     "activeMinutes": 25,
-    "passiveMinutes": 35
+    "passiveMinutes": 35,
+    "courseType": "mainCourse"
   },
   {
     "id": "hamburguer",
@@ -549,7 +557,8 @@
       "Aquece uma frigideira em lume alto.",
       "Cozinha os hambúrgueres 4 minutos de cada lado.",
       "Monta no pão com tomate fatiado e os condimentos que preferires."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "lasanha",
@@ -614,7 +623,8 @@
       "Cobre com papel de alumínio e leva ao forno 40 minutos. Retira o alumínio nos últimos 10."
     ],
     "activeMinutes": 30,
-    "passiveMinutes": 45
+    "passiveMinutes": 45,
+    "courseType": "mainCourse"
   },
   {
     "id": "feijoada_simples",
@@ -679,7 +689,8 @@
       "Refoga a cebola picada em azeite.",
       "Junta o chouriço, a cenoura e o feijão cozido.",
       "Adiciona água até cobrir, tempera e deixa cozinhar 20-25 minutos."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "grao_espinafres",
@@ -737,7 +748,8 @@
       "Refoga o alho laminado em azeite.",
       "Junta os espinafres e deixa murchar 2-3 minutos.",
       "Adiciona o grão, tempera com sal e azeite e aquece bem."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "lentilhas_estufadas",
@@ -804,7 +816,8 @@
       "Cozinha em lume brando 25-30 minutos até as lentilhas ficarem tenras."
     ],
     "activeMinutes": 10,
-    "passiveMinutes": 20
+    "passiveMinutes": 20,
+    "courseType": "mainCourse"
   },
   {
     "id": "feijao_verde_batata",
@@ -862,7 +875,8 @@
       "Coze tudo junto em água com sal durante 15-20 minutos.",
       "Escorre e tempera com alho picado e azeite a gosto.",
       "Serve quente como prato principal ou acompanhamento."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "sopa_feijao",
@@ -926,7 +940,8 @@
       "Refoga a cebola em azeite numa panela grande.",
       "Junta as batatas, cenouras, feijão e água.",
       "Cozinha 25 minutos e tritura parcialmente para engrossar."
-    ]
+    ],
+    "courseType": "soupOrStarter"
   },
   {
     "id": "omelete_legumes",
@@ -985,7 +1000,8 @@
       "Refoga os legumes em azeite até ficarem macios.",
       "Deita os ovos batidos por cima e cozinha em lume médio.",
       "Quando a base estiver firme, dobra ao meio e serve."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "tortilha",
@@ -1044,7 +1060,8 @@
       "Bate os ovos com a cebola picada e sal.",
       "Mistura as batatas com os ovos e deita numa frigideira com um fio de azeite.",
       "Cozinha em lume brando, vira com a ajuda de um prato e cozinha do outro lado."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "frittata_espinafres",
@@ -1107,7 +1124,8 @@
       "Leva ao forno 15-20 minutos até ficar firme e dourada."
     ],
     "activeMinutes": 10,
-    "passiveMinutes": 10
+    "passiveMinutes": 10,
+    "courseType": "mainCourse"
   },
   {
     "id": "ovos_mexidos_tomate",
@@ -1166,7 +1184,8 @@
       "Junta o tomate e deixa cozinhar 5 minutos.",
       "Adiciona os ovos e mexe em lume brando até ficarem cremosos.",
       "Serve imediatamente com pão torrado."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "ovo_arroz",
@@ -1224,7 +1243,8 @@
       "Numa frigideira, salteia a cenoura em azeite.",
       "Junta o arroz cozido e mistura bem.",
       "Faz um ovo estrelado ou mexido e serve por cima do arroz."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "pescada_forno",
@@ -1286,7 +1306,8 @@
       "Leva ao forno 40-45 minutos até o peixe estar cozido e as batatas tenras."
     ],
     "activeMinutes": 15,
-    "passiveMinutes": 35
+    "passiveMinutes": 35,
+    "courseType": "mainCourse"
   },
   {
     "id": "peixe_grelhado",
@@ -1344,7 +1365,8 @@
       "Grelha o peixe numa frigideira antiaderente, 4 minutos de cada lado.",
       "Salteia os legumes separadamente em azeite.",
       "Serve o peixe com os legumes grelhados."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "arroz_peixe",
@@ -1406,7 +1428,8 @@
       "Junta o tomate pelado esmagado e deixa apurar.",
       "Adiciona água, e quando ferver, junta o arroz e o peixe.",
       "Cozinha em lume brando 18-20 minutos. Deve ficar caldoso."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "bacalhau_cozido",
@@ -1471,7 +1494,8 @@
       "Coze o bacalhau em água (sem sal) durante 15-20 minutos.",
       "Descasca as batatas e corta os ovos ao meio.",
       "Serve tudo junto, regado com azeite a gosto e cebola picada."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "bacalhau_grao",
@@ -1532,7 +1556,8 @@
       "Escorre o grão-de-bico.",
       "Mistura o bacalhau desfiado com o grão num prato.",
       "Tempera generosamente com azeite, alho picado e salsa."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "costeletas_porco",
@@ -1590,7 +1615,8 @@
       "Aquece a grelha ou frigideira em lume alto.",
       "Grelha as costeletas 5-6 minutos de cada lado.",
       "Serve com batatas cozidas temperadas com azeite."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "porco_alentejana",
@@ -1650,7 +1676,8 @@
       "Junta as batatas fritas à carne e mistura bem antes de servir."
     ],
     "activeMinutes": 15,
-    "passiveMinutes": 30
+    "passiveMinutes": 30,
+    "courseType": "mainCourse"
   },
   {
     "id": "bifanas",
@@ -1708,7 +1735,8 @@
       "Deixa marinar pelo menos 30 minutos.",
       "Frita as bifanas rapidamente em lume alto, 2 minutos de cada lado.",
       "Serve no pão com o molho da frigideira."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "porco_assado",
@@ -1770,7 +1798,8 @@
       "Assa durante 50-60 minutos, regando de vez em quando com o próprio molho."
     ],
     "activeMinutes": 15,
-    "passiveMinutes": 35
+    "passiveMinutes": 35,
+    "courseType": "mainCourse"
   },
   {
     "id": "feijoada_porco",
@@ -1837,7 +1866,8 @@
       "Rectifica os temperos e serve com arroz branco."
     ],
     "activeMinutes": 20,
-    "passiveMinutes": 40
+    "passiveMinutes": 40,
+    "courseType": "mainCourse"
   },
   {
     "id": "sardinhas_assadas",
@@ -1897,7 +1927,8 @@
       "Assa as sardinhas 5-6 minutos de cada lado.",
       "Coze as batatas e corta o pimento em tiras.",
       "Serve as sardinhas com as batatas e pimento assado."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "atum_salada",
@@ -1962,7 +1993,8 @@
       "Escorre o atum da lata.",
       "Monta a salada com alface, tomate, cebola e atum por cima.",
       "Tempera com azeite, vinagre e sal a gosto."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "atum_arroz",
@@ -2024,7 +2056,8 @@
       "Adiciona o arroz e a água (2x o volume do arroz).",
       "Quando o arroz estiver quase cozido, junta o atum escorrido.",
       "Mexe delicadamente e serve quando o arroz absorver a água."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "caldeirada",
@@ -2095,7 +2128,8 @@
       "Cozinha em lume brando 35-40 minutos sem mexer (apenas agitar a panela)."
     ],
     "activeMinutes": 15,
-    "passiveMinutes": 30
+    "passiveMinutes": 30,
+    "courseType": "mainCourse"
   },
   {
     "id": "pataniscas_bacalhau",
@@ -2160,7 +2194,8 @@
       "Adiciona o bacalhau desfiado e a cebola picada à massa.",
       "Aquece azeite numa frigideira.",
       "Deita colheradas da massa no azeite quente e frita até dourar de ambos os lados."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "papas_aveia",
@@ -2213,7 +2248,8 @@
       "Quando engrossar, retira do lume.",
       "Corta a banana em rodelas.",
       "Serve as papas numa taça e decora com a fruta por cima."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "torradas_queijo",
@@ -2271,7 +2307,8 @@
       "Coloca uma fatia de fiambre e uma de queijo em cada torrada.",
       "Leva à torradeira ou ao forno até o queijo derreter.",
       "Serve quente."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "cereais_leite",
@@ -2324,7 +2361,8 @@
       "Lava e corta a fruta em pedaços pequenos.",
       "Junta a fruta por cima.",
       "Serve imediatamente para manter os cereais crocantes."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "iogurte_fruta",
@@ -2378,7 +2416,8 @@
       "Junta a fruta ao iogurte.",
       "Polvilha com aveia por cima.",
       "Mistura levemente e serve."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "ovos_pequeno_almoco",
@@ -2431,7 +2470,8 @@
       "Deita os ovos e mexe em lume brando com uma espátula.",
       "Retira quando ainda estiverem ligeiramente cremosos.",
       "Tosta o pão de forma e serve os ovos por cima ou ao lado."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "panquecas",
@@ -2489,7 +2529,8 @@
       "Aquece uma frigideira antiaderente com um pouco de azeite.",
       "Deita pequenas porções de massa e cozinha 2 minutos de cada lado.",
       "Serve com fruta fresca ou mel."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "tosta_mista",
@@ -2543,7 +2584,8 @@
       "Tosta até o pão ficar dourado e crocante e o queijo derreter.",
       "Corta ao meio na diagonal.",
       "Serve quente."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "fruta_iogurte",
@@ -2596,7 +2638,8 @@
       "Fatia a banana em rodelas.",
       "Dispõe a fruta e a banana sobre o iogurte.",
       "Serve fresco."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "caldo_verde",
@@ -2660,7 +2703,8 @@
       "Quando estiverem cozidas, tritura com a varinha mágica.",
       "Corta os espinafres em tiras finas e o chouriço em rodelas.",
       "Junta ao caldo, deixa ferver 5 minutos e serve com um fio de azeite."
-    ]
+    ],
+    "courseType": "soupOrStarter"
   },
   {
     "id": "arroz_legumes",
@@ -2722,7 +2766,8 @@
       "Junta o arroz e mexe bem.",
       "Adiciona água (2x o volume do arroz) e sal.",
       "Cozinha em lume brando 18 minutos até o arroz estar cozido."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "massa_cogumelos",
@@ -2787,7 +2832,8 @@
       "Junta os cogumelos e salteia em lume alto 5 minutos.",
       "Adiciona as natas, tempera e deixa apurar 3 minutos.",
       "Cozinha a massa, escorre e mistura com o molho de cogumelos."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "sopa_legumes",
@@ -2851,7 +2897,8 @@
       "Cozinha durante 20-25 minutos até os legumes estarem macios.",
       "Tritura tudo com a varinha mágica até ficar homogéneo.",
       "Serve com um fio de azeite."
-    ]
+    ],
+    "courseType": "soupOrStarter"
   },
   {
     "id": "salada_grao",
@@ -2916,7 +2963,8 @@
       "Lava e corta a alface em pedaços.",
       "Mistura tudo numa saladeira.",
       "Tempera com azeite, vinagre, sal e ervas aromáticas a gosto."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "salmao_forno",
@@ -2982,7 +3030,8 @@
       "Leva ao forno 25 minutos até o salmão ficar cozinhado."
     ],
     "activeMinutes": 10,
-    "passiveMinutes": 25
+    "passiveMinutes": 25,
+    "courseType": "mainCourse"
   },
   {
     "id": "salmao_grelhado",
@@ -3039,7 +3088,8 @@
       "Coze os brócolos e a cenoura ao vapor 8 minutos.",
       "Grelha o salmão numa frigideira bem quente 4 minutos de cada lado.",
       "Serve o salmão sobre os legumes e rega com azeite."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "dourada_forno",
@@ -3105,7 +3155,8 @@
       "Assa 30 minutos, virando a meio."
     ],
     "activeMinutes": 10,
-    "passiveMinutes": 25
+    "passiveMinutes": 25,
+    "courseType": "mainCourse"
   },
   {
     "id": "dourada_grelhada",
@@ -3165,7 +3216,8 @@
       "Grelha em lume forte 5-6 minutos de cada lado.",
       "Prepara a salada com alface e tomate em cubos.",
       "Serve a dourada com a salada e um fio de azeite."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "ameijoas_bulhao_pato",
@@ -3226,7 +3278,8 @@
       "Junta as amêijoas e o vinho branco, tampa.",
       "Cozinha em lume forte 3-4 minutos até abrirem.",
       "Polvilha com coentros picados e serve com pão."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "arroz_marisco",
@@ -3300,7 +3353,8 @@
       "Adiciona água a ferver e o arroz.",
       "A meio da cozedura junta as amêijoas e o camarão.",
       "Cozinha até o arroz ficar malandrinho e polvilha com coentros."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "camarao_alho",
@@ -3357,7 +3411,8 @@
       "Junta o camarão e salteia em lume alto 3-4 minutos.",
       "Tempera com sal, pimenta e um toque de malagueta.",
       "Serve com pão para molhar no molho."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "polvo_lagareiro",
@@ -3419,7 +3474,8 @@
       "Leva ao forno a 220°C durante 15 minutos até dourar."
     ],
     "activeMinutes": 15,
-    "passiveMinutes": 15
+    "passiveMinutes": 15,
+    "courseType": "mainCourse"
   },
   {
     "id": "polvo_arroz",
@@ -3485,7 +3541,8 @@
       "Adiciona a água do polvo e o arroz.",
       "Corta o polvo em pedaços e junta a meio da cozedura.",
       "Cozinha até ficar malandrinho e finaliza com coentros."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "lulas_grelhadas",
@@ -3545,7 +3602,8 @@
       "Deixa marinar 15 minutos.",
       "Grelha em lume muito forte 2-3 minutos de cada lado.",
       "Serve com salada de alface e batata cozida."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "lulas_recheadas",
@@ -3615,7 +3673,8 @@
       "Leva ao forno a 180°C durante 25 minutos."
     ],
     "activeMinutes": 15,
-    "passiveMinutes": 20
+    "passiveMinutes": 20,
+    "courseType": "mainCourse"
   },
   {
     "id": "cataplana_peixe",
@@ -3692,7 +3751,8 @@
       "Rega com azeite e vinho branco.",
       "Tampa bem e cozinha em lume brando 25 minutos.",
       "Junta as amêijoas nos últimos 5 minutos e polvilha com coentros."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "bacalhau_bras",
@@ -3758,7 +3818,8 @@
       "Refoga a cebola em azeite, junta o bacalhau desfiado.",
       "Mistura as batatas palha e os ovos batidos.",
       "Mexe em lume brando até os ovos coalharem ligeiramente. Polvilha com salsa."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "bacalhau_natas",
@@ -3824,7 +3885,8 @@
       "Gratina os últimos 5 minutos até dourar."
     ],
     "activeMinutes": 15,
-    "passiveMinutes": 20
+    "passiveMinutes": 20,
+    "courseType": "mainCourse"
   },
   {
     "id": "sopa_peixe",
@@ -3896,7 +3958,8 @@
       "Tritura os legumes com a varinha mágica.",
       "Junta o tomate picado e a pescada desfiada.",
       "Cozinha mais 5 minutos e finaliza com coentros."
-    ]
+    ],
+    "courseType": "soupOrStarter"
   },
   {
     "id": "peru_estufado",
@@ -3960,7 +4023,8 @@
       "Tampa e estúfa em lume brando 25 minutos."
     ],
     "activeMinutes": 10,
-    "passiveMinutes": 20
+    "passiveMinutes": 20,
+    "courseType": "mainCourse"
   },
   {
     "id": "peru_grelhado",
@@ -4017,7 +4081,8 @@
       "Deixa marinar 10 minutos.",
       "Grelha os bifes 4 minutos de cada lado.",
       "Serve com arroz cozido e salada de alface."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "vitela_estufada",
@@ -4088,7 +4153,8 @@
       "Tampa e cozinha em lume brando 40 minutos."
     ],
     "activeMinutes": 15,
-    "passiveMinutes": 20
+    "passiveMinutes": 20,
+    "courseType": "mainCourse"
   },
   {
     "id": "arroz_pato",
@@ -4161,7 +4227,8 @@
       "Coloca num tabuleiro e leva ao forno a 200°C por 15 minutos até fazer crosta."
     ],
     "activeMinutes": 25,
-    "passiveMinutes": 35
+    "passiveMinutes": 35,
+    "courseType": "mainCourse"
   },
   {
     "id": "coelho_caçador",
@@ -4236,7 +4303,8 @@
       "Volta a juntar o coelho, tampa e cozinha em lume brando 45 minutos."
     ],
     "activeMinutes": 15,
-    "passiveMinutes": 25
+    "passiveMinutes": 25,
+    "courseType": "mainCourse"
   },
   {
     "id": "chanfana",
@@ -4309,7 +4377,8 @@
       "Serve com batata cozida."
     ],
     "activeMinutes": 15,
-    "passiveMinutes": 30
+    "passiveMinutes": 30,
+    "courseType": "mainCourse"
   },
   {
     "id": "cozido_portuguesa",
@@ -4386,7 +4455,8 @@
       "Serve tudo travessado num prato, com o chouriço fatiado por cima."
     ],
     "activeMinutes": 20,
-    "passiveMinutes": 40
+    "passiveMinutes": 40,
+    "courseType": "mainCourse"
   },
   {
     "id": "acorda_alentejana",
@@ -4448,7 +4518,8 @@
       "Parte o pão em pedaços numa terrina.",
       "Escalfa os ovos na água a ferver.",
       "Deita a água quente sobre o pão, mistura o preparado de alho e coloca os ovos por cima."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "migas_alentejanas",
@@ -4513,7 +4584,8 @@
       "Coze a couve em água com sal e escorre.",
       "Esmiga o pão duro e mistura com a couve, alho e azeite.",
       "Mexe em lume brando até formar uma massa consistente. Serve com a carne."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "canja_galinha",
@@ -4577,7 +4649,8 @@
       "No caldo coado, junta o arroz e cozinha 15 minutos.",
       "Volta a juntar o frango desfiado.",
       "Tempera com sal e serve bem quente."
-    ]
+    ],
+    "courseType": "soupOrStarter"
   },
   {
     "id": "creme_cenoura",
@@ -4634,7 +4707,8 @@
       "Tritura com a varinha mágica até ficar cremoso.",
       "Tempera com azeite e uma pitada de noz-moscada.",
       "Serve quente com um fio de azeite."
-    ]
+    ],
+    "courseType": "soupOrStarter"
   },
   {
     "id": "sopa_abobora",
@@ -4697,7 +4771,8 @@
       "Coze com a batata, cebola e cenoura em água com sal.",
       "Quando tudo estiver macio, tritura com a varinha.",
       "Ajusta o sal e serve com um fio de azeite."
-    ]
+    ],
+    "courseType": "soupOrStarter"
   },
   {
     "id": "gazpacho",
@@ -4772,7 +4847,8 @@
       "Junta o pão demolhado e o azeite.",
       "Tritura até ficar homogéneo.",
       "Tempera com sal e vinagre a gosto. Serve bem frio."
-    ]
+    ],
+    "courseType": "soupOrStarter"
   },
   {
     "id": "sopa_couve_flor",
@@ -4831,7 +4907,8 @@
       "Coze com a batata e cebola em água com sal.",
       "Tritura com a varinha mágica até ficar cremoso.",
       "Serve com um fio de azeite."
-    ]
+    ],
+    "courseType": "soupOrStarter"
   },
   {
     "id": "sopa_espinafres",
@@ -4891,7 +4968,8 @@
       "Junta os espinafres e cozinha mais 5 minutos.",
       "Tritura tudo com a varinha mágica.",
       "Junta o alho picado refogado em azeite e serve."
-    ]
+    ],
+    "courseType": "soupOrStarter"
   },
   {
     "id": "tofu_salteado",
@@ -4957,7 +5035,8 @@
       "No mesmo azeite salteia a cebola, pimento e courgette.",
       "Junta os cogumelos e salteia mais 3 minutos.",
       "Volta a juntar o tofu, tempera com molho de soja e serve."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "tofu_arroz",
@@ -5018,7 +5097,8 @@
       "Coze os brócolos ao vapor 6 minutos.",
       "Corta o tofu em cubos e grelha em azeite com alho.",
       "Serve o tofu sobre o arroz com os brócolos ao lado."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "beringela_recheada",
@@ -5091,7 +5171,8 @@
       "Polvilha com queijo ralado e leva ao forno mais 15 minutos."
     ],
     "activeMinutes": 15,
-    "passiveMinutes": 20
+    "passiveMinutes": 20,
+    "courseType": "mainCourse"
   },
   {
     "id": "wrap_vegetariano",
@@ -5157,7 +5238,8 @@
       "Aquece a tortilha numa frigideira seca.",
       "Espalha o grão esmagado na tortilha.",
       "Distribui os legumes, enrola bem e serve."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "wrap_atum",
@@ -5219,7 +5301,8 @@
       "Corta a alface e o tomate.",
       "Aquece a tortilha e monta o wrap.",
       "Enrola bem e corta ao meio."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "tosta_atum_queijo",
@@ -5280,7 +5363,8 @@
       "Leva ao forno a 200°C por 8-10 minutos até gratinar."
     ],
     "activeMinutes": 5,
-    "passiveMinutes": 5
+    "passiveMinutes": 5,
+    "courseType": "mainCourse"
   },
   {
     "id": "crepes_fiambre_queijo",
@@ -5346,7 +5430,8 @@
       "Unta a frigideira com manteiga e faz crepes finos.",
       "Recheia cada crepe com fiambre e queijo.",
       "Dobra em quatro e serve."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "crepes_espinafres",
@@ -5420,7 +5505,8 @@
       "Polvilha com queijo e gratina no forno 10 minutos."
     ],
     "activeMinutes": 15,
-    "passiveMinutes": 15
+    "passiveMinutes": 15,
+    "courseType": "mainCourse"
   },
   {
     "id": "feijao_branco_chourico",
@@ -5491,7 +5577,8 @@
       "Cozinha 15 minutos em lume brando até apurar."
     ],
     "activeMinutes": 10,
-    "passiveMinutes": 15
+    "passiveMinutes": 15,
+    "courseType": "mainCourse"
   },
   {
     "id": "lentilhas_legumes",
@@ -5557,7 +5644,8 @@
       "Adiciona o tomate pelado e as lentilhas.",
       "Cobre com água e cozinha 20 minutos até as lentilhas ficarem macias.",
       "Tempera com sal e serve."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "grao_curry",
@@ -5619,7 +5707,8 @@
       "Junta o grão-de-bico cozido e os espinafres.",
       "Cozinha mais 10 minutos em lume brando.",
       "Serve com arroz basmati."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "feijao_preto_arroz",
@@ -5684,7 +5773,8 @@
       "Refoga a cebola, pimento e alho em azeite.",
       "Junta o feijão cozido e tempera com cominhos.",
       "Cozinha 10 minutos e serve com o arroz."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "cuscuz_legumes",
@@ -5750,7 +5840,8 @@
       "Salteia os legumes em azeite até ficarem al dente.",
       "Solta o cuscuz com um garfo e mistura os legumes.",
       "Tempera com sal, pimenta e ervas a gosto."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "batata_doce_forno",
@@ -5819,7 +5910,8 @@
       "Polvilha com queijo ralado e gratina 5 minutos."
     ],
     "activeMinutes": 10,
-    "passiveMinutes": 10
+    "passiveMinutes": 10,
+    "courseType": "mainCourse"
   },
   {
     "id": "ovo_estrelado_arroz_feijao",
@@ -5876,7 +5968,8 @@
       "Aquece o feijão já cozido num tacho.",
       "Frita os ovos em azeite com a gema mole.",
       "Serve o arroz, feijão e ovos estrelados por cima."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "ovos_cozidos_espinafres",
@@ -5933,7 +6026,8 @@
       "Salteia os espinafres com alho em azeite.",
       "Corta os ovos ao meio.",
       "Serve os ovos sobre a cama de espinafres."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "quiche_legumes",
@@ -6008,7 +6102,8 @@
       "Coloca os legumes na base, verte o creme e polvilha com queijo. Assa 25 minutos."
     ],
     "activeMinutes": 20,
-    "passiveMinutes": 20
+    "passiveMinutes": 20,
+    "courseType": "mainCourse"
   },
   {
     "id": "ovos_ninho",
@@ -6074,7 +6169,8 @@
       "Parte um ovo em cada ninho e volta ao forno mais 8 minutos."
     ],
     "activeMinutes": 15,
-    "passiveMinutes": 15
+    "passiveMinutes": 15,
+    "courseType": "mainCourse"
   },
   {
     "id": "panquecas_banana",
@@ -6131,7 +6227,8 @@
       "Aquece a frigideira com um pouco de manteiga.",
       "Deita porções da massa e cozinha 2-3 minutos de cada lado.",
       "Serve com fruta fresca ou mel."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "overnight_oats",
@@ -6191,7 +6288,8 @@
       "Adiciona a banana fatiada.",
       "Tapa e guarda no frigorífico durante a noite.",
       "De manhã, adiciona fruta fresca e serve."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "smoothie_bowl",
@@ -6257,7 +6355,8 @@
       "Tritura a banana congelada, iogurte e leite no processador.",
       "Deita numa taça.",
       "Decora com fruta fresca fatiada e flocos de aveia."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "tosta_abacate_ovo",
@@ -6314,7 +6413,8 @@
       "Frita ou coze os ovos a gosto.",
       "Corta o tomate em rodelas.",
       "Monta a tosta com tomate e ovo por cima. Rega com azeite."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "massa_atum_ervilhas",
@@ -6376,7 +6476,8 @@
       "Junta as ervilhas e cozinha 5 minutos.",
       "Mistura o atum escorrido e a massa.",
       "Tempera e serve."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "arroz_feijao_legumes",
@@ -6442,7 +6543,8 @@
       "Adiciona o arroz e o feijão cozido.",
       "Cobre com água e cozinha até o arroz estar feito.",
       "Tempera e serve."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "frango_caril",
@@ -6508,7 +6610,8 @@
       "Adiciona o tomate pelado e cozinha 10 minutos.",
       "Junta as natas e deixa apurar mais 5 minutos.",
       "Serve com arroz cozido."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "pescada_cozida",
@@ -6569,7 +6672,8 @@
       "Quando faltar 10 minutos, junta a pescada.",
       "Escorre tudo com cuidado.",
       "Serve regado com azeite e um pouco de vinagre."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "salmao_massa",
@@ -6635,7 +6739,8 @@
       "Refoga a cebola, junta os espinafres e as natas.",
       "Mistura o salmão e a massa ao molho.",
       "Serve imediatamente."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "porco_cogumelos",
@@ -6697,7 +6802,8 @@
       "Refoga a cebola e o alho, junta os cogumelos fatiados.",
       "Salteia até os cogumelos ficarem dourados.",
       "Volta a juntar a carne e serve com arroz."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "carne_picada_ervilhas",
@@ -6763,7 +6869,8 @@
       "Adiciona o tomate pelado e as ervilhas.",
       "Cozinha 15 minutos em lume brando.",
       "Serve com arroz cozido."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "vitela_forno",
@@ -6833,7 +6940,8 @@
       "Serve com os legumes assados."
     ],
     "activeMinutes": 15,
-    "passiveMinutes": 15
+    "passiveMinutes": 15,
+    "courseType": "mainCourse"
   },
   {
     "id": "peru_massa",
@@ -6895,7 +7003,8 @@
       "Salteia a courgette em cubos e o tomate.",
       "Mistura tudo com a massa escorrida.",
       "Tempera e serve."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "arroz_cabidela",
@@ -6957,7 +7066,8 @@
       "Junta o frango e deixa selar.",
       "Adiciona água e vinagre, cozinha até o frango estar tenro.",
       "Junta o arroz e cozinha até ficar malandrinho."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "massa_pesto_frango",
@@ -7019,7 +7129,8 @@
       "Mistura a massa com azeite, alho e tomate picado.",
       "Junta o frango e mexe bem.",
       "Serve com um fio de azeite."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "salada_atum_feijao",
@@ -7087,7 +7198,8 @@
       "Corta a cebola em meias-luas finas e o tomate em cubos.",
       "Mistura tudo numa saladeira com a alface.",
       "Tempera com azeite, vinagre e sal."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "frittata_batata",
@@ -7154,7 +7266,8 @@
       "Leva ao forno a 180°C por 10 minutos até ficar firme."
     ],
     "activeMinutes": 10,
-    "passiveMinutes": 15
+    "passiveMinutes": 15,
+    "courseType": "mainCourse"
   },
   {
     "id": "cogumelos_recheados",
@@ -7224,7 +7337,8 @@
       "Assa no forno a 200°C por 15 minutos."
     ],
     "activeMinutes": 10,
-    "passiveMinutes": 15
+    "passiveMinutes": 15,
+    "courseType": "mainCourse"
   },
   {
     "id": "sopa_lentilhas",
@@ -7292,7 +7406,8 @@
       "Cobre com água e cozinha 25 minutos.",
       "Tritura parcialmente se quiser mais cremosa.",
       "Tempera e serve com um fio de azeite."
-    ]
+    ],
+    "courseType": "soupOrStarter"
   },
   {
     "id": "wrap_frango",
@@ -7354,7 +7469,8 @@
       "Aquece as tortilhas numa frigideira.",
       "Monta os wraps com frango e legumes.",
       "Enrola bem e serve."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "arroz_ervilhas_ovo",
@@ -7416,7 +7532,8 @@
       "Adiciona as ervilhas e cozinha mais 8 minutos.",
       "No final, mistura os ovos batidos e mexe até coalharem.",
       "Serve imediatamente."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "pato_laranja",
@@ -7484,7 +7601,8 @@
       "Serve com a batata assada e o molho."
     ],
     "activeMinutes": 15,
-    "passiveMinutes": 30
+    "passiveMinutes": 30,
+    "courseType": "mainCourse"
   },
   {
     "id": "massa_legumes_forno",
@@ -7554,7 +7672,8 @@
       "Gratina no forno a 200°C por 15 minutos."
     ],
     "activeMinutes": 15,
-    "passiveMinutes": 15
+    "passiveMinutes": 15,
+    "courseType": "mainCourse"
   },
   {
     "id": "bacalhau_espiritual",
@@ -7632,7 +7751,8 @@
       "Cobre com queijo ralado e gratina a 200°C por 20 minutos."
     ],
     "activeMinutes": 20,
-    "passiveMinutes": 25
+    "passiveMinutes": 25,
+    "courseType": "mainCourse"
   },
   {
     "id": "sopa_grao",
@@ -7700,7 +7820,8 @@
       "Junta o restante grão inteiro e os espinafres.",
       "Cozinha mais 5 minutos.",
       "Serve com um fio de azeite e alho picado."
-    ]
+    ],
+    "courseType": "soupOrStarter"
   },
   {
     "id": "camarao_arroz",
@@ -7770,7 +7891,8 @@
       "Adiciona o arroz e o caldo de camarão.",
       "Quando faltar 5 minutos junta o camarão descascado.",
       "Finaliza com coentros e serve malandrinho."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "couve_flor_gratinada",
@@ -7835,7 +7957,8 @@
       "Gratina no forno a 200°C por 15 minutos."
     ],
     "activeMinutes": 15,
-    "passiveMinutes": 15
+    "passiveMinutes": 15,
+    "courseType": "mainCourse"
   },
   {
     "id": "lulas_estufadas",
@@ -7907,7 +8030,8 @@
       "Polvilha com salsa e serve."
     ],
     "activeMinutes": 10,
-    "passiveMinutes": 20
+    "passiveMinutes": 20,
+    "courseType": "mainCourse"
   },
   {
     "id": "feijao_branco_atum",
@@ -7971,7 +8095,8 @@
       "Pica a cebola finamente.",
       "Mistura tudo numa tigela.",
       "Tempera com azeite, vinagre e salsa picada."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "cuscuz_frango",
@@ -8037,7 +8162,8 @@
       "Salteia o pimento, courgette e cebola.",
       "Solta o cuscuz e mistura com os legumes e o frango.",
       "Tempera e serve."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "porco_batata_doce",
@@ -8106,7 +8232,8 @@
       "Fatia e serve com a batata-doce."
     ],
     "activeMinutes": 10,
-    "passiveMinutes": 15
+    "passiveMinutes": 15,
+    "courseType": "mainCourse"
   },
   {
     "id": "ervilhas_ovos",
@@ -8168,7 +8295,8 @@
       "Cozinha 10 minutos em lume brando.",
       "Faz pequenos buracos e parte os ovos para dentro.",
       "Tampa e cozinha até os ovos estarem feitos (5 min)."
-    ]
+    ],
+    "courseType": "mainCourse"
   },
   {
     "id": "sobremesa_fruta_epoca",
@@ -8209,7 +8337,8 @@
       "Lavar a fruta",
       "Cortar em pedaços se necessário",
       "Servir fresca"
-    ]
+    ],
+    "courseType": "dessert"
   },
   {
     "id": "sobremesa_iogurte_mel",
@@ -8254,7 +8383,8 @@
       "Colocar iogurte em taças",
       "Regar com mel",
       "Servir"
-    ]
+    ],
+    "courseType": "dessert"
   },
   {
     "id": "sobremesa_salada_fruta",
@@ -8297,7 +8427,8 @@
       "Misturar num recipiente",
       "Adicionar sumo de limão para não oxidar",
       "Servir fresca"
-    ]
+    ],
+    "courseType": "dessert"
   },
   {
     "id": "sobremesa_mousse_chocolate",
@@ -8345,7 +8476,8 @@
       "Bater claras em castelo",
       "Envolver claras na mistura de chocolate",
       "Refrigerar 4 horas"
-    ]
+    ],
+    "courseType": "dessert"
   },
   {
     "id": "sobremesa_arroz_doce",
@@ -8393,7 +8525,8 @@
       "Juntar açúcar e gemas",
       "Mexer até engrossar",
       "Servir polvilhado com canela"
-    ]
+    ],
+    "courseType": "dessert"
   },
   {
     "id": "sobremesa_gelatina",
@@ -8435,7 +8568,8 @@
       "Adicionar água fria",
       "Verter em taças",
       "Refrigerar 4 horas até solidificar"
-    ]
+    ],
+    "courseType": "dessert"
   },
   {
     "id": "sobremesa_leite_creme",
@@ -8483,7 +8617,8 @@
       "Levar ao lume, mexendo até engrossar",
       "Verter em taças",
       "Queimar açúcar por cima com maçarico"
-    ]
+    ],
+    "courseType": "dessert"
   },
   {
     "id": "sobremesa_compota_maca",
@@ -8528,6 +8663,7 @@
       "Cozer com um pouco de água e canela",
       "Esmagar com garfo ou varinha",
       "Servir morna ou fria"
-    ]
+    ],
+    "courseType": "dessert"
   }
 ]
