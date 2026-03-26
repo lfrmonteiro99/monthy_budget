@@ -3,7 +3,7 @@ name: Release Tag
 # Creates tag + release + builds APK/AAB when a release commit lands on main.
 # Covers both human pushes and agent-delivery merges where the branch didn't
 # start with 'release/' (so agent-delivery's build-release job was skipped).
-# Fixed: tag and release creation are now independent operations.
+# Fixed: tag and release creation are independent; --target omitted when tag exists.
 on:
   push:
     branches: [main]
@@ -128,12 +128,23 @@ jobs:
         run: |
           set -euo pipefail
           TAG="${{ steps.check.outputs.tag }}"
-          SHA="${{ github.sha }}"
+
+          # When tag already exists, omit --target so gh uses the tag's commit.
+          # When tag was just created above, use github.sha as target.
+          TARGET_FLAG=""
+          if [[ "${{ steps.status.outputs.tag_exists }}" != "true" ]]; then
+            TARGET_FLAG="--target ${{ github.sha }}"
+          fi
+
+          NOTES="${{ steps.changelog.outputs.body }}"
+          if [[ -z "$NOTES" ]]; then
+            NOTES="Release $TAG"
+          fi
 
           gh release create "$TAG" \
-            --target "$SHA" \
+            $TARGET_FLAG \
             --title "$TAG" \
-            --notes "${{ steps.changelog.outputs.body }}"
+            --notes "$NOTES"
 
           echo "Created GitHub Release for $TAG"
 
