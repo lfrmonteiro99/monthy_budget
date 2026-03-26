@@ -3,6 +3,7 @@ name: Release Tag
 # Creates tag + release + builds APK/AAB when a release commit lands on main.
 # Covers both human pushes and agent-delivery merges where the branch didn't
 # start with 'release/' (so agent-delivery's build-release job was skipped).
+# Fixed: tag and release creation are now independent operations.
 on:
   push:
     branches: [main]
@@ -50,18 +51,33 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Verify tag does not exist
+      - name: Check tag and release status
         if: steps.check.outputs.is_release == 'true'
+        id: status
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           TAG="${{ steps.check.outputs.tag }}"
+
+          # Check if tag already exists
           if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null 2>&1; then
-            echo "Tag $TAG already exists, skipping tag creation."
-            echo "skip_tag=true" >> "$GITHUB_ENV"
+            echo "tag_exists=true" >> "$GITHUB_OUTPUT"
+            echo "Tag $TAG already exists."
+          else
+            echo "tag_exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          # Check if GitHub release already exists
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "release_exists=true" >> "$GITHUB_OUTPUT"
+            echo "Release $TAG already exists."
+          else
+            echo "release_exists=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Extract changelog section
-        if: steps.check.outputs.is_release == 'true' && env.skip_tag != 'true'
+        if: steps.check.outputs.is_release == 'true' && steps.status.outputs.release_exists != 'true'
         id: changelog
         shell: bash
         run: |
@@ -94,8 +110,18 @@ jobs:
             echo "CHANGELOG_EOF"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Create tag and GitHub Release
-        if: steps.check.outputs.is_release == 'true' && env.skip_tag != 'true'
+      - name: Create tag (if needed)
+        if: steps.check.outputs.is_release == 'true' && steps.status.outputs.tag_exists != 'true'
+        shell: bash
+        run: |
+          TAG="${{ steps.check.outputs.tag }}"
+          SHA="${{ github.sha }}"
+          git tag "$TAG" "$SHA"
+          git push origin "$TAG"
+          echo "Created tag $TAG"
+
+      - name: Create GitHub Release (if needed)
+        if: steps.check.outputs.is_release == 'true' && steps.status.outputs.release_exists != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
@@ -104,15 +130,12 @@ jobs:
           TAG="${{ steps.check.outputs.tag }}"
           SHA="${{ github.sha }}"
 
-          git tag "$TAG" "$SHA"
-          git push origin "$TAG"
-
           gh release create "$TAG" \
             --target "$SHA" \
             --title "$TAG" \
             --notes "${{ steps.changelog.outputs.body }}"
 
-          echo "✅ Created tag $TAG and GitHub Release"
+          echo "Created GitHub Release for $TAG"
 
   build-release:
     needs: tag-and-release
@@ -235,14 +258,14 @@ jobs:
 
           if [ -f "$APK" ]; then
             gh release upload "$TAG" "$APK" --clobber
-            echo "✅ Uploaded APK to release $TAG"
+            echo "Uploaded APK to release $TAG"
           else
             echo "::warning::APK not found at $APK"
           fi
 
           if [ -n "$AAB" ] && [ -f "$AAB" ]; then
             gh release upload "$TAG" "$AAB" --clobber
-            echo "✅ Uploaded AAB to release $TAG"
+            echo "Uploaded AAB to release $TAG"
           else
             echo "::warning::AAB not found"
           fi
