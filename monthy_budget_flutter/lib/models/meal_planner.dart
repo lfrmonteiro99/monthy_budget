@@ -269,18 +269,22 @@ class Recipe {
   static final _soupPattern = RegExp(r'sopa|caldo|canja|creme');
 
   /// Whether this recipe qualifies as a soup or starter/entrada.
+  /// Excludes desserts even if they match the nutrition threshold.
   bool get isSoupOrStarter =>
-      isSoup ||
-      _starterPattern.hasMatch(id) ||
-      (nutrition != null && nutrition!.kcal <= 200 && nutrition!.proteinG < Recipe.mainMealMinProteinG);
+      !isDessert &&
+      (isSoup ||
+       _starterPattern.hasMatch(id) ||
+       (nutrition != null && nutrition!.kcal <= 200 && nutrition!.proteinG < Recipe.mainMealMinProteinG));
   static final _starterPattern = RegExp(r'entrada|salada_simples|bruschetta|croquete');
 
   /// Whether this recipe is a dessert.
+  /// Uses `sobremesa_` prefix (canonical) plus specific known dessert IDs.
   bool get isDessert => _dessertPattern.hasMatch(id);
   static final _dessertPattern = RegExp(
-    r'sobremesa|fruta|doce|mousse|pudim|gelado|bolo|tarte|'
-    r'arroz_doce|leite_creme|iogurte_fruta|fruta_iogurte|'
-    r'compota|gelatina|natas_ceu|aletria|rabanada|salada_fruta',
+    r'^sobremesa_|'                            // canonical prefix
+    r'^(mousse|pudim|gelado|tarte|aletria|rabanada)_|'  // dessert-type prefix
+    r'^(arroz_doce|leite_creme|natas_ceu|salada_fruta|compota)$|'
+    r'^(arroz_doce|leite_creme|natas_ceu|salada_fruta|compota)_',
   );
 
   /// Inferred course type based on recipe characteristics.
