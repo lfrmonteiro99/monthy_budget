@@ -3,6 +3,7 @@ name: Release Tag
 # Creates tag + release + builds APK/AAB when a release commit lands on main.
 # Covers both human pushes and agent-delivery merges where the branch didn't
 # start with 'release/' (so agent-delivery's build-release job was skipped).
+# Fixed: tag and release creation are now independent operations.
 on:
   push:
     branches: [main]
