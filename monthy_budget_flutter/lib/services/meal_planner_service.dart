@@ -98,6 +98,10 @@ class MealPlannerService {
                 )
               : null,
           prepSteps: (r['prep_steps'] as List?)?.cast<String>() ?? [],
+          courseType: CourseType.values.firstWhere(
+            (e) => e.name == (r['course_type'] ?? 'mainCourse'),
+            orElse: () => CourseType.mainCourse,
+          ),
         );
       }).toList();
 
@@ -808,7 +812,7 @@ class MealPlannerService {
         } else if (rType == RecipeType.carne && const {'porco', 'carne_picada'}.contains(recipe.proteinId)) {
           weeklyRedMeatCount[weekNum] = (weeklyRedMeatCount[weekNum] ?? 0) + 1;
         }
-        if (recipe.isSoup) {
+        if (recipe.courseType == CourseType.soupOrStarter && RegExp(r'sopa|caldo|canja|creme').hasMatch(recipe.id)) {
           weeklySoupCount[weekNum] = (weeklySoupCount[weekNum] ?? 0) + 1;
         }
 
@@ -818,7 +822,7 @@ class MealPlannerService {
         if (ms.includeSoupOrStarter &&
             (mealType == MealType.lunch || mealType == MealType.dinner)) {
           final soupPool = _recipes.where((r) {
-            if (!r.isSoupOrStarter) return false;
+            if (r.courseType != CourseType.soupOrStarter) return false;
             if (!r.suitableMealTypes.contains(mealType.name)) return false;
             if (ms.glutenFree && !r.glutenFree) return false;
             if (ms.lactoseFree && !r.lactoseFree) return false;
@@ -863,7 +867,7 @@ class MealPlannerService {
         if (ms.includeDessert &&
             (mealType == MealType.lunch || mealType == MealType.dinner)) {
           final dessertPool = _recipes.where((r) {
-            if (!r.isDessert) return false;
+            if (r.courseType != CourseType.dessert) return false;
             if (!r.suitableMealTypes.contains(mealType.name)) return false;
             if (ms.glutenFree && !r.glutenFree) return false;
             if (ms.lactoseFree && !r.lactoseFree) return false;
@@ -1044,11 +1048,11 @@ class MealPlannerService {
     if (courseType != null) {
       switch (courseType) {
         case CourseType.soupOrStarter:
-          pool = pool.where((r) => r.isSoupOrStarter).toList();
+          pool = pool.where((r) => r.courseType == CourseType.soupOrStarter).toList();
         case CourseType.dessert:
-          pool = pool.where((r) => r.isDessert).toList();
+          pool = pool.where((r) => r.courseType == CourseType.dessert).toList();
         case CourseType.mainCourse:
-          pool = pool.where((r) => !r.isSoupOrStarter && !r.isDessert).toList();
+          pool = pool.where((r) => r.courseType != CourseType.soupOrStarter && r.courseType != CourseType.dessert).toList();
       }
     }
 

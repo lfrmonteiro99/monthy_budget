@@ -1803,163 +1803,126 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   );
                 },
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 4),
             ],
           ),
         ),
-        // Toggle for detailed view (pantry, nutrition, budget)
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: TextButton.icon(
-              onPressed: () => setState(() => _showDetails = !_showDetails),
-              icon: Icon(
-                _showDetails
-                    ? Icons.visibility_off_outlined
-                    : Icons.visibility_outlined,
-                size: 16,
+        // Always-visible compact detail chip row (replaces toggle)
+        SizedBox(
+          height: 36,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            children: [
+              ActionChip(
+                avatar: const Icon(Icons.eco_outlined, size: 14),
+                label: Text(l10n.mealShowDetails),
+                labelStyle: const TextStyle(fontSize: 11),
+                padding: EdgeInsets.zero,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                onPressed: () => _showPantryPicker(),
               ),
-              label: Text(
-                _showDetails ? l10n.mealHideDetails : l10n.mealShowDetails,
-              ),
-              style: TextButton.styleFrom(
-                foregroundColor: AppColors.textSecondary(context),
-                textStyle: const TextStyle(fontSize: 12),
-              ),
-            ),
-          ),
-        ),
-        // Progressive disclosure: pantry, nutrition, budget
-        if (_showDetails) ...[
-          PantrySummaryChipRow(
-            activePantryIds: resolveActivePantry(widget.settings.mealSettings),
-            ingredientMap: _service.ingredientMap,
-            onEditPantry: () => _showPantryPicker(),
-          ),
-          if (_weeklySummaries.containsKey(_selectedWeek))
-            _WeeklySummaryCard(summary: _weeklySummaries[_selectedWeek]!),
-          if (_budgetInsight != null)
-            MealPlanBudgetCard(
-              insight: _budgetInsight!,
-              onViewDetails: () => showMealPlanBudgetSheet(
-                context: context,
-                insight: _budgetInsight!,
-                onApplySwap: (swap) {
-                  Navigator.of(context).pop();
-                  final updated = _service.swapDay(
-                    plan,
-                    swap.original.dayIndex,
-                    MealType.values.firstWhere(
-                      (m) => m.name == swap.original.mealType,
-                      orElse: () => MealType.dinner,
+              const SizedBox(width: 6),
+              if (_weeklySummaries.containsKey(_selectedWeek))
+                Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: ActionChip(
+                    avatar: const Icon(Icons.monitor_heart_outlined, size: 14),
+                    label: Text(
+                      '${_weeklySummaries[_selectedWeek]!.avgKcal.round()} kcal',
                     ),
-                    swap.alternativeRecipeId,
-                  );
-                  _service.save(updated, widget.householdId);
-                  setState(() => _plan = updated);
-                  _enrichPlan(updated);
-                  _recomputeBudgetInsight();
-                },
-              ),
-            ),
-          NutritionDashboardCard(
-            weekDays: _getWeekDays(plan, _selectedWeek),
-            recipeMap: _service.recipeMap,
-            ingredientMap: _service.ingredientMap,
-            nPessoas: plan.nPessoas,
-            settings: widget.settings.mealSettings,
-          ),
-          Builder(
-            builder: (_) {
-              final wasteItems = _computeWasteItems();
-              if (wasteItems.isEmpty) return const SizedBox.shrink();
-              final totalWaste = wasteItems.fold(
-                0.0,
-                (s, w) => s + w.estimatedWasteCost,
-              );
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 4,
+                    labelStyle: const TextStyle(fontSize: 11),
+                    padding: EdgeInsets.zero,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (_) => Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              NutritionDashboardCard(
+                                weekDays: _getWeekDays(plan, _selectedWeek),
+                                recipeMap: _service.recipeMap,
+                                ingredientMap: _service.ingredientMap,
+                                nPessoas: plan.nPessoas,
+                                settings: widget.settings.mealSettings,
+                              ),
+                              if (_weeklySummaries.containsKey(_selectedWeek))
+                                _WeeklySummaryCard(
+                                  summary: _weeklySummaries[_selectedWeek]!,
+                                ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
-                child: GestureDetector(
-                  onTap: () => _showWasteDetails(wasteItems),
-                  child: Chip(
+              if (_budgetInsight != null)
+                Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: ActionChip(
+                    avatar: const Icon(Icons.account_balance_wallet_outlined, size: 14),
+                    label: Text(
+                      '${_budgetInsight!.weekSpent.toStringAsFixed(0)}${currencySymbol()}',
+                    ),
+                    labelStyle: const TextStyle(fontSize: 11),
+                    padding: EdgeInsets.zero,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    onPressed: () => showMealPlanBudgetSheet(
+                      context: context,
+                      insight: _budgetInsight!,
+                      onApplySwap: (swap) {
+                        Navigator.of(context).pop();
+                        final updated = _service.swapDay(
+                          plan,
+                          swap.original.dayIndex,
+                          MealType.values.firstWhere(
+                            (m) => m.name == swap.original.mealType,
+                            orElse: () => MealType.dinner,
+                          ),
+                          swap.alternativeRecipeId,
+                        );
+                        _service.save(updated, widget.householdId);
+                        setState(() => _plan = updated);
+                        _enrichPlan(updated);
+                        _recomputeBudgetInsight();
+                      },
+                    ),
+                  ),
+                ),
+              Builder(
+                builder: (_) {
+                  final wasteItems = _computeWasteItems();
+                  if (wasteItems.isEmpty) return const SizedBox.shrink();
+                  final totalWaste = wasteItems.fold(
+                    0.0,
+                    (s, w) => s + w.estimatedWasteCost,
+                  );
+                  return ActionChip(
                     avatar: Icon(
                       Icons.delete_outline,
-                      size: 16,
+                      size: 14,
                       color: AppColors.warning(context),
                     ),
                     label: Text(
-                      l10n.mealWasteCost(
-                        '\u20AC${totalWaste.toStringAsFixed(2)}',
-                      ),
-                      style: const TextStyle(fontSize: 12),
+                      '\u20AC${totalWaste.toStringAsFixed(2)}',
                     ),
+                    labelStyle: const TextStyle(fontSize: 11),
+                    padding: EdgeInsets.zero,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     backgroundColor: AppColors.warningBackground(context),
                     side: BorderSide(color: AppColors.warningBorder(context)),
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Row(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  key: MealsTourKeys.addToListButton,
-                  child: OutlinedButton.icon(
-                    onPressed: () => _addWeekToShoppingList(_selectedWeek),
-                    icon: const Icon(Icons.add_shopping_cart, size: 18),
-                    label: Text(l10n.mealAddWeekToList),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.primary(context),
-                      side: BorderSide(color: AppColors.primary(context)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                    ),
-                  ),
-                ),
+                    onPressed: () => _showWasteDetails(wasteItems),
+                  );
+                },
               ),
-              if (_weekHasBatchCooking(plan, _selectedWeek)) ...[
-                const SizedBox(width: 8),
-                OutlinedButton.icon(
-                  onPressed: _batchPlanLoading
-                      ? null
-                      : () => _showBatchPrepGuide(plan, _selectedWeek),
-                  icon: _batchPlanLoading
-                      ? SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: AppColors.primary(context),
-                          ),
-                        )
-                      : const Icon(Icons.kitchen, size: 18),
-                  label: Text(l10n.mealBatchPrepGuide),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.primary(context),
-                    side: BorderSide(color: AppColors.primary(context)),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 12,
-                    ),
-                  ),
-                ),
-              ],
             ],
           ),
         ),
+        const SizedBox(height: 4),
         Expanded(
           child: Stack(
             children: [
