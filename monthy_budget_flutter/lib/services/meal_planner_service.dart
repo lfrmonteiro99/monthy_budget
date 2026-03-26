@@ -603,7 +603,7 @@ class MealPlannerService {
         // Soup limit: max 2 soups per week
         final soupsSoFar = weeklySoupCount[weekNum] ?? 0;
         if (soupsSoFar >= maxSoupsPerWeek) {
-          final noSoup = pool.where((r) => !(r.courseType == CourseType.soupOrStarter && RegExp(r'sopa|caldo|canja|creme').hasMatch(r.id))).toList();
+          final noSoup = pool.where((r) => r.courseType != CourseType.soupOrStarter).toList();
           if (noSoup.isNotEmpty) pool = noSoup;
         }
 
@@ -812,7 +812,7 @@ class MealPlannerService {
         } else if (rType == RecipeType.carne && const {'porco', 'carne_picada'}.contains(recipe.proteinId)) {
           weeklyRedMeatCount[weekNum] = (weeklyRedMeatCount[weekNum] ?? 0) + 1;
         }
-        if (recipe.courseType == CourseType.soupOrStarter && RegExp(r'sopa|caldo|canja|creme').hasMatch(recipe.id)) {
+        if (recipe.courseType == CourseType.soupOrStarter) {
           weeklySoupCount[weekNum] = (weeklySoupCount[weekNum] ?? 0) + 1;
         }
 
