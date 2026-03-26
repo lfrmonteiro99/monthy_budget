@@ -18,7 +18,6 @@ import '../widgets/freeform_meal_sheet.dart';
 import '../models/meal_budget_insight.dart';
 import '../utils/meal_budget_insights.dart';
 import '../widgets/meal_cost_reconciliation_sheet.dart';
-import '../widgets/meal_feedback_button.dart';
 import '../widgets/star_rating_row.dart';
 import '../widgets/meal_plan_budget_sheet.dart';
 import '../widgets/nutrition_dashboard_card.dart';
@@ -2318,149 +2317,62 @@ class _DayCard extends StatelessWidget {
                     ),
                   ],
                 ),
+                // Compact nutrition badges
                 if (recipe.nutrition != null) ...[
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      _NutriBadge(
-                        '${recipe.nutrition!.kcal}',
-                        'kcal',
-                        AppColors.error(context),
-                      ),
-                      const SizedBox(width: 6),
-                      _NutriBadge(
-                        '${recipe.nutrition!.proteinG.round()}g',
-                        l10n.mealNutriProt,
-                        AppColors.primary(context),
-                      ),
-                      const SizedBox(width: 6),
-                      _NutriBadge(
-                        '${recipe.nutrition!.carbsG.round()}g',
-                        l10n.mealNutriCarbs,
-                        AppColors.warning(context),
-                      ),
-                      const SizedBox(width: 6),
-                      _NutriBadge(
-                        '${recipe.nutrition!.fatG.round()}g',
-                        l10n.mealNutriFat,
-                        const Color(0xFF8B5CF6),
-                      ),
+                      _NutriBadge('${recipe.nutrition!.kcal}', 'kcal', AppColors.error(context)),
+                      const SizedBox(width: 4),
+                      _NutriBadge('${recipe.nutrition!.proteinG.round()}g', l10n.mealNutriProt, AppColors.primary(context)),
+                      const SizedBox(width: 4),
+                      _NutriBadge('${recipe.nutrition!.carbsG.round()}g', l10n.mealNutriCarbs, AppColors.warning(context)),
+                      const SizedBox(width: 4),
+                      _NutriBadge('${recipe.nutrition!.fatG.round()}g', l10n.mealNutriFat, const Color(0xFF8B5CF6)),
                       if (recipe.nutrition!.fiberG >= 5) ...[
-                        const SizedBox(width: 6),
-                        _NutriBadge(
-                          '${recipe.nutrition!.fiberG.round()}g',
-                          l10n.mealNutriFiber,
-                          AppColors.success(context),
-                        ),
+                        const SizedBox(width: 4),
+                        _NutriBadge('${recipe.nutrition!.fiberG.round()}g', l10n.mealNutriFiber, AppColors.success(context)),
                       ],
                     ],
                   ),
                 ],
-                const SizedBox(height: 10),
+                const SizedBox(height: 6),
+                // Action row: star rating + icon-only buttons
                 Row(
                   children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
+                    StarRatingRow(currentRating: mealDay.effectiveRating, onRate: onRating),
+                    const Spacer(),
+                    SizedBox(
+                      width: 32, height: 32,
+                      child: IconButton(
                         onPressed: onToggleExpand,
-                        icon: Icon(
-                          isExpanded ? Icons.expand_less : Icons.swap_horiz,
-                          size: 16,
-                        ),
-                        label: Text(
-                          isExpanded ? l10n.close : l10n.mealIngredients,
-                          style: const TextStyle(fontSize: 12),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: isExpanded
-                              ? AppColors.textSecondary(context)
-                              : AppColors.primary(context),
-                          side: BorderSide(
-                            color: isExpanded
-                                ? AppColors.border(context)
-                                : AppColors.primary(
-                                    context,
-                                  ).withValues(alpha: 0.5),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                        ),
+                        icon: Icon(isExpanded ? Icons.expand_less : Icons.restaurant_menu, size: 18),
+                        padding: EdgeInsets.zero,
+                        color: isExpanded ? AppColors.textSecondary(context) : AppColors.primary(context),
+                        tooltip: isExpanded ? l10n.close : l10n.mealIngredients,
                       ),
                     ),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: OutlinedButton.icon(
+                    SizedBox(
+                      width: 32, height: 32,
+                      child: IconButton(
                         onPressed: onViewPrepGuide,
-                        icon: const Icon(Icons.menu_book_outlined, size: 16),
-                        label: Text(
-                          l10n.mealViewPrepGuide,
-                          style: const TextStyle(fontSize: 12),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.primary(context),
-                          side: BorderSide(
-                            color: AppColors.primary(
-                              context,
-                            ).withValues(alpha: 0.5),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                        ),
+                        icon: const Icon(Icons.menu_book_outlined, size: 18),
+                        padding: EdgeInsets.zero,
+                        color: AppColors.primary(context),
+                        tooltip: l10n.mealViewPrepGuide,
                       ),
                     ),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: OutlinedButton.icon(
+                    SizedBox(
+                      width: 32, height: 32,
+                      child: IconButton(
                         onPressed: onSwap,
-                        icon: const Icon(Icons.swap_horiz, size: 16),
-                        label: Text(
-                          l10n.mealSwap,
-                          style: const TextStyle(fontSize: 12),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.textSecondary(context),
-                          side: BorderSide(color: AppColors.border(context)),
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                        ),
+                        icon: const Icon(Icons.swap_horiz, size: 18),
+                        padding: EdgeInsets.zero,
+                        color: AppColors.textSecondary(context),
+                        tooltip: l10n.mealSwap,
                       ),
                     ),
                   ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      StarRatingRow(
-                        currentRating: mealDay.effectiveRating,
-                        onRate: onRating,
-                      ),
-                      const SizedBox(width: 10),
-                      MealFeedbackButton(
-                        icon: Icons.thumb_up_outlined,
-                        activeIcon: Icons.thumb_up,
-                        isActive: mealDay.feedback == MealFeedback.liked,
-                        color: AppColors.success(context),
-                        label: l10n.mealFeedbackLike,
-                        onTap: () => onFeedback(MealFeedback.liked),
-                      ),
-                      const SizedBox(width: 4),
-                      MealFeedbackButton(
-                        icon: Icons.thumb_down_outlined,
-                        activeIcon: Icons.thumb_down,
-                        isActive: mealDay.feedback == MealFeedback.disliked,
-                        color: AppColors.error(context),
-                        label: l10n.mealFeedbackDislike,
-                        onTap: () => onFeedback(MealFeedback.disliked),
-                      ),
-                      const SizedBox(width: 4),
-                      MealFeedbackButton(
-                        icon: Icons.skip_next_outlined,
-                        activeIcon: Icons.skip_next,
-                        isActive: mealDay.feedback == MealFeedback.skipped,
-                        color: AppColors.textMuted(context),
-                        label: l10n.mealFeedbackSkip,
-                        onTap: () => onFeedback(MealFeedback.skipped),
-                      ),
-                    ],
-                  ),
                 ),
               ],
             ),
@@ -2468,7 +2380,7 @@ class _DayCard extends StatelessWidget {
           if (isExpanded) ...[
             Divider(height: 1, color: AppColors.border(context)),
             Padding(
-              padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -2481,27 +2393,27 @@ class _DayCard extends StatelessWidget {
                         : null;
                     return [
                       if (courseLabel != null) ...[
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 2),
                         Text(
                           courseLabel,
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: 10,
                             fontWeight: FontWeight.w700,
                             color: AppColors.textMuted(context),
                             letterSpacing: 0.5,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 2),
                       ] else ...[
                         Text(
                           l10n.mealIngredients,
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 11,
                             fontWeight: FontWeight.w600,
                             color: AppColors.textSecondary(context),
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 4),
                       ],
                       ...courseRecipe.ingredients.map((ri) {
                         final effectiveId =
@@ -2516,7 +2428,7 @@ class _DayCard extends StatelessWidget {
                         final qty = ri.quantity * scale;
                         final cost = qty * ing.avgPricePerUnit;
                         return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 3),
+                          padding: const EdgeInsets.symmetric(vertical: 2),
                           child: Row(
                             children: [
                               Expanded(
@@ -2530,7 +2442,7 @@ class _DayCard extends StatelessWidget {
                                         child: Text(
                                           ing.name,
                                           style: TextStyle(
-                                            fontSize: 13,
+                                            fontSize: 12,
                                             decoration: isSubstituted
                                                 ? TextDecoration.underline
                                                 : null,
@@ -2540,10 +2452,10 @@ class _DayCard extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      const SizedBox(width: 4),
+                                      const SizedBox(width: 3),
                                       Icon(
                                         Icons.swap_horiz,
-                                        size: 14,
+                                        size: 12,
                                         color: AppColors.textMuted(context),
                                       ),
                                     ],
@@ -2553,20 +2465,20 @@ class _DayCard extends StatelessWidget {
                               Text(
                                 '${_fmt(qty)} ${ing.unit}',
                                 style: TextStyle(
-                                  fontSize: 13,
+                                  fontSize: 12,
                                   color: AppColors.textSecondary(context),
                                 ),
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: 8),
                               Semantics(
                                 button: true,
                                 label: l10n.addToList(ing.name),
                                 child: SizedBox(
-                                  width: 40,
-                                  height: 40,
+                                  width: 32,
+                                  height: 32,
                                   child: Material(
                                     color: AppColors.primary(context),
-                                    borderRadius: BorderRadius.circular(10),
+                                    borderRadius: BorderRadius.circular(8),
                                     child: InkWell(
                                       onTap: () => onAddIngredientToList(
                                         ShoppingItem(
@@ -2577,10 +2489,10 @@ class _DayCard extends StatelessWidget {
                                               '${ing.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${ing.unit}',
                                         ),
                                       ),
-                                      borderRadius: BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(8),
                                       child: Icon(
                                         Icons.add,
-                                        size: 18,
+                                        size: 16,
                                         color: AppColors.onPrimary(context),
                                       ),
                                     ),
@@ -2831,8 +2743,7 @@ class _DayCard extends StatelessWidget {
     }
   }
 
-  /// Builds the course rows for the meal card.
-  /// Shows soup/starter as first line, main course, and dessert as last line.
+  /// Builds compact course rows. Single: just name. Multi: icon+name+swap.
   List<Widget> _buildCourseRows(
     BuildContext context,
     S l10n,
@@ -2841,6 +2752,11 @@ class _DayCard extends StatelessWidget {
   ) {
     final widgets = <Widget>[];
     final hasCourses = allCourses.length > 1;
+
+    if (!hasCourses) {
+      widgets.add(Text(mainRecipe.name, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)));
+      return widgets;
+    }
 
     // Soup/starter course
     for (final course in allCourses) {
@@ -2854,35 +2770,18 @@ class _DayCard extends StatelessWidget {
             color: const Color(0xFFE67E22),
             onSwap: () => onSwapCourse(course),
           ));
-          widgets.add(const SizedBox(height: 4));
+          widgets.add(const SizedBox(height: 2));
         }
       }
     }
 
-    // Main course (always shown)
-    if (hasCourses) {
-      widgets.add(Row(
-        children: [
-          Icon(Icons.restaurant, size: 14, color: AppColors.primary(context)),
-          const SizedBox(width: 6),
-          Text(
-            l10n.mealCourseMain,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: AppColors.primary(context),
-            ),
-          ),
-        ],
-      ));
-      widgets.add(const SizedBox(height: 2));
-    }
-    widgets.add(Text(
-      mainRecipe.name,
-      style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w600,
-      ),
+    // Main course inline
+    widgets.add(_CourseRow(
+      icon: Icons.restaurant,
+      label: l10n.mealCourseMain,
+      recipeName: mainRecipe.name,
+      color: AppColors.primary(context),
+      onSwap: onSwap,
     ));
 
     // Dessert course
@@ -2890,7 +2789,7 @@ class _DayCard extends StatelessWidget {
       if (course.courseType == CourseType.dessert) {
         final dessertRecipe = service.recipeMap[course.recipeId];
         if (dessertRecipe != null) {
-          widgets.add(const SizedBox(height: 4));
+          widgets.add(const SizedBox(height: 2));
           widgets.add(_CourseRow(
             icon: Icons.icecream,
             label: l10n.mealCourseDessert,
@@ -2929,37 +2828,24 @@ class _CourseRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(8),
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 1),
       child: Row(
         children: [
-          Icon(icon, size: 16, color: color),
+          Icon(icon, size: 14, color: color),
           const SizedBox(width: 6),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
-              color: color,
-            ),
-          ),
-          const SizedBox(width: 8),
           Expanded(
             child: Text(
               recipeName,
               style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
           GestureDetector(
             onTap: onSwap,
-            child: Icon(
-              Icons.swap_horiz,
-              size: 18,
-              color: color,
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: Icon(Icons.swap_horiz, size: 16, color: color),
             ),
           ),
         ],
