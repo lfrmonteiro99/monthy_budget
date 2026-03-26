@@ -8169,5 +8169,365 @@
       "Faz pequenos buracos e parte os ovos para dentro.",
       "Tampa e cozinha até os ovos estarem feitos (5 min)."
     ]
+  },
+  {
+    "id": "sobremesa_fruta_epoca",
+    "name": "Fruta da Época",
+    "proteinId": "",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 5,
+    "servings": 4,
+    "ingredients": [
+      {
+        "ingredientId": "fruta_epoca",
+        "quantity": 0.6
+      }
+    ],
+    "isVegetarian": true,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 80,
+      "proteinG": 1.0,
+      "carbsG": 20.0,
+      "fatG": 0.3,
+      "fiberG": 3.0,
+      "sodiumMg": 2.0
+    },
+    "prepSteps": [
+      "Lavar a fruta",
+      "Cortar em pedaços se necessário",
+      "Servir fresca"
+    ]
+  },
+  {
+    "id": "sobremesa_iogurte_mel",
+    "name": "Iogurte Natural com Mel",
+    "proteinId": "",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 3,
+    "servings": 4,
+    "ingredients": [
+      {
+        "ingredientId": "iogurte",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "mel",
+        "quantity": 0.04
+      }
+    ],
+    "isVegetarian": true,
+    "glutenFree": true,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 120,
+      "proteinG": 5.0,
+      "carbsG": 18.0,
+      "fatG": 3.0,
+      "fiberG": 0.0,
+      "sodiumMg": 50.0
+    },
+    "prepSteps": [
+      "Colocar iogurte em taças",
+      "Regar com mel",
+      "Servir"
+    ]
+  },
+  {
+    "id": "sobremesa_salada_fruta",
+    "name": "Salada de Fruta Fresca",
+    "proteinId": "",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 10,
+    "servings": 4,
+    "ingredients": [
+      {
+        "ingredientId": "fruta_epoca",
+        "quantity": 0.8
+      }
+    ],
+    "isVegetarian": true,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "batchCookable": false,
+    "maxBatchDays": 1,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 95,
+      "proteinG": 1.2,
+      "carbsG": 23.0,
+      "fatG": 0.4,
+      "fiberG": 3.5,
+      "sodiumMg": 3.0
+    },
+    "prepSteps": [
+      "Lavar e descascar as frutas",
+      "Cortar em cubos pequenos",
+      "Misturar num recipiente",
+      "Adicionar sumo de limão para não oxidar",
+      "Servir fresca"
+    ]
+  },
+  {
+    "id": "sobremesa_mousse_chocolate",
+    "name": "Mousse de Chocolate",
+    "proteinId": "ovo",
+    "type": "vegetariano",
+    "complexity": 3,
+    "prepMinutes": 20,
+    "servings": 4,
+    "ingredients": [
+      {
+        "ingredientId": "ovo",
+        "quantity": 3
+      },
+      {
+        "ingredientId": "chocolate",
+        "quantity": 0.15
+      }
+    ],
+    "isVegetarian": true,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "isPortable": false,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 180,
+      "proteinG": 6.0,
+      "carbsG": 18.0,
+      "fatG": 10.0,
+      "fiberG": 1.5,
+      "sodiumMg": 40.0
+    },
+    "prepSteps": [
+      "Derreter o chocolate em banho-maria",
+      "Separar claras das gemas",
+      "Misturar gemas no chocolate derretido",
+      "Bater claras em castelo",
+      "Envolver claras na mistura de chocolate",
+      "Refrigerar 4 horas"
+    ]
+  },
+  {
+    "id": "sobremesa_arroz_doce",
+    "name": "Arroz Doce",
+    "proteinId": "",
+    "type": "vegetariano",
+    "complexity": 2,
+    "prepMinutes": 35,
+    "servings": 6,
+    "ingredients": [
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.25
+      },
+      {
+        "ingredientId": "leite",
+        "quantity": 0.75
+      }
+    ],
+    "isVegetarian": true,
+    "glutenFree": true,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "isPortable": false,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 200,
+      "proteinG": 4.0,
+      "carbsG": 38.0,
+      "fatG": 4.0,
+      "fiberG": 0.3,
+      "sodiumMg": 55.0
+    },
+    "prepSteps": [
+      "Cozer o arroz em água com casca de limão",
+      "Aquecer o leite separadamente",
+      "Adicionar leite quente ao arroz",
+      "Juntar açúcar e gemas",
+      "Mexer até engrossar",
+      "Servir polvilhado com canela"
+    ]
+  },
+  {
+    "id": "sobremesa_gelatina",
+    "name": "Gelatina de Fruta",
+    "proteinId": "",
+    "type": "vegetariano",
+    "complexity": 1,
+    "prepMinutes": 10,
+    "servings": 4,
+    "ingredients": [
+      {
+        "ingredientId": "gelatina",
+        "quantity": 0.085
+      }
+    ],
+    "isVegetarian": true,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "batchCookable": true,
+    "maxBatchDays": 4,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "isPortable": true,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 70,
+      "proteinG": 1.5,
+      "carbsG": 17.0,
+      "fatG": 0.0,
+      "fiberG": 0.0,
+      "sodiumMg": 50.0
+    },
+    "prepSteps": [
+      "Dissolver a gelatina em água quente",
+      "Adicionar água fria",
+      "Verter em taças",
+      "Refrigerar 4 horas até solidificar"
+    ]
+  },
+  {
+    "id": "sobremesa_leite_creme",
+    "name": "Leite-Creme",
+    "proteinId": "ovo",
+    "type": "vegetariano",
+    "complexity": 3,
+    "prepMinutes": 25,
+    "servings": 4,
+    "ingredients": [
+      {
+        "ingredientId": "leite",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "ovo",
+        "quantity": 3
+      }
+    ],
+    "isVegetarian": true,
+    "glutenFree": true,
+    "lactoseFree": false,
+    "nutFree": true,
+    "shellfishFree": true,
+    "batchCookable": true,
+    "maxBatchDays": 3,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "isPortable": false,
+    "seasons": [],
+    "nutrition": {
+      "kcal": 170,
+      "proteinG": 7.0,
+      "carbsG": 22.0,
+      "fatG": 6.0,
+      "fiberG": 0.0,
+      "sodiumMg": 60.0
+    },
+    "prepSteps": [
+      "Aquecer o leite com casca de limão e canela",
+      "Bater gemas com açúcar e maizena",
+      "Juntar o leite quente às gemas",
+      "Levar ao lume, mexendo até engrossar",
+      "Verter em taças",
+      "Queimar açúcar por cima com maçarico"
+    ]
+  },
+  {
+    "id": "sobremesa_compota_maca",
+    "name": "Compota de Maçã Caseira",
+    "proteinId": "",
+    "type": "vegetariano",
+    "complexity": 2,
+    "prepMinutes": 20,
+    "servings": 4,
+    "ingredients": [
+      {
+        "ingredientId": "fruta_epoca",
+        "quantity": 0.6
+      }
+    ],
+    "isVegetarian": true,
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "batchCookable": true,
+    "maxBatchDays": 5,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "isPortable": true,
+    "seasons": [
+      "autumn",
+      "winter"
+    ],
+    "nutrition": {
+      "kcal": 90,
+      "proteinG": 0.3,
+      "carbsG": 24.0,
+      "fatG": 0.2,
+      "fiberG": 2.5,
+      "sodiumMg": 2.0
+    },
+    "prepSteps": [
+      "Descascar e cortar as maçãs",
+      "Cozer com um pouco de água e canela",
+      "Esmagar com garfo ou varinha",
+      "Servir morna ou fria"
+    ]
   }
 ]

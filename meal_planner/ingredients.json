@@ -1,72 +1,594 @@
 [
-  {"id":"frango","name":"Frango","category":"proteina","unit":"kg","avgPricePerUnit":3.50,"minPurchaseQty":1.0},
-  {"id":"carne_picada","name":"Carne Picada","category":"proteina","unit":"kg","avgPricePerUnit":5.50,"minPurchaseQty":0.5},
-  {"id":"ovo","name":"Ovos","category":"proteina","unit":"unidade","avgPricePerUnit":0.22,"minPurchaseQty":6.0},
-  {"id":"feijao","name":"Feijão","category":"proteina","unit":"kg","avgPricePerUnit":1.50,"minPurchaseQty":0.5},
-  {"id":"grao","name":"Grão de Bico","category":"proteina","unit":"kg","avgPricePerUnit":1.80,"minPurchaseQty":0.5},
-  {"id":"lentilhas","name":"Lentilhas","category":"proteina","unit":"kg","avgPricePerUnit":1.60,"minPurchaseQty":0.5},
-  {"id":"pescada","name":"Pescada","category":"proteina","unit":"kg","avgPricePerUnit":5.50,"minPurchaseQty":0.5},
-  {"id":"bacalhau","name":"Bacalhau","category":"proteina","unit":"kg","avgPricePerUnit":9.00,"minPurchaseQty":0.4},
-  {"id":"chourico","name":"Chouriço","category":"proteina","unit":"kg","avgPricePerUnit":6.00,"minPurchaseQty":0.2},
-  {"id":"cenoura","name":"Cenoura","category":"vegetal","unit":"kg","avgPricePerUnit":0.90,"minPurchaseQty":1.0},
-  {"id":"cebola","name":"Cebola","category":"vegetal","unit":"kg","avgPricePerUnit":0.80,"minPurchaseQty":1.0},
-  {"id":"batata","name":"Batata","category":"vegetal","unit":"kg","avgPricePerUnit":0.60,"minPurchaseQty":1.5},
-  {"id":"tomate","name":"Tomate","category":"vegetal","unit":"kg","avgPricePerUnit":2.00,"minPurchaseQty":0.5},
-  {"id":"courgette","name":"Courgette","category":"vegetal","unit":"kg","avgPricePerUnit":1.20,"minPurchaseQty":0.5},
-  {"id":"espinafres","name":"Espinafres","category":"vegetal","unit":"kg","avgPricePerUnit":1.50,"minPurchaseQty":0.3},
-  {"id":"broculos","name":"Brócolos","category":"vegetal","unit":"kg","avgPricePerUnit":1.80,"minPurchaseQty":0.5},
-  {"id":"pimento","name":"Pimento","category":"vegetal","unit":"kg","avgPricePerUnit":1.50,"minPurchaseQty":0.3},
-  {"id":"feijao_verde","name":"Feijão Verde","category":"vegetal","unit":"kg","avgPricePerUnit":1.80,"minPurchaseQty":0.5},
-  {"id":"alho","name":"Alho","category":"condimento","unit":"kg","avgPricePerUnit":5.00,"minPurchaseQty":0.1},
-  {"id":"tomate_pelado","name":"Tomate Pelado (lata)","category":"condimento","unit":"unidade","avgPricePerUnit":0.80,"minPurchaseQty":1.0},
-  {"id":"azeite","name":"Azeite","category":"gordura","unit":"litro","avgPricePerUnit":8.00,"minPurchaseQty":0.5},
-  {"id":"arroz","name":"Arroz","category":"carbo","unit":"kg","avgPricePerUnit":1.20,"minPurchaseQty":1.0},
-  {"id":"massa","name":"Massa","category":"carbo","unit":"kg","avgPricePerUnit":1.00,"minPurchaseQty":0.5},
-  {"id":"massa_lasanha","name":"Lasanha (folhas)","category":"carbo","unit":"kg","avgPricePerUnit":1.50,"minPurchaseQty":0.25},
-  {"id":"pao","name":"Pão","category":"carbo","unit":"unidade","avgPricePerUnit":1.20,"minPurchaseQty":1.0},
-  {"id":"porco","name":"Carne de Porco","category":"proteina","unit":"kg","avgPricePerUnit":4.50,"minPurchaseQty":0.5},
-  {"id":"sardinha","name":"Sardinhas","category":"proteina","unit":"kg","avgPricePerUnit":4.00,"minPurchaseQty":0.5},
-  {"id":"atum_lata","name":"Atum (lata)","category":"proteina","unit":"unidade","avgPricePerUnit":1.20,"minPurchaseQty":1.0},
-  {"id":"iogurte","name":"Iogurte Natural","category":"proteina","unit":"unidade","avgPricePerUnit":0.30,"minPurchaseQty":4.0},
-  {"id":"leite","name":"Leite","category":"proteina","unit":"litro","avgPricePerUnit":0.75,"minPurchaseQty":1.0},
-  {"id":"queijo","name":"Queijo Flamengo","category":"proteina","unit":"kg","avgPricePerUnit":6.50,"minPurchaseQty":0.2},
-  {"id":"fiambre","name":"Fiambre","category":"proteina","unit":"kg","avgPricePerUnit":5.00,"minPurchaseQty":0.2},
-  {"id":"cereais","name":"Cereais/Muesli","category":"carbo","unit":"kg","avgPricePerUnit":3.50,"minPurchaseQty":0.5},
-  {"id":"pao_forma","name":"Pão de Forma","category":"carbo","unit":"unidade","avgPricePerUnit":1.50,"minPurchaseQty":1.0},
-  {"id":"aveia","name":"Flocos de Aveia","category":"carbo","unit":"kg","avgPricePerUnit":2.00,"minPurchaseQty":0.5},
-  {"id":"fruta","name":"Fruta da Época","category":"vegetal","unit":"kg","avgPricePerUnit":1.50,"minPurchaseQty":1.0},
-  {"id":"banana","name":"Banana","category":"vegetal","unit":"kg","avgPricePerUnit":1.20,"minPurchaseQty":1.0},
-  {"id":"alface","name":"Alface","category":"vegetal","unit":"unidade","avgPricePerUnit":0.60,"minPurchaseQty":1.0},
-  {"id":"cogumelos","name":"Cogumelos","category":"vegetal","unit":"kg","avgPricePerUnit":3.50,"minPurchaseQty":0.3},
-  {"id":"manteiga","name":"Manteiga","category":"gordura","unit":"kg","avgPricePerUnit":7.00,"minPurchaseQty":0.25},
-  {"id":"natas","name":"Natas","category":"gordura","unit":"litro","avgPricePerUnit":1.50,"minPurchaseQty":0.2},
-  {"id":"salmao","name":"Salmão","category":"proteina","unit":"kg","avgPricePerUnit":12.00,"minPurchaseQty":0.4},
-  {"id":"dourada","name":"Dourada","category":"proteina","unit":"kg","avgPricePerUnit":8.00,"minPurchaseQty":0.5},
-  {"id":"ameijoas","name":"Amêijoas","category":"proteina","unit":"kg","avgPricePerUnit":10.00,"minPurchaseQty":0.5},
-  {"id":"camarao","name":"Camarão","category":"proteina","unit":"kg","avgPricePerUnit":12.00,"minPurchaseQty":0.4},
-  {"id":"polvo","name":"Polvo","category":"proteina","unit":"kg","avgPricePerUnit":11.00,"minPurchaseQty":0.5},
-  {"id":"lulas","name":"Lulas","category":"proteina","unit":"kg","avgPricePerUnit":7.00,"minPurchaseQty":0.5},
-  {"id":"peru","name":"Peru","category":"proteina","unit":"kg","avgPricePerUnit":5.00,"minPurchaseQty":0.5},
-  {"id":"vitela","name":"Vitela","category":"proteina","unit":"kg","avgPricePerUnit":9.00,"minPurchaseQty":0.5},
-  {"id":"coelho","name":"Coelho","category":"proteina","unit":"kg","avgPricePerUnit":6.50,"minPurchaseQty":1.0},
-  {"id":"pato","name":"Pato","category":"proteina","unit":"kg","avgPricePerUnit":7.50,"minPurchaseQty":1.0},
-  {"id":"tofu","name":"Tofu","category":"proteina","unit":"kg","avgPricePerUnit":4.50,"minPurchaseQty":0.4},
-  {"id":"grão_farinha","name":"Farinha de Grão","category":"carbo","unit":"kg","avgPricePerUnit":2.50,"minPurchaseQty":0.5},
-  {"id":"farinha","name":"Farinha de Trigo","category":"carbo","unit":"kg","avgPricePerUnit":0.80,"minPurchaseQty":1.0},
-  {"id":"tortilha_trigo","name":"Tortilha de Trigo","category":"carbo","unit":"unidade","avgPricePerUnit":2.00,"minPurchaseQty":1.0},
-  {"id":"batata_doce","name":"Batata-Doce","category":"vegetal","unit":"kg","avgPricePerUnit":1.50,"minPurchaseQty":1.0},
-  {"id":"ervilhas","name":"Ervilhas","category":"vegetal","unit":"kg","avgPricePerUnit":1.80,"minPurchaseQty":0.5},
-  {"id":"milho_lata","name":"Milho (lata)","category":"vegetal","unit":"unidade","avgPricePerUnit":0.90,"minPurchaseQty":1.0},
-  {"id":"pepino","name":"Pepino","category":"vegetal","unit":"kg","avgPricePerUnit":1.00,"minPurchaseQty":0.5},
-  {"id":"nabo","name":"Nabo","category":"vegetal","unit":"kg","avgPricePerUnit":0.80,"minPurchaseQty":1.0},
-  {"id":"couve","name":"Couve Portuguesa","category":"vegetal","unit":"kg","avgPricePerUnit":0.70,"minPurchaseQty":0.5},
-  {"id":"couve_flor","name":"Couve-Flor","category":"vegetal","unit":"kg","avgPricePerUnit":1.50,"minPurchaseQty":0.5},
-  {"id":"abobora","name":"Abóbora","category":"vegetal","unit":"kg","avgPricePerUnit":1.00,"minPurchaseQty":0.5},
-  {"id":"beringela","name":"Beringela","category":"vegetal","unit":"kg","avgPricePerUnit":1.50,"minPurchaseQty":0.5},
-  {"id":"salsa","name":"Salsa","category":"condimento","unit":"kg","avgPricePerUnit":8.00,"minPurchaseQty":0.05},
-  {"id":"coentros","name":"Coentros","category":"condimento","unit":"kg","avgPricePerUnit":8.00,"minPurchaseQty":0.05},
-  {"id":"louro","name":"Louro","category":"condimento","unit":"kg","avgPricePerUnit":15.00,"minPurchaseQty":0.02},
-  {"id":"vinho_branco","name":"Vinho Branco (culinária)","category":"condimento","unit":"litro","avgPricePerUnit":2.50,"minPurchaseQty":0.75},
-  {"id":"feijao_branco","name":"Feijão Branco","category":"proteina","unit":"kg","avgPricePerUnit":1.60,"minPurchaseQty":0.5},
-  {"id":"cuscuz","name":"Cuscuz","category":"carbo","unit":"kg","avgPricePerUnit":2.00,"minPurchaseQty":0.5}
+  {
+    "id": "frango",
+    "name": "Frango",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 3.5,
+    "minPurchaseQty": 1.0
+  },
+  {
+    "id": "carne_picada",
+    "name": "Carne Picada",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 5.5,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "ovo",
+    "name": "Ovos",
+    "category": "proteina",
+    "unit": "unidade",
+    "avgPricePerUnit": 0.22,
+    "minPurchaseQty": 6.0
+  },
+  {
+    "id": "feijao",
+    "name": "Feijão",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 1.5,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "grao",
+    "name": "Grão de Bico",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 1.8,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "lentilhas",
+    "name": "Lentilhas",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 1.6,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "pescada",
+    "name": "Pescada",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 5.5,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "bacalhau",
+    "name": "Bacalhau",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 9.0,
+    "minPurchaseQty": 0.4
+  },
+  {
+    "id": "chourico",
+    "name": "Chouriço",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 6.0,
+    "minPurchaseQty": 0.2
+  },
+  {
+    "id": "cenoura",
+    "name": "Cenoura",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 0.9,
+    "minPurchaseQty": 1.0
+  },
+  {
+    "id": "cebola",
+    "name": "Cebola",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 0.8,
+    "minPurchaseQty": 1.0
+  },
+  {
+    "id": "batata",
+    "name": "Batata",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 0.6,
+    "minPurchaseQty": 1.5
+  },
+  {
+    "id": "tomate",
+    "name": "Tomate",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 2.0,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "courgette",
+    "name": "Courgette",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 1.2,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "espinafres",
+    "name": "Espinafres",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 1.5,
+    "minPurchaseQty": 0.3
+  },
+  {
+    "id": "broculos",
+    "name": "Brócolos",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 1.8,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "pimento",
+    "name": "Pimento",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 1.5,
+    "minPurchaseQty": 0.3
+  },
+  {
+    "id": "feijao_verde",
+    "name": "Feijão Verde",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 1.8,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "alho",
+    "name": "Alho",
+    "category": "condimento",
+    "unit": "kg",
+    "avgPricePerUnit": 5.0,
+    "minPurchaseQty": 0.1
+  },
+  {
+    "id": "tomate_pelado",
+    "name": "Tomate Pelado (lata)",
+    "category": "condimento",
+    "unit": "unidade",
+    "avgPricePerUnit": 0.8,
+    "minPurchaseQty": 1.0
+  },
+  {
+    "id": "azeite",
+    "name": "Azeite",
+    "category": "gordura",
+    "unit": "litro",
+    "avgPricePerUnit": 8.0,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "arroz",
+    "name": "Arroz",
+    "category": "carbo",
+    "unit": "kg",
+    "avgPricePerUnit": 1.2,
+    "minPurchaseQty": 1.0
+  },
+  {
+    "id": "massa",
+    "name": "Massa",
+    "category": "carbo",
+    "unit": "kg",
+    "avgPricePerUnit": 1.0,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "massa_lasanha",
+    "name": "Lasanha (folhas)",
+    "category": "carbo",
+    "unit": "kg",
+    "avgPricePerUnit": 1.5,
+    "minPurchaseQty": 0.25
+  },
+  {
+    "id": "pao",
+    "name": "Pão",
+    "category": "carbo",
+    "unit": "unidade",
+    "avgPricePerUnit": 1.2,
+    "minPurchaseQty": 1.0
+  },
+  {
+    "id": "porco",
+    "name": "Carne de Porco",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 4.5,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "sardinha",
+    "name": "Sardinhas",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 4.0,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "atum_lata",
+    "name": "Atum (lata)",
+    "category": "proteina",
+    "unit": "unidade",
+    "avgPricePerUnit": 1.2,
+    "minPurchaseQty": 1.0
+  },
+  {
+    "id": "iogurte",
+    "name": "Iogurte Natural",
+    "category": "proteina",
+    "unit": "unidade",
+    "avgPricePerUnit": 0.3,
+    "minPurchaseQty": 4.0
+  },
+  {
+    "id": "leite",
+    "name": "Leite",
+    "category": "proteina",
+    "unit": "litro",
+    "avgPricePerUnit": 0.75,
+    "minPurchaseQty": 1.0
+  },
+  {
+    "id": "queijo",
+    "name": "Queijo Flamengo",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 6.5,
+    "minPurchaseQty": 0.2
+  },
+  {
+    "id": "fiambre",
+    "name": "Fiambre",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 5.0,
+    "minPurchaseQty": 0.2
+  },
+  {
+    "id": "cereais",
+    "name": "Cereais/Muesli",
+    "category": "carbo",
+    "unit": "kg",
+    "avgPricePerUnit": 3.5,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "pao_forma",
+    "name": "Pão de Forma",
+    "category": "carbo",
+    "unit": "unidade",
+    "avgPricePerUnit": 1.5,
+    "minPurchaseQty": 1.0
+  },
+  {
+    "id": "aveia",
+    "name": "Flocos de Aveia",
+    "category": "carbo",
+    "unit": "kg",
+    "avgPricePerUnit": 2.0,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "fruta",
+    "name": "Fruta da Época",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 1.5,
+    "minPurchaseQty": 1.0
+  },
+  {
+    "id": "banana",
+    "name": "Banana",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 1.2,
+    "minPurchaseQty": 1.0
+  },
+  {
+    "id": "alface",
+    "name": "Alface",
+    "category": "vegetal",
+    "unit": "unidade",
+    "avgPricePerUnit": 0.6,
+    "minPurchaseQty": 1.0
+  },
+  {
+    "id": "cogumelos",
+    "name": "Cogumelos",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 3.5,
+    "minPurchaseQty": 0.3
+  },
+  {
+    "id": "manteiga",
+    "name": "Manteiga",
+    "category": "gordura",
+    "unit": "kg",
+    "avgPricePerUnit": 7.0,
+    "minPurchaseQty": 0.25
+  },
+  {
+    "id": "natas",
+    "name": "Natas",
+    "category": "gordura",
+    "unit": "litro",
+    "avgPricePerUnit": 1.5,
+    "minPurchaseQty": 0.2
+  },
+  {
+    "id": "salmao",
+    "name": "Salmão",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 12.0,
+    "minPurchaseQty": 0.4
+  },
+  {
+    "id": "dourada",
+    "name": "Dourada",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 8.0,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "ameijoas",
+    "name": "Amêijoas",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 10.0,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "camarao",
+    "name": "Camarão",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 12.0,
+    "minPurchaseQty": 0.4
+  },
+  {
+    "id": "polvo",
+    "name": "Polvo",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 11.0,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "lulas",
+    "name": "Lulas",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 7.0,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "peru",
+    "name": "Peru",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 5.0,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "vitela",
+    "name": "Vitela",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 9.0,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "coelho",
+    "name": "Coelho",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 6.5,
+    "minPurchaseQty": 1.0
+  },
+  {
+    "id": "pato",
+    "name": "Pato",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 7.5,
+    "minPurchaseQty": 1.0
+  },
+  {
+    "id": "tofu",
+    "name": "Tofu",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 4.5,
+    "minPurchaseQty": 0.4
+  },
+  {
+    "id": "grão_farinha",
+    "name": "Farinha de Grão",
+    "category": "carbo",
+    "unit": "kg",
+    "avgPricePerUnit": 2.5,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "farinha",
+    "name": "Farinha de Trigo",
+    "category": "carbo",
+    "unit": "kg",
+    "avgPricePerUnit": 0.8,
+    "minPurchaseQty": 1.0
+  },
+  {
+    "id": "tortilha_trigo",
+    "name": "Tortilha de Trigo",
+    "category": "carbo",
+    "unit": "unidade",
+    "avgPricePerUnit": 2.0,
+    "minPurchaseQty": 1.0
+  },
+  {
+    "id": "batata_doce",
+    "name": "Batata-Doce",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 1.5,
+    "minPurchaseQty": 1.0
+  },
+  {
+    "id": "ervilhas",
+    "name": "Ervilhas",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 1.8,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "milho_lata",
+    "name": "Milho (lata)",
+    "category": "vegetal",
+    "unit": "unidade",
+    "avgPricePerUnit": 0.9,
+    "minPurchaseQty": 1.0
+  },
+  {
+    "id": "pepino",
+    "name": "Pepino",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 1.0,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "nabo",
+    "name": "Nabo",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 0.8,
+    "minPurchaseQty": 1.0
+  },
+  {
+    "id": "couve",
+    "name": "Couve Portuguesa",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 0.7,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "couve_flor",
+    "name": "Couve-Flor",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 1.5,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "abobora",
+    "name": "Abóbora",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 1.0,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "beringela",
+    "name": "Beringela",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 1.5,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "salsa",
+    "name": "Salsa",
+    "category": "condimento",
+    "unit": "kg",
+    "avgPricePerUnit": 8.0,
+    "minPurchaseQty": 0.05
+  },
+  {
+    "id": "coentros",
+    "name": "Coentros",
+    "category": "condimento",
+    "unit": "kg",
+    "avgPricePerUnit": 8.0,
+    "minPurchaseQty": 0.05
+  },
+  {
+    "id": "louro",
+    "name": "Louro",
+    "category": "condimento",
+    "unit": "kg",
+    "avgPricePerUnit": 15.0,
+    "minPurchaseQty": 0.02
+  },
+  {
+    "id": "vinho_branco",
+    "name": "Vinho Branco (culinária)",
+    "category": "condimento",
+    "unit": "litro",
+    "avgPricePerUnit": 2.5,
+    "minPurchaseQty": 0.75
+  },
+  {
+    "id": "feijao_branco",
+    "name": "Feijão Branco",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 1.6,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "cuscuz",
+    "name": "Cuscuz",
+    "category": "carbo",
+    "unit": "kg",
+    "avgPricePerUnit": 2.0,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "fruta_epoca",
+    "name": "Fruta da Época",
+    "category": "vegetal",
+    "unit": "kg",
+    "avgPricePerUnit": 1.8,
+    "minPurchaseQty": 0.5
+  },
+  {
+    "id": "mel",
+    "name": "Mel",
+    "category": "condimento",
+    "unit": "kg",
+    "avgPricePerUnit": 8.0,
+    "minPurchaseQty": 0.25
+  },
+  {
+    "id": "chocolate",
+    "name": "Chocolate Negro",
+    "category": "condimento",
+    "unit": "kg",
+    "avgPricePerUnit": 12.0,
+    "minPurchaseQty": 0.1
+  },
+  {
+    "id": "gelatina",
+    "name": "Gelatina",
+    "category": "condimento",
+    "unit": "kg",
+    "avgPricePerUnit": 8.0,
+    "minPurchaseQty": 0.085
+  }
 ]
