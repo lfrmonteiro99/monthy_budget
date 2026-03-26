@@ -98,6 +98,10 @@ class MealPlannerService {
                 )
               : null,
           prepSteps: (r['prep_steps'] as List?)?.cast<String>() ?? [],
+          courseType: CourseType.values.firstWhere(
+            (e) => e.name == (r['course_type'] ?? 'mainCourse'),
+            orElse: () => CourseType.mainCourse,
+          ),
         );
       }).toList();
 
@@ -434,6 +438,12 @@ class MealPlannerService {
     final weeklySoupCount = <int, int>{}; // weekNumber -> count
     const maxSoupsPerWeek = 2;
 
+    // Track recent soup/dessert recipes for multi-day dedup
+    final recentSoupRecipes = <String>[]; // last N soup recipe IDs (across days)
+    final recentDessertRecipes = <String>[]; // last N dessert recipe IDs (across days)
+    // Track the recipe used 2 days ago per meal type for extended main course dedup
+    final prevPrevRecipePerMealType = <MealType, String>{};
+
     for (int day = 1; day <= daysInMonth; day++) {
       usedRecipesPerDay[day] = {};
       // Reset weekly tracking on Mondays (weekday 1)
@@ -601,7 +611,7 @@ class MealPlannerService {
         // soups/starters and desserts — those are picked separately.
         if (ms.includeSoupOrStarter || ms.includeDessert) {
           final mainOnly = pool.where((r) =>
-            !r.isSoupOrStarter && !r.isDessert).toList();
+            r.courseType != CourseType.soupOrStarter && r.courseType != CourseType.dessert).toList();
           if (mainOnly.isNotEmpty) pool = mainOnly;
         }
 
@@ -617,16 +627,21 @@ class MealPlannerService {
         if (available.isEmpty) available = pool.toList();
         if (available.isEmpty) available = _recipes.toList();
 
-        // Consecutive-day dedup: avoid same recipe as yesterday for this mealType
+        // Consecutive-day dedup: avoid same recipe as yesterday AND 2 days ago for this mealType
         final prevRecipe = recentRecipePerMealType[mealType];
-        if (prevRecipe != null) {
-          final deduped = available.where((r) => r.id != prevRecipe).toList();
+        final prevPrevRecipe = prevPrevRecipePerMealType[mealType];
+        final recentMainRecipes = <String>{
+          if (prevRecipe != null) prevRecipe,
+          if (prevPrevRecipe != null) prevPrevRecipe,
+        };
+        if (recentMainRecipes.isNotEmpty) {
+          final deduped = available.where((r) => !recentMainRecipes.contains(r.id)).toList();
           if (deduped.isNotEmpty) {
             available = deduped;
           } else {
-            // Pool collapsed to a single repeated recipe — widen to base pool
+            // Pool collapsed to repeated recipes — widen to base pool
             final fallback = basePool(mealType, isWeekend)
-                .where((r) => r.id != prevRecipe && !usedToday.contains(r.id))
+                .where((r) => !recentMainRecipes.contains(r.id) && !usedToday.contains(r.id))
                 .toList();
             if (fallback.isNotEmpty) available = fallback;
           }
@@ -792,7 +807,7 @@ class MealPlannerService {
         } else if (rType == RecipeType.carne && const {'porco', 'carne_picada'}.contains(recipe.proteinId)) {
           weeklyRedMeatCount[weekNum] = (weeklyRedMeatCount[weekNum] ?? 0) + 1;
         }
-        if (recipe.isSoup) {
+        if (recipe.courseType == CourseType.soupOrStarter && RegExp(r'sopa|caldo|canja|creme').hasMatch(recipe.id)) {
           weeklySoupCount[weekNum] = (weeklySoupCount[weekNum] ?? 0) + 1;
         }
 
@@ -802,7 +817,7 @@ class MealPlannerService {
         if (ms.includeSoupOrStarter &&
             (mealType == MealType.lunch || mealType == MealType.dinner)) {
           final soupPool = _recipes.where((r) {
-            if (!r.isSoupOrStarter) return false;
+            if (r.courseType != CourseType.soupOrStarter) return false;
             if (!r.suitableMealTypes.contains(mealType.name)) return false;
             if (ms.glutenFree && !r.glutenFree) return false;
             if (ms.lactoseFree && !r.lactoseFree) return false;
@@ -846,7 +861,7 @@ class MealPlannerService {
         if (ms.includeDessert &&
             (mealType == MealType.lunch || mealType == MealType.dinner)) {
           final dessertPool = _recipes.where((r) {
-            if (!r.isDessert) return false;
+            if (r.courseType != CourseType.dessert) return false;
             if (!r.suitableMealTypes.contains(mealType.name)) return false;
             if (ms.glutenFree && !r.glutenFree) return false;
             if (ms.lactoseFree && !r.lactoseFree) return false;
