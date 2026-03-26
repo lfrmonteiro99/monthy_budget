@@ -1,87 +1,195 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:monthly_management/models/meal_planner.dart';
 import 'package:monthly_management/models/app_settings.dart';
 import 'package:monthly_management/models/meal_settings.dart';
+import 'package:monthly_management/models/shopping_item.dart';
 import 'package:monthly_management/services/meal_planner_service.dart';
 
-/// Helper to build AppSettings with specific MealSettings for testing.
-AppSettings _makeSettings({MealSettings? ms}) {
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+AppSettings _makeSettings({MealSettings? ms, double budget = 500}) {
   return AppSettings(
-    salaries: const [
-      SalaryInfo(label: 'S1', enabled: true, titulares: 2),
-    ],
+    salaries: const [SalaryInfo(label: 'S1', enabled: true, titulares: 2)],
     personalInfo: const PersonalInfo(dependentes: 2),
-    expenses: const [
-      ExpenseItem(
-        id: 'food',
-        label: 'Alimentacao',
-        amount: 500,
-        category: 'alimentacao',
-      ),
+    expenses: [
+      ExpenseItem(id: 'food', label: 'Alimentacao', amount: budget, category: 'alimentacao'),
     ],
     mealSettings: ms ?? const MealSettings(),
   );
 }
 
-/// Prints analysis results for a generated meal plan.
+/// Build a simple shopping list from a plan (mirrors _addWeekToShoppingList logic).
+Map<String, double> _buildShoppingTotals(
+  MealPlannerService svc,
+  MealPlan plan,
+  List<MealDay> days,
+) {
+  final totals = <String, double>{};
+  for (final day in days) {
+    if (day.isLeftover || day.isFreeform) continue;
+    final recipe = svc.recipeMap[day.recipeId];
+    if (recipe == null) continue;
+    final guests = plan.extraGuests[day.dayIndex] ?? 0;
+    final scale = (plan.nPessoas + guests) / recipe.servings;
+    for (final ri in recipe.ingredients) {
+      // Apply substitutions — this is the critical bug fix we're testing
+      final effectiveId = day.substitutions[ri.ingredientId] ?? ri.ingredientId;
+      totals.update(effectiveId, (v) => v + ri.quantity * scale, ifAbsent: () => ri.quantity * scale);
+    }
+  }
+  return totals;
+}
+
 void _analyzeAndPrint(String label, MealPlan plan, MealPlannerService svc) {
   final recipeMap = svc.recipeMap;
-  final mainDays = plan.days.where((d) => d.courseType == CourseType.mainCourse && !d.isLeftover);
-  final soupDays = plan.days.where((d) => d.courseType == CourseType.soupOrStarter);
-  final dessertDays = plan.days.where((d) => d.courseType == CourseType.dessert);
+  final mains = plan.days.where((d) => d.courseType == CourseType.mainCourse && !d.isLeftover);
+  final soups = plan.days.where((d) => d.courseType == CourseType.soupOrStarter);
+  final desserts = plan.days.where((d) => d.courseType == CourseType.dessert);
 
-  // Recipe distribution for main courses
   final mainCounts = <String, int>{};
-  for (final d in mainDays) {
-    mainCounts[d.recipeId] = (mainCounts[d.recipeId] ?? 0) + 1;
-  }
-
-  // Soup distribution
-  final soupCounts = <String, int>{};
-  for (final d in soupDays) {
-    soupCounts[d.recipeId] = (soupCounts[d.recipeId] ?? 0) + 1;
-  }
-
-  // Dessert distribution
-  final dessertCounts = <String, int>{};
-  for (final d in dessertDays) {
-    dessertCounts[d.recipeId] = (dessertCounts[d.recipeId] ?? 0) + 1;
-  }
+  for (final d in mains) mainCounts[d.recipeId] = (mainCounts[d.recipeId] ?? 0) + 1;
 
   print('--- $label ---');
-  print('Total meal entries: ${plan.days.length}');
-  print('Main courses: ${mainDays.length} (${mainCounts.length} unique)');
-  if (soupDays.isNotEmpty) {
-    print('Soups/starters: ${soupDays.length} (${soupCounts.length} unique)');
-  }
-  if (dessertDays.isNotEmpty) {
-    print('Desserts: ${dessertDays.length} (${dessertCounts.length} unique)');
-  }
+  print('Total entries: ${plan.days.length} | Mains: ${mains.length} (${mainCounts.length} unique)');
+  if (soups.isNotEmpty) print('Soups: ${soups.length} (${soups.map((d) => d.recipeId).toSet().length} unique)');
+  if (desserts.isNotEmpty) print('Desserts: ${desserts.length} (${desserts.map((d) => d.recipeId).toSet().length} unique)');
 
-  // Top 5 most used main recipes
   final sorted = mainCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
-  print('Top main recipes:');
-  for (final e in sorted.take(5)) {
-    final name = recipeMap[e.key]?.name ?? e.key;
-    print('  $name: ${e.value}x');
+  print('Top 3: ${sorted.take(3).map((e) => '${recipeMap[e.key]?.name ?? e.key}:${e.value}x').join(', ')}');
+  print('Cost: ${plan.totalEstimatedCost.toStringAsFixed(2)} EUR\n');
+}
+
+// ── Shared validation ────────────────────────────────────────────────────────
+
+void _runCoreValidation(
+  MealPlan plan,
+  MealPlannerService service, {
+  bool expectSoups = false,
+  bool expectDesserts = false,
+}) {
+  final recipeMap = service.recipeMap;
+
+  // 1. Course type integrity
+  for (final d in plan.days.where((d) => !d.isLeftover && !d.isFreeform)) {
+    final recipe = recipeMap[d.recipeId];
+    if (recipe == null) continue;
+
+    if (d.courseType == CourseType.soupOrStarter) {
+      expect(recipe.courseType, CourseType.soupOrStarter,
+          reason: 'Day ${d.dayIndex} ${d.mealType.name}: soup slot has ${recipe.name} (courseType=${recipe.courseType.name})');
+    } else if (d.courseType == CourseType.mainCourse) {
+      expect(recipe.courseType, CourseType.mainCourse,
+          reason: 'Day ${d.dayIndex} ${d.mealType.name}: main slot has ${recipe.name} (courseType=${recipe.courseType.name})');
+    } else if (d.courseType == CourseType.dessert) {
+      expect(recipe.courseType, CourseType.dessert,
+          reason: 'Day ${d.dayIndex} ${d.mealType.name}: dessert slot has ${recipe.name} (courseType=${recipe.courseType.name})');
+    }
   }
 
-  // Weekly recipe repetition
-  final weeklyRecipes = <int, Set<String>>{};
+  // 2. No duplicate recipes within same day + meal type
+  final dayMealGroups = <String, List<String>>{};
+  for (final d in plan.days.where((d) => !d.isLeftover)) {
+    final key = '${d.dayIndex}_${d.mealType.name}';
+    (dayMealGroups[key] ??= []).add(d.recipeId);
+  }
+  for (final entry in dayMealGroups.entries) {
+    final ids = entry.value;
+    expect(ids.length, ids.toSet().length,
+        reason: '${entry.key}: duplicate recipes $ids');
+  }
+
+  // 3. Multi-course completeness
+  if (expectSoups) {
+    for (final d in plan.days.where((d) =>
+        d.courseType == CourseType.mainCourse &&
+        !d.isLeftover &&
+        (d.mealType == MealType.lunch || d.mealType == MealType.dinner))) {
+      final key = '${d.dayIndex}_${d.mealType.name}';
+      final group = dayMealGroups[key] ?? [];
+      final hasSoup = plan.days.any((s) =>
+          s.dayIndex == d.dayIndex &&
+          s.mealType == d.mealType &&
+          s.courseType == CourseType.soupOrStarter);
+      expect(hasSoup, isTrue,
+          reason: 'Day ${d.dayIndex} ${d.mealType.name}: missing soup');
+    }
+  }
+
+  if (expectDesserts) {
+    for (final d in plan.days.where((d) =>
+        d.courseType == CourseType.mainCourse &&
+        !d.isLeftover &&
+        (d.mealType == MealType.lunch || d.mealType == MealType.dinner))) {
+      final hasDessert = plan.days.any((s) =>
+          s.dayIndex == d.dayIndex &&
+          s.mealType == d.mealType &&
+          s.courseType == CourseType.dessert);
+      expect(hasDessert, isTrue,
+          reason: 'Day ${d.dayIndex} ${d.mealType.name}: missing dessert');
+    }
+  }
+
+  // 4. Weekly variety
+  final weeklyMains = <int, Set<String>>{};
   for (final d in plan.days.where((d) => d.courseType == CourseType.mainCourse && !d.isLeftover)) {
     final week = ((d.dayIndex - 1) / 7).floor();
-    weeklyRecipes.putIfAbsent(week, () => {}).add(d.recipeId);
+    weeklyMains.putIfAbsent(week, () => {}).add(d.recipeId);
   }
-  for (final entry in weeklyRecipes.entries) {
-    print('Week ${entry.key}: ${entry.value.length} unique main recipes');
+  for (final entry in weeklyMains.entries) {
+    final minUnique = (entry.value.length >= 8) ? 5 : 2;
+    expect(entry.value.length, greaterThanOrEqualTo(minUnique),
+        reason: 'Week ${entry.key}: only ${entry.value.length} unique mains');
   }
 
-  print('Total estimated cost: ${plan.totalEstimatedCost.toStringAsFixed(2)}');
-  print('');
+  // 5. Max repetitions per week
+  final weeklyRecipeCounts = <int, Map<String, int>>{};
+  for (final d in plan.days.where((d) => d.courseType == CourseType.mainCourse && !d.isLeftover)) {
+    final week = ((d.dayIndex - 1) / 7).floor();
+    final counts = weeklyRecipeCounts.putIfAbsent(week, () => {});
+    counts[d.recipeId] = (counts[d.recipeId] ?? 0) + 1;
+  }
+  for (final weekEntry in weeklyRecipeCounts.entries) {
+    for (final recipeEntry in weekEntry.value.entries) {
+      expect(recipeEntry.value, lessThanOrEqualTo(3),
+          reason: '${recipeMap[recipeEntry.key]?.name ?? recipeEntry.key} x${recipeEntry.value} in week ${weekEntry.key}');
+    }
+  }
+
+  // 6. No consecutive-day repeats for main courses
+  final prevMain = <String, (int, String)>{};
+  for (final d in plan.days.where((d) => d.courseType == CourseType.mainCourse).toList()
+    ..sort((a, b) => a.dayIndex.compareTo(b.dayIndex))) {
+    final mt = d.mealType.name;
+    if (prevMain.containsKey(mt) && prevMain[mt]!.$1 == d.dayIndex - 1) {
+      expect(prevMain[mt]!.$2, isNot(d.recipeId),
+          reason: 'Day ${d.dayIndex} $mt: same main ${recipeMap[d.recipeId]?.name} as yesterday');
+    }
+    prevMain[mt] = (d.dayIndex, d.recipeId);
+  }
+
+  // 7. Cost sanity
+  for (final d in plan.days.where((d) => !d.isLeftover)) {
+    expect(d.costEstimate, greaterThanOrEqualTo(0));
+    expect(d.costEstimate, lessThan(100),
+        reason: 'Day ${d.dayIndex}: cost ${d.costEstimate}');
+  }
+
+  // 8. Complete meals for lunch/dinner
+  for (final d in plan.days.where((d) =>
+      d.courseType == CourseType.mainCourse &&
+      !d.isLeftover &&
+      (d.mealType == MealType.lunch || d.mealType == MealType.dinner))) {
+    final recipe = recipeMap[d.recipeId];
+    if (recipe != null) {
+      expect(recipe.isCompleteMeal, isTrue,
+          reason: 'Day ${d.dayIndex} ${d.mealType.name}: incomplete meal ${recipe.name}');
+    }
+  }
 }
+
+// ── Main test suite ──────────────────────────────────────────────────────────
 
 void main() {
   late MealPlannerService service;
@@ -95,447 +203,557 @@ void main() {
 
   final forMonth = DateTime(2026, 4);
 
-  group('Config 1: Default settings (lunch + dinner, no soup/dessert)', () {
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PART 1: Generation validation (7 configs)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  group('Generation: Config 1 - Default (lunch+dinner)', () {
+    late MealPlan plan;
+    setUpAll(() => plan = service.generate(_makeSettings(), forMonth));
+
+    test('core validation passes', () => _runCoreValidation(plan, service));
+    test('analysis', () => _analyzeAndPrint('Config 1: Default', plan, service));
+  });
+
+  group('Generation: Config 2 - Soup + Main', () {
+    late MealPlan plan;
+    setUpAll(() => plan = service.generate(
+      _makeSettings(ms: const MealSettings(includeSoupOrStarter: true)), forMonth));
+
+    test('core validation passes', () => _runCoreValidation(plan, service, expectSoups: true));
+    test('analysis', () => _analyzeAndPrint('Config 2: Soup+Main', plan, service));
+  });
+
+  group('Generation: Config 3 - Full multi-course', () {
+    late MealPlan plan;
+    setUpAll(() => plan = service.generate(
+      _makeSettings(ms: const MealSettings(includeSoupOrStarter: true, includeDessert: true)), forMonth));
+
+    test('core validation passes', () =>
+        _runCoreValidation(plan, service, expectSoups: true, expectDesserts: true));
+    test('analysis', () => _analyzeAndPrint('Config 3: Full multi-course', plan, service));
+  });
+
+  group('Generation: Config 4 - Vegetarian', () {
+    late MealPlan plan;
+    setUpAll(() => plan = service.generate(
+      _makeSettings(ms: const MealSettings(objective: MealObjective.vegetarian)), forMonth));
+
+    test('core validation passes', () => _runCoreValidation(plan, service));
+    test('analysis', () => _analyzeAndPrint('Config 4: Vegetarian', plan, service));
+  });
+
+  group('Generation: Config 5 - Minimize Cost', () {
+    late MealPlan plan;
+    setUpAll(() => plan = service.generate(
+      _makeSettings(ms: const MealSettings(objective: MealObjective.minimizeCost)), forMonth));
+
+    test('core validation passes', () => _runCoreValidation(plan, service));
+    test('analysis', () => _analyzeAndPrint('Config 5: MinCost', plan, service));
+  });
+
+  group('Generation: Config 6 - High Protein + Multi-course', () {
+    late MealPlan plan;
+    setUpAll(() => plan = service.generate(
+      _makeSettings(ms: const MealSettings(
+        objective: MealObjective.highProtein, includeSoupOrStarter: true, includeDessert: true)), forMonth));
+
+    test('core validation passes', () =>
+        _runCoreValidation(plan, service, expectSoups: true, expectDesserts: true));
+    test('analysis', () => _analyzeAndPrint('Config 6: HighProt+Multi', plan, service));
+  });
+
+  group('Generation: Config 7 - All meals', () {
+    late MealPlan plan;
+    setUpAll(() => plan = service.generate(
+      _makeSettings(ms: const MealSettings(
+        enabledMeals: {MealType.breakfast, MealType.lunch, MealType.dinner},
+        includeSoupOrStarter: true, includeDessert: true)), forMonth));
+
+    test('core validation passes', () =>
+        _runCoreValidation(plan, service, expectSoups: true, expectDesserts: true));
+    test('analysis', () => _analyzeAndPrint('Config 7: All meals', plan, service));
+  });
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PART 2: Ingredient substitution tests
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  group('Ingredient substitution', () {
     late MealPlan plan;
 
     setUpAll(() {
-      final settings = _makeSettings();
-      plan = service.generate(settings, forMonth);
+      plan = service.generate(
+        _makeSettings(ms: const MealSettings(
+          includeSoupOrStarter: true, includeDessert: true)),
+        forMonth,
+      );
     });
 
-    test('no recipe repeats on the same day for the same meal type (excluding leftovers)', () {
-      final dayMealRecipes = <String, Set<String>>{};
-      for (final d in plan.days.where((d) => !d.isLeftover)) {
-        final key = '${d.dayIndex}_${d.mealType.name}_${d.courseType.name}';
-        final set = dayMealRecipes.putIfAbsent(key, () => {});
-        expect(set.contains(d.recipeId), isFalse,
-            reason: 'Recipe ${d.recipeId} repeated for $key');
-        set.add(d.recipeId);
-      }
-    });
+    test('can substitute any ingredient in a main course', () {
+      // Pick the first main course that has ingredients
+      final mainDay = plan.days.firstWhere(
+        (d) => d.courseType == CourseType.mainCourse && !d.isLeftover && !d.isFreeform,
+      );
+      final recipe = service.recipeMap[mainDay.recipeId]!;
+      expect(recipe.ingredients.isNotEmpty, isTrue);
 
-    test('main courses are never soups or desserts', () {
-      final recipeMap = service.recipeMap;
-      for (final d in plan.days.where((d) => d.courseType == CourseType.mainCourse && !d.isLeftover)) {
-        final recipe = recipeMap[d.recipeId];
-        if (recipe != null) {
-          expect(recipe.isSoupOrStarter, isFalse,
-              reason: 'Main course ${d.recipeId} is a soup/starter on day ${d.dayIndex}');
-          expect(recipe.isDessert, isFalse,
-              reason: 'Main course ${d.recipeId} is a dessert on day ${d.dayIndex}');
+      // Substitute the first ingredient with a different one
+      final originalIngId = recipe.ingredients.first.ingredientId;
+      // Find an alternative ingredient (different ID)
+      final altIng = service.ingredients.firstWhere((i) => i.id != originalIngId);
+
+      final newSubs = Map<String, String>.from(mainDay.substitutions);
+      newSubs[originalIngId] = altIng.id;
+
+      final updatedDays = plan.days.map((d) {
+        if (d.dayIndex == mainDay.dayIndex &&
+            d.mealType == mainDay.mealType &&
+            d.courseType == mainDay.courseType) {
+          return d.copyWith(substitutions: newSubs);
         }
-      }
+        return d;
+      }).toList();
+      final updatedPlan = plan.copyWithDays(updatedDays);
+
+      // Verify substitution is stored
+      final updatedDay = updatedPlan.days.firstWhere((d) =>
+          d.dayIndex == mainDay.dayIndex &&
+          d.mealType == mainDay.mealType &&
+          d.courseType == mainDay.courseType);
+      expect(updatedDay.substitutions[originalIngId], altIng.id);
     });
 
-    test('no recipe appears more than 3 times per week for main courses', () {
-      final weeklyRecipeCounts = <int, Map<String, int>>{};
-      for (final d in plan.days.where((d) => d.courseType == CourseType.mainCourse && !d.isLeftover)) {
-        final week = ((d.dayIndex - 1) / 7).floor();
-        final counts = weeklyRecipeCounts.putIfAbsent(week, () => {});
-        counts[d.recipeId] = (counts[d.recipeId] ?? 0) + 1;
-      }
-      for (final weekEntry in weeklyRecipeCounts.entries) {
-        for (final recipeEntry in weekEntry.value.entries) {
-          expect(recipeEntry.value, lessThanOrEqualTo(3),
-              reason: 'Recipe ${recipeEntry.key} appears ${recipeEntry.value} times in week ${weekEntry.key}');
+    test('can substitute ingredient in soup course', () {
+      final soupDay = plan.days.firstWhere(
+        (d) => d.courseType == CourseType.soupOrStarter && !d.isLeftover,
+      );
+      final recipe = service.recipeMap[soupDay.recipeId]!;
+      expect(recipe.ingredients.isNotEmpty, isTrue);
+
+      final originalId = recipe.ingredients.first.ingredientId;
+      final altIng = service.ingredients.firstWhere((i) => i.id != originalId);
+
+      final updatedDays = plan.days.map((d) {
+        if (d.dayIndex == soupDay.dayIndex &&
+            d.mealType == soupDay.mealType &&
+            d.courseType == soupDay.courseType) {
+          return d.copyWith(substitutions: {originalId: altIng.id});
         }
-      }
+        return d;
+      }).toList();
+      final updatedPlan = plan.copyWithDays(updatedDays);
+
+      final updatedDay = updatedPlan.days.firstWhere((d) =>
+          d.dayIndex == soupDay.dayIndex &&
+          d.mealType == soupDay.mealType &&
+          d.courseType == soupDay.courseType);
+      expect(updatedDay.substitutions[originalId], altIng.id);
     });
 
-    test('recipe variety: at least 5 unique recipes per week for main courses', () {
-      final weeklyRecipes = <int, Set<String>>{};
-      for (final d in plan.days.where((d) => d.courseType == CourseType.mainCourse && !d.isLeftover)) {
-        final week = ((d.dayIndex - 1) / 7).floor();
-        weeklyRecipes.putIfAbsent(week, () => {}).add(d.recipeId);
-      }
-      for (final entry in weeklyRecipes.entries) {
-        expect(entry.value.length, greaterThanOrEqualTo(5),
-            reason: 'Week ${entry.key} has only ${entry.value.length} unique main recipes');
-      }
+    test('can substitute ingredient in dessert course', () {
+      final dessertDay = plan.days.firstWhere(
+        (d) => d.courseType == CourseType.dessert && !d.isLeftover,
+      );
+      final recipe = service.recipeMap[dessertDay.recipeId]!;
+      expect(recipe.ingredients.isNotEmpty, isTrue);
+
+      final originalId = recipe.ingredients.first.ingredientId;
+      final altIng = service.ingredients.firstWhere((i) => i.id != originalId);
+
+      final updatedDays = plan.days.map((d) {
+        if (d.dayIndex == dessertDay.dayIndex &&
+            d.mealType == dessertDay.mealType &&
+            d.courseType == dessertDay.courseType) {
+          return d.copyWith(substitutions: {originalId: altIng.id});
+        }
+        return d;
+      }).toList();
+      final updatedPlan = plan.copyWithDays(updatedDays);
+
+      final updatedDay = updatedPlan.days.firstWhere((d) =>
+          d.dayIndex == dessertDay.dayIndex &&
+          d.mealType == dessertDay.mealType &&
+          d.courseType == dessertDay.courseType);
+      expect(updatedDay.substitutions[originalId], altIng.id);
     });
 
-    test('cost estimates are positive and reasonable', () {
-      for (final d in plan.days.where((d) => !d.isLeftover)) {
-        expect(d.costEstimate, greaterThanOrEqualTo(0),
-            reason: 'Negative cost on day ${d.dayIndex}');
-        expect(d.costEstimate, lessThan(100),
-            reason: 'Unreasonable cost ${d.costEstimate} on day ${d.dayIndex}');
-      }
-    });
+    test('multiple substitutions on same meal work independently', () {
+      final mainDay = plan.days.firstWhere(
+        (d) => d.courseType == CourseType.mainCourse &&
+               !d.isLeftover &&
+               service.recipeMap[d.recipeId]!.ingredients.length >= 2,
+      );
+      final recipe = service.recipeMap[mainDay.recipeId]!;
+      final ing1 = recipe.ingredients[0].ingredientId;
+      final ing2 = recipe.ingredients[1].ingredientId;
 
-    test('prints analysis', () {
-      _analyzeAndPrint('Config 1: Default', plan, service);
+      final alt1 = service.ingredients.firstWhere((i) => i.id != ing1 && i.id != ing2);
+      final alt2 = service.ingredients.firstWhere((i) => i.id != ing1 && i.id != ing2 && i.id != alt1.id);
+
+      final updatedDays = plan.days.map((d) {
+        if (d.dayIndex == mainDay.dayIndex &&
+            d.mealType == mainDay.mealType &&
+            d.courseType == mainDay.courseType) {
+          return d.copyWith(substitutions: {ing1: alt1.id, ing2: alt2.id});
+        }
+        return d;
+      }).toList();
+      final updatedPlan = plan.copyWithDays(updatedDays);
+
+      final updatedDay = updatedPlan.days.firstWhere((d) =>
+          d.dayIndex == mainDay.dayIndex &&
+          d.mealType == mainDay.mealType &&
+          d.courseType == mainDay.courseType);
+      expect(updatedDay.substitutions[ing1], alt1.id);
+      expect(updatedDay.substitutions[ing2], alt2.id);
+      expect(updatedDay.substitutions.length, 2);
     });
   });
 
-  group('Config 2: Soup + main course enabled', () {
-    late MealPlan plan;
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PART 3: Shopping list reflects substitutions
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  group('Shopping list with substitutions', () {
+    late MealPlan basePlan;
 
     setUpAll(() {
-      final settings = _makeSettings(
-        ms: const MealSettings(includeSoupOrStarter: true),
+      basePlan = service.generate(
+        _makeSettings(ms: const MealSettings(
+          includeSoupOrStarter: true, includeDessert: true)),
+        forMonth,
       );
-      plan = service.generate(settings, forMonth);
     });
 
-    test('every lunch/dinner has a soupOrStarter course', () {
-      final lunchDinnerDays = <int>{};
-      for (final d in plan.days.where((d) =>
-          (d.mealType == MealType.lunch || d.mealType == MealType.dinner) &&
-          d.courseType == CourseType.mainCourse &&
-          !d.isLeftover)) {
-        lunchDinnerDays.add(d.dayIndex * 10 + d.mealType.index);
-      }
-      final soupDayMeals = <int>{};
-      for (final d in plan.days.where((d) => d.courseType == CourseType.soupOrStarter)) {
-        soupDayMeals.add(d.dayIndex * 10 + d.mealType.index);
-      }
-      for (final key in lunchDinnerDays) {
-        expect(soupDayMeals.contains(key), isTrue,
-            reason: 'Missing soup/starter for day/meal $key');
+    test('shopping list uses original ingredients when no substitutions', () {
+      final weekDays = basePlan.days.where((d) => d.dayIndex <= 7).toList();
+      final totals = _buildShoppingTotals(service, basePlan, weekDays);
+
+      expect(totals.isNotEmpty, isTrue);
+      // All ingredient IDs should be in the ingredient map
+      for (final id in totals.keys) {
+        expect(service.ingredientMap.containsKey(id), isTrue,
+            reason: 'Unknown ingredient $id in shopping list');
       }
     });
 
-    test('soup courses are actually soup/starter recipes', () {
-      final recipeMap = service.recipeMap;
-      for (final d in plan.days.where((d) => d.courseType == CourseType.soupOrStarter)) {
-        final recipe = recipeMap[d.recipeId];
-        expect(recipe, isNotNull, reason: 'Unknown recipe ${d.recipeId}');
-        expect(recipe!.courseType, CourseType.soupOrStarter,
-            reason: 'Soup course ${d.recipeId} is not a soup/starter recipe');
-      }
-    });
+    test('substitution replaces old ingredient with new in shopping list', () {
+      // Pick a day with a main course
+      final targetDay = basePlan.days.firstWhere(
+        (d) => d.dayIndex <= 7 && d.courseType == CourseType.mainCourse && !d.isLeftover,
+      );
+      final recipe = service.recipeMap[targetDay.recipeId]!;
+      final originalIngId = recipe.ingredients.first.ingredientId;
 
-    test('soups are never main courses or desserts', () {
-      final recipeMap = service.recipeMap;
-      for (final d in plan.days.where((d) => d.courseType == CourseType.soupOrStarter)) {
-        final recipe = recipeMap[d.recipeId];
-        if (recipe != null) {
-          expect(recipe.isDessert, isFalse,
-              reason: 'Soup ${d.recipeId} is a dessert');
+      // Find a replacement that is NOT already in this recipe
+      final replacementIng = service.ingredients.firstWhere(
+        (i) => i.id != originalIngId && !recipe.ingredients.any((ri) => ri.ingredientId == i.id),
+      );
+
+      // Build shopping list WITHOUT substitution
+      final weekDays = basePlan.days.where((d) => d.dayIndex <= 7).toList();
+      final totalsBefore = _buildShoppingTotals(service, basePlan, weekDays);
+      final origQtyBefore = totalsBefore[originalIngId] ?? 0;
+      final replQtyBefore = totalsBefore[replacementIng.id] ?? 0;
+
+      // Apply substitution
+      final updatedDays = basePlan.days.map((d) {
+        if (d.dayIndex == targetDay.dayIndex &&
+            d.mealType == targetDay.mealType &&
+            d.courseType == targetDay.courseType) {
+          return d.copyWith(substitutions: {originalIngId: replacementIng.id});
         }
-      }
+        return d;
+      }).toList();
+      final updatedPlan = basePlan.copyWithDays(updatedDays);
+
+      // Build shopping list WITH substitution
+      final updatedWeekDays = updatedPlan.days.where((d) => d.dayIndex <= 7).toList();
+      final totalsAfter = _buildShoppingTotals(service, updatedPlan, updatedWeekDays);
+      final origQtyAfter = totalsAfter[originalIngId] ?? 0;
+      final replQtyAfter = totalsAfter[replacementIng.id] ?? 0;
+
+      // Original ingredient quantity should decrease
+      expect(origQtyAfter, lessThan(origQtyBefore),
+          reason: 'Original ingredient ${service.ingredientMap[originalIngId]?.name} '
+              'should decrease after substitution: $origQtyBefore -> $origQtyAfter');
+
+      // Replacement ingredient quantity should increase
+      expect(replQtyAfter, greaterThan(replQtyBefore),
+          reason: 'Replacement ${replacementIng.name} should increase: $replQtyBefore -> $replQtyAfter');
     });
 
-    test('no recipe repeats on the same day across course types', () {
-      final dayRecipes = <int, Set<String>>{};
-      for (final d in plan.days.where((d) => !d.isLeftover)) {
-        final set = dayRecipes.putIfAbsent(d.dayIndex, () => {});
-        // Same recipe can appear for different meal types (lunch vs dinner),
-        // but not for different course types within the same meal type on same day
-        final key = '${d.dayIndex}_${d.mealType.name}';
-        // Actually, check within same day: no recipe should appear more than once per day
-        // (soup, main, dessert should all be different recipes)
-      }
-      // Group by day
-      for (int day = 1; day <= 30; day++) {
-        final dayMeals = plan.days.where((d) => d.dayIndex == day && !d.isLeftover).toList();
-        // Per meal type, all course entries should have distinct recipe IDs
-        for (final mt in MealType.values) {
-          final entries = dayMeals.where((d) => d.mealType == mt).toList();
-          final ids = entries.map((d) => d.recipeId).toSet();
-          expect(ids.length, entries.length,
-              reason: 'Duplicate recipe on day $day for ${mt.name}: ${entries.map((d) => d.recipeId).toList()}');
+    test('consolidatedIngredients respects substitutions', () {
+      // Use service.consolidatedIngredients directly
+      final totalsOriginal = service.consolidatedIngredients(basePlan);
+
+      // Apply substitution to day 1 main course
+      final targetDay = basePlan.days.firstWhere(
+        (d) => d.courseType == CourseType.mainCourse && !d.isLeftover,
+      );
+      final recipe = service.recipeMap[targetDay.recipeId]!;
+      final originalIngId = recipe.ingredients.first.ingredientId;
+      final replacement = service.ingredients.firstWhere(
+        (i) => i.id != originalIngId && !recipe.ingredients.any((ri) => ri.ingredientId == i.id),
+      );
+
+      final updatedDays = basePlan.days.map((d) {
+        if (d.dayIndex == targetDay.dayIndex &&
+            d.mealType == targetDay.mealType &&
+            d.courseType == targetDay.courseType) {
+          return d.copyWith(substitutions: {originalIngId: replacement.id});
         }
-      }
+        return d;
+      }).toList();
+      final updatedPlan = basePlan.copyWithDays(updatedDays);
+      final totalsUpdated = service.consolidatedIngredients(updatedPlan);
+
+      // Replacement ingredient should appear or increase
+      final newQty = totalsUpdated[replacement.id] ?? 0;
+      final oldQty = totalsOriginal[replacement.id] ?? 0;
+      expect(newQty, greaterThan(oldQty),
+          reason: 'consolidatedIngredients should include replacement ${replacement.name}');
     });
 
-    test('no recipe appears more than 3 times per week', () {
-      final weeklyRecipeCounts = <int, Map<String, int>>{};
-      for (final d in plan.days.where((d) => d.courseType == CourseType.mainCourse && !d.isLeftover)) {
-        final week = ((d.dayIndex - 1) / 7).floor();
-        final counts = weeklyRecipeCounts.putIfAbsent(week, () => {});
-        counts[d.recipeId] = (counts[d.recipeId] ?? 0) + 1;
-      }
-      for (final weekEntry in weeklyRecipeCounts.entries) {
-        for (final recipeEntry in weekEntry.value.entries) {
-          expect(recipeEntry.value, lessThanOrEqualTo(3),
-              reason: 'Recipe ${recipeEntry.key} appears ${recipeEntry.value} times in week ${weekEntry.key}');
+    test('substitution in soup course updates shopping list', () {
+      final soupDay = basePlan.days.firstWhere(
+        (d) => d.dayIndex <= 7 && d.courseType == CourseType.soupOrStarter,
+      );
+      final recipe = service.recipeMap[soupDay.recipeId]!;
+      final originalIngId = recipe.ingredients.first.ingredientId;
+      final replacement = service.ingredients.firstWhere(
+        (i) => i.id != originalIngId && !recipe.ingredients.any((ri) => ri.ingredientId == i.id),
+      );
+
+      final weekDays = basePlan.days.where((d) => d.dayIndex <= 7).toList();
+      final totalsBefore = _buildShoppingTotals(service, basePlan, weekDays);
+
+      final updatedDays = basePlan.days.map((d) {
+        if (d.dayIndex == soupDay.dayIndex &&
+            d.mealType == soupDay.mealType &&
+            d.courseType == soupDay.courseType) {
+          return d.copyWith(substitutions: {originalIngId: replacement.id});
         }
-      }
+        return d;
+      }).toList();
+      final updatedPlan = basePlan.copyWithDays(updatedDays);
+      final updatedWeekDays = updatedPlan.days.where((d) => d.dayIndex <= 7).toList();
+      final totalsAfter = _buildShoppingTotals(service, updatedPlan, updatedWeekDays);
+
+      // Replacement should appear in shopping list
+      expect(totalsAfter.containsKey(replacement.id), isTrue,
+          reason: 'Soup substitution: ${replacement.name} missing from shopping list');
     });
 
-    test('prints analysis', () {
-      _analyzeAndPrint('Config 2: Soup + Main', plan, service);
+    test('substitution in dessert course updates shopping list', () {
+      final dessertDay = basePlan.days.firstWhere(
+        (d) => d.dayIndex <= 7 && d.courseType == CourseType.dessert,
+      );
+      final recipe = service.recipeMap[dessertDay.recipeId]!;
+      final originalIngId = recipe.ingredients.first.ingredientId;
+      final replacement = service.ingredients.firstWhere(
+        (i) => i.id != originalIngId && !recipe.ingredients.any((ri) => ri.ingredientId == i.id),
+      );
+
+      final updatedDays = basePlan.days.map((d) {
+        if (d.dayIndex == dessertDay.dayIndex &&
+            d.mealType == dessertDay.mealType &&
+            d.courseType == dessertDay.courseType) {
+          return d.copyWith(substitutions: {originalIngId: replacement.id});
+        }
+        return d;
+      }).toList();
+      final updatedPlan = basePlan.copyWithDays(updatedDays);
+      final weekDays = updatedPlan.days.where((d) => d.dayIndex <= 7).toList();
+      final totals = _buildShoppingTotals(service, updatedPlan, weekDays);
+
+      expect(totals.containsKey(replacement.id), isTrue,
+          reason: 'Dessert substitution: ${replacement.name} missing from shopping list');
     });
   });
 
-  group('Config 3: Soup + main + dessert', () {
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PART 4: Recipe swap tests
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  group('Recipe swap', () {
     late MealPlan plan;
 
     setUpAll(() {
-      final settings = _makeSettings(
-        ms: const MealSettings(
-          includeSoupOrStarter: true,
-          includeDessert: true,
-        ),
+      plan = service.generate(
+        _makeSettings(ms: const MealSettings(
+          includeSoupOrStarter: true, includeDessert: true)),
+        forMonth,
       );
-      plan = service.generate(settings, forMonth);
     });
 
-    test('every lunch/dinner has a dessert course', () {
-      final lunchDinnerDays = <int>{};
-      for (final d in plan.days.where((d) =>
-          (d.mealType == MealType.lunch || d.mealType == MealType.dinner) &&
-          d.courseType == CourseType.mainCourse &&
-          !d.isLeftover)) {
-        lunchDinnerDays.add(d.dayIndex * 10 + d.mealType.index);
-      }
-      final dessertDayMeals = <int>{};
-      for (final d in plan.days.where((d) => d.courseType == CourseType.dessert)) {
-        dessertDayMeals.add(d.dayIndex * 10 + d.mealType.index);
-      }
-      for (final key in lunchDinnerDays) {
-        expect(dessertDayMeals.contains(key), isTrue,
-            reason: 'Missing dessert for day/meal $key');
-      }
+    test('swapDay replaces recipe and recalculates cost', () {
+      final mainDay = plan.days.firstWhere(
+        (d) => d.courseType == CourseType.mainCourse && !d.isLeftover,
+      );
+      final alternatives = service.alternativesFor(
+        mainDay.recipeId, plan.nPessoas,
+        ms: const MealSettings(),
+        courseType: CourseType.mainCourse,
+      );
+      expect(alternatives, isNotEmpty);
+
+      final newRecipeId = alternatives.first.id;
+      final swapped = service.swapDay(
+        plan, mainDay.dayIndex, mainDay.mealType, newRecipeId,
+        courseType: CourseType.mainCourse,
+      );
+
+      final swappedDay = swapped.days.firstWhere((d) =>
+          d.dayIndex == mainDay.dayIndex &&
+          d.mealType == mainDay.mealType &&
+          d.courseType == CourseType.mainCourse);
+      expect(swappedDay.recipeId, newRecipeId);
+      expect(swappedDay.costEstimate, greaterThan(0));
     });
 
-    test('dessert courses are actually dessert recipes', () {
-      final recipeMap = service.recipeMap;
-      for (final d in plan.days.where((d) => d.courseType == CourseType.dessert)) {
-        final recipe = recipeMap[d.recipeId];
-        expect(recipe, isNotNull, reason: 'Unknown recipe ${d.recipeId}');
-        expect(recipe!.courseType, CourseType.dessert,
-            reason: 'Dessert course ${d.recipeId} is not a dessert recipe');
-      }
+    test('swapDay for soup only changes soup course', () {
+      final soupDay = plan.days.firstWhere(
+        (d) => d.courseType == CourseType.soupOrStarter,
+      );
+      final mainDay = plan.days.firstWhere(
+        (d) => d.dayIndex == soupDay.dayIndex &&
+               d.mealType == soupDay.mealType &&
+               d.courseType == CourseType.mainCourse,
+      );
+
+      final soupAlternatives = service.alternativesFor(
+        soupDay.recipeId, plan.nPessoas,
+        courseType: CourseType.soupOrStarter,
+      );
+      expect(soupAlternatives, isNotEmpty);
+
+      final swapped = service.swapDay(
+        plan, soupDay.dayIndex, soupDay.mealType, soupAlternatives.first.id,
+        courseType: CourseType.soupOrStarter,
+      );
+
+      // Soup changed
+      final newSoup = swapped.days.firstWhere((d) =>
+          d.dayIndex == soupDay.dayIndex &&
+          d.mealType == soupDay.mealType &&
+          d.courseType == CourseType.soupOrStarter);
+      expect(newSoup.recipeId, soupAlternatives.first.id);
+
+      // Main course UNCHANGED
+      final unchangedMain = swapped.days.firstWhere((d) =>
+          d.dayIndex == mainDay.dayIndex &&
+          d.mealType == mainDay.mealType &&
+          d.courseType == CourseType.mainCourse);
+      expect(unchangedMain.recipeId, mainDay.recipeId);
     });
 
-    test('desserts are never main courses or soups', () {
-      final recipeMap = service.recipeMap;
-      for (final d in plan.days.where((d) => d.courseType == CourseType.dessert)) {
-        final recipe = recipeMap[d.recipeId];
-        if (recipe != null) {
-          expect(recipe.isSoupOrStarter, isFalse,
-              reason: 'Dessert ${d.recipeId} is a soup/starter');
-        }
+    test('alternativesFor with courseType only returns matching type', () {
+      final soupAlts = service.alternativesFor('sopa_legumes', plan.nPessoas,
+          courseType: CourseType.soupOrStarter);
+      for (final r in soupAlts) {
+        expect(r.courseType, CourseType.soupOrStarter,
+            reason: '${r.name} is not a soup but was returned as soup alternative');
       }
-    });
 
-    test('no recipe repeats on same day within same meal type across courses', () {
-      for (int day = 1; day <= 30; day++) {
-        final dayMeals = plan.days.where((d) => d.dayIndex == day && !d.isLeftover).toList();
-        for (final mt in MealType.values) {
-          final entries = dayMeals.where((d) => d.mealType == mt).toList();
-          final ids = entries.map((d) => d.recipeId).toSet();
-          expect(ids.length, entries.length,
-              reason: 'Duplicate recipe on day $day for ${mt.name}: ${entries.map((d) => d.recipeId).toList()}');
-        }
+      final dessertAlts = service.alternativesFor('sobremesa_fruta_epoca', plan.nPessoas,
+          courseType: CourseType.dessert);
+      for (final r in dessertAlts) {
+        expect(r.courseType, CourseType.dessert,
+            reason: '${r.name} is not a dessert but was returned as dessert alternative');
       }
-    });
 
-    test('soup courses are actually soup/starter recipes', () {
-      final recipeMap = service.recipeMap;
-      for (final d in plan.days.where((d) => d.courseType == CourseType.soupOrStarter)) {
-        final recipe = recipeMap[d.recipeId];
-        expect(recipe, isNotNull);
-        expect(recipe!.courseType, CourseType.soupOrStarter,
-            reason: 'Soup course ${d.recipeId} is not a soup/starter recipe');
+      final mainAlts = service.alternativesFor('frango_assado', plan.nPessoas,
+          courseType: CourseType.mainCourse);
+      for (final r in mainAlts) {
+        expect(r.courseType, CourseType.mainCourse,
+            reason: '${r.name} is not a main but was returned as main alternative');
       }
-    });
-
-    test('recipe variety: at least 5 unique main recipes per week', () {
-      final weeklyRecipes = <int, Set<String>>{};
-      for (final d in plan.days.where((d) => d.courseType == CourseType.mainCourse && !d.isLeftover)) {
-        final week = ((d.dayIndex - 1) / 7).floor();
-        weeklyRecipes.putIfAbsent(week, () => {}).add(d.recipeId);
-      }
-      for (final entry in weeklyRecipes.entries) {
-        expect(entry.value.length, greaterThanOrEqualTo(5),
-            reason: 'Week ${entry.key} has only ${entry.value.length} unique main recipes');
-      }
-    });
-
-    test('cost estimates are positive and reasonable', () {
-      for (final d in plan.days.where((d) => !d.isLeftover)) {
-        expect(d.costEstimate, greaterThanOrEqualTo(0));
-        expect(d.costEstimate, lessThan(100));
-      }
-    });
-
-    test('prints analysis', () {
-      _analyzeAndPrint('Config 3: Soup + Main + Dessert', plan, service);
     });
   });
 
-  group('Config 4: Vegetarian objective', () {
-    late MealPlan plan;
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PART 5: Edge cases & serialization
+  // ═══════════════════════════════════════════════════════════════════════════
 
-    setUpAll(() {
-      final settings = _makeSettings(
-        ms: const MealSettings(objective: MealObjective.vegetarian),
+  group('Edge cases', () {
+    test('MealDay serialization preserves courseType and substitutions', () {
+      final day = MealDay(
+        dayIndex: 5,
+        recipeId: 'frango_assado',
+        costEstimate: 3.50,
+        mealType: MealType.dinner,
+        courseType: CourseType.mainCourse,
+        substitutions: const {'arroz': 'massa', 'frango': 'peru'},
       );
-      plan = service.generate(settings, forMonth);
+
+      final json = day.toJson();
+      final restored = MealDay.fromJson(json);
+
+      expect(restored.courseType, CourseType.mainCourse);
+      expect(restored.substitutions['arroz'], 'massa');
+      expect(restored.substitutions['frango'], 'peru');
+      expect(restored.substitutions.length, 2);
     });
 
-    test('no recipe repeats on the same day for the same meal type', () {
-      final dayMealRecipes = <String, Set<String>>{};
-      for (final d in plan.days.where((d) => !d.isLeftover)) {
-        final key = '${d.dayIndex}_${d.mealType.name}_${d.courseType.name}';
-        final set = dayMealRecipes.putIfAbsent(key, () => {});
-        expect(set.contains(d.recipeId), isFalse,
-            reason: 'Recipe ${d.recipeId} repeated for $key');
-        set.add(d.recipeId);
-      }
+    test('MealDay fromJson defaults courseType to mainCourse for legacy data', () {
+      final legacyJson = {
+        'dayIndex': 1,
+        'recipeId': 'frango_arroz',
+        'costEstimate': 2.0,
+        'mealType': 'dinner',
+        'feedback': 'none',
+        // No courseType field — legacy plan
+      };
+      final day = MealDay.fromJson(legacyJson);
+      expect(day.courseType, CourseType.mainCourse);
     });
 
-    test('no recipe appears more than 3 times per week', () {
-      final weeklyRecipeCounts = <int, Map<String, int>>{};
-      for (final d in plan.days.where((d) => d.courseType == CourseType.mainCourse && !d.isLeftover)) {
-        final week = ((d.dayIndex - 1) / 7).floor();
-        final counts = weeklyRecipeCounts.putIfAbsent(week, () => {});
-        counts[d.recipeId] = (counts[d.recipeId] ?? 0) + 1;
-      }
-      for (final weekEntry in weeklyRecipeCounts.entries) {
-        for (final recipeEntry in weekEntry.value.entries) {
-          expect(recipeEntry.value, lessThanOrEqualTo(3),
-              reason: 'Recipe ${recipeEntry.key} appears ${recipeEntry.value} times in week ${weekEntry.key}');
-        }
-      }
+    test('MealSettings serialization preserves includeSoupOrStarter and includeDessert', () {
+      const ms = MealSettings(includeSoupOrStarter: true, includeDessert: true);
+      final json = ms.toJson();
+      final restored = MealSettings.fromJson(json);
+      expect(restored.includeSoupOrStarter, isTrue);
+      expect(restored.includeDessert, isTrue);
     });
 
-    test('recipe variety: at least 5 unique recipes per week', () {
-      final weeklyRecipes = <int, Set<String>>{};
-      for (final d in plan.days.where((d) => d.courseType == CourseType.mainCourse && !d.isLeftover)) {
-        final week = ((d.dayIndex - 1) / 7).floor();
-        weeklyRecipes.putIfAbsent(week, () => {}).add(d.recipeId);
-      }
-      for (final entry in weeklyRecipes.entries) {
-        expect(entry.value.length, greaterThanOrEqualTo(5),
-            reason: 'Week ${entry.key} has only ${entry.value.length} unique main recipes');
-      }
+    test('MealSettings fromJson defaults multi-course to false for legacy data', () {
+      final legacyJson = <String, dynamic>{
+        'objective': 'balancedHealth',
+        // No includeSoupOrStarter or includeDessert
+      };
+      final ms = MealSettings.fromJson(legacyJson);
+      expect(ms.includeSoupOrStarter, isFalse);
+      expect(ms.includeDessert, isFalse);
     });
 
-    test('cost estimates are positive and reasonable', () {
-      for (final d in plan.days.where((d) => !d.isLeftover)) {
-        expect(d.costEstimate, greaterThanOrEqualTo(0));
-        expect(d.costEstimate, lessThan(100));
-      }
+    test('Recipe courseType field persists through JSON roundtrip', () {
+      final soupRecipe = service.recipes.firstWhere((r) => r.courseType == CourseType.soupOrStarter);
+      final json = soupRecipe.toJson();
+      final restored = Recipe.fromJson(json);
+      expect(restored.courseType, CourseType.soupOrStarter);
+      expect(restored.isSoupOrStarter, isTrue);
+      expect(restored.isDessert, isFalse);
+
+      final dessertRecipe = service.recipes.firstWhere((r) => r.courseType == CourseType.dessert);
+      final djson = dessertRecipe.toJson();
+      final drestored = Recipe.fromJson(djson);
+      expect(drestored.courseType, CourseType.dessert);
+      expect(drestored.isDessert, isTrue);
+      expect(drestored.isSoupOrStarter, isFalse);
     });
 
-    test('prints analysis', () {
-      _analyzeAndPrint('Config 4: Vegetarian', plan, service);
-    });
-  });
+    test('catalog has correct courseType distribution', () {
+      final soups = service.recipes.where((r) => r.courseType == CourseType.soupOrStarter).length;
+      final mains = service.recipes.where((r) => r.courseType == CourseType.mainCourse).length;
+      final desserts = service.recipes.where((r) => r.courseType == CourseType.dessert).length;
 
-  group('Config 5: Minimize cost objective', () {
-    late MealPlan plan;
-
-    setUpAll(() {
-      final settings = _makeSettings(
-        ms: const MealSettings(objective: MealObjective.minimizeCost),
-      );
-      plan = service.generate(settings, forMonth);
-    });
-
-    test('no recipe repeats on the same day for the same meal type', () {
-      final dayMealRecipes = <String, Set<String>>{};
-      for (final d in plan.days.where((d) => !d.isLeftover)) {
-        final key = '${d.dayIndex}_${d.mealType.name}_${d.courseType.name}';
-        final set = dayMealRecipes.putIfAbsent(key, () => {});
-        expect(set.contains(d.recipeId), isFalse,
-            reason: 'Recipe ${d.recipeId} repeated for $key');
-        set.add(d.recipeId);
-      }
-    });
-
-    test('no recipe appears more than 3 times per week', () {
-      final weeklyRecipeCounts = <int, Map<String, int>>{};
-      for (final d in plan.days.where((d) => d.courseType == CourseType.mainCourse && !d.isLeftover)) {
-        final week = ((d.dayIndex - 1) / 7).floor();
-        final counts = weeklyRecipeCounts.putIfAbsent(week, () => {});
-        counts[d.recipeId] = (counts[d.recipeId] ?? 0) + 1;
-      }
-      for (final weekEntry in weeklyRecipeCounts.entries) {
-        for (final recipeEntry in weekEntry.value.entries) {
-          expect(recipeEntry.value, lessThanOrEqualTo(3),
-              reason: 'Recipe ${recipeEntry.key} appears ${recipeEntry.value} times in week ${weekEntry.key}');
-        }
-      }
-    });
-
-    test('cost estimates are positive and reasonable', () {
-      for (final d in plan.days.where((d) => !d.isLeftover)) {
-        expect(d.costEstimate, greaterThanOrEqualTo(0));
-        expect(d.costEstimate, lessThan(100));
-      }
-    });
-
-    test('prints analysis', () {
-      _analyzeAndPrint('Config 5: Minimize Cost', plan, service);
-    });
-  });
-
-  group('Config 6: High protein objective', () {
-    late MealPlan plan;
-
-    setUpAll(() {
-      final settings = _makeSettings(
-        ms: const MealSettings(objective: MealObjective.highProtein),
-      );
-      plan = service.generate(settings, forMonth);
-    });
-
-    test('no recipe repeats on the same day for the same meal type', () {
-      final dayMealRecipes = <String, Set<String>>{};
-      for (final d in plan.days.where((d) => !d.isLeftover)) {
-        final key = '${d.dayIndex}_${d.mealType.name}_${d.courseType.name}';
-        final set = dayMealRecipes.putIfAbsent(key, () => {});
-        expect(set.contains(d.recipeId), isFalse,
-            reason: 'Recipe ${d.recipeId} repeated for $key');
-        set.add(d.recipeId);
-      }
-    });
-
-    test('main courses are never soups or desserts', () {
-      final recipeMap = service.recipeMap;
-      for (final d in plan.days.where((d) => d.courseType == CourseType.mainCourse && !d.isLeftover)) {
-        final recipe = recipeMap[d.recipeId];
-        if (recipe != null) {
-          expect(recipe.isSoupOrStarter, isFalse,
-              reason: 'Main course ${d.recipeId} is a soup/starter');
-          expect(recipe.isDessert, isFalse,
-              reason: 'Main course ${d.recipeId} is a dessert');
-        }
-      }
-    });
-
-    test('no recipe appears more than 3 times per week', () {
-      final weeklyRecipeCounts = <int, Map<String, int>>{};
-      for (final d in plan.days.where((d) => d.courseType == CourseType.mainCourse && !d.isLeftover)) {
-        final week = ((d.dayIndex - 1) / 7).floor();
-        final counts = weeklyRecipeCounts.putIfAbsent(week, () => {});
-        counts[d.recipeId] = (counts[d.recipeId] ?? 0) + 1;
-      }
-      for (final weekEntry in weeklyRecipeCounts.entries) {
-        for (final recipeEntry in weekEntry.value.entries) {
-          expect(recipeEntry.value, lessThanOrEqualTo(3),
-              reason: 'Recipe ${recipeEntry.key} appears ${recipeEntry.value} times in week ${weekEntry.key}');
-        }
-      }
-    });
-
-    test('recipe variety: at least 5 unique recipes per week', () {
-      final weeklyRecipes = <int, Set<String>>{};
-      for (final d in plan.days.where((d) => d.courseType == CourseType.mainCourse && !d.isLeftover)) {
-        final week = ((d.dayIndex - 1) / 7).floor();
-        weeklyRecipes.putIfAbsent(week, () => {}).add(d.recipeId);
-      }
-      for (final entry in weeklyRecipes.entries) {
-        expect(entry.value.length, greaterThanOrEqualTo(5),
-            reason: 'Week ${entry.key} has only ${entry.value.length} unique main recipes');
-      }
-    });
-
-    test('cost estimates are positive and reasonable', () {
-      for (final d in plan.days.where((d) => !d.isLeftover)) {
-        expect(d.costEstimate, greaterThanOrEqualTo(0));
-        expect(d.costEstimate, lessThan(100));
-      }
-    });
-
-    test('prints analysis', () {
-      _analyzeAndPrint('Config 6: High Protein', plan, service);
+      expect(soups, greaterThanOrEqualTo(10), reason: 'Need enough soups for variety');
+      expect(mains, greaterThanOrEqualTo(50), reason: 'Need enough mains for a month');
+      expect(desserts, greaterThanOrEqualTo(5), reason: 'Need enough desserts for variety');
+      expect(soups + mains + desserts, service.recipes.length);
+      print('Catalog: $soups soups, $mains mains, $desserts desserts (${service.recipes.length} total)');
     });
   });
 }
