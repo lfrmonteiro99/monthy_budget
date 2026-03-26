@@ -1910,7 +1910,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   child: ActionChip(
                     avatar: const Icon(Icons.account_balance_wallet_outlined, size: 14),
                     label: Text(
-                      '${_budgetInsight!.weekSpent.toStringAsFixed(0)}${currencySymbol()}',
+                      '${_budgetInsight!.weeklyEstimatedCost.toStringAsFixed(0)}${currencySymbol()}',
                     ),
                     labelStyle: const TextStyle(fontSize: 11),
                     padding: EdgeInsets.zero,
@@ -2029,8 +2029,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                           _swapRecipeCourse(day.dayIndex, day.mealType, day.recipeId, day.courseType),
                       onReplaceFreeform: () => _replaceMealWithFreeform(mainDay),
                       onAddIngredientToList: widget.onAddToShoppingList,
-                      onFeedback: (fb) =>
-                          _setFeedback(mainDay.dayIndex, mainDay.mealType, fb),
                       onRating: (rating) =>
                           _setRating(mainDay.dayIndex, mainDay.mealType, rating),
                       onViewPrepGuide: () => _showMealPrepGuide(mainDay),
@@ -2109,7 +2107,6 @@ class _DayCard extends StatelessWidget {
   final void Function(MealDay day) onSwapCourse;
   final VoidCallback onReplaceFreeform;
   final void Function(ShoppingItem) onAddIngredientToList;
-  final ValueChanged<MealFeedback> onFeedback;
   final ValueChanged<int> onRating;
   final VoidCallback onViewPrepGuide;
   final Set<String> activePantryIds;
@@ -2129,7 +2126,6 @@ class _DayCard extends StatelessWidget {
     required this.onSwapCourse,
     required this.onReplaceFreeform,
     required this.onAddIngredientToList,
-    required this.onFeedback,
     required this.onRating,
     required this.onViewPrepGuide,
     required this.onSubstituteIngredient,
@@ -2747,7 +2743,6 @@ class _DayCard extends StatelessWidget {
         if (soupRecipe != null) {
           widgets.add(_CourseRow(
             icon: Icons.soup_kitchen,
-            label: l10n.mealCourseSoupStarter,
             recipeName: soupRecipe.name,
             color: const Color(0xFFE67E22),
             onSwap: () => onSwapCourse(course),
@@ -2760,7 +2755,6 @@ class _DayCard extends StatelessWidget {
     // Main course inline
     widgets.add(_CourseRow(
       icon: Icons.restaurant,
-      label: l10n.mealCourseMain,
       recipeName: mainRecipe.name,
       color: AppColors.primary(context),
       onSwap: onSwap,
@@ -2774,7 +2768,6 @@ class _DayCard extends StatelessWidget {
           widgets.add(const SizedBox(height: 2));
           widgets.add(_CourseRow(
             icon: Icons.icecream,
-            label: l10n.mealCourseDessert,
             recipeName: dessertRecipe.name,
             color: const Color(0xFF9B59B6),
             onSwap: () => onSwapCourse(course),
@@ -2795,14 +2788,12 @@ class _DayCard extends StatelessWidget {
 /// Compact row for a companion course (soup/starter or dessert).
 class _CourseRow extends StatelessWidget {
   final IconData icon;
-  final String label;
   final String recipeName;
   final Color color;
   final VoidCallback onSwap;
 
   const _CourseRow({
     required this.icon,
-    required this.label,
     required this.recipeName,
     required this.color,
     required this.onSwap,
