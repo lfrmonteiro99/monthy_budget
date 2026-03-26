@@ -1724,10 +1724,10 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 value: budgetUsed.clamp(0.0, 1.0),
                 backgroundColor: AppColors.border(context),
                 color: budgetUsed > 1 ? Colors.red : AppColors.primary(context),
-                minHeight: 6,
-                borderRadius: BorderRadius.circular(3),
+                minHeight: 4,
+                borderRadius: BorderRadius.circular(2),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               // Week navigator (← Week N →) — replaces W1-W4 tabs
               Builder(
                 builder: (_) {
@@ -2762,7 +2762,6 @@ class _DayCard extends StatelessWidget {
       onSwap: onSwap,
     ));
 
-    // Dessert course
     for (final course in allCourses) {
       if (course.courseType == CourseType.dessert) {
         final dessertRecipe = service.recipeMap[course.recipeId];
