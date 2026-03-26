@@ -271,9 +271,8 @@ class Recipe {
         'courseType': courseType.jsonValue,
       };
 
-  /// Whether this recipe is a soup/broth (detected by ID convention).
-  bool get isSoup => courseType == CourseType.soupOrStarter && _soupPattern.hasMatch(id);
-  static final _soupPattern = RegExp(r'sopa|caldo|canja|creme');
+  /// Whether this recipe is a soup/broth.
+  bool get isSoup => courseType == CourseType.soupOrStarter;
 
   /// Whether this recipe qualifies as a soup or starter/entrada.
   bool get isSoupOrStarter => courseType == CourseType.soupOrStarter;
