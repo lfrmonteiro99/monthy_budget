@@ -1,0 +1,78 @@
+name: Meal Planner Validation
+
+# Dedicated workflow to validate meal generation logic.
+# Runs the Dart test that exercises MealPlannerService.generate() with
+# 7 different configurations and checks course types, diversity, nutrition,
+# cost sanity, and completeness.
+#
+# Trigger manually via workflow_dispatch or on changes to meal planner code.
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'monthy_budget_flutter/lib/models/meal_planner.dart'
+      - 'monthy_budget_flutter/lib/models/meal_settings.dart'
+      - 'monthy_budget_flutter/lib/services/meal_planner_service.dart'
+      - 'monthy_budget_flutter/assets/meal_planner/**'
+      - 'monthy_budget_flutter/test/meal_generation_validation_test.dart'
+      - '.github/workflows/meal-planner-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-meal-generation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: monthy_budget_flutter
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.2'
+          channel: stable
+          cache: true
+
+      - name: Create Supabase config stub
+        run: |
+          mkdir -p lib/config
+          if [ ! -f lib/config/supabase_config.dart ]; then
+            cat > lib/config/supabase_config.dart << 'DART'
+            const supabaseUrl = 'https://placeholder.supabase.co';
+            const supabaseAnonKey = 'placeholder';
+          DART
+          fi
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate l10n
+        run: flutter gen-l10n
+
+      - name: Run meal generation validation tests
+        run: |
+          echo "========================================"
+          echo "  Meal Planner Generation Validation"
+          echo "========================================"
+          flutter test test/meal_generation_validation_test.dart --reporter expanded 2>&1 | tee meal_validation_output.txt
+          EXIT_CODE=${PIPESTATUS[0]}
+
+          echo ""
+          echo "========================================"
+          echo "  Test Summary"
+          echo "========================================"
+          grep -E '(Config|PASS|FAIL|✅|❌|unique|Top|Soup|Dessert|Main)' meal_validation_output.txt || true
+
+          exit $EXIT_CODE
+
+      - name: Upload test output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: meal-validation-results
+          path: monthy_budget_flutter/meal_validation_output.txt
+          retention-days: 7
