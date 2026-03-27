@@ -81,6 +81,7 @@ class MealPlannerService {
           nutFree: r['nut_free'] as bool? ?? true,
           shellfishFree: r['shellfish_free'] as bool? ?? true,
           batchCookable: r['batch_cookable'] as bool? ?? false,
+          isCompleteMeal: r['is_complete_meal'] as bool? ?? true,
           maxBatchDays: r['max_batch_days'] as int? ?? 2,
           isPortable: r['is_portable'] as bool? ?? false,
           suitableMealTypes:
@@ -607,9 +608,9 @@ class MealPlannerService {
           if (noSoup.isNotEmpty) pool = noSoup;
         }
 
-        // When multi-course is enabled, the main course pool must exclude
-        // soups/starters and desserts — those are picked separately.
-        if (ms.includeSoupOrStarter || ms.includeDessert) {
+        // Always exclude soups/desserts from the main course pool —
+        // they should never be picked as standalone main courses.
+        {
           final mainOnly = pool.where((r) =>
             r.courseType != CourseType.soupOrStarter && r.courseType != CourseType.dessert).toList();
           if (mainOnly.isNotEmpty) pool = mainOnly;
@@ -620,6 +621,14 @@ class MealPlannerService {
           r.nutrition == null ||
           r.nutrition!.proteinG >= Recipe.mainMealMinProteinG).toList();
         if (highProtein.length >= 3) pool = highProtein;
+
+        // Complete meal filter: for lunch/dinner, strongly prefer recipes
+        // with a real protein source (meat, fish, eggs, tofu) over
+        // legume-only or dairy-only dishes.
+        if (mealType == MealType.lunch || mealType == MealType.dinner) {
+          final complete = pool.where((r) => r.isCompleteMeal).toList();
+          if (complete.length >= 3) pool = complete;
+        }
 
         // Pick recipe: dedup + protein diversity + favorites boost
         final usedToday = usedRecipesPerDay[day]!;
@@ -996,11 +1005,15 @@ class MealPlannerService {
       }
       final expensive = days[expensiveIdx];
 
-      // Find cheapest eligible replacement from pre-sorted list
+      // Find cheapest eligible replacement from pre-sorted list.
+      // Must match the same courseType to preserve multi-course integrity.
+      final expensiveCourseType = recipeMap[expensive.recipeId]?.courseType ?? expensive.courseType;
       final eligible = eligibleByMealType[expensive.mealType] ?? [];
       (Recipe, double)? replacement;
       for (final entry in eligible) {
-        if (entry.$1.id != expensive.recipeId && entry.$2 < expensive.costEstimate) {
+        if (entry.$1.id != expensive.recipeId &&
+            entry.$2 < expensive.costEstimate &&
+            entry.$1.courseType == expensiveCourseType) {
           replacement = entry;
           break; // already sorted by cost, first match is cheapest
         }
