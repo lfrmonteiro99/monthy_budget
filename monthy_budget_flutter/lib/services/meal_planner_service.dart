@@ -1005,11 +1005,15 @@ class MealPlannerService {
       }
       final expensive = days[expensiveIdx];
 
-      // Find cheapest eligible replacement from pre-sorted list
+      // Find cheapest eligible replacement from pre-sorted list.
+      // Must match the same courseType to preserve multi-course integrity.
+      final expensiveCourseType = recipeMap[expensive.recipeId]?.courseType ?? expensive.courseType;
       final eligible = eligibleByMealType[expensive.mealType] ?? [];
       (Recipe, double)? replacement;
       for (final entry in eligible) {
-        if (entry.$1.id != expensive.recipeId && entry.$2 < expensive.costEstimate) {
+        if (entry.$1.id != expensive.recipeId &&
+            entry.$2 < expensive.costEstimate &&
+            entry.$1.courseType == expensiveCourseType) {
           replacement = entry;
           break; // already sorted by cost, first match is cheapest
         }
