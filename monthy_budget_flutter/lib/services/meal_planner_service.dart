@@ -608,8 +608,7 @@ class MealPlannerService {
           if (noSoup.isNotEmpty) pool = noSoup;
         }
 
-        // Always exclude soups/desserts from the main course pool —
-        // they should never be picked as standalone main courses.
+        // Always exclude soups/desserts from the main course pool.
         {
           final mainOnly = pool.where((r) =>
             r.courseType != CourseType.soupOrStarter && r.courseType != CourseType.dessert).toList();
