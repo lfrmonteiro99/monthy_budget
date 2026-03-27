@@ -608,9 +608,9 @@ class MealPlannerService {
           if (noSoup.isNotEmpty) pool = noSoup;
         }
 
-        // When multi-course is enabled, exclude soups/desserts from main pool
-        // (they're picked separately as companion courses).
-        if (ms.includeSoupOrStarter || ms.includeDessert) {
+        // Always exclude soups/desserts from the main course pool —
+        // they should never be picked as standalone main courses.
+        {
           final mainOnly = pool.where((r) =>
             r.courseType != CourseType.soupOrStarter && r.courseType != CourseType.dessert).toList();
           if (mainOnly.isNotEmpty) pool = mainOnly;
