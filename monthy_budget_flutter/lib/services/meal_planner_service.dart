@@ -609,8 +609,8 @@ class MealPlannerService {
         }
 
         // When multi-course is enabled, the main course pool must exclude
-        // soups/starters and desserts — those are picked separately.
-        if (ms.includeSoupOrStarter || ms.includeDessert) {
+        // Always exclude soups/starters and desserts from the main course pool.
+        {
           final mainOnly = pool.where((r) =>
             r.courseType != CourseType.soupOrStarter && r.courseType != CourseType.dessert).toList();
           if (mainOnly.isNotEmpty) pool = mainOnly;
