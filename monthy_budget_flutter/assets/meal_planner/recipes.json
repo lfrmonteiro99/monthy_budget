@@ -8827,7 +8827,8 @@
       "proteinG": 28,
       "carbsG": 52,
       "fatG": 10,
-      "fiberG": 3
+      "fiberG": 3,
+      "sodiumMg": 480
     }
   },
   {
@@ -8877,7 +8878,8 @@
       "proteinG": 24,
       "carbsG": 55,
       "fatG": 16,
-      "fiberG": 4
+      "fiberG": 4,
+      "sodiumMg": 620
     }
   },
   {
@@ -8923,7 +8925,8 @@
       "proteinG": 18,
       "carbsG": 50,
       "fatG": 12,
-      "fiberG": 2
+      "fiberG": 2,
+      "sodiumMg": 350
     }
   },
   {
@@ -8973,7 +8976,8 @@
       "proteinG": 30,
       "carbsG": 50,
       "fatG": 10,
-      "fiberG": 3
+      "fiberG": 3,
+      "sodiumMg": 410
     }
   },
   {
@@ -9023,7 +9027,8 @@
       "proteinG": 28,
       "carbsG": 55,
       "fatG": 9,
-      "fiberG": 4
+      "fiberG": 4,
+      "sodiumMg": 450
     }
   },
   {
@@ -9069,7 +9074,8 @@
       "proteinG": 20,
       "carbsG": 52,
       "fatG": 16,
-      "fiberG": 5
+      "fiberG": 5,
+      "sodiumMg": 680
     }
   },
   {
@@ -9115,7 +9121,8 @@
       "proteinG": 26,
       "carbsG": 38,
       "fatG": 9,
-      "fiberG": 3
+      "fiberG": 3,
+      "sodiumMg": 520
     }
   },
   {
@@ -9165,7 +9172,8 @@
       "proteinG": 18,
       "carbsG": 56,
       "fatG": 14,
-      "fiberG": 4
+      "fiberG": 4,
+      "sodiumMg": 590
     }
   },
   {
@@ -9211,7 +9219,8 @@
       "proteinG": 26,
       "carbsG": 54,
       "fatG": 8,
-      "fiberG": 3
+      "fiberG": 3,
+      "sodiumMg": 460
     }
   },
   {
@@ -9261,7 +9270,8 @@
       "proteinG": 28,
       "carbsG": 40,
       "fatG": 12,
-      "fiberG": 3
+      "fiberG": 3,
+      "sodiumMg": 430
     }
   }
 ]
