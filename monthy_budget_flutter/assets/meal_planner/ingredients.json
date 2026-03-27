@@ -590,5 +590,13 @@
     "unit": "kg",
     "avgPricePerUnit": 8.0,
     "minPurchaseQty": 0.085
+  },
+  {
+    "id": "salsichas",
+    "name": "Salsichas",
+    "category": "proteina",
+    "unit": "kg",
+    "avgPricePerUnit": 3.0,
+    "minPurchaseQty": 0.4
   }
 ]

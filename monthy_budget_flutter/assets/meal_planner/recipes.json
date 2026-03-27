@@ -8779,5 +8779,489 @@
       "Servir morna ou fria"
     ],
     "courseType": "dessert"
+  },
+  {
+    "id": "massa_atum_simples",
+    "name": "Massa com Atum",
+    "proteinId": "atum_lata",
+    "type": "peixe",
+    "complexity": 1,
+    "prepMinutes": 12,
+    "activeMinutes": 5,
+    "passiveMinutes": 7,
+    "servings": 4,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isCompleteMeal": true,
+    "courseType": "mainCourse",
+    "ingredients": [
+      {
+        "ingredientId": "massa",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "atum_lata",
+        "quantity": 2.0
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.01
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.15
+      }
+    ],
+    "nutrition": {
+      "kcal": 420,
+      "proteinG": 28,
+      "carbsG": 52,
+      "fatG": 10,
+      "fiberG": 3
+    }
+  },
+  {
+    "id": "arroz_ovos_salsichas",
+    "name": "Arroz com Ovos e Salsichas",
+    "proteinId": "ovo",
+    "type": "ovos",
+    "complexity": 1,
+    "prepMinutes": 18,
+    "activeMinutes": 8,
+    "passiveMinutes": 10,
+    "servings": 4,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isCompleteMeal": true,
+    "courseType": "mainCourse",
+    "ingredients": [
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "ovo",
+        "quantity": 4.0
+      },
+      {
+        "ingredientId": "salsichas",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "ervilhas",
+        "quantity": 0.2
+      }
+    ],
+    "nutrition": {
+      "kcal": 480,
+      "proteinG": 24,
+      "carbsG": 55,
+      "fatG": 16,
+      "fiberG": 4
+    }
+  },
+  {
+    "id": "esparguete_ovo",
+    "name": "Esparguete com Ovo Estrelado",
+    "proteinId": "ovo",
+    "type": "ovos",
+    "complexity": 1,
+    "prepMinutes": 12,
+    "activeMinutes": 5,
+    "passiveMinutes": 7,
+    "servings": 4,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isCompleteMeal": true,
+    "courseType": "mainCourse",
+    "ingredients": [
+      {
+        "ingredientId": "massa",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "ovo",
+        "quantity": 4.0
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.03
+      },
+      {
+        "ingredientId": "alho",
+        "quantity": 0.01
+      }
+    ],
+    "nutrition": {
+      "kcal": 390,
+      "proteinG": 18,
+      "carbsG": 50,
+      "fatG": 12,
+      "fiberG": 2
+    }
+  },
+  {
+    "id": "arroz_frango_simples",
+    "name": "Arroz de Frango Simples",
+    "proteinId": "frango",
+    "type": "carne",
+    "complexity": 1,
+    "prepMinutes": 20,
+    "activeMinutes": 8,
+    "passiveMinutes": 12,
+    "servings": 4,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isCompleteMeal": true,
+    "courseType": "mainCourse",
+    "ingredients": [
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "frango",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "cenoura",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      }
+    ],
+    "nutrition": {
+      "kcal": 430,
+      "proteinG": 30,
+      "carbsG": 50,
+      "fatG": 10,
+      "fiberG": 3
+    }
+  },
+  {
+    "id": "massa_frango_tomate",
+    "name": "Massa com Frango e Tomate",
+    "proteinId": "frango",
+    "type": "carne",
+    "complexity": 1,
+    "prepMinutes": 18,
+    "activeMinutes": 8,
+    "passiveMinutes": 10,
+    "servings": 4,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isCompleteMeal": true,
+    "courseType": "mainCourse",
+    "ingredients": [
+      {
+        "ingredientId": "massa",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "frango",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1.0
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.02
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      }
+    ],
+    "nutrition": {
+      "kcal": 440,
+      "proteinG": 28,
+      "carbsG": 55,
+      "fatG": 9,
+      "fiberG": 4
+    }
+  },
+  {
+    "id": "salsichas_arroz_ervilhas",
+    "name": "Salsichas com Arroz e Ervilhas",
+    "proteinId": "salsichas",
+    "type": "carne",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "activeMinutes": 5,
+    "passiveMinutes": 10,
+    "servings": 4,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isCompleteMeal": true,
+    "courseType": "mainCourse",
+    "ingredients": [
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "salsichas",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "ervilhas",
+        "quantity": 0.3
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.02
+      }
+    ],
+    "nutrition": {
+      "kcal": 460,
+      "proteinG": 20,
+      "carbsG": 52,
+      "fatG": 16,
+      "fiberG": 5
+    }
+  },
+  {
+    "id": "sandes_atum_alface",
+    "name": "Sandes de Atum e Alface",
+    "proteinId": "atum_lata",
+    "type": "peixe",
+    "complexity": 1,
+    "prepMinutes": 8,
+    "activeMinutes": 8,
+    "passiveMinutes": 0,
+    "servings": 4,
+    "suitableMealTypes": [
+      "lunch",
+      "snack"
+    ],
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isCompleteMeal": true,
+    "courseType": "mainCourse",
+    "ingredients": [
+      {
+        "ingredientId": "pao_forma",
+        "quantity": 1.0
+      },
+      {
+        "ingredientId": "atum_lata",
+        "quantity": 2.0
+      },
+      {
+        "ingredientId": "alface",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.01
+      }
+    ],
+    "nutrition": {
+      "kcal": 350,
+      "proteinG": 26,
+      "carbsG": 38,
+      "fatG": 9,
+      "fiberG": 3
+    }
+  },
+  {
+    "id": "massa_salsichas_tomate",
+    "name": "Massa com Salsichas e Tomate",
+    "proteinId": "salsichas",
+    "type": "carne",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "activeMinutes": 5,
+    "passiveMinutes": 10,
+    "servings": 4,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isCompleteMeal": true,
+    "courseType": "mainCourse",
+    "ingredients": [
+      {
+        "ingredientId": "massa",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "salsichas",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "tomate_pelado",
+        "quantity": 1.0
+      },
+      {
+        "ingredientId": "cebola",
+        "quantity": 0.1
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.02
+      }
+    ],
+    "nutrition": {
+      "kcal": 450,
+      "proteinG": 18,
+      "carbsG": 56,
+      "fatG": 14,
+      "fiberG": 4
+    }
+  },
+  {
+    "id": "arroz_atum_milho",
+    "name": "Arroz com Atum e Milho",
+    "proteinId": "atum_lata",
+    "type": "peixe",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "activeMinutes": 5,
+    "passiveMinutes": 10,
+    "servings": 4,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "glutenFree": true,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isCompleteMeal": true,
+    "courseType": "mainCourse",
+    "ingredients": [
+      {
+        "ingredientId": "arroz",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "atum_lata",
+        "quantity": 2.0
+      },
+      {
+        "ingredientId": "milho_lata",
+        "quantity": 1.0
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.02
+      }
+    ],
+    "nutrition": {
+      "kcal": 410,
+      "proteinG": 26,
+      "carbsG": 54,
+      "fatG": 8,
+      "fiberG": 3
+    }
+  },
+  {
+    "id": "tortilha_frango_simples",
+    "name": "Tortilha de Frango",
+    "proteinId": "frango",
+    "type": "carne",
+    "complexity": 1,
+    "prepMinutes": 15,
+    "activeMinutes": 10,
+    "passiveMinutes": 5,
+    "servings": 4,
+    "suitableMealTypes": [
+      "lunch",
+      "dinner"
+    ],
+    "glutenFree": false,
+    "lactoseFree": true,
+    "nutFree": true,
+    "shellfishFree": true,
+    "isCompleteMeal": true,
+    "courseType": "mainCourse",
+    "ingredients": [
+      {
+        "ingredientId": "pao",
+        "quantity": 1.0
+      },
+      {
+        "ingredientId": "frango",
+        "quantity": 0.4
+      },
+      {
+        "ingredientId": "alface",
+        "quantity": 0.5
+      },
+      {
+        "ingredientId": "tomate",
+        "quantity": 0.2
+      },
+      {
+        "ingredientId": "azeite",
+        "quantity": 0.01
+      }
+    ],
+    "nutrition": {
+      "kcal": 400,
+      "proteinG": 28,
+      "carbsG": 40,
+      "fatG": 12,
+      "fiberG": 3
+    }
   }
 ]
