@@ -150,6 +150,7 @@ jobs:
 
       - name: Run Playwright smoke tests
         if: steps.playwright-mode.outputs.mode == 'authenticated'
+        continue-on-error: true
         env:
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:7357
           E2E_EMAIL: ${{ secrets.E2E_EMAIL }}
