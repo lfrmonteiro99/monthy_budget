@@ -153,7 +153,7 @@ void _runCoreValidation(
   }
   for (final weekEntry in weeklyRecipeCounts.entries) {
     for (final recipeEntry in weekEntry.value.entries) {
-      expect(recipeEntry.value, lessThanOrEqualTo(4),
+      expect(recipeEntry.value, lessThanOrEqualTo(3),
           reason: '${recipeMap[recipeEntry.key]?.name ?? recipeEntry.key} x${recipeEntry.value} in week ${weekEntry.key}');
     }
   }
