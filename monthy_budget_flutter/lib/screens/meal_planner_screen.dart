@@ -1874,7 +1874,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   child: ActionChip(
                     avatar: const Icon(Icons.monitor_heart_outlined, size: 14),
                     label: Text(
-                      '${_weeklySummaries[_selectedWeek]!.avgKcal.round()} kcal',
+                      '${_weeklySummaries[_selectedWeek]!.overallScore}/10',
                     ),
                     labelStyle: const TextStyle(fontSize: 11),
                     padding: EdgeInsets.zero,
