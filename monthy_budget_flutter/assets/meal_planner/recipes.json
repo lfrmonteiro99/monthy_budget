@@ -705,7 +705,7 @@
   },
   {
     "id": "grao_espinafres",
-    "name": "Grão com Espinafres",
+    "name": "Grão com Espinafres com Frango",
     "proteinId": "grao",
     "type": "leguminosas",
     "complexity": 1,
@@ -741,13 +741,17 @@
       {
         "ingredientId": "azeite",
         "quantity": 0.05
+      },
+      {
+        "ingredientId": "frango",
+        "quantity": 0.3
       }
     ],
     "isPortable": true,
     "seasons": [],
     "nutrition": {
-      "kcal": 350,
-      "proteinG": 16,
+      "kcal": 470,
+      "proteinG": 31,
       "carbsG": 42,
       "fatG": 10,
       "fiberG": 10,
@@ -761,11 +765,11 @@
       "Adiciona o grão, tempera com sal e azeite e aquece bem."
     ],
     "courseType": "mainCourse",
-    "isCompleteMeal": false
+    "isCompleteMeal": true
   },
   {
     "id": "lentilhas_estufadas",
-    "name": "Lentilhas Estufadas",
+    "name": "Lentilhas Estufadas com Chouriço",
     "proteinId": "lentilhas",
     "type": "leguminosas",
     "complexity": 2,
@@ -805,6 +809,10 @@
       {
         "ingredientId": "azeite",
         "quantity": 0.05
+      },
+      {
+        "ingredientId": "chourico",
+        "quantity": 0.3
       }
     ],
     "isPortable": true,
@@ -813,8 +821,8 @@
       "winter"
     ],
     "nutrition": {
-      "kcal": 380,
-      "proteinG": 20,
+      "kcal": 500,
+      "proteinG": 35,
       "carbsG": 48,
       "fatG": 8,
       "fiberG": 14,
@@ -834,7 +842,7 @@
   },
   {
     "id": "feijao_verde_batata",
-    "name": "Feijão Verde com Batata",
+    "name": "Feijão Verde com Batata com Chouriço",
     "proteinId": "feijao_verde",
     "type": "leguminosas",
     "complexity": 1,
@@ -870,13 +878,17 @@
       {
         "ingredientId": "azeite",
         "quantity": 0.05
+      },
+      {
+        "ingredientId": "chourico",
+        "quantity": 0.3
       }
     ],
     "isPortable": true,
     "seasons": [],
     "nutrition": {
-      "kcal": 280,
-      "proteinG": 10,
+      "kcal": 400,
+      "proteinG": 25,
       "carbsG": 38,
       "fatG": 8,
       "fiberG": 8,
@@ -890,7 +902,7 @@
       "Serve quente como prato principal ou acompanhamento."
     ],
     "courseType": "mainCourse",
-    "isCompleteMeal": false
+    "isCompleteMeal": true
   },
   {
     "id": "sopa_feijao",
@@ -2750,7 +2762,7 @@
   },
   {
     "id": "arroz_legumes",
-    "name": "Arroz de Legumes",
+    "name": "Arroz de Legumes com Ovo",
     "proteinId": "arroz",
     "type": "vegetariano",
     "complexity": 1,
@@ -2790,13 +2802,17 @@
       {
         "ingredientId": "azeite",
         "quantity": 0.05
+      },
+      {
+        "ingredientId": "ovo",
+        "quantity": 0.3
       }
     ],
     "isPortable": true,
     "seasons": [],
     "nutrition": {
-      "kcal": 320,
-      "proteinG": 8,
+      "kcal": 440,
+      "proteinG": 23,
       "carbsG": 52,
       "fatG": 8,
       "fiberG": 4.5,
@@ -2810,11 +2826,11 @@
       "Cozinha em lume brando 18 minutos até o arroz estar cozido."
     ],
     "courseType": "mainCourse",
-    "isCompleteMeal": false
+    "isCompleteMeal": true
   },
   {
     "id": "massa_cogumelos",
-    "name": "Massa com Cogumelos",
+    "name": "Massa com Cogumelos com Atum",
     "proteinId": "cogumelos",
     "type": "vegetariano",
     "complexity": 2,
@@ -2854,6 +2870,10 @@
       {
         "ingredientId": "azeite",
         "quantity": 0.05
+      },
+      {
+        "ingredientId": "atum_lata",
+        "quantity": 0.3
       }
     ],
     "isPortable": true,
@@ -2862,8 +2882,8 @@
       "winter"
     ],
     "nutrition": {
-      "kcal": 380,
-      "proteinG": 12,
+      "kcal": 500,
+      "proteinG": 27,
       "carbsG": 52,
       "fatG": 12,
       "fiberG": 3.5,
@@ -2877,7 +2897,7 @@
       "Cozinha a massa, escorre e mistura com o molho de cogumelos."
     ],
     "courseType": "mainCourse",
-    "isCompleteMeal": false
+    "isCompleteMeal": true
   },
   {
     "id": "sopa_legumes",
@@ -2946,7 +2966,7 @@
   },
   {
     "id": "salada_grao",
-    "name": "Salada de Grão-de-Bico",
+    "name": "Salada de Grão-de-Bico com Frango",
     "proteinId": "grao",
     "type": "leguminosas",
     "complexity": 1,
@@ -2986,6 +3006,10 @@
       {
         "ingredientId": "azeite",
         "quantity": 0.05
+      },
+      {
+        "ingredientId": "frango",
+        "quantity": 0.3
       }
     ],
     "isPortable": false,
@@ -2994,8 +3018,8 @@
       "summer"
     ],
     "nutrition": {
-      "kcal": 320,
-      "proteinG": 14,
+      "kcal": 440,
+      "proteinG": 29,
       "carbsG": 38,
       "fatG": 12,
       "fiberG": 8,
@@ -3009,7 +3033,7 @@
       "Tempera com azeite, vinagre, sal e ervas aromáticas a gosto."
     ],
     "courseType": "mainCourse",
-    "isCompleteMeal": false
+    "isCompleteMeal": true
   },
   {
     "id": "salmao_forno",
@@ -5172,7 +5196,7 @@
   },
   {
     "id": "beringela_recheada",
-    "name": "Beringela Recheada",
+    "name": "Beringela Recheada com Ovo",
     "proteinId": "beringela",
     "type": "vegetariano",
     "complexity": 2,
@@ -5218,6 +5242,10 @@
       {
         "ingredientId": "azeite",
         "quantity": 0.03
+      },
+      {
+        "ingredientId": "ovo",
+        "quantity": 0.3
       }
     ],
     "isPortable": true,
@@ -5226,8 +5254,8 @@
       "autumn"
     ],
     "nutrition": {
-      "kcal": 250,
-      "proteinG": 10,
+      "kcal": 370,
+      "proteinG": 25,
       "carbsG": 18,
       "fatG": 14,
       "fiberG": 6,
@@ -5243,7 +5271,7 @@
     "activeMinutes": 15,
     "passiveMinutes": 20,
     "courseType": "mainCourse",
-    "isCompleteMeal": false
+    "isCompleteMeal": true
   },
   {
     "id": "wrap_vegetariano",
@@ -5658,7 +5686,7 @@
   },
   {
     "id": "lentilhas_legumes",
-    "name": "Lentilhas com Legumes",
+    "name": "Lentilhas com Legumes com Chouriço",
     "proteinId": "lentilhas",
     "type": "leguminosas",
     "complexity": 1,
@@ -5702,13 +5730,17 @@
       {
         "ingredientId": "azeite",
         "quantity": 0.03
+      },
+      {
+        "ingredientId": "chourico",
+        "quantity": 0.3
       }
     ],
     "isPortable": true,
     "seasons": [],
     "nutrition": {
-      "kcal": 320,
-      "proteinG": 18,
+      "kcal": 440,
+      "proteinG": 33,
       "carbsG": 44,
       "fatG": 6,
       "fiberG": 12,
@@ -5722,11 +5754,11 @@
       "Tempera com sal e serve."
     ],
     "courseType": "mainCourse",
-    "isCompleteMeal": false
+    "isCompleteMeal": true
   },
   {
     "id": "grao_curry",
-    "name": "Grão-de-Bico com Caril",
+    "name": "Grão-de-Bico com Caril com Frango",
     "proteinId": "grao",
     "type": "leguminosas",
     "complexity": 1,
@@ -5766,13 +5798,17 @@
       {
         "ingredientId": "azeite",
         "quantity": 0.04
+      },
+      {
+        "ingredientId": "frango",
+        "quantity": 0.3
       }
     ],
     "isPortable": true,
     "seasons": [],
     "nutrition": {
-      "kcal": 340,
-      "proteinG": 16,
+      "kcal": 460,
+      "proteinG": 31,
       "carbsG": 42,
       "fatG": 10,
       "fiberG": 10,
@@ -5786,11 +5822,11 @@
       "Serve com arroz basmati."
     ],
     "courseType": "mainCourse",
-    "isCompleteMeal": false
+    "isCompleteMeal": true
   },
   {
     "id": "feijao_preto_arroz",
-    "name": "Feijão Preto com Arroz",
+    "name": "Feijão Preto com Arroz com Chouriço",
     "proteinId": "feijao",
     "type": "leguminosas",
     "complexity": 1,
@@ -5834,13 +5870,17 @@
       {
         "ingredientId": "azeite",
         "quantity": 0.03
+      },
+      {
+        "ingredientId": "chourico",
+        "quantity": 0.3
       }
     ],
     "isPortable": true,
     "seasons": [],
     "nutrition": {
-      "kcal": 380,
-      "proteinG": 16,
+      "kcal": 500,
+      "proteinG": 31,
       "carbsG": 58,
       "fatG": 8,
       "fiberG": 10,
@@ -5853,11 +5893,11 @@
       "Cozinha 10 minutos e serve com o arroz."
     ],
     "courseType": "mainCourse",
-    "isCompleteMeal": false
+    "isCompleteMeal": true
   },
   {
     "id": "cuscuz_legumes",
-    "name": "Cuscuz com Legumes",
+    "name": "Cuscuz com Legumes com Frango",
     "proteinId": "courgette",
     "type": "vegetariano",
     "complexity": 1,
@@ -5901,13 +5941,17 @@
       {
         "ingredientId": "azeite",
         "quantity": 0.03
+      },
+      {
+        "ingredientId": "frango",
+        "quantity": 0.3
       }
     ],
     "isPortable": true,
     "seasons": [],
     "nutrition": {
-      "kcal": 300,
-      "proteinG": 10,
+      "kcal": 420,
+      "proteinG": 25,
       "carbsG": 48,
       "fatG": 8,
       "fiberG": 5,
@@ -5921,11 +5965,11 @@
       "Tempera com sal, pimenta e ervas a gosto."
     ],
     "courseType": "mainCourse",
-    "isCompleteMeal": false
+    "isCompleteMeal": true
   },
   {
     "id": "batata_doce_forno",
-    "name": "Batata-Doce Recheada",
+    "name": "Batata-Doce Recheada com Frango",
     "proteinId": "batata_doce",
     "type": "vegetariano",
     "complexity": 1,
@@ -5967,6 +6011,10 @@
       {
         "ingredientId": "azeite",
         "quantity": 0.02
+      },
+      {
+        "ingredientId": "frango",
+        "quantity": 0.3
       }
     ],
     "isPortable": true,
@@ -5975,8 +6023,8 @@
       "winter"
     ],
     "nutrition": {
-      "kcal": 320,
-      "proteinG": 10,
+      "kcal": 440,
+      "proteinG": 25,
       "carbsG": 48,
       "fatG": 10,
       "fiberG": 6,
@@ -5992,7 +6040,7 @@
     "activeMinutes": 10,
     "passiveMinutes": 10,
     "courseType": "mainCourse",
-    "isCompleteMeal": false
+    "isCompleteMeal": true
   },
   {
     "id": "ovo_estrelado_arroz_feijao",
@@ -6571,7 +6619,7 @@
   },
   {
     "id": "arroz_feijao_legumes",
-    "name": "Arroz de Feijão com Legumes",
+    "name": "Arroz de Feijão com Legumes com Chouriço",
     "proteinId": "feijao",
     "type": "leguminosas",
     "complexity": 1,
@@ -6615,13 +6663,17 @@
       {
         "ingredientId": "azeite",
         "quantity": 0.03
+      },
+      {
+        "ingredientId": "chourico",
+        "quantity": 0.3
       }
     ],
     "isPortable": true,
     "seasons": [],
     "nutrition": {
-      "kcal": 380,
-      "proteinG": 14,
+      "kcal": 500,
+      "proteinG": 29,
       "carbsG": 58,
       "fatG": 8,
       "fiberG": 8,
@@ -6635,7 +6687,7 @@
       "Tempera e serve."
     ],
     "courseType": "mainCourse",
-    "isCompleteMeal": false
+    "isCompleteMeal": true
   },
   {
     "id": "frango_caril",
@@ -7711,7 +7763,7 @@
   },
   {
     "id": "massa_legumes_forno",
-    "name": "Massa Gratinada com Legumes",
+    "name": "Massa Gratinada com Legumes com Atum",
     "proteinId": "courgette",
     "type": "vegetariano",
     "complexity": 2,
@@ -7757,13 +7809,17 @@
       {
         "ingredientId": "azeite",
         "quantity": 0.02
+      },
+      {
+        "ingredientId": "atum_lata",
+        "quantity": 0.3
       }
     ],
     "isPortable": true,
     "seasons": [],
     "nutrition": {
-      "kcal": 400,
-      "proteinG": 16,
+      "kcal": 520,
+      "proteinG": 31,
       "carbsG": 46,
       "fatG": 18,
       "fiberG": 4,
@@ -7779,7 +7835,7 @@
     "activeMinutes": 15,
     "passiveMinutes": 15,
     "courseType": "mainCourse",
-    "isCompleteMeal": false
+    "isCompleteMeal": true
   },
   {
     "id": "bacalhau_espiritual",
@@ -8004,7 +8060,7 @@
   },
   {
     "id": "couve_flor_gratinada",
-    "name": "Couve-Flor Gratinada",
+    "name": "Couve-Flor Gratinada com Ovo",
     "proteinId": "couve_flor",
     "type": "vegetariano",
     "complexity": 2,
@@ -8042,6 +8098,10 @@
       {
         "ingredientId": "manteiga",
         "quantity": 0.02
+      },
+      {
+        "ingredientId": "ovo",
+        "quantity": 0.3
       }
     ],
     "isPortable": true,
@@ -8050,8 +8110,8 @@
       "winter"
     ],
     "nutrition": {
-      "kcal": 250,
-      "proteinG": 10,
+      "kcal": 370,
+      "proteinG": 25,
       "carbsG": 14,
       "fatG": 16,
       "fiberG": 4,
@@ -8067,7 +8127,7 @@
     "activeMinutes": 15,
     "passiveMinutes": 15,
     "courseType": "mainCourse",
-    "isCompleteMeal": false
+    "isCompleteMeal": true
   },
   {
     "id": "lulas_estufadas",
