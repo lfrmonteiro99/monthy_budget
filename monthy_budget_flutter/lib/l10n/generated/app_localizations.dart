@@ -230,7 +230,7 @@ abstract class S {
   /// Accessibility label for adding item to shopping list
   ///
   /// In pt, this message translates to:
-  /// **'Adicionar {name} Ã  lista'**
+  /// **'Adicionar {name} à lista'**
   String addToList(String name);
 
   /// Marital status: single
@@ -332,7 +332,7 @@ abstract class S {
   /// Expense category: water
   ///
   /// In pt, this message translates to:
-  /// **'Ãgua'**
+  /// **'Água'**
   String get enumCatAgua;
 
   /// Expense category: food
@@ -518,13 +518,13 @@ abstract class S {
   /// Age group: 0 to 3 years
   ///
   /// In pt, this message translates to:
-  /// **'0â€“3 anos'**
+  /// **'0–3 anos'**
   String get enumAge0to3;
 
   /// Age group: 4 to 10 years
   ///
   /// In pt, this message translates to:
-  /// **'4â€“10 anos'**
+  /// **'4–10 anos'**
   String get enumAge4to10;
 
   /// Age group: teenager
@@ -674,19 +674,19 @@ abstract class S {
   /// Month review insight: food budget exceeded
   ///
   /// In pt, this message translates to:
-  /// **'Alimentação excedeu o orçamento em {percent}% â€” considere rever porções ou frequência de compras.'**
+  /// **'Alimentação excedeu o orçamento em {percent}% — considere rever porções ou frequência de compras.'**
   String monthReviewFoodExceeded(String percent);
 
   /// Month review insight: expenses exceeded plan
   ///
   /// In pt, this message translates to:
-  /// **'Despesas reais superaram o planeado em {amount}â‚¬ â€” ajustar valores nas definições?'**
+  /// **'Despesas reais superaram o planeado em {amount}€ — ajustar valores nas definições?'**
   String monthReviewExpensesExceeded(String amount);
 
   /// Month review insight: saved more than expected
   ///
   /// In pt, this message translates to:
-  /// **'Poupou {amount}â‚¬ mais do que previsto â€” pode reforçar fundo de emergência.'**
+  /// **'Poupou {amount}€ mais do que previsto — pode reforçar fundo de emergência.'**
   String monthReviewSavedMore(String amount);
 
   /// Month review insight: on track
@@ -710,7 +710,7 @@ abstract class S {
   /// Stress index card title
   ///
   /// In pt, this message translates to:
-  /// **'Ãndice de Tranquilidade'**
+  /// **'Índice de Tranquilidade'**
   String get dashboardStressIndex;
 
   /// Dashboard tension label
@@ -872,7 +872,7 @@ abstract class S {
   /// Food spending card header
   ///
   /// In pt, this message translates to:
-  /// **'ALIMENTAÃ‡ÃƒO'**
+  /// **'ALIMENTAÇÃO'**
   String get dashboardFood;
 
   /// Simulate button label
@@ -908,7 +908,7 @@ abstract class S {
   /// Purchase history card header
   ///
   /// In pt, this message translates to:
-  /// **'HISTÃ“RICO DE COMPRAS'**
+  /// **'HISTÓRICO DE COMPRAS'**
   String get dashboardPurchaseHistory;
 
   /// View all button label
@@ -1016,13 +1016,13 @@ abstract class S {
   /// Budget pace comparison value
   ///
   /// In pt, this message translates to:
-  /// **'{actual}â‚¬/dia vs {expected}â‚¬/dia'**
+  /// **'{actual}€/dia vs {expected}€/dia'**
   String dashboardPaceValue(String actual, String expected);
 
   /// Month review card summary suffix
   ///
   /// In pt, this message translates to:
-  /// **'â€” RESUMO'**
+  /// **'— RESUMO'**
   String get dashboardSummaryLabel;
 
   /// Accessibility label for month review card
@@ -1058,7 +1058,7 @@ abstract class S {
   /// Coach analysis card description
   ///
   /// In pt, this message translates to:
-  /// **'Posicionamento geral · Factores críticos do Ãndice de Tranquilidade · Oportunidade imediata. Baseado nos teus dados reais de orçamento, despesas e histórico de compras.'**
+  /// **'Posicionamento geral · Factores críticos do Índice de Tranquilidade · Oportunidade imediata. Baseado nos teus dados reais de orçamento, despesas e histórico de compras.'**
   String get coachAnalysisDescription;
 
   /// Coach configure API key button
@@ -1100,7 +1100,7 @@ abstract class S {
   /// Coach history section header
   ///
   /// In pt, this message translates to:
-  /// **'HISTÃ“RICO'**
+  /// **'HISTÓRICO'**
   String get coachHistory;
 
   /// Coach clear all button
@@ -1196,7 +1196,7 @@ abstract class S {
   /// Cost info when mode is free
   ///
   /// In pt, this message translates to:
-  /// **'Modo Eco â€” sem custos de creditos.'**
+  /// **'Modo Eco — sem custos de creditos.'**
   String get coachCostFree;
 
   /// Cost info per message
@@ -1544,7 +1544,7 @@ abstract class S {
   /// Snackbar message when product added to list
   ///
   /// In pt, this message translates to:
-  /// **'{name} adicionado Ã  lista'**
+  /// **'{name} adicionado à lista'**
   String groceryAddedToList(String name);
 
   /// Product card average price label
@@ -1784,7 +1784,7 @@ abstract class S {
   /// No description provided for @authErrorNetwork.
   ///
   /// In pt, this message translates to:
-  /// **'Não foi possível ligar ao servidor. Verifique a sua ligação Ã  internet e tente novamente.'**
+  /// **'Não foi possível ligar ao servidor. Verifique a sua ligação à internet e tente novamente.'**
   String get authErrorNetwork;
 
   /// No description provided for @authErrorInvalidCredentials.
@@ -1964,7 +1964,7 @@ abstract class S {
   /// Projection sheet title
   ///
   /// In pt, this message translates to:
-  /// **'Projeção â€” {month} {year}'**
+  /// **'Projeção — {month} {year}'**
   String projectionTitle(String month, String year);
 
   /// Projection sheet subtitle
@@ -1976,7 +1976,7 @@ abstract class S {
   /// Projection section: food
   ///
   /// In pt, this message translates to:
-  /// **'ALIMENTAÃ‡ÃƒO'**
+  /// **'ALIMENTAÇÃO'**
   String get projectionFood;
 
   /// Projection scenario: current pace
@@ -2018,7 +2018,7 @@ abstract class S {
   /// Projection stress impact label
   ///
   /// In pt, this message translates to:
-  /// **'Impacto no Ãndice'**
+  /// **'Impacto no Índice'**
   String get projectionStressImpact;
 
   /// Projection section: expenses
@@ -2030,7 +2030,7 @@ abstract class S {
   /// Projection simulation disclaimer
   ///
   /// In pt, this message translates to:
-  /// **'Simulação â€” não guardado'**
+  /// **'Simulação — não guardado'**
   String get projectionSimulation;
 
   /// Projection reduce all expenses label
@@ -2060,7 +2060,7 @@ abstract class S {
   /// Projection simulated stress index label
   ///
   /// In pt, this message translates to:
-  /// **'Ãndice simulado'**
+  /// **'Índice simulado'**
   String get projectionSimIndex;
 
   /// Trend sheet title
@@ -2072,7 +2072,7 @@ abstract class S {
   /// Trend section: stress index
   ///
   /// In pt, this message translates to:
-  /// **'ÃNDICE DE TRANQUILIDADE'**
+  /// **'ÍNDICE DE TRANQUILIDADE'**
   String get trendStressIndex;
 
   /// Trend section: total expenses
@@ -2108,7 +2108,7 @@ abstract class S {
   /// Trend category: water
   ///
   /// In pt, this message translates to:
-  /// **'Ãgua'**
+  /// **'Água'**
   String get trendCatWater;
 
   /// Trend category: food
@@ -2156,7 +2156,7 @@ abstract class S {
   /// Month review sheet title
   ///
   /// In pt, this message translates to:
-  /// **'Resumo â€” {month}'**
+  /// **'Resumo — {month}'**
   String monthReviewTitle(String month);
 
   /// Title for the month review section on the dashboard
@@ -2276,13 +2276,13 @@ abstract class S {
   /// Meal planner add week to shopping list button
   ///
   /// In pt, this message translates to:
-  /// **'Adicionar semana Ã  lista'**
+  /// **'Adicionar semana à lista'**
   String get mealAddWeekToList;
 
   /// Meal planner ingredients added snackbar
   ///
   /// In pt, this message translates to:
-  /// **'{count} ingredientes adicionados Ã  lista'**
+  /// **'{count} ingredientes adicionados à lista'**
   String mealIngredientsAdded(int count);
 
   /// Meal planner day label
@@ -2330,7 +2330,7 @@ abstract class S {
   /// Meal planner total cost display
   ///
   /// In pt, this message translates to:
-  /// **'{cost}â‚¬ total'**
+  /// **'{cost}€ total'**
   String mealTotalCost(String cost);
 
   /// Meal ingredient category: proteins
@@ -2366,7 +2366,7 @@ abstract class S {
   /// Cost per person display in meal card
   ///
   /// In pt, this message translates to:
-  /// **'{cost}â‚¬/pess'**
+  /// **'{cost}€/pess'**
   String mealCostPerPerson(String cost);
 
   /// Nutrition badge abbreviation: protein
@@ -2450,7 +2450,7 @@ abstract class S {
   /// Wizard restrictions section header
   ///
   /// In pt, this message translates to:
-  /// **'RESTRIÃ‡Ã•ES DIETÃ‰TICAS'**
+  /// **'RESTRIÇÃ•ES DIETÉTICAS'**
   String get wizardDietaryRestrictions;
 
   /// Wizard dietary restriction: gluten free
@@ -2480,7 +2480,7 @@ abstract class S {
   /// Wizard disliked ingredients section header
   ///
   /// In pt, this message translates to:
-  /// **'INGREDIENTES QUE NÃƒO GOSTAS'**
+  /// **'INGREDIENTES QUE NÃO GOSTAS'**
   String get wizardDislikedIngredients;
 
   /// Wizard disliked ingredients hint
@@ -2492,13 +2492,13 @@ abstract class S {
   /// Wizard max prep time section header
   ///
   /// In pt, this message translates to:
-  /// **'TEMPO MÃXIMO POR REFEIÃ‡ÃƒO'**
+  /// **'TEMPO MÁXIMO POR REFEIÇÃO'**
   String get wizardMaxPrepTime;
 
   /// Wizard max complexity section header
   ///
   /// In pt, this message translates to:
-  /// **'COMPLEXIDADE MÃXIMA'**
+  /// **'COMPLEXIDADE MÁXIMA'**
   String get wizardMaxComplexity;
 
   /// Wizard complexity level: easy
@@ -2522,7 +2522,7 @@ abstract class S {
   /// Wizard equipment section header
   ///
   /// In pt, this message translates to:
-  /// **'EQUIPAMENTO DISPONÃVEL'**
+  /// **'EQUIPAMENTO DISPONÍVEL'**
   String get wizardEquipment;
 
   /// Wizard strategy: batch cooking toggle
@@ -2540,7 +2540,7 @@ abstract class S {
   /// Wizard max batch days section header
   ///
   /// In pt, this message translates to:
-  /// **'MÃXIMO DE DIAS POR RECEITA'**
+  /// **'MÁXIMO DE DIAS POR RECEITA'**
   String get wizardMaxBatchDays;
 
   /// Wizard batch days display
@@ -2570,7 +2570,7 @@ abstract class S {
   /// Wizard max new ingredients section header
   ///
   /// In pt, this message translates to:
-  /// **'MÃXIMO DE INGREDIENTES NOVOS POR SEMANA'**
+  /// **'MÁXIMO DE INGREDIENTES NOVOS POR SEMANA'**
   String get wizardMaxNewIngredients;
 
   /// Wizard no limit label
@@ -2924,7 +2924,7 @@ abstract class S {
   /// Settings label: number of dependents
   ///
   /// In pt, this message translates to:
-  /// **'NÃšMERO DE DEPENDENTES'**
+  /// **'NÚMERO DE DEPENDENTES'**
   String get settingsDependentsLabel;
 
   /// Settings social security rate display
@@ -2942,13 +2942,13 @@ abstract class S {
   /// Settings label: gross monthly salary
   ///
   /// In pt, this message translates to:
-  /// **'SALÃRIO BRUTO MENSAL'**
+  /// **'SALÁRIO BRUTO MENSAL'**
   String get settingsGrossMonthlySalary;
 
   /// Settings label: holiday subsidies
   ///
   /// In pt, this message translates to:
-  /// **'SUBSÃDIOS DE FÃ‰RIAS E NATAL (DUODÃ‰CIMOS)'**
+  /// **'SUBSÍDIOS DE FÉRIAS E NATAL (DUODÉCIMOS)'**
   String get settingsSubsidyHoliday;
 
   /// Settings label: other exempt income
@@ -2960,7 +2960,7 @@ abstract class S {
   /// Settings label: meal allowance
   ///
   /// In pt, this message translates to:
-  /// **'SUBSÃDIO DE ALIMENTAÃ‡ÃƒO'**
+  /// **'SUBSÍDIO DE ALIMENTAÇÃO'**
   String get settingsMealAllowanceLabel;
 
   /// Settings label: amount per day
@@ -2972,7 +2972,7 @@ abstract class S {
   /// Settings label: days per month
   ///
   /// In pt, this message translates to:
-  /// **'DIAS/MÃŠS'**
+  /// **'DIAS/MÊS'**
   String get settingsDaysPerMonth;
 
   /// Settings label: number of tax holders
@@ -3008,7 +3008,7 @@ abstract class S {
   /// Settings label: visible sections
   ///
   /// In pt, this message translates to:
-  /// **'SECÃ‡Ã•ES VISÃVEIS'**
+  /// **'SECÇÃ•ES VISÍVEIS'**
   String get settingsVisibleSections;
 
   /// Settings dashboard preset: minimalist
@@ -3032,7 +3032,7 @@ abstract class S {
   /// Settings dashboard toggle: stress index
   ///
   /// In pt, this message translates to:
-  /// **'Ãndice de Tranquilidade'**
+  /// **'Índice de Tranquilidade'**
   String get settingsDashStressIndex;
 
   /// Settings dashboard toggle: summary cards
@@ -3080,7 +3080,7 @@ abstract class S {
   /// Dashboard settings group label: overview
   ///
   /// In pt, this message translates to:
-  /// **'VISÃƒO GERAL'**
+  /// **'VISÃO GERAL'**
   String get dashGroupOverview;
 
   /// Dashboard settings group label: financial detail
@@ -3092,25 +3092,25 @@ abstract class S {
   /// Dashboard settings group label: history
   ///
   /// In pt, this message translates to:
-  /// **'HISTÃ“RICO'**
+  /// **'HISTÓRICO'**
   String get dashGroupHistory;
 
   /// Dashboard settings group label: charts
   ///
   /// In pt, this message translates to:
-  /// **'GRÃFICOS'**
+  /// **'GRÁFICOS'**
   String get dashGroupCharts;
 
   /// Settings label: visible charts
   ///
   /// In pt, this message translates to:
-  /// **'GRÃFICOS VISÃVEIS'**
+  /// **'GRÁFICOS VISÍVEIS'**
   String get settingsVisibleCharts;
 
   /// Settings favorites tip text
   ///
   /// In pt, this message translates to:
-  /// **'Os produtos favoritos influenciam o plano de refeições â€” receitas com esses ingredientes ficam em prioridade.'**
+  /// **'Os produtos favoritos influenciam o plano de refeições — receitas com esses ingredientes ficam em prioridade.'**
   String get settingsFavTip;
 
   /// Settings label: my favorites
@@ -3122,7 +3122,7 @@ abstract class S {
   /// Settings label: product catalog
   ///
   /// In pt, this message translates to:
-  /// **'CATÃLOGO DE PRODUTOS'**
+  /// **'CATÁLOGO DE PRODUTOS'**
   String get settingsProductCatalog;
 
   /// Settings search product hint
@@ -3158,7 +3158,7 @@ abstract class S {
   /// Settings dialog title: add to pantry
   ///
   /// In pt, this message translates to:
-  /// **'Adicionar Ã  despensa'**
+  /// **'Adicionar à despensa'**
   String get settingsAddToPantry;
 
   /// Settings label: household people
@@ -3278,13 +3278,13 @@ abstract class S {
   /// Settings label: medical conditions
   ///
   /// In pt, this message translates to:
-  /// **'CONDIÃ‡Ã•ES MÃ‰DICAS'**
+  /// **'CONDIÇÃ•ES MÉDICAS'**
   String get settingsMedicalConditions;
 
   /// Settings label: active meals
   ///
   /// In pt, this message translates to:
-  /// **'REFEIÃ‡Ã•ES ATIVAS'**
+  /// **'REFEIÇÃ•ES ATIVAS'**
   String get settingsActiveMeals;
 
   /// Settings label: objective
@@ -3302,7 +3302,7 @@ abstract class S {
   /// Settings label: dietary restrictions
   ///
   /// In pt, this message translates to:
-  /// **'RESTRIÃ‡Ã•ES DIETÃ‰TICAS'**
+  /// **'RESTRIÇÃ•ES DIETÉTICAS'**
   String get settingsDietaryRestrictions;
 
   /// Settings dietary restriction: egg free
@@ -3314,7 +3314,7 @@ abstract class S {
   /// Settings label: sodium preference
   ///
   /// In pt, this message translates to:
-  /// **'PREFERÃŠNCIA DE SÃ“DIO'**
+  /// **'PREFERÊNCIA DE SÓDIO'**
   String get settingsSodiumPref;
 
   /// Settings label: disliked ingredients
@@ -3326,7 +3326,7 @@ abstract class S {
   /// Settings label: excluded proteins
   ///
   /// In pt, this message translates to:
-  /// **'PROTEÃNAS EXCLUÃDAS'**
+  /// **'PROTEÍNAS EXCLUÍDAS'**
   String get settingsExcludedProteins;
 
   /// Settings protein: chicken
@@ -3380,13 +3380,13 @@ abstract class S {
   /// Settings label: max prep time
   ///
   /// In pt, this message translates to:
-  /// **'TEMPO MÃXIMO (MINUTOS)'**
+  /// **'TEMPO MÁXIMO (MINUTOS)'**
   String get settingsMaxPrepTime;
 
   /// Settings label: max complexity
   ///
   /// In pt, this message translates to:
-  /// **'COMPLEXIDADE MÃXIMA ({value}/5)'**
+  /// **'COMPLEXIDADE MÁXIMA ({value}/5)'**
   String settingsMaxComplexity(int value);
 
   /// Settings label: weekend prep time
@@ -3410,7 +3410,7 @@ abstract class S {
   /// Settings label: weekly distribution
   ///
   /// In pt, this message translates to:
-  /// **'DISTRIBUIÃ‡ÃƒO SEMANAL'**
+  /// **'DISTRIBUIÇÃO SEMANAL'**
   String get settingsWeeklyDistribution;
 
   /// Settings fish days per week display
@@ -3446,7 +3446,7 @@ abstract class S {
   /// Settings label: available equipment
   ///
   /// In pt, this message translates to:
-  /// **'EQUIPAMENTO DISPONÃVEL'**
+  /// **'EQUIPAMENTO DISPONÍVEL'**
   String get settingsAvailableEquipment;
 
   /// Settings toggle: batch cooking
@@ -3458,7 +3458,7 @@ abstract class S {
   /// Settings label: max batch days
   ///
   /// In pt, this message translates to:
-  /// **'MÃXIMO DE DIAS POR RECEITA'**
+  /// **'MÁXIMO DE DIAS POR RECEITA'**
   String get settingsMaxBatchDays;
 
   /// Settings toggle: reuse leftovers
@@ -3530,13 +3530,13 @@ abstract class S {
   /// Settings API key info text
   ///
   /// In pt, this message translates to:
-  /// **'A key é guardada localmente no dispositivo e nunca é partilhada. Usa o modelo GPT-4o mini (~â‚¬0,00008 por análise).'**
+  /// **'A key é guardada localmente no dispositivo e nunca é partilhada. Usa o modelo GPT-4o mini (~€0,00008 por análise).'**
   String get settingsApiKeyInfo;
 
   /// Settings label: invite code
   ///
   /// In pt, this message translates to:
-  /// **'CÃ“DIGO DE CONVITE'**
+  /// **'CÓDIGO DE CONVITE'**
   String get settingsInviteCodeLabel;
 
   /// Settings generate invite code
@@ -3680,7 +3680,7 @@ abstract class S {
   /// Tax label: Income Tax (France)
   ///
   /// In pt, this message translates to:
-  /// **'ImpÃ´t sur le Revenu'**
+  /// **'Impôt sur le Revenu'**
   String get taxIR;
 
   /// Tax label: CSG + CRDS (France)
@@ -3722,7 +3722,7 @@ abstract class S {
   /// AI coach system prompt for financial analysis
   ///
   /// In pt, this message translates to:
-  /// **'Ã‰s um analista financeiro pessoal para utilizadores portugueses. Responde sempre em português europeu. Sê directo e analítico â€” usa sempre números concretos do contexto fornecido. Estrutura a resposta exactamente nas 3 partes pedidas. Não introduzas dados, benchmarks ou referências externas que não foram fornecidos.'**
+  /// **'És um analista financeiro pessoal para utilizadores portugueses. Responde sempre em português europeu. Sê directo e analítico — usa sempre números concretos do contexto fornecido. Estrutura a resposta exactamente nas 3 partes pedidas. Não introduzas dados, benchmarks ou referências externas que não foram fornecidos.'**
   String get aiCoachSystemPrompt;
 
   /// AI coach invalid API key error
@@ -3734,13 +3734,13 @@ abstract class S {
   /// AI coach mid-month system prompt
   ///
   /// In pt, this message translates to:
-  /// **'Ã‰s um consultor de orçamento doméstico português. Responde sempre em português europeu. Sê prático e directo.'**
+  /// **'És um consultor de orçamento doméstico português. Responde sempre em português europeu. Sê prático e directo.'**
   String get aiCoachMidMonthSystem;
 
   /// AI meal planner system prompt
   ///
   /// In pt, this message translates to:
-  /// **'Ã‰s um chef português. Responde sempre em português europeu. Responde APENAS com JSON válido, sem texto extra.'**
+  /// **'És um chef português. Responde sempre em português europeu. Responde APENAS com JSON válido, sem texto extra.'**
   String get aiMealPlannerSystem;
 
   /// Month abbreviation: January
@@ -4196,7 +4196,7 @@ abstract class S {
   /// Budget vs actual card title
   ///
   /// In pt, this message translates to:
-  /// **'ORÃ‡AMENTO VS REAL'**
+  /// **'ORÇAMENTO VS REAL'**
   String get expenseTrackerTitle;
 
   /// Budgeted label
@@ -4742,7 +4742,7 @@ abstract class S {
   /// Surplus suggestion card
   ///
   /// In pt, this message translates to:
-  /// **'Tiveste {amount} de excedente no mês passado â€” queres alocar a um objetivo?'**
+  /// **'Tiveste {amount} de excedente no mês passado — queres alocar a um objetivo?'**
   String savingsGoalSurplusSuggestion(String amount);
 
   /// Allocate button
@@ -5204,7 +5204,7 @@ abstract class S {
   /// Sunset palette name
   ///
   /// In pt, this message translates to:
-  /// **'PÃ´r do sol'**
+  /// **'Pôr do sol'**
   String get paletteSunset;
 
   /// Export button tooltip
@@ -5426,7 +5426,7 @@ abstract class S {
   /// No description provided for @onbSlide0Body.
   ///
   /// In pt, this message translates to:
-  /// **'O painel mostra a sua liquidez mensal, despesas e Ãndice de Serenidade.'**
+  /// **'O painel mostra a sua liquidez mensal, despesas e Índice de Serenidade.'**
   String get onbSlide0Body;
 
   /// No description provided for @onbSlide1Title.
@@ -5462,7 +5462,7 @@ abstract class S {
   /// No description provided for @onbSlide3Body.
   ///
   /// In pt, this message translates to:
-  /// **'Obtenha uma análise em 3 partes baseada no seu orçamento real â€” não conselhos genéricos.'**
+  /// **'Obtenha uma análise em 3 partes baseada no seu orçamento real — não conselhos genéricos.'**
   String get onbSlide3Body;
 
   /// No description provided for @onbSlide4Title.
@@ -5510,13 +5510,13 @@ abstract class S {
   /// No description provided for @onbTourDash2Title.
   ///
   /// In pt, this message translates to:
-  /// **'Ãndice de Serenidade'**
+  /// **'Índice de Serenidade'**
   String get onbTourDash2Title;
 
   /// No description provided for @onbTourDash2Body.
   ///
   /// In pt, this message translates to:
-  /// **'Pontuação de saúde financeira 0â€“100. Toque para ver os fatores.'**
+  /// **'Pontuação de saúde financeira 0–100. Toque para ver os fatores.'**
   String get onbTourDash2Body;
 
   /// No description provided for @onbTourDash3Title.
@@ -5570,13 +5570,13 @@ abstract class S {
   /// No description provided for @onbTourGrocery2Title.
   ///
   /// In pt, this message translates to:
-  /// **'Adicionar Ã  lista'**
+  /// **'Adicionar à lista'**
   String get onbTourGrocery2Title;
 
   /// No description provided for @onbTourGrocery2Body.
   ///
   /// In pt, this message translates to:
-  /// **'Toque + num produto para o adicionar Ã  lista de compras.'**
+  /// **'Toque + num produto para o adicionar à lista de compras.'**
   String get onbTourGrocery2Body;
 
   /// No description provided for @onbTourGrocery3Title.
@@ -5678,7 +5678,7 @@ abstract class S {
   /// No description provided for @onbTourMeals3Title.
   ///
   /// In pt, this message translates to:
-  /// **'Adicionar Ã  lista de compras'**
+  /// **'Adicionar à lista de compras'**
   String get onbTourMeals3Title;
 
   /// No description provided for @onbTourMeals3Body.
@@ -5792,7 +5792,7 @@ abstract class S {
   /// No description provided for @onbTourAssistant1Body.
   ///
   /// In pt, this message translates to:
-  /// **'O seu atalho para ações rápidas. Toque para adicionar despesas, mudar definições, navegar e mais â€” basta escrever o que precisa.'**
+  /// **'O seu atalho para ações rápidas. Toque para adicionar despesas, mudar definições, navegar e mais — basta escrever o que precisa.'**
   String get onbTourAssistant1Body;
 
   /// No description provided for @taxDeductionTitle.
@@ -5822,25 +5822,25 @@ abstract class S {
   /// No description provided for @taxDeductionDetailTitle.
   ///
   /// In pt, this message translates to:
-  /// **'Deduções IRS â€” Detalhe'**
+  /// **'Deduções IRS — Detalhe'**
   String get taxDeductionDetailTitle;
 
   /// No description provided for @taxDeductionDeductibleTitle.
   ///
   /// In pt, this message translates to:
-  /// **'CATEGORIAS DEDUTÃVEIS'**
+  /// **'CATEGORIAS DEDUTÍVEIS'**
   String get taxDeductionDeductibleTitle;
 
   /// No description provided for @taxDeductionNonDeductibleTitle.
   ///
   /// In pt, this message translates to:
-  /// **'CATEGORIAS NÃƒO DEDUTÃVEIS'**
+  /// **'CATEGORIAS NÃO DEDUTÍVEIS'**
   String get taxDeductionNonDeductibleTitle;
 
   /// No description provided for @taxDeductionTotalLabel.
   ///
   /// In pt, this message translates to:
-  /// **'DEDUÃ‡ÃƒO IRS ESTIMADA'**
+  /// **'DEDUÇÃO IRS ESTIMADA'**
   String get taxDeductionTotalLabel;
 
   /// No description provided for @taxDeductionSpent.
@@ -5966,13 +5966,13 @@ abstract class S {
   /// No description provided for @taxSimPresets.
   ///
   /// In pt, this message translates to:
-  /// **'CENÃRIOS RÃPIDOS'**
+  /// **'CENÁRIOS RÁPIDOS'**
   String get taxSimPresets;
 
   /// No description provided for @taxSimPresetRaise.
   ///
   /// In pt, this message translates to:
-  /// **'+â‚¬200 aumento'**
+  /// **'+€200 aumento'**
   String get taxSimPresetRaise;
 
   /// No description provided for @taxSimPresetMeal.
@@ -5984,7 +5984,7 @@ abstract class S {
   /// No description provided for @taxSimPresetTitular.
   ///
   /// In pt, this message translates to:
-  /// **'Ãšnico vs conjunto'**
+  /// **'Único vs conjunto'**
   String get taxSimPresetTitular;
 
   /// No description provided for @taxSimParameters.
@@ -6116,7 +6116,7 @@ abstract class S {
   /// No description provided for @expenseDefaultBudget.
   ///
   /// In pt, this message translates to:
-  /// **'ORÃ‡AMENTO BASE'**
+  /// **'ORÇAMENTO BASE'**
   String get expenseDefaultBudget;
 
   /// No description provided for @expenseOverrideActive.
@@ -6254,7 +6254,7 @@ abstract class S {
   /// Last day of trial message
   ///
   /// In pt, this message translates to:
-  /// **'Ãšltimo dia do seu teste gratuito!'**
+  /// **'Último dia do seu teste gratuito!'**
   String get subscriptionTrialLastDay;
 
   /// Upgrade now button
@@ -6824,7 +6824,7 @@ abstract class S {
   /// How it works step 1
   ///
   /// In pt, this message translates to:
-  /// **'Crie um objetivo com um nome e o valor que pretende atingir (ex: \"Férias â€” 2 000 â‚¬\").'**
+  /// **'Crie um objetivo com um nome e o valor que pretende atingir (ex: \"Férias — 2 000 €\").'**
   String get savingsGoalHowItWorksStep1;
 
   /// How it works step 2
@@ -7238,7 +7238,7 @@ abstract class S {
   /// No description provided for @pantryAddedToWeekly.
   ///
   /// In pt, this message translates to:
-  /// **'{name} adicionado Ã  despensa semanal'**
+  /// **'{name} adicionado à despensa semanal'**
   String pantryAddedToWeekly(String name);
 
   /// No description provided for @pantryRemovedFromList.
@@ -7958,7 +7958,7 @@ abstract class S {
   /// Grocery Browser description
   ///
   /// In pt, this message translates to:
-  /// **'Explora produtos de várias lojas, compara preços e adiciona as melhores ofertas diretamente Ã  tua lista de compras.'**
+  /// **'Explora produtos de várias lojas, compara preços e adiciona as melhores ofertas diretamente à tua lista de compras.'**
   String get featureDescGroceryBrowser;
 
   /// Export Reports description
@@ -8000,7 +8000,7 @@ abstract class S {
   /// Last day urgent headline
   ///
   /// In pt, this message translates to:
-  /// **'Ãšltimo dia do teu período de teste grátis!'**
+  /// **'Último dia do teu período de teste grátis!'**
   String get trialLastDay;
 
   /// CTA button text early/mid phase
@@ -8096,7 +8096,7 @@ abstract class S {
   /// No description provided for @receiptScanProcessing.
   ///
   /// In pt, this message translates to:
-  /// **'A ler reciboâ€¦'**
+  /// **'A ler recibo…'**
   String get receiptScanProcessing;
 
   /// No description provided for @receiptScanSuccess.
@@ -8132,7 +8132,7 @@ abstract class S {
   /// No description provided for @receiptItemsMatched.
   ///
   /// In pt, this message translates to:
-  /// **'{count} itens associados Ã  lista de compras'**
+  /// **'{count} itens associados à lista de compras'**
   String receiptItemsMatched(int count);
 
   /// No description provided for @quickScanReceipt.
@@ -8192,13 +8192,13 @@ abstract class S {
   /// No description provided for @receiptCameraPermissionTitle.
   ///
   /// In pt, this message translates to:
-  /// **'Acesso Ã  Câmara'**
+  /// **'Acesso à Câmara'**
   String get receiptCameraPermissionTitle;
 
   /// No description provided for @receiptCameraPermissionBody.
   ///
   /// In pt, this message translates to:
-  /// **'Ã‰ necessário acesso Ã  câmara para digitalizar recibos e códigos de barras.'**
+  /// **'É necessário acesso à câmara para digitalizar recibos e códigos de barras.'**
   String get receiptCameraPermissionBody;
 
   /// No description provided for @receiptCameraPermissionAllow.
@@ -8342,7 +8342,7 @@ abstract class S {
   /// No description provided for @paywallUpgradedPro.
   ///
   /// In pt, this message translates to:
-  /// **'Atualizado para Pro â€” obrigado!'**
+  /// **'Atualizado para Pro — obrigado!'**
   String get paywallUpgradedPro;
 
   /// No description provided for @paywallNoRestore.
@@ -8402,19 +8402,19 @@ abstract class S {
   /// No description provided for @settingsGroupBudget.
   ///
   /// In pt, this message translates to:
-  /// **'ORÃ‡AMENTO'**
+  /// **'ORÇAMENTO'**
   String get settingsGroupBudget;
 
   /// No description provided for @settingsGroupPreferences.
   ///
   /// In pt, this message translates to:
-  /// **'PREFERÃŠNCIAS'**
+  /// **'PREFERÊNCIAS'**
   String get settingsGroupPreferences;
 
   /// No description provided for @settingsGroupAdvanced.
   ///
   /// In pt, this message translates to:
-  /// **'AVANÃ‡ADO'**
+  /// **'AVANÇADO'**
   String get settingsGroupAdvanced;
 
   /// No description provided for @settingsManageSubscription.
@@ -8468,31 +8468,31 @@ abstract class S {
   /// No description provided for @stressZoneCritical.
   ///
   /// In pt, this message translates to:
-  /// **'0â€“39: Pressão financeira elevada, ação urgente necessária'**
+  /// **'0–39: Pressão financeira elevada, ação urgente necessária'**
   String get stressZoneCritical;
 
   /// No description provided for @stressZoneWarning.
   ///
   /// In pt, this message translates to:
-  /// **'40â€“59: Alguns riscos presentes, melhorias recomendadas'**
+  /// **'40–59: Alguns riscos presentes, melhorias recomendadas'**
   String get stressZoneWarning;
 
   /// No description provided for @stressZoneGood.
   ///
   /// In pt, this message translates to:
-  /// **'60â€“79: Finanças saudáveis, pequenas otimizações possíveis'**
+  /// **'60–79: Finanças saudáveis, pequenas otimizações possíveis'**
   String get stressZoneGood;
 
   /// No description provided for @stressZoneExcellent.
   ///
   /// In pt, this message translates to:
-  /// **'80â€“100: Posição financeira forte, bem gerida'**
+  /// **'80–100: Posição financeira forte, bem gerida'**
   String get stressZoneExcellent;
 
   /// No description provided for @projectionStressHint.
   ///
   /// In pt, this message translates to:
-  /// **'Como este cenário de gastos afeta a sua pontuação geral de saúde financeira (0â€“100)'**
+  /// **'Como este cenário de gastos afeta a sua pontuação geral de saúde financeira (0–100)'**
   String get projectionStressHint;
 
   /// No description provided for @coachWelcomeTitle.
@@ -8636,7 +8636,7 @@ abstract class S {
   /// No description provided for @setupWizardSubsidyLabel.
   ///
   /// In pt, this message translates to:
-  /// **'DUODÃ‰CIMOS'**
+  /// **'DUODÉCIMOS'**
   String get setupWizardSubsidyLabel;
 
   /// No description provided for @setupWizardPerDay.
@@ -8720,7 +8720,7 @@ abstract class S {
   /// Category icon field label
   ///
   /// In pt, this message translates to:
-  /// **'Ãcone'**
+  /// **'Ícone'**
   String get customCategoryIcon;
 
   /// Category color field label
@@ -8882,7 +8882,7 @@ abstract class S {
   /// Label above monthly budget input
   ///
   /// In pt, this message translates to:
-  /// **'ORÃ‡AMENTO MENSAL'**
+  /// **'ORÇAMENTO MENSAL'**
   String get settingsMonthlyBudgetLabel;
 
   /// Search address button label
@@ -8924,7 +8924,7 @@ abstract class S {
   /// Daily average label
   ///
   /// In pt, this message translates to:
-  /// **'MÃ‰DIA/DIA'**
+  /// **'MÉDIA/DIA'**
   String get dashboardBurnRateDailyAvg;
 
   /// Daily allowance label
@@ -8972,7 +8972,7 @@ abstract class S {
   /// End of month label
   ///
   /// In pt, this message translates to:
-  /// **'FIM DO MÃŠS'**
+  /// **'FIM DO MÊS'**
   String get dashboardCashFlowEndOfMonth;
 
   /// Pending bills message

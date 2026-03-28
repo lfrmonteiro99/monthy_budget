@@ -77,7 +77,7 @@ class SPt extends S {
 
   @override
   String addToList(String name) {
-    return 'Adicionar $name Ã  lista';
+    return 'Adicionar $name à lista';
   }
 
   @override
@@ -129,7 +129,7 @@ class SPt extends S {
   String get enumCatEnergia => 'Energia';
 
   @override
-  String get enumCatAgua => 'Ãgua';
+  String get enumCatAgua => 'Água';
 
   @override
   String get enumCatAlimentacao => 'Alimentação';
@@ -222,10 +222,10 @@ class SPt extends S {
   String get enumSodiumLow => 'Baixo sódio';
 
   @override
-  String get enumAge0to3 => '0â€“3 anos';
+  String get enumAge0to3 => '0–3 anos';
 
   @override
-  String get enumAge4to10 => '4â€“10 anos';
+  String get enumAge4to10 => '4–10 anos';
 
   @override
   String get enumAgeTeen => 'Adolescente';
@@ -303,17 +303,17 @@ class SPt extends S {
 
   @override
   String monthReviewFoodExceeded(String percent) {
-    return 'Alimentação excedeu o orçamento em $percent% â€” considere rever porções ou frequência de compras.';
+    return 'Alimentação excedeu o orçamento em $percent% — considere rever porções ou frequência de compras.';
   }
 
   @override
   String monthReviewExpensesExceeded(String amount) {
-    return 'Despesas reais superaram o planeado em $amountâ‚¬ â€” ajustar valores nas definições?';
+    return 'Despesas reais superaram o planeado em $amount€ — ajustar valores nas definições?';
   }
 
   @override
   String monthReviewSavedMore(String amount) {
-    return 'Poupou $amountâ‚¬ mais do que previsto â€” pode reforçar fundo de emergência.';
+    return 'Poupou $amount€ mais do que previsto — pode reforçar fundo de emergência.';
   }
 
   @override
@@ -327,7 +327,7 @@ class SPt extends S {
   String get dashboardViewFullReport => 'Ver Relatório Completo';
 
   @override
-  String get dashboardStressIndex => 'Ãndice de Tranquilidade';
+  String get dashboardStressIndex => 'Índice de Tranquilidade';
 
   @override
   String get dashboardTension => 'Tensão';
@@ -419,7 +419,7 @@ class SPt extends S {
   }
 
   @override
-  String get dashboardFood => 'ALIMENTAÃ‡ÃƒO';
+  String get dashboardFood => 'ALIMENTAÇÃO';
 
   @override
   String get dashboardSimulate => 'Simular';
@@ -438,7 +438,7 @@ class SPt extends S {
       'Finaliza uma compra na Lista para registar gastos.';
 
   @override
-  String get dashboardPurchaseHistory => 'HISTÃ“RICO DE COMPRAS';
+  String get dashboardPurchaseHistory => 'HISTÓRICO DE COMPRAS';
 
   @override
   String get dashboardViewAll => 'Ver tudo';
@@ -508,11 +508,11 @@ class SPt extends S {
 
   @override
   String dashboardPaceValue(String actual, String expected) {
-    return '$actualâ‚¬/dia vs $expectedâ‚¬/dia';
+    return '$actual€/dia vs $expected€/dia';
   }
 
   @override
-  String get dashboardSummaryLabel => 'â€” RESUMO';
+  String get dashboardSummaryLabel => '— RESUMO';
 
   @override
   String get dashboardViewMonthSummary => 'Ver resumo do mês';
@@ -532,7 +532,7 @@ class SPt extends S {
 
   @override
   String get coachAnalysisDescription =>
-      'Posicionamento geral · Factores críticos do Ãndice de Tranquilidade · Oportunidade imediata. Baseado nos teus dados reais de orçamento, despesas e histórico de compras.';
+      'Posicionamento geral · Factores críticos do Índice de Tranquilidade · Oportunidade imediata. Baseado nos teus dados reais de orçamento, despesas e histórico de compras.';
 
   @override
   String get coachConfigureApiKey => 'Configurar API key nas Definições';
@@ -553,7 +553,7 @@ class SPt extends S {
   String get coachNewAnalysis => 'Gerar nova análise';
 
   @override
-  String get coachHistory => 'HISTÃ“RICO';
+  String get coachHistory => 'HISTÓRICO';
 
   @override
   String get coachClearAll => 'Limpar tudo';
@@ -605,7 +605,7 @@ class SPt extends S {
   String get coachMemory => 'Memoria';
 
   @override
-  String get coachCostFree => 'Modo Eco â€” sem custos de creditos.';
+  String get coachCostFree => 'Modo Eco — sem custos de creditos.';
 
   @override
   String coachCostCredits(int cost) {
@@ -802,7 +802,7 @@ class SPt extends S {
 
   @override
   String groceryAddedToList(String name) {
-    return '$name adicionado Ã  lista';
+    return '$name adicionado à lista';
   }
 
   @override
@@ -959,7 +959,7 @@ class SPt extends S {
 
   @override
   String get authErrorNetwork =>
-      'Não foi possível ligar ao servidor. Verifique a sua ligação Ã  internet e tente novamente.';
+      'Não foi possível ligar ao servidor. Verifique a sua ligação à internet e tente novamente.';
 
   @override
   String get authErrorInvalidCredentials =>
@@ -1055,7 +1055,7 @@ class SPt extends S {
 
   @override
   String projectionTitle(String month, String year) {
-    return 'Projeção â€” $month $year';
+    return 'Projeção — $month $year';
   }
 
   @override
@@ -1064,7 +1064,7 @@ class SPt extends S {
   }
 
   @override
-  String get projectionFood => 'ALIMENTAÃ‡ÃƒO';
+  String get projectionFood => 'ALIMENTAÇÃO';
 
   @override
   String get projectionCurrentPace => 'Ritmo atual';
@@ -1087,13 +1087,13 @@ class SPt extends S {
   String get projectionRemaining => 'Restante projetado';
 
   @override
-  String get projectionStressImpact => 'Impacto no Ãndice';
+  String get projectionStressImpact => 'Impacto no Índice';
 
   @override
   String get projectionExpenses => 'DESPESAS';
 
   @override
-  String get projectionSimulation => 'Simulação â€” não guardado';
+  String get projectionSimulation => 'Simulação — não guardado';
 
   @override
   String get projectionReduceAll => 'Reduzir todas em ';
@@ -1108,13 +1108,13 @@ class SPt extends S {
   String get projectionSimSavingsRate => 'Taxa poupança simulada';
 
   @override
-  String get projectionSimIndex => 'Ãndice simulado';
+  String get projectionSimIndex => 'Índice simulado';
 
   @override
   String get trendTitle => 'Evolução';
 
   @override
-  String get trendStressIndex => 'ÃNDICE DE TRANQUILIDADE';
+  String get trendStressIndex => 'ÍNDICE DE TRANQUILIDADE';
 
   @override
   String get trendTotalExpenses => 'DESPESAS TOTAIS';
@@ -1134,7 +1134,7 @@ class SPt extends S {
   String get trendCatEnergy => 'Energia';
 
   @override
-  String get trendCatWater => 'Ãgua';
+  String get trendCatWater => 'Água';
 
   @override
   String get trendCatFood => 'Alimentação';
@@ -1159,7 +1159,7 @@ class SPt extends S {
 
   @override
   String monthReviewTitle(String month) {
-    return 'Resumo â€” $month';
+    return 'Resumo — $month';
   }
 
   @override
@@ -1226,11 +1226,11 @@ class SPt extends S {
   }
 
   @override
-  String get mealAddWeekToList => 'Adicionar semana Ã  lista';
+  String get mealAddWeekToList => 'Adicionar semana à lista';
 
   @override
   String mealIngredientsAdded(int count) {
-    return '$count ingredientes adicionados Ã  lista';
+    return '$count ingredientes adicionados à lista';
   }
 
   @override
@@ -1258,7 +1258,7 @@ class SPt extends S {
 
   @override
   String mealTotalCost(String cost) {
-    return '$costâ‚¬ total';
+    return '$cost€ total';
   }
 
   @override
@@ -1278,7 +1278,7 @@ class SPt extends S {
 
   @override
   String mealCostPerPerson(String cost) {
-    return '$costâ‚¬/pess';
+    return '$cost€/pess';
   }
 
   @override
@@ -1327,7 +1327,7 @@ class SPt extends S {
   }
 
   @override
-  String get wizardDietaryRestrictions => 'RESTRIÃ‡Ã•ES DIETÃ‰TICAS';
+  String get wizardDietaryRestrictions => 'RESTRIÇÃ•ES DIETÉTICAS';
 
   @override
   String get wizardGlutenFree => 'Sem glúten';
@@ -1342,16 +1342,16 @@ class SPt extends S {
   String get wizardShellfishFree => 'Sem marisco';
 
   @override
-  String get wizardDislikedIngredients => 'INGREDIENTES QUE NÃƒO GOSTAS';
+  String get wizardDislikedIngredients => 'INGREDIENTES QUE NÃO GOSTAS';
 
   @override
   String get wizardDislikedHint => 'ex: atum, brócolos';
 
   @override
-  String get wizardMaxPrepTime => 'TEMPO MÃXIMO POR REFEIÃ‡ÃƒO';
+  String get wizardMaxPrepTime => 'TEMPO MÁXIMO POR REFEIÇÃO';
 
   @override
-  String get wizardMaxComplexity => 'COMPLEXIDADE MÃXIMA';
+  String get wizardMaxComplexity => 'COMPLEXIDADE MÁXIMA';
 
   @override
   String get wizardComplexityEasy => 'Fácil';
@@ -1363,7 +1363,7 @@ class SPt extends S {
   String get wizardComplexityAdvanced => 'Avançado';
 
   @override
-  String get wizardEquipment => 'EQUIPAMENTO DISPONÃVEL';
+  String get wizardEquipment => 'EQUIPAMENTO DISPONÍVEL';
 
   @override
   String get wizardBatchCooking => 'Batch cooking';
@@ -1372,7 +1372,7 @@ class SPt extends S {
   String get wizardBatchCookingDesc => 'Cozinhar para vários dias de uma vez';
 
   @override
-  String get wizardMaxBatchDays => 'MÃXIMO DE DIAS POR RECEITA';
+  String get wizardMaxBatchDays => 'MÁXIMO DE DIAS POR RECEITA';
 
   @override
   String wizardBatchDays(int days) {
@@ -1391,7 +1391,7 @@ class SPt extends S {
 
   @override
   String get wizardMaxNewIngredients =>
-      'MÃXIMO DE INGREDIENTES NOVOS POR SEMANA';
+      'MÁXIMO DE INGREDIENTES NOVOS POR SEMANA';
 
   @override
   String get wizardNoLimit => 'Sem limite';
@@ -1575,7 +1575,7 @@ class SPt extends S {
   String get settingsMaritalStatusLabel => 'ESTADO CIVIL';
 
   @override
-  String get settingsDependentsLabel => 'NÃšMERO DE DEPENDENTES';
+  String get settingsDependentsLabel => 'NÚMERO DE DEPENDENTES';
 
   @override
   String settingsSocialSecurityRate(String rate) {
@@ -1586,23 +1586,23 @@ class SPt extends S {
   String get settingsSalaryActive => 'Ativo';
 
   @override
-  String get settingsGrossMonthlySalary => 'SALÃRIO BRUTO MENSAL';
+  String get settingsGrossMonthlySalary => 'SALÁRIO BRUTO MENSAL';
 
   @override
   String get settingsSubsidyHoliday =>
-      'SUBSÃDIOS DE FÃ‰RIAS E NATAL (DUODÃ‰CIMOS)';
+      'SUBSÍDIOS DE FÉRIAS E NATAL (DUODÉCIMOS)';
 
   @override
   String get settingsOtherExemptLabel => 'OUTROS RENDIMENTOS ISENTOS DE IRS';
 
   @override
-  String get settingsMealAllowanceLabel => 'SUBSÃDIO DE ALIMENTAÃ‡ÃƒO';
+  String get settingsMealAllowanceLabel => 'SUBSÍDIO DE ALIMENTAÇÃO';
 
   @override
   String get settingsAmountPerDay => 'VALOR/DIA';
 
   @override
-  String get settingsDaysPerMonth => 'DIAS/MÃŠS';
+  String get settingsDaysPerMonth => 'DIAS/MÊS';
 
   @override
   String get settingsTitularesLabel => 'N. TITULARES';
@@ -1623,7 +1623,7 @@ class SPt extends S {
       'Estas definições são guardadas neste dispositivo.';
 
   @override
-  String get settingsVisibleSections => 'SECÃ‡Ã•ES VISÃVEIS';
+  String get settingsVisibleSections => 'SECÇÃ•ES VISÍVEIS';
 
   @override
   String get settingsMinimalist => 'Minimalista';
@@ -1635,7 +1635,7 @@ class SPt extends S {
   String get settingsDashMonthlyLiquidity => 'Liquidez mensal';
 
   @override
-  String get settingsDashStressIndex => 'Ãndice de Tranquilidade';
+  String get settingsDashStressIndex => 'Índice de Tranquilidade';
 
   @override
   String get settingsDashSummaryCards => 'Cartões de resumo';
@@ -1659,29 +1659,29 @@ class SPt extends S {
   String get settingsDashCharts => 'Gráficos';
 
   @override
-  String get dashGroupOverview => 'VISÃƒO GERAL';
+  String get dashGroupOverview => 'VISÃO GERAL';
 
   @override
   String get dashGroupFinancialDetail => 'DETALHE FINANCEIRO';
 
   @override
-  String get dashGroupHistory => 'HISTÃ“RICO';
+  String get dashGroupHistory => 'HISTÓRICO';
 
   @override
-  String get dashGroupCharts => 'GRÃFICOS';
+  String get dashGroupCharts => 'GRÁFICOS';
 
   @override
-  String get settingsVisibleCharts => 'GRÃFICOS VISÃVEIS';
+  String get settingsVisibleCharts => 'GRÁFICOS VISÍVEIS';
 
   @override
   String get settingsFavTip =>
-      'Os produtos favoritos influenciam o plano de refeições â€” receitas com esses ingredientes ficam em prioridade.';
+      'Os produtos favoritos influenciam o plano de refeições — receitas com esses ingredientes ficam em prioridade.';
 
   @override
   String get settingsMyFavorites => 'OS MEUS FAVORITOS';
 
   @override
-  String get settingsProductCatalog => 'CATÃLOGO DE PRODUTOS';
+  String get settingsProductCatalog => 'CATÁLOGO DE PRODUTOS';
 
   @override
   String get settingsSearchProduct => 'Pesquisar produto...';
@@ -1699,7 +1699,7 @@ class SPt extends S {
   String get settingsAddButton => 'Adicionar';
 
   @override
-  String get settingsAddToPantry => 'Adicionar Ã  despensa';
+  String get settingsAddToPantry => 'Adicionar à despensa';
 
   @override
   String get settingsHouseholdPeople => 'AGREGADO (PESSOAS)';
@@ -1765,10 +1765,10 @@ class SPt extends S {
   String get settingsDailyFiber => 'Fibra diária';
 
   @override
-  String get settingsMedicalConditions => 'CONDIÃ‡Ã•ES MÃ‰DICAS';
+  String get settingsMedicalConditions => 'CONDIÇÃ•ES MÉDICAS';
 
   @override
-  String get settingsActiveMeals => 'REFEIÃ‡Ã•ES ATIVAS';
+  String get settingsActiveMeals => 'REFEIÇÃ•ES ATIVAS';
 
   @override
   String get settingsObjective => 'OBJETIVO';
@@ -1777,19 +1777,19 @@ class SPt extends S {
   String get settingsVeggieDays => 'DIAS VEGETARIANOS POR SEMANA';
 
   @override
-  String get settingsDietaryRestrictions => 'RESTRIÃ‡Ã•ES DIETÃ‰TICAS';
+  String get settingsDietaryRestrictions => 'RESTRIÇÃ•ES DIETÉTICAS';
 
   @override
   String get settingsEggFree => 'Sem ovos';
 
   @override
-  String get settingsSodiumPref => 'PREFERÃŠNCIA DE SÃ“DIO';
+  String get settingsSodiumPref => 'PREFERÊNCIA DE SÓDIO';
 
   @override
   String get settingsDislikedIngredients => 'INGREDIENTES INDESEJADOS';
 
   @override
-  String get settingsExcludedProteins => 'PROTEÃNAS EXCLUÃDAS';
+  String get settingsExcludedProteins => 'PROTEÍNAS EXCLUÍDAS';
 
   @override
   String get settingsProteinChicken => 'Frango';
@@ -1816,11 +1816,11 @@ class SPt extends S {
   String get settingsProteinEgg => 'Ovos';
 
   @override
-  String get settingsMaxPrepTime => 'TEMPO MÃXIMO (MINUTOS)';
+  String get settingsMaxPrepTime => 'TEMPO MÁXIMO (MINUTOS)';
 
   @override
   String settingsMaxComplexity(int value) {
-    return 'COMPLEXIDADE MÃXIMA ($value/5)';
+    return 'COMPLEXIDADE MÁXIMA ($value/5)';
   }
 
   @override
@@ -1835,7 +1835,7 @@ class SPt extends S {
   String get settingsEatingOutDays => 'DIAS DE COMER FORA';
 
   @override
-  String get settingsWeeklyDistribution => 'DISTRIBUIÃ‡ÃƒO SEMANAL';
+  String get settingsWeeklyDistribution => 'DISTRIBUIÇÃO SEMANAL';
 
   @override
   String settingsFishPerWeek(String count) {
@@ -1859,13 +1859,13 @@ class SPt extends S {
   String get settingsNoLimit => 'sem limite';
 
   @override
-  String get settingsAvailableEquipment => 'EQUIPAMENTO DISPONÃVEL';
+  String get settingsAvailableEquipment => 'EQUIPAMENTO DISPONÍVEL';
 
   @override
   String get settingsBatchCooking => 'Batch cooking';
 
   @override
-  String get settingsMaxBatchDays => 'MÃXIMO DE DIAS POR RECEITA';
+  String get settingsMaxBatchDays => 'MÁXIMO DE DIAS POR RECEITA';
 
   @override
   String get settingsReuseLeftovers => 'Reaproveitar sobras';
@@ -1907,10 +1907,10 @@ class SPt extends S {
 
   @override
   String get settingsApiKeyInfo =>
-      'A key é guardada localmente no dispositivo e nunca é partilhada. Usa o modelo GPT-4o mini (~â‚¬0,00008 por análise).';
+      'A key é guardada localmente no dispositivo e nunca é partilhada. Usa o modelo GPT-4o mini (~€0,00008 por análise).';
 
   @override
-  String get settingsInviteCodeLabel => 'CÃ“DIGO DE CONVITE';
+  String get settingsInviteCodeLabel => 'CÓDIGO DE CONVITE';
 
   @override
   String get settingsGenerateInvite => 'Gerar código de convite';
@@ -1985,7 +1985,7 @@ class SPt extends S {
   String get taxSSSpain => 'Seguridad Social';
 
   @override
-  String get taxIR => 'ImpÃ´t sur le Revenu';
+  String get taxIR => 'Impôt sur le Revenu';
 
   @override
   String get taxCSG => 'CSG + CRDS';
@@ -2007,7 +2007,7 @@ class SPt extends S {
 
   @override
   String get aiCoachSystemPrompt =>
-      'Ã‰s um analista financeiro pessoal para utilizadores portugueses. Responde sempre em português europeu. Sê directo e analítico â€” usa sempre números concretos do contexto fornecido. Estrutura a resposta exactamente nas 3 partes pedidas. Não introduzas dados, benchmarks ou referências externas que não foram fornecidos.';
+      'És um analista financeiro pessoal para utilizadores portugueses. Responde sempre em português europeu. Sê directo e analítico — usa sempre números concretos do contexto fornecido. Estrutura a resposta exactamente nas 3 partes pedidas. Não introduzas dados, benchmarks ou referências externas que não foram fornecidos.';
 
   @override
   String get aiCoachInvalidApiKey =>
@@ -2015,11 +2015,11 @@ class SPt extends S {
 
   @override
   String get aiCoachMidMonthSystem =>
-      'Ã‰s um consultor de orçamento doméstico português. Responde sempre em português europeu. Sê prático e directo.';
+      'És um consultor de orçamento doméstico português. Responde sempre em português europeu. Sê prático e directo.';
 
   @override
   String get aiMealPlannerSystem =>
-      'Ã‰s um chef português. Responde sempre em português europeu. Responde APENAS com JSON válido, sem texto extra.';
+      'És um chef português. Responde sempre em português europeu. Responde APENAS com JSON válido, sem texto extra.';
 
   @override
   String get monthAbbrJan => 'Jan';
@@ -2269,7 +2269,7 @@ class SPt extends S {
   String get setupWizardExpLeisure => 'Lazer';
 
   @override
-  String get expenseTrackerTitle => 'ORÃ‡AMENTO VS REAL';
+  String get expenseTrackerTitle => 'ORÇAMENTO VS REAL';
 
   @override
   String get expenseTrackerBudgeted => 'Orçamentado';
@@ -2562,7 +2562,7 @@ class SPt extends S {
 
   @override
   String savingsGoalSurplusSuggestion(String amount) {
-    return 'Tiveste $amount de excedente no mês passado â€” queres alocar a um objetivo?';
+    return 'Tiveste $amount de excedente no mês passado — queres alocar a um objetivo?';
   }
 
   @override
@@ -2816,7 +2816,7 @@ class SPt extends S {
   String get paletteTeal => 'Azul-petróleo';
 
   @override
-  String get paletteSunset => 'PÃ´r do sol';
+  String get paletteSunset => 'Pôr do sol';
 
   @override
   String get exportTooltip => 'Exportar';
@@ -2937,7 +2937,7 @@ class SPt extends S {
 
   @override
   String get onbSlide0Body =>
-      'O painel mostra a sua liquidez mensal, despesas e Ãndice de Serenidade.';
+      'O painel mostra a sua liquidez mensal, despesas e Índice de Serenidade.';
 
   @override
   String get onbSlide1Title => 'Registe cada despesa';
@@ -2958,7 +2958,7 @@ class SPt extends S {
 
   @override
   String get onbSlide3Body =>
-      'Obtenha uma análise em 3 partes baseada no seu orçamento real â€” não conselhos genéricos.';
+      'Obtenha uma análise em 3 partes baseada no seu orçamento real — não conselhos genéricos.';
 
   @override
   String get onbSlide4Title => 'Planeie refeições no orçamento';
@@ -2984,11 +2984,11 @@ class SPt extends S {
       'Rendimento menos todas as despesas. Verde significa saldo positivo.';
 
   @override
-  String get onbTourDash2Title => 'Ãndice de Serenidade';
+  String get onbTourDash2Title => 'Índice de Serenidade';
 
   @override
   String get onbTourDash2Body =>
-      'Pontuação de saúde financeira 0â€“100. Toque para ver os fatores.';
+      'Pontuação de saúde financeira 0–100. Toque para ver os fatores.';
 
   @override
   String get onbTourDash3Title => 'Orçamento vs real';
@@ -3018,11 +3018,11 @@ class SPt extends S {
       'Pesquise por nome ou filtre por categoria.';
 
   @override
-  String get onbTourGrocery2Title => 'Adicionar Ã  lista';
+  String get onbTourGrocery2Title => 'Adicionar à lista';
 
   @override
   String get onbTourGrocery2Body =>
-      'Toque + num produto para o adicionar Ã  lista de compras.';
+      'Toque + num produto para o adicionar à lista de compras.';
 
   @override
   String get onbTourGrocery3Title => 'Categorias';
@@ -3081,7 +3081,7 @@ class SPt extends S {
       'Navegue refeições por semana. Toque num dia para ver a receita.';
 
   @override
-  String get onbTourMeals3Title => 'Adicionar Ã  lista de compras';
+  String get onbTourMeals3Title => 'Adicionar à lista de compras';
 
   @override
   String get onbTourMeals3Body =>
@@ -3148,7 +3148,7 @@ class SPt extends S {
 
   @override
   String get onbTourAssistant1Body =>
-      'O seu atalho para ações rápidas. Toque para adicionar despesas, mudar definições, navegar e mais â€” basta escrever o que precisa.';
+      'O seu atalho para ações rápidas. Toque para adicionar despesas, mudar definições, navegar e mais — basta escrever o que precisa.';
 
   @override
   String get taxDeductionTitle => 'Deduções IRS';
@@ -3165,16 +3165,16 @@ class SPt extends S {
   }
 
   @override
-  String get taxDeductionDetailTitle => 'Deduções IRS â€” Detalhe';
+  String get taxDeductionDetailTitle => 'Deduções IRS — Detalhe';
 
   @override
-  String get taxDeductionDeductibleTitle => 'CATEGORIAS DEDUTÃVEIS';
+  String get taxDeductionDeductibleTitle => 'CATEGORIAS DEDUTÍVEIS';
 
   @override
-  String get taxDeductionNonDeductibleTitle => 'CATEGORIAS NÃƒO DEDUTÃVEIS';
+  String get taxDeductionNonDeductibleTitle => 'CATEGORIAS NÃO DEDUTÍVEIS';
 
   @override
-  String get taxDeductionTotalLabel => 'DEDUÃ‡ÃƒO IRS ESTIMADA';
+  String get taxDeductionTotalLabel => 'DEDUÇÃO IRS ESTIMADA';
 
   @override
   String taxDeductionSpent(String amount) {
@@ -3251,16 +3251,16 @@ class SPt extends S {
   String get taxSimTitle => 'Simulador Fiscal';
 
   @override
-  String get taxSimPresets => 'CENÃRIOS RÃPIDOS';
+  String get taxSimPresets => 'CENÁRIOS RÁPIDOS';
 
   @override
-  String get taxSimPresetRaise => '+â‚¬200 aumento';
+  String get taxSimPresetRaise => '+€200 aumento';
 
   @override
   String get taxSimPresetMeal => 'Cartão vs dinheiro';
 
   @override
-  String get taxSimPresetTitular => 'Ãšnico vs conjunto';
+  String get taxSimPresetTitular => 'Único vs conjunto';
 
   @override
   String get taxSimParameters => 'PARÃ‚METROS';
@@ -3328,7 +3328,7 @@ class SPt extends S {
   }
 
   @override
-  String get expenseDefaultBudget => 'ORÃ‡AMENTO BASE';
+  String get expenseDefaultBudget => 'ORÇAMENTO BASE';
 
   @override
   String expenseOverrideActive(String month, String amount) {
@@ -3412,7 +3412,7 @@ class SPt extends S {
   }
 
   @override
-  String get subscriptionTrialLastDay => 'Ãšltimo dia do seu teste gratuito!';
+  String get subscriptionTrialLastDay => 'Último dia do seu teste gratuito!';
 
   @override
   String get subscriptionUpgradeNow => 'Atualizar Agora';
@@ -3771,7 +3771,7 @@ class SPt extends S {
 
   @override
   String get savingsGoalHowItWorksStep1 =>
-      'Crie um objetivo com um nome e o valor que pretende atingir (ex: \"Férias â€” 2 000 â‚¬\").';
+      'Crie um objetivo com um nome e o valor que pretende atingir (ex: \"Férias — 2 000 €\").';
 
   @override
   String get savingsGoalHowItWorksStep2 =>
@@ -4000,7 +4000,7 @@ class SPt extends S {
 
   @override
   String pantryAddedToWeekly(String name) {
-    return '$name adicionado Ã  despensa semanal';
+    return '$name adicionado à despensa semanal';
   }
 
   @override
@@ -4409,7 +4409,7 @@ class SPt extends S {
 
   @override
   String get featureDescGroceryBrowser =>
-      'Explora produtos de várias lojas, compara preços e adiciona as melhores ofertas diretamente Ã  tua lista de compras.';
+      'Explora produtos de várias lojas, compara preços e adiciona as melhores ofertas diretamente à tua lista de compras.';
 
   @override
   String get featureDescExportReports =>
@@ -4435,7 +4435,7 @@ class SPt extends S {
   }
 
   @override
-  String get trialLastDay => 'Ãšltimo dia do teu período de teste grátis!';
+  String get trialLastDay => 'Último dia do teu período de teste grátis!';
 
   @override
   String get trialSeePlans => 'Ver Planos';
@@ -4495,7 +4495,7 @@ class SPt extends S {
       'Posicione o recibo e toque no botão para capturar';
 
   @override
-  String get receiptScanProcessing => 'A ler reciboâ€¦';
+  String get receiptScanProcessing => 'A ler recibo…';
 
   @override
   String receiptScanSuccess(String amount, String store) {
@@ -4519,7 +4519,7 @@ class SPt extends S {
 
   @override
   String receiptItemsMatched(int count) {
-    return '$count itens associados Ã  lista de compras';
+    return '$count itens associados à lista de compras';
   }
 
   @override
@@ -4552,11 +4552,11 @@ class SPt extends S {
   String get receiptReviewRetake => 'Repetir';
 
   @override
-  String get receiptCameraPermissionTitle => 'Acesso Ã  Câmara';
+  String get receiptCameraPermissionTitle => 'Acesso à Câmara';
 
   @override
   String get receiptCameraPermissionBody =>
-      'Ã‰ necessário acesso Ã  câmara para digitalizar recibos e códigos de barras.';
+      'É necessário acesso à câmara para digitalizar recibos e códigos de barras.';
 
   @override
   String get receiptCameraPermissionAllow => 'Permitir';
@@ -4641,7 +4641,7 @@ class SPt extends S {
   String get paywallContinueFree => 'Continuar grátis';
 
   @override
-  String get paywallUpgradedPro => 'Atualizado para Pro â€” obrigado!';
+  String get paywallUpgradedPro => 'Atualizado para Pro — obrigado!';
 
   @override
   String get paywallNoRestore => 'Nenhuma compra anterior encontrada';
@@ -4673,13 +4673,13 @@ class SPt extends S {
   String get settingsGroupAccount => 'CONTA';
 
   @override
-  String get settingsGroupBudget => 'ORÃ‡AMENTO';
+  String get settingsGroupBudget => 'ORÇAMENTO';
 
   @override
-  String get settingsGroupPreferences => 'PREFERÃŠNCIAS';
+  String get settingsGroupPreferences => 'PREFERÊNCIAS';
 
   @override
-  String get settingsGroupAdvanced => 'AVANÃ‡ADO';
+  String get settingsGroupAdvanced => 'AVANÇADO';
 
   @override
   String get settingsManageSubscription => 'Gerir Subscrição';
@@ -4709,23 +4709,23 @@ class SPt extends S {
 
   @override
   String get stressZoneCritical =>
-      '0â€“39: Pressão financeira elevada, ação urgente necessária';
+      '0–39: Pressão financeira elevada, ação urgente necessária';
 
   @override
   String get stressZoneWarning =>
-      '40â€“59: Alguns riscos presentes, melhorias recomendadas';
+      '40–59: Alguns riscos presentes, melhorias recomendadas';
 
   @override
   String get stressZoneGood =>
-      '60â€“79: Finanças saudáveis, pequenas otimizações possíveis';
+      '60–79: Finanças saudáveis, pequenas otimizações possíveis';
 
   @override
   String get stressZoneExcellent =>
-      '80â€“100: Posição financeira forte, bem gerida';
+      '80–100: Posição financeira forte, bem gerida';
 
   @override
   String get projectionStressHint =>
-      'Como este cenário de gastos afeta a sua pontuação geral de saúde financeira (0â€“100)';
+      'Como este cenário de gastos afeta a sua pontuação geral de saúde financeira (0–100)';
 
   @override
   String get coachWelcomeTitle => 'O Seu Coach Financeiro IA';
@@ -4816,7 +4816,7 @@ class SPt extends S {
   String get settingsAiCoach => 'Coach IA';
 
   @override
-  String get setupWizardSubsidyLabel => 'DUODÃ‰CIMOS';
+  String get setupWizardSubsidyLabel => 'DUODÉCIMOS';
 
   @override
   String get setupWizardPerDay => '/dia';
@@ -4862,7 +4862,7 @@ class SPt extends S {
   String get customCategoryName => 'Nome da categoria';
 
   @override
-  String get customCategoryIcon => 'Ãcone';
+  String get customCategoryIcon => 'Ícone';
 
   @override
   String get customCategoryColor => 'Cor';
@@ -4950,7 +4950,7 @@ class SPt extends S {
   String get settingsCategoryLabel => 'CATEGORIA';
 
   @override
-  String get settingsMonthlyBudgetLabel => 'ORÃ‡AMENTO MENSAL';
+  String get settingsMonthlyBudgetLabel => 'ORÇAMENTO MENSAL';
 
   @override
   String get expenseLocationSearch => 'Pesquisar';
@@ -4972,7 +4972,7 @@ class SPt extends S {
   String get dashboardBurnRateOver => 'Acima do ritmo';
 
   @override
-  String get dashboardBurnRateDailyAvg => 'MÃ‰DIA/DIA';
+  String get dashboardBurnRateDailyAvg => 'MÉDIA/DIA';
 
   @override
   String get dashboardBurnRateAllowance => 'DISP./DIA';
@@ -4997,7 +4997,7 @@ class SPt extends S {
   String get dashboardCashFlowProjectedSpend => 'GASTO PROJETADO';
 
   @override
-  String get dashboardCashFlowEndOfMonth => 'FIM DO MÃŠS';
+  String get dashboardCashFlowEndOfMonth => 'FIM DO MÊS';
 
   @override
   String dashboardCashFlowPendingBills(String amount) {
@@ -5641,7 +5641,8 @@ class SPt extends S {
   String get mealCourseDessert => 'Sobremesa';
 
   @override
-  String get mealSubstituteHint => 'Toque num ingrediente para o substituir por outro';
+  String get mealSubstituteHint =>
+      'Toque num ingrediente para o substituir por outro';
 
   @override
   String get mealSubstituteSameCategory => 'Mesma categoria';
@@ -5656,11 +5657,13 @@ class SPt extends S {
   String get wizardIncludeSoupStarter => 'Incluir sopa ou entrada';
 
   @override
-  String get wizardSoupStarterHint => 'Adiciona uma sopa ou entrada como primeiro prato';
+  String get wizardSoupStarterHint =>
+      'Adiciona uma sopa ou entrada como primeiro prato';
 
   @override
   String get wizardIncludeDessert => 'Incluir sobremesa';
 
   @override
-  String get wizardDessertHint => 'Adiciona fruta, doce ou outra sobremesa como ultimo prato';
+  String get wizardDessertHint =>
+      'Adiciona fruta, doce ou outra sobremesa como ultimo prato';
 }
