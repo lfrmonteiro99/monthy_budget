@@ -622,12 +622,13 @@ class MealPlannerService {
           r.nutrition!.proteinG >= Recipe.mainMealMinProteinG).toList();
         if (highProtein.length >= 3) pool = highProtein;
 
-        // Complete meal filter: for lunch/dinner, strongly prefer recipes
-        // with a real protein source (meat, fish, eggs, tofu) over
-        // legume-only or dairy-only dishes.
+        // Complete meal filter: for lunch/dinner, REQUIRE recipes with a real
+        // protein source (meat, fish, eggs, tofu). This is a HARD filter —
+        // no fallback to incomplete meals. Every lunch/dinner main course
+        // must have strong protein.
         if (mealType == MealType.lunch || mealType == MealType.dinner) {
           final complete = pool.where((r) => r.isCompleteMeal).toList();
-          if (complete.length >= 3) pool = complete;
+          if (complete.isNotEmpty) pool = complete;
         }
 
         // Pick recipe: dedup + protein diversity + favorites boost
