@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2026.6.1 - 2026-03-28
+
+### Bug Fixes
+
+- Fix double/triple UTF-8 encoding corruption in all 4 ARB localization files (#820)
+- 403 keys repaired: EUR symbol, accented characters, em-dashes, and ellipses now render correctly
+- Affected all languages: PT (108 keys), EN (28), ES (76), FR (191)
+
 ## v2026.6.0 - 2026-03-27
 
 ### Features
