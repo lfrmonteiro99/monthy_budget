@@ -1004,6 +1004,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           _label(l10n.settingsGrossMonthlySalary),
                           const SizedBox(height: 8),
                           TextFormField(
+                            key: ValueKey('gross_$idx'),
                             initialValue: salary.grossAmount > 0 ? salary.grossAmount.toStringAsFixed(2) : '',
                             onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(grossAmount: double.tryParse(v) ?? 0)),
                             keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -1070,6 +1071,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           _label(l10n.settingsOtherExemptLabel),
                           const SizedBox(height: 8),
                           TextFormField(
+                            key: ValueKey('exempt_$idx'),
                             initialValue: salary.otherExemptIncome > 0 ? salary.otherExemptIncome.toStringAsFixed(2) : '',
                             onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(otherExemptIncome: double.tryParse(v) ?? 0)),
                             keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -1128,6 +1130,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         _label(l10n.settingsAmountPerDay),
                                         const SizedBox(height: 4),
                                         TextFormField(
+                                          key: ValueKey('meal_day_$idx'),
                                           initialValue: salary.mealAllowancePerDay > 0 ? salary.mealAllowancePerDay.toStringAsFixed(2) : '',
                                           onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(mealAllowancePerDay: double.tryParse(v) ?? 0)),
                                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -1145,6 +1148,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         _label(l10n.settingsDaysPerMonth),
                                         const SizedBox(height: 4),
                                         TextFormField(
+                                          key: ValueKey('meal_days_$idx'),
                                           initialValue: salary.workingDaysPerMonth > 0 ? salary.workingDaysPerMonth.toString() : '',
                                           onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(workingDaysPerMonth: int.tryParse(v) ?? 0)),
                                           keyboardType: TextInputType.number,
