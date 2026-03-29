@@ -1,9 +1,12 @@
 import 'dart:math' as math;
 import 'tax_system.dart';
 
-/// Spain IRPF simplified tax system (2024 rates)
-/// 6 brackets: 19%, 24%, 30%, 37%, 45%, 47%
-/// Social Security: 6.35% employee contribution
+/// Spain IRPF tax system (2026 rates)
+/// 6 escalones estatales: 19%, 24%, 30%, 37%, 45%, 47%
+/// Seguridad Social: 6,35% cotización trabajador
+/// Mínimo personal: 5.550€ (Art. 63 LIRPF)
+/// Mínimo por descendientes: 1er hijo 2.400€, 2º 2.700€, 3º 4.000€, 4º+ 4.500€
+/// Source: Agencia Tributaria, sede.agenciatributaria.gob.es
 class EsTaxSystem extends TaxSystem {
   @override
   Country get country => Country.es;
@@ -19,6 +22,18 @@ class EsTaxSystem extends TaxSystem {
     TaxBracket(upTo: 300000, rate: 0.45),
     TaxBracket(upTo: double.infinity, rate: 0.47),
   ];
+
+  /// Mínimo personal + mínimo por descendientes (Art. 63-64 LIRPF).
+  /// Returns the annual tax-free personal/family allowance.
+  static double _minimoPersonalFamiliar(int dependentes) {
+    double minimo = 5550; // Mínimo del contribuyente
+    // Mínimo por descendientes
+    const childAmounts = [2400, 2700, 4000, 4500];
+    for (int i = 0; i < dependentes; i++) {
+      minimo += i < childAmounts.length ? childAmounts[i] : 4500;
+    }
+    return minimo;
+  }
 
   @override
   TaxResult calculateTax({
@@ -37,9 +52,13 @@ class EsTaxSystem extends TaxSystem {
       );
     }
 
-    // Annualize for bracket lookup, then de-annualize
     final annualGross = grossSalary * 12;
-    final annualTax = TaxBracket.applyBrackets(annualGross, _brackets);
+
+    // Cuota íntegra = tax on gross - tax on mínimo personal/familiar
+    final grossTax = TaxBracket.applyBrackets(annualGross, _brackets);
+    final minimo = _minimoPersonalFamiliar(dependentes);
+    final minimoTax = TaxBracket.applyBrackets(minimo, _brackets);
+    final annualTax = math.max(0.0, grossTax - minimoTax);
     final monthlyTax = round2(annualTax / 12);
 
     final ss = calculateSocialContribution(grossSalary);
