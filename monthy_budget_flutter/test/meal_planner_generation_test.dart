@@ -1202,4 +1202,73 @@ void main() {
       }
     });
   });
+
+  // ────────────────────────────────────────────────────────────
+  // 27. DIVERSITY COLLAPSE REGRESSION (issue #848)
+  //
+  // A fresh install has no "alimentacao" expense so monthlyFoodBudget is 0.
+  // Previously _enforceBudget(plan, monthlyBudget=0) would run its swap
+  // loop for 100 iterations, repeatedly picking the cheapest eligible
+  // recipe, and collapse every meal on every day onto that one recipe
+  // (reported in the field as "Arroz de Legumes com Ovo" 31×2 times).
+  // Same risk with a tight but non-zero budget — cap saved us from full
+  // collapse.
+  // ────────────────────────────────────────────────────────────
+  group('Diversity collapse (issue #848)', () {
+    test('zero food budget still produces a diverse plan', () {
+      // foodBudget=0 mimics a brand-new account with no alimentacao expense.
+      final plan = service.generate(_settings(foodBudget: 0), march2026);
+      final uniqueMains = <String>{};
+      for (final d in plan.days) {
+        if (d.isLeftover) continue;
+        uniqueMains.add(d.recipeId);
+      }
+      // The catalog has 120+ lunch/dinner-suitable mains; default settings
+      // should reach at least 10 unique recipes across 62 meals. Before the
+      // fix, uniqueMains.length == 1.
+      expect(uniqueMains.length, greaterThanOrEqualTo(10),
+          reason:
+              'Zero-budget plan collapsed to ${uniqueMains.length} unique recipes — '
+              'expected diverse selection (generate() should skip _enforceBudget '
+              'when monthlyBudget <= 0)');
+    });
+
+    test('tight but non-zero budget does not collapse to a single recipe', () {
+      // 50€/month is genuinely impossible for 2 people × 62 meals. The
+      // per-recipe cap must still keep variety even when enforcement can't
+      // meet the budget.
+      final plan = service.generate(_settings(foodBudget: 50), march2026);
+      final usage = <String, int>{};
+      for (final d in plan.days) {
+        if (d.isLeftover) continue;
+        usage[d.recipeId] = (usage[d.recipeId] ?? 0) + 1;
+      }
+      final totalMeals = plan.days.where((d) => !d.isLeftover).length;
+      // Per-recipe cap is max(4, ceil(totalMeals / 8)). For 62 meals -> 8.
+      // Allow a small slack for mid-loop states.
+      final cap = totalMeals ~/ 4; // ~15 for a 62-meal plan
+      for (final entry in usage.entries) {
+        expect(entry.value, lessThanOrEqualTo(cap),
+            reason:
+                'Recipe ${entry.key} used ${entry.value}× in a tight-budget '
+                'plan (totalMeals=$totalMeals, cap=$cap) — enforcement should '
+                'stop concentrating on the cheapest recipe');
+      }
+      // And we should have meaningful variety.
+      expect(usage.keys.length, greaterThanOrEqualTo(6),
+          reason:
+              'Tight-budget plan has only ${usage.keys.length} unique recipes');
+    });
+
+    test('generous budget path unchanged: variety remains', () {
+      // Regression guard for the existing "generous budget" behaviour.
+      final plan = service.generate(_settings(foodBudget: 9999), march2026);
+      final uniqueMains = <String>{};
+      for (final d in plan.days) {
+        if (d.isLeftover) continue;
+        uniqueMains.add(d.recipeId);
+      }
+      expect(uniqueMains.length, greaterThanOrEqualTo(10));
+    });
+  });
 }

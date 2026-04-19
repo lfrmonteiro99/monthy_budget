@@ -414,7 +414,12 @@ class MealPlannerService {
       if (pool.isEmpty) {
         pool = _recipes.where((r) => r.suitableMealTypes.contains(mealTypeName)).toList();
       }
-      if (pool.isEmpty) pool = _recipes.toList();
+      if (pool.isEmpty) {
+        // Last-resort fallback: every recipe. Shuffle so a pathological
+        // pool collapse doesn't produce the same definition-order recipe
+        // every day (issue #848).
+        pool = _recipes.toList()..shuffle(rng);
+      }
 
       poolCache[key] = pool;
       return List.of(pool);
@@ -979,6 +984,13 @@ class MealPlannerService {
     var days = List<MealDay>.from(plan.days);
     var total = days.fold(0.0, (s, d) => s + d.costEstimate);
 
+    // Nothing to enforce when the user hasn't configured a food budget yet.
+    // Running the swap loop with monthlyBudget <= 0 would otherwise collapse
+    // every meal onto the single cheapest eligible recipe (issue #848).
+    if (plan.monthlyBudget <= 0) {
+      return _fixLeftoverRefs(plan, days);
+    }
+
     if (total <= plan.monthlyBudget) {
       return _fixLeftoverRefs(plan, days);
     }
@@ -1021,6 +1033,18 @@ class MealPlannerService {
       eligibleByMealType[mt] = eligible;
     }
 
+    // Per-recipe usage cap to preserve variety. Without this, enforcement
+    // keeps swapping the most expensive day for the cheapest available
+    // recipe and eventually collapses the plan onto that one recipe.
+    // Cap = max(4, ceil(totalMeals / 8)) — generous enough to let tight
+    // budgets still drop cost meaningfully, strict enough to prevent the
+    // "same meal every day" outcome.
+    final usageCount = <String, int>{};
+    for (final d in days) {
+      usageCount[d.recipeId] = (usageCount[d.recipeId] ?? 0) + 1;
+    }
+    final perRecipeCap = max(4, (days.length + 7) ~/ 8);
+
     int iterations = 0;
     while (total > plan.monthlyBudget && iterations < 100) {
       iterations++;
@@ -1038,6 +1062,8 @@ class MealPlannerService {
       // Must match the same courseType to preserve multi-course integrity.
       // For lunch/dinner main courses, the replacement must also be a
       // complete meal so we don't swap a hearty main for a cheap side dish.
+      // The per-recipe cap stops the loop from concentrating every day
+      // on the single cheapest recipe (issue #848).
       final expensiveRecipe = recipeMap[expensive.recipeId];
       final expensiveCourseType = expensiveRecipe?.courseType ?? expensive.courseType;
       final requireCompleteMeal =
@@ -1047,23 +1073,35 @@ class MealPlannerService {
       final eligible = eligibleByMealType[expensive.mealType] ?? [];
       (Recipe, double)? replacement;
       for (final entry in eligible) {
-        if (entry.$1.id != expensive.recipeId &&
-            entry.$2 < expensive.costEstimate &&
-            entry.$1.courseType == expensiveCourseType &&
-            (!requireCompleteMeal || entry.$1.isCompleteMeal)) {
-          replacement = entry;
-          break; // already sorted by cost, first match is cheapest
-        }
+        if (entry.$1.id == expensive.recipeId) continue;
+        if (entry.$2 >= expensive.costEstimate) continue;
+        if (entry.$1.courseType != expensiveCourseType) continue;
+        if (requireCompleteMeal && !entry.$1.isCompleteMeal) continue;
+        if ((usageCount[entry.$1.id] ?? 0) >= perRecipeCap) continue;
+        replacement = entry;
+        break; // eligible is sorted by cost, first match is cheapest
       }
 
       if (replacement == null) break;
 
       final oldCost = expensive.costEstimate;
+      final oldRecipeId = expensive.recipeId;
       days[expensiveIdx] = expensive.copyWith(
         recipeId: replacement.$1.id,
         costEstimate: replacement.$2,
       );
       total += replacement.$2 - oldCost; // Incremental update
+      // Keep usageCount in sync so the per-recipe cap is honored across
+      // subsequent iterations.
+      final prevCount = usageCount[oldRecipeId];
+      if (prevCount != null) {
+        if (prevCount <= 1) {
+          usageCount.remove(oldRecipeId);
+        } else {
+          usageCount[oldRecipeId] = prevCount - 1;
+        }
+      }
+      usageCount[replacement.$1.id] = (usageCount[replacement.$1.id] ?? 0) + 1;
     }
 
     days.sort((a, b) => a.dayIndex.compareTo(b.dayIndex));
