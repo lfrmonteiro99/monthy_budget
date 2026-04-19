@@ -355,6 +355,45 @@ jobs:
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "✅ Created tag $TAG and GitHub Release"
 
+      - name: Dispatch release-tag workflow for auto-versioned merges
+        # When the branch/commits don't carry an explicit vX.Y.Z (the common
+        # case — normal fix/feat PRs), release-tag.yml is the one that
+        # computes the next CalVer, tags, and builds APK/AAB. It normally
+        # triggers on `push: branches: [main]`, BUT pushes authored by the
+        # GITHUB_TOKEN (which agent-delivery's squash-merge is) don't fire
+        # downstream workflow runs per GitHub's anti-recursion rule.
+        # workflow_dispatch is exempt from that rule, so dispatch it
+        # explicitly. No-op when the step above already created the tag —
+        # release-tag.yml detects the pre-existing tag and exits cleanly.
+        if: steps.release-tag.outputs.tag == ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          BRANCH='${{ needs.prepare.outputs.branch_name }}'
+          PR_NUMBER="$(gh pr list --head "$BRANCH" --base "$DEFAULT_BRANCH" --state all --json number --jq '.[0].number // empty')"
+          if [[ -z "$PR_NUMBER" ]]; then
+            echo "No PR for $BRANCH; nothing to release."
+            exit 0
+          fi
+
+          # Wait for the squash-merge to actually land on $DEFAULT_BRANCH so
+          # release-tag.yml sees the new commits when it computes the bump.
+          for i in $(seq 1 30); do
+            STATE="$(gh pr view "$PR_NUMBER" --json state --jq .state)"
+            if [[ "$STATE" == "MERGED" ]]; then break; fi
+            echo "PR #$PR_NUMBER state: $STATE (attempt $i/30)"
+            sleep 10
+          done
+
+          if [[ "$STATE" != "MERGED" ]]; then
+            echo "PR #$PR_NUMBER did not merge in time, skipping release dispatch."
+            exit 0
+          fi
+
+          echo "Dispatching release-tag workflow against $DEFAULT_BRANCH..."
+          gh workflow run release-tag.yml --ref "$DEFAULT_BRANCH"
+          echo "✅ release-tag.yml dispatched; it will compute the CalVer bump, tag, release, and build APK/AAB."
+
   build-release:
     needs: [prepare, open-pr-and-merge]
     if: needs.open-pr-and-merge.outputs.release_tag != ''
