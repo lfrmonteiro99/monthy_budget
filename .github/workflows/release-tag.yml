@@ -81,7 +81,11 @@ jobs:
             fi
 
             BUMP="patch"
-            if printf '%s\n' "$COMMITS" | grep -Eiq 'BREAKING CHANGE|^[a-zA-Z]+!:'; then
+            # Breaking change: either a "BREAKING CHANGE" footer or a "!" before
+            # the colon in the header. The optional (\([^)]*\))? covers scoped
+            # conventional commits like "feat(api)!: rework contract" that
+            # would otherwise be classified as a patch/minor.
+            if printf '%s\n' "$COMMITS" | grep -Eiq 'BREAKING CHANGE|^[a-zA-Z]+(\([^)]*\))?!:'; then
               BUMP="major"
             elif printf '%s\n' "$COMMITS" | grep -Eiq '(^|\n)feat(\(|:)'; then
               BUMP="minor"
