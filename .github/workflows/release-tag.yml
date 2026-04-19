@@ -1,165 +1,221 @@
 name: Release Tag
 
-# Creates tag + release + builds APK/AAB when a release commit lands on main.
-# Covers both human pushes and agent-delivery merges where the branch didn't
-# start with 'release/' (so agent-delivery's build-release job was skipped).
-# Fixed: tag and release creation are independent; --target omitted when tag exists.
+# Auto-tag + release + build on every push to main (i.e. every PR merge).
+#
+# The workflow resolves the target tag in this order:
+#   1. workflow_dispatch `tag` input (manual override)
+#   2. `chore(release): vYYYY.M.PATCH` head-commit message (explicit release PR)
+#   3. Auto-bumped CalVer vYYYY.M.PATCH from conventional commits since the
+#      latest `v20*` tag (`feat:` → minor, `BREAKING CHANGE` / `!:` → major,
+#      otherwise patch).
+#
+# If the resolved tag already exists (retry / replay / agent-delivery already
+# tagged this merge) the job exits cleanly and the build is skipped.
+#
+# Builds pass `--build-name` / `--build-number` explicitly so the APK/AAB
+# carry the correct CalVer without needing a pubspec bump per merge.
 on:
   push:
     branches: [main]
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag (e.g. v2026.3.20)'
-        required: true
+        description: 'Release tag (e.g. v2026.3.20). Leave empty to auto-compute.'
+        required: false
 
 permissions:
   contents: write
+
+concurrency:
+  group: release-tag-main
+  cancel-in-progress: false
 
 jobs:
   tag-and-release:
     runs-on: ubuntu-latest
     outputs:
-      is_release: ${{ steps.check.outputs.is_release }}
-      tag: ${{ steps.check.outputs.tag }}
+      should_release: ${{ steps.plan.outputs.should_release }}
+      tag: ${{ steps.plan.outputs.tag }}
+      version_name: ${{ steps.plan.outputs.version_name }}
+      version_code: ${{ steps.plan.outputs.version_code }}
     steps:
-      - name: Check if release commit
-        id: check
-        shell: bash
-        run: |
-          # Support workflow_dispatch with explicit tag input
-          if [[ -n "${{ github.event.inputs.tag }}" ]]; then
-            TAG="${{ github.event.inputs.tag }}"
-            echo "is_release=true" >> "$GITHUB_OUTPUT"
-            echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-            echo "Manual dispatch for tag: $TAG"
-          else
-            MSG="${{ github.event.head_commit.message }}"
-            if echo "$MSG" | grep -qP '^chore\(release\):.*v\d+\.\d+\.\d+'; then
-              TAG="$(echo "$MSG" | grep -oP 'v\d+\.\d+\.\d+' | head -n1)"
-              echo "is_release=true" >> "$GITHUB_OUTPUT"
-              echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-              echo "Detected release commit: $TAG"
-            else
-              echo "is_release=false" >> "$GITHUB_OUTPUT"
-              echo "Not a release commit, skipping."
-            fi
-          fi
-
       - uses: actions/checkout@v4
-        if: steps.check.outputs.is_release == 'true'
         with:
           fetch-depth: 0
 
-      - name: Check tag and release status
-        if: steps.check.outputs.is_release == 'true'
-        id: status
+      - name: Plan release
+        id: plan
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          TAG="${{ steps.check.outputs.tag }}"
-
-          # Check if tag already exists
-          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null 2>&1; then
-            echo "tag_exists=true" >> "$GITHUB_OUTPUT"
-            echo "Tag $TAG already exists."
-          else
-            echo "tag_exists=false" >> "$GITHUB_OUTPUT"
-          fi
-
-          # Check if GitHub release already exists
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            echo "release_exists=true" >> "$GITHUB_OUTPUT"
-            echo "Release $TAG already exists."
-          else
-            echo "release_exists=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Extract changelog section
-        if: steps.check.outputs.is_release == 'true' && steps.status.outputs.release_exists != 'true'
-        id: changelog
-        shell: bash
+          DISPATCH_TAG: ${{ github.event.inputs.tag }}
+          HEAD_MSG: ${{ github.event.head_commit.message }}
         run: |
           set -euo pipefail
-          TAG="${{ steps.check.outputs.tag }}"
-          VERSION="${TAG#v}"
-          CHANGELOG="monthy_budget_flutter/CHANGELOG.md"
+          git fetch --tags --force --quiet
 
-          if [[ ! -f "$CHANGELOG" ]]; then
-            echo "body=Release $TAG" >> "$GITHUB_OUTPUT"
+          # ─── 1. Resolve tag (dispatch > explicit release commit > auto) ──
+          TAG=""
+          if [[ -n "${DISPATCH_TAG:-}" ]]; then
+            TAG="$DISPATCH_TAG"
+            echo "Using workflow_dispatch tag: $TAG"
+          else
+            # Detect explicit release commits (chore(release): vX.Y.Z ...)
+            if printf '%s' "${HEAD_MSG:-}" | grep -qP '^chore\(release\):.*v\d+\.\d+\.\d+'; then
+              TAG="$(printf '%s' "${HEAD_MSG:-}" | grep -oP 'v\d+\.\d+\.\d+' | head -n1)"
+              echo "Detected explicit release commit: $TAG"
+            fi
+          fi
+
+          LAST_TAG="$(git tag --list 'v20*' --sort=-v:refname | head -n 1 || true)"
+
+          if [[ -z "$TAG" ]]; then
+            # Auto-compute next CalVer from conventional commits since LAST_TAG.
+            RANGE="HEAD"
+            [[ -n "$LAST_TAG" ]] && RANGE="${LAST_TAG}..HEAD"
+            COMMITS="$(git log $RANGE --pretty=format:'%s%n%b' 2>/dev/null || true)"
+            if [[ -z "${COMMITS// }" ]]; then
+              echo "No new commits since ${LAST_TAG:-'initial'}; nothing to release."
+              echo "should_release=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            BUMP="patch"
+            # Breaking change: either a "BREAKING CHANGE" footer or a "!" before
+            # the colon in the header. The optional (\([^)]*\))? covers scoped
+            # conventional commits like "feat(api)!: rework contract" that
+            # would otherwise be classified as a patch/minor.
+            if printf '%s\n' "$COMMITS" | grep -Eiq 'BREAKING CHANGE|^[a-zA-Z]+(\([^)]*\))?!:'; then
+              BUMP="major"
+            elif printf '%s\n' "$COMMITS" | grep -Eiq '(^|\n)feat(\(|:)'; then
+              BUMP="minor"
+            fi
+
+            CURRENT_YEAR="$(date +%Y)"
+            CURRENT_MONTH=$((10#$(date +%m)))
+            if [[ -z "$LAST_TAG" ]]; then
+              YEAR="$CURRENT_YEAR"; MONTH="$CURRENT_MONTH"; PATCH=0
+            else
+              BASE="${LAST_TAG#v}"
+              IFS='.' read -r PREV_YEAR PREV_MONTH PREV_PATCH <<< "$BASE"
+              case "$BUMP" in
+                major)
+                  if (( CURRENT_YEAR <= PREV_YEAR )); then YEAR=$((PREV_YEAR + 1)); else YEAR="$CURRENT_YEAR"; fi
+                  MONTH=1; PATCH=0 ;;
+                minor)
+                  if (( CURRENT_YEAR > PREV_YEAR || (CURRENT_YEAR == PREV_YEAR && CURRENT_MONTH > PREV_MONTH) )); then
+                    YEAR="$CURRENT_YEAR"; MONTH="$CURRENT_MONTH"
+                  else
+                    YEAR="$PREV_YEAR"; MONTH=$((PREV_MONTH + 1))
+                    if (( MONTH > 12 )); then YEAR=$((YEAR + 1)); MONTH=1; fi
+                  fi
+                  PATCH=0 ;;
+                patch)
+                  if (( CURRENT_YEAR > PREV_YEAR || (CURRENT_YEAR == PREV_YEAR && CURRENT_MONTH > PREV_MONTH) )); then
+                    YEAR="$CURRENT_YEAR"; MONTH="$CURRENT_MONTH"; PATCH=1
+                  else
+                    YEAR="$PREV_YEAR"; MONTH="$PREV_MONTH"; PATCH=$((PREV_PATCH + 1))
+                  fi ;;
+              esac
+            fi
+            TAG="v${YEAR}.${MONTH}.${PATCH}"
+            echo "Auto-computed tag: $TAG (bump=$BUMP, since=${LAST_TAG:-'initial'})"
+          fi
+
+          # ─── 2. Compute version_name / version_code ──────────────────────
+          VERSION_NAME="${TAG#v}"
+          IFS='.' read -r Y M P <<< "$VERSION_NAME"
+          if [[ -z "${Y:-}" || -z "${M:-}" || -z "${P:-}" ]]; then
+            echo "::error::Malformed tag: $TAG (expected vYYYY.M.PATCH)"
+            exit 1
+          fi
+          YY=$((Y % 100))
+          VERSION_CODE=$((YY * 10000000 + M * 100000 + P))
+
+          # ─── 3. Skip if tag already exists ───────────────────────────────
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null 2>&1 \
+             || git ls-remote --tags origin "refs/tags/$TAG" 2>/dev/null | grep -q .; then
+            echo "Tag $TAG already exists; skipping release."
+            echo "should_release=false" >> "$GITHUB_OUTPUT"
+            echo "tag=$TAG" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          BODY="$(awk -v ver="$VERSION" '
-            /^## / {
-              if (found) exit
-              if (index($0, ver)) found=1
-              next
-            }
-            found { print }
-          ' "$CHANGELOG")"
+          echo "should_release=true" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version_name=$VERSION_NAME" >> "$GITHUB_OUTPUT"
+          echo "version_code=$VERSION_CODE" >> "$GITHUB_OUTPUT"
 
-          if [[ -z "$BODY" ]]; then
-            BODY="Release $TAG"
+      - name: Build release notes
+        if: steps.plan.outputs.should_release == 'true'
+        id: notes
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${{ steps.plan.outputs.tag }}"
+          VERSION="${TAG#v}"
+          CHANGELOG="monthy_budget_flutter/CHANGELOG.md"
+          BODY=""
+          if [[ -f "$CHANGELOG" ]]; then
+            BODY="$(awk -v ver="$VERSION" '
+              /^## / { if (found) exit; if (index($0, ver)) found=1; next }
+              found { print }
+            ' "$CHANGELOG")"
           fi
-
+          if [[ -z "${BODY// }" ]]; then
+            LAST_TAG="$(git tag --list 'v20*' --sort=-v:refname | head -n 1 || true)"
+            RANGE="HEAD"
+            [[ -n "$LAST_TAG" ]] && RANGE="${LAST_TAG}..HEAD"
+            BODY="$(git log $RANGE --pretty='- %s' 2>/dev/null || echo "- Release $TAG")"
+          fi
           {
             echo "body<<CHANGELOG_EOF"
             echo "$BODY"
             echo "CHANGELOG_EOF"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Create tag (if needed)
-        if: steps.check.outputs.is_release == 'true' && steps.status.outputs.tag_exists != 'true'
+      - name: Create tag
+        if: steps.plan.outputs.should_release == 'true'
         shell: bash
         run: |
-          TAG="${{ steps.check.outputs.tag }}"
-          SHA="${{ github.sha }}"
-          git tag "$TAG" "$SHA"
+          set -euo pipefail
+          TAG="${{ steps.plan.outputs.tag }}"
+          git tag "$TAG" "${{ github.sha }}"
           git push origin "$TAG"
-          echo "Created tag $TAG"
+          echo "Created tag $TAG on ${{ github.sha }}"
 
-      - name: Create GitHub Release (if needed)
-        if: steps.check.outputs.is_release == 'true' && steps.status.outputs.release_exists != 'true'
+      - name: Create GitHub Release
+        if: steps.plan.outputs.should_release == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          TAG="${{ steps.check.outputs.tag }}"
-
-          # When tag already exists, omit --target so gh uses the tag's commit.
-          # When tag was just created above, use github.sha as target.
-          TARGET_FLAG=""
-          if [[ "${{ steps.status.outputs.tag_exists }}" != "true" ]]; then
-            TARGET_FLAG="--target ${{ github.sha }}"
-          fi
-
-          NOTES="${{ steps.changelog.outputs.body }}"
-          if [[ -z "$NOTES" ]]; then
-            NOTES="Release $TAG"
-          fi
-
+          TAG="${{ steps.plan.outputs.tag }}"
+          NOTES="${{ steps.notes.outputs.body }}"
+          [[ -z "${NOTES// }" ]] && NOTES="Release $TAG"
           gh release create "$TAG" \
-            $TARGET_FLAG \
+            --target "${{ github.sha }}" \
             --title "$TAG" \
             --notes "$NOTES"
-
           echo "Created GitHub Release for $TAG"
 
   build-release:
     needs: tag-and-release
-    if: needs.tag-and-release.outputs.is_release == 'true'
+    if: needs.tag-and-release.outputs.should_release == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     defaults:
       run:
         working-directory: monthy_budget_flutter
     env:
       GH_TOKEN: ${{ github.token }}
+      BUILD_NAME: ${{ needs.tag-and-release.outputs.version_name }}
+      BUILD_NUMBER: ${{ needs.tag-and-release.outputs.version_code }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.tag-and-release.outputs.tag }}
 
       - uses: actions/setup-java@v4
         with:
@@ -188,25 +244,7 @@ jobs:
       - name: Generate l10n
         run: flutter gen-l10n
 
-      - name: Validate signing secrets
-        run: |
-          missing=""
-          [ -z "${KEYSTORE_BASE64}" ] && missing="${missing} KEYSTORE_BASE64"
-          [ -z "${KEYSTORE_PASSWORD}" ] && missing="${missing} KEYSTORE_PASSWORD"
-          [ -z "${KEY_ALIAS}" ] && missing="${missing} KEY_ALIAS"
-          [ -z "${KEY_PASSWORD}" ] && missing="${missing} KEY_PASSWORD"
-          if [ -n "$missing" ]; then
-            echo "::error::Missing signing secrets:${missing}. Go to repo Settings > Secrets and variables > Actions and add them."
-            exit 1
-          fi
-        env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-
       - name: Resolve monetization secrets with dev placeholders
-        id: monetization
         run: |
           echo "REVENUECAT_API_KEY=${REVENUECAT_API_KEY:-placeholder_revenuecat}" >> "$GITHUB_ENV"
           echo "ADMOB_APP_ID=${ADMOB_APP_ID:-ca-app-pub-0000000000000000~0000000000}" >> "$GITHUB_ENV"
@@ -223,25 +261,34 @@ jobs:
         run: |
           if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
             echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/keystore.jks
+            if [ ! -s android/keystore.jks ]; then
+              echo "::error::Decoded keystore is empty — KEYSTORE_BASE64 secret may be invalid."
+              exit 1
+            fi
             echo "Keystore decoded: $(wc -c < android/keystore.jks) bytes"
+            {
+              echo "KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}"
+              echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}"
+              echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}"
+            } >> "$GITHUB_ENV"
           else
             echo "::warning::No KEYSTORE_BASE64 secret — generating debug keystore for dev build."
             keytool -genkey -v -keystore android/keystore.jks \
               -alias dev -keyalg RSA -keysize 2048 -validity 1 \
               -storepass android -keypass android \
               -dname "CN=Dev,O=Dev,C=PT" 2>/dev/null
-            echo "KEYSTORE_PASSWORD=android" >> "$GITHUB_ENV"
-            echo "KEY_ALIAS=dev" >> "$GITHUB_ENV"
-            echo "KEY_PASSWORD=android" >> "$GITHUB_ENV"
+            {
+              echo "KEYSTORE_PASSWORD=android"
+              echo "KEY_ALIAS=dev"
+              echo "KEY_PASSWORD=android"
+            } >> "$GITHUB_ENV"
           fi
 
       - name: Build APK
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           flutter build apk --release \
+            --build-name="$BUILD_NAME" \
+            --build-number="$BUILD_NUMBER" \
             --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
             --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
             --dart-define=REVENUECAT_API_KEY=${{ env.REVENUECAT_API_KEY }} \
@@ -249,12 +296,10 @@ jobs:
             --dart-define=ADMOB_BANNER_AD_UNIT_ID=${{ env.ADMOB_BANNER_AD_UNIT_ID }}
 
       - name: Build AAB
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           flutter build appbundle --release \
+            --build-name="$BUILD_NAME" \
+            --build-number="$BUILD_NUMBER" \
             --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
             --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
             --dart-define=REVENUECAT_API_KEY=${{ env.REVENUECAT_API_KEY }} \
@@ -284,13 +329,13 @@ jobs:
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: gestao-mensal-apk
+          name: gestao-mensal-apk-${{ needs.tag-and-release.outputs.tag }}
           path: monthy_budget_flutter/build/app/outputs/flutter-apk/app-release.apk
           retention-days: 30
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: gestao-mensal-aab
+          name: gestao-mensal-aab-${{ needs.tag-and-release.outputs.tag }}
           path: monthy_budget_flutter/build/app/outputs/bundle/release/*.aab
           retention-days: 30

@@ -12,7 +12,12 @@ import {
 // Patterns for multi-language support (PT/EN/ES/FR)
 const planAndShopTab = /Shop|Compras|Courses/i;
 const mealPlannerTab = /Meal Planner|Planeador|Planificateur|Planificador/i;
-const generateButton = /Generate|Gerar plano|G[eé]n[eé]rer|Generar/i;
+// Match the primary "Generate Plan" button on the meal-planner empty state
+// and wizard step 5. Word-boundary prefix + trailing "plan" keeps this from
+// matching the "Regenerate" button shown once a plan already exists —
+// otherwise downstream tests click it and get stuck on the "Regenerate
+// plan?" confirmation dialog.
+const generateButton = /\bGenerate\s+Plan\b|\bGerar\s+Plano\b|\bG[eé]n[eé]rer\s+le\s+plan\b|\bGenerar\s+Plan\b/i;
 const weekLabel = /Week|Semana|Semaine/i;
 const addToListButton = /Add.*list|Adicionar.*lista|Ajouter.*liste|A[nñ]adir.*lista/i;
 const ingredientsButton = /Ingredients|Ingredientes|Ingr[eé]dients/i;
@@ -30,6 +35,59 @@ const dessertCoursePattern = /Dessert|Sobremesa|Postre/i;
 const dayPattern = /Dia \d|Day \d|Jour \d/i;
 const mealTypePattern = /Lunch|Almo[cç]o|D[eé]jeuner|Dinner|Jantar|D[iî]ner/i;
 
+// Meal-planner setup wizard labels (lib/l10n/app_*.arb wizardContinue /
+// wizardGeneratePlan / wizardStep*). Fresh test accounts land in the 5-step
+// wizard the first time Meal Planner is opened; the helper below clicks
+// through it so the smoke tests reach the actual planner.
+const wizardStepLabel = /Step \d+ of \d+|Passo \d+ de \d+|[EÉe]tape \d+ sur \d+|Paso \d+ de \d+/i;
+const wizardContinueButton = /^Continue$|^Continuar$|^Continuer$|^Continuar$/i;
+const wizardGeneratePlanButton = /Generate Plan|Gerar Plano|G[eé]n[eé]rer le plan|Generar Plan/i;
+
+async function completeMealWizardIfPresent(page: Page) {
+  // Quick probe: are we on the wizard? It shows "Step N of 5" and a
+  // Continue / Generate Plan primary button.
+  const onWizard = async () => {
+    const names = await getSemanticNames(page);
+    const content = names.join('\n');
+    return wizardStepLabel.test(content);
+  };
+
+  if (!(await onWizard())) return;
+
+  // Up to 6 iterations (5 steps + slack). On the final step the button
+  // label flips from "Continue" to "Generate Plan".
+  for (let step = 0; step < 6; step += 1) {
+    // Prefer the terminal Generate Plan button when present — pressing it
+    // immediately if we're on step 5 avoids an extra loop.
+    const clickedGenerate = await tryClickSemantic(
+      page,
+      wizardGeneratePlanButton,
+      { role: 'button' },
+    );
+    if (clickedGenerate) {
+      await page.waitForTimeout(3000);
+      break;
+    }
+
+    const clickedContinue = await tryClickSemantic(
+      page,
+      wizardContinueButton,
+      { role: 'button' },
+    );
+    if (!clickedContinue) {
+      // Wizard exited (or we never found the button) — stop looping.
+      break;
+    }
+    await page.waitForTimeout(800);
+
+    if (!(await onWizard())) {
+      break;
+    }
+  }
+  // Allow Flutter to rebuild the planner after the wizard dismisses.
+  await page.waitForTimeout(1500);
+}
+
 async function openMealPlanner(page: Page) {
   await page.keyboard.press('Escape');
   await page.waitForTimeout(300);
@@ -37,6 +95,8 @@ async function openMealPlanner(page: Page) {
   await page.waitForTimeout(2000);
   await clickSemantic(page, mealPlannerTab, { role: 'tab' });
   await page.waitForTimeout(2500);
+  // First-run meal-planner configuration wizard; click through when present.
+  await completeMealWizardIfPresent(page);
 }
 
 test.describe('Meal planner E2E smoke', () => {
@@ -191,8 +251,14 @@ test.describe('Meal planner E2E smoke', () => {
       // Should show quantity + unit (e.g. "0.5 kg" or "2 unidade")
       expect(expanded).toMatch(/\d+[.,]?\d*\s*(kg|g|L|ml|unidade|un)/i);
 
-      // Should show swap icon for each ingredient
-      expect(expanded).toMatch(/swap_horiz|⇄/i);
+      // Should expose a per-ingredient "Add <X> to list" action. Flutter
+      // renders the ingredient's swap icon as a canvas glyph without a
+      // semantic label, so we can't assert on `swap_horiz` / `⇄` from the
+      // DOM — assert on the add-to-list button instead, which IS a labelled
+      // semantic button and proves per-ingredient actions wired up.
+      expect(expanded).toMatch(
+        /Add\s+\w+\s+to\s+list|Adicionar\s+\w+\s+[aà]\s+lista|Ajouter\s+\w+\s+[aà]\s+la\s+liste|A[nñ]adir\s+\w+\s+a\s+la\s+lista/i,
+      );
     }
   });
 

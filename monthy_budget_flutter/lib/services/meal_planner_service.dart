@@ -330,8 +330,14 @@ class MealPlannerService {
     const highSodiumIds = {'bacalhau', 'chourico', 'fiambre', 'sardinha'};
     const highPurineProteins = {'sardinha', 'porco'};
 
-    // Core eliminatory filter (day-independent parts)
-    bool passesHardFilters(Recipe r) {
+    // Core eliminatory filter (day-independent parts).
+    // Split into two layers:
+    //   - passesDietarySafety: allergens, medical, sodium, disliked, excluded
+    //     proteins. These are safety invariants — never relax.
+    //   - hasRequiredEquipment: convenience constraint for mains only.
+    // Soups/desserts apply only the safety layer so an optional starter or
+    // dessert does not disappear just because its recipe needs a blender.
+    bool passesDietarySafety(Recipe r) {
       if (ms.glutenFree && !r.glutenFree) return false;
       if (ms.lactoseFree && !r.lactoseFree) return false;
       if (ms.nutFree && !r.nutFree) return false;
@@ -339,12 +345,17 @@ class MealPlannerService {
       if (ms.eggFree && r.ingredients.any((ri) => ri.ingredientId == 'ovo')) return false;
       if (excludedProteinsSet.contains(r.proteinId)) return false;
       if (hasDislikedIngredient(r)) return false;
-      if (!hasRequiredEquipment(r)) return false;
       if (isLowSodium && r.ingredients.any((ri) => highSodiumIds.contains(ri.ingredientId))) return false;
       if (hasDiabetes && r.nutrition != null && r.nutrition!.carbsG > 55) return false;
       if (hasHypertension && r.nutrition != null && r.nutrition!.sodiumMg > 500) return false;
       if (hasCholesterol && r.nutrition != null && r.nutrition!.fatG > 25) return false;
       if (hasGout && highPurineProteins.contains(r.proteinId)) return false;
+      return true;
+    }
+
+    bool passesHardFilters(Recipe r) {
+      if (!passesDietarySafety(r)) return false;
+      if (!hasRequiredEquipment(r)) return false;
       return true;
     }
 
@@ -447,17 +458,19 @@ class MealPlannerService {
 
     for (int day = 1; day <= daysInMonth; day++) {
       usedRecipesPerDay[day] = {};
-      // Reset weekly tracking on Mondays (weekday 1)
+      // Reset weekly tracking on Mondays (weekday 1).
+      // IMPORTANT: reset BEFORE the eating-out skip, otherwise trackers
+      // never reset when Monday is an eating-out day.
       final weekday = DateTime(forMonth.year, forMonth.month, day).weekday;
       final isWeekend = weekday == 6 || weekday == 7;
-      // Skip eating-out days
-      if (ms.eatingOutWeekdays.contains(weekday)) continue;
       if (weekday == 1) {
         globalUsedIngredientsThisWeek = {};
         for (final m in ms.enabledMeals) {
           newIngredientCountThisWeek[m] = 0;
         }
       }
+      // Skip eating-out days
+      if (ms.eatingOutWeekdays.contains(weekday)) continue;
 
       final isVeggieDay = veggieDays.contains(day);
 
@@ -484,10 +497,16 @@ class MealPlannerService {
           }
         }
 
-        // --- Leftovers (lunch reuses previous dinner) ---
+        // --- Leftovers (lunch reuses previous dinner's MAIN course) ---
+        // With multi-course dinners, yesterday has up to 3 MealDay entries for
+        // dinner (soup, main, dessert). We must explicitly pick the mainCourse
+        // so leftovers don't inherit a dessert or soup recipe.
         if (ms.reuseLeftovers && mealType == MealType.lunch && day > 1 && ms.enabledMeals.contains(MealType.dinner)) {
           final prevDinner = days.lastWhere(
-            (d) => d.dayIndex == day - 1 && d.mealType == MealType.dinner,
+            (d) =>
+                d.dayIndex == day - 1 &&
+                d.mealType == MealType.dinner &&
+                d.courseType == CourseType.mainCourse,
             orElse: () => MealDay(dayIndex: 0, recipeId: '', costEstimate: 0),
           );
           if (prevDinner.recipeId.isNotEmpty) {
@@ -497,6 +516,7 @@ class MealPlannerService {
               isLeftover: true,
               costEstimate: 0,
               mealType: MealType.lunch,
+              courseType: CourseType.mainCourse,
             ));
             continue;
           }
@@ -828,14 +848,19 @@ class MealPlannerService {
 
         // --- Multi-course meal generation ---
         // If soup/starter is enabled and this is a main meal (lunch/dinner),
-        // pick a soup/starter BEFORE the main course.
+        // pick a soup/starter BEFORE the main course. The maxSoupsPerWeek cap
+        // applies to soup MAIN COURSES only (soups picked as the main dish);
+        // starter soups reflect an explicit user opt-in and are not capped.
         if (ms.includeSoupOrStarter &&
             (mealType == MealType.lunch || mealType == MealType.dinner)) {
           final soupPool = _recipes.where((r) {
             if (r.courseType != CourseType.soupOrStarter) return false;
             if (!r.suitableMealTypes.contains(mealType.name)) return false;
-            if (ms.glutenFree && !r.glutenFree) return false;
-            if (ms.lactoseFree && !r.lactoseFree) return false;
+            // Safety layer only: allergens, medical, disliked, sodium,
+            // excluded proteins. Equipment is intentionally omitted so an
+            // optional starter isn't silently dropped when only mains need
+            // it.
+            if (!passesDietarySafety(r)) return false;
             return true;
           }).toList();
           if (soupPool.isNotEmpty) {
@@ -873,14 +898,17 @@ class MealPlannerService {
           courseType: CourseType.mainCourse,
         ));
 
-        // If dessert is enabled, pick a dessert AFTER the main course
+        // If dessert is enabled, pick a dessert AFTER the main course.
+        // Safety layer only (allergens, medical, disliked, excluded proteins,
+        // sodium); equipment is intentionally omitted since an optional
+        // dessert shouldn't disappear when it requires a blender the user
+        // doesn't have.
         if (ms.includeDessert &&
             (mealType == MealType.lunch || mealType == MealType.dinner)) {
           final dessertPool = _recipes.where((r) {
             if (r.courseType != CourseType.dessert) return false;
             if (!r.suitableMealTypes.contains(mealType.name)) return false;
-            if (ms.glutenFree && !r.glutenFree) return false;
-            if (ms.lactoseFree && !r.lactoseFree) return false;
+            if (!passesDietarySafety(r)) return false;
             return true;
           }).toList();
           if (dessertPool.isNotEmpty) {
@@ -1008,13 +1036,21 @@ class MealPlannerService {
 
       // Find cheapest eligible replacement from pre-sorted list.
       // Must match the same courseType to preserve multi-course integrity.
-      final expensiveCourseType = recipeMap[expensive.recipeId]?.courseType ?? expensive.courseType;
+      // For lunch/dinner main courses, the replacement must also be a
+      // complete meal so we don't swap a hearty main for a cheap side dish.
+      final expensiveRecipe = recipeMap[expensive.recipeId];
+      final expensiveCourseType = expensiveRecipe?.courseType ?? expensive.courseType;
+      final requireCompleteMeal =
+          expensiveCourseType == CourseType.mainCourse &&
+              (expensive.mealType == MealType.lunch ||
+                  expensive.mealType == MealType.dinner);
       final eligible = eligibleByMealType[expensive.mealType] ?? [];
       (Recipe, double)? replacement;
       for (final entry in eligible) {
         if (entry.$1.id != expensive.recipeId &&
             entry.$2 < expensive.costEstimate &&
-            entry.$1.courseType == expensiveCourseType) {
+            entry.$1.courseType == expensiveCourseType &&
+            (!requireCompleteMeal || entry.$1.isCompleteMeal)) {
           replacement = entry;
           break; // already sorted by cost, first match is cheapest
         }
@@ -1039,8 +1075,13 @@ class MealPlannerService {
     for (int i = 0; i < days.length; i++) {
       if (!days[i].isLeftover) continue;
       final dinnerDay = days[i].dayIndex - 1;
+      // Multi-course dinners may have soup/main/dessert entries; lock to the
+      // main course so leftovers never point at a soup or dessert recipe.
       final dinner = days.where(
-        (d) => d.dayIndex == dinnerDay && d.mealType == MealType.dinner,
+        (d) =>
+            d.dayIndex == dinnerDay &&
+            d.mealType == MealType.dinner &&
+            d.courseType == CourseType.mainCourse,
       ).firstOrNull;
       if (dinner != null && dinner.recipeId != days[i].recipeId) {
         days[i] = days[i].copyWith(recipeId: dinner.recipeId, costEstimate: 0);

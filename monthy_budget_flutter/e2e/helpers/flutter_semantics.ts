@@ -135,6 +135,56 @@ export async function clickSemantic(
   await activateLocator(page, locator!);
 }
 
+// Fill a text input that Flutter exposes via aria-label (TextField's labelText).
+// Tries the textbox role first, then getByLabel, then falls back to focusing
+// via findSemanticLocator + keyboard typing. Handles both regular <input> and
+// Flutter's semantic <flt-semantics role="textbox"> wrappers.
+export async function fillSemanticField(
+  page: Page,
+  labelPattern: RegExp,
+  value: string,
+) {
+  const candidates: Locator[] = [
+    page.getByRole('textbox', { name: labelPattern }),
+    page.getByLabel(labelPattern),
+  ];
+
+  for (const locator of candidates) {
+    const count = await locator.count();
+    if (count === 0) continue;
+    const field = locator.first();
+    try {
+      await field.click({ timeout: 3_000 });
+      await page.waitForTimeout(150);
+      // Clear any pre-existing value before filling.
+      try {
+        await field.fill('');
+        await field.fill(value);
+      } catch {
+        // Flutter's semantic input sometimes rejects fill(); type instead.
+        await page.keyboard.press('Control+a');
+        await page.keyboard.press('Delete');
+        await page.keyboard.type(value, { delay: 10 });
+      }
+      return;
+    } catch {
+      // Try the next candidate.
+    }
+  }
+
+  // Last resort: focus whatever element the semantic lookup finds, then type.
+  const fallback = await findSemanticLocator(page, labelPattern);
+  expect(
+    fallback,
+    `Could not locate input for label ${labelPattern}`,
+  ).not.toBeNull();
+  await activateLocator(page, fallback!);
+  await page.waitForTimeout(150);
+  await page.keyboard.press('Control+a');
+  await page.keyboard.press('Delete');
+  await page.keyboard.type(value, { delay: 10 });
+}
+
 export async function tryClickSemantic(
   page: Page,
   labelPattern: RegExp,

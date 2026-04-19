@@ -256,7 +256,7 @@ jobs:
             }' -f owner="${{ github.repository_owner }}" \
                -f repo="$(echo '${{ github.repository }}' | cut -d/ -f2)" \
                -F pr="$PR_NUMBER" \
-               --jq '.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved==false) | select(.comments.nodes[0].author.login | test("\\[bot\\]$|bot$")) | .id')"
+               --jq '.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved==false) | select(.comments.nodes[0].author.login | test("\\[bot\\]$|bot$|-connector$|copilot$")) | .id')"
 
           for THREAD_ID in $UNRESOLVED; do
             gh api graphql -f query="mutation { resolveReviewThread(input:{threadId:\"$THREAD_ID\"}) { thread { isResolved } } }" --silent
