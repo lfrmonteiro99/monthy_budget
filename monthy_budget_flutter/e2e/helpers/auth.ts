@@ -3,6 +3,7 @@ import { expect, Page } from '@playwright/test';
 import {
   clickSemantic,
   enableFlutterSemantics,
+  fillSemanticField,
   getSemanticNames,
   tryClickSemantic,
   waitForSemanticMatch,
@@ -12,6 +13,14 @@ const email = process.env.E2E_EMAIL;
 const password = process.env.E2E_PASSWORD;
 const settingsTitlePattern =
   /^Settings$|^Definições$|^Paramètres$|^Configuración$/i;
+
+// Auth-screen selectors. Labels come from the localized l10n strings on
+// LoginScreen (lib/screens/auth/login_screen.dart) — keep these in sync.
+const emailLabel = /Email/i;
+const passwordLabel = /Password|Palavra-passe|Contrase[ñn]a|Mot de passe/i;
+const signInLabel =
+  /Sign in|Entrar|Se connecter|Iniciar sesi[oó]n/i;
+const authenticatedPattern = /Home|Track|Shop/i;
 
 export function hasAuthCredentials() {
   return Boolean(email && password);
@@ -25,7 +34,7 @@ export async function openApp(page: Page) {
 
 export async function isAuthenticated(page: Page) {
   const names = await getSemanticNames(page);
-  return names.some((name) => /Home|Track|Shop/i.test(name));
+  return names.some((name) => authenticatedPattern.test(name));
 }
 
 export async function login(page: Page) {
@@ -35,22 +44,30 @@ export async function login(page: Page) {
     return;
   }
 
-  const viewport = page.viewportSize();
-  expect(viewport).not.toBeNull();
-
-  await page.mouse.click(viewport!.width / 2, 475);
-  await page.waitForTimeout(300);
-  await page.keyboard.press('Control+a');
-  await page.keyboard.type(email!, { delay: 10 });
-  await page.keyboard.press('Tab');
-  await page.waitForTimeout(300);
-  await page.keyboard.type(password!, { delay: 10 });
-  await page.mouse.click(viewport!.width / 2, 590);
-  await page.waitForTimeout(1000);
-  await page.keyboard.press('Enter');
-  await page.waitForTimeout(12_000);
+  // Ensure Flutter's semantics tree is attached — TextFields only expose
+  // aria-labels once the "Enable accessibility" placeholder is activated.
   await enableFlutterSemantics(page);
-  await waitForSemanticMatch(page, /Home|Track|Shop/i);
+
+  // The login form mounts the Email field first; wait for it before typing.
+  await waitForSemanticMatch(page, emailLabel, 20_000);
+
+  await fillSemanticField(page, emailLabel, email!);
+  await fillSemanticField(page, passwordLabel, password!);
+
+  // Click the localized "Sign in" button. Fall back to Enter if the button
+  // can't be found (some locales or theme variants may not expose the role).
+  const submitted = await tryClickSemantic(page, signInLabel, {
+    role: 'button',
+  });
+  if (!submitted) {
+    await page.keyboard.press('Enter');
+  }
+
+  // Wait for the authenticated home to paint. Re-enable semantics because
+  // Flutter resets the tree on navigation.
+  await page.waitForTimeout(2000);
+  await enableFlutterSemantics(page);
+  await waitForSemanticMatch(page, authenticatedPattern, 30_000);
 }
 
 export async function logout(page: Page) {
