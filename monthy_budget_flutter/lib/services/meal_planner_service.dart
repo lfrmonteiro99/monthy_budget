@@ -330,8 +330,14 @@ class MealPlannerService {
     const highSodiumIds = {'bacalhau', 'chourico', 'fiambre', 'sardinha'};
     const highPurineProteins = {'sardinha', 'porco'};
 
-    // Core eliminatory filter (day-independent parts)
-    bool passesHardFilters(Recipe r) {
+    // Core eliminatory filter (day-independent parts).
+    // Split into two layers:
+    //   - passesDietarySafety: allergens, medical, sodium, disliked, excluded
+    //     proteins. These are safety invariants — never relax.
+    //   - hasRequiredEquipment: convenience constraint for mains only.
+    // Soups/desserts apply only the safety layer so an optional starter or
+    // dessert does not disappear just because its recipe needs a blender.
+    bool passesDietarySafety(Recipe r) {
       if (ms.glutenFree && !r.glutenFree) return false;
       if (ms.lactoseFree && !r.lactoseFree) return false;
       if (ms.nutFree && !r.nutFree) return false;
@@ -339,12 +345,17 @@ class MealPlannerService {
       if (ms.eggFree && r.ingredients.any((ri) => ri.ingredientId == 'ovo')) return false;
       if (excludedProteinsSet.contains(r.proteinId)) return false;
       if (hasDislikedIngredient(r)) return false;
-      if (!hasRequiredEquipment(r)) return false;
       if (isLowSodium && r.ingredients.any((ri) => highSodiumIds.contains(ri.ingredientId))) return false;
       if (hasDiabetes && r.nutrition != null && r.nutrition!.carbsG > 55) return false;
       if (hasHypertension && r.nutrition != null && r.nutrition!.sodiumMg > 500) return false;
       if (hasCholesterol && r.nutrition != null && r.nutrition!.fatG > 25) return false;
       if (hasGout && highPurineProteins.contains(r.proteinId)) return false;
+      return true;
+    }
+
+    bool passesHardFilters(Recipe r) {
+      if (!passesDietarySafety(r)) return false;
+      if (!hasRequiredEquipment(r)) return false;
       return true;
     }
 
@@ -845,9 +856,11 @@ class MealPlannerService {
           final soupPool = _recipes.where((r) {
             if (r.courseType != CourseType.soupOrStarter) return false;
             if (!r.suitableMealTypes.contains(mealType.name)) return false;
-            // Apply the full hard-filter set (allergies, excluded proteins,
-            // disliked ingredients, equipment, sodium, medical conditions).
-            if (!passesHardFilters(r)) return false;
+            // Safety layer only: allergens, medical, disliked, sodium,
+            // excluded proteins. Equipment is intentionally omitted so an
+            // optional starter isn't silently dropped when only mains need
+            // it.
+            if (!passesDietarySafety(r)) return false;
             return true;
           }).toList();
           if (soupPool.isNotEmpty) {
@@ -886,14 +899,16 @@ class MealPlannerService {
         ));
 
         // If dessert is enabled, pick a dessert AFTER the main course.
-        // Apply the full hard-filter set so desserts respect allergies,
-        // medical conditions, disliked ingredients, etc.
+        // Safety layer only (allergens, medical, disliked, excluded proteins,
+        // sodium); equipment is intentionally omitted since an optional
+        // dessert shouldn't disappear when it requires a blender the user
+        // doesn't have.
         if (ms.includeDessert &&
             (mealType == MealType.lunch || mealType == MealType.dinner)) {
           final dessertPool = _recipes.where((r) {
             if (r.courseType != CourseType.dessert) return false;
             if (!r.suitableMealTypes.contains(mealType.name)) return false;
-            if (!passesHardFilters(r)) return false;
+            if (!passesDietarySafety(r)) return false;
             return true;
           }).toList();
           if (dessertPool.isNotEmpty) {
