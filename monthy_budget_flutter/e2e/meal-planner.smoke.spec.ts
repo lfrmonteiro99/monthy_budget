@@ -251,8 +251,14 @@ test.describe('Meal planner E2E smoke', () => {
       // Should show quantity + unit (e.g. "0.5 kg" or "2 unidade")
       expect(expanded).toMatch(/\d+[.,]?\d*\s*(kg|g|L|ml|unidade|un)/i);
 
-      // Should show swap icon for each ingredient
-      expect(expanded).toMatch(/swap_horiz|⇄/i);
+      // Should expose a per-ingredient "Add <X> to list" action. Flutter
+      // renders the ingredient's swap icon as a canvas glyph without a
+      // semantic label, so we can't assert on `swap_horiz` / `⇄` from the
+      // DOM — assert on the add-to-list button instead, which IS a labelled
+      // semantic button and proves per-ingredient actions wired up.
+      expect(expanded).toMatch(
+        /Add\s+\w+\s+to\s+list|Adicionar\s+\w+\s+[aà]\s+lista|Ajouter\s+\w+\s+[aà]\s+la\s+liste|A[nñ]adir\s+\w+\s+a\s+la\s+lista/i,
+      );
     }
   });
 
