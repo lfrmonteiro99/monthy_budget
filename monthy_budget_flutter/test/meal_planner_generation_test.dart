@@ -1022,4 +1022,184 @@ void main() {
       expect(summerOrAll / plan.days.length, greaterThan(0.8));
     });
   });
+
+  // ────────────────────────────────────────────────────────────
+  // 26. AUDIT REGRESSIONS (issue #835)
+  //
+  // These cover bugs that only surface under multi-course dinners or when
+  // Monday is an eating-out day — pathways earlier tests did not exercise.
+  // ────────────────────────────────────────────────────────────
+  group('Audit regressions (issue #835)', () {
+    test('leftover reuse picks the MAIN course, not soup or dessert', () {
+      final ms = const MealSettings(
+        reuseLeftovers: true,
+        includeSoupOrStarter: true,
+        includeDessert: true,
+        enabledMeals: {MealType.lunch, MealType.dinner},
+      );
+      final plan = service.generate(_settings(ms: ms), march2026);
+      final rMap = service.recipeMap;
+      int leftovers = 0;
+      for (final day in plan.days.where((d) => d.isLeftover)) {
+        leftovers++;
+        // Leftover must reference the previous day's main-course recipe.
+        final prevMain = plan.days
+            .where((d) =>
+                d.dayIndex == day.dayIndex - 1 &&
+                d.mealType == MealType.dinner &&
+                d.courseType == CourseType.mainCourse)
+            .firstOrNull;
+        if (prevMain != null) {
+          expect(day.recipeId, prevMain.recipeId,
+              reason:
+                  'Day ${day.dayIndex} leftover points to ${rMap[day.recipeId]?.name} '
+                  '(courseType=${rMap[day.recipeId]?.courseType.name}), '
+                  'expected main ${rMap[prevMain.recipeId]?.name}');
+        }
+        // Whatever it references, it must never be a soup or dessert.
+        final recipe = rMap[day.recipeId];
+        expect(recipe?.courseType, CourseType.mainCourse,
+            reason:
+                'Leftover on day ${day.dayIndex} references a ${recipe?.courseType.name} recipe');
+        expect(day.courseType, CourseType.mainCourse);
+      }
+      expect(leftovers, greaterThan(0),
+          reason: 'reuseLeftovers=true should yield at least one leftover');
+    });
+
+    test('weekly trackers still reset when Monday is an eating-out day', () {
+      // Skip Mondays entirely. A plan must still generate and must not
+      // collapse week-over-week variety.
+      final ms = const MealSettings(
+        eatingOutWeekdays: {1},
+        maxNewIngredientsPerWeek: 5, // trips the soft "new ingredient" path
+      );
+      final plan = service.generate(_settings(ms: ms), march2026);
+      expect(plan.days.isNotEmpty, isTrue);
+
+      // Every non-Monday weekday should have meals; Mondays should have none.
+      final mondays = plan.days.where((d) {
+        final wd = DateTime(2026, 3, d.dayIndex).weekday;
+        return wd == DateTime.monday;
+      });
+      expect(mondays, isEmpty);
+
+      // Compute main-course variety per week — with the fix, each week
+      // picks a fresh ingredient budget, so we still get multiple distinct
+      // recipes rather than repeating one recipe every day of the week.
+      final weeklyMains = <int, Set<String>>{};
+      for (final d in plan.days.where((d) =>
+          d.courseType == CourseType.mainCourse && !d.isLeftover)) {
+        final week = ((d.dayIndex - 1) / 7).floor();
+        weeklyMains.putIfAbsent(week, () => {}).add(d.recipeId);
+      }
+      for (final entry in weeklyMains.entries) {
+        expect(entry.value.length, greaterThanOrEqualTo(2),
+            reason:
+                'Week ${entry.key} collapsed to ${entry.value.length} unique mains — '
+                'weekly tracker likely never reset');
+      }
+    });
+
+    test('soup starter respects lactoseFree dietary filter', () {
+      final ms = const MealSettings(
+        includeSoupOrStarter: true,
+        lactoseFree: true,
+        enabledMeals: {MealType.lunch, MealType.dinner},
+      );
+      final plan = service.generate(_settings(ms: ms), march2026);
+      final rMap = service.recipeMap;
+      for (final d in plan.days.where(
+          (d) => d.courseType == CourseType.soupOrStarter && !d.isLeftover)) {
+        expect(rMap[d.recipeId]!.lactoseFree, isTrue,
+            reason:
+                'Day ${d.dayIndex}: soup ${rMap[d.recipeId]!.name} is not lactose-free');
+      }
+    });
+
+    test('dessert course respects lactoseFree dietary filter', () {
+      final ms = const MealSettings(
+        includeDessert: true,
+        lactoseFree: true,
+        enabledMeals: {MealType.lunch, MealType.dinner},
+      );
+      final plan = service.generate(_settings(ms: ms), march2026);
+      final rMap = service.recipeMap;
+      int dessertCount = 0;
+      for (final d in plan.days.where(
+          (d) => d.courseType == CourseType.dessert && !d.isLeftover)) {
+        dessertCount++;
+        expect(rMap[d.recipeId]!.lactoseFree, isTrue,
+            reason:
+                'Day ${d.dayIndex}: dessert ${rMap[d.recipeId]!.name} contains lactose');
+      }
+      expect(dessertCount, greaterThan(0),
+          reason: 'includeDessert=true should produce at least one dessert');
+    });
+
+    test('dessert course respects eggFree dietary filter', () {
+      final ms = const MealSettings(
+        includeDessert: true,
+        eggFree: true,
+        enabledMeals: {MealType.lunch, MealType.dinner},
+      );
+      final plan = service.generate(_settings(ms: ms), march2026);
+      final rMap = service.recipeMap;
+      for (final d in plan.days.where(
+          (d) => d.courseType == CourseType.dessert && !d.isLeftover)) {
+        final recipe = rMap[d.recipeId]!;
+        expect(recipe.ingredients.any((ri) => ri.ingredientId == 'ovo'),
+            isFalse,
+            reason:
+                'Day ${d.dayIndex}: dessert ${recipe.name} contains egg but eggFree=true');
+      }
+    });
+
+    test('dessert course respects disliked ingredients', () {
+      final ms = const MealSettings(
+        includeDessert: true,
+        // 'iogurte' matches iogurte ingredient used in sobremesa_iogurte_mel
+        dislikedIngredients: ['Iogurte Natural'],
+        enabledMeals: {MealType.lunch, MealType.dinner},
+      );
+      final plan = service.generate(_settings(ms: ms), march2026);
+      final rMap = service.recipeMap;
+      for (final d in plan.days.where(
+          (d) => d.courseType == CourseType.dessert && !d.isLeftover)) {
+        final recipe = rMap[d.recipeId]!;
+        expect(recipe.ingredients.any((ri) => ri.ingredientId == 'iogurte'),
+            isFalse,
+            reason:
+                'Day ${d.dayIndex}: dessert ${recipe.name} uses a disliked ingredient');
+      }
+    });
+
+    test(
+        'tight budget does not replace lunch/dinner mains with incomplete meals',
+        () {
+      // Very small budget to force many replacements.
+      final ms = const MealSettings(
+        enabledMeals: {MealType.lunch, MealType.dinner},
+      );
+      final plan = service.generate(_settings(ms: ms, foodBudget: 50), march2026);
+      final rMap = service.recipeMap;
+      int incomplete = 0;
+      int total = 0;
+      for (final d in plan.days.where((d) =>
+          d.courseType == CourseType.mainCourse &&
+          !d.isLeftover &&
+          (d.mealType == MealType.lunch || d.mealType == MealType.dinner))) {
+        total++;
+        final recipe = rMap[d.recipeId];
+        if (recipe != null && !recipe.isCompleteMeal) incomplete++;
+      }
+      // Budget enforcement must preserve the complete-meal constraint for
+      // lunch/dinner mains. Allow a small slack for degenerate pools.
+      if (total > 0) {
+        expect(incomplete / total, lessThanOrEqualTo(0.15),
+            reason:
+                '$incomplete/$total lunch/dinner mains became incomplete after budget enforcement');
+      }
+    });
+  });
 }
