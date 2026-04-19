@@ -12,7 +12,12 @@ import {
 // Patterns for multi-language support (PT/EN/ES/FR)
 const planAndShopTab = /Shop|Compras|Courses/i;
 const mealPlannerTab = /Meal Planner|Planeador|Planificateur|Planificador/i;
-const generateButton = /Generate|Gerar plano|G[eé]n[eé]rer|Generar/i;
+// Match the primary "Generate Plan" button on the meal-planner empty state
+// and wizard step 5. Word-boundary prefix + trailing "plan" keeps this from
+// matching the "Regenerate" button shown once a plan already exists —
+// otherwise downstream tests click it and get stuck on the "Regenerate
+// plan?" confirmation dialog.
+const generateButton = /\bGenerate\s+Plan\b|\bGerar\s+Plano\b|\bG[eé]n[eé]rer\s+le\s+plan\b|\bGenerar\s+Plan\b/i;
 const weekLabel = /Week|Semana|Semaine/i;
 const addToListButton = /Add.*list|Adicionar.*lista|Ajouter.*liste|A[nñ]adir.*lista/i;
 const ingredientsButton = /Ingredients|Ingredientes|Ingr[eé]dients/i;
