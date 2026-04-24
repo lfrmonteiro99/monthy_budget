@@ -53,7 +53,7 @@ class LocalConfigService {
     final value = prefs.getString(_paletteKey);
     return AppColorPalette.values.firstWhere(
       (p) => p.name == value,
-      orElse: () => AppColorPalette.ocean,
+      orElse: () => AppColorPalette.calm,
     );
   }
 
