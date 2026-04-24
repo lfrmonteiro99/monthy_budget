@@ -34,7 +34,10 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byType(ElevatedButton));
+    // Calm empty state renders the CTA as a TextButton with the localized
+    // label — match the action by button type rather than text so the test
+    // stays locale-agnostic.
+    await tester.tap(find.byType(TextButton).first);
     await tester.pumpAndSettle();
 
     expect(called, 1);
@@ -83,7 +86,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byIcon(Icons.settings));
+    await tester.tap(find.byIcon(Icons.settings_outlined));
     await tester.pump();
 
     expect(called, 1);
@@ -121,7 +124,10 @@ void main() {
       ),
     );
 
-    expect(find.text('Quick actions'), findsOneWidget);
+    // Calm treatment renders section eyebrows in upper-case; assert the
+    // label is present regardless of casing, and that callbacks are still
+    // wired correctly.
+    expect(find.text('QUICK ACTIONS'), findsOneWidget);
     expect(find.text('Expense Tracker'), findsOneWidget);
     expect(find.byIcon(Icons.insights_outlined), findsOneWidget);
 
