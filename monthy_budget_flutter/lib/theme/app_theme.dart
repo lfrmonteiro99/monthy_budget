@@ -268,7 +268,7 @@ class CalmText {
       height: 1.0,
       letterSpacing: -0.02 * size,
       color: AppColors.ink(context),
-      fontFeatures: const [FontFeature.stylisticSet(1)],
+      fontFeatures: const [FontFeature('ss01')],
     );
   }
 
