@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
-import '../constants/app_constants.dart';
 import '../l10n/generated/app_localizations.dart';
+import 'tour_helpers.dart';
 import 'tour_step_content.dart';
 
 class MealsTourKeys {
@@ -26,7 +26,7 @@ TutorialCoachMark buildMealsTour({
         radius: 12,
         contents: [
           TargetContent(
-            align: ContentAlign.bottom,
+            align: pickAlign(MealsTourKeys.generateButton),
             child: TourStepContent(
               title: l10n.onbTourMeals1Title,
               body: l10n.onbTourMeals1Body,
@@ -43,7 +43,7 @@ TutorialCoachMark buildMealsTour({
         radius: 14,
         contents: [
           TargetContent(
-            align: ContentAlign.bottom,
+            align: pickAlign(MealsTourKeys.weekTabs),
             child: TourStepContent(
               title: l10n.onbTourMeals2Title,
               body: l10n.onbTourMeals2Body,
@@ -60,7 +60,7 @@ TutorialCoachMark buildMealsTour({
         radius: 12,
         contents: [
           TargetContent(
-            align: ContentAlign.top,
+            align: pickAlign(MealsTourKeys.addToListButton),
             child: TourStepContent(
               title: l10n.onbTourMeals3Title,
               body: l10n.onbTourMeals3Body,
@@ -85,13 +85,7 @@ TutorialCoachMark buildMealsTour({
     },
     beforeFocus: (target) async {
       final ctx = target.keyTarget?.currentContext;
-      if (ctx != null) {
-        await Scrollable.ensureVisible(
-          ctx,
-          duration: AppConstants.animPageTransition,
-          alignment: 0.5,
-        );
-      }
+      if (ctx != null) await safeEnsureVisible(ctx);
     },
   );
 }
