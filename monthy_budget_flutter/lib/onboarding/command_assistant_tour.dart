@@ -18,6 +18,7 @@ TutorialCoachMark buildCommandAssistantTour({
       TargetFocus(
         identify: 'cmd_fab',
         keyTarget: CommandAssistantTourKeys.fab,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.Circle,
         contents: [
           TargetContent(
@@ -35,7 +36,10 @@ TutorialCoachMark buildCommandAssistantTour({
     targets: targets,
     colorShadow: Colors.black,
     opacityShadow: 0.7,
-    hideSkip: true,
+    hideSkip: false,
+    alignSkip: Alignment.topRight,
+    useSafeArea: true,
+    showSkipInLastTarget: true,
     onFinish: onFinish,
     onSkip: () {
       onSkip();

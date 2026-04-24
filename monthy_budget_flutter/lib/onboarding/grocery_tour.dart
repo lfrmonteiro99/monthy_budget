@@ -21,6 +21,7 @@ TutorialCoachMark buildGroceryTour({
       TargetFocus(
         identify: 'search',
         keyTarget: GroceryTourKeys.searchBar,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.RRect,
         radius: 12,
         contents: [
@@ -37,6 +38,7 @@ TutorialCoachMark buildGroceryTour({
       TargetFocus(
         identify: 'product',
         keyTarget: GroceryTourKeys.productCard,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.RRect,
         radius: 12,
         contents: [
@@ -53,6 +55,7 @@ TutorialCoachMark buildGroceryTour({
       TargetFocus(
         identify: 'category',
         keyTarget: GroceryTourKeys.categoryFilter,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.RRect,
         radius: 20,
         contents: [
@@ -71,7 +74,10 @@ TutorialCoachMark buildGroceryTour({
     targets: targets,
     colorShadow: Colors.black,
     opacityShadow: 0.7,
-    hideSkip: true,
+    hideSkip: false,
+    alignSkip: Alignment.topRight,
+    useSafeArea: true,
+    showSkipInLastTarget: true,
     onFinish: onFinish,
     onSkip: () {
       onSkip();

@@ -21,6 +21,7 @@ TutorialCoachMark buildShoppingTour({
       TargetFocus(
         identify: 'item',
         keyTarget: ShoppingTourKeys.shoppingItem,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.RRect,
         radius: 12,
         contents: [
@@ -37,6 +38,7 @@ TutorialCoachMark buildShoppingTour({
       TargetFocus(
         identify: 'finalize',
         keyTarget: ShoppingTourKeys.finalizeButton,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.RRect,
         radius: 28,
         contents: [
@@ -53,6 +55,7 @@ TutorialCoachMark buildShoppingTour({
       TargetFocus(
         identify: 'history',
         keyTarget: ShoppingTourKeys.historyButton,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.Circle,
         contents: [
           TargetContent(
@@ -70,7 +73,10 @@ TutorialCoachMark buildShoppingTour({
     targets: targets,
     colorShadow: Colors.black,
     opacityShadow: 0.7,
-    hideSkip: true,
+    hideSkip: false,
+    alignSkip: Alignment.topRight,
+    useSafeArea: true,
+    showSkipInLastTarget: true,
     onFinish: onFinish,
     onSkip: () {
       onSkip();
