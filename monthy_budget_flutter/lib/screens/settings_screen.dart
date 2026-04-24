@@ -547,7 +547,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildAppearanceSection() {
     final l10n = S.of(context);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final appShell = AppShellScope.of(context);
     return Container(
       color: AppColors.surface(context),
@@ -582,94 +581,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 LocalConfigService().saveThemeMode(newMode);
               },
             ),
-            const SizedBox(height: 24),
-            Text(
-              l10n.settingsColorPalette.toUpperCase(),
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textSecondary(context),
-                letterSpacing: 0.5,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 16,
-              runSpacing: 12,
-              children: AppColorPalette.values.map((p) {
-                final isSelected = p == appShell.colorPalette;
-                final color = AppColors.primaryStatic(p, isDark);
-                return GestureDetector(
-                  onTap: () {
-                    appShell.setColorPalette(p);
-                    LocalConfigService().saveColorPalette(p);
-                  },
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AnimatedContainer(
-                        duration: AppConstants.animFast,
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          color: color,
-                          shape: BoxShape.circle,
-                          border: isSelected
-                              ? Border.all(
-                                  color: AppColors.textPrimary(context),
-                                  width: 2.5,
-                                )
-                              : Border.all(
-                                  color: AppColors.border(context),
-                                  width: 1,
-                                ),
-                        ),
-                        child: isSelected
-                            ? Icon(
-                                Icons.check,
-                                size: 20,
-                                color: AppColors.primaryStatic(
-                                  p,
-                                  isDark,
-                                ).computeLuminance() > 0.5
-                                    ? Colors.black
-                                    : Colors.white,
-                              )
-                            : null,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        _paletteLabel(p, l10n),
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: isSelected
-                              ? FontWeight.w600
-                              : FontWeight.w400,
-                          color: isSelected
-                              ? AppColors.textPrimary(context)
-                              : AppColors.textSecondary(context),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            ),
           ],
         ),
       ),
     );
-  }
-
-  String _paletteLabel(AppColorPalette palette, S l10n) {
-    return switch (palette) {
-      AppColorPalette.ocean => l10n.paletteOcean,
-      AppColorPalette.emerald => l10n.paletteEmerald,
-      AppColorPalette.violet => l10n.paletteViolet,
-      AppColorPalette.teal => l10n.paletteTeal,
-      AppColorPalette.sunset => l10n.paletteSunset,
-      AppColorPalette.calm => 'Calm',
-    };
   }
 
   Widget _buildProfileSection() {

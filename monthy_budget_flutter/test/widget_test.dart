@@ -16,7 +16,7 @@ void main() {
     final controller = AppShellController(
       locale: const Locale('fr'),
       themeMode: ThemeMode.dark,
-      colorPalette: AppColorPalette.sunset,
+      colorPalette: AppColorPalette.calm,
     );
 
     await tester.pumpWidget(OrcamentoMensalApp(controller: controller));
@@ -24,17 +24,17 @@ void main() {
     var app = tester.widget<MaterialApp>(find.byType(MaterialApp));
     expect(app.locale, const Locale('fr'));
     expect(app.themeMode, ThemeMode.dark);
-    expect(AppColors.palette, AppColorPalette.sunset);
+    expect(AppColors.palette, AppColorPalette.calm);
 
     controller
       ..setLocaleCode('es')
       ..setThemeMode(ThemeMode.light)
-      ..setColorPalette(AppColorPalette.emerald);
+      ..setColorPalette(AppColorPalette.calm);
     await tester.pump();
 
     app = tester.widget<MaterialApp>(find.byType(MaterialApp));
     expect(app.locale, const Locale('es'));
     expect(app.themeMode, ThemeMode.light);
-    expect(AppColors.palette, AppColorPalette.emerald);
+    expect(AppColors.palette, AppColorPalette.calm);
   });
 }

@@ -390,8 +390,8 @@ void main() {
     });
 
     test('set_color_palette calls callback with correct palette', () async {
-      await registry.execute('set_color_palette', {'palette': 'emerald'});
-      expect(palettes, [AppColorPalette.emerald]);
+      await registry.execute('set_color_palette', {'palette': 'calm'});
+      expect(palettes, [AppColorPalette.calm]);
     });
 
     test('add_shopping_item calls callback with correct ShoppingItem', () async {
