@@ -1,187 +1,152 @@
 import 'package:flutter/material.dart';
 import '../models/app_settings.dart';
 
-enum AppColorPalette { ocean, emerald, violet, teal, sunset }
-
-/// Centralized semantic colors for light and dark themes.
+/// Calm palette — NEW redesign tokens.
 ///
-/// Usage: `AppColors.primary(context)` — resolves based on current brightness.
+/// Mapped 1:1 from `tokens.css` in the Monthly Budget Redesign prototype.
+/// Usage: `AppColors.bg(context)`, `AppColors.ink(context)`, etc.
+///
+/// The legacy `AppColorPalette` enum + old `primary()`/`background()` helpers
+/// are kept below so existing call sites keep compiling while we migrate.
+enum AppColorPalette { ocean, emerald, violet, teal, sunset, calm }
+
 class AppColors {
   AppColors._();
 
-  static AppColorPalette palette = AppColorPalette.ocean;
-
-  // ── Helpers ──────────────────────────────────────────────────────────
+  static AppColorPalette palette = AppColorPalette.calm;
 
   static Brightness _brightness(BuildContext context) =>
       Theme.of(context).brightness;
-
   static bool _isDark(BuildContext context) =>
       _brightness(context) == Brightness.dark;
 
-  // ── Brand / Primary ─────────────────────────────────────────────────
+  // ── Calm palette ────────────────────────────────────────────────────
+  //   Source of truth: Monthly Budget Redesign → tokens.css
 
-  static const _primaryColors = {
-    AppColorPalette.ocean:   (light: Color(0xFF2563EB), dark: Color(0xFF60A5FA)),
-    AppColorPalette.emerald: (light: Color(0xFF059669), dark: Color(0xFF34D399)),
-    AppColorPalette.violet:  (light: Color(0xFF7C3AED), dark: Color(0xFFA78BFA)),
-    AppColorPalette.teal:    (light: Color(0xFF0D9488), dark: Color(0xFF2DD4BF)),
-    AppColorPalette.sunset:  (light: Color(0xFFEA580C), dark: Color(0xFFFB923C)),
-  };
+  /// Page background (warm off-white in light, near-black warm in dark).
+  static Color bg(BuildContext c) =>
+      _isDark(c) ? const Color(0xFF12100D) : const Color(0xFFF8F7F3);
 
-  static const _primaryLightColors = {
-    AppColorPalette.ocean:   (light: Color(0xFFEFF6FF), dark: Color(0xFF1E3A5F)),
-    AppColorPalette.emerald: (light: Color(0xFFD1FAE5), dark: Color(0xFF064E3B)),
-    AppColorPalette.violet:  (light: Color(0xFFEDE9FE), dark: Color(0xFF2E1065)),
-    AppColorPalette.teal:    (light: Color(0xFFCCFBF1), dark: Color(0xFF134E4A)),
-    AppColorPalette.sunset:  (light: Color(0xFFFFF7ED), dark: Color(0xFF431407)),
-  };
+  /// Slightly-sunk panel background (grouped lists, rails).
+  static Color bgSunk(BuildContext c) =>
+      _isDark(c) ? const Color(0xFF1A1815) : const Color(0xFFF1EFE9);
 
-  static const _onPrimaryColors = {
-    AppColorPalette.ocean:   (light: Color(0xFFFFFFFF), dark: Color(0xFF0F172A)),
-    AppColorPalette.emerald: (light: Color(0xFFFFFFFF), dark: Color(0xFF022C22)),
-    AppColorPalette.violet:  (light: Color(0xFFFFFFFF), dark: Color(0xFF1E1B4B)),
-    AppColorPalette.teal:    (light: Color(0xFFFFFFFF), dark: Color(0xFF042F2E)),
-    AppColorPalette.sunset:  (light: Color(0xFFFFFFFF), dark: Color(0xFF1C1917)),
-  };
+  /// Card / elevated surface.
+  static Color card(BuildContext c) =>
+      _isDark(c) ? const Color(0xFF1F1D19) : Colors.white;
 
-  static Color primary(BuildContext context) {
-    final c = _primaryColors[palette]!;
-    return _isDark(context) ? c.dark : c.light;
-  }
+  /// Primary text.
+  static Color ink(BuildContext c) =>
+      _isDark(c) ? const Color(0xFFF5F2EC) : const Color(0xFF0B0E14);
 
-  static Color primaryStatic(AppColorPalette p, bool isDark) {
-    final c = _primaryColors[p]!;
-    return isDark ? c.dark : c.light;
-  }
+  /// Secondary text (70%).
+  static Color ink70(BuildContext c) =>
+      _isDark(c) ? const Color(0xFFB8B2A5) : const Color(0xFF4A5464);
 
-  static Color primaryLight(BuildContext context) {
-    final c = _primaryLightColors[palette]!;
-    return _isDark(context) ? c.dark : c.light;
-  }
+  /// Muted / placeholder text (50%).
+  static Color ink50(BuildContext c) =>
+      _isDark(c) ? const Color(0xFF807A6D) : const Color(0xFF8B93A3);
 
-  static Color onPrimary(BuildContext context) {
-    final c = _onPrimaryColors[palette]!;
-    return _isDark(context) ? c.dark : c.light;
-  }
+  /// Hairline / disabled tint (20%).
+  static Color ink20(BuildContext c) =>
+      _isDark(c) ? const Color(0xFF3A3730) : const Color(0xFFDCDED6);
 
-  // ── Text ─────────────────────────────────────────────────────────────
+  /// Hairline border with subtle alpha.
+  static Color line(BuildContext c) => _isDark(c)
+      ? const Color(0xFFF5F2EC).withValues(alpha: 0.08)
+      : const Color(0xFF0B0E14).withValues(alpha: 0.07);
 
-  static Color textPrimary(BuildContext context) =>
-      _isDark(context) ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+  /// Accent (calm indigo).
+  static Color accent(BuildContext c) =>
+      _isDark(c) ? const Color(0xFF8B9BFF) : const Color(0xFF2F4CDD);
 
-  static Color textSecondary(BuildContext context) =>
-      _isDark(context) ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+  /// Accent soft fill (chip/selected backgrounds).
+  static Color accentSoft(BuildContext c) => _isDark(c)
+      ? const Color(0xFF8B9BFF).withValues(alpha: 0.14)
+      : const Color(0xFFEAEEFF);
 
-  static Color textMuted(BuildContext context) =>
-      _isDark(context) ? const Color(0xFF64748B) : const Color(0xFF94A3B8);
+  // Semantic status
+  static Color ok(BuildContext c) =>
+      _isDark(c) ? const Color(0xFF4ADE80) : const Color(0xFF0E9F6E);
+  static Color warn(BuildContext c) =>
+      _isDark(c) ? const Color(0xFFF59E0B) : const Color(0xFFC2410C);
+  static Color bad(BuildContext c) =>
+      _isDark(c) ? const Color(0xFFF87171) : const Color(0xFFB91C1C);
 
-  static Color textLabel(BuildContext context) =>
-      _isDark(context) ? const Color(0xFFCBD5E1) : const Color(0xFF475569);
+  // ── Legacy aliases (KEEP until all call sites migrated) ─────────────
+  //
+  // These map the old API to the new Calm tokens so screens that still
+  // call `AppColors.primary(context)` don't break during the rollout.
+  // Delete once grep finds no more usages.
 
-  // ── Surfaces ─────────────────────────────────────────────────────────
+  // CRITICAL — read before changing:
+  // In Calm, the primary CTA colour is INK, not accent. Accent is only for
+  // selection/focus. So the legacy `primary()` alias intentionally returns
+  // `ink(c)` — not `accent(c)` — so that existing `FilledButton`s driven by
+  // `AppColors.primary()` render with the correct Calm treatment.
+  //
+  // If you want the indigo accent (e.g. a link, a selected chip border),
+  // call `AppColors.accent(context)` explicitly.
+  static Color primary(BuildContext c) => ink(c);
+  static Color primaryLight(BuildContext c) => accentSoft(c);
+  static Color onPrimary(BuildContext c) => bg(c);
+  static Color primaryStatic(AppColorPalette p, bool isDark) =>
+      isDark ? const Color(0xFFF5F2EC) : const Color(0xFF0B0E14);
 
-  static Color surface(BuildContext context) =>
-      _isDark(context) ? const Color(0xFF1E293B) : Colors.white;
+  static Color textPrimary(BuildContext c) => ink(c);
+  static Color textSecondary(BuildContext c) => ink70(c);
+  static Color textMuted(BuildContext c) => ink50(c);
+  static Color textLabel(BuildContext c) => ink70(c);
 
-  static Color background(BuildContext context) =>
-      _isDark(context) ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
+  static Color surface(BuildContext c) => card(c);
+  static Color background(BuildContext c) => bg(c);
+  static Color surfaceVariant(BuildContext c) => bgSunk(c);
 
-  static Color surfaceVariant(BuildContext context) =>
-      _isDark(context) ? const Color(0xFF334155) : const Color(0xFFF1F5F9);
+  static Color border(BuildContext c) => line(c);
+  static Color borderMuted(BuildContext c) => ink20(c);
 
-  // ── Borders ──────────────────────────────────────────────────────────
+  static Color success(BuildContext c) => ok(c);
+  static Color error(BuildContext c) => bad(c);
+  static Color warning(BuildContext c) => warn(c);
 
-  static Color border(BuildContext context) =>
-      _isDark(context) ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
+  static Color infoBackground(BuildContext c) => accentSoft(c);
+  static Color infoBorder(BuildContext c) => accentSoft(c);
+  static Color successBackground(BuildContext c) => _isDark(c)
+      ? const Color(0xFF4ADE80).withValues(alpha: 0.12)
+      : const Color(0xFFE8F6F0);
+  static Color errorBackground(BuildContext c) => _isDark(c)
+      ? const Color(0xFFF87171).withValues(alpha: 0.12)
+      : const Color(0xFFFDECEC);
+  static Color warningBackground(BuildContext c) => _isDark(c)
+      ? const Color(0xFFF59E0B).withValues(alpha: 0.12)
+      : const Color(0xFFFEF3E7);
+  static Color errorBorder(BuildContext c) => bad(c).withValues(alpha: 0.4);
+  static Color warningBorder(BuildContext c) => warn(c).withValues(alpha: 0.4);
 
-  static Color borderMuted(BuildContext context) =>
-      _isDark(context) ? const Color(0xFF475569) : const Color(0xFFCBD5E1);
+  static Color shimmer(BuildContext c) => _isDark(c)
+      ? Colors.white.withValues(alpha: 0.03)
+      : Colors.black.withValues(alpha: 0.03);
 
-  // ── Status ───────────────────────────────────────────────────────────
+  static Color navIndicator(BuildContext c) => accentSoft(c);
+  static Color dragHandle(BuildContext c) => ink20(c);
+  static Color chipSelected(BuildContext c) => accentSoft(c);
+  static Color settingsIcon(BuildContext c) => ink(c);
+  static Color settingsArrow(BuildContext c) => ink50(c);
 
-  static Color success(BuildContext context) =>
-      _isDark(context) ? const Color(0xFF34D399) : const Color(0xFF10B981);
-
-  static Color error(BuildContext context) =>
-      _isDark(context) ? const Color(0xFFF87171) : const Color(0xFFEF4444);
-
-  static Color warning(BuildContext context) =>
-      _isDark(context) ? const Color(0xFFFBBF24) : const Color(0xFFF59E0B);
-
-  // ── Status Backgrounds ───────────────────────────────────────────────
-
-  static Color infoBackground(BuildContext context) =>
-      _isDark(context) ? const Color(0xFF172554) : const Color(0xFFEFF6FF);
-
-  static Color infoBorder(BuildContext context) =>
-      _isDark(context) ? const Color(0xFF1E3A5F) : const Color(0xFFDBEAFE);
-
-  static Color successBackground(BuildContext context) =>
-      _isDark(context) ? const Color(0xFF064E3B) : const Color(0xFFECFDF5);
-
-  static Color errorBackground(BuildContext context) =>
-      _isDark(context) ? const Color(0xFF450A0A) : const Color(0xFFFEF2F2);
-
-  static Color warningBackground(BuildContext context) =>
-      _isDark(context) ? const Color(0xFF451A03) : const Color(0xFFFFFBEB);
-
-  // ── Misc ─────────────────────────────────────────────────────────────
-
-  static Color shimmer(BuildContext context) =>
-      _isDark(context) ? Colors.white.withValues(alpha: 0.03) : Colors.black.withValues(alpha: 0.03);
-
-  static const _navIndicatorColors = {
-    AppColorPalette.ocean:   (light: Color(0xFFDBEAFE), dark: Color(0xFF1E3A6E)),
-    AppColorPalette.emerald: (light: Color(0xFFD1FAE5), dark: Color(0xFF064E3B)),
-    AppColorPalette.violet:  (light: Color(0xFFEDE9FE), dark: Color(0xFF2E1065)),
-    AppColorPalette.teal:    (light: Color(0xFFCCFBF1), dark: Color(0xFF134E4A)),
-    AppColorPalette.sunset:  (light: Color(0xFFFFF7ED), dark: Color(0xFF431407)),
-  };
-
-  static Color navIndicator(BuildContext context) {
-    final c = _navIndicatorColors[palette]!;
-    return _isDark(context) ? c.dark : c.light;
-  }
-
-  static Color dragHandle(BuildContext context) =>
-      _isDark(context) ? const Color(0xFF475569) : const Color(0xFFCBD5E1);
-
-  /// Chip selected background — mockup: #EFF6FF light
-  static Color chipSelected(BuildContext context) =>
-      _isDark(context) ? const Color(0xFF1E3A5F) : const Color(0xFFEFF6FF);
-
-  /// Settings list item icon color — mockup: #2563eb (primary blue)
-  static Color settingsIcon(BuildContext context) => primary(context);
-
-  /// Settings list item trailing arrow — mockup: #94a3b8
-  static Color settingsArrow(BuildContext context) =>
-      _isDark(context) ? const Color(0xFF475569) : const Color(0xFF94A3B8);
-
-  // ── Status Borders ─────────────────────────────────────────────────
-
-  static Color errorBorder(BuildContext context) =>
-      _isDark(context) ? const Color(0xFF7F1D1D) : const Color(0xFFFCA5A5);
-
-  static Color warningBorder(BuildContext context) =>
-      _isDark(context) ? const Color(0xFF78350F) : const Color(0xFFFCD34D);
-
-  // ── Expense Category Colors ────────────────────────────────────────
-
+  // ── Expense category swatches (Calm-tuned, warmer than legacy) ──────
   static const _expenseCategoryColors = {
-    ExpenseCategory.telecomunicacoes: Color(0xFF818CF8),
-    ExpenseCategory.energia: Color(0xFFFBBF24),
-    ExpenseCategory.agua: Color(0xFF60A5FA),
-    ExpenseCategory.alimentacao: Color(0xFF34D399),
-    ExpenseCategory.educacao: Color(0xFFA78BFA),
-    ExpenseCategory.habitacao: Color(0xFFF87171),
-    ExpenseCategory.transportes: Color(0xFFFB923C),
-    ExpenseCategory.saude: Color(0xFFF472B6),
-    ExpenseCategory.lazer: Color(0xFF2DD4BF),
-    ExpenseCategory.outros: Color(0xFF94A3B8),
+    ExpenseCategory.habitacao:        Color(0xFFE8817F), // home — coral
+    ExpenseCategory.alimentacao:      Color(0xFF5AB890), // food — sage
+    ExpenseCategory.transportes:      Color(0xFFEDA05C), // transport — amber
+    ExpenseCategory.energia:          Color(0xFFEBBF5C), // energy — sun
+    ExpenseCategory.telecomunicacoes: Color(0xFF8590EB), // telecom — periwinkle
+    ExpenseCategory.lazer:            Color(0xFF5ECBB8), // fun — mint
+    ExpenseCategory.saude:            Color(0xFFE088B8), // health — rose
+    ExpenseCategory.agua:             Color(0xFF7CB8E0), // water — sky
+    ExpenseCategory.educacao:         Color(0xFFA78BFA), // edu — violet
+    ExpenseCategory.outros:           Color(0xFF9AA2B1), // other — stone
   };
-
-  static const _defaultCategoryColor = Color(0xFF94A3B8);
+  static const _defaultCategoryColor = Color(0xFF9AA2B1);
 
   static Color categoryColor(ExpenseCategory category) =>
       _expenseCategoryColors[category] ?? _defaultCategoryColor;
