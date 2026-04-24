@@ -21,6 +21,7 @@ TutorialCoachMark buildMealsTour({
       TargetFocus(
         identify: 'generate',
         keyTarget: MealsTourKeys.generateButton,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.RRect,
         radius: 12,
         contents: [
@@ -37,6 +38,7 @@ TutorialCoachMark buildMealsTour({
       TargetFocus(
         identify: 'weeks',
         keyTarget: MealsTourKeys.weekTabs,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.RRect,
         radius: 14,
         contents: [
@@ -53,6 +55,7 @@ TutorialCoachMark buildMealsTour({
       TargetFocus(
         identify: 'addToList',
         keyTarget: MealsTourKeys.addToListButton,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.RRect,
         radius: 12,
         contents: [
@@ -71,7 +74,10 @@ TutorialCoachMark buildMealsTour({
     targets: targets,
     colorShadow: Colors.black,
     opacityShadow: 0.7,
-    hideSkip: true,
+    hideSkip: false,
+    alignSkip: Alignment.topRight,
+    useSafeArea: true,
+    showSkipInLastTarget: true,
     onFinish: onFinish,
     onSkip: () {
       onSkip();

@@ -23,6 +23,7 @@ TutorialCoachMark buildDashboardTour({
       TargetFocus(
         identify: 'hero',
         keyTarget: DashboardTourKeys.heroCard,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.RRect,
         radius: 14,
         contents: [
@@ -39,6 +40,7 @@ TutorialCoachMark buildDashboardTour({
       TargetFocus(
         identify: 'stress',
         keyTarget: DashboardTourKeys.stressIndex,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.RRect,
         radius: 14,
         contents: [
@@ -55,6 +57,7 @@ TutorialCoachMark buildDashboardTour({
       TargetFocus(
         identify: 'bva',
         keyTarget: DashboardTourKeys.budgetVsActual,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.RRect,
         radius: 14,
         contents: [
@@ -71,6 +74,7 @@ TutorialCoachMark buildDashboardTour({
       TargetFocus(
         identify: 'fab',
         keyTarget: fabKey,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.Circle,
         contents: [
           TargetContent(
@@ -86,6 +90,7 @@ TutorialCoachMark buildDashboardTour({
       TargetFocus(
         identify: 'nav',
         keyTarget: navBarKey,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.RRect,
         radius: 0,
         contents: [
@@ -104,7 +109,10 @@ TutorialCoachMark buildDashboardTour({
     targets: targets,
     colorShadow: Colors.black,
     opacityShadow: 0.7,
-    hideSkip: true,
+    hideSkip: false,
+    alignSkip: Alignment.topRight,
+    useSafeArea: true,
+    showSkipInLastTarget: true,
     onFinish: onFinish,
     onSkip: () {
       onSkip();
