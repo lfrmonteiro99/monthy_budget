@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -70,6 +71,22 @@ Future<void> main() async {
   FlutterNativeSplash.remove();
 
   await LogService.initApp(() async {
+    // Pre-warm Fraunces + Inter so the first hero number renders immediately
+    // in the correct typeface. Timeout is intentionally short so offline
+    // users are not blocked on splash; runtime fetching remains active.
+    try {
+      await GoogleFonts.pendingFonts([
+        GoogleFonts.fraunces(),
+        GoogleFonts.inter(),
+      ]).timeout(const Duration(seconds: 3));
+    } catch (e) {
+      LogService.error(
+        'Font pre-warm failed — will fall back to runtime fetching',
+        error: e,
+        category: 'theme.fonts',
+      );
+    }
+
     // Zone guard: last-resort catcher for errors that bypass all other handlers.
     runZonedGuarded(
       () {
