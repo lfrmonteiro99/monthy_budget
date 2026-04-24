@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/savings_goal.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_theme.dart';
 import '../utils/formatters.dart';
 import '../utils/savings_projections.dart';
 import 'info_icon_button.dart';
@@ -46,7 +48,7 @@ class SavingsGoalCard extends StatelessWidget {
             l10n.savingsGoalEmpty,
             style: TextStyle(
               fontSize: 13,
-              color: AppColors.textMuted(context),
+              color: AppColors.ink50(context),
             ),
           ),
           const SizedBox(height: 12),
@@ -56,14 +58,6 @@ class SavingsGoalCard extends StatelessWidget {
               onPressed: onSeeAll,
               icon: const Icon(Icons.add, size: 18),
               label: Text(l10n.savingsGoalSeeAll),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.primary(context),
-                side: BorderSide(color: AppColors.primary(context)),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 10),
-              ),
             ),
           ),
         ],
@@ -88,7 +82,7 @@ class SavingsGoalCard extends StatelessWidget {
                 '+$pausedCount paused goals',
                 style: TextStyle(
                   fontSize: 11,
-                  color: AppColors.textMuted(context),
+                  color: AppColors.ink50(context),
                 ),
               ),
             ),
@@ -100,7 +94,7 @@ class SavingsGoalCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 11,
               fontStyle: FontStyle.italic,
-              color: AppColors.textMuted(context),
+              color: AppColors.ink50(context),
             ),
           ),
         ),
@@ -113,21 +107,15 @@ class SavingsGoalCard extends StatelessWidget {
     S l10n, {
     required List<Widget> children,
   }) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+    return CalmCard(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.surface(context),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border(context)),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Icon(Icons.savings_outlined,
-                  size: 18, color: AppColors.primary(context)),
+                  size: 18, color: AppColors.ink70(context)),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -135,7 +123,7 @@ class SavingsGoalCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary(context),
+                    color: AppColors.ink(context),
                   ),
                 ),
               ),
@@ -147,7 +135,7 @@ class SavingsGoalCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.primary(context),
+                    color: AppColors.accent(context),
                   ),
                 ),
               ),
@@ -169,9 +157,9 @@ class _GoalRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    final goalColor = goal.color != null
-        ? _hexToColor(goal.color!)
-        : AppColors.primary(context);
+    final progressColor = goal.isCompleted
+        ? AppColors.ok(context)
+        : AppColors.accent(context);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -184,7 +172,7 @@ class _GoalRow extends StatelessWidget {
                 width: 8,
                 height: 8,
                 decoration: BoxDecoration(
-                  color: goalColor,
+                  color: progressColor,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -195,7 +183,7 @@ class _GoalRow extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.textPrimary(context),
+                    color: AppColors.ink(context),
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -203,11 +191,8 @@ class _GoalRow extends StatelessWidget {
               Text(
                 l10n.savingsGoalProgress(
                     '${(goal.progress * 100).toStringAsFixed(0)}%'),
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: goalColor,
-                ),
+                style: CalmText.amount(context,
+                    size: 11, weight: FontWeight.w600),
               ),
             ],
           ),
@@ -218,8 +203,9 @@ class _GoalRow extends StatelessWidget {
               borderRadius: BorderRadius.circular(3),
               child: LinearProgressIndicator(
                 value: goal.progress,
-                backgroundColor: AppColors.border(context),
-                color: goalColor,
+                backgroundColor: AppColors.ink20(context),
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(progressColor),
                 minHeight: 4,
               ),
             ),
@@ -231,7 +217,7 @@ class _GoalRow extends StatelessWidget {
                 '${formatCurrency(goal.currentAmount)} / ${formatCurrency(goal.targetAmount)}',
                 style: TextStyle(
                   fontSize: 11,
-                  color: AppColors.textMuted(context),
+                  color: AppColors.ink50(context),
                 ),
               ),
               const Spacer(),
@@ -250,7 +236,7 @@ class _GoalRow extends StatelessWidget {
         l10n.savingsProjectionNoData,
         style: TextStyle(
           fontSize: 10,
-          color: AppColors.textMuted(context),
+          color: AppColors.ink50(context),
           fontStyle: FontStyle.italic,
         ),
       );
@@ -259,15 +245,15 @@ class _GoalRow extends StatelessWidget {
     if (p.projectedDate != null && p.onTrack != null) {
       final dateStr =
           '${p.projectedDate!.month.toString().padLeft(2, '0')}/${p.projectedDate!.year}';
+      final statusColor =
+          p.onTrack! ? AppColors.ok(context) : AppColors.warn(context);
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
             p.onTrack! ? Icons.check_circle_outline : Icons.warning_amber,
             size: 12,
-            color: p.onTrack!
-                ? AppColors.success(context)
-                : AppColors.warning(context),
+            color: statusColor,
           ),
           const SizedBox(width: 3),
           Text(
@@ -275,9 +261,7 @@ class _GoalRow extends StatelessWidget {
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w500,
-              color: p.onTrack!
-                  ? AppColors.success(context)
-                  : AppColors.warning(context),
+              color: statusColor,
             ),
           ),
         ],
@@ -291,7 +275,7 @@ class _GoalRow extends StatelessWidget {
         l10n.savingsProjectionReachedBy(dateStr),
         style: TextStyle(
           fontSize: 10,
-          color: AppColors.textSecondary(context),
+          color: AppColors.ink70(context),
         ),
       );
     }
@@ -310,14 +294,14 @@ class _CompletedRow extends StatelessWidget {
     return Row(
       children: [
         Icon(Icons.check_circle,
-            size: 16, color: AppColors.success(context)),
+            size: 16, color: AppColors.ok(context)),
         const SizedBox(width: 8),
         Expanded(
           child: Text(
             '${goal.name} - ${l10n.savingsGoalCompleted}',
             style: TextStyle(
               fontSize: 13,
-              color: AppColors.success(context),
+              color: AppColors.ok(context),
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -327,7 +311,3 @@ class _CompletedRow extends StatelessWidget {
   }
 }
 
-Color _hexToColor(String hex) {
-  final h = hex.replaceFirst('#', '');
-  return Color(int.parse('FF$h', radix: 16));
-}
