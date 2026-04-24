@@ -15,7 +15,10 @@ import '../services/analytics_service.dart';
 import '../services/ai_coach_service.dart';
 import '../services/revenuecat_service.dart';
 import '../services/subscription_service.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
+
 import '../theme/app_colors.dart';
+import '../theme/app_theme.dart';
 import '../utils/calculations.dart';
 import '../utils/coach_delimiter_parser.dart';
 import '../utils/coach_mode_recommender.dart';
@@ -383,7 +386,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
             onPressed: () => Navigator.pop(context, true),
             child: Text(
               l10n.clear,
-              style: TextStyle(color: AppColors.error(context)),
+              style: TextStyle(color: AppColors.bad(context)),
             ),
           ),
         ],
@@ -492,99 +495,84 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
-      appBar: AppBar(
-        backgroundColor: AppColors.surface(context),
-        surfaceTintColor: AppColors.surface(context),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n.coachTitle,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary(context),
-              ),
-            ),
-            Text(
-              l10n.coachSubtitle,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textSecondary(context),
-                letterSpacing: 0.5,
-              ),
-            ),
-          ],
+    return CalmScaffold(
+      title: l10n.coachTitle,
+      actions: [
+        InfoIconButton(title: l10n.coachTitle, body: l10n.infoCoachModes),
+        IconButton(
+          onPressed: _clearConversation,
+          tooltip: l10n.coachClearAll,
+          icon: const Icon(Icons.delete_sweep_outlined),
         ),
-        actions: [
-          InfoIconButton(title: l10n.coachTitle, body: l10n.infoCoachModes),
-          IconButton(
-            onPressed: _clearConversation,
-            tooltip: l10n.coachClearAll,
-            icon: const Icon(Icons.delete_sweep_outlined),
+      ],
+      body: Column(
+        children: [
+          // Subtitle / eyebrow below the app bar — keeps the Calm hierarchy
+          // without a headline metric (no CalmHero for chat screens).
+          Padding(
+            padding: const EdgeInsets.only(top: 4, bottom: 8),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                l10n.coachSubtitle,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: AppColors.ink70(context),
+                ),
+              ),
+            ),
           ),
-        ],
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            // #754: Offline banner
-            if (widget.isOffline)
-              OfflineBanner(message: l10n.coachOfflineBanner),
 
+          // #754: Offline banner
+          if (widget.isOffline)
+            OfflineBanner(message: l10n.coachOfflineBanner),
+
+          _buildModeCard(),
+
+          // Feature #1: Downgrade transition card (one-time per depletion)
+          if (_lastModeResolution?.usedFallback == true &&
+              !_downgradeCardDismissed &&
+              _subscription.downgradeCardShown)
             Padding(
-              padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-              child: _buildModeCard(),
+              padding: const EdgeInsets.only(top: 8),
+              child: _buildDowngradeTransitionCard(),
             ),
 
-            // Feature #1: Downgrade transition card (one-time per depletion)
-            if (_lastModeResolution?.usedFallback == true &&
-                !_downgradeCardDismissed &&
-                _subscription.downgradeCardShown)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-                child: _buildDowngradeTransitionCard(),
-              ),
-
-            // Existing fallback card (for subsequent eco messages)
-            if (_lastModeResolution?.usedFallback == true &&
-                _downgradeCardDismissed)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-                child: _buildFallbackCard(),
-              ),
-
-            // Feature #2: Endowment Plus banner
-            if (_subscription.isInEndowmentPeriod && !_endowmentBannerDismissed)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-                child: _buildEndowmentBanner(),
-              ),
-
-            if (_error != null)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-                child: _buildErrorCard(),
-              ),
-
-            Expanded(
-              child: Container(
-                key: CoachTourKeys.historyList,
-                margin: const EdgeInsets.only(top: 8),
-                child: _buildMessagesList(),
-              ),
+          // Existing fallback card (for subsequent eco messages)
+          if (_lastModeResolution?.usedFallback == true &&
+              _downgradeCardDismissed)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: _buildFallbackCard(),
             ),
 
-            // Feature #3: Smart mode recommendation widget
-            if (_showRecommendation && _pendingRecommendation != null)
-              _buildRecommendationWidget(),
+          // Feature #2: Endowment Plus banner
+          if (_subscription.isInEndowmentPeriod && !_endowmentBannerDismissed)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: _buildEndowmentBanner(),
+            ),
 
-            _buildComposer(),
-          ],
-        ),
+          if (_error != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: _buildErrorCard(),
+            ),
+
+          Expanded(
+            child: Container(
+              key: CoachTourKeys.historyList,
+              margin: const EdgeInsets.only(top: 8),
+              child: _buildMessagesList(),
+            ),
+          ),
+
+          // Feature #3: Smart mode recommendation widget
+          if (_showRecommendation && _pendingRecommendation != null)
+            _buildRecommendationWidget(),
+
+          _buildComposer(),
+        ],
       ),
     );
   }
@@ -592,25 +580,18 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   // Feature #1: Downgrade transition card
   Widget _buildDowngradeTransitionCard() {
     final l10n = S.of(context);
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.warningBackground(context),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.warning(context).withValues(alpha: 0.35),
-        ),
-      ),
+    return CalmCard(
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            l10n.coachDowngradeTitle,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: AppColors.warning(context),
-            ),
+          Row(
+            children: [
+              CalmPill(
+                label: l10n.coachDowngradeTitle,
+                color: AppColors.warn(context),
+              ),
+            ],
           ),
           const SizedBox(height: 10),
           Row(
@@ -671,21 +652,14 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: AppColors.surface(context),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.border(context)),
+        color: AppColors.card(context),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.line(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary(context),
-            ),
-          ),
+          CalmEyebrow(title),
           const SizedBox(height: 6),
           ...items.map(
             (item) => Padding(
@@ -696,8 +670,8 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                     item.$2 ? Icons.check_circle : Icons.cancel,
                     size: 14,
                     color: item.$2
-                        ? AppColors.success(context)
-                        : AppColors.error(context),
+                        ? AppColors.ok(context)
+                        : AppColors.bad(context),
                   ),
                   const SizedBox(width: 4),
                   Expanded(
@@ -705,7 +679,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                       item.$1,
                       style: TextStyle(
                         fontSize: 11,
-                        color: AppColors.textSecondary(context),
+                        color: AppColors.ink70(context),
                       ),
                     ),
                   ),
@@ -727,11 +701,9 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.primary(context).withValues(alpha: 0.08),
+        color: AppColors.accentSoft(context),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.primary(context).withValues(alpha: 0.15),
-        ),
+        border: Border.all(color: AppColors.line(context)),
       ),
       child: Row(
         children: [
@@ -740,7 +712,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
               l10n.coachEndowmentBanner(remaining),
               style: TextStyle(
                 fontSize: 12,
-                color: AppColors.primary(context),
+                color: AppColors.accent(context),
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -749,7 +721,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
             onPressed: () => setState(() => _endowmentBannerDismissed = true),
             icon: const Icon(Icons.close, size: 16),
             visualDensity: VisualDensity.compact,
-            color: AppColors.primary(context),
+            color: AppColors.accent(context),
           ),
         ],
       ),
@@ -762,22 +734,19 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     final rec = _pendingRecommendation!;
     final isPro = rec == CoachMode.pro;
     final cost = _subscription.creditCostForMode(rec);
-    final accentColor = isPro
-        ? const Color(0xFF7C3AED)
-        : AppColors.primary(context);
-    final bgColor = isPro
-        ? const Color(0xFF7C3AED).withValues(alpha: 0.06)
-        : AppColors.primary(context).withValues(alpha: 0.06);
+    // Calm restraint: the accent indigo is the single highlight colour.
+    // Pro vs Plus differ by label, not by hue.
+    final accentColor = AppColors.accent(context);
 
     final text = isPro
         ? l10n.coachRecommendPro(cost)
         : l10n.coachRecommendPlus(cost);
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(12, 4, 12, 0),
-      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.only(top: 4),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: bgColor,
+        color: AppColors.accentSoft(context),
         borderRadius: BorderRadius.circular(12),
         border: Border(left: BorderSide(width: 3, color: accentColor)),
       ),
@@ -789,7 +758,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary(context),
+              color: AppColors.ink(context),
             ),
           ),
           const SizedBox(height: 8),
@@ -798,7 +767,6 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
               FilledButton(
                 onPressed: _acceptRecommendation,
                 style: FilledButton.styleFrom(
-                  backgroundColor: accentColor,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 14,
                     vertical: 6,
@@ -847,11 +815,9 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: AppColors.successBackground(context),
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: AppColors.success(context).withValues(alpha: 0.1),
-          ),
+          color: AppColors.card(context),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.line(context)),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -859,29 +825,21 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
             Icon(
               Icons.flag_rounded,
               size: 16,
-              color: AppColors.success(context),
+              color: AppColors.ok(context),
             ),
             const SizedBox(width: 8),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    S.of(context).coachNextStep,
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.5,
-                      color: AppColors.success(context),
-                    ),
-                  ),
+                  CalmEyebrow(S.of(context).coachNextStep),
                   const SizedBox(height: 2),
                   Text(
                     action,
                     style: TextStyle(
                       fontSize: 13,
                       height: 1.4,
-                      color: AppColors.textPrimary(context),
+                      color: AppColors.ink(context),
                     ),
                   ),
                 ],
@@ -899,206 +857,197 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     final date = _subscription.lastMicroActionDate;
     final daysAgo = date != null ? DateTime.now().difference(date).inDays : 0;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.successBackground(context),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.success(context).withValues(alpha: 0.15),
-        ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 3,
-            height: 80,
-            decoration: BoxDecoration(
-              color: AppColors.success(context),
-              borderRadius: BorderRadius.circular(2),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: CalmCard(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 3,
+              height: 80,
+              decoration: BoxDecoration(
+                color: AppColors.ok(context),
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.track_changes,
-                      size: 16,
-                      color: AppColors.success(context),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      l10n.coachPendingAction,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary(context),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.track_changes,
+                        size: 16,
+                        color: AppColors.ok(context),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        l10n.coachPendingAction,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.ink(context),
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (daysAgo > 0)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Text(
+                        l10n.coachSuggestedDaysAgo(daysAgo),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: AppColors.ink50(context),
+                        ),
                       ),
                     ),
-                  ],
-                ),
-                if (daysAgo > 0)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.bgSunk(context),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: AppColors.line(context)),
+                    ),
                     child: Text(
-                      l10n.coachSuggestedDaysAgo(daysAgo),
+                      action,
                       style: TextStyle(
-                        fontSize: 11,
-                        color: AppColors.textMuted(context),
+                        fontSize: 13,
+                        color: AppColors.ink(context),
+                        height: 1.4,
                       ),
                     ),
                   ),
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: AppColors.surface(context),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    action,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppColors.textPrimary(context),
-                      height: 1.4,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    FilledButton(
-                      onPressed: _completeMicroAction,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.success(context),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 6,
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      FilledButton(
+                        onPressed: _completeMicroAction,
+                        style: FilledButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 6,
+                          ),
                         ),
+                        child: Text(S.of(context).coachAchieved),
                       ),
-                      child: Text(S.of(context).coachAchieved),
-                    ),
-                    const SizedBox(width: 8),
-                    OutlinedButton(
-                      onPressed: _dismissMicroAction,
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 6,
+                      const SizedBox(width: 8),
+                      OutlinedButton(
+                        onPressed: _dismissMicroAction,
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 6,
+                          ),
                         ),
+                        child: Text(S.of(context).coachNotYet),
                       ),
-                      child: Text(S.of(context).coachNotYet),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildWelcomeCard(S l10n) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.infoBackground(context),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: AppColors.primary(context).withValues(alpha: 0.2),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.psychology_alt_rounded,
-                size: 20,
-                color: AppColors.primary(context),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  l10n.coachWelcomeTitle,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary(context),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: CalmCard(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.psychology_alt_rounded,
+                  size: 20,
+                  color: AppColors.accent(context),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    l10n.coachWelcomeTitle,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.ink(context),
+                    ),
                   ),
                 ),
-              ),
-              IconButton(
-                onPressed: () => setState(() => _welcomeCardDismissed = true),
-                icon: const Icon(Icons.close, size: 16),
-                visualDensity: VisualDensity.compact,
-                color: AppColors.textMuted(context),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            l10n.coachWelcomeBody,
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.textSecondary(context),
-              height: 1.5,
+                IconButton(
+                  onPressed: () =>
+                      setState(() => _welcomeCardDismissed = true),
+                  icon: const Icon(Icons.close, size: 16),
+                  visualDensity: VisualDensity.compact,
+                  color: AppColors.ink50(context),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 6),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(
-                Icons.toll_outlined,
-                size: 14,
-                color: AppColors.textMuted(context),
+            const SizedBox(height: 8),
+            Text(
+              l10n.coachWelcomeBody,
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.ink70(context),
+                height: 1.5,
               ),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  l10n.coachWelcomeCredits,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: AppColors.textMuted(context),
-                    height: 1.4,
+            ),
+            const SizedBox(height: 6),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.toll_outlined,
+                  size: 14,
+                  color: AppColors.ink50(context),
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    l10n.coachWelcomeCredits,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: AppColors.ink50(context),
+                      height: 1.4,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(
-                Icons.timer_outlined,
-                size: 14,
-                color: AppColors.textMuted(context),
-              ),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  l10n.coachWelcomeRateLimit,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: AppColors.textMuted(context),
-                    height: 1.4,
+              ],
+            ),
+            const SizedBox(height: 4),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.timer_outlined,
+                  size: 14,
+                  color: AppColors.ink50(context),
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    l10n.coachWelcomeRateLimit,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: AppColors.ink50(context),
+                      height: 1.4,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1108,7 +1057,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
       final l10n = S.of(context);
       return Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 18),
+          padding: const EdgeInsets.symmetric(vertical: 12),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -1118,28 +1067,36 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
               if (_subscription.lastMicroAction != null &&
                   !_microActionCardDismissed)
                 _buildMicroActionCard(),
-              Text(
-                l10n.coachEmptyBody,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: AppColors.textSecondary(context),
-                  fontSize: 15,
-                  height: 1.6,
-                ),
+              CalmEmptyState(
+                icon: Icons.chat_bubble_outline,
+                title: l10n.coachTitle,
+                body: l10n.coachEmptyBody,
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 20),
+              // Prompt suggestion chips — Calm outlined buttons, ink70 text.
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
                 alignment: WrapAlignment.center,
                 children: _quickPrompts(l10n)
                     .map(
-                      (prompt) => ActionChip(
-                        label: Text(prompt),
+                      (prompt) => OutlinedButton(
                         onPressed: () {
                           _composerController.text = prompt;
                           _sendCurrentMessage();
                         },
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.ink70(context),
+                          side: BorderSide(color: AppColors.line(context)),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 8,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                        ),
+                        child: Text(prompt),
                       ),
                     )
                     .toList(),
@@ -1152,7 +1109,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
 
     return ListView.builder(
       controller: _scrollController,
-      padding: const EdgeInsets.fromLTRB(12, 6, 12, 14),
+      padding: const EdgeInsets.fromLTRB(0, 6, 0, 14),
       itemCount: _messages.length + (_loading ? 1 : 0),
       itemBuilder: (context, index) {
         if (_loading && index == _messages.length) {
@@ -1160,34 +1117,34 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
             alignment: Alignment.centerLeft,
             child: Container(
               margin: const EdgeInsets.only(bottom: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 10,
+              ),
               decoration: BoxDecoration(
-                color: AppColors.surfaceVariant(context),
-                borderRadius: BorderRadius.circular(12),
+                color: AppColors.card(context),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: AppColors.line(context)),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircleAvatar(
-                    radius: 10,
-                    backgroundColor: AppColors.primary(
-                      context,
-                    ).withValues(alpha: 0.2),
+                  Container(
+                    width: 20,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      color: AppColors.accentSoft(context),
+                      shape: BoxShape.circle,
+                    ),
+                    alignment: Alignment.center,
                     child: Icon(
                       Icons.psychology_alt_rounded,
                       size: 12,
-                      color: AppColors.primary(context),
+                      color: AppColors.accent(context),
                     ),
                   ),
                   const SizedBox(width: 10),
-                  SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: AppColors.primary(context),
-                    ),
-                  ),
+                  const _CoachTypingDots(),
                 ],
               ),
             ),
@@ -1214,60 +1171,73 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     final costNow = _subscription.creditCostForMode(_selectedMode);
     return Container(
       key: CoachTourKeys.analyzeButton,
-      padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 12),
       decoration: BoxDecoration(
-        color: AppColors.surface(context),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.18),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
-        ],
-        border: Border(top: BorderSide(color: AppColors.border(context))),
+        color: AppColors.bg(context),
+        border: Border(top: BorderSide(color: AppColors.line(context))),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _composerController,
-                  minLines: 1,
-                  maxLines: 4,
-                  textInputAction: TextInputAction.send,
-                  onSubmitted: (_) => _sendCurrentMessage(),
-                  onChanged: _checkRecommendation,
-                  decoration: InputDecoration(
-                    hintText: l10n.coachComposerHint,
-                    isDense: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.card(context),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: AppColors.line(context)),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _composerController,
+                    minLines: 1,
+                    maxLines: 4,
+                    textInputAction: TextInputAction.send,
+                    onSubmitted: (_) => _sendCurrentMessage(),
+                    onChanged: _checkRecommendation,
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: AppColors.ink(context),
+                    ),
+                    decoration: InputDecoration(
+                      hintText: l10n.coachComposerHint,
+                      hintStyle: TextStyle(
+                        color: AppColors.ink50(context),
+                        fontSize: 15,
+                      ),
+                      isDense: true,
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 10,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              FilledButton(
-                onPressed: (_loading || widget.isOffline)
-                    ? null
-                    : _sendCurrentMessage,
-                style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.all(14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                const SizedBox(width: 4),
+                FilledButton(
+                  onPressed: (_loading || widget.isOffline)
+                      ? null
+                      : _sendCurrentMessage,
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.all(12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
+                  child: _loading
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.send_rounded, size: 18),
                 ),
-                child: _loading
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.send_rounded, size: 18),
-              ),
-            ],
+              ],
+            ),
           ),
           const SizedBox(height: 6),
           Row(
@@ -1281,7 +1251,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textMuted(context),
+                    color: AppColors.ink50(context),
                   ),
                 ),
               ),
@@ -1304,26 +1274,14 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     final window = _subscription.contextWindowForMode(effectiveMode);
     final usagePct = ((_messages.length / window) * 100).clamp(0, 100).round();
 
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceVariant(context).withValues(alpha: 0.6),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border(context)),
-      ),
+    return CalmCard(
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Text(
-                l10n.coachMemory,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary(context),
-                ),
-              ),
+              CalmEyebrow(l10n.coachMemory),
               const SizedBox(width: 6),
               InfoIconButton(title: l10n.coachTitle, body: l10n.infoCoachModes),
               const Spacer(),
@@ -1332,7 +1290,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary(context),
+                  color: AppColors.ink70(context),
                 ),
               ),
             ],
@@ -1346,13 +1304,13 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
               _modeChip(CoachMode.pro, 'Pro'),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
           Text(
             l10n.coachActiveMemory(effectiveMode.name.toUpperCase(), usagePct),
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: AppColors.textMuted(context),
+              color: AppColors.ink50(context),
             ),
           ),
           const SizedBox(height: 4),
@@ -1361,44 +1319,18 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: AppColors.textMuted(context),
+              color: AppColors.ink50(context),
             ),
           ),
           // Feature #6: Credit cap warning
           if (_subscription.isAtCreditCap)
             Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.warningBackground(context),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: AppColors.warning(context).withValues(alpha: 0.15),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.info,
-                      size: 16,
-                      color: AppColors.warning(context),
-                    ),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        l10n.coachCapWarning,
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.warning(context),
-                        ),
-                      ),
-                    ),
-                  ],
+              padding: const EdgeInsets.only(top: 10),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: CalmPill(
+                  label: l10n.coachCapWarning,
+                  color: AppColors.warn(context),
                 ),
               ),
             ),
@@ -1420,14 +1352,16 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         fontSize: 12,
         fontWeight: FontWeight.w600,
         color: selected
-            ? AppColors.onPrimary(context)
-            : AppColors.textPrimary(context),
+            ? AppColors.accent(context)
+            : AppColors.ink(context),
       ),
-      selectedColor: AppColors.primary(context),
-      backgroundColor: AppColors.surfaceVariant(context),
+      selectedColor: AppColors.accentSoft(context),
+      backgroundColor: AppColors.bgSunk(context),
+      side: BorderSide(
+        color: selected ? AppColors.accent(context) : AppColors.line(context),
+      ),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        side: BorderSide(color: AppColors.border(context)),
+        borderRadius: BorderRadius.circular(100),
       ),
     );
   }
@@ -1435,28 +1369,17 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   Widget _buildFallbackCard() {
     final l10n = S.of(context);
     final compact = _ecoBannerCollapsed;
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: AppColors.warningBackground(context),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.warning(context).withValues(alpha: 0.35),
-        ),
-      ),
+    return CalmCard(
+      padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Expanded(
-                child: Text(
-                  l10n.coachEcoFallbackTitle,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.warning(context),
-                  ),
+                child: CalmPill(
+                  label: l10n.coachEcoFallbackTitle,
+                  color: AppColors.warn(context),
                 ),
               ),
               IconButton(
@@ -1468,18 +1391,22 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                 tooltip: compact ? l10n.coachExpandTip : l10n.coachCollapseTip,
                 icon: Icon(
                   compact ? Icons.expand_more : Icons.expand_less,
-                  color: AppColors.warning(context),
+                  color: AppColors.ink50(context),
                 ),
               ),
             ],
           ),
           if (!compact) ...[
-            const SizedBox(height: 2),
+            const SizedBox(height: 6),
             Text(
               l10n.coachEcoFallbackBody,
-              style: TextStyle(fontSize: 12, color: AppColors.warning(context)),
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.ink70(context),
+                height: 1.4,
+              ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             Align(
               alignment: Alignment.centerLeft,
               child: OutlinedButton(
@@ -1497,23 +1424,21 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.errorBackground(context),
+        color: AppColors.card(context),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.error(context).withValues(alpha: 0.4),
-        ),
+        border: Border.all(color: AppColors.bad(context)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.error_outline, color: AppColors.error(context), size: 18),
+          Icon(Icons.error_outline, color: AppColors.bad(context), size: 18),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               _error!,
               style: TextStyle(
                 fontSize: 13,
-                color: AppColors.error(context),
+                color: AppColors.bad(context),
                 height: 1.4,
               ),
             ),
@@ -1523,7 +1448,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
             onTap: () {
               setState(() => _error = null);
             },
-            child: Icon(Icons.close, size: 16, color: AppColors.error(context)),
+            child: Icon(Icons.close, size: 16, color: AppColors.bad(context)),
           ),
         ],
       ),
@@ -1610,21 +1535,22 @@ class _MessageBubble extends StatelessWidget {
         : screenWidth >= 700
         ? (isUser ? 460.0 : 640.0)
         : screenWidth * (isUser ? 0.78 : 0.9);
+
+    // Calm chat palette: user bubbles are accent-filled with bg text
+    // (ink-reversed); coach bubbles are card-filled with a hairline border.
     final bubbleColor = isUser
-        ? AppColors.primary(context)
-        : AppColors.surfaceVariant(context);
+        ? AppColors.accent(context)
+        : AppColors.card(context);
     final textColor = isUser
-        ? AppColors.onPrimary(context)
-        : AppColors.textPrimary(context);
-    final labelColor = isUser
-        ? AppColors.textSecondary(context)
-        : AppColors.textMuted(context);
+        ? AppColors.bg(context)
+        : AppColors.ink(context);
+    final labelColor = AppColors.ink50(context);
     final avatarBg = isUser
-        ? AppColors.primary(context).withValues(alpha: 0.2)
-        : AppColors.surfaceVariant(context);
+        ? AppColors.accentSoft(context)
+        : AppColors.bgSunk(context);
     final avatarIconColor = isUser
-        ? AppColors.primary(context)
-        : AppColors.textSecondary(context);
+        ? AppColors.accent(context)
+        : AppColors.ink70(context);
 
     return Align(
       alignment: align,
@@ -1685,10 +1611,13 @@ class _MessageBubble extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(bottom: 8),
             constraints: BoxConstraints(maxWidth: maxWidth),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
               color: bubbleColor,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(14),
+              border: isUser
+                  ? null
+                  : Border.all(color: AppColors.line(context)),
             ),
             child: isUser
                 ? SelectableText(
@@ -1732,6 +1661,66 @@ class _MessageBubble extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Three-dot typing indicator for streaming coach replies.
+/// Renders in `AppColors.ink50(context)` as the Calm streaming rest.
+class _CoachTypingDots extends StatefulWidget {
+  const _CoachTypingDots();
+
+  @override
+  State<_CoachTypingDots> createState() => _CoachTypingDotsState();
+}
+
+class _CoachTypingDotsState extends State<_CoachTypingDots>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final color = AppColors.ink50(context);
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(3, (i) {
+            // Stagger each dot's phase across the cycle.
+            final phase = (_controller.value + i / 3) % 1.0;
+            // Eased bounce: peaks around phase=0.5, rests at the edges.
+            final t = (1 - (phase * 2 - 1).abs()).clamp(0.0, 1.0);
+            final opacity = 0.3 + 0.7 * t;
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: Container(
+                width: 6,
+                height: 6,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: opacity),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            );
+          }),
+        );
+      },
     );
   }
 }
@@ -1780,27 +1769,13 @@ class _CreditPacksSheet extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary(context),
+                    color: AppColors.ink(context),
                   ),
                 ),
                 const Spacer(),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary(context).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  child: Text(
-                    l10n.coachCreditsRemaining(subscription.aiCredits),
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.primary(context),
-                    ),
-                  ),
+                CalmPill(
+                  label: l10n.coachCreditsRemaining(subscription.aiCredits),
+                  color: AppColors.accent(context),
                 ),
               ],
             ),
@@ -1811,11 +1786,9 @@ class _CreditPacksSheet extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.primary(context).withValues(alpha: 0.06),
+                  color: AppColors.accentSoft(context),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: AppColors.primary(context).withValues(alpha: 0.12),
-                  ),
+                  border: Border.all(color: AppColors.line(context)),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1823,7 +1796,7 @@ class _CreditPacksSheet extends StatelessWidget {
                     Icon(
                       Icons.insights_rounded,
                       size: 20,
-                      color: AppColors.primary(context),
+                      color: AppColors.accent(context),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
@@ -1832,7 +1805,7 @@ class _CreditPacksSheet extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 12.5,
                             height: 1.5,
-                            color: AppColors.textSecondary(context),
+                            color: AppColors.ink70(context),
                           ),
                           children: [
                             TextSpan(
@@ -1842,7 +1815,7 @@ class _CreditPacksSheet extends StatelessWidget {
                               text: insight,
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.textPrimary(context),
+                                color: AppColors.ink(context),
                               ),
                             ),
                             if (insightValue != null &&
@@ -1852,7 +1825,7 @@ class _CreditPacksSheet extends StatelessWidget {
                                 text: insightValue,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w700,
-                                  color: AppColors.primary(context),
+                                  color: AppColors.accent(context),
                                 ),
                               ),
                             ],
@@ -1874,26 +1847,26 @@ class _CreditPacksSheet extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppColors.warningBackground(context),
+                  color: AppColors.card(context),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: AppColors.warning(context).withValues(alpha: 0.15),
-                  ),
+                  border: Border.all(color: AppColors.line(context)),
                 ),
                 child: Row(
                   children: [
                     Icon(
                       Icons.info_rounded,
                       size: 16,
-                      color: AppColors.warning(context),
+                      color: AppColors.warn(context),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        l10n.coachCapWarningSheet(SubscriptionState.maxCreditCap),
+                        l10n.coachCapWarningSheet(
+                          SubscriptionState.maxCreditCap,
+                        ),
                         style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.textPrimary(context),
+                          color: AppColors.ink(context),
                         ),
                       ),
                     ),
@@ -1915,12 +1888,12 @@ class _CreditPacksSheet extends StatelessWidget {
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 8),
                   decoration: BoxDecoration(
-                    color: AppColors.surface(context),
+                    color: AppColors.card(context),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: isRecommended
-                          ? AppColors.primary(context)
-                          : AppColors.border(context),
+                          ? AppColors.accent(context)
+                          : AppColors.line(context),
                       width: isRecommended ? 2 : 1,
                     ),
                   ),
@@ -1934,10 +1907,10 @@ class _CreditPacksSheet extends StatelessWidget {
                       children: [
                         Text(
                           '${pack.credits}',
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimary(context),
+                          style: CalmText.amount(
+                            context,
+                            size: 22,
+                            weight: FontWeight.w700,
                           ),
                         ),
                         Text(
@@ -1945,7 +1918,7 @@ class _CreditPacksSheet extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w500,
-                            color: AppColors.textMuted(context),
+                            color: AppColors.ink50(context),
                           ),
                         ),
                       ],
@@ -1954,24 +1927,11 @@ class _CreditPacksSheet extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (isRecommended)
-                          Container(
-                            margin: const EdgeInsets.only(bottom: 4),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary(context),
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            child: Text(
-                              l10n.coachBestValue,
-                              style: TextStyle(
-                                fontSize: 9,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0.5,
-                                color: AppColors.onPrimary(context),
-                              ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 4),
+                            child: CalmPill(
+                              label: l10n.coachBestValue,
+                              color: AppColors.accent(context),
                             ),
                           ),
                         Text(
@@ -1979,8 +1939,8 @@ class _CreditPacksSheet extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 12,
                             color: wasted > 0
-                                ? AppColors.error(context)
-                                : AppColors.textSecondary(context),
+                                ? AppColors.bad(context)
+                                : AppColors.ink70(context),
                           ),
                         ),
                         if (wasted > 0)
@@ -1989,7 +1949,7 @@ class _CreditPacksSheet extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
-                              color: AppColors.error(context),
+                              color: AppColors.bad(context),
                             ),
                           ),
                       ],
@@ -1997,7 +1957,7 @@ class _CreditPacksSheet extends StatelessWidget {
                     trailing: OutlinedButton(
                       onPressed: isDimmed ? null : () => onPurchase(pack),
                       style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: AppColors.primary(context)),
+                        side: BorderSide(color: AppColors.line(context)),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 14,
                           vertical: 8,
@@ -2007,7 +1967,7 @@ class _CreditPacksSheet extends StatelessWidget {
                         pack.fallbackPrice,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
-                          color: AppColors.primary(context),
+                          color: AppColors.ink(context),
                         ),
                       ),
                     ),
@@ -2024,14 +1984,14 @@ class _CreditPacksSheet extends StatelessWidget {
                 Icon(
                   Icons.auto_awesome,
                   size: 14,
-                  color: AppColors.primary(context),
+                  color: AppColors.accent(context),
                 ),
                 const SizedBox(width: 4),
                 Text(
                   l10n.coachRecommendedPack(creditPacks[recommended].credits),
                   style: TextStyle(
                     fontSize: 12,
-                    color: AppColors.textSecondary(context),
+                    color: AppColors.ink70(context),
                   ),
                 ),
               ],
