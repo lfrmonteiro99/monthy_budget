@@ -272,11 +272,7 @@ void main() {
 
     test('validates set_color_palette with known palettes', () {
       expect(
-        registry.validate('set_color_palette', {'palette': 'ocean'}),
-        isTrue,
-      );
-      expect(
-        registry.validate('set_color_palette', {'palette': 'sunset'}),
+        registry.validate('set_color_palette', {'palette': 'calm'}),
         isTrue,
       );
     });
@@ -284,6 +280,10 @@ void main() {
     test('rejects set_color_palette with unknown palette', () {
       expect(
         registry.validate('set_color_palette', {'palette': 'rainbow'}),
+        isFalse,
+      );
+      expect(
+        registry.validate('set_color_palette', {'palette': 'ocean'}),
         isFalse,
       );
     });
