@@ -7,7 +7,9 @@ import '../models/expense_snapshot.dart';
 import '../models/app_settings.dart';
 import '../constants/app_constants.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_theme.dart';
 import '../utils/formatters.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 
 
 Map<String, String> _localizedCategoryLabels(S l10n) => {
@@ -134,64 +136,80 @@ class _ExpenseTrendsScreenState extends State<ExpenseTrendsScreen> {
         .toList();
   }
 
+  String _rangeSubtitle(S l10n) {
+    switch (_selectedMonths) {
+      case 3:
+        return l10n.expenseTrends3Months;
+      case 12:
+        return l10n.expenseTrends12Months;
+      default:
+        return l10n.expenseTrends6Months;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     final months = _filteredMonthKeys();
     final hasData = months.isNotEmpty;
+    final totalActual = months.fold(0.0, (sum, mk) => sum + _actualTotal(mk));
 
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
-      appBar: AppBar(
-        title: Text(l10n.expenseTrends),
-        backgroundColor: AppColors.surface(context),
-        foregroundColor: AppColors.textPrimary(context),
-        elevation: 0,
-        scrolledUnderElevation: 1,
-      ),
+    return CalmScaffold(
+      title: l10n.expenseTrends,
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const SizedBox(height: 24),
+
+          // Hero block — one Fraunces number per screen
+          CalmHero(
+            eyebrow: 'TENDÊNCIAS', // TODO(l10n): move to ARB (Wave H)
+            amount: formatCurrency(totalActual),
+            subtitle: _rangeSubtitle(l10n),
+          ),
+
+          const SizedBox(height: 24),
+
           // Time range selector
-          Container(
-            color: AppColors.surface(context),
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          CalmCard(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _rangeChip(l10n.expenseTrends3Months, 3),
+                _rangeButton(l10n.expenseTrends3Months, 3),
                 const SizedBox(width: 8),
-                _rangeChip(l10n.expenseTrends6Months, 6),
+                _rangeButton(l10n.expenseTrends6Months, 6),
                 const SizedBox(width: 8),
-                _rangeChip(l10n.expenseTrends12Months, 12),
+                _rangeButton(l10n.expenseTrends12Months, 12),
               ],
             ),
           ),
-          const Divider(height: 1),
+
+          const SizedBox(height: 24),
 
           // Content
           Expanded(
             child: !hasData
                 ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(32),
-                      child: Text(
-                        l10n.expenseTrendsNoData,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: AppColors.textMuted(context),
-                          height: 1.5,
-                        ),
-                      ),
+                    child: CalmEmptyState(
+                      icon: Icons.bar_chart_outlined,
+                      title: l10n.expenseTrendsNoData,
+                      // TODO(l10n): move subtitle to ARB (Wave H)
+                      body: 'Adiciona despesas para ver as tendências.',
                     ),
                   )
-                : ListView(
-                    padding: const EdgeInsets.all(16),
-                    children: [
-                      _buildOverviewChart(context, l10n, months),
-                      const SizedBox(height: 20),
-                      _buildCategoryBreakdown(context, l10n, months),
-                    ],
+                : SingleChildScrollView(
+                    padding: EdgeInsets.zero,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildOverviewChart(context, l10n, months),
+                        const SizedBox(height: 20),
+                        _buildCategoryBreakdown(context, l10n, months),
+                        const SizedBox(height: 32),
+                      ],
+                    ),
                   ),
           ),
         ],
@@ -199,27 +217,31 @@ class _ExpenseTrendsScreenState extends State<ExpenseTrendsScreen> {
     );
   }
 
-  Widget _rangeChip(String label, int months) {
+  Widget _rangeButton(String label, int months) {
     final isSelected = _selectedMonths == months;
-    return ChoiceChip(
-      label: Text(label),
-      selected: isSelected,
-      selectedColor: AppColors.primaryLight(context),
-      labelStyle: TextStyle(
-        fontSize: 13,
-        fontWeight: FontWeight.w600,
-        color: isSelected
-            ? AppColors.primary(context)
-            : AppColors.textSecondary(context),
+    return OutlinedButton(
+      onPressed: () => setState(() => _selectedMonths = months),
+      style: OutlinedButton.styleFrom(
+        foregroundColor:
+            isSelected ? AppColors.bg(context) : AppColors.ink(context),
+        backgroundColor: isSelected ? AppColors.ink(context) : null,
+        side: BorderSide(
+          color: isSelected
+              ? AppColors.ink(context)
+              : AppColors.ink20(context),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
+        padding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
-      backgroundColor: AppColors.surfaceVariant(context),
-      side: BorderSide(
-        color: isSelected
-            ? AppColors.primary(context)
-            : AppColors.border(context),
+      child: Text(
+        label,
+        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
       ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      onSelected: (_) => setState(() => _selectedMonths = months),
     );
   }
 
@@ -247,186 +269,177 @@ class _ExpenseTrendsScreenState extends State<ExpenseTrendsScreen> {
 
     final ceilY = maxY > 0 ? maxY * 1.15 : 1.0;
 
-    // Determine actual line color: green if overall under budget, red if over
+    // Determine actual line color: ok if overall under budget, bad if over
     final totalBudgeted =
         months.fold(0.0, (sum, mk) => sum + _budgetedTotal(mk));
-    final totalActual = months.fold(0.0, (sum, mk) => sum + _actualTotal(mk));
+    final totalActual =
+        months.fold(0.0, (sum, mk) => sum + _actualTotal(mk));
     final actualColor = totalActual <= totalBudgeted
-        ? AppColors.success(context)
-        : AppColors.error(context);
+        ? AppColors.ok(context)
+        : AppColors.bad(context);
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.surface(context),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border(context)),
-      ),
+    return CalmCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            l10n.expenseTrendsOverview.toUpperCase(),
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textSecondary(context),
-              letterSpacing: 0.5,
-            ),
-          ),
+          CalmEyebrow(l10n.expenseTrendsOverview.toUpperCase()),
           const SizedBox(height: 16),
           Semantics(
             label: l10n.expenseTrendsChartLabel,
             child: SizedBox(
-            height: 220,
-            child: LineChart(
-              LineChartData(
-                minY: 0,
-                maxY: ceilY,
-                gridData: FlGridData(
-                  show: true,
-                  horizontalInterval: ceilY / 5,
-                  getDrawingHorizontalLine: (value) => FlLine(
-                    color: AppColors.surfaceVariant(context),
-                    strokeWidth: 1,
+              height: 220,
+              child: LineChart(
+                LineChartData(
+                  minY: 0,
+                  maxY: ceilY,
+                  gridData: FlGridData(
+                    show: true,
+                    horizontalInterval: ceilY / 5,
+                    getDrawingHorizontalLine: (value) => FlLine(
+                      color: AppColors.line(context),
+                      strokeWidth: 1,
+                      dashArray: [4, 4],
+                    ),
+                    drawVerticalLine: false,
                   ),
-                  drawVerticalLine: false,
-                ),
-                borderData: FlBorderData(show: false),
-                titlesData: FlTitlesData(
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 52,
-                      interval: ceilY / 5,
-                      getTitlesWidget: (value, _) => Padding(
-                        padding: const EdgeInsets.only(right: 4),
-                        child: Text(
-                          _compactCurrency(value),
-                          style: TextStyle(
-                            fontSize: 9,
-                            color: AppColors.textMuted(context),
+                  borderData: FlBorderData(show: false),
+                  titlesData: FlTitlesData(
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 52,
+                        interval: ceilY / 5,
+                        getTitlesWidget: (value, _) => Padding(
+                          padding: const EdgeInsets.only(right: 4),
+                          child: Text(
+                            _compactCurrency(value),
+                            style: TextStyle(
+                              fontSize: 9,
+                              color: AppColors.ink50(context),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      interval: 1,
-                      getTitlesWidget: (value, _) {
-                        final idx = value.toInt();
-                        // Show every label for small ranges, every 2nd for larger
-                        if (months.length > 8 && idx % 2 != 0) {
-                          return const SizedBox();
-                        }
-                        if (labels.containsKey(idx)) {
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: Text(
-                              labels[idx]!,
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: AppColors.textSecondary(context),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        interval: 1,
+                        getTitlesWidget: (value, _) {
+                          final idx = value.toInt();
+                          // Show every label for small ranges, every 2nd for larger
+                          if (months.length > 8 && idx % 2 != 0) {
+                            return const SizedBox();
+                          }
+                          if (labels.containsKey(idx)) {
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: Text(
+                                labels[idx]!,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: AppColors.ink70(context),
+                                ),
                               ),
-                            ),
-                          );
-                        }
-                        return const SizedBox();
-                      },
-                    ),
-                  ),
-                  rightTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false)),
-                  topTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false)),
-                ),
-                lineBarsData: [
-                  // Budgeted line (blue)
-                  LineChartBarData(
-                    spots: budgetedSpots,
-                    isCurved: true,
-                    curveSmoothness: 0.2,
-                    color: AppColors.primary(context),
-                    barWidth: 2.5,
-                    isStrokeCapRound: true,
-                    dotData: FlDotData(
-                      show: true,
-                      getDotPainter: (spot, percent, bar, index) =>
-                          FlDotCirclePainter(
-                        radius: 3,
-                        color: AppColors.primary(context),
-                        strokeWidth: 1.5,
-                        strokeColor: AppColors.surface(context),
+                            );
+                          }
+                          return const SizedBox();
+                        },
                       ),
                     ),
-                    belowBarData: BarAreaData(
-                      show: true,
-                      color:
-                          AppColors.primary(context).withValues(alpha: 0.06),
-                    ),
+                    rightTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false)),
+                    topTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false)),
                   ),
-                  // Actual line (green/red)
-                  LineChartBarData(
-                    spots: actualSpots,
-                    isCurved: true,
-                    curveSmoothness: 0.2,
-                    color: actualColor,
-                    barWidth: 2.5,
-                    isStrokeCapRound: true,
-                    dashArray: [6, 3],
-                    dotData: FlDotData(
-                      show: true,
-                      getDotPainter: (spot, percent, bar, index) {
-                        final mk = index < months.length ? months[index] : '';
-                        final budgeted = _budgetedTotal(mk);
-                        final dotColor = spot.y <= budgeted
-                            ? AppColors.success(context)
-                            : AppColors.error(context);
-                        return FlDotCirclePainter(
+                  lineBarsData: [
+                    // Budgeted line (accent)
+                    LineChartBarData(
+                      spots: budgetedSpots,
+                      isCurved: true,
+                      curveSmoothness: 0.2,
+                      color: AppColors.accent(context),
+                      barWidth: 2.5,
+                      isStrokeCapRound: true,
+                      dotData: FlDotData(
+                        show: true,
+                        getDotPainter: (spot, percent, bar, index) =>
+                            FlDotCirclePainter(
                           radius: 3,
-                          color: dotColor,
+                          color: AppColors.accent(context),
                           strokeWidth: 1.5,
-                          strokeColor: AppColors.surface(context),
-                        );
+                          strokeColor: AppColors.card(context),
+                        ),
+                      ),
+                      belowBarData: BarAreaData(
+                        show: true,
+                        color: AppColors.accent(context)
+                            .withValues(alpha: 0.06),
+                      ),
+                    ),
+                    // Actual line (ok/bad)
+                    LineChartBarData(
+                      spots: actualSpots,
+                      isCurved: true,
+                      curveSmoothness: 0.2,
+                      color: actualColor,
+                      barWidth: 2.5,
+                      isStrokeCapRound: true,
+                      dashArray: [6, 3],
+                      dotData: FlDotData(
+                        show: true,
+                        getDotPainter: (spot, percent, bar, index) {
+                          final mk =
+                              index < months.length ? months[index] : '';
+                          final budgeted = _budgetedTotal(mk);
+                          final dotColor = spot.y <= budgeted
+                              ? AppColors.ok(context)
+                              : AppColors.bad(context);
+                          return FlDotCirclePainter(
+                            radius: 3,
+                            color: dotColor,
+                            strokeWidth: 1.5,
+                            strokeColor: AppColors.card(context),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                  lineTouchData: LineTouchData(
+                    handleBuiltInTouches: true,
+                    touchTooltipData: LineTouchTooltipData(
+                      tooltipPadding: const EdgeInsets.all(8),
+                      tooltipRoundedRadius: 8,
+                      getTooltipItems: (touchedSpots) {
+                        return touchedSpots.map((s) {
+                          final isBudgeted = s.barIndex == 0;
+                          return LineTooltipItem(
+                            '${isBudgeted ? l10n.expenseTrendsBudgeted : l10n.expenseTrendsActual}\n${formatCurrency(s.y)}',
+                            TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.bg(context),
+                            ),
+                          );
+                        }).toList();
                       },
                     ),
-                  ),
-                ],
-                lineTouchData: LineTouchData(
-                  handleBuiltInTouches: true,
-                  touchTooltipData: LineTouchTooltipData(
-                    tooltipPadding: const EdgeInsets.all(8),
-                    tooltipRoundedRadius: 8,
-                    getTooltipItems: (touchedSpots) {
-                      return touchedSpots.map((s) {
-                        final isBudgeted = s.barIndex == 0;
-                        return LineTooltipItem(
-                          '${isBudgeted ? l10n.expenseTrendsBudgeted : l10n.expenseTrendsActual}\n${formatCurrency(s.y)}',
-                          TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.onPrimary(context),
-                          ),
-                        );
-                      }).toList();
-                    },
                   ),
                 ),
               ),
             ),
-          ),
           ),
           const SizedBox(height: 14),
           // Legend
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _legendLine(
-                  context, AppColors.primary(context), l10n.expenseTrendsBudgeted, dashed: false),
+              _legendLine(context, AppColors.accent(context),
+                  l10n.expenseTrendsBudgeted,
+                  dashed: false),
               const SizedBox(width: 20),
-              _legendLine(context, actualColor, l10n.expenseTrendsActual, dashed: true),
+              _legendLine(context, actualColor, l10n.expenseTrendsActual,
+                  dashed: true),
             ],
           ),
           const SizedBox(height: 12),
@@ -438,16 +451,17 @@ class _ExpenseTrendsScreenState extends State<ExpenseTrendsScreen> {
                   context,
                   l10n.expenseTrendsTotal,
                   formatCurrency(totalActual),
-                  AppColors.textPrimary(context),
+                  AppColors.ink(context),
                 ),
               ),
               Expanded(
                 child: _summaryColumn(
                   context,
                   l10n.expenseTrendsAverage,
-                  formatCurrency(
-                      months.isNotEmpty ? totalActual / months.length : 0),
-                  AppColors.textSecondary(context),
+                  formatCurrency(months.isNotEmpty
+                      ? totalActual / months.length
+                      : 0),
+                  AppColors.ink70(context),
                 ),
               ),
             ],
@@ -466,33 +480,29 @@ class _ExpenseTrendsScreenState extends State<ExpenseTrendsScreen> {
 
     final maxAvg = stats.fold(0.0, (m, s) => math.max(m, s.average));
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.surface(context),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border(context)),
-      ),
+    return CalmCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            l10n.expenseTrendsByCategory.toUpperCase(),
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textSecondary(context),
-              letterSpacing: 0.5,
-            ),
-          ),
+          CalmEyebrow(l10n.expenseTrendsByCategory.toUpperCase()),
           const SizedBox(height: 16),
-          ...stats.map((s) => _CategoryBar(
-                stat: s,
-                maxAvg: maxAvg,
-                months: months,
-                actualExpenseHistory: widget.actualExpenseHistory,
-                l10n: l10n,
-              )),
+          ...stats.asMap().entries.map((entry) {
+            final i = entry.key;
+            final s = entry.value;
+            return Column(
+              children: [
+                _CategoryRow(
+                  stat: s,
+                  maxAvg: maxAvg,
+                  months: months,
+                  actualExpenseHistory: widget.actualExpenseHistory,
+                  l10n: l10n,
+                ),
+                if (i < stats.length - 1)
+                  Divider(color: AppColors.line(context), height: 1),
+              ],
+            );
+          }),
         ],
       ),
     );
@@ -506,28 +516,6 @@ class _ExpenseTrendsScreenState extends State<ExpenseTrendsScreen> {
     }
     return value.toStringAsFixed(0);
   }
-
-  Widget _legendDot(BuildContext context, Color color, String label) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 10,
-            height: 3,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 11,
-              color: AppColors.textSecondary(context),
-            ),
-          ),
-        ],
-      );
 
   Widget _legendLine(BuildContext context, Color color, String label,
       {required bool dashed}) {
@@ -559,7 +547,7 @@ class _ExpenseTrendsScreenState extends State<ExpenseTrendsScreen> {
           label,
           style: TextStyle(
             fontSize: 11,
-            color: AppColors.textSecondary(context),
+            color: AppColors.ink70(context),
           ),
         ),
       ],
@@ -574,14 +562,14 @@ class _ExpenseTrendsScreenState extends State<ExpenseTrendsScreen> {
             label,
             style: TextStyle(
               fontSize: 11,
-              color: AppColors.textMuted(context),
+              color: AppColors.ink50(context),
               fontWeight: FontWeight.w500,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             value,
-            style: TextStyle(
+            style: CalmText.amount(context).copyWith(
               fontSize: 16,
               fontWeight: FontWeight.w700,
               color: color,
@@ -605,16 +593,20 @@ class _CategoryStats {
   });
 }
 
-// ── Category bar row with tap-to-detail ────────────────────────────────
+// ── Category row with tap-to-detail ────────────────────────────────────
+//
+// Uses a custom row layout: circular avatar (like CalmListTile) + label +
+// inline progress bar + trailing average. CalmListTile.trailing is
+// String-only so we can't embed the progress bar there.
 
-class _CategoryBar extends StatelessWidget {
+class _CategoryRow extends StatelessWidget {
   final _CategoryStats stat;
   final double maxAvg;
   final List<String> months;
   final Map<String, List<ActualExpense>> actualExpenseHistory;
   final S l10n;
 
-  const _CategoryBar({
+  const _CategoryRow({
     required this.stat,
     required this.maxAvg,
     required this.months,
@@ -624,78 +616,88 @@ class _CategoryBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final barFraction = maxAvg > 0 ? (stat.average / maxAvg).clamp(0.0, 1.0) : 0.0;
-    final color =
-        AppColors.categoryColorByName(stat.category);
+    final barFraction =
+        maxAvg > 0 ? (stat.average / maxAvg).clamp(0.0, 1.0) : 0.0;
+    final color = AppColors.categoryColorByName(stat.category);
     final categoryLabels = _localizedCategoryLabels(l10n);
     final label = categoryLabels[stat.category] ??
         _localizedCategory(stat.category, l10n);
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(8),
-        onTap: () => _showCategoryDetail(context),
+    return InkWell(
+      onTap: () => _showCategoryDetail(context),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
         child: Row(
           children: [
-            Icon(
-              _categoryIcon(stat.category),
-              size: 18,
-              color: color,
-            ),
-            const SizedBox(width: 10),
-            SizedBox(
-              width: 80,
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textPrimary(context),
-                ),
+            // Leading circular avatar
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.15),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                _categoryIcon(stat.category),
+                size: 16,
+                color: color,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 12),
+            // Label + progress bar
             Expanded(
-              child: LayoutBuilder(
-                builder: (_, constraints) {
-                  return Stack(
-                    children: [
-                      Container(
-                        height: 14,
-                        decoration: BoxDecoration(
-                          color: AppColors.surfaceVariant(context),
-                          borderRadius: BorderRadius.circular(7),
-                        ),
-                      ),
-                      AnimatedContainer(
-                        duration: AppConstants.animProgressBar,
-                        curve: Curves.easeOutCubic,
-                        height: 14,
-                        width: constraints.maxWidth * barFraction,
-                        decoration: BoxDecoration(
-                          color: color,
-                          borderRadius: BorderRadius.circular(7),
-                        ),
-                      ),
-                    ],
-                  );
-                },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.ink(context),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  LayoutBuilder(
+                    builder: (_, constraints) {
+                      return Stack(
+                        children: [
+                          Container(
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: AppColors.bgSunk(context),
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                          AnimatedContainer(
+                            duration: AppConstants.animProgressBar,
+                            curve: Curves.easeOutCubic,
+                            height: 4,
+                            width:
+                                constraints.maxWidth * barFraction,
+                            decoration: BoxDecoration(
+                              color: color,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
-            const SizedBox(width: 10),
-            SizedBox(
-              width: 72,
-              child: Text(
-                formatCurrency(stat.average),
-                textAlign: TextAlign.end,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary(context),
-                ),
+            const SizedBox(width: 12),
+            // Trailing average
+            Text(
+              formatCurrency(stat.average),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.ink(context),
               ),
             ),
           ],
@@ -708,8 +710,7 @@ class _CategoryBar extends StatelessWidget {
     final categoryLabels = _localizedCategoryLabels(l10n);
     final label = categoryLabels[stat.category] ??
         _localizedCategory(stat.category, l10n);
-    final color =
-        AppColors.categoryColorByName(stat.category);
+    final color = AppColors.categoryColorByName(stat.category);
 
     // Build per-month data for this category
     final monthlyData = <_MonthAmount>[];
@@ -721,19 +722,20 @@ class _CategoryBar extends StatelessWidget {
       monthlyData.add(_MonthAmount(monthKey: mk, amount: catTotal));
     }
 
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: AppColors.surface(context),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) => _CategoryDetailSheet(
-        label: label,
-        color: color,
-        monthlyData: monthlyData,
-        total: stat.total,
-        average: stat.average,
-        l10n: l10n,
+    CalmBottomSheet.show(
+      context,
+      builder: (_) => SingleChildScrollView(
+        child: CalmBottomSheetContent(
+          title: label,
+          child: _CategoryDetailContent(
+            label: label,
+            color: color,
+            monthlyData: monthlyData,
+            total: stat.total,
+            average: stat.average,
+            l10n: l10n,
+          ),
+        ),
       ),
     );
   }
@@ -747,9 +749,9 @@ class _MonthAmount {
   const _MonthAmount({required this.monthKey, required this.amount});
 }
 
-// ── Category detail bottom sheet ───────────────────────────────────────
+// ── Category detail content (used inside CalmBottomSheetContent) ───────
 
-class _CategoryDetailSheet extends StatelessWidget {
+class _CategoryDetailContent extends StatelessWidget {
   final String label;
   final Color color;
   final List<_MonthAmount> monthlyData;
@@ -757,7 +759,7 @@ class _CategoryDetailSheet extends StatelessWidget {
   final double average;
   final S l10n;
 
-  const _CategoryDetailSheet({
+  const _CategoryDetailContent({
     required this.label,
     required this.color,
     required this.monthlyData,
@@ -782,61 +784,34 @@ class _CategoryDetailSheet extends StatelessWidget {
 
     final ceilY = maxAmount > 0 ? maxAmount * 1.2 : 1.0;
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              margin: const EdgeInsets.symmetric(vertical: 12),
-              decoration: BoxDecoration(
-                color: AppColors.dragHandle(context),
-                borderRadius: BorderRadius.circular(2),
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Stats pill + average
+        Row(
+          children: [
+            CalmPill(
+              label: formatCurrency(total),
+              color: color,
             ),
-          ),
-          Row(
-            children: [
-              Container(
-                width: 12,
-                height: 12,
-                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: const TextStyle(
-                    fontSize: 17, fontWeight: FontWeight.w700),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Text(
-                '${l10n.expenseTrendsTotal}: ${formatCurrency(total)}',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: AppColors.textSecondary(context),
-                ),
-              ),
-              const SizedBox(width: 20),
-              Text(
+            const SizedBox(width: 12),
+            Flexible(
+              child: Text(
                 '${l10n.expenseTrendsAverage}: ${formatCurrency(average)}',
                 style: TextStyle(
                   fontSize: 13,
-                  color: AppColors.textSecondary(context),
+                  color: AppColors.ink70(context),
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          if (spots.length >= 2) ...[
-            SizedBox(
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        // Mini chart
+        if (spots.length >= 2) ...[
+          CalmCard(
+            padding: const EdgeInsets.all(20),
+            child: SizedBox(
               height: 180,
               child: LineChart(
                 LineChartData(
@@ -846,8 +821,9 @@ class _CategoryDetailSheet extends StatelessWidget {
                     show: true,
                     horizontalInterval: ceilY / 4,
                     getDrawingHorizontalLine: (value) => FlLine(
-                      color: AppColors.surfaceVariant(context),
+                      color: AppColors.line(context),
                       strokeWidth: 1,
+                      dashArray: [4, 4],
                     ),
                     drawVerticalLine: false,
                   ),
@@ -862,7 +838,7 @@ class _CategoryDetailSheet extends StatelessWidget {
                           _compactCurrency(value),
                           style: TextStyle(
                             fontSize: 9,
-                            color: AppColors.textMuted(context),
+                            color: AppColors.ink50(context),
                           ),
                         ),
                       ),
@@ -880,7 +856,7 @@ class _CategoryDetailSheet extends StatelessWidget {
                                 labels[idx]!,
                                 style: TextStyle(
                                   fontSize: 10,
-                                  color: AppColors.textSecondary(context),
+                                  color: AppColors.ink70(context),
                                 ),
                               ),
                             );
@@ -909,7 +885,7 @@ class _CategoryDetailSheet extends StatelessWidget {
                           radius: 3.5,
                           color: color,
                           strokeWidth: 1.5,
-                          strokeColor: AppColors.surface(context),
+                          strokeColor: AppColors.card(context),
                         ),
                       ),
                       belowBarData: BarAreaData(
@@ -938,7 +914,7 @@ class _CategoryDetailSheet extends StatelessWidget {
                             TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
-                              color: AppColors.onPrimary(context),
+                              color: AppColors.bg(context),
                             ),
                           );
                         }).toList();
@@ -948,40 +924,48 @@ class _CategoryDetailSheet extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-          ],
-          // Monthly breakdown list
-          ...monthlyData.map((d) {
-            final parts = d.monthKey.split('-');
-            final monthNum = int.parse(parts[1]);
-            final monthLabel = localizedMonthAbbr(l10n, monthNum);
-            final year = parts[0];
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '$monthLabel $year',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppColors.textSecondary(context),
-                    ),
-                  ),
-                  Text(
-                    formatCurrency(d.amount),
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary(context),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }),
+          ),
+          const SizedBox(height: 16),
         ],
-      ),
+        // Monthly breakdown list
+        ...monthlyData.asMap().entries.map((entry) {
+          final i = entry.key;
+          final d = entry.value;
+          final parts = d.monthKey.split('-');
+          final monthNum = int.parse(parts[1]);
+          final monthLabel = localizedMonthAbbr(l10n, monthNum);
+          final year = parts[0];
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '$monthLabel $year',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.ink70(context),
+                      ),
+                    ),
+                    Text(
+                      formatCurrency(d.amount),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.ink(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (i < monthlyData.length - 1)
+                Divider(color: AppColors.line(context), height: 1),
+            ],
+          );
+        }),
+      ],
     );
   }
 
