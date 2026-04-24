@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 import '../data/tax/tax_system.dart';
 import '../data/tax/tax_factory.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/budget_summary.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_theme.dart';
 import '../utils/calculations.dart';
 import '../utils/formatters.dart';
 
@@ -99,304 +101,272 @@ class _TaxSimulatorScreenState extends State<TaxSimulatorScreen> {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     final country = widget.settings.country;
+    final netDelta = _simCalc.totalNetWithMeal - _currentCalc.totalNetWithMeal;
 
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
-      body: SafeArea(
+    return CalmScaffold(
+      title: l10n.taxSimTitle,
+      body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
-            Container(
-              color: AppColors.surface(context),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                children: [
-                  IconButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: Icon(Icons.arrow_back,
-                        color: AppColors.textLabel(context)),
-                  ),
-                  Expanded(
-                    child: Text(
-                      l10n.taxSimTitle,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary(context),
-                        letterSpacing: -0.3,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Divider(height: 1, color: AppColors.surfaceVariant(context)),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Quick presets
-                    Text(
-                      l10n.taxSimPresets,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textMuted(context),
-                        letterSpacing: 0.8,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        _PresetChip(
-                          label: l10n.taxSimPresetRaise,
-                          onTap: () => _applyPreset('raise200'),
-                        ),
-                        if (country.hasMealAllowance)
-                          _PresetChip(
-                            label: l10n.taxSimPresetMeal,
-                            onTap: () => _applyPreset('mealToggle'),
-                          ),
-                        if (country.hasTitulares)
-                          _PresetChip(
-                            label: l10n.taxSimPresetTitular,
-                            onTap: () => _applyPreset('titularToggle'),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Parameters
-                    _buildParameterSection(l10n, country),
-                    const SizedBox(height: 20),
-
-                    // Comparison
-                    _buildComparisonCard(context, l10n),
-                    const SizedBox(height: 16),
-                  ],
-                ),
-              ),
-            ),
+            const SizedBox(height: 8),
+            _buildHero(context, l10n, netDelta),
+            const SizedBox(height: 24),
+            _buildPresetsSection(context, l10n, country),
+            const SizedBox(height: 24),
+            _buildParameterSection(context, l10n, country),
+            const SizedBox(height: 24),
+            _buildComparisonSection(context, l10n),
+            const SizedBox(height: 16),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildParameterSection(S l10n, Country country) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.surface(context),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border(context)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            l10n.taxSimParameters,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textMuted(context),
-              letterSpacing: 0.8,
+  // ───────────────────────────── Hero ──────────────────────────────────────
+
+  Widget _buildHero(BuildContext context, S l10n, double netDelta) {
+    final isPositive = netDelta >= 0;
+    final sign = netDelta > 0 ? '+' : '';
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CalmHero(
+          eyebrow: 'SIMULAÇÃO',
+          amount: formatCurrency(_simCalc.totalNetWithMeal),
+          subtitle: l10n.taxSimNetTakeHome,
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            CalmPill(
+              label: '$sign${formatCurrency(netDelta)}',
+              color: netDelta == 0
+                  ? AppColors.ink50(context)
+                  : isPositive
+                      ? AppColors.ok(context)
+                      : AppColors.bad(context),
             ),
-          ),
-          const SizedBox(height: 16),
-
-          // Gross salary slider
-          _SliderRow(
-            label: l10n.taxSimGross,
-            value: _grossAmount,
-            min: 0,
-            max: 10000,
-            step: 50,
-            format: formatCurrency,
-            onChanged: (v) => setState(() {
-              _grossAmount = v;
-              _recalculate();
-            }),
-          ),
-
-          // Marital status
-          if (country.maritalStatusAffectsTax) ...[
-            const SizedBox(height: 12),
-            _SegmentedRow(
-              label: l10n.taxSimMarital,
-              options: [
-                MaritalStatus.solteiro.localizedLabel(l10n),
-                MaritalStatus.casado.localizedLabel(l10n),
-                MaritalStatus.uniaoFacto.localizedLabel(l10n),
-              ],
-              selected: _maritalStatus == MaritalStatus.solteiro
-                  ? 0
-                  : _maritalStatus == MaritalStatus.casado
-                      ? 1
-                      : 2,
-              onSelected: (i) => setState(() {
-                _maritalStatus = i == 0
-                    ? MaritalStatus.solteiro
-                    : i == 1
-                        ? MaritalStatus.casado
-                        : MaritalStatus.uniaoFacto;
-                _recalculate();
-              }),
+            const SizedBox(width: 8),
+            Icon(
+              netDelta == 0
+                  ? Icons.remove
+                  : isPositive
+                      ? Icons.arrow_upward
+                      : Icons.arrow_downward,
+              size: 16,
+              color: netDelta == 0
+                  ? AppColors.ink50(context)
+                  : isPositive
+                      ? AppColors.ok(context)
+                      : AppColors.bad(context),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              l10n.taxSimDelta,
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.ink70(context),
+              ),
             ),
           ],
+        ),
+      ],
+    );
+  }
 
-          // Titulares
-          if (country.hasTitulares) ...[
-            const SizedBox(height: 12),
-            _SegmentedRow(
-              label: l10n.taxSimTitulares,
-              subtitle: l10n.taxSimTitularesHint,
-              options: const ['1', '2'],
-              selected: _titulares - 1,
-              onSelected: (i) => setState(() {
-                _titulares = i + 1;
-                _recalculate();
-              }),
+  // ──────────────────────────── Presets ────────────────────────────────────
+
+  Widget _buildPresetsSection(BuildContext context, S l10n, Country country) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CalmEyebrow(l10n.taxSimPresets),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            _PresetChip(
+              label: l10n.taxSimPresetRaise,
+              onTap: () => _applyPreset('raise200'),
             ),
+            if (country.hasMealAllowance)
+              _PresetChip(
+                label: l10n.taxSimPresetMeal,
+                onTap: () => _applyPreset('mealToggle'),
+              ),
+            if (country.hasTitulares)
+              _PresetChip(
+                label: l10n.taxSimPresetTitular,
+                onTap: () => _applyPreset('titularToggle'),
+              ),
           ],
+        ),
+      ],
+    );
+  }
 
-          // Dependentes
-          const SizedBox(height: 12),
-          _StepperRow(
-            label: l10n.taxSimDependentes,
-            value: _dependentes,
-            min: 0,
-            max: 6,
-            onChanged: (v) => setState(() {
-              _dependentes = v;
-              _recalculate();
-            }),
-          ),
+  // ─────────────────────────── Parameters ──────────────────────────────────
 
-          // Meal allowance
-          if (country.hasMealAllowance) ...[
-            const SizedBox(height: 12),
-            _SegmentedRow(
-              label: l10n.taxSimMealType,
-              subtitle: l10n.taxSimMealTypeHint,
-              options: [
-                MealAllowanceType.none.localizedLabel(l10n),
-                MealAllowanceType.card.localizedLabel(l10n),
-                MealAllowanceType.cash.localizedLabel(l10n),
-              ],
-              selected: _mealType.index,
-              onSelected: (i) => setState(() {
-                _mealType = MealAllowanceType.values[i];
-                _recalculate();
-              }),
-            ),
-            if (_mealType != MealAllowanceType.none) ...[
-              const SizedBox(height: 12),
+  Widget _buildParameterSection(
+    BuildContext context,
+    S l10n,
+    Country country,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CalmEyebrow(l10n.taxSimParameters),
+        const SizedBox(height: 12),
+        CalmCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
               _SliderRow(
-                label: l10n.taxSimMealAmount,
-                value: _mealPerDay,
+                label: l10n.taxSimGross,
+                value: _grossAmount,
                 min: 0,
-                max: 15,
-                step: 0.5,
+                max: 10000,
+                step: 50,
                 format: formatCurrency,
                 onChanged: (v) => setState(() {
-                  _mealPerDay = v;
+                  _grossAmount = v;
                   _recalculate();
                 }),
               ),
+              if (country.maritalStatusAffectsTax) ...[
+                const SizedBox(height: 16),
+                _SegmentedRow(
+                  label: l10n.taxSimMarital,
+                  options: [
+                    MaritalStatus.solteiro.localizedLabel(l10n),
+                    MaritalStatus.casado.localizedLabel(l10n),
+                    MaritalStatus.uniaoFacto.localizedLabel(l10n),
+                  ],
+                  selected: _maritalStatus == MaritalStatus.solteiro
+                      ? 0
+                      : _maritalStatus == MaritalStatus.casado
+                          ? 1
+                          : 2,
+                  onSelected: (i) => setState(() {
+                    _maritalStatus = i == 0
+                        ? MaritalStatus.solteiro
+                        : i == 1
+                            ? MaritalStatus.casado
+                            : MaritalStatus.uniaoFacto;
+                    _recalculate();
+                  }),
+                ),
+              ],
+              if (country.hasTitulares) ...[
+                const SizedBox(height: 16),
+                _SegmentedRow(
+                  label: l10n.taxSimTitulares,
+                  subtitle: l10n.taxSimTitularesHint,
+                  options: const ['1', '2'],
+                  selected: _titulares - 1,
+                  onSelected: (i) => setState(() {
+                    _titulares = i + 1;
+                    _recalculate();
+                  }),
+                ),
+              ],
+              const SizedBox(height: 16),
+              _StepperRow(
+                label: l10n.taxSimDependentes,
+                value: _dependentes,
+                min: 0,
+                max: 6,
+                onChanged: (v) => setState(() {
+                  _dependentes = v;
+                  _recalculate();
+                }),
+              ),
+              if (country.hasMealAllowance) ...[
+                const SizedBox(height: 16),
+                _SegmentedRow(
+                  label: l10n.taxSimMealType,
+                  subtitle: l10n.taxSimMealTypeHint,
+                  options: [
+                    MealAllowanceType.none.localizedLabel(l10n),
+                    MealAllowanceType.card.localizedLabel(l10n),
+                    MealAllowanceType.cash.localizedLabel(l10n),
+                  ],
+                  selected: _mealType.index,
+                  onSelected: (i) => setState(() {
+                    _mealType = MealAllowanceType.values[i];
+                    _recalculate();
+                  }),
+                ),
+                if (_mealType != MealAllowanceType.none) ...[
+                  const SizedBox(height: 16),
+                  _SliderRow(
+                    label: l10n.taxSimMealAmount,
+                    value: _mealPerDay,
+                    min: 0,
+                    max: 15,
+                    step: 0.5,
+                    format: formatCurrency,
+                    onChanged: (v) => setState(() {
+                      _mealPerDay = v;
+                      _recalculate();
+                    }),
+                  ),
+                ],
+              ],
             ],
-          ],
-        ],
-      ),
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildComparisonCard(BuildContext context, S l10n) {
-    final netDelta = _simCalc.totalNetWithMeal - _currentCalc.totalNetWithMeal;
-    final isPositive = netDelta >= 0;
+  // ─────────────────────────── Comparison ──────────────────────────────────
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.surface(context),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border(context)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            l10n.taxSimComparison,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textMuted(context),
-              letterSpacing: 0.8,
-            ),
-          ),
-          const SizedBox(height: 16),
-          // Net take-home comparison
-          _ComparisonRow(
-            label: l10n.taxSimNetTakeHome,
-            current: _currentCalc.totalNetWithMeal,
-            simulated: _simCalc.totalNetWithMeal,
-          ),
-          const SizedBox(height: 10),
-          _ComparisonRow(
-            label: l10n.taxSimIRSFull,
-            current: _currentCalc.irsRetention,
-            simulated: _simCalc.irsRetention,
-            invertColor: true,
-          ),
-          const SizedBox(height: 10),
-          _ComparisonRow(
-            label: l10n.taxSimSSFull,
-            current: _currentCalc.socialSecurity,
-            simulated: _simCalc.socialSecurity,
-            invertColor: true,
-          ),
-          const Divider(height: 24),
-          // Delta summary
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+  Widget _buildComparisonSection(BuildContext context, S l10n) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CalmEyebrow(l10n.taxSimComparison),
+        const SizedBox(height: 12),
+        CalmCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                l10n.taxSimDelta,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textMuted(context),
-                ),
+              _ComparisonRow(
+                label: l10n.taxSimNetTakeHome,
+                current: _currentCalc.totalNetWithMeal,
+                simulated: _simCalc.totalNetWithMeal,
               ),
-              const SizedBox(width: 8),
-              Text(
-                '${netDelta >= 0 ? '+' : ''}${formatCurrency(netDelta)}',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: isPositive
-                      ? AppColors.success(context)
-                      : AppColors.error(context),
-                ),
+              const SizedBox(height: 12),
+              Divider(height: 1, color: AppColors.line(context)),
+              const SizedBox(height: 12),
+              _ComparisonRow(
+                label: l10n.taxSimIRSFull,
+                current: _currentCalc.irsRetention,
+                simulated: _simCalc.irsRetention,
+                invertColor: true,
               ),
-              const SizedBox(width: 4),
-              Icon(
-                isPositive ? Icons.arrow_upward : Icons.arrow_downward,
-                size: 18,
-                color: isPositive
-                    ? AppColors.success(context)
-                    : AppColors.error(context),
+              const SizedBox(height: 12),
+              Divider(height: 1, color: AppColors.line(context)),
+              const SizedBox(height: 12),
+              _ComparisonRow(
+                label: l10n.taxSimSSFull,
+                current: _currentCalc.socialSecurity,
+                simulated: _simCalc.socialSecurity,
+                invertColor: true,
               ),
             ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
+
+// ──────────────────────────── Sub-widgets ──────────────────────────────────
 
 class _PresetChip extends StatelessWidget {
   final String label;
@@ -407,10 +377,19 @@ class _PresetChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ActionChip(
-      label: Text(label,
-          style: TextStyle(fontSize: 12, color: AppColors.primary(context))),
-      backgroundColor: AppColors.primaryLight(context),
-      side: BorderSide(color: AppColors.primary(context).withValues(alpha: 0.3)),
+      label: Text(
+        label,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: AppColors.ink(context),
+        ),
+      ),
+      backgroundColor: AppColors.card(context),
+      side: BorderSide(color: AppColors.line(context)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(100),
+      ),
       onPressed: onTap,
     );
   }
@@ -442,17 +421,20 @@ class _SliderRow extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text(label,
+            Expanded(
+              child: Text(
+                label,
                 style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textSecondary(context))),
-            const Spacer(),
-            Text(format(value),
-                style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary(context))),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.ink70(context),
+                ),
+              ),
+            ),
+            Text(
+              format(value),
+              style: CalmText.amount(context, weight: FontWeight.w700),
+            ),
           ],
         ),
         Slider(
@@ -460,7 +442,8 @@ class _SliderRow extends StatelessWidget {
           min: min,
           max: max,
           divisions: ((max - min) / step).round(),
-          activeColor: AppColors.primary(context),
+          activeColor: AppColors.accent(context),
+          inactiveColor: AppColors.line(context),
           onChanged: (v) => onChanged((v / step).round() * step),
         ),
       ],
@@ -488,17 +471,23 @@ class _SegmentedRow extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-                color: AppColors.textSecondary(context))),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            color: AppColors.ink70(context),
+          ),
+        ),
         if (subtitle != null) ...[
           const SizedBox(height: 2),
-          Text(subtitle!,
-              style: TextStyle(
-                  fontSize: 11,
-                  color: AppColors.textMuted(context))),
+          Text(
+            subtitle!,
+            style: TextStyle(
+              fontSize: 11,
+              color: AppColors.ink50(context),
+            ),
+          ),
         ],
         const SizedBox(height: 8),
         SizedBox(
@@ -506,14 +495,21 @@ class _SegmentedRow extends StatelessWidget {
           child: SegmentedButton<int>(
             segments: List.generate(
               options.length,
-              (i) => ButtonSegment(value: i, label: Text(options[i],
-                  style: const TextStyle(fontSize: 11))),
+              (i) => ButtonSegment(
+                value: i,
+                label: Text(
+                  options[i],
+                  style: const TextStyle(fontSize: 11),
+                ),
+              ),
             ),
             selected: {selected},
             onSelectionChanged: (s) => onSelected(s.first),
             style: SegmentedButton.styleFrom(
-              selectedBackgroundColor: AppColors.primaryLight(context),
-              selectedForegroundColor: AppColors.primary(context),
+              selectedBackgroundColor: AppColors.accentSoft(context),
+              selectedForegroundColor: AppColors.ink(context),
+              foregroundColor: AppColors.ink70(context),
+              side: BorderSide(color: AppColors.line(context)),
             ),
           ),
         ),
@@ -542,26 +538,28 @@ class _StepperRow extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: Text(label,
-              style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textSecondary(context))),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: AppColors.ink70(context),
+            ),
+          ),
         ),
         IconButton(
           onPressed: value > min ? () => onChanged(value - 1) : null,
           icon: const Icon(Icons.remove_circle_outline, size: 22),
-          color: AppColors.primary(context),
+          color: AppColors.ink(context),
         ),
-        Text('$value',
-            style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary(context))),
+        Text(
+          '$value',
+          style: CalmText.amount(context, size: 16, weight: FontWeight.w700),
+        ),
         IconButton(
           onPressed: value < max ? () => onChanged(value + 1) : null,
           icon: const Icon(Icons.add_circle_outline, size: 22),
-          color: AppColors.primary(context),
+          color: AppColors.ink(context),
         ),
       ],
     );
@@ -590,50 +588,53 @@ class _ComparisonRow extends StatelessWidget {
       children: [
         Expanded(
           flex: 3,
-          child: Text(label,
-              style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textSecondary(context))),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: AppColors.ink70(context),
+            ),
+          ),
         ),
         Expanded(
           flex: 2,
           child: Text(
             formatCurrency(current),
             style: TextStyle(
-                fontSize: 12,
-                color: AppColors.textMuted(context)),
+              fontSize: 12,
+              color: AppColors.ink50(context),
+            ),
             textAlign: TextAlign.right,
           ),
         ),
         const SizedBox(width: 8),
-        Icon(Icons.arrow_forward, size: 12, color: AppColors.textMuted(context)),
+        Icon(
+          Icons.arrow_forward,
+          size: 12,
+          color: AppColors.ink50(context),
+        ),
         const SizedBox(width: 8),
         Expanded(
           flex: 2,
           child: Text(
             formatCurrency(simulated),
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary(context),
-            ),
+            style: CalmText.amount(context, size: 13, weight: FontWeight.w700),
             textAlign: TextAlign.right,
           ),
         ),
         const SizedBox(width: 4),
         SizedBox(
-          width: 50,
+          width: 60,
           child: delta != 0
-              ? Text(
-                  '${delta > 0 ? '+' : ''}${formatCurrency(delta)}',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
+              ? Align(
+                  alignment: Alignment.centerRight,
+                  child: CalmPill(
+                    label: '${delta > 0 ? '+' : ''}${formatCurrency(delta)}',
                     color: isPositive
-                        ? AppColors.success(context)
-                        : AppColors.error(context),
+                        ? AppColors.ok(context)
+                        : AppColors.bad(context),
                   ),
-                  textAlign: TextAlign.right,
                 )
               : const SizedBox.shrink(),
         ),
