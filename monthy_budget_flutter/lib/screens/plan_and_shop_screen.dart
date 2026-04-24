@@ -108,25 +108,23 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen>
   Widget build(BuildContext context) {
     final l10n = S.of(context);
 
+    // CalmScaffold applies horizontal padding which would clip TabBarView
+    // children (embedded full-width screens). Use raw Scaffold with Calm
+    // colour tokens and build the tab chrome inline.
     return Scaffold(
-      backgroundColor: AppColors.background(context),
+      backgroundColor: AppColors.bg(context),
       appBar: AppBar(
-        backgroundColor: AppColors.surface(context),
-        surfaceTintColor: AppColors.surface(context),
-        title: Text(
-          l10n.navPlanAndShop,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary(context),
-          ),
-        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        title: Text(l10n.navPlanAndShop),
         actions: _buildActions(context, l10n),
         bottom: TabBar(
           controller: _tabController,
-          labelColor: AppColors.primary(context),
-          unselectedLabelColor: AppColors.textSecondary(context),
-          indicatorColor: AppColors.primary(context),
+          labelColor: AppColors.accent(context),
+          unselectedLabelColor: AppColors.ink50(context),
+          indicatorColor: AppColors.accent(context),
+          dividerColor: AppColors.line(context),
           labelStyle:
               const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
           unselectedLabelStyle:
@@ -146,7 +144,8 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen>
                   : Badge(
                       label: Text(
                         l10n.planMealsProBadge,
-                        style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w700),
+                        style: const TextStyle(
+                            fontSize: 8, fontWeight: FontWeight.w700),
                       ),
                       child: const Icon(Icons.restaurant_outlined, size: 20),
                     ),
@@ -208,7 +207,7 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen>
         return [
           IconButton(
             icon: Icon(Icons.document_scanner,
-                color: AppColors.textSecondary(context)),
+                color: AppColors.ink50(context)),
             tooltip: l10n.quickScanReceipt,
             onPressed: () {
               // Delegate to receipt scan - handled by parent
@@ -221,7 +220,7 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen>
           if (widget.onAddToShoppingList != null)
             IconButton(
               icon: Icon(Icons.qr_code_scanner,
-                  color: AppColors.textSecondary(context)),
+                  color: AppColors.ink50(context)),
               tooltip: l10n.barcodeScanTooltip,
               onPressed: () {
                 // Delegate to barcode scan - handled by child
@@ -233,7 +232,7 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen>
         return [
           IconButton(
             icon: Icon(Icons.settings_outlined,
-                color: AppColors.textSecondary(context)),
+                color: AppColors.ink50(context)),
             tooltip: l10n.settingsTitle,
             onPressed: widget.onOpenMealSettings,
           ),
