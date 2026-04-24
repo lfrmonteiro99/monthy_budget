@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 import '../constants/app_constants.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/meal_settings.dart';
@@ -75,33 +76,35 @@ class _MealWizardScreenState extends State<MealWizardScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
-      appBar: AppBar(
-        backgroundColor: AppColors.surface(context),
-        elevation: 0,
-        leading: _step > 0
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: _back,
-              )
-            : null,
-        title: Text(
-          _stepTitles(l10n)[_step],
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-        ),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(4),
-          child: LinearProgressIndicator(
-            value: (_step + 1) / _totalSteps,
-            backgroundColor: AppColors.border(context),
-            color: AppColors.primary(context),
-            minHeight: 4,
-          ),
-        ),
-      ),
+    return CalmScaffold(
+      title: _stepTitles(l10n)[_step],
+      leading: _step > 0
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: _back,
+            )
+          : null,
       body: Column(
         children: [
+          // Step progress indicator.
+          Padding(
+            padding: const EdgeInsets.only(top: 12, bottom: 4),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(2),
+              child: LinearProgressIndicator(
+                value: (_step + 1) / _totalSteps,
+                backgroundColor: AppColors.ink20(context),
+                color: AppColors.accent(context),
+                minHeight: 4,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 4, bottom: 8),
+            child: CalmEyebrow(
+              l10n.wizardStepOf(_step + 1, _totalSteps).toUpperCase(),
+            ),
+          ),
           Expanded(
             child: PageView(
               controller: _pageController,
@@ -131,32 +134,35 @@ class _MealWizardScreenState extends State<MealWizardScreen> {
             ),
           ),
           SafeArea(
+            top: false,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+              padding: const EdgeInsets.only(top: 8, bottom: 16),
               child: Column(
                 children: [
                   if (_step == _totalSteps - 1)
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppColors.infoBackground(context),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: AppColors.primaryLight(context)),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.info_outline,
-                              size: 16, color: AppColors.primary(context)),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              l10n.wizardSettingsInfo,
-                              style: const TextStyle(
-                                  fontSize: 12, color: Color(0xFF1E40AF)),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: CalmCard(
+                        padding: const EdgeInsets.all(12),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.info_outline,
+                              size: 16,
+                              color: AppColors.accent(context),
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                l10n.wizardSettingsInfo,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: AppColors.ink70(context),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   SizedBox(
@@ -164,21 +170,16 @@ class _MealWizardScreenState extends State<MealWizardScreen> {
                     child: FilledButton(
                       onPressed: _next,
                       style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.primary(context),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       child: Text(
-                        _step == _totalSteps - 1 ? l10n.wizardGeneratePlan : l10n.wizardContinue,
+                        _step == _totalSteps - 1
+                            ? l10n.wizardGeneratePlan
+                            : l10n.wizardContinue,
                         style: const TextStyle(
                             fontSize: 15, fontWeight: FontWeight.w600),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    l10n.wizardStepOf(_step + 1, _totalSteps),
-                    style: TextStyle(
-                        fontSize: 11, color: AppColors.textMuted(context)),
                   ),
                 ],
               ),
@@ -207,60 +208,66 @@ class _Step1Meals extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     return ListView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       children: [
         Text(
           l10n.wizardMealsQuestion,
-          style: TextStyle(fontSize: 15, color: AppColors.textLabel(context)),
+          style: TextStyle(fontSize: 15, color: AppColors.ink70(context)),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         ...MealType.values.map((mt) {
           final enabled = draft.enabledMeals.contains(mt);
-          return Container(
-            margin: const EdgeInsets.only(bottom: 10),
-            decoration: BoxDecoration(
-              color: AppColors.surface(context),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: enabled
-                    ? AppColors.primary(context)
-                    : AppColors.border(context),
-                width: enabled ? 2 : 1,
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.card(context),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: enabled
+                      ? AppColors.accent(context)
+                      : AppColors.line(context),
+                  width: enabled ? 1.5 : 1,
+                ),
               ),
-            ),
-            child: SwitchListTile(
-              value: enabled,
-              onChanged: (v) {
-                final newSet = Set<MealType>.from(draft.enabledMeals);
-                if (v) {
-                  newSet.add(mt);
-                } else {
-                  newSet.remove(mt);
-                }
-                if (newSet.isEmpty) return; // must have at least 1
-                onChanged(draft.copyWith(enabledMeals: newSet));
-              },
-              title: Text(mt.localizedLabel(l10n),
+              child: SwitchListTile(
+                value: enabled,
+                onChanged: (v) {
+                  final newSet = Set<MealType>.from(draft.enabledMeals);
+                  if (v) {
+                    newSet.add(mt);
+                  } else {
+                    newSet.remove(mt);
+                  }
+                  if (newSet.isEmpty) return; // must have at least 1
+                  onChanged(draft.copyWith(enabledMeals: newSet));
+                },
+                title: Text(
+                  mt.localizedLabel(l10n),
                   style: const TextStyle(
-                      fontWeight: FontWeight.w600, fontSize: 14)),
-              subtitle: Text(l10n.wizardBudgetWeight(_weights[mt]!),
+                      fontWeight: FontWeight.w600, fontSize: 14),
+                ),
+                subtitle: Text(
+                  l10n.wizardBudgetWeight(_weights[mt]!),
                   style: TextStyle(
-                      fontSize: 12, color: AppColors.textMuted(context))),
-              activeTrackColor: AppColors.primary(context),
+                      fontSize: 12, color: AppColors.ink50(context)),
+                ),
+                activeTrackColor: AppColors.accent(context),
+              ),
             ),
           );
         }),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         Text(
           l10n.wizardCourseStructure,
-          style: TextStyle(fontSize: 15, color: AppColors.textLabel(context)),
+          style: TextStyle(fontSize: 15, color: AppColors.ink70(context)),
         ),
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.surface(context),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.border(context)),
+            color: AppColors.card(context),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: AppColors.line(context)),
           ),
           child: SwitchListTile(
             value: draft.includeSoupOrStarter,
@@ -273,23 +280,26 @@ class _Step1Meals extends StatelessWidget {
             subtitle: Text(
               l10n.wizardSoupStarterHint,
               style: TextStyle(
-                  fontSize: 12, color: AppColors.textMuted(context)),
+                  fontSize: 12, color: AppColors.ink50(context)),
             ),
-            activeTrackColor: AppColors.primary(context),
-            secondary: const Icon(Icons.soup_kitchen, size: 22),
+            activeTrackColor: AppColors.accent(context),
+            secondary: Icon(
+              Icons.soup_kitchen,
+              size: 22,
+              color: AppColors.accent(context),
+            ),
           ),
         ),
         const SizedBox(height: 10),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.surface(context),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.border(context)),
+            color: AppColors.card(context),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: AppColors.line(context)),
           ),
           child: SwitchListTile(
             value: draft.includeDessert,
-            onChanged: (v) =>
-                onChanged(draft.copyWith(includeDessert: v)),
+            onChanged: (v) => onChanged(draft.copyWith(includeDessert: v)),
             title: Text(
               l10n.wizardIncludeDessert,
               style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
@@ -297,10 +307,14 @@ class _Step1Meals extends StatelessWidget {
             subtitle: Text(
               l10n.wizardDessertHint,
               style: TextStyle(
-                  fontSize: 12, color: AppColors.textMuted(context)),
+                  fontSize: 12, color: AppColors.ink50(context)),
             ),
-            activeTrackColor: AppColors.primary(context),
-            secondary: const Icon(Icons.icecream, size: 22),
+            activeTrackColor: AppColors.accent(context),
+            secondary: Icon(
+              Icons.icecream,
+              size: 22,
+              color: AppColors.accent(context),
+            ),
           ),
         ),
       ],
@@ -318,70 +332,76 @@ class _Step2Objective extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     return ListView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       children: [
         Text(
           l10n.wizardObjectiveQuestion,
-          style: TextStyle(fontSize: 15, color: AppColors.textLabel(context)),
+          style: TextStyle(fontSize: 15, color: AppColors.ink70(context)),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         ...MealObjective.values.map((obj) {
           final selected = draft.objective == obj;
           final label = obj.localizedLabel(l10n);
           return Semantics(
             button: true,
             label: selected ? l10n.wizardSelected(label) : label,
-            child: Material(
-            color: selected ? AppColors.infoBackground(context) : AppColors.surface(context),
-            borderRadius: BorderRadius.circular(12),
-            child: InkWell(
-            onTap: () {
-              var updated = draft.copyWith(objective: obj);
-              if (obj == MealObjective.vegetarian) {
-                updated = updated.copyWith(veggieDaysPerWeek: 7);
-              }
-              onChanged(updated);
-            },
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 10),
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: selected
-                      ? AppColors.primary(context)
-                      : AppColors.border(context),
-                  width: selected ? 2 : 1,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Material(
+                color: selected
+                    ? AppColors.accentSoft(context)
+                    : AppColors.card(context),
+                borderRadius: BorderRadius.circular(20),
+                child: InkWell(
+                  onTap: () {
+                    var updated = draft.copyWith(objective: obj);
+                    if (obj == MealObjective.vegetarian) {
+                      updated = updated.copyWith(veggieDaysPerWeek: 7);
+                    }
+                    onChanged(updated);
+                  },
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: selected
+                            ? AppColors.accent(context)
+                            : AppColors.line(context),
+                        width: selected ? 1.5 : 1,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          selected
+                              ? Icons.radio_button_checked
+                              : Icons.radio_button_unchecked,
+                          color: selected
+                              ? AppColors.accent(context)
+                              : AppColors.ink20(context),
+                          size: 20,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          label,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: selected
+                                ? FontWeight.w600
+                                : FontWeight.w400,
+                            color: selected
+                                ? AppColors.ink(context)
+                                : AppColors.ink70(context),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-              child: Row(
-                children: [
-                  Icon(
-                    selected
-                        ? Icons.radio_button_checked
-                        : Icons.radio_button_unchecked,
-                    color: selected
-                        ? AppColors.primary(context)
-                        : AppColors.borderMuted(context),
-                    size: 20,
-                  ),
-                  const SizedBox(width: 12),
-                  Text(label,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: selected
-                            ? FontWeight.w600
-                            : FontWeight.w400,
-                        color: selected
-                            ? AppColors.textPrimary(context)
-                            : AppColors.textLabel(context),
-                      )),
-                ],
-              ),
             ),
-          ),
-          ),
           );
         }),
       ],
@@ -413,9 +433,9 @@ class _Step3RestrictionsState extends State<_Step3Restrictions> {
     final l10n = S.of(context);
     final d = widget.draft;
     return ListView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       children: [
-        _sectionLabel(context, l10n.wizardDietaryRestrictions),
+        CalmEyebrow(l10n.wizardDietaryRestrictions.toUpperCase()),
         const SizedBox(height: 8),
         ...[
           (l10n.wizardGlutenFree, d.glutenFree,
@@ -429,17 +449,19 @@ class _Step3RestrictionsState extends State<_Step3Restrictions> {
         ].map(
           (item) => CheckboxListTile(
             contentPadding: EdgeInsets.zero,
-            title: Text(item.$1,
-                style: const TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w500)),
+            title: Text(
+              item.$1,
+              style: const TextStyle(
+                  fontSize: 14, fontWeight: FontWeight.w500),
+            ),
             value: item.$2,
-            activeColor: AppColors.primary(context),
+            activeColor: AppColors.accent(context),
             controlAffinity: ListTileControlAffinity.leading,
             onChanged: (v) => item.$3(v ?? false),
           ),
         ),
         const SizedBox(height: 20),
-        _sectionLabel(context, l10n.wizardDislikedIngredients),
+        CalmEyebrow(l10n.wizardDislikedIngredients.toUpperCase()),
         const SizedBox(height: 8),
         if (d.dislikedIngredients.isNotEmpty)
           Wrap(
@@ -447,8 +469,10 @@ class _Step3RestrictionsState extends State<_Step3Restrictions> {
             runSpacing: 6,
             children: d.dislikedIngredients
                 .map((name) => Chip(
-                      label: Text(name,
-                          style: const TextStyle(fontSize: 12)),
+                      label: Text(
+                        name,
+                        style: const TextStyle(fontSize: 12),
+                      ),
                       deleteIcon: const Icon(Icons.close, size: 14),
                       onDeleted: () {
                         final updated =
@@ -468,19 +492,19 @@ class _Step3RestrictionsState extends State<_Step3Restrictions> {
                 controller: _dislikedCtrl,
                 decoration: InputDecoration(
                   hintText: l10n.wizardDislikedHint,
-                  hintStyle: TextStyle(color: AppColors.borderMuted(context)),
+                  hintStyle: TextStyle(color: AppColors.ink50(context)),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide:
-                          BorderSide(color: AppColors.border(context))),
+                          BorderSide(color: AppColors.line(context))),
                   enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide:
-                          BorderSide(color: AppColors.border(context))),
+                          BorderSide(color: AppColors.line(context))),
                   focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(
-                          color: AppColors.primary(context), width: 2)),
+                          color: AppColors.accent(context), width: 2)),
                   isDense: true,
                   contentPadding: const EdgeInsets.symmetric(
                       horizontal: 12, vertical: 10),
@@ -498,7 +522,9 @@ class _Step3RestrictionsState extends State<_Step3Restrictions> {
               },
               icon: const Icon(Icons.add),
               style: IconButton.styleFrom(
-                  backgroundColor: AppColors.primary(context)),
+                backgroundColor: AppColors.ink(context),
+                foregroundColor: AppColors.bg(context),
+              ),
             ),
           ],
         ),
@@ -518,9 +544,9 @@ class _Step4Kitchen extends StatelessWidget {
     final l10n = S.of(context);
     final prepOptions = [15, 30, 45, 60];
     return ListView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       children: [
-        _sectionLabel(context, l10n.wizardMaxPrepTime),
+        CalmEyebrow(l10n.wizardMaxPrepTime.toUpperCase()),
         const SizedBox(height: 12),
         Row(
           children: prepOptions.map((mins) {
@@ -529,44 +555,20 @@ class _Step4Kitchen extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.only(
                     right: mins != prepOptions.last ? 8 : 0),
-                child: Material(
-                  color: selected ? AppColors.primary(context) : AppColors.surface(context),
-                  borderRadius: BorderRadius.circular(10),
-                  child: InkWell(
+                child: _ChoiceTile(
+                  label: mins == 60
+                      ? l10n.wizardPrepMin60Plus
+                      : l10n.wizardPrepMin(mins),
+                  selected: selected,
                   onTap: () =>
                       onChanged(draft.copyWith(maxPrepMinutes: mins)),
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: selected
-                            ? AppColors.primary(context)
-                            : AppColors.border(context),
-                      ),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      mins == 60 ? l10n.wizardPrepMin60Plus : l10n.wizardPrepMin(mins),
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: selected
-                            ? AppColors.onPrimary(context)
-                            : AppColors.textLabel(context),
-                      ),
-                    ),
-                  ),
-                ),
                 ),
               ),
             );
           }).toList(),
         ),
         const SizedBox(height: 20),
-        _sectionLabel(context, l10n.wizardMaxComplexity),
+        CalmEyebrow(l10n.wizardMaxComplexity.toUpperCase()),
         const SizedBox(height: 12),
         Row(
           children: [
@@ -577,54 +579,29 @@ class _Step4Kitchen extends StatelessWidget {
             final selected = draft.maxComplexity == item.$2;
             return Expanded(
               child: Padding(
-                padding:
-                    EdgeInsets.only(right: item.$2 != 5 ? 8 : 0),
-                child: Material(
-                  color: selected ? AppColors.primary(context) : AppColors.surface(context),
-                  borderRadius: BorderRadius.circular(10),
-                  child: InkWell(
+                padding: EdgeInsets.only(right: item.$2 != 5 ? 8 : 0),
+                child: _ChoiceTile(
+                  label: item.$1,
+                  selected: selected,
                   onTap: () =>
                       onChanged(draft.copyWith(maxComplexity: item.$2)),
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: selected
-                            ? AppColors.primary(context)
-                            : AppColors.border(context),
-                      ),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      item.$1,
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: selected
-                            ? AppColors.onPrimary(context)
-                            : AppColors.textLabel(context),
-                      ),
-                    ),
-                  ),
-                ),
                 ),
               ),
             );
           }).toList(),
         ),
         const SizedBox(height: 20),
-        _sectionLabel(context, l10n.wizardEquipment),
+        CalmEyebrow(l10n.wizardEquipment.toUpperCase()),
         const SizedBox(height: 8),
         ...KitchenEquipment.values.map((eq) => CheckboxListTile(
               contentPadding: EdgeInsets.zero,
-              title: Text(eq.localizedLabel(l10n),
-                  style: const TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w500)),
+              title: Text(
+                eq.localizedLabel(l10n),
+                style: const TextStyle(
+                    fontSize: 14, fontWeight: FontWeight.w500),
+              ),
               value: draft.availableEquipment.contains(eq),
-              activeColor: AppColors.primary(context),
+              activeColor: AppColors.accent(context),
               controlAffinity: ListTileControlAffinity.leading,
               onChanged: (v) {
                 final updated =
@@ -652,40 +629,46 @@ class _Step5Strategy extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     final weekdays = [
-      l10n.wizardWeekdayMon, l10n.wizardWeekdayTue, l10n.wizardWeekdayWed,
-      l10n.wizardWeekdayThu, l10n.wizardWeekdayFri, l10n.wizardWeekdaySat,
+      l10n.wizardWeekdayMon,
+      l10n.wizardWeekdayTue,
+      l10n.wizardWeekdayWed,
+      l10n.wizardWeekdayThu,
+      l10n.wizardWeekdayFri,
+      l10n.wizardWeekdaySat,
       l10n.wizardWeekdaySun,
     ];
     return ListView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       children: [
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
-          title: Text(l10n.wizardBatchCooking,
-              style: const TextStyle(
-                  fontSize: 14, fontWeight: FontWeight.w600)),
-          subtitle: Text(l10n.wizardBatchCookingDesc,
-              style:
-                  TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+          title: Text(
+            l10n.wizardBatchCooking,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+          ),
+          subtitle: Text(
+            l10n.wizardBatchCookingDesc,
+            style: TextStyle(fontSize: 12, color: AppColors.ink50(context)),
+          ),
           value: draft.batchCookingEnabled,
-          activeTrackColor: AppColors.primary(context),
+          activeTrackColor: AppColors.accent(context),
           onChanged: (v) =>
               onChanged(draft.copyWith(batchCookingEnabled: v)),
         ),
         if (draft.batchCookingEnabled) ...[
           const SizedBox(height: 12),
-          _sectionLabel(context, l10n.wizardMaxBatchDays),
+          CalmEyebrow(l10n.wizardMaxBatchDays.toUpperCase()),
           Slider(
             value: draft.maxBatchDays.toDouble(),
             min: 1,
             max: 4,
             divisions: 3,
             label: l10n.wizardBatchDays(draft.maxBatchDays),
-            activeColor: AppColors.primary(context),
+            activeColor: AppColors.accent(context),
             onChanged: (v) =>
                 onChanged(draft.copyWith(maxBatchDays: v.round())),
           ),
-          _sectionLabel(context, l10n.wizardPreferredCookingDay),
+          CalmEyebrow(l10n.wizardPreferredCookingDay.toUpperCase()),
           const SizedBox(height: 8),
           Wrap(
             spacing: 6,
@@ -694,11 +677,11 @@ class _Step5Strategy extends StatelessWidget {
               return ChoiceChip(
                 label: Text(weekdays[i]),
                 selected: selected,
-                selectedColor: AppColors.primary(context),
+                selectedColor: AppColors.accent(context),
                 labelStyle: TextStyle(
                   color: selected
-                      ? AppColors.onPrimary(context)
-                      : AppColors.textLabel(context),
+                      ? AppColors.bg(context)
+                      : AppColors.ink70(context),
                   fontSize: 12,
                 ),
                 onSelected: (v) => onChanged(
@@ -712,19 +695,20 @@ class _Step5Strategy extends StatelessWidget {
         const SizedBox(height: 16),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
-          title: Text(l10n.wizardReuseLeftovers,
-              style: const TextStyle(
-                  fontSize: 14, fontWeight: FontWeight.w600)),
+          title: Text(
+            l10n.wizardReuseLeftovers,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+          ),
           subtitle: Text(
-              l10n.wizardReuseLeftoversDesc,
-              style:
-                  TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+            l10n.wizardReuseLeftoversDesc,
+            style: TextStyle(fontSize: 12, color: AppColors.ink50(context)),
+          ),
           value: draft.reuseLeftovers,
-          activeTrackColor: AppColors.primary(context),
+          activeTrackColor: AppColors.accent(context),
           onChanged: (v) => onChanged(draft.copyWith(reuseLeftovers: v)),
         ),
         const SizedBox(height: 16),
-        _sectionLabel(context, l10n.wizardMaxNewIngredients),
+        CalmEyebrow(l10n.wizardMaxNewIngredients.toUpperCase()),
         Slider(
           value: draft.maxNewIngredientsPerWeek.toDouble(),
           min: 1,
@@ -733,21 +717,22 @@ class _Step5Strategy extends StatelessWidget {
           label: draft.maxNewIngredientsPerWeek == 10
               ? l10n.wizardNoLimit
               : '${draft.maxNewIngredientsPerWeek}',
-          activeColor: AppColors.primary(context),
+          activeColor: AppColors.accent(context),
           onChanged: (v) => onChanged(
               draft.copyWith(maxNewIngredientsPerWeek: v.round())),
         ),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
-          title: Text(l10n.wizardMinimizeWaste,
-              style: const TextStyle(
-                  fontSize: 14, fontWeight: FontWeight.w600)),
+          title: Text(
+            l10n.wizardMinimizeWaste,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+          ),
           subtitle: Text(
-              l10n.wizardMinimizeWasteDesc,
-              style:
-                  TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+            l10n.wizardMinimizeWasteDesc,
+            style: TextStyle(fontSize: 12, color: AppColors.ink50(context)),
+          ),
           value: draft.minimizeWaste,
-          activeTrackColor: AppColors.primary(context),
+          activeTrackColor: AppColors.accent(context),
           onChanged: (v) => onChanged(draft.copyWith(minimizeWaste: v)),
         ),
       ],
@@ -755,12 +740,49 @@ class _Step5Strategy extends StatelessWidget {
   }
 }
 
-Widget _sectionLabel(BuildContext context, String text) => Text(
-      text,
-      style: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-        color: AppColors.textSecondary(context),
-        letterSpacing: 0.5,
+/// Compact choice tile used by the kitchen / strategy steps.
+class _ChoiceTile extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+  const _ChoiceTile({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color:
+          selected ? AppColors.ink(context) : AppColors.card(context),
+      borderRadius: BorderRadius.circular(10),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: selected
+                  ? AppColors.ink(context)
+                  : AppColors.line(context),
+            ),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: selected
+                  ? AppColors.bg(context)
+                  : AppColors.ink70(context),
+            ),
+          ),
+        ),
       ),
     );
+  }
+}
