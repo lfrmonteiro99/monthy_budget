@@ -76,18 +76,22 @@ class ConfidenceCenterScreen extends StatelessWidget {
       ];
     }
 
-    return actions
-        .map((action) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: CalmCard(
-                child: CalmListTile(
-                  leadingIcon: Icons.arrow_forward,
-                  leadingColor: AppColors.accent(context),
-                  title: action,
-                ),
-              ),
-            ))
-        .toList();
+    // All actions in one card to keep the section compact.
+    return [
+      CalmCard(
+        padding: EdgeInsets.zero,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: actions
+              .map((action) => CalmListTile(
+                    leadingIcon: Icons.arrow_forward,
+                    leadingColor: AppColors.accent(context),
+                    title: action,
+                  ))
+              .toList(),
+        ),
+      ),
+    ];
   }
 }
 
@@ -139,6 +143,7 @@ class _AlertCard extends StatelessWidget {
     };
 
     return CalmCard(
+      padding: EdgeInsets.zero,
       child: CalmListTile(
         leadingIcon: icon,
         leadingColor: leadColor,
