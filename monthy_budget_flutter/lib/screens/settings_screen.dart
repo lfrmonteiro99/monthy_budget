@@ -668,6 +668,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       AppColorPalette.violet => l10n.paletteViolet,
       AppColorPalette.teal => l10n.paletteTeal,
       AppColorPalette.sunset => l10n.paletteSunset,
+      AppColorPalette.calm => 'Calm',
     };
   }
 

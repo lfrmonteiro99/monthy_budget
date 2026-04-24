@@ -10,21 +10,21 @@ void main() {
 
   group('app_theme', () {
     testWidgets('lightTheme configures expected core properties', (tester) async {
-      final theme = lightTheme(AppColorPalette.ocean);
+      final theme = lightTheme(AppColorPalette.calm);
       expect(theme.brightness, Brightness.light);
       expect(theme.useMaterial3, isTrue);
-      expect(theme.scaffoldBackgroundColor, const Color(0xFFF8FAFC));
+      expect(theme.scaffoldBackgroundColor, const Color(0xFFF8F7F3));
       expect(theme.navigationBarTheme.height, 72);
       expect(theme.bottomSheetTheme.backgroundColor, Colors.white);
     });
 
     testWidgets('darkTheme configures expected core properties', (tester) async {
-      final theme = darkTheme(AppColorPalette.emerald);
+      final theme = darkTheme(AppColorPalette.calm);
       expect(theme.brightness, Brightness.dark);
       expect(theme.useMaterial3, isTrue);
-      expect(theme.scaffoldBackgroundColor, const Color(0xFF0F172A));
+      expect(theme.scaffoldBackgroundColor, const Color(0xFF12100D));
       expect(theme.navigationBarTheme.height, 72);
-      expect(theme.bottomSheetTheme.backgroundColor, const Color(0xFF1E293B));
+      expect(theme.bottomSheetTheme.backgroundColor, const Color(0xFF1F1D19));
     });
 
     testWidgets('themes are buildable for all palettes', (tester) async {
