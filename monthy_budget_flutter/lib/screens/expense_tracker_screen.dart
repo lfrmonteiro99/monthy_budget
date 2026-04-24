@@ -8,6 +8,7 @@ import '../models/actual_expense.dart';
 import '../models/budget_summary.dart';
 import '../models/custom_category.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_theme.dart';
 import '../utils/category_helpers.dart';
 import '../utils/expense_filter.dart';
 import '../utils/formatters.dart';
@@ -24,6 +25,7 @@ import '../onboarding/expense_tracker_tour.dart';
 import '../data/tax/tax_deductions.dart';
 import '../widgets/irs_deduction_banner.dart';
 import 'tax_deduction_detail_screen.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 
 class ExpenseTrackerScreen extends StatefulWidget {
   final AppSettings settings;
@@ -521,104 +523,158 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
     final diff = totalBudgeted - totalActual;
     final isOver = totalActual > totalBudgeted;
 
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
-      appBar: AppBar(
-        title: Text(l10n.expenseTrackerScreenTitle),
-        backgroundColor: AppColors.surface(context),
-        foregroundColor: AppColors.textPrimary(context),
-        elevation: 0,
-        scrolledUnderElevation: 1,
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.document_scanner,
-              color: AppColors.textMuted(context),
-            ),
-            tooltip: l10n.quickScanReceipt,
-            onPressed: _scanReceipt,
-          ),
-          IconButton(
-            icon: const Icon(Icons.share),
-            tooltip: l10n.exportTooltip,
-            onPressed: _exportMonth,
-          ),
-          if (widget.onLoadHistory != null)
-            IconButton(
-              icon: const Icon(Icons.search),
-              tooltip: l10n.searchExpenses,
-              onPressed: _activateSearch,
-            ),
-          if (widget.onOpenRecurring != null)
-            IconButton(
-              icon: const Icon(Icons.repeat),
-              tooltip: l10n.recurringExpenseManage,
-              onPressed: widget.onOpenRecurring,
-            ),
-        ],
+    return CalmScaffold(
+      floatingActionButton: FloatingActionButton(
+        key: ExpenseTrackerTourKeys.addFab,
+        onPressed: _addExpense,
+        backgroundColor: AppColors.ink(context),
+        foregroundColor: AppColors.bg(context),
+        tooltip: l10n.addExpenseTooltip,
+        child: const Icon(Icons.add),
       ),
       body: Column(
         children: [
-          // Month navigator
-          Container(
-            key: ExpenseTrackerTourKeys.monthNav,
-            color: AppColors.surface(context),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          // Top action bar — scan, export, search, recurring
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
             child: Row(
+              children: [
+                // Screen title
+                Expanded(
+                  child: Text(
+                    l10n.expenseTrackerScreenTitle,
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.ink(context),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.document_scanner_outlined,
+                    color: AppColors.ink50(context),
+                  ),
+                  tooltip: l10n.quickScanReceipt,
+                  onPressed: _scanReceipt,
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.share_outlined,
+                    color: AppColors.ink50(context),
+                  ),
+                  tooltip: l10n.exportTooltip,
+                  onPressed: _exportMonth,
+                ),
+                if (widget.onLoadHistory != null)
+                  IconButton(
+                    icon: Icon(
+                      Icons.search,
+                      color: AppColors.ink50(context),
+                    ),
+                    tooltip: l10n.searchExpenses,
+                    onPressed: _activateSearch,
+                  ),
+                if (widget.onOpenRecurring != null)
+                  IconButton(
+                    icon: Icon(
+                      Icons.repeat,
+                      color: AppColors.ink50(context),
+                    ),
+                    tooltip: l10n.recurringExpenseManage,
+                    onPressed: widget.onOpenRecurring,
+                  ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // Month navigator
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              key: ExpenseTrackerTourKeys.monthNav,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
                   onPressed: _loading ? null : () => _navigateMonth(-1),
-                  icon: const Icon(Icons.chevron_left),
+                  icon: Icon(
+                    Icons.chevron_left,
+                    color: _loading
+                        ? AppColors.ink20(context)
+                        : AppColors.ink(context),
+                  ),
                 ),
                 Text(
                   _monthLabel(l10n),
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary(context),
+                    color: AppColors.ink(context),
                   ),
                 ),
                 IconButton(
                   onPressed: _loading ? null : () => _navigateMonth(1),
-                  icon: const Icon(Icons.chevron_right),
+                  icon: Icon(
+                    Icons.chevron_right,
+                    color: _loading
+                        ? AppColors.ink20(context)
+                        : AppColors.ink(context),
+                  ),
                 ),
               ],
             ),
           ),
 
-          // Summary header
-          Container(
-            key: ExpenseTrackerTourKeys.summary,
-            color: AppColors.surface(context),
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          const SizedBox(height: 8),
+
+          // Hero — month total
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: CalmHero(
+              // TODO(l10n): move to ARB (Wave H)
+              eyebrow: 'ESTE MÊS',
+              amount: formatCurrency(totalActual),
+              subtitle: _expenses.isEmpty
+                  ? l10n.expenseTrackerEmpty
+                  : l10n.expenseTrackerActual,
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          // Budget status pill
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
+              key: ExpenseTrackerTourKeys.summary,
               children: [
-                Expanded(
-                  child: _SummaryColumn(
-                    label: l10n.expenseTrackerBudgeted,
-                    value: formatCurrency(totalBudgeted),
-                    color: AppColors.textSecondary(context),
+                CalmPill(
+                  label: isOver
+                      ? '-${formatCurrency(diff.abs())}'
+                      : formatCurrency(diff),
+                  color: isOver
+                      ? AppColors.bad(context)
+                      : AppColors.ok(context),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  isOver
+                      ? l10n.expenseTrackerOver
+                      : l10n.expenseTrackerRemaining,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: AppColors.ink70(context),
                   ),
                 ),
-                Expanded(
-                  child: _SummaryColumn(
-                    label: l10n.expenseTrackerActual,
-                    value: formatCurrency(totalActual),
-                    color: AppColors.textPrimary(context),
-                  ),
-                ),
-                Expanded(
-                  child: _SummaryColumn(
-                    label: isOver
-                        ? l10n.expenseTrackerOver
-                        : l10n.expenseTrackerRemaining,
-                    value: isOver
-                        ? '-${formatCurrency(diff.abs())}'
-                        : formatCurrency(diff),
-                    color: isOver
-                        ? AppColors.error(context)
-                        : AppColors.success(context),
+                const Spacer(),
+                Text(
+                  // TODO(l10n): move to ARB (Wave H)
+                  'orç. ${formatCurrency(totalBudgeted)}',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: AppColors.ink50(context),
                   ),
                 ),
                 InfoIconButton(
@@ -629,7 +685,9 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
             ),
           ),
 
-          const Divider(height: 1),
+          const SizedBox(height: 16),
+
+          Divider(color: AppColors.line(context), height: 1),
 
           // IRS deduction banner (Portugal only)
           if (widget.irsDeductionSummary != null)
@@ -644,55 +702,19 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
               ),
             ),
 
-          // Category progress info
-          if (_expenses.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-              child: Row(
-                children: [
-                  Text(
-                    l10n.expenseTrackerBudgeted,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textMuted(context),
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                  InfoIconButton(
-                    title: l10n.expenseTrackerBudgeted,
-                    body: l10n.infoExpenseTrackerProgress,
-                  ),
-                ],
-              ),
-            ),
-
           // Content
           Expanded(
             child: _loading
                 ? Center(
                     child: CircularProgressIndicator(
-                      color: AppColors.primary(context),
+                      color: AppColors.accent(context),
                     ),
                   )
                 : _expenses.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(32),
-                      child: Text(
-                        l10n.expenseTrackerEmpty,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: AppColors.textMuted(context),
-                          height: 1.5,
-                        ),
-                      ),
-                    ),
-                  )
+                ? _buildEmptyState(l10n)
                 : ListView.builder(
                     key: ExpenseTrackerTourKeys.categoryList,
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 80),
                     itemCount: summaries.length,
                     itemBuilder: (_, i) => _CategorySection(
                       summary: summaries[i],
@@ -716,136 +738,160 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        key: ExpenseTrackerTourKeys.addFab,
-        onPressed: _addExpense,
-        backgroundColor: AppColors.primary(context),
-        tooltip: l10n.addExpenseTooltip,
-        child: Icon(Icons.add, color: AppColors.onPrimary(context)),
+    );
+  }
+
+  Widget _buildEmptyState(S l10n) {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: CalmEmptyState(
+        icon: Icons.receipt_long_outlined,
+        title: l10n.expenseTrackerEmpty,
+        // TODO(l10n): move to ARB (Wave H)
+        body: 'Adicione a sua primeira despesa para começar a acompanhar o orçamento.',
+        action: CalmEmptyStateAction(
+          label: l10n.addExpenseTooltip,
+          onPressed: _addExpense,
+        ),
       ),
     );
   }
 
   Widget _buildSearchView(S l10n) {
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
-      appBar: AppBar(
-        backgroundColor: AppColors.surface(context),
-        foregroundColor: AppColors.textPrimary(context),
-        elevation: 0,
-        scrolledUnderElevation: 1,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: _deactivateSearch,
-        ),
-        title: TextField(
-          controller: _searchController,
-          autofocus: true,
-          decoration: InputDecoration(
-            hintText: l10n.searchExpensesHint,
-            border: InputBorder.none,
-            hintStyle: TextStyle(
-              color: AppColors.textMuted(context),
-              fontSize: 16,
+    return CalmScaffold(
+      body: Column(
+        children: [
+          // Search bar row
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+            child: Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.arrow_back, color: AppColors.ink(context)),
+                  onPressed: _deactivateSearch,
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: _searchController,
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      hintText: l10n.searchExpensesHint,
+                      border: InputBorder.none,
+                      hintStyle: TextStyle(
+                        color: AppColors.ink50(context),
+                        fontSize: 16,
+                      ),
+                    ),
+                    style: TextStyle(
+                      color: AppColors.ink(context),
+                      fontSize: 16,
+                    ),
+                    onChanged: (value) {
+                      _searchQuery = value;
+                      _applyFilters();
+                    },
+                  ),
+                ),
+                if (_searchQuery.isNotEmpty)
+                  IconButton(
+                    icon: Icon(Icons.clear, color: AppColors.ink50(context)),
+                    onPressed: () {
+                      _searchController.clear();
+                      _searchQuery = '';
+                      _applyFilters();
+                    },
+                  ),
+              ],
             ),
           ),
-          style: TextStyle(color: AppColors.textPrimary(context), fontSize: 16),
-          onChanged: (value) {
-            _searchQuery = value;
-            _applyFilters();
-          },
-        ),
-        actions: [
-          if (_searchQuery.isNotEmpty)
-            IconButton(
-              icon: const Icon(Icons.clear),
-              onPressed: () {
-                _searchController.clear();
-                _searchQuery = '';
-                _applyFilters();
-              },
+
+          if (_loadingHistory)
+            Expanded(
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.accent(context),
+                ),
+              ),
+            )
+          else
+            Expanded(
+              child: Column(
+                children: [
+                  // Category chips + date range filter
+                  Row(
+                    children: [
+                      Expanded(child: _buildFilterBar(l10n)),
+                      InfoIconButton(
+                        title: l10n.filter,
+                        body: l10n.infoExpenseTrackerFilter,
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                  ),
+
+                  Divider(color: AppColors.line(context), height: 1),
+
+                  // Result count
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 8,
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          l10n.searchResultCount(_searchResults.length),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.ink70(context),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Results
+                  Expanded(
+                    child: _searchResults.isEmpty
+                        ? Center(
+                            child: Text(
+                              l10n.searchNoResults,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: AppColors.ink50(context),
+                              ),
+                            ),
+                          )
+                        : ListView.builder(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            itemCount: _searchResults.length,
+                            itemBuilder: (_, i) {
+                              final expense = _searchResults[i];
+                              return _SearchResultTile(
+                                expense: expense,
+                                categoryLabel: _localizedCategory(
+                                  expense.category,
+                                  l10n,
+                                ),
+                                categoryIcon: categoryIconByName(
+                                  expense.category,
+                                  customCategories: widget.customCategories,
+                                ),
+                                categoryColor: categoryColorByNameFull(
+                                  expense.category,
+                                  customCategories: widget.customCategories,
+                                ),
+                                onTap: () => _showExpenseDetail(expense),
+                              );
+                            },
+                          ),
+                  ),
+                ],
+              ),
             ),
         ],
       ),
-      body: _loadingHistory
-          ? Center(
-              child: CircularProgressIndicator(
-                color: AppColors.primary(context),
-              ),
-            )
-          : Column(
-              children: [
-                // Category chips + date range
-                Row(
-                  children: [
-                    Expanded(child: _buildFilterBar(l10n)),
-                    InfoIconButton(
-                      title: l10n.filter,
-                      body: l10n.infoExpenseTrackerFilter,
-                    ),
-                    const SizedBox(width: 8),
-                  ],
-                ),
-                const Divider(height: 1),
-
-                // Result count
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  child: Row(
-                    children: [
-                      Text(
-                        l10n.searchResultCount(_searchResults.length),
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textSecondary(context),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Results
-                Expanded(
-                  child: _searchResults.isEmpty
-                      ? Center(
-                          child: Text(
-                            l10n.searchNoResults,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: AppColors.textMuted(context),
-                            ),
-                          ),
-                        )
-                      : ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: _searchResults.length,
-                          itemBuilder: (_, i) {
-                            final expense = _searchResults[i];
-                            return _SearchResultTile(
-                              expense: expense,
-                              categoryLabel: _localizedCategory(
-                                expense.category,
-                                l10n,
-                              ),
-                              categoryIcon: categoryIconByName(
-                                expense.category,
-                                customCategories: widget.customCategories,
-                              ),
-                              categoryColor: categoryColorByNameFull(
-                                expense.category,
-                                customCategories: widget.customCategories,
-                              ),
-                              onTap: () => _showExpenseDetail(expense),
-                            );
-                          },
-                        ),
-                ),
-              ],
-            ),
     );
   }
 
@@ -853,90 +899,102 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
     final categories = _allCategories().toList()..sort();
 
     return Container(
-      color: AppColors.surface(context),
+      color: AppColors.card(context),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Category chips
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                ...categories.map((cat) {
-                  final selected = _selectedCategories.contains(cat);
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 6),
-                    child: FilterChip(
-                      label: Text(
-                        _localizedCategory(cat, l10n),
-                        style: TextStyle(fontSize: 12),
-                      ),
-                      selected: selected,
-                      onSelected: (_) => _toggleCategory(cat),
-                      selectedColor: AppColors.chipSelected(context),
-                      checkmarkColor: AppColors.primary(context),
-                      side: selected
-                          ? BorderSide(color: const Color(0xFF93C5FD))
-                          : null,
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      visualDensity: VisualDensity.compact,
-                    ),
-                  );
-                }),
-                // Date range chip
-                Padding(
-                  padding: const EdgeInsets.only(right: 6),
-                  child: ActionChip(
-                    avatar: Icon(
-                      Icons.date_range,
-                      size: 16,
-                      color: _dateFrom != null
-                          ? AppColors.primary(context)
-                          : AppColors.textSecondary(context),
-                    ),
-                    label: Text(
-                      _dateFrom != null && _dateTo != null
-                          ? '${_dateFrom!.day}/${_dateFrom!.month} - ${_dateTo!.day}/${_dateTo!.month}'
-                          : l10n.searchDateRange,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: _dateFrom != null
-                            ? AppColors.primary(context)
-                            : AppColors.textSecondary(context),
-                      ),
-                    ),
-                    onPressed: _pickDateRange,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    visualDensity: VisualDensity.compact,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            ...categories.map((cat) {
+              final selected = _selectedCategories.contains(cat);
+              final catColor = categoryColorByNameFull(
+                cat,
+                customCategories: widget.customCategories,
+              );
+              return Padding(
+                padding: const EdgeInsets.only(right: 6),
+                child: FilterChip(
+                  label: Text(
+                    _localizedCategory(cat, l10n),
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  selected: selected,
+                  onSelected: (_) => _toggleCategory(cat),
+                  selectedColor: AppColors.accentSoft(context),
+                  checkmarkColor: AppColors.accent(context),
+                  side: selected
+                      ? BorderSide(color: AppColors.accent(context))
+                      : BorderSide(color: AppColors.line(context)),
+                  avatar: selected
+                      ? null
+                      : Container(
+                          width: 10,
+                          height: 10,
+                          decoration: BoxDecoration(
+                            color: catColor,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  visualDensity: VisualDensity.compact,
+                ),
+              );
+            }),
+            // Date range chip
+            Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: ActionChip(
+                avatar: Icon(
+                  Icons.date_range,
+                  size: 16,
+                  color: _dateFrom != null
+                      ? AppColors.accent(context)
+                      : AppColors.ink50(context),
+                ),
+                label: Text(
+                  _dateFrom != null && _dateTo != null
+                      ? '${_dateFrom!.day}/${_dateFrom!.month} - ${_dateTo!.day}/${_dateTo!.month}'
+                      : l10n.searchDateRange,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: _dateFrom != null
+                        ? AppColors.accent(context)
+                        : AppColors.ink50(context),
                   ),
                 ),
-                if (_dateFrom != null)
-                  Tooltip(
-                    message: l10n.shoppingClear,
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _dateFrom = null;
-                          _dateTo = null;
-                        });
-                        _applyFilters();
-                      },
-                      child: Icon(
-                        Icons.clear,
-                        size: 16,
-                        color: AppColors.textMuted(context),
-                      ),
-                    ),
-                  ),
-              ],
+                onPressed: _pickDateRange,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                visualDensity: VisualDensity.compact,
+              ),
             ),
-          ),
-        ],
+            if (_dateFrom != null)
+              Tooltip(
+                message: l10n.shoppingClear,
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _dateFrom = null;
+                      _dateTo = null;
+                    });
+                    _applyFilters();
+                  },
+                  child: Icon(
+                    Icons.clear,
+                    size: 16,
+                    color: AppColors.ink50(context),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
 }
+
+// ---------------------------------------------------------------------------
+// Search result tile
+// ---------------------------------------------------------------------------
 
 class _SearchResultTile extends StatelessWidget {
   final ActualExpense expense;
@@ -957,81 +1015,25 @@ class _SearchResultTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final dateStr =
         '${expense.date.day.toString().padLeft(2, '0')}/${expense.date.month.toString().padLeft(2, '0')}/${expense.date.year}';
-    return Container(
-      margin: const EdgeInsets.only(bottom: 4),
-      child: ListTile(
-        onTap: onTap,
-        dense: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-        leading: CircleAvatar(
-          radius: 16,
-          backgroundColor: categoryColor.withValues(alpha: 0.15),
-          child: Icon(categoryIcon, size: 16, color: categoryColor),
-        ),
-        title: Row(
-          children: [
-            Expanded(
-              child: Text(
-                expense.description ?? categoryLabel,
-                style: const TextStyle(fontSize: 14),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            Text(
-              formatCurrency(expense.amount),
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: AppColors.error(context),
-              ),
-            ),
-          ],
-        ),
-        subtitle: Text(
-          '$dateStr  •  $categoryLabel',
-          style: TextStyle(fontSize: 12, color: AppColors.textMuted(context)),
-        ),
-      ),
-    );
-  }
-}
-
-class _SummaryColumn extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color color;
-
-  const _SummaryColumn({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 11,
-            color: AppColors.textMuted(context),
-            fontWeight: FontWeight.w500,
-          ),
+        CalmListTile(
+          leadingIcon: categoryIcon,
+          leadingColor: categoryColor,
+          title: expense.description ?? categoryLabel,
+          subtitle: '$dateStr  •  $categoryLabel',
+          trailing: formatCurrency(expense.amount),
+          onTap: onTap,
         ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-            color: color,
-          ),
-        ),
+        Divider(color: AppColors.line(context), height: 1),
       ],
     );
   }
 }
+
+// ---------------------------------------------------------------------------
+// Category section (expandable card with expense rows)
+// ---------------------------------------------------------------------------
 
 class _CategorySection extends StatelessWidget {
   final CategoryBudgetSummary summary;
@@ -1057,150 +1059,179 @@ class _CategorySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final progressColor = summary.isOver
-        ? AppColors.error(context)
+        ? AppColors.bad(context)
         : summary.progress > 0.8
-        ? AppColors.warning(context)
-        : AppColors.success(context);
+        ? AppColors.warn(context)
+        : AppColors.ok(context);
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: AppColors.surface(context),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border(context)),
-      ),
-      child: ExpansionTile(
-        leading: CircleAvatar(
-          radius: 18,
-          backgroundColor: categoryColor.withValues(alpha: 0.15),
-          child: Icon(icon, size: 18, color: categoryColor),
-        ),
-        title: Row(
-          children: [
-            Expanded(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary(context),
-                ),
-              ),
-            ),
-            Text(
-              '${formatCurrency(summary.actual)} / ${formatCurrency(summary.budgeted)}',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: summary.isOver
-                    ? AppColors.error(context)
-                    : AppColors.textSecondary(context),
-              ),
-            ),
-          ],
-        ),
-        subtitle: Column(
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: CalmCard(
+        padding: EdgeInsets.zero,
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 6),
-            LinearProgressIndicator(
-              value: summary.progress.clamp(0.0, 1.0),
-              backgroundColor: AppColors.border(context),
-              color: progressColor,
-              minHeight: 4,
-              borderRadius: BorderRadius.circular(2),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              summary.isOver
-                  ? '${l10n.expenseTrackerOver}: -${formatCurrency(summary.remaining.abs())}'
-                  : '${l10n.expenseTrackerRemaining}: ${formatCurrency(summary.remaining)}',
-              style: TextStyle(
-                fontSize: 11,
-                color: summary.isOver
-                    ? AppColors.error(context)
-                    : AppColors.textSecondary(context),
-              ),
-            ),
-          ],
-        ),
-        shape: const Border(),
-        collapsedShape: const Border(),
-        children: expenses.map((expense) {
-          return Dismissible(
-            key: ValueKey(expense.id),
-            direction: DismissDirection.endToStart,
-            confirmDismiss: (_) async {
-              final confirmed = await showDialog<bool>(
-                context: context,
-                builder: (ctx) => AlertDialog(
-                  title: Text(l10n.delete),
-                  content: Text(l10n.expenseTrackerDeleteConfirm),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(ctx, false),
-                      child: Text(l10n.cancel),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.pop(ctx, true),
+            // Section header
+            Theme(
+              data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                leading: Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: categoryColor.withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, size: 18, color: categoryColor),
+                ),
+                title: Row(
+                  children: [
+                    Expanded(
                       child: Text(
-                        l10n.delete,
-                        style: TextStyle(color: AppColors.error(context)),
+                        label,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.ink(context),
+                        ),
                       ),
+                    ),
+                    Text(
+                      formatCurrency(summary.actual),
+                      style: CalmText.amount(context),
                     ),
                   ],
                 ),
-              );
-              return confirmed ?? false;
-            },
-            onDismissed: (_) => onDelete(expense),
-            background: Container(
-              alignment: Alignment.centerRight,
-              padding: const EdgeInsets.only(right: 16),
-              color: AppColors.errorBackground(context),
-              child: Icon(
-                Icons.delete,
-                color: AppColors.error(context),
-                size: 20,
-              ),
-            ),
-            child: ListTile(
-              onTap: () => onOpenDetails(expense),
-              dense: true,
-              trailing: Icon(
-                Icons.chevron_right,
-                size: 18,
-                color: AppColors.textMuted(context),
-              ),
-              title: Row(
+                subtitle: Padding(
+                  padding: const EdgeInsets.only(top: 6, bottom: 2),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      LinearProgressIndicator(
+                        value: summary.progress.clamp(0.0, 1.0),
+                        backgroundColor: AppColors.line(context),
+                        color: progressColor,
+                        minHeight: 3,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          CalmPill(
+                            label: summary.isOver
+                                ? '-${formatCurrency(summary.remaining.abs())}'
+                                : formatCurrency(summary.remaining),
+                            color: progressColor,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            summary.isOver
+                                ? l10n.expenseTrackerOver
+                                : l10n.expenseTrackerRemaining,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: AppColors.ink70(context),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                shape: const Border(),
+                collapsedShape: const Border(),
+                tilePadding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                childrenPadding: EdgeInsets.zero,
                 children: [
-                  Expanded(
-                    child: Text(
-                      expense.description ?? label,
-                      style: const TextStyle(fontSize: 14),
-                      overflow: TextOverflow.ellipsis,
+                  if (expenses.isNotEmpty) ...[
+                    Divider(
+                      color: AppColors.line(context),
+                      height: 1,
+                      indent: 16,
+                      endIndent: 16,
                     ),
-                  ),
-                  Text(
-                    formatCurrency(expense.amount),
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.error(context),
-                    ),
-                  ),
+                    ...expenses.asMap().entries.map((entry) {
+                      final i = entry.key;
+                      final expense = entry.value;
+                      final dateStr =
+                          '${expense.date.day.toString().padLeft(2, '0')}/${expense.date.month.toString().padLeft(2, '0')}/${expense.date.year}';
+                      return Column(
+                        children: [
+                          Dismissible(
+                            key: ValueKey(expense.id),
+                            direction: DismissDirection.endToStart,
+                            confirmDismiss: (_) async {
+                              final confirmed = await showDialog<bool>(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: Text(l10n.delete),
+                                  content: Text(
+                                    l10n.expenseTrackerDeleteConfirm,
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(ctx, false),
+                                      child: Text(l10n.cancel),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(ctx, true),
+                                      child: Text(
+                                        l10n.delete,
+                                        style: TextStyle(
+                                          color: AppColors.bad(context),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                              return confirmed ?? false;
+                            },
+                            onDismissed: (_) => onDelete(expense),
+                            background: Container(
+                              alignment: Alignment.centerRight,
+                              padding: const EdgeInsets.only(right: 16),
+                              color: AppColors.bad(context)
+                                  .withValues(alpha: 0.12),
+                              child: Icon(
+                                Icons.delete_outline,
+                                color: AppColors.bad(context),
+                                size: 20,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              child: CalmListTile(
+                                leadingIcon: icon,
+                                leadingColor: categoryColor,
+                                title: expense.description ?? label,
+                                subtitle: dateStr,
+                                trailing: formatCurrency(expense.amount),
+                                onTap: () => onOpenDetails(expense),
+                              ),
+                            ),
+                          ),
+                          if (i < expenses.length - 1)
+                            Divider(
+                              color: AppColors.line(context),
+                              height: 1,
+                              indent: 16,
+                              endIndent: 16,
+                            ),
+                        ],
+                      );
+                    }),
+                    const SizedBox(height: 4),
+                  ],
                 ],
               ),
-              subtitle: Text(
-                '${expense.date.day.toString().padLeft(2, '0')}/${expense.date.month.toString().padLeft(2, '0')}/${expense.date.year}',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textMuted(context),
-                ),
-              ),
             ),
-          );
-        }).toList(),
+          ],
+        ),
       ),
     );
   }
