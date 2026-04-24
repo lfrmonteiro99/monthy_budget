@@ -4,6 +4,7 @@ import '../models/shopping_item.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 import '../utils/shopping_grouping.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 
 /// Displays shopping items organized in collapsible groups.
 class ShoppingListGroupedView extends StatefulWidget {
@@ -32,19 +33,36 @@ class _ShoppingListGroupedViewState extends State<ShoppingListGroupedView> {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 80),
       itemCount: widget.groups.length,
       itemBuilder: (_, i) {
         final group = widget.groups[i];
         final isCollapsed = _collapsed.contains(group.label);
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildGroupHeader(context, group, isCollapsed, l10n),
-            if (!isCollapsed)
-              ...group.items.map((item) => _buildItemTile(context, item, l10n)),
-            const SizedBox(height: 8),
-          ],
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: CalmCard(
+            padding: EdgeInsets.zero,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildGroupHeader(context, group, isCollapsed, l10n),
+                if (!isCollapsed) ...[
+                  Divider(color: AppColors.line(context), height: 1),
+                  ...group.items.asMap().entries.map((entry) {
+                    final idx = entry.key;
+                    final item = entry.value;
+                    return Column(
+                      children: [
+                        if (idx > 0)
+                          Divider(color: AppColors.line(context), height: 1),
+                        _buildItemTile(context, item, l10n),
+                      ],
+                    );
+                  }),
+                ],
+              ],
+            ),
+          ),
         );
       },
     );
@@ -70,53 +88,42 @@ class _ShoppingListGroupedViewState extends State<ShoppingListGroupedView> {
           }
         });
       },
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        margin: const EdgeInsets.only(bottom: 4),
-        decoration: BoxDecoration(
-          color: AppColors.surface(context),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: AppColors.border(context)),
-        ),
+      borderRadius: isCollapsed
+          ? BorderRadius.circular(20)
+          : const BorderRadius.vertical(top: Radius.circular(20)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
-            Icon(icon, size: 16, color: AppColors.primary(context)),
+            Icon(icon, size: 16, color: AppColors.accent(context)),
             const SizedBox(width: 8),
             Expanded(
-              child: Text(
-                group.label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary(context),
-                ),
+              child: CalmEyebrow(
+                group.label.toUpperCase(),
               ),
             ),
             Text(
               l10n.shoppingGroupCount(group.items.length),
               style: TextStyle(
                 fontSize: 11,
-                color: AppColors.textMuted(context),
+                color: AppColors.ink50(context),
               ),
             ),
-            const SizedBox(width: 4),
+            const SizedBox(width: 6),
             if (group.totalPrice > 0)
               Text(
                 formatCurrency(group.totalPrice),
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.success(context),
+                  color: AppColors.ok(context),
                 ),
               ),
-            const SizedBox(width: 4),
+            const SizedBox(width: 6),
             Icon(
               isCollapsed ? Icons.expand_more : Icons.expand_less,
               size: 18,
-              color: AppColors.textMuted(context),
+              color: AppColors.ink50(context),
             ),
           ],
         ),
@@ -133,133 +140,116 @@ class _ShoppingListGroupedViewState extends State<ShoppingListGroupedView> {
       background: Container(
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 16),
-        margin: const EdgeInsets.only(bottom: 6),
         decoration: BoxDecoration(
-          color: AppColors.errorBackground(context),
-          borderRadius: BorderRadius.circular(12),
+          color: AppColors.bad(context).withValues(alpha: 0.12),
         ),
         child: Icon(Icons.delete_outline,
-            color: AppColors.error(context), size: 22),
+            color: AppColors.bad(context), size: 22),
       ),
       onDismissed: (_) => widget.onRemove(item),
-      child: Material(
-        color: item.checked
-            ? AppColors.background(context)
-            : AppColors.surface(context),
-        borderRadius: BorderRadius.circular(12),
-        child: InkWell(
-          onTap: () => widget.onToggleChecked(item),
-          borderRadius: BorderRadius.circular(12),
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 6),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
+      child: InkWell(
+        onTap: () => widget.onToggleChecked(item),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              Icon(
+                item.checked
+                    ? Icons.check_circle
+                    : Icons.radio_button_unchecked,
+                size: 20,
                 color: item.checked
-                    ? AppColors.surfaceVariant(context)
-                    : AppColors.border(context),
+                    ? AppColors.ok(context)
+                    : AppColors.ink20(context),
               ),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  item.checked
-                      ? Icons.check_circle
-                      : Icons.radio_button_unchecked,
-                  size: 20,
-                  color: item.checked
-                      ? AppColors.success(context)
-                      : AppColors.borderMuted(context),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.productName,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: item.checked
-                              ? const Color(0xFF94A3B8)
-                              : AppColors.textPrimary(context),
-                          decoration: item.checked
-                              ? TextDecoration.lineThrough
-                              : null,
-                          decorationColor: const Color(0xFF94A3B8),
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.productName,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: item.checked
+                            ? AppColors.ink50(context)
+                            : AppColors.ink(context),
+                        decoration: item.checked
+                            ? TextDecoration.lineThrough
+                            : null,
+                        decorationColor: AppColors.ink50(context),
                       ),
-                      if (item.quantity != null && item.unit != null)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 2),
-                          child: Text(
-                            '${_formatQuantity(item.quantity!)} ${item.unit!}',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Color(0xFF64748B),
-                            ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (item.quantity != null && item.unit != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Text(
+                          '${_formatQuantity(item.quantity!)} ${item.unit!}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.ink50(context),
                           ),
                         ),
-                      if (item.pendingSync)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 6),
-                          child: Row(
-                            children: [
-                              Icon(Icons.sync, size: 12, color: AppColors.warning(context)),
-                              const SizedBox(width: 4),
-                              Text(
-                                l10n.shoppingPendingSync,
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.warning(context),
-                                ),
+                      ),
+                    if (item.pendingSync)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 6),
+                        child: Row(
+                          children: [
+                            Icon(Icons.sync,
+                                size: 12, color: AppColors.warn(context)),
+                            const SizedBox(width: 4),
+                            Text(
+                              l10n.shoppingPendingSync,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.warn(context),
                               ),
-                            ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    if (item.cheapestKnownStore != null &&
+                        item.cheapestKnownPrice != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Text(
+                          l10n.shoppingCheapestAt(
+                            item.cheapestKnownStore!,
+                            formatCurrency(item.cheapestKnownPrice!),
+                          ),
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: AppColors.ink70(context),
+                            fontStyle: FontStyle.italic,
                           ),
                         ),
-                      if (item.cheapestKnownStore != null &&
-                          item.cheapestKnownPrice != null)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 2),
-                          child: Text(
-                            l10n.shoppingCheapestAt(
-                              item.cheapestKnownStore!,
-                              formatCurrency(item.cheapestKnownPrice!),
-                            ),
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: AppColors.textMuted(context),
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                        ),
-                    ],
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              if (item.price > 0)
+                Text(
+                  formatCurrency(item.price),
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: item.checked
+                        ? AppColors.ink50(context)
+                        : AppColors.ok(context),
+                    decoration:
+                        item.checked ? TextDecoration.lineThrough : null,
+                    decorationColor: AppColors.ink50(context),
                   ),
                 ),
-                const SizedBox(width: 8),
-                if (item.price > 0)
-                  Text(
-                    formatCurrency(item.price),
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: item.checked
-                          ? AppColors.borderMuted(context)
-                          : AppColors.success(context),
-                      decoration:
-                          item.checked ? TextDecoration.lineThrough : null,
-                      decorationColor: AppColors.borderMuted(context),
-                    ),
-                  ),
-              ],
-            ),
+            ],
           ),
         ),
       ),
