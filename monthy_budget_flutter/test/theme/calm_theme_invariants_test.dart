@@ -26,7 +26,6 @@ const _grandfathered = <String>{
   'lib/widgets/charts/budget_charts.dart',
   'lib/widgets/projection_sheet.dart',
   'lib/widgets/shopping_list_grouped_view.dart',
-  'lib/widgets/trend_sheet.dart',
 };
 
 void main() {
