@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
-import '../constants/app_constants.dart';
 import '../l10n/generated/app_localizations.dart';
+import 'tour_helpers.dart';
 import 'tour_step_content.dart';
 
 class DashboardTourKeys {
@@ -28,7 +28,7 @@ TutorialCoachMark buildDashboardTour({
         radius: 14,
         contents: [
           TargetContent(
-            align: ContentAlign.bottom,
+            align: pickAlign(DashboardTourKeys.heroCard),
             child: TourStepContent(
               title: l10n.onbTourDash1Title,
               body: l10n.onbTourDash1Body,
@@ -45,7 +45,7 @@ TutorialCoachMark buildDashboardTour({
         radius: 14,
         contents: [
           TargetContent(
-            align: ContentAlign.bottom,
+            align: pickAlign(DashboardTourKeys.stressIndex),
             child: TourStepContent(
               title: l10n.onbTourDash2Title,
               body: l10n.onbTourDash2Body,
@@ -62,7 +62,7 @@ TutorialCoachMark buildDashboardTour({
         radius: 14,
         contents: [
           TargetContent(
-            align: ContentAlign.top,
+            align: pickAlign(DashboardTourKeys.budgetVsActual),
             child: TourStepContent(
               title: l10n.onbTourDash3Title,
               body: l10n.onbTourDash3Body,
@@ -78,7 +78,7 @@ TutorialCoachMark buildDashboardTour({
         shape: ShapeLightFocus.Circle,
         contents: [
           TargetContent(
-            align: ContentAlign.top,
+            align: pickAlign(fabKey),
             child: TourStepContent(
               title: l10n.onbTourDash4Title,
               body: l10n.onbTourDash4Body,
@@ -95,7 +95,7 @@ TutorialCoachMark buildDashboardTour({
         radius: 0,
         contents: [
           TargetContent(
-            align: ContentAlign.top,
+            align: pickAlign(navBarKey),
             child: TourStepContent(
               title: l10n.onbTourDash5Title,
               body: l10n.onbTourDash5Body,
@@ -121,13 +121,7 @@ TutorialCoachMark buildDashboardTour({
     onClickTarget: (target) {},
     beforeFocus: (target) async {
       final ctx = target.keyTarget?.currentContext;
-      if (ctx != null) {
-        await Scrollable.ensureVisible(
-          ctx,
-          duration: AppConstants.animPageTransition,
-          alignment: 0.5,
-        );
-      }
+      if (ctx != null) await safeEnsureVisible(ctx);
     },
   );
 }

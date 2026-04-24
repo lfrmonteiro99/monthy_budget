@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
-import '../constants/app_constants.dart';
 import '../l10n/generated/app_localizations.dart';
+import 'tour_helpers.dart';
 import 'tour_step_content.dart';
 
 class CoachTourKeys {
@@ -25,7 +25,7 @@ TutorialCoachMark buildCoachTour({
         radius: 12,
         contents: [
           TargetContent(
-            align: ContentAlign.bottom,
+            align: pickAlign(CoachTourKeys.analyzeButton),
             child: TourStepContent(
               title: l10n.onbTourCoach1Title,
               body: l10n.onbTourCoach1Body,
@@ -42,7 +42,7 @@ TutorialCoachMark buildCoachTour({
         radius: 14,
         contents: [
           TargetContent(
-            align: ContentAlign.top,
+            align: pickAlign(CoachTourKeys.historyList),
             child: TourStepContent(
               title: l10n.onbTourCoach2Title,
               body: l10n.onbTourCoach2Body,
@@ -67,13 +67,7 @@ TutorialCoachMark buildCoachTour({
     },
     beforeFocus: (target) async {
       final ctx = target.keyTarget?.currentContext;
-      if (ctx != null) {
-        await Scrollable.ensureVisible(
-          ctx,
-          duration: AppConstants.animPageTransition,
-          alignment: 0.5,
-        );
-      }
+      if (ctx != null) await safeEnsureVisible(ctx);
     },
   );
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
-import '../constants/app_constants.dart';
 import '../l10n/generated/app_localizations.dart';
+import 'tour_helpers.dart';
 import 'tour_step_content.dart';
 
 class RecurringExpensesTourKeys {
@@ -25,7 +25,7 @@ TutorialCoachMark buildRecurringExpensesTour({
         radius: 14,
         contents: [
           TargetContent(
-            align: ContentAlign.bottom,
+            align: pickAlign(RecurringExpensesTourKeys.expenseItem),
             child: TourStepContent(
               title: l10n.onbTourRecurring1Title,
               body: l10n.onbTourRecurring1Body,
@@ -41,7 +41,7 @@ TutorialCoachMark buildRecurringExpensesTour({
         shape: ShapeLightFocus.Circle,
         contents: [
           TargetContent(
-            align: ContentAlign.top,
+            align: pickAlign(RecurringExpensesTourKeys.addFab),
             child: TourStepContent(
               title: l10n.onbTourRecurring2Title,
               body: l10n.onbTourRecurring2Body,
@@ -66,13 +66,7 @@ TutorialCoachMark buildRecurringExpensesTour({
     },
     beforeFocus: (target) async {
       final ctx = target.keyTarget?.currentContext;
-      if (ctx != null) {
-        await Scrollable.ensureVisible(
-          ctx,
-          duration: AppConstants.animPageTransition,
-          alignment: 0.5,
-        );
-      }
+      if (ctx != null) await safeEnsureVisible(ctx);
     },
   );
 }

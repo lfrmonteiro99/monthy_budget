@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import '../l10n/generated/app_localizations.dart';
+import 'tour_helpers.dart';
 import 'tour_step_content.dart';
 
 class CommandAssistantTourKeys {
@@ -22,7 +23,7 @@ TutorialCoachMark buildCommandAssistantTour({
         shape: ShapeLightFocus.Circle,
         contents: [
           TargetContent(
-            align: ContentAlign.top,
+            align: pickAlign(CommandAssistantTourKeys.fab),
             child: TourStepContent(
               title: l10n.onbTourAssistant1Title,
               body: l10n.onbTourAssistant1Body,
@@ -44,6 +45,10 @@ TutorialCoachMark buildCommandAssistantTour({
     onSkip: () {
       onSkip();
       return true;
+    },
+    beforeFocus: (target) async {
+      final ctx = target.keyTarget?.currentContext;
+      if (ctx != null) await safeEnsureVisible(ctx);
     },
   );
 }

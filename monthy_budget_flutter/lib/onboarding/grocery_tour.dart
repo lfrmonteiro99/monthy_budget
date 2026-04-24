@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
-import '../constants/app_constants.dart';
 import '../l10n/generated/app_localizations.dart';
+import 'tour_helpers.dart';
 import 'tour_step_content.dart';
 
 class GroceryTourKeys {
@@ -26,7 +26,7 @@ TutorialCoachMark buildGroceryTour({
         radius: 12,
         contents: [
           TargetContent(
-            align: ContentAlign.bottom,
+            align: pickAlign(GroceryTourKeys.searchBar),
             child: TourStepContent(
               title: l10n.onbTourGrocery1Title,
               body: l10n.onbTourGrocery1Body,
@@ -43,7 +43,7 @@ TutorialCoachMark buildGroceryTour({
         radius: 12,
         contents: [
           TargetContent(
-            align: ContentAlign.bottom,
+            align: pickAlign(GroceryTourKeys.productCard),
             child: TourStepContent(
               title: l10n.onbTourGrocery2Title,
               body: l10n.onbTourGrocery2Body,
@@ -60,7 +60,7 @@ TutorialCoachMark buildGroceryTour({
         radius: 20,
         contents: [
           TargetContent(
-            align: ContentAlign.bottom,
+            align: pickAlign(GroceryTourKeys.categoryFilter),
             child: TourStepContent(
               title: l10n.onbTourGrocery3Title,
               body: l10n.onbTourGrocery3Body,
@@ -85,13 +85,7 @@ TutorialCoachMark buildGroceryTour({
     },
     beforeFocus: (target) async {
       final ctx = target.keyTarget?.currentContext;
-      if (ctx != null) {
-        await Scrollable.ensureVisible(
-          ctx,
-          duration: AppConstants.animPageTransition,
-          alignment: 0.5,
-        );
-      }
+      if (ctx != null) await safeEnsureVisible(ctx);
     },
   );
 }
