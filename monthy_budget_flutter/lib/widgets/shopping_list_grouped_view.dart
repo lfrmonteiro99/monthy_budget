@@ -98,9 +98,7 @@ class _ShoppingListGroupedViewState extends State<ShoppingListGroupedView> {
             Icon(icon, size: 16, color: AppColors.accent(context)),
             const SizedBox(width: 8),
             Expanded(
-              child: CalmEyebrow(
-                group.label.toUpperCase(),
-              ),
+              child: CalmEyebrow(group.label),
             ),
             Text(
               l10n.shoppingGroupCount(group.items.length),
