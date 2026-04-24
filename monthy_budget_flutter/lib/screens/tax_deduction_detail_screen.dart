@@ -22,84 +22,65 @@ class TaxDeductionDetailScreen extends StatelessWidget {
     final nonDeductible = summary.nonDeductible;
 
     return CalmScaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            pinned: true,
-            backgroundColor: AppColors.bg(context),
-            elevation: 0,
-            scrolledUnderElevation: 0,
-            leading: IconButton(
-              onPressed: () => Navigator.of(context).pop(),
-              icon: Icon(Icons.arrow_back, color: AppColors.ink(context)),
-            ),
-            title: Text(
-              l10n.taxDeductionDetailTitle,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: AppColors.ink(context),
-                letterSpacing: -0.3,
+      title: l10n.taxDeductionDetailTitle,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 8),
+            _buildHero(context, l10n),
+            const SizedBox(height: 24),
+            _buildCapProgress(context, l10n),
+            const SizedBox(height: 24),
+            CalmEyebrow(l10n.taxDeductionDeductibleTitle),
+            const SizedBox(height: 12),
+            if (deductible.isNotEmpty)
+              CalmCard(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 8,
+                ),
+                child: Column(
+                  children: [
+                    for (int i = 0; i < deductible.length; i++) ...[
+                      _DeductibleTile(result: deductible[i]),
+                      if (i != deductible.length - 1)
+                        Divider(
+                          height: 1,
+                          color: AppColors.line(context),
+                        ),
+                    ],
+                  ],
+                ),
               ),
-            ),
-          ),
-          SliverList(
-            delegate: SliverChildListDelegate([
-              const SizedBox(height: 8),
-              _buildHero(context, l10n),
+            if (nonDeductible.isNotEmpty) ...[
               const SizedBox(height: 24),
-              _buildCapProgress(context, l10n),
-              const SizedBox(height: 24),
-              CalmEyebrow(l10n.taxDeductionDeductibleTitle),
+              CalmEyebrow(l10n.taxDeductionNonDeductibleTitle),
               const SizedBox(height: 12),
-              if (deductible.isNotEmpty)
-                CalmCard(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 8,
-                  ),
-                  child: Column(
-                    children: [
-                      for (int i = 0; i < deductible.length; i++) ...[
-                        _DeductibleTile(result: deductible[i]),
-                        if (i != deductible.length - 1)
-                          Divider(
-                            height: 1,
-                            color: AppColors.line(context),
-                          ),
-                      ],
-                    ],
-                  ),
+              CalmCard(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 8,
                 ),
-              if (nonDeductible.isNotEmpty) ...[
-                const SizedBox(height: 24),
-                CalmEyebrow(l10n.taxDeductionNonDeductibleTitle),
-                const SizedBox(height: 12),
-                CalmCard(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 8,
-                  ),
-                  child: Column(
-                    children: [
-                      for (int i = 0; i < nonDeductible.length; i++) ...[
-                        _NonDeductibleTile(result: nonDeductible[i]),
-                        if (i != nonDeductible.length - 1)
-                          Divider(
-                            height: 1,
-                            color: AppColors.line(context),
-                          ),
-                      ],
+                child: Column(
+                  children: [
+                    for (int i = 0; i < nonDeductible.length; i++) ...[
+                      _NonDeductibleTile(result: nonDeductible[i]),
+                      if (i != nonDeductible.length - 1)
+                        Divider(
+                          height: 1,
+                          color: AppColors.line(context),
+                        ),
                     ],
-                  ),
+                  ],
                 ),
-              ],
-              const SizedBox(height: 24),
-              _buildDisclaimer(context, l10n),
-              const SizedBox(height: 16),
-            ]),
-          ),
-        ],
+              ),
+            ],
+            const SizedBox(height: 24),
+            _buildDisclaimer(context, l10n),
+            const SizedBox(height: 16),
+          ],
+        ),
       ),
     );
   }

@@ -104,41 +104,22 @@ class _TaxSimulatorScreenState extends State<TaxSimulatorScreen> {
     final netDelta = _simCalc.totalNetWithMeal - _currentCalc.totalNetWithMeal;
 
     return CalmScaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            pinned: true,
-            backgroundColor: AppColors.bg(context),
-            elevation: 0,
-            scrolledUnderElevation: 0,
-            leading: IconButton(
-              onPressed: () => Navigator.of(context).pop(),
-              icon: Icon(Icons.arrow_back, color: AppColors.ink(context)),
-            ),
-            title: Text(
-              l10n.taxSimTitle,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: AppColors.ink(context),
-                letterSpacing: -0.3,
-              ),
-            ),
-          ),
-          SliverList(
-            delegate: SliverChildListDelegate([
-              const SizedBox(height: 8),
-              _buildHero(context, l10n, netDelta),
-              const SizedBox(height: 24),
-              _buildPresetsSection(context, l10n, country),
-              const SizedBox(height: 24),
-              _buildParameterSection(context, l10n, country),
-              const SizedBox(height: 24),
-              _buildComparisonSection(context, l10n),
-              const SizedBox(height: 16),
-            ]),
-          ),
-        ],
+      title: l10n.taxSimTitle,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 8),
+            _buildHero(context, l10n, netDelta),
+            const SizedBox(height: 24),
+            _buildPresetsSection(context, l10n, country),
+            const SizedBox(height: 24),
+            _buildParameterSection(context, l10n, country),
+            const SizedBox(height: 24),
+            _buildComparisonSection(context, l10n),
+            const SizedBox(height: 16),
+          ],
+        ),
       ),
     );
   }
