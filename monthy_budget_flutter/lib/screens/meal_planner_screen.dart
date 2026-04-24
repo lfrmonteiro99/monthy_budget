@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 import '../constants/app_constants.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
@@ -12,6 +13,7 @@ import '../services/analytics_service.dart';
 import '../services/meal_planner_service.dart';
 import '../services/meal_planner_ai_service.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_theme.dart';
 import '../utils/formatters.dart';
 import '../widgets/freeform_meal_card.dart';
 import '../widgets/freeform_meal_sheet.dart';
@@ -747,9 +749,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                             Expanded(
                               child: Text(
                                 aiContent.tip,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 13,
-                                  color: Color(0xFF92400E),
+                                  color: AppColors.warn(ctx),
                                 ),
                               ),
                             ),
@@ -1539,7 +1541,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final l10n = S.of(context);
     final bodyContent = !_catalogReady
         ? Center(
-            child: CircularProgressIndicator(color: AppColors.primary(context)),
+            child: CircularProgressIndicator(color: AppColors.ink(context)),
           )
         : _plan == null
         ? _buildEmptyState()
@@ -1547,15 +1549,15 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
     if (widget.embedded) return bodyContent;
 
+    // Raw Scaffold (not CalmScaffold) so the full-width plan view bars and
+    // bottom CTA row render edge-to-edge. Colours still use Calm tokens.
     return Scaffold(
-      backgroundColor: AppColors.background(context),
+      backgroundColor: AppColors.bg(context),
       appBar: AppBar(
-        backgroundColor: AppColors.surface(context),
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text(
-          l10n.mealPlannerTitle,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-        ),
+        scrolledUnderElevation: 0,
+        title: Text(l10n.mealPlannerTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.kitchen_outlined),
@@ -1591,30 +1593,27 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final now = DateTime.now();
     final monthName = '${localizedMonthFull(l10n, now.month)} ${now.year}';
 
-    return Center(
+    return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // Hero — month + planned budget.
+            CalmHero(
+              eyebrow: monthName.toUpperCase(),
+              amount: '${budget.toStringAsFixed(2)}${currencySymbol()}',
+              subtitle: l10n.mealPeopleLabel + ' · ' + np.toString(),
+              crossAxisAlignment: CrossAxisAlignment.center,
+            ),
+            const SizedBox(height: 32),
             Icon(
               Icons.restaurant_outlined,
-              size: 64,
-              color: AppColors.textMuted(context),
+              size: 32,
+              color: AppColors.ink50(context),
             ),
             const SizedBox(height: 24),
-            Text(
-              monthName,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 24),
-            _InfoRow(
-              label: l10n.mealBudgetLabel,
-              value: '${budget.toStringAsFixed(2)}${currencySymbol()}',
-            ),
-            const SizedBox(height: 8),
-            _InfoRow(label: l10n.mealPeopleLabel, value: '$np'),
-            const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
@@ -1622,6 +1621,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 icon: const Icon(Icons.kitchen_outlined),
                 label: Text(l10n.pantryUseWhatWeHave),
                 style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.ink(context),
+                  side: BorderSide(color: AppColors.line(context)),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
               ),
@@ -1637,7 +1638,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                         width: 18,
                         height: 18,
                         child: CircularProgressIndicator(
-                          color: AppColors.onPrimary(context),
+                          color: AppColors.bg(context),
                           strokeWidth: 2,
                         ),
                       )
@@ -1646,7 +1647,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   _loading ? l10n.mealGenerating : l10n.mealGeneratePlan,
                 ),
                 style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primary(context),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
               ),
@@ -1665,24 +1665,54 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         : 0.0;
     final weekDays = _getWeekDays(plan, _selectedWeek);
 
+    final budgetPill = budgetUsed > 1.0
+        ? CalmPill(
+            label: '${(budgetUsed * 100).toStringAsFixed(0)}%',
+            color: AppColors.bad(context),
+          )
+        : budgetUsed > 0.85
+            ? CalmPill(
+                label: '${(budgetUsed * 100).toStringAsFixed(0)}%',
+                color: AppColors.warn(context),
+              )
+            : CalmPill(
+                label: '${(budgetUsed * 100).toStringAsFixed(0)}%',
+                color: AppColors.ok(context),
+              );
     return Column(
       children: [
         Container(
-          color: AppColors.surface(context),
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+          color: AppColors.bg(context),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '${plan.totalEstimatedCost.toStringAsFixed(2)}${currencySymbol()} / ${plan.monthlyBudget.toStringAsFixed(2)}${currencySymbol()}',
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CalmEyebrow('PLANO DO MÊS'),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${plan.totalEstimatedCost.toStringAsFixed(2)}${currencySymbol()}',
+                          style: CalmText.amount(context, size: 22),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '/ ${plan.monthlyBudget.toStringAsFixed(2)}${currencySymbol()}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.ink50(context),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                  budgetPill,
+                  const SizedBox(width: 4),
                   TextButton.icon(
                     onPressed: () async {
                       final confirmed = await showDialog<bool>(
@@ -1714,18 +1744,22 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     icon: const Icon(Icons.refresh, size: 16),
                     label: Text(l10n.mealRegenerate),
                     style: TextButton.styleFrom(
-                      foregroundColor: AppColors.textSecondary(context),
+                      foregroundColor: AppColors.ink70(context),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 6),
-              LinearProgressIndicator(
-                value: budgetUsed.clamp(0.0, 1.0),
-                backgroundColor: AppColors.border(context),
-                color: budgetUsed > 1 ? Colors.red : AppColors.primary(context),
-                minHeight: 4,
+              const SizedBox(height: 8),
+              ClipRRect(
                 borderRadius: BorderRadius.circular(2),
+                child: LinearProgressIndicator(
+                  value: budgetUsed.clamp(0.0, 1.0),
+                  backgroundColor: AppColors.ink20(context),
+                  color: budgetUsed > 1
+                      ? AppColors.bad(context)
+                      : AppColors.ink(context),
+                  minHeight: 4,
+                ),
               ),
               const SizedBox(height: 8),
               // Week navigator (← Week N →) — replaces W1-W4 tabs
@@ -2133,12 +2167,6 @@ class _DayCard extends StatelessWidget {
 
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
-      color: AppColors.surface(context),
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: AppColors.border(context)),
-      ),
       child: Column(
         children: [
           Padding(
@@ -2148,73 +2176,20 @@ class _DayCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.infoBackground(context),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        l10n.mealDayLabel(mealDay.dayIndex),
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.primary(context),
-                        ),
-                      ),
+                    CalmPill(
+                      label: l10n.mealDayLabel(mealDay.dayIndex),
+                      color: AppColors.accent(context),
                     ),
                     const SizedBox(width: 4),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF0FDF4),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        mealDay.mealType.localizedLabel(l10n),
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF16A34A),
-                        ),
-                      ),
+                    CalmPill(
+                      label: mealDay.mealType.localizedLabel(l10n),
+                      color: AppColors.ok(context),
                     ),
                     if (mealDay.isLeftover) ...[
                       const SizedBox(width: 4),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFEF3C7),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.recycling,
-                              size: 11,
-                              color: Color(0xFF92400E),
-                            ),
-                            const SizedBox(width: 3),
-                            Text(
-                              l10n.mealLeftover,
-                              style: const TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF92400E),
-                              ),
-                            ),
-                          ],
-                        ),
+                      CalmPill(
+                        label: l10n.mealLeftover,
+                        color: AppColors.warn(context),
                       ),
                     ],
                     if (activePantryIds.isNotEmpty) ...[
@@ -2308,7 +2283,7 @@ class _DayCard extends StatelessWidget {
                       const SizedBox(width: 4),
                       _NutriBadge('${recipe.nutrition!.carbsG.round()}g', l10n.mealNutriCarbs, AppColors.warning(context)),
                       const SizedBox(width: 4),
-                      _NutriBadge('${recipe.nutrition!.fatG.round()}g', l10n.mealNutriFat, const Color(0xFF8B5CF6)),
+                      _NutriBadge('${recipe.nutrition!.fatG.round()}g', l10n.mealNutriFat, AppColors.accent(context)),
                       if (recipe.nutrition!.fiberG >= 5) ...[
                         const SizedBox(width: 4),
                         _NutriBadge('${recipe.nutrition!.fiberG.round()}g', l10n.mealNutriFiber, AppColors.success(context)),
@@ -2358,7 +2333,7 @@ class _DayCard extends StatelessWidget {
             ),
           ),
           if (isExpanded) ...[
-            Divider(height: 1, color: AppColors.border(context)),
+            Divider(height: 1, color: AppColors.line(context)),
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
               child: Column(
@@ -2374,25 +2349,10 @@ class _DayCard extends StatelessWidget {
                     return [
                       if (courseLabel != null) ...[
                         const SizedBox(height: 2),
-                        Text(
-                          courseLabel,
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.textMuted(context),
-                            letterSpacing: 0.5,
-                          ),
-                        ),
+                        CalmEyebrow(courseLabel),
                         const SizedBox(height: 2),
                       ] else ...[
-                        Text(
-                          l10n.mealIngredients,
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textSecondary(context),
-                          ),
-                        ),
+                        CalmEyebrow(l10n.mealIngredients.toUpperCase()),
                         const SizedBox(height: 4),
                       ],
                       ...courseRecipe.ingredients.map((ri) {
@@ -2524,9 +2484,9 @@ class _DayCard extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 aiContent!.tip,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 12,
-                                  color: Color(0xFF92400E),
+                                  color: AppColors.warn(context),
                                 ),
                               ),
                             ),
@@ -2664,15 +2624,16 @@ class _DayCard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFEF3C7),
+                          color: AppColors.warn(context)
+                              .withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.auto_fix_high,
                               size: 16,
-                              color: Color(0xFF92400E),
+                              color: AppColors.warn(context),
                             ),
                             const SizedBox(width: 8),
                             Expanded(
@@ -2681,18 +2642,18 @@ class _DayCard extends StatelessWidget {
                                 children: [
                                   Text(
                                     l10n.mealLeftoverIdea,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 11,
                                       fontWeight: FontWeight.w600,
-                                      color: Color(0xFF92400E),
+                                      color: AppColors.warn(context),
                                     ),
                                   ),
                                   const SizedBox(height: 2),
                                   Text(
                                     aiContent!.leftoverIdea,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 12,
-                                      color: Color(0xFF92400E),
+                                      color: AppColors.warn(context),
                                     ),
                                   ),
                                 ],
@@ -2746,7 +2707,7 @@ class _DayCard extends StatelessWidget {
           widgets.add(_CourseRow(
             icon: Icons.soup_kitchen,
             recipeName: soupRecipe.name,
-            color: const Color(0xFFE67E22),
+            color: AppColors.warn(context),
             onSwap: () => onSwapCourse(course),
           ));
           widgets.add(const SizedBox(height: 2));
@@ -2770,7 +2731,7 @@ class _DayCard extends StatelessWidget {
           widgets.add(_CourseRow(
             icon: Icons.icecream,
             recipeName: dessertRecipe.name,
-            color: const Color(0xFF9B59B6),
+            color: AppColors.accent(context),
             onSwap: () => onSwapCourse(course),
           ));
         }
@@ -2939,8 +2900,8 @@ class _SwapSheetState extends State<_SwapSheet> {
                   ? '+${delta.toStringAsFixed(2)}${currencySymbol()}'
                   : '${delta.toStringAsFixed(2)}${currencySymbol()}';
               final deltaColor = delta > 0
-                  ? Colors.red
-                  : const Color(0xFF16A34A);
+                  ? AppColors.bad(context)
+                  : AppColors.ok(context);
               // Show meal type badge for cross-type results
               final isCrossType = !r.suitableMealTypes.contains(
                 widget.currentMealType.name,
@@ -3184,32 +3145,6 @@ class _ConsolidatedSheet extends StatelessWidget {
 
 // -- Helpers ------------------------------------------------------------------
 
-class _InfoRow extends StatelessWidget {
-  final String label;
-  final String value;
-  const _InfoRow({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: AppColors.textSecondary(context),
-            fontSize: 14,
-          ),
-        ),
-        Text(
-          value,
-          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
-        ),
-      ],
-    );
-  }
-}
-
 class _Stars extends StatelessWidget {
   final int complexity;
   const _Stars(this.complexity);
@@ -3271,100 +3206,78 @@ class _WeeklySummaryCard extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-      child: Card(
-        elevation: 0,
-        color: AppColors.surface(context),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: AppColors.border(context)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.analytics_outlined,
-                    size: 18,
-                    color: AppColors.textSecondary(context),
+      child: CalmCard(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.analytics_outlined,
+                  size: 18,
+                  color: AppColors.ink70(context),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  l10n.mealWeeklySummary,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
                   ),
-                  const SizedBox(width: 8),
-                  Text(
-                    l10n.mealWeeklySummary,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const Spacer(),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      color: scoreColor.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      '${summary.overallScore}/10',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        color: scoreColor,
+                ),
+                const Spacer(),
+                CalmPill(
+                  label: '${summary.overallScore}/10',
+                  color: scoreColor,
+                ),
+              ],
+            ),
+            if (summary.highlights.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              ...summary.highlights.map(
+                (h) => Padding(
+                  padding: const EdgeInsets.only(bottom: 3),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.check_circle_outline,
+                        size: 14,
+                        color: AppColors.ok(context),
                       ),
-                    ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(h, style: const TextStyle(fontSize: 12)),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-              if (summary.highlights.isNotEmpty) ...[
-                const SizedBox(height: 8),
-                ...summary.highlights.map(
-                  (h) => Padding(
-                    padding: const EdgeInsets.only(bottom: 3),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.check_circle_outline,
-                          size: 14,
-                          color: AppColors.success(context),
-                        ),
-                        const SizedBox(width: 6),
-                        Expanded(
-                          child: Text(h, style: const TextStyle(fontSize: 12)),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-              if (summary.concerns.isNotEmpty) ...[
-                const SizedBox(height: 4),
-                ...summary.concerns.map(
-                  (c) => Padding(
-                    padding: const EdgeInsets.only(bottom: 3),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.warning_amber_outlined,
-                          size: 14,
-                          color: AppColors.warning(context),
-                        ),
-                        const SizedBox(width: 6),
-                        Expanded(
-                          child: Text(c, style: const TextStyle(fontSize: 12)),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
             ],
-          ),
+            if (summary.concerns.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              ...summary.concerns.map(
+                (c) => Padding(
+                  padding: const EdgeInsets.only(bottom: 3),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.warning_amber_outlined,
+                        size: 14,
+                        color: AppColors.warn(context),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(c, style: const TextStyle(fontSize: 12)),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ],
         ),
       ),
     );
