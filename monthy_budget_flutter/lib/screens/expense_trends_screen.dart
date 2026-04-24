@@ -199,14 +199,17 @@ class _ExpenseTrendsScreenState extends State<ExpenseTrendsScreen> {
                       body: 'Adiciona despesas para ver as tendências.',
                     ),
                   )
-                : ListView(
+                : SingleChildScrollView(
                     padding: EdgeInsets.zero,
-                    children: [
-                      _buildOverviewChart(context, l10n, months),
-                      const SizedBox(height: 20),
-                      _buildCategoryBreakdown(context, l10n, months),
-                      const SizedBox(height: 32),
-                    ],
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildOverviewChart(context, l10n, months),
+                        const SizedBox(height: 20),
+                        _buildCategoryBreakdown(context, l10n, months),
+                        const SizedBox(height: 32),
+                      ],
+                    ),
                   ),
           ),
         ],
