@@ -8,7 +8,7 @@ import '../models/app_settings.dart';
 ///
 /// The legacy `AppColorPalette` enum + old `primary()`/`background()` helpers
 /// are kept below so existing call sites keep compiling while we migrate.
-enum AppColorPalette { ocean, emerald, violet, teal, sunset, calm }
+enum AppColorPalette { calm }
 
 class AppColors {
   AppColors._();

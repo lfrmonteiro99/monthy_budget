@@ -113,11 +113,7 @@ class CommandActionRegistry {
   };
 
   static const _validPalettes = <String, AppColorPalette>{
-    'ocean': AppColorPalette.ocean,
-    'emerald': AppColorPalette.emerald,
-    'violet': AppColorPalette.violet,
-    'teal': AppColorPalette.teal,
-    'sunset': AppColorPalette.sunset,
+    'calm': AppColorPalette.calm,
   };
 
   static const _validLanguages = <String>{
@@ -490,7 +486,7 @@ class CommandActionRegistry {
       '- Recurring expense: add recurring expense [amount] in [category]\n'
       '- Delete expense: delete expense [description]\n'
       '- Theme: theme [light/dark/system]\n'
-      '- Palette: color [ocean/emerald/violet/teal/sunset]\n'
+      '- Palette: color [calm]\n'
       '- Language: language [english/portuguese/spanish/french]\n'
       '- Navigate: open [screen]\n'
       '- Clear checked: clear checked\n'

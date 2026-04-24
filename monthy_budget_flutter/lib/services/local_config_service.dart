@@ -51,10 +51,16 @@ class LocalConfigService {
   Future<AppColorPalette> loadColorPalette() async {
     final prefs = await SharedPreferences.getInstance();
     final value = prefs.getString(_paletteKey);
-    return AppColorPalette.values.firstWhere(
+    final result = AppColorPalette.values.firstWhere(
       (p) => p.name == value,
       orElse: () => AppColorPalette.calm,
     );
+    // Heal legacy stored values (ocean/emerald/violet/teal/sunset) by
+    // re-persisting as 'calm' so future reads match the collapsed enum.
+    if (result.name != value) {
+      await prefs.setString(_paletteKey, result.name);
+    }
+    return result;
   }
 
   Future<void> saveColorPalette(AppColorPalette palette) async {

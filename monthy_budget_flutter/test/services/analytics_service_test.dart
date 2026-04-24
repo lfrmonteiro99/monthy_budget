@@ -61,7 +61,7 @@ void main() {
         trialStartDate: DateTime(2026, 3, 1),
       ),
       themeMode: ThemeMode.dark,
-      colorPalette: AppColorPalette.emerald,
+      colorPalette: AppColorPalette.calm,
       isAdmin: true,
     );
 
@@ -69,7 +69,7 @@ void main() {
     expect(client.registered['country'], 'fr');
     expect(client.registered['language'], 'fr');
     expect(client.registered['theme_mode'], 'dark');
-    expect(client.registered['color_palette'], 'emerald');
+    expect(client.registered['color_palette'], 'calm');
     expect(client.registered['is_admin'], true);
   });
 
@@ -106,7 +106,7 @@ void main() {
       settings: const AppSettings(country: Country.pt),
       subscription: SubscriptionState(trialStartDate: DateTime(2026, 3, 1)),
       themeMode: ThemeMode.light,
-      colorPalette: AppColorPalette.sunset,
+      colorPalette: AppColorPalette.calm,
       isAdmin: false,
     );
     await AnalyticsService.instance.trackScreen('dashboard');

@@ -272,11 +272,7 @@ void main() {
 
     test('validates set_color_palette with known palettes', () {
       expect(
-        registry.validate('set_color_palette', {'palette': 'ocean'}),
-        isTrue,
-      );
-      expect(
-        registry.validate('set_color_palette', {'palette': 'sunset'}),
+        registry.validate('set_color_palette', {'palette': 'calm'}),
         isTrue,
       );
     });
@@ -284,6 +280,10 @@ void main() {
     test('rejects set_color_palette with unknown palette', () {
       expect(
         registry.validate('set_color_palette', {'palette': 'rainbow'}),
+        isFalse,
+      );
+      expect(
+        registry.validate('set_color_palette', {'palette': 'ocean'}),
         isFalse,
       );
     });
@@ -390,8 +390,8 @@ void main() {
     });
 
     test('set_color_palette calls callback with correct palette', () async {
-      await registry.execute('set_color_palette', {'palette': 'emerald'});
-      expect(palettes, [AppColorPalette.emerald]);
+      await registry.execute('set_color_palette', {'palette': 'calm'});
+      expect(palettes, [AppColorPalette.calm]);
     });
 
     test('add_shopping_item calls callback with correct ShoppingItem', () async {

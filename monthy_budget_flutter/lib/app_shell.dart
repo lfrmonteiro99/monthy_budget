@@ -6,7 +6,7 @@ class AppShellController extends ChangeNotifier {
   AppShellController({
     Locale? locale,
     ThemeMode themeMode = ThemeMode.system,
-    AppColorPalette colorPalette = AppColorPalette.ocean,
+    AppColorPalette colorPalette = AppColorPalette.calm,
   }) : _locale = locale,
        _themeMode = themeMode,
        _colorPalette = colorPalette {
