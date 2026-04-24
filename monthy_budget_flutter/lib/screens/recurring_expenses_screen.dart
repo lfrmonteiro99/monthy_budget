@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/recurring_expense.dart';
 import '../models/custom_category.dart';
 import '../models/app_settings.dart';
 import '../services/recurring_expense_service.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_theme.dart';
 import '../utils/formatters.dart';
 import '../utils/category_icons.dart';
 import '../onboarding/recurring_expenses_tour.dart';
@@ -95,7 +97,7 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             child: Text(l10n.delete,
-                style: TextStyle(color: AppColors.error(context))),
+                style: TextStyle(color: AppColors.bad(context))),
           ),
         ],
       ),
@@ -131,10 +133,9 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
 
   Future<RecurringExpense?> _showEditSheet(
       [RecurringExpense? existing]) async {
-    return showModalBottomSheet<RecurringExpense>(
-      context: context,
+    return CalmBottomSheet.show<RecurringExpense>(
+      context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
       builder: (_) => _EditRecurringSheet(
         existing: existing,
         customCategories: widget.customCategories,
@@ -142,145 +143,181 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
     );
   }
 
+  double get _totalMonthly =>
+      _expenses.where((e) => e.isActive).fold(0.0, (sum, e) => sum + e.amount);
+
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
+    final activeCount = _expenses.where((e) => e.isActive).length;
 
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
-      appBar: AppBar(
-        title: Text(l10n.recurringExpenses),
-        backgroundColor: AppColors.surface(context),
-        foregroundColor: AppColors.textPrimary(context),
-        elevation: 0,
-      ),
+    return CalmScaffold(
+      title: l10n.recurringExpenses,
       floatingActionButton: FloatingActionButton(
         key: RecurringExpensesTourKeys.addFab,
         onPressed: () => _addOrEdit(),
-        backgroundColor: AppColors.primary(context),
-        child: Icon(Icons.add, color: AppColors.onPrimary(context)),
+        backgroundColor: AppColors.ink(context),
+        foregroundColor: AppColors.bg(context),
+        elevation: 0,
+        child: const Icon(Icons.add),
       ),
       body: _expenses.isEmpty
           ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.repeat, size: 48,
-                        color: AppColors.dragHandle(context)),
-                    const SizedBox(height: 16),
-                    Text(
-                      l10n.recurringExpenseEmpty,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: AppColors.textMuted(context),
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    OutlinedButton.icon(
-                      onPressed: () => _addOrEdit(),
-                      icon: const Icon(Icons.add, size: 18),
-                      label: Text(l10n.recurringExpenseAdd),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: AppColors.primary(context),
-                        side: BorderSide(color: AppColors.primary(context)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
-                      ),
-                    ),
-                  ],
+              child: CalmEmptyState(
+                icon: Icons.event_repeat_outlined,
+                title: 'Sem pagamentos recorrentes', // TODO(l10n): move to ARB (Wave H)
+                body: 'Adicione para gerar automaticamente todos os meses.', // TODO(l10n): move to ARB (Wave H)
+                action: CalmEmptyStateAction(
+                  label: l10n.recurringExpenseAdd,
+                  onPressed: () => _addOrEdit(),
                 ),
               ),
             )
-          : ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: _expenses.length,
-              separatorBuilder: (_, _) => const SizedBox(height: 8),
-              itemBuilder: (_, i) {
-                final e = _expenses[i];
-                return Container(
-                  key: i == 0 ? RecurringExpensesTourKeys.expenseItem : null,
-                  decoration: BoxDecoration(
-                    color: AppColors.surface(context),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.border(context)),
-                  ),
-                  child: ListTile(
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                    leading: CircleAvatar(
-                      backgroundColor: e.isActive
-                          ? AppColors.primaryLight(context)
-                          : AppColors.surfaceVariant(context),
-                      child: Icon(
-                        Icons.repeat,
-                        color: e.isActive
-                            ? AppColors.primary(context)
-                            : AppColors.textMuted(context),
-                        size: 20,
-                      ),
-                    ),
-                    title: Text(
-                      _localizedCategory(e.category, l10n),
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary(context),
-                      ),
-                    ),
-                    subtitle: Text(
-                      [
-                        formatCurrency(e.amount),
-                        if (e.dayOfMonth != null) '${l10n.recurringExpenseDayOfMonth} ${e.dayOfMonth}',
-                        if (e.description != null && e.description!.isNotEmpty)
-                          e.description!,
-                        if (!e.isActive) l10n.recurringExpenseInactive,
-                      ].join(' · '),
-                      style: TextStyle(
-                        color: AppColors.textSecondary(context),
-                        fontSize: 13,
-                      ),
-                    ),
-                    trailing: PopupMenuButton<String>(
-                      onSelected: (action) {
-                        switch (action) {
-                          case 'edit':
-                            _addOrEdit(e);
-                          case 'toggle':
-                            _toggleActive(e);
-                          case 'delete':
-                            _delete(e);
-                        }
-                      },
-                      itemBuilder: (_) => [
-                        PopupMenuItem(
-                          value: 'edit',
-                          child: Text(l10n.recurringExpenseEdit),
-                        ),
-                        PopupMenuItem(
-                          value: 'toggle',
-                          child: Text(e.isActive
-                              ? l10n.recurringExpenseInactive
-                              : l10n.recurringExpenseActive),
-                        ),
-                        PopupMenuItem(
-                          value: 'delete',
-                          child: Text(l10n.delete,
-                              style: TextStyle(color: AppColors.error(context))),
-                        ),
-                      ],
+          : CustomScrollView(
+              slivers: [
+                // Hero — total monthly recurring
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 24, bottom: 24),
+                    child: CalmHero(
+                      eyebrow: 'RECORRENTES', // TODO(l10n): move to ARB (Wave H)
+                      amount: formatCurrency(_totalMonthly),
+                      subtitle: '$activeCount ${activeCount == 1 ? 'subscrição ativa' : 'subscrições ativas'}', // TODO(l10n): move to ARB (Wave H)
                     ),
                   ),
-                );
-              },
+                ),
+
+                // Divider before list
+                SliverToBoxAdapter(
+                  child: Divider(
+                    color: AppColors.line(context),
+                    height: 1,
+                  ),
+                ),
+
+                // List of recurring expenses in a grouped card
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 24, bottom: 32),
+                    child: CalmCard(
+                      padding: EdgeInsets.zero,
+                      child: Column(
+                        children: [
+                          for (var i = 0; i < _expenses.length; i++) ...[
+                            if (i > 0)
+                              Divider(
+                                color: AppColors.line(context),
+                                height: 1,
+                                indent: 64,
+                              ),
+                            _RecurringRow(
+                              key: i == 0
+                                  ? RecurringExpensesTourKeys.expenseItem
+                                  : null,
+                              expense: _expenses[i],
+                              localizedCategory:
+                                  _localizedCategory(_expenses[i].category, l10n),
+                              l10n: l10n,
+                              onEdit: () => _addOrEdit(_expenses[i]),
+                              onToggle: () => _toggleActive(_expenses[i]),
+                              onDelete: () => _delete(_expenses[i]),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
     );
   }
 }
+
+// ---------------------------------------------------------------------------
+// Row widget for a single recurring expense inside the grouped card.
+// ---------------------------------------------------------------------------
+class _RecurringRow extends StatelessWidget {
+  const _RecurringRow({
+    super.key,
+    required this.expense,
+    required this.localizedCategory,
+    required this.l10n,
+    required this.onEdit,
+    required this.onToggle,
+    required this.onDelete,
+  });
+
+  final RecurringExpense expense;
+  final String localizedCategory;
+  final S l10n;
+  final VoidCallback onEdit;
+  final VoidCallback onToggle;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final catColor = AppColors.categoryColorByName(expense.category);
+    final subtitleParts = <String>[
+      formatCurrency(expense.amount),
+      if (expense.dayOfMonth != null)
+        '${l10n.recurringExpenseDayOfMonth} ${expense.dayOfMonth}',
+      if (expense.description != null && expense.description!.isNotEmpty)
+        expense.description!,
+      if (!expense.isActive) l10n.recurringExpenseInactive,
+    ];
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: [
+          Expanded(
+            child: CalmListTile(
+              leadingIcon: getCategoryIcon(expense.category),
+              leadingColor: catColor,
+              title: localizedCategory,
+              subtitle: subtitleParts.join(' · '),
+              trailing: expense.isActive ? null : l10n.recurringExpenseInactive,
+            ),
+          ),
+          PopupMenuButton<String>(
+            onSelected: (action) {
+              switch (action) {
+                case 'edit':
+                  onEdit();
+                case 'toggle':
+                  onToggle();
+                case 'delete':
+                  onDelete();
+              }
+            },
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                value: 'edit',
+                child: Text(l10n.recurringExpenseEdit),
+              ),
+              PopupMenuItem(
+                value: 'toggle',
+                child: Text(expense.isActive
+                    ? l10n.recurringExpenseInactive
+                    : l10n.recurringExpenseActive),
+              ),
+              PopupMenuItem(
+                value: 'delete',
+                child: Text(l10n.delete,
+                    style: TextStyle(color: AppColors.bad(context))),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Public helper — show the recurring expense edit sheet from other screens.
+// ---------------------------------------------------------------------------
 
 /// Public helper to show the recurring expense edit sheet from other screens.
 /// Pass [preselectedCategory] to pre-select the category chip.
@@ -289,10 +326,9 @@ Future<RecurringExpense?> showEditRecurringSheet(
   RecurringExpense? existing,
   String? preselectedCategory,
 }) {
-  return showModalBottomSheet<RecurringExpense>(
-    context: context,
+  return CalmBottomSheet.show<RecurringExpense>(
+    context,
     isScrollControlled: true,
-    backgroundColor: Colors.transparent,
     builder: (_) => _EditRecurringSheet(
       existing: existing,
       preselectedCategory: preselectedCategory,
@@ -300,11 +336,19 @@ Future<RecurringExpense?> showEditRecurringSheet(
   );
 }
 
+// ---------------------------------------------------------------------------
+// Edit / Add sheet
+// ---------------------------------------------------------------------------
+
 class _EditRecurringSheet extends StatefulWidget {
   final RecurringExpense? existing;
   final List<CustomCategory> customCategories;
   final String? preselectedCategory;
-  const _EditRecurringSheet({this.existing, this.customCategories = const [], this.preselectedCategory});
+  const _EditRecurringSheet({
+    this.existing,
+    this.customCategories = const [],
+    this.preselectedCategory,
+  });
 
   @override
   State<_EditRecurringSheet> createState() => _EditRecurringSheetState();
@@ -376,23 +420,25 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
       initialChildSize: 0.7,
       minChildSize: 0.5,
       maxChildSize: 0.95,
+      expand: false,
       builder: (_, scrollController) => Container(
         decoration: BoxDecoration(
-          color: AppColors.surface(context),
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          color: AppColors.card(context),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         ),
         child: Form(
           key: _formKey,
           child: ListView(
             controller: scrollController,
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+            padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
             children: [
+              // Drag handle
               Center(
                 child: Container(
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: AppColors.dragHandle(context),
+                    color: AppColors.ink20(context),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -403,22 +449,17 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
                     ? l10n.recurringExpenseEdit
                     : l10n.recurringExpenseAdd,
                 style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary(context),
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.ink(context),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
 
               // Category
               Text(
                 l10n.recurringExpenseCategory,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary(context),
-                  letterSpacing: 0.8,
-                ),
+                style: CalmText.eyebrow(context),
               ),
               const SizedBox(height: 8),
               Wrap(
@@ -440,14 +481,14 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
                       selected: selected,
                       onSelected: (_) =>
                           setState(() => _selectedCategory = cat),
-                      selectedColor: AppColors.primaryLight(context),
+                      selectedColor: AppColors.accentSoft(context),
                       labelStyle: TextStyle(
                         fontSize: 13,
                         fontWeight:
                             selected ? FontWeight.w600 : FontWeight.w400,
                         color: selected
-                            ? AppColors.primary(context)
-                            : AppColors.textSecondary(context),
+                            ? AppColors.accent(context)
+                            : AppColors.ink70(context),
                       ),
                     );
                   }),
@@ -459,14 +500,14 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
                       selected: selected,
                       onSelected: (_) =>
                           setState(() => _selectedCategory = cc.name),
-                      selectedColor: AppColors.primaryLight(context),
+                      selectedColor: AppColors.accentSoft(context),
                       labelStyle: TextStyle(
                         fontSize: 13,
                         fontWeight:
                             selected ? FontWeight.w600 : FontWeight.w400,
                         color: selected
-                            ? AppColors.primary(context)
-                            : AppColors.textSecondary(context),
+                            ? AppColors.accent(context)
+                            : AppColors.ink70(context),
                       ),
                     );
                   }),
@@ -477,12 +518,7 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
               // Amount
               Text(
                 l10n.recurringExpenseAmount,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary(context),
-                  letterSpacing: 0.8,
-                ),
+                style: CalmText.eyebrow(context),
               ),
               const SizedBox(height: 8),
               TextFormField(
@@ -492,7 +528,8 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
                 decoration: InputDecoration(
                   prefixText: currencySymbol(),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide(color: AppColors.ink20(context)),
                   ),
                   contentPadding: const EdgeInsets.symmetric(
                       horizontal: 12, vertical: 12),
@@ -510,16 +547,11 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
               Row(
                 children: [
                   Icon(Icons.notifications_outlined,
-                      size: 14, color: AppColors.primary(context)),
+                      size: 14, color: AppColors.accent(context)),
                   const SizedBox(width: 6),
                   Text(
                     l10n.recurringExpenseDayOfMonth,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary(context),
-                      letterSpacing: 0.8,
-                    ),
+                    style: CalmText.eyebrow(context),
                   ),
                 ],
               ),
@@ -530,9 +562,10 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
                 decoration: InputDecoration(
                   hintText: l10n.recurringExpenseDayHint,
                   prefixIcon: Icon(Icons.calendar_today,
-                      size: 18, color: AppColors.textMuted(context)),
+                      size: 18, color: AppColors.ink50(context)),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide(color: AppColors.ink20(context)),
                   ),
                   contentPadding: const EdgeInsets.symmetric(
                       horizontal: 12, vertical: 12),
@@ -551,12 +584,7 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
               // Description
               Text(
                 l10n.recurringExpenseDescription,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary(context),
-                  letterSpacing: 0.8,
-                ),
+                style: CalmText.eyebrow(context),
               ),
               const SizedBox(height: 8),
               TextFormField(
@@ -564,7 +592,8 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
                 decoration: InputDecoration(
                   hintText: l10n.recurringExpenseDescription,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide(color: AppColors.ink20(context)),
                   ),
                   contentPadding: const EdgeInsets.symmetric(
                       horizontal: 12, vertical: 12),
@@ -581,9 +610,9 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
                   _isActive
                       ? l10n.recurringExpenseActive
                       : l10n.recurringExpenseInactive,
-                  style: TextStyle(color: AppColors.textPrimary(context)),
+                  style: TextStyle(color: AppColors.ink(context)),
                 ),
-                activeThumbColor: AppColors.primary(context),
+                activeColor: AppColors.accent(context),
                 contentPadding: EdgeInsets.zero,
               ),
               const SizedBox(height: 24),
@@ -591,14 +620,14 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
               // Save button
               SizedBox(
                 width: double.infinity,
-                height: 48,
-                child: ElevatedButton(
+                height: 52,
+                child: FilledButton(
                   onPressed: _save,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary(context),
-                    foregroundColor: AppColors.onPrimary(context),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.ink(context),
+                    foregroundColor: AppColors.bg(context),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+                        borderRadius: BorderRadius.circular(14)),
                     elevation: 0,
                   ),
                   child: Text(
