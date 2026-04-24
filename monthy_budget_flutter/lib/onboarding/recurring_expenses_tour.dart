@@ -20,6 +20,7 @@ TutorialCoachMark buildRecurringExpensesTour({
       TargetFocus(
         identify: 'expense_item',
         keyTarget: RecurringExpensesTourKeys.expenseItem,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.RRect,
         radius: 14,
         contents: [
@@ -36,6 +37,7 @@ TutorialCoachMark buildRecurringExpensesTour({
       TargetFocus(
         identify: 'add_fab',
         keyTarget: RecurringExpensesTourKeys.addFab,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.Circle,
         contents: [
           TargetContent(
@@ -53,7 +55,10 @@ TutorialCoachMark buildRecurringExpensesTour({
     targets: targets,
     colorShadow: Colors.black,
     opacityShadow: 0.7,
-    hideSkip: true,
+    hideSkip: false,
+    alignSkip: Alignment.topRight,
+    useSafeArea: true,
+    showSkipInLastTarget: true,
     onFinish: onFinish,
     onSkip: () {
       onSkip();

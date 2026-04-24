@@ -22,6 +22,7 @@ TutorialCoachMark buildExpenseTrackerTour({
       TargetFocus(
         identify: 'month_nav',
         keyTarget: ExpenseTrackerTourKeys.monthNav,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.RRect,
         radius: 14,
         contents: [
@@ -38,6 +39,7 @@ TutorialCoachMark buildExpenseTrackerTour({
       TargetFocus(
         identify: 'summary',
         keyTarget: ExpenseTrackerTourKeys.summary,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.RRect,
         radius: 14,
         contents: [
@@ -54,6 +56,7 @@ TutorialCoachMark buildExpenseTrackerTour({
       TargetFocus(
         identify: 'categories',
         keyTarget: ExpenseTrackerTourKeys.categoryList,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.RRect,
         radius: 14,
         contents: [
@@ -70,6 +73,7 @@ TutorialCoachMark buildExpenseTrackerTour({
       TargetFocus(
         identify: 'add_fab',
         keyTarget: ExpenseTrackerTourKeys.addFab,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.Circle,
         contents: [
           TargetContent(
@@ -87,7 +91,10 @@ TutorialCoachMark buildExpenseTrackerTour({
     targets: targets,
     colorShadow: Colors.black,
     opacityShadow: 0.7,
-    hideSkip: true,
+    hideSkip: false,
+    alignSkip: Alignment.topRight,
+    useSafeArea: true,
+    showSkipInLastTarget: true,
     onFinish: onFinish,
     onSkip: () {
       onSkip();

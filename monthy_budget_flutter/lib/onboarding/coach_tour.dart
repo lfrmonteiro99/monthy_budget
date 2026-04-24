@@ -20,6 +20,7 @@ TutorialCoachMark buildCoachTour({
       TargetFocus(
         identify: 'analyze',
         keyTarget: CoachTourKeys.analyzeButton,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.RRect,
         radius: 12,
         contents: [
@@ -36,6 +37,7 @@ TutorialCoachMark buildCoachTour({
       TargetFocus(
         identify: 'history',
         keyTarget: CoachTourKeys.historyList,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.RRect,
         radius: 14,
         contents: [
@@ -54,7 +56,10 @@ TutorialCoachMark buildCoachTour({
     targets: targets,
     colorShadow: Colors.black,
     opacityShadow: 0.7,
-    hideSkip: true,
+    hideSkip: false,
+    alignSkip: Alignment.topRight,
+    useSafeArea: true,
+    showSkipInLastTarget: true,
     onFinish: onFinish,
     onSkip: () {
       onSkip();

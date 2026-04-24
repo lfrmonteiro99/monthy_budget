@@ -20,6 +20,7 @@ TutorialCoachMark buildSavingsGoalsTour({
       TargetFocus(
         identify: 'goal_card',
         keyTarget: SavingsGoalsTourKeys.goalCard,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.RRect,
         radius: 14,
         contents: [
@@ -36,6 +37,7 @@ TutorialCoachMark buildSavingsGoalsTour({
       TargetFocus(
         identify: 'add_fab',
         keyTarget: SavingsGoalsTourKeys.addFab,
+        enableOverlayTab: true,
         shape: ShapeLightFocus.Circle,
         contents: [
           TargetContent(
@@ -53,7 +55,10 @@ TutorialCoachMark buildSavingsGoalsTour({
     targets: targets,
     colorShadow: Colors.black,
     opacityShadow: 0.7,
-    hideSkip: true,
+    hideSkip: false,
+    alignSkip: Alignment.topRight,
+    useSafeArea: true,
+    showSkipInLastTarget: true,
     onFinish: onFinish,
     onSkip: () {
       onSkip();
