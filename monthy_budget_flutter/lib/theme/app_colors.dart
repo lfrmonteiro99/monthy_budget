@@ -133,6 +133,27 @@ class AppColors {
   static Color settingsIcon(BuildContext c) => ink(c);
   static Color settingsArrow(BuildContext c) => ink50(c);
 
+  // ── Chart-series palette ────────────────────────────────────────────
+  //
+  // Distinguishable per-series colours for budget charts. Unlike the
+  // semantic ok/warn/bad tokens, these are tuned for legibility against
+  // both light and dark surfaces in stacked/grouped bar charts.
+  //
+  // The base hex matches the original budget_charts.dart palette
+  // (Tailwind 400-class greens/reds/ambers/indigos) and the dark-mode
+  // variant nudges the value lighter to maintain contrast on dark
+  // surfaces.
+  static Color chartGreen(BuildContext c) =>
+      _isDark(c) ? const Color(0xFF6EE7B7) : const Color(0xFF34D399);
+  static Color chartRed(BuildContext c) =>
+      _isDark(c) ? const Color(0xFFFCA5A5) : const Color(0xFFF87171);
+  static Color chartAmber(BuildContext c) =>
+      _isDark(c) ? const Color(0xFFFCD34D) : const Color(0xFFFBBF24);
+  static Color chartIndigo(BuildContext c) =>
+      _isDark(c) ? const Color(0xFFA5B4FC) : const Color(0xFF818CF8);
+  static Color chartIndigoLight(BuildContext c) =>
+      _isDark(c) ? const Color(0xFFC7D2FE) : const Color(0xFFC7D2FE);
+
   // ── Expense category swatches (Calm-tuned, warmer than legacy) ──────
   static const _expenseCategoryColors = {
     ExpenseCategory.habitacao:        Color(0xFFE8817F), // home — coral
