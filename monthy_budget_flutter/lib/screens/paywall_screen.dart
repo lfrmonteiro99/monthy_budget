@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../config/revenuecat_config.dart';
@@ -162,19 +163,14 @@ class _PaywallScreenState extends State<PaywallScreen> {
 
     return Stack(
       children: [
-        Scaffold(
-          backgroundColor: AppColors.background(context),
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: IconButton(
-              icon: Icon(Icons.close, color: AppColors.textPrimary(context)),
-              onPressed: _purchasing ? null : () => Navigator.of(context).pop(),
-            ),
+        CalmScaffold(
+          title: '',
+          leading: IconButton(
+            icon: Icon(Icons.close, color: AppColors.textPrimary(context)),
+            onPressed: _purchasing ? null : () => Navigator.of(context).pop(),
           ),
-          body: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.only(bottom: 32),
               child: Column(
                 children: [
                   // Header
@@ -383,8 +379,6 @@ class _PaywallScreenState extends State<PaywallScreen> {
               ),
             ),
           ),
-        ),
-
         // Loading overlay during purchase/restore
         if (_purchasing)
           Container(
