@@ -50,7 +50,7 @@ class _OverviewCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          CalmEyebrow(label: '${report.year}'),
+          CalmEyebrow('${report.year}'),
           const SizedBox(height: 12),
           CalmHero(
             eyebrow: l10n.yearlySummaryNetSavings,
@@ -95,7 +95,7 @@ class _BestWorstCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          CalmEyebrow(label: l10n.yearlySummaryHighlights),
+          CalmEyebrow(l10n.yearlySummaryHighlights),
           const SizedBox(height: 12),
           if (report.bestMonth != null)
             _KpiRow(
@@ -131,7 +131,7 @@ class _CategoryBreakdownCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          CalmEyebrow(label: l10n.yearlySummaryCategoryBreakdown),
+          CalmEyebrow(l10n.yearlySummaryCategoryBreakdown),
           const SizedBox(height: 12),
           for (var i = 0; i < sorted.length; i++) ...[
             _KpiRow(
