@@ -201,13 +201,15 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         expand: false,
         builder: (ctx, controller) => Column(
           children: [
-            Container(
-              width: 40,
-              height: 4,
-              margin: const EdgeInsets.symmetric(vertical: 12),
-              decoration: BoxDecoration(
-                color: AppColors.borderMuted(ctx),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: ClipRRect( // Justified: drag-handle indicator, no Calm equivalent
                 borderRadius: BorderRadius.circular(2),
+                child: SizedBox(
+                  width: 40,
+                  height: 4,
+                  child: ColoredBox(color: AppColors.borderMuted(ctx)),
+                ),
               ),
             ),
             Padding(
@@ -496,13 +498,15 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         expand: false,
         builder: (_, controller) => Column(
           children: [
-            Container(
-              width: 40,
-              height: 4,
-              margin: const EdgeInsets.symmetric(vertical: 12),
-              decoration: BoxDecoration(
-                color: AppColors.borderMuted(context),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: ClipRRect( // Justified: drag-handle indicator, no Calm equivalent
                 borderRadius: BorderRadius.circular(2),
+                child: SizedBox(
+                  width: 40,
+                  height: 4,
+                  child: ColoredBox(color: AppColors.borderMuted(context)),
+                ),
               ),
             ),
             Padding(
@@ -539,68 +543,22 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   ...plan.prepOrder.asMap().entries.map(
                     (e) => Padding(
                       padding: const EdgeInsets.only(bottom: 8),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 24,
-                            height: 24,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: AppColors.primary(context),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              '${e.key + 1}',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.onPrimary(context),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              e.value,
-                              style: const TextStyle(fontSize: 13),
-                            ),
-                          ),
-                        ],
+                      child: CalmListTile(
+                        leadingIcon: Icons.circle,
+                        leadingColor: AppColors.primary(context),
+                        title: '${e.key + 1}. ${e.value}',
                       ),
                     ),
                   ),
                   if (plan.parallelTips.isNotEmpty) ...[
                     const SizedBox(height: 16),
-                    Text(
-                      l10n.mealBatchParallelTips,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textSecondary(context),
-                      ),
-                    ),
+                    CalmEyebrow(l10n.mealBatchParallelTips.toUpperCase()),
                     const SizedBox(height: 8),
                     ...plan.parallelTips.map(
-                      (tip) => Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.tips_and_updates_outlined,
-                              size: 16,
-                              color: AppColors.warning(context),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                tip,
-                                style: const TextStyle(fontSize: 13),
-                              ),
-                            ),
-                          ],
-                        ),
+                      (tip) => CalmListTile(
+                        leadingIcon: Icons.tips_and_updates_outlined,
+                        leadingColor: AppColors.warning(context),
+                        title: tip,
                       ),
                     ),
                   ],
@@ -644,13 +602,15 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         expand: false,
         builder: (ctx, controller) => Column(
           children: [
-            Container(
-              width: 40,
-              height: 4,
-              margin: const EdgeInsets.symmetric(vertical: 12),
-              decoration: BoxDecoration(
-                color: AppColors.borderMuted(ctx),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: ClipRRect( // Justified: drag-handle indicator, no Calm equivalent
                 borderRadius: BorderRadius.circular(2),
+                child: SizedBox(
+                  width: 40,
+                  height: 4,
+                  child: ColoredBox(color: AppColors.borderMuted(ctx)),
+                ),
               ),
             ),
             Padding(
@@ -691,156 +651,34 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                 children: [
                   ...steps.asMap().entries.map(
-                    (e) => Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 26,
-                            height: 26,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: AppColors.primary(ctx),
-                              borderRadius: BorderRadius.circular(13),
-                            ),
-                            child: Text(
-                              '${e.key + 1}',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.onPrimary(ctx),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 3),
-                              child: Text(
-                                e.value,
-                                style: const TextStyle(fontSize: 14),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                    (e) => CalmListTile(
+                      leadingIcon: Icons.circle,
+                      leadingColor: AppColors.primary(ctx),
+                      title: '${e.key + 1}. ${e.value}',
                     ),
                   ),
                   // Show AI-enriched extras if available
                   if (aiContent != null) ...[
-                    if (aiContent.tip.isNotEmpty) ...[
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: AppColors.warningBackground(ctx),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.lightbulb_outline,
-                              size: 18,
-                              color: AppColors.warning(ctx),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                aiContent.tip,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: AppColors.warn(ctx),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                    if (aiContent.tip.isNotEmpty)
+                      CalmListTile(
+                        leadingIcon: Icons.lightbulb_outline,
+                        leadingColor: AppColors.warning(ctx),
+                        title: aiContent.tip,
                       ),
-                    ],
-                    if (aiContent.variation.isNotEmpty) ...[
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: AppColors.infoBackground(ctx),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.shuffle,
-                              size: 18,
-                              color: AppColors.primary(ctx),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    l10n.mealVariation,
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.primary(ctx),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    aiContent.variation,
-                                    style: const TextStyle(fontSize: 13),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                    if (aiContent.variation.isNotEmpty)
+                      CalmListTile(
+                        leadingIcon: Icons.shuffle,
+                        leadingColor: AppColors.primary(ctx),
+                        title: l10n.mealVariation,
+                        subtitle: aiContent.variation,
                       ),
-                    ],
-                    if (aiContent.storageInfo.isNotEmpty) ...[
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: AppColors.surfaceVariant(ctx),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.kitchen,
-                              size: 18,
-                              color: AppColors.textSecondary(ctx),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    l10n.mealStorage,
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.textSecondary(ctx),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    aiContent.storageInfo,
-                                    style: const TextStyle(fontSize: 13),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                    if (aiContent.storageInfo.isNotEmpty)
+                      CalmListTile(
+                        leadingIcon: Icons.kitchen,
+                        leadingColor: AppColors.textSecondary(ctx),
+                        title: l10n.mealStorage,
+                        subtitle: aiContent.storageInfo,
                       ),
-                    ],
                   ],
                 ],
               ),
@@ -923,13 +761,15 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           expand: false,
           builder: (_, controller) => Column(
             children: [
-              Container(
-                width: 40,
-                height: 4,
-                margin: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: AppColors.borderMuted(ctx),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: ClipRRect( // Justified: drag-handle indicator, no Calm equivalent
                   borderRadius: BorderRadius.circular(2),
+                  child: SizedBox(
+                    width: 40,
+                    height: 4,
+                    child: ColoredBox(color: AppColors.borderMuted(ctx)),
+                  ),
                 ),
               ),
               Padding(
@@ -1070,13 +910,15 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         expand: false,
         builder: (ctx, controller) => Column(
           children: [
-            Container(
-              width: 40,
-              height: 4,
-              margin: const EdgeInsets.symmetric(vertical: 12),
-              decoration: BoxDecoration(
-                color: AppColors.borderMuted(ctx),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: ClipRRect( // Justified: drag-handle indicator, no Calm equivalent
                 borderRadius: BorderRadius.circular(2),
+                child: SizedBox(
+                  width: 40,
+                  height: 4,
+                  child: ColoredBox(color: AppColors.borderMuted(ctx)),
+                ),
               ),
             ),
             Padding(
@@ -1114,70 +956,44 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 children: [
                   // Same category header
                   if (sameCategory.isNotEmpty) ...[
-                    Text(
-                      l10n.mealSubstituteSameCategory.toUpperCase(),
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.primary(ctx),
-                        letterSpacing: 0.8,
+                    CalmEyebrow(l10n.mealSubstituteSameCategory.toUpperCase()),
+                    const SizedBox(height: 4),
+                    CalmCard(
+                      padding: const EdgeInsets.all(0),
+                      child: Column(
+                        children: sameCategory.map((alt) => CalmListTile(
+                          leadingIcon: Icons.swap_horiz,
+                          leadingColor: AppColors.primary(ctx),
+                          title: alt.name,
+                          subtitle: '${alt.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${alt.unit}',
+                          onTap: () {
+                            Navigator.pop(ctx);
+                            _applySubstitution(day, ingredientId, alt.id);
+                          },
+                        )).toList(),
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    ...sameCategory.map((alt) => ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(alt.name, style: const TextStyle(fontSize: 14)),
-                      subtitle: Text(
-                        '${alt.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${alt.unit}',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textSecondary(ctx),
-                        ),
-                      ),
-                      trailing: Icon(
-                        Icons.swap_horiz,
-                        size: 18,
-                        color: AppColors.primary(ctx),
-                      ),
-                      onTap: () {
-                        Navigator.pop(ctx);
-                        _applySubstitution(day, ingredientId, alt.id);
-                      },
-                    )),
                   ],
                   // Other categories
                   if (otherCategories.isNotEmpty) ...[
                     const SizedBox(height: 12),
-                    Text(
-                      l10n.mealSubstituteOtherCategories.toUpperCase(),
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textMuted(ctx),
-                        letterSpacing: 0.8,
+                    CalmEyebrow(l10n.mealSubstituteOtherCategories.toUpperCase()),
+                    const SizedBox(height: 4),
+                    CalmCard(
+                      padding: const EdgeInsets.all(0),
+                      child: Column(
+                        children: otherCategories.map((alt) => CalmListTile(
+                          leadingIcon: Icons.swap_horiz,
+                          leadingColor: AppColors.textMuted(ctx),
+                          title: alt.name,
+                          subtitle: '${alt.category.name} · ${alt.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${alt.unit}',
+                          onTap: () {
+                            Navigator.pop(ctx);
+                            _applySubstitution(day, ingredientId, alt.id);
+                          },
+                        )).toList(),
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    ...otherCategories.map((alt) => ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(alt.name, style: const TextStyle(fontSize: 14)),
-                      subtitle: Text(
-                        '${alt.category.name} · ${alt.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${alt.unit}',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textSecondary(ctx),
-                        ),
-                      ),
-                      trailing: Icon(
-                        Icons.swap_horiz,
-                        size: 18,
-                        color: AppColors.textMuted(ctx),
-                      ),
-                      onTap: () {
-                        Navigator.pop(ctx);
-                        _applySubstitution(day, ingredientId, alt.id);
-                      },
-                    )),
                   ],
                 ],
               ),
@@ -1549,39 +1365,31 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
     if (widget.embedded) return bodyContent;
 
-    // Raw Scaffold (not CalmScaffold) so the full-width plan view bars and
-    // bottom CTA row render edge-to-edge. Colours still use Calm tokens.
-    return Scaffold(
-      backgroundColor: AppColors.bg(context),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        title: Text(l10n.mealPlannerTitle),
-        actions: [
+    return CalmScaffold(
+      title: l10n.mealPlannerTitle,
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.kitchen_outlined),
+          tooltip: l10n.mealPlanWithPantry,
+          onPressed: _showPlanWithPantrySheet,
+        ),
+        if (_plan != null)
           IconButton(
-            icon: const Icon(Icons.kitchen_outlined),
-            tooltip: l10n.mealPlanWithPantry,
-            onPressed: _showPlanWithPantrySheet,
-          ),
-          if (_plan != null)
-            IconButton(
-              icon: const Icon(Icons.receipt_long_outlined),
-              tooltip: l10n.mealCostReconciliation,
-              onPressed: () => showMealCostReconciliationSheet(
-                context: context,
-                mealDays: _plan!.days,
-                purchaseHistory: widget.purchaseHistory,
-                year: _plan!.year,
-                month: _plan!.month,
-              ),
+            icon: const Icon(Icons.receipt_long_outlined),
+            tooltip: l10n.mealCostReconciliation,
+            onPressed: () => showMealCostReconciliationSheet(
+              context: context,
+              mealDays: _plan!.days,
+              purchaseHistory: widget.purchaseHistory,
+              year: _plan!.year,
+              month: _plan!.month,
             ),
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            onPressed: widget.onOpenMealSettings,
           ),
-        ],
-      ),
+        IconButton(
+          icon: const Icon(Icons.settings_outlined),
+          onPressed: widget.onOpenMealSettings,
+        ),
+      ],
       body: bodyContent,
     );
   }
@@ -1593,67 +1401,62 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final now = DateTime.now();
     final monthName = '${localizedMonthFull(l10n, now.month)} ${now.year}';
 
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Hero — month + planned budget.
-            CalmHero(
-              eyebrow: monthName.toUpperCase(),
-              amount: '${budget.toStringAsFixed(2)}${currencySymbol()}',
-              subtitle: l10n.mealPeopleLabel + ' · ' + np.toString(),
-              crossAxisAlignment: CrossAxisAlignment.center,
-            ),
-            const SizedBox(height: 32),
-            Icon(
-              Icons.restaurant_outlined,
-              size: 32,
-              color: AppColors.ink50(context),
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () => _showPantryPicker(),
-                icon: const Icon(Icons.kitchen_outlined),
-                label: Text(l10n.pantryUseWhatWeHave),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.ink(context),
-                  side: BorderSide(color: AppColors.line(context)),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            SizedBox(
-              key: MealsTourKeys.generateButton,
-              width: double.infinity,
-              child: FilledButton.icon(
-                onPressed: _loading ? null : _generatePlan,
-                icon: _loading
-                    ? SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(
-                          color: AppColors.bg(context),
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : const Icon(Icons.auto_awesome),
-                label: Text(
-                  _loading ? l10n.mealGenerating : l10n.mealGeneratePlan,
-                ),
-                style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-              ),
-            ),
-          ],
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Hero — month + planned budget.
+        CalmHero(
+          eyebrow: monthName.toUpperCase(),
+          amount: '${budget.toStringAsFixed(2)}${currencySymbol()}',
+          subtitle: l10n.mealPeopleLabel + ' · ' + np.toString(),
+          crossAxisAlignment: CrossAxisAlignment.center,
         ),
-      ),
+        const SizedBox(height: 32),
+        CalmEmptyState(
+          icon: Icons.restaurant_outlined,
+          title: l10n.mealGeneratePlan, // TODO(l10n): use dedicated empty-state title
+          body: l10n.mealPeopleLabel + ' · ' + np.toString(),
+        ),
+        const SizedBox(height: 24),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: () => _showPantryPicker(),
+            icon: const Icon(Icons.kitchen_outlined),
+            label: Text(l10n.pantryUseWhatWeHave),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.ink(context),
+              side: BorderSide(color: AppColors.line(context)),
+              padding: const EdgeInsets.symmetric(vertical: 14),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          key: MealsTourKeys.generateButton,
+          width: double.infinity,
+          child: FilledButton.icon(
+            onPressed: _loading ? null : _generatePlan,
+            icon: _loading
+                ? SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(
+                      color: AppColors.bg(context),
+                      strokeWidth: 2,
+                    ),
+                  )
+                : const Icon(Icons.auto_awesome),
+            label: Text(
+              _loading ? l10n.mealGenerating : l10n.mealGeneratePlan,
+            ),
+            style: FilledButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -1681,200 +1484,207 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               );
     return Column(
       children: [
-        Container(
-          color: AppColors.bg(context),
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CalmEyebrow('PLANO DO MÊS'),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${plan.totalEstimatedCost.toStringAsFixed(2)}${currencySymbol()}',
-                          style: CalmText.amount(context, size: 22),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          '/ ${plan.monthlyBudget.toStringAsFixed(2)}${currencySymbol()}',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: AppColors.ink50(context),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
+          child: CalmCard(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CalmEyebrow('PLANO DO MÊS'),
+                const SizedBox(height: 6),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${plan.totalEstimatedCost.toStringAsFixed(2)}${currencySymbol()}',
+                            style: CalmText.amount(context, size: 22),
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 2),
+                          Text(
+                            '/ ${plan.monthlyBudget.toStringAsFixed(2)}${currencySymbol()}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.ink50(context),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  budgetPill,
-                  const SizedBox(width: 4),
-                  TextButton.icon(
-                    onPressed: () async {
-                      final confirmed = await showDialog<bool>(
-                        context: context,
-                        builder: (ctx) => AlertDialog(
-                          title: Text(l10n.mealRegenerateTitle),
-                          content: Text(l10n.mealRegenerateContent),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(ctx, false),
-                              child: Text(l10n.cancel),
-                            ),
-                            FilledButton(
-                              onPressed: () => Navigator.pop(ctx, true),
-                              child: Text(l10n.mealRegenerate),
-                            ),
-                          ],
-                        ),
-                      );
-                      if (confirmed == true && mounted) {
-                        setState(() => _plan = null);
-                        _service.clear(
-                          widget.householdId,
-                          plan.month,
-                          plan.year,
+                    budgetPill,
+                    const SizedBox(width: 4),
+                    TextButton.icon(
+                      onPressed: () async {
+                        final confirmed = await showDialog<bool>(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: Text(l10n.mealRegenerateTitle),
+                            content: Text(l10n.mealRegenerateContent),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx, false),
+                                child: Text(l10n.cancel),
+                              ),
+                              FilledButton(
+                                onPressed: () => Navigator.pop(ctx, true),
+                                child: Text(l10n.mealRegenerate),
+                              ),
+                            ],
+                          ),
                         );
-                      }
-                    },
-                    icon: const Icon(Icons.refresh, size: 16),
-                    label: Text(l10n.mealRegenerate),
-                    style: TextButton.styleFrom(
-                      foregroundColor: AppColors.ink70(context),
+                        if (confirmed == true && mounted) {
+                          setState(() => _plan = null);
+                          _service.clear(
+                            widget.householdId,
+                            plan.month,
+                            plan.year,
+                          );
+                        }
+                      },
+                      icon: const Icon(Icons.refresh, size: 16),
+                      label: Text(l10n.mealRegenerate),
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.ink70(context),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(2),
-                child: LinearProgressIndicator(
-                  value: budgetUsed.clamp(0.0, 1.0),
-                  backgroundColor: AppColors.ink20(context),
-                  color: budgetUsed > 1
-                      ? AppColors.bad(context)
-                      : AppColors.ink(context),
-                  minHeight: 4,
+                  ],
                 ),
-              ),
-              const SizedBox(height: 8),
-              // Week navigator (← Week N →) — replaces W1-W4 tabs
-              Builder(
-                builder: (_) {
-                  final daysInMonth = DateTime(
-                    plan.year,
-                    plan.month + 1,
-                    0,
-                  ).day;
-                  final weekCount = (daysInMonth / 7).ceil();
-                  if (_selectedWeek >= weekCount) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      if (mounted) {
-                        setState(() => _selectedWeek = weekCount - 1);
-                      }
-                    });
-                  }
-                  return Row(
-                    key: MealsTourKeys.weekTabs,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.chevron_left),
-                        onPressed: _selectedWeek > 0
-                            ? () {
-                                setState(() => _selectedWeek--);
-                                if (_plan != null) {
-                                  _loadWeeklySummary(_selectedWeek, _plan!);
+                const SizedBox(height: 8),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(2),
+                  child: LinearProgressIndicator(
+                    value: budgetUsed.clamp(0.0, 1.0),
+                    backgroundColor: AppColors.ink20(context),
+                    color: budgetUsed > 1
+                        ? AppColors.bad(context)
+                        : AppColors.ink(context),
+                    minHeight: 4,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                CalmEyebrow('SEMANA'), // TODO(l10n): localise
+                const SizedBox(height: 4),
+                // Week navigator (← Week N →) — replaces W1-W4 tabs
+                Builder(
+                  builder: (_) {
+                    final daysInMonth = DateTime(
+                      plan.year,
+                      plan.month + 1,
+                      0,
+                    ).day;
+                    final weekCount = (daysInMonth / 7).ceil();
+                    if (_selectedWeek >= weekCount) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (mounted) {
+                          setState(() => _selectedWeek = weekCount - 1);
+                        }
+                      });
+                    }
+                    return Row(
+                      key: MealsTourKeys.weekTabs,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.chevron_left),
+                          onPressed: _selectedWeek > 0
+                              ? () {
+                                  setState(() => _selectedWeek--);
+                                  if (_plan != null) {
+                                    _loadWeeklySummary(_selectedWeek, _plan!);
+                                  }
+                                  _recomputeBudgetInsight();
                                 }
-                                _recomputeBudgetInsight();
-                              }
-                            : null,
-                      ),
-                      Text(
-                        l10n.mealWeekLabel(_selectedWeek + 1),
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
+                              : null,
                         ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.chevron_right),
-                        onPressed: _selectedWeek < weekCount - 1
-                            ? () {
-                                setState(() => _selectedWeek++);
-                                if (_plan != null) {
-                                  _loadWeeklySummary(_selectedWeek, _plan!);
-                                }
-                                _recomputeBudgetInsight();
-                              }
-                            : null,
-                      ),
-                      const Spacer(),
-                      SizedBox(
-                        key: MealsTourKeys.addToListButton,
-                        height: 32,
-                        child: OutlinedButton.icon(
-                          onPressed: () => _addWeekToShoppingList(_selectedWeek),
-                          icon: const Icon(Icons.add_shopping_cart, size: 16),
-                          label: Text(
-                            l10n.mealAddWeekToList,
-                            style: const TextStyle(fontSize: 11),
-                          ),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColors.primary(context),
-                            side: BorderSide(color: AppColors.primary(context)),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                        Text(
+                          l10n.mealWeekLabel(_selectedWeek + 1),
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ),
-                      if (_weekHasBatchCooking(plan, _selectedWeek)) ...[
-                        const SizedBox(width: 4),
+                        IconButton(
+                          icon: const Icon(Icons.chevron_right),
+                          onPressed: _selectedWeek < weekCount - 1
+                              ? () {
+                                  setState(() => _selectedWeek++);
+                                  if (_plan != null) {
+                                    _loadWeeklySummary(_selectedWeek, _plan!);
+                                  }
+                                  _recomputeBudgetInsight();
+                                }
+                              : null,
+                        ),
+                        const Spacer(),
                         SizedBox(
+                          key: MealsTourKeys.addToListButton,
                           height: 32,
-                          width: 32,
-                          child: IconButton(
-                            onPressed: _batchPlanLoading
-                                ? null
-                                : () => _showBatchPrepGuide(plan, _selectedWeek),
-                            icon: _batchPlanLoading
-                                ? SizedBox(
-                                    width: 14,
-                                    height: 14,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
+                          child: OutlinedButton.icon(
+                            onPressed: () => _addWeekToShoppingList(_selectedWeek),
+                            icon: const Icon(Icons.add_shopping_cart, size: 16),
+                            label: Text(
+                              l10n.mealAddWeekToList,
+                              style: const TextStyle(fontSize: 11),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppColors.primary(context),
+                              side: BorderSide(color: AppColors.primary(context)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                            ),
+                          ),
+                        ),
+                        if (_weekHasBatchCooking(plan, _selectedWeek)) ...[
+                          const SizedBox(width: 4),
+                          SizedBox(
+                            height: 32,
+                            width: 32,
+                            child: IconButton(
+                              onPressed: _batchPlanLoading
+                                  ? null
+                                  : () => _showBatchPrepGuide(plan, _selectedWeek),
+                              icon: _batchPlanLoading
+                                  ? SizedBox(
+                                      width: 14,
+                                      height: 14,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: AppColors.primary(context),
+                                      ),
+                                    )
+                                  : Icon(
+                                      Icons.kitchen,
+                                      size: 18,
                                       color: AppColors.primary(context),
                                     ),
-                                  )
-                                : Icon(
-                                    Icons.kitchen,
-                                    size: 18,
-                                    color: AppColors.primary(context),
-                                  ),
-                            padding: EdgeInsets.zero,
-                            tooltip: l10n.mealBatchPrepGuide,
+                              padding: EdgeInsets.zero,
+                              tooltip: l10n.mealBatchPrepGuide,
+                            ),
                           ),
-                        ),
+                        ],
                       ],
-                    ],
-                  );
-                },
-              ),
-              const SizedBox(height: 4),
-            ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
         // Always-visible compact detail chip row (replaces toggle)
+        Padding(
+          padding: const EdgeInsets.only(top: 8, bottom: 2),
+          child: CalmEyebrow('DETALHE'), // TODO(l10n): localise
+        ),
         SizedBox(
           height: 36,
           child: ListView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 0),
             children: [
               ActionChip(
                 avatar: const Icon(Icons.eco_outlined, size: 14),
@@ -1984,7 +1794,10 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 4),
+        Padding(
+          padding: const EdgeInsets.only(top: 8, bottom: 4),
+          child: CalmEyebrow('REFEIÇÕES'), // TODO(l10n): localise
+        ),
         Expanded(
           child: Stack(
             children: [
@@ -2007,7 +1820,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 }
                 final groupKeys = grouped.keys.toList();
                 return ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+                  padding: const EdgeInsets.fromLTRB(0, 4, 0, 80),
                   itemCount: groupKeys.length,
                   itemBuilder: (_, i) {
                     final courses = grouped[groupKeys[i]]!;
@@ -2030,7 +1843,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                       plan: plan,
                       service: _service,
                       aiContent: _aiContent[mainDay.recipeId],
-                      allAiContent: _aiContent,
                       isExpanded: _expanded.contains(
                         '${mainDay.dayIndex}_${mainDay.mealType.name}',
                       ),
@@ -2064,8 +1876,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               }),
               Positioned(
                 bottom: 16,
-                left: 16,
-                right: 16,
+                left: 0,
+                right: 0,
                 child: Row(
                   children: [
                     Expanded(
@@ -2118,8 +1930,6 @@ class _DayCard extends StatelessWidget {
   final MealPlan plan;
   final MealPlannerService service;
   final RecipeAiContent? aiContent;
-  /// AI content map for all recipes (needed for course AI content).
-  final Map<String, RecipeAiContent> allAiContent;
   final bool isExpanded;
   final VoidCallback onToggleExpand;
   final VoidCallback onSwap;
@@ -2138,7 +1948,6 @@ class _DayCard extends StatelessWidget {
     required this.plan,
     required this.service,
     required this.aiContent,
-    this.allAiContent = const {},
     required this.isExpanded,
     required this.onToggleExpand,
     required this.onSwap,
@@ -2165,297 +1974,216 @@ class _DayCard extends StatelessWidget {
         ? displayCost / plan.nPessoas
         : displayCost;
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
+    return CalmCard(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 10, 4, 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    CalmPill(
-                      label: l10n.mealDayLabel(mealDay.dayIndex),
-                      color: AppColors.accent(context),
-                    ),
-                    const SizedBox(width: 4),
-                    CalmPill(
-                      label: mealDay.mealType.localizedLabel(l10n),
-                      color: AppColors.ok(context),
-                    ),
-                    if (mealDay.isLeftover) ...[
-                      const SizedBox(width: 4),
-                      CalmPill(
-                        label: l10n.mealLeftover,
-                        color: AppColors.warn(context),
-                      ),
-                    ],
-                    if (activePantryIds.isNotEmpty) ...[
-                      const SizedBox(width: 4),
-                      PantryCoverageBadge(
-                        coverageRatio: computePantryCoverage(
-                          recipe,
-                          activePantryIds,
-                        ).coverageRatio,
-                      ),
-                    ],
-                    const Spacer(),
-                    Text(
-                      '${displayCost.toStringAsFixed(2)}${currencySymbol()}',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary(context),
-                      ),
-                    ),
-                    PopupMenuButton<String>(
-                      icon: Icon(
-                        Icons.more_vert,
-                        size: 18,
-                        color: AppColors.textMuted(context),
-                      ),
-                      padding: EdgeInsets.zero,
-                      itemBuilder: (_) => [
-                        PopupMenuItem(
-                          value: 'freeform',
-                          child: Text(l10n.freeformReplace),
-                        ),
-                      ],
-                      onSelected: (value) {
-                        if (value == 'freeform') onReplaceFreeform();
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                // Compact course display
-                ..._buildCourseRows(context, l10n, recipe, iMap),
-                const SizedBox(height: 4),
-                // Compact info row: stars + time + cost/person
-                Row(
-                  children: [
-                    _Stars(recipe.complexity),
-                    const SizedBox(width: 8),
-                    Icon(
-                      Icons.timer_outlined,
-                      size: 13,
-                      color: AppColors.textMuted(context),
-                    ),
-                    const SizedBox(width: 2),
-                    Text(
-                      recipe.activeMinutes != null &&
-                              recipe.passiveMinutes != null
-                          ? '${recipe.activeMinutes}+${recipe.passiveMinutes}min'
-                          : '${recipe.prepMinutes}min',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: AppColors.textMuted(context),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Icon(
-                      Icons.person_outline,
-                      size: 13,
-                      color: AppColors.textMuted(context),
-                    ),
-                    const SizedBox(width: 2),
-                    Text(
-                      l10n.mealCostPerPerson(
-                        costPerPerson.toStringAsFixed(2),
-                      ),
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: AppColors.textMuted(context),
-                      ),
-                    ),
-                  ],
-                ),
-                // Compact nutrition badges
-                if (recipe.nutrition != null) ...[
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      _NutriBadge('${recipe.nutrition!.kcal}', 'kcal', AppColors.error(context)),
-                      const SizedBox(width: 4),
-                      _NutriBadge('${recipe.nutrition!.proteinG.round()}g', l10n.mealNutriProt, AppColors.primary(context)),
-                      const SizedBox(width: 4),
-                      _NutriBadge('${recipe.nutrition!.carbsG.round()}g', l10n.mealNutriCarbs, AppColors.warning(context)),
-                      const SizedBox(width: 4),
-                      _NutriBadge('${recipe.nutrition!.fatG.round()}g', l10n.mealNutriFat, AppColors.accent(context)),
-                      if (recipe.nutrition!.fiberG >= 5) ...[
-                        const SizedBox(width: 4),
-                        _NutriBadge('${recipe.nutrition!.fiberG.round()}g', l10n.mealNutriFiber, AppColors.success(context)),
-                      ],
-                    ],
-                  ),
-                ],
-                const SizedBox(height: 6),
-                // Action row: star rating + icon-only buttons
-                Row(
-                  children: [
-                    StarRatingRow(currentRating: mealDay.effectiveRating, onRate: onRating),
-                    const Spacer(),
-                    SizedBox(
-                      width: 32, height: 32,
-                      child: IconButton(
-                        onPressed: onToggleExpand,
-                        icon: Icon(isExpanded ? Icons.expand_less : Icons.restaurant_menu, size: 18),
-                        padding: EdgeInsets.zero,
-                        color: isExpanded ? AppColors.textSecondary(context) : AppColors.primary(context),
-                        tooltip: isExpanded ? l10n.close : l10n.mealIngredients,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 32, height: 32,
-                      child: IconButton(
-                        onPressed: onViewPrepGuide,
-                        icon: const Icon(Icons.menu_book_outlined, size: 18),
-                        padding: EdgeInsets.zero,
-                        color: AppColors.primary(context),
-                        tooltip: l10n.mealViewPrepGuide,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 32, height: 32,
-                      child: IconButton(
-                        onPressed: onSwap,
-                        icon: const Icon(Icons.swap_horiz, size: 18),
-                        padding: EdgeInsets.zero,
-                        color: AppColors.textSecondary(context),
-                        tooltip: l10n.mealSwap,
-                      ),
-                    ),
-                  ],
+          // Day header: eyebrow + meal-type pill + leftover pill + cost + menu
+          CalmEyebrow(l10n.mealDayLabel(mealDay.dayIndex)),
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              CalmPill(
+                label: mealDay.mealType.localizedLabel(l10n),
+                color: AppColors.ok(context),
+              ),
+              if (mealDay.isLeftover) ...[
+                const SizedBox(width: 4),
+                CalmPill(
+                  label: l10n.mealLeftover,
+                  color: AppColors.warn(context),
                 ),
               ],
+              if (activePantryIds.isNotEmpty) ...[
+                const SizedBox(width: 4),
+                PantryCoverageBadge(
+                  coverageRatio: computePantryCoverage(
+                    recipe,
+                    activePantryIds,
+                  ).coverageRatio,
+                ),
+              ],
+              const Spacer(),
+              Text(
+                '${displayCost.toStringAsFixed(2)}${currencySymbol()}',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary(context),
+                ),
+              ),
+              PopupMenuButton<String>(
+                icon: Icon(
+                  Icons.more_vert,
+                  size: 18,
+                  color: AppColors.textMuted(context),
+                ),
+                padding: EdgeInsets.zero,
+                itemBuilder: (_) => [
+                  PopupMenuItem(
+                    value: 'freeform',
+                    child: Text(l10n.freeformReplace),
+                  ),
+                ],
+                onSelected: (value) {
+                  if (value == 'freeform') onReplaceFreeform();
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          // Course rows as CalmListTile
+          ..._buildCourseListTiles(context, l10n, recipe, iMap),
+          const SizedBox(height: 4),
+          // Compact info row: stars + time + cost/person
+          Row(
+            children: [
+              _Stars(recipe.complexity),
+              const SizedBox(width: 8),
+              Icon(
+                Icons.timer_outlined,
+                size: 13,
+                color: AppColors.textMuted(context),
+              ),
+              const SizedBox(width: 2),
+              Text(
+                recipe.activeMinutes != null &&
+                        recipe.passiveMinutes != null
+                    ? '${recipe.activeMinutes}+${recipe.passiveMinutes}min'
+                    : '${recipe.prepMinutes}min',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: AppColors.textMuted(context),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Icon(
+                Icons.person_outline,
+                size: 13,
+                color: AppColors.textMuted(context),
+              ),
+              const SizedBox(width: 2),
+              Text(
+                l10n.mealCostPerPerson(
+                  costPerPerson.toStringAsFixed(2),
+                ),
+                style: TextStyle(
+                  fontSize: 11,
+                  color: AppColors.textMuted(context),
+                ),
+              ),
+            ],
+          ),
+          // Compact nutrition badges
+          if (recipe.nutrition != null) ...[
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                _NutriBadge('${recipe.nutrition!.kcal}', 'kcal', AppColors.error(context)),
+                const SizedBox(width: 4),
+                _NutriBadge('${recipe.nutrition!.proteinG.round()}g', l10n.mealNutriProt, AppColors.primary(context)),
+                const SizedBox(width: 4),
+                _NutriBadge('${recipe.nutrition!.carbsG.round()}g', l10n.mealNutriCarbs, AppColors.warning(context)),
+                const SizedBox(width: 4),
+                _NutriBadge('${recipe.nutrition!.fatG.round()}g', l10n.mealNutriFat, AppColors.accent(context)),
+                if (recipe.nutrition!.fiberG >= 5) ...[
+                  const SizedBox(width: 4),
+                  _NutriBadge('${recipe.nutrition!.fiberG.round()}g', l10n.mealNutriFiber, AppColors.success(context)),
+                ],
+              ],
             ),
+          ],
+          const SizedBox(height: 6),
+          // Action row: star rating + icon-only buttons
+          Row(
+            children: [
+              StarRatingRow(currentRating: mealDay.effectiveRating, onRate: onRating),
+              const Spacer(),
+              SizedBox(
+                width: 32, height: 32,
+                child: IconButton(
+                  onPressed: onToggleExpand,
+                  icon: Icon(isExpanded ? Icons.expand_less : Icons.restaurant_menu, size: 18),
+                  padding: EdgeInsets.zero,
+                  color: isExpanded ? AppColors.textSecondary(context) : AppColors.primary(context),
+                  tooltip: isExpanded ? l10n.close : l10n.mealIngredients,
+                ),
+              ),
+              SizedBox(
+                width: 32, height: 32,
+                child: IconButton(
+                  onPressed: onViewPrepGuide,
+                  icon: const Icon(Icons.menu_book_outlined, size: 18),
+                  padding: EdgeInsets.zero,
+                  color: AppColors.primary(context),
+                  tooltip: l10n.mealViewPrepGuide,
+                ),
+              ),
+              SizedBox(
+                width: 32, height: 32,
+                child: IconButton(
+                  onPressed: onSwap,
+                  icon: const Icon(Icons.swap_horiz, size: 18),
+                  padding: EdgeInsets.zero,
+                  color: AppColors.textSecondary(context),
+                  tooltip: l10n.mealSwap,
+                ),
+              ),
+            ],
           ),
           if (isExpanded) ...[
             Divider(height: 1, color: AppColors.line(context)),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Show ingredients for ALL courses in this meal slot
-                  ...allCourses.expand((course) {
-                    final courseRecipe = service.recipeMap[course.recipeId];
-                    if (courseRecipe == null) return <Widget>[];
-                    final courseLabel = allCourses.length > 1
-                        ? _courseLabel(course.courseType, l10n)
-                        : null;
-                    return [
-                      if (courseLabel != null) ...[
-                        const SizedBox(height: 2),
-                        CalmEyebrow(courseLabel),
-                        const SizedBox(height: 2),
-                      ] else ...[
-                        CalmEyebrow(l10n.mealIngredients.toUpperCase()),
-                        const SizedBox(height: 4),
-                      ],
-                      ...courseRecipe.ingredients.map((ri) {
-                        final effectiveId =
-                            course.substitutions[ri.ingredientId] ??
-                            ri.ingredientId;
-                        final ing = iMap[effectiveId] ?? iMap[ri.ingredientId];
-                        if (ing == null) return const SizedBox();
-                        final isSubstituted = course.substitutions.containsKey(
-                          ri.ingredientId,
-                        );
-                        final scale = plan.nPessoas / courseRecipe.servings;
-                        final qty = ri.quantity * scale;
-                        final cost = qty * ing.avgPricePerUnit;
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () =>
-                                      onSubstituteCourseIngredient(course, ri.ingredientId),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Flexible(
-                                        child: Text(
-                                          ing.name,
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            decoration: isSubstituted
-                                                ? TextDecoration.underline
-                                                : null,
-                                            color: isSubstituted
-                                                ? AppColors.primary(context)
-                                                : null,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 3),
-                                      Icon(
-                                        Icons.swap_horiz,
-                                        size: 12,
-                                        color: AppColors.textMuted(context),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                '${_fmt(qty)} ${ing.unit}',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: AppColors.textSecondary(context),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Semantics(
-                                button: true,
-                                label: l10n.addToList(ing.name),
-                                child: SizedBox(
-                                  width: 32,
-                                  height: 32,
-                                  child: Material(
-                                    color: AppColors.primary(context),
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: InkWell(
-                                      onTap: () => onAddIngredientToList(
-                                        ShoppingItem(
-                                          productName: ing.name,
-                                          store: '',
-                                          price: cost,
-                                          unitPrice:
-                                              '${ing.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${ing.unit}',
-                                        ),
-                                      ),
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Icon(
-                                        Icons.add,
-                                        size: 16,
-                                        color: AppColors.onPrimary(context),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
-                    ];
-                  }),
-                  if (aiContent != null) ...[
-                    const SizedBox(height: 12),
-                    Text(
-                      l10n.mealPreparation,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textSecondary(context),
-                      ),
-                    ),
-                    const SizedBox(height: 6),
+            const SizedBox(height: 8),
+            // Show ingredients for ALL courses in this meal slot
+            ...allCourses.expand((course) {
+              final courseRecipe = service.recipeMap[course.recipeId];
+              if (courseRecipe == null) return <Widget>[];
+              final courseLabel = allCourses.length > 1
+                  ? _courseLabel(course.courseType, l10n)
+                  : null;
+              return [
+                if (courseLabel != null) ...[
+                  const SizedBox(height: 2),
+                  CalmEyebrow(courseLabel),
+                ] else ...[
+                  CalmEyebrow(l10n.mealIngredients.toUpperCase()),
+                ],
+                ...courseRecipe.ingredients.map((ri) {
+                  final effectiveId =
+                      course.substitutions[ri.ingredientId] ??
+                      ri.ingredientId;
+                  final ing = iMap[effectiveId] ?? iMap[ri.ingredientId];
+                  if (ing == null) return const SizedBox();
+                  final isSubstituted = course.substitutions.containsKey(
+                    ri.ingredientId,
+                  );
+                  final scale = plan.nPessoas / courseRecipe.servings;
+                  final qty = ri.quantity * scale;
+                  final cost = qty * ing.avgPricePerUnit;
+                  // Tap → add to shopping list; tap icon → substitute ingredient.
+                  return CalmListTile(
+                    leadingIcon: isSubstituted ? Icons.swap_horiz : Icons.grain,
+                    leadingColor: isSubstituted
+                        ? AppColors.primary(context)
+                        : AppColors.textMuted(context),
+                    title: ing.name,
+                    subtitle: '${_fmt(qty)} ${ing.unit}${isSubstituted ? ' · substituted' : ''}',
+                    trailing: '${cost.toStringAsFixed(2)}${currencySymbol()}',
+                    onTap: () => onSubstituteCourseIngredient(course, ri.ingredientId),
+                  );
+                }),
+              ];
+            }),
+            if (aiContent != null) ...[
+              const SizedBox(height: 8),
+              CalmEyebrow(l10n.mealPreparation.toUpperCase()),
+              const SizedBox(height: 4),
+              CalmCard(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     ...aiContent!.steps.asMap().entries.map(
                       (e) => Padding(
                         padding: const EdgeInsets.only(bottom: 4),
@@ -2466,207 +2194,54 @@ class _DayCard extends StatelessWidget {
                       ),
                     ),
                     if (aiContent!.tip.isNotEmpty) ...[
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: AppColors.warningBackground(context),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.lightbulb_outline,
-                              size: 16,
-                              color: AppColors.warning(context),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                aiContent!.tip,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: AppColors.warn(context),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                      Divider(height: 1, color: AppColors.line(context)),
+                      CalmListTile(
+                        leadingIcon: Icons.lightbulb_outline,
+                        leadingColor: AppColors.warning(context),
+                        title: aiContent!.tip,
                       ),
                     ],
-                    // Variation
                     if (aiContent!.variation.isNotEmpty) ...[
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: AppColors.infoBackground(context),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.shuffle,
-                              size: 16,
-                              color: AppColors.primary(context),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    l10n.mealVariation,
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.primary(context),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    aiContent!.variation,
-                                    style: const TextStyle(fontSize: 12),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                      Divider(height: 1, color: AppColors.line(context)),
+                      CalmListTile(
+                        leadingIcon: Icons.shuffle,
+                        leadingColor: AppColors.primary(context),
+                        title: l10n.mealVariation,
+                        subtitle: aiContent!.variation,
                       ),
                     ],
-                    // Pairing suggestion
                     if (aiContent!.pairingSuggestion.isNotEmpty) ...[
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: AppColors.successBackground(context),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.restaurant,
-                              size: 16,
-                              color: AppColors.success(context),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    l10n.mealPairing,
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.success(context),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    aiContent!.pairingSuggestion,
-                                    style: const TextStyle(fontSize: 12),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                      Divider(height: 1, color: AppColors.line(context)),
+                      CalmListTile(
+                        leadingIcon: Icons.restaurant,
+                        leadingColor: AppColors.success(context),
+                        title: l10n.mealPairing,
+                        subtitle: aiContent!.pairingSuggestion,
                       ),
                     ],
-                    // Storage info
                     if (aiContent!.storageInfo.isNotEmpty) ...[
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: AppColors.surfaceVariant(context),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.kitchen,
-                              size: 16,
-                              color: AppColors.textSecondary(context),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    l10n.mealStorage,
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.textSecondary(context),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    aiContent!.storageInfo,
-                                    style: const TextStyle(fontSize: 12),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                      Divider(height: 1, color: AppColors.line(context)),
+                      CalmListTile(
+                        leadingIcon: Icons.kitchen,
+                        leadingColor: AppColors.textSecondary(context),
+                        title: l10n.mealStorage,
+                        subtitle: aiContent!.storageInfo,
                       ),
                     ],
-                    // Leftover transformation idea
                     if (mealDay.isLeftover &&
                         aiContent!.leftoverIdea.isNotEmpty) ...[
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: AppColors.warn(context)
-                              .withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.auto_fix_high,
-                              size: 16,
-                              color: AppColors.warn(context),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    l10n.mealLeftoverIdea,
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.warn(context),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    aiContent!.leftoverIdea,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: AppColors.warn(context),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                      Divider(height: 1, color: AppColors.line(context)),
+                      CalmListTile(
+                        leadingIcon: Icons.auto_fix_high,
+                        leadingColor: AppColors.warn(context),
+                        title: l10n.mealLeftoverIdea,
+                        subtitle: aiContent!.leftoverIdea,
                       ),
                     ],
                   ],
-                ],
+                ),
               ),
-            ),
+            ],
           ],
         ],
       ),
@@ -2684,8 +2259,8 @@ class _DayCard extends StatelessWidget {
     }
   }
 
-  /// Builds compact course rows. Single: just name. Multi: icon+name+swap.
-  List<Widget> _buildCourseRows(
+  /// Builds course rows as CalmListTile for the compact header display.
+  List<Widget> _buildCourseListTiles(
     BuildContext context,
     S l10n,
     Recipe mainRecipe,
@@ -2695,44 +2270,48 @@ class _DayCard extends StatelessWidget {
     final hasCourses = allCourses.length > 1;
 
     if (!hasCourses) {
-      widgets.add(Text(mainRecipe.name, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)));
+      // Single course: show as CalmListTile
+      widgets.add(CalmListTile(
+        leadingIcon: Icons.restaurant,
+        leadingColor: AppColors.primary(context),
+        title: mainRecipe.name,
+        onTap: onSwap,
+      ));
       return widgets;
     }
 
-    // Soup/starter course
+    // Multi-course: soup/starter, main, dessert each as CalmListTile
     for (final course in allCourses) {
       if (course.courseType == CourseType.soupOrStarter) {
         final soupRecipe = service.recipeMap[course.recipeId];
         if (soupRecipe != null) {
-          widgets.add(_CourseRow(
-            icon: Icons.soup_kitchen,
-            recipeName: soupRecipe.name,
-            color: AppColors.warn(context),
-            onSwap: () => onSwapCourse(course),
+          widgets.add(CalmListTile(
+            leadingIcon: Icons.soup_kitchen,
+            leadingColor: AppColors.warn(context),
+            title: soupRecipe.name,
+            onTap: () => onSwapCourse(course),
           ));
-          widgets.add(const SizedBox(height: 2));
         }
       }
     }
 
-    // Main course inline
-    widgets.add(_CourseRow(
-      icon: Icons.restaurant,
-      recipeName: mainRecipe.name,
-      color: AppColors.primary(context),
-      onSwap: onSwap,
+    // Main course
+    widgets.add(CalmListTile(
+      leadingIcon: Icons.restaurant,
+      leadingColor: AppColors.primary(context),
+      title: mainRecipe.name,
+      onTap: onSwap,
     ));
 
     for (final course in allCourses) {
       if (course.courseType == CourseType.dessert) {
         final dessertRecipe = service.recipeMap[course.recipeId];
         if (dessertRecipe != null) {
-          widgets.add(const SizedBox(height: 2));
-          widgets.add(_CourseRow(
-            icon: Icons.icecream,
-            recipeName: dessertRecipe.name,
-            color: AppColors.accent(context),
-            onSwap: () => onSwapCourse(course),
+          widgets.add(CalmListTile(
+            leadingIcon: Icons.icecream,
+            leadingColor: AppColors.accent(context),
+            title: dessertRecipe.name,
+            onTap: () => onSwapCourse(course),
           ));
         }
       }
@@ -2744,48 +2323,6 @@ class _DayCard extends StatelessWidget {
   String _fmt(double v) {
     if (v == v.roundToDouble()) return v.round().toString();
     return v.toStringAsFixed(1);
-  }
-}
-
-/// Compact row for a companion course (soup/starter or dessert).
-class _CourseRow extends StatelessWidget {
-  final IconData icon;
-  final String recipeName;
-  final Color color;
-  final VoidCallback onSwap;
-
-  const _CourseRow({
-    required this.icon,
-    required this.recipeName,
-    required this.color,
-    required this.onSwap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 1),
-      child: Row(
-        children: [
-          Icon(icon, size: 14, color: color),
-          const SizedBox(width: 6),
-          Expanded(
-            child: Text(
-              recipeName,
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          GestureDetector(
-            onTap: onSwap,
-            child: Padding(
-              padding: const EdgeInsets.all(4),
-              child: Icon(Icons.swap_horiz, size: 16, color: color),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
 
@@ -2889,74 +2426,46 @@ class _SwapSheetState extends State<_SwapSheet> {
               ],
             ),
             const SizedBox(height: 12),
-            ..._alternatives.take(6).map((r) {
-              final cost = widget.service.recipeCost(
-                r,
-                widget.nPessoas,
-                widget.ingredientMap,
-              );
-              final delta = cost - currentCost;
-              final deltaStr = delta >= 0
-                  ? '+${delta.toStringAsFixed(2)}${currencySymbol()}'
-                  : '${delta.toStringAsFixed(2)}${currencySymbol()}';
-              final deltaColor = delta > 0
-                  ? AppColors.bad(context)
-                  : AppColors.ok(context);
-              // Show meal type badge for cross-type results
-              final isCrossType = !r.suitableMealTypes.contains(
-                widget.currentMealType.name,
-              );
-              return ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Row(
-                  children: [
-                    Expanded(
-                      child: Text(r.name, style: const TextStyle(fontSize: 14)),
-                    ),
-                    if (_showAllMealTypes && isCrossType)
-                      Container(
-                        margin: const EdgeInsets.only(left: 6),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary(
-                            context,
-                          ).withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          r.suitableMealTypes.first,
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: AppColors.primary(context),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-                subtitle: Text(
-                  l10n.mealTotalCost(cost.toStringAsFixed(2)),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textSecondary(context),
-                  ),
-                ),
-                trailing: Text(
-                  deltaStr,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: deltaColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  widget.onSelect(r.id);
-                },
-              );
-            }),
+            CalmCard(
+              padding: const EdgeInsets.all(0),
+              child: Column(
+                children: [
+                  ..._alternatives.take(6).map((r) {
+                    final cost = widget.service.recipeCost(
+                      r,
+                      widget.nPessoas,
+                      widget.ingredientMap,
+                    );
+                    final delta = cost - currentCost;
+                    final deltaStr = delta >= 0
+                        ? '+${delta.toStringAsFixed(2)}${currencySymbol()}'
+                        : '${delta.toStringAsFixed(2)}${currencySymbol()}';
+                    final deltaColor = delta > 0
+                        ? AppColors.bad(context)
+                        : AppColors.ok(context);
+                    // Show meal type badge for cross-type results via subtitle
+                    final isCrossType = !r.suitableMealTypes.contains(
+                      widget.currentMealType.name,
+                    );
+                    final subtitleParts = [
+                      l10n.mealTotalCost(cost.toStringAsFixed(2)),
+                      if (_showAllMealTypes && isCrossType) r.suitableMealTypes.first,
+                    ];
+                    return CalmListTile(
+                      leadingIcon: Icons.restaurant_menu,
+                      leadingColor: deltaColor,
+                      title: r.name,
+                      subtitle: subtitleParts.join(' · '),
+                      trailing: deltaStr,
+                      onTap: () {
+                        Navigator.pop(context);
+                        widget.onSelect(r.id);
+                      },
+                    );
+                  }),
+                ],
+              ),
+            ),
             const SizedBox(height: 8),
             SizedBox(
               width: double.infinity,
@@ -3009,13 +2518,15 @@ class _ConsolidatedSheet extends StatelessWidget {
       expand: false,
       builder: (_, controller) => Column(
         children: [
-          Container(
-            width: 40,
-            height: 4,
-            margin: const EdgeInsets.symmetric(vertical: 12),
-            decoration: BoxDecoration(
-              color: AppColors.borderMuted(context),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: ClipRRect( // Justified: drag-handle indicator, no Calm equivalent
               borderRadius: BorderRadius.circular(2),
+              child: SizedBox(
+                width: 40,
+                height: 4,
+                child: ColoredBox(color: AppColors.borderMuted(context)),
+              ),
             ),
           ),
           Padding(
@@ -3041,78 +2552,35 @@ class _ConsolidatedSheet extends StatelessWidget {
                 if (items == null || items.isEmpty) return <Widget>[];
                 return [
                   const SizedBox(height: 16),
-                  Text(
-                    _categoryLabel(cat, l10n).toUpperCase(),
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textMuted(context),
-                      letterSpacing: 0.8,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  ...items.map((entry) {
-                    final ing = ingredientMap[entry.key]!;
-                    final cost = entry.value * ing.avgPricePerUnit;
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              ing.name,
-                              style: const TextStyle(fontSize: 14),
-                            ),
-                          ),
-                          Text(
-                            '${_fmt(entry.value)} ${ing.unit}',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: AppColors.textSecondary(context),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            '${cost.toStringAsFixed(2)}${currencySymbol()}',
-                            style: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Semantics(
-                            button: true,
-                            label: l10n.addToList(ing.name),
-                            child: SizedBox(
-                              width: 40,
-                              height: 40,
-                              child: Material(
-                                color: AppColors.primary(context),
-                                borderRadius: BorderRadius.circular(10),
-                                child: InkWell(
-                                  onTap: () => onAddToShoppingList(
-                                    ShoppingItem(
-                                      productName: ing.name,
-                                      store: '',
-                                      price: cost,
-                                      unitPrice:
-                                          '${ing.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${ing.unit}',
-                                    ),
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Icon(
-                                    Icons.add,
-                                    size: 18,
-                                    color: AppColors.onPrimary(context),
-                                  ),
-                                ),
+                  CalmEyebrow(_categoryLabel(cat, l10n).toUpperCase()),
+                  const SizedBox(height: 4),
+                  CalmCard(
+                    padding: const EdgeInsets.all(0),
+                    child: Column(
+                      children: [
+                        ...items.map((entry) {
+                          final ing = ingredientMap[entry.key]!;
+                          final cost = entry.value * ing.avgPricePerUnit;
+                          return CalmListTile(
+                            leadingIcon: _ingredientCategoryIcon(cat),
+                            leadingColor: _ingredientCategoryColor(cat, context),
+                            title: ing.name,
+                            subtitle: '${_fmt(entry.value)} ${ing.unit}',
+                            trailing: '${cost.toStringAsFixed(2)}${currencySymbol()}',
+                            onTap: () => onAddToShoppingList(
+                              ShoppingItem(
+                                productName: ing.name,
+                                store: '',
+                                price: cost,
+                                unitPrice:
+                                    '${ing.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${ing.unit}',
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
+                          );
+                        }),
+                      ],
+                    ),
+                  ),
                 ];
               }).toList(),
             ),
@@ -3134,6 +2602,36 @@ class _ConsolidatedSheet extends StatelessWidget {
         return l10n.mealCatFats;
       case IngredientCategory.condimento:
         return l10n.mealCatCondiments;
+    }
+  }
+
+  IconData _ingredientCategoryIcon(IngredientCategory cat) {
+    switch (cat) {
+      case IngredientCategory.proteina:
+        return Icons.egg_outlined;
+      case IngredientCategory.vegetal:
+        return Icons.eco_outlined;
+      case IngredientCategory.carbo:
+        return Icons.grain;
+      case IngredientCategory.gordura:
+        return Icons.water_drop_outlined;
+      case IngredientCategory.condimento:
+        return Icons.spa_outlined;
+    }
+  }
+
+  Color _ingredientCategoryColor(IngredientCategory cat, BuildContext context) {
+    switch (cat) {
+      case IngredientCategory.proteina:
+        return AppColors.error(context);
+      case IngredientCategory.vegetal:
+        return AppColors.ok(context);
+      case IngredientCategory.carbo:
+        return AppColors.warning(context);
+      case IngredientCategory.gordura:
+        return AppColors.accent(context);
+      case IngredientCategory.condimento:
+        return AppColors.primary(context);
     }
   }
 
@@ -3173,9 +2671,9 @@ class _NutriBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Container( // Justified: micro nutrition badge — no Calm equivalent for inline tinted label
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
+      decoration: BoxDecoration( // Justified: micro nutrition badge colour tint
         color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(4),
       ),
