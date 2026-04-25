@@ -158,7 +158,7 @@ class _HouseholdActivityScreenState extends State<HouseholdActivityScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                CalmEyebrow(label: section.label),
+                CalmEyebrow(section.label),
                 const SizedBox(height: 8),
                 CalmCard(
                   child: Column(
