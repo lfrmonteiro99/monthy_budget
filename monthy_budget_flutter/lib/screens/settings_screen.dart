@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/app_settings.dart';
 import '../models/product.dart';
@@ -339,8 +340,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
+    return CalmScaffold(
+      // Custom in-body header acts as the AppBar; opt out of horizontal
+      // padding so the header bleeds edge-to-edge like the original.
+      bodyPadding: EdgeInsets.zero,
       body: SafeArea(
         child: Column(
           children: [
@@ -3825,20 +3828,8 @@ class _SettingsDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
-      appBar: AppBar(
-        backgroundColor: AppColors.surface(context),
-        elevation: 0,
-        title: Text(
-          title,
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary(context),
-          ),
-        ),
-      ),
+    return CalmScaffold(
+      title: title,
       body: ValueListenableBuilder<int>(
         valueListenable: rebuildNotifier,
         builder: (context, _, child) => SingleChildScrollView(

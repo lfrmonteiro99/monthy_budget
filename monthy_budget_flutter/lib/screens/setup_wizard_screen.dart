@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../data/tax/tax_system.dart';
@@ -205,31 +206,31 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
-      appBar: _step >= 1 && _step <= _dataSteps
-          ? AppBar(
-              backgroundColor: AppColors.surface(context),
-              elevation: 0,
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: _back,
-              ),
-              title: Text(
-                S.of(context).setupWizardStepOf(_step, _dataSteps),
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-              bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(6),
-                child: LinearProgressIndicator(
-                  value: _step / _dataSteps,
-                  backgroundColor: AppColors.border(context),
-                  color: AppColors.primary(context),
-                  minHeight: 6,
-                ),
+    final showAppBar = _step >= 1 && _step <= _dataSteps;
+    return CalmScaffold(
+      title: showAppBar
+          ? S.of(context).setupWizardStepOf(_step, _dataSteps)
+          : null,
+      leading: showAppBar
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: _back,
+            )
+          : null,
+      bottom: showAppBar
+          ? PreferredSize(
+              preferredSize: const Size.fromHeight(6),
+              child: LinearProgressIndicator(
+                value: _step / _dataSteps,
+                backgroundColor: AppColors.border(context),
+                color: AppColors.primary(context),
+                minHeight: 6,
               ),
             )
           : null,
+      // Steps lay out their own padding/SafeArea; opt out of CalmScaffold's
+      // 20px horizontal so PageView keeps full width.
+      bodyPadding: EdgeInsets.zero,
       body: PageView(
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(),

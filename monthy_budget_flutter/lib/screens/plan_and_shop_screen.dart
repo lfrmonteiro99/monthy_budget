@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/grocery_data.dart';
@@ -108,52 +109,47 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen>
   Widget build(BuildContext context) {
     final l10n = S.of(context);
 
-    // CalmScaffold applies horizontal padding which would clip TabBarView
-    // children (embedded full-width screens). Use raw Scaffold with Calm
-    // colour tokens and build the tab chrome inline.
-    return Scaffold(
-      backgroundColor: AppColors.bg(context),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        title: Text(l10n.navPlanAndShop),
-        actions: _buildActions(context, l10n),
-        bottom: TabBar(
-          controller: _tabController,
-          labelColor: AppColors.accent(context),
-          unselectedLabelColor: AppColors.ink50(context),
-          indicatorColor: AppColors.accent(context),
-          dividerColor: AppColors.line(context),
-          labelStyle:
-              const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-          unselectedLabelStyle:
-              const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
-          tabs: [
-            Tab(
-              icon: const Icon(Icons.shopping_basket_outlined, size: 20),
-              text: l10n.planShoppingList,
-            ),
-            Tab(
-              icon: const Icon(Icons.shopping_cart_outlined, size: 20),
-              text: l10n.groceryTitle,
-            ),
-            Tab(
-              icon: widget.canAccessMeals
-                  ? const Icon(Icons.restaurant_outlined, size: 20)
-                  : Badge(
-                      label: Text(
-                        l10n.planMealsProBadge,
-                        style: const TextStyle(
-                            fontSize: 8, fontWeight: FontWeight.w700),
-                      ),
-                      child: const Icon(Icons.restaurant_outlined, size: 20),
+    // bodyPadding: EdgeInsets.zero so embedded full-width TabBarView
+    // children (ShoppingListScreen, GroceryScreen, MealPlannerScreen) are
+    // not clipped by CalmScaffold's default 20px horizontal padding.
+    return CalmScaffold(
+      title: l10n.navPlanAndShop,
+      actions: _buildActions(context, l10n),
+      bottom: TabBar(
+        controller: _tabController,
+        labelColor: AppColors.accent(context),
+        unselectedLabelColor: AppColors.ink50(context),
+        indicatorColor: AppColors.accent(context),
+        dividerColor: AppColors.line(context),
+        labelStyle:
+            const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+        unselectedLabelStyle:
+            const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+        tabs: [
+          Tab(
+            icon: const Icon(Icons.shopping_basket_outlined, size: 20),
+            text: l10n.planShoppingList,
+          ),
+          Tab(
+            icon: const Icon(Icons.shopping_cart_outlined, size: 20),
+            text: l10n.groceryTitle,
+          ),
+          Tab(
+            icon: widget.canAccessMeals
+                ? const Icon(Icons.restaurant_outlined, size: 20)
+                : Badge(
+                    label: Text(
+                      l10n.planMealsProBadge,
+                      style: const TextStyle(
+                          fontSize: 8, fontWeight: FontWeight.w700),
                     ),
-              text: l10n.mealPlannerTitle,
-            ),
-          ],
-        ),
+                    child: const Icon(Icons.restaurant_outlined, size: 20),
+                  ),
+            text: l10n.mealPlannerTitle,
+          ),
+        ],
       ),
+      bodyPadding: EdgeInsets.zero,
       body: TabBarView(
         controller: _tabController,
         children: [
