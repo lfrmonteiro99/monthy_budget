@@ -306,14 +306,12 @@ class _NotificationSettingsScreenState
           ),
           const SizedBox(height: 8),
           if (_prefs.customReminders.isEmpty)
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24),
-                child: CalmEmptyState(
-                  icon: Icons.notifications_off_outlined,
-                  title: l10n.notificationEmpty,
-                  body: '',
-                ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24),
+              child: CalmEmptyState(
+                icon: Icons.notifications_off_outlined,
+                title: l10n.notificationEmpty,
+                body: '',
               ),
             )
           else
