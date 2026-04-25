@@ -211,17 +211,17 @@ jobs:
           VALIDATE_OK=true
           VALIDATE_MSG=""
 
-          if ! echo "$PR_BODY" | grep -Eiq '(Fixes|Closes|Resolves)[[:space:]]+#[0-9]+'; then
+          if ! grep -Eiq '(Fixes|Closes|Resolves)[[:space:]]+#[0-9]+' <<<"$PR_BODY"; then
             VALIDATE_OK=false
             VALIDATE_MSG="PR body must include: Fixes #<issue-number>"
           fi
 
-          if ! echo "$PR_BODY" | grep -Eiq '^##[[:space:]]+Release Notes'; then
+          if ! grep -Eiq '^##[[:space:]]+Release Notes' <<<"$PR_BODY"; then
             VALIDATE_OK=false
             VALIDATE_MSG="${VALIDATE_MSG:+$VALIDATE_MSG; }PR body must include a '## Release Notes' section"
           fi
 
-          if ! echo "$PR_LABELS" | grep -Eq '(^|,)(release:patch|release:minor|release:major)(,|$)'; then
+          if ! grep -Eq '(^|,)(release:patch|release:minor|release:major)(,|$)' <<<"$PR_LABELS"; then
             VALIDATE_OK=false
             VALIDATE_MSG="${VALIDATE_MSG:+$VALIDATE_MSG; }PR must include one release label: release:patch | release:minor | release:major"
           fi
