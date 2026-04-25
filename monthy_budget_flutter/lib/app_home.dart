@@ -2152,7 +2152,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           bottomNavigationBar: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(height: 1, color: const Color(0xFFF1F5F9)),
+              Container(height: 1, color: AppColors.line(context)),
               NavigationBar(
                 key: _navBarKey,
                 selectedIndex: _currentTab.navigationIndex,
@@ -2185,7 +2185,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                   NavigationDestination(
                     icon: Badge(
                       isLabelVisible: _shoppingList.any((i) => !i.checked),
-                      backgroundColor: const Color(0xFFEF4444),
+                      backgroundColor: AppColors.bad(context),
                       label: Text(
                         '${_shoppingList.where((i) => !i.checked).length}',
                         style: const TextStyle(
@@ -2198,7 +2198,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                     ),
                     selectedIcon: Badge(
                       isLabelVisible: _shoppingList.any((i) => !i.checked),
-                      backgroundColor: const Color(0xFFEF4444),
+                      backgroundColor: AppColors.bad(context),
                       label: Text(
                         '${_shoppingList.where((i) => !i.checked).length}',
                         style: const TextStyle(
