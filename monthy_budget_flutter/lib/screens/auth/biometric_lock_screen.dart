@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../services/biometric_service.dart';
 import '../../theme/app_colors.dart';
@@ -42,11 +43,10 @@ class _BiometricLockScreenState extends State<BiometricLockScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
+    return CalmScaffold(
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(32),
+          padding: const EdgeInsets.symmetric(vertical: 32),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
