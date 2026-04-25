@@ -2631,14 +2631,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               const SizedBox(height: 16),
               _label(l10n.settingsActiveMeals),
               const SizedBox(height: 8),
-              ...MealType.values.map((mt) => SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(mt.localizedLabel(l10n),
-                        style: const TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w500)),
-                    subtitle: Text(l10n.subtitleMealTypeInclude, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+              ...MealType.values.map((mt) => CalmSwitchRow(
+                    title: mt.localizedLabel(l10n),
+                    subtitle: l10n.subtitleMealTypeInclude,
                     value: ms.enabledMeals.contains(mt),
-                    activeTrackColor: AppColors.primary(context),
                     onChanged: (v) {
                       final newSet = Set<MealType>.from(ms.enabledMeals);
                       if (v) {
@@ -2652,14 +2648,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     },
                   )),
               const SizedBox(height: 8),
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(l10n.settingsPreferSeasonal,
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                subtitle: Text(l10n.settingsPreferSeasonalDesc,
-                    style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+              CalmSwitchRow(
+                title: l10n.settingsPreferSeasonal,
+                subtitle: l10n.settingsPreferSeasonalDesc,
                 value: ms.preferSeasonal,
-                activeTrackColor: AppColors.primary(context),
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
                     mealSettings: ms.copyWith(preferSeasonal: v))),
               ),
@@ -2949,25 +2941,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: l10n.wizardCourseStructure,
             subtitle: l10n.mealSubstituteHint,
             children: [
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(l10n.wizardIncludeSoupStarter,
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                subtitle: Text(l10n.wizardSoupStarterHint, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
-                secondary: const Icon(Icons.soup_kitchen, size: 22),
+              CalmSwitchRow(
+                title: l10n.wizardIncludeSoupStarter,
+                subtitle: l10n.wizardSoupStarterHint,
+                leadingIcon: Icons.soup_kitchen,
                 value: ms.includeSoupOrStarter,
-                activeTrackColor: AppColors.primary(context),
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
                     mealSettings: ms.copyWith(includeSoupOrStarter: v))),
               ),
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(l10n.wizardIncludeDessert,
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                subtitle: Text(l10n.wizardDessertHint, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
-                secondary: const Icon(Icons.icecream, size: 22),
+              CalmSwitchRow(
+                title: l10n.wizardIncludeDessert,
+                subtitle: l10n.wizardDessertHint,
+                leadingIcon: Icons.icecream,
                 value: ms.includeDessert,
-                activeTrackColor: AppColors.primary(context),
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
                     mealSettings: ms.copyWith(includeDessert: v))),
               ),
@@ -2980,14 +2966,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: l10n.mealSectionStrategies,
             subtitle: l10n.mealSectionStrategiesSub,
             children: [
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(l10n.settingsBatchCooking,
-                    style:
-                        const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                subtitle: Text(l10n.subtitleBatchCooking, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+              CalmSwitchRow(
+                title: l10n.settingsBatchCooking,
+                subtitle: l10n.subtitleBatchCooking,
                 value: ms.batchCookingEnabled,
-                activeTrackColor: AppColors.primary(context),
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
                     mealSettings: ms.copyWith(batchCookingEnabled: v))),
               ),
@@ -3008,25 +2990,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   child: Text(l10n.helperMaxBatchDays, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
                 ),
               ],
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(l10n.settingsReuseLeftovers,
-                    style:
-                        const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                subtitle: Text(l10n.subtitleReuseLeftovers, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+              CalmSwitchRow(
+                title: l10n.settingsReuseLeftovers,
+                subtitle: l10n.subtitleReuseLeftovers,
                 value: ms.reuseLeftovers,
-                activeTrackColor: AppColors.primary(context),
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
                     mealSettings: ms.copyWith(reuseLeftovers: v))),
               ),
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(l10n.settingsMinimizeWaste,
-                    style:
-                        const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                subtitle: Text(l10n.subtitleMinimizeWaste, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+              CalmSwitchRow(
+                title: l10n.settingsMinimizeWaste,
+                subtitle: l10n.subtitleMinimizeWaste,
                 value: ms.minimizeWaste,
-                activeTrackColor: AppColors.primary(context),
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
                     mealSettings: ms.copyWith(minimizeWaste: v))),
               ),
@@ -3047,25 +3021,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   child: Text(l10n.helperNewIngredients, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
                 ),
               ],
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(l10n.settingsPrioritizeLowCost,
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                subtitle: Text(l10n.settingsPrioritizeLowCostDesc,
-                    style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+              CalmSwitchRow(
+                title: l10n.settingsPrioritizeLowCost,
+                subtitle: l10n.settingsPrioritizeLowCostDesc,
                 value: ms.prioritizeLowCost,
-                activeTrackColor: AppColors.primary(context),
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
                     mealSettings: ms.copyWith(prioritizeLowCost: v))),
               ),
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(l10n.settingsLunchboxLunches,
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                subtitle: Text(l10n.settingsLunchboxLunchesDesc,
-                    style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+              CalmSwitchRow(
+                title: l10n.settingsLunchboxLunches,
+                subtitle: l10n.settingsLunchboxLunchesDesc,
                 value: ms.lunchboxLunches,
-                activeTrackColor: AppColors.primary(context),
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
                     mealSettings: ms.copyWith(lunchboxLunches: v))),
               ),
