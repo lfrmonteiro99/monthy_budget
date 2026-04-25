@@ -65,6 +65,31 @@ class AppColors {
       ? const Color(0xFF8B9BFF).withValues(alpha: 0.14)
       : const Color(0xFFEAEEFF);
 
+  // ── Calm money redesign tokens (Wave T) ─────────────────────────────
+  //   §0 of the Calm redesign frontend spec.
+
+  /// Text/icon colour on dark fills (centre FAB, dark avatar).
+  /// Light: white. Dark: near-black so dark FAB stays visually grounded.
+  static Color inkInverse(BuildContext c) =>
+      _isDark(c) ? const Color(0xFF0B0E14) : const Color(0xFFFFFFFF);
+
+  /// Fill for elements that must remain near-black on both themes
+  /// (centre FAB, dark avatar circle). Semantically distinct from [ink]
+  /// — in dark mode [ink] is light but [inkSurface] stays near-black.
+  static Color inkSurface(BuildContext c) =>
+      _isDark(c) ? const Color(0xFFF5F2EC) : const Color(0xFF0B0E14);
+
+  /// Warm cream background for the "Plano Plus" subscription pill.
+  /// Distinct from [accentSoft] (too cold/blue). In dark mode uses a
+  /// 18%-alpha overlay of the accent colour for legibility.
+  static Color pillCream(BuildContext c) => _isDark(c)
+      ? const Color(0xFF8B9BFF).withValues(alpha: 0.18)
+      : const Color(0xFFF4ECD8);
+
+  /// Text colour inside [pillCream].
+  static Color pillCreamInk(BuildContext c) =>
+      _isDark(c) ? const Color(0xFFF0DFA8) : const Color(0xFF5C4A1E);
+
   // Semantic status
   static Color ok(BuildContext c) =>
       _isDark(c) ? const Color(0xFF4ADE80) : const Color(0xFF0E9F6E);
