@@ -113,6 +113,15 @@ class _GroceryScreenState extends State<GroceryScreen> {
     return list;
   }
 
+  /// Products whose names are in the pantry id set.
+  List<Product> get _pantryProducts {
+    if (widget.weeklyPantryIds.isEmpty) return const [];
+    return widget.products
+        .where((p) =>
+            widget.weeklyPantryIds.contains(p.name.toLowerCase()))
+        .toList();
+  }
+
   IconData _categoryIcon(String cat) {
     const map = {
       'Frutas': Icons.eco,
@@ -137,7 +146,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
     // Map grocery category strings to Calm category swatches by semantic match.
     // Resolved via AppColors.categoryColorByName which reads from
     // AppColors._expenseCategoryColors — the single source of truth for swatches.
-    const _groceryCategoryToExpense = {
+    const groceryCategoryToExpense = {
       'Frutas': 'alimentacao',
       'Legumes': 'alimentacao',
       'Carnes': 'habitacao',
@@ -153,7 +162,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
       'Limpeza': 'educacao',
       'Higiene': 'saude',
     };
-    final expenseName = _groceryCategoryToExpense[cat] ?? 'outros';
+    final expenseName = groceryCategoryToExpense[cat] ?? 'outros';
     return AppColors.categoryColorByName(expenseName);
   }
 
@@ -234,37 +243,6 @@ class _GroceryScreenState extends State<GroceryScreen> {
     }
     final cats = byCategory.keys.toList()..sort();
 
-    final searchBar = Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: TextField(
-        key: GroceryTourKeys.searchBar,
-        onChanged: (v) => setState(() => _searchQuery = v),
-        decoration: InputDecoration(
-          hintText: l10n.grocerySearchHint,
-          hintStyle:
-              TextStyle(color: AppColors.ink50(context), fontSize: 14),
-          prefixIcon: Icon(Icons.search,
-              color: AppColors.ink50(context), size: 20),
-          filled: true,
-          fillColor: AppColors.bgSunk(context),
-          contentPadding: const EdgeInsets.symmetric(vertical: 10),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide: BorderSide(color: AppColors.line(context)),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide: BorderSide(color: AppColors.line(context)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide:
-                BorderSide(color: AppColors.accent(context), width: 2),
-          ),
-        ),
-      ),
-    );
-
     final bodyContent = widget.isLoading
         ? Center(
             child: Semantics(
@@ -287,79 +265,107 @@ class _GroceryScreenState extends State<GroceryScreen> {
             ? Center(child: _buildEmptyState(l10n))
             : Column(
                 children: [
-                  searchBar,
-                  if ((widget.groceryData?.hasCountryBundle ?? false))
-                    _buildAvailabilityCard(l10n),
-                  // Category filter chips
-                  SizedBox(
-                    key: GroceryTourKeys.categoryFilter,
-                    height: 44,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
+                  // Hero summary: catalog count + active scope
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: CalmHero(
+                      eyebrow: 'COMPRAS', // TODO(l10n): extrair chave
+                      amount: '${widget.products.length}',
+                      subtitle: _selectedCategory ?? l10n.groceryAll,
+                    ),
+                  ),
+                  // Search + filter wrapped in a CalmCard surface
+                  CalmCard(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (_canFilterStaleStores) ...[
-                          FilterChip(
-                            label: Text(
-                              l10n.groceryHideStaleStores,
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: _hideStaleStores
-                                    ? AppColors.bg(context)
-                                    : AppColors.ink70(context),
-                              ),
+                        CalmEyebrow('FILTROS'), // TODO(l10n): extrair chave
+                        const SizedBox(height: 10),
+                        TextField(
+                          key: GroceryTourKeys.searchBar,
+                          onChanged: (v) =>
+                              setState(() => _searchQuery = v),
+                          decoration: InputDecoration(
+                            hintText: l10n.grocerySearchHint,
+                            hintStyle: TextStyle(
+                                color: AppColors.ink50(context),
+                                fontSize: 14),
+                            prefixIcon: Icon(Icons.search,
+                                color: AppColors.ink50(context), size: 20),
+                            filled: true,
+                            fillColor: AppColors.bgSunk(context),
+                            contentPadding:
+                                const EdgeInsets.symmetric(vertical: 10),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(14),
+                              borderSide: BorderSide(
+                                  color: AppColors.line(context)),
                             ),
-                            selected: _hideStaleStores,
-                            onSelected: (value) =>
-                                setState(() => _hideStaleStores = value),
-                            selectedColor: AppColors.warn(context),
-                            backgroundColor: AppColors.card(context),
-                            side: BorderSide(
-                              color: _hideStaleStores
-                                  ? AppColors.warn(context)
-                                  : AppColors.line(context),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(14),
+                              borderSide: BorderSide(
+                                  color: AppColors.line(context)),
                             ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(14),
+                              borderSide: BorderSide(
+                                  color: AppColors.accent(context),
+                                  width: 2),
                             ),
-                            showCheckmark: false,
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 4),
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
-                            visualDensity: VisualDensity.compact,
                           ),
-                          const SizedBox(width: 8),
-                        ],
-                        _chip(l10n.groceryAll, _selectedCategory == null,
-                            () => setState(() => _selectedCategory = null)),
-                        ..._categories.map((cat) => Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: _chip(
-                                cat,
-                                _selectedCategory == cat,
-                                () => setState(() => _selectedCategory == cat
-                                    ? _selectedCategory = null
-                                    : _selectedCategory = cat),
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          key: GroceryTourKeys.categoryFilter,
+                          height: 36,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: [
+                              if (_canFilterStaleStores) ...[
+                                _staleFilterPill(),
+                                const SizedBox(width: 8),
+                              ],
+                              _categoryChip(
+                                l10n.groceryAll,
+                                _selectedCategory == null,
+                                () => setState(
+                                    () => _selectedCategory = null),
                               ),
-                            )),
+                              ..._categories.map((cat) => Padding(
+                                    padding:
+                                        const EdgeInsets.only(left: 8),
+                                    child: _categoryChip(
+                                      cat,
+                                      _selectedCategory == cat,
+                                      () => setState(
+                                        () =>
+                                            _selectedCategory == cat
+                                                ? _selectedCategory = null
+                                                : _selectedCategory = cat,
+                                      ),
+                                    ),
+                                  )),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          l10n.groceryProductCount(filtered.length),
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.ink50(context),
+                              fontWeight: FontWeight.w500),
+                        ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  // Count
-                  Row(
-                    children: [
-                      Text(
-                        l10n.groceryProductCount(filtered.length),
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: AppColors.ink50(context),
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 12),
+                  // Pantry items summary card (shown when user has marked items)
+                  if (_pantryProducts.isNotEmpty) _buildPantryCard(l10n),
+                  // Availability card (country data bundle)
+                  if ((widget.groceryData?.hasCountryBundle ?? false))
+                    _buildAvailabilityCard(l10n),
                   // Product list grouped by category
                   Expanded(
                     child: ListView.builder(
@@ -368,8 +374,8 @@ class _GroceryScreenState extends State<GroceryScreen> {
                       itemBuilder: (_, i) {
                         final cat = cats[i];
                         final items = byCategory[cat]!;
-                        return _buildCategory(cat, items,
-                            isFirst: i == 0);
+                        return _buildCategory(
+                            cat, items, isFirst: i == 0);
                       },
                     ),
                   ),
@@ -377,15 +383,9 @@ class _GroceryScreenState extends State<GroceryScreen> {
               );
 
     if (widget.embedded) {
-      return Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
-            child: searchBar,
-          ),
-          Expanded(child: bodyContent),
-        ],
-      );
+      // In embedded mode (e.g. inside TabBarView), the parent provides
+      // height constraints. Wrap in Column so the inner Expanded resolves.
+      return Column(children: [Expanded(child: bodyContent)]);
     }
 
     return CalmScaffold(
@@ -399,15 +399,52 @@ class _GroceryScreenState extends State<GroceryScreen> {
             onPressed: _onScanBarcode,
           ),
       ],
-      body: bodyContent,
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+        child: bodyContent,
+      ),
     );
   }
 
   Widget _buildEmptyState(S l10n) {
     return CalmEmptyState(
-      icon: Icons.shopping_cart_outlined,
+      icon: Icons.shopping_basket_outlined,
       title: l10n.groceryEmptyStateTitle,
       body: l10n.groceryEmptyStateMessage,
+    );
+  }
+
+  /// Pantry items section — products already marked as "em casa".
+  /// Each product is rendered as a CalmListTile row so pantry status is
+  /// visible before the user scrolls the full product list.
+  Widget _buildPantryCard(S l10n) {
+    final pantry = _pantryProducts;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: CalmCard(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CalmEyebrow('EM CASA'), // TODO(l10n): extrair chave
+            const SizedBox(height: 8),
+            for (int i = 0; i < pantry.length; i++) ...[
+              CalmListTile(
+                leadingIcon: Icons.home,
+                leadingColor: AppColors.ok(context),
+                title: pantry[i].name,
+                subtitle: pantry[i].category,
+                trailing: formatCurrency(pantry[i].avgPrice),
+              ),
+              if (i < pantry.length - 1)
+                Divider(
+                  color: AppColors.line(context),
+                  height: 1,
+                ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 
@@ -420,33 +457,30 @@ class _GroceryScreenState extends State<GroceryScreen> {
     final hasWarning = groceryData.hasDegradedStores;
     final accent =
         hasWarning ? AppColors.warn(context) : AppColors.ok(context);
-    final background = hasWarning
-        ? AppColors.warningBackground(context)
-        : AppColors.successBackground(context);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: background,
-          borderRadius: BorderRadius.circular(14),
-          border:
-              Border.all(color: accent.withValues(alpha: 0.3)),
-        ),
+      child: CalmCard(
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              l10n.groceryAvailabilityTitle,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: accent,
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: CalmEyebrow(
+                    'DISPONIBILIDADE', // TODO(l10n): extrair chave
+                  ),
+                ),
+                CalmPill(
+                  label: hasWarning
+                      ? l10n.groceryStoreStaleLabel
+                      : l10n.groceryStoreFreshLabel,
+                  color: accent,
+                ),
+              ],
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 8),
             Text(
               l10n.groceryAvailabilityCountry(groceryData.countryCode),
               style: TextStyle(
@@ -478,6 +512,23 @@ class _GroceryScreenState extends State<GroceryScreen> {
               ),
             ],
             const SizedBox(height: 8),
+            // Summary stat rows — fresh vs failed store counts
+            CalmListTile(
+              leadingIcon: Icons.check_circle_outline,
+              leadingColor: AppColors.ok(context),
+              title: l10n.groceryStoreFreshLabel,
+              trailing: '${groceryData.freshStoreCount}',
+            ),
+            Divider(color: AppColors.line(context), height: 1),
+            CalmListTile(
+              leadingIcon: Icons.error_outline,
+              leadingColor: AppColors.bad(context),
+              title: l10n.groceryStoreFailedLabel,
+              trailing: '${groceryData.failedStoreCount}',
+            ),
+            Divider(color: AppColors.line(context), height: 1),
+            const SizedBox(height: 4),
+            // Per-store detail rows
             ...groceryData.storeSummaries.map(
               (store) => _buildStoreHealthRow(l10n, store),
             ),
@@ -523,6 +574,8 @@ class _GroceryScreenState extends State<GroceryScreen> {
     return l10n.groceryStoreUpdatedHoursAgo(totalHours);
   }
 
+  /// Each store's freshness rendered as a CalmListTile row.
+  /// Leading icon reflects status; trailing shows a CalmPill badge.
   Widget _buildStoreHealthRow(S l10n, GroceryStoreSummary store) {
     final color = _storeStatusColor(store.status);
     final label = _storeStatusLabel(l10n, store.status);
@@ -530,55 +583,32 @@ class _GroceryScreenState extends State<GroceryScreen> {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
-      child: Row(
+      child: Column(
         children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
+          CalmListTile(
+            leadingIcon: _storeStatusIcon(store.status),
+            leadingColor: color,
+            title: store.storeName,
+            subtitle: ageText,
+            trailing: label,
           ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              store.storeName,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: AppColors.ink(context),
-              ),
-            ),
-          ),
-          if (ageText != null) ...[
-            Text(
-              ageText,
-              style: TextStyle(
-                fontSize: 10,
-                color: AppColors.ink50(context),
-              ),
-            ),
-            const SizedBox(width: 8),
-          ],
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w600,
-                color: color,
-              ),
-            ),
-          ),
+          Divider(color: AppColors.line(context), height: 1),
         ],
       ),
     );
+  }
+
+  IconData _storeStatusIcon(GroceryStoreStatus status) {
+    switch (status) {
+      case GroceryStoreStatus.fresh:
+        return Icons.check_circle_outline;
+      case GroceryStoreStatus.stale:
+        return Icons.schedule_outlined;
+      case GroceryStoreStatus.partial:
+        return Icons.warning_amber_outlined;
+      case GroceryStoreStatus.failed:
+        return Icons.error_outline;
+    }
   }
 
   Widget _buildCategory(String category, List<Product> items,
@@ -591,12 +621,8 @@ class _GroceryScreenState extends State<GroceryScreen> {
           padding: const EdgeInsets.only(top: 20, bottom: 8),
           child: CalmEyebrow(category.toUpperCase()),
         ),
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.card(context),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppColors.line(context)),
-          ),
+        CalmCard(
+          padding: EdgeInsets.zero,
           child: Column(
             children: [
               for (int i = 0; i < items.length; i++) ...[
@@ -634,7 +660,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
     return Semantics(
       label:
           '${product.name}, ${formatCurrency(product.avgPrice)}, ${product.unit}',
-      child: Container(
+      child: SizedBox(
         key: tourKey,
         child: Row(
           children: [
@@ -700,37 +726,31 @@ class _GroceryScreenState extends State<GroceryScreen> {
     );
   }
 
-  Widget _chip(String label, bool selected, VoidCallback onTap) {
+  /// Stale-stores filter pill button.
+  Widget _staleFilterPill() {
+    return GestureDetector(
+      onTap: () => setState(() => _hideStaleStores = !_hideStaleStores),
+      child: CalmPill(
+        label: S.of(context).groceryHideStaleStores,
+        color: _hideStaleStores
+            ? AppColors.warn(context)
+            : AppColors.ink50(context),
+      ),
+    );
+  }
+
+  Widget _categoryChip(String label, bool selected, VoidCallback onTap) {
     return Semantics(
       button: true,
       label: S.of(context).filterBy(label),
       selected: selected,
-      child: Material(
-        color: selected ? AppColors.ink(context) : AppColors.card(context),
-        borderRadius: BorderRadius.circular(100),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(100),
-          child: Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
-              border: Border.all(
-                  color: selected
-                      ? AppColors.ink(context)
-                      : AppColors.line(context)),
-            ),
-            child: Text(
-              label,
-              style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: selected
-                      ? AppColors.bg(context)
-                      : AppColors.ink70(context)),
-            ),
-          ),
+      child: GestureDetector(
+        onTap: onTap,
+        child: CalmPill(
+          label: label,
+          color: selected
+              ? AppColors.accent(context)
+              : AppColors.ink50(context),
         ),
       ),
     );
