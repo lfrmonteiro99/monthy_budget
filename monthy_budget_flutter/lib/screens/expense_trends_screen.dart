@@ -528,18 +528,16 @@ class _ExpenseTrendsScreenState extends State<ExpenseTrendsScreen> {
           child: dashed
               ? Row(
                   children: [
-                    Container(width: 5, height: 3, color: color),
+                    Container(width: 5, height: 3, color: color), // Justified: dashed legend line stroke
                     const SizedBox(width: 3),
-                    Container(width: 5, height: 3, color: color),
+                    Container(width: 5, height: 3, color: color), // Justified: dashed legend line stroke
                     const SizedBox(width: 3),
-                    Container(width: 4, height: 3, color: color),
+                    Container(width: 4, height: 3, color: color), // Justified: dashed legend line stroke
                   ],
                 )
-              : Container(
-                  decoration: BoxDecoration(
-                    color: color,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
+              : ClipRRect(
+                  borderRadius: BorderRadius.circular(2),
+                  child: ColoredBox(color: color),
                 ),
         ),
         const SizedBox(width: 6),
@@ -630,13 +628,9 @@ class _CategoryRow extends StatelessWidget {
         child: Row(
           children: [
             // Leading circular avatar
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.15),
-                shape: BoxShape.circle,
-              ),
+            CircleAvatar(
+              radius: 16,
+              backgroundColor: color.withValues(alpha: 0.15),
               child: Icon(
                 _categoryIcon(stat.category),
                 size: 16,
@@ -663,27 +657,29 @@ class _CategoryRow extends StatelessWidget {
                   const SizedBox(height: 6),
                   LayoutBuilder(
                     builder: (_, constraints) {
-                      return Stack(
-                        children: [
-                          Container(
-                            height: 4,
-                            decoration: BoxDecoration(
-                              color: AppColors.bgSunk(context),
-                              borderRadius: BorderRadius.circular(2),
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(2),
+                        child: Stack(
+                          children: [
+                            SizedBox(
+                              height: 4,
+                              width: double.infinity,
+                              child: ColoredBox(
+                                color: AppColors.bgSunk(context),
+                              ),
                             ),
-                          ),
-                          AnimatedContainer(
-                            duration: AppConstants.animProgressBar,
-                            curve: Curves.easeOutCubic,
-                            height: 4,
-                            width:
-                                constraints.maxWidth * barFraction,
-                            decoration: BoxDecoration(
-                              color: color,
-                              borderRadius: BorderRadius.circular(2),
+                            TweenAnimationBuilder<double>(
+                              tween: Tween<double>(begin: 0, end: barFraction),
+                              duration: AppConstants.animProgressBar,
+                              curve: Curves.easeOutCubic,
+                              builder: (_, fraction, __) => SizedBox(
+                                height: 4,
+                                width: constraints.maxWidth * fraction,
+                                child: ColoredBox(color: color),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       );
                     },
                   ),
@@ -928,6 +924,8 @@ class _CategoryDetailContent extends StatelessWidget {
           const SizedBox(height: 16),
         ],
         // Monthly breakdown list
+        CalmEyebrow('HISTÓRICO MENSAL'), // TODO(l10n): move to ARB (Wave H)
+        const SizedBox(height: 8),
         ...monthlyData.asMap().entries.map((entry) {
           final i = entry.key;
           final d = entry.value;
