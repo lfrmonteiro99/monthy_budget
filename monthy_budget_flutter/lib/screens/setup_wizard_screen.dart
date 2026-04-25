@@ -287,7 +287,8 @@ class _BulletRow extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: Text(text,
-              style: const TextStyle(fontSize: 14, color: Color(0xFF334155))),
+              style: TextStyle(
+                  fontSize: 14, color: AppColors.textSecondary(context))),
         ),
       ],
     );
@@ -353,7 +354,7 @@ class _CompletionStepState extends State<_CompletionStep>
         draft.salaries.isNotEmpty && draft.salaries[0].grossAmount > 0;
     final available = summary.netLiquidity;
     final availableColor =
-        available >= 0 ? const Color(0xFF16A34A) : const Color(0xFFDC2626);
+        available >= 0 ? AppColors.ok(context) : AppColors.bad(context);
 
     final countryFlags = {
       Country.pt: '🇵🇹',
@@ -383,12 +384,12 @@ class _CompletionStepState extends State<_CompletionStep>
               child: Container(
                 width: 72,
                 height: 72,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFF0FDF4),
+                decoration: BoxDecoration(
+                  color: AppColors.successBackground(context),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.check_circle,
-                    size: 48, color: Color(0xFF16A34A)),
+                child: Icon(Icons.check_circle,
+                    size: 48, color: AppColors.ok(context)),
               ),
             ),
             const SizedBox(height: 24),
@@ -609,8 +610,8 @@ class _InfoBox extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: Text(text,
-                style: const TextStyle(
-                    fontSize: 12, color: Color(0xFF1E40AF))),
+                style: TextStyle(
+                    fontSize: 12, color: AppColors.primary(context))),
           ),
         ],
       ),
