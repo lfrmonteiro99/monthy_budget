@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 import '../constants/app_constants.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
@@ -27,113 +28,110 @@ class _WelcomeSlideshowScreenState extends State<WelcomeSlideshowScreen> {
     final l10n = S.of(context);
     final slides = _buildSlides(l10n);
 
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Skip button
-            Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 12, 16, 0),
-                child: TextButton(
-                  onPressed: widget.onComplete,
-                  child: Text(
-                    l10n.onbSkip,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.textSecondary(context),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            // Slides
-            Expanded(
-              child: PageView.builder(
-                controller: _controller,
-                itemCount: slides.length,
-                onPageChanged: (i) => setState(() => _currentPage = i),
-                itemBuilder: (_, i) => _buildSlide(context, slides[i]),
-              ),
-            ),
-            // Swipe hint on first slide
-            if (_currentPage == 0)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+    return CalmScaffold(
+      body: Column(
+        children: [
+          // Skip button
+          Align(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: TextButton(
+                onPressed: widget.onComplete,
                 child: Text(
-                  l10n.onbSwipeHint,
+                  l10n.onbSkip,
                   style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textMuted(context),
-                    fontStyle: FontStyle.italic,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textSecondary(context),
                   ),
                 ),
               ),
-            // Dot indicator + button
+            ),
+          ),
+          // Slides
+          Expanded(
+            child: PageView.builder(
+              controller: _controller,
+              itemCount: slides.length,
+              onPageChanged: (i) => setState(() => _currentPage = i),
+              itemBuilder: (_, i) => _buildSlide(context, slides[i]),
+            ),
+          ),
+          // Swipe hint on first slide
+          if (_currentPage == 0)
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
-              child: Column(
-                children: [
-                  Semantics(
-                    label: l10n.onbSlideOf(_currentPage + 1, slides.length),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        slides.length,
-                        (i) => Container(
-                          width: _currentPage == i ? 24 : 8,
-                          height: 8,
-                          margin: const EdgeInsets.symmetric(horizontal: 3),
-                          decoration: BoxDecoration(
-                            color: _currentPage == i
-                                ? AppColors.primary(context)
-                                : AppColors.border(context),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton(
-                      onPressed: () {
-                        if (_currentPage < slides.length - 1) {
-                          _controller.nextPage(
-                            duration: AppConstants.animPageTransition,
-                            curve: Curves.easeInOut,
-                          );
-                        } else {
-                          widget.onComplete();
-                        }
-                      },
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.primary(context),
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Text(
-                        _currentPage < slides.length - 1
-                            ? l10n.onbNext
-                            : l10n.onbGetStarted,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                l10n.onbSwipeHint,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.textMuted(context),
+                  fontStyle: FontStyle.italic,
+                ),
               ),
             ),
-          ],
-        ),
+          // Dot indicator + button
+          Padding(
+            padding: const EdgeInsets.only(bottom: 32),
+            child: Column(
+              children: [
+                Semantics(
+                  label: l10n.onbSlideOf(_currentPage + 1, slides.length),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      slides.length,
+                      (i) => Container(
+                        width: _currentPage == i ? 24 : 8,
+                        height: 8,
+                        margin: const EdgeInsets.symmetric(horizontal: 3),
+                        decoration: BoxDecoration(
+                          color: _currentPage == i
+                              ? AppColors.primary(context)
+                              : AppColors.border(context),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    onPressed: () {
+                      if (_currentPage < slides.length - 1) {
+                        _controller.nextPage(
+                          duration: AppConstants.animPageTransition,
+                          curve: Curves.easeInOut,
+                        );
+                      } else {
+                        widget.onComplete();
+                      }
+                    },
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppColors.primary(context),
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      _currentPage < slides.length - 1
+                          ? l10n.onbNext
+                          : l10n.onbGetStarted,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
