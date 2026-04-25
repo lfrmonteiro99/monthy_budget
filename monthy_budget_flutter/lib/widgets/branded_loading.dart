@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 import '../constants/app_constants.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
@@ -38,8 +39,7 @@ class _BrandedLoadingState extends State<BrandedLoading>
   Widget build(BuildContext context) {
     final primary = AppColors.primary(context);
 
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
+    return CalmScaffold(
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
