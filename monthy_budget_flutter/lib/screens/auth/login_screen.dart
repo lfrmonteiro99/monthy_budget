@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../exceptions/app_exceptions.dart' as app;
 import '../../l10n/generated/app_localizations.dart';
@@ -92,11 +93,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
+    return CalmScaffold(
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.symmetric(vertical: 24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
