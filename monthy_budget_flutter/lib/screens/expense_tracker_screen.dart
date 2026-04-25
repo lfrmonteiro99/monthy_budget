@@ -629,59 +629,103 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
 
           const SizedBox(height: 8),
 
-          // Hero — month total
+          // Hero card — month total + budget status
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: CalmHero(
-              // TODO(l10n): move to ARB (Wave H)
-              eyebrow: 'ESTE MÊS',
-              amount: formatCurrency(totalActual),
-              subtitle: _expenses.isEmpty
-                  ? l10n.expenseTrackerEmpty
-                  : l10n.expenseTrackerActual,
+            child: CalmCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CalmHero(
+                    // TODO(l10n): move to ARB (Wave H)
+                    eyebrow: 'ESTE MÊS',
+                    amount: formatCurrency(totalActual),
+                    subtitle: _expenses.isEmpty
+                        ? l10n.expenseTrackerEmpty
+                        : l10n.expenseTrackerActual,
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    key: ExpenseTrackerTourKeys.summary,
+                    children: [
+                      CalmPill(
+                        label: isOver
+                            ? '-${formatCurrency(diff.abs())}'
+                            : formatCurrency(diff),
+                        color: isOver
+                            ? AppColors.bad(context)
+                            : AppColors.ok(context),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        isOver
+                            ? l10n.expenseTrackerOver
+                            : l10n.expenseTrackerRemaining,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: AppColors.ink70(context),
+                        ),
+                      ),
+                      const Spacer(),
+                      // TODO(l10n): move to ARB (Wave H)
+                      Text(
+                        'orç. ${formatCurrency(totalBudgeted)}',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: AppColors.ink50(context),
+                        ),
+                      ),
+                      InfoIconButton(
+                        title: l10n.expenseTrackerScreenTitle,
+                        body: l10n.infoExpenseTrackerSummary,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
 
           const SizedBox(height: 12),
 
-          // Budget status pill
+          // Budget overview card — budgeted / actual / remaining rows
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              key: ExpenseTrackerTourKeys.summary,
-              children: [
-                CalmPill(
-                  label: isOver
-                      ? '-${formatCurrency(diff.abs())}'
-                      : formatCurrency(diff),
-                  color: isOver
-                      ? AppColors.bad(context)
-                      : AppColors.ok(context),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  isOver
-                      ? l10n.expenseTrackerOver
-                      : l10n.expenseTrackerRemaining,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.ink70(context),
+            child: CalmCard(
+              padding: EdgeInsets.zero,
+              child: Column(
+                children: [
+                  CalmListTile(
+                    leadingIcon: Icons.account_balance_wallet_outlined,
+                    leadingColor: AppColors.ink50(context),
+                    // TODO(l10n): move to ARB (Wave H)
+                    title: 'Orçamentado',
+                    trailing: formatCurrency(totalBudgeted),
                   ),
-                ),
-                const Spacer(),
-                Text(
-                  // TODO(l10n): move to ARB (Wave H)
-                  'orç. ${formatCurrency(totalBudgeted)}',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.ink50(context),
+                  Divider(color: AppColors.line(context), height: 1, indent: 56),
+                  CalmListTile(
+                    leadingIcon: Icons.receipt_long_outlined,
+                    leadingColor: AppColors.ink50(context),
+                    // TODO(l10n): move to ARB (Wave H)
+                    title: 'Gasto',
+                    trailing: formatCurrency(totalActual),
                   ),
-                ),
-                InfoIconButton(
-                  title: l10n.expenseTrackerScreenTitle,
-                  body: l10n.infoExpenseTrackerSummary,
-                ),
-              ],
+                  Divider(color: AppColors.line(context), height: 1, indent: 56),
+                  CalmListTile(
+                    leadingIcon: isOver
+                        ? Icons.warning_amber_outlined
+                        : Icons.savings_outlined,
+                    leadingColor: isOver
+                        ? AppColors.bad(context)
+                        : AppColors.ok(context),
+                    // TODO(l10n): move to ARB (Wave H)
+                    title: isOver
+                        ? l10n.expenseTrackerOver
+                        : l10n.expenseTrackerRemaining,
+                    trailing: formatCurrency(diff.abs()),
+                  ),
+                ],
+              ),
             ),
           ),
 
@@ -715,25 +759,35 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                 : ListView.builder(
                     key: ExpenseTrackerTourKeys.categoryList,
                     padding: const EdgeInsets.fromLTRB(20, 16, 20, 80),
-                    itemCount: summaries.length,
-                    itemBuilder: (_, i) => _CategorySection(
-                      summary: summaries[i],
-                      expenses: _expenses
-                          .where((e) => e.category == summaries[i].category)
-                          .toList(),
-                      icon: categoryIconByName(
-                        summaries[i].category,
-                        customCategories: widget.customCategories,
-                      ),
-                      categoryColor: categoryColorByNameFull(
-                        summaries[i].category,
-                        customCategories: widget.customCategories,
-                      ),
-                      label: _localizedCategory(summaries[i].category, l10n),
-                      onOpenDetails: _showExpenseDetail,
-                      onDelete: _deleteExpense,
-                      l10n: l10n,
-                    ),
+                    itemCount: summaries.length + 1,
+                    itemBuilder: (_, i) {
+                      if (i == 0) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          // TODO(l10n): move to ARB (Wave H)
+                          child: const CalmEyebrow('CATEGORIAS'),
+                        );
+                      }
+                      final idx = i - 1;
+                      return _CategorySection(
+                        summary: summaries[idx],
+                        expenses: _expenses
+                            .where((e) => e.category == summaries[idx].category)
+                            .toList(),
+                        icon: categoryIconByName(
+                          summaries[idx].category,
+                          customCategories: widget.customCategories,
+                        ),
+                        categoryColor: categoryColorByNameFull(
+                          summaries[idx].category,
+                          customCategories: widget.customCategories,
+                        ),
+                        label: _localizedCategory(summaries[idx].category, l10n),
+                        onOpenDetails: _showExpenseDetail,
+                        onDelete: _deleteExpense,
+                        l10n: l10n,
+                      );
+                    },
                   ),
           ),
         ],
@@ -818,24 +872,42 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
               child: Column(
                 children: [
                   // Category chips + date range filter
-                  Row(
-                    children: [
-                      Expanded(child: _buildFilterBar(l10n)),
-                      InfoIconButton(
-                        title: l10n.filter,
-                        body: l10n.infoExpenseTrackerFilter,
-                      ),
-                      const SizedBox(width: 8),
-                    ],
+                  CalmCard(
+                    padding: EdgeInsets.zero,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
+                          // TODO(l10n): move to ARB (Wave H)
+                          child: const CalmEyebrow('FILTROS'),
+                        ),
+                        Row(
+                          children: [
+                            Expanded(child: _buildFilterBar(l10n)),
+                            InfoIconButton(
+                              title: l10n.filter,
+                              body: l10n.infoExpenseTrackerFilter,
+                            ),
+                            const SizedBox(width: 8),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
 
                   Divider(color: AppColors.line(context), height: 1),
 
-                  // Result count
+                  // Result count + section label
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
+                    // TODO(l10n): move to ARB (Wave H)
+                    child: const CalmEyebrow('RESULTADOS'),
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 20,
-                      vertical: 8,
+                      vertical: 4,
                     ),
                     child: Row(
                       children: [
@@ -898,48 +970,51 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
   Widget _buildFilterBar(S l10n) {
     final categories = _allCategories().toList()..sort();
 
-    return Container(
+    return ColoredBox(
       color: AppColors.card(context),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            ...categories.map((cat) {
-              final selected = _selectedCategories.contains(cat);
-              final catColor = categoryColorByNameFull(
-                cat,
-                customCategories: widget.customCategories,
-              );
-              return Padding(
-                padding: const EdgeInsets.only(right: 6),
-                child: FilterChip(
-                  label: Text(
-                    _localizedCategory(cat, l10n),
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                  selected: selected,
-                  onSelected: (_) => _toggleCategory(cat),
-                  selectedColor: AppColors.accentSoft(context),
-                  checkmarkColor: AppColors.accent(context),
-                  side: selected
-                      ? BorderSide(color: AppColors.accent(context))
-                      : BorderSide(color: AppColors.line(context)),
-                  avatar: selected
-                      ? null
-                      : Container(
-                          width: 10,
-                          height: 10,
-                          decoration: BoxDecoration(
-                            color: catColor,
-                            shape: BoxShape.circle,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              ...categories.map((cat) {
+                final selected = _selectedCategories.contains(cat);
+                final catColor = categoryColorByNameFull(
+                  cat,
+                  customCategories: widget.customCategories,
+                );
+                return Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: FilterChip(
+                    label: Text(
+                      _localizedCategory(cat, l10n),
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                    selected: selected,
+                    onSelected: (_) => _toggleCategory(cat),
+                    selectedColor: AppColors.accentSoft(context),
+                    checkmarkColor: AppColors.accent(context),
+                    side: selected
+                        ? BorderSide(color: AppColors.accent(context))
+                        : BorderSide(color: AppColors.line(context)),
+                    avatar: selected
+                        ? null
+                        : SizedBox(
+                            width: 10,
+                            height: 10,
+                            child: DecoratedBox(
+                              decoration: ShapeDecoration(
+                                color: catColor,
+                                shape: const CircleBorder(),
+                              ),
+                            ),
                           ),
-                        ),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  visualDensity: VisualDensity.compact,
-                ),
-              );
-            }),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                  ),
+                );
+              }),
             // Date range chip
             Padding(
               padding: const EdgeInsets.only(right: 6),
@@ -985,7 +1060,8 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                   ),
                 ),
               ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -1075,14 +1151,16 @@ class _CategorySection extends StatelessWidget {
             Theme(
               data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
               child: ExpansionTile(
-                leading: Container(
+                leading: SizedBox(
                   width: 36,
                   height: 36,
-                  decoration: BoxDecoration(
-                    color: categoryColor.withValues(alpha: 0.15),
-                    shape: BoxShape.circle,
+                  child: DecoratedBox(
+                    decoration: ShapeDecoration(
+                      color: categoryColor.withValues(alpha: 0.15),
+                      shape: const CircleBorder(),
+                    ),
+                    child: Icon(icon, size: 18, color: categoryColor),
                   ),
-                  child: Icon(icon, size: 18, color: categoryColor),
                 ),
                 title: Row(
                   children: [
