@@ -2793,21 +2793,6 @@ class SEn extends S {
   String get settingsColorPalette => 'Color palette';
 
   @override
-  String get paletteOcean => 'Ocean';
-
-  @override
-  String get paletteEmerald => 'Emerald';
-
-  @override
-  String get paletteViolet => 'Violet';
-
-  @override
-  String get paletteTeal => 'Teal';
-
-  @override
-  String get paletteSunset => 'Sunset';
-
-  @override
   String get exportTooltip => 'Export';
 
   @override

@@ -3647,26 +3647,6 @@
     "@settingsColorPalette": {
         "description": "Color palette setting label"
     },
-    "paletteOcean": "Oceano",
-    "@paletteOcean": {
-        "description": "Ocean palette name"
-    },
-    "paletteEmerald": "Esmeralda",
-    "@paletteEmerald": {
-        "description": "Emerald palette name"
-    },
-    "paletteViolet": "Violeta",
-    "@paletteViolet": {
-        "description": "Violet palette name"
-    },
-    "paletteTeal": "Azul-petróleo",
-    "@paletteTeal": {
-        "description": "Teal palette name"
-    },
-    "paletteSunset": "Pôr do sol",
-    "@paletteSunset": {
-        "description": "Sunset palette name"
-    },
     "exportTooltip": "Exportar",
     "@exportTooltip": {
         "description": "Export button tooltip"

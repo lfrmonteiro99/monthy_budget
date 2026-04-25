@@ -2804,21 +2804,6 @@ class SPt extends S {
   String get settingsColorPalette => 'Paleta de cores';
 
   @override
-  String get paletteOcean => 'Oceano';
-
-  @override
-  String get paletteEmerald => 'Esmeralda';
-
-  @override
-  String get paletteViolet => 'Violeta';
-
-  @override
-  String get paletteTeal => 'Azul-petróleo';
-
-  @override
-  String get paletteSunset => 'Pôr do sol';
-
-  @override
   String get exportTooltip => 'Exportar';
 
   @override
