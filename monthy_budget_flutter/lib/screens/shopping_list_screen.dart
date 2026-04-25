@@ -111,6 +111,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              CalmEyebrow('A FINALIZAR'), // TODO(l10n): extract to ARB
+              const SizedBox(height: 8),
               ConstrainedBox(
                 constraints: const BoxConstraints(maxHeight: 200),
                 child: ListView.builder(
@@ -119,63 +121,35 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   itemCount: checkedItems.length,
                   itemBuilder: (_, i) {
                     final item = checkedItems[i];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 3),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.check_circle,
-                            size: 16,
-                            color: AppColors.ok(ctx),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              item.productName,
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: AppColors.ink(ctx),
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          if (item.price > 0)
-                            Text(
-                              formatCurrency(item.price),
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.ok(ctx),
-                              ),
-                            ),
-                        ],
-                      ),
+                    return CalmListTile(
+                      leadingIcon: Icons.check_circle,
+                      leadingColor: AppColors.ok(ctx),
+                      title: item.productName,
+                      subtitle: item.price > 0
+                          ? formatCurrency(item.price)
+                          : null,
+                      trailing: item.price > 0
+                          ? formatCurrency(item.price)
+                          : null,
                     );
                   },
                 ),
               ),
               Divider(height: 24, color: AppColors.line(ctx)),
               if (estimatedTotal > 0)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        l10n.shoppingEstimatedTotal,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: AppColors.ink70(ctx),
-                        ),
-                      ),
-                      Text(
-                        formatCurrency(estimatedTotal),
-                        style: CalmText.amount(ctx),
-                      ),
-                    ],
+                CalmCard(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 0,
+                  ),
+                  child: CalmListTile(
+                    leadingIcon: Icons.shopping_cart_checkout,
+                    leadingColor: AppColors.ok(ctx),
+                    title: l10n.shoppingEstimatedTotal,
+                    trailing: formatCurrency(estimatedTotal),
                   ),
                 ),
+              if (estimatedTotal > 0) const SizedBox(height: 12),
               Text(
                 l10n.shoppingHowMuchSpent,
                 style: TextStyle(
@@ -286,6 +260,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     final hasChecked = widget.items.any((i) => i.checked);
+    final checkedItems = widget.items.where((i) => i.checked).toList();
     final uncheckedItems = widget.items.where((i) => !i.checked).toList();
     final uncheckedTotal = uncheckedItems.fold(0.0, (s, i) => s + i.price);
 
@@ -318,65 +293,80 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       ),
     );
 
-    final statusRow = Row(
-      children: [
-        Icon(
-          Icons.shopping_basket_outlined,
-          size: 16,
-          color: AppColors.ok(context),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            l10n.shoppingItemsRemaining(
-              uncheckedItems.length,
-              formatCurrency(uncheckedTotal),
-            ),
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: AppColors.ink(context),
+    // Summary card with totals and status pill
+    final summaryCard = CalmCard(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CalmEyebrow('RESUMO'), // TODO(l10n): extract to ARB
+                const SizedBox(height: 4),
+                Text(
+                  l10n.shoppingItemsRemaining(
+                    uncheckedItems.length,
+                    formatCurrency(uncheckedTotal),
+                  ),
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.ink(context),
+                  ),
+                ),
+              ],
             ),
           ),
-        ),
-        if (hasChecked)
-          TextButton.icon(
-            onPressed: () async {
-              final confirmed = await showDialog<bool>(
-                context: context,
-                builder: (ctx) => AlertDialog(
-                  title: Text(l10n.shoppingClear),
-                  content: Text(l10n.shoppingClear),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(ctx, false),
-                      child: Text(l10n.cancel),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.pop(ctx, true),
-                      child: Text(
-                        l10n.delete,
-                        style: TextStyle(color: AppColors.bad(context)),
+          const SizedBox(width: 8),
+          // Status pill: shows how many items checked
+          CalmPill(
+            label: '${checkedItems.length} ✓', // TODO(l10n): extract to ARB
+            color: hasChecked
+                ? AppColors.ok(context)
+                : AppColors.ink50(context),
+          ),
+          if (hasChecked) ...[
+            const SizedBox(width: 8),
+            TextButton.icon(
+              onPressed: () async {
+                final confirmed = await showDialog<bool>(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: Text(l10n.shoppingClear),
+                    content: Text(l10n.shoppingClear),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx, false),
+                        child: Text(l10n.cancel),
                       ),
-                    ),
-                  ],
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx, true),
+                        child: Text(
+                          l10n.delete,
+                          style: TextStyle(color: AppColors.bad(context)),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+                if (confirmed == true) {
+                  widget.onClearChecked();
+                }
+              },
+              icon: const Icon(Icons.delete_sweep, size: 16),
+              label: Text(l10n.shoppingClear),
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.ink70(context),
+                textStyle: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
                 ),
-              );
-              if (confirmed == true) {
-                widget.onClearChecked();
-              }
-            },
-            icon: const Icon(Icons.delete_sweep, size: 16),
-            label: Text(l10n.shoppingClear),
-            style: TextButton.styleFrom(
-              foregroundColor: AppColors.ink70(context),
-              textStyle: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
               ),
             ),
-          ),
-      ],
+          ],
+        ],
+      ),
     );
 
     final body = Column(
@@ -393,7 +383,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
-          child: statusRow,
+          child: summaryCard,
         ),
         if (widget.items.isNotEmpty && widget.items.every((i) => i.checked))
           _buildReceiptScanBanner(l10n),
@@ -598,13 +588,28 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   Widget _buildListBody(S l10n) {
     switch (_groupMode) {
       case ShoppingGroupMode.items:
-        return ListView.builder(
+        final unchecked = widget.items.where((i) => !i.checked).toList();
+        final checked = widget.items.where((i) => i.checked).toList();
+        return ListView(
           padding: const EdgeInsets.fromLTRB(0, 8, 0, 80),
-          itemCount: widget.items.length,
-          itemBuilder: (_, i) => _buildItemRow(
-            widget.items[i],
-            tourKey: i == 0 ? ShoppingTourKeys.shoppingItem : null,
-          ),
+          children: [
+            if (unchecked.isNotEmpty) ...[
+              CalmEyebrow('POR COMPRAR'), // TODO(l10n): extract to ARB
+              const SizedBox(height: 6),
+              ...unchecked.asMap().entries.map(
+                (e) => _buildItemRow(
+                  e.value,
+                  tourKey: e.key == 0 ? ShoppingTourKeys.shoppingItem : null,
+                ),
+              ),
+            ],
+            if (checked.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              CalmEyebrow('NO CESTO'), // TODO(l10n): extract to ARB
+              const SizedBox(height: 6),
+              ...checked.map((item) => _buildItemRow(item)),
+            ],
+          ],
         );
       case ShoppingGroupMode.meals:
         final groups = groupByMeal(
@@ -648,16 +653,20 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
-                  child: Container(
+                  child: SizedBox(
                     width: 40,
                     height: 4,
-                    decoration: BoxDecoration(
-                      color: AppColors.ink20(ctx),
-                      borderRadius: BorderRadius.circular(2),
+                    child: DecoratedBox(
+                      decoration: ShapeDecoration(
+                        color: AppColors.ink20(ctx),
+                        shape: const StadiumBorder(),
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(height: 16),
+                CalmEyebrow('HISTÓRICO'), // TODO(l10n): extract to ARB
+                const SizedBox(height: 4),
                 Text(
                   l10n.shoppingHistoryTitle,
                   style: TextStyle(
@@ -726,29 +735,12 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                   ),
                                 ),
                               if (isExpanded && r.items.isNotEmpty) ...[
-                                const SizedBox(height: 8),
+                                const SizedBox(height: 4),
                                 ...r.items.map(
-                                  (name) => Padding(
-                                    padding: const EdgeInsets.only(bottom: 3),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.circle,
-                                          size: 4,
-                                          color: AppColors.ink50(ctx),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Expanded(
-                                          child: Text(
-                                            name,
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              color: AppColors.ink70(ctx),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                  (name) => CalmListTile(
+                                    leadingIcon: Icons.receipt_outlined,
+                                    leadingColor: AppColors.accent(ctx),
+                                    title: name,
                                   ),
                                 ),
                               ],
@@ -769,23 +761,84 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
 
   Widget _buildItemRow(ShoppingItem item, {GlobalKey? tourKey}) {
     final l10n = S.of(context);
+    // subtitle: quantity · estimated price when available
+    final subtitleParts = <String>[];
+    if (item.price > 0) subtitleParts.add(formatCurrency(item.price));
+    final subtitle = subtitleParts.isNotEmpty ? subtitleParts.join(' · ') : null;
+
+    final tile = CalmListTile(
+      leadingIcon: item.checked
+          ? Icons.check_circle
+          : Icons.radio_button_unchecked,
+      leadingColor: item.checked
+          ? AppColors.ok(context)
+          : AppColors.accent(context),
+      title: item.productName,
+      subtitle: subtitle,
+      trailing: item.price > 0 ? formatCurrency(item.price) : null,
+      onTap: () => widget.onToggleChecked(item),
+    );
+
+    // Action button (mark at home) appended below the tile when relevant
+    final tileWithAction = item.checked || widget.onMarkAtHome == null
+        ? tile
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              tile,
+              Align(
+                alignment: Alignment.centerRight,
+                child: Tooltip(
+                  message: l10n.pantryMarkAtHome,
+                  child: InkWell(
+                    onTap: () {
+                      widget.onMarkAtHome!(item);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            l10n.pantryMarkedAtHome(item.productName),
+                          ),
+                          duration: AppConstants.snackBarShort,
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: Icon(
+                        Icons.home_outlined,
+                        size: 18,
+                        color: AppColors.accent(context),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+
     return Dismissible(
       key: Key(
         item.id.isNotEmpty ? item.id : '${item.productName}_${item.store}',
       ),
       direction: DismissDirection.endToStart,
-      background: Container(
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 16),
-        margin: const EdgeInsets.only(bottom: 8),
-        decoration: BoxDecoration(
-          color: AppColors.bad(context).withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Icon(
-          Icons.delete_outline,
-          color: AppColors.bad(context),
-          size: 22,
+      background: ColoredBox(
+        color: AppColors.bad(context).withValues(alpha: 0.12),
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: Icon(
+              Icons.delete_outline,
+              color: AppColors.bad(context),
+              size: 22,
+            ),
+          ),
         ),
       ),
       onDismissed: (_) => widget.onRemove(item),
@@ -798,89 +851,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         child: Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: CalmCard(
-            onTap: () => widget.onToggleChecked(item),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: Row(
-              children: [
-                Icon(
-                  item.checked
-                      ? Icons.check_circle
-                      : Icons.radio_button_unchecked,
-                  size: 20,
-                  color: item.checked
-                      ? AppColors.ok(context)
-                      : AppColors.ink20(context),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    item.productName,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: item.checked
-                          ? AppColors.ink50(context)
-                          : AppColors.ink(context),
-                      decoration: item.checked
-                          ? TextDecoration.lineThrough
-                          : null,
-                      decorationColor: AppColors.ink50(context),
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                if (item.price > 0)
-                  Text(
-                    formatCurrency(item.price),
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: item.checked
-                          ? AppColors.ink50(context)
-                          : AppColors.ok(context),
-                      decoration: item.checked
-                          ? TextDecoration.lineThrough
-                          : null,
-                      decorationColor: AppColors.ink50(context),
-                    ),
-                  ),
-                if (!item.checked && widget.onMarkAtHome != null)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 6),
-                    child: Tooltip(
-                      message: l10n.pantryMarkAtHome,
-                      child: InkWell(
-                        onTap: () {
-                          widget.onMarkAtHome!(item);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                l10n.pantryMarkedAtHome(item.productName),
-                              ),
-                              duration: AppConstants.snackBarShort,
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          );
-                        },
-                        borderRadius: BorderRadius.circular(8),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: Icon(
-                            Icons.home_outlined,
-                            size: 18,
-                            color: AppColors.accent(context),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+            child: tileWithAction,
           ),
         ),
       ),
