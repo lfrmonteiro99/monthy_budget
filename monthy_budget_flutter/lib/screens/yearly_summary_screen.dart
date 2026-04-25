@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../services/yearly_summary_service.dart';
 import '../theme/app_colors.dart';
@@ -16,29 +17,16 @@ class YearlySummaryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
-      appBar: AppBar(
-        backgroundColor: AppColors.surface(context),
-        surfaceTintColor: AppColors.surface(context),
-        title: Text(
-          l10n.yearlySummaryTitle,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary(context),
-          ),
-        ),
-      ),
+    return CalmScaffold(
+      title: l10n.yearlySummaryTitle,
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+        padding: const EdgeInsets.only(top: 16, bottom: 24),
         children: [
-          // -- Overview card
           _OverviewCard(report: report),
-          const SizedBox(height: 16),
-          // -- Best / worst months
-          if (report.bestMonth != null || report.worstMonth != null)
+          if (report.bestMonth != null || report.worstMonth != null) ...[
+            const SizedBox(height: 16),
             _BestWorstCard(report: report),
+          ],
           if (report.categoryTotals.isNotEmpty) ...[
             const SizedBox(height: 16),
             _CategoryBreakdownCard(report: report),
@@ -56,52 +44,41 @@ class _OverviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    return Card(
-      color: AppColors.surface(context),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '${report.year}',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary(context),
-              ),
+    final netColor =
+        report.netSavings >= 0 ? AppColors.ok(context) : AppColors.bad(context);
+    return CalmCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          CalmEyebrow('${report.year}'),
+          const SizedBox(height: 12),
+          CalmHero(
+            eyebrow: l10n.yearlySummaryNetSavings,
+            amount: formatCurrency(report.netSavings),
+            subtitle: l10n.yearlySummarySavingsRate(
+              report.savingsRate.toStringAsFixed(1),
             ),
-            const SizedBox(height: 12),
-            _Row(
-              label: l10n.yearlySummaryIncome,
-              value: formatCurrency(report.totalIncome),
-              color: Colors.green,
-            ),
-            const SizedBox(height: 8),
-            _Row(
-              label: l10n.yearlySummaryExpenses,
-              value: formatCurrency(report.totalExpenses),
-              color: Colors.red,
-            ),
-            const Divider(height: 24),
-            _Row(
-              label: l10n.yearlySummaryNetSavings,
-              value: formatCurrency(report.netSavings),
-              color: report.netSavings >= 0 ? Colors.green : Colors.red,
-              bold: true,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              l10n.yearlySummarySavingsRate(
-                report.savingsRate.toStringAsFixed(1),
-              ),
-              style: TextStyle(
-                fontSize: 13,
-                color: AppColors.textSecondary(context),
-              ),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 16),
+          _KpiRow(
+            label: l10n.yearlySummaryIncome,
+            value: formatCurrency(report.totalIncome),
+            color: AppColors.ok(context),
+          ),
+          const SizedBox(height: 8),
+          _KpiRow(
+            label: l10n.yearlySummaryExpenses,
+            value: formatCurrency(report.totalExpenses),
+            color: AppColors.bad(context),
+          ),
+          Divider(color: AppColors.line(context), height: 24),
+          _KpiRow(
+            label: l10n.yearlySummaryNetSavings,
+            value: formatCurrency(report.netSavings),
+            color: netColor,
+            bold: true,
+          ),
+        ],
       ),
     );
   }
@@ -114,38 +91,27 @@ class _BestWorstCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    return Card(
-      color: AppColors.surface(context),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n.yearlySummaryHighlights,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary(context),
-              ),
+    return CalmCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          CalmEyebrow(l10n.yearlySummaryHighlights),
+          const SizedBox(height: 12),
+          if (report.bestMonth != null)
+            _KpiRow(
+              label: l10n.yearlySummaryBestMonth(report.bestMonth!),
+              value: formatCurrency(report.bestMonthNet),
+              color: AppColors.ok(context),
             ),
-            const SizedBox(height: 12),
-            if (report.bestMonth != null)
-              _Row(
-                label: l10n.yearlySummaryBestMonth(report.bestMonth!),
-                value: formatCurrency(report.bestMonthNet),
-                color: Colors.green,
-              ),
-            if (report.worstMonth != null) ...[
-              const SizedBox(height: 8),
-              _Row(
-                label: l10n.yearlySummaryWorstMonth(report.worstMonth!),
-                value: formatCurrency(report.worstMonthNet),
-                color: Colors.red,
-              ),
-            ],
-          ],
-        ),
+          if (report.bestMonth != null && report.worstMonth != null)
+            const SizedBox(height: 8),
+          if (report.worstMonth != null)
+            _KpiRow(
+              label: l10n.yearlySummaryWorstMonth(report.worstMonth!),
+              value: formatCurrency(report.worstMonthNet),
+              color: AppColors.bad(context),
+            ),
+        ],
       ),
     );
   }
@@ -161,43 +127,33 @@ class _CategoryBreakdownCard extends StatelessWidget {
     final sorted = report.categoryTotals.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
 
-    return Card(
-      color: AppColors.surface(context),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n.yearlySummaryCategoryBreakdown,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary(context),
-              ),
+    return CalmCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          CalmEyebrow(l10n.yearlySummaryCategoryBreakdown),
+          const SizedBox(height: 12),
+          for (var i = 0; i < sorted.length; i++) ...[
+            _KpiRow(
+              label: sorted[i].key,
+              value: formatCurrency(sorted[i].value),
             ),
-            const SizedBox(height: 12),
-            for (final entry in sorted) ...[
-              _Row(
-                label: entry.key,
-                value: formatCurrency(entry.value),
-              ),
-              const SizedBox(height: 6),
-            ],
+            if (i < sorted.length - 1)
+              Divider(color: AppColors.line(context), height: 16),
           ],
-        ),
+        ],
       ),
     );
   }
 }
 
-class _Row extends StatelessWidget {
+class _KpiRow extends StatelessWidget {
   final String label;
   final String value;
   final Color? color;
   final bool bold;
 
-  const _Row({
+  const _KpiRow({
     required this.label,
     required this.value,
     this.color,
