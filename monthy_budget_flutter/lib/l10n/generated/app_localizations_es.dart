@@ -2806,21 +2806,6 @@ class SEs extends S {
   String get settingsColorPalette => 'Paleta de colores';
 
   @override
-  String get paletteOcean => 'Océano';
-
-  @override
-  String get paletteEmerald => 'Esmeralda';
-
-  @override
-  String get paletteViolet => 'Violeta';
-
-  @override
-  String get paletteTeal => 'Verde azulado';
-
-  @override
-  String get paletteSunset => 'Atardecer';
-
-  @override
   String get exportTooltip => 'Exportar';
 
   @override

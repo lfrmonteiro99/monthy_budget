@@ -2812,21 +2812,6 @@ class SFr extends S {
   String get settingsColorPalette => 'Palette de couleurs';
 
   @override
-  String get paletteOcean => 'Océan';
-
-  @override
-  String get paletteEmerald => 'Émeraude';
-
-  @override
-  String get paletteViolet => 'Violet';
-
-  @override
-  String get paletteTeal => 'Sarcelle';
-
-  @override
-  String get paletteSunset => 'Coucher de soleil';
-
-  @override
   String get exportTooltip => 'Exporter';
 
   @override

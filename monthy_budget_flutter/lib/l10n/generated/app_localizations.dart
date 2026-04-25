@@ -5177,36 +5177,6 @@ abstract class S {
   /// **'Paleta de cores'**
   String get settingsColorPalette;
 
-  /// Ocean palette name
-  ///
-  /// In pt, this message translates to:
-  /// **'Oceano'**
-  String get paletteOcean;
-
-  /// Emerald palette name
-  ///
-  /// In pt, this message translates to:
-  /// **'Esmeralda'**
-  String get paletteEmerald;
-
-  /// Violet palette name
-  ///
-  /// In pt, this message translates to:
-  /// **'Violeta'**
-  String get paletteViolet;
-
-  /// Teal palette name
-  ///
-  /// In pt, this message translates to:
-  /// **'Azul-petróleo'**
-  String get paletteTeal;
-
-  /// Sunset palette name
-  ///
-  /// In pt, this message translates to:
-  /// **'Pôr do sol'**
-  String get paletteSunset;
-
   /// Export button tooltip
   ///
   /// In pt, this message translates to:
