@@ -588,7 +588,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
             ),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
 
           // Month navigator
           Padding(
@@ -627,7 +627,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
 
           // Hero card — month total + budget status
           Padding(
