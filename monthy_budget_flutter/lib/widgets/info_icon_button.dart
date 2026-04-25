@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
+import 'calm/calm.dart';
 
 class InfoIconButton extends StatelessWidget {
   final String title;
@@ -21,7 +22,7 @@ class InfoIconButton extends StatelessWidget {
             child: Icon(
               Icons.info_outline_rounded,
               size: 18,
-              color: AppColors.textMuted(context),
+              color: AppColors.ink50(context),
             ),
           ),
         ),
@@ -30,48 +31,17 @@ class InfoIconButton extends StatelessWidget {
   }
 
   void _showSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      showDragHandle: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      backgroundColor: AppColors.surface(context),
-      builder: (ctx) => Padding(
-        padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary(ctx),
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () => Navigator.pop(ctx),
-                  child: Icon(Icons.close,
-                      size: 20, color: AppColors.textMuted(ctx)),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              body,
-              style: TextStyle(
-                fontSize: 14,
-                color: AppColors.textSecondary(ctx),
-                height: 1.5,
-              ),
-            ),
-          ],
+    CalmBottomSheet.show(
+      context,
+      builder: (ctx) => CalmBottomSheetContent(
+        title: title,
+        child: Text(
+          body,
+          style: TextStyle(
+            fontSize: 14,
+            color: AppColors.ink70(ctx),
+            height: 1.5,
+          ),
         ),
       ),
     );

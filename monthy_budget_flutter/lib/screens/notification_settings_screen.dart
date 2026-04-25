@@ -51,23 +51,13 @@ class _NotificationSettingsScreenState
 
   Future<void> _deleteCustomReminder(int index) async {
     final l10n = S.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(l10n.delete),
-        content: Text(l10n.notificationCustomDeleteConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.delete,
-                style: TextStyle(color: AppColors.error(context))),
-          ),
-        ],
-      ),
+    final confirmed = await CalmDialog.confirm(
+      context,
+      title: l10n.delete,
+      body: l10n.notificationCustomDeleteConfirm,
+      confirmLabel: l10n.delete,
+      cancelLabel: l10n.cancel,
+      destructive: true,
     );
     if (confirmed != true || !mounted) return;
     final updated = List<CustomReminder>.from(_prefs.customReminders)
@@ -76,10 +66,8 @@ class _NotificationSettingsScreenState
   }
 
   Future<CustomReminder?> _showCustomReminderSheet() async {
-    return showModalBottomSheet<CustomReminder>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+    return CalmBottomSheet.show<CustomReminder>(
+      context,
       builder: (_) => const _AddCustomReminderSheet(),
     );
   }
@@ -95,131 +83,119 @@ class _NotificationSettingsScreenState
         children: [
           // Preferred notification time
           CalmCard(
-            padding: EdgeInsets.zero,
-            child: ListTile(
-              leading: Icon(Icons.schedule,
-                  color: AppColors.primary(context)),
-              title: Text(l10n.notificationPreferredTime,
-                  style: TextStyle(
-                      color: AppColors.textPrimary(context),
-                      fontWeight: FontWeight.w600)),
-              subtitle: Text(
-                l10n.notificationPreferredTimeDesc,
-                style: TextStyle(
-                    color: AppColors.textSecondary(context),
-                    fontSize: 13),
-              ),
-              trailing: InkWell(
-                onTap: () async {
-                  final picked = await showTimePicker(
-                    context: context,
-                    initialTime: TimeOfDay(
-                      hour: _prefs.preferredHour,
-                      minute: _prefs.preferredMinute,
-                    ),
-                  );
-                  if (picked != null) {
-                    _update(_prefs.copyWith(
-                      preferredHour: picked.hour,
-                      preferredMinute: picked.minute,
-                    ));
-                  }
-                },
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                        color: AppColors.borderMuted(context)),
-                    borderRadius: BorderRadius.circular(8),
+            child: Row(
+              children: [
+                Icon(Icons.schedule, color: AppColors.ink(context)),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l10n.notificationPreferredTime,
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: AppColors.ink(context),
+                              fontWeight: FontWeight.w500)),
+                      const SizedBox(height: 2),
+                      Text(
+                        l10n.notificationPreferredTimeDesc,
+                        style: TextStyle(
+                            color: AppColors.ink50(context),
+                            fontSize: 13),
+                      ),
+                    ],
                   ),
-                  child: Text(
-                    '${_prefs.preferredHour.toString().padLeft(2, '0')}:${_prefs.preferredMinute.toString().padLeft(2, '0')}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.primary(context),
+                ),
+                InkWell(
+                  onTap: () async {
+                    final picked = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay(
+                        hour: _prefs.preferredHour,
+                        minute: _prefs.preferredMinute,
+                      ),
+                    );
+                    if (picked != null) {
+                      _update(_prefs.copyWith(
+                        preferredHour: picked.hour,
+                        preferredMinute: picked.minute,
+                      ));
+                    }
+                  },
+                  borderRadius: BorderRadius.circular(14),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.line(context)),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Text(
+                      '${_prefs.preferredHour.toString().padLeft(2, '0')}:${_prefs.preferredMinute.toString().padLeft(2, '0')}',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.ink(context),
+                      ),
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
           const SizedBox(height: 12),
 
           // Daily expense reminder
           CalmCard(
-            padding: EdgeInsets.zero,
-            child: SwitchListTile(
+            child: CalmSwitchRow(
               value: _prefs.dailyExpenseReminder,
               onChanged: (v) {
                 if (v) _ensurePermission();
                 _update(_prefs.copyWith(dailyExpenseReminder: v));
               },
-              title: Text(l10n.notifDailyExpenseReminder,
-                  style: TextStyle(
-                      color: AppColors.textPrimary(context),
-                      fontWeight: FontWeight.w600)),
-              subtitle: Text(
-                l10n.notifDailyExpenseReminderDesc,
-                style: TextStyle(
-                    color: AppColors.textSecondary(context),
-                    fontSize: 13),
-              ),
-              activeThumbColor: AppColors.primary(context),
+              title: l10n.notifDailyExpenseReminder,
+              subtitle: l10n.notifDailyExpenseReminderDesc,
             ),
           ),
           const SizedBox(height: 12),
 
           // Bill reminders
           CalmCard(
-            padding: EdgeInsets.zero,
             child: Column(
               children: [
-                SwitchListTile(
+                CalmSwitchRow(
                   value: _prefs.billReminders,
                   onChanged: (v) {
                     if (v) _ensurePermission();
                     _update(_prefs.copyWith(billReminders: v));
                   },
-                  title: Text(l10n.notificationBillReminders,
-                      style: TextStyle(
-                          color: AppColors.textPrimary(context),
-                          fontWeight: FontWeight.w600)),
-                  subtitle: Text(
-                    '${l10n.notificationBillReminderDays}: ${_prefs.billReminderDaysBefore}',
-                    style: TextStyle(
-                        color: AppColors.textSecondary(context),
-                        fontSize: 13),
-                  ),
-                  activeThumbColor: AppColors.primary(context),
+                  title: l10n.notificationBillReminders,
+                  subtitle:
+                      '${l10n.notificationBillReminderDays}: ${_prefs.billReminderDaysBefore}',
                 ),
-                if (_prefs.billReminders)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                    child: Row(
-                      children: [
-                        Text(l10n.notificationBillReminderDays,
-                            style: TextStyle(
-                                color: AppColors.textSecondary(context),
-                                fontSize: 13)),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Slider(
-                            value: _prefs.billReminderDaysBefore.toDouble(),
-                            min: 1,
-                            max: 7,
-                            divisions: 6,
-                            label: '${_prefs.billReminderDaysBefore}',
-                            activeColor: AppColors.primary(context),
-                            onChanged: (v) => _update(_prefs.copyWith(
-                                billReminderDaysBefore: v.round())),
-                          ),
+                if (_prefs.billReminders) ...[
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Text(l10n.notificationBillReminderDays,
+                          style: TextStyle(
+                              color: AppColors.ink70(context),
+                              fontSize: 13)),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Slider(
+                          value: _prefs.billReminderDaysBefore.toDouble(),
+                          min: 1,
+                          max: 7,
+                          divisions: 6,
+                          label: '${_prefs.billReminderDaysBefore}',
+                          onChanged: (v) => _update(_prefs.copyWith(
+                              billReminderDaysBefore: v.round())),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
+                ],
               ],
             ),
           ),
@@ -227,42 +203,30 @@ class _NotificationSettingsScreenState
 
           // Budget alerts
           CalmCard(
-            padding: EdgeInsets.zero,
             child: Column(
               children: [
-                SwitchListTile(
+                CalmSwitchRow(
                   value: _prefs.budgetAlerts,
                   onChanged: (v) {
                     if (v) _ensurePermission();
                     _update(_prefs.copyWith(budgetAlerts: v));
                   },
-                  title: Text(l10n.notificationBudgetAlerts,
-                      style: TextStyle(
-                          color: AppColors.textPrimary(context),
-                          fontWeight: FontWeight.w600)),
-                  subtitle: Text(
-                    l10n.notificationBudgetThreshold(
-                        _prefs.budgetAlertThreshold.toString()),
-                    style: TextStyle(
-                        color: AppColors.textSecondary(context),
-                        fontSize: 13),
-                  ),
-                  activeThumbColor: AppColors.primary(context),
+                  title: l10n.notificationBudgetAlerts,
+                  subtitle: l10n.notificationBudgetThreshold(
+                      _prefs.budgetAlertThreshold.toString()),
                 ),
-                if (_prefs.budgetAlerts)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                    child: Slider(
-                      value: _prefs.budgetAlertThreshold.toDouble(),
-                      min: 50,
-                      max: 100,
-                      divisions: 10,
-                      label: '${_prefs.budgetAlertThreshold}%',
-                      activeColor: AppColors.primary(context),
-                      onChanged: (v) => _update(_prefs.copyWith(
-                          budgetAlertThreshold: v.round())),
-                    ),
+                if (_prefs.budgetAlerts) ...[
+                  const SizedBox(height: 8),
+                  Slider(
+                    value: _prefs.budgetAlertThreshold.toDouble(),
+                    min: 50,
+                    max: 100,
+                    divisions: 10,
+                    label: '${_prefs.budgetAlertThreshold}%',
+                    onChanged: (v) => _update(_prefs.copyWith(
+                        budgetAlertThreshold: v.round())),
                   ),
+                ],
               ],
             ),
           ),
@@ -270,24 +234,14 @@ class _NotificationSettingsScreenState
 
           // Meal plan reminder
           CalmCard(
-            padding: EdgeInsets.zero,
-            child: SwitchListTile(
+            child: CalmSwitchRow(
               value: _prefs.mealPlanReminders,
               onChanged: (v) {
                 if (v) _ensurePermission();
                 _update(_prefs.copyWith(mealPlanReminders: v));
               },
-              title: Text(l10n.notificationMealPlanReminder,
-                  style: TextStyle(
-                      color: AppColors.textPrimary(context),
-                      fontWeight: FontWeight.w600)),
-              subtitle: Text(
-                l10n.notificationMealPlanReminderDesc,
-                style: TextStyle(
-                    color: AppColors.textSecondary(context),
-                    fontSize: 13),
-              ),
-              activeThumbColor: AppColors.primary(context),
+              title: l10n.notificationMealPlanReminder,
+              subtitle: l10n.notificationMealPlanReminderDesc,
             ),
           ),
           const SizedBox(height: 24),

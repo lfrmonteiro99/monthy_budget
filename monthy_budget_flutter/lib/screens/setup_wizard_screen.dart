@@ -10,6 +10,7 @@ import '../utils/calculations.dart';
 import '../utils/formatters.dart';
 import '../constants/app_constants.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_theme.dart';
 
 class SetupWizardScreen extends StatefulWidget {
   final AppSettings initial;
@@ -395,7 +396,8 @@ class _CompletionStepState extends State<_CompletionStep>
             ),
             const SizedBox(height: 24),
             Text(l10n.setupWizardCompleteTitle,
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
+                style: CalmText.display(context, size: 28),
+                textAlign: TextAlign.center),
             const SizedBox(height: 24),
             // Summary card
             Container(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../data/tax/tax_deductions.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_theme.dart';
 import '../utils/formatters.dart';
 import 'info_icon_button.dart';
 
@@ -68,10 +69,8 @@ class TaxDeductionCard extends StatelessWidget {
             children: [
               Text(
                 formatCurrency(summary.totalDeduction),
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.success(context),
+                style: CalmText.display(context, size: 28).copyWith(
+                  color: AppColors.ok(context),
                 ),
               ),
               const SizedBox(width: 8),

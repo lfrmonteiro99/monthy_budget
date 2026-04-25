@@ -330,25 +330,12 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             const SizedBox(width: 8),
             TextButton.icon(
               onPressed: () async {
-                final confirmed = await showDialog<bool>(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    title: Text(l10n.shoppingClear),
-                    content: Text(l10n.shoppingClear),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(ctx, false),
-                        child: Text(l10n.cancel),
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.pop(ctx, true),
-                        child: Text(
-                          l10n.delete,
-                          style: TextStyle(color: AppColors.bad(context)),
-                        ),
-                      ),
-                    ],
-                  ),
+                final confirmed = await CalmDialog.confirm(
+                  context,
+                  title: l10n.shoppingClear,
+                  confirmLabel: l10n.delete,
+                  cancelLabel: l10n.cancel,
+                  destructive: true,
                 );
                 if (confirmed == true) {
                   widget.onClearChecked();
@@ -481,18 +468,13 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       );
       if (!mounted) return;
       final l10n = S.of(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.barcodeInvoiceDetected),
-          duration: AppConstants.snackBarMedium,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          action: SnackBarAction(
-            label: l10n.barcodeInvoiceAction,
-            onPressed: () => ReceiptScanSheet.show(context),
-          ),
+      CalmSnack.show(
+        context,
+        l10n.barcodeInvoiceDetected,
+        duration: AppConstants.snackBarMedium,
+        action: SnackBarAction(
+          label: l10n.barcodeInvoiceAction,
+          onPressed: () => ReceiptScanSheet.show(context),
         ),
       );
       return;
@@ -519,15 +501,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       onAddToList: (item) {
         widget.onAddToShoppingList?.call(item);
         final l10n = S.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.barcodeAddedToList(item.productName)),
-            duration: AppConstants.snackBarShort,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
+        CalmSnack.success(
+          context,
+          l10n.barcodeAddedToList(item.productName),
+          duration: AppConstants.snackBarShort,
         );
       },
     );
@@ -559,15 +536,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             const SizedBox(width: 8),
             TextButton(
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(l10n.quickScanReceipt),
-                    duration: AppConstants.snackBarShort,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
+                CalmSnack.show(
+                  context,
+                  l10n.quickScanReceipt,
+                  duration: AppConstants.snackBarShort,
                 );
               },
               style: TextButton.styleFrom(
@@ -794,17 +766,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   child: InkWell(
                     onTap: () {
                       widget.onMarkAtHome!(item);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            l10n.pantryMarkedAtHome(item.productName),
-                          ),
-                          duration: AppConstants.snackBarShort,
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
+                      CalmSnack.show(
+                        context,
+                        l10n.pantryMarkedAtHome(item.productName),
+                        duration: AppConstants.snackBarShort,
                       );
                     },
                     borderRadius: BorderRadius.circular(8),

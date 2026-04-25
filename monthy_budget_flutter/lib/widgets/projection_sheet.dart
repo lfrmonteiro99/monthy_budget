@@ -9,6 +9,7 @@ import '../utils/formatters.dart';
 import '../utils/stress_index.dart';
 import '../data/tax/tax_factory.dart';
 import '../l10n/generated/app_localizations.dart';
+import 'calm/calm.dart';
 
 /// Opens the projection simulator bottom sheet.
 void showProjectionSheet({
@@ -17,14 +18,8 @@ void showProjectionSheet({
   required BudgetSummary summary,
   required PurchaseHistory purchaseHistory,
 }) {
-  showModalBottomSheet(
-    showDragHandle: true,
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: AppColors.surface(context),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
+  CalmBottomSheet.show(
+    context,
     builder: (_) => DraggableScrollableSheet(
       initialChildSize: 0.85,
       maxChildSize: 0.95,

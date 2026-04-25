@@ -3,20 +3,15 @@ import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
 import '../utils/month_review.dart';
 import '../utils/formatters.dart';
+import 'calm/calm.dart';
 
 void showMonthReviewSheet({
   required BuildContext context,
   required MonthReviewResult review,
   VoidCallback? onAskAI,
 }) {
-  showModalBottomSheet(
-    showDragHandle: true,
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: AppColors.surface(context),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
+  CalmBottomSheet.show(
+    context,
     builder: (_) => DraggableScrollableSheet(
       initialChildSize: 0.75,
       maxChildSize: 0.95,

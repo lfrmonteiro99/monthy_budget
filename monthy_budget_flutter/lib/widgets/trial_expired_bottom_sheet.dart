@@ -3,6 +3,7 @@ import '../models/app_settings.dart';
 import '../models/savings_goal.dart';
 import '../services/downgrade_service.dart';
 import '../theme/app_colors.dart';
+import 'calm/calm.dart';
 
 /// Result of the trial-expired bottom sheet interaction.
 enum TrialExpiredAction { upgrade, manageCategories, extendTrial, dismiss }
@@ -288,11 +289,8 @@ Future<TrialExpiredAction?> showTrialExpiredBottomSheet({
   bool isSubscriptionEnd = false,
   bool canExtendTrial = false,
 }) {
-  return showModalBottomSheet<TrialExpiredAction>(
-    showDragHandle: true,
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
+  return CalmBottomSheet.show<TrialExpiredAction>(
+    context,
     builder: (_) => TrialExpiredBottomSheet(
       expenses: expenses,
       savingsGoals: savingsGoals,

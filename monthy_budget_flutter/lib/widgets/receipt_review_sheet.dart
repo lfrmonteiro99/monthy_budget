@@ -4,6 +4,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../models/parsed_receipt.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
+import 'calm/calm.dart';
 
 /// Post-scan review sheet: user verifies extracted data and picks a category
 /// before creating the expense.
@@ -23,10 +24,8 @@ class ReceiptReviewSheet extends StatefulWidget {
     required ParsedReceipt receipt,
     required List<String> categories,
   }) {
-    return showModalBottomSheet<String>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+    return CalmBottomSheet.show<String>(
+      context,
       builder: (_) => ReceiptReviewSheet(
         receipt: receipt,
         categories: categories,

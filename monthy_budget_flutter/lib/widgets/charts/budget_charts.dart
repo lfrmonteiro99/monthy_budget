@@ -5,6 +5,7 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../models/app_settings.dart';
 import '../../models/budget_summary.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_theme.dart';
 import '../../utils/category_helpers.dart';
 import '../../utils/formatters.dart';
 import '../info_icon_button.dart';
@@ -62,12 +63,9 @@ class _ChartCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.surface(context),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.surfaceVariant(context)),
-        boxShadow: [
-          BoxShadow(color: AppColors.shimmer(context), blurRadius: 8, offset: const Offset(0, 2)),
-        ],
+        color: AppColors.card(context),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.line(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -449,7 +447,9 @@ class _SavingsRateChart extends StatelessWidget {
               children: [
                 Text(
                   formatPercentage(savingsRate),
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: AppColors.success(context), letterSpacing: -0.5),
+                  style: CalmText.display(context, size: 28).copyWith(
+                    color: AppColors.ok(context),
+                  ),
                 ),
                 Text(l10n.chartSavings, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: AppColors.textMuted(context))),
               ],

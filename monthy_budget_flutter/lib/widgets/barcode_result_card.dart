@@ -4,6 +4,7 @@ import '../models/scanned_product_candidate.dart';
 import '../models/shopping_item.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
+import 'calm/calm.dart';
 
 /// Displays the result of a barcode scan.
 ///
@@ -26,13 +27,8 @@ class BarcodeResultCard extends StatefulWidget {
     required ScannedProductCandidate candidate,
     required ValueChanged<ShoppingItem> onAddToList,
   }) {
-    return showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: AppColors.surface(context),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+    return CalmBottomSheet.show(
+      context,
       builder: (_) => BarcodeResultCard(
         candidate: candidate,
         onAddToList: onAddToList,

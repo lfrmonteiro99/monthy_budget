@@ -20,6 +20,7 @@ import '../app_shell.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../constants/app_constants.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_theme.dart';
 import '../models/subscription_state.dart';
 import '../services/downgrade_service.dart';
 import '../services/biometric_service.dart';
@@ -198,10 +199,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void _handleSave() {
     if (!widget.isAdmin) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(S.of(context).settingsAdminOnly)),
-      );
+      CalmSnack.error(context, S.of(context).settingsAdminOnly);
       return;
     }
     widget.onSave(_draft);
@@ -709,7 +707,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
                   '${_draft.personalInfo.dependentes}',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: AppColors.textPrimary(context)),
+                  style: CalmText.display(context, size: 24),
                 ),
               ),
               _counterButton('+', () {
@@ -1918,10 +1916,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _showCategoryEditor(CustomCategory? existing) async {
-    final result = await showModalBottomSheet<CustomCategory>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+    final result = await CalmBottomSheet.show<CustomCategory>(
+      context,
       builder: (_) => _EditCustomCategorySheet(existing: existing),
     );
     if (result == null || !mounted) return;
@@ -1935,11 +1931,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         category: 'settings.categories',
       );
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${S.of(context).authErrorGeneric}: $e'),
-            duration: AppConstants.snackBarLong,
-          ),
+        CalmSnack.error(
+          context,
+          '${S.of(context).authErrorGeneric}: $e',
+          duration: AppConstants.snackBarLong,
         );
       }
       return;
@@ -1958,31 +1953,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
     widget.onCustomCategoriesChanged?.call(_customCategoriesDraft);
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(S.of(context).customCategorySaved)),
-      );
+      CalmSnack.success(context, S.of(context).customCategorySaved);
     }
   }
 
   Future<void> _deleteCustomCategory(CustomCategory cat) async {
     final l10n = S.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(l10n.customCategoryDelete),
-        content: Text(l10n.customCategoryDeleteConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.delete,
-                style: TextStyle(color: AppColors.error(context))),
-          ),
-        ],
-      ),
+    final confirmed = await CalmDialog.confirm(
+      context,
+      title: l10n.customCategoryDelete,
+      body: l10n.customCategoryDeleteConfirm,
+      confirmLabel: l10n.delete,
+      cancelLabel: l10n.cancel,
+      destructive: true,
     );
     if (confirmed != true) return;
 
@@ -1990,9 +1973,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       await _categoryService.delete(cat.id);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(S.of(context).authErrorGeneric)),
-        );
+        CalmSnack.error(context, S.of(context).authErrorGeneric);
       }
       return;
     }
@@ -2351,79 +2332,76 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _showAddDislikedDialog() {
     final l10n = S.of(context);
     final controller = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.settingsAddIngredient),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          decoration: InputDecoration(
-            hintText: l10n.settingsIngredientName,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(l10n.cancel),
-          ),
-          FilledButton(
-            onPressed: () {
-              final name = controller.text.trim();
-              if (name.isNotEmpty) {
-                final ms = _draft.mealSettings;
-                final updated = List<String>.from(ms.dislikedIngredients)..add(name);
-                setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(dislikedIngredients: updated)));
-              }
-              Navigator.pop(ctx);
-            },
-            child: Text(l10n.settingsAddButton),
-          ),
-        ],
+    CalmDialog.show(
+      context,
+      title: l10n.settingsAddIngredient,
+      child: CalmTextField(
+        controller: controller,
+        autofocus: true,
+        hint: l10n.settingsIngredientName,
       ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(l10n.cancel),
+        ),
+        FilledButton(
+          onPressed: () {
+            final name = controller.text.trim();
+            if (name.isNotEmpty) {
+              final ms = _draft.mealSettings;
+              final updated = List<String>.from(ms.dislikedIngredients)..add(name);
+              setState(() => _draft = _draft.copyWith(
+                  mealSettings: ms.copyWith(dislikedIngredients: updated)));
+            }
+            Navigator.pop(context);
+          },
+          child: Text(l10n.settingsAddButton),
+        ),
+      ],
     );
   }
 
   void _showAddPantryDialog({bool? isStaple}) {
     final l10n = S.of(context);
     final controller = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.settingsAddToPantry),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          decoration: InputDecoration(hintText: l10n.settingsIngredientName),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l10n.cancel)),
-          FilledButton(
-            onPressed: () {
-              final name = controller.text.trim();
-              if (name.isNotEmpty) {
-                final ms = _draft.mealSettings;
-                if (isStaple == true) {
-                  final updated = List<String>.from(ms.stapleIngredients)..add(name);
-                  setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(stapleIngredients: updated)));
-                } else if (isStaple == false) {
-                  final updated = List<String>.from(ms.weeklyPantryIngredients)..add(name);
-                  setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(weeklyPantryIngredients: updated)));
-                } else {
-                  final updated = List<String>.from(ms.pantryIngredients)..add(name);
-                  setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(pantryIngredients: updated)));
-                }
-              }
-              Navigator.pop(ctx);
-            },
-            child: Text(l10n.settingsAddButton),
-          ),
-        ],
+    CalmDialog.show(
+      context,
+      title: l10n.settingsAddToPantry,
+      child: CalmTextField(
+        controller: controller,
+        autofocus: true,
+        hint: l10n.settingsIngredientName,
       ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(l10n.cancel),
+        ),
+        FilledButton(
+          onPressed: () {
+            final name = controller.text.trim();
+            if (name.isNotEmpty) {
+              final ms = _draft.mealSettings;
+              if (isStaple == true) {
+                final updated = List<String>.from(ms.stapleIngredients)..add(name);
+                setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(stapleIngredients: updated)));
+              } else if (isStaple == false) {
+                final updated = List<String>.from(ms.weeklyPantryIngredients)..add(name);
+                setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(weeklyPantryIngredients: updated)));
+              } else {
+                final updated = List<String>.from(ms.pantryIngredients)..add(name);
+                setState(() => _draft = _draft.copyWith(
+                    mealSettings: ms.copyWith(pantryIngredients: updated)));
+              }
+            }
+            Navigator.pop(context);
+          },
+          child: Text(l10n.settingsAddButton),
+        ),
+      ],
     );
   }
 
@@ -3514,52 +3492,54 @@ class _SettingsScreenState extends State<SettingsScreen> {
     ActivityLevel activityLevel = ActivityLevel.moderate;
     final ms = _draft.mealSettings;
 
-    showDialog(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setDialogState) => AlertDialog(
-          title: Text(l10n.settingsAddMember),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                decoration: InputDecoration(labelText: l10n.settingsName),
-                onChanged: (v) => name = v,
-              ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<AgeGroup>(
-                initialValue: ageGroup,
-                decoration: InputDecoration(labelText: l10n.settingsAgeGroup),
-                items: AgeGroup.values.map((a) =>
-                  DropdownMenuItem(value: a, child: Text(a.localizedLabel(l10n)))).toList(),
-                onChanged: (v) { if (v != null) ageGroup = v; },
-              ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<ActivityLevel>(
-                initialValue: activityLevel,
-                decoration: InputDecoration(labelText: l10n.settingsActivityLevel),
-                items: ActivityLevel.values.map((a) =>
-                  DropdownMenuItem(value: a, child: Text(a.localizedLabel(l10n)))).toList(),
-                onChanged: (v) { if (v != null) activityLevel = v; },
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l10n.cancel)),
-            FilledButton(
-              onPressed: () {
-                if (name.trim().isEmpty) return;
-                final member = HouseholdMember(name: name.trim(), ageGroup: ageGroup, activityLevel: activityLevel);
-                final updated = [...ms.householdMembers, member];
-                setState(() => _draft = _draft.copyWith(
-                  mealSettings: ms.copyWith(householdMembers: updated)));
-                Navigator.pop(ctx);
-              },
-              child: Text(l10n.settingsAddButton),
+    CalmDialog.show(
+      context,
+      title: l10n.settingsAddMember,
+      child: StatefulBuilder(
+        builder: (ctx, setDialogState) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CalmTextField(
+              label: l10n.settingsName,
+              onChanged: (v) => name = v,
+            ),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<AgeGroup>(
+              initialValue: ageGroup,
+              decoration: InputDecoration(labelText: l10n.settingsAgeGroup),
+              items: AgeGroup.values.map((a) =>
+                DropdownMenuItem(value: a, child: Text(a.localizedLabel(l10n)))).toList(),
+              onChanged: (v) { if (v != null) ageGroup = v; },
+            ),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<ActivityLevel>(
+              initialValue: activityLevel,
+              decoration: InputDecoration(labelText: l10n.settingsActivityLevel),
+              items: ActivityLevel.values.map((a) =>
+                DropdownMenuItem(value: a, child: Text(a.localizedLabel(l10n)))).toList(),
+              onChanged: (v) { if (v != null) activityLevel = v; },
             ),
           ],
         ),
       ),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(context), child: Text(l10n.cancel)),
+        FilledButton(
+          onPressed: () {
+            if (name.trim().isEmpty) return;
+            final member = HouseholdMember(
+                name: name.trim(),
+                ageGroup: ageGroup,
+                activityLevel: activityLevel);
+            final updated = [...ms.householdMembers, member];
+            setState(() => _draft = _draft.copyWith(
+                mealSettings: ms.copyWith(householdMembers: updated)));
+            Navigator.pop(context);
+          },
+          child: Text(l10n.settingsAddButton),
+        ),
+      ],
     );
   }
 
@@ -4038,12 +4018,11 @@ class _EditCustomCategorySheetState extends State<_EditCustomCategorySheet> {
                         color: color,
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: selected ? Colors.white : Colors.transparent,
-                          width: 3,
+                          color: selected
+                              ? AppColors.ink(context)
+                              : AppColors.line(context),
+                          width: selected ? 2 : 1,
                         ),
-                        boxShadow: selected
-                            ? [BoxShadow(color: color.withValues(alpha: 0.5), blurRadius: 8)]
-                            : null,
                       ),
                       child: selected
                           ? const Icon(Icons.check, color: Colors.white, size: 20)
