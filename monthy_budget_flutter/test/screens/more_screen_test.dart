@@ -26,7 +26,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.widgetWithText(ListTile, 'Insights'));
+    await tester.tap(find.text('Insights'));
     await tester.pump();
     await tester.tap(find.text('Savings Goals'));
     await tester.pump();
