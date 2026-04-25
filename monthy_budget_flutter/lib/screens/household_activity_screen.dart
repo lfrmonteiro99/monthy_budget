@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/household_activity_event.dart';
 import '../services/household_activity_service.dart';
@@ -65,24 +66,11 @@ class _HouseholdActivityScreenState extends State<HouseholdActivityScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
-      appBar: AppBar(
-        backgroundColor: AppColors.surface(context),
-        surfaceTintColor: AppColors.surface(context),
-        title: Text(
-          l10n.householdActivityTitle,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary(context),
-          ),
-        ),
-      ),
+    return CalmScaffold(
+      title: l10n.householdActivityTitle,
       body: Column(
         children: [
           _buildFilterChips(context, l10n),
-          Divider(height: 1, color: AppColors.surfaceVariant(context)),
           Expanded(child: _buildBody(context, l10n)),
         ],
       ),
@@ -101,7 +89,7 @@ class _HouseholdActivityScreenState extends State<HouseholdActivityScreen> {
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
         children: labels.entries.map((entry) {
           final isSelected = _selectedDomain == entry.key;
@@ -136,58 +124,23 @@ class _HouseholdActivityScreenState extends State<HouseholdActivityScreen> {
     }
     if (_error != null) {
       return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.error_outline, size: 40, color: AppColors.error(context)),
-              const SizedBox(height: 12),
-              Text(
-                _error!,
-                style: TextStyle(color: AppColors.error(context)),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              FilledButton.icon(
-                onPressed: _loadEvents,
-                icon: const Icon(Icons.refresh, size: 18),
-                label: Text(l10n.actionRetry),
-              ),
-            ],
+        child: CalmEmptyState(
+          icon: Icons.error_outline,
+          title: _error!,
+          body: '',
+          action: CalmEmptyStateAction(
+            label: l10n.actionRetry,
+            onPressed: _loadEvents,
           ),
         ),
       );
     }
     if (_events.isEmpty) {
       return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.history,
-                  size: 56, color: AppColors.dragHandle(context)),
-              const SizedBox(height: 16),
-              Text(
-                l10n.householdActivityEmpty,
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textLabel(context),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                l10n.householdActivityEmptyMessage,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: AppColors.textMuted(context),
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+        child: CalmEmptyState(
+          icon: Icons.history,
+          title: l10n.householdActivityEmpty,
+          body: l10n.householdActivityEmptyMessage,
         ),
       );
     }
@@ -196,76 +149,40 @@ class _HouseholdActivityScreenState extends State<HouseholdActivityScreen> {
     return RefreshIndicator(
       onRefresh: _loadEvents,
       child: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+        padding: const EdgeInsets.only(top: 4, bottom: 32),
         itemCount: grouped.length,
         itemBuilder: (_, i) {
           final section = grouped[i];
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (i > 0) const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  section.label,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textMuted(context),
-                    letterSpacing: 0.8,
-                  ),
-                ),
-              ),
-              ...section.events.map((e) => _buildEventTile(context, e)),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildEventTile(BuildContext context, HouseholdActivityEvent event) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 6),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppColors.surface(context),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border(context)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            _domainIcon(event.domain),
-            size: 20,
-            color: AppColors.primary(context),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
+          return Padding(
+            padding: EdgeInsets.only(top: i > 0 ? 16 : 0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  event.readableSummary(),
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textPrimary(context),
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  _formatTime(event.createdAt),
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: AppColors.textMuted(context),
+                CalmEyebrow(label: section.label),
+                const SizedBox(height: 8),
+                CalmCard(
+                  child: Column(
+                    children: [
+                      for (var j = 0; j < section.events.length; j++) ...[
+                        CalmListTile(
+                          leadingIcon: _domainIcon(section.events[j].domain),
+                          leadingColor: AppColors.accent(context),
+                          title: section.events[j].readableSummary(),
+                          subtitle: _formatTime(section.events[j].createdAt),
+                        ),
+                        if (j < section.events.length - 1)
+                          Divider(
+                            color: AppColors.line(context),
+                            height: 1,
+                          ),
+                      ],
+                    ],
                   ),
                 ),
               ],
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
