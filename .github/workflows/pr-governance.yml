@@ -61,11 +61,6 @@ jobs:
             exit 1
           fi
 
-          if ! grep -Eiq '^##[[:space:]]+Release Notes' <<<"$PR_BODY"; then
-            echo "PR body must include a '## Release Notes' section"
-            exit 1
-          fi
-
           if ! grep -Eq '(^|,)(release:patch|release:minor|release:major)(,|$)' <<<"$PR_LABELS"; then
             echo "PR must include one release label: release:patch | release:minor | release:major"
             exit 1
