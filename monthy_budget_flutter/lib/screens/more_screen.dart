@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/subscription_state.dart';
 import '../services/downgrade_service.dart';
@@ -33,72 +34,91 @@ class MoreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
-      appBar: AppBar(
-        backgroundColor: AppColors.surface(context),
-        surfaceTintColor: AppColors.surface(context),
-        title: Text(
-          l10n.moreTitle,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary(context),
-          ),
-        ),
-      ),
+    return CalmScaffold(
+      title: l10n.moreTitle,
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+        padding: const EdgeInsets.only(top: 16, bottom: 24),
         children: [
-          _Tile(
-            icon: Icons.insights_outlined,
-            title: l10n.insightsTitle,
-            subtitle: l10n.trendTitle,
+          CalmCard(
             onTap: onOpenInsights,
+            child: CalmListTile(
+              leadingIcon: Icons.insights_outlined,
+              leadingColor: AppColors.accent(context),
+              title: l10n.insightsTitle,
+              subtitle: l10n.trendTitle,
+              trailing: '›',
+              onTap: onOpenInsights,
+            ),
           ),
-          const SizedBox(height: 8),
-          _Tile(
-            icon: Icons.savings_outlined,
-            title: l10n.savingsGoals,
-            subtitle: l10n.moreSavingsSubtitle,
+          const SizedBox(height: 12),
+          CalmCard(
             onTap: onOpenSavingsGoals,
+            child: CalmListTile(
+              leadingIcon: Icons.savings_outlined,
+              leadingColor: AppColors.accent(context),
+              title: l10n.savingsGoals,
+              subtitle: l10n.moreSavingsSubtitle,
+              trailing: '›',
+              onTap: onOpenSavingsGoals,
+            ),
           ),
-          const SizedBox(height: 8),
-          _Tile(
-            icon: Icons.notifications_outlined,
-            title: l10n.notifications,
-            subtitle: l10n.moreNotificationsSubtitle,
+          const SizedBox(height: 12),
+          CalmCard(
             onTap: onOpenNotifications,
+            child: CalmListTile(
+              leadingIcon: Icons.notifications_outlined,
+              leadingColor: AppColors.accent(context),
+              title: l10n.notifications,
+              subtitle: l10n.moreNotificationsSubtitle,
+              trailing: '›',
+              onTap: onOpenNotifications,
+            ),
           ),
-          const SizedBox(height: 8),
-          _SubscriptionTile(
+          const SizedBox(height: 12),
+          _SubscriptionCard(
             subscription: subscription,
             pausedItemCount: pausedItemCount,
             onTap: onOpenSubscription,
           ),
           if (onOpenConfidenceCenter != null) ...[
-            const SizedBox(height: 8),
-            _Tile(
-              icon: Icons.verified_outlined,
-              title: l10n.confidenceCenterTile,
-              subtitle: l10n.confidenceCenterSubtitle,
-              onTap: onOpenConfidenceCenter!,
-              badgeCount: confidenceAlertCount,
+            const SizedBox(height: 12),
+            CalmCard(
+              onTap: onOpenConfidenceCenter,
+              child: CalmListTile(
+                leadingIcon: Icons.verified_outlined,
+                leadingColor: AppColors.accent(context),
+                title: l10n.confidenceCenterTile,
+                subtitle: l10n.confidenceCenterSubtitle,
+                trailing: confidenceAlertCount > 0
+                    ? '$confidenceAlertCount  ›'
+                    : '›',
+                onTap: onOpenConfidenceCenter,
+              ),
             ),
           ],
-          const SizedBox(height: 8),
-          _Tile(
-            icon: Icons.new_releases_outlined,
-            title: l10n.productUpdatesTitle,
-            subtitle: l10n.productUpdatesSubtitle,
+          const SizedBox(height: 12),
+          CalmCard(
             onTap: onOpenProductUpdates,
+            child: CalmListTile(
+              leadingIcon: Icons.new_releases_outlined,
+              leadingColor: AppColors.accent(context),
+              title: l10n.productUpdatesTitle,
+              subtitle: l10n.productUpdatesSubtitle,
+              trailing: '›',
+              onTap: onOpenProductUpdates,
+            ),
           ),
-          const SizedBox(height: 8),
-          _Tile(
-            icon: Icons.settings_outlined,
-            title: l10n.settingsTitle,
-            subtitle: l10n.moreSettingsSubtitle,
+          const SizedBox(height: 12),
+          CalmCard(
             onTap: onOpenSettings,
+            child: CalmListTile(
+              leadingIcon: Icons.settings_outlined,
+              leadingColor: AppColors.accent(context),
+              title: l10n.settingsTitle,
+              subtitle: l10n.moreSettingsSubtitle,
+              trailing: '›',
+              onTap: onOpenSettings,
+            ),
           ),
         ],
       ),
@@ -106,12 +126,12 @@ class MoreScreen extends StatelessWidget {
   }
 }
 
-class _SubscriptionTile extends StatelessWidget {
+class _SubscriptionCard extends StatelessWidget {
   final SubscriptionState? subscription;
   final int pausedItemCount;
   final VoidCallback onTap;
 
-  const _SubscriptionTile({
+  const _SubscriptionCard({
     required this.subscription,
     required this.pausedItemCount,
     required this.onTap,
@@ -130,110 +150,34 @@ class _SubscriptionTile extends StatelessWidget {
     }
   }
 
-  String _planDetails(S l10n) {
-    if (subscription == null || subscription!.hasPremiumAccess) {
-      return l10n.morePlanManage;
+  String _subtitle(S l10n) {
+    final base = (subscription == null || subscription!.hasPremiumAccess)
+        ? l10n.morePlanManage
+        : l10n.morePlanLimits(
+            DowngradeService.maxFreeCategories,
+            DowngradeService.maxFreeSavingsGoals,
+          );
+    if (pausedItemCount > 0) {
+      return '$base\n${l10n.moreItemsPaused(pausedItemCount)}';
     }
-    return l10n.morePlanLimits(
-      DowngradeService.maxFreeCategories,
-      DowngradeService.maxFreeSavingsGoals,
-    );
+    return base;
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    return ListTile(
-      tileColor: AppColors.surface(context),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-        side: BorderSide(color: AppColors.border(context)),
-      ),
-      leading:
-          Icon(Icons.workspace_premium_outlined, color: AppColors.primary(context)),
-      title: Text(
-        _planLabel(l10n),
-        style: TextStyle(
-          fontWeight: FontWeight.w700,
-          color: AppColors.textPrimary(context),
-        ),
-      ),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            _planDetails(l10n),
-            style: TextStyle(color: AppColors.textSecondary(context)),
-          ),
-          if (pausedItemCount > 0)
-            Padding(
-              padding: const EdgeInsets.only(top: 2),
-              child: Text(
-                l10n.moreItemsPaused(pausedItemCount),
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textMuted(context),
-                ),
-              ),
-            ),
-        ],
-      ),
-      trailing: subscription != null && !subscription!.hasPremiumAccess
-          ? Text(
-              l10n.moreUpgrade,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: AppColors.primary(context),
-              ),
-            )
-          : Icon(Icons.chevron_right, color: AppColors.textMuted(context)),
+    final showsUpgrade =
+        subscription != null && !subscription!.hasPremiumAccess;
+    return CalmCard(
       onTap: onTap,
-    );
-  }
-}
-
-class _Tile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-  final int badgeCount;
-
-  const _Tile({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-    this.badgeCount = 0,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      tileColor: AppColors.surface(context),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-        side: BorderSide(color: AppColors.border(context)),
+      child: CalmListTile(
+        leadingIcon: Icons.workspace_premium_outlined,
+        leadingColor: AppColors.accent(context),
+        title: _planLabel(l10n),
+        subtitle: _subtitle(l10n),
+        trailing: showsUpgrade ? '${l10n.moreUpgrade}  ›' : '›',
+        onTap: onTap,
       ),
-      leading: Badge(
-        isLabelVisible: badgeCount > 0,
-        label: Text('$badgeCount', style: const TextStyle(fontSize: 10)),
-        child: Icon(icon, color: AppColors.primary(context)),
-      ),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontWeight: FontWeight.w700,
-          color: AppColors.textPrimary(context),
-        ),
-      ),
-      subtitle: Text(
-        subtitle,
-        style: TextStyle(color: AppColors.textSecondary(context)),
-      ),
-      trailing: Icon(Icons.chevron_right, color: AppColors.textMuted(context)),
-      onTap: onTap,
     );
   }
 }
