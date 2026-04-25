@@ -26,19 +26,20 @@ void main() {
       ),
     );
 
-    await tester.tap(find.text('Insights'));
-    await tester.pump();
-    await tester.tap(find.text('Savings Goals'));
-    await tester.pump();
-    await tester.tap(find.text('Notifications'));
-    await tester.pump();
-    await tester.tap(find.text('Free Plan'));
-    await tester.pump();
-    await tester.tap(find.text('Settings'));
-    await tester.pump();
+    Future<void> tapText(String text) async {
+      final finder = find.text(text);
+      await tester.ensureVisible(finder);
+      await tester.pump();
+      await tester.tap(finder);
+      await tester.pump();
+    }
 
-    await tester.tap(find.text('Product Updates'));
-    await tester.pump();
+    await tapText('Insights');
+    await tapText('Savings Goals');
+    await tapText('Notifications');
+    await tapText('Free Plan');
+    await tapText('Product Updates');
+    await tapText('Settings');
 
     expect(insights, 1);
     expect(savings, 1);
