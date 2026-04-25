@@ -400,13 +400,9 @@ class _HowItWorksCard extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: AppColors.accentSoft(context),
-                        shape: BoxShape.circle,
-                      ),
+                    CircleAvatar(
+                      radius: 12,
+                      backgroundColor: AppColors.accentSoft(context),
                       child: Icon(
                         icons[i],
                         size: 14,
@@ -486,13 +482,9 @@ class _GoalCard extends StatelessWidget {
                     color: AppColors.ink50(context),
                   )
                 else
-                  Container(
-                    width: 12,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      color: progressColor,
-                      shape: BoxShape.circle,
-                    ),
+                  CircleAvatar(
+                    radius: 6,
+                    backgroundColor: progressColor,
                   ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -1002,15 +994,7 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
             // Contribution history label
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Text(
-                l10n.savingsGoalContributionHistory,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.ink70(context),
-                  letterSpacing: 0.5,
-                ),
-              ),
+              child: CalmEyebrow(l10n.savingsGoalContributionHistory.toUpperCase()),
             ),
 
             // Contribution list
@@ -1177,7 +1161,11 @@ class _AddContributionSheetState extends State<_AddContributionSheet> {
                 // Date
                 _sheetLabel(context, l10n.savingsGoalContributionDate),
                 const SizedBox(height: 8),
-                InkWell(
+                CalmCard(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
                   onTap: () async {
                     final picked = await showDatePicker(
                       context: context,
@@ -1191,34 +1179,22 @@ class _AddContributionSheetState extends State<_AddContributionSheet> {
                       setState(() => _selectedDate = picked);
                     }
                   },
-                  borderRadius: BorderRadius.circular(14),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 16,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: AppColors.line(context)),
-                      borderRadius: BorderRadius.circular(14),
-                      color: AppColors.card(context),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.calendar_today,
-                          size: 18,
-                          color: AppColors.ink70(context),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_today,
+                        size: 18,
+                        color: AppColors.ink70(context),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        '${_selectedDate.day.toString().padLeft(2, '0')}/${_selectedDate.month.toString().padLeft(2, '0')}/${_selectedDate.year}',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: AppColors.ink(context),
                         ),
-                        const SizedBox(width: 8),
-                        Text(
-                          '${_selectedDate.day.toString().padLeft(2, '0')}/${_selectedDate.month.toString().padLeft(2, '0')}/${_selectedDate.year}',
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: AppColors.ink(context),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 20),
