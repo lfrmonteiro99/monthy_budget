@@ -5,6 +5,7 @@ import 'package:monthly_management/models/budget_summary.dart';
 import 'package:monthly_management/models/local_dashboard_config.dart';
 import 'package:monthly_management/models/purchase_record.dart';
 import 'package:monthly_management/screens/dashboard_screen.dart';
+import 'package:monthly_management/widgets/calm/calm_avatar_badge.dart';
 
 import '../helpers/test_app.dart';
 
@@ -43,7 +44,7 @@ void main() {
     expect(called, 1);
   });
 
-  testWidgets('Dashboard settings icon triggers callback when data exists',
+  testWidgets('Dashboard avatar triggers onOpenSettings callback when data exists',
       (tester) async {
     var called = 0;
 
@@ -86,7 +87,9 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byIcon(Icons.settings_outlined));
+    // The CalmHeader renders a CalmAvatarBadge in place of the old settings
+    // icon chip; tapping it triggers onOpenSettings.
+    await tester.tap(find.byType(CalmAvatarBadge));
     await tester.pump();
 
     expect(called, 1);

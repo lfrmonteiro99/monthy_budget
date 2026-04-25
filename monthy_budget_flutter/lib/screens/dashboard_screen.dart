@@ -33,6 +33,8 @@ import '../widgets/savings_goal_card.dart';
 import '../widgets/info_icon_button.dart';
 import '../utils/savings_projections.dart';
 import '../onboarding/dashboard_tour.dart';
+import '../models/notification_preferences.dart';
+import 'notification_settings_screen.dart';
 import 'tax_deduction_detail_screen.dart';
 import 'tax_simulator_screen.dart';
 
@@ -65,6 +67,14 @@ class DashboardScreen extends StatefulWidget {
   final VoidCallback? onOpenCoach;
   final List<CustomCategory> customCategories;
 
+  /// Household display name shown in the CalmHeader eyebrow (e.g. 'CASA SILVA').
+  /// Falls back to empty string when not provided.
+  final String householdName;
+
+  /// Called when the bell icon is tapped. Typically opens notification
+  /// settings. No-op tooltip is shown if null.
+  final VoidCallback? onOpenNotificationSettings;
+
   const DashboardScreen({
     super.key,
     required this.settings,
@@ -94,6 +104,8 @@ class DashboardScreen extends StatefulWidget {
     this.onOpenInsights,
     this.onOpenCoach,
     this.customCategories = const [],
+    this.householdName = '',
+    this.onOpenNotificationSettings,
   });
 
   @override
@@ -198,8 +210,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 8),
-            _buildTopActions(context, l10n),
+            _buildCalmHeader(context, l10n),
             const SizedBox(height: 24),
             if (hasData && dashboardConfig.showHeroCard)
               _buildHero(context, isPositive, l10n)
@@ -218,60 +229,71 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // ───────────────────────── Header (Coach / Settings) ─────────────────────
+  // ───────────────────────── Header (CalmHeader) ───────────────────────────
 
-  Widget _buildTopActions(BuildContext context, S l10n) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        if (widget.onOpenCoach != null) ...[
-          _iconChip(
-            context,
-            icon: Icons.psychology_outlined,
-            tooltip: l10n.coachTitle,
-            onTap: widget.onOpenCoach!,
-            iconColor: AppColors.accent(context),
+  Widget _buildCalmHeader(BuildContext context, S l10n) {
+    final now = DateTime.now();
+    final monthLabel =
+        '${localizedMonthFull(l10n, now.month)} ${now.year}';
+
+    final eyebrow = widget.householdName.isNotEmpty
+        ? widget.householdName.toUpperCase()
+        : l10n.appTitle.toUpperCase();
+
+    // Derive avatar initials from household name; fall back to '?' when empty.
+    final initials = _avatarInitials(widget.householdName);
+
+    return CalmHeader(
+      eyebrow: eyebrow,
+      title: monthLabel,
+      // Chevron is decoration-only in M1; picker wired in M1b.
+      onTitleTap: () {},
+      actions: [
+        Tooltip(
+          message: l10n.notificationSettings,
+          child: IconButton(
+            icon: Badge(
+              isLabelVisible: false,
+              child: Icon(
+                Icons.notifications_outlined,
+                size: 24,
+                color: AppColors.ink70(context),
+              ),
+            ),
+            onPressed: widget.onOpenNotificationSettings ??
+                () => _openNotificationSettings(context),
           ),
-          const SizedBox(width: 8),
-        ],
-        _iconChip(
-          context,
-          icon: Icons.settings_outlined,
-          tooltip: l10n.dashboardOpenSettings,
+        ),
+        CalmAvatarBadge(
+          initials: initials,
+          size: 36,
           onTap: onOpenSettings,
-          iconColor: AppColors.ink70(context),
         ),
       ],
     );
   }
 
-  Widget _iconChip(
-    BuildContext context, {
-    required IconData icon,
-    required String tooltip,
-    required VoidCallback onTap,
-    required Color iconColor,
-  }) {
-    return Semantics(
-      button: true,
-      label: tooltip,
-      child: Material(
-        color: AppColors.card(context),
-        borderRadius: BorderRadius.circular(12),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              border: Border.all(color: AppColors.line(context)),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, size: 20, color: iconColor),
-          ),
+  void _openNotificationSettings(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => NotificationSettingsScreen(
+          preferences: const NotificationPreferences(),
+          onSave: (_) {},
         ),
       ),
     );
+  }
+
+  static String _avatarInitials(String householdName) {
+    if (householdName.isEmpty) return '?';
+    final parts = householdName
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((s) => s.isNotEmpty)
+        .toList();
+    if (parts.isEmpty) return '?';
+    if (parts.length == 1) return parts.first[0].toUpperCase();
+    return (parts.first[0] + parts.last[0]).toUpperCase();
   }
 
   // ───────────────────────────────── Hero ──────────────────────────────────
