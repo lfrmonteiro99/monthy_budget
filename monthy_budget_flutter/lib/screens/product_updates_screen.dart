@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 
 import '../l10n/generated/app_localizations.dart';
 import '../models/roadmap_entry.dart';
@@ -53,43 +54,37 @@ class _ProductUpdatesScreenState extends State<ProductUpdatesScreen>
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
-      appBar: AppBar(
-        backgroundColor: AppColors.surface(context),
-        surfaceTintColor: AppColors.surface(context),
-        title: Text(
-          l10n.productUpdatesTitle,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary(context),
+    return CalmScaffold(
+      title: l10n.productUpdatesTitle,
+      body: Column(
+        children: [
+          TabBar(
+            controller: _tabController,
+            labelColor: AppColors.primary(context),
+            unselectedLabelColor: AppColors.textMuted(context),
+            indicatorColor: AppColors.primary(context),
+            indicatorSize: TabBarIndicatorSize.label,
+            tabs: [
+              Tab(text: l10n.whatsNewTab),
+              Tab(text: l10n.roadmapTab),
+            ],
           ),
-        ),
-        bottom: TabBar(
-          controller: _tabController,
-          labelColor: AppColors.primary(context),
-          unselectedLabelColor: AppColors.textMuted(context),
-          indicatorColor: AppColors.primary(context),
-          indicatorSize: TabBarIndicatorSize.label,
-          tabs: [
-            Tab(text: l10n.whatsNewTab),
-            Tab(text: l10n.roadmapTab),
-          ],
-        ),
+          Expanded(
+            child: _loading
+                ? const Center(child: CircularProgressIndicator())
+                : TabBarView(
+                    controller: _tabController,
+                    children: [
+                      _WhatsNewTab(
+                        entries: _whatsNew,
+                        onFeatureNavigate: widget.onFeatureNavigate,
+                      ),
+                      _RoadmapTab(entries: _roadmap),
+                    ],
+                  ),
+          ),
+        ],
       ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : TabBarView(
-              controller: _tabController,
-              children: [
-                _WhatsNewTab(
-                  entries: _whatsNew,
-                  onFeatureNavigate: widget.onFeatureNavigate,
-                ),
-                _RoadmapTab(entries: _roadmap),
-              ],
-            ),
     );
   }
 }
@@ -105,14 +100,15 @@ class _WhatsNewTab extends StatelessWidget {
     final l10n = S.of(context);
     if (entries.isEmpty) {
       return Center(
-        child: Text(
-          l10n.noUpdatesYet,
-          style: TextStyle(color: AppColors.textMuted(context)),
+        child: CalmEmptyState(
+          icon: Icons.inbox_outlined,
+          title: l10n.noUpdatesYet,
+          body: '',
         ),
       );
     }
     return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+      padding: const EdgeInsets.only(top: 16, bottom: 24),
       itemCount: entries.length,
       itemBuilder: (context, index) {
         final entry = entries[index];
@@ -141,15 +137,16 @@ class _RoadmapTab extends StatelessWidget {
 
     if (entries.isEmpty) {
       return Center(
-        child: Text(
-          l10n.noRoadmapItems,
-          style: TextStyle(color: AppColors.textMuted(context)),
+        child: CalmEmptyState(
+          icon: Icons.explore_outlined,
+          title: l10n.noRoadmapItems,
+          body: '',
         ),
       );
     }
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+      padding: const EdgeInsets.only(top: 4, bottom: 24),
       children: [
         RoadmapLaneSection(
           title: l10n.roadmapNow,
