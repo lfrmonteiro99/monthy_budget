@@ -455,8 +455,6 @@ class _GroceryScreenState extends State<GroceryScreen> {
     }
 
     final hasWarning = groceryData.hasDegradedStores;
-    final accent =
-        hasWarning ? AppColors.warn(context) : AppColors.ok(context);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -465,20 +463,8 @@ class _GroceryScreenState extends State<GroceryScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: CalmEyebrow(
-                    'DISPONIBILIDADE', // TODO(l10n): extrair chave
-                  ),
-                ),
-                CalmPill(
-                  label: hasWarning
-                      ? l10n.groceryStoreStaleLabel
-                      : l10n.groceryStoreFreshLabel,
-                  color: accent,
-                ),
-              ],
+            CalmEyebrow(
+              'DISPONIBILIDADE', // TODO(l10n): extrair chave
             ),
             const SizedBox(height: 8),
             Text(
@@ -512,23 +498,23 @@ class _GroceryScreenState extends State<GroceryScreen> {
               ),
             ],
             const SizedBox(height: 8),
-            // Summary stat rows — fresh vs failed store counts
+            // Summary stat rows — store counts by freshness bucket
             CalmListTile(
               leadingIcon: Icons.check_circle_outline,
               leadingColor: AppColors.ok(context),
-              title: l10n.groceryStoreFreshLabel,
+              title: l10n.groceryStoreFreshCount(groceryData.freshStoreCount),
               trailing: '${groceryData.freshStoreCount}',
             ),
             Divider(color: AppColors.line(context), height: 1),
             CalmListTile(
               leadingIcon: Icons.error_outline,
               leadingColor: AppColors.bad(context),
-              title: l10n.groceryStoreFailedLabel,
+              title: l10n.groceryStoreFailedCount(groceryData.failedStoreCount),
               trailing: '${groceryData.failedStoreCount}',
             ),
             Divider(color: AppColors.line(context), height: 1),
             const SizedBox(height: 4),
-            // Per-store detail rows
+            // Per-store detail rows (one per store, each shows its own status)
             ...groceryData.storeSummaries.map(
               (store) => _buildStoreHealthRow(l10n, store),
             ),
