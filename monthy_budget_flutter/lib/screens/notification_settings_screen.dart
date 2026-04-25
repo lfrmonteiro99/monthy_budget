@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/notification_preferences.dart';
 import '../services/local_config_service.dart';
@@ -87,212 +88,207 @@ class _NotificationSettingsScreenState
   Widget build(BuildContext context) {
     final l10n = S.of(context);
 
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
-      appBar: AppBar(
-        title: Text(l10n.notificationSettings),
-        backgroundColor: AppColors.surface(context),
-        foregroundColor: AppColors.textPrimary(context),
-        elevation: 0,
-      ),
+    return CalmScaffold(
+      title: l10n.notificationSettings,
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.only(top: 16, bottom: 24),
         children: [
           // Preferred notification time
-          _buildSectionCard(
-            children: [
-              ListTile(
-                leading: Icon(Icons.schedule,
-                    color: AppColors.primary(context)),
-                title: Text(l10n.notificationPreferredTime,
-                    style: TextStyle(
-                        color: AppColors.textPrimary(context),
-                        fontWeight: FontWeight.w600)),
-                subtitle: Text(
-                  l10n.notificationPreferredTimeDesc,
+          CalmCard(
+            padding: EdgeInsets.zero,
+            child: ListTile(
+              leading: Icon(Icons.schedule,
+                  color: AppColors.primary(context)),
+              title: Text(l10n.notificationPreferredTime,
                   style: TextStyle(
-                      color: AppColors.textSecondary(context),
-                      fontSize: 13),
-                ),
-                trailing: InkWell(
-                  onTap: () async {
-                    final picked = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay(
-                        hour: _prefs.preferredHour,
-                        minute: _prefs.preferredMinute,
-                      ),
-                    );
-                    if (picked != null) {
-                      _update(_prefs.copyWith(
-                        preferredHour: picked.hour,
-                        preferredMinute: picked.minute,
-                      ));
-                    }
-                  },
-                  borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          color: AppColors.borderMuted(context)),
-                      borderRadius: BorderRadius.circular(8),
+                      color: AppColors.textPrimary(context),
+                      fontWeight: FontWeight.w600)),
+              subtitle: Text(
+                l10n.notificationPreferredTimeDesc,
+                style: TextStyle(
+                    color: AppColors.textSecondary(context),
+                    fontSize: 13),
+              ),
+              trailing: InkWell(
+                onTap: () async {
+                  final picked = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay(
+                      hour: _prefs.preferredHour,
+                      minute: _prefs.preferredMinute,
                     ),
-                    child: Text(
-                      '${_prefs.preferredHour.toString().padLeft(2, '0')}:${_prefs.preferredMinute.toString().padLeft(2, '0')}',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.primary(context),
-                      ),
+                  );
+                  if (picked != null) {
+                    _update(_prefs.copyWith(
+                      preferredHour: picked.hour,
+                      preferredMinute: picked.minute,
+                    ));
+                  }
+                },
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        color: AppColors.borderMuted(context)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    '${_prefs.preferredHour.toString().padLeft(2, '0')}:${_prefs.preferredMinute.toString().padLeft(2, '0')}',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primary(context),
                     ),
                   ),
                 ),
               ),
-            ],
+            ),
           ),
           const SizedBox(height: 12),
 
           // Daily expense reminder
-          _buildSectionCard(
-            children: [
-              SwitchListTile(
-                value: _prefs.dailyExpenseReminder,
-                onChanged: (v) {
-                  if (v) _ensurePermission();
-                  _update(_prefs.copyWith(dailyExpenseReminder: v));
-                },
-                title: Text(l10n.notifDailyExpenseReminder,
-                    style: TextStyle(
-                        color: AppColors.textPrimary(context),
-                        fontWeight: FontWeight.w600)),
-                subtitle: Text(
-                  l10n.notifDailyExpenseReminderDesc,
+          CalmCard(
+            padding: EdgeInsets.zero,
+            child: SwitchListTile(
+              value: _prefs.dailyExpenseReminder,
+              onChanged: (v) {
+                if (v) _ensurePermission();
+                _update(_prefs.copyWith(dailyExpenseReminder: v));
+              },
+              title: Text(l10n.notifDailyExpenseReminder,
                   style: TextStyle(
-                      color: AppColors.textSecondary(context),
-                      fontSize: 13),
-                ),
-                activeThumbColor: AppColors.primary(context),
+                      color: AppColors.textPrimary(context),
+                      fontWeight: FontWeight.w600)),
+              subtitle: Text(
+                l10n.notifDailyExpenseReminderDesc,
+                style: TextStyle(
+                    color: AppColors.textSecondary(context),
+                    fontSize: 13),
               ),
-            ],
+              activeThumbColor: AppColors.primary(context),
+            ),
           ),
           const SizedBox(height: 12),
 
           // Bill reminders
-          _buildSectionCard(
-            children: [
-              SwitchListTile(
-                value: _prefs.billReminders,
-                onChanged: (v) {
-                  if (v) _ensurePermission();
-                  _update(_prefs.copyWith(billReminders: v));
-                },
-                title: Text(l10n.notificationBillReminders,
+          CalmCard(
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                SwitchListTile(
+                  value: _prefs.billReminders,
+                  onChanged: (v) {
+                    if (v) _ensurePermission();
+                    _update(_prefs.copyWith(billReminders: v));
+                  },
+                  title: Text(l10n.notificationBillReminders,
+                      style: TextStyle(
+                          color: AppColors.textPrimary(context),
+                          fontWeight: FontWeight.w600)),
+                  subtitle: Text(
+                    '${l10n.notificationBillReminderDays}: ${_prefs.billReminderDaysBefore}',
                     style: TextStyle(
-                        color: AppColors.textPrimary(context),
-                        fontWeight: FontWeight.w600)),
-                subtitle: Text(
-                  '${l10n.notificationBillReminderDays}: ${_prefs.billReminderDaysBefore}',
-                  style: TextStyle(
-                      color: AppColors.textSecondary(context),
-                      fontSize: 13),
-                ),
-                activeThumbColor: AppColors.primary(context),
-              ),
-              if (_prefs.billReminders) ...[
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  child: Row(
-                    children: [
-                      Text(l10n.notificationBillReminderDays,
-                          style: TextStyle(
-                              color: AppColors.textSecondary(context),
-                              fontSize: 13)),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Slider(
-                          value: _prefs.billReminderDaysBefore.toDouble(),
-                          min: 1,
-                          max: 7,
-                          divisions: 6,
-                          label: '${_prefs.billReminderDaysBefore}',
-                          activeColor: AppColors.primary(context),
-                          onChanged: (v) => _update(_prefs.copyWith(
-                              billReminderDaysBefore: v.round())),
-                        ),
-                      ),
-                    ],
+                        color: AppColors.textSecondary(context),
+                        fontSize: 13),
                   ),
+                  activeThumbColor: AppColors.primary(context),
                 ),
+                if (_prefs.billReminders)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    child: Row(
+                      children: [
+                        Text(l10n.notificationBillReminderDays,
+                            style: TextStyle(
+                                color: AppColors.textSecondary(context),
+                                fontSize: 13)),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Slider(
+                            value: _prefs.billReminderDaysBefore.toDouble(),
+                            min: 1,
+                            max: 7,
+                            divisions: 6,
+                            label: '${_prefs.billReminderDaysBefore}',
+                            activeColor: AppColors.primary(context),
+                            onChanged: (v) => _update(_prefs.copyWith(
+                                billReminderDaysBefore: v.round())),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
               ],
-            ],
+            ),
           ),
           const SizedBox(height: 12),
 
           // Budget alerts
-          _buildSectionCard(
-            children: [
-              SwitchListTile(
-                value: _prefs.budgetAlerts,
-                onChanged: (v) {
-                  if (v) _ensurePermission();
-                  _update(_prefs.copyWith(budgetAlerts: v));
-                },
-                title: Text(l10n.notificationBudgetAlerts,
+          CalmCard(
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                SwitchListTile(
+                  value: _prefs.budgetAlerts,
+                  onChanged: (v) {
+                    if (v) _ensurePermission();
+                    _update(_prefs.copyWith(budgetAlerts: v));
+                  },
+                  title: Text(l10n.notificationBudgetAlerts,
+                      style: TextStyle(
+                          color: AppColors.textPrimary(context),
+                          fontWeight: FontWeight.w600)),
+                  subtitle: Text(
+                    l10n.notificationBudgetThreshold(
+                        _prefs.budgetAlertThreshold.toString()),
                     style: TextStyle(
-                        color: AppColors.textPrimary(context),
-                        fontWeight: FontWeight.w600)),
-                subtitle: Text(
-                  l10n.notificationBudgetThreshold(
-                      _prefs.budgetAlertThreshold.toString()),
-                  style: TextStyle(
-                      color: AppColors.textSecondary(context),
-                      fontSize: 13),
-                ),
-                activeThumbColor: AppColors.primary(context),
-              ),
-              if (_prefs.budgetAlerts) ...[
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  child: Slider(
-                    value: _prefs.budgetAlertThreshold.toDouble(),
-                    min: 50,
-                    max: 100,
-                    divisions: 10,
-                    label: '${_prefs.budgetAlertThreshold}%',
-                    activeColor: AppColors.primary(context),
-                    onChanged: (v) => _update(_prefs.copyWith(
-                        budgetAlertThreshold: v.round())),
+                        color: AppColors.textSecondary(context),
+                        fontSize: 13),
                   ),
+                  activeThumbColor: AppColors.primary(context),
                 ),
+                if (_prefs.budgetAlerts)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    child: Slider(
+                      value: _prefs.budgetAlertThreshold.toDouble(),
+                      min: 50,
+                      max: 100,
+                      divisions: 10,
+                      label: '${_prefs.budgetAlertThreshold}%',
+                      activeColor: AppColors.primary(context),
+                      onChanged: (v) => _update(_prefs.copyWith(
+                          budgetAlertThreshold: v.round())),
+                    ),
+                  ),
               ],
-            ],
+            ),
           ),
           const SizedBox(height: 12),
 
           // Meal plan reminder
-          _buildSectionCard(
-            children: [
-              SwitchListTile(
-                value: _prefs.mealPlanReminders,
-                onChanged: (v) {
-                  if (v) _ensurePermission();
-                  _update(_prefs.copyWith(mealPlanReminders: v));
-                },
-                title: Text(l10n.notificationMealPlanReminder,
-                    style: TextStyle(
-                        color: AppColors.textPrimary(context),
-                        fontWeight: FontWeight.w600)),
-                subtitle: Text(
-                  l10n.notificationMealPlanReminderDesc,
+          CalmCard(
+            padding: EdgeInsets.zero,
+            child: SwitchListTile(
+              value: _prefs.mealPlanReminders,
+              onChanged: (v) {
+                if (v) _ensurePermission();
+                _update(_prefs.copyWith(mealPlanReminders: v));
+              },
+              title: Text(l10n.notificationMealPlanReminder,
                   style: TextStyle(
-                      color: AppColors.textSecondary(context),
-                      fontSize: 13),
-                ),
-                activeThumbColor: AppColors.primary(context),
+                      color: AppColors.textPrimary(context),
+                      fontWeight: FontWeight.w600)),
+              subtitle: Text(
+                l10n.notificationMealPlanReminderDesc,
+                style: TextStyle(
+                    color: AppColors.textSecondary(context),
+                    fontSize: 13),
               ),
-            ],
+              activeThumbColor: AppColors.primary(context),
+            ),
           ),
           const SizedBox(height: 24),
 
@@ -300,14 +296,7 @@ class _NotificationSettingsScreenState
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                l10n.notificationCustomReminders,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary(context),
-                ),
-              ),
+              CalmEyebrow(l10n.notificationCustomReminders),
               TextButton.icon(
                 onPressed: _addCustomReminder,
                 icon: const Icon(Icons.add, size: 18),
@@ -317,64 +306,65 @@ class _NotificationSettingsScreenState
           ),
           const SizedBox(height: 8),
           if (_prefs.customReminders.isEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24),
-              child: Text(
-                l10n.notificationEmpty,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: AppColors.textMuted(context), fontSize: 14),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24),
+                child: CalmEmptyState(
+                  icon: Icons.notifications_off_outlined,
+                  title: l10n.notificationEmpty,
+                  body: '',
+                ),
               ),
             )
           else
+            // Custom reminder rows: a Row inside CalmCard rather than
+            // CalmListTile, because the trailing widget must be an
+            // IconButton (delete) and CalmListTile.trailing is String-only.
             ...List.generate(_prefs.customReminders.length, (i) {
               final r = _prefs.customReminders[i];
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.surface(context),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.border(context)),
-                  ),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: AppColors.primaryLight(context),
-                      child: Icon(Icons.notifications_outlined,
-                          color: AppColors.primary(context), size: 20),
-                    ),
-                    title: Text(r.title,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary(context))),
-                    subtitle: Text(
-                      '${r.hour.toString().padLeft(2, '0')}:${r.minute.toString().padLeft(2, '0')} · ${_repeatLabel(r.repeat, l10n)}',
-                      style: TextStyle(
-                          color: AppColors.textSecondary(context),
-                          fontSize: 13),
-                    ),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete_outline,
-                          color: AppColors.error(context)),
-                      onPressed: () => _deleteCustomReminder(i),
-                    ),
+                child: CalmCard(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 8),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: AppColors.primaryLight(context),
+                        child: Icon(Icons.notifications_outlined,
+                            color: AppColors.primary(context), size: 20),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(r.title,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.textPrimary(context))),
+                            const SizedBox(height: 2),
+                            Text(
+                              '${r.hour.toString().padLeft(2, '0')}:${r.minute.toString().padLeft(2, '0')} · ${_repeatLabel(r.repeat, l10n)}',
+                              style: TextStyle(
+                                  color: AppColors.textSecondary(context),
+                                  fontSize: 13),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete_outline,
+                            color: AppColors.error(context)),
+                        onPressed: () => _deleteCustomReminder(i),
+                      ),
+                    ],
                   ),
                 ),
               );
             }),
         ],
       ),
-    );
-  }
-
-  Widget _buildSectionCard({required List<Widget> children}) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface(context),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border(context)),
-      ),
-      child: Column(children: children),
     );
   }
 
