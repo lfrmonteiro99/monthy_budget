@@ -13,9 +13,8 @@ import 'package:monthly_management/theme/app_theme.dart';
 ///   grep -rEln "Color\(0x[A-Fa-f0-9]{6,8}\)" lib/ --include='*.dart' \
 ///     --exclude-dir=theme | sort
 ///
-/// Last verified: 2026-04-25 (2 files).
+/// Last verified: 2026-04-25 (1 file — chart palette pending series-token decision).
 const _grandfathered = <String>{
-  'lib/screens/settings_screen.dart',
   'lib/widgets/charts/budget_charts.dart',
 };
 

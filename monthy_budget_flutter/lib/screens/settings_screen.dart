@@ -415,7 +415,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       title: S.of(context).settingsSubscription,
                       subtitle: _subscriptionSubtitle(),
                       onTap: widget.onOpenSubscription!,
-                      iconColor: const Color(0xFFF59E0B),
+                      iconColor: AppColors.warning(context),
                     ),
                   if (widget.onOpenCustomerCenter != null)
                     _SettingsItem(
@@ -506,7 +506,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         label: Text(l10n.settingsLogout),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppColors.error(context),
-                          side: const BorderSide(color: Color(0xFFFECACA)),
+                          side: BorderSide(
+                              color: AppColors.bad(context).withValues(alpha: 0.2)),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12)),
                           padding: const EdgeInsets.symmetric(vertical: 14),
@@ -888,16 +889,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             _deductionChip(l10n.settingsDeductionIrs,
                                 '-${salaryCalc.irsRetention.toStringAsFixed(0)}',
                                 '${(salaryCalc.irsRate * 100).toStringAsFixed(1)}%',
-                                const Color(0xFFEF4444)),
+                                AppColors.bad(context)),
                             _deductionChip(l10n.settingsDeductionSs,
                                 '-${salaryCalc.socialSecurity.toStringAsFixed(0)}',
                                 '${(salaryCalc.socialSecurityRate * 100).toStringAsFixed(0)}%',
-                                const Color(0xFFF59E0B)),
+                                AppColors.warning(context)),
                             if (salaryCalc.mealAllowance.netMealAllowance > 0)
                               _deductionChip(l10n.settingsDeductionMeal,
                                   '+${salaryCalc.mealAllowance.netMealAllowance.toStringAsFixed(0)}',
                                   null,
-                                  const Color(0xFF10B981)),
+                                  AppColors.ok(context)),
                           ],
                         ),
                       ),
@@ -1081,7 +1082,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   width: double.infinity,
                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF10B981).withValues(alpha: 0.08),
+                                    color: AppColors.ok(context).withValues(alpha: 0.08),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
@@ -1313,7 +1314,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         width: 8, height: 8,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: expense.enabled ? const Color(0xFF34D399) : AppColors.textMuted(context),
+                          color: expense.enabled ? AppColors.ok(context) : AppColors.textMuted(context),
                         ),
                       ),
                       const SizedBox(width: 4),
@@ -1590,10 +1591,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final ratio = totalCount > 0 ? activeCount / totalCount : 0.0;
     // Color coding: green (>80% active), amber (50-80%), red (<50%)
     final healthColor = ratio >= 0.8
-        ? const Color(0xFF34D399)
+        ? AppColors.ok(context)
         : ratio >= 0.5
-            ? const Color(0xFFFBBF24)
-            : const Color(0xFFF87171);
+            ? AppColors.warning(context)
+            : AppColors.bad(context);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -2279,14 +2280,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF7ED),
+              color: AppColors.warningBackground(context),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFFED7AA)),
+              border: Border.all(
+                  color: AppColors.warning(context).withValues(alpha: 0.4)),
             ),
             child: Row(
               children: [
-                const Icon(Icons.tips_and_updates,
-                    size: 18, color: Color(0xFFF97316)),
+                Icon(Icons.tips_and_updates,
+                    size: 18, color: AppColors.warning(context)),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
