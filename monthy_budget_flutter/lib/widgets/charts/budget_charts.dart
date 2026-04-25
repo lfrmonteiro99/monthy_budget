@@ -179,9 +179,9 @@ class _IncomeVsExpensesChart extends StatelessWidget {
           BarChartData(
             maxY: maxVal * 1.15,
             barGroups: [
-              _bar(0, summary.totalNetWithMeal, const Color(0xFF34D399)),
-              _bar(1, summary.totalExpenses, const Color(0xFFF87171)),
-              _bar(2, math.max(0, summary.netLiquidity), const Color(0xFF818CF8)),
+              _bar(0, summary.totalNetWithMeal, AppColors.chartGreen(context)),
+              _bar(1, summary.totalExpenses, AppColors.chartRed(context)),
+              _bar(2, math.max(0, summary.netLiquidity), AppColors.chartIndigo(context)),
             ],
             titlesData: FlTitlesData(
               leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -252,21 +252,21 @@ class _DeductionsChart extends StatelessWidget {
                 sections: [
                   PieChartSectionData(
                     value: summary.totalNet,
-                    color: const Color(0xFF34D399),
+                    color: AppColors.chartGreen(context),
                     title: '',
                     radius: 70,
                     borderSide: BorderSide(color: AppColors.surface(context), width: 3),
                   ),
                   PieChartSectionData(
                     value: summary.totalIRS,
-                    color: const Color(0xFFF87171),
+                    color: AppColors.chartRed(context),
                     title: '',
                     radius: 70,
                     borderSide: BorderSide(color: AppColors.surface(context), width: 3),
                   ),
                   PieChartSectionData(
                     value: summary.totalSS,
-                    color: const Color(0xFFFBBF24),
+                    color: AppColors.chartAmber(context),
                     title: '',
                     radius: 70,
                     borderSide: BorderSide(color: AppColors.surface(context), width: 3),
@@ -281,11 +281,11 @@ class _DeductionsChart extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _legendDot(context, const Color(0xFF34D399), l10n.chartNetSalary),
+              _legendDot(context, AppColors.chartGreen(context), l10n.chartNetSalary),
               const SizedBox(width: 16),
-              _legendDot(context, const Color(0xFFF87171), l10n.chartIRS),
+              _legendDot(context, AppColors.chartRed(context), l10n.chartIRS),
               const SizedBox(width: 16),
-              _legendDot(context, const Color(0xFFFBBF24), l10n.chartSocialSecurity),
+              _legendDot(context, AppColors.chartAmber(context), l10n.chartSocialSecurity),
             ],
           ),
         ],
@@ -343,13 +343,13 @@ class _NetIncomeChart extends StatelessWidget {
                     barRods: [
                       BarChartRodData(
                         toY: grossValues[i],
-                        color: const Color(0xFFC7D2FE),
+                        color: AppColors.chartIndigoLight(context),
                         width: 24,
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
                       ),
                       BarChartRodData(
                         toY: netValues[i],
-                        color: const Color(0xFF818CF8),
+                        color: AppColors.chartIndigo(context),
                         width: 24,
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
                       ),
@@ -384,9 +384,9 @@ class _NetIncomeChart extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _legendDot(context, const Color(0xFFC7D2FE), l10n.chartGross),
+              _legendDot(context, AppColors.chartIndigoLight(context), l10n.chartGross),
               const SizedBox(width: 16),
-              _legendDot(context, const Color(0xFF818CF8), l10n.chartNet),
+              _legendDot(context, AppColors.chartIndigo(context), l10n.chartNet),
             ],
           ),
         ],
@@ -427,7 +427,7 @@ class _SavingsRateChart extends StatelessWidget {
                 sections: [
                   PieChartSectionData(
                     value: savingsRate * 100,
-                    color: const Color(0xFF34D399),
+                    color: AppColors.chartGreen(context),
                     title: '',
                     radius: 24,
                     borderSide: BorderSide.none,
