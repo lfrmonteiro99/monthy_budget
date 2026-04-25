@@ -518,10 +518,10 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                           : AppColors.primaryLight(context),
                       side: BorderSide(
                         color: selected
-                            ? (chipColor ?? const Color(0xFF93C5FD))
+                            ? (chipColor ?? AppColors.primary(context))
                             : chipColor != null
                                 ? chipColor.withValues(alpha: 0.3)
-                                : const Color(0xFFE2E8F0),
+                                : AppColors.border(context),
                       ),
                       labelStyle: TextStyle(
                         fontSize: 13,
@@ -545,8 +545,8 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                     selectedColor: AppColors.primaryLight(context),
                     side: BorderSide(
                       color: _isCustom
-                          ? const Color(0xFF93C5FD)
-                          : const Color(0xFFE2E8F0),
+                          ? AppColors.primary(context)
+                          : AppColors.border(context),
                     ),
                     labelStyle: const TextStyle(fontSize: 13),
                   ),

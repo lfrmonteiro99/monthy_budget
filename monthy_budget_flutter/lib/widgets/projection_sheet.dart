@@ -298,13 +298,13 @@ class _ProjectionSheetContentState extends State<_ProjectionSheetContent> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF7ED),
+                  color: AppColors.warningBackground(context),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   S.of(context).projectionSimulation,
                   style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500,
-                      color: Colors.orange.shade700),
+                      color: AppColors.warning(context)),
                 ),
               ),
             ],

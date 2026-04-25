@@ -13,13 +13,11 @@ import 'package:monthly_management/theme/app_theme.dart';
 ///   grep -rEln "Color\(0x[A-Fa-f0-9]{6,8}\)" lib/ --include='*.dart' \
 ///     --exclude-dir=theme | sort
 ///
-/// Last verified: 2026-04-25 (5 files).
+/// Last verified: 2026-04-25 (3 files).
 const _grandfathered = <String>{
   'lib/app_home.dart',
   'lib/screens/settings_screen.dart',
-  'lib/widgets/add_expense_sheet.dart',
   'lib/widgets/charts/budget_charts.dart',
-  'lib/widgets/projection_sheet.dart',
 };
 
 void main() {
