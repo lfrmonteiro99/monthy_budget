@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../models/app_settings.dart';
 import '../../services/household_service.dart';
@@ -74,11 +75,10 @@ class _HouseholdSetupScreenState extends State<HouseholdSetupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background(context),
+    return CalmScaffold(
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.symmetric(vertical: 24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
