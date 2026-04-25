@@ -146,10 +146,186 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
   double get _totalMonthly =>
       _expenses.where((e) => e.isActive).fold(0.0, (sum, e) => sum + e.amount);
 
+  Widget _buildSummaryCard(BuildContext context, S l10n) {
+    final activeCount = _expenses.where((e) => e.isActive).length;
+    final pausedCount = _expenses.length - activeCount;
+    final activeMonthly = _totalMonthly;
+    final pausedMonthly = _expenses
+        .where((e) => !e.isActive)
+        .fold(0.0, (s, e) => s + e.amount);
+    final pillColor =
+        activeCount > 0 ? AppColors.ok(context) : AppColors.ink50(context);
+    final pillLabel = activeCount == 1
+        ? '1 ativa' // TODO(l10n): move to ARB (Wave H)
+        : '$activeCount ativas'; // TODO(l10n): move to ARB (Wave H)
+
+    return CalmCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              CalmEyebrow('TOTAL MENSAL'), // TODO(l10n): move to ARB (Wave H)
+              const Spacer(),
+              CalmPill(label: pillLabel, color: pillColor),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            formatCurrency(activeMonthly),
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.w700,
+              color: AppColors.ink(context),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Divider(color: AppColors.line(context), height: 1),
+          const SizedBox(height: 4),
+          // Active summary row
+          CalmListTile(
+            leadingIcon: Icons.check_circle_outline,
+            leadingColor: AppColors.ok(context),
+            title: 'Ativas', // TODO(l10n): move to ARB (Wave H)
+            subtitle: '$activeCount subscrição${activeCount == 1 ? '' : 'ões'}', // TODO(l10n): move to ARB (Wave H)
+            trailing: formatCurrency(activeMonthly),
+          ),
+          if (pausedCount > 0) ...[
+            Divider(
+              color: AppColors.line(context),
+              height: 1,
+              indent: 44,
+            ),
+            // Paused summary row
+            CalmListTile(
+              leadingIcon: Icons.pause_circle_outline,
+              leadingColor: AppColors.ink50(context),
+              title: 'Pausadas', // TODO(l10n): move to ARB (Wave H)
+              subtitle: '$pausedCount subscrição${pausedCount == 1 ? '' : 'ões'}', // TODO(l10n): move to ARB (Wave H)
+              trailing: formatCurrency(pausedMonthly),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExpenseGroup(
+    BuildContext context,
+    S l10n,
+    String groupLabel,
+    List<RecurringExpense> items,
+    bool isFirst,
+  ) {
+    return Padding(
+      padding: EdgeInsets.only(top: isFirst ? 0 : 16, bottom: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: CalmEyebrow(groupLabel),
+          ),
+          const SizedBox(height: 8),
+          CalmCard(
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                for (var i = 0; i < items.length; i++) ...[
+                  if (i > 0)
+                    Divider(
+                      color: AppColors.line(context),
+                      height: 1,
+                      indent: 64,
+                    ),
+                  _buildExpenseRow(
+                    context,
+                    l10n,
+                    items[i],
+                    isFirst: i == 0,
+                    isFirstInAllGroups: isFirst && i == 0,
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExpenseRow(
+    BuildContext context,
+    S l10n,
+    RecurringExpense expense, {
+    bool isFirst = false,
+    bool isFirstInAllGroups = false,
+  }) {
+    final catColor = AppColors.categoryColorByName(expense.category);
+    final localizedCat = _localizedCategory(expense.category, l10n);
+
+    final subtitleParts = <String>[
+      formatCurrency(expense.amount),
+      if (expense.dayOfMonth != null)
+        'dia ${expense.dayOfMonth}', // TODO(l10n): move to ARB (Wave H)
+      if (expense.description != null && expense.description!.isNotEmpty)
+        expense.description!,
+    ];
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        key: isFirstInAllGroups ? RecurringExpensesTourKeys.expenseItem : null,
+        children: [
+          Expanded(
+            child: CalmListTile(
+              leadingIcon: getCategoryIcon(expense.category),
+              leadingColor: catColor,
+              title: localizedCat,
+              subtitle: subtitleParts.join(' · '),
+              trailing: expense.isActive ? null : l10n.recurringExpenseInactive,
+            ),
+          ),
+          PopupMenuButton<String>(
+            onSelected: (action) {
+              switch (action) {
+                case 'edit':
+                  _addOrEdit(expense);
+                case 'toggle':
+                  _toggleActive(expense);
+                case 'delete':
+                  _delete(expense);
+              }
+            },
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                value: 'edit',
+                child: Text(l10n.recurringExpenseEdit),
+              ),
+              PopupMenuItem(
+                value: 'toggle',
+                child: Text(expense.isActive
+                    ? l10n.recurringExpenseInactive
+                    : l10n.recurringExpenseActive),
+              ),
+              PopupMenuItem(
+                value: 'delete',
+                child: Text(l10n.delete,
+                    style: TextStyle(color: AppColors.bad(context))),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    final activeCount = _expenses.where((e) => e.isActive).length;
+
+    final active = _expenses.where((e) => e.isActive).toList();
+    final paused = _expenses.where((e) => !e.isActive).toList();
 
     return CalmScaffold(
       title: l10n.recurringExpenses,
@@ -173,144 +349,42 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
                 ),
               ),
             )
-          : CustomScrollView(
-              slivers: [
+          : ListView(
+              padding: const EdgeInsets.fromLTRB(16, 24, 16, 100),
+              children: [
                 // Hero — total monthly recurring
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 24, bottom: 24),
-                    child: CalmHero(
-                      eyebrow: 'RECORRENTES', // TODO(l10n): move to ARB (Wave H)
-                      amount: formatCurrency(_totalMonthly),
-                      subtitle: '$activeCount ${activeCount == 1 ? 'subscrição ativa' : 'subscrições ativas'}', // TODO(l10n): move to ARB (Wave H)
-                    ),
-                  ),
+                CalmHero(
+                  eyebrow: 'RECORRENTES', // TODO(l10n): move to ARB (Wave H)
+                  amount: formatCurrency(_totalMonthly),
+                  subtitle: '${_expenses.where((e) => e.isActive).length} ${_expenses.where((e) => e.isActive).length == 1 ? 'subscrição ativa' : 'subscrições ativas'}', // TODO(l10n): move to ARB (Wave H)
                 ),
+                const SizedBox(height: 24),
 
-                // Divider before list
-                SliverToBoxAdapter(
-                  child: Divider(
-                    color: AppColors.line(context),
-                    height: 1,
-                  ),
-                ),
+                // Summary card with total + pill
+                _buildSummaryCard(context, l10n),
+                const SizedBox(height: 24),
 
-                // List of recurring expenses in a grouped card
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 24, bottom: 32),
-                    child: CalmCard(
-                      padding: EdgeInsets.zero,
-                      child: Column(
-                        children: [
-                          for (var i = 0; i < _expenses.length; i++) ...[
-                            if (i > 0)
-                              Divider(
-                                color: AppColors.line(context),
-                                height: 1,
-                                indent: 64,
-                              ),
-                            _RecurringRow(
-                              key: i == 0
-                                  ? RecurringExpensesTourKeys.expenseItem
-                                  : null,
-                              expense: _expenses[i],
-                              localizedCategory:
-                                  _localizedCategory(_expenses[i].category, l10n),
-                              l10n: l10n,
-                              onEdit: () => _addOrEdit(_expenses[i]),
-                              onToggle: () => _toggleActive(_expenses[i]),
-                              onDelete: () => _delete(_expenses[i]),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
+                // Active group
+                if (active.isNotEmpty)
+                  _buildExpenseGroup(
+                    context,
+                    l10n,
+                    'ATIVAS', // TODO(l10n): move to ARB (Wave H)
+                    active,
+                    true,
                   ),
-                ),
+
+                // Paused group
+                if (paused.isNotEmpty)
+                  _buildExpenseGroup(
+                    context,
+                    l10n,
+                    'PAUSADAS', // TODO(l10n): move to ARB (Wave H)
+                    paused,
+                    active.isEmpty,
+                  ),
               ],
             ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Row widget for a single recurring expense inside the grouped card.
-// ---------------------------------------------------------------------------
-class _RecurringRow extends StatelessWidget {
-  const _RecurringRow({
-    super.key,
-    required this.expense,
-    required this.localizedCategory,
-    required this.l10n,
-    required this.onEdit,
-    required this.onToggle,
-    required this.onDelete,
-  });
-
-  final RecurringExpense expense;
-  final String localizedCategory;
-  final S l10n;
-  final VoidCallback onEdit;
-  final VoidCallback onToggle;
-  final VoidCallback onDelete;
-
-  @override
-  Widget build(BuildContext context) {
-    final catColor = AppColors.categoryColorByName(expense.category);
-    final subtitleParts = <String>[
-      formatCurrency(expense.amount),
-      if (expense.dayOfMonth != null)
-        '${l10n.recurringExpenseDayOfMonth} ${expense.dayOfMonth}',
-      if (expense.description != null && expense.description!.isNotEmpty)
-        expense.description!,
-      if (!expense.isActive) l10n.recurringExpenseInactive,
-    ];
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        children: [
-          Expanded(
-            child: CalmListTile(
-              leadingIcon: getCategoryIcon(expense.category),
-              leadingColor: catColor,
-              title: localizedCategory,
-              subtitle: subtitleParts.join(' · '),
-              trailing: expense.isActive ? null : l10n.recurringExpenseInactive,
-            ),
-          ),
-          PopupMenuButton<String>(
-            onSelected: (action) {
-              switch (action) {
-                case 'edit':
-                  onEdit();
-                case 'toggle':
-                  onToggle();
-                case 'delete':
-                  onDelete();
-              }
-            },
-            itemBuilder: (_) => [
-              PopupMenuItem(
-                value: 'edit',
-                child: Text(l10n.recurringExpenseEdit),
-              ),
-              PopupMenuItem(
-                value: 'toggle',
-                child: Text(expense.isActive
-                    ? l10n.recurringExpenseInactive
-                    : l10n.recurringExpenseActive),
-              ),
-              PopupMenuItem(
-                value: 'delete',
-                child: Text(l10n.delete,
-                    style: TextStyle(color: AppColors.bad(context))),
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 }
@@ -434,12 +508,12 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
             children: [
               // Drag handle
               Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: AppColors.ink20(context),
-                    borderRadius: BorderRadius.circular(2),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(2),
+                  child: SizedBox(
+                    width: 40,
+                    height: 4,
+                    child: ColoredBox(color: AppColors.ink20(context)),
                   ),
                 ),
               ),
@@ -457,10 +531,7 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
               const SizedBox(height: 24),
 
               // Category
-              Text(
-                l10n.recurringExpenseCategory,
-                style: CalmText.eyebrow(context),
-              ),
+              CalmEyebrow(l10n.recurringExpenseCategory.toUpperCase()),
               const SizedBox(height: 8),
               Wrap(
                 spacing: 8,
@@ -516,10 +587,7 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
               const SizedBox(height: 20),
 
               // Amount
-              Text(
-                l10n.recurringExpenseAmount,
-                style: CalmText.eyebrow(context),
-              ),
+              CalmEyebrow(l10n.recurringExpenseAmount.toUpperCase()),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _amountController,
@@ -549,10 +617,7 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
                   Icon(Icons.notifications_outlined,
                       size: 14, color: AppColors.accent(context)),
                   const SizedBox(width: 6),
-                  Text(
-                    l10n.recurringExpenseDayOfMonth,
-                    style: CalmText.eyebrow(context),
-                  ),
+                  CalmEyebrow(l10n.recurringExpenseDayOfMonth.toUpperCase()),
                 ],
               ),
               const SizedBox(height: 8),
@@ -582,10 +647,7 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
               const SizedBox(height: 20),
 
               // Description
-              Text(
-                l10n.recurringExpenseDescription,
-                style: CalmText.eyebrow(context),
-              ),
+              CalmEyebrow(l10n.recurringExpenseDescription.toUpperCase()),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _descriptionController,
