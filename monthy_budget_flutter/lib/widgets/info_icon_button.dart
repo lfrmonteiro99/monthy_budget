@@ -34,14 +34,40 @@ class InfoIconButton extends StatelessWidget {
     CalmBottomSheet.show(
       context,
       builder: (ctx) => CalmBottomSheetContent(
-        title: title,
-        child: Text(
-          body,
-          style: TextStyle(
-            fontSize: 14,
-            color: AppColors.ink70(ctx),
-            height: 1.5,
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.ink(ctx),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.close, color: AppColors.ink50(ctx)),
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  splashRadius: 20,
+                  visualDensity: VisualDensity.compact,
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              body,
+              style: TextStyle(
+                fontSize: 14,
+                color: AppColors.ink70(ctx),
+                height: 1.5,
+              ),
+            ),
+          ],
         ),
       ),
     );

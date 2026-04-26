@@ -78,9 +78,11 @@ class _NotificationSettingsScreenState
 
     return CalmScaffold(
       title: l10n.notificationSettings,
-      body: ListView(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.only(top: 16, bottom: 24),
-        children: [
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
           // Preferred notification time
           CalmCard(
             child: Row(
@@ -147,6 +149,7 @@ class _NotificationSettingsScreenState
 
           // Daily expense reminder
           CalmCard(
+            padding: EdgeInsets.zero,
             child: CalmSwitchRow(
               value: _prefs.dailyExpenseReminder,
               onChanged: (v) {
@@ -161,6 +164,7 @@ class _NotificationSettingsScreenState
 
           // Bill reminders
           CalmCard(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
             child: Column(
               children: [
                 CalmSwitchRow(
@@ -203,6 +207,7 @@ class _NotificationSettingsScreenState
 
           // Budget alerts
           CalmCard(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
             child: Column(
               children: [
                 CalmSwitchRow(
@@ -234,6 +239,7 @@ class _NotificationSettingsScreenState
 
           // Meal plan reminder
           CalmCard(
+            padding: EdgeInsets.zero,
             child: CalmSwitchRow(
               value: _prefs.mealPlanReminders,
               onChanged: (v) {
@@ -316,6 +322,7 @@ class _NotificationSettingsScreenState
               );
             }),
         ],
+        ),
       ),
     );
   }
