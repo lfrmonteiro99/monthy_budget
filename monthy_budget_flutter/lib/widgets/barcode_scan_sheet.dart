@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
+import 'calm/calm.dart';
 
 /// Bottom sheet that opens the camera for barcode scanning.
 ///
@@ -11,10 +12,8 @@ class BarcodeScanSheet extends StatefulWidget {
 
   /// Show as a modal bottom sheet and return the scanned barcode or null.
   static Future<String?> show(BuildContext context) {
-    return showModalBottomSheet<String>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+    return CalmBottomSheet.show<String>(
+      context,
       builder: (_) => const BarcodeScanSheet(),
     );
   }

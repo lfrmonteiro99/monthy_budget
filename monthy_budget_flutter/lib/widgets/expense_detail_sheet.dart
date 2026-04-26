@@ -6,6 +6,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../models/actual_expense.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
+import 'calm/calm.dart';
 
 enum ExpenseDetailAction { edit }
 
@@ -16,10 +17,8 @@ Future<ExpenseDetailAction?> showExpenseDetailSheet({
   required IconData categoryIcon,
   required Color categoryColor,
 }) {
-  return showModalBottomSheet<ExpenseDetailAction>(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
+  return CalmBottomSheet.show<ExpenseDetailAction>(
+    context,
     builder: (_) => ExpenseDetailSheet(
       expense: expense,
       categoryLabel: categoryLabel,

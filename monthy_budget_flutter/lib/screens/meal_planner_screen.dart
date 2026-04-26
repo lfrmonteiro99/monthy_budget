@@ -188,13 +188,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   void _showWasteDetails(List<WasteItem> items) {
     final l10n = S.of(context);
     final iMap = _service.ingredientMap;
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: AppColors.surface(context),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+    CalmBottomSheet.show(
+      context,
       builder: (_) => DraggableScrollableSheet(
         initialChildSize: 0.5,
         maxChildSize: 0.85,
@@ -276,12 +271,10 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
   Future<void> _generatePlan() async {
     if (!_rateLimiter.tryCall()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(S.of(context).rateLimitMessage),
-          behavior: SnackBarBehavior.floating,
-          duration: AppConstants.snackBarShort,
-        ),
+      CalmSnack.show(
+        context,
+        S.of(context).rateLimitMessage,
+        duration: AppConstants.snackBarShort,
       );
       return;
     }
@@ -341,14 +334,13 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
     if (hadPreviousPlan && mounted) {
       final l10n = S.of(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.mealPlanUndoMessage),
-          duration: AppConstants.snackBarUndo,
-          action: SnackBarAction(
-            label: l10n.mealPlanUndoAction,
-            onPressed: () => _undoRegeneration(),
-          ),
+      CalmSnack.show(
+        context,
+        l10n.mealPlanUndoMessage,
+        duration: AppConstants.snackBarUndo,
+        action: SnackBarAction(
+          label: l10n.mealPlanUndoAction,
+          onPressed: () => _undoRegeneration(),
         ),
       );
     }
@@ -445,12 +437,10 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
   void _showBatchPrepGuide(MealPlan plan, int weekIndex) {
     if (!_rateLimiter.tryCall()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(S.of(context).rateLimitMessage),
-          behavior: SnackBarBehavior.floating,
-          duration: AppConstants.snackBarShort,
-        ),
+      CalmSnack.show(
+        context,
+        S.of(context).rateLimitMessage,
+        duration: AppConstants.snackBarShort,
       );
       return;
     }
@@ -489,9 +479,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
   void _showBatchPlanSheet(BatchCookingPlan plan) {
     final l10n = S.of(context);
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
+    CalmBottomSheet.show(
+      context,
       builder: (_) => DraggableScrollableSheet(
         initialChildSize: 0.65,
         maxChildSize: 0.95,
@@ -589,13 +578,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 locale: locale,
               );
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: AppColors.surface(context),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+    CalmBottomSheet.show(
+      context,
       builder: (_) => DraggableScrollableSheet(
         initialChildSize: 0.6,
         maxChildSize: 0.9,
@@ -710,13 +694,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
   void _showPantryPicker() {
     final ms = widget.settings.mealSettings;
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: AppColors.surface(context),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+    CalmBottomSheet.show(
+      context,
       builder: (_) => PantryQuickPickerSheet(
         availableIngredients: _service.ingredients,
         stapleIds: ms.stapleIngredients.toSet(),
@@ -747,13 +726,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       ..sort((a, b) => a.name.compareTo(b.name));
     final l10n = S.of(context);
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: AppColors.surface(context),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+    CalmBottomSheet.show(
+      context,
       builder: (_) => StatefulBuilder(
         builder: (ctx, setSheetState) => DraggableScrollableSheet(
           initialChildSize: 0.7,
@@ -897,13 +871,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         return catCmp != 0 ? catCmp : a.name.compareTo(b.name);
       });
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: AppColors.surface(context),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+    CalmBottomSheet.show(
+      context,
       builder: (_) => DraggableScrollableSheet(
         initialChildSize: 0.6,
         maxChildSize: 0.9,
@@ -1032,11 +1001,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     setState(() => _plan = updated);
 
     if (oldIng != null && newIng != null && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.mealSubstitutionApplied(oldIng.name, newIng.name)),
-        ),
-      );
+      CalmSnack.success(
+          context, l10n.mealSubstitutionApplied(oldIng.name, newIng.name));
     }
 
     // Fire-and-forget AI adaptation
@@ -1080,9 +1046,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final plan = _plan!;
     final iMap = _service.ingredientMap;
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
+    CalmBottomSheet.show(
+      context,
       builder: (_) => _SwapSheet(
         currentRecipeId: currentRecipeId,
         nPessoas: plan.nPessoas,
@@ -1112,9 +1077,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final plan = _plan!;
     final iMap = _service.ingredientMap;
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
+    CalmBottomSheet.show(
+      context,
       builder: (_) => _SwapSheet(
         currentRecipeId: currentRecipeId,
         nPessoas: plan.nPessoas,
@@ -1206,9 +1170,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       count++;
     }
     if (mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.mealIngredientsAdded(count))));
+      CalmSnack.success(context, l10n.mealIngredientsAdded(count));
     }
   }
 
@@ -1217,9 +1179,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final totals = _service.consolidatedIngredients(plan);
     final iMap = _service.ingredientMap;
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
+    CalmBottomSheet.show(
+      context,
       builder: (_) => _ConsolidatedSheet(
         totals: totals,
         ingredientMap: iMap,
@@ -1237,9 +1198,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   }
 
   void _addFreeformMeal(int dayIndex, MealType mealType) {
-    showModalBottomSheet<dynamic>(
-      context: context,
-      isScrollControlled: true,
+    CalmBottomSheet.show<dynamic>(
+      context,
       builder: (_) => FreeformMealSheet(dayIndex: dayIndex, mealType: mealType),
     ).then((result) {
       if (result is MealDay && _plan != null) {
@@ -1259,9 +1219,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   }
 
   void _editFreeformMeal(MealDay mealDay) {
-    showModalBottomSheet<dynamic>(
-      context: context,
-      isScrollControlled: true,
+    CalmBottomSheet.show<dynamic>(
+      context,
       builder: (_) => FreeformMealSheet(
         dayIndex: mealDay.dayIndex,
         mealType: mealDay.mealType,
@@ -1298,9 +1257,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   }
 
   void _replaceMealWithFreeform(MealDay existing) {
-    showModalBottomSheet<dynamic>(
-      context: context,
-      isScrollControlled: true,
+    CalmBottomSheet.show<dynamic>(
+      context,
       builder: (_) => FreeformMealSheet(
         dayIndex: existing.dayIndex,
         mealType: existing.mealType,
@@ -1385,6 +1343,12 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               month: _plan!.month,
             ),
           ),
+        if (_plan != null)
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: l10n.mealRegenerate,
+            onPressed: _confirmRegenerate,
+          ),
         IconButton(
           icon: const Icon(Icons.settings_outlined),
           onPressed: widget.onOpenMealSettings,
@@ -1392,6 +1356,23 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       ],
       body: bodyContent,
     );
+  }
+
+  Future<void> _confirmRegenerate() async {
+    final l10n = S.of(context);
+    final plan = _plan;
+    if (plan == null) return;
+    final confirmed = await CalmDialog.confirm(
+      context,
+      title: l10n.mealRegenerateTitle,
+      body: l10n.mealRegenerateContent,
+      confirmLabel: l10n.mealRegenerate,
+      cancelLabel: l10n.cancel,
+    );
+    if (confirmed == true && mounted) {
+      setState(() => _plan = null);
+      _service.clear(widget.householdId, plan.month, plan.year);
+    }
   }
 
   Widget _buildEmptyState() {
@@ -1405,31 +1386,36 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Hero — month + planned budget.
+        // Hero — month + planned budget. Single Fraunces display per screen.
         CalmHero(
           eyebrow: monthName.toUpperCase(),
           amount: '${budget.toStringAsFixed(2)}${currencySymbol()}',
-          subtitle: l10n.mealPeopleLabel + ' · ' + np.toString(),
+          subtitle: '${l10n.mealPeopleLabel} · $np',
           crossAxisAlignment: CrossAxisAlignment.center,
         ),
-        const SizedBox(height: 32),
-        CalmEmptyState(
-          icon: Icons.restaurant_outlined,
-          title: l10n.mealGeneratePlan, // TODO(l10n): use dedicated empty-state title
-          body: l10n.mealPeopleLabel + ' · ' + np.toString(),
+        const SizedBox(height: 40),
+        Icon(
+          Icons.restaurant_outlined,
+          size: 32,
+          color: AppColors.ink50(context),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 16),
+        Text(
+          l10n.mealGeneratePlan,
+          style: TextStyle(
+            fontSize: 14,
+            color: AppColors.ink70(context),
+            height: 1.4,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 32),
         SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(
             onPressed: () => _showPantryPicker(),
             icon: const Icon(Icons.kitchen_outlined),
             label: Text(l10n.pantryUseWhatWeHave),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.ink(context),
-              side: BorderSide(color: AppColors.line(context)),
-              padding: const EdgeInsets.symmetric(vertical: 14),
-            ),
           ),
         ),
         const SizedBox(height: 12),
@@ -1450,9 +1436,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 : const Icon(Icons.auto_awesome),
             label: Text(
               _loading ? l10n.mealGenerating : l10n.mealGeneratePlan,
-            ),
-            style: FilledButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
             ),
           ),
         ),
@@ -1485,14 +1468,11 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
+          padding: const EdgeInsets.only(top: 8),
           child: CalmCard(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CalmEyebrow('PLANO DO MÊS'),
-                const SizedBox(height: 6),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -1500,60 +1480,27 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          CalmEyebrow('PLANO DO MÊS'),
+                          const SizedBox(height: 8),
                           Text(
                             '${plan.totalEstimatedCost.toStringAsFixed(2)}${currencySymbol()}',
-                            style: CalmText.amount(context, size: 22),
+                            style: CalmText.display(context, size: 32),
                           ),
-                          const SizedBox(height: 2),
+                          const SizedBox(height: 4),
                           Text(
                             '/ ${plan.monthlyBudget.toStringAsFixed(2)}${currencySymbol()}',
                             style: TextStyle(
-                              fontSize: 12,
-                              color: AppColors.ink50(context),
+                              fontSize: 13,
+                              color: AppColors.ink70(context),
                             ),
                           ),
                         ],
                       ),
                     ),
                     budgetPill,
-                    const SizedBox(width: 4),
-                    TextButton.icon(
-                      onPressed: () async {
-                        final confirmed = await showDialog<bool>(
-                          context: context,
-                          builder: (ctx) => AlertDialog(
-                            title: Text(l10n.mealRegenerateTitle),
-                            content: Text(l10n.mealRegenerateContent),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(ctx, false),
-                                child: Text(l10n.cancel),
-                              ),
-                              FilledButton(
-                                onPressed: () => Navigator.pop(ctx, true),
-                                child: Text(l10n.mealRegenerate),
-                              ),
-                            ],
-                          ),
-                        );
-                        if (confirmed == true && mounted) {
-                          setState(() => _plan = null);
-                          _service.clear(
-                            widget.householdId,
-                            plan.month,
-                            plan.year,
-                          );
-                        }
-                      },
-                      icon: const Icon(Icons.refresh, size: 16),
-                      label: Text(l10n.mealRegenerate),
-                      style: TextButton.styleFrom(
-                        foregroundColor: AppColors.ink70(context),
-                      ),
-                    ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 16),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(2),
                   child: LinearProgressIndicator(
@@ -1565,7 +1512,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     minHeight: 4,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 20),
+                Divider(color: AppColors.line(context), height: 1),
+                const SizedBox(height: 12),
                 CalmEyebrow('SEMANA'), // TODO(l10n): localise
                 const SizedBox(height: 4),
                 // Week navigator (← Week N →) — replaces W1-W4 tabs
@@ -1707,10 +1656,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     padding: EdgeInsets.zero,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (_) => Padding(
-                          padding: const EdgeInsets.all(20),
+                      CalmBottomSheet.show(
+                        context,
+                        builder: (_) => CalmBottomSheetContent(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [

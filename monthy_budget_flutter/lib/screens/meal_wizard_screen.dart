@@ -220,17 +220,18 @@ class _Step1Meals extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 color: AppColors.card(context),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
                   color: enabled
-                      ? AppColors.accent(context)
+                      ? AppColors.ink(context)
                       : AppColors.line(context),
                   width: enabled ? 1.5 : 1,
                 ),
               ),
-              child: SwitchListTile(
+              child: CalmSwitchRow(
                 value: enabled,
                 onChanged: (v) {
                   final newSet = Set<MealType>.from(draft.enabledMeals);
@@ -242,17 +243,8 @@ class _Step1Meals extends StatelessWidget {
                   if (newSet.isEmpty) return; // must have at least 1
                   onChanged(draft.copyWith(enabledMeals: newSet));
                 },
-                title: Text(
-                  mt.localizedLabel(l10n),
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w600, fontSize: 14),
-                ),
-                subtitle: Text(
-                  l10n.wizardBudgetWeight(_weights[mt]!),
-                  style: TextStyle(
-                      fontSize: 12, color: AppColors.ink50(context)),
-                ),
-                activeTrackColor: AppColors.accent(context),
+                title: mt.localizedLabel(l10n),
+                subtitle: l10n.wizardBudgetWeight(_weights[mt]!),
               ),
             ),
           );
@@ -263,58 +255,26 @@ class _Step1Meals extends StatelessWidget {
           style: TextStyle(fontSize: 15, color: AppColors.ink70(context)),
         ),
         const SizedBox(height: 12),
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.card(context),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppColors.line(context)),
-          ),
-          child: SwitchListTile(
+        CalmCard(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: CalmSwitchRow(
             value: draft.includeSoupOrStarter,
             onChanged: (v) =>
                 onChanged(draft.copyWith(includeSoupOrStarter: v)),
-            title: Text(
-              l10n.wizardIncludeSoupStarter,
-              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-            ),
-            subtitle: Text(
-              l10n.wizardSoupStarterHint,
-              style: TextStyle(
-                  fontSize: 12, color: AppColors.ink50(context)),
-            ),
-            activeTrackColor: AppColors.accent(context),
-            secondary: Icon(
-              Icons.soup_kitchen,
-              size: 22,
-              color: AppColors.accent(context),
-            ),
+            title: l10n.wizardIncludeSoupStarter,
+            subtitle: l10n.wizardSoupStarterHint,
+            leadingIcon: Icons.soup_kitchen,
           ),
         ),
         const SizedBox(height: 10),
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.card(context),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppColors.line(context)),
-          ),
-          child: SwitchListTile(
+        CalmCard(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: CalmSwitchRow(
             value: draft.includeDessert,
             onChanged: (v) => onChanged(draft.copyWith(includeDessert: v)),
-            title: Text(
-              l10n.wizardIncludeDessert,
-              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-            ),
-            subtitle: Text(
-              l10n.wizardDessertHint,
-              style: TextStyle(
-                  fontSize: 12, color: AppColors.ink50(context)),
-            ),
-            activeTrackColor: AppColors.accent(context),
-            secondary: Icon(
-              Icons.icecream,
-              size: 22,
-              color: AppColors.accent(context),
-            ),
+            title: l10n.wizardIncludeDessert,
+            subtitle: l10n.wizardDessertHint,
+            leadingIcon: Icons.icecream,
           ),
         ),
       ],
@@ -640,18 +600,10 @@ class _Step5Strategy extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 12),
       children: [
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(
-            l10n.wizardBatchCooking,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-          ),
-          subtitle: Text(
-            l10n.wizardBatchCookingDesc,
-            style: TextStyle(fontSize: 12, color: AppColors.ink50(context)),
-          ),
+        CalmSwitchRow(
+          title: l10n.wizardBatchCooking,
+          subtitle: l10n.wizardBatchCookingDesc,
           value: draft.batchCookingEnabled,
-          activeTrackColor: AppColors.accent(context),
           onChanged: (v) =>
               onChanged(draft.copyWith(batchCookingEnabled: v)),
         ),
@@ -693,18 +645,10 @@ class _Step5Strategy extends StatelessWidget {
           ),
         ],
         const SizedBox(height: 16),
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(
-            l10n.wizardReuseLeftovers,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-          ),
-          subtitle: Text(
-            l10n.wizardReuseLeftoversDesc,
-            style: TextStyle(fontSize: 12, color: AppColors.ink50(context)),
-          ),
+        CalmSwitchRow(
+          title: l10n.wizardReuseLeftovers,
+          subtitle: l10n.wizardReuseLeftoversDesc,
           value: draft.reuseLeftovers,
-          activeTrackColor: AppColors.accent(context),
           onChanged: (v) => onChanged(draft.copyWith(reuseLeftovers: v)),
         ),
         const SizedBox(height: 16),
@@ -721,18 +665,10 @@ class _Step5Strategy extends StatelessWidget {
           onChanged: (v) => onChanged(
               draft.copyWith(maxNewIngredientsPerWeek: v.round())),
         ),
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(
-            l10n.wizardMinimizeWaste,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-          ),
-          subtitle: Text(
-            l10n.wizardMinimizeWasteDesc,
-            style: TextStyle(fontSize: 12, color: AppColors.ink50(context)),
-          ),
+        CalmSwitchRow(
+          title: l10n.wizardMinimizeWaste,
+          subtitle: l10n.wizardMinimizeWasteDesc,
           value: draft.minimizeWaste,
-          activeTrackColor: AppColors.accent(context),
           onChanged: (v) => onChanged(draft.copyWith(minimizeWaste: v)),
         ),
       ],

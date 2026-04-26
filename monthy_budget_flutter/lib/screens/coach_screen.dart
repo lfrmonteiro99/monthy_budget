@@ -226,12 +226,10 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
 
     if (!_rateLimiter.tryCall()) {
       setState(() => _loading = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(S.of(context).rateLimitMessage),
-          behavior: SnackBarBehavior.floating,
-          duration: AppConstants.snackBarShort,
-        ),
+      CalmSnack.show(
+        context,
+        S.of(context).rateLimitMessage,
+        duration: AppConstants.snackBarShort,
       );
       return;
     }
@@ -372,25 +370,13 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
 
   Future<void> _clearConversation() async {
     final l10n = S.of(context);
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(l10n.coachClearTitle),
-        content: Text(l10n.coachClearContent),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(
-              l10n.clear,
-              style: TextStyle(color: AppColors.bad(context)),
-            ),
-          ),
-        ],
-      ),
+    final confirm = await CalmDialog.confirm(
+      context,
+      title: l10n.coachClearTitle,
+      body: l10n.coachClearContent,
+      confirmLabel: l10n.clear,
+      cancelLabel: l10n.cancel,
+      destructive: true,
     );
     if (confirm == true) {
       await _service.clearConversation(widget.householdId);
@@ -1457,10 +1443,8 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
 
   // Feature #4: Credit packs sheet with ROI card
   void _showCreditPacksSheet() {
-    showModalBottomSheet(
-      context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
+    CalmBottomSheet.show(
+      context,
       builder: (ctx) => _CreditPacksSheet(
         subscription: _subscription,
         onPurchase: (pack) async {
@@ -1480,11 +1464,8 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         );
         _updateSubscription(updated);
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(S.of(context).coachCreditsAdded(pack.credits)),
-            ),
-          );
+          CalmSnack.success(
+              context, S.of(context).coachCreditsAdded(pack.credits));
         }
         return;
       }
@@ -1496,20 +1477,14 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         );
         _updateSubscription(updated);
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(S.of(context).coachCreditsAdded(pack.credits)),
-            ),
-          );
+          CalmSnack.success(
+              context, S.of(context).coachCreditsAdded(pack.credits));
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(S.of(context).coachPurchaseError(e.toString())),
-          ),
-        );
+        CalmSnack.error(
+            context, S.of(context).coachPurchaseError(e.toString()));
       }
     }
   }

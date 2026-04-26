@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
+import 'calm/calm.dart';
 
 enum ExportFormat { pdf, csv, monthlySummary }
 
 Future<ExportFormat?> showExportSheet(BuildContext context) {
   final l10n = S.of(context);
-  return showModalBottomSheet<ExportFormat>(
-    showDragHandle: true,
-    context: context,
-    backgroundColor: AppColors.surface(context),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-    ),
+  return CalmBottomSheet.show<ExportFormat>(
+    context,
     builder: (ctx) => SafeArea(
       child: Column(
         mainAxisSize: MainAxisSize.min,

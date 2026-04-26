@@ -5,6 +5,7 @@ import '../models/purchase_record.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 import '../l10n/generated/app_localizations.dart';
+import 'calm/calm.dart';
 
 /// Opens the meal cost reconciliation bottom sheet.
 void showMealCostReconciliationSheet({
@@ -14,14 +15,8 @@ void showMealCostReconciliationSheet({
   required int year,
   required int month,
 }) {
-  showModalBottomSheet(
-    showDragHandle: true,
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: AppColors.surface(context),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
+  CalmBottomSheet.show(
+    context,
     builder: (_) => DraggableScrollableSheet(
       initialChildSize: 0.65,
       maxChildSize: 0.95,

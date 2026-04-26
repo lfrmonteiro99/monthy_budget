@@ -202,24 +202,17 @@ class _CommandChatFabState extends State<CommandChatFab>
             width: _fabSize,
             height: _fabSize,
             decoration: BoxDecoration(
-              color: AppColors.textSecondary(context),
+              color: AppColors.ink(context),
               shape: BoxShape.circle,
               border: Border.all(
-                color: AppColors.surface(context).withValues(alpha: 0.3),
-                width: 1.5,
+                color: AppColors.line(context),
+                width: 1,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.2),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
             ),
             child: Icon(
               Icons.chat_bubble_rounded,
               size: 22,
-              color: AppColors.surface(context),
+              color: AppColors.bg(context),
             ),
           ),
         ),

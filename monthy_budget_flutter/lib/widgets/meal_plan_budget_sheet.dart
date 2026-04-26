@@ -3,6 +3,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../models/meal_budget_insight.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
+import 'calm/calm.dart';
 import 'meal_budget_status_chip.dart';
 
 /// Opens the meal plan budget detail bottom sheet.
@@ -11,14 +12,8 @@ void showMealPlanBudgetSheet({
   required MealPlanBudgetInsight insight,
   void Function(MealCostSwap swap)? onApplySwap,
 }) {
-  showModalBottomSheet(
-    showDragHandle: true,
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: AppColors.surface(context),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
+  CalmBottomSheet.show(
+    context,
     builder: (_) => DraggableScrollableSheet(
       initialChildSize: 0.7,
       maxChildSize: 0.95,

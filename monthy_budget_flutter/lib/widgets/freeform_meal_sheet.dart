@@ -4,6 +4,7 @@ import '../models/meal_planner.dart';
 import '../models/meal_settings.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
+import 'calm/calm.dart';
 
 /// Bottom sheet for creating / editing a freeform meal.
 ///
@@ -69,87 +70,83 @@ class _FreeformMealSheetState extends State<FreeformMealSheet> {
     final priceCtrl = TextEditingController();
     final storeCtrl = TextEditingController();
 
-    showDialog(
-      context: context,
-      builder: (ctx) {
-        final l10n = S.of(ctx);
-        return AlertDialog(
-          title: Text(l10n.freeformAddItem),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+    final l10n = S.of(context);
+    CalmDialog.show(
+      context,
+      title: l10n.freeformAddItem,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CalmTextField(
+              controller: nameCtrl,
+              label: l10n.freeformItemName,
+              autofocus: true,
+            ),
+            const SizedBox(height: 8),
+            Row(
               children: [
-                TextField(
-                  controller: nameCtrl,
-                  decoration: InputDecoration(labelText: l10n.freeformItemName),
-                  autofocus: true,
+                Expanded(
+                  child: CalmTextField(
+                    controller: qtyCtrl,
+                    label: l10n.freeformItemQuantity,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  ),
                 ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: qtyCtrl,
-                        decoration: InputDecoration(labelText: l10n.freeformItemQuantity),
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: TextField(
-                        controller: unitCtrl,
-                        decoration: InputDecoration(labelText: l10n.freeformItemUnit),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: priceCtrl,
-                        decoration: InputDecoration(labelText: l10n.freeformItemPrice),
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: TextField(
-                        controller: storeCtrl,
-                        decoration: InputDecoration(labelText: l10n.freeformItemStore),
-                      ),
-                    ),
-                  ],
+                const SizedBox(width: 8),
+                Expanded(
+                  child: CalmTextField(
+                    controller: unitCtrl,
+                    label: l10n.freeformItemUnit,
+                  ),
                 ),
               ],
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(l10n.cancel),
-            ),
-            FilledButton(
-              onPressed: () {
-                final name = nameCtrl.text.trim();
-                if (name.isEmpty) return;
-                Navigator.pop(ctx);
-                setState(() {
-                  _shoppingItems.add(FreeformMealItem(
-                    name: name,
-                    quantity: double.tryParse(qtyCtrl.text.trim()),
-                    unit: unitCtrl.text.trim().isEmpty ? null : unitCtrl.text.trim(),
-                    estimatedPrice: double.tryParse(priceCtrl.text.trim()),
-                    store: storeCtrl.text.trim().isEmpty ? null : storeCtrl.text.trim(),
-                  ));
-                });
-              },
-              child: Text(l10n.save),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: CalmTextField(
+                    controller: priceCtrl,
+                    label: l10n.freeformItemPrice,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: CalmTextField(
+                    controller: storeCtrl,
+                    label: l10n.freeformItemStore,
+                  ),
+                ),
+              ],
             ),
           ],
-        );
-      },
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(l10n.cancel),
+        ),
+        FilledButton(
+          onPressed: () {
+            final name = nameCtrl.text.trim();
+            if (name.isEmpty) return;
+            Navigator.pop(context);
+            setState(() {
+              _shoppingItems.add(FreeformMealItem(
+                name: name,
+                quantity: double.tryParse(qtyCtrl.text.trim()),
+                unit: unitCtrl.text.trim().isEmpty ? null : unitCtrl.text.trim(),
+                estimatedPrice: double.tryParse(priceCtrl.text.trim()),
+                store: storeCtrl.text.trim().isEmpty ? null : storeCtrl.text.trim(),
+              ));
+            });
+          },
+          child: Text(l10n.save),
+        ),
+      ],
     );
   }
 
@@ -221,24 +218,13 @@ class _FreeformMealSheetState extends State<FreeformMealSheet> {
                   IconButton(
                     icon: Icon(Icons.delete_outline, color: AppColors.error(context)),
                     onPressed: () async {
-                      final confirmed = await showDialog<bool>(
-                        context: context,
-                        builder: (ctx) => AlertDialog(
-                          title: Text(l10n.delete),
-                          content: Text(l10n.confirm),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(ctx, false),
-                              child: Text(l10n.cancel),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.pop(ctx, true),
-                              child: Text(l10n.delete,
-                                  style: TextStyle(
-                                      color: AppColors.error(context))),
-                            ),
-                          ],
-                        ),
+                      final confirmed = await CalmDialog.confirm(
+                        context,
+                        title: l10n.delete,
+                        body: l10n.confirm,
+                        confirmLabel: l10n.delete,
+                        cancelLabel: l10n.cancel,
+                        destructive: true,
                       );
                       if (confirmed == true && context.mounted) {
                         Navigator.pop(context, 'delete');

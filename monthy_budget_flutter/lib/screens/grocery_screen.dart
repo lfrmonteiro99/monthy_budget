@@ -165,17 +165,13 @@ class _GroceryScreenState extends State<GroceryScreen> {
     if (AtcudParser.isAtcudQrCode(barcode)) {
       if (!mounted) return;
       final l10n = S.of(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.barcodeInvoiceDetected),
-          duration: AppConstants.snackBarMedium,
-          behavior: SnackBarBehavior.floating,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          action: SnackBarAction(
-            label: l10n.barcodeInvoiceAction,
-            onPressed: () => ReceiptScanSheet.show(context),
-          ),
+      CalmSnack.show(
+        context,
+        l10n.barcodeInvoiceDetected,
+        duration: AppConstants.snackBarMedium,
+        action: SnackBarAction(
+          label: l10n.barcodeInvoiceAction,
+          onPressed: () => ReceiptScanSheet.show(context),
         ),
       );
       return;
@@ -192,14 +188,10 @@ class _GroceryScreenState extends State<GroceryScreen> {
       onAddToList: (item) {
         widget.onAddToShoppingList?.call(item);
         final l10n = S.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.barcodeAddedToList(item.productName)),
-            duration: AppConstants.snackBarShort,
-            behavior: SnackBarBehavior.floating,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          ),
+        CalmSnack.success(
+          context,
+          l10n.barcodeAddedToList(item.productName),
+          duration: AppConstants.snackBarShort,
         );
       },
     );
@@ -213,13 +205,10 @@ class _GroceryScreenState extends State<GroceryScreen> {
       store: '',
       price: product.avgPrice,
     ));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.groceryAddedToList(product.name)),
-        duration: AppConstants.snackBarShort,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
+    CalmSnack.success(
+      context,
+      l10n.groceryAddedToList(product.name),
+      duration: AppConstants.snackBarShort,
     );
   }
 

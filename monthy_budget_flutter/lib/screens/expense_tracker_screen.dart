@@ -168,15 +168,8 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
           final allUrls = [...?expense.attachmentUrls, ...urls];
           expense = expense.copyWith(attachmentUrls: allUrls);
         } else if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(S.of(context).expenseAttachUploadFailed),
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          );
+          CalmSnack.error(
+              context, S.of(context).expenseAttachUploadFailed);
         }
       }
       await widget.onAdd(expense);
@@ -239,15 +232,8 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
           final allUrls = [...?updated.attachmentUrls, ...urls];
           updated = updated.copyWith(attachmentUrls: allUrls);
         } else if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(S.of(context).expenseAttachUploadFailed),
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          );
+          CalmSnack.error(
+              context, S.of(context).expenseAttachUploadFailed);
         }
       }
       await widget.onUpdate(updated);
@@ -1161,31 +1147,13 @@ class _CategorySection extends StatelessWidget {
                             key: ValueKey(expense.id),
                             direction: DismissDirection.endToStart,
                             confirmDismiss: (_) async {
-                              final confirmed = await showDialog<bool>(
-                                context: context,
-                                builder: (ctx) => AlertDialog(
-                                  title: Text(l10n.delete),
-                                  content: Text(
-                                    l10n.expenseTrackerDeleteConfirm,
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.pop(ctx, false),
-                                      child: Text(l10n.cancel),
-                                    ),
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.pop(ctx, true),
-                                      child: Text(
-                                        l10n.delete,
-                                        style: TextStyle(
-                                          color: AppColors.bad(context),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              final confirmed = await CalmDialog.confirm(
+                                context,
+                                title: l10n.delete,
+                                body: l10n.expenseTrackerDeleteConfirm,
+                                confirmLabel: l10n.delete,
+                                cancelLabel: l10n.cancel,
+                                destructive: true,
                               );
                               return confirmed ?? false;
                             },

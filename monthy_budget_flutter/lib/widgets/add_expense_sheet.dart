@@ -15,6 +15,7 @@ import '../models/custom_category.dart';
 import '../utils/category_icons.dart';
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
+import 'calm/calm.dart';
 
 /// Result returned by the expense form, containing the expense and any new
 /// attachment files that still need to be uploaded.
@@ -33,11 +34,8 @@ Future<ExpenseFormResult?> showAddExpenseSheet({
   Future<void> Function(ActualExpense)? onDelete,
   String? householdId,
 }) {
-  return showModalBottomSheet<ExpenseFormResult>(
-    showDragHandle: true,
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
+  return CalmBottomSheet.show<ExpenseFormResult>(
+    context,
     builder: (_) => _AddExpenseSheet(
       budgetExpenses: budgetExpenses,
       currentExpenses: currentExpenses,
@@ -178,12 +176,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(l10n.expenseLocationPermissionDenied),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10)),
-        ));
+        CalmSnack.error(context, l10n.expenseLocationPermissionDenied);
       }
       return;
     }
@@ -193,12 +186,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
       if (permission == LocationPermission.denied ||
           permission == LocationPermission.deniedForever) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(l10n.expenseLocationPermissionDenied),
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10)),
-          ));
+          CalmSnack.error(context, l10n.expenseLocationPermissionDenied);
         }
         return;
       }
@@ -231,12 +219,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
       }
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(l10n.expenseLocationPermissionDenied),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10)),
-        ));
+        CalmSnack.error(context, l10n.expenseLocationPermissionDenied);
       }
     }
   }
@@ -336,12 +319,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
 
   void _save() {
     if (!_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(S.of(context).addExpenseInvalidAmount),
-        behavior: SnackBarBehavior.floating,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ));
+      CalmSnack.error(context, S.of(context).addExpenseInvalidAmount);
       return;
     }
     final amount =
@@ -355,12 +333,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
       category = _selectedCategory;
     }
     if (category == null || category.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(S.of(context).addExpenseCategory),
-        behavior: SnackBarBehavior.floating,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ));
+      CalmSnack.error(context, S.of(context).addExpenseCategory);
       return;
     }
 
@@ -422,15 +395,9 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
       initialChildSize: 0.65,
       minChildSize: 0.5,
       maxChildSize: 0.95,
-      builder: (_, scrollController) => Container(
-        decoration: BoxDecoration(
-          color: AppColors.surface(context),
-          borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Form(
-          key: _formKey,
-          child: ListView(
+      builder: (_, scrollController) => Form(
+        key: _formKey,
+        child: ListView(
             controller: scrollController,
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
             children: [
@@ -932,28 +899,13 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                   height: 48,
                   child: OutlinedButton.icon(
                     onPressed: () async {
-                      final confirmed = await showDialog<bool>(
-                        context: context,
-                        builder: (ctx) => AlertDialog(
-                          title: Text(l10n.delete),
-                          content:
-                              Text(l10n.expenseTrackerDeleteConfirm),
-                          actions: [
-                            TextButton(
-                              onPressed: () =>
-                                  Navigator.pop(ctx, false),
-                              child: Text(l10n.cancel),
-                            ),
-                            TextButton(
-                              onPressed: () =>
-                                  Navigator.pop(ctx, true),
-                              child: Text(l10n.delete,
-                                  style: TextStyle(
-                                      color:
-                                          AppColors.error(context))),
-                            ),
-                          ],
-                        ),
+                      final confirmed = await CalmDialog.confirm(
+                        context,
+                        title: l10n.delete,
+                        body: l10n.expenseTrackerDeleteConfirm,
+                        confirmLabel: l10n.delete,
+                        cancelLabel: l10n.cancel,
+                        destructive: true,
                       );
                       if (confirmed == true && context.mounted) {
                         await widget.onDelete!(widget.existing!);
@@ -978,7 +930,6 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
             ],
           ),
         ),
-      ),
     );
   }
 }

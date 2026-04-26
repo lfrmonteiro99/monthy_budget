@@ -124,42 +124,25 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
       }
       await _reloadGoals();
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(S.of(context).savingsGoalSaved)));
+        CalmSnack.success(context, S.of(context).savingsGoalSaved);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(S.of(context).savingsGoalSaveError(e.toString())),
-          ),
-        );
+        CalmSnack.error(
+            context, S.of(context).savingsGoalSaveError(e.toString()));
       }
     }
   }
 
   Future<void> _deleteGoal(SavingsGoal goal) async {
     final l10n = S.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(l10n.delete),
-        content: Text(l10n.savingsGoalDeleteConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(
-              l10n.delete,
-              style: TextStyle(color: AppColors.bad(context)),
-            ),
-          ),
-        ],
-      ),
+    final confirmed = await CalmDialog.confirm(
+      context,
+      title: l10n.delete,
+      body: l10n.savingsGoalDeleteConfirm,
+      confirmLabel: l10n.delete,
+      cancelLabel: l10n.cancel,
+      destructive: true,
     );
     if (confirmed != true) return;
 
@@ -168,11 +151,8 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
       await _reloadGoals();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(S.of(context).savingsGoalDeleteError(e.toString())),
-          ),
-        );
+        CalmSnack.error(
+            context, S.of(context).savingsGoalDeleteError(e.toString()));
       }
     }
   }
@@ -201,11 +181,8 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
       await _reloadGoals();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(S.of(context).savingsGoalUpdateError(e.toString())),
-          ),
-        );
+        CalmSnack.error(
+            context, S.of(context).savingsGoalUpdateError(e.toString()));
       }
     }
   }
@@ -687,10 +664,8 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
   }
 
   Future<void> _addContribution() async {
-    final result = await showModalBottomSheet<SavingsContribution>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+    final result = await CalmBottomSheet.show<SavingsContribution>(
+      context,
       builder: (_) => _AddContributionSheet(goalId: _goal.id),
     );
     if (result == null) return;
@@ -709,33 +684,20 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
           contributions: updated,
         );
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(S.of(context).savingsGoalContributionSaved)),
-      );
+      CalmSnack.success(
+          context, S.of(context).savingsGoalContributionSaved);
     }
   }
 
   Future<void> _deleteContribution(SavingsContribution c) async {
     final l10n = S.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(l10n.delete),
-        content: Text(l10n.savingsGoalDeleteConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(
-              l10n.delete,
-              style: TextStyle(color: AppColors.bad(context)),
-            ),
-          ),
-        ],
-      ),
+    final confirmed = await CalmDialog.confirm(
+      context,
+      title: l10n.delete,
+      body: l10n.savingsGoalDeleteConfirm,
+      confirmLabel: l10n.delete,
+      cancelLabel: l10n.cancel,
+      destructive: true,
     );
     if (confirmed != true) return;
 

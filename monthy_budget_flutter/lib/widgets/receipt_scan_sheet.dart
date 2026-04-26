@@ -10,6 +10,7 @@ import '../services/analytics_service.dart';
 import '../services/receipt_scan_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/atcud_parser.dart';
+import 'calm/calm.dart';
 
 enum _ScanMode { qr, photo }
 
@@ -21,10 +22,8 @@ class ReceiptScanSheet extends StatefulWidget {
 
   /// Show as a modal bottom sheet and return the parsed receipt or null.
   static Future<ParsedReceipt?> show(BuildContext context) {
-    return showModalBottomSheet<ParsedReceipt>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+    return CalmBottomSheet.show<ParsedReceipt>(
+      context,
       builder: (_) => const ReceiptScanSheet(),
     );
   }

@@ -76,31 +76,19 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
     });
     _notify();
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(S.of(context).recurringExpenseSaved)),
-      );
+      CalmSnack.success(context, S.of(context).recurringExpenseSaved);
     }
   }
 
   Future<void> _delete(RecurringExpense expense) async {
     final l10n = S.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(l10n.delete),
-        content: Text(l10n.recurringExpenseDeleteConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(l10n.cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.delete,
-                style: TextStyle(color: AppColors.bad(context))),
-          ),
-        ],
-      ),
+    final confirmed = await CalmDialog.confirm(
+      context,
+      title: l10n.delete,
+      body: l10n.recurringExpenseDeleteConfirm,
+      confirmLabel: l10n.delete,
+      cancelLabel: l10n.cancel,
+      destructive: true,
     );
     if (confirmed != true) return;
     await _service.delete(expense.id);
@@ -173,11 +161,7 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
           const SizedBox(height: 8),
           Text(
             formatCurrency(activeMonthly),
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.w700,
-              color: AppColors.ink(context),
-            ),
+            style: CalmText.display(context, size: 32),
           ),
           const SizedBox(height: 16),
           Divider(color: AppColors.line(context), height: 1),
@@ -665,17 +649,12 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
               const SizedBox(height: 16),
 
               // Active toggle
-              SwitchListTile(
+              CalmSwitchRow(
                 value: _isActive,
                 onChanged: (v) => setState(() => _isActive = v),
-                title: Text(
-                  _isActive
-                      ? l10n.recurringExpenseActive
-                      : l10n.recurringExpenseInactive,
-                  style: TextStyle(color: AppColors.ink(context)),
-                ),
-                activeColor: AppColors.accent(context),
-                contentPadding: EdgeInsets.zero,
+                title: _isActive
+                    ? l10n.recurringExpenseActive
+                    : l10n.recurringExpenseInactive,
               ),
               const SizedBox(height: 24),
 

@@ -5,6 +5,7 @@ import '../models/command_action.dart';
 import '../services/command_chat_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/rate_limiter.dart';
+import 'calm/calm.dart';
 
 class CommandChatMessage {
   final String role; // 'user' or 'assistant'
@@ -265,9 +266,8 @@ class _CommandChatPanelState extends State<CommandChatPanel> {
 
   void _showCapabilitiesSheet(S l10n) {
     final capabilities = _capabilities(l10n);
-    showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
+    CalmBottomSheet.show<void>(
+      context,
       builder: (sheetContext) {
         return SafeArea(
           child: Padding(

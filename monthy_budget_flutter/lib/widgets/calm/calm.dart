@@ -26,6 +26,11 @@
 /// - [CalmCreamPill]         — Warm-cream subscription/premium badge pill.
 /// - [CalmSwatchRow]         — 5-circle palette picker (+ [CalmSwatch]).
 /// - [CalmBottomNav]         — Custom 4+centre-FAB bottom navigation bar.
+/// - [CalmDialog]            — Static helper for confirm/info dialogs with Calm chrome.
+/// - [CalmSnack]             — Static helper for neutral / success / error snackbars.
+/// - [CalmTextField]         — `TextFormField` wrapper bound to the Calm input theme.
+/// - [CalmSwitchRow]         — Calm-styled toggle row (title + subtitle + Switch).
+/// - [CalmSpacing]           — Constants for the Calm spacing scale (4–32 dp).
 library calm;
 
 export 'calm_scaffold.dart';
@@ -48,3 +53,8 @@ export 'calm_kpi_row.dart';
 export 'calm_cream_pill.dart';
 export 'calm_swatch_row.dart';
 export 'calm_bottom_nav.dart';
+export 'calm_dialog.dart';
+export 'calm_snack.dart';
+export 'calm_text_field.dart';
+export 'calm_switch_row.dart';
+export 'calm_spacing.dart';

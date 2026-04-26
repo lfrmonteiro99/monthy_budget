@@ -29,6 +29,7 @@ import 'services/monthly_budget_service.dart';
 import 'models/actual_expense.dart';
 import 'models/monthly_budget.dart';
 import 'widgets/add_expense_sheet.dart';
+import 'widgets/calm/calm.dart';
 import 'screens/expense_tracker_screen.dart';
 import 'models/local_dashboard_config.dart';
 import 'models/expense_snapshot.dart';
@@ -855,15 +856,11 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                   setState(() => _subscription = updated);
                   _refreshAnalyticsContext();
                   Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        tier == SubscriptionTier.free
-                            ? l10n.paywallContinueFree
-                            : l10n.paywallUpgradedPro,
-                      ),
-                      behavior: SnackBarBehavior.floating,
-                    ),
+                  CalmSnack.success(
+                    context,
+                    tier == SubscriptionTier.free
+                        ? l10n.paywallContinueFree
+                        : l10n.paywallUpgradedPro,
                   );
                 }
               },
@@ -885,12 +882,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                   setState(() => _subscription = updated);
                   _refreshAnalyticsContext();
                   Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(l10n.paywallUpgradedPro),
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
+                  CalmSnack.success(context, l10n.paywallUpgradedPro);
                 }
               },
               onRestoreComplete: (tier) async {
@@ -921,15 +913,11 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                   setState(() => _subscription = updated);
                   _refreshAnalyticsContext();
                   Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        tier == SubscriptionTier.free
-                            ? l10n.paywallNoRestore
-                            : l10n.paywallRestoredPro,
-                      ),
-                      behavior: SnackBarBehavior.floating,
-                    ),
+                  CalmSnack.success(
+                    context,
+                    tier == SubscriptionTier.free
+                        ? l10n.paywallNoRestore
+                        : l10n.paywallRestoredPro,
                   );
                 }
               },
@@ -1508,13 +1496,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(S.of(context).errorSavingPurchase('$e')),
-            backgroundColor: AppColors.error(context),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+        CalmSnack.error(context, S.of(context).errorSavingPurchase('$e'));
       }
     }
   }
@@ -1825,14 +1807,12 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
       );
     }
     if (!mounted || deleted == null) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(S.of(context).expenseDeleted),
-        behavior: SnackBarBehavior.floating,
-        action: SnackBarAction(
-          label: S.of(context).cmdUndo,
-          onPressed: () => _addActualExpense(deleted),
-        ),
+    CalmSnack.show(
+      context,
+      S.of(context).expenseDeleted,
+      action: SnackBarAction(
+        label: S.of(context).cmdUndo,
+        onPressed: () => _addActualExpense(deleted),
       ),
     );
   }
@@ -1887,18 +1867,11 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           (receipt.merchantNif.isNotEmpty
               ? 'NIF ${receipt.merchantNif}'
               : l10n.receiptMerchantUnknown);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            l10n.receiptScanSuccess(
-              formatCurrency(receipt.totalAmount),
-              merchantLabel,
-            ),
-          ),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
+      CalmSnack.success(
+        context,
+        l10n.receiptScanSuccess(
+          formatCurrency(receipt.totalAmount),
+          merchantLabel,
         ),
       );
     }

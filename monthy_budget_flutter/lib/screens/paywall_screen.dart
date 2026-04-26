@@ -9,6 +9,7 @@ import '../services/revenuecat_service.dart';
 import '../constants/app_constants.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_theme.dart';
 
 const _termsOfServiceUrl =
     'https://lfrmonteiro99.github.io/monthy_budget/terms-of-service';
@@ -184,11 +185,8 @@ class _PaywallScreenState extends State<PaywallScreen> {
                     trialExpired
                         ? 'Your trial has ended'
                         : 'Upgrade to Premium',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary(context),
-                    ),
+                    style: CalmText.display(context, size: 28),
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -484,19 +482,10 @@ class _TierCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: isPrimary
-              ? AppColors.primary(context)
-              : AppColors.border(context),
-          width: isPrimary ? 2 : 1,
+              ? AppColors.ink(context)
+              : AppColors.line(context),
+          width: isPrimary ? 1.5 : 1,
         ),
-        boxShadow: isPrimary
-            ? [
-                BoxShadow(
-                  color: AppColors.primary(context).withValues(alpha: 0.15),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ]
-            : null,
       ),
       child: Stack(
         children: [
@@ -523,13 +512,7 @@ class _TierCard extends StatelessWidget {
                   children: [
                     Text(
                       showPriceAsIs ? price : '€$price',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.w800,
-                        color: isPrimary
-                            ? AppColors.primary(context)
-                            : AppColors.textPrimary(context),
-                      ),
+                      style: CalmText.display(context, size: 32),
                     ),
                     const SizedBox(width: 4),
                     Text(

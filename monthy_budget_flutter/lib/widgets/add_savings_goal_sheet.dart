@@ -246,16 +246,12 @@ class _AddSavingsGoalSheetState extends State<_AddSavingsGoalSheet> {
                 const SizedBox(height: 16),
 
                 // Active toggle
-                SwitchListTile(
+                CalmSwitchRow(
                   value: _isActive,
                   onChanged: (v) => setState(() => _isActive = v),
-                  title: Text(
-                    _isActive
-                        ? l10n.savingsGoalActive
-                        : l10n.savingsGoalInactive,
-                    style: TextStyle(color: AppColors.ink(context)),
-                  ),
-                  contentPadding: EdgeInsets.zero,
+                  title: _isActive
+                      ? l10n.savingsGoalActive
+                      : l10n.savingsGoalInactive,
                 ),
                 const SizedBox(height: 8),
               ],
