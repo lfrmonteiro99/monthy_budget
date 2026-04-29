@@ -198,7 +198,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: ClipRRect( // Justified: drag-handle indicator, no Calm equivalent
+              child: ClipRRect(
+                // Justified: drag-handle indicator, no Calm equivalent
                 borderRadius: BorderRadius.circular(2),
                 child: SizedBox(
                   width: 40,
@@ -302,7 +303,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     }
 
     final plan = _service.generate(
-      widget.settings,
+      _localSettings,
       now,
       favorites: widget.favorites,
       previousFeedback: previousFeedback,
@@ -467,7 +468,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           if (!mounted) return;
           setState(() => _batchPlanLoading = false);
           // Use AI result or build a deterministic local plan as fallback.
-          final guide = result ??
+          final guide =
+              result ??
               MealPlannerAiService.buildLocalBatchPlan(
                 batchRecipes: batchRecipes,
                 nPessoas: plan.nPessoas,
@@ -489,7 +491,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: ClipRRect( // Justified: drag-handle indicator, no Calm equivalent
+              child: ClipRRect(
+                // Justified: drag-handle indicator, no Calm equivalent
                 borderRadius: BorderRadius.circular(2),
                 child: SizedBox(
                   width: 40,
@@ -571,12 +574,12 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final steps = recipe.prepSteps.isNotEmpty
         ? recipe.prepSteps
         : (aiContent?.steps != null && aiContent!.steps.isNotEmpty)
-            ? aiContent.steps
-            : MealPlannerAiService.buildLocalPrepSteps(
-                recipe: recipe,
-                nPessoas: _plan?.nPessoas ?? 2,
-                locale: locale,
-              );
+        ? aiContent.steps
+        : MealPlannerAiService.buildLocalPrepSteps(
+            recipe: recipe,
+            nPessoas: _plan?.nPessoas ?? 2,
+            locale: locale,
+          );
 
     CalmBottomSheet.show(
       context,
@@ -588,7 +591,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: ClipRRect( // Justified: drag-handle indicator, no Calm equivalent
+              child: ClipRRect(
+                // Justified: drag-handle indicator, no Calm equivalent
                 borderRadius: BorderRadius.circular(2),
                 child: SizedBox(
                   width: 40,
@@ -693,7 +697,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   }
 
   void _showPantryPicker() {
-    final ms = widget.settings.mealSettings;
+    final ms = _localSettings.mealSettings;
     CalmBottomSheet.show(
       context,
       builder: (_) => PantryQuickPickerSheet(
@@ -702,18 +706,18 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         weeklyIds: ms.weeklyPantryIngredients.toSet(),
         onStaplesChanged: (ids) {
           final updated = ms.copyWith(stapleIngredients: ids.toList());
-          widget.onSaveSettings(
-            widget.settings.copyWith(mealSettings: updated),
-          );
+          final settings = _localSettings.copyWith(mealSettings: updated);
+          setState(() => _localSettings = settings);
+          widget.onSaveSettings(settings);
         },
         onWeeklyChanged: (ids) {
           final updated = ms.copyWith(
             weeklyPantryIngredients: ids.toList(),
             weeklyPantryUpdatedAt: DateTime.now(),
           );
-          widget.onSaveSettings(
-            widget.settings.copyWith(mealSettings: updated),
-          );
+          final settings = _localSettings.copyWith(mealSettings: updated);
+          setState(() => _localSettings = settings);
+          widget.onSaveSettings(settings);
         },
       ),
     );
@@ -737,7 +741,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                child: ClipRRect( // Justified: drag-handle indicator, no Calm equivalent
+                child: ClipRRect(
+                  // Justified: drag-handle indicator, no Calm equivalent
                   borderRadius: BorderRadius.circular(2),
                   child: SizedBox(
                     width: 40,
@@ -859,17 +864,23 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final l10n = S.of(context);
 
     // Group all ingredients by category, prioritizing same category first
-    final sameCategory = _service.ingredients
-        .where((i) => i.category == ingredient.category && i.id != effectiveId)
-        .toList()
-      ..sort((a, b) => a.name.compareTo(b.name));
-    final otherCategories = _service.ingredients
-        .where((i) => i.category != ingredient.category && i.id != effectiveId)
-        .toList()
-      ..sort((a, b) {
-        final catCmp = a.category.name.compareTo(b.category.name);
-        return catCmp != 0 ? catCmp : a.name.compareTo(b.name);
-      });
+    final sameCategory =
+        _service.ingredients
+            .where(
+              (i) => i.category == ingredient.category && i.id != effectiveId,
+            )
+            .toList()
+          ..sort((a, b) => a.name.compareTo(b.name));
+    final otherCategories =
+        _service.ingredients
+            .where(
+              (i) => i.category != ingredient.category && i.id != effectiveId,
+            )
+            .toList()
+          ..sort((a, b) {
+            final catCmp = a.category.name.compareTo(b.category.name);
+            return catCmp != 0 ? catCmp : a.name.compareTo(b.name);
+          });
 
     CalmBottomSheet.show(
       context,
@@ -881,7 +892,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: ClipRRect( // Justified: drag-handle indicator, no Calm equivalent
+              child: ClipRRect(
+                // Justified: drag-handle indicator, no Calm equivalent
                 borderRadius: BorderRadius.circular(2),
                 child: SizedBox(
                   width: 40,
@@ -930,37 +942,49 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     CalmCard(
                       padding: const EdgeInsets.all(0),
                       child: Column(
-                        children: sameCategory.map((alt) => CalmListTile(
-                          leadingIcon: Icons.swap_horiz,
-                          leadingColor: AppColors.primary(ctx),
-                          title: alt.name,
-                          subtitle: '${alt.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${alt.unit}',
-                          onTap: () {
-                            Navigator.pop(ctx);
-                            _applySubstitution(day, ingredientId, alt.id);
-                          },
-                        )).toList(),
+                        children: sameCategory
+                            .map(
+                              (alt) => CalmListTile(
+                                leadingIcon: Icons.swap_horiz,
+                                leadingColor: AppColors.primary(ctx),
+                                title: alt.name,
+                                subtitle:
+                                    '${alt.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${alt.unit}',
+                                onTap: () {
+                                  Navigator.pop(ctx);
+                                  _applySubstitution(day, ingredientId, alt.id);
+                                },
+                              ),
+                            )
+                            .toList(),
                       ),
                     ),
                   ],
                   // Other categories
                   if (otherCategories.isNotEmpty) ...[
                     const SizedBox(height: 12),
-                    CalmEyebrow(l10n.mealSubstituteOtherCategories.toUpperCase()),
+                    CalmEyebrow(
+                      l10n.mealSubstituteOtherCategories.toUpperCase(),
+                    ),
                     const SizedBox(height: 4),
                     CalmCard(
                       padding: const EdgeInsets.all(0),
                       child: Column(
-                        children: otherCategories.map((alt) => CalmListTile(
-                          leadingIcon: Icons.swap_horiz,
-                          leadingColor: AppColors.textMuted(ctx),
-                          title: alt.name,
-                          subtitle: '${alt.category.name} · ${alt.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${alt.unit}',
-                          onTap: () {
-                            Navigator.pop(ctx);
-                            _applySubstitution(day, ingredientId, alt.id);
-                          },
-                        )).toList(),
+                        children: otherCategories
+                            .map(
+                              (alt) => CalmListTile(
+                                leadingIcon: Icons.swap_horiz,
+                                leadingColor: AppColors.textMuted(ctx),
+                                title: alt.name,
+                                subtitle:
+                                    '${alt.category.name} · ${alt.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${alt.unit}',
+                                onTap: () {
+                                  Navigator.pop(ctx);
+                                  _applySubstitution(day, ingredientId, alt.id);
+                                },
+                              ),
+                            )
+                            .toList(),
                       ),
                     ),
                   ],
@@ -1002,7 +1026,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
     if (oldIng != null && newIng != null && mounted) {
       CalmSnack.success(
-          context, l10n.mealSubstitutionApplied(oldIng.name, newIng.name));
+        context,
+        l10n.mealSubstitutionApplied(oldIng.name, newIng.name),
+      );
     }
 
     // Fire-and-forget AI adaptation
@@ -1042,7 +1068,12 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     }
   }
 
-  void _swapRecipeCourse(int dayIndex, MealType mealType, String currentRecipeId, CourseType courseType) {
+  void _swapRecipeCourse(
+    int dayIndex,
+    MealType mealType,
+    String currentRecipeId,
+    CourseType courseType,
+  ) {
     final plan = _plan!;
     final iMap = _service.ingredientMap;
 
@@ -1128,7 +1159,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       final scale = (plan.nPessoas + dayGuests) / recipe.servings;
       for (final ri in recipe.ingredients) {
         // BUG FIX: apply ingredient substitutions to shopping list
-        final effectiveId = day.substitutions[ri.ingredientId] ?? ri.ingredientId;
+        final effectiveId =
+            day.substitutions[ri.ingredientId] ?? ri.ingredientId;
         totals.update(
           effectiveId,
           (v) => v + ri.quantity * scale,
@@ -1434,9 +1466,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     ),
                   )
                 : const Icon(Icons.auto_awesome),
-            label: Text(
-              _loading ? l10n.mealGenerating : l10n.mealGeneratePlan,
-            ),
+            label: Text(_loading ? l10n.mealGenerating : l10n.mealGeneratePlan),
           ),
         ),
       ],
@@ -1457,14 +1487,14 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             color: AppColors.bad(context),
           )
         : budgetUsed > 0.85
-            ? CalmPill(
-                label: '${(budgetUsed * 100).toStringAsFixed(0)}%',
-                color: AppColors.warn(context),
-              )
-            : CalmPill(
-                label: '${(budgetUsed * 100).toStringAsFixed(0)}%',
-                color: AppColors.ok(context),
-              );
+        ? CalmPill(
+            label: '${(budgetUsed * 100).toStringAsFixed(0)}%',
+            color: AppColors.warn(context),
+          )
+        : CalmPill(
+            label: '${(budgetUsed * 100).toStringAsFixed(0)}%',
+            color: AppColors.ok(context),
+          );
     return Column(
       children: [
         Padding(
@@ -1572,7 +1602,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                           key: MealsTourKeys.addToListButton,
                           height: 32,
                           child: OutlinedButton.icon(
-                            onPressed: () => _addWeekToShoppingList(_selectedWeek),
+                            onPressed: () =>
+                                _addWeekToShoppingList(_selectedWeek),
                             icon: const Icon(Icons.add_shopping_cart, size: 16),
                             label: Text(
                               l10n.mealAddWeekToList,
@@ -1580,11 +1611,15 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                             ),
                             style: OutlinedButton.styleFrom(
                               foregroundColor: AppColors.primary(context),
-                              side: BorderSide(color: AppColors.primary(context)),
+                              side: BorderSide(
+                                color: AppColors.primary(context),
+                              ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                              ),
                             ),
                           ),
                         ),
@@ -1596,7 +1631,10 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                             child: IconButton(
                               onPressed: _batchPlanLoading
                                   ? null
-                                  : () => _showBatchPrepGuide(plan, _selectedWeek),
+                                  : () => _showBatchPrepGuide(
+                                      plan,
+                                      _selectedWeek,
+                                    ),
                               icon: _batchPlanLoading
                                   ? SizedBox(
                                       width: 14,
@@ -1684,7 +1722,10 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 Padding(
                   padding: const EdgeInsets.only(right: 6),
                   child: ActionChip(
-                    avatar: const Icon(Icons.account_balance_wallet_outlined, size: 14),
+                    avatar: const Icon(
+                      Icons.account_balance_wallet_outlined,
+                      size: 14,
+                    ),
                     label: Text(
                       '${_budgetInsight!.weeklyEstimatedCost.toStringAsFixed(0)}${currencySymbol()}',
                     ),
@@ -1727,9 +1768,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                       size: 14,
                       color: AppColors.warning(context),
                     ),
-                    label: Text(
-                      '\u20AC${totalWaste.toStringAsFixed(2)}',
-                    ),
+                    label: Text('\u20AC${totalWaste.toStringAsFixed(2)}'),
                     labelStyle: const TextStyle(fontSize: 11),
                     padding: EdgeInsets.zero,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -1749,79 +1788,102 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         Expanded(
           child: Stack(
             children: [
-              Builder(builder: (_) {
-                // Group courses by (dayIndex, mealType) for multi-course display
-                final grouped = <String, List<MealDay>>{};
-                for (final day in weekDays) {
-                  final key = '${day.dayIndex}_${day.mealType.name}';
-                  (grouped[key] ??= []).add(day);
-                }
-                // Sort courses within each group: soup first, main, dessert last
-                const courseOrder = {
-                  CourseType.soupOrStarter: 0,
-                  CourseType.mainCourse: 1,
-                  CourseType.dessert: 2,
-                };
-                for (final group in grouped.values) {
-                  group.sort((a, b) =>
-                    (courseOrder[a.courseType] ?? 1).compareTo(courseOrder[b.courseType] ?? 1));
-                }
-                final groupKeys = grouped.keys.toList();
-                return ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(0, 4, 0, 80),
-                  itemCount: groupKeys.length,
-                  itemBuilder: (_, i) {
-                    final courses = grouped[groupKeys[i]]!;
-                    final mainDay = courses.firstWhere(
-                      (d) => d.courseType == CourseType.mainCourse,
-                      orElse: () => courses.first,
+              Builder(
+                builder: (_) {
+                  // Group courses by (dayIndex, mealType) for multi-course display
+                  final grouped = <String, List<MealDay>>{};
+                  for (final day in weekDays) {
+                    final key = '${day.dayIndex}_${day.mealType.name}';
+                    (grouped[key] ??= []).add(day);
+                  }
+                  // Sort courses within each group: soup first, main, dessert last
+                  const courseOrder = {
+                    CourseType.soupOrStarter: 0,
+                    CourseType.mainCourse: 1,
+                    CourseType.dessert: 2,
+                  };
+                  for (final group in grouped.values) {
+                    group.sort(
+                      (a, b) => (courseOrder[a.courseType] ?? 1).compareTo(
+                        courseOrder[b.courseType] ?? 1,
+                      ),
                     );
-                    if (mainDay.isFreeform) {
-                      return FreeformMealCard(
-                        mealDay: mainDay,
-                        onEdit: () => _editFreeformMeal(mainDay),
-                        onAddToShoppingList: widget.onAddToShoppingList,
-                        onFeedback: (fb) =>
-                            _setFreeformFeedback(mainDay.dayIndex, mainDay.mealType, fb),
+                  }
+                  final groupKeys = grouped.keys.toList();
+                  return ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(0, 4, 0, 80),
+                    itemCount: groupKeys.length,
+                    itemBuilder: (_, i) {
+                      final courses = grouped[groupKeys[i]]!;
+                      final mainDay = courses.firstWhere(
+                        (d) => d.courseType == CourseType.mainCourse,
+                        orElse: () => courses.first,
                       );
-                    }
-                    return _DayCard(
-                      mealDay: mainDay,
-                      allCourses: courses,
-                      plan: plan,
-                      service: _service,
-                      aiContent: _aiContent[mainDay.recipeId],
-                      isExpanded: _expanded.contains(
-                        '${mainDay.dayIndex}_${mainDay.mealType.name}',
-                      ),
-                      onToggleExpand: () => setState(() {
-                        final key = '${mainDay.dayIndex}_${mainDay.mealType.name}';
-                        if (_expanded.contains(key)) {
-                          _expanded.remove(key);
-                        } else {
-                          _expanded.add(key);
-                        }
-                      }),
-                      onSwap: () =>
-                          _swapRecipe(mainDay.dayIndex, mainDay.mealType, mainDay.recipeId),
-                      onSwapCourse: (day) =>
-                          _swapRecipeCourse(day.dayIndex, day.mealType, day.recipeId, day.courseType),
-                      onReplaceFreeform: () => _replaceMealWithFreeform(mainDay),
-                      onAddIngredientToList: widget.onAddToShoppingList,
-                      onRating: (rating) =>
-                          _setRating(mainDay.dayIndex, mainDay.mealType, rating),
-                      onViewPrepGuide: () => _showMealPrepGuide(mainDay),
-                      activePantryIds: resolveActivePantry(
-                        widget.settings.mealSettings,
-                      ),
-                      onSubstituteIngredient: (ingredientId) =>
-                          _showIngredientSubstitutionSheet(mainDay, ingredientId),
-                      onSubstituteCourseIngredient: (day, ingredientId) =>
-                          _showIngredientSubstitutionSheet(day, ingredientId),
-                    );
-                  },
-                );
-              }),
+                      if (mainDay.isFreeform) {
+                        return FreeformMealCard(
+                          mealDay: mainDay,
+                          onEdit: () => _editFreeformMeal(mainDay),
+                          onAddToShoppingList: widget.onAddToShoppingList,
+                          onFeedback: (fb) => _setFreeformFeedback(
+                            mainDay.dayIndex,
+                            mainDay.mealType,
+                            fb,
+                          ),
+                        );
+                      }
+                      return _DayCard(
+                        mealDay: mainDay,
+                        allCourses: courses,
+                        plan: plan,
+                        service: _service,
+                        aiContent: _aiContent[mainDay.recipeId],
+                        isExpanded: _expanded.contains(
+                          '${mainDay.dayIndex}_${mainDay.mealType.name}',
+                        ),
+                        onToggleExpand: () => setState(() {
+                          final key =
+                              '${mainDay.dayIndex}_${mainDay.mealType.name}';
+                          if (_expanded.contains(key)) {
+                            _expanded.remove(key);
+                          } else {
+                            _expanded.add(key);
+                          }
+                        }),
+                        onSwap: () => _swapRecipe(
+                          mainDay.dayIndex,
+                          mainDay.mealType,
+                          mainDay.recipeId,
+                        ),
+                        onSwapCourse: (day) => _swapRecipeCourse(
+                          day.dayIndex,
+                          day.mealType,
+                          day.recipeId,
+                          day.courseType,
+                        ),
+                        onReplaceFreeform: () =>
+                            _replaceMealWithFreeform(mainDay),
+                        onAddIngredientToList: widget.onAddToShoppingList,
+                        onRating: (rating) => _setRating(
+                          mainDay.dayIndex,
+                          mainDay.mealType,
+                          rating,
+                        ),
+                        onViewPrepGuide: () => _showMealPrepGuide(mainDay),
+                        activePantryIds: resolveActivePantry(
+                          widget.settings.mealSettings,
+                        ),
+                        onSubstituteIngredient: (ingredientId) =>
+                            _showIngredientSubstitutionSheet(
+                              mainDay,
+                              ingredientId,
+                            ),
+                        onSubstituteCourseIngredient: (day, ingredientId) =>
+                            _showIngredientSubstitutionSheet(day, ingredientId),
+                      );
+                    },
+                  );
+                },
+              ),
               Positioned(
                 bottom: 16,
                 left: 0,
@@ -1873,6 +1935,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
 class _DayCard extends StatelessWidget {
   final MealDay mealDay;
+
   /// All courses for this day+mealType group (soup, main, dessert).
   final List<MealDay> allCourses;
   final MealPlan plan;
@@ -1888,7 +1951,8 @@ class _DayCard extends StatelessWidget {
   final VoidCallback onViewPrepGuide;
   final Set<String> activePantryIds;
   final void Function(String ingredientId) onSubstituteIngredient;
-  final void Function(MealDay day, String ingredientId) onSubstituteCourseIngredient;
+  final void Function(MealDay day, String ingredientId)
+  onSubstituteCourseIngredient;
 
   const _DayCard({
     required this.mealDay,
@@ -1916,8 +1980,13 @@ class _DayCard extends StatelessWidget {
     if (recipe == null) return const SizedBox();
     final iMap = service.ingredientMap;
     // Total cost for all courses in this meal slot
-    final totalMealCost = allCourses.fold(0.0, (sum, c) => sum + c.costEstimate);
-    final displayCost = allCourses.length > 1 ? totalMealCost : mealDay.costEstimate;
+    final totalMealCost = allCourses.fold(
+      0.0,
+      (sum, c) => sum + c.costEstimate,
+    );
+    final displayCost = allCourses.length > 1
+        ? totalMealCost
+        : mealDay.costEstimate;
     final costPerPerson = plan.nPessoas > 0
         ? displayCost / plan.nPessoas
         : displayCost;
@@ -1996,8 +2065,7 @@ class _DayCard extends StatelessWidget {
               ),
               const SizedBox(width: 2),
               Text(
-                recipe.activeMinutes != null &&
-                        recipe.passiveMinutes != null
+                recipe.activeMinutes != null && recipe.passiveMinutes != null
                     ? '${recipe.activeMinutes}+${recipe.passiveMinutes}min'
                     : '${recipe.prepMinutes}min',
                 style: TextStyle(
@@ -2013,9 +2081,7 @@ class _DayCard extends StatelessWidget {
               ),
               const SizedBox(width: 2),
               Text(
-                l10n.mealCostPerPerson(
-                  costPerPerson.toStringAsFixed(2),
-                ),
+                l10n.mealCostPerPerson(costPerPerson.toStringAsFixed(2)),
                 style: TextStyle(
                   fontSize: 11,
                   color: AppColors.textMuted(context),
@@ -2028,16 +2094,36 @@ class _DayCard extends StatelessWidget {
             const SizedBox(height: 4),
             Row(
               children: [
-                _NutriBadge('${recipe.nutrition!.kcal}', 'kcal', AppColors.error(context)),
+                _NutriBadge(
+                  '${recipe.nutrition!.kcal}',
+                  'kcal',
+                  AppColors.error(context),
+                ),
                 const SizedBox(width: 4),
-                _NutriBadge('${recipe.nutrition!.proteinG.round()}g', l10n.mealNutriProt, AppColors.primary(context)),
+                _NutriBadge(
+                  '${recipe.nutrition!.proteinG.round()}g',
+                  l10n.mealNutriProt,
+                  AppColors.primary(context),
+                ),
                 const SizedBox(width: 4),
-                _NutriBadge('${recipe.nutrition!.carbsG.round()}g', l10n.mealNutriCarbs, AppColors.warning(context)),
+                _NutriBadge(
+                  '${recipe.nutrition!.carbsG.round()}g',
+                  l10n.mealNutriCarbs,
+                  AppColors.warning(context),
+                ),
                 const SizedBox(width: 4),
-                _NutriBadge('${recipe.nutrition!.fatG.round()}g', l10n.mealNutriFat, AppColors.accent(context)),
+                _NutriBadge(
+                  '${recipe.nutrition!.fatG.round()}g',
+                  l10n.mealNutriFat,
+                  AppColors.accent(context),
+                ),
                 if (recipe.nutrition!.fiberG >= 5) ...[
                   const SizedBox(width: 4),
-                  _NutriBadge('${recipe.nutrition!.fiberG.round()}g', l10n.mealNutriFiber, AppColors.success(context)),
+                  _NutriBadge(
+                    '${recipe.nutrition!.fiberG.round()}g',
+                    l10n.mealNutriFiber,
+                    AppColors.success(context),
+                  ),
                 ],
               ],
             ),
@@ -2046,20 +2132,30 @@ class _DayCard extends StatelessWidget {
           // Action row: star rating + icon-only buttons
           Row(
             children: [
-              StarRatingRow(currentRating: mealDay.effectiveRating, onRate: onRating),
+              StarRatingRow(
+                currentRating: mealDay.effectiveRating,
+                onRate: onRating,
+              ),
               const Spacer(),
               SizedBox(
-                width: 32, height: 32,
+                width: 32,
+                height: 32,
                 child: IconButton(
                   onPressed: onToggleExpand,
-                  icon: Icon(isExpanded ? Icons.expand_less : Icons.restaurant_menu, size: 18),
+                  icon: Icon(
+                    isExpanded ? Icons.expand_less : Icons.restaurant_menu,
+                    size: 18,
+                  ),
                   padding: EdgeInsets.zero,
-                  color: isExpanded ? AppColors.textSecondary(context) : AppColors.primary(context),
+                  color: isExpanded
+                      ? AppColors.textSecondary(context)
+                      : AppColors.primary(context),
                   tooltip: isExpanded ? l10n.close : l10n.mealIngredients,
                 ),
               ),
               SizedBox(
-                width: 32, height: 32,
+                width: 32,
+                height: 32,
                 child: IconButton(
                   onPressed: onViewPrepGuide,
                   icon: const Icon(Icons.menu_book_outlined, size: 18),
@@ -2069,7 +2165,8 @@ class _DayCard extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                width: 32, height: 32,
+                width: 32,
+                height: 32,
                 child: IconButton(
                   onPressed: onSwap,
                   icon: const Icon(Icons.swap_horiz, size: 18),
@@ -2099,14 +2196,15 @@ class _DayCard extends StatelessWidget {
                 ],
                 ...courseRecipe.ingredients.map((ri) {
                   final effectiveId =
-                      course.substitutions[ri.ingredientId] ??
-                      ri.ingredientId;
+                      course.substitutions[ri.ingredientId] ?? ri.ingredientId;
                   final ing = iMap[effectiveId] ?? iMap[ri.ingredientId];
                   if (ing == null) return const SizedBox();
                   final isSubstituted = course.substitutions.containsKey(
                     ri.ingredientId,
                   );
-                  final scale = plan.nPessoas / courseRecipe.servings;
+                  final dayGuests = plan.extraGuests[course.dayIndex] ?? 0;
+                  final scale =
+                      (plan.nPessoas + dayGuests) / courseRecipe.servings;
                   final qty = ri.quantity * scale;
                   final cost = qty * ing.avgPricePerUnit;
                   // Tap → add to shopping list; tap icon → substitute ingredient.
@@ -2116,9 +2214,11 @@ class _DayCard extends StatelessWidget {
                         ? AppColors.primary(context)
                         : AppColors.textMuted(context),
                     title: ing.name,
-                    subtitle: '${_fmt(qty)} ${ing.unit}${isSubstituted ? ' · substituted' : ''}',
+                    subtitle:
+                        '${_fmt(qty)} ${ing.unit}${isSubstituted ? ' · substituted' : ''}',
                     trailing: '${cost.toStringAsFixed(2)}${currencySymbol()}',
-                    onTap: () => onSubstituteCourseIngredient(course, ri.ingredientId),
+                    onTap: () =>
+                        onSubstituteCourseIngredient(course, ri.ingredientId),
                   );
                 }),
               ];
@@ -2219,12 +2319,14 @@ class _DayCard extends StatelessWidget {
 
     if (!hasCourses) {
       // Single course: show as CalmListTile
-      widgets.add(CalmListTile(
-        leadingIcon: Icons.restaurant,
-        leadingColor: AppColors.primary(context),
-        title: mainRecipe.name,
-        onTap: onSwap,
-      ));
+      widgets.add(
+        CalmListTile(
+          leadingIcon: Icons.restaurant,
+          leadingColor: AppColors.primary(context),
+          title: mainRecipe.name,
+          onTap: onSwap,
+        ),
+      );
       return widgets;
     }
 
@@ -2233,34 +2335,40 @@ class _DayCard extends StatelessWidget {
       if (course.courseType == CourseType.soupOrStarter) {
         final soupRecipe = service.recipeMap[course.recipeId];
         if (soupRecipe != null) {
-          widgets.add(CalmListTile(
-            leadingIcon: Icons.soup_kitchen,
-            leadingColor: AppColors.warn(context),
-            title: soupRecipe.name,
-            onTap: () => onSwapCourse(course),
-          ));
+          widgets.add(
+            CalmListTile(
+              leadingIcon: Icons.soup_kitchen,
+              leadingColor: AppColors.warn(context),
+              title: soupRecipe.name,
+              onTap: () => onSwapCourse(course),
+            ),
+          );
         }
       }
     }
 
     // Main course
-    widgets.add(CalmListTile(
-      leadingIcon: Icons.restaurant,
-      leadingColor: AppColors.primary(context),
-      title: mainRecipe.name,
-      onTap: onSwap,
-    ));
+    widgets.add(
+      CalmListTile(
+        leadingIcon: Icons.restaurant,
+        leadingColor: AppColors.primary(context),
+        title: mainRecipe.name,
+        onTap: onSwap,
+      ),
+    );
 
     for (final course in allCourses) {
       if (course.courseType == CourseType.dessert) {
         final dessertRecipe = service.recipeMap[course.recipeId];
         if (dessertRecipe != null) {
-          widgets.add(CalmListTile(
-            leadingIcon: Icons.icecream,
-            leadingColor: AppColors.accent(context),
-            title: dessertRecipe.name,
-            onTap: () => onSwapCourse(course),
-          ));
+          widgets.add(
+            CalmListTile(
+              leadingIcon: Icons.icecream,
+              leadingColor: AppColors.accent(context),
+              title: dessertRecipe.name,
+              onTap: () => onSwapCourse(course),
+            ),
+          );
         }
       }
     }
@@ -2397,7 +2505,8 @@ class _SwapSheetState extends State<_SwapSheet> {
                     );
                     final subtitleParts = [
                       l10n.mealTotalCost(cost.toStringAsFixed(2)),
-                      if (_showAllMealTypes && isCrossType) r.suitableMealTypes.first,
+                      if (_showAllMealTypes && isCrossType)
+                        r.suitableMealTypes.first,
                     ];
                     return CalmListTile(
                       leadingIcon: Icons.restaurant_menu,
@@ -2468,7 +2577,8 @@ class _ConsolidatedSheet extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
-            child: ClipRRect( // Justified: drag-handle indicator, no Calm equivalent
+            child: ClipRRect(
+              // Justified: drag-handle indicator, no Calm equivalent
               borderRadius: BorderRadius.circular(2),
               child: SizedBox(
                 width: 40,
@@ -2511,10 +2621,14 @@ class _ConsolidatedSheet extends StatelessWidget {
                           final cost = entry.value * ing.avgPricePerUnit;
                           return CalmListTile(
                             leadingIcon: _ingredientCategoryIcon(cat),
-                            leadingColor: _ingredientCategoryColor(cat, context),
+                            leadingColor: _ingredientCategoryColor(
+                              cat,
+                              context,
+                            ),
                             title: ing.name,
                             subtitle: '${_fmt(entry.value)} ${ing.unit}',
-                            trailing: '${cost.toStringAsFixed(2)}${currencySymbol()}',
+                            trailing:
+                                '${cost.toStringAsFixed(2)}${currencySymbol()}',
                             onTap: () => onAddToShoppingList(
                               ShoppingItem(
                                 productName: ing.name,
@@ -2619,9 +2733,11 @@ class _NutriBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container( // Justified: micro nutrition badge — no Calm equivalent for inline tinted label
+    return Container(
+      // Justified: micro nutrition badge — no Calm equivalent for inline tinted label
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration( // Justified: micro nutrition badge colour tint
+      decoration: BoxDecoration(
+        // Justified: micro nutrition badge colour tint
         color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(4),
       ),

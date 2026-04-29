@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:monthly_management/models/app_settings.dart';
 import 'package:monthly_management/models/pantry_item.dart';
 import 'package:monthly_management/models/meal_planner.dart';
 import 'package:monthly_management/models/meal_settings.dart';
@@ -74,31 +75,19 @@ void main() {
     });
 
     test('isLow returns false when no threshold set', () {
-      const item = PantryItem(
-        ingredientId: 'azeite',
-        quantity: 0.1,
-        unit: 'l',
-      );
+      const item = PantryItem(ingredientId: 'azeite', quantity: 0.1, unit: 'l');
 
       expect(item.isLow, isFalse);
     });
 
     test('isDepleted returns true at zero', () {
-      const item = PantryItem(
-        ingredientId: 'sal',
-        quantity: 0,
-        unit: 'kg',
-      );
+      const item = PantryItem(ingredientId: 'sal', quantity: 0, unit: 'kg');
 
       expect(item.isDepleted, isTrue);
     });
 
     test('isDepleted returns false when quantity > 0', () {
-      const item = PantryItem(
-        ingredientId: 'sal',
-        quantity: 0.01,
-        unit: 'kg',
-      );
+      const item = PantryItem(ingredientId: 'sal', quantity: 0.01, unit: 'kg');
 
       expect(item.isDepleted, isFalse);
     });
@@ -231,11 +220,7 @@ void main() {
       final totals = svc.consolidatedIngredients(
         plan,
         pantryItems: [
-          const PantryItem(
-            ingredientId: 'frango',
-            quantity: 0.5,
-            unit: 'kg',
-          ),
+          const PantryItem(ingredientId: 'frango', quantity: 0.5, unit: 'kg'),
         ],
       );
 
@@ -266,11 +251,7 @@ void main() {
       final totals = svc.consolidatedIngredients(
         plan,
         pantryItems: [
-          const PantryItem(
-            ingredientId: 'frango',
-            quantity: 2.0,
-            unit: 'kg',
-          ),
+          const PantryItem(ingredientId: 'frango', quantity: 2.0, unit: 'kg'),
         ],
       );
 
@@ -298,11 +279,7 @@ void main() {
       final totals = svc.consolidatedIngredients(
         plan,
         pantryItems: [
-          const PantryItem(
-            ingredientId: 'frango',
-            quantity: 500,
-            unit: 'g',
-          ),
+          const PantryItem(ingredientId: 'frango', quantity: 500, unit: 'g'),
         ],
       );
 
@@ -327,21 +304,44 @@ void main() {
         generatedAt: DateTime(2026, 3, 1),
       );
 
-      // Pantry item has 'un' unit (units) which is incompatible with 'kg'
-      // Conversion returns null, so raw quantity is used as-is
+      // Pantry item has 'un' unit (units) which is incompatible with 'kg'.
+      // Conversion returns null, so the pantry item must not be subtracted.
       final totals = svc.consolidatedIngredients(
         plan,
         pantryItems: [
-          const PantryItem(
-            ingredientId: 'frango',
-            quantity: 0.3,
-            unit: 'un',
-          ),
+          const PantryItem(ingredientId: 'frango', quantity: 0.3, unit: 'un'),
         ],
       );
 
-      // 1.0 - 0.3 = 0.7 (raw subtraction, no conversion possible)
-      expect(totals['frango'], closeTo(0.7, 0.001));
+      expect(totals['frango'], closeTo(1.0, 0.001));
+    });
+
+    test('quantity-aware pantry takes precedence over legacy pantry IDs', () {
+      final plan = MealPlan(
+        month: 3,
+        year: 2026,
+        nPessoas: 4,
+        monthlyBudget: 300,
+        days: [
+          const MealDay(
+            dayIndex: 1,
+            recipeId: 'frango_assado',
+            costEstimate: 3.86,
+          ),
+        ],
+        totalEstimatedCost: 3.86,
+        generatedAt: DateTime(2026, 3, 1),
+      );
+
+      final totals = svc.consolidatedIngredients(
+        plan,
+        pantryIngredients: const ['frango'],
+        pantryItems: [
+          const PantryItem(ingredientId: 'frango', quantity: 0.25, unit: 'kg'),
+        ],
+      );
+
+      expect(totals['frango'], closeTo(0.75, 0.001));
     });
 
     test('pantryItems does not affect ingredients not in plan', () {
@@ -365,17 +365,78 @@ void main() {
       final totals = svc.consolidatedIngredients(
         plan,
         pantryItems: [
-          const PantryItem(
-            ingredientId: 'arroz',
-            quantity: 2.0,
-            unit: 'kg',
-          ),
+          const PantryItem(ingredientId: 'arroz', quantity: 2.0, unit: 'kg'),
         ],
       );
 
       // All recipe ingredients should remain unchanged
       expect(totals['frango'], closeTo(1.0, 0.001));
       expect(totals['batata'], closeTo(0.6, 0.001));
+    });
+  });
+
+  group('generation with pantryItems', () {
+    test('quantity-aware pantry ingredients boost matching recipes', () {
+      final svc = MealPlannerService();
+      final ingredientsJson = jsonEncode([
+        {
+          'id': 'massa',
+          'name': 'Massa',
+          'category': 'cereal',
+          'unit': 'kg',
+          'avgPricePerUnit': 1.20,
+          'minPurchaseQty': 0.5,
+        },
+        {
+          'id': 'arroz',
+          'name': 'Arroz',
+          'category': 'cereal',
+          'unit': 'kg',
+          'avgPricePerUnit': 1.00,
+          'minPurchaseQty': 1.0,
+        },
+      ]);
+      final recipesJson = jsonEncode([
+        {
+          'id': 'massa_simples',
+          'name': 'Massa Simples',
+          'proteinId': 'massa',
+          'type': 'vegetariano',
+          'complexity': 1,
+          'prepMinutes': 10,
+          'servings': 1,
+          'ingredients': [
+            {'ingredientId': 'massa', 'quantity': 0.1},
+          ],
+        },
+        {
+          'id': 'arroz_simples',
+          'name': 'Arroz Simples',
+          'proteinId': 'arroz',
+          'type': 'vegetariano',
+          'complexity': 1,
+          'prepMinutes': 10,
+          'servings': 1,
+          'ingredients': [
+            {'ingredientId': 'arroz', 'quantity': 0.1},
+          ],
+        },
+      ]);
+      svc.loadCatalogFromJson(ingredientsJson, recipesJson);
+
+      final plan = svc.generate(
+        AppSettings(
+          mealSettings: const MealSettings(
+            enabledMeals: {MealType.dinner},
+            pantryItems: [
+              PantryItem(ingredientId: 'arroz', quantity: 1, unit: 'kg'),
+            ],
+          ),
+        ),
+        DateTime(2026, 3),
+      );
+
+      expect(plan.days.first.recipeId, 'arroz_simples');
     });
   });
 
@@ -401,11 +462,7 @@ void main() {
             lastRestocked: DateTime(2026, 3, 15),
             lowThreshold: 0.5,
           ),
-          const PantryItem(
-            ingredientId: 'azeite',
-            quantity: 0.75,
-            unit: 'l',
-          ),
+          const PantryItem(ingredientId: 'azeite', quantity: 0.75, unit: 'l'),
         ],
       );
 
@@ -426,11 +483,7 @@ void main() {
       const original = MealSettings();
       final updated = original.copyWith(
         pantryItems: [
-          const PantryItem(
-            ingredientId: 'sal',
-            quantity: 1.0,
-            unit: 'kg',
-          ),
+          const PantryItem(ingredientId: 'sal', quantity: 1.0, unit: 'kg'),
         ],
       );
 

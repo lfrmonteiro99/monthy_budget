@@ -7,6 +7,7 @@ import 'l10n/generated/app_localizations.dart';
 import 'models/app_settings.dart';
 import 'models/product.dart';
 import 'models/shopping_item.dart';
+import 'models/pantry_item.dart';
 import 'models/purchase_record.dart';
 import 'utils/calculations.dart';
 import 'utils/formatters.dart';
@@ -1277,6 +1278,74 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     }
   }
 
+  void _toggleWeeklyPantry(String ingredientId) {
+    final normalized = ingredientId.trim().toLowerCase();
+    if (normalized.isEmpty) return;
+    final ms = _settings.mealSettings;
+    final weekly = ms.weeklyPantryIngredients.toSet();
+    if (weekly.contains(normalized)) {
+      weekly.remove(normalized);
+    } else {
+      weekly.add(normalized);
+    }
+    _saveSettings(
+      _settings.copyWith(
+        mealSettings: ms.copyWith(
+          weeklyPantryIngredients: weekly.toList()..sort(),
+          weeklyPantryUpdatedAt: DateTime.now(),
+        ),
+      ),
+    );
+  }
+
+  void _markShoppingItemAtHome(ShoppingItem item) {
+    final ingredientId = item.productName.trim().toLowerCase();
+    if (ingredientId.isEmpty) return;
+    final quantity = item.quantity ?? 1;
+    final unit = item.unit ?? 'un';
+    final ms = _settings.mealSettings;
+    final pantryItems = List<PantryItem>.from(ms.pantryItems);
+    final existingIndex = pantryItems.indexWhere(
+      (p) => p.ingredientId == ingredientId,
+    );
+    if (existingIndex >= 0) {
+      final existing = pantryItems[existingIndex];
+      double newQuantity = quantity;
+      String newUnit = unit;
+      if (UnitConverter.compatible(existing.unit, unit)) {
+        final converted =
+            UnitConverter.convert(quantity, unit, existing.unit) ?? quantity;
+        newQuantity = existing.quantity + converted;
+        newUnit = existing.unit;
+      }
+      pantryItems[existingIndex] = existing.copyWith(
+        quantity: newQuantity,
+        unit: newUnit,
+        lastRestocked: DateTime.now(),
+      );
+    } else {
+      pantryItems.add(
+        PantryItem(
+          ingredientId: ingredientId,
+          quantity: quantity,
+          unit: unit,
+          lastRestocked: DateTime.now(),
+        ),
+      );
+    }
+
+    final weekly = ms.weeklyPantryIngredients.toSet()..add(ingredientId);
+    _saveSettings(
+      _settings.copyWith(
+        mealSettings: ms.copyWith(
+          weeklyPantryIngredients: weekly.toList()..sort(),
+          weeklyPantryUpdatedAt: DateTime.now(),
+          pantryItems: pantryItems,
+        ),
+      ),
+    );
+  }
+
   void _saveDashboardConfig(LocalDashboardConfig config) {
     setState(() => _dashboardConfig = config);
     _localConfigService.save(config);
@@ -2113,6 +2182,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           onFinalize: _finalizeShopping,
           purchaseHistory: _purchaseHistory,
           onAddToShoppingList: _addToShoppingList,
+          onMarkAtHome: _markShoppingItemAtHome,
           products:
               _groceryData.toCatalogProducts().isNotEmpty ||
                   _settings.country != Country.pt
@@ -2120,6 +2190,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
               : _products,
           groceryData: _groceryData,
           groceryLoading: _groceryLoading,
+          weeklyPantryIds: _settings.mealSettings.weeklyPantryIngredients
+              .map((id) => id.toLowerCase())
+              .toSet(),
+          onToggleWeeklyPantry: _toggleWeeklyPantry,
           settings: _settings,
           apiKey: _openAiApiKey,
           favorites: _favorites,
@@ -2312,7 +2386,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                   message: '',
                 );
               }
-              return _commandChatService.parseCommand(input, l10n: S.of(context));
+              return _commandChatService.parseCommand(
+                input,
+                l10n: S.of(context),
+              );
             },
             onExecuteAction: (action) async {
               final registry = _buildCommandRegistry();

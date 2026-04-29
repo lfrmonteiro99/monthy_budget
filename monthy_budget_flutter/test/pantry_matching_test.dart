@@ -1,22 +1,31 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:monthly_management/models/meal_planner.dart';
 import 'package:monthly_management/models/meal_settings.dart';
+import 'package:monthly_management/models/pantry_item.dart';
 import 'package:monthly_management/utils/pantry_matching.dart';
 
 void main() {
   group('resolveActivePantry', () {
     test('merges staples, weekly, and legacy pantry ingredients', () {
-      const ms = MealSettings(
+      final ms = MealSettings(
         pantryIngredients: ['salt', 'pepper'],
         stapleIngredients: ['olive_oil', 'salt'],
         weeklyPantryIngredients: ['tomato', 'onion'],
+        pantryItems: const [
+          PantryItem(ingredientId: 'rice', quantity: 1.0, unit: 'kg'),
+          PantryItem(ingredientId: 'empty_oil', quantity: 0, unit: 'l'),
+        ],
       );
 
       final active = resolveActivePantry(ms);
 
-      expect(active, containsAll(['salt', 'pepper', 'olive_oil', 'tomato', 'onion']));
+      expect(
+        active,
+        containsAll(['salt', 'pepper', 'olive_oil', 'tomato', 'onion', 'rice']),
+      );
       // Duplicates are collapsed (salt appears in both)
-      expect(active.length, 5);
+      expect(active.length, 6);
+      expect(active.contains('empty_oil'), isFalse);
     });
 
     test('returns empty set when all lists are empty', () {
@@ -43,10 +52,12 @@ void main() {
     );
 
     test('full coverage when all ingredients in pantry', () {
-      final coverage = computePantryCoverage(
-        recipe,
-        {'chicken', 'rice', 'onion', 'garlic'},
-      );
+      final coverage = computePantryCoverage(recipe, {
+        'chicken',
+        'rice',
+        'onion',
+        'garlic',
+      });
 
       expect(coverage.coverageRatio, 1.0);
       expect(coverage.matchedIngredients.length, 4);
@@ -54,10 +65,7 @@ void main() {
     });
 
     test('partial coverage returns correct ratio', () {
-      final coverage = computePantryCoverage(
-        recipe,
-        {'chicken', 'rice'},
-      );
+      final coverage = computePantryCoverage(recipe, {'chicken', 'rice'});
 
       expect(coverage.coverageRatio, 0.5);
       expect(coverage.matchedIngredients, ['chicken', 'rice']);
@@ -100,10 +108,11 @@ void main() {
         'onion': 0.3,
       };
 
-      final result = excludePantryFromConsolidated(
-        consolidated,
-        {'salt', 'onion', 'garlic'},
-      );
+      final result = excludePantryFromConsolidated(consolidated, {
+        'salt',
+        'onion',
+        'garlic',
+      });
 
       expect(result.keys, containsAll(['chicken', 'rice']));
       expect(result.containsKey('salt'), isFalse);
@@ -202,9 +211,7 @@ void main() {
     });
 
     test('copyWith supports clearing weeklyPantryUpdatedAt', () {
-      final base = MealSettings(
-        weeklyPantryUpdatedAt: DateTime(2026, 3, 8),
-      );
+      final base = MealSettings(weeklyPantryUpdatedAt: DateTime(2026, 3, 8));
 
       final cleared = base.copyWith(weeklyPantryUpdatedAt: null);
       expect(cleared.weeklyPantryUpdatedAt, isNull);
