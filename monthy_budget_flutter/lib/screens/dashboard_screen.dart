@@ -277,7 +277,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => NotificationSettingsScreen(
-          preferences: const NotificationPreferences(),
+          preferences: NotificationPreferences(),
           onSave: (_) {},
         ),
       ),
