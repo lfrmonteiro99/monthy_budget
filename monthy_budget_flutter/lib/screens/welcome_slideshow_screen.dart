@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:monthly_management/widgets/calm/calm.dart';
 import '../constants/app_constants.dart';
-import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
+
+// ---------------------------------------------------------------------------
+// WelcomeSlideshowScreen — Calm redesign §21 (Wave M7)
+// 3-slide PageView: 60 % illustration placeholder / 40 % copy block.
+// ---------------------------------------------------------------------------
 
 class WelcomeSlideshowScreen extends StatefulWidget {
   final VoidCallback onComplete;
@@ -23,171 +28,270 @@ class _WelcomeSlideshowScreenState extends State<WelcomeSlideshowScreen> {
     super.dispose();
   }
 
+  void _advance() {
+    if (_currentPage < 2) {
+      _controller.nextPage(
+        duration: AppConstants.animPageTransition,
+        curve: Curves.easeInOut,
+      );
+    } else {
+      widget.onComplete();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final l10n = S.of(context);
-    final slides = _buildSlides(l10n);
+    final isLast = _currentPage == 2;
 
     return CalmScaffold(
-      body: Column(
+      bodyPadding: EdgeInsets.zero,
+      body: Stack(
         children: [
-          // Skip button
-          Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 12),
-              child: TextButton(
-                onPressed: widget.onComplete,
-                child: Text(
-                  l10n.onbSkip,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textSecondary(context),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          // Slides
-          Expanded(
-            child: PageView.builder(
-              controller: _controller,
-              itemCount: slides.length,
-              onPageChanged: (i) => setState(() => _currentPage = i),
-              itemBuilder: (_, i) => _buildSlide(context, slides[i]),
-            ),
-          ),
-          // Swipe hint on first slide
-          if (_currentPage == 0)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Text(
-                l10n.onbSwipeHint,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textMuted(context),
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
-          // Dot indicator + button
-          Padding(
-            padding: const EdgeInsets.only(bottom: 32),
-            child: Column(
-              children: [
-                Semantics(
-                  label: l10n.onbSlideOf(_currentPage + 1, slides.length),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      slides.length,
-                      (i) => Container(
-                        width: _currentPage == i ? 24 : 8,
-                        height: 8,
-                        margin: const EdgeInsets.symmetric(horizontal: 3),
-                        decoration: BoxDecoration(
-                          color: _currentPage == i
-                              ? AppColors.primary(context)
-                              : AppColors.border(context),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
+          // ── Main layout ────────────────────────────────────────────────
+          Column(
+            children: [
+              // PageView takes all available space minus the bottom bar
+              Expanded(
+                child: PageView(
+                  controller: _controller,
+                  onPageChanged: (i) => setState(() => _currentPage = i),
+                  children: [
+                    // ── Slide 1: Bem-vindo ─────────────────────────────
+                    _buildSlide(
+                      context: context,
+                      eyebrow: CalmEyebrow('BEM-VINDO'), // TODO(l10n):
+                      illustrationName: 'boas-vindas',
+                      title: 'O teu orçamento, numa vista só', // TODO(l10n):
+                      body: 'O painel mostra a tua liquidez mensal, '
+                          'despesas e Índice de Serenidade.', // TODO(l10n):
                     ),
-                  ),
+                    // ── Slide 2: Funcionalidades ───────────────────────
+                    _buildSlide(
+                      context: context,
+                      eyebrow: CalmEyebrow('FUNCIONALIDADES'), // TODO(l10n):
+                      illustrationName: 'funcionalidades',
+                      title: 'Controla cada despesa', // TODO(l10n):
+                      body: 'Toca em + para registar uma compra. '
+                          'Atribui uma categoria e vê as barras actualizarem.', // TODO(l10n):
+                    ),
+                    // ── Slide 3: Privacidade ───────────────────────────
+                    _buildSlide(
+                      context: context,
+                      eyebrow: CalmEyebrow('PRIVACIDADE'), // TODO(l10n):
+                      illustrationName: 'privacidade',
+                      title: 'Os teus dados ficam aqui', // TODO(l10n):
+                      body: 'Tudo armazenado localmente no dispositivo. '
+                          'Sem servidores, sem partilha de dados.', // TODO(l10n):
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 24),
-                SizedBox(
+              ),
+              // ── Dot indicator ──────────────────────────────────────────
+              _SlideIndicator(count: 3, current: _currentPage),
+              const SizedBox(height: 16),
+              // ── CTA button ─────────────────────────────────────────────
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: SizedBox(
                   width: double.infinity,
+                  height: 52,
                   child: FilledButton(
-                    onPressed: () {
-                      if (_currentPage < slides.length - 1) {
-                        _controller.nextPage(
-                          duration: AppConstants.animPageTransition,
-                          curve: Curves.easeInOut,
-                        );
-                      } else {
-                        widget.onComplete();
-                      }
-                    },
+                    onPressed: _advance,
                     style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.primary(context),
-                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      backgroundColor: AppColors.ink(context),
+                      foregroundColor: AppColors.bg(context),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(14),
                       ),
                     ),
                     child: Text(
-                      _currentPage < slides.length - 1
-                          ? l10n.onbNext
-                          : l10n.onbGetStarted,
-                      style: const TextStyle(
+                      isLast ? 'Começar' : 'Continuar', // TODO(l10n):
+                      style: GoogleFonts.inter(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
                 ),
+              ),
+              const SizedBox(height: 32),
+            ],
+          ),
+          // ── "Saltar" — top-right safe-area, slides 1-2 only ───────────
+          if (!isLast)
+            Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 16, right: 20),
+                child: GestureDetector(
+                  onTap: widget.onComplete,
+                  child: Text(
+                    'Saltar', // TODO(l10n):
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.ink50(context),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// Builds a single slide with 60/40 split.
+  /// The illustration [Container] is the SOLE Container per §21.
+  Widget _buildSlide({
+    required BuildContext context,
+    required CalmEyebrow eyebrow,
+    required String illustrationName,
+    required String title,
+    required String body,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Top 60 % — illustration placeholder
+        Expanded(
+          flex: 60,
+          child: Container(
+            margin: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: AppColors.bgSunk(context),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              'ilustração: $illustrationName',
+              style: TextStyle(
+                fontFamily: 'monospace',
+                fontSize: 13,
+                color: AppColors.ink50(context),
+              ),
+            ),
+          ),
+        ),
+        // Bottom 40 % — copy block padding 24
+        Expanded(
+          flex: 40,
+          child: CalmCard(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                eyebrow,
+                const SizedBox(height: 8),
+                // Fraunces 32px hero — one per slide, lineheight 1.2, max 2 lines
+                Text(
+                  title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.fraunces(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w500,
+                    height: 1.2,
+                    color: AppColors.ink(context),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                // 15px ink70 body, max 3 lines
+                Text(
+                  body,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 15,
+                    height: 1.5,
+                    color: AppColors.ink70(context),
+                  ),
+                ),
               ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
-
-  Widget _buildSlide(BuildContext context, _SlideData slide) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              color: AppColors.primary(context),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(slide.icon, size: 56, color: AppColors.onPrimary(context)),
-          ),
-          const SizedBox(height: 40),
-          Text(
-            slide.title,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary(context),
-            ),
-          ),
-          const SizedBox(height: 14),
-          Text(
-            slide.body,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 14,
-              color: AppColors.textSecondary(context),
-              height: 1.5,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  List<_SlideData> _buildSlides(S l10n) => [
-        _SlideData(Icons.dashboard, l10n.onbSlide0Title, l10n.onbSlide0Body),
-        _SlideData(Icons.add_circle_outline, l10n.onbSlide1Title, l10n.onbSlide1Body),
-        _SlideData(Icons.shopping_basket_outlined, l10n.onbSlide2Title, l10n.onbSlide2Body),
-        _SlideData(Icons.psychology_outlined, l10n.onbSlide3Title, l10n.onbSlide3Body),
-        _SlideData(Icons.restaurant_outlined, l10n.onbSlide4Title, l10n.onbSlide4Body),
-      ];
 }
 
-class _SlideData {
-  final IconData icon;
-  final String title;
-  final String body;
-  const _SlideData(this.icon, this.title, this.body);
+// ---------------------------------------------------------------------------
+// _SlideIndicator — inline ≤30 LoC
+// Active dot = ink 24×8 pill; inactive = ink20 6×6 circle
+// Drawn via CustomPainter — zero extra Containers / BoxDecorations
+// ---------------------------------------------------------------------------
+
+class _SlideIndicator extends StatelessWidget {
+  const _SlideIndicator({required this.count, required this.current});
+
+  final int count;
+  final int current;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 8,
+      child: CustomPaint(
+        painter: _DotsPainter(
+          count: count,
+          current: current,
+          inkColor: AppColors.ink(context),
+          inactiveColor: AppColors.ink20(context),
+        ),
+        size: Size(count * 20 + 24.0, 8),
+      ),
+    );
+  }
+}
+
+class _DotsPainter extends CustomPainter {
+  _DotsPainter({
+    required this.count,
+    required this.current,
+    required this.inkColor,
+    required this.inactiveColor,
+  });
+
+  final int count;
+  final int current;
+  final Color inkColor;
+  final Color inactiveColor;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const spacing = 6.0;
+    const dotSize = 6.0;
+    const pillWidth = 24.0;
+    const pillHeight = 8.0;
+    const radius = 4.0;
+
+    // Total width for centering
+    double totalW = 0;
+    for (int i = 0; i < count; i++) {
+      totalW += (i == current ? pillWidth : dotSize);
+      if (i < count - 1) totalW += spacing;
+    }
+    double x = (size.width - totalW) / 2;
+
+    final activePaint = Paint()..color = inkColor;
+    final inactivePaint = Paint()..color = inactiveColor;
+
+    for (int i = 0; i < count; i++) {
+      if (i == current) {
+        final rect = RRect.fromLTRBR(x, 0, x + pillWidth, pillHeight, const Radius.circular(radius));
+        canvas.drawRRect(rect, activePaint);
+        x += pillWidth;
+      } else {
+        final cy = (pillHeight - dotSize) / 2;
+        canvas.drawCircle(Offset(x + dotSize / 2, cy + dotSize / 2), dotSize / 2, inactivePaint);
+        x += dotSize;
+      }
+      if (i < count - 1) x += spacing;
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DotsPainter old) =>
+      old.count != count || old.current != current || old.inkColor != inkColor;
 }
