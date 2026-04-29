@@ -26,3 +26,11 @@
 - If rebase causes conflicts, resolve them before pushing.
 - Never push code directly to `main`.
 - Include `#<issue-number>` in commit messages so the pipeline can link the PR.
+
+## Calm redesign — source of truth (handoff v3)
+For any UI redesign work in `monthy_budget_flutter/`, these three docs are canonical:
+- `monthy_budget_flutter/docs/calm-handoff.md` — foundation: tokens (§2), typography (§3), layout patterns (§4), coherence checklist (§7).
+- `monthy_budget_flutter/docs/calm-screen-rollout.md` — **per-screen operational spec**. Each screen has 8 fixed blocks (issue+branch, files, mock+artboard, input data, structure top→bottom with copy/sizes/tokens, interactions, states, regression checklist). Cite the relevant entry verbatim in the issue body — paraphrasing produces shallow migrations.
+- `.github/PULL_REQUEST_TEMPLATE.md` — comprehensive Calm-aware PR gate. Every redesign PR must check the relevant boxes (foundation, design tokens, typography, states, animations, a11y, screen-specific, migration, visual review).
+
+Vague briefs ("rewrite on Calm widgets") are gameable — past waves passed CI with token-swaps that didn't restructure. The rollout doc + PR template are the gate that closes that gap. Do not reopen redesign issues with prose-only briefs.

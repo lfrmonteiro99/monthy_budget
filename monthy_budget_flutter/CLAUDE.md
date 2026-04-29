@@ -39,3 +39,11 @@ This is automated by `.github/workflows/agent-delivery.yml`.
 - Tag: `vYYYY.M.PATCH`
 - Release command:
   - `bash scripts/release.sh [--dry-run] [--allow-dirty] [--bump patch|minor|major]`
+
+## Calm redesign — source of truth (handoff v3)
+Any redesign issue MUST cite these:
+- `docs/calm-handoff.md` — foundation: tokens (§2), typography (§3), layout patterns (§4), coherence checklist (§7).
+- `docs/calm-screen-rollout.md` — per-screen operational spec. Find the entry under `## #N · ScreenName` and **paste the structure block verbatim into the issue**. Includes mock/artboard reference, exact widget hierarchy, copy strings, sizes, tokens, states, regression checklist.
+- `../.github/PULL_REQUEST_TEMPLATE.md` — comprehensive PR gate (foundation, tokens, typography, states, animations, a11y, screen-specific, migration, visual review).
+
+The density audit (`for f in lib/screens/*_screen.dart; do ...`) gives a quantitative gate (≥13‰ acceptable, <10‰ + containers ≥3 = shallow), but the structural prescription comes from `docs/calm-screen-rollout.md`. Vague briefs produce shallow migrations — see open deepening issues for screens that landed token-swap-only.
