@@ -31,3 +31,11 @@ These rules are mandatory for any agent/model that edits this repository.
 - PR must carry one release label (`release:patch|release:minor|release:major`).
 - Active workflows are in repo root: `.github/workflows/*`.
 - Flutter app code lives in `monthy_budget_flutter/`.
+
+## Calm redesign — source of truth (handoff v3)
+For any UI redesign work in `monthy_budget_flutter/`:
+- `monthy_budget_flutter/docs/calm-handoff.md` — foundation (tokens, typography, layout patterns, coherence checklist).
+- `monthy_budget_flutter/docs/calm-screen-rollout.md` — per-screen operational spec (8 fixed blocks per screen). **Cite the relevant entry verbatim in the issue body**; do not paraphrase.
+- `.github/PULL_REQUEST_TEMPLATE.md` — Calm-aware PR gate. Every redesign PR must check the relevant boxes.
+
+Past waves passed CI with shallow token-swaps that didn't restructure. The rollout doc + PR template are how that gap closes. Do not dispatch redesign work with prose-only briefs.

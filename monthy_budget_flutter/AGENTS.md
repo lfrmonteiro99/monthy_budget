@@ -23,3 +23,10 @@ These rules are mandatory for any agent/model that edits this repository.
 - `versionCode = (YY * 10000000) + (MM * 100000) + PATCH`
 - Tag: `vYYYY.M.PATCH`
 - Release script: `bash scripts/release.sh [--dry-run] [--allow-dirty] [--bump patch|minor|major]`
+
+## Calm redesign — source of truth (handoff v3)
+- `docs/calm-handoff.md` — foundation (tokens, typography, patterns, coherence).
+- `docs/calm-screen-rollout.md` — per-screen operational spec; cite the entry verbatim in the issue.
+- `../.github/PULL_REQUEST_TEMPLATE.md` — Calm-aware PR gate.
+
+Do not dispatch redesign work with paraphrased prose briefs. Past waves passed CI with shallow token-swaps; this is the documented closure.
