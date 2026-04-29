@@ -16,8 +16,10 @@ Widget _wrap(Widget child) {
 void main() {
   group('PaywallScreen', () {
     group('header', () {
-      testWidgets('shows "Your trial has ended" when trial expired',
-          (tester) async {
+      // Wave M5: the header is now a fixed Calm hero title (not conditional on
+      // trial state). Tests rebind to the eyebrow + hero title that are always
+      // present, and to the Calm CTA that supersedes the old conditional copy.
+      testWidgets('shows hero title when trial expired', (tester) async {
         final state = SubscriptionState(
           trialStartDate: DateTime.now().subtract(const Duration(days: 30)),
         );
@@ -26,15 +28,14 @@ void main() {
           PaywallScreen(subscription: state, onSelectTier: (_) {}),
         ));
 
-        expect(find.text('Your trial has ended'), findsOneWidget);
         expect(
-          find.text('Choose a plan to keep all your data and features'),
+          find.text('Tudo o que precisas para um ano de paz financeira'),
           findsOneWidget,
         );
+        expect(find.text('MONTHLY PLUS'), findsOneWidget);
       });
 
-      testWidgets('shows "Upgrade to Premium" when trial active',
-          (tester) async {
+      testWidgets('shows hero title when trial active', (tester) async {
         final state = SubscriptionState(
           trialStartDate: DateTime.now(),
         );
@@ -43,15 +44,14 @@ void main() {
           PaywallScreen(subscription: state, onSelectTier: (_) {}),
         ));
 
-        expect(find.text('Upgrade to Premium'), findsOneWidget);
         expect(
-          find.text('Unlock the full power of your budget'),
+          find.text('Tudo o que precisas para um ano de paz financeira'),
           findsOneWidget,
         );
+        expect(find.text('MONTHLY PLUS'), findsOneWidget);
       });
 
-      testWidgets('shows "Your trial has ended" when trialUsed is true',
-          (tester) async {
+      testWidgets('shows hero title when trialUsed is true', (tester) async {
         final state = SubscriptionState(
           trialStartDate: DateTime.now(),
           trialUsed: true,
@@ -61,7 +61,10 @@ void main() {
           PaywallScreen(subscription: state, onSelectTier: (_) {}),
         ));
 
-        expect(find.text('Your trial has ended'), findsOneWidget);
+        expect(
+          find.text('Tudo o que precisas para um ano de paz financeira'),
+          findsOneWidget,
+        );
       });
     });
 
@@ -145,7 +148,8 @@ void main() {
         await tester.pumpWidget(_wrap(
           PaywallScreen(subscription: state, onSelectTier: (_) {}),
         ));
-        expect(find.textContaining('2.49'), findsOneWidget);
+        // Wave M5: price shown in both price card and tier card — allow multiple
+        expect(find.textContaining('2.49'), findsAtLeastNWidgets(1));
       });
 
       testWidgets('shows yearly savings notes', (tester) async {
@@ -157,7 +161,7 @@ void main() {
           PaywallScreen(subscription: state, onSelectTier: (_) {}),
         ));
 
-        expect(find.textContaining('Save 37%'), findsOneWidget);
+        expect(find.textContaining('Save 37%'), findsAtLeastNWidgets(1));
       });
 
       testWidgets('switches to monthly pricing when toggled', (tester) async {
@@ -172,7 +176,7 @@ void main() {
         // Tap "Monthly" toggle
         await tester.tap(find.text('Monthly'));
         await tester.pumpAndSettle();
-        expect(find.textContaining('3.99'), findsOneWidget);
+        expect(find.textContaining('3.99'), findsAtLeastNWidgets(1));
       });
     });
 
@@ -286,8 +290,19 @@ void main() {
         ));
         expect(find.textContaining('Cancel anytime'), findsOneWidget);
         expect(find.textContaining('No hidden fees'), findsOneWidget);
-        expect(find.textContaining('Terms of Service'), findsOneWidget);
-        expect(find.textContaining('Privacy Policy'), findsOneWidget);
+        // ToS + Privacy are in RichText TextSpans — verify via RichText content
+        expect(
+          find.byWidgetPredicate((w) =>
+              w is RichText &&
+              w.text.toPlainText().contains('Terms of Service')),
+          findsOneWidget,
+        );
+        expect(
+          find.byWidgetPredicate((w) =>
+              w is RichText &&
+              w.text.toPlainText().contains('Privacy Policy')),
+          findsOneWidget,
+        );
       });
     });
 
@@ -312,7 +327,7 @@ void main() {
         expect(selectedTier, SubscriptionTier.family);
       });
 
-      
+
       testWidgets('calls onSelectTier with free when "Continue Free" tapped',
           (tester) async {
         SubscriptionTier? selectedTier;
@@ -373,18 +388,18 @@ void main() {
           PaywallScreen(subscription: state, onSelectTier: (_) {}),
         ));
 
-        // Initially yearly
-        expect(find.textContaining('2.49'), findsOneWidget);
+        // Initially yearly — price appears in both price card and tier card
+        expect(find.textContaining('2.49'), findsAtLeastNWidgets(1));
 
         // Switch to monthly
         await tester.tap(find.text('Monthly'));
         await tester.pumpAndSettle();
-        expect(find.textContaining('3.99'), findsOneWidget);
+        expect(find.textContaining('3.99'), findsAtLeastNWidgets(1));
 
         // Switch back to yearly
         await tester.tap(find.text('Yearly (save 37%)'));
         await tester.pumpAndSettle();
-        expect(find.textContaining('2.49'), findsOneWidget);
+        expect(find.textContaining('2.49'), findsAtLeastNWidgets(1));
       });
     });
   });
