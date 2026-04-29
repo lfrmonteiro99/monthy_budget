@@ -27,8 +27,19 @@ class MealPlannerService {
   MealPlannerService({MealPlanRepository? repository})
     : _repository = repository;
 
-  MealPlanRepository get _mealPlanRepository =>
-      _repository ??= SupabaseMealPlanRepository();
+  MealPlanRepository get _mealPlanRepository {
+    final existing = _repository;
+    if (existing != null) return existing;
+    // SupabaseMealPlanRepository touches Supabase.instance in its initializer
+    // list, which throws AssertionError when Supabase isn't configured (e.g.
+    // widget tests, offline boot). Fall back to a stub so callers can still
+    // hit the cache + bundled-asset tiers.
+    try {
+      return _repository = SupabaseMealPlanRepository();
+    } catch (_) {
+      return _repository = _OfflineMealPlanRepository();
+    }
+  }
 
   /// Loads the recipe catalog using a three-tier strategy:
   /// 1. Supabase (remote, authoritative)
@@ -1313,4 +1324,22 @@ class MealPlannerService {
     final key = 'meal_plan_previous_${month}_$year';
     await prefs.remove(key);
   }
+}
+
+/// Stub repository used when Supabase isn't initialized (widget tests, offline
+/// boot before runtime config). Returns empty data so callers can fall through
+/// to the cache / bundled-asset tiers without hitting an AssertionError.
+class _OfflineMealPlanRepository implements MealPlanRepository {
+  @override
+  Future<List<Map<String, dynamic>>> loadRecipeRows() async => const [];
+
+  @override
+  Future<MealPlan?> loadPlan(String householdId, int month, int year) async =>
+      null;
+
+  @override
+  Future<void> savePlan(MealPlan plan, String householdId) async {}
+
+  @override
+  Future<void> clearPlan(String householdId, int month, int year) async {}
 }
