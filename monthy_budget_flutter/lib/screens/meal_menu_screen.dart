@@ -74,14 +74,23 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
   }
 
   Future<void> _load() async {
-    await _service.loadCatalog();
-    final now = DateTime.now();
-    final saved = await _service.load(widget.householdId, now.month, now.year);
-    if (!mounted) return;
-    setState(() {
-      _plan = saved;
-      _loading = false;
-    });
+    try {
+      await _service.loadCatalog();
+      final now = DateTime.now();
+      final saved =
+          await _service.load(widget.householdId, now.month, now.year);
+      if (!mounted) return;
+      setState(() {
+        _plan = saved;
+        _loading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _plan = null;
+        _loading = false;
+      });
+    }
   }
 
   // ── Grid cell text ──────────────────────────────────────────────────────
