@@ -28,36 +28,25 @@ void main() {
     );
   }
 
-  testWidgets('Plan & Shop screen shows three tabs', (tester) async {
+  testWidgets('Plan & Shop hub renders the page header and three tiles',
+      (tester) async {
     await tester.pumpWidget(wrapWithTestApp(buildScreen()));
     await tester.pumpAndSettle();
 
-    // Should show the three tab labels
-    expect(find.text('Shopping List'), findsOneWidget);
-    expect(find.text('Grocery'), findsOneWidget);
-    expect(find.text('Meal Planner'), findsOneWidget);
+    // Page header title (Calm rewrite — was a 3-tab TabBar before #951).
+    expect(find.text('Plano & compras'), findsOneWidget);
+
+    // Three navigation tiles (CalmTile labels).
+    expect(find.text('Lista'), findsOneWidget);
+    expect(find.text('Ementa'), findsOneWidget);
+    expect(find.text('Despensa'), findsOneWidget);
   });
 
-  testWidgets('Plan & Shop screen switches tabs on tap', (tester) async {
+  testWidgets('Plan & Shop hub shows the weekly budget eyebrow',
+      (tester) async {
     await tester.pumpWidget(wrapWithTestApp(buildScreen()));
     await tester.pumpAndSettle();
 
-    // Default tab is Shopping List — verify it's visible
-    expect(find.text('Shopping List'), findsOneWidget);
-
-    // Tap on Grocery tab — this is safe because GroceryScreen does not
-    // require Supabase initialization.
-    await tester.tap(find.text('Grocery'));
-    await tester.pumpAndSettle();
-
-    // All three tab headers should still be visible after switching.
-    expect(find.text('Shopping List'), findsOneWidget);
-    expect(find.text('Grocery'), findsOneWidget);
-    expect(find.text('Meal Planner'), findsOneWidget);
-
-    // NOTE: Switching to the Meal Planner tab is not tested here because
-    // MealPlannerScreen eagerly creates MealPlannerAiService which calls
-    // Supabase.instance in its constructor, causing an assertion failure
-    // in test environments where Supabase is not initialized.
+    expect(find.text('ORÇAMENTO SEMANAL'), findsOneWidget);
   });
 }
