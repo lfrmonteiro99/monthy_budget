@@ -10,8 +10,93 @@ import '../utils/calculations.dart';
 import '../utils/formatters.dart';
 import '../constants/app_constants.dart';
 import '../theme/app_colors.dart';
-import '../theme/app_theme.dart';
 
+// ── Progress bar (4 px, ≤ 30 LoC) ───────────────────────────────────────────
+class _WizardProgress extends StatelessWidget {
+  final int current;
+  final int total;
+  const _WizardProgress({required this.current, required this.total});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 4,
+      child: LinearProgressIndicator(
+        value: total > 0 ? current / total : 0,
+        backgroundColor: AppColors.line(context),
+        valueColor: AlwaysStoppedAnimation<Color>(AppColors.accent(context)),
+        minHeight: 4,
+      ),
+    );
+  }
+}
+
+// ── Bottom CTA row ────────────────────────────────────────────────────────────
+class _WizardBottomRow extends StatelessWidget {
+  final String primaryLabel;
+  final VoidCallback onPrimary;
+  final VoidCallback? onBack;
+
+  const _WizardBottomRow({
+    required this.primaryLabel,
+    required this.onPrimary,
+    this.onBack,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+        child: Row(
+          children: [
+            if (onBack != null) ...[
+              Expanded(
+                child: SizedBox(
+                  height: 52,
+                  child: OutlinedButton(
+                    onPressed: onBack,
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: AppColors.ink20(context)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    child: const Text('Anterior'), // TODO(l10n):
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+            ],
+            Expanded(
+              flex: onBack != null ? 2 : 1,
+              child: SizedBox(
+                height: 52,
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: onPrimary,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.ink(context),
+                    foregroundColor: AppColors.inkInverse(context),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  child: Text(primaryLabel,
+                      style: const TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.w600)),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Root wizard widget ────────────────────────────────────────────────────────
 class SetupWizardScreen extends StatefulWidget {
   final AppSettings initial;
   final ValueChanged<AppSettings> onComplete;
@@ -30,12 +115,11 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
   late AppSettings _draft;
   int _step = 0; // 0=welcome+country, 1=salary+expenses, 2=completion
   late PageController _pageController;
-  static const _dataSteps = 2; // for progress display (steps 1-2)
 
-  // Expense controllers for step 4
+  // Expense controllers for step 1
   final _expenseControllers = <String, TextEditingController>{};
 
-  // Salary controller for step 3
+  // Salary controller for step 1
   final _salaryController = TextEditingController();
 
   // Meal allowance controller
@@ -126,7 +210,6 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
   }
 
   void _finishExpenses() {
-    // Build expense items from controllers
     final l10nKeys = _expenseKeyOrder();
     final expenses = <ExpenseItem>[];
     for (final key in l10nKeys) {
@@ -207,36 +290,13 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final showAppBar = _step >= 1 && _step <= _dataSteps;
     return CalmScaffold(
-      title: showAppBar
-          ? S.of(context).setupWizardStepOf(_step, _dataSteps)
-          : null,
-      leading: showAppBar
-          ? IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: _back,
-            )
-          : null,
-      bottom: showAppBar
-          ? PreferredSize(
-              preferredSize: const Size.fromHeight(6),
-              child: LinearProgressIndicator(
-                value: _step / _dataSteps,
-                backgroundColor: AppColors.border(context),
-                color: AppColors.primary(context),
-                minHeight: 6,
-              ),
-            )
-          : null,
-      // Steps lay out their own padding/SafeArea; opt out of CalmScaffold's
-      // 20px horizontal so PageView keeps full width.
       bodyPadding: EdgeInsets.zero,
       body: PageView(
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(),
         children: [
-          // Step 0: Welcome message + Country selection (combined)
+          // Step 0: Welcome message + Country selection
           _WelcomeAndCountryStep(
             draft: _draft,
             onChanged: (d) {
@@ -250,7 +310,7 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
             onNext: _next,
             onSkip: _skipAll,
           ),
-          // Step 1: Salary + Expenses (combined, personal info deferred to Settings)
+          // Step 1: Salary + Expenses
           _SalaryAndExpensesStep(
             draft: _draft,
             onChanged: (d) => setState(() => _draft = d),
@@ -260,15 +320,14 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
             expenseKeyOrder: _expenseKeyOrder(),
             expenseIcon: _expenseIcon,
             expenseLabel: (key) => _expenseL10nLabel(S.of(context), key),
-            onFinish: () {
-              _finishExpenses();
-            },
-            onSkip: _next,
+            onFinish: _finishExpenses,
+            onBack: _back,
           ),
           // Step 2: Completion
           _CompletionStep(
             draft: _draft,
             onGoToDashboard: _finish,
+            onBack: _back,
           ),
         ],
       ),
@@ -276,389 +335,8 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
   }
 }
 
-class _BulletRow extends StatelessWidget {
-  final IconData icon;
-  final String text;
-  const _BulletRow({required this.icon, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 20, color: AppColors.primary(context)),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(text,
-              style: TextStyle(
-                  fontSize: 14, color: AppColors.textSecondary(context))),
-        ),
-      ],
-    );
-  }
-}
-
 // ============================================================
-// Screen 5 -- Completion
-// ============================================================
-class _CompletionStep extends StatefulWidget {
-  final AppSettings draft;
-  final VoidCallback onGoToDashboard;
-
-  const _CompletionStep({
-    required this.draft,
-    required this.onGoToDashboard,
-  });
-
-  @override
-  State<_CompletionStep> createState() => _CompletionStepState();
-}
-
-class _CompletionStepState extends State<_CompletionStep>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animController;
-  late Animation<double> _scaleAnim;
-
-  @override
-  void initState() {
-    super.initState();
-    _animController = AnimationController(
-      vsync: this,
-      duration: AppConstants.animBounce,
-    );
-    _scaleAnim = CurvedAnimation(
-      parent: _animController,
-      curve: Curves.elasticOut,
-    );
-    _animController.forward();
-  }
-
-  @override
-  void dispose() {
-    _animController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = S.of(context);
-    final draft = widget.draft;
-
-    // Compute summary
-    final taxSystem = getTaxSystem(draft.country);
-    final summary = calculateBudgetSummary(
-      draft.salaries,
-      draft.personalInfo,
-      draft.expenses,
-      taxSystem,
-    );
-
-    final hasSalary =
-        draft.salaries.isNotEmpty && draft.salaries[0].grossAmount > 0;
-    final available = summary.netLiquidity;
-    final availableColor =
-        available >= 0 ? AppColors.ok(context) : AppColors.bad(context);
-
-    final countryFlags = {
-      Country.pt: '🇵🇹',
-      Country.es: '🇪🇸',
-      Country.fr: '🇫🇷',
-      Country.uk: '🇬🇧',
-    };
-
-    String countryName(Country c) {
-      switch (c) {
-        case Country.pt: return l10n.setupWizardCountryPT;
-        case Country.es: return l10n.setupWizardCountryES;
-        case Country.fr: return l10n.setupWizardCountryFR;
-        case Country.uk: return l10n.setupWizardCountryUK;
-      }
-    }
-
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 28),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Spacer(flex: 2),
-            ScaleTransition(
-              scale: _scaleAnim,
-              child: Container(
-                width: 72,
-                height: 72,
-                decoration: BoxDecoration(
-                  color: AppColors.successBackground(context),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(Icons.check_circle,
-                    size: 48, color: AppColors.ok(context)),
-              ),
-            ),
-            const SizedBox(height: 24),
-            Text(l10n.setupWizardCompleteTitle,
-                style: CalmText.display(context, size: 28),
-                textAlign: TextAlign.center),
-            const SizedBox(height: 24),
-            // Summary card
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.surface(context),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppColors.border(context)),
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Text(countryFlags[draft.country] ?? '',
-                          style: const TextStyle(fontSize: 20)),
-                      const SizedBox(width: 8),
-                      Text(countryName(draft.country),
-                          style: const TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w600)),
-                    ],
-                  ),
-                  const Divider(height: 20),
-                  if (hasSalary) ...[
-                    _SummaryRow(
-                      label: l10n.setupWizardNetLabel('').replaceAll(': ', ''),
-                      value: formatCurrency(summary.totalNetWithMeal),
-                    ),
-                    const SizedBox(height: 6),
-                    _SummaryRow(
-                      label: l10n.setupWizardTotalExpenses('').replaceAll(': ', ''),
-                      value: formatCurrency(summary.totalExpenses),
-                    ),
-                    const SizedBox(height: 6),
-                    _SummaryRow(
-                      label: l10n.setupWizardAvailableLabel('').replaceAll(': ', ''),
-                      value: formatCurrency(available),
-                      valueColor: availableColor,
-                      bold: true,
-                    ),
-                  ] else ...[
-                    Text(l10n.setupWizardConfigureSalaryHint,
-                        style: TextStyle(
-                            fontSize: 13, color: AppColors.textSecondary(context)),
-                        textAlign: TextAlign.center),
-                  ],
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(l10n.setupWizardCompleteReassurance,
-                style: TextStyle(fontSize: 12, color: AppColors.textMuted(context)),
-                textAlign: TextAlign.center),
-            const Spacer(flex: 3),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: widget.onGoToDashboard,
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primary(context),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-                child: Text(l10n.setupWizardGoToDashboard,
-                    style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.w600)),
-              ),
-            ),
-            const SizedBox(height: 24),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ============================================================
-// Shared widgets
-// ============================================================
-
-class _BottomButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onPressed;
-  const _BottomButton({required this.label, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
-        child: SizedBox(
-          width: double.infinity,
-          child: FilledButton(
-            onPressed: onPressed,
-            style: FilledButton.styleFrom(
-              backgroundColor: AppColors.primary(context),
-              padding: const EdgeInsets.symmetric(vertical: 14),
-            ),
-            child: Text(label,
-                style:
-                    const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _SelectionCard extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _SelectionCard({
-    required this.label,
-    required this.icon,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: selected ? AppColors.infoBackground(context) : AppColors.surface(context),
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: selected
-                  ? AppColors.primary(context)
-                  : AppColors.border(context),
-              width: selected ? 2 : 1,
-            ),
-          ),
-          child: Column(
-            children: [
-              Icon(icon,
-                  size: 28,
-                  color: selected
-                      ? AppColors.primary(context)
-                      : AppColors.textMuted(context)),
-              const SizedBox(height: 8),
-              Text(label,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight:
-                        selected ? FontWeight.w600 : FontWeight.w400,
-                    color: selected
-                        ? AppColors.textPrimary(context)
-                        : AppColors.textLabel(context),
-                  )),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CounterButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback? onPressed;
-  const _CounterButton({required this.icon, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: onPressed != null ? AppColors.surface(context) : AppColors.surfaceVariant(context),
-      borderRadius: BorderRadius.circular(8),
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          width: 36,
-          height: 36,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: AppColors.border(context)),
-          ),
-          child: Icon(icon,
-              size: 18,
-              color: onPressed != null
-                  ? AppColors.textLabel(context)
-                  : AppColors.borderMuted(context)),
-        ),
-      ),
-    );
-  }
-}
-
-class _InfoBox extends StatelessWidget {
-  final String text;
-  const _InfoBox({required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.infoBackground(context),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.primaryLight(context)),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.info_outline,
-              size: 16, color: AppColors.primary(context)),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(text,
-                style: TextStyle(
-                    fontSize: 12, color: AppColors.primary(context))),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SummaryRow extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color? valueColor;
-  final bool bold;
-
-  const _SummaryRow({
-    required this.label,
-    required this.value,
-    this.valueColor,
-    this.bold = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(label,
-            style: TextStyle(
-              fontSize: 13,
-              color: AppColors.textSecondary(context),
-              fontWeight: bold ? FontWeight.w600 : FontWeight.w400,
-            )),
-        Text(value,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: bold ? FontWeight.w700 : FontWeight.w500,
-              color: valueColor ?? AppColors.textPrimary(context),
-            )),
-      ],
-    );
-  }
-}
-
-// ============================================================
-// Combined Step 0 — Welcome + Country (simplified onboarding)
+// Step 0 — Welcome + Country
 // ============================================================
 class _WelcomeAndCountryStep extends StatelessWidget {
   final AppSettings draft;
@@ -702,122 +380,131 @@ class _WelcomeAndCountryStep extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     final appShell = AppShellScope.of(context);
-    return SafeArea(
-      child: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
-              children: [
-                const SizedBox(height: 12),
-                Icon(Icons.account_balance_wallet_outlined,
-                    size: 56, color: AppColors.primary(context)),
-                const SizedBox(height: 16),
-                Text(
-                  l10n.setupWizardWelcomeTitle,
-                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  l10n.setupWizardWelcomeSubtitle,
-                  style: TextStyle(fontSize: 14, color: AppColors.textSecondary(context)),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 28),
-                Text(l10n.setupWizardCountryTitle,
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-                const SizedBox(height: 12),
-                ..._countries.map((entry) {
-                  final (country, flag) = entry;
-                  final selected = draft.country == country;
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Material(
-                      color: selected ? AppColors.infoBackground(context) : AppColors.surface(context),
-                      borderRadius: BorderRadius.circular(12),
-                      child: InkWell(
-                        onTap: () {
-                          final newLocale = _localeForCountry(country);
-                          onChanged(draft.copyWith(
-                            country: country,
-                            localeOverride: newLocale,
-                          ));
-                          appShell.setLocaleCode(newLocale);
-                        },
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 12),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: selected
-                                  ? AppColors.primary(context)
-                                  : AppColors.border(context),
-                              width: selected ? 2 : 1,
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Text(flag, style: const TextStyle(fontSize: 22)),
-                              const SizedBox(width: 12),
-                              Text(_countryName(l10n, country),
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: selected
-                                        ? FontWeight.w600
-                                        : FontWeight.w400,
-                                  )),
-                              const Spacer(),
-                              Icon(
-                                selected
-                                    ? Icons.radio_button_checked
-                                    : Icons.radio_button_unchecked,
-                                color: selected
-                                    ? AppColors.primary(context)
-                                    : AppColors.borderMuted(context),
-                                size: 20,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(28, 0, 28, 8),
-            child: SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: onNext,
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primary(context),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-                child: Text(l10n.setupWizardContinue,
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+    return Column(
+      children: [
+        // Progress bar: step 0 of 2
+        _WizardProgress(current: 0, total: 2),
+        CalmPageHeader(
+          eyebrow: 'PASSO 1 · 3', // TODO(l10n):
+          title: l10n.setupWizardWelcomeTitle,
+          showBack: false,
+        ),
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            children: [
+              Text(
+                l10n.setupWizardWelcomeSubtitle,
+                style: TextStyle(fontSize: 14, color: AppColors.ink70(context)),
               ),
-            ),
+              const SizedBox(height: 24),
+              CalmCard(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.setupWizardCountryTitle,
+                        style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.ink(context))),
+                    const SizedBox(height: 12),
+                    ..._countries.map((entry) {
+                      final (country, flag) = entry;
+                      final selected = draft.country == country;
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: _CountryTile(
+                          flag: flag,
+                          label: _countryName(l10n, country),
+                          selected: selected,
+                          onTap: () {
+                            final newLocale = _localeForCountry(country);
+                            onChanged(draft.copyWith(
+                              country: country,
+                              localeOverride: newLocale,
+                            ));
+                            appShell.setLocaleCode(newLocale);
+                          },
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: onSkip,
-            child: Text(l10n.setupWizardSkipAll,
-                style: TextStyle(fontSize: 13, color: AppColors.textMuted(context))),
+        ),
+        _WizardBottomRow(
+          primaryLabel: l10n.setupWizardContinue,
+          onPrimary: onNext,
+        ),
+        TextButton(
+          onPressed: onSkip,
+          child: Text(l10n.setupWizardSkipAll,
+              style: TextStyle(fontSize: 13, color: AppColors.ink50(context))),
+        ),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+}
+
+// ── Country tile (replaces Container-based inline widget) ──────────────────
+class _CountryTile extends StatelessWidget {
+  final String flag;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _CountryTile({
+    required this.flag,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: selected ? AppColors.accentSoft(context) : AppColors.card(context),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              Text(flag, style: const TextStyle(fontSize: 22)),
+              const SizedBox(width: 12),
+              Text(label,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight:
+                        selected ? FontWeight.w600 : FontWeight.w400,
+                    color: AppColors.ink(context),
+                  )),
+              const Spacer(),
+              Icon(
+                selected
+                    ? Icons.radio_button_checked
+                    : Icons.radio_button_unchecked,
+                color: selected
+                    ? AppColors.accent(context)
+                    : AppColors.ink20(context),
+                size: 20,
+              ),
+            ],
           ),
-          const SizedBox(height: 8),
-        ],
+        ),
       ),
     );
   }
 }
 
 // ============================================================
-// Combined Step 1 — Salary + Expenses (simplified onboarding)
+// Step 1 — Salary + Expenses
 // ============================================================
 class _SalaryAndExpensesStep extends StatelessWidget {
   final AppSettings draft;
@@ -829,7 +516,7 @@ class _SalaryAndExpensesStep extends StatelessWidget {
   final IconData Function(String key) expenseIcon;
   final String Function(String key) expenseLabel;
   final VoidCallback onFinish;
-  final VoidCallback onSkip;
+  final VoidCallback onBack;
   final _formKey = GlobalKey<FormState>();
 
   _SalaryAndExpensesStep({
@@ -842,7 +529,7 @@ class _SalaryAndExpensesStep extends StatelessWidget {
     required this.expenseIcon,
     required this.expenseLabel,
     required this.onFinish,
-    required this.onSkip,
+    required this.onBack,
   });
 
   @override
@@ -854,136 +541,336 @@ class _SalaryAndExpensesStep extends StatelessWidget {
       key: _formKey,
       child: Column(
         children: [
+          // Progress bar: step 1 of 2
+          _WizardProgress(current: 1, total: 2),
+          CalmPageHeader(
+            eyebrow: 'PASSO 2 · 3', // TODO(l10n):
+            title: l10n.setupWizardSalaryTitle,
+            showBack: false,
+          ),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               children: [
-                Text(l10n.setupWizardSalaryTitle,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
-                const SizedBox(height: 6),
                 Text(l10n.setupWizardSalarySubtitle,
-                    style: TextStyle(fontSize: 14, color: AppColors.textSecondary(context))),
+                    style: TextStyle(
+                        fontSize: 14, color: AppColors.ink70(context))),
                 const SizedBox(height: 16),
-                TextFormField(
-                  controller: salaryController,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[\d.,]')),
-                  ],
-                  decoration: InputDecoration(
-                    labelText: l10n.setupWizardSalaryGross,
+                // ── Salary card ──────────────────────────────────────
+                CalmEyebrow('RENDIMENTO'), // TODO(l10n):
+                const SizedBox(height: 8),
+                CalmCard(
+                  padding: const EdgeInsets.all(16),
+                  child: CalmTextField(
+                    controller: salaryController,
+                    label: l10n.setupWizardSalaryGross,
                     prefixText: '${country.currencySymbol} ',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: AppColors.border(context)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: AppColors.primary(context), width: 2),
-                    ),
-                  ),
-                  onChanged: (v) {
-                    final amount = double.tryParse(v.replaceAll(',', '.')) ?? 0;
-                    if (amount > 0) {
-                      final salaries = List<SalaryInfo>.from(
-                          draft.salaries.isEmpty
-                              ? [SalaryInfo(grossAmount: amount)]
-                              : [draft.salaries[0].copyWith(grossAmount: amount)]);
-                      onChanged(draft.copyWith(salaries: salaries));
-                    }
-                  },
-                ),
-                const SizedBox(height: 24),
-                // Expenses section
-                Text(l10n.setupWizardExpensesTitle,
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-                const SizedBox(height: 6),
-                Text(l10n.setupWizardExpensesSubtitle,
-                    style: TextStyle(fontSize: 13, color: AppColors.textSecondary(context))),
-                const SizedBox(height: 12),
-                ...expenseKeyOrder.map((key) {
-                  final ctrl = expenseControllers[key]!;
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Row(
-                      children: [
-                        Icon(expenseIcon(key), size: 20, color: AppColors.primary(context)),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          flex: 3,
-                          child: Text(expenseLabel(key),
-                              style: const TextStyle(fontSize: 14)),
-                        ),
-                        const SizedBox(width: 8),
-                        SizedBox(
-                          width: 100,
-                          child: TextFormField(
-                            controller: ctrl,
-                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(RegExp(r'[\d.,]')),
-                            ],
-                            textAlign: TextAlign.end,
-                            style: const TextStyle(fontSize: 14),
-                            decoration: InputDecoration(
-                              prefixText: '${country.currencySymbol} ',
-                              prefixStyle: TextStyle(
-                                  fontSize: 13, color: AppColors.textMuted(context)),
-                              contentPadding:
-                                  const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8)),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide(color: AppColors.border(context)),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-            child: Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: onSkip,
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                    ),
-                    child: Text(l10n.setupWizardSkipAll),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  flex: 2,
-                  child: FilledButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        onFinish();
+                    keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[\d.,]')),
+                    ],
+                    onChanged: (v) {
+                      final amount =
+                          double.tryParse(v.replaceAll(',', '.')) ?? 0;
+                      if (amount > 0) {
+                        final salaries = List<SalaryInfo>.from(
+                            draft.salaries.isEmpty
+                                ? [SalaryInfo(grossAmount: amount)]
+                                : [
+                                    draft.salaries[0]
+                                        .copyWith(grossAmount: amount)
+                                  ]);
+                        onChanged(draft.copyWith(salaries: salaries));
                       }
                     },
-                    style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.primary(context),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                    ),
-                    child: Text(l10n.setupWizardContinue,
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
                   ),
                 ),
+                const SizedBox(height: 20),
+                // ── Expenses card ────────────────────────────────────
+                CalmEyebrow('DESPESAS MENSAIS'), // TODO(l10n):
+                const SizedBox(height: 8),
+                CalmCard(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l10n.setupWizardExpensesTitle,
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.ink(context))),
+                      const SizedBox(height: 4),
+                      Text(l10n.setupWizardExpensesSubtitle,
+                          style: TextStyle(
+                              fontSize: 13, color: AppColors.ink50(context))),
+                      const SizedBox(height: 12),
+                      ...expenseKeyOrder.map((key) {
+                        final ctrl = expenseControllers[key]!;
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Row(
+                            children: [
+                              Icon(expenseIcon(key),
+                                  size: 20, color: AppColors.accent(context)),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                flex: 3,
+                                child: Text(expenseLabel(key),
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: AppColors.ink(context))),
+                              ),
+                              const SizedBox(width: 8),
+                              SizedBox(
+                                width: 110,
+                                child: CalmTextField(
+                                  controller: ctrl,
+                                  keyboardType:
+                                      const TextInputType.numberWithOptions(
+                                          decimal: true),
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp(r'[\d.,]')),
+                                  ],
+                                  prefixText: '${country.currencySymbol} ',
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
               ],
             ),
           ),
-          const SizedBox(height: 8),
+          _WizardBottomRow(
+            primaryLabel: l10n.setupWizardContinue,
+            onPrimary: () {
+              if (_formKey.currentState!.validate()) {
+                onFinish();
+              }
+            },
+            onBack: onBack,
+          ),
         ],
       ),
+    );
+  }
+}
+
+// ============================================================
+// Step 2 — Completion
+// ============================================================
+class _CompletionStep extends StatefulWidget {
+  final AppSettings draft;
+  final VoidCallback onGoToDashboard;
+  final VoidCallback onBack;
+
+  const _CompletionStep({
+    required this.draft,
+    required this.onGoToDashboard,
+    required this.onBack,
+  });
+
+  @override
+  State<_CompletionStep> createState() => _CompletionStepState();
+}
+
+class _CompletionStepState extends State<_CompletionStep>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animController;
+  late Animation<double> _scaleAnim;
+
+  @override
+  void initState() {
+    super.initState();
+    _animController = AnimationController(
+      vsync: this,
+      duration: AppConstants.animBounce,
+    );
+    _scaleAnim = CurvedAnimation(
+      parent: _animController,
+      curve: Curves.elasticOut,
+    );
+    _animController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = S.of(context);
+    final draft = widget.draft;
+
+    final taxSystem = getTaxSystem(draft.country);
+    final summary = calculateBudgetSummary(
+      draft.salaries,
+      draft.personalInfo,
+      draft.expenses,
+      taxSystem,
+    );
+
+    final hasSalary =
+        draft.salaries.isNotEmpty && draft.salaries[0].grossAmount > 0;
+    final available = summary.netLiquidity;
+    final availableColor =
+        available >= 0 ? AppColors.ok(context) : AppColors.bad(context);
+
+    final countryFlags = {
+      Country.pt: '🇵🇹',
+      Country.es: '🇪🇸',
+      Country.fr: '🇫🇷',
+      Country.uk: '🇬🇧',
+    };
+
+    String countryName(Country c) {
+      switch (c) {
+        case Country.pt: return l10n.setupWizardCountryPT;
+        case Country.es: return l10n.setupWizardCountryES;
+        case Country.fr: return l10n.setupWizardCountryFR;
+        case Country.uk: return l10n.setupWizardCountryUK;
+      }
+    }
+
+    return Column(
+      children: [
+        // Progress bar: step 2 of 2 (complete)
+        _WizardProgress(current: 2, total: 2),
+        CalmPageHeader(
+          eyebrow: 'PASSO 3 · 3', // TODO(l10n):
+          title: l10n.setupWizardCompleteTitle,
+          showBack: false,
+        ),
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            children: [
+              const SizedBox(height: 8),
+              Center(
+                child: ScaleTransition(
+                  scale: _scaleAnim,
+                  child: CircleAvatar(
+                    radius: 36,
+                    backgroundColor: AppColors.successBackground(context),
+                    child: Icon(Icons.check_circle,
+                        size: 40, color: AppColors.ok(context)),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              // Summary card
+              CalmCard(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(countryFlags[draft.country] ?? '',
+                            style: const TextStyle(fontSize: 20)),
+                        const SizedBox(width: 8),
+                        Text(countryName(draft.country),
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.ink(context))),
+                      ],
+                    ),
+                    Divider(height: 20, color: AppColors.line(context)),
+                    if (hasSalary) ...[
+                      _SummaryRow(
+                        label: l10n
+                            .setupWizardNetLabel('')
+                            .replaceAll(': ', ''),
+                        value: formatCurrency(summary.totalNetWithMeal),
+                      ),
+                      const SizedBox(height: 6),
+                      _SummaryRow(
+                        label: l10n
+                            .setupWizardTotalExpenses('')
+                            .replaceAll(': ', ''),
+                        value: formatCurrency(summary.totalExpenses),
+                      ),
+                      const SizedBox(height: 6),
+                      _SummaryRow(
+                        label: l10n
+                            .setupWizardAvailableLabel('')
+                            .replaceAll(': ', ''),
+                        value: formatCurrency(available),
+                        valueColor: availableColor,
+                        bold: true,
+                      ),
+                    ] else ...[
+                      Text(l10n.setupWizardConfigureSalaryHint,
+                          style: TextStyle(
+                              fontSize: 13,
+                              color: AppColors.ink50(context)),
+                          textAlign: TextAlign.center),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(l10n.setupWizardCompleteReassurance,
+                  style:
+                      TextStyle(fontSize: 12, color: AppColors.ink50(context)),
+                  textAlign: TextAlign.center),
+            ],
+          ),
+        ),
+        _WizardBottomRow(
+          primaryLabel: l10n.setupWizardGoToDashboard, // "Concluir"-equiv.
+          onPrimary: widget.onGoToDashboard,
+          onBack: widget.onBack,
+        ),
+      ],
+    );
+  }
+}
+
+// ============================================================
+// Shared helpers
+// ============================================================
+
+class _SummaryRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color? valueColor;
+  final bool bold;
+
+  const _SummaryRow({
+    required this.label,
+    required this.value,
+    this.valueColor,
+    this.bold = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label,
+            style: TextStyle(
+              fontSize: 13,
+              color: AppColors.ink70(context),
+              fontWeight: bold ? FontWeight.w600 : FontWeight.w400,
+            )),
+        Text(value,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: bold ? FontWeight.w700 : FontWeight.w500,
+              color: valueColor ?? AppColors.ink(context),
+            )),
+      ],
     );
   }
 }
