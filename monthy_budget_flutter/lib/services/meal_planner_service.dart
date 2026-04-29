@@ -644,19 +644,6 @@ class MealPlannerService {
           if (veg.isNotEmpty) pool = veg;
         }
 
-        // Pantry-first boost: soft-sort recipes by pantry ingredient count (desc)
-        if (pantryIds.isNotEmpty) {
-          pool.sort((a, b) {
-            final aCount = a.ingredients
-                .where((ri) => pantryIds.contains(ri.ingredientId))
-                .length;
-            final bCount = b.ingredients
-                .where((ri) => pantryIds.contains(ri.ingredientId))
-                .length;
-            return bCount.compareTo(aCount); // more pantry matches first
-          });
-        }
-
         // Sort by objective
         if (ms.objective == MealObjective.minimizeCost ||
             ms.prioritizeLowCost) {
@@ -872,6 +859,37 @@ class MealPlannerService {
         if (ms.objective != MealObjective.minimizeCost) {
           available.shuffle(rng);
         }
+
+        // Pantry-first boost: prefer recipes whose ingredients overlap with
+        // the pantry. Applied AFTER shuffle so the bias survives randomization.
+        // Placed before favorites/feedback/taste so stronger user signals can
+        // still override.
+        if (pantryIds.isNotEmpty && available.length > 1) {
+          int pantryMatchCount(Recipe r) {
+            var c = 0;
+            for (final ri in r.ingredients) {
+              if (pantryIds.contains(ri.ingredientId)) c++;
+            }
+            return c;
+          }
+
+          final boosted = <Recipe>[];
+          final pantryRest = <Recipe>[];
+          for (final r in available) {
+            if (pantryMatchCount(r) > 0) {
+              boosted.add(r);
+            } else {
+              pantryRest.add(r);
+            }
+          }
+          if (boosted.isNotEmpty && boosted.length < available.length) {
+            boosted.sort(
+              (a, b) => pantryMatchCount(b).compareTo(pantryMatchCount(a)),
+            );
+            available = [...boosted, ...pantryRest];
+          }
+        }
+
         if (favorites.isNotEmpty) {
           final favs = <Recipe>[];
           final rest = <Recipe>[];
