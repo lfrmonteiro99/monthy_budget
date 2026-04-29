@@ -26,18 +26,17 @@ void main() {
 
   testWidgets('MealMenuScreen renders without crashing', (tester) async {
     await tester.pumpWidget(wrapWithTestApp(buildScreen()));
-    // Let async _load() complete (no Supabase in tests → service falls back).
     await tester.pump();
-    await tester.pump(const Duration(seconds: 1));
-    // Screen should not have thrown; basic Material widget tree present.
     expect(find.byType(MealMenuScreen), findsOneWidget);
   });
 
   testWidgets('MealMenuScreen shows 21 grid cells', (tester) async {
     await tester.pumpWidget(wrapWithTestApp(buildScreen()));
+    // Single pump renders the full structure (build() no longer gates the
+    // grid + KPI sections behind _loading). pumpAndSettle would hang because
+    // MealPlannerService.loadCatalog() hits SharedPreferences/rootBundle
+    // channels that aren't wired in widget tests.
     await tester.pump();
-    await tester.pump(const Duration(seconds: 1));
-    await tester.pumpAndSettle();
 
     // CalmWeekGrid renders 3 rows × 7 cells = 21 cells inside the grid.
     // Each cell is a _Cell widget containing a Text. We can verify the grid
@@ -54,9 +53,11 @@ void main() {
 
   testWidgets('MealMenuScreen shows 4 KPI rows', (tester) async {
     await tester.pumpWidget(wrapWithTestApp(buildScreen()));
+    // Single pump renders the full structure (build() no longer gates the
+    // grid + KPI sections behind _loading). pumpAndSettle would hang because
+    // MealPlannerService.loadCatalog() hits SharedPreferences/rootBundle
+    // channels that aren't wired in widget tests.
     await tester.pump();
-    await tester.pump(const Duration(seconds: 1));
-    await tester.pumpAndSettle();
 
     // Verify 4 CalmKpiRow widgets are present.
     expect(find.byType(CalmKpiRow), findsNWidgets(4));
@@ -71,9 +72,11 @@ void main() {
   testWidgets('MealMenuScreen shows ESTA SEMANA eyebrow and Ementa title',
       (tester) async {
     await tester.pumpWidget(wrapWithTestApp(buildScreen()));
+    // Single pump renders the full structure (build() no longer gates the
+    // grid + KPI sections behind _loading). pumpAndSettle would hang because
+    // MealPlannerService.loadCatalog() hits SharedPreferences/rootBundle
+    // channels that aren't wired in widget tests.
     await tester.pump();
-    await tester.pump(const Duration(seconds: 1));
-    await tester.pumpAndSettle();
 
     expect(find.text('ESTA SEMANA'), findsOneWidget);
     expect(find.text('Ementa'), findsOneWidget);

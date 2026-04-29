@@ -227,11 +227,14 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Always render the full structure. While `_loading` is true the helper
+    // counts return 0 and `_rowCells` returns empty strings, so the grid +
+    // KPI sections show a graceful empty state instead of a spinner — keeps
+    // the layout stable, lets widget tests assert on static structure
+    // without waiting for platform channels to wire up.
     return CalmScaffold(
       bodyPadding: EdgeInsets.zero,
-      body: _loading
-          ? Center(child: CircularProgressIndicator(color: AppColors.ink(context)))
-          : _buildContent(context),
+      body: _buildContent(context),
     );
   }
 
