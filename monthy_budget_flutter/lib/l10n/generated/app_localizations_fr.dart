@@ -4250,6 +4250,19 @@ class SFr extends S {
       'Suivre et mettre a jour la progression des objectifs';
 
   @override
+  String get moreCoachSubtitle => 'Conseils personnalises sur ton budget';
+
+  @override
+  String get moreYearlySummarySubtitle =>
+      'Vue d\'ensemble annuelle et tendances mensuelles';
+
+  @override
+  String get navMore => 'Plus';
+
+  @override
+  String get navMoreTip => 'Paramètres et analyses';
+
+  @override
   String get moreNotificationsSubtitle => 'Budgets, factures et rappels';
 
   @override
@@ -4628,12 +4641,6 @@ class SFr extends S {
 
   @override
   String get navPlanAndShopTip => 'Liste de courses, épicerie et repas';
-
-  @override
-  String get navMore => 'Plus';
-
-  @override
-  String get navMoreTip => 'Paramètres et analyses';
 
   @override
   String get paywallContinueFree => 'Continuer gratuitement';

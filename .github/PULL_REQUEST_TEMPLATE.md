@@ -33,6 +33,20 @@ Fixes #<NUM>
 - [ ] Nenhuma string hard-coded de UI nova fora de `app_pt.arb` (excepção: debug-only)
 - [ ] Sem novos packages no `pubspec.yaml` (se adicionado, justifica em comment)
 
+### Regressão funcional (verificar à mão antes de qualquer check visual)
+
+> **Gate crítico para passes Calm e refactors estruturais.** A density audit só verifica tokens — não apanha botões que viram decorações nem destinos que deixam de ter call-site na UI. Cada caixa não marcada = motivo para bloquear merge.
+
+- [ ] **Todos os botões/widgets interactivos antes do PR continuam interactivos** — nenhum `onTap`/`onPressed`/`onChanged` desapareceu silenciosamente; nenhum `InkWell`/`GestureDetector` foi substituído por `Container`/`Card` sem handler
+- [ ] **Sem `onTap: null` novos** — se um row/card é renderizado, ou faz alguma coisa, ou é removido (não fica como placeholder)
+- [ ] **Sem rotas órfãs** — qualquer `AppRoute.*` ou `Navigator.push` referenciado tem pelo menos um call-site de UI alcançável (botão, tile, card). Verifica com `rg "AppRoute\.<nome>" lib/`
+- [ ] **Sem ecrãs órfãos** — qualquer `Screen` novo ou tocado é instanciado a partir de pelo menos um caminho de UI (não só deep-link). Verifica com `rg "<NomeScreen>\(" lib/`
+- [ ] **Toggle/checkbox/swipe testados manualmente** — se o ecrã tem selecção (lista de compras, planner, dashboard cards), confirma que cada interacção produz o efeito esperado e o estado persiste
+- [ ] **Estados vazio/loading/erro mostram CTA funcional** — empty state com botão "Adicionar X" ou "Gerar plano" tem o handler ligado, não só o ícone
+- [ ] **Deep-link → UI parity** — qualquer destino acessível por deep-link (`orcamentomensal://...`) também é acessível por toque na UI
+- [ ] **Back button / Navigator.pop volta a um estado válido** — sem ecrãs presos ou loops
+- [ ] **Inputs persistem** — campos editáveis (settings, planner, formulários) guardam o valor após pop/repush do ecrã
+
 ### Design tokens
 
 - [ ] Background do scaffold = `AppColors.bg(context)`

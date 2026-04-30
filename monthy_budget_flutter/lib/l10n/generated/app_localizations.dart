@@ -7649,6 +7649,30 @@ abstract class S {
   /// **'Acompanhar e atualizar o progresso das metas'**
   String get moreSavingsSubtitle;
 
+  /// Coach tile subtitle on More screen
+  ///
+  /// In pt, this message translates to:
+  /// **'Conselhos personalizados sobre o teu orçamento'**
+  String get moreCoachSubtitle;
+
+  /// Yearly summary tile subtitle on More screen
+  ///
+  /// In pt, this message translates to:
+  /// **'Visão geral do ano e tendências mensais'**
+  String get moreYearlySummarySubtitle;
+
+  /// More tab label in bottom navigation
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais'**
+  String get navMore;
+
+  /// More tab tooltip in bottom navigation
+  ///
+  /// In pt, this message translates to:
+  /// **'Definições e análises'**
+  String get navMoreTip;
+
   /// Notifications tile subtitle
   ///
   /// In pt, this message translates to:
@@ -8290,18 +8314,6 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Lista de compras, mercearia e refeições'**
   String get navPlanAndShopTip;
-
-  /// No description provided for @navMore.
-  ///
-  /// In pt, this message translates to:
-  /// **'Mais'**
-  String get navMore;
-
-  /// No description provided for @navMoreTip.
-  ///
-  /// In pt, this message translates to:
-  /// **'Definições e análises'**
-  String get navMoreTip;
 
   /// CTA button to continue with free plan
   ///
