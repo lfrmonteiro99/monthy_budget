@@ -482,6 +482,7 @@ class AppSettings {
   final PersonalInfo personalInfo;
   final List<SalaryInfo> salaries;
   final List<ExpenseItem> expenses;
+  final List<IncomeSource> incomeSources;
   /// @deprecated Use LocalDashboardConfig (stored in SharedPreferences) instead.
   /// Kept for backwards compatibility with existing serialized data.
   final DashboardConfig dashboardConfig;
@@ -504,6 +505,7 @@ class AppSettings {
       ExpenseItem(id: 'compras', label: 'Compras / Alimentação', category: 'alimentacao'),
       ExpenseItem(id: 'escola', label: 'Escola', category: 'educacao'),
     ],
+    this.incomeSources = const [],
     this.dashboardConfig = const DashboardConfig(),
     this.mealSettings = const MealSettings(),
     this.stressHistory = const {},
@@ -518,6 +520,7 @@ class AppSettings {
     PersonalInfo? personalInfo,
     List<SalaryInfo>? salaries,
     List<ExpenseItem>? expenses,
+    List<IncomeSource>? incomeSources,
     DashboardConfig? dashboardConfig,
     MealSettings? mealSettings,
     Map<String, int>? stressHistory,
@@ -529,6 +532,7 @@ class AppSettings {
       personalInfo: personalInfo ?? this.personalInfo,
       salaries: salaries ?? this.salaries,
       expenses: expenses ?? this.expenses,
+      incomeSources: incomeSources ?? this.incomeSources,
       dashboardConfig: dashboardConfig ?? this.dashboardConfig,
       mealSettings: mealSettings ?? this.mealSettings,
       stressHistory: stressHistory ?? this.stressHistory,
@@ -545,6 +549,7 @@ class AppSettings {
       'personalInfo': personalInfo.toJson(),
       'salaries': salaries.map((s) => s.toJson()).toList(),
       'expenses': expenses.map((e) => e.toJson()).toList(),
+      'incomeSources': incomeSources.map((s) => s.toJson()).toList(),
       'dashboardConfig': dashboardConfig.toJson(),
       'mealSettings': mealSettings.toJson(),
       'stressHistory': stressHistory,
@@ -583,6 +588,10 @@ class AppSettings {
               ?.map((e) => ExpenseItem.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      incomeSources: (map['incomeSources'] as List<dynamic>?)
+              ?.map((e) => IncomeSource.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       dashboardConfig: DashboardConfig.fromJson(map['dashboardConfig'] ?? {}),
       mealSettings: MealSettings.fromJson(
         (map['mealSettings'] as Map<String, dynamic>?) ?? {},
@@ -601,4 +610,108 @@ class AppSettings {
           : _hasConfiguredSalary(map),
     );
   }
+}
+
+/// Periodicity of an income source.
+///
+/// `monthly`  — recurring every month (rents, salary-like extras, interest).
+/// `oneOff`   — punctual entry within the current month (freelance gig).
+/// `yearly`   — once a year (IRS refund). Excluded from the monthly planned
+///              total until effectively credited.
+enum IncomePeriod {
+  monthly,
+  oneOff,
+  yearly;
+
+  String get jsonValue => name;
+
+  static IncomePeriod fromJson(String? value) {
+    for (final p in IncomePeriod.values) {
+      if (p.name == value) return p;
+    }
+    return IncomePeriod.monthly;
+  }
+}
+
+/// A user-configured income source beyond the configured salaries
+/// (`AppSettings.salaries`). Examples: rentals, freelance, interest, IRS
+/// refund. Stored inside `AppSettings.incomeSources` as a JSON list — no
+/// separate Supabase table.
+class IncomeSource {
+  final String id;
+  final String label;
+  final double amount;
+  final IncomePeriod period;
+  /// Day of month the source is expected (1–31). 0 means "n/a" (e.g. yearly
+  /// IRS refund).
+  final int dayOfMonth;
+  /// Free-text category key. Maps to a calm icon: `wallet`, `home`, `sparkle`,
+  /// `pie`, `chart` … defaults to `wallet`.
+  final String category;
+  final bool recurring;
+  final bool received;
+  /// ISO yyyy-MM-dd of the (expected/effective) entry. Optional — when null
+  /// we render only the period in the row sub-label.
+  final String? date;
+
+  const IncomeSource({
+    required this.id,
+    required this.label,
+    required this.amount,
+    this.period = IncomePeriod.monthly,
+    this.dayOfMonth = 1,
+    this.category = 'wallet',
+    this.recurring = false,
+    this.received = false,
+    this.date,
+  });
+
+  IncomeSource copyWith({
+    String? id,
+    String? label,
+    double? amount,
+    IncomePeriod? period,
+    int? dayOfMonth,
+    String? category,
+    bool? recurring,
+    bool? received,
+    String? date,
+    bool clearDate = false,
+  }) {
+    return IncomeSource(
+      id: id ?? this.id,
+      label: label ?? this.label,
+      amount: amount ?? this.amount,
+      period: period ?? this.period,
+      dayOfMonth: dayOfMonth ?? this.dayOfMonth,
+      category: category ?? this.category,
+      recurring: recurring ?? this.recurring,
+      received: received ?? this.received,
+      date: clearDate ? null : (date ?? this.date),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'label': label,
+        'amount': amount,
+        'period': period.jsonValue,
+        'dayOfMonth': dayOfMonth,
+        'category': category,
+        'recurring': recurring,
+        'received': received,
+        if (date != null) 'date': date,
+      };
+
+  factory IncomeSource.fromJson(Map<String, dynamic> json) => IncomeSource(
+        id: json['id'] as String,
+        label: (json['label'] as String?) ?? '',
+        amount: (json['amount'] as num?)?.toDouble() ?? 0,
+        period: IncomePeriod.fromJson(json['period'] as String?),
+        dayOfMonth: (json['dayOfMonth'] as num?)?.toInt() ?? 1,
+        category: (json['category'] as String?) ?? 'wallet',
+        recurring: json['recurring'] as bool? ?? false,
+        received: json['received'] as bool? ?? false,
+        date: json['date'] as String?,
+      );
 }

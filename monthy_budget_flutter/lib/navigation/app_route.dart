@@ -42,6 +42,7 @@ enum AppRouteType {
   confidenceCenter,
   taxSimulator,
   yearlySummary,
+  income,
 }
 
 class AppRoute {
@@ -85,6 +86,8 @@ class AppRoute {
   const AppRoute.taxSimulator() : this._(type: AppRouteType.taxSimulator);
 
   const AppRoute.yearlySummary() : this._(type: AppRouteType.yearlySummary);
+
+  const AppRoute.income() : this._(type: AppRouteType.income);
 
   final AppRouteType type;
   final AppTab? tab;
@@ -146,6 +149,8 @@ class AppRoute {
         return const AppRoute.grocery();
       case 'savings-goals':
         return const AppRoute.savingsGoals();
+      case 'income':
+        return const AppRoute.income();
       default:
         return null;
     }
@@ -165,6 +170,7 @@ class AppRoute {
       'settings' => const AppRoute.settings(),
       'insights' => const AppRoute.insights(),
       'savings_goals' => const AppRoute.savingsGoals(),
+      'income' => const AppRoute.income(),
       _ => const AppRoute.tab(AppTab.dashboard),
     };
   }
