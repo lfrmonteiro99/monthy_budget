@@ -250,17 +250,13 @@ extension _SettingsSections on _SettingsScreenState {
                 ? AppColors.border(context)
                 : AppColors.surfaceVariant(context);
 
-            return Container(
-              margin: EdgeInsets.only(bottom: idx < _draft.salaries.length - 1 ? 16 : 0),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: enabledBorderColor, width: 1.5),
-                color: salary.enabled ? AppColors.surface(context) : AppColors.background(context),
-              ),
-              child: Stack(
-                children: [
-                  Column(
+            return Padding(
+              padding: EdgeInsets.only(bottom: idx < _draft.salaries.length - 1 ? 16 : 0),
+              child: CalmCard(
+                padding: const EdgeInsets.all(16),
+                child: Stack(
+                  children: [
+                    Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // ── Header: Switch + Label + Delete ──
@@ -300,16 +296,9 @@ extension _SettingsSections on _SettingsScreenState {
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            AppColors.primary(context).withValues(alpha: 0.08),
-                            AppColors.primary(context).withValues(alpha: 0.02),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
+                        color: AppColors.bgSunk(context),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.primary(context).withValues(alpha: 0.15)),
+                        border: Border.all(color: AppColors.line(context)),
                       ),
                       child: Row(
                         children: [
@@ -317,38 +306,32 @@ extension _SettingsSections on _SettingsScreenState {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text(
-                                  l10n.settingsSalarySummaryGross,
-                                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.textMuted(context)),
-                                ),
+                                CalmEyebrow(l10n.settingsSalarySummaryGross.toUpperCase()),
                                 const SizedBox(height: 2),
                                 Text(
                                   salary.grossAmount > 0
                                       ? '${salary.grossAmount.toStringAsFixed(2)} $currency'
                                       : '\u2014',
-                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textPrimary(context)),
+                                  style: CalmText.amount(context, size: 15),
                                 ),
                               ],
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 6),
-                            child: Icon(Icons.trending_flat, size: 20, color: AppColors.primary(context)),
+                            child: Icon(Icons.trending_flat, size: 20, color: AppColors.ink(context)),
                           ),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text(
-                                  l10n.settingsSalarySummaryNet,
-                                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.textMuted(context)),
-                                ),
+                                CalmEyebrow(l10n.settingsSalarySummaryNet.toUpperCase()),
                                 const SizedBox(height: 2),
                                 Text(
                                   salaryCalc != null
                                       ? '${salaryCalc.totalNetWithMeal.toStringAsFixed(2)} $currency'
                                       : '\u2014',
-                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.primary(context)),
+                                  style: CalmText.amount(context, size: 15),
                                 ),
                               ],
                             ),
@@ -390,7 +373,7 @@ extension _SettingsSections on _SettingsScreenState {
                       width: double.infinity,
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: AppColors.background(context),
+                        color: AppColors.bgSunk(context),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Column(
@@ -457,7 +440,7 @@ extension _SettingsSections on _SettingsScreenState {
                       width: double.infinity,
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: AppColors.background(context),
+                        color: AppColors.bgSunk(context),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Column(
@@ -656,19 +639,13 @@ extension _SettingsSections on _SettingsScreenState {
                     Positioned(
                       top: 8,
                       right: 8,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: AppColors.textMuted(context).withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          l10n.settingsPausedCategories,
-                          style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: AppColors.textMuted(context)),
-                        ),
+                      child: CalmPill(
+                        label: l10n.settingsPausedCategories.toUpperCase(),
+                        color: AppColors.ink50(context),
                       ),
                     ),
-                ],
+                  ],
+                ),
               ),
             );
           }),
@@ -739,9 +716,8 @@ extension _SettingsSections on _SettingsScreenState {
           if (_isFreeUser && pausedExpenses.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: Text(
+              child: CalmEyebrow(
                 l10n.settingsActiveCategoriesCount(activeExpenses.length, _draft.expenses.length),
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textMuted(context), letterSpacing: 0.8),
               ),
             ),
           // ── Expense Cards ──
@@ -749,10 +725,7 @@ extension _SettingsSections on _SettingsScreenState {
             if (_isFreeUser && ei == activeExpenses.length && pausedExpenses.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 8, bottom: 12),
-                child: Text(
-                  l10n.settingsPausedCategories,
-                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textMuted(context), letterSpacing: 0.8),
-                ),
+                child: CalmEyebrow(l10n.settingsPausedCategories),
               ),
             Builder(builder: (_) {
               final expense = sortedExpenses[ei];
@@ -1078,13 +1051,9 @@ extension _SettingsSections on _SettingsScreenState {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [healthColor.withValues(alpha: 0.08), healthColor.withValues(alpha: 0.02)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: AppColors.bgSunk(context),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: healthColor.withValues(alpha: 0.25)),
+        border: Border.all(color: healthColor.withValues(alpha: 0.4)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1102,16 +1071,9 @@ extension _SettingsSections on _SettingsScreenState {
                   ),
                 ],
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: healthColor.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  '$activeCount / $totalCount',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: healthColor),
-                ),
+              CalmPill(
+                label: '$activeCount / $totalCount',
+                color: healthColor,
               ),
             ],
           ),
@@ -1701,22 +1663,23 @@ extension _SettingsSections on _SettingsScreenState {
   }
 
   Widget _helpTip(String text, {IconData icon = Icons.lightbulb_outline}) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.infoBackground(context),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, size: 16, color: Colors.blue.shade600),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(text, style: TextStyle(fontSize: 12, color: Colors.blue.shade700, height: 1.4)),
-          ),
-        ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: CalmCard(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, size: 16, color: AppColors.accent(context)),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                text,
+                style: TextStyle(fontSize: 12, color: AppColors.ink70(context), height: 1.4),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1970,9 +1933,9 @@ extension _SettingsSections on _SettingsScreenState {
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: _autoHouseholdSize().toString(),
-                          hintStyle: TextStyle(color: Colors.grey.shade400),
+                          hintStyle: TextStyle(color: AppColors.ink50(context)),
                           suffixText: ms.householdSize == null ? l10n.settingsAutomatic : null,
-                          suffixStyle: TextStyle(fontSize: 12, color: Colors.grey.shade400),
+                          suffixStyle: TextStyle(fontSize: 12, color: AppColors.ink50(context)),
                         ),
                         style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                         onChanged: (v) {
@@ -2001,7 +1964,7 @@ extension _SettingsSections on _SettingsScreenState {
                   ms.householdSize != null
                       ? l10n.settingsManualValue(ms.householdSize!)
                       : l10n.settingsAutoValue(_autoHouseholdSize()),
-                  style: TextStyle(fontSize: 11, color: Colors.grey.shade400),
+                  style: TextStyle(fontSize: 11, color: AppColors.ink50(context)),
                 ),
               ),
               _label(l10n.settingsHouseholdMembers),
@@ -2022,7 +1985,7 @@ extension _SettingsSections on _SettingsScreenState {
                                   style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
                               Text(
                                 '${m.ageGroup.localizedLabel(l10n)} \u2022 ${m.activityLevel.localizedLabel(l10n)} \u2022 ${m.portionEquivalent.toStringAsFixed(2)} ${l10n.settingsPortions}',
-                                style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                                style: TextStyle(fontSize: 12, color: AppColors.ink50(context)),
                               ),
                             ],
                           ),
@@ -2601,7 +2564,7 @@ extension _SettingsSections on _SettingsScreenState {
                 keyboardType: TextInputType.number,
                 decoration: _inputDecoration(l10n.settingsProteinHint, suffix: l10n.settingsGramsPerDay, helperText: l10n.helperProteinTarget).copyWith(
                   labelText: l10n.settingsDailyProtein,
-                  labelStyle: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+                  labelStyle: TextStyle(fontSize: 13, color: AppColors.ink50(context)),
                   suffixIcon: ms.dailyProteinTargetG != null
                       ? IconButton(
                           icon: Icon(Icons.close, size: 18, color: AppColors.textMuted(context)),
@@ -2623,7 +2586,7 @@ extension _SettingsSections on _SettingsScreenState {
                 keyboardType: TextInputType.number,
                 decoration: _inputDecoration(l10n.settingsFiberHint, suffix: l10n.settingsGramsPerDay, helperText: l10n.helperFiberTarget).copyWith(
                   labelText: l10n.settingsDailyFiber,
-                  labelStyle: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+                  labelStyle: TextStyle(fontSize: 13, color: AppColors.ink50(context)),
                   suffixIcon: ms.dailyFiberTargetG != null
                       ? IconButton(
                           icon: Icon(Icons.close, size: 18, color: AppColors.textMuted(context)),
@@ -2986,10 +2949,7 @@ extension _SettingsSections on _SettingsScreenState {
     );
   }
 
-  Widget _label(String text) => Text(
-        text,
-        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondary(context), letterSpacing: 0.5),
-      );
+  Widget _label(String text) => CalmEyebrow(text);
 
   Widget _expenseTypeChip({
     required String label,
@@ -3042,11 +3002,11 @@ extension _SettingsSections on _SettingsScreenState {
   Widget _deductionChip(String label, String value, String? subtitle, Color color) {
     return Column(
       children: [
-        Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.textMuted(context))),
+        CalmEyebrow(label.toUpperCase()),
         const SizedBox(height: 2),
-        Text(value, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: color)),
+        Text(value, style: CalmText.amount(context, size: 12).copyWith(color: color)),
         if (subtitle != null)
-          Text(subtitle, style: TextStyle(fontSize: 9, color: AppColors.textMuted(context))),
+          Text(subtitle, style: TextStyle(fontSize: 9, color: AppColors.ink50(context))),
       ],
     );
   }
@@ -3074,7 +3034,7 @@ extension _SettingsSections on _SettingsScreenState {
         hintText: hint,
         hintStyle: TextStyle(color: AppColors.dragHandle(context)),
         suffixText: suffix,
-        suffixStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey.shade400),
+        suffixStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink50(context)),
         helperText: helperText,
         helperStyle: TextStyle(fontSize: 11, color: AppColors.textMuted(context)),
         helperMaxLines: 2,
