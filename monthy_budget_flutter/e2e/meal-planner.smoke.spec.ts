@@ -11,7 +11,7 @@ import {
 
 // Patterns for multi-language support (PT/EN/ES/FR)
 const planAndShopTab = /Shop|Compras|Courses/i;
-const mealPlannerTab = /Meal Planner|Planeador|Planificateur|Planificador/i;
+const mealPlannerTab = /Meal Planner|Planeador|Planificateur|Planificador|Ementa|Menu|Carta/i;
 // Match the primary "Generate Plan" button on the meal-planner empty state
 // and wizard step 5. Word-boundary prefix + trailing "plan" keeps this from
 // matching the "Regenerate" button shown once a plan already exists —
