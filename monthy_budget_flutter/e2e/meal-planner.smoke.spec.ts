@@ -147,7 +147,9 @@ test.describe.skip('Meal planner E2E smoke', () => {
     // After generation, plan should be visible with week navigation
     await waitForSemanticMatch(page, weekLabel, 15_000);
 
-    const planContent = (await getSemanticNames(page)).join('\n');
+    // Day cards live below the budget header + month navigator, scroll to bring
+    // them into the semantic tree.
+    const planContent = (await collectSemanticNamesWhileScrolling(page)).join('\n');
 
     // Verify day labels are present
     expect(planContent).toMatch(dayPattern);
