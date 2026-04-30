@@ -1202,6 +1202,18 @@ class SEs extends S {
   String get mealPlannerTitle => 'Planificador de Comidas';
 
   @override
+  String get mealPlannerPreviousMonth => 'Mes anterior';
+
+  @override
+  String get mealPlannerNextMonth => 'Mes siguiente';
+
+  @override
+  String get mealPlannerFullMonthView => 'Mes completo';
+
+  @override
+  String get mealPlannerWeekView => 'Semana';
+
+  @override
   String get mealBudgetLabel => 'Presupuesto alimentación';
 
   @override

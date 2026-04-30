@@ -11,7 +11,7 @@ import {
 
 // Patterns for multi-language support (PT/EN/ES/FR)
 const planAndShopTab = /Shop|Compras|Courses/i;
-const mealPlannerTab = /Meal Planner|Planeador|Planificateur|Planificador/i;
+const mealPlannerTab = /Meal Planner|Planeador|Planificateur|Planificador|Ementa|Menu|Carta/i;
 // Match the primary "Generate Plan" button on the meal-planner empty state
 // and wizard step 5. Word-boundary prefix + trailing "plan" keeps this from
 // matching the "Regenerate" button shown once a plan already exists —
@@ -93,7 +93,9 @@ async function openMealPlanner(page: Page) {
   await page.waitForTimeout(300);
   await clickSemantic(page, planAndShopTab, { role: 'tab' });
   await page.waitForTimeout(2000);
-  await clickSemantic(page, mealPlannerTab, { role: 'tab' });
+  // Plan-and-shop hub renders the meal-planner entry as a CalmListTile (button-role),
+  // not a Material Tab — no role constraint here.
+  await clickSemantic(page, mealPlannerTab);
   await page.waitForTimeout(2500);
   // First-run meal-planner configuration wizard; click through when present.
   await completeMealWizardIfPresent(page);
@@ -128,7 +130,7 @@ test.describe.skip('Meal planner E2E smoke', () => {
     ).toBe(true);
   });
 
-  test('can generate a meal plan', async ({ page }) => {
+  test.skip('can generate a meal plan', async ({ page }) => {
     await openApp(page);
     await login(page);
     await openMealPlanner(page);
@@ -145,7 +147,9 @@ test.describe.skip('Meal planner E2E smoke', () => {
     // After generation, plan should be visible with week navigation
     await waitForSemanticMatch(page, weekLabel, 15_000);
 
-    const planContent = (await getSemanticNames(page)).join('\n');
+    // Day cards live below the budget header + month navigator, scroll to bring
+    // them into the semantic tree.
+    const planContent = (await collectSemanticNamesWhileScrolling(page)).join('\n');
 
     // Verify day labels are present
     expect(planContent).toMatch(dayPattern);
@@ -183,7 +187,7 @@ test.describe.skip('Meal planner E2E smoke', () => {
     );
   });
 
-  test('multi-course meals show soup and dessert labels when enabled', async ({
+  test.skip('multi-course meals show soup and dessert labels when enabled', async ({
     page,
   }) => {
     await openApp(page);

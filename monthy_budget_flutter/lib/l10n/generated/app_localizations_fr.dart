@@ -1205,6 +1205,18 @@ class SFr extends S {
   String get mealPlannerTitle => 'Planificateur de Repas';
 
   @override
+  String get mealPlannerPreviousMonth => 'Mois precedent';
+
+  @override
+  String get mealPlannerNextMonth => 'Mois suivant';
+
+  @override
+  String get mealPlannerFullMonthView => 'Mois complet';
+
+  @override
+  String get mealPlannerWeekView => 'Semaine';
+
+  @override
   String get mealBudgetLabel => 'Budget alimentation';
 
   @override

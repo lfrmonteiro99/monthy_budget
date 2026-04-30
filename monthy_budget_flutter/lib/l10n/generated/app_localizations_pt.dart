@@ -1199,6 +1199,18 @@ class SPt extends S {
   String get mealPlannerTitle => 'Planeador de Refeições';
 
   @override
+  String get mealPlannerPreviousMonth => 'Mês anterior';
+
+  @override
+  String get mealPlannerNextMonth => 'Mês seguinte';
+
+  @override
+  String get mealPlannerFullMonthView => 'Mês inteiro';
+
+  @override
+  String get mealPlannerWeekView => 'Semana';
+
+  @override
   String get mealBudgetLabel => 'Orçamento alimentação';
 
   @override

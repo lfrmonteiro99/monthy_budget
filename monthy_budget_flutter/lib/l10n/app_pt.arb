@@ -1475,6 +1475,14 @@
     "@mealPlannerTitle": {
         "description": "Meal planner screen title"
     },
+    "mealPlannerPreviousMonth": "Mês anterior",
+    "@mealPlannerPreviousMonth": { "description": "Tooltip for previous month chevron" },
+    "mealPlannerNextMonth": "Mês seguinte",
+    "@mealPlannerNextMonth": { "description": "Tooltip for next month chevron" },
+    "mealPlannerFullMonthView": "Mês inteiro",
+    "@mealPlannerFullMonthView": { "description": "Toggle label to show all weeks" },
+    "mealPlannerWeekView": "Semana",
+    "@mealPlannerWeekView": { "description": "Toggle label to show one week" },
     "mealBudgetLabel": "Orçamento alimentação",
     "@mealBudgetLabel": {
         "description": "Meal planner budget label"
