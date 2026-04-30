@@ -61,8 +61,11 @@ void main() {
       final plan = service.generate(_settings(), march2026);
       final recipeIds = service.recipes.map((r) => r.id).toSet();
       for (final day in plan.days) {
-        expect(recipeIds.contains(day.recipeId), isTrue,
-            reason: 'Invalid recipe: ${day.recipeId} on day ${day.dayIndex}');
+        expect(
+          recipeIds.contains(day.recipeId),
+          isTrue,
+          reason: 'Invalid recipe: ${day.recipeId} on day ${day.dayIndex}',
+        );
       }
     });
 
@@ -85,11 +88,24 @@ void main() {
   group('Enabled meals', () {
     test('only generates enabled meal types', () {
       final ms = const MealSettings(
-        enabledMeals: {MealType.breakfast, MealType.lunch, MealType.snack, MealType.dinner},
+        enabledMeals: {
+          MealType.breakfast,
+          MealType.lunch,
+          MealType.snack,
+          MealType.dinner,
+        },
       );
       final plan = service.generate(_settings(ms: ms), march2026);
       final types = plan.days.map((d) => d.mealType).toSet();
-      expect(types, containsAll([MealType.breakfast, MealType.lunch, MealType.snack, MealType.dinner]));
+      expect(
+        types,
+        containsAll([
+          MealType.breakfast,
+          MealType.lunch,
+          MealType.snack,
+          MealType.dinner,
+        ]),
+      );
     });
 
     test('dinner-only plan produces one meal per day', () {
@@ -101,18 +117,25 @@ void main() {
       }
     });
 
-    test('breakfast-only plan picks recipes with breakfast in suitableMealTypes', () {
-      final ms = const MealSettings(enabledMeals: {MealType.breakfast});
-      final plan = service.generate(_settings(ms: ms), march2026);
-      final breakfastRecipes = service.recipes
-          .where((r) => r.suitableMealTypes.contains('breakfast'))
-          .map((r) => r.id)
-          .toSet();
-      for (final d in plan.days) {
-        expect(breakfastRecipes.contains(d.recipeId), isTrue,
-            reason: 'Day ${d.dayIndex}: ${d.recipeId} is not a breakfast recipe');
-      }
-    });
+    test(
+      'breakfast-only plan picks recipes with breakfast in suitableMealTypes',
+      () {
+        final ms = const MealSettings(enabledMeals: {MealType.breakfast});
+        final plan = service.generate(_settings(ms: ms), march2026);
+        final breakfastRecipes = service.recipes
+            .where((r) => r.suitableMealTypes.contains('breakfast'))
+            .map((r) => r.id)
+            .toSet();
+        for (final d in plan.days) {
+          expect(
+            breakfastRecipes.contains(d.recipeId),
+            isTrue,
+            reason:
+                'Day ${d.dayIndex}: ${d.recipeId} is not a breakfast recipe',
+          );
+        }
+      },
+    );
   });
 
   // ────────────────────────────────────────────────────────────
@@ -126,8 +149,12 @@ void main() {
       for (final day in plan.days) {
         if (day.isLeftover) continue;
         final recipe = rMap[day.recipeId]!;
-        expect(recipe.glutenFree, isTrue,
-            reason: 'Day ${day.dayIndex} ${day.mealType}: ${recipe.name} is not gluten-free');
+        expect(
+          recipe.glutenFree,
+          isTrue,
+          reason:
+              'Day ${day.dayIndex} ${day.mealType}: ${recipe.name} is not gluten-free',
+        );
       }
     });
 
@@ -138,8 +165,12 @@ void main() {
       for (final day in plan.days) {
         if (day.isLeftover) continue;
         final recipe = rMap[day.recipeId]!;
-        expect(recipe.lactoseFree, isTrue,
-            reason: 'Day ${day.dayIndex} ${day.mealType}: ${recipe.name} contains lactose');
+        expect(
+          recipe.lactoseFree,
+          isTrue,
+          reason:
+              'Day ${day.dayIndex} ${day.mealType}: ${recipe.name} contains lactose',
+        );
       }
     });
 
@@ -151,8 +182,12 @@ void main() {
         if (day.isLeftover) continue;
         final recipe = rMap[day.recipeId]!;
         final hasEgg = recipe.ingredients.any((ri) => ri.ingredientId == 'ovo');
-        expect(hasEgg, isFalse,
-            reason: 'Day ${day.dayIndex} ${day.mealType}: ${recipe.name} contains egg');
+        expect(
+          hasEgg,
+          isFalse,
+          reason:
+              'Day ${day.dayIndex} ${day.mealType}: ${recipe.name} contains egg',
+        );
       }
     });
 
@@ -163,8 +198,12 @@ void main() {
       for (final day in plan.days) {
         if (day.isLeftover) continue;
         final recipe = rMap[day.recipeId]!;
-        expect(recipe.proteinId, isNot(anyOf('frango', 'porco')),
-            reason: 'Day ${day.dayIndex}: ${recipe.name} uses excluded protein ${recipe.proteinId}');
+        expect(
+          recipe.proteinId,
+          isNot(anyOf('frango', 'porco')),
+          reason:
+              'Day ${day.dayIndex}: ${recipe.name} uses excluded protein ${recipe.proteinId}',
+        );
       }
     });
 
@@ -179,8 +218,12 @@ void main() {
         for (final ri in recipe.ingredients) {
           final ing = iMap[ri.ingredientId];
           if (ing == null) continue;
-          expect(ing.name.toLowerCase(), isNot(anyOf('batata', 'cenoura')),
-              reason: 'Day ${day.dayIndex}: ${recipe.name} contains disliked ${ing.name}');
+          expect(
+            ing.name.toLowerCase(),
+            isNot(anyOf('batata', 'cenoura')),
+            reason:
+                'Day ${day.dayIndex}: ${recipe.name} contains disliked ${ing.name}',
+          );
         }
       }
     });
@@ -210,7 +253,9 @@ void main() {
   // ────────────────────────────────────────────────────────────
   group('Sodium preference', () {
     test('low sodium excludes high-sodium ingredients', () {
-      final ms = const MealSettings(sodiumPreference: SodiumPreference.lowSodium);
+      final ms = const MealSettings(
+        sodiumPreference: SodiumPreference.lowSodium,
+      );
       final plan = service.generate(_settings(ms: ms), march2026);
       const highSodium = {'bacalhau', 'chourico', 'fiambre', 'sardinha'};
       final rMap = service.recipeMap;
@@ -218,8 +263,12 @@ void main() {
         if (day.isLeftover) continue;
         final recipe = rMap[day.recipeId]!;
         for (final ri in recipe.ingredients) {
-          expect(highSodium.contains(ri.ingredientId), isFalse,
-              reason: 'Day ${day.dayIndex}: ${recipe.name} has high-sodium ${ri.ingredientId}');
+          expect(
+            highSodium.contains(ri.ingredientId),
+            isFalse,
+            reason:
+                'Day ${day.dayIndex}: ${recipe.name} has high-sodium ${ri.ingredientId}',
+          );
         }
       }
     });
@@ -230,43 +279,61 @@ void main() {
   // ────────────────────────────────────────────────────────────
   group('Medical conditions', () {
     test('diabetes: no meal exceeds 55g carbs', () {
-      final ms = const MealSettings(medicalConditions: {MedicalCondition.diabetes});
+      final ms = const MealSettings(
+        medicalConditions: {MedicalCondition.diabetes},
+      );
       final plan = service.generate(_settings(ms: ms), march2026);
       final rMap = service.recipeMap;
       for (final day in plan.days) {
         if (day.isLeftover) continue;
         final recipe = rMap[day.recipeId]!;
         if (recipe.nutrition != null) {
-          expect(recipe.nutrition!.carbsG, lessThanOrEqualTo(55),
-              reason: 'Day ${day.dayIndex}: ${recipe.name} has ${recipe.nutrition!.carbsG}g carbs (limit 55)');
+          expect(
+            recipe.nutrition!.carbsG,
+            lessThanOrEqualTo(55),
+            reason:
+                'Day ${day.dayIndex}: ${recipe.name} has ${recipe.nutrition!.carbsG}g carbs (limit 55)',
+          );
         }
       }
     });
 
     test('hypertension: no meal exceeds 500mg sodium', () {
-      final ms = const MealSettings(medicalConditions: {MedicalCondition.hypertension});
+      final ms = const MealSettings(
+        medicalConditions: {MedicalCondition.hypertension},
+      );
       final plan = service.generate(_settings(ms: ms), march2026);
       final rMap = service.recipeMap;
       for (final day in plan.days) {
         if (day.isLeftover) continue;
         final recipe = rMap[day.recipeId]!;
         if (recipe.nutrition != null) {
-          expect(recipe.nutrition!.sodiumMg, lessThanOrEqualTo(500),
-              reason: 'Day ${day.dayIndex}: ${recipe.name} has ${recipe.nutrition!.sodiumMg}mg sodium');
+          expect(
+            recipe.nutrition!.sodiumMg,
+            lessThanOrEqualTo(500),
+            reason:
+                'Day ${day.dayIndex}: ${recipe.name} has ${recipe.nutrition!.sodiumMg}mg sodium',
+          );
         }
       }
     });
 
     test('high cholesterol: no meal exceeds 25g fat', () {
-      final ms = const MealSettings(medicalConditions: {MedicalCondition.highCholesterol});
+      final ms = const MealSettings(
+        medicalConditions: {MedicalCondition.highCholesterol},
+      );
       final plan = service.generate(_settings(ms: ms), march2026);
       final rMap = service.recipeMap;
       for (final day in plan.days) {
         if (day.isLeftover) continue;
         final recipe = rMap[day.recipeId]!;
         if (recipe.nutrition != null) {
-          expect(recipe.nutrition!.fatG, lessThanOrEqualTo(25),
-              reason: 'Day ${day.dayIndex}: ${recipe.name} has ${recipe.nutrition!.fatG}g fat');
+          expect(
+            recipe.nutrition!.fatG,
+            lessThanOrEqualTo(25),
+            reason:
+                'Day ${day.dayIndex}: ${recipe.name} has ${recipe.nutrition!.fatG}g fat',
+          );
         }
       }
     });
@@ -278,14 +345,21 @@ void main() {
       for (final day in plan.days) {
         if (day.isLeftover) continue;
         final recipe = rMap[day.recipeId]!;
-        expect(recipe.proteinId, isNot(anyOf('sardinha', 'porco')),
-            reason: 'Day ${day.dayIndex}: ${recipe.name} uses gout-triggering ${recipe.proteinId}');
+        expect(
+          recipe.proteinId,
+          isNot(anyOf('sardinha', 'porco')),
+          reason:
+              'Day ${day.dayIndex}: ${recipe.name} uses gout-triggering ${recipe.proteinId}',
+        );
       }
     });
 
     test('multiple conditions combined', () {
       final ms = const MealSettings(
-        medicalConditions: {MedicalCondition.diabetes, MedicalCondition.hypertension},
+        medicalConditions: {
+          MedicalCondition.diabetes,
+          MedicalCondition.hypertension,
+        },
       );
       final plan = service.generate(_settings(ms: ms), march2026);
       final rMap = service.recipeMap;
@@ -311,8 +385,12 @@ void main() {
       for (final day in plan.days) {
         if (day.isLeftover) continue;
         final recipe = rMap[day.recipeId]!;
-        expect(recipe.isVegetarian, isTrue,
-            reason: 'Day ${day.dayIndex} ${day.mealType}: ${recipe.name} is not vegetarian');
+        expect(
+          recipe.isVegetarian,
+          isTrue,
+          reason:
+              'Day ${day.dayIndex} ${day.mealType}: ${recipe.name} is not vegetarian',
+        );
       }
     });
 
@@ -329,8 +407,11 @@ void main() {
         if (recipe.isHighProtein) highProteinCount++;
       }
       // High protein should be the majority
-      expect(highProteinCount / totalNonLeftover, greaterThan(0.7),
-          reason: 'Only $highProteinCount/$totalNonLeftover are high protein');
+      expect(
+        highProteinCount / totalNonLeftover,
+        greaterThan(0.7),
+        reason: 'Only $highProteinCount/$totalNonLeftover are high protein',
+      );
     });
 
     test('low carb prefers low-carb recipes', () {
@@ -344,22 +425,37 @@ void main() {
         total++;
         if (rMap[day.recipeId]!.isLowCarb) lowCarbCount++;
       }
-      expect(lowCarbCount / total, greaterThan(0.5),
-          reason: 'Only $lowCarbCount/$total are low carb');
+      expect(
+        lowCarbCount / total,
+        greaterThan(0.5),
+        reason: 'Only $lowCarbCount/$total are low carb',
+      );
     });
 
     test('minimize cost produces cheaper plan than balanced', () {
-      final msMinCost = const MealSettings(objective: MealObjective.minimizeCost);
-      final msBalanced = const MealSettings(objective: MealObjective.balancedHealth);
+      final msMinCost = const MealSettings(
+        objective: MealObjective.minimizeCost,
+      );
+      final msBalanced = const MealSettings(
+        objective: MealObjective.balancedHealth,
+      );
       // Run multiple times to account for randomness
       double minCostTotal = 0;
       double balancedTotal = 0;
       for (int i = 0; i < 5; i++) {
-        minCostTotal += service.generate(_settings(ms: msMinCost, foodBudget: 9999), march2026).totalEstimatedCost;
-        balancedTotal += service.generate(_settings(ms: msBalanced, foodBudget: 9999), march2026).totalEstimatedCost;
+        minCostTotal += service
+            .generate(_settings(ms: msMinCost, foodBudget: 9999), march2026)
+            .totalEstimatedCost;
+        balancedTotal += service
+            .generate(_settings(ms: msBalanced, foodBudget: 9999), march2026)
+            .totalEstimatedCost;
       }
-      expect(minCostTotal, lessThan(balancedTotal),
-          reason: 'minimizeCost avg=${minCostTotal / 5} should be < balanced avg=${balancedTotal / 5}');
+      expect(
+        minCostTotal,
+        lessThan(balancedTotal),
+        reason:
+            'minimizeCost avg=${minCostTotal / 5} should be < balanced avg=${balancedTotal / 5}',
+      );
     });
   });
 
@@ -376,10 +472,18 @@ void main() {
         final dt = DateTime(2026, 3, day.dayIndex);
         if (dt.weekday == 6 || dt.weekday == 7) continue; // skip weekends
         final recipe = rMap[day.recipeId]!;
-        expect(recipe.prepMinutes, lessThanOrEqualTo(20),
-            reason: 'Weekday ${day.dayIndex}: ${recipe.name} prep=${recipe.prepMinutes}m > 20m');
-        expect(recipe.complexity, lessThanOrEqualTo(2),
-            reason: 'Weekday ${day.dayIndex}: ${recipe.name} cx=${recipe.complexity} > 2');
+        expect(
+          recipe.prepMinutes,
+          lessThanOrEqualTo(20),
+          reason:
+              'Weekday ${day.dayIndex}: ${recipe.name} prep=${recipe.prepMinutes}m > 20m',
+        );
+        expect(
+          recipe.complexity,
+          lessThanOrEqualTo(2),
+          reason:
+              'Weekday ${day.dayIndex}: ${recipe.name} cx=${recipe.complexity} > 2',
+        );
       }
     });
 
@@ -400,8 +504,12 @@ void main() {
           expect(recipe.prepMinutes, lessThanOrEqualTo(60));
           expect(recipe.complexity, lessThanOrEqualTo(4));
         } else {
-          expect(recipe.prepMinutes, lessThanOrEqualTo(15),
-              reason: 'Weekday day ${day.dayIndex}: ${recipe.name} prep=${recipe.prepMinutes}');
+          expect(
+            recipe.prepMinutes,
+            lessThanOrEqualTo(15),
+            reason:
+                'Weekday day ${day.dayIndex}: ${recipe.name} prep=${recipe.prepMinutes}',
+          );
           expect(recipe.complexity, lessThanOrEqualTo(1));
         }
       }
@@ -421,8 +529,11 @@ void main() {
       for (final day in plan.days) {
         if (day.isLeftover) continue;
         final recipe = rMap[day.recipeId]!;
-        expect(recipe.requiresEquipment.contains('oven'), isFalse,
-            reason: 'Day ${day.dayIndex}: ${recipe.name} requires oven');
+        expect(
+          recipe.requiresEquipment.contains('oven'),
+          isFalse,
+          reason: 'Day ${day.dayIndex}: ${recipe.name} requires oven',
+        );
       }
     });
   });
@@ -437,8 +548,12 @@ void main() {
       final plan = service.generate(_settings(ms: ms), march2026);
       for (final day in plan.days) {
         final dt = DateTime(2026, 3, day.dayIndex);
-        expect(dt.weekday, isNot(anyOf(2, 4)),
-            reason: 'Day ${day.dayIndex} (weekday ${dt.weekday}) should be skipped');
+        expect(
+          dt.weekday,
+          isNot(anyOf(2, 4)),
+          reason:
+              'Day ${day.dayIndex} (weekday ${dt.weekday}) should be skipped',
+        );
       }
     });
 
@@ -468,8 +583,12 @@ void main() {
       }
       // Expected: ~3 per week * ~4.4 weeks ≈ 13 veggie days
       final expectedTotal = (3 * 31 / 7).round();
-      expect(veggieDays.length, greaterThanOrEqualTo(expectedTotal - 2),
-          reason: 'Expected ~$expectedTotal veggie days, got ${veggieDays.length}');
+      expect(
+        veggieDays.length,
+        greaterThanOrEqualTo(expectedTotal - 2),
+        reason:
+            'Expected ~$expectedTotal veggie days, got ${veggieDays.length}',
+      );
     });
   });
 
@@ -493,8 +612,12 @@ void main() {
       }
       // Each complete week should have at least 1 fish day (enforcement kicks in toward end of week)
       for (final entry in weeklyFish.entries) {
-        expect(entry.value, greaterThanOrEqualTo(1),
-            reason: 'Week ${entry.key} has ${entry.value} fish meals, expected >= 1');
+        expect(
+          entry.value,
+          greaterThanOrEqualTo(1),
+          reason:
+              'Week ${entry.key} has ${entry.value} fish meals, expected >= 1',
+        );
       }
     });
 
@@ -507,14 +630,19 @@ void main() {
       for (final day in plan.days) {
         if (day.isLeftover) continue;
         final recipe = rMap[day.recipeId]!;
-        if (recipe.type == RecipeType.carne && redMeatProteins.contains(recipe.proteinId)) {
+        if (recipe.type == RecipeType.carne &&
+            redMeatProteins.contains(recipe.proteinId)) {
           final weekNum = ((day.dayIndex - 1) / 7).floor();
           weeklyRedMeat[weekNum] = (weeklyRedMeat[weekNum] ?? 0) + 1;
         }
       }
       for (final entry in weeklyRedMeat.entries) {
-        expect(entry.value, lessThanOrEqualTo(1),
-            reason: 'Week ${entry.key} has ${entry.value} red meat meals, cap is 1');
+        expect(
+          entry.value,
+          lessThanOrEqualTo(1),
+          reason:
+              'Week ${entry.key} has ${entry.value} red meat meals, cap is 1',
+        );
       }
     });
   });
@@ -539,7 +667,12 @@ void main() {
           break;
         }
       }
-      expect(foundBatch, isTrue, reason: 'Batch cooking enabled but no consecutive same-recipe days found');
+      expect(
+        foundBatch,
+        isTrue,
+        reason:
+            'Batch cooking enabled but no consecutive same-recipe days found',
+      );
     });
 
     test('batch does not exceed maxBatchDays', () {
@@ -561,8 +694,11 @@ void main() {
           current = 1;
         }
       }
-      expect(maxConsec, lessThanOrEqualTo(2),
-          reason: 'Max batch streak is $maxConsec, should be <= 2');
+      expect(
+        maxConsec,
+        lessThanOrEqualTo(2),
+        reason: 'Max batch streak is $maxConsec, should be <= 2',
+      );
     });
   });
 
@@ -583,16 +719,28 @@ void main() {
           expect(day.mealType, MealType.lunch);
           expect(day.costEstimate, 0.0);
           // Verify references previous day's dinner
-          final prevDinner = plan.days.where(
-            (d) => d.dayIndex == day.dayIndex - 1 && d.mealType == MealType.dinner,
-          ).firstOrNull;
+          final prevDinner = plan.days
+              .where(
+                (d) =>
+                    d.dayIndex == day.dayIndex - 1 &&
+                    d.mealType == MealType.dinner,
+              )
+              .firstOrNull;
           if (prevDinner != null) {
-            expect(day.recipeId, prevDinner.recipeId,
-                reason: 'Leftover on day ${day.dayIndex} should match dinner on day ${day.dayIndex - 1}');
+            expect(
+              day.recipeId,
+              prevDinner.recipeId,
+              reason:
+                  'Leftover on day ${day.dayIndex} should match dinner on day ${day.dayIndex - 1}',
+            );
           }
         }
       }
-      expect(leftoverCount, greaterThan(0), reason: 'No leftovers found despite reuseLeftovers=true');
+      expect(
+        leftoverCount,
+        greaterThan(0),
+        reason: 'No leftovers found despite reuseLeftovers=true',
+      );
     });
 
     test('leftovers disabled means no leftover meals', () {
@@ -609,8 +757,11 @@ void main() {
   group('Budget enforcement', () {
     test('plan respects monthly budget when achievable', () {
       final plan = service.generate(_settings(foodBudget: 300), march2026);
-      expect(plan.totalEstimatedCost, lessThanOrEqualTo(300),
-          reason: 'Total ${plan.totalEstimatedCost} exceeds budget 300');
+      expect(
+        plan.totalEstimatedCost,
+        lessThanOrEqualTo(300),
+        reason: 'Total ${plan.totalEstimatedCost} exceeds budget 300',
+      );
     });
 
     test('very tight budget triggers replacements', () {
@@ -644,8 +795,11 @@ void main() {
       }
       // All lunches should be portable since filter is applied
       if (totalLunches > 0) {
-        expect(portableCount / totalLunches, greaterThanOrEqualTo(0.9),
-            reason: '$portableCount/$totalLunches lunches are portable');
+        expect(
+          portableCount / totalLunches,
+          greaterThanOrEqualTo(0.9),
+          reason: '$portableCount/$totalLunches lunches are portable',
+        );
       }
     });
   });
@@ -657,7 +811,10 @@ void main() {
     test('winter month prefers winter/all-season recipes when enabled', () {
       final ms = const MealSettings(preferSeasonal: true);
       final january = DateTime(2026, 1);
-      final plan = service.generate(_settings(ms: ms, foodBudget: 9999), january);
+      final plan = service.generate(
+        _settings(ms: ms, foodBudget: 9999),
+        january,
+      );
       final rMap = service.recipeMap;
       int seasonalCount = 0;
       int total = 0;
@@ -680,30 +837,33 @@ void main() {
   group('Pinned meals', () {
     test('pinned recipe appears on the correct weekday', () {
       // Pin frango_assado for Monday dinner (weekday 1)
-      final ms = const MealSettings(
-        pinnedMeals: {'1_dinner': 'frango_assado'},
-      );
+      final ms = const MealSettings(pinnedMeals: {'1_dinner': 'frango_assado'});
       final plan = service.generate(_settings(ms: ms), march2026);
       final mondayDinners = plan.days.where((d) {
         final dt = DateTime(2026, 3, d.dayIndex);
         return dt.weekday == 1 && d.mealType == MealType.dinner;
       });
       for (final d in mondayDinners) {
-        expect(d.recipeId, 'frango_assado',
-            reason: 'Monday dinner on day ${d.dayIndex} should be frango_assado');
+        expect(
+          d.recipeId,
+          'frango_assado',
+          reason: 'Monday dinner on day ${d.dayIndex} should be frango_assado',
+        );
       }
     });
 
     test('pinned "skip" produces no meal for that slot', () {
-      final ms = const MealSettings(
-        pinnedMeals: {'5_lunch': 'skip'},
-      );
+      final ms = const MealSettings(pinnedMeals: {'5_lunch': 'skip'});
       final plan = service.generate(_settings(ms: ms), march2026);
       final fridayLunches = plan.days.where((d) {
         final dt = DateTime(2026, 3, d.dayIndex);
         return dt.weekday == 5 && d.mealType == MealType.lunch;
       });
-      expect(fridayLunches.isEmpty, isTrue, reason: 'Friday lunch should be skipped');
+      expect(
+        fridayLunches.isEmpty,
+        isTrue,
+        reason: 'Friday lunch should be skipped',
+      );
     });
   });
 
@@ -715,15 +875,21 @@ void main() {
       final plan = service.generate(
         _settings(),
         march2026,
-        previousFeedback: {'frango_assado': MealFeedback.disliked, 'frango_arroz': MealFeedback.disliked},
+        previousFeedback: {
+          'frango_assado': MealFeedback.disliked,
+          'frango_arroz': MealFeedback.disliked,
+        },
       );
       // Disliked are avoided when pool >= 3
       final usedDisliked = plan.days.where(
         (d) => d.recipeId == 'frango_assado' || d.recipeId == 'frango_arroz',
       );
       // Allow some due to fallback, but should be minimal
-      expect(usedDisliked.length, lessThanOrEqualTo(5),
-          reason: '${usedDisliked.length} disliked meals used');
+      expect(
+        usedDisliked.length,
+        lessThanOrEqualTo(5),
+        reason: '${usedDisliked.length} disliked meals used',
+      );
     });
   });
 
@@ -734,8 +900,16 @@ void main() {
     test('household members with age/activity factors affect nPessoas', () {
       final ms = MealSettings(
         householdMembers: [
-          const HouseholdMember(name: 'Adult', ageGroup: AgeGroup.adult, activityLevel: ActivityLevel.moderate),
-          const HouseholdMember(name: 'Child', ageGroup: AgeGroup.child4to10, activityLevel: ActivityLevel.sedentary),
+          const HouseholdMember(
+            name: 'Adult',
+            ageGroup: AgeGroup.adult,
+            activityLevel: ActivityLevel.moderate,
+          ),
+          const HouseholdMember(
+            name: 'Child',
+            ageGroup: AgeGroup.child4to10,
+            activityLevel: ActivityLevel.sedentary,
+          ),
         ],
       );
       // Adult moderate = 1.0 * 1.1 = 1.1, Child4to10 sedentary = 0.65 * 1.0 = 0.65
@@ -752,8 +926,16 @@ void main() {
       final ms = MealSettings(
         householdSize: 10,
         householdMembers: [
-          const HouseholdMember(name: 'A', ageGroup: AgeGroup.adult, activityLevel: ActivityLevel.sedentary),
-          const HouseholdMember(name: 'B', ageGroup: AgeGroup.adult, activityLevel: ActivityLevel.sedentary),
+          const HouseholdMember(
+            name: 'A',
+            ageGroup: AgeGroup.adult,
+            activityLevel: ActivityLevel.sedentary,
+          ),
+          const HouseholdMember(
+            name: 'B',
+            ageGroup: AgeGroup.adult,
+            activityLevel: ActivityLevel.sedentary,
+          ),
         ],
       );
       // 2 adults sedentary: 1.0 * 1.0 = 1.0 each → total 2.0 → 2
@@ -770,7 +952,10 @@ void main() {
       // Run 5 times to account for randomness
       int violations = 0;
       for (int run = 0; run < 5; run++) {
-        final plan = service.generate(_settings(ms: ms, foodBudget: 9999), march2026);
+        final plan = service.generate(
+          _settings(ms: ms, foodBudget: 9999),
+          march2026,
+        );
         final rMap = service.recipeMap;
         for (int i = 2; i < plan.days.length; i++) {
           final p0 = rMap[plan.days[i - 2].recipeId]!.proteinId;
@@ -780,8 +965,12 @@ void main() {
         }
       }
       // Should be very rare
-      expect(violations, lessThanOrEqualTo(5),
-          reason: '$violations cases of 3 consecutive same-protein dinners across 5 runs');
+      expect(
+        violations,
+        lessThanOrEqualTo(5),
+        reason:
+            '$violations cases of 3 consecutive same-protein dinners across 5 runs',
+      );
     });
   });
 
@@ -805,7 +994,10 @@ void main() {
 
     test('pantry ingredients are excluded', () {
       final plan = service.generate(_settings(), march2026);
-      final withPantry = service.consolidatedIngredients(plan, pantryIngredients: ['azeite', 'alho']);
+      final withPantry = service.consolidatedIngredients(
+        plan,
+        pantryIngredients: ['azeite', 'alho'],
+      );
       expect(withPantry.containsKey('azeite'), isFalse);
       expect(withPantry.containsKey('alho'), isFalse);
     });
@@ -822,12 +1014,59 @@ void main() {
     });
 
     test('alternatives respect dietary filters', () {
-      final alts = service.alternativesFor('frango_assado', 2,
-          ms: const MealSettings(glutenFree: true));
+      final alts = service.alternativesFor(
+        'frango_assado',
+        2,
+        ms: const MealSettings(glutenFree: true),
+      );
       for (final r in alts) {
         expect(r.glutenFree, isTrue);
       }
     });
+
+    test(
+      'alternatives respect egg, sodium, medical, disliked, and equipment filters',
+      () {
+        final alts = service.alternativesFor(
+          'frango_assado',
+          2,
+          ms: const MealSettings(
+            eggFree: true,
+            sodiumPreference: SodiumPreference.lowSodium,
+            medicalConditions: {MedicalCondition.hypertension},
+            dislikedIngredients: ['batata'],
+            availableEquipment: {},
+          ),
+          crossType: true,
+        );
+
+        for (final r in alts) {
+          expect(r.ingredients.any((ri) => ri.ingredientId == 'ovo'), isFalse);
+          expect(
+            r.ingredients.any(
+              (ri) => {
+                'bacalhau',
+                'chourico',
+                'fiambre',
+                'sardinha',
+              }.contains(ri.ingredientId),
+            ),
+            isFalse,
+          );
+          expect(r.nutrition, isNotNull);
+          expect(r.nutrition!.sodiumMg, lessThanOrEqualTo(500));
+          expect(
+            r.ingredients.any(
+              (ri) =>
+                  service.ingredientMap[ri.ingredientId]?.name.toLowerCase() ==
+                  'batata',
+            ),
+            isFalse,
+          );
+          expect(r.requiresEquipment, isEmpty);
+        }
+      },
+    );
 
     test('alternatives sorted by protein match then cost', () {
       final alts = service.alternativesFor('frango_assado', 2);
@@ -851,14 +1090,22 @@ void main() {
     test('replaces specific meal and recalculates cost', () {
       final plan = service.generate(_settings(), march2026);
       final oldDay = plan.days.first;
-      final newPlan = service.swapDay(plan, oldDay.dayIndex, oldDay.mealType, 'frango_grelhado');
+      final newPlan = service.swapDay(
+        plan,
+        oldDay.dayIndex,
+        oldDay.mealType,
+        'frango_grelhado',
+      );
       final updated = newPlan.days.firstWhere(
         (d) => d.dayIndex == oldDay.dayIndex && d.mealType == oldDay.mealType,
       );
       expect(updated.recipeId, 'frango_grelhado');
       expect(updated.costEstimate, greaterThan(0));
       // Verify total was recalculated as sum of all day costs
-      final expectedTotal = newPlan.days.fold(0.0, (s, d) => s + d.costEstimate);
+      final expectedTotal = newPlan.days.fold(
+        0.0,
+        (s, d) => s + d.costEstimate,
+      );
       expect(newPlan.totalEstimatedCost, closeTo(expectedTotal, 0.001));
     });
   });
@@ -869,7 +1116,12 @@ void main() {
   group('Combined settings stress tests', () {
     test('all meals + vegetarian + gluten-free + low sodium + diabetes', () {
       final ms = const MealSettings(
-        enabledMeals: {MealType.breakfast, MealType.lunch, MealType.snack, MealType.dinner},
+        enabledMeals: {
+          MealType.breakfast,
+          MealType.lunch,
+          MealType.snack,
+          MealType.dinner,
+        },
         objective: MealObjective.vegetarian,
         glutenFree: true,
         sodiumPreference: SodiumPreference.lowSodium,
@@ -904,21 +1156,24 @@ void main() {
       expect(plan.days.isNotEmpty, isTrue);
     });
 
-    test('maximum restrictions: all allergies + excluded proteins + low complexity', () {
-      final ms = const MealSettings(
-        glutenFree: true,
-        lactoseFree: true,
-        eggFree: true,
-        shellfishFree: true,
-        excludedProteins: ['porco', 'bacalhau', 'sardinha', 'chourico'],
-        maxPrepMinutes: 15,
-        maxComplexity: 1,
-        availableEquipment: {},
-      );
-      final plan = service.generate(_settings(ms: ms), march2026);
-      // Even with extreme restrictions, fallback should produce meals
-      expect(plan.days.isNotEmpty, isTrue);
-    });
+    test(
+      'maximum restrictions: all allergies + excluded proteins + low complexity',
+      () {
+        final ms = const MealSettings(
+          glutenFree: true,
+          lactoseFree: true,
+          eggFree: true,
+          shellfishFree: true,
+          excludedProteins: ['porco', 'bacalhau', 'sardinha', 'chourico'],
+          maxPrepMinutes: 15,
+          maxComplexity: 1,
+          availableEquipment: {},
+        );
+        final plan = service.generate(_settings(ms: ms), march2026);
+        // Even with extreme restrictions, fallback should produce meals
+        expect(plan.days.isNotEmpty, isTrue);
+      },
+    );
 
     test('fish + legume days + red meat cap together', () {
       final ms = const MealSettings(
@@ -932,7 +1187,8 @@ void main() {
       for (final day in plan.days) {
         if (day.isLeftover) continue;
         final recipe = rMap[day.recipeId]!;
-        if (recipe.type == RecipeType.carne && redMeatProteins.contains(recipe.proteinId)) {
+        if (recipe.type == RecipeType.carne &&
+            redMeatProteins.contains(recipe.proteinId)) {
           fail('Day ${day.dayIndex}: ${recipe.name} is red meat but cap is 0');
         }
       }
@@ -968,29 +1224,40 @@ void main() {
         }
       }
       for (final entry in weeklySoups.entries) {
-        expect(entry.value, lessThanOrEqualTo(2),
-            reason: 'Week ${entry.key} has ${entry.value} soups, max is 2');
+        expect(
+          entry.value,
+          lessThanOrEqualTo(2),
+          reason: 'Week ${entry.key} has ${entry.value} soups, max is 2',
+        );
       }
     });
 
-    test('low-protein soups excluded from main meals when pool is large enough', () {
-      final ms = const MealSettings(
-        enabledMeals: {MealType.lunch, MealType.dinner},
-      );
-      final plan = service.generate(_settings(ms: ms), march2026);
-      final rMap = service.recipeMap;
-      int lowProteinSoups = 0;
-      for (final d in plan.days) {
-        if (d.isLeftover) continue;
-        final r = rMap[d.recipeId];
-        if (r != null && r.isSoup && r.nutrition != null &&
-            r.nutrition!.proteinG < Recipe.mainMealMinProteinG) {
-          lowProteinSoups++;
+    test(
+      'low-protein soups excluded from main meals when pool is large enough',
+      () {
+        final ms = const MealSettings(
+          enabledMeals: {MealType.lunch, MealType.dinner},
+        );
+        final plan = service.generate(_settings(ms: ms), march2026);
+        final rMap = service.recipeMap;
+        int lowProteinSoups = 0;
+        for (final d in plan.days) {
+          if (d.isLeftover) continue;
+          final r = rMap[d.recipeId];
+          if (r != null &&
+              r.isSoup &&
+              r.nutrition != null &&
+              r.nutrition!.proteinG < Recipe.mainMealMinProteinG) {
+            lowProteinSoups++;
+          }
         }
-      }
-      expect(lowProteinSoups, 0,
-          reason: 'Low-protein soups should not appear as main meals');
-    });
+        expect(
+          lowProteinSoups,
+          0,
+          reason: 'Low-protein soups should not appear as main meals',
+        );
+      },
+    );
 
     test('soups only appear at dinner, not lunch', () {
       final ms = const MealSettings(
@@ -999,16 +1266,22 @@ void main() {
       );
       final plan = service.generate(_settings(ms: ms), march2026);
       final rMap = service.recipeMap;
-      final lunchSoups = plan.days.where((d) =>
-          d.mealType == MealType.lunch &&
-          !d.isLeftover &&
-          rMap[d.recipeId]?.isSoup == true).toList();
-      expect(lunchSoups.length, 0,
-          reason: 'Soups should not appear at lunch');
+      final lunchSoups = plan.days
+          .where(
+            (d) =>
+                d.mealType == MealType.lunch &&
+                !d.isLeftover &&
+                rMap[d.recipeId]?.isSoup == true,
+          )
+          .toList();
+      expect(lunchSoups.length, 0, reason: 'Soups should not appear at lunch');
     });
 
     test('summer month with seasonal preference picks summer recipes', () {
-      final ms = const MealSettings(preferSeasonal: true, enabledMeals: {MealType.dinner});
+      final ms = const MealSettings(
+        preferSeasonal: true,
+        enabledMeals: {MealType.dinner},
+      );
       final july = DateTime(2026, 7);
       final plan = service.generate(_settings(ms: ms, foodBudget: 9999), july);
       final rMap = service.recipeMap;
@@ -1044,27 +1317,38 @@ void main() {
         leftovers++;
         // Leftover must reference the previous day's main-course recipe.
         final prevMain = plan.days
-            .where((d) =>
-                d.dayIndex == day.dayIndex - 1 &&
-                d.mealType == MealType.dinner &&
-                d.courseType == CourseType.mainCourse)
+            .where(
+              (d) =>
+                  d.dayIndex == day.dayIndex - 1 &&
+                  d.mealType == MealType.dinner &&
+                  d.courseType == CourseType.mainCourse,
+            )
             .firstOrNull;
         if (prevMain != null) {
-          expect(day.recipeId, prevMain.recipeId,
-              reason:
-                  'Day ${day.dayIndex} leftover points to ${rMap[day.recipeId]?.name} '
-                  '(courseType=${rMap[day.recipeId]?.courseType.name}), '
-                  'expected main ${rMap[prevMain.recipeId]?.name}');
+          expect(
+            day.recipeId,
+            prevMain.recipeId,
+            reason:
+                'Day ${day.dayIndex} leftover points to ${rMap[day.recipeId]?.name} '
+                '(courseType=${rMap[day.recipeId]?.courseType.name}), '
+                'expected main ${rMap[prevMain.recipeId]?.name}',
+          );
         }
         // Whatever it references, it must never be a soup or dessert.
         final recipe = rMap[day.recipeId];
-        expect(recipe?.courseType, CourseType.mainCourse,
-            reason:
-                'Leftover on day ${day.dayIndex} references a ${recipe?.courseType.name} recipe');
+        expect(
+          recipe?.courseType,
+          CourseType.mainCourse,
+          reason:
+              'Leftover on day ${day.dayIndex} references a ${recipe?.courseType.name} recipe',
+        );
         expect(day.courseType, CourseType.mainCourse);
       }
-      expect(leftovers, greaterThan(0),
-          reason: 'reuseLeftovers=true should yield at least one leftover');
+      expect(
+        leftovers,
+        greaterThan(0),
+        reason: 'reuseLeftovers=true should yield at least one leftover',
+      );
     });
 
     test('weekly trackers still reset when Monday is an eating-out day', () {
@@ -1088,16 +1372,20 @@ void main() {
       // picks a fresh ingredient budget, so we still get multiple distinct
       // recipes rather than repeating one recipe every day of the week.
       final weeklyMains = <int, Set<String>>{};
-      for (final d in plan.days.where((d) =>
-          d.courseType == CourseType.mainCourse && !d.isLeftover)) {
+      for (final d in plan.days.where(
+        (d) => d.courseType == CourseType.mainCourse && !d.isLeftover,
+      )) {
         final week = ((d.dayIndex - 1) / 7).floor();
         weeklyMains.putIfAbsent(week, () => {}).add(d.recipeId);
       }
       for (final entry in weeklyMains.entries) {
-        expect(entry.value.length, greaterThanOrEqualTo(2),
-            reason:
-                'Week ${entry.key} collapsed to ${entry.value.length} unique mains — '
-                'weekly tracker likely never reset');
+        expect(
+          entry.value.length,
+          greaterThanOrEqualTo(2),
+          reason:
+              'Week ${entry.key} collapsed to ${entry.value.length} unique mains — '
+              'weekly tracker likely never reset',
+        );
       }
     });
 
@@ -1110,10 +1398,14 @@ void main() {
       final plan = service.generate(_settings(ms: ms), march2026);
       final rMap = service.recipeMap;
       for (final d in plan.days.where(
-          (d) => d.courseType == CourseType.soupOrStarter && !d.isLeftover)) {
-        expect(rMap[d.recipeId]!.lactoseFree, isTrue,
-            reason:
-                'Day ${d.dayIndex}: soup ${rMap[d.recipeId]!.name} is not lactose-free');
+        (d) => d.courseType == CourseType.soupOrStarter && !d.isLeftover,
+      )) {
+        expect(
+          rMap[d.recipeId]!.lactoseFree,
+          isTrue,
+          reason:
+              'Day ${d.dayIndex}: soup ${rMap[d.recipeId]!.name} is not lactose-free',
+        );
       }
     });
 
@@ -1127,14 +1419,21 @@ void main() {
       final rMap = service.recipeMap;
       int dessertCount = 0;
       for (final d in plan.days.where(
-          (d) => d.courseType == CourseType.dessert && !d.isLeftover)) {
+        (d) => d.courseType == CourseType.dessert && !d.isLeftover,
+      )) {
         dessertCount++;
-        expect(rMap[d.recipeId]!.lactoseFree, isTrue,
-            reason:
-                'Day ${d.dayIndex}: dessert ${rMap[d.recipeId]!.name} contains lactose');
+        expect(
+          rMap[d.recipeId]!.lactoseFree,
+          isTrue,
+          reason:
+              'Day ${d.dayIndex}: dessert ${rMap[d.recipeId]!.name} contains lactose',
+        );
       }
-      expect(dessertCount, greaterThan(0),
-          reason: 'includeDessert=true should produce at least one dessert');
+      expect(
+        dessertCount,
+        greaterThan(0),
+        reason: 'includeDessert=true should produce at least one dessert',
+      );
     });
 
     test('dessert course respects eggFree dietary filter', () {
@@ -1146,12 +1445,15 @@ void main() {
       final plan = service.generate(_settings(ms: ms), march2026);
       final rMap = service.recipeMap;
       for (final d in plan.days.where(
-          (d) => d.courseType == CourseType.dessert && !d.isLeftover)) {
+        (d) => d.courseType == CourseType.dessert && !d.isLeftover,
+      )) {
         final recipe = rMap[d.recipeId]!;
-        expect(recipe.ingredients.any((ri) => ri.ingredientId == 'ovo'),
-            isFalse,
-            reason:
-                'Day ${d.dayIndex}: dessert ${recipe.name} contains egg but eggFree=true');
+        expect(
+          recipe.ingredients.any((ri) => ri.ingredientId == 'ovo'),
+          isFalse,
+          reason:
+              'Day ${d.dayIndex}: dessert ${recipe.name} contains egg but eggFree=true',
+        );
       }
     });
 
@@ -1165,42 +1467,54 @@ void main() {
       final plan = service.generate(_settings(ms: ms), march2026);
       final rMap = service.recipeMap;
       for (final d in plan.days.where(
-          (d) => d.courseType == CourseType.dessert && !d.isLeftover)) {
+        (d) => d.courseType == CourseType.dessert && !d.isLeftover,
+      )) {
         final recipe = rMap[d.recipeId]!;
-        expect(recipe.ingredients.any((ri) => ri.ingredientId == 'iogurte'),
-            isFalse,
-            reason:
-                'Day ${d.dayIndex}: dessert ${recipe.name} uses a disliked ingredient');
+        expect(
+          recipe.ingredients.any((ri) => ri.ingredientId == 'iogurte'),
+          isFalse,
+          reason:
+              'Day ${d.dayIndex}: dessert ${recipe.name} uses a disliked ingredient',
+        );
       }
     });
 
     test(
-        'tight budget does not replace lunch/dinner mains with incomplete meals',
-        () {
-      // Very small budget to force many replacements.
-      final ms = const MealSettings(
-        enabledMeals: {MealType.lunch, MealType.dinner},
-      );
-      final plan = service.generate(_settings(ms: ms, foodBudget: 50), march2026);
-      final rMap = service.recipeMap;
-      int incomplete = 0;
-      int total = 0;
-      for (final d in plan.days.where((d) =>
-          d.courseType == CourseType.mainCourse &&
-          !d.isLeftover &&
-          (d.mealType == MealType.lunch || d.mealType == MealType.dinner))) {
-        total++;
-        final recipe = rMap[d.recipeId];
-        if (recipe != null && !recipe.isCompleteMeal) incomplete++;
-      }
-      // Budget enforcement must preserve the complete-meal constraint for
-      // lunch/dinner mains. Allow a small slack for degenerate pools.
-      if (total > 0) {
-        expect(incomplete / total, lessThanOrEqualTo(0.15),
+      'tight budget does not replace lunch/dinner mains with incomplete meals',
+      () {
+        // Very small budget to force many replacements.
+        final ms = const MealSettings(
+          enabledMeals: {MealType.lunch, MealType.dinner},
+        );
+        final plan = service.generate(
+          _settings(ms: ms, foodBudget: 50),
+          march2026,
+        );
+        final rMap = service.recipeMap;
+        int incomplete = 0;
+        int total = 0;
+        for (final d in plan.days.where(
+          (d) =>
+              d.courseType == CourseType.mainCourse &&
+              !d.isLeftover &&
+              (d.mealType == MealType.lunch || d.mealType == MealType.dinner),
+        )) {
+          total++;
+          final recipe = rMap[d.recipeId];
+          if (recipe != null && !recipe.isCompleteMeal) incomplete++;
+        }
+        // Budget enforcement must preserve the complete-meal constraint for
+        // lunch/dinner mains. Allow a small slack for degenerate pools.
+        if (total > 0) {
+          expect(
+            incomplete / total,
+            lessThanOrEqualTo(0.15),
             reason:
-                '$incomplete/$total lunch/dinner mains became incomplete after budget enforcement');
-      }
-    });
+                '$incomplete/$total lunch/dinner mains became incomplete after budget enforcement',
+          );
+        }
+      },
+    );
   });
 
   // ────────────────────────────────────────────────────────────
@@ -1226,11 +1540,14 @@ void main() {
       // The catalog has 120+ lunch/dinner-suitable mains; default settings
       // should reach at least 10 unique recipes across 62 meals. Before the
       // fix, uniqueMains.length == 1.
-      expect(uniqueMains.length, greaterThanOrEqualTo(10),
-          reason:
-              'Zero-budget plan collapsed to ${uniqueMains.length} unique recipes — '
-              'expected diverse selection (generate() should skip _enforceBudget '
-              'when monthlyBudget <= 0)');
+      expect(
+        uniqueMains.length,
+        greaterThanOrEqualTo(10),
+        reason:
+            'Zero-budget plan collapsed to ${uniqueMains.length} unique recipes — '
+            'expected diverse selection (generate() should skip _enforceBudget '
+            'when monthlyBudget <= 0)',
+      );
     });
 
     test('tight but non-zero budget does not collapse to a single recipe', () {
@@ -1248,16 +1565,73 @@ void main() {
       // Allow a small slack for mid-loop states.
       final cap = totalMeals ~/ 4; // ~15 for a 62-meal plan
       for (final entry in usage.entries) {
-        expect(entry.value, lessThanOrEqualTo(cap),
-            reason:
-                'Recipe ${entry.key} used ${entry.value}× in a tight-budget '
-                'plan (totalMeals=$totalMeals, cap=$cap) — enforcement should '
-                'stop concentrating on the cheapest recipe');
+        expect(
+          entry.value,
+          lessThanOrEqualTo(cap),
+          reason:
+              'Recipe ${entry.key} used ${entry.value}× in a tight-budget '
+              'plan (totalMeals=$totalMeals, cap=$cap) — enforcement should '
+              'stop concentrating on the cheapest recipe',
+        );
       }
       // And we should have meaningful variety.
-      expect(usage.keys.length, greaterThanOrEqualTo(6),
+      expect(
+        usage.keys.length,
+        greaterThanOrEqualTo(6),
+        reason:
+            'Tight-budget plan has only ${usage.keys.length} unique recipes',
+      );
+    });
+
+    test('budget enforcement preserves egg-free safety', () {
+      final plan = service.generate(
+        _settings(
+          foodBudget: 50,
+          ms: const MealSettings(
+            eggFree: true,
+            enabledMeals: {MealType.lunch, MealType.dinner},
+          ),
+        ),
+        march2026,
+      );
+
+      for (final day in plan.days.where(
+        (d) => !d.isLeftover && !d.isFreeform,
+      )) {
+        final recipe = service.recipeMap[day.recipeId]!;
+        expect(
+          recipe.ingredients.any((ri) => ri.ingredientId == 'ovo'),
+          isFalse,
           reason:
-              'Tight-budget plan has only ${usage.keys.length} unique recipes');
+              '${day.recipeId} was selected after budget enforcement despite eggFree',
+        );
+      }
+    });
+
+    test('invalid pinned meals are skipped and regenerated safely', () {
+      final plan = service.generate(
+        _settings(
+          ms: const MealSettings(
+            eggFree: true,
+            enabledMeals: {MealType.dinner},
+            pinnedMeals: {'1_dinner': 'omelete_legumes'},
+          ),
+        ),
+        march2026,
+      );
+
+      for (final day in plan.days.where(
+        (d) =>
+            d.mealType == MealType.dinner &&
+            DateTime(plan.year, plan.month, d.dayIndex).weekday == 1,
+      )) {
+        expect(day.recipeId, isNot('omelete_legumes'));
+        final recipe = service.recipeMap[day.recipeId]!;
+        expect(
+          recipe.ingredients.any((ri) => ri.ingredientId == 'ovo'),
+          isFalse,
+        );
+      }
     });
 
     test('generous budget path unchanged: variety remains', () {

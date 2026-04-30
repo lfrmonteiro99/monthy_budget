@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS public.recipes (
   lactose_free boolean DEFAULT false,
   nut_free boolean DEFAULT true,
   shellfish_free boolean DEFAULT true,
+  is_complete_meal boolean DEFAULT true,
+  course_type text DEFAULT 'mainCourse',
   batch_cookable boolean DEFAULT false,
   max_batch_days int DEFAULT 2,
   is_portable boolean DEFAULT false,

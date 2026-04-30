@@ -13,7 +13,6 @@ import '../utils/taste_profile.dart';
 import '../utils/unit_converter.dart';
 
 class MealPlannerService {
-
   static const _recipeCacheKey = 'cached_recipes_json';
   static const _ingredientCacheKey = 'cached_ingredients_json';
 
@@ -64,13 +63,14 @@ class MealPlannerService {
       if (recipesData.isEmpty) return false;
 
       _recipes = recipesData.map<Recipe>((r) {
-        final ingredients =
-            (r['recipe_ingredients'] as List? ?? []).map<RecipeIngredient>((ri) =>
-              RecipeIngredient(
+        final ingredients = (r['recipe_ingredients'] as List? ?? [])
+            .map<RecipeIngredient>(
+              (ri) => RecipeIngredient(
                 ingredientId: ri['ingredient_id'] as String,
                 quantity: (ri['quantity'] as num).toDouble(),
               ),
-            ).toList();
+            )
+            .toList();
 
         return Recipe(
           id: r['id'] as String,
@@ -97,7 +97,7 @@ class MealPlannerService {
           isPortable: r['is_portable'] as bool? ?? false,
           suitableMealTypes:
               (r['suitable_meal_types'] as List?)?.cast<String>() ??
-                  ['lunch', 'dinner'],
+              ['lunch', 'dinner'],
           seasons: (r['seasons'] as List?)?.cast<String>() ?? [],
           requiresEquipment:
               (r['requires_equipment'] as List?)?.cast<String>() ?? [],
@@ -105,7 +105,7 @@ class MealPlannerService {
               ? NutritionInfo.fromJson(
                   r['nutrition'] is String
                       ? jsonDecode(r['nutrition'] as String)
-                          as Map<String, dynamic>
+                            as Map<String, dynamic>
                       : r['nutrition'] as Map<String, dynamic>,
                 )
               : null,
@@ -118,8 +118,9 @@ class MealPlannerService {
       }).toList();
 
       // Ingredients are simpler and change rarely -- load from assets
-      final ingJson =
-          await rootBundle.loadString('assets/meal_planner/ingredients.json');
+      final ingJson = await rootBundle.loadString(
+        'assets/meal_planner/ingredients.json',
+      );
       _ingredients = (jsonDecode(ingJson) as List<dynamic>)
           .map((e) => Ingredient.fromJson(e as Map<String, dynamic>))
           .toList();
@@ -158,10 +159,12 @@ class MealPlannerService {
   }
 
   Future<void> _loadFromAssets() async {
-    final ingJson =
-        await rootBundle.loadString('assets/meal_planner/ingredients.json');
-    final recJson =
-        await rootBundle.loadString('assets/meal_planner/recipes.json');
+    final ingJson = await rootBundle.loadString(
+      'assets/meal_planner/ingredients.json',
+    );
+    final recJson = await rootBundle.loadString(
+      'assets/meal_planner/recipes.json',
+    );
     loadCatalogFromJson(ingJson, recJson);
   }
 
@@ -169,8 +172,7 @@ class MealPlannerService {
     try {
       final prefs = await SharedPreferences.getInstance();
       final recJson = jsonEncode(_recipes.map((r) => r.toJson()).toList());
-      final ingJson =
-          jsonEncode(_ingredients.map((i) => i.toJson()).toList());
+      final ingJson = jsonEncode(_ingredients.map((i) => i.toJson()).toList());
       await prefs.setString(_recipeCacheKey, recJson);
       await prefs.setString(_ingredientCacheKey, ingJson);
     } catch (_) {
@@ -205,7 +207,10 @@ class MealPlannerService {
   int nPessoas(AppSettings settings) {
     final members = settings.mealSettings.householdMembers;
     if (members.isNotEmpty) {
-      return members.fold(0.0, (sum, m) => sum + m.portionEquivalent).round().clamp(1, 99);
+      return members
+          .fold(0.0, (sum, m) => sum + m.portionEquivalent)
+          .round()
+          .clamp(1, 99);
     }
     if (settings.mealSettings.householdSize != null) {
       return settings.mealSettings.householdSize!.clamp(1, 99);
@@ -264,7 +269,14 @@ class MealPlannerService {
     return map;
   }
 
-  MealPlan generate(AppSettings settings, DateTime forMonth, {List<String> favorites = const [], Map<String, MealFeedback> previousFeedback = const {}, Map<String, int> previousRatings = const {}, Map<String, double>? groceryPrices}) {
+  MealPlan generate(
+    AppSettings settings,
+    DateTime forMonth, {
+    List<String> favorites = const [],
+    Map<String, MealFeedback> previousFeedback = const {},
+    Map<String, int> previousRatings = const {},
+    Map<String, double>? groceryPrices,
+  }) {
     assert(_catalogLoaded, 'Call loadCatalog() first');
     final ms = settings.mealSettings;
     final np = nPessoas(settings);
@@ -280,24 +292,38 @@ class MealPlannerService {
       ...ms.pantryIngredients,
       ...ms.stapleIngredients,
       ...ms.weeklyPantryIngredients,
+      for (final item in ms.pantryItems)
+        if (item.quantity > 0) item.ingredientId,
     };
 
     // Build taste profile from previous feedback and ratings
-    final tasteProfile = (previousFeedback.isNotEmpty || previousRatings.isNotEmpty)
-        ? TasteProfile.fromFeedback(feedback: previousFeedback, recipeMap: recipeMap, ratings: previousRatings)
+    final tasteProfile =
+        (previousFeedback.isNotEmpty || previousRatings.isNotEmpty)
+        ? TasteProfile.fromFeedback(
+            feedback: previousFeedback,
+            recipeMap: recipeMap,
+            ratings: previousRatings,
+          )
         : const TasteProfile();
 
     // Pre-compute average price map for price-based seasonal boost
-    final avgPriceMap = groceryPrices != null ? _buildAvgPriceMap() : <String, double>{};
+    final avgPriceMap = groceryPrices != null
+        ? _buildAvgPriceMap()
+        : <String, double>{};
 
     // Pre-compute cost cache: recipeId -> cost for this np
     final costCache = <String, double>{};
     double cachedCost(Recipe recipe) {
-      return costCache.putIfAbsent(recipe.id, () => recipeCost(recipe, np, iMap));
+      return costCache.putIfAbsent(
+        recipe.id,
+        () => recipeCost(recipe, np, iMap),
+      );
     }
 
     // Pre-lowercase disliked ingredients for O(1) lookup
-    final dislikedLower = ms.dislikedIngredients.map((d) => d.toLowerCase()).toSet();
+    final dislikedLower = ms.dislikedIngredients
+        .map((d) => d.toLowerCase())
+        .toSet();
 
     // Pre-build ingredient name lookup (lowercased)
     final ingredientNameLower = <String, String>{};
@@ -333,9 +359,15 @@ class MealPlannerService {
     }
 
     // Pre-compute hard-filter flags per recipe (settings-only, day-independent)
-    final hasDiabetes = ms.medicalConditions.contains(MedicalCondition.diabetes);
-    final hasHypertension = ms.medicalConditions.contains(MedicalCondition.hypertension);
-    final hasCholesterol = ms.medicalConditions.contains(MedicalCondition.highCholesterol);
+    final hasDiabetes = ms.medicalConditions.contains(
+      MedicalCondition.diabetes,
+    );
+    final hasHypertension = ms.medicalConditions.contains(
+      MedicalCondition.hypertension,
+    );
+    final hasCholesterol = ms.medicalConditions.contains(
+      MedicalCondition.highCholesterol,
+    );
     final hasGout = ms.medicalConditions.contains(MedicalCondition.gout);
     final isLowSodium = ms.sodiumPreference == SodiumPreference.lowSodium;
     const highSodiumIds = {'bacalhau', 'chourico', 'fiambre', 'sardinha'};
@@ -353,13 +385,25 @@ class MealPlannerService {
       if (ms.lactoseFree && !r.lactoseFree) return false;
       if (ms.nutFree && !r.nutFree) return false;
       if (ms.shellfishFree && !r.shellfishFree) return false;
-      if (ms.eggFree && r.ingredients.any((ri) => ri.ingredientId == 'ovo')) return false;
+      if (ms.eggFree && r.ingredients.any((ri) => ri.ingredientId == 'ovo')) {
+        return false;
+      }
       if (excludedProteinsSet.contains(r.proteinId)) return false;
       if (hasDislikedIngredient(r)) return false;
-      if (isLowSodium && r.ingredients.any((ri) => highSodiumIds.contains(ri.ingredientId))) return false;
-      if (hasDiabetes && r.nutrition != null && r.nutrition!.carbsG > 55) return false;
-      if (hasHypertension && r.nutrition != null && r.nutrition!.sodiumMg > 500) return false;
-      if (hasCholesterol && r.nutrition != null && r.nutrition!.fatG > 25) return false;
+      if (isLowSodium &&
+          r.ingredients.any((ri) => highSodiumIds.contains(ri.ingredientId))) {
+        return false;
+      }
+      if (hasDiabetes && (r.nutrition == null || r.nutrition!.carbsG > 55)) {
+        return false;
+      }
+      if (hasHypertension &&
+          (r.nutrition == null || r.nutrition!.sodiumMg > 500)) {
+        return false;
+      }
+      if (hasCholesterol && (r.nutrition == null || r.nutrition!.fatG > 25)) {
+        return false;
+      }
       if (hasGout && highPurineProteins.contains(r.proteinId)) return false;
       return true;
     }
@@ -378,8 +422,12 @@ class MealPlannerService {
       final cached = poolCache[key];
       if (cached != null) return List.of(cached);
 
-      final effectiveMaxPrep = isWeekend ? ms.maxPrepMinutesWeekend : ms.maxPrepMinutes;
-      final effectiveMaxComplexity = isWeekend ? ms.maxComplexityWeekend : ms.maxComplexity;
+      final effectiveMaxPrep = isWeekend
+          ? ms.maxPrepMinutesWeekend
+          : ms.maxPrepMinutes;
+      final effectiveMaxComplexity = isWeekend
+          ? ms.maxComplexityWeekend
+          : ms.maxComplexity;
       final mealTypeName = mealType.name;
 
       var pool = _recipes.where((r) {
@@ -416,14 +464,19 @@ class MealPlannerService {
           if (ms.lactoseFree && !r.lactoseFree) return false;
           if (ms.nutFree && !r.nutFree) return false;
           if (ms.shellfishFree && !r.shellfishFree) return false;
-          if (ms.eggFree && r.ingredients.any((ri) => ri.ingredientId == 'ovo')) return false;
+          if (ms.eggFree &&
+              r.ingredients.any((ri) => ri.ingredientId == 'ovo')) {
+            return false;
+          }
           if (excludedProteinsSet.contains(r.proteinId)) return false;
           if (hasDislikedIngredient(r)) return false;
           return true;
         }).toList();
       }
       if (pool.isEmpty) {
-        pool = _recipes.where((r) => r.suitableMealTypes.contains(mealTypeName)).toList();
+        pool = _recipes
+            .where((r) => r.suitableMealTypes.contains(mealTypeName))
+            .toList();
       }
       if (pool.isEmpty) {
         // Last-resort fallback: every recipe. Shuffle so a pathological
@@ -451,7 +504,7 @@ class MealPlannerService {
     // Global tracking for waste minimization (shared across meal types)
     var globalUsedIngredientsThisWeek = <String>{};
     final newIngredientCountThisWeek = <MealType, int>{
-      for (final m in ms.enabledMeals) m: 0
+      for (final m in ms.enabledMeals) m: 0,
     };
 
     // Batch cooking tracking: {mealType: {recipeId, daysRemaining}}
@@ -467,8 +520,10 @@ class MealPlannerService {
     const maxSoupsPerWeek = 2;
 
     // Track recent soup/dessert recipes for multi-day dedup
-    final recentSoupRecipes = <String>[]; // last N soup recipe IDs (across days)
-    final recentDessertRecipes = <String>[]; // last N dessert recipe IDs (across days)
+    final recentSoupRecipes =
+        <String>[]; // last N soup recipe IDs (across days)
+    final recentDessertRecipes =
+        <String>[]; // last N dessert recipe IDs (across days)
     // Track the recipe used 2 days ago per meal type for extended main course dedup
     final prevPrevRecipePerMealType = <MealType, String>{};
 
@@ -497,12 +552,14 @@ class MealPlannerService {
           if (state.daysLeft > 0) {
             final recipe = rMap[state.recipeId]!;
             final cost = cachedCost(recipe);
-            days.add(MealDay(
-              dayIndex: day,
-              recipeId: state.recipeId,
-              costEstimate: cost,
-              mealType: mealType,
-            ));
+            days.add(
+              MealDay(
+                dayIndex: day,
+                recipeId: state.recipeId,
+                costEstimate: cost,
+                mealType: mealType,
+              ),
+            );
             batchState[mealType] = (
               recipeId: state.recipeId,
               daysLeft: state.daysLeft - 1,
@@ -517,7 +574,10 @@ class MealPlannerService {
         // With multi-course dinners, yesterday has up to 3 MealDay entries for
         // dinner (soup, main, dessert). We must explicitly pick the mainCourse
         // so leftovers don't inherit a dessert or soup recipe.
-        if (ms.reuseLeftovers && mealType == MealType.lunch && day > 1 && ms.enabledMeals.contains(MealType.dinner)) {
+        if (ms.reuseLeftovers &&
+            mealType == MealType.lunch &&
+            day > 1 &&
+            ms.enabledMeals.contains(MealType.dinner)) {
           final prevDinner = days.lastWhere(
             (d) =>
                 d.dayIndex == day - 1 &&
@@ -526,14 +586,16 @@ class MealPlannerService {
             orElse: () => MealDay(dayIndex: 0, recipeId: '', costEstimate: 0),
           );
           if (prevDinner.recipeId.isNotEmpty) {
-            days.add(MealDay(
-              dayIndex: day,
-              recipeId: prevDinner.recipeId,
-              isLeftover: true,
-              costEstimate: 0,
-              mealType: MealType.lunch,
-              courseType: CourseType.mainCourse,
-            ));
+            days.add(
+              MealDay(
+                dayIndex: day,
+                recipeId: prevDinner.recipeId,
+                isLeftover: true,
+                costEstimate: 0,
+                mealType: MealType.lunch,
+                courseType: CourseType.mainCourse,
+              ),
+            );
             continue;
           }
         }
@@ -544,14 +606,26 @@ class MealPlannerService {
         if (pinnedRecipeId != null) {
           if (pinnedRecipeId == 'skip') continue;
           final pinnedRecipe = rMap[pinnedRecipeId];
-          if (pinnedRecipe != null) {
+          final validPinnedRecipe =
+              pinnedRecipe != null &&
+              pinnedRecipe.suitableMealTypes.contains(mealType.name) &&
+              pinnedRecipe.courseType == CourseType.mainCourse &&
+              passesHardFilters(pinnedRecipe) &&
+              (ms.objective != MealObjective.vegetarian ||
+                  pinnedRecipe.isVegetarian) &&
+              (!isVeggieDay || pinnedRecipe.isVegetarian) &&
+              ((mealType != MealType.lunch && mealType != MealType.dinner) ||
+                  pinnedRecipe.isCompleteMeal);
+          if (validPinnedRecipe) {
             final cost = cachedCost(pinnedRecipe);
-            days.add(MealDay(
-              dayIndex: day,
-              recipeId: pinnedRecipeId,
-              costEstimate: cost,
-              mealType: mealType,
-            ));
+            days.add(
+              MealDay(
+                dayIndex: day,
+                recipeId: pinnedRecipeId,
+                costEstimate: cost,
+                mealType: mealType,
+              ),
+            );
             continue;
           }
         }
@@ -570,41 +644,59 @@ class MealPlannerService {
           if (veg.isNotEmpty) pool = veg;
         }
 
-        // Pantry-first boost: soft-sort recipes by pantry ingredient count (desc)
-        if (pantryIds.isNotEmpty) {
-          pool.sort((a, b) {
-            final aCount = a.ingredients.where((ri) => pantryIds.contains(ri.ingredientId)).length;
-            final bCount = b.ingredients.where((ri) => pantryIds.contains(ri.ingredientId)).length;
-            return bCount.compareTo(aCount); // more pantry matches first
-          });
-        }
-
         // Sort by objective
-        if (ms.objective == MealObjective.minimizeCost || ms.prioritizeLowCost) {
+        if (ms.objective == MealObjective.minimizeCost ||
+            ms.prioritizeLowCost) {
           pool.sort((a, b) => cachedCost(a).compareTo(cachedCost(b)));
         }
 
         // Waste minimization: prefer recipes sharing ingredients (any, not all)
         if (ms.minimizeWaste && globalUsedIngredientsThisWeek.isNotEmpty) {
-          final reuse = pool.where((r) =>
-              r.ingredients.any((ri) => globalUsedIngredientsThisWeek.contains(ri.ingredientId))).toList();
+          final reuse = pool
+              .where(
+                (r) => r.ingredients.any(
+                  (ri) =>
+                      globalUsedIngredientsThisWeek.contains(ri.ingredientId),
+                ),
+              )
+              .toList();
           if (reuse.length >= 3) pool = reuse;
         }
 
         // Max new ingredients cap — soft: prefer fewer new ingredients, don't hard-block
         if (ms.maxNewIngredientsPerWeek < 10) {
-          final remaining = ms.maxNewIngredientsPerWeek - (newIngredientCountThisWeek[mealType] ?? 0);
+          final remaining =
+              ms.maxNewIngredientsPerWeek -
+              (newIngredientCountThisWeek[mealType] ?? 0);
           if (remaining <= 0) {
             // Prefer recipes with zero new ingredients
-            final noNew = pool.where((r) =>
-                r.ingredients.every((ri) => globalUsedIngredientsThisWeek.contains(ri.ingredientId))).toList();
+            final noNew = pool
+                .where(
+                  (r) => r.ingredients.every(
+                    (ri) =>
+                        globalUsedIngredientsThisWeek.contains(ri.ingredientId),
+                  ),
+                )
+                .toList();
             if (noNew.length >= 2) {
               pool = noNew;
             } else {
               // Fallback: sort by fewest new ingredients instead of hard-blocking
               pool.sort((a, b) {
-                final aNew = a.ingredients.where((ri) => !globalUsedIngredientsThisWeek.contains(ri.ingredientId)).length;
-                final bNew = b.ingredients.where((ri) => !globalUsedIngredientsThisWeek.contains(ri.ingredientId)).length;
+                final aNew = a.ingredients
+                    .where(
+                      (ri) => !globalUsedIngredientsThisWeek.contains(
+                        ri.ingredientId,
+                      ),
+                    )
+                    .length;
+                final bNew = b.ingredients
+                    .where(
+                      (ri) => !globalUsedIngredientsThisWeek.contains(
+                        ri.ingredientId,
+                      ),
+                    )
+                    .length;
                 return aNew.compareTo(bNew);
               });
             }
@@ -616,23 +708,38 @@ class MealPlannerService {
         if (ms.fishDaysPerWeek > 0) {
           final fishSoFar = weeklyFishCount[weekNum] ?? 0;
           final daysLeftInWeek = 7 - ((day - 1) % 7);
-          if (fishSoFar < ms.fishDaysPerWeek && daysLeftInWeek <= (ms.fishDaysPerWeek - fishSoFar)) {
-            final fishPool = pool.where((r) => r.type == RecipeType.peixe).toList();
+          if (fishSoFar < ms.fishDaysPerWeek &&
+              daysLeftInWeek <= (ms.fishDaysPerWeek - fishSoFar)) {
+            final fishPool = pool
+                .where((r) => r.type == RecipeType.peixe)
+                .toList();
             if (fishPool.isNotEmpty) pool = fishPool;
           }
         }
         if (ms.legumeDaysPerWeek > 0) {
           final legSoFar = weeklyLegumeCount[weekNum] ?? 0;
           final daysLeftInWeek = 7 - ((day - 1) % 7);
-          if (legSoFar < ms.legumeDaysPerWeek && daysLeftInWeek <= (ms.legumeDaysPerWeek - legSoFar)) {
-            final legPool = pool.where((r) => r.type == RecipeType.leguminosas).toList();
+          if (legSoFar < ms.legumeDaysPerWeek &&
+              daysLeftInWeek <= (ms.legumeDaysPerWeek - legSoFar)) {
+            final legPool = pool
+                .where((r) => r.type == RecipeType.leguminosas)
+                .toList();
             if (legPool.isNotEmpty) pool = legPool;
           }
         }
         if (ms.redMeatMaxPerWeek < 7) {
           final redSoFar = weeklyRedMeatCount[weekNum] ?? 0;
           if (redSoFar >= ms.redMeatMaxPerWeek) {
-            final noRed = pool.where((r) => !(r.type == RecipeType.carne && const {'porco', 'carne_picada'}.contains(r.proteinId))).toList();
+            final noRed = pool
+                .where(
+                  (r) =>
+                      !(r.type == RecipeType.carne &&
+                          const {
+                            'porco',
+                            'carne_picada',
+                          }.contains(r.proteinId)),
+                )
+                .toList();
             if (noRed.isNotEmpty) pool = noRed;
           }
         }
@@ -640,22 +747,33 @@ class MealPlannerService {
         // Soup limit: max 2 soups per week
         final soupsSoFar = weeklySoupCount[weekNum] ?? 0;
         if (soupsSoFar >= maxSoupsPerWeek) {
-          final noSoup = pool.where((r) => r.courseType != CourseType.soupOrStarter).toList();
+          final noSoup = pool
+              .where((r) => r.courseType != CourseType.soupOrStarter)
+              .toList();
           if (noSoup.isNotEmpty) pool = noSoup;
         }
 
         // Always exclude soups/desserts from the main course pool —
         // they should never be picked as standalone main courses.
         {
-          final mainOnly = pool.where((r) =>
-            r.courseType != CourseType.soupOrStarter && r.courseType != CourseType.dessert).toList();
+          final mainOnly = pool
+              .where(
+                (r) =>
+                    r.courseType != CourseType.soupOrStarter &&
+                    r.courseType != CourseType.dessert,
+              )
+              .toList();
           if (mainOnly.isNotEmpty) pool = mainOnly;
         }
 
         // Minimum protein: exclude low-protein soups/sides from main meals
-        final highProtein = pool.where((r) =>
-          r.nutrition == null ||
-          r.nutrition!.proteinG >= Recipe.mainMealMinProteinG).toList();
+        final highProtein = pool
+            .where(
+              (r) =>
+                  r.nutrition == null ||
+                  r.nutrition!.proteinG >= Recipe.mainMealMinProteinG,
+            )
+            .toList();
         if (highProtein.length >= 3) pool = highProtein;
 
         // Complete meal filter: for lunch/dinner, REQUIRE recipes with a real
@@ -676,18 +794,21 @@ class MealPlannerService {
         // Consecutive-day dedup: avoid same recipe as yesterday AND 2 days ago for this mealType
         final prevRecipe = recentRecipePerMealType[mealType];
         final prevPrevRecipe = prevPrevRecipePerMealType[mealType];
-        final recentMainRecipes = <String>{
-          if (prevRecipe != null) prevRecipe,
-          if (prevPrevRecipe != null) prevPrevRecipe,
-        };
+        final recentMainRecipes = <String>{?prevRecipe, ?prevPrevRecipe};
         if (recentMainRecipes.isNotEmpty) {
-          final deduped = available.where((r) => !recentMainRecipes.contains(r.id)).toList();
+          final deduped = available
+              .where((r) => !recentMainRecipes.contains(r.id))
+              .toList();
           if (deduped.isNotEmpty) {
             available = deduped;
           } else {
             // Pool collapsed to repeated recipes — widen to base pool
             final fallback = basePool(mealType, isWeekend)
-                .where((r) => !recentMainRecipes.contains(r.id) && !usedToday.contains(r.id))
+                .where(
+                  (r) =>
+                      !recentMainRecipes.contains(r.id) &&
+                      !usedToday.contains(r.id),
+                )
                 .toList();
             if (fallback.isNotEmpty) available = fallback;
           }
@@ -696,7 +817,9 @@ class MealPlannerService {
         // Protein diversity: avoid same protein as last 2 days for this mealType
         final recentProteins = recentProteinPerMealType[mealType] ?? [];
         if (recentProteins.isNotEmpty) {
-          final diverse = available.where((r) => !recentProteins.contains(r.proteinId)).toList();
+          final diverse = available
+              .where((r) => !recentProteins.contains(r.proteinId))
+              .toList();
           if (diverse.isNotEmpty) available = diverse;
         }
 
@@ -705,8 +828,9 @@ class MealPlannerService {
           final mealsPerDay = ms.enabledMeals.length;
           final targetPerMeal = ms.dailyCalorieTarget! / mealsPerDay;
           final maxKcal = (targetPerMeal * 1.3).round();
-          final calFiltered = available.where((r) =>
-            r.nutrition == null || r.nutrition!.kcal <= maxKcal).toList();
+          final calFiltered = available
+              .where((r) => r.nutrition == null || r.nutrition!.kcal <= maxKcal)
+              .toList();
           if (calFiltered.length >= 3) available = calFiltered;
         }
 
@@ -735,14 +859,50 @@ class MealPlannerService {
         if (ms.objective != MealObjective.minimizeCost) {
           available.shuffle(rng);
         }
+
+        // Pantry-first boost: prefer recipes whose ingredients overlap with
+        // the pantry. Applied AFTER shuffle so the bias survives randomization.
+        // Placed before favorites/feedback/taste so stronger user signals can
+        // still override.
+        if (pantryIds.isNotEmpty && available.length > 1) {
+          int pantryMatchCount(Recipe r) {
+            var c = 0;
+            for (final ri in r.ingredients) {
+              if (pantryIds.contains(ri.ingredientId)) c++;
+            }
+            return c;
+          }
+
+          final boosted = <Recipe>[];
+          final pantryRest = <Recipe>[];
+          for (final r in available) {
+            if (pantryMatchCount(r) > 0) {
+              boosted.add(r);
+            } else {
+              pantryRest.add(r);
+            }
+          }
+          if (boosted.isNotEmpty && boosted.length < available.length) {
+            boosted.sort(
+              (a, b) => pantryMatchCount(b).compareTo(pantryMatchCount(a)),
+            );
+            available = [...boosted, ...pantryRest];
+          }
+        }
+
         if (favorites.isNotEmpty) {
           final favs = <Recipe>[];
           final rest = <Recipe>[];
           for (final r in available) {
             final ing = iMap[r.proteinId];
-            if (ing != null && favorites.any((fav) =>
-                fav.toLowerCase().contains(ing.name.toLowerCase()) ||
-                ing.name.toLowerCase().contains(fav.toLowerCase().split(' ').first))) {
+            if (ing != null &&
+                favorites.any(
+                  (fav) =>
+                      fav.toLowerCase().contains(ing.name.toLowerCase()) ||
+                      ing.name.toLowerCase().contains(
+                        fav.toLowerCase().split(' ').first,
+                      ),
+                )) {
               favs.add(r);
             } else {
               rest.add(r);
@@ -754,8 +914,9 @@ class MealPlannerService {
         // Feedback integration
         if (previousFeedback.isNotEmpty) {
           // Remove disliked
-          final noDisliked = available.where((r) =>
-            previousFeedback[r.id] != MealFeedback.disliked).toList();
+          final noDisliked = available
+              .where((r) => previousFeedback[r.id] != MealFeedback.disliked)
+              .toList();
           if (noDisliked.length >= 3) available = noDisliked;
 
           // Boost liked
@@ -774,9 +935,12 @@ class MealPlannerService {
         // Seasonal boost
         if (ms.preferSeasonal) {
           final month = forMonth.month;
-          final season = month >= 3 && month <= 5 ? 'spring'
-              : month >= 6 && month <= 8 ? 'summer'
-              : month >= 9 && month <= 11 ? 'autumn'
+          final season = month >= 3 && month <= 5
+              ? 'spring'
+              : month >= 6 && month <= 8
+              ? 'summer'
+              : month >= 9 && month <= 11
+              ? 'autumn'
               : 'winter';
           final seasonal = <Recipe>[];
           final nonSeasonal = <Recipe>[];
@@ -793,17 +957,21 @@ class MealPlannerService {
         }
 
         // Price-based seasonal boost: prefer recipes with cheap ingredients
-        if (groceryPrices != null && groceryPrices.isNotEmpty && available.length > 1) {
+        if (groceryPrices != null &&
+            groceryPrices.isNotEmpty &&
+            available.length > 1) {
           int cheapCount(Recipe r) {
             int count = 0;
             for (final ri in r.ingredients) {
               final name = ingredientNameLower[ri.ingredientId];
-              if (name != null && isSeasonallyCheap(name, groceryPrices, avgPriceMap)) {
+              if (name != null &&
+                  isSeasonallyCheap(name, groceryPrices, avgPriceMap)) {
                 count++;
               }
             }
             return count;
           }
+
           final boosted = <Recipe>[];
           final rest = <Recipe>[];
           for (final r in available) {
@@ -844,7 +1012,9 @@ class MealPlannerService {
           prevPrevRecipePerMealType[mealType] = oldPrev;
         }
         recentRecipePerMealType[mealType] = recipe.id;
-        final rpList = List<String>.from(recentProteinPerMealType[mealType] ?? []);
+        final rpList = List<String>.from(
+          recentProteinPerMealType[mealType] ?? [],
+        );
         rpList.add(recipe.proteinId);
         if (rpList.length > 2) rpList.removeAt(0);
         recentProteinPerMealType[mealType] = rpList;
@@ -855,7 +1025,8 @@ class MealPlannerService {
           weeklyFishCount[weekNum] = (weeklyFishCount[weekNum] ?? 0) + 1;
         } else if (rType == RecipeType.leguminosas) {
           weeklyLegumeCount[weekNum] = (weeklyLegumeCount[weekNum] ?? 0) + 1;
-        } else if (rType == RecipeType.carne && const {'porco', 'carne_picada'}.contains(recipe.proteinId)) {
+        } else if (rType == RecipeType.carne &&
+            const {'porco', 'carne_picada'}.contains(recipe.proteinId)) {
           weeklyRedMeatCount[weekNum] = (weeklyRedMeatCount[weekNum] ?? 0) + 1;
         }
         if (recipe.courseType == CourseType.soupOrStarter) {
@@ -881,12 +1052,16 @@ class MealPlannerService {
           }).toList();
           if (soupPool.isNotEmpty) {
             // Filter out recipes already used today (cross-course dedup)
-            var filteredSoups = soupPool.where((r) => !usedToday.contains(r.id)).toList();
+            var filteredSoups = soupPool
+                .where((r) => !usedToday.contains(r.id))
+                .toList();
             if (filteredSoups.isEmpty) filteredSoups = soupPool;
             // Filter out soups used in the previous 3 days
             if (recentSoupRecipes.isNotEmpty) {
               final recentSoupSet = recentSoupRecipes.toSet();
-              final dedupedSoups = filteredSoups.where((r) => !recentSoupSet.contains(r.id)).toList();
+              final dedupedSoups = filteredSoups
+                  .where((r) => !recentSoupSet.contains(r.id))
+                  .toList();
               if (dedupedSoups.isNotEmpty) filteredSoups = dedupedSoups;
             }
             filteredSoups.shuffle(rng);
@@ -895,24 +1070,28 @@ class MealPlannerService {
             // Track recent soups (keep last 3 for 3-day dedup window)
             recentSoupRecipes.add(soupRecipe.id);
             if (recentSoupRecipes.length > 3) recentSoupRecipes.removeAt(0);
-            days.add(MealDay(
-              dayIndex: day,
-              recipeId: soupRecipe.id,
-              costEstimate: cachedCost(soupRecipe),
-              mealType: mealType,
-              courseType: CourseType.soupOrStarter,
-            ));
+            days.add(
+              MealDay(
+                dayIndex: day,
+                recipeId: soupRecipe.id,
+                costEstimate: cachedCost(soupRecipe),
+                mealType: mealType,
+                courseType: CourseType.soupOrStarter,
+              ),
+            );
           }
         }
 
         // Main course
-        days.add(MealDay(
-          dayIndex: day,
-          recipeId: recipe.id,
-          costEstimate: cachedCost(recipe),
-          mealType: mealType,
-          courseType: CourseType.mainCourse,
-        ));
+        days.add(
+          MealDay(
+            dayIndex: day,
+            recipeId: recipe.id,
+            costEstimate: cachedCost(recipe),
+            mealType: mealType,
+            courseType: CourseType.mainCourse,
+          ),
+        );
 
         // If dessert is enabled, pick a dessert AFTER the main course.
         // Safety layer only (allergens, medical, disliked, excluded proteins,
@@ -929,27 +1108,37 @@ class MealPlannerService {
           }).toList();
           if (dessertPool.isNotEmpty) {
             // Filter out recipes already used today (cross-course dedup)
-            var filteredDesserts = dessertPool.where((r) => !usedToday.contains(r.id)).toList();
+            var filteredDesserts = dessertPool
+                .where((r) => !usedToday.contains(r.id))
+                .toList();
             if (filteredDesserts.isEmpty) filteredDesserts = dessertPool;
             // Filter out desserts used in the previous 2 days
             if (recentDessertRecipes.isNotEmpty) {
               final recentDessertSet = recentDessertRecipes.toSet();
-              final dedupedDesserts = filteredDesserts.where((r) => !recentDessertSet.contains(r.id)).toList();
-              if (dedupedDesserts.isNotEmpty) filteredDesserts = dedupedDesserts;
+              final dedupedDesserts = filteredDesserts
+                  .where((r) => !recentDessertSet.contains(r.id))
+                  .toList();
+              if (dedupedDesserts.isNotEmpty) {
+                filteredDesserts = dedupedDesserts;
+              }
             }
             filteredDesserts.shuffle(rng);
             final dessertRecipe = filteredDesserts.first;
             usedToday.add(dessertRecipe.id);
             // Track recent desserts (keep last 2 for 2-day dedup window)
             recentDessertRecipes.add(dessertRecipe.id);
-            if (recentDessertRecipes.length > 2) recentDessertRecipes.removeAt(0);
-            days.add(MealDay(
-              dayIndex: day,
-              recipeId: dessertRecipe.id,
-              costEstimate: cachedCost(dessertRecipe),
-              mealType: mealType,
-              courseType: CourseType.dessert,
-            ));
+            if (recentDessertRecipes.length > 2) {
+              recentDessertRecipes.removeAt(0);
+            }
+            days.add(
+              MealDay(
+                dayIndex: day,
+                recipeId: dessertRecipe.id,
+                costEstimate: cachedCost(dessertRecipe),
+                mealType: mealType,
+                courseType: CourseType.dessert,
+              ),
+            );
           }
         }
 
@@ -964,8 +1153,11 @@ class MealPlannerService {
         newIngredientCountThisWeek[mealType] = newCount;
 
         // Start batch cooking block if applicable and on preferred day
-        if (ms.batchCookingEnabled && recipe.batchCookable && ms.maxBatchDays > 1) {
-          final isPreferredDay = ms.preferredCookingWeekday == null ||
+        if (ms.batchCookingEnabled &&
+            recipe.batchCookable &&
+            ms.maxBatchDays > 1) {
+          final isPreferredDay =
+              ms.preferredCookingWeekday == null ||
               weekday - 1 == ms.preferredCookingWeekday;
           if (isPreferredDay && !batchState.containsKey(mealType)) {
             batchState[mealType] = (
@@ -991,7 +1183,12 @@ class MealPlannerService {
     return plan;
   }
 
-  MealPlan _enforceBudget(MealPlan plan, int np, Map<String, Ingredient> iMap, MealSettings ms) {
+  MealPlan _enforceBudget(
+    MealPlan plan,
+    int np,
+    Map<String, Ingredient> iMap,
+    MealSettings ms,
+  ) {
     var days = List<MealDay>.from(plan.days);
     var total = days.fold(0.0, (s, d) => s + d.costEstimate);
 
@@ -1007,12 +1204,27 @@ class MealPlannerService {
     }
 
     // Pre-lowercase disliked ingredients once
-    final dislikedLower = ms.dislikedIngredients.map((d) => d.toLowerCase()).toSet();
+    final dislikedLower = ms.dislikedIngredients
+        .map((d) => d.toLowerCase())
+        .toSet();
     final ingredientNameLower = <String, String>{};
     for (final ing in _ingredients) {
       ingredientNameLower[ing.id] = ing.name.toLowerCase();
     }
     final excludedSet = ms.excludedProteins.toSet();
+    final hasDiabetes = ms.medicalConditions.contains(
+      MedicalCondition.diabetes,
+    );
+    final hasHypertension = ms.medicalConditions.contains(
+      MedicalCondition.hypertension,
+    );
+    final hasCholesterol = ms.medicalConditions.contains(
+      MedicalCondition.highCholesterol,
+    );
+    final hasGout = ms.medicalConditions.contains(MedicalCondition.gout);
+    final isLowSodium = ms.sodiumPreference == SodiumPreference.lowSodium;
+    const highSodiumIds = {'bacalhau', 'chourico', 'fiambre', 'sardinha'};
+    const highPurineProteins = {'sardinha', 'porco'};
 
     // Pre-compute eligible recipes per meal type (hard filters only, day-independent)
     final eligibleByMealType = <MealType, List<(Recipe, double)>>{};
@@ -1025,6 +1237,9 @@ class MealPlannerService {
         if (ms.lactoseFree && !r.lactoseFree) continue;
         if (ms.nutFree && !r.nutFree) continue;
         if (ms.shellfishFree && !r.shellfishFree) continue;
+        if (ms.eggFree && r.ingredients.any((ri) => ri.ingredientId == 'ovo')) {
+          continue;
+        }
         if (excludedSet.contains(r.proteinId)) continue;
         bool disliked = false;
         if (dislikedLower.isNotEmpty) {
@@ -1037,6 +1252,23 @@ class MealPlannerService {
           }
         }
         if (disliked) continue;
+        if (isLowSodium &&
+            r.ingredients.any(
+              (ri) => highSodiumIds.contains(ri.ingredientId),
+            )) {
+          continue;
+        }
+        if (hasDiabetes && (r.nutrition == null || r.nutrition!.carbsG > 55)) {
+          continue;
+        }
+        if (hasHypertension &&
+            (r.nutrition == null || r.nutrition!.sodiumMg > 500)) {
+          continue;
+        }
+        if (hasCholesterol && (r.nutrition == null || r.nutrition!.fatG > 25)) {
+          continue;
+        }
+        if (hasGout && highPurineProteins.contains(r.proteinId)) continue;
         eligible.add((r, recipeCost(r, np, iMap)));
       }
       // Pre-sort by cost ascending
@@ -1076,11 +1308,12 @@ class MealPlannerService {
       // The per-recipe cap stops the loop from concentrating every day
       // on the single cheapest recipe (issue #848).
       final expensiveRecipe = recipeMap[expensive.recipeId];
-      final expensiveCourseType = expensiveRecipe?.courseType ?? expensive.courseType;
+      final expensiveCourseType =
+          expensiveRecipe?.courseType ?? expensive.courseType;
       final requireCompleteMeal =
           expensiveCourseType == CourseType.mainCourse &&
-              (expensive.mealType == MealType.lunch ||
-                  expensive.mealType == MealType.dinner);
+          (expensive.mealType == MealType.lunch ||
+              expensive.mealType == MealType.dinner);
       final eligible = eligibleByMealType[expensive.mealType] ?? [];
       (Recipe, double)? replacement;
       for (final entry in eligible) {
@@ -1126,12 +1359,14 @@ class MealPlannerService {
       final dinnerDay = days[i].dayIndex - 1;
       // Multi-course dinners may have soup/main/dessert entries; lock to the
       // main course so leftovers never point at a soup or dessert recipe.
-      final dinner = days.where(
-        (d) =>
-            d.dayIndex == dinnerDay &&
-            d.mealType == MealType.dinner &&
-            d.courseType == CourseType.mainCourse,
-      ).firstOrNull;
+      final dinner = days
+          .where(
+            (d) =>
+                d.dayIndex == dinnerDay &&
+                d.mealType == MealType.dinner &&
+                d.courseType == CourseType.mainCourse,
+          )
+          .firstOrNull;
       if (dinner != null && dinner.recipeId != days[i].recipeId) {
         days[i] = days[i].copyWith(recipeId: dinner.recipeId, costEstimate: 0);
       }
@@ -1141,7 +1376,13 @@ class MealPlannerService {
 
   // --- Swap ---
 
-  List<Recipe> alternativesFor(String recipeId, int np, {MealSettings? ms, bool crossType = false, CourseType? courseType}) {
+  List<Recipe> alternativesFor(
+    String recipeId,
+    int np, {
+    MealSettings? ms,
+    bool crossType = false,
+    CourseType? courseType,
+  }) {
     final current = recipeMap[recipeId];
     if (current == null) return [];
     final iMap = ingredientMap;
@@ -1152,11 +1393,19 @@ class MealPlannerService {
     if (courseType != null) {
       switch (courseType) {
         case CourseType.soupOrStarter:
-          pool = pool.where((r) => r.courseType == CourseType.soupOrStarter).toList();
+          pool = pool
+              .where((r) => r.courseType == CourseType.soupOrStarter)
+              .toList();
         case CourseType.dessert:
           pool = pool.where((r) => r.courseType == CourseType.dessert).toList();
         case CourseType.mainCourse:
-          pool = pool.where((r) => r.courseType != CourseType.soupOrStarter && r.courseType != CourseType.dessert).toList();
+          pool = pool
+              .where(
+                (r) =>
+                    r.courseType != CourseType.soupOrStarter &&
+                    r.courseType != CourseType.dessert,
+              )
+              .toList();
       }
     }
 
@@ -1164,16 +1413,72 @@ class MealPlannerService {
     // suitableMealType with the current recipe (same-type swap).
     if (!crossType && current.suitableMealTypes.isNotEmpty) {
       final types = current.suitableMealTypes.toSet();
-      pool = pool.where((r) => r.suitableMealTypes.any(types.contains)).toList();
+      pool = pool
+          .where((r) => r.suitableMealTypes.any(types.contains))
+          .toList();
     }
 
     if (ms != null) {
+      final dislikedLower = ms.dislikedIngredients
+          .map((d) => d.toLowerCase())
+          .toSet();
+      final ingredientNameLower = <String, String>{
+        for (final ing in _ingredients) ing.id: ing.name.toLowerCase(),
+      };
+      final hasDiabetes = ms.medicalConditions.contains(
+        MedicalCondition.diabetes,
+      );
+      final hasHypertension = ms.medicalConditions.contains(
+        MedicalCondition.hypertension,
+      );
+      final hasCholesterol = ms.medicalConditions.contains(
+        MedicalCondition.highCholesterol,
+      );
+      final hasGout = ms.medicalConditions.contains(MedicalCondition.gout);
+      final isLowSodium = ms.sodiumPreference == SodiumPreference.lowSodium;
+      const highSodiumIds = {'bacalhau', 'chourico', 'fiambre', 'sardinha'};
+      const highPurineProteins = {'sardinha', 'porco'};
+      final equipmentByName = <String, KitchenEquipment>{
+        for (final k in KitchenEquipment.values) k.name: k,
+      };
       pool = pool.where((r) {
         if (ms.glutenFree && !r.glutenFree) return false;
         if (ms.lactoseFree && !r.lactoseFree) return false;
         if (ms.nutFree && !r.nutFree) return false;
         if (ms.shellfishFree && !r.shellfishFree) return false;
-        if (excludedSet != null && excludedSet.contains(r.proteinId)) return false;
+        if (ms.eggFree && r.ingredients.any((ri) => ri.ingredientId == 'ovo')) {
+          return false;
+        }
+        if (excludedSet != null && excludedSet.contains(r.proteinId)) {
+          return false;
+        }
+        if (dislikedLower.isNotEmpty) {
+          for (final ri in r.ingredients) {
+            final name = ingredientNameLower[ri.ingredientId];
+            if (name != null && dislikedLower.contains(name)) return false;
+          }
+        }
+        if (isLowSodium &&
+            r.ingredients.any(
+              (ri) => highSodiumIds.contains(ri.ingredientId),
+            )) {
+          return false;
+        }
+        if (hasDiabetes && (r.nutrition == null || r.nutrition!.carbsG > 55)) {
+          return false;
+        }
+        if (hasHypertension &&
+            (r.nutrition == null || r.nutrition!.sodiumMg > 500)) {
+          return false;
+        }
+        if (hasCholesterol && (r.nutrition == null || r.nutrition!.fatG > 25)) {
+          return false;
+        }
+        if (hasGout && highPurineProteins.contains(r.proteinId)) return false;
+        for (final eq in r.requiresEquipment) {
+          final mapped = equipmentByName[eq] ?? KitchenEquipment.oven;
+          if (!ms.availableEquipment.contains(mapped)) return false;
+        }
         return true;
       }).toList();
     }
@@ -1192,12 +1497,20 @@ class MealPlannerService {
     return pool;
   }
 
-  MealPlan swapDay(MealPlan plan, int dayIndex, MealType mealType, String newRecipeId, {MealType? newMealType, CourseType? courseType}) {
+  MealPlan swapDay(
+    MealPlan plan,
+    int dayIndex,
+    MealType mealType,
+    String newRecipeId, {
+    MealType? newMealType,
+    CourseType? courseType,
+  }) {
     final iMap = ingredientMap;
     final newRecipe = recipeMap[newRecipeId]!;
     final newCost = recipeCost(newRecipe, plan.nPessoas, iMap);
     final updatedDays = plan.days.map((d) {
-      if (d.dayIndex == dayIndex && d.mealType == mealType &&
+      if (d.dayIndex == dayIndex &&
+          d.mealType == mealType &&
           (courseType == null || d.courseType == courseType)) {
         return d.copyWith(
           recipeId: newRecipeId,
@@ -1226,7 +1539,8 @@ class MealPlannerService {
       final dayGuests = plan.extraGuests[day.dayIndex] ?? 0;
       final scale = (plan.nPessoas + dayGuests) / recipe.servings;
       for (final ri in recipe.ingredients) {
-        final effectiveId = day.substitutions[ri.ingredientId] ?? ri.ingredientId;
+        final effectiveId =
+            day.substitutions[ri.ingredientId] ?? ri.ingredientId;
         totals.update(
           effectiveId,
           (v) => v + ri.quantity * scale,
@@ -1235,7 +1549,11 @@ class MealPlannerService {
       }
     }
     // Legacy: remove pantry ingredient IDs entirely (no quantity awareness)
+    final quantityAwarePantryIds = pantryItems
+        .map((item) => item.ingredientId)
+        .toSet();
     for (final id in pantryIngredients) {
+      if (quantityAwarePantryIds.contains(id)) continue;
       totals.remove(id);
     }
     // Quantity-aware pantry subtraction
@@ -1247,9 +1565,13 @@ class MealPlannerService {
       double available = item.quantity;
       // Convert pantry unit to recipe unit if compatible
       if (ingredient != null && item.unit != ingredient.unit) {
-        final converted =
-            UnitConverter.convert(item.quantity, item.unit, ingredient.unit);
-        if (converted != null) available = converted;
+        final converted = UnitConverter.convert(
+          item.quantity,
+          item.unit,
+          ingredient.unit,
+        );
+        if (converted == null) continue;
+        available = converted;
       }
       final remaining = needed - available;
       if (remaining <= 0) {
@@ -1272,7 +1594,10 @@ class MealPlannerService {
   }
 
   /// Returns freeform shopping items from meals within the given week.
-  List<FreeformMealItem> freeformShoppingItemsForWeek(MealPlan plan, List<MealDay> weekDays) {
+  List<FreeformMealItem> freeformShoppingItemsForWeek(
+    MealPlan plan,
+    List<MealDay> weekDays,
+  ) {
     final items = <FreeformMealItem>[];
     for (final day in weekDays) {
       if (!day.isFreeform) continue;

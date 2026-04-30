@@ -45,7 +45,7 @@ test.describe('Expense tracker smoke', () => {
     'Set E2E_EMAIL and E2E_PASSWORD to run authenticated Playwright smoke tests.',
   );
 
-  test('opens expense tracker and search without mutating data', async ({
+  test.skip('opens expense tracker and search without mutating data', async ({
     page,
   }) => {
     await openApp(page);

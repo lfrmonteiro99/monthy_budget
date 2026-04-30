@@ -705,7 +705,7 @@
   },
   {
     "id": "grao_espinafres",
-    "name": "Grão com Espinafres com Frango",
+    "name": "Grão com Espinafres",
     "proteinId": "grao",
     "type": "leguminosas",
     "complexity": 1,
@@ -741,10 +741,6 @@
       {
         "ingredientId": "azeite",
         "quantity": 0.05
-      },
-      {
-        "ingredientId": "frango",
-        "quantity": 0.3
       }
     ],
     "isPortable": true,

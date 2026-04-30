@@ -16,20 +16,20 @@ class PantryCoverage {
 }
 
 /// Resolve the full active pantry set by merging staple ingredients,
-/// weekly pantry ingredients, and the legacy [pantryIngredients] field.
+/// weekly pantry ingredients, quantity-aware pantry stock, and the legacy
+/// [pantryIngredients] field.
 Set<String> resolveActivePantry(MealSettings settings) {
   return {
     ...settings.stapleIngredients,
     ...settings.weeklyPantryIngredients,
     ...settings.pantryIngredients,
+    for (final item in settings.pantryItems)
+      if (item.quantity > 0) item.ingredientId,
   };
 }
 
 /// Compute how many of [recipe]'s ingredients are covered by [pantryIds].
-PantryCoverage computePantryCoverage(
-  Recipe recipe,
-  Set<String> pantryIds,
-) {
+PantryCoverage computePantryCoverage(Recipe recipe, Set<String> pantryIds) {
   final matched = <String>[];
   final missing = <String>[];
 
@@ -91,17 +91,21 @@ List<String> generatePantryHints({
 
   // Find recipes with high coverage (>= 75%)
   final highCoverage = coverages.entries
-      .where((e) => e.value.coverageRatio >= 0.75 && e.value.coverageRatio < 1.0)
+      .where(
+        (e) => e.value.coverageRatio >= 0.75 && e.value.coverageRatio < 1.0,
+      )
       .toList();
   if (highCoverage.isNotEmpty) {
-    hints.add('${highCoverage.length} recipe${highCoverage.length == 1 ? '' : 's'} need only 1-2 extra ingredients');
+    hints.add(
+      '${highCoverage.length} recipe${highCoverage.length == 1 ? '' : 's'} need only 1-2 extra ingredients',
+    );
   }
 
   // Compute overall average coverage
   if (coverages.isNotEmpty) {
-    final avg = coverages.values
-        .map((c) => c.coverageRatio)
-        .reduce((a, b) => a + b) / coverages.length;
+    final avg =
+        coverages.values.map((c) => c.coverageRatio).reduce((a, b) => a + b) /
+        coverages.length;
     final pct = (avg * 100).round();
     hints.add('Average pantry coverage: $pct%');
   }

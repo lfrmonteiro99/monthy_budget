@@ -250,6 +250,8 @@ create table if not exists recipes (
   lactose_free        boolean default false,
   nut_free            boolean default true,
   shellfish_free      boolean default true,
+  is_complete_meal    boolean default true,
+  course_type         text default 'mainCourse',
   batch_cookable      boolean default false,
   max_batch_days      int default 2,
   is_portable         boolean default false,

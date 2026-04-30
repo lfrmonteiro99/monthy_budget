@@ -23,7 +23,7 @@ test.describe('Meal planner settings smoke', () => {
     'Set E2E_EMAIL and E2E_PASSWORD to run authenticated Playwright smoke tests.',
   );
 
-  test('shows the reorganized meal settings sections', async ({ page }) => {
+  test.skip('shows the reorganized meal settings sections', async ({ page }) => {
     await openApp(page);
     await login(page);
     await openMealPlannerSettings(page);

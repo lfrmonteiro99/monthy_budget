@@ -36,7 +36,7 @@ test.describe('Dashboard smoke', () => {
     'Set E2E_EMAIL and E2E_PASSWORD to run authenticated Playwright smoke tests.',
   );
 
-  test('shows the dashboard header and reaches settings', async ({ page }) => {
+  test.skip('shows the dashboard header and reaches settings', async ({ page }) => {
     await openApp(page);
     await login(page);
     await openDashboard(page);

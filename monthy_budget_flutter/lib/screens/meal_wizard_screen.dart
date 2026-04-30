@@ -79,10 +79,7 @@ class _MealWizardScreenState extends State<MealWizardScreen> {
     return CalmScaffold(
       title: _stepTitles(l10n)[_step],
       leading: _step > 0
-          ? IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: _back,
-            )
+          ? IconButton(icon: const Icon(Icons.arrow_back), onPressed: _back)
           : null,
       body: Column(
         children: [
@@ -177,7 +174,9 @@ class _MealWizardScreenState extends State<MealWizardScreen> {
                             ? l10n.wizardGeneratePlan
                             : l10n.wizardContinue,
                         style: const TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w600),
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
@@ -317,6 +316,9 @@ class _Step2Objective extends StatelessWidget {
                     var updated = draft.copyWith(objective: obj);
                     if (obj == MealObjective.vegetarian) {
                       updated = updated.copyWith(veggieDaysPerWeek: 7);
+                    } else if (draft.objective == MealObjective.vegetarian &&
+                        draft.veggieDaysPerWeek == 7) {
+                      updated = updated.copyWith(veggieDaysPerWeek: 0);
                     }
                     onChanged(updated);
                   },
@@ -398,21 +400,32 @@ class _Step3RestrictionsState extends State<_Step3Restrictions> {
         CalmEyebrow(l10n.wizardDietaryRestrictions.toUpperCase()),
         const SizedBox(height: 8),
         ...[
-          (l10n.wizardGlutenFree, d.glutenFree,
-              (bool v) => widget.onChanged(d.copyWith(glutenFree: v))),
-          (l10n.wizardLactoseFree, d.lactoseFree,
-              (bool v) => widget.onChanged(d.copyWith(lactoseFree: v))),
-          (l10n.wizardNutFree, d.nutFree,
-              (bool v) => widget.onChanged(d.copyWith(nutFree: v))),
-          (l10n.wizardShellfishFree, d.shellfishFree,
-              (bool v) => widget.onChanged(d.copyWith(shellfishFree: v))),
+          (
+            l10n.wizardGlutenFree,
+            d.glutenFree,
+            (bool v) => widget.onChanged(d.copyWith(glutenFree: v)),
+          ),
+          (
+            l10n.wizardLactoseFree,
+            d.lactoseFree,
+            (bool v) => widget.onChanged(d.copyWith(lactoseFree: v)),
+          ),
+          (
+            l10n.wizardNutFree,
+            d.nutFree,
+            (bool v) => widget.onChanged(d.copyWith(nutFree: v)),
+          ),
+          (
+            l10n.wizardShellfishFree,
+            d.shellfishFree,
+            (bool v) => widget.onChanged(d.copyWith(shellfishFree: v)),
+          ),
         ].map(
           (item) => CheckboxListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(
               item.$1,
-              style: const TextStyle(
-                  fontSize: 14, fontWeight: FontWeight.w500),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             ),
             value: item.$2,
             activeColor: AppColors.accent(context),
@@ -428,20 +441,19 @@ class _Step3RestrictionsState extends State<_Step3Restrictions> {
             spacing: 8,
             runSpacing: 6,
             children: d.dislikedIngredients
-                .map((name) => Chip(
-                      label: Text(
-                        name,
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                      deleteIcon: const Icon(Icons.close, size: 14),
-                      onDeleted: () {
-                        final updated =
-                            List<String>.from(d.dislikedIngredients)
-                              ..remove(name);
-                        widget.onChanged(
-                            d.copyWith(dislikedIngredients: updated));
-                      },
-                    ))
+                .map(
+                  (name) => Chip(
+                    label: Text(name, style: const TextStyle(fontSize: 12)),
+                    deleteIcon: const Icon(Icons.close, size: 14),
+                    onDeleted: () {
+                      final updated = List<String>.from(d.dislikedIngredients)
+                        ..remove(name);
+                      widget.onChanged(
+                        d.copyWith(dislikedIngredients: updated),
+                      );
+                    },
+                  ),
+                )
                 .toList(),
           ),
         const SizedBox(height: 8),
@@ -454,20 +466,25 @@ class _Step3RestrictionsState extends State<_Step3Restrictions> {
                   hintText: l10n.wizardDislikedHint,
                   hintStyle: TextStyle(color: AppColors.ink50(context)),
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide:
-                          BorderSide(color: AppColors.line(context))),
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: AppColors.line(context)),
+                  ),
                   enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide:
-                          BorderSide(color: AppColors.line(context))),
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: AppColors.line(context)),
+                  ),
                   focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(
-                          color: AppColors.accent(context), width: 2)),
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: AppColors.accent(context),
+                      width: 2,
+                    ),
+                  ),
                   isDense: true,
                   contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 10),
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
                 ),
               ),
             ),
@@ -514,14 +531,14 @@ class _Step4Kitchen extends StatelessWidget {
             return Expanded(
               child: Padding(
                 padding: EdgeInsets.only(
-                    right: mins != prepOptions.last ? 8 : 0),
+                  right: mins != prepOptions.last ? 8 : 0,
+                ),
                 child: _ChoiceTile(
                   label: mins == 60
                       ? l10n.wizardPrepMin60Plus
                       : l10n.wizardPrepMin(mins),
                   selected: selected,
-                  onTap: () =>
-                      onChanged(draft.copyWith(maxPrepMinutes: mins)),
+                  onTap: () => onChanged(draft.copyWith(maxPrepMinutes: mins)),
                 ),
               ),
             );
@@ -531,49 +548,52 @@ class _Step4Kitchen extends StatelessWidget {
         CalmEyebrow(l10n.wizardMaxComplexity.toUpperCase()),
         const SizedBox(height: 12),
         Row(
-          children: [
-            (l10n.wizardComplexityEasy, 2),
-            (l10n.wizardComplexityMedium, 3),
-            (l10n.wizardComplexityAdvanced, 5),
-          ].map(((String, int) item) {
-            final selected = draft.maxComplexity == item.$2;
-            return Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(right: item.$2 != 5 ? 8 : 0),
-                child: _ChoiceTile(
-                  label: item.$1,
-                  selected: selected,
-                  onTap: () =>
-                      onChanged(draft.copyWith(maxComplexity: item.$2)),
-                ),
-              ),
-            );
-          }).toList(),
+          children:
+              [
+                (l10n.wizardComplexityEasy, 2),
+                (l10n.wizardComplexityMedium, 3),
+                (l10n.wizardComplexityAdvanced, 5),
+              ].map(((String, int) item) {
+                final selected = draft.maxComplexity == item.$2;
+                return Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(right: item.$2 != 5 ? 8 : 0),
+                    child: _ChoiceTile(
+                      label: item.$1,
+                      selected: selected,
+                      onTap: () =>
+                          onChanged(draft.copyWith(maxComplexity: item.$2)),
+                    ),
+                  ),
+                );
+              }).toList(),
         ),
         const SizedBox(height: 20),
         CalmEyebrow(l10n.wizardEquipment.toUpperCase()),
         const SizedBox(height: 8),
-        ...KitchenEquipment.values.map((eq) => CheckboxListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(
-                eq.localizedLabel(l10n),
-                style: const TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w500),
-              ),
-              value: draft.availableEquipment.contains(eq),
-              activeColor: AppColors.accent(context),
-              controlAffinity: ListTileControlAffinity.leading,
-              onChanged: (v) {
-                final updated =
-                    Set<KitchenEquipment>.from(draft.availableEquipment);
-                if (v == true) {
-                  updated.add(eq);
-                } else {
-                  updated.remove(eq);
-                }
-                onChanged(draft.copyWith(availableEquipment: updated));
-              },
-            )),
+        ...KitchenEquipment.values.map(
+          (eq) => CheckboxListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(
+              eq.localizedLabel(l10n),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            ),
+            value: draft.availableEquipment.contains(eq),
+            activeColor: AppColors.accent(context),
+            controlAffinity: ListTileControlAffinity.leading,
+            onChanged: (v) {
+              final updated = Set<KitchenEquipment>.from(
+                draft.availableEquipment,
+              );
+              if (v == true) {
+                updated.add(eq);
+              } else {
+                updated.remove(eq);
+              }
+              onChanged(draft.copyWith(availableEquipment: updated));
+            },
+          ),
+        ),
       ],
     );
   }
@@ -604,8 +624,7 @@ class _Step5Strategy extends StatelessWidget {
           title: l10n.wizardBatchCooking,
           subtitle: l10n.wizardBatchCookingDesc,
           value: draft.batchCookingEnabled,
-          onChanged: (v) =>
-              onChanged(draft.copyWith(batchCookingEnabled: v)),
+          onChanged: (v) => onChanged(draft.copyWith(batchCookingEnabled: v)),
         ),
         if (draft.batchCookingEnabled) ...[
           const SizedBox(height: 12),
@@ -637,8 +656,7 @@ class _Step5Strategy extends StatelessWidget {
                   fontSize: 12,
                 ),
                 onSelected: (v) => onChanged(
-                  draft.copyWith(
-                      preferredCookingWeekday: v ? i : null),
+                  draft.copyWith(preferredCookingWeekday: v ? i : null),
                 ),
               );
             }),
@@ -662,8 +680,8 @@ class _Step5Strategy extends StatelessWidget {
               ? l10n.wizardNoLimit
               : '${draft.maxNewIngredientsPerWeek}',
           activeColor: AppColors.accent(context),
-          onChanged: (v) => onChanged(
-              draft.copyWith(maxNewIngredientsPerWeek: v.round())),
+          onChanged: (v) =>
+              onChanged(draft.copyWith(maxNewIngredientsPerWeek: v.round())),
         ),
         CalmSwitchRow(
           title: l10n.wizardMinimizeWaste,
@@ -690,8 +708,7 @@ class _ChoiceTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color:
-          selected ? AppColors.ink(context) : AppColors.card(context),
+      color: selected ? AppColors.ink(context) : AppColors.card(context),
       borderRadius: BorderRadius.circular(10),
       child: InkWell(
         onTap: onTap,

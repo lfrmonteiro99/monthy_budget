@@ -12,10 +12,15 @@ on:
     paths:
       - 'monthy_budget_flutter/lib/models/meal_planner.dart'
       - 'monthy_budget_flutter/lib/models/meal_settings.dart'
+      - 'monthy_budget_flutter/lib/models/pantry_item.dart'
       - 'monthy_budget_flutter/lib/services/meal_planner_service.dart'
       - 'monthy_budget_flutter/lib/screens/meal_planner_screen.dart'
+      - 'monthy_budget_flutter/lib/utils/pantry_matching.dart'
       - 'monthy_budget_flutter/assets/meal_planner/**'
+      - 'monthy_budget_flutter/test/meal_planner_generation_test.dart'
       - 'monthy_budget_flutter/test/meal_generation_validation_test.dart'
+      - 'monthy_budget_flutter/test/pantry_item_test.dart'
+      - 'monthy_budget_flutter/test/pantry_matching_test.dart'
       - 'monthy_budget_flutter/e2e/meal-planner.smoke.spec.ts'
       - '.github/workflows/meal-planner-validation.yml'
 

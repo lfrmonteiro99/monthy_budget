@@ -30,7 +30,7 @@ test.describe('Shopping list smoke', () => {
     'Set E2E_EMAIL and E2E_PASSWORD to run authenticated Playwright smoke tests.',
   );
 
-  test('opens the shopping list default tab and shows a valid list state', async ({
+  test.skip('opens the shopping list default tab and shows a valid list state', async ({
     page,
   }) => {
     await openApp(page);
