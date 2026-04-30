@@ -521,25 +521,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               _buildExpensesSection,
             ),
           ),
-          _rowDivider(),
-          // TODO(l10n): "Início do mês" / "Moeda" not modelled in AppSettings
-          // yet. Render placeholder rows so the structure matches the mockup;
-          // wiring lands when the schema is extended.
-          CalmListTile(
-            leadingIcon: Icons.event_outlined,
-            leadingColor: accent,
-            title: 'Início do mês',
-            trailing: 'Dia 1',
-            onTap: null,
-          ),
-          _rowDivider(),
-          CalmListTile(
-            leadingIcon: Icons.euro_outlined,
-            leadingColor: accent,
-            title: 'Moeda',
-            trailing: 'EUR',
-            onTap: null,
-          ),
         ],
       ),
     );
@@ -563,71 +544,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onTap: () => _openSectionPage(
                 l10n.settingsAppearance,
                 _buildAppearanceSection,
-              ),
-            ),
-            _rowDivider(),
-            // Paleta de cor: only `calm` palette ships today; render the
-            // single-swatch preview disabled with a hint pill so the slot is
-            // present in the structure.
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      color: accent.withValues(alpha: 0.15),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.palette_outlined,
-                      size: 16,
-                      color: accent,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          // TODO(l10n): "Paleta de cor" not in ARB.
-                          'Paleta de cor',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.ink(context),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        CalmSwatchRow(
-                          swatches: [
-                            CalmSwatch('Calm', accent),
-                          ],
-                          selectedIndex: 0,
-                          onChanged: (_) {},
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            _rowDivider(),
-            // Densidade — disabled toggle (no plumbing yet). Tooltip
-            // explains the "Em breve" state.
-            Tooltip(
-              message: 'Em breve',
-              child: CalmSwitchRow(
-                // TODO(l10n): "Densidade" / "Em breve" not in ARB.
-                title: 'Densidade',
-                subtitle: 'Em breve',
-                leadingIcon: Icons.density_medium_outlined,
-                value: false,
-                enabled: false,
-                onChanged: null,
               ),
             ),
           ],
