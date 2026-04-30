@@ -474,6 +474,7 @@
         }
     },
     "shoppingItemSwipe": "{name}, deslizar para eliminar",
+    "shoppingSyncPending": "Sincronizando — intenta de nuevo en un momento",
     "@shoppingItemSwipe": {
         "placeholders": {
             "name": {

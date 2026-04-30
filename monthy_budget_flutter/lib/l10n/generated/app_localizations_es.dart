@@ -883,6 +883,10 @@ class SEs extends S {
   }
 
   @override
+  String get shoppingSyncPending =>
+      'Sincronizando — intenta de nuevo en un momento';
+
+  @override
   String shoppingProductCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

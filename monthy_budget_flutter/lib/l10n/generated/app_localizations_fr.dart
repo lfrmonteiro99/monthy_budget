@@ -886,6 +886,10 @@ class SFr extends S {
   }
 
   @override
+  String get shoppingSyncPending =>
+      'Synchronisation en cours — reessaye dans un instant';
+
+  @override
   String shoppingProductCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

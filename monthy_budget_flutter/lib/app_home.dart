@@ -1401,7 +1401,41 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   }
 
   void _toggleShoppingItem(ShoppingItem item) async {
-    if (item.id.isEmpty) return;
+    if (item.id.isEmpty) {
+      // Item is mid-flight: not yet persisted to Supabase, no id to call
+      // toggle() with. Update local state by name+store match so the user
+      // gets immediate feedback; the realtime emission will reconcile when
+      // the persisted item arrives with a real id.
+      LogService.warning(
+        'Toggle on shopping item with empty id; deferring sync',
+        category: 'ui.shopping',
+      );
+      setState(() {
+        _shoppingList = _shoppingList.map((i) {
+          if (i.id.isNotEmpty ||
+              i.productName != item.productName ||
+              i.store != item.store) {
+            return i;
+          }
+          return ShoppingItem(
+            id: i.id,
+            productName: i.productName,
+            store: i.store,
+            price: i.price,
+            unitPrice: i.unitPrice,
+            checked: !i.checked,
+          );
+        }).toList();
+      });
+      if (mounted) {
+        CalmSnack.show(
+          context,
+          S.of(context).shoppingSyncPending,
+          duration: AppConstants.snackBarShort,
+        );
+      }
+      return;
+    }
     // Optimistic: update local state immediately, don't wait for Realtime
     setState(() {
       _shoppingList = _shoppingList.map((i) {

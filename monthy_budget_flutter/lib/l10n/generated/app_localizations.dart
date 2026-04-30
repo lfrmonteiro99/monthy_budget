@@ -1667,6 +1667,12 @@ abstract class S {
   /// **'{name}, deslizar para remover'**
   String shoppingItemSwipe(String name);
 
+  /// Snack shown when user taps an item still pending Supabase insert
+  ///
+  /// In pt, this message translates to:
+  /// **'A sincronizar — tenta de novo num instante'**
+  String get shoppingSyncPending;
+
   /// Pluralized product count
   ///
   /// In pt, this message translates to:

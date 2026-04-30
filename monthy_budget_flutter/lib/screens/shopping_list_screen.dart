@@ -572,6 +572,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 (e) => _buildItemRow(
                   e.value,
                   tourKey: e.key == 0 ? ShoppingTourKeys.shoppingItem : null,
+                  index: e.key,
                 ),
               ),
             ],
@@ -579,7 +580,9 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               const SizedBox(height: 8),
               CalmEyebrow('NO CESTO'), // TODO(l10n): extract to ARB
               const SizedBox(height: 6),
-              ...checked.map((item) => _buildItemRow(item)),
+              ...checked.asMap().entries.map(
+                (e) => _buildItemRow(e.value, index: 1000 + e.key),
+              ),
             ],
           ],
         );
@@ -731,7 +734,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     );
   }
 
-  Widget _buildItemRow(ShoppingItem item, {GlobalKey? tourKey}) {
+  Widget _buildItemRow(ShoppingItem item, {GlobalKey? tourKey, int? index}) {
     final l10n = S.of(context);
     // subtitle: quantity · estimated price when available
     final subtitleParts = <String>[];
@@ -789,7 +792,9 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
 
     return Dismissible(
       key: Key(
-        item.id.isNotEmpty ? item.id : '${item.productName}_${item.store}',
+        item.id.isNotEmpty
+            ? 'sl_${item.id}'
+            : 'sl_pending_${index ?? 0}_${item.productName}_${item.store}_${item.price}',
       ),
       direction: DismissDirection.endToStart,
       background: ColoredBox(
