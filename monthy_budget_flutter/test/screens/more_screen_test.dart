@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:monthly_management/screens/more_screen.dart';
 
@@ -7,7 +6,9 @@ import '../helpers/test_app.dart';
 void main() {
   testWidgets('More screen exposes core utility entry points', (tester) async {
     var insights = 0;
+    var coach = 0;
     var savings = 0;
+    var yearlySummary = 0;
     var settings = 0;
     var notifications = 0;
     var subscription = 0;
@@ -17,7 +18,9 @@ void main() {
       wrapWithTestApp(
         MoreScreen(
           onOpenInsights: () => insights++,
+          onOpenCoach: () => coach++,
           onOpenSavingsGoals: () => savings++,
+          onOpenYearlySummary: () => yearlySummary++,
           onOpenSettings: () => settings++,
           onOpenNotifications: () => notifications++,
           onOpenSubscription: () => subscription++,
@@ -35,14 +38,18 @@ void main() {
     }
 
     await tapText('Insights');
+    await tapText('Financial Coach');
     await tapText('Savings Goals');
+    await tapText('Yearly Summary');
     await tapText('Notifications');
     await tapText('Free Plan');
     await tapText('Product Updates');
     await tapText('Settings');
 
     expect(insights, 1);
+    expect(coach, 1);
     expect(savings, 1);
+    expect(yearlySummary, 1);
     expect(settings, 1);
     expect(notifications, 1);
     expect(subscription, 1);

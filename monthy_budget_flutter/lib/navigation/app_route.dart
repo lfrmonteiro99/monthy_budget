@@ -41,6 +41,7 @@ enum AppRouteType {
   grocery,
   confidenceCenter,
   taxSimulator,
+  yearlySummary,
 }
 
 class AppRoute {
@@ -83,6 +84,8 @@ class AppRoute {
 
   const AppRoute.taxSimulator() : this._(type: AppRouteType.taxSimulator);
 
+  const AppRoute.yearlySummary() : this._(type: AppRouteType.yearlySummary);
+
   final AppRouteType type;
   final AppTab? tab;
   final SettingsSection? settingsSection;
@@ -109,6 +112,10 @@ class AppRoute {
       case 'plan':
       case 'shopping':
         return const AppRoute.tab(AppTab.planHub);
+      case 'more':
+        return const AppRoute.tab(AppTab.more);
+      case 'yearly-summary':
+        return const AppRoute.yearlySummary();
       case 'settings':
         return AppRoute.settings(
           section: SettingsSection.fromKey(
@@ -149,10 +156,11 @@ class AppRoute {
       'dashboard' => const AppRoute.tab(AppTab.dashboard),
       'expenses' => const AppRoute.tab(AppTab.expenses),
       'plan' ||
-      'more' ||
       'grocery' ||
       'shopping_list' ||
       'meals' => const AppRoute.tab(AppTab.planHub),
+      'more' => const AppRoute.tab(AppTab.more),
+      'yearly_summary' => const AppRoute.yearlySummary(),
       'coach' => const AppRoute.coach(),
       'settings' => const AppRoute.settings(),
       'insights' => const AppRoute.insights(),

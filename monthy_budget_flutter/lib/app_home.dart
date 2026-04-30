@@ -54,6 +54,9 @@ import 'services/savings_goal_service.dart';
 import 'models/savings_goal.dart';
 import 'screens/savings_goals_screen.dart';
 import 'screens/tax_simulator_screen.dart';
+import 'screens/more_screen.dart';
+import 'screens/yearly_summary_screen.dart';
+import 'services/yearly_summary_service.dart';
 import 'utils/savings_projections.dart';
 import 'theme/app_colors.dart';
 import 'models/onboarding_state.dart';
@@ -734,6 +737,31 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     _pushScreen('product_updates', (_) => const ProductUpdatesScreen());
   }
 
+  void _openYearlySummary() {
+    final taxSystem = getTaxSystem(_settings.country);
+    final summary = calculateBudgetSummary(
+      _settings.salaries,
+      _settings.personalInfo,
+      _settings.expenses,
+      taxSystem,
+      monthlyBudgets: _monthlyBudgets,
+    );
+    final year = DateTime.now().year;
+    final monthlyIncomes = <String, double>{
+      for (var m = 1; m <= 12; m++)
+        '$year-${m.toString().padLeft(2, '0')}': summary.totalNet,
+    };
+    final allExpenses = _actualExpenseHistory.values
+        .expand((list) => list)
+        .toList();
+    final report = YearlySummaryService.generate(
+      year: year,
+      monthlyIncomes: monthlyIncomes,
+      expenses: allExpenses,
+    );
+    _pushScreen('yearly_summary', (_) => YearlySummaryScreen(report: report));
+  }
+
   void _openNotificationSettings() {
     _pushScreen(
       'notification_settings',
@@ -1044,6 +1072,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           'tax_simulator',
           (_) => TaxSimulatorScreen(settings: _settings),
         );
+        return;
+      case AppRouteType.yearlySummary:
+        _openYearlySummary();
         return;
     }
   }
@@ -2071,6 +2102,28 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           canAccessMeals: _subscription.hasPremiumAccess,
         ),
       ),
+      AppTab.more: ErrorBoundary(
+        onError: (error, stack) => LogService.error(
+          'More subtree error',
+          error: error,
+          stackTrace: stack,
+          category: 'ui.more',
+        ),
+        child: MoreScreen(
+          onOpenInsights: _openInsights,
+          onOpenCoach: _openCoach,
+          onOpenSavingsGoals: _openSavingsGoals,
+          onOpenYearlySummary: _openYearlySummary,
+          onOpenSettings: () => _openSettings(),
+          onOpenNotifications: _openNotificationSettings,
+          onOpenSubscription: () => _openPaywall(),
+          onOpenConfidenceCenter: _openConfidenceCenter,
+          onOpenProductUpdates: _openProductUpdates,
+          subscription: _subscription,
+          confidenceAlertCount:
+              buildAlerts(statuses: _dataHealthService.statuses).length,
+        ),
+      ),
     };
 
     final dashboardBody = Column(
@@ -2187,6 +2240,15 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                     ),
                     label: l10n.navPlanAndShop,
                     tooltip: l10n.navPlanAndShopTip,
+                  ),
+                  NavigationDestination(
+                    icon: const Icon(Icons.more_horiz_outlined),
+                    selectedIcon: Icon(
+                      Icons.more_horiz,
+                      color: AppColors.primary(context),
+                    ),
+                    label: l10n.navMore,
+                    tooltip: l10n.navMoreTip,
                   ),
                 ],
               ),

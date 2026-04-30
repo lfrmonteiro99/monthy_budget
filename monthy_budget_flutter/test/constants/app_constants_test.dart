@@ -38,30 +38,34 @@ void main() {
       expect(AppTab.dashboard.navigationIndex, 0);
       expect(AppTab.expenses.navigationIndex, 1);
       expect(AppTab.planHub.navigationIndex, 2);
+      expect(AppTab.more.navigationIndex, 3);
     });
 
     test('featureKey maps correctly', () {
       expect(AppTab.dashboard.featureKey, 'dashboard');
       expect(AppTab.expenses.featureKey, 'expense_tracker');
       expect(AppTab.planHub.featureKey, 'plan_and_shop');
+      expect(AppTab.more.featureKey, 'more');
     });
 
     test('fromNavigationIndex returns correct tab', () {
       expect(AppTab.fromNavigationIndex(0), AppTab.dashboard);
       expect(AppTab.fromNavigationIndex(1), AppTab.expenses);
       expect(AppTab.fromNavigationIndex(2), AppTab.planHub);
+      expect(AppTab.fromNavigationIndex(3), AppTab.more);
     });
 
     test('fromNavigationIndex throws on invalid index', () {
-      expect(() => AppTab.fromNavigationIndex(3), throwsA(isA<RangeError>()));
+      expect(() => AppTab.fromNavigationIndex(4), throwsA(isA<RangeError>()));
       expect(() => AppTab.fromNavigationIndex(-1), throwsA(isA<RangeError>()));
     });
 
     test('values contains all tabs', () {
-      expect(AppTab.values, hasLength(3));
+      expect(AppTab.values, hasLength(4));
       expect(AppTab.values, contains(AppTab.dashboard));
       expect(AppTab.values, contains(AppTab.expenses));
       expect(AppTab.values, contains(AppTab.planHub));
+      expect(AppTab.values, contains(AppTab.more));
     });
   });
 }
