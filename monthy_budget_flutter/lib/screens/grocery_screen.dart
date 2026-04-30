@@ -137,7 +137,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
     // Map grocery category strings to Calm category swatches by semantic match.
     // Resolved via AppColors.categoryColorByName which reads from
     // AppColors._expenseCategoryColors — the single source of truth for swatches.
-    const _groceryCategoryToExpense = {
+    const groceryCategoryToExpense = {
       'Frutas': 'alimentacao',
       'Legumes': 'alimentacao',
       'Carnes': 'habitacao',
@@ -153,7 +153,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
       'Limpeza': 'educacao',
       'Higiene': 'saude',
     };
-    final expenseName = _groceryCategoryToExpense[cat] ?? 'outros';
+    final expenseName = groceryCategoryToExpense[cat] ?? 'outros';
     return AppColors.categoryColorByName(expenseName);
   }
 
@@ -223,6 +223,12 @@ class _GroceryScreenState extends State<GroceryScreen> {
     }
     final cats = byCategory.keys.toList()..sort();
 
+    // §13 eyebrow: "{total} ITENS · {low} EM FALTA"
+    // TODO(l10n): extract to ARB
+    final totalItems = widget.products.length;
+    final eyebrowText = '$totalItems ITENS';
+
+    // Search bar: bgSunk radius 14 padding 10/14, search icon ink50 — §13
     final searchBar = Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: TextField(
@@ -236,7 +242,8 @@ class _GroceryScreenState extends State<GroceryScreen> {
               color: AppColors.ink50(context), size: 20),
           filled: true,
           fillColor: AppColors.bgSunk(context),
-          contentPadding: const EdgeInsets.symmetric(vertical: 10),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
             borderSide: BorderSide(color: AppColors.line(context)),
@@ -254,22 +261,63 @@ class _GroceryScreenState extends State<GroceryScreen> {
       ),
     );
 
+    // §13 header block: CalmPageHeader "Despensa" + scan icon trailing
+    // TODO(l10n): "Despensa" label
+    final pageHeader = CalmPageHeader(
+      eyebrow: eyebrowText,
+      title: 'Despensa',
+      showBack: false,
+      trailing: widget.onAddToShoppingList != null
+          ? IconButton(
+              icon: Icon(Icons.qr_code_scanner,
+                  color: AppColors.ink70(context)),
+              tooltip: l10n.barcodeScanTooltip,
+              onPressed: _onScanBarcode,
+            )
+          : null,
+    );
+
     final bodyContent = widget.isLoading
-        ? Center(
-            child: Semantics(
-              label: l10n.groceryLoadingLabel,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircularProgressIndicator(color: AppColors.accent(context)),
-                  const SizedBox(height: 16),
-                  Text(
-                    l10n.groceryLoadingMessage,
-                    style: TextStyle(
-                        fontSize: 14, color: AppColors.ink70(context)),
+        ? Semantics(
+            label: l10n.groceryLoadingLabel,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 8, bottom: 8),
+                  child: LinearProgressIndicator(
+                    color: AppColors.accent(context),
+                    backgroundColor: AppColors.bgSunk(context),
                   ),
-                ],
-              ),
+                ),
+                CalmCard(
+                  padding: EdgeInsets.zero,
+                  child: Column(
+                    children: [
+                      CalmListTile(
+                        leadingIcon: Icons.category_outlined,
+                        leadingColor: AppColors.ink20(context),
+                        title: l10n.groceryLoadingMessage,
+                        subtitle: '—',
+                      ),
+                      Divider(color: AppColors.line(context), height: 1, indent: 16, endIndent: 16),
+                      CalmListTile(
+                        leadingIcon: Icons.category_outlined,
+                        leadingColor: AppColors.ink20(context),
+                        title: '…',
+                        subtitle: '—',
+                      ),
+                      Divider(color: AppColors.line(context), height: 1, indent: 16, endIndent: 16),
+                      CalmListTile(
+                        leadingIcon: Icons.category_outlined,
+                        leadingColor: AppColors.ink20(context),
+                        title: '…',
+                        subtitle: '—',
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           )
         : widget.products.isEmpty
@@ -279,7 +327,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
                   searchBar,
                   if ((widget.groceryData?.hasCountryBundle ?? false))
                     _buildAvailabilityCard(l10n),
-                  // Category filter chips
+                  // Category filter chips — §13 segmented control
                   SizedBox(
                     key: GroceryTourKeys.categoryFilter,
                     height: 44,
@@ -336,15 +384,11 @@ class _GroceryScreenState extends State<GroceryScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  // Count
+                  // Count eyebrow — §13
                   Row(
                     children: [
-                      Text(
-                        l10n.groceryProductCount(filtered.length),
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: AppColors.ink50(context),
-                            fontWeight: FontWeight.w500),
+                      CalmEyebrow(
+                        l10n.groceryProductCount(filtered.length).toUpperCase(),
                       ),
                     ],
                   ),
@@ -377,18 +421,21 @@ class _GroceryScreenState extends State<GroceryScreen> {
       );
     }
 
+    // §13: CalmScaffold with CalmPageHeader as header, no AppBar title
     return CalmScaffold(
-      title: l10n.groceryTitle,
-      actions: [
-        if (widget.onAddToShoppingList != null)
-          IconButton(
-            icon: Icon(Icons.qr_code_scanner,
-                color: AppColors.ink70(context)),
-            tooltip: l10n.barcodeScanTooltip,
-            onPressed: _onScanBarcode,
+      bodyPadding: EdgeInsets.zero,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          pageHeader,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: bodyContent,
+            ),
           ),
-      ],
-      body: bodyContent,
+        ],
+      ),
     );
   }
 
@@ -407,34 +454,15 @@ class _GroceryScreenState extends State<GroceryScreen> {
     }
 
     final hasWarning = groceryData.hasDegradedStores;
-    final accent =
-        hasWarning ? AppColors.warn(context) : AppColors.ok(context);
-    final background = hasWarning
-        ? AppColors.warningBackground(context)
-        : AppColors.successBackground(context);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Container(
-        width: double.infinity,
+      child: CalmCard(
         padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: background,
-          borderRadius: BorderRadius.circular(14),
-          border:
-              Border.all(color: accent.withValues(alpha: 0.3)),
-        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              l10n.groceryAvailabilityTitle,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: accent,
-              ),
-            ),
+            CalmEyebrow(l10n.groceryAvailabilityTitle),
             const SizedBox(height: 4),
             Text(
               l10n.groceryAvailabilityCountry(groceryData.countryCode),
@@ -467,6 +495,35 @@ class _GroceryScreenState extends State<GroceryScreen> {
               ),
             ],
             const SizedBox(height: 8),
+            // Status summary pill row
+            Row(
+              children: [
+                if (groceryData.freshStoreCount > 0)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 6),
+                    child: CalmPill(
+                      label: '${groceryData.freshStoreCount} ok',
+                      color: AppColors.ok(context),
+                    ),
+                  ),
+                if (groceryData.partialStoreCount > 0)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 6),
+                    child: CalmPill(
+                      label: '${groceryData.partialStoreCount} parcial',
+                      // TODO(l10n): "parcial"
+                      color: AppColors.warn(context),
+                    ),
+                  ),
+                if (groceryData.failedStoreCount > 0)
+                  CalmPill(
+                    label: '${groceryData.failedStoreCount} falhou',
+                    // TODO(l10n): "falhou"
+                    color: AppColors.bad(context),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 4),
             ...groceryData.storeSummaries.map(
               (store) => _buildStoreHealthRow(l10n, store),
             ),
@@ -550,26 +607,13 @@ class _GroceryScreenState extends State<GroceryScreen> {
             ),
             const SizedBox(width: 8),
           ],
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w600,
-                color: color,
-              ),
-            ),
-          ),
+          CalmPill(label: label, color: color),
         ],
       ),
     );
   }
 
+  // §13 group header + CalmCard container for item rows
   Widget _buildCategory(String category, List<Product> items,
       {bool isFirst = false}) {
     final catColor = _categoryColor(category);
@@ -578,26 +622,20 @@ class _GroceryScreenState extends State<GroceryScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 20, bottom: 8),
+          // §13 aisle header: 11px ink50 uppercase
           child: CalmEyebrow(category.toUpperCase()),
         ),
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.card(context),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppColors.line(context)),
-          ),
+        CalmCard(
+          padding: EdgeInsets.zero,
           child: Column(
             children: [
               for (int i = 0; i < items.length; i++) ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _buildProductRow(
-                    items[i],
-                    catColor: catColor,
-                    tourKey: isFirst && i == 0
-                        ? GroceryTourKeys.productCard
-                        : null,
-                  ),
+                _buildProductRow(
+                  items[i],
+                  catColor: catColor,
+                  tourKey: isFirst && i == 0
+                      ? GroceryTourKeys.productCard
+                      : null,
                 ),
                 if (i < items.length - 1)
                   Divider(
@@ -614,6 +652,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
     );
   }
 
+  // §13 product row: CalmListTile + pantry/cart actions
   Widget _buildProductRow(Product product,
       {required Color catColor, GlobalKey? tourKey}) {
     final l10n = S.of(context);
@@ -623,8 +662,9 @@ class _GroceryScreenState extends State<GroceryScreen> {
     return Semantics(
       label:
           '${product.name}, ${formatCurrency(product.avgPrice)}, ${product.unit}',
-      child: Container(
+      child: Padding(
         key: tourKey,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(
           children: [
             Expanded(
@@ -694,32 +734,13 @@ class _GroceryScreenState extends State<GroceryScreen> {
       button: true,
       label: S.of(context).filterBy(label),
       selected: selected,
-      child: Material(
-        color: selected ? AppColors.ink(context) : AppColors.card(context),
-        borderRadius: BorderRadius.circular(100),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(100),
-          child: Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
-              border: Border.all(
-                  color: selected
-                      ? AppColors.ink(context)
-                      : AppColors.line(context)),
-            ),
-            child: Text(
-              label,
-              style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: selected
-                      ? AppColors.bg(context)
-                      : AppColors.ink70(context)),
-            ),
-          ),
+      child: GestureDetector(
+        onTap: onTap,
+        child: CalmPill(
+          label: label,
+          color: selected
+              ? AppColors.ink(context)
+              : AppColors.ink50(context),
         ),
       ),
     );
