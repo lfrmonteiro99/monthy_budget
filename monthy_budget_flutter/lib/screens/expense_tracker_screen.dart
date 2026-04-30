@@ -288,6 +288,22 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
     }
   }
 
+  /// Average spend per elapsed day in [_currentMonth] (or whole month total ÷
+  /// days-in-month when viewing a past month). Returned as a formatted currency string.
+  String _avgPerDay(double totalActual) {
+    final now = DateTime.now();
+    final isCurrentMonth =
+        _currentMonth.year == now.year && _currentMonth.month == now.month;
+    final elapsedDays =
+        isCurrentMonth ? now.day.clamp(1, 31) : _daysInMonth(_currentMonth);
+    final avg = totalActual / elapsedDays;
+    return formatCurrency(avg);
+  }
+
+  int _daysInMonth(DateTime month) {
+    return DateTime(month.year, month.month + 1, 0).day;
+  }
+
   String _monthLabel(S l10n) {
     final monthNames = [
       l10n.monthFullJan,
@@ -520,20 +536,25 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
       ),
       body: Column(
         children: [
-          // Top action bar — scan, export, search, recurring
+          // Header — eyebrow + Fraunces hero + action icons
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+            padding: const EdgeInsets.fromLTRB(20, 18, 20, 8),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Screen title
                 Expanded(
-                  child: Text(
-                    l10n.expenseTrackerScreenTitle,
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.ink(context),
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // TODO(l10n): move to ARB (Wave H)
+                      const CalmEyebrow('MOVIMENTO'),
+                      const SizedBox(height: 4),
+                      Text(
+                        // TODO(l10n): move to ARB (Wave H)
+                        'Despesas',
+                        style: CalmText.display(context, size: 36),
+                      ),
+                    ],
                   ),
                 ),
                 IconButton(
@@ -574,8 +595,6 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
             ),
           ),
 
-          const SizedBox(height: 16),
-
           // Month navigator
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -613,28 +632,93 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: 14),
 
-          // Hero — month total
+          // Stats row — 3 cards: Este mês / Média/dia / Contas
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: CalmHero(
-              // TODO(l10n): move to ARB (Wave H)
-              eyebrow: 'ESTE MÊS',
-              amount: formatCurrency(totalActual),
-              subtitle: _expenses.isEmpty
-                  ? l10n.expenseTrackerEmpty
-                  : l10n.expenseTrackerActual,
+            child: Row(
+              key: ExpenseTrackerTourKeys.summary,
+              children: [
+                Expanded(
+                  child: CalmCard(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 12,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // TODO(l10n): move to ARB (Wave H)
+                        const CalmEyebrow('ESTE MÊS'),
+                        const SizedBox(height: 4),
+                        Text(
+                          formatCurrency(totalActual),
+                          style: CalmText.amount(context,
+                              size: 22, weight: FontWeight.w600),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: CalmCard(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 12,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // TODO(l10n): move to ARB (Wave H)
+                        const CalmEyebrow('MÉDIA/DIA'),
+                        const SizedBox(height: 4),
+                        Text(
+                          _avgPerDay(totalActual),
+                          style: CalmText.amount(context,
+                              size: 22, weight: FontWeight.w600),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: CalmCard(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 12,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // TODO(l10n): move to ARB (Wave H)
+                        const CalmEyebrow('CONTAS'),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${_expenses.length}',
+                          style: CalmText.amount(context,
+                              size: 22, weight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
 
           // Budget status pill
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
-              key: ExpenseTrackerTourKeys.summary,
               children: [
                 CalmPill(
                   label: isOver
@@ -698,28 +782,79 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                   )
                 : _expenses.isEmpty
                 ? _buildEmptyState(l10n)
-                : ListView.builder(
+                : CustomScrollView(
                     key: ExpenseTrackerTourKeys.categoryList,
-                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 80),
-                    itemCount: summaries.length,
-                    itemBuilder: (_, i) => _CategorySection(
-                      summary: summaries[i],
-                      expenses: _expenses
-                          .where((e) => e.category == summaries[i].category)
-                          .toList(),
-                      icon: categoryIconByName(
-                        summaries[i].category,
-                        customCategories: widget.customCategories,
+                    slivers: [
+                      // "ALERTAS" card — over-budget categories
+                      if (summaries.any((s) => s.isOver))
+                        SliverPadding(
+                          padding:
+                              const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                          sliver: SliverToBoxAdapter(
+                            child: _buildAlertsCard(
+                                context, l10n, summaries),
+                          ),
+                        ),
+
+                      // "RECENTES" card — last 3 expenses quick-view
+                      if (_expenses.isNotEmpty)
+                        SliverPadding(
+                          padding:
+                              const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                          sliver: SliverToBoxAdapter(
+                            child: _buildRecentCard(context, l10n),
+                          ),
+                        ),
+
+                      // "POR CATEGORIA" sticky section label
+                      SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(20, 16, 20, 6),
+                        sliver: SliverToBoxAdapter(
+                          child: Row(
+                            children: [
+                              // TODO(l10n): move to ARB (Wave H)
+                              const CalmEyebrow('POR CATEGORIA'),
+                              const Spacer(),
+                              Text(
+                                '${summaries.length}',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: AppColors.ink50(context),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      categoryColor: categoryColorByNameFull(
-                        summaries[i].category,
-                        customCategories: widget.customCategories,
+                      SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 80),
+                        sliver: SliverList.builder(
+                          itemCount: summaries.length,
+                          itemBuilder: (_, i) => _CategorySection(
+                            summary: summaries[i],
+                            expenses: _expenses
+                                .where(
+                                  (e) =>
+                                      e.category == summaries[i].category,
+                                )
+                                .toList(),
+                            icon: categoryIconByName(
+                              summaries[i].category,
+                              customCategories: widget.customCategories,
+                            ),
+                            categoryColor: categoryColorByNameFull(
+                              summaries[i].category,
+                              customCategories: widget.customCategories,
+                            ),
+                            label: _localizedCategory(
+                                summaries[i].category, l10n),
+                            onOpenDetails: _showExpenseDetail,
+                            onDelete: _deleteExpense,
+                            l10n: l10n,
+                          ),
+                        ),
                       ),
-                      label: _localizedCategory(summaries[i].category, l10n),
-                      onOpenDetails: _showExpenseDetail,
-                      onDelete: _deleteExpense,
-                      l10n: l10n,
-                    ),
+                    ],
                   ),
           ),
         ],
@@ -739,6 +874,138 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
           label: l10n.addExpenseTooltip,
           onPressed: _addExpense,
         ),
+      ),
+    );
+  }
+
+  /// Shows an "ALERTAS" CalmCard listing over-budget categories as CalmListTile rows.
+  Widget _buildAlertsCard(
+    BuildContext context,
+    S l10n,
+    List<CategoryBudgetSummary> summaries,
+  ) {
+    final overItems = summaries.where((s) => s.isOver).toList();
+    return CalmCard(
+      padding: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 6),
+            child: Row(
+              children: [
+                // TODO(l10n): move to ARB (Wave H)
+                const CalmEyebrow('ALERTAS'),
+                const SizedBox(width: 6),
+                CalmPill(
+                  label: '${overItems.length}',
+                  color: AppColors.bad(context),
+                ),
+              ],
+            ),
+          ),
+          Divider(color: AppColors.line(context), height: 1),
+          ...overItems.asMap().entries.map((entry) {
+            final i = entry.key;
+            final s = entry.value;
+            final catIcon = categoryIconByName(
+              s.category,
+              customCategories: widget.customCategories,
+            );
+            final over = s.actual - s.budgeted;
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: CalmListTile(
+                    leadingIcon: catIcon,
+                    leadingColor: AppColors.bad(context),
+                    title: _localizedCategory(s.category, l10n),
+                    subtitle:
+                        // TODO(l10n): move to ARB (Wave H)
+                        'orç. ${formatCurrency(s.budgeted)} · gasto ${formatCurrency(s.actual)}',
+                    trailing: '+${formatCurrency(over)}',
+                  ),
+                ),
+                if (i < overItems.length - 1)
+                  Divider(
+                    color: AppColors.line(context),
+                    height: 1,
+                    indent: 16,
+                    endIndent: 16,
+                  ),
+              ],
+            );
+          }),
+          const SizedBox(height: 4),
+        ],
+      ),
+    );
+  }
+
+  /// Shows a "Recentes" CalmCard with the last 3 expenses as CalmListTile rows.
+  Widget _buildRecentCard(BuildContext context, S l10n) {
+    final recent = _expenses.take(3).toList();
+    return CalmCard(
+      padding: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 6),
+            // TODO(l10n): move to ARB (Wave H)
+            child: const CalmEyebrow('RECENTES'),
+          ),
+          Divider(color: AppColors.line(context), height: 1),
+          ...recent.map((expense) {
+            final catColor = categoryColorByNameFull(
+              expense.category,
+              customCategories: widget.customCategories,
+            );
+            final catIcon = categoryIconByName(
+              expense.category,
+              customCategories: widget.customCategories,
+            );
+            final dateStr =
+                '${expense.date.day.toString().padLeft(2, '0')}/${expense.date.month.toString().padLeft(2, '0')}';
+            final catLabel = _localizedCategory(expense.category, l10n);
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: CalmListTile(
+                    leadingIcon: catIcon,
+                    leadingColor: catColor,
+                    title: expense.description ?? catLabel,
+                    subtitle: '$dateStr · $catLabel',
+                    trailing: formatCurrency(expense.amount),
+                    onTap: () => _showExpenseDetail(expense),
+                  ),
+                ),
+                Divider(
+                  color: AppColors.line(context),
+                  height: 1,
+                  indent: 16,
+                  endIndent: 16,
+                ),
+              ],
+            );
+          }),
+          // "Ver todas" footer row
+          if (_expenses.length > 3)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: CalmListTile(
+                leadingIcon: Icons.receipt_long_outlined,
+                leadingColor: AppColors.ink50(context),
+                // TODO(l10n): move to ARB (Wave H)
+                title: 'Ver todas as despesas',
+                subtitle: '${_expenses.length} transações este mês',
+              ),
+            )
+          else
+            const SizedBox(height: 4),
+        ],
       ),
     );
   }
@@ -817,14 +1084,14 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
 
                   Divider(color: AppColors.line(context), height: 1),
 
-                  // Result count
+                  // Result count + eyebrow
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 8,
-                    ),
+                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
                     child: Row(
                       children: [
+                        // TODO(l10n): move to ARB (Wave H)
+                        const CalmEyebrow('RESULTADOS'),
+                        const SizedBox(width: 8),
                         Text(
                           l10n.searchResultCount(_searchResults.length),
                           style: TextStyle(
@@ -841,12 +1108,11 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                   Expanded(
                     child: _searchResults.isEmpty
                         ? Center(
-                            child: Text(
-                              l10n.searchNoResults,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: AppColors.ink50(context),
-                              ),
+                            child: CalmEmptyState(
+                              icon: Icons.search_off,
+                              // TODO(l10n): move to ARB (Wave H)
+                              title: 'Nada encontrado',
+                              body: l10n.searchNoResults,
                             ),
                           )
                         : ListView.builder(
@@ -884,8 +1150,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
   Widget _buildFilterBar(S l10n) {
     final categories = _allCategories().toList()..sort();
 
-    return Container(
-      color: AppColors.card(context),
+    return CalmCard(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -913,12 +1178,14 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                       : BorderSide(color: AppColors.line(context)),
                   avatar: selected
                       ? null
-                      : Container(
+                      : SizedBox(
                           width: 10,
                           height: 10,
-                          decoration: BoxDecoration(
-                            color: catColor,
-                            shape: BoxShape.circle,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: catColor,
+                              shape: BoxShape.circle,
+                            ),
                           ),
                         ),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -1061,26 +1328,15 @@ class _CategorySection extends StatelessWidget {
             Theme(
               data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
               child: ExpansionTile(
-                leading: Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: categoryColor.withValues(alpha: 0.15),
-                    shape: BoxShape.circle,
-                  ),
+                leading: CircleAvatar(
+                  radius: 18,
+                  backgroundColor: categoryColor.withValues(alpha: 0.15),
                   child: Icon(icon, size: 18, color: categoryColor),
                 ),
                 title: Row(
                   children: [
                     Expanded(
-                      child: Text(
-                        label,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.ink(context),
-                        ),
-                      ),
+                      child: CalmEyebrow(label.toUpperCase()),
                     ),
                     Text(
                       formatCurrency(summary.actual),
@@ -1158,15 +1414,19 @@ class _CategorySection extends StatelessWidget {
                               return confirmed ?? false;
                             },
                             onDismissed: (_) => onDelete(expense),
-                            background: Container(
-                              alignment: Alignment.centerRight,
-                              padding: const EdgeInsets.only(right: 16),
+                            background: ColoredBox(
                               color: AppColors.bad(context)
                                   .withValues(alpha: 0.12),
-                              child: Icon(
-                                Icons.delete_outline,
-                                color: AppColors.bad(context),
-                                size: 20,
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 16),
+                                  child: Icon(
+                                    Icons.delete_outline,
+                                    color: AppColors.bad(context),
+                                    size: 20,
+                                  ),
+                                ),
                               ),
                             ),
                             child: Padding(

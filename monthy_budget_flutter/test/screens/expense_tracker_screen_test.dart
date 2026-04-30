@@ -40,7 +40,9 @@ void main() {
 
     await tester.tap(find.byType(ExpansionTile));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('January rent'));
+    // 'January rent' appears in both the recent card and the expanded category
+    // section; tap the first visible occurrence.
+    await tester.tap(find.text('January rent').first);
     await tester.pumpAndSettle();
 
     expect(find.byType(ExpenseDetailSheet), findsOneWidget);
