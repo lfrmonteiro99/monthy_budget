@@ -2430,6 +2430,28 @@ class SPt extends S {
   String get recurringExpenseSaved => 'Pagamento recorrente guardado';
 
   @override
+  String get recurringExpenseSaveError =>
+      'Não foi possível guardar — tenta de novo';
+
+  @override
+  String get recurringExpenseDeleteError =>
+      'Não foi possível eliminar — tenta de novo';
+
+  @override
+  String get savingsContributionSaveError =>
+      'Não foi possível guardar a contribuição — tenta de novo';
+
+  @override
+  String get coachNoApiKeyTitle => 'Configura o teu coach';
+
+  @override
+  String get coachNoApiKeyBody =>
+      'Adiciona uma chave OpenAI nas Definições para começar a conversar.';
+
+  @override
+  String get coachNoApiKeyAction => 'Abrir Definições';
+
+  @override
   String get recurringPaymentToggle => 'Pagamento recorrente';
 
   @override

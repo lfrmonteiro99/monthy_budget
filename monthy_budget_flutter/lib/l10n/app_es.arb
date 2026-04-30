@@ -1259,6 +1259,12 @@
     "recurringExpenseDayHint": "Ej: 1 para el día 1",
     "recurringExpenseNoDay": "Sin día fijo",
     "recurringExpenseSaved": "Pago recurrente guardado",
+    "recurringExpenseSaveError": "No se pudo guardar — intenta de nuevo",
+    "recurringExpenseDeleteError": "No se pudo eliminar — intenta de nuevo",
+    "savingsContributionSaveError": "No se pudo guardar la contribucion — intenta de nuevo",
+    "coachNoApiKeyTitle": "Configura tu coach",
+    "coachNoApiKeyBody": "Anade una clave OpenAI en Ajustes para comenzar a chatear.",
+    "coachNoApiKeyAction": "Abrir Ajustes",
     "recurringPaymentToggle": "Pago recurrente",
     "billsCount": "{count} pagos",
     "@billsCount": {

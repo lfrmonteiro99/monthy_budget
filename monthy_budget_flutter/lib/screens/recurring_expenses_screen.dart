@@ -5,6 +5,7 @@ import '../models/recurring_expense.dart';
 import '../models/custom_category.dart';
 import '../models/app_settings.dart';
 import '../services/recurring_expense_service.dart';
+import '../services/log_service.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_theme.dart';
 import '../utils/formatters.dart';
@@ -65,7 +66,19 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
     final result = await _showEditSheet(existing);
     if (result == null) return;
 
-    await _service.save(result, widget.householdId);
+    try {
+      await _service.save(result, widget.householdId);
+    } catch (e, st) {
+      LogService.error(
+        'Failed to save recurring expense',
+        error: e,
+        stackTrace: st,
+        category: 'ui.recurring',
+      );
+      if (!mounted) return;
+      CalmSnack.error(context, S.of(context).recurringExpenseSaveError);
+      return;
+    }
     if (!mounted) return;
     setState(() {
       if (existing != null) {
@@ -91,7 +104,19 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
       destructive: true,
     );
     if (confirmed != true) return;
-    await _service.delete(expense.id);
+    try {
+      await _service.delete(expense.id);
+    } catch (e, st) {
+      LogService.error(
+        'Failed to delete recurring expense ${expense.id}',
+        error: e,
+        stackTrace: st,
+        category: 'ui.recurring',
+      );
+      if (!mounted) return;
+      CalmSnack.error(context, S.of(context).recurringExpenseDeleteError);
+      return;
+    }
     if (!mounted) return;
     setState(() {
       _expenses = _expenses.where((e) => e.id != expense.id).toList();
@@ -100,13 +125,32 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
   }
 
   Future<void> _toggleActive(RecurringExpense expense) async {
+    final previous = expense;
     final updated = expense.copyWith(isActive: !expense.isActive);
-    await _service.save(updated, widget.householdId);
-    if (!mounted) return;
+    // Optimistic local update first so the toggle feels instant.
     setState(() {
       _expenses =
           _expenses.map((e) => e.id == expense.id ? updated : e).toList();
     });
+    try {
+      await _service.save(updated, widget.householdId);
+    } catch (e, st) {
+      LogService.error(
+        'Failed to toggle recurring expense ${expense.id}',
+        error: e,
+        stackTrace: st,
+        category: 'ui.recurring',
+      );
+      if (!mounted) return;
+      // Rollback the optimistic toggle.
+      setState(() {
+        _expenses =
+            _expenses.map((e) => e.id == previous.id ? previous : e).toList();
+      });
+      CalmSnack.error(context, S.of(context).recurringExpenseSaveError);
+      return;
+    }
+    if (!mounted) return;
     _notify();
   }
 

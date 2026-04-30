@@ -1301,6 +1301,12 @@
     "recurringExpenseDayHint": "E.g. 1 for the 1st",
     "recurringExpenseNoDay": "No fixed day",
     "recurringExpenseSaved": "Recurring payment saved",
+    "recurringExpenseSaveError": "Couldn't save — try again",
+    "recurringExpenseDeleteError": "Couldn't delete — try again",
+    "savingsContributionSaveError": "Couldn't save contribution — try again",
+    "coachNoApiKeyTitle": "Set up your coach",
+    "coachNoApiKeyBody": "Add an OpenAI key in Settings to start chatting.",
+    "coachNoApiKeyAction": "Open Settings",
     "recurringPaymentToggle": "Recurring payment",
     "billsCount": "{count} payments",
     "@billsCount": {

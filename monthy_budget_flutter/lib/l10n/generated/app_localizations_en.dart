@@ -2419,6 +2419,26 @@ class SEn extends S {
   String get recurringExpenseSaved => 'Recurring payment saved';
 
   @override
+  String get recurringExpenseSaveError => 'Couldn\'t save — try again';
+
+  @override
+  String get recurringExpenseDeleteError => 'Couldn\'t delete — try again';
+
+  @override
+  String get savingsContributionSaveError =>
+      'Couldn\'t save contribution — try again';
+
+  @override
+  String get coachNoApiKeyTitle => 'Set up your coach';
+
+  @override
+  String get coachNoApiKeyBody =>
+      'Add an OpenAI key in Settings to start chatting.';
+
+  @override
+  String get coachNoApiKeyAction => 'Open Settings';
+
+  @override
   String get recurringPaymentToggle => 'Recurring payment';
 
   @override

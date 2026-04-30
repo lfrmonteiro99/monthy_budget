@@ -1259,6 +1259,12 @@
     "recurringExpenseDayHint": "Ex : 1 pour le 1er",
     "recurringExpenseNoDay": "Pas de jour fixe",
     "recurringExpenseSaved": "Paiement récurrent enregistré",
+    "recurringExpenseSaveError": "Impossible d'enregistrer — reessaye",
+    "recurringExpenseDeleteError": "Impossible de supprimer — reessaye",
+    "savingsContributionSaveError": "Impossible d'enregistrer la contribution — reessaye",
+    "coachNoApiKeyTitle": "Configure ton coach",
+    "coachNoApiKeyBody": "Ajoute une cle OpenAI dans les Reglages pour commencer a discuter.",
+    "coachNoApiKeyAction": "Ouvrir Reglages",
     "recurringPaymentToggle": "Paiement récurrent",
     "billsCount": "{count} paiements",
     "@billsCount": {

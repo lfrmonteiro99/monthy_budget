@@ -2438,6 +2438,28 @@ class SFr extends S {
   String get recurringExpenseSaved => 'Paiement récurrent enregistré';
 
   @override
+  String get recurringExpenseSaveError =>
+      'Impossible d\'enregistrer — reessaye';
+
+  @override
+  String get recurringExpenseDeleteError =>
+      'Impossible de supprimer — reessaye';
+
+  @override
+  String get savingsContributionSaveError =>
+      'Impossible d\'enregistrer la contribution — reessaye';
+
+  @override
+  String get coachNoApiKeyTitle => 'Configure ton coach';
+
+  @override
+  String get coachNoApiKeyBody =>
+      'Ajoute une cle OpenAI dans les Reglages pour commencer a discuter.';
+
+  @override
+  String get coachNoApiKeyAction => 'Ouvrir Reglages';
+
+  @override
   String get recurringPaymentToggle => 'Paiement récurrent';
 
   @override

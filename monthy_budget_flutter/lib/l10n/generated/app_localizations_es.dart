@@ -2432,6 +2432,28 @@ class SEs extends S {
   String get recurringExpenseSaved => 'Pago recurrente guardado';
 
   @override
+  String get recurringExpenseSaveError =>
+      'No se pudo guardar — intenta de nuevo';
+
+  @override
+  String get recurringExpenseDeleteError =>
+      'No se pudo eliminar — intenta de nuevo';
+
+  @override
+  String get savingsContributionSaveError =>
+      'No se pudo guardar la contribucion — intenta de nuevo';
+
+  @override
+  String get coachNoApiKeyTitle => 'Configura tu coach';
+
+  @override
+  String get coachNoApiKeyBody =>
+      'Anade una clave OpenAI en Ajustes para comenzar a chatear.';
+
+  @override
+  String get coachNoApiKeyAction => 'Abrir Ajustes';
+
+  @override
   String get recurringPaymentToggle => 'Pago recurrente';
 
   @override

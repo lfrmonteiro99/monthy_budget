@@ -423,15 +423,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   }
 
   List<Widget> _buildAppBarActions(S l10n) {
+    // Receipt scan is not wired to an expense-creation handler from the
+    // shopping list (the screen has no onAdd callback). Removed until that
+    // path is plumbed — shows in the expense tracker only.
     return [
-      IconButton(
-        icon: Icon(
-          Icons.document_scanner,
-          color: AppColors.ink70(context),
-        ),
-        tooltip: l10n.quickScanReceipt,
-        onPressed: () => ReceiptScanSheet.show(context),
-      ),
       if (widget.onAddToShoppingList != null)
         IconButton(
           icon: Icon(
@@ -468,14 +463,12 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       );
       if (!mounted) return;
       final l10n = S.of(context);
+      // Shopping list has no expense-add path; surface a hint instead of
+      // opening a sheet whose result we'd discard.
       CalmSnack.show(
         context,
         l10n.barcodeInvoiceDetected,
         duration: AppConstants.snackBarMedium,
-        action: SnackBarAction(
-          label: l10n.barcodeInvoiceAction,
-          onPressed: () => ReceiptScanSheet.show(context),
-        ),
       );
       return;
     }
