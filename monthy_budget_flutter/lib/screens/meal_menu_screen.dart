@@ -49,7 +49,6 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
   final _service = MealPlannerService();
 
   MealPlan? _plan;
-  bool _loading = true;
 
   // Row indices: 0 = Pequeno-almoço, 1 = Almoço, 2 = Jantar
   static const _mealTypes = [
@@ -80,16 +79,10 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
       final saved =
           await _service.load(widget.householdId, now.month, now.year);
       if (!mounted) return;
-      setState(() {
-        _plan = saved;
-        _loading = false;
-      });
+      setState(() => _plan = saved);
     } catch (_) {
       if (!mounted) return;
-      setState(() {
-        _plan = null;
-        _loading = false;
-      });
+      setState(() => _plan = null);
     }
   }
 
@@ -227,10 +220,10 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Always render the full structure. While `_loading` is true the helper
-    // counts return 0 and `_rowCells` returns empty strings, so the grid +
-    // KPI sections show a graceful empty state instead of a spinner — keeps
-    // the layout stable, lets widget tests assert on static structure
+    // Always render the full structure. While the plan is still loading the
+    // helper counts return 0 and `_rowCells` returns empty strings, so the
+    // grid + KPI sections show a graceful empty state instead of a spinner —
+    // keeps the layout stable, lets widget tests assert on static structure
     // without waiting for platform channels to wire up.
     return CalmScaffold(
       bodyPadding: EdgeInsets.zero,
