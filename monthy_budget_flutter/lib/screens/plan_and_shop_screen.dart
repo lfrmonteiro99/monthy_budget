@@ -62,6 +62,7 @@ class PlanAndShopScreen extends StatefulWidget {
 
   // Premium gate
   final bool canAccessMeals;
+  final VoidCallback? onUpgrade;
 
   const PlanAndShopScreen({
     super.key,
@@ -92,6 +93,7 @@ class PlanAndShopScreen extends StatefulWidget {
     this.showMealsTour = false,
     this.onMealsTourComplete,
     this.canAccessMeals = true,
+    this.onUpgrade,
   });
 
   @override
@@ -406,12 +408,18 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen> {
         const SizedBox(width: 12),
         Expanded(
           child: CalmTile(
-            icon: Icons.restaurant_menu_outlined,
+            icon: widget.canAccessMeals
+                ? Icons.restaurant_menu_outlined
+                : Icons.lock_outlined,
             label: 'Ementa',
-            count: _plan != null
-                ? '${_plan!.days.length} refeições'
-                : 'sem plano',
-            onTap: widget.canAccessMeals ? () => _openEmenta(context) : null,
+            count: widget.canAccessMeals
+                ? (_plan != null
+                    ? '${_plan!.days.length} refeições'
+                    : 'sem plano')
+                : 'Premium',
+            onTap: widget.canAccessMeals
+                ? () => _openEmenta(context)
+                : (widget.onUpgrade ?? () => _openEmenta(context)),
           ),
         ),
         const SizedBox(width: 12),

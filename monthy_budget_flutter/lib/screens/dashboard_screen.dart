@@ -34,6 +34,7 @@ import '../widgets/info_icon_button.dart';
 import '../utils/savings_projections.dart';
 import '../onboarding/dashboard_tour.dart';
 import '../models/notification_preferences.dart';
+import '../services/local_config_service.dart';
 import 'notification_settings_screen.dart';
 import 'tax_deduction_detail_screen.dart';
 import 'tax_simulator_screen.dart';
@@ -246,8 +247,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return CalmHeader(
       eyebrow: eyebrow,
       title: monthLabel,
-      // Chevron is decoration-only in M1; picker wired in M1b.
-      onTitleTap: () {},
       actions: [
         Tooltip(
           message: l10n.notificationSettings,
@@ -273,12 +272,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  void _openNotificationSettings(BuildContext context) {
-    Navigator.of(context).push(
+  Future<void> _openNotificationSettings(BuildContext context) async {
+    final config = LocalConfigService();
+    final prefs = await config.loadNotificationPreferences();
+    if (!context.mounted) return;
+    await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => NotificationSettingsScreen(
-          preferences: NotificationPreferences(),
-          onSave: (_) {},
+          preferences: prefs,
+          onSave: (updated) => config.saveNotificationPreferences(updated),
         ),
       ),
     );
