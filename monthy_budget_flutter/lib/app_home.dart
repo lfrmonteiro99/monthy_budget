@@ -2221,19 +2221,37 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           stackTrace: stack,
           category: 'ui.more',
         ),
-        child: MoreScreen(
-          onOpenInsights: _openInsights,
-          onOpenCoach: _openCoach,
-          onOpenSavingsGoals: _openSavingsGoals,
-          onOpenYearlySummary: _openYearlySummary,
-          onOpenSettings: () => _openSettings(),
-          onOpenNotifications: _openNotificationSettings,
-          onOpenSubscription: () => _openPaywall(),
-          onOpenConfidenceCenter: _openConfidenceCenter,
-          onOpenProductUpdates: _openProductUpdates,
-          subscription: _subscription,
-          confidenceAlertCount:
-              buildAlerts(statuses: _dataHealthService.statuses).length,
+        child: Builder(
+          builder: (ctx) {
+            final l10n = S.of(ctx);
+            return MoreScreen(
+              coachQuote: l10n.moreCoachFallbackQuote,
+              observations: const [],
+              onOpenCoach: _openCoach,
+              onOpenInsight: (_) => _openInsights(),
+              onOpenPlanShop: () => _selectTab(AppTab.planHub),
+              onOpenShoppingList: _openShoppingList,
+              onOpenMealPlanner: _openMealPlanner,
+              onOpenPantry: _openGrocery,
+              onOpenIncome: () =>
+                  _openSettings(section: SettingsSection.salaries),
+              onOpenRecurring: _openRecurringExpenses,
+              onOpenHousehold: () =>
+                  _openSettings(section: SettingsSection.household),
+              onOpenYearlySummary: _openYearlySummary,
+              onOpenTaxSimulator: () =>
+                  _navigate(const AppRoute.taxSimulator()),
+              onOpenScanReceipt: _openReceiptScanner,
+              onOpenDataHealth: _openConfidenceCenter,
+              onOpenNotifications: _openNotificationSettings,
+              onOpenSettings: () => _openSettings(),
+              onOpenPaywall: () => _openPaywall(),
+              subscription: _subscription,
+              dataHealthAlertCount:
+                  buildAlerts(statuses: _dataHealthService.statuses).length,
+              taxSimulatorEnabled: _settings.country == Country.pt,
+            );
+          },
         ),
       ),
     };

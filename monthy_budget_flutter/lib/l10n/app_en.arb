@@ -2306,6 +2306,55 @@
     },
     "moreUpgrade": "Upgrade \u2192",
 
+    "moreScreenTitle": "Insights & more",
+    "moreScreenEyebrow": "Understanding",
+    "moreCoachEyebrow": "Coach",
+    "moreCoachCta": "Talk to the coach",
+    "moreCoachUnlockCta": "Unlock the coach",
+    "moreCoachFallbackQuote": "Tap to open the coach.",
+    "moreObservationsEyebrow": "Observations",
+    "moreToolsEyebrow": "Tools",
+    "moreObsKindWarning": "Heads up",
+    "moreObsKindInfo": "FYI",
+    "moreObsKindSuccess": "Great",
+    "moreToolPlanShop": "Plan & shopping list",
+    "moreToolPlanShopSub": "Menu + weekly list",
+    "moreToolShoppingList": "Shopping list",
+    "moreToolShoppingListSub": "Aisles \u00b7 progress",
+    "moreToolMealsWeek": "Meals this week",
+    "moreToolMealsWeekSub": "7 days \u00b7 planned meals",
+    "moreToolPantry": "Pantry",
+    "moreToolPantrySub": "Stock at home \u00b7 expiry dates",
+    "moreToolIncome": "Income",
+    "moreToolIncomeSub": "Salary, freelance, rent",
+    "moreToolRecurring": "Recurring bills",
+    "moreToolRecurringSub": "Rent, utilities, subscriptions",
+    "moreToolHousehold": "Household",
+    "moreToolHouseholdSubFmt": "{count} members \u00b7 shared",
+    "@moreToolHouseholdSubFmt": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "moreToolHouseholdSubConfigure": "Set up",
+    "moreToolYearly": "Yearly summary",
+    "moreToolYearlySubFmt": "{year} trends",
+    "@moreToolYearlySubFmt": {
+        "placeholders": {
+            "year": { "type": "int" }
+        }
+    },
+    "moreToolTaxSimulator": "Tax simulator",
+    "moreToolTaxSimulatorSub": "Deductions and refund",
+    "moreToolReceiptScan": "Scan receipt",
+    "moreToolReceiptScanSub": "Automatic OCR",
+    "moreToolDataHealth": "Data health",
+    "moreToolDataHealthSub": "Categorisation, duplicates",
+    "moreToolNotifications": "Notifications",
+    "moreToolNotificationsSub": "Alerts and reminders",
+    "moreToolSettings": "Settings",
+    "moreToolSettingsSub": "Budget, theme, data",
+
     "planTitle": "Plan",
     "planGrocerySubtitle": "Browse products and prices",
     "planShoppingList": "Shopping List",
