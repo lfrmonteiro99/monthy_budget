@@ -161,7 +161,9 @@ class _GroceryScreenState extends State<GroceryScreen> {
     final barcode = await BarcodeScanSheet.show(context);
     if (barcode == null || !mounted) return;
 
-    // Detect invoice/receipt barcodes (ATCUD QR codes) and redirect
+    // Detect invoice/receipt barcodes (ATCUD QR codes) and surface a hint.
+    // Grocery has no expense-add path; opening a receipt sheet here would
+    // discard the parsed result, so we just notify the user.
     if (AtcudParser.isAtcudQrCode(barcode)) {
       if (!mounted) return;
       final l10n = S.of(context);
@@ -169,10 +171,6 @@ class _GroceryScreenState extends State<GroceryScreen> {
         context,
         l10n.barcodeInvoiceDetected,
         duration: AppConstants.snackBarMedium,
-        action: SnackBarAction(
-          label: l10n.barcodeInvoiceAction,
-          onPressed: () => ReceiptScanSheet.show(context),
-        ),
       );
       return;
     }

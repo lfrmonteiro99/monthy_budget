@@ -4475,6 +4475,42 @@ abstract class S {
   /// **'Pagamento recorrente guardado'**
   String get recurringExpenseSaved;
 
+  /// Error snack when saving a recurring expense fails
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível guardar — tenta de novo'**
+  String get recurringExpenseSaveError;
+
+  /// Error snack when deleting a recurring expense fails
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível eliminar — tenta de novo'**
+  String get recurringExpenseDeleteError;
+
+  /// Error snack when saving a savings contribution fails
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível guardar a contribuição — tenta de novo'**
+  String get savingsContributionSaveError;
+
+  /// Empty-state title when no AI key is set
+  ///
+  /// In pt, this message translates to:
+  /// **'Configura o teu coach'**
+  String get coachNoApiKeyTitle;
+
+  /// Empty-state body when no AI key is set
+  ///
+  /// In pt, this message translates to:
+  /// **'Adiciona uma chave OpenAI nas Definições para começar a conversar.'**
+  String get coachNoApiKeyBody;
+
+  /// CTA to navigate to coach settings
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir Definições'**
+  String get coachNoApiKeyAction;
+
   /// Toggle label for recurring payment per budget item
   ///
   /// In pt, this message translates to:

@@ -3120,6 +3120,18 @@
         "description": "Label when no day set"
     },
     "recurringExpenseSaved": "Pagamento recorrente guardado",
+    "recurringExpenseSaveError": "Não foi possível guardar — tenta de novo",
+    "recurringExpenseDeleteError": "Não foi possível eliminar — tenta de novo",
+    "@recurringExpenseSaveError": { "description": "Error snack when saving a recurring expense fails" },
+    "@recurringExpenseDeleteError": { "description": "Error snack when deleting a recurring expense fails" },
+    "savingsContributionSaveError": "Não foi possível guardar a contribuição — tenta de novo",
+    "@savingsContributionSaveError": { "description": "Error snack when saving a savings contribution fails" },
+    "coachNoApiKeyTitle": "Configura o teu coach",
+    "@coachNoApiKeyTitle": { "description": "Empty-state title when no AI key is set" },
+    "coachNoApiKeyBody": "Adiciona uma chave OpenAI nas Definições para começar a conversar.",
+    "@coachNoApiKeyBody": { "description": "Empty-state body when no AI key is set" },
+    "coachNoApiKeyAction": "Abrir Definições",
+    "@coachNoApiKeyAction": { "description": "CTA to navigate to coach settings" },
     "recurringPaymentToggle": "Pagamento recorrente",
     "@recurringPaymentToggle": {
         "description": "Toggle label for recurring payment per budget item"
