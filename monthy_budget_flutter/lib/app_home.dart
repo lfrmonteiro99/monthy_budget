@@ -46,6 +46,7 @@ import 'screens/insights_screen.dart';
 import 'screens/plan_and_shop_screen.dart';
 import 'screens/notification_settings_screen.dart';
 import 'models/recurring_expense.dart';
+import 'models/coach_insight.dart';
 import 'models/custom_category.dart';
 import 'models/notification_preferences.dart';
 import 'services/recurring_expense_service.dart';
@@ -56,6 +57,7 @@ import 'models/savings_goal.dart';
 import 'screens/savings_goals_screen.dart';
 import 'screens/tax_simulator_screen.dart';
 import 'screens/more_screen.dart';
+import 'utils/more_context_builder.dart';
 import 'screens/yearly_summary_screen.dart';
 import 'services/yearly_summary_service.dart';
 import 'utils/savings_projections.dart';
@@ -162,6 +164,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   List<String> _favorites = [];
   List<ShoppingItem> _shoppingList = [];
   String _openAiApiKey = '';
+  CoachInsight? _latestCoachInsight;
   PurchaseHistory _purchaseHistory = const PurchaseHistory();
   LocalDashboardConfig _dashboardConfig = const LocalDashboardConfig();
   Map<String, List<ExpenseSnapshot>> _expenseHistory = {};
@@ -366,9 +369,26 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     _loadMonthlyBudgets();
     _loadNotificationPrefs();
     _loadMealPlanState();
+    _loadLatestCoachInsight();
     await _loadSavingsGoals();
     _syncRevenueCat();
     _checkDowngrade();
+  }
+
+  /// Fire-and-forget load of the most recent LLM-generated coach insight
+  /// for the More tab hero. Never blocks app start; on failure or empty
+  /// the screen falls back to a projection rule (see `MoreContextBuilder`).
+  Future<void> _loadLatestCoachInsight() async {
+    try {
+      final insights = await _aiCoachService.loadInsights(widget.householdId);
+      if (!mounted) return;
+      setState(() {
+        _latestCoachInsight = insights.isEmpty ? null : insights.first;
+      });
+    } catch (_) {
+      // Service already swallows network errors; this catch is belt &
+      // braces. Hero stays on whichever fallback the builder chooses.
+    }
   }
 
   Future<T?> _pushScreen<T>(String screenName, WidgetBuilder builder) {
@@ -2221,19 +2241,51 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           stackTrace: stack,
           category: 'ui.more',
         ),
-        child: MoreScreen(
-          onOpenInsights: _openInsights,
-          onOpenCoach: _openCoach,
-          onOpenSavingsGoals: _openSavingsGoals,
-          onOpenYearlySummary: _openYearlySummary,
-          onOpenSettings: () => _openSettings(),
-          onOpenNotifications: _openNotificationSettings,
-          onOpenSubscription: () => _openPaywall(),
-          onOpenConfidenceCenter: _openConfidenceCenter,
-          onOpenProductUpdates: _openProductUpdates,
-          subscription: _subscription,
-          confidenceAlertCount:
-              buildAlerts(statuses: _dataHealthService.statuses).length,
+        child: Builder(
+          builder: (ctx) {
+            final l10n = S.of(ctx);
+            final topCat = _topCategoryUsage();
+            final moreContext = MoreContextBuilder.build(
+              summary: summary,
+              topCategory: topCat == null
+                  ? null
+                  : TopCategoryUsage(
+                      category: topCat.category,
+                      percent: topCat.percent,
+                    ),
+              l10n: l10n,
+              liveQuote: _latestCoachInsight?.content,
+            );
+            return MoreScreen(
+              coachQuote: moreContext.coachQuote,
+              observations: moreContext.observations,
+              onOpenCoach: _openCoach,
+              onOpenInsight: (_) => _openInsights(),
+              onOpenPlanShop: () => _selectTab(AppTab.planHub),
+              onOpenShoppingList: _openShoppingList,
+              onOpenMealPlanner: _openMealPlanner,
+              onOpenPantry: _openGrocery,
+              onOpenIncome: () =>
+                  _openSettings(section: SettingsSection.salaries),
+              onOpenRecurring: _openRecurringExpenses,
+              onOpenHousehold: () =>
+                  _openSettings(section: SettingsSection.household),
+              onOpenYearlySummary: _openYearlySummary,
+              onOpenTaxSimulator: () =>
+                  _navigate(const AppRoute.taxSimulator()),
+              onOpenScanReceipt: _openReceiptScanner,
+              onOpenDataHealth: _openConfidenceCenter,
+              onOpenNotifications: _openNotificationSettings,
+              onOpenSettings: () => _openSettings(),
+              onOpenPaywall: () => _openPaywall(),
+              subscription: _subscription,
+              householdMemberCount:
+                  _settings.mealSettings.householdMembers.length,
+              dataHealthAlertCount:
+                  buildAlerts(statuses: _dataHealthService.statuses).length,
+              taxSimulatorEnabled: _settings.country == Country.pt,
+            );
+          },
         ),
       ),
     };

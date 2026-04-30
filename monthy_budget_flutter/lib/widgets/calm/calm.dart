@@ -31,6 +31,8 @@
 /// - [CalmTextField]         — `TextFormField` wrapper bound to the Calm input theme.
 /// - [CalmSwitchRow]         — Calm-styled toggle row (title + subtitle + Switch).
 /// - [CalmSpacing]           — Constants for the Calm spacing scale (4–32 dp).
+/// - [CalmCoachHeroCard]     — Dark coach hero with sparkle eyebrow + serif quote + pill CTA (More tab).
+/// - [CalmObservationCard]   — Insight/observation card with kind-tagged coloured dot.
 library calm;
 
 export 'calm_scaffold.dart';
@@ -58,3 +60,5 @@ export 'calm_snack.dart';
 export 'calm_text_field.dart';
 export 'calm_switch_row.dart';
 export 'calm_spacing.dart';
+export 'calm_coach_hero_card.dart';
+export 'calm_observation_card.dart';
