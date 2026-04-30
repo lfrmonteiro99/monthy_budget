@@ -93,7 +93,9 @@ async function openMealPlanner(page: Page) {
   await page.waitForTimeout(300);
   await clickSemantic(page, planAndShopTab, { role: 'tab' });
   await page.waitForTimeout(2000);
-  await clickSemantic(page, mealPlannerTab, { role: 'tab' });
+  // Plan-and-shop hub renders the meal-planner entry as a CalmListTile (button-role),
+  // not a Material Tab — no role constraint here.
+  await clickSemantic(page, mealPlannerTab);
   await page.waitForTimeout(2500);
   // First-run meal-planner configuration wizard; click through when present.
   await completeMealWizardIfPresent(page);
