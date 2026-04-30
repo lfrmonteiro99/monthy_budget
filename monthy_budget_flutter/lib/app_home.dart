@@ -46,6 +46,7 @@ import 'screens/insights_screen.dart';
 import 'screens/plan_and_shop_screen.dart';
 import 'screens/notification_settings_screen.dart';
 import 'models/recurring_expense.dart';
+import 'models/coach_insight.dart';
 import 'models/custom_category.dart';
 import 'models/notification_preferences.dart';
 import 'services/recurring_expense_service.dart';
@@ -163,6 +164,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   List<String> _favorites = [];
   List<ShoppingItem> _shoppingList = [];
   String _openAiApiKey = '';
+  CoachInsight? _latestCoachInsight;
   PurchaseHistory _purchaseHistory = const PurchaseHistory();
   LocalDashboardConfig _dashboardConfig = const LocalDashboardConfig();
   Map<String, List<ExpenseSnapshot>> _expenseHistory = {};
@@ -367,9 +369,26 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     _loadMonthlyBudgets();
     _loadNotificationPrefs();
     _loadMealPlanState();
+    _loadLatestCoachInsight();
     await _loadSavingsGoals();
     _syncRevenueCat();
     _checkDowngrade();
+  }
+
+  /// Fire-and-forget load of the most recent LLM-generated coach insight
+  /// for the More tab hero. Never blocks app start; on failure or empty
+  /// the screen falls back to a projection rule (see `MoreContextBuilder`).
+  Future<void> _loadLatestCoachInsight() async {
+    try {
+      final insights = await _aiCoachService.loadInsights(widget.householdId);
+      if (!mounted) return;
+      setState(() {
+        _latestCoachInsight = insights.isEmpty ? null : insights.first;
+      });
+    } catch (_) {
+      // Service already swallows network errors; this catch is belt &
+      // braces. Hero stays on whichever fallback the builder chooses.
+    }
   }
 
   Future<T?> _pushScreen<T>(String screenName, WidgetBuilder builder) {
@@ -2235,6 +2254,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
                       percent: topCat.percent,
                     ),
               l10n: l10n,
+              liveQuote: _latestCoachInsight?.content,
             );
             return MoreScreen(
               coachQuote: moreContext.coachQuote,

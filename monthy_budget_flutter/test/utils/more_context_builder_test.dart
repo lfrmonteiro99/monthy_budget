@@ -28,6 +28,38 @@ void main() {
   }
 
   group('coach quote', () {
+    test('liveQuote (LLM) wins over the projection rule', () {
+      final ctx = MoreContextBuilder.build(
+        summary: summaryWith(netLiquidity: 500),
+        topCategory: null,
+        l10n: l10n,
+        liveQuote: 'You can save €1200 by cutting eating out.',
+      );
+      expect(ctx.coachQuote, 'You can save €1200 by cutting eating out.');
+    });
+
+    test('whitespace-only liveQuote falls through to projection', () {
+      final ctx = MoreContextBuilder.build(
+        summary: summaryWith(netLiquidity: 880),
+        topCategory: null,
+        l10n: l10n,
+        liveQuote: '   \n  ',
+      );
+      expect(ctx.coachQuote, contains('880'));
+    });
+
+    test('overlong liveQuote is truncated with an ellipsis', () {
+      final long = 'a' * 400;
+      final ctx = MoreContextBuilder.build(
+        summary: summaryWith(),
+        topCategory: null,
+        l10n: l10n,
+        liveQuote: long,
+      );
+      expect(ctx.coachQuote.length, lessThanOrEqualTo(MoreContextBuilder.liveQuoteMaxChars));
+      expect(ctx.coachQuote.endsWith('…'), isTrue);
+    });
+
     test('uses projection copy when there is positive liquidity', () {
       final ctx = MoreContextBuilder.build(
         summary: summaryWith(netLiquidity: 880),
