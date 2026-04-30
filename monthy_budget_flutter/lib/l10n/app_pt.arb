@@ -1067,6 +1067,8 @@
             }
         }
     },
+    "shoppingSyncPending": "A sincronizar — tenta de novo num instante",
+    "@shoppingSyncPending": { "description": "Snack shown when user taps an item still pending Supabase insert" },
     "shoppingProductCount": "{count, plural, =1{1 produto} other{{count} produtos}}",
     "@shoppingProductCount": {
         "description": "Pluralized product count",

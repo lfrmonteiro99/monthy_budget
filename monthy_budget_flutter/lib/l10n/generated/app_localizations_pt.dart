@@ -881,6 +881,10 @@ class SPt extends S {
   }
 
   @override
+  String get shoppingSyncPending =>
+      'A sincronizar — tenta de novo num instante';
+
+  @override
   String shoppingProductCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

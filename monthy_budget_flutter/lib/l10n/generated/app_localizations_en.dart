@@ -877,6 +877,9 @@ class SEn extends S {
   }
 
   @override
+  String get shoppingSyncPending => 'Syncing — try again in a moment';
+
+  @override
   String shoppingProductCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

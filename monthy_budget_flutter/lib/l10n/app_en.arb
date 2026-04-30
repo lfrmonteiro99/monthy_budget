@@ -516,6 +516,7 @@
         }
     },
     "shoppingItemSwipe": "{name}, swipe to remove",
+    "shoppingSyncPending": "Syncing — try again in a moment",
     "@shoppingItemSwipe": {
         "placeholders": {
             "name": {
