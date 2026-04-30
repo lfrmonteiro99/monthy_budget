@@ -701,6 +701,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ? '${formatCurrency(value)} de ${formatCurrency(budgetAmount)}'
           : formatCurrency(value),
       trailing: trailing,
+      onTap: widget.onOpenExpenseTracker,
     );
   }
 
@@ -1251,7 +1252,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     : s.progress > 0.8
                         ? AppColors.warn(context)
                         : AppColors.ok(context);
-                return Padding(
+                return InkWell(
+                  onTap: widget.onOpenExpenseTracker,
+                  borderRadius: BorderRadius.circular(8),
+                  child: Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1329,6 +1333,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ],
                       ),
                     ],
+                  ),
                   ),
                 );
               }),
@@ -1420,7 +1425,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final summary = r.items.isNotEmpty
         ? (r.items.take(3).join(', ') + (r.items.length > 3 ? '...' : ''))
         : l10n.dashboardProductCount(r.itemCount);
-    return Padding(
+    return InkWell(
+      onTap: () => _showAllHistory(context),
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
@@ -1469,6 +1477,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             style: CalmText.amount(context, size: 14),
           ),
         ],
+      ),
       ),
     );
   }
@@ -1618,50 +1627,54 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SizedBox(height: 8),
           for (var i = 0; i < activeExpenses.length; i++) ...[
             if (i > 0) Divider(color: AppColors.line(context), height: 1),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Row(
-                children: [
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: _categoryColor(activeExpenses[i].category),
-                      shape: BoxShape.circle,
+            InkWell(
+              onTap: widget.onOpenRecurringExpenses,
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: _categoryColor(activeExpenses[i].category),
+                        shape: BoxShape.circle,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Flexible(
-                          child: Text(
-                            activeExpenses[i].label,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.ink(context)),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              activeExpenses[i].label,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.ink(context)),
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        Flexible(
-                          child: Text(
-                            categoryLabel(activeExpenses[i].category),
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontSize: 11,
-                                color: AppColors.ink50(context)),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Text(
+                              categoryLabel(activeExpenses[i].category),
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 11,
+                                  color: AppColors.ink50(context)),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  Text(
-                    formatCurrency(activeExpenses[i].amount),
-                    style: CalmText.amount(context, size: 13),
-                  ),
-                ],
+                    Text(
+                      formatCurrency(activeExpenses[i].amount),
+                      style: CalmText.amount(context, size: 13),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
