@@ -10,6 +10,7 @@ import '../utils/calculations.dart';
 import '../utils/formatters.dart';
 import '../constants/app_constants.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_theme.dart';
 
 // ── Progress bar (4 px, ≤ 30 LoC) ───────────────────────────────────────────
 class _WizardProgress extends StatelessWidget {
@@ -83,9 +84,7 @@ class _WizardBottomRow extends StatelessWidget {
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                  child: Text(primaryLabel,
-                      style: const TextStyle(
-                          fontSize: 15, fontWeight: FontWeight.w600)),
+                  child: Text(primaryLabel, style: CalmText.amount(context, size: 15)),
                 ),
               ),
             ),

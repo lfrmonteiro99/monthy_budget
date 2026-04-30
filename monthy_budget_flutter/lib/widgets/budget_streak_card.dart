@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
 import '../utils/budget_streaks.dart';
+import 'calm/calm.dart';
 import 'info_icon_button.dart';
 
 /// Dashboard card showing 3-tier budget streak badges.
@@ -17,13 +18,8 @@ class BudgetStreakCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
 
-    return Container(
+    return CalmCard(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.surface(context),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border(context)),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
