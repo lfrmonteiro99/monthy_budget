@@ -28,36 +28,19 @@ void main() {
     );
   }
 
-  testWidgets('Plan & Shop screen shows three tabs', (tester) async {
+  testWidgets('Plan & Shop hub renders the page header and three tiles',
+      (tester) async {
     await tester.pumpWidget(wrapWithTestApp(buildScreen()));
-    await tester.pumpAndSettle();
+    // Single pump — the static structure (page header, tiles) renders on
+    // the first frame. Avoid pumpAndSettle: the hero card initially shows a
+    // CircularProgressIndicator while MealPlannerService.loadCatalog()
+    // resolves, which never settles in widget-test envs without platform
+    // channels (assets, SharedPreferences) wired up.
+    await tester.pump();
 
-    // Should show the three tab labels
-    expect(find.text('Shopping List'), findsOneWidget);
-    expect(find.text('Grocery'), findsOneWidget);
-    expect(find.text('Meal Planner'), findsOneWidget);
-  });
-
-  testWidgets('Plan & Shop screen switches tabs on tap', (tester) async {
-    await tester.pumpWidget(wrapWithTestApp(buildScreen()));
-    await tester.pumpAndSettle();
-
-    // Default tab is Shopping List — verify it's visible
-    expect(find.text('Shopping List'), findsOneWidget);
-
-    // Tap on Grocery tab — this is safe because GroceryScreen does not
-    // require Supabase initialization.
-    await tester.tap(find.text('Grocery'));
-    await tester.pumpAndSettle();
-
-    // All three tab headers should still be visible after switching.
-    expect(find.text('Shopping List'), findsOneWidget);
-    expect(find.text('Grocery'), findsOneWidget);
-    expect(find.text('Meal Planner'), findsOneWidget);
-
-    // NOTE: Switching to the Meal Planner tab is not tested here because
-    // MealPlannerScreen eagerly creates MealPlannerAiService which calls
-    // Supabase.instance in its constructor, causing an assertion failure
-    // in test environments where Supabase is not initialized.
+    expect(find.text('Plano & compras'), findsOneWidget);
+    expect(find.text('Lista'), findsOneWidget);
+    expect(find.text('Ementa'), findsOneWidget);
+    expect(find.text('Despensa'), findsOneWidget);
   });
 }
