@@ -290,7 +290,18 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return CalmScaffold(
+    // Block Android system back from popping the wizard mid-way (which would
+    // exit without persisting partial state and re-show the wizard on next
+    // launch). Step back via the page controller instead.
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        if (_pageController.hasClients && (_pageController.page ?? 0) > 0) {
+          _back();
+        }
+      },
+      child: CalmScaffold(
       bodyPadding: EdgeInsets.zero,
       body: PageView(
         controller: _pageController,
@@ -330,6 +341,7 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
             onBack: _back,
           ),
         ],
+      ),
       ),
     );
   }

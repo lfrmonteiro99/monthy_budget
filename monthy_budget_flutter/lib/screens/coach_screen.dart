@@ -221,6 +221,22 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     final text = _composerController.text.trim();
     if (text.isEmpty || _loading) return;
 
+    // Pre-flight: if no API key is configured, route the user to settings
+    // instead of letting the request fail with a vague server error.
+    if (widget.apiKey.trim().isEmpty) {
+      final l10n = S.of(context);
+      CalmSnack.show(
+        context,
+        l10n.coachNoApiKeyBody,
+        duration: AppConstants.snackBarLong,
+        action: SnackBarAction(
+          label: l10n.coachNoApiKeyAction,
+          onPressed: widget.onOpenSettings,
+        ),
+      );
+      return;
+    }
+
     // Set loading synchronously BEFORE any async work to prevent
     // double credit deduction from rapid chip taps (#759).
     setState(() => _loading = true);

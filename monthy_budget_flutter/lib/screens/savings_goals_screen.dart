@@ -9,6 +9,7 @@ import '../models/subscription_state.dart';
 import '../services/analytics_service.dart';
 import '../services/downgrade_service.dart';
 import '../services/savings_goal_service.dart';
+import '../services/log_service.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_theme.dart';
 import '../utils/formatters.dart';
@@ -670,10 +671,23 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
     );
     if (result == null) return;
 
-    final updatedGoal = await widget.service.addContribution(
-      result,
-      widget.householdId,
-    );
+    final SavingsGoal updatedGoal;
+    try {
+      updatedGoal = await widget.service.addContribution(
+        result,
+        widget.householdId,
+      );
+    } catch (e, st) {
+      LogService.error(
+        'Failed to save savings contribution',
+        error: e,
+        stackTrace: st,
+        category: 'ui.savings',
+      );
+      if (!mounted) return;
+      CalmSnack.error(context, S.of(context).savingsContributionSaveError);
+      return;
+    }
     if (mounted) {
       final updated = [result, ..._contributions];
       setState(() {
