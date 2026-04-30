@@ -98,6 +98,8 @@ import 'widgets/receipt_scan_sheet.dart';
 import 'screens/product_updates_screen.dart';
 import 'constants/app_constants.dart';
 import 'navigation/app_route.dart';
+import 'screens/income_screen.dart';
+import 'services/income_service.dart';
 import 'repositories/local/app_database.dart';
 import 'repositories/local/local_shopping_repository.dart';
 import 'services/connectivity_service.dart';
@@ -758,6 +760,26 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
     _pushScreen('product_updates', (_) => const ProductUpdatesScreen());
   }
 
+  void _openIncome() {
+    _pushScreen('income', (innerContext) {
+      return _IncomeScreenHost(
+        getSettings: () => _settings,
+        getMonthlyBudgets: () => _monthlyBudgets,
+        getSavingsGoals: () => _savingsGoals,
+        onSourcesChanged: (next) =>
+            _saveSettings(_settings.copyWith(incomeSources: next)),
+        onAllocateToGoal: () {
+          Navigator.of(innerContext).pop();
+          _openSavingsGoals();
+        },
+        onViewProjection: () {
+          Navigator.of(innerContext).pop();
+          _openYearlySummary();
+        },
+      );
+    });
+  }
+
   void _openYearlySummary() {
     final taxSystem = getTaxSystem(_settings.country);
     final summary = calculateBudgetSummary(
@@ -1096,6 +1118,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         return;
       case AppRouteType.yearlySummary:
         _openYearlySummary();
+        return;
+      case AppRouteType.income:
+        _openIncome();
         return;
     }
   }
@@ -2158,8 +2183,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           navBarKey: _navBarKey,
           onOpenInsights: _openInsights,
           onOpenCoach: _openCoach,
-          onOpenIncome: () =>
-              _openSettings(section: SettingsSection.salaries),
+          onOpenIncome: _openIncome,
           onOpenTaxSimulator: () => _navigate(const AppRoute.taxSimulator()),
           customCategories: _customCategories,
         ),
@@ -2265,8 +2289,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
               onOpenShoppingList: _openShoppingList,
               onOpenMealPlanner: _openMealPlanner,
               onOpenPantry: _openGrocery,
-              onOpenIncome: () =>
-                  _openSettings(section: SettingsSection.salaries),
+              onOpenIncome: _openIncome,
               onOpenRecurring: _openRecurringExpenses,
               onOpenHousehold: () =>
                   _openSettings(section: SettingsSection.household),
@@ -2471,6 +2494,94 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           onTourComplete: () => _markTourDone('command_assistant'),
         ),
       ],
+    );
+  }
+}
+
+/// Stateful host that wires the [IncomeScreen] to the current settings +
+/// budget summary, persisting source edits back into [AppSettings] via the
+/// callback provided by [_AppHomeState].
+class _IncomeScreenHost extends StatefulWidget {
+  const _IncomeScreenHost({
+    required this.getSettings,
+    required this.getMonthlyBudgets,
+    required this.getSavingsGoals,
+    required this.onSourcesChanged,
+    required this.onAllocateToGoal,
+    required this.onViewProjection,
+  });
+
+  final AppSettings Function() getSettings;
+  final Map<String, double> Function() getMonthlyBudgets;
+  final List<SavingsGoal> Function() getSavingsGoals;
+  final ValueChanged<List<IncomeSource>> onSourcesChanged;
+  final VoidCallback onAllocateToGoal;
+  final VoidCallback onViewProjection;
+
+  @override
+  State<_IncomeScreenHost> createState() => _IncomeScreenHostState();
+}
+
+class _IncomeScreenHostState extends State<_IncomeScreenHost> {
+  late List<IncomeSource> _sources;
+
+  @override
+  void initState() {
+    super.initState();
+    _sources = List.of(widget.getSettings().incomeSources);
+  }
+
+  void _commit(List<IncomeSource> next) {
+    setState(() => _sources = next);
+    widget.onSourcesChanged(next);
+  }
+
+  void _addSource(IncomeSource source) {
+    _commit([..._sources, source]);
+  }
+
+  void _updateSource(IncomeSource source) {
+    _commit([
+      for (final s in _sources)
+        if (s.id == source.id) source else s,
+    ]);
+  }
+
+  void _deleteSource(IncomeSource source) {
+    _commit(_sources.where((s) => s.id != source.id).toList());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final settings = widget.getSettings();
+    final taxSystem = getTaxSystem(settings.country);
+    final summary = calculateBudgetSummary(
+      settings.salaries,
+      settings.personalInfo,
+      settings.expenses,
+      taxSystem,
+      monthlyBudgets: widget.getMonthlyBudgets(),
+    );
+
+    final fixedExpenses = settings.expenses
+        .where((e) => e.enabled && e.isFixed)
+        .fold<double>(0, (a, e) => a + e.amount);
+
+    final breakdown = const IncomeService().calculate(
+      summary: summary,
+      sources: _sources,
+      fixedExpenses: fixedExpenses,
+    );
+
+    return IncomeScreen(
+      summary: summary,
+      sources: _sources,
+      breakdown: breakdown,
+      onAddSource: _addSource,
+      onUpdateSource: _updateSource,
+      onDeleteSource: _deleteSource,
+      onAllocateToGoal: widget.onAllocateToGoal,
+      onViewProjection: widget.onViewProjection,
     );
   }
 }

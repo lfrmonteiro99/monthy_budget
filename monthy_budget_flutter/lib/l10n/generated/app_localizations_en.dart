@@ -5654,4 +5654,197 @@ class SEn extends S {
   @override
   String get wizardDessertHint =>
       'Adds fruit, sweet or other dessert as the last course';
+
+  @override
+  String get moreIncomeSubtitle => 'Sources, trend and where it goes';
+
+  @override
+  String incomeHeaderEyebrow(String month) {
+    return 'Income · $month';
+  }
+
+  @override
+  String get incomeHeaderTitle => 'Income';
+
+  @override
+  String get incomeHeroLabel => 'Received this month';
+
+  @override
+  String incomeConfirmedEntries(int count) {
+    return '$count confirmed entries';
+  }
+
+  @override
+  String incomeExpectedShort(String amount) {
+    return '+$amount expected';
+  }
+
+  @override
+  String get incomeHairlineReceived => 'received';
+
+  @override
+  String incomeHairlinePlanned(String amount) {
+    return 'planned · $amount';
+  }
+
+  @override
+  String get incomeTrendEyebrow => 'Last 6 months';
+
+  @override
+  String get incomeTrendAverageSuffix => 'avg';
+
+  @override
+  String get incomeSourcesEyebrow => 'Sources';
+
+  @override
+  String get incomeSourcesManage => 'Manage';
+
+  @override
+  String get incomeSourcesEmpty =>
+      'No extra sources yet — tap + above to add one.';
+
+  @override
+  String get incomeAllocationEyebrow => 'Where it went';
+
+  @override
+  String get incomeAllocFixedLabel => 'Fixed expenses';
+
+  @override
+  String get incomeAllocFixedSub => 'Rent, telecom, utilities';
+
+  @override
+  String get incomeAllocVariableLabel => 'Variable expenses';
+
+  @override
+  String get incomeAllocVariableSub => 'Shopping, leisure, transport';
+
+  @override
+  String get incomeAllocSavedLabel => 'Savings';
+
+  @override
+  String get incomeAllocSavedSub => 'Towards goals and emergency fund';
+
+  @override
+  String get incomeAllocRemainingLabel => 'Unallocated';
+
+  @override
+  String get incomeAllocRemainingSub => 'Available this month';
+
+  @override
+  String get incomeInsightEyebrow => 'Savings rate';
+
+  @override
+  String incomeInsightHeadline(int pct) {
+    return 'You\'re saving $pct% of what comes in this month.';
+  }
+
+  @override
+  String incomeInsightBody(String yearly) {
+    return 'The recommended average is around 20%. Keeping this pace you would close the year with around $yearly saved.';
+  }
+
+  @override
+  String get incomeInsightAllocateCta => 'Allocate to a goal';
+
+  @override
+  String get incomeInsightProjectionCta => 'View projection';
+
+  @override
+  String get incomeFootnote =>
+      'Interest and IRS refund show up here as soon as they hit your account.';
+
+  @override
+  String get incomeSourceRecurringPill => 'recurring';
+
+  @override
+  String incomeSourceReceivedOn(String date) {
+    return 'Received · $date';
+  }
+
+  @override
+  String incomeSourceExpectedOn(String date) {
+    return 'Expected · $date';
+  }
+
+  @override
+  String get incomePeriodMonthly => 'Monthly';
+
+  @override
+  String get incomePeriodOneOff => 'One-off';
+
+  @override
+  String get incomePeriodYearly => 'Yearly';
+
+  @override
+  String get incomeEmptyTitle => 'Track everything that comes in.';
+
+  @override
+  String get incomeEmptyBody =>
+      'Add salary, rentals, freelance work or any other source. We\'ll show you where it lands and how it splits.';
+
+  @override
+  String get incomeEmptyCta => 'Add first source';
+
+  @override
+  String get incomeSheetAddTitle => 'Add income source';
+
+  @override
+  String get incomeSheetEditTitle => 'Edit income source';
+
+  @override
+  String get incomeSheetLabelField => 'Name';
+
+  @override
+  String get incomeSheetLabelHint => 'e.g. Salary, Rental T1';
+
+  @override
+  String get incomeSheetLabelRequired => 'Required';
+
+  @override
+  String get incomeSheetAmountField => 'Amount';
+
+  @override
+  String get incomeSheetAmountInvalid => 'Enter a positive amount';
+
+  @override
+  String get incomeSheetPeriodSection => 'Periodicity';
+
+  @override
+  String get incomeSheetDayField => 'Day of month';
+
+  @override
+  String get incomeSheetDayInvalid => 'Day must be between 1 and 31';
+
+  @override
+  String get incomeSheetCategorySection => 'Category';
+
+  @override
+  String get incomeSheetRecurringToggle => 'Recurring';
+
+  @override
+  String get incomeSheetRecurringSub => 'Repeats every period';
+
+  @override
+  String get incomeSheetReceivedToggle => 'Already received';
+
+  @override
+  String get incomeSheetReceivedSub => 'Counts in this month\'s received total';
+
+  @override
+  String get incomeCategorySalary => 'Salary';
+
+  @override
+  String get incomeCategoryRent => 'Rentals';
+
+  @override
+  String get incomeCategoryFreelance => 'Freelance';
+
+  @override
+  String get incomeCategoryInterest => 'Interest';
+
+  @override
+  String get incomeCategoryInvestment => 'Investment';
+
+  @override
+  String get incomeCategoryGift => 'Gift / Bonus';
 }

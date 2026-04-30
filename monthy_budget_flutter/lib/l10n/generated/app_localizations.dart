@@ -10108,6 +10108,354 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Adiciona fruta, doce ou outra sobremesa como ultimo prato'**
   String get wizardDessertHint;
+
+  /// No description provided for @moreIncomeSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Fontes, tendência e para onde foi'**
+  String get moreIncomeSubtitle;
+
+  /// No description provided for @incomeHeaderEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'Rendimento · {month}'**
+  String incomeHeaderEyebrow(String month);
+
+  /// No description provided for @incomeHeaderTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Rendimento'**
+  String get incomeHeaderTitle;
+
+  /// No description provided for @incomeHeroLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recebido este mês'**
+  String get incomeHeroLabel;
+
+  /// No description provided for @incomeConfirmedEntries.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} entradas confirmadas'**
+  String incomeConfirmedEntries(int count);
+
+  /// No description provided for @incomeExpectedShort.
+  ///
+  /// In pt, this message translates to:
+  /// **'+{amount} prev.'**
+  String incomeExpectedShort(String amount);
+
+  /// No description provided for @incomeHairlineReceived.
+  ///
+  /// In pt, this message translates to:
+  /// **'recebido'**
+  String get incomeHairlineReceived;
+
+  /// No description provided for @incomeHairlinePlanned.
+  ///
+  /// In pt, this message translates to:
+  /// **'previsto · {amount}'**
+  String incomeHairlinePlanned(String amount);
+
+  /// No description provided for @incomeTrendEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'Últimos 6 meses'**
+  String get incomeTrendEyebrow;
+
+  /// No description provided for @incomeTrendAverageSuffix.
+  ///
+  /// In pt, this message translates to:
+  /// **'média'**
+  String get incomeTrendAverageSuffix;
+
+  /// No description provided for @incomeSourcesEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'Fontes'**
+  String get incomeSourcesEyebrow;
+
+  /// No description provided for @incomeSourcesManage.
+  ///
+  /// In pt, this message translates to:
+  /// **'Gerir'**
+  String get incomeSourcesManage;
+
+  /// No description provided for @incomeSourcesEmpty.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem fontes extra ainda — toca em + acima para adicionar.'**
+  String get incomeSourcesEmpty;
+
+  /// No description provided for @incomeAllocationEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'Para onde foi'**
+  String get incomeAllocationEyebrow;
+
+  /// No description provided for @incomeAllocFixedLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas fixas'**
+  String get incomeAllocFixedLabel;
+
+  /// No description provided for @incomeAllocFixedSub.
+  ///
+  /// In pt, this message translates to:
+  /// **'Renda, telecom, energia'**
+  String get incomeAllocFixedSub;
+
+  /// No description provided for @incomeAllocVariableLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas variáveis'**
+  String get incomeAllocVariableLabel;
+
+  /// No description provided for @incomeAllocVariableSub.
+  ///
+  /// In pt, this message translates to:
+  /// **'Compras, lazer, transportes'**
+  String get incomeAllocVariableSub;
+
+  /// No description provided for @incomeAllocSavedLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Poupança'**
+  String get incomeAllocSavedLabel;
+
+  /// No description provided for @incomeAllocSavedSub.
+  ///
+  /// In pt, this message translates to:
+  /// **'Para metas e fundo'**
+  String get incomeAllocSavedSub;
+
+  /// No description provided for @incomeAllocRemainingLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Por alocar'**
+  String get incomeAllocRemainingLabel;
+
+  /// No description provided for @incomeAllocRemainingSub.
+  ///
+  /// In pt, this message translates to:
+  /// **'Disponível este mês'**
+  String get incomeAllocRemainingSub;
+
+  /// No description provided for @incomeInsightEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'Taxa de poupança'**
+  String get incomeInsightEyebrow;
+
+  /// No description provided for @incomeInsightHeadline.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estás a poupar {pct}% do que entra este mês.'**
+  String incomeInsightHeadline(int pct);
+
+  /// No description provided for @incomeInsightBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'A média recomendada anda nos 20%. Se manteres este ritmo, fechas o ano com cerca de {yearly} guardados.'**
+  String incomeInsightBody(String yearly);
+
+  /// No description provided for @incomeInsightAllocateCta.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alocar a uma meta'**
+  String get incomeInsightAllocateCta;
+
+  /// No description provided for @incomeInsightProjectionCta.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver projeção'**
+  String get incomeInsightProjectionCta;
+
+  /// No description provided for @incomeFootnote.
+  ///
+  /// In pt, this message translates to:
+  /// **'Os juros e o reembolso de IRS aparecem aqui assim que entrarem na tua conta.'**
+  String get incomeFootnote;
+
+  /// No description provided for @incomeSourceRecurringPill.
+  ///
+  /// In pt, this message translates to:
+  /// **'recorrente'**
+  String get incomeSourceRecurringPill;
+
+  /// No description provided for @incomeSourceReceivedOn.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recebido · {date}'**
+  String incomeSourceReceivedOn(String date);
+
+  /// No description provided for @incomeSourceExpectedOn.
+  ///
+  /// In pt, this message translates to:
+  /// **'Previsto · {date}'**
+  String incomeSourceExpectedOn(String date);
+
+  /// No description provided for @incomePeriodMonthly.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mensal'**
+  String get incomePeriodMonthly;
+
+  /// No description provided for @incomePeriodOneOff.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pontual'**
+  String get incomePeriodOneOff;
+
+  /// No description provided for @incomePeriodYearly.
+  ///
+  /// In pt, this message translates to:
+  /// **'Anual'**
+  String get incomePeriodYearly;
+
+  /// No description provided for @incomeEmptyTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Vê tudo o que entra.'**
+  String get incomeEmptyTitle;
+
+  /// No description provided for @incomeEmptyBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adiciona salário, rendas, freelance ou outra fonte. Mostramos-te onde aterra e como se divide.'**
+  String get incomeEmptyBody;
+
+  /// No description provided for @incomeEmptyCta.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar primeira fonte'**
+  String get incomeEmptyCta;
+
+  /// No description provided for @incomeSheetAddTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar fonte'**
+  String get incomeSheetAddTitle;
+
+  /// No description provided for @incomeSheetEditTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar fonte'**
+  String get incomeSheetEditTitle;
+
+  /// No description provided for @incomeSheetLabelField.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome'**
+  String get incomeSheetLabelField;
+
+  /// No description provided for @incomeSheetLabelHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'ex.: Salário, Renda T1'**
+  String get incomeSheetLabelHint;
+
+  /// No description provided for @incomeSheetLabelRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Obrigatório'**
+  String get incomeSheetLabelRequired;
+
+  /// No description provided for @incomeSheetAmountField.
+  ///
+  /// In pt, this message translates to:
+  /// **'Valor'**
+  String get incomeSheetAmountField;
+
+  /// No description provided for @incomeSheetAmountInvalid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Insere um valor positivo'**
+  String get incomeSheetAmountInvalid;
+
+  /// No description provided for @incomeSheetPeriodSection.
+  ///
+  /// In pt, this message translates to:
+  /// **'Periodicidade'**
+  String get incomeSheetPeriodSection;
+
+  /// No description provided for @incomeSheetDayField.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dia do mês'**
+  String get incomeSheetDayField;
+
+  /// No description provided for @incomeSheetDayInvalid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dia entre 1 e 31'**
+  String get incomeSheetDayInvalid;
+
+  /// No description provided for @incomeSheetCategorySection.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria'**
+  String get incomeSheetCategorySection;
+
+  /// No description provided for @incomeSheetRecurringToggle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recorrente'**
+  String get incomeSheetRecurringToggle;
+
+  /// No description provided for @incomeSheetRecurringSub.
+  ///
+  /// In pt, this message translates to:
+  /// **'Repete em cada período'**
+  String get incomeSheetRecurringSub;
+
+  /// No description provided for @incomeSheetReceivedToggle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já recebido'**
+  String get incomeSheetReceivedToggle;
+
+  /// No description provided for @incomeSheetReceivedSub.
+  ///
+  /// In pt, this message translates to:
+  /// **'Conta no recebido deste mês'**
+  String get incomeSheetReceivedSub;
+
+  /// No description provided for @incomeCategorySalary.
+  ///
+  /// In pt, this message translates to:
+  /// **'Salário'**
+  String get incomeCategorySalary;
+
+  /// No description provided for @incomeCategoryRent.
+  ///
+  /// In pt, this message translates to:
+  /// **'Rendas'**
+  String get incomeCategoryRent;
+
+  /// No description provided for @incomeCategoryFreelance.
+  ///
+  /// In pt, this message translates to:
+  /// **'Freelance'**
+  String get incomeCategoryFreelance;
+
+  /// No description provided for @incomeCategoryInterest.
+  ///
+  /// In pt, this message translates to:
+  /// **'Juros'**
+  String get incomeCategoryInterest;
+
+  /// No description provided for @incomeCategoryInvestment.
+  ///
+  /// In pt, this message translates to:
+  /// **'Investimento'**
+  String get incomeCategoryInvestment;
+
+  /// No description provided for @incomeCategoryGift.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prenda / Bónus'**
+  String get incomeCategoryGift;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
