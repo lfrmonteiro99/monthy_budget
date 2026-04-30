@@ -250,17 +250,13 @@ extension _SettingsSections on _SettingsScreenState {
                 ? AppColors.border(context)
                 : AppColors.surfaceVariant(context);
 
-            return Container(
-              margin: EdgeInsets.only(bottom: idx < _draft.salaries.length - 1 ? 16 : 0),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: enabledBorderColor, width: 1.5),
-                color: salary.enabled ? AppColors.surface(context) : AppColors.background(context),
-              ),
-              child: Stack(
-                children: [
-                  Column(
+            return Padding(
+              padding: EdgeInsets.only(bottom: idx < _draft.salaries.length - 1 ? 16 : 0),
+              child: CalmCard(
+                padding: const EdgeInsets.all(16),
+                child: Stack(
+                  children: [
+                    Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // ── Header: Switch + Label + Delete ──
@@ -300,16 +296,9 @@ extension _SettingsSections on _SettingsScreenState {
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            AppColors.primary(context).withValues(alpha: 0.08),
-                            AppColors.primary(context).withValues(alpha: 0.02),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
+                        color: AppColors.bgSunk(context),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.primary(context).withValues(alpha: 0.15)),
+                        border: Border.all(color: AppColors.line(context)),
                       ),
                       child: Row(
                         children: [
@@ -317,38 +306,32 @@ extension _SettingsSections on _SettingsScreenState {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text(
-                                  l10n.settingsSalarySummaryGross,
-                                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.textMuted(context)),
-                                ),
+                                CalmEyebrow(l10n.settingsSalarySummaryGross.toUpperCase()),
                                 const SizedBox(height: 2),
                                 Text(
                                   salary.grossAmount > 0
                                       ? '${salary.grossAmount.toStringAsFixed(2)} $currency'
                                       : '\u2014',
-                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textPrimary(context)),
+                                  style: CalmText.amount(context, size: 15),
                                 ),
                               ],
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 6),
-                            child: Icon(Icons.trending_flat, size: 20, color: AppColors.primary(context)),
+                            child: Icon(Icons.trending_flat, size: 20, color: AppColors.ink(context)),
                           ),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text(
-                                  l10n.settingsSalarySummaryNet,
-                                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.textMuted(context)),
-                                ),
+                                CalmEyebrow(l10n.settingsSalarySummaryNet.toUpperCase()),
                                 const SizedBox(height: 2),
                                 Text(
                                   salaryCalc != null
                                       ? '${salaryCalc.totalNetWithMeal.toStringAsFixed(2)} $currency'
                                       : '\u2014',
-                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.primary(context)),
+                                  style: CalmText.amount(context, size: 15),
                                 ),
                               ],
                             ),
@@ -390,7 +373,7 @@ extension _SettingsSections on _SettingsScreenState {
                       width: double.infinity,
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: AppColors.background(context),
+                        color: AppColors.bgSunk(context),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Column(
@@ -457,7 +440,7 @@ extension _SettingsSections on _SettingsScreenState {
                       width: double.infinity,
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: AppColors.background(context),
+                        color: AppColors.bgSunk(context),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Column(
@@ -656,19 +639,13 @@ extension _SettingsSections on _SettingsScreenState {
                     Positioned(
                       top: 8,
                       right: 8,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: AppColors.textMuted(context).withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          l10n.settingsPausedCategories,
-                          style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: AppColors.textMuted(context)),
-                        ),
+                      child: CalmPill(
+                        label: l10n.settingsPausedCategories.toUpperCase(),
+                        color: AppColors.ink50(context),
                       ),
                     ),
-                ],
+                  ],
+                ),
               ),
             );
           }),
@@ -1078,13 +1055,9 @@ extension _SettingsSections on _SettingsScreenState {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [healthColor.withValues(alpha: 0.08), healthColor.withValues(alpha: 0.02)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: AppColors.bgSunk(context),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: healthColor.withValues(alpha: 0.25)),
+        border: Border.all(color: healthColor.withValues(alpha: 0.4)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1102,16 +1075,9 @@ extension _SettingsSections on _SettingsScreenState {
                   ),
                 ],
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: healthColor.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  '$activeCount / $totalCount',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: healthColor),
-                ),
+              CalmPill(
+                label: '$activeCount / $totalCount',
+                color: healthColor,
               ),
             ],
           ),
