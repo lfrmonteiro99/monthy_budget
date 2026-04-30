@@ -5759,7 +5759,8 @@ class SFr extends S {
   String get incomeSourcesManage => 'Gerer';
 
   @override
-  String get incomeSourcesEmpty => 'Pas encore de sources supplementaires — touche + ci-dessus pour en ajouter.';
+  String get incomeSourcesEmpty =>
+      'Pas encore de sources supplementaires — touche + ci-dessus pour en ajouter.';
 
   @override
   String get incomeAllocationEyebrow => 'Ou est-il alle';
@@ -5808,7 +5809,8 @@ class SFr extends S {
   String get incomeInsightProjectionCta => 'Voir projection';
 
   @override
-  String get incomeFootnote => 'Les interets et le remboursement d impots apparaissent ici des qu ils arrivent sur ton compte.';
+  String get incomeFootnote =>
+      'Les interets et le remboursement d impots apparaissent ici des qu ils arrivent sur ton compte.';
 
   @override
   String get incomeSourceRecurringPill => 'recurrent';
@@ -5836,7 +5838,8 @@ class SFr extends S {
   String get incomeEmptyTitle => 'Vois tout ce qui entre.';
 
   @override
-  String get incomeEmptyBody => 'Ajoute salaire, loyers, freelance ou toute autre source. On te montre ou cela atterrit et comment cela se repartit.';
+  String get incomeEmptyBody =>
+      'Ajoute salaire, loyers, freelance ou toute autre source. On te montre ou cela atterrit et comment cela se repartit.';
 
   @override
   String get incomeEmptyCta => 'Ajouter la premiere source';

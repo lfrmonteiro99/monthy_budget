@@ -5746,7 +5746,8 @@ class SEs extends S {
   String get incomeSourcesManage => 'Gestionar';
 
   @override
-  String get incomeSourcesEmpty => 'Sin fuentes extra todavia — toca + arriba para anadir.';
+  String get incomeSourcesEmpty =>
+      'Sin fuentes extra todavia — toca + arriba para anadir.';
 
   @override
   String get incomeAllocationEyebrow => 'A donde fue';
@@ -5795,7 +5796,8 @@ class SEs extends S {
   String get incomeInsightProjectionCta => 'Ver proyeccion';
 
   @override
-  String get incomeFootnote => 'Los intereses y la devolucion de Hacienda aparecen aqui en cuanto entran en tu cuenta.';
+  String get incomeFootnote =>
+      'Los intereses y la devolucion de Hacienda aparecen aqui en cuanto entran en tu cuenta.';
 
   @override
   String get incomeSourceRecurringPill => 'recurrente';
@@ -5823,7 +5825,8 @@ class SEs extends S {
   String get incomeEmptyTitle => 'Mira todo lo que entra.';
 
   @override
-  String get incomeEmptyBody => 'Anade salario, alquileres, freelance u otra fuente. Te ensenamos donde aterriza y como se reparte.';
+  String get incomeEmptyBody =>
+      'Anade salario, alquileres, freelance u otra fuente. Te ensenamos donde aterriza y como se reparte.';
 
   @override
   String get incomeEmptyCta => 'Anadir primera fuente';

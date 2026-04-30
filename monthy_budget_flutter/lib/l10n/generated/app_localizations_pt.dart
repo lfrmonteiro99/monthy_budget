@@ -5743,7 +5743,8 @@ class SPt extends S {
   String get incomeSourcesManage => 'Gerir';
 
   @override
-  String get incomeSourcesEmpty => 'Sem fontes extra ainda — toca em + acima para adicionar.';
+  String get incomeSourcesEmpty =>
+      'Sem fontes extra ainda — toca em + acima para adicionar.';
 
   @override
   String get incomeAllocationEyebrow => 'Para onde foi';
@@ -5792,7 +5793,8 @@ class SPt extends S {
   String get incomeInsightProjectionCta => 'Ver projeção';
 
   @override
-  String get incomeFootnote => 'Os juros e o reembolso de IRS aparecem aqui assim que entrarem na tua conta.';
+  String get incomeFootnote =>
+      'Os juros e o reembolso de IRS aparecem aqui assim que entrarem na tua conta.';
 
   @override
   String get incomeSourceRecurringPill => 'recorrente';
@@ -5820,7 +5822,8 @@ class SPt extends S {
   String get incomeEmptyTitle => 'Vê tudo o que entra.';
 
   @override
-  String get incomeEmptyBody => 'Adiciona salário, rendas, freelance ou outra fonte. Mostramos-te onde aterra e como se divide.';
+  String get incomeEmptyBody =>
+      'Adiciona salário, rendas, freelance ou outra fonte. Mostramos-te onde aterra e como se divide.';
 
   @override
   String get incomeEmptyCta => 'Adicionar primeira fonte';

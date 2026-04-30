@@ -5700,7 +5700,8 @@ class SEn extends S {
   String get incomeSourcesManage => 'Manage';
 
   @override
-  String get incomeSourcesEmpty => 'No extra sources yet — tap + above to add one.';
+  String get incomeSourcesEmpty =>
+      'No extra sources yet — tap + above to add one.';
 
   @override
   String get incomeAllocationEyebrow => 'Where it went';
@@ -5749,7 +5750,8 @@ class SEn extends S {
   String get incomeInsightProjectionCta => 'View projection';
 
   @override
-  String get incomeFootnote => 'Interest and IRS refund show up here as soon as they hit your account.';
+  String get incomeFootnote =>
+      'Interest and IRS refund show up here as soon as they hit your account.';
 
   @override
   String get incomeSourceRecurringPill => 'recurring';
@@ -5777,7 +5779,8 @@ class SEn extends S {
   String get incomeEmptyTitle => 'Track everything that comes in.';
 
   @override
-  String get incomeEmptyBody => 'Add salary, rentals, freelance work or any other source. We\'ll show you where it lands and how it splits.';
+  String get incomeEmptyBody =>
+      'Add salary, rentals, freelance work or any other source. We\'ll show you where it lands and how it splits.';
 
   @override
   String get incomeEmptyCta => 'Add first source';
