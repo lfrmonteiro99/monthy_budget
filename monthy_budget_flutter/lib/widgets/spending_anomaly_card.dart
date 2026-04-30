@@ -4,6 +4,7 @@ import '../services/spending_anomaly_service.dart';
 import '../theme/app_colors.dart';
 import '../utils/category_helpers.dart';
 import '../utils/formatters.dart';
+import 'calm/calm.dart';
 import 'info_icon_button.dart';
 
 /// Dashboard card that highlights categories with spending anomalies.
@@ -21,13 +22,8 @@ class SpendingAnomalyCard extends StatelessWidget {
 
     final l10n = S.of(context);
 
-    return Container(
+    return CalmCard(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.surface(context),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border(context)),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -118,20 +114,9 @@ class _AnomalyRow extends StatelessWidget {
                     color: AppColors.error(context),
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: AppColors.error(context).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    deviationText,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.error(context),
-                    ),
-                  ),
+                CalmPill(
+                  label: deviationText,
+                  color: AppColors.error(context),
                 ),
               ],
             ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:monthly_management/widgets/calm/calm.dart';
 import '../constants/app_constants.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_theme.dart';
 
 // ---------------------------------------------------------------------------
 // WelcomeSlideshowScreen — Calm redesign §21 (Wave M7)
@@ -106,10 +106,7 @@ class _WelcomeSlideshowScreenState extends State<WelcomeSlideshowScreen> {
                     ),
                     child: Text(
                       isLast ? 'Começar' : 'Continuar', // TODO(l10n):
-                      style: GoogleFonts.inter(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: CalmText.amount(context, size: 15),
                     ),
                   ),
                 ),
@@ -188,12 +185,7 @@ class _WelcomeSlideshowScreenState extends State<WelcomeSlideshowScreen> {
                   title,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.fraunces(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w500,
-                    height: 1.2,
-                    color: AppColors.ink(context),
-                  ),
+                  style: CalmText.display(context, size: 32),
                 ),
                 const SizedBox(height: 12),
                 // 15px ink70 body, max 3 lines

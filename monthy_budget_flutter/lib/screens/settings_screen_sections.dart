@@ -1933,9 +1933,9 @@ extension _SettingsSections on _SettingsScreenState {
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: _autoHouseholdSize().toString(),
-                          hintStyle: TextStyle(color: Colors.grey.shade400),
+                          hintStyle: TextStyle(color: AppColors.ink50(context)),
                           suffixText: ms.householdSize == null ? l10n.settingsAutomatic : null,
-                          suffixStyle: TextStyle(fontSize: 12, color: Colors.grey.shade400),
+                          suffixStyle: TextStyle(fontSize: 12, color: AppColors.ink50(context)),
                         ),
                         style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                         onChanged: (v) {
@@ -1964,7 +1964,7 @@ extension _SettingsSections on _SettingsScreenState {
                   ms.householdSize != null
                       ? l10n.settingsManualValue(ms.householdSize!)
                       : l10n.settingsAutoValue(_autoHouseholdSize()),
-                  style: TextStyle(fontSize: 11, color: Colors.grey.shade400),
+                  style: TextStyle(fontSize: 11, color: AppColors.ink50(context)),
                 ),
               ),
               _label(l10n.settingsHouseholdMembers),
@@ -1985,7 +1985,7 @@ extension _SettingsSections on _SettingsScreenState {
                                   style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
                               Text(
                                 '${m.ageGroup.localizedLabel(l10n)} \u2022 ${m.activityLevel.localizedLabel(l10n)} \u2022 ${m.portionEquivalent.toStringAsFixed(2)} ${l10n.settingsPortions}',
-                                style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                                style: TextStyle(fontSize: 12, color: AppColors.ink50(context)),
                               ),
                             ],
                           ),
@@ -2564,7 +2564,7 @@ extension _SettingsSections on _SettingsScreenState {
                 keyboardType: TextInputType.number,
                 decoration: _inputDecoration(l10n.settingsProteinHint, suffix: l10n.settingsGramsPerDay, helperText: l10n.helperProteinTarget).copyWith(
                   labelText: l10n.settingsDailyProtein,
-                  labelStyle: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+                  labelStyle: TextStyle(fontSize: 13, color: AppColors.ink50(context)),
                   suffixIcon: ms.dailyProteinTargetG != null
                       ? IconButton(
                           icon: Icon(Icons.close, size: 18, color: AppColors.textMuted(context)),
@@ -2586,7 +2586,7 @@ extension _SettingsSections on _SettingsScreenState {
                 keyboardType: TextInputType.number,
                 decoration: _inputDecoration(l10n.settingsFiberHint, suffix: l10n.settingsGramsPerDay, helperText: l10n.helperFiberTarget).copyWith(
                   labelText: l10n.settingsDailyFiber,
-                  labelStyle: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+                  labelStyle: TextStyle(fontSize: 13, color: AppColors.ink50(context)),
                   suffixIcon: ms.dailyFiberTargetG != null
                       ? IconButton(
                           icon: Icon(Icons.close, size: 18, color: AppColors.textMuted(context)),
@@ -3034,7 +3034,7 @@ extension _SettingsSections on _SettingsScreenState {
         hintText: hint,
         hintStyle: TextStyle(color: AppColors.dragHandle(context)),
         suffixText: suffix,
-        suffixStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey.shade400),
+        suffixStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink50(context)),
         helperText: helperText,
         helperStyle: TextStyle(fontSize: 11, color: AppColors.textMuted(context)),
         helperMaxLines: 2,
