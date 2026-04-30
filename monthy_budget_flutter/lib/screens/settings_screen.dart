@@ -374,6 +374,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   _buildAccountCard(l10n, initials: initials, email: email),
                   const SizedBox(height: 18),
 
+                  // ── RENDIMENTO (income — promoted out of Advanced) ──
+                  CalmEyebrow(l10n.settingsSalariesSection.toUpperCase()),
+                  const SizedBox(height: 8),
+                  _buildIncomeCard(l10n),
+                  const SizedBox(height: 18),
+
                   // ── ORÇAMENTO ──
                   CalmEyebrow(l10n.settingsGroupBudget),
                   const SizedBox(height: 8),
@@ -490,6 +496,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  // ─── Rendimento card (income — promoted out of Advanced) ───────────────
+  Widget _buildIncomeCard(S l10n) {
+    final accent = AppColors.accent(context);
+    return CalmCard(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: CalmListTile(
+        leadingIcon: Icons.account_balance_wallet_outlined,
+        leadingColor: accent,
+        title: l10n.settingsSalariesSection,
+        subtitle: formatCurrency(
+          _draft.salaries
+              .where((s) => s.enabled)
+              .fold(0.0, (sum, s) => sum + s.grossAmount),
+        ),
+        onTap: () => _openSectionPage(
+          l10n.settingsSalariesSection,
+          _buildSalariesSection,
+        ),
+      ),
+    );
+  }
+
   // ─── Orçamento card ─────────────────────────────────────────────────────
   Widget _buildBudgetCard(S l10n) {
     final accent = AppColors.accent(context);
@@ -599,18 +627,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: l10n.settingsManageSubscription,
           onTap: widget.onOpenCustomerCenter!,
         ),
-      CalmListTile(
-        leadingIcon: Icons.account_balance_wallet_outlined,
-        leadingColor: accent,
-        title: l10n.settingsSalariesSection,
-        subtitle: formatCurrency(
-          _draft.salaries
-              .where((s) => s.enabled)
-              .fold(0.0, (sum, s) => sum + s.grossAmount),
-        ),
-        onTap: () =>
-            _openSectionPage(l10n.settingsSalariesSection, _buildSalariesSection),
-      ),
       CalmListTile(
         leadingIcon: Icons.dashboard_outlined,
         leadingColor: accent,
