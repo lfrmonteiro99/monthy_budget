@@ -2138,6 +2138,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           navBarKey: _navBarKey,
           onOpenInsights: _openInsights,
           onOpenCoach: _openCoach,
+          onOpenIncome: () =>
+              _openSettings(section: SettingsSection.salaries),
+          onOpenTaxSimulator: () => _navigate(const AppRoute.taxSimulator()),
           customCategories: _customCategories,
         ),
       ),

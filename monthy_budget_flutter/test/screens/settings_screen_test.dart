@@ -89,6 +89,32 @@ void main() {
     expect(calls, 1);
   });
 
+  testWidgets('income tile lives outside the Advanced section', (tester) async {
+    await tester.pumpWidget(
+      wrapWithTestApp(
+        buildScreen(
+          // empty string skips _autoOpenInitialSection (no-op for unknown keys)
+          initialSection: '',
+          loadAssociatedMembers: (_) async => const [],
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    final incomeFinder = find.text('Income');
+    final advancedFinder = find.text('ADVANCED');
+
+    expect(incomeFinder, findsWidgets);
+    expect(advancedFinder, findsOneWidget);
+
+    // The first "Income" occurrence is the eyebrow + tile rendered above the
+    // ADVANCED group; assert the tile sits before Advanced in the scroll view.
+    final incomeY = tester.getTopLeft(incomeFinder.first).dy;
+    final advancedY = tester.getTopLeft(advancedFinder).dy;
+    expect(incomeY, lessThan(advancedY));
+  });
+
   testWidgets('appearance section updates app shell theme mode', (
     tester,
   ) async {

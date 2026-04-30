@@ -66,6 +66,8 @@ class DashboardScreen extends StatefulWidget {
   final GlobalKey? navBarKey;
   final VoidCallback? onOpenInsights;
   final VoidCallback? onOpenCoach;
+  final VoidCallback? onOpenIncome;
+  final VoidCallback? onOpenTaxSimulator;
   final List<CustomCategory> customCategories;
 
   /// Household display name shown in the CalmHeader eyebrow (e.g. 'CASA SILVA').
@@ -104,6 +106,8 @@ class DashboardScreen extends StatefulWidget {
     this.navBarKey,
     this.onOpenInsights,
     this.onOpenCoach,
+    this.onOpenIncome,
+    this.onOpenTaxSimulator,
     this.customCategories = const [],
     this.householdName = '',
     this.onOpenNotificationSettings,
@@ -241,9 +245,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ? widget.householdName.toUpperCase()
         : l10n.appTitle.toUpperCase();
 
-    // Derive avatar initials from household name; fall back to '?' when empty.
-    final initials = _avatarInitials(widget.householdName);
-
     return CalmHeader(
       eyebrow: eyebrow,
       title: monthLabel,
@@ -263,10 +264,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 () => _openNotificationSettings(context),
           ),
         ),
-        CalmAvatarBadge(
-          initials: initials,
-          size: 36,
-          onTap: onOpenSettings,
+        Tooltip(
+          message: l10n.dashboardOpenSettings,
+          child: IconButton(
+            icon: Icon(
+              Icons.settings_outlined,
+              size: 24,
+              color: AppColors.ink70(context),
+            ),
+            onPressed: onOpenSettings,
+          ),
         ),
       ],
     );
@@ -284,18 +291,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       ),
     );
-  }
-
-  static String _avatarInitials(String householdName) {
-    if (householdName.isEmpty) return '?';
-    final parts = householdName
-        .trim()
-        .split(RegExp(r'\s+'))
-        .where((s) => s.isNotEmpty)
-        .toList();
-    if (parts.isEmpty) return '?';
-    if (parts.length == 1) return parts.first[0].toUpperCase();
-    return (parts.first[0] + parts.last[0]).toUpperCase();
   }
 
   // ───────────────────────────────── Hero ──────────────────────────────────
@@ -938,6 +933,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // ───────────────────────── Summary Cards ─────────────────────────────────
 
   Widget _buildSummaryCards(S l10n) {
+    final openIncome = widget.onOpenIncome;
+    final openTaxSimulator = widget.onOpenTaxSimulator ?? widget.onOpenIncome;
+    final openSavings = widget.onOpenSavingsGoals;
     return Column(
       children: [
         Row(
@@ -948,6 +946,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 label: l10n.dashboardGrossIncome,
                 value: formatCurrency(summary.totalGross),
                 accent: AppColors.accent,
+                onTap: openIncome,
               ),
             ),
             const SizedBox(width: 12),
@@ -961,6 +960,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         formatCurrency(summary.totalMealAllowance))
                     : null,
                 accent: AppColors.ok,
+                onTap: openIncome,
               ),
             ),
           ],
@@ -977,6 +977,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     formatCurrency(summary.totalIRS),
                     formatCurrency(summary.totalSS)),
                 accent: AppColors.warn,
+                onTap: openTaxSimulator,
               ),
             ),
             const SizedBox(width: 12),
@@ -989,6 +990,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 sublabel: l10n.dashboardExpensesAmount(
                     formatCurrency(summary.totalExpenses)),
                 accent: AppColors.accent,
+                onTap: openSavings,
               ),
             ),
           ],
@@ -1700,6 +1702,7 @@ class _SummaryCard extends StatelessWidget {
   final String value;
   final String? sublabel;
   final Color Function(BuildContext) accent;
+  final VoidCallback? onTap;
 
   const _SummaryCard({
     required this.icon,
@@ -1707,6 +1710,7 @@ class _SummaryCard extends StatelessWidget {
     required this.value,
     required this.accent,
     this.sublabel,
+    this.onTap,
   });
 
   @override
@@ -1714,6 +1718,7 @@ class _SummaryCard extends StatelessWidget {
     final accentColor = accent(context);
     return CalmCard(
       padding: const EdgeInsets.all(16),
+      onTap: onTap,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
