@@ -628,6 +628,131 @@ Ver `pull_request_template.md`.
 
 # FASE 4 — Intelligence
 
+## #5 · Insights & mais (More tab hub)
+
+| Campo | Valor |
+|---|---|
+| Branch | `issue-N-more-calm-redesign` |
+| Label | `release:minor` |
+| Ficheiros | `lib/screens/more_screen.dart`, `lib/widgets/calm/calm_coach_hero_card.dart` (novo), `lib/widgets/calm/calm_observation_card.dart` (extraído de #17 para reuso), `lib/app_home.dart` (mantém a tab Mais já mounted), `lib/l10n/app_pt.arb`, `app_en.arb` |
+| Mock JSX | `calm-d.jsx` → `CalmMore` |
+| Artboard | `05 · Insights & mais` |
+| Dados | `BudgetProvider.currentMonth` → `{month, projectedSavings}`; `CoachProvider.headline()` → `{quote, ctaLabel}`; `InsightProvider.topThree()` → até 3 obs `{kind: 'warn'\|'info'\|'ok', title, body}`; `HouseholdProvider.summary()` → `{memberCount, isShared}`; `FeatureFlagProvider` → `taxSimulator`, `receiptOcr` |
+
+### Estrutura
+
+**1 · `CalmSubHeader` (padding `12 24 8`)**
+- Eyebrow `ENTENDIMENTO` ink50 11px letterspacing 2 uppercase fontweight 600.
+- Título `CalmText.display(size: 34)` lineheight 1.05 letterspacing -0.5 fontweight 400 → `"Insights & mais"` (l10n: `moreScreenTitle`).
+- Sem trailing actions. Sem AppBar Material — a tab Mais usa só o sub-header.
+
+**2 · Coach hero card (margin `8 20 24`, padding `24 22 22`, radius 22, fill `ink`)**
+- Eyebrow row (gap 8, margin-bottom 14): ícone `auto_awesome` 14px `bg` opacity 0.6 + texto `COACH` 11px `bg` opacity 0.6 letterspacing 2 uppercase semibold.
+- Quote: `CalmText.display(size: 22)` Fraunces lineheight 1.3 letterspacing -0.2 fontweight 400 cor `bg` — frase do `CoachProvider.headline()`. Ex: `"Se mantiveres o ritmo, acabas ${month} com €${projectedSavings} poupados."` Max 3 linhas; após isso, ellipsis.
+- CTA pill (margin-top 18): width-content, padding `12 18`, radius 99, fill `bg`, text `ink` 13px medium → "Conversar com o coach" (l10n: `moreCoachCta`). Tap → push `coach_screen`.
+- Tap em qualquer parte do card (excepto a pill já é tappable) também push `coach_screen` — área tappable inteira.
+- Sem subtitle, sem secondary CTA.
+
+**3 · `CalmEyebrow` `OBSERVAÇÕES` (margin `0 24 12`)**
+- ink50 11px letterspacing 2 uppercase semibold.
+- Apenas se `InsightProvider.topThree().isNotEmpty`. Caso contrário, eyebrow + cards skipped (não mostrar empty state — fica em #17).
+
+**4 · Observações (até 3 cards, gap 12, padding lateral 20)**
+- `CalmCard` radius 20 border `line` padding `18 20`.
+- Tag row (gap 8, margin-bottom 8, 11px semibold uppercase letterspacing 0.5):
+  - Dot 6×6 — `warn` (Atenção) / `accent` (Informação) / `ok` (Ótimo). **Tokens iguais a #17** — não introduzir `bad`.
+  - Label correspondente (`ATENÇÃO` / `INFORMAÇÃO` / `ÓTIMO`) na cor do dot.
+- Mapa `kind` na store: `'warning' → warn`, `'success' → ok`, `'info' → accent`. Passar como `enum CalmObservationKind { warning, success, info }`.
+- Título 16px ink medium lineheight 1.35 — uma frase, max 2 linhas. Ex: `"Lazer 43% acima do orçamento"`.
+- Body 13px ink70 lineheight 1.5 — máx 2 frases com números/datas concretas. Ex: `"Gastaste €287 este mês vs. €200 planeado. 3 cinemas + 2 restaurantes."`
+- **Sem CTA** dentro do card (CTA vive em #17). Tap no card → push `insights_screen` filtrada na obs específica.
+- Reutilizar `CalmObservationCard` (extraído de #17) — não criar variante.
+
+**5 · `CalmEyebrow` `FERRAMENTAS` (margin `28 24 12`)**
+- ink50 11px letterspacing 2 uppercase semibold.
+
+**6 · Tools list (1 só card grouped, radius 20 border `line` overflow hidden, margin lateral 20)**
+- 1 só border `line` no container; rows separadas por `Divider(line, height: 1)` excepto a última.
+- Cada row 64px alta (≥ 44pt iOS / 48dp Android — hit target a11y AA garantido), padding `14 20`, **`InkWell` com `Semantics(button: true, label: <título>)`** envolvendo a row inteira:
+  - Avatar 40×40 redondo bg `bgSunk` ícone 18px ink70 (neutro — não accent).
+  - Coluna texto (flex):
+    - Título 15px ink medium lineheight 1.3.
+    - Sublabel 12px ink50 lineheight 1.4 — uma frase descritiva.
+  - Chevron `chevron_right` 20px ink50 à direita (decorativo — `excludeSemantics: true`).
+- **Ordem fixa** (top → bottom; itens com feature-flag escondem mantendo a ordem dos restantes):
+  1. **Plano & lista de compras** · "Ementa + lista da semana" · `restaurant_outlined` → push `plan_hub_screen`.
+  2. **Lista de compras** · "Corredores · progresso" · `shopping_cart_outlined` → push `shopping_list_screen`.
+  3. **Ementa da semana** · "7 dias · refeições planeadas" · `calendar_today_outlined` → push `meal_planner_screen`.
+  4. **Despensa** · "Stock em casa · validades" · `kitchen_outlined` → push `grocery_screen`.
+  5. **Rendimento** · "Salário, freelas, rendas" · `trending_up_outlined` → push `income_screen`. **(screen + route a criar — não existe hoje no produto)**
+  6. **Contas recorrentes** · "Renda, utilities, assinaturas" · `event_repeat_outlined` → push `recurring_expenses_screen`. **(screen existe; falta `AppRoute.recurring()` — adicionar)**
+  7. **Agregado familiar** · "${memberCount} membros · partilhado" / "Configurar" se 0 · `group_outlined` → push `household_screen`. **(screen + route a criar — só existe spec em #22)**
+  8. **Resumo anual** · "Tendências de ${currentYear}" · `bar_chart_outlined` → push `yearly_summary_screen`.
+  9. **Simulador IRS** · "Deduções e reembolso" · `receipt_long_outlined` → push `tax_simulator_screen`. (oculto se `featureFlag.taxSimulator == false`)
+  10. **Digitalizar talão** · "OCR automático" · `document_scanner_outlined` → push `receipt_scan_screen`. (oculto se `featureFlag.receiptOcr == false`)
+  11. **Saúde dos dados** · "Categorizações, duplicados" · `health_and_safety_outlined` → push `confidence_center_screen` (mesmo destino que #17). Trailing badge 12px ink50 com `${alertCount}` se > 0, antes do chevron.
+
+- **Itens que NÃO aparecem aqui** (ficam noutras superficies — não duplicar):
+  - Notificações → ícone bell no header do dashboard (#6).
+  - Definições → tap no avatar do dashboard (#6).
+  - Subscrição → secção dentro de Definições (#23).
+  - Centro de Confiança → surface-shared com "Saúde dos dados" (item 11).
+  - Atualizações do produto → secção "Sobre" dentro de Definições (#23).
+  - Coach (entrada de tile separada) → vive como hero acima; não duplicar.
+  - Insights (entrada de tile separada) → acessível via tap nas Observações; não duplicar.
+  - Metas de poupança → tab "Metas" no bottom nav; não duplicar.
+
+**7 · `SizedBox(height: 24 + MediaQuery.padding.bottom)` no fim do `ListView`**
+
+### Não fazer (guardrails para esta tela)
+
+- **Não** usar gradientes, glows, sombras coloridas ou emoji em qualquer parte da tela.
+- **Não** introduzir cor fora do que está prescrito: cor só no Coach hero (fill `ink`) e nos dots dos insights (`warn`/`ok`/`accent`). Ferramentas são monocromáticas (avatar `bgSunk`, ícone `ink70`).
+- **Não** usar Inter/Roboto como display — só Fraunces para o título da tela e a quote do coach. Inter para tudo o resto.
+- **Não** mostrar empty states genéricos ("Ainda não há nada aqui 👋"). Quando `OBSERVAÇÕES` está vazio, **skip da secção inteira**.
+- **Não** criar ícones novos — usar exclusivamente o icon set Material já presente no produto.
+- **Não** duplicar entradas que vivem noutras superficies (ver lista "Itens que NÃO aparecem aqui" acima).
+
+### Interacções
+
+- Pull-to-refresh: `RefreshIndicator` ink, recarrega `CoachProvider.headline()` + `InsightProvider.topThree()`. Tools list é estática.
+- Tap no Coach hero (qualquer área): push `coach_screen` (slide-from-right 220ms). Analytics `more.coach_open`.
+- Tap numa Observação: push `insights_screen?focus=${obs.id}`. Analytics `more.insight_open` com `kind`.
+- Tap numa ferramenta: push da rota correspondente. Analytics `more.tool_open` com `tool: <key>`.
+- Long-press numa ferramenta: **nada** (sem action sheet — manter zero estados secundários neste hub).
+- Scroll: sub-header não fica sticky; Coach hero scrolla normalmente.
+
+### Estados
+
+| Estado | Comportamento |
+|---|---|
+| Loading inicial | Coach hero shimmer (ink20→bgSunk, 2s). Observações 2 cards skeleton. Tools list já visível (estática). |
+| Coach indisponível (offline / API fail) | Hero mantém-se com frase fallback estática ink70 sobre `ink`: "Toca para abrir o coach." CTA continua activo. Sem skeleton infinito. |
+| 0 observações este mês | Eyebrow `OBSERVAÇÕES` + cards inteiramente skipped. NÃO mostrar empty state. |
+| 1 ou 2 observações | Renderizar exactamente as que existem; sem placeholders. |
+| `featureFlag.taxSimulator == false` | Item "Simulador IRS" não renderiza; ordem dos restantes mantém-se. |
+| `featureFlag.receiptOcr == false` | Item "Digitalizar talão" não renderiza. |
+| Free tier (`!subscription.hasPremiumAccess`) | Coach hero mostra pill `accentSoft` 11px "PRO" canto superior direito (top 12, right 12). Tap no card → push `paywall_screen` em vez de `coach_screen`. CTA pill troca label para "Desbloquear coach". Tools inalteradas. |
+| Dark mode | Coach hero: fill `ink` (em dark = `#F1EFE9`), texto e ícones em `bg` (em dark = `#0B0E14`). Verificar contraste WCAG AA. Tools avatars `bgSunk` continuam OK. |
+| Pull-to-refresh offline | Banner topo `bgSunk` 12px ink50 "Sem ligação · Coach indisponível". Observações vêm do cache local. |
+| `householdProvider.memberCount == 0` | Item 7 sublabel troca para "Configurar" 12px `accent`. |
+| Viewport pequeno (iPhone SE 1.ª gen, 320×568) | Coach hero não pode exceder 38% da viewport vertical — quote trunca a 2 linhas (em vez de 3) com ellipsis. CTA pill mantém-se 100% visível. Tools list scrolla por baixo. |
+| Screen reader (TalkBack/VoiceOver) | Coach hero anuncia: "Coach. ${quote}. Botão. Conversar com o coach." Cada tool row anuncia: "${title}. ${sublabel}. Botão." (label + hint, sem ler o chevron). |
+
+### Regressão
+Ver `pull_request_template.md`. Específico para esta tela:
+- [ ] Densidade ≥13‰ tokens Calm (auditoria `for f in lib/screens/*_screen.dart …`).
+- [ ] `MoreScreen` consome `CalmSubHeader` (não AppBar Material) e `CalmCard` para o coach hero (não Container raw).
+- [ ] CTA "Conversar com o coach" usa fill `bg` sobre `ink` — **não accent**.
+- [ ] Observações usam `CalmObservationCard` partilhado com #17 — diff visual = 0.
+- [ ] FERRAMENTAS lista exactamente os 11 itens na ordem prescrita (com feature-flags); zero duplicação de Insights/Coach/Notificações/Definições/Subscrição.
+- [ ] Item "Saúde dos dados" → mesma rota que `confidence_center_screen` de #17.
+- [ ] Free tier → pill "PRO" presente no hero e CTA reroteia para paywall.
+- [ ] `flutter analyze --no-fatal-infos` clean.
+- [ ] `more_screen_test.dart` cobre: 3 secções renderizam, observações vazias skippam secção, feature-flags ocultam tools, free tier mostra pill PRO.
+
+---
+
 ## #16 · Coach (chat)
 
 | Campo | Valor |
