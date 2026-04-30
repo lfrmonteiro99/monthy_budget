@@ -114,20 +114,9 @@ class _AnomalyRow extends StatelessWidget {
                     color: AppColors.error(context),
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: AppColors.error(context).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    deviationText,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.error(context),
-                    ),
-                  ),
+                CalmPill(
+                  label: deviationText,
+                  color: AppColors.error(context),
                 ),
               ],
             ),
