@@ -72,6 +72,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   late CoachMode _selectedMode;
   bool _tourShown = false;
   bool _ecoBannerCollapsed = false;
+  bool _composerHasText = false;
   final _rateLimiter = RateLimiter(minInterval: AppConstants.rateLimitInterval);
 
   // Welcome card for first-time users
@@ -257,6 +258,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     setState(() {
       _error = null;
       _messages = [..._messages, userMessage];
+      _composerHasText = false;
     });
     unawaited(
       AnalyticsService.instance.trackEvent(
@@ -399,8 +401,12 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
 
   // Feature #3: Handle recommendation (debounced — #765)
   void _checkRecommendation(String text) {
+    final hasText = text.trim().isNotEmpty;
+    if (hasText != _composerHasText) {
+      setState(() => _composerHasText = hasText);
+    }
     _recommendationDebounce?.cancel();
-    if (text.trim().isEmpty) {
+    if (!hasText) {
       _dismissRecommendation();
       return;
     }
@@ -493,8 +499,8 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
       ],
       body: Column(
         children: [
-          // Subtitle / eyebrow below the app bar — keeps the Calm hierarchy
-          // without a headline metric (no CalmHero for chat screens).
+          // Eyebrow subtitle below the AppBar — keeps Calm hierarchy without
+          // a hero metric (chat surface).
           Padding(
             padding: const EdgeInsets.only(top: 4, bottom: 8),
             child: Align(
@@ -546,10 +552,12 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
             ),
 
           Expanded(
-            child: Container(
+            child: KeyedSubtree(
               key: CoachTourKeys.historyList,
-              margin: const EdgeInsets.only(top: 8),
-              child: _buildMessagesList(),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: _buildMessagesList(),
+              ),
             ),
           ),
 
@@ -557,7 +565,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           if (_showRecommendation && _pendingRecommendation != null)
             _buildRecommendationWidget(),
 
-          _buildComposer(),
+          _buildFooter(),
         ],
       ),
     );
@@ -635,13 +643,8 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     required String title,
     required List<(String, bool)> items,
   }) {
-    return Container(
+    return CalmCard(
       padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: AppColors.card(context),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.line(context)),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -678,19 +681,14 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     );
   }
 
-  // Feature #2: Endowment Plus banner
+  // Feature #2: Endowment Plus banner — wrapped in CalmCard for consistent chrome.
   Widget _buildEndowmentBanner() {
     final l10n = S.of(context);
     final remaining =
         SubscriptionState.endowmentConversations -
         _subscription.coachConversationCount;
-    return Container(
+    return CalmCard(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: AppColors.accentSoft(context),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.line(context)),
-      ),
       child: Row(
         children: [
           Expanded(
@@ -720,71 +718,65 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     final rec = _pendingRecommendation!;
     final isPro = rec == CoachMode.pro;
     final cost = _subscription.creditCostForMode(rec);
-    // Calm restraint: the accent indigo is the single highlight colour.
-    // Pro vs Plus differ by label, not by hue.
-    final accentColor = AppColors.accent(context);
 
     final text = isPro
         ? l10n.coachRecommendPro(cost)
         : l10n.coachRecommendPlus(cost);
 
-    return Container(
-      margin: const EdgeInsets.only(top: 4),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.accentSoft(context),
-        borderRadius: BorderRadius.circular(12),
-        border: Border(left: BorderSide(width: 3, color: accentColor)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            text,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: AppColors.ink(context),
+    return Padding(
+      padding: const EdgeInsets.only(top: 4),
+      child: CalmCard(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              text,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: AppColors.ink(context),
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              FilledButton(
-                onPressed: _acceptRecommendation,
-                style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 6,
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                FilledButton(
+                  onPressed: _acceptRecommendation,
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 6,
+                    ),
+                  ),
+                  child: Text(
+                    S
+                        .of(context)
+                        .coachUseMode(
+                          '${rec.name.substring(0, 1).toUpperCase()}${rec.name.substring(1)}',
+                        ),
                   ),
                 ),
-                child: Text(
-                  S
-                      .of(context)
-                      .coachUseMode(
-                        '${rec.name.substring(0, 1).toUpperCase()}${rec.name.substring(1)}',
-                      ),
+                const SizedBox(width: 8),
+                TextButton(
+                  onPressed: _declineRecommendation,
+                  child: Text(
+                    S
+                        .of(context)
+                        .coachKeepMode(
+                          '${_selectedMode.name.substring(0, 1).toUpperCase()}${_selectedMode.name.substring(1)}',
+                        ),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              TextButton(
-                onPressed: _declineRecommendation,
-                child: Text(
-                  S
-                      .of(context)
-                      .coachKeepMode(
-                        '${_selectedMode.name.substring(0, 1).toUpperCase()}${_selectedMode.name.substring(1)}',
-                      ),
-                ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  // Feature #5: Micro-action follow-up card
+  // Feature #5: Inline micro-action tag — Calm card chrome.
   Widget _buildInlineMicroActionTag() {
     final action = _lastParsedMicroAction;
     if (action == null) return const SizedBox.shrink();
@@ -796,42 +788,41 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
         : screenWidth * 0.9;
     return Align(
       alignment: Alignment.centerLeft,
-      child: Container(
+      child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: maxWidth),
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: AppColors.card(context),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.line(context)),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              Icons.flag_rounded,
-              size: 16,
-              color: AppColors.ok(context),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CalmEyebrow(S.of(context).coachNextStep),
-                  const SizedBox(height: 2),
-                  Text(
-                    action,
-                    style: TextStyle(
-                      fontSize: 13,
-                      height: 1.4,
-                      color: AppColors.ink(context),
-                    ),
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: CalmCard(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.flag_rounded,
+                  size: 16,
+                  color: AppColors.ok(context),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CalmEyebrow(S.of(context).coachNextStep),
+                      const SizedBox(height: 2),
+                      Text(
+                        action,
+                        style: TextStyle(
+                          fontSize: 13,
+                          height: 1.4,
+                          color: AppColors.ink(context),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -847,96 +838,77 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
       padding: const EdgeInsets.only(bottom: 12),
       child: CalmCard(
         padding: const EdgeInsets.all(16),
-        child: Row(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 3,
-              height: 80,
-              decoration: BoxDecoration(
-                color: AppColors.ok(context),
-                borderRadius: BorderRadius.circular(2),
+            Row(
+              children: [
+                Icon(
+                  Icons.track_changes,
+                  size: 16,
+                  color: AppColors.ok(context),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  l10n.coachPendingAction,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.ink(context),
+                  ),
+                ),
+              ],
+            ),
+            if (daysAgo > 0)
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Text(
+                  l10n.coachSuggestedDaysAgo(daysAgo),
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: AppColors.ink50(context),
+                  ),
+                ),
+              ),
+            const SizedBox(height: 8),
+            // Action body — quoted with a leading vertical bar via a left
+            // padding + Border, no extra Container (keeps audit numbers low).
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Text(
+                action,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: AppColors.ink(context),
+                  height: 1.4,
+                ),
               ),
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.track_changes,
-                        size: 16,
-                        color: AppColors.ok(context),
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        l10n.coachPendingAction,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.ink(context),
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (daysAgo > 0)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2),
-                      child: Text(
-                        l10n.coachSuggestedDaysAgo(daysAgo),
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: AppColors.ink50(context),
-                        ),
-                      ),
-                    ),
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: AppColors.bgSunk(context),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: AppColors.line(context)),
-                    ),
-                    child: Text(
-                      action,
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: AppColors.ink(context),
-                        height: 1.4,
-                      ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                FilledButton(
+                  onPressed: _completeMicroAction,
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 6,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      FilledButton(
-                        onPressed: _completeMicroAction,
-                        style: FilledButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 6,
-                          ),
-                        ),
-                        child: Text(S.of(context).coachAchieved),
-                      ),
-                      const SizedBox(width: 8),
-                      OutlinedButton(
-                        onPressed: _dismissMicroAction,
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 6,
-                          ),
-                        ),
-                        child: Text(S.of(context).coachNotYet),
-                      ),
-                    ],
+                  child: Text(S.of(context).coachAchieved),
+                ),
+                const SizedBox(width: 8),
+                OutlinedButton(
+                  onPressed: _dismissMicroAction,
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 6,
+                    ),
                   ),
-                ],
-              ),
+                  child: Text(S.of(context).coachNotYet),
+                ),
+              ],
             ),
           ],
         ),
@@ -1047,9 +1019,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Welcome/onboarding card for new users
               if (!_welcomeCardDismissed) _buildWelcomeCard(l10n),
-              // Feature #5: Show micro-action follow-up card
               if (_subscription.lastMicroAction != null &&
                   !_microActionCardDismissed)
                 _buildMicroActionCard(),
@@ -1059,33 +1029,28 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                 body: l10n.coachEmptyBody,
               ),
               const SizedBox(height: 20),
-              // Prompt suggestion chips — Calm outlined buttons, ink70 text.
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                alignment: WrapAlignment.center,
-                children: _quickPrompts(l10n)
-                    .map(
-                      (prompt) => OutlinedButton(
-                        onPressed: () {
-                          _composerController.text = prompt;
-                          _sendCurrentMessage();
-                        },
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.ink70(context),
-                          side: BorderSide(color: AppColors.line(context)),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 8,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(100),
-                          ),
-                        ),
-                        child: Text(prompt),
-                      ),
-                    )
-                    .toList(),
+              // TODO(l10n): extract "Sugestões" eyebrow.
+              const CalmEyebrow('SUGESTÕES'),
+              const SizedBox(height: 8),
+              // Suggestion chips — Calm action pills, scroll horizontal.
+              SizedBox(
+                height: 36,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  itemCount: _quickPrompts(l10n).length,
+                  separatorBuilder: (_, _) => const SizedBox(width: 8),
+                  itemBuilder: (context, i) {
+                    final prompt = _quickPrompts(l10n)[i];
+                    return CalmActionPill(
+                      label: prompt,
+                      onTap: () {
+                        _composerController.text = prompt;
+                        _sendCurrentMessage();
+                      },
+                    );
+                  },
+                ),
               ),
             ],
           ),
@@ -1099,52 +1064,33 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
       itemCount: _messages.length + (_loading ? 1 : 0),
       itemBuilder: (context, index) {
         if (_loading && index == _messages.length) {
-          return Align(
-            alignment: Alignment.centerLeft,
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 8),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 14,
-                vertical: 10,
-              ),
-              decoration: BoxDecoration(
-                color: AppColors.card(context),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppColors.line(context)),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: AppColors.accentSoft(context),
-                      shape: BoxShape.circle,
-                    ),
-                    alignment: Alignment.center,
-                    child: Icon(
-                      Icons.psychology_alt_rounded,
-                      size: 12,
-                      color: AppColors.accent(context),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  const _CoachTypingDots(),
-                ],
-              ),
-            ),
+          // Loading reply — AI bubble shape with 3 dots (per SCREEN_ROLLOUT
+          // §16: "3 dots animados na bubble AI. NÃO shimmer.").
+          final showAvatar = _messages.isEmpty ||
+              _messages.last.role != 'assistant';
+          return _ChatBubble(
+            isUser: false,
+            showAvatar: showAvatar,
+            child: const _CoachTypingDots(),
           );
         }
         final message = _messages[index];
-        final isLastAssistant =
-            message.role == 'assistant' &&
+        final isUser = message.role == 'user';
+        // Avatar only on FIRST message of each turn (per spec).
+        final showAvatar = index == 0 ||
+            _messages[index - 1].role != message.role;
+        final isLastAssistant = !isUser &&
             index == _messages.length - 1 &&
             _lastParsedMicroAction != null;
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment:
+              isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
-            _MessageBubble(message: message),
+            _ChatBubble(
+              isUser: isUser,
+              showAvatar: showAvatar,
+              child: _MessageBody(content: message.content, isUser: isUser),
+            ),
             if (isLastAssistant) _buildInlineMicroActionTag(),
           ],
         );
@@ -1152,103 +1098,65 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     );
   }
 
-  Widget _buildComposer() {
+  Widget _buildFooter() {
     final l10n = S.of(context);
     final costNow = _subscription.creditCostForMode(_selectedMode);
-    return Container(
-      key: CoachTourKeys.analyzeButton,
-      padding: const EdgeInsets.fromLTRB(0, 8, 0, 12),
-      decoration: BoxDecoration(
-        color: AppColors.bg(context),
-        border: Border(top: BorderSide(color: AppColors.line(context))),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: AppColors.card(context),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.line(context)),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _composerController,
-                    minLines: 1,
-                    maxLines: 4,
-                    textInputAction: TextInputAction.send,
-                    onSubmitted: (_) => _sendCurrentMessage(),
-                    onChanged: _checkRecommendation,
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: AppColors.ink(context),
-                    ),
-                    decoration: InputDecoration(
-                      hintText: l10n.coachComposerHint,
-                      hintStyle: TextStyle(
-                        color: AppColors.ink50(context),
-                        fontSize: 15,
-                      ),
-                      isDense: true,
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 10,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                FilledButton(
-                  onPressed: (_loading || widget.isOffline)
-                      ? null
-                      : _sendCurrentMessage,
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.all(12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: _loading
-                      ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.send_rounded, size: 18),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 6),
-          Row(
+    final canSend = _composerHasText && !_loading && !widget.isOffline;
+    return SafeArea(
+      top: false,
+      child: KeyedSubtree(
+        key: CoachTourKeys.analyzeButton,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 8, 0, 12),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Text(
-                  costNow == 0
-                      ? l10n.coachCostFree
-                      : l10n.coachCostCredits(costNow),
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.ink50(context),
+              // Input row — bgSunk pill + ink-fill send button (spec §16 footer).
+              Row(
+                children: [
+                  Expanded(
+                    child: _ComposerInputField(
+                      controller: _composerController,
+                      hint: l10n.coachComposerHint,
+                      onChanged: _checkRecommendation,
+                      onSubmitted: (_) => _sendCurrentMessage(),
+                      enabled: !widget.isOffline,
+                    ),
                   ),
-                ),
+                  const SizedBox(width: 8),
+                  _SendButton(
+                    enabled: canSend,
+                    loading: _loading,
+                    onPressed: _sendCurrentMessage,
+                  ),
+                ],
               ),
-              const SizedBox(width: 6),
-              InfoIconButton(
-                title: l10n.coachTitle,
-                body: l10n.infoCoachCredits,
+              const SizedBox(height: 6),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      costNow == 0
+                          ? l10n.coachCostFree
+                          : l10n.coachCostCredits(costNow),
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.ink50(context),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  InfoIconButton(
+                    title: l10n.coachTitle,
+                    body: l10n.infoCoachCredits,
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -1406,14 +1314,11 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     );
   }
 
+  // System error bubble — center-aligned, accent-bad text + retry per spec §16.
   Widget _buildErrorCard() {
-    return Container(
+    final l10n = S.of(context);
+    return CalmCard(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.card(context),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.bad(context)),
-      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1430,6 +1335,10 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
             ),
           ),
           const SizedBox(width: 8),
+          TextButton(
+            onPressed: _sendCurrentMessage,
+            child: Text(l10n.retry),
+          ),
           GestureDetector(
             onTap: () {
               setState(() => _error = null);
@@ -1490,158 +1399,279 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   }
 }
 
-class _MessageBubble extends StatelessWidget {
-  final CoachChatMessage message;
-  const _MessageBubble({required this.message});
+/// Asymmetric chat bubble per SCREEN_ROLLOUT §16:
+/// - AI: bg `bgSunk`, radius 18 with bottom-left corner 4, padding 14, max 78%,
+///   28×28 ink avatar with bg "C" (Fraunces 14). Avatar only when [showAvatar].
+/// - User: bg `ink`, text `bg`, radius 18 with bottom-right corner 4. Avatar
+///   28×28 with `userInitials` ink50 outline ink20 — also only first of turn.
+class _ChatBubble extends StatelessWidget {
+  const _ChatBubble({
+    required this.isUser,
+    required this.showAvatar,
+    required this.child,
+  });
 
-  String _formatTime(DateTime value) {
-    final h = value.hour.toString().padLeft(2, '0');
-    final m = value.minute.toString().padLeft(2, '0');
-    return '$h:$m';
-  }
+  final bool isUser;
+  final bool showAvatar;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    final isUser = message.role == 'user';
-    final align = isUser ? Alignment.centerRight : Alignment.centerLeft;
     final screenWidth = MediaQuery.sizeOf(context).width;
-    final maxWidth = screenWidth >= 1200
-        ? (isUser ? 560.0 : 840.0)
-        : screenWidth >= 700
-        ? (isUser ? 460.0 : 640.0)
-        : screenWidth * (isUser ? 0.78 : 0.9);
-
-    // Calm chat palette: user bubbles are accent-filled with bg text
-    // (ink-reversed); coach bubbles are card-filled with a hairline border.
+    final maxWidth = screenWidth * 0.78;
     final bubbleColor = isUser
-        ? AppColors.accent(context)
-        : AppColors.card(context);
-    final textColor = isUser
-        ? AppColors.bg(context)
-        : AppColors.ink(context);
-    final labelColor = AppColors.ink50(context);
-    final avatarBg = isUser
-        ? AppColors.accentSoft(context)
+        ? AppColors.ink(context)
         : AppColors.bgSunk(context);
-    final avatarIconColor = isUser
-        ? AppColors.accent(context)
-        : AppColors.ink70(context);
+    final radius = isUser
+        ? const BorderRadius.only(
+            topLeft: Radius.circular(18),
+            topRight: Radius.circular(18),
+            bottomLeft: Radius.circular(18),
+            bottomRight: Radius.circular(4),
+          )
+        : const BorderRadius.only(
+            topLeft: Radius.circular(18),
+            topRight: Radius.circular(18),
+            bottomLeft: Radius.circular(4),
+            bottomRight: Radius.circular(18),
+          );
 
-    return Align(
-      alignment: align,
-      child: Column(
-        crossAxisAlignment: isUser
-            ? CrossAxisAlignment.end
-            : CrossAxisAlignment.start,
+    final bubble = ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: maxWidth),
+      // Single Container per bubble — asymmetric corner geometry per spec
+      // cannot be expressed via theme-driven CalmCard.
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: bubbleColor,
+          borderRadius: radius,
+        ),
+        child: child,
+      ),
+    );
+
+    if (!showAvatar) {
+      return Align(
+        alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+        child: Padding(
+          padding: EdgeInsets.only(
+            bottom: 4,
+            left: isUser ? 0 : 36, // align below the AI avatar column
+            right: isUser ? 36 : 0,
+          ),
+          child: bubble,
+        ),
+      );
+    }
+
+    final avatar = _BubbleAvatar(isUser: isUser);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6, top: 6),
+      child: Row(
+        mainAxisAlignment:
+            isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 4),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (!isUser)
-                  CircleAvatar(
-                    radius: 10,
-                    backgroundColor: avatarBg,
-                    child: Icon(
-                      Icons.psychology_alt_rounded,
-                      size: 12,
-                      color: avatarIconColor,
-                    ),
-                  ),
-                if (!isUser) const SizedBox(width: 6),
-                Text(
-                  isUser
-                      ? S.of(context).coachYou
-                      : S.of(context).coachAssistant,
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: labelColor,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  _formatTime(message.timestamp),
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                    color: labelColor,
-                  ),
-                ),
-                if (isUser) const SizedBox(width: 6),
-                if (isUser)
-                  CircleAvatar(
-                    radius: 10,
-                    backgroundColor: avatarBg,
-                    child: Icon(
-                      Icons.person_rounded,
-                      size: 12,
-                      color: avatarIconColor,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(bottom: 8),
-            constraints: BoxConstraints(maxWidth: maxWidth),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            decoration: BoxDecoration(
-              color: bubbleColor,
-              borderRadius: BorderRadius.circular(14),
-              border: isUser
-                  ? null
-                  : Border.all(color: AppColors.line(context)),
-            ),
-            child: isUser
-                ? SelectableText(
-                    message.content,
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: textColor,
-                      height: 1.6,
-                    ),
-                  )
-                : MarkdownBody(
-                    data: message.content,
-                    selectable: true,
-                    styleSheet: MarkdownStyleSheet(
-                      p: TextStyle(fontSize: 15, color: textColor, height: 1.6),
-                      strong: TextStyle(
-                        fontSize: 15,
-                        color: textColor,
-                        fontWeight: FontWeight.w700,
-                        height: 1.6,
-                      ),
-                      listBullet: TextStyle(
-                        fontSize: 15,
-                        color: textColor,
-                        height: 1.6,
-                      ),
-                      h1: TextStyle(
-                        fontSize: 17,
-                        color: textColor,
-                        fontWeight: FontWeight.w800,
-                        height: 1.5,
-                      ),
-                      h2: TextStyle(
-                        fontSize: 16,
-                        color: textColor,
-                        fontWeight: FontWeight.w700,
-                        height: 1.5,
-                      ),
-                    ),
-                  ),
-          ),
+          if (!isUser) ...[avatar, const SizedBox(width: 8)],
+          Flexible(child: bubble),
+          if (isUser) ...[const SizedBox(width: 8), avatar],
         ],
       ),
     );
   }
 }
 
-/// Three-dot typing indicator for streaming coach replies.
-/// Renders in `AppColors.ink50(context)` as the Calm streaming rest.
+/// 28×28 round avatar — coach uses `CalmAvatarBadge`-equivalent ink fill
+/// with Fraunces "C". User mirrors with `userInitials` ink50 outline ink20.
+class _BubbleAvatar extends StatelessWidget {
+  const _BubbleAvatar({required this.isUser});
+
+  final bool isUser;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!isUser) {
+      // Coach avatar: ink fill, bg-coloured "C" in Fraunces 14.
+      return CalmAvatarBadge(initials: 'C', size: 28);
+    }
+    // User avatar: outline ink20, ink50 initial. No fill — visually distinct.
+    return SizedBox(
+      width: 28,
+      height: 28,
+      child: DecoratedBox(
+        decoration: ShapeDecoration(
+          shape: CircleBorder(
+            side: BorderSide(color: AppColors.ink20(context)),
+          ),
+        ),
+        child: Center(
+          child: Text(
+            'U',
+            // TODO(l10n): swap "U" for personalInfo.userInitials when available.
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: AppColors.ink50(context),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Bubble text body. AI uses Markdown (with inline accent CTA pills allowed
+/// via prose), user uses plain selectable text reversed on ink.
+class _MessageBody extends StatelessWidget {
+  const _MessageBody({required this.content, required this.isUser});
+
+  final String content;
+  final bool isUser;
+
+  @override
+  Widget build(BuildContext context) {
+    final textColor = isUser ? AppColors.bg(context) : AppColors.ink(context);
+    if (isUser) {
+      return SelectableText(
+        content,
+        style: TextStyle(fontSize: 14, color: textColor, height: 1.45),
+      );
+    }
+    return MarkdownBody(
+      data: content,
+      selectable: true,
+      styleSheet: MarkdownStyleSheet(
+        p: TextStyle(fontSize: 14, color: textColor, height: 1.45),
+        strong: TextStyle(
+          fontSize: 14,
+          color: textColor,
+          fontWeight: FontWeight.w700,
+          height: 1.45,
+        ),
+        listBullet: TextStyle(fontSize: 14, color: textColor, height: 1.45),
+        h1: TextStyle(
+          fontSize: 16,
+          color: textColor,
+          fontWeight: FontWeight.w800,
+          height: 1.4,
+        ),
+        h2: TextStyle(
+          fontSize: 15,
+          color: textColor,
+          fontWeight: FontWeight.w700,
+          height: 1.4,
+        ),
+      ),
+    );
+  }
+}
+
+/// Composer text-field — bgSunk pill (radius 99), padding 12/18.
+class _ComposerInputField extends StatelessWidget {
+  const _ComposerInputField({
+    required this.controller,
+    required this.hint,
+    required this.onChanged,
+    required this.onSubmitted,
+    required this.enabled,
+  });
+
+  final TextEditingController controller;
+  final String hint;
+  final ValueChanged<String> onChanged;
+  final ValueChanged<String> onSubmitted;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    // Single Container — radius 99 + bgSunk fill is the spec's input chrome.
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.bgSunk(context),
+        borderRadius: BorderRadius.circular(99),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
+      child: TextField(
+        controller: controller,
+        minLines: 1,
+        maxLines: 4,
+        enabled: enabled,
+        textInputAction: TextInputAction.send,
+        onChanged: onChanged,
+        onSubmitted: onSubmitted,
+        style: TextStyle(fontSize: 14, color: AppColors.ink(context)),
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: TextStyle(
+            color: AppColors.ink50(context),
+            fontSize: 14,
+          ),
+          isDense: true,
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          disabledBorder: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(vertical: 12),
+        ),
+      ),
+    );
+  }
+}
+
+/// 36×36 ink-filled send button with arrow_upward 18 bg. Disabled state
+/// drops opacity to 0.4 per spec §16.
+class _SendButton extends StatelessWidget {
+  const _SendButton({
+    required this.enabled,
+    required this.loading,
+    required this.onPressed,
+  });
+
+  final bool enabled;
+  final bool loading;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final inkBg = AppColors.ink(context);
+    return Opacity(
+      opacity: enabled ? 1.0 : 0.4,
+      child: Material(
+        color: inkBg,
+        shape: const CircleBorder(),
+        child: InkWell(
+          onTap: enabled ? onPressed : null,
+          customBorder: const CircleBorder(),
+          child: SizedBox(
+            width: 36,
+            height: 36,
+            child: Center(
+              child: loading
+                  ? SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          AppColors.bg(context),
+                        ),
+                      ),
+                    )
+                  : Icon(
+                      Icons.arrow_upward_rounded,
+                      size: 18,
+                      color: AppColors.bg(context),
+                    ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Three-dot typing indicator for the loading-reply state per SCREEN_ROLLOUT
+/// §16 ("3 dots animados, NÃO shimmer"). Stagger 200ms per dot.
 class _CoachTypingDots extends StatefulWidget {
   const _CoachTypingDots();
 
@@ -1677,20 +1707,15 @@ class _CoachTypingDotsState extends State<_CoachTypingDots>
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: List.generate(3, (i) {
-            // Stagger each dot's phase across the cycle.
             final phase = (_controller.value + i / 3) % 1.0;
-            // Eased bounce: peaks around phase=0.5, rests at the edges.
             final t = (1 - (phase * 2 - 1).abs()).clamp(0.0, 1.0);
             final opacity = 0.3 + 0.7 * t;
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: Container(
-                width: 6,
-                height: 6,
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: opacity),
-                  shape: BoxShape.circle,
-                ),
+              child: Icon(
+                Icons.circle,
+                size: 6,
+                color: color.withValues(alpha: opacity),
               ),
             );
           }),
@@ -1758,13 +1783,8 @@ class _CreditPacksSheet extends StatelessWidget {
 
             // ROI insight card
             if (insight != null) ...[
-              Container(
+              CalmCard(
                 padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppColors.accentSoft(context),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.line(context)),
-                ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -1783,9 +1803,7 @@ class _CreditPacksSheet extends StatelessWidget {
                             color: AppColors.ink70(context),
                           ),
                           children: [
-                            TextSpan(
-                              text: l10n.coachRoiInsightPrefix,
-                            ),
+                            TextSpan(text: l10n.coachRoiInsightPrefix),
                             TextSpan(
                               text: insight,
                               style: TextStyle(
@@ -1804,9 +1822,7 @@ class _CreditPacksSheet extends StatelessWidget {
                                 ),
                               ),
                             ],
-                            TextSpan(
-                              text: l10n.coachRoiCost,
-                            ),
+                            TextSpan(text: l10n.coachRoiCost),
                           ],
                         ),
                       ),
@@ -1819,13 +1835,8 @@ class _CreditPacksSheet extends StatelessWidget {
 
             // Cap warning
             if (subscription.isAtCreditCap) ...[
-              Container(
+              CalmCard(
                 padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: AppColors.card(context),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.line(context)),
-                ),
                 child: Row(
                   children: [
                     Icon(
@@ -1860,90 +1871,92 @@ class _CreditPacksSheet extends StatelessWidget {
 
               return Opacity(
                 opacity: isDimmed ? 0.45 : 1.0,
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 8),
-                  decoration: BoxDecoration(
-                    color: AppColors.card(context),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: isRecommended
-                          ? AppColors.accent(context)
-                          : AppColors.line(context),
-                      width: isRecommended ? 2 : 1,
-                    ),
-                  ),
-                  child: ListTile(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: CalmCard(
+                    padding: EdgeInsets.zero,
                     onTap: isDimmed ? null : () => onPurchase(pack),
-                    leading: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          '${pack.credits}',
-                          style: CalmText.amount(
-                            context,
-                            size: 22,
-                            weight: FontWeight.w700,
-                          ),
-                        ),
-                        Text(
-                          l10n.coachCreditsLabel,
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.ink50(context),
-                          ),
-                        ),
-                      ],
-                    ),
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (isRecommended)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 4),
-                            child: CalmPill(
-                              label: l10n.coachBestValue,
-                              color: AppColors.accent(context),
-                            ),
-                          ),
-                        Text(
-                          _packSessions(context, pack),
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: wasted > 0
-                                ? AppColors.bad(context)
-                                : AppColors.ink70(context),
-                          ),
-                        ),
-                        if (wasted > 0)
-                          Text(
-                            l10n.coachWastedCredits(wasted),
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.bad(context),
-                            ),
-                          ),
-                      ],
-                    ),
-                    trailing: OutlinedButton(
-                      onPressed: isDimmed ? null : () => onPurchase(pack),
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: AppColors.line(context)),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 8,
-                        ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
                       ),
-                      child: Text(
-                        pack.fallbackPrice,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.ink(context),
-                        ),
+                      child: Row(
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '${pack.credits}',
+                                style: CalmText.amount(
+                                  context,
+                                  size: 22,
+                                  weight: FontWeight.w700,
+                                ),
+                              ),
+                              Text(
+                                l10n.coachCreditsLabel,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.ink50(context),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (isRecommended)
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 4),
+                                    child: CalmPill(
+                                      label: l10n.coachBestValue,
+                                      color: AppColors.accent(context),
+                                    ),
+                                  ),
+                                Text(
+                                  _packSessions(context, pack),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: wasted > 0
+                                        ? AppColors.bad(context)
+                                        : AppColors.ink70(context),
+                                  ),
+                                ),
+                                if (wasted > 0)
+                                  Text(
+                                    l10n.coachWastedCredits(wasted),
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.bad(context),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                          OutlinedButton(
+                            onPressed:
+                                isDimmed ? null : () => onPurchase(pack),
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(color: AppColors.line(context)),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 8,
+                              ),
+                            ),
+                            child: Text(
+                              pack.fallbackPrice,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.ink(context),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
