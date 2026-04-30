@@ -451,8 +451,11 @@ void main() {
           summary: const BudgetSummary(
             totalGross: 1000,
             totalNetWithMeal: 1000,
-            totalExpenses: 0,
-            netLiquidity: 1000,
+            // Match the seeded ExpenseItem.amount so the breakdown card
+            // passes the `summary.totalExpenses > 0` gate at
+            // dashboard_screen.dart:484.
+            totalExpenses: 42,
+            netLiquidity: 958,
           ),
           purchaseHistory: const PurchaseHistory(),
           dashboardConfig: const LocalDashboardConfig(

@@ -1494,8 +1494,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
         builder: (innerContext, scrollController) => StatefulBuilder(
           builder: (ctx, setLocalState) => CalmBottomSheetContent(
             title: S.of(context).dashboardAllPurchases,
+            // Cap at half the screen height — leaves room for the sheet
+            // title + handle + bottom inset without overflowing in narrow
+            // viewports (widget tests use 800x600 by default).
             child: SizedBox(
-              height: MediaQuery.of(innerContext).size.height * 0.6,
+              height: MediaQuery.of(innerContext).size.height * 0.45,
               child: ListView.builder(
                 controller: scrollController,
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 32),
