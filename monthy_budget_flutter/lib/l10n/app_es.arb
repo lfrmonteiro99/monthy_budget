@@ -2248,6 +2248,78 @@
     },
     "moreUpgrade": "Mejorar \u2192",
 
+    "moreScreenTitle": "Insights y m\u00e1s",
+    "moreScreenEyebrow": "Comprensi\u00f3n",
+    "moreCoachEyebrow": "Coach",
+    "moreCoachCta": "Habla con el coach",
+    "moreCoachUnlockCta": "Desbloquear coach",
+    "moreCoachFallbackQuote": "Toca para abrir el coach.",
+    "moreCoachProjectionFmt": "Si mantienes el ritmo, ahorrar\u00e1s unos \u20ac{amount} este mes.",
+    "@moreCoachProjectionFmt": {
+        "placeholders": {
+            "amount": { "type": "int" }
+        }
+    },
+    "moreObservationsEyebrow": "Observaciones",
+    "moreToolsEyebrow": "Herramientas",
+    "moreObsKindWarning": "Atenci\u00f3n",
+    "moreObsKindInfo": "Informaci\u00f3n",
+    "moreObsKindSuccess": "Genial",
+    "moreObsCatOverTitle": "{category} {percent}% por encima del presupuesto",
+    "@moreObsCatOverTitle": {
+        "placeholders": {
+            "category": { "type": "String" },
+            "percent": { "type": "int" }
+        }
+    },
+    "moreObsCatOverBody": "Categor\u00eda con mayor exceso este mes. Toca para ver detalles.",
+    "moreObsGoodSavingsTitle": "Ahorrando {percent}% este mes",
+    "@moreObsGoodSavingsTitle": {
+        "placeholders": {
+            "percent": { "type": "int" }
+        }
+    },
+    "moreObsGoodSavingsBody": "Por encima del objetivo del 20%. Sigue as\u00ed.",
+    "moreObsLowSavingsTitle": "Tasa de ahorro baja",
+    "moreObsLowSavingsBody": "Por debajo del 10% este mes. Libera espacio en una categor\u00eda flexible.",
+    "moreToolPlanShop": "Plan y lista de la compra",
+    "moreToolPlanShopSub": "Men\u00fa + lista semanal",
+    "moreToolShoppingList": "Lista de la compra",
+    "moreToolShoppingListSub": "Pasillos \u00b7 progreso",
+    "moreToolMealsWeek": "Men\u00fa semanal",
+    "moreToolMealsWeekSub": "7 d\u00edas \u00b7 comidas planificadas",
+    "moreToolPantry": "Despensa",
+    "moreToolPantrySub": "Stock en casa \u00b7 caducidades",
+    "moreToolIncome": "Ingresos",
+    "moreToolIncomeSub": "Salario, aut\u00f3nomo, alquileres",
+    "moreToolRecurring": "Gastos recurrentes",
+    "moreToolRecurringSub": "Alquiler, suministros, suscripciones",
+    "moreToolHousehold": "Hogar",
+    "moreToolHouseholdSubFmt": "{count} miembros \u00b7 compartido",
+    "@moreToolHouseholdSubFmt": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "moreToolHouseholdSubConfigure": "Configurar",
+    "moreToolYearly": "Resumen anual",
+    "moreToolYearlySubFmt": "Tendencias de {year}",
+    "@moreToolYearlySubFmt": {
+        "placeholders": {
+            "year": { "type": "int" }
+        }
+    },
+    "moreToolTaxSimulator": "Simulador fiscal",
+    "moreToolTaxSimulatorSub": "Deducciones y reembolso",
+    "moreToolReceiptScan": "Escanear ticket",
+    "moreToolReceiptScanSub": "OCR autom\u00e1tico",
+    "moreToolDataHealth": "Salud de datos",
+    "moreToolDataHealthSub": "Categorizaci\u00f3n, duplicados",
+    "moreToolNotifications": "Notificaciones",
+    "moreToolNotificationsSub": "Alertas y avisos",
+    "moreToolSettings": "Ajustes",
+    "moreToolSettingsSub": "Presupuesto, tema, datos",
+
     "planTitle": "Planificar",
     "planGrocerySubtitle": "Explorar productos y precios",
     "planShoppingList": "Lista de Compras",

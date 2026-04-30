@@ -2248,6 +2248,78 @@
     },
     "moreUpgrade": "Ameliorer \u2192",
 
+    "moreScreenTitle": "Insights & plus",
+    "moreScreenEyebrow": "Compr\u00e9hension",
+    "moreCoachEyebrow": "Coach",
+    "moreCoachCta": "Parler au coach",
+    "moreCoachUnlockCta": "D\u00e9bloquer le coach",
+    "moreCoachFallbackQuote": "Touchez pour ouvrir le coach.",
+    "moreCoachProjectionFmt": "Si vous maintenez ce rythme, vous \u00e9conomiserez environ {amount} \u20ac ce mois-ci.",
+    "@moreCoachProjectionFmt": {
+        "placeholders": {
+            "amount": { "type": "int" }
+        }
+    },
+    "moreObservationsEyebrow": "Observations",
+    "moreToolsEyebrow": "Outils",
+    "moreObsKindWarning": "Attention",
+    "moreObsKindInfo": "Info",
+    "moreObsKindSuccess": "Super",
+    "moreObsCatOverTitle": "{category} d\u00e9passe de {percent}% le budget",
+    "@moreObsCatOverTitle": {
+        "placeholders": {
+            "category": { "type": "String" },
+            "percent": { "type": "int" }
+        }
+    },
+    "moreObsCatOverBody": "Cat\u00e9gorie la plus d\u00e9pass\u00e9e ce mois. Touchez pour les d\u00e9tails.",
+    "moreObsGoodSavingsTitle": "Vous \u00e9pargnez {percent}% ce mois",
+    "@moreObsGoodSavingsTitle": {
+        "placeholders": {
+            "percent": { "type": "int" }
+        }
+    },
+    "moreObsGoodSavingsBody": "Au-dessus de l'objectif de 20%. Continuez.",
+    "moreObsLowSavingsTitle": "Taux d'\u00e9pargne faible",
+    "moreObsLowSavingsBody": "En dessous de 10% ce mois. Lib\u00e9rez de la place dans une cat\u00e9gorie flexible.",
+    "moreToolPlanShop": "Plan & liste de courses",
+    "moreToolPlanShopSub": "Menu + liste de la semaine",
+    "moreToolShoppingList": "Liste de courses",
+    "moreToolShoppingListSub": "Rayons \u00b7 progression",
+    "moreToolMealsWeek": "Menu de la semaine",
+    "moreToolMealsWeekSub": "7 jours \u00b7 repas planifi\u00e9s",
+    "moreToolPantry": "Garde-manger",
+    "moreToolPantrySub": "Stock \u00e0 la maison \u00b7 p\u00e9remptions",
+    "moreToolIncome": "Revenus",
+    "moreToolIncomeSub": "Salaire, freelance, loyers",
+    "moreToolRecurring": "D\u00e9penses r\u00e9currentes",
+    "moreToolRecurringSub": "Loyer, services, abonnements",
+    "moreToolHousehold": "Foyer",
+    "moreToolHouseholdSubFmt": "{count} membres \u00b7 partag\u00e9",
+    "@moreToolHouseholdSubFmt": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "moreToolHouseholdSubConfigure": "Configurer",
+    "moreToolYearly": "Bilan annuel",
+    "moreToolYearlySubFmt": "Tendances de {year}",
+    "@moreToolYearlySubFmt": {
+        "placeholders": {
+            "year": { "type": "int" }
+        }
+    },
+    "moreToolTaxSimulator": "Simulateur d'imp\u00f4ts",
+    "moreToolTaxSimulatorSub": "D\u00e9ductions et remboursement",
+    "moreToolReceiptScan": "Scanner le ticket",
+    "moreToolReceiptScanSub": "OCR automatique",
+    "moreToolDataHealth": "Sant\u00e9 des donn\u00e9es",
+    "moreToolDataHealthSub": "Cat\u00e9gorisation, doublons",
+    "moreToolNotifications": "Notifications",
+    "moreToolNotificationsSub": "Alertes et rappels",
+    "moreToolSettings": "Param\u00e8tres",
+    "moreToolSettingsSub": "Budget, th\u00e8me, donn\u00e9es",
+
     "planTitle": "Planifier",
     "planGrocerySubtitle": "Parcourir produits et prix",
     "planShoppingList": "Liste de Courses",
