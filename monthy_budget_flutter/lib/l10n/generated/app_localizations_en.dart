@@ -1195,6 +1195,18 @@ class SEn extends S {
   String get mealPlannerTitle => 'Meal Planner';
 
   @override
+  String get mealPlannerPreviousMonth => 'Previous month';
+
+  @override
+  String get mealPlannerNextMonth => 'Next month';
+
+  @override
+  String get mealPlannerFullMonthView => 'Full month';
+
+  @override
+  String get mealPlannerWeekView => 'Week';
+
+  @override
   String get mealBudgetLabel => 'Food budget';
 
   @override

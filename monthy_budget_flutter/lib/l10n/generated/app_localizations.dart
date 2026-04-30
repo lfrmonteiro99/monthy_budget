@@ -2225,6 +2225,30 @@ abstract class S {
   /// **'Planeador de Refeições'**
   String get mealPlannerTitle;
 
+  /// Tooltip for previous month chevron
+  ///
+  /// In pt, this message translates to:
+  /// **'Mês anterior'**
+  String get mealPlannerPreviousMonth;
+
+  /// Tooltip for next month chevron
+  ///
+  /// In pt, this message translates to:
+  /// **'Mês seguinte'**
+  String get mealPlannerNextMonth;
+
+  /// Toggle label to show all weeks
+  ///
+  /// In pt, this message translates to:
+  /// **'Mês inteiro'**
+  String get mealPlannerFullMonthView;
+
+  /// Toggle label to show one week
+  ///
+  /// In pt, this message translates to:
+  /// **'Semana'**
+  String get mealPlannerWeekView;
+
   /// Meal planner budget label
   ///
   /// In pt, this message translates to:

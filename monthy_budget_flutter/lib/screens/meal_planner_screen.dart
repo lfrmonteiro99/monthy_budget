@@ -71,6 +71,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   bool _loading = false;
   bool _catalogReady = false;
   int _selectedWeek = 0;
+  late int _viewMonth;
+  late int _viewYear;
+  bool _showFullMonth = false;
 
   final Map<String, RecipeAiContent> _aiContent = {};
   final Set<String> _aiPending = {};
@@ -89,6 +92,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   void initState() {
     super.initState();
     _localSettings = widget.settings;
+    final now = DateTime.now();
+    _viewMonth = now.month;
+    _viewYear = now.year;
     _init();
   }
 
@@ -103,8 +109,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   Future<void> _init() async {
     await _service.loadCatalog();
     await _aiService.loadCache();
-    final now = DateTime.now();
-    final saved = await _service.load(widget.householdId, now.month, now.year);
+    final saved = await _service.load(widget.householdId, _viewMonth, _viewYear);
     if (!mounted) return;
     if (saved != null) {
       // Pre-populate AI content from persisted cache for immediate render
@@ -280,7 +285,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       return;
     }
     setState(() => _loading = true);
-    final now = DateTime.now();
+    final forMonth = DateTime(_viewYear, _viewMonth);
 
     // Collect feedback and ratings from previous plan
     final previousFeedback = <String, MealFeedback>{};
@@ -304,7 +309,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
     final plan = _service.generate(
       _localSettings,
-      now,
+      forMonth,
       favorites: widget.favorites,
       previousFeedback: previousFeedback,
       previousRatings: previousRatings,
@@ -344,6 +349,82 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           onPressed: () => _undoRegeneration(),
         ),
       );
+    }
+  }
+
+  Widget _buildMonthNavigator(S l10n) {
+    final monthName = '${localizedMonthFull(l10n, _viewMonth)} $_viewYear';
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.chevron_left),
+            tooltip: l10n.mealPlannerPreviousMonth,
+            onPressed: _loading ? null : () => _changeMonth(-1),
+          ),
+          Expanded(
+            child: Center(
+              child: Text(
+                monthName,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.chevron_right),
+            tooltip: l10n.mealPlannerNextMonth,
+            onPressed: _loading ? null : () => _changeMonth(1),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _changeMonth(int delta) async {
+    var m = _viewMonth + delta;
+    var y = _viewYear;
+    while (m < 1) {
+      m += 12;
+      y -= 1;
+    }
+    while (m > 12) {
+      m -= 12;
+      y += 1;
+    }
+    setState(() {
+      _viewMonth = m;
+      _viewYear = y;
+      _plan = null;
+      _selectedWeek = 0;
+      _expanded.clear();
+      _weeklySummaries.clear();
+      _weeklySummaryPending.clear();
+      _budgetInsight = null;
+      _aiContent.clear();
+      _aiPending.clear();
+    });
+    final saved = await _service.load(widget.householdId, _viewMonth, _viewYear);
+    if (!mounted) return;
+    if (saved != null) {
+      final locale = Localizations.localeOf(context).languageCode;
+      for (final recipeId in saved.days
+          .where((d) => !d.isFreeform && d.recipeId.isNotEmpty)
+          .map((d) => d.recipeId)
+          .toSet()) {
+        final cached = _aiService.getCached(recipeId, locale: locale);
+        if (cached != null) _aiContent[recipeId] = cached;
+      }
+    }
+    if (!mounted) return;
+    setState(() => _plan = saved);
+    if (saved != null) {
+      _enrichPlan(saved);
+      _loadWeeklySummary(0, saved);
+      _recomputeBudgetInsight();
     }
   }
 
@@ -1345,13 +1426,22 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       );
     }
     final l10n = S.of(context);
-    final bodyContent = !_catalogReady
+    final inner = !_catalogReady
         ? Center(
             child: CircularProgressIndicator(color: AppColors.ink(context)),
           )
         : _plan == null
         ? _buildEmptyState()
         : _buildPlanView();
+
+    final bodyContent = _catalogReady
+        ? Column(
+            children: [
+              _buildMonthNavigator(l10n),
+              Expanded(child: inner),
+            ],
+          )
+        : inner;
 
     if (widget.embedded) return bodyContent;
 
@@ -1411,8 +1501,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final l10n = S.of(context);
     final budget = _service.monthlyFoodBudget(widget.settings);
     final np = _service.nPessoas(widget.settings);
-    final now = DateTime.now();
-    final monthName = '${localizedMonthFull(l10n, now.month)} ${now.year}';
+    final monthName = '${localizedMonthFull(l10n, _viewMonth)} $_viewYear';
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -1479,7 +1568,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     final budgetUsed = plan.monthlyBudget > 0
         ? plan.totalEstimatedCost / plan.monthlyBudget
         : 0.0;
-    final weekDays = _getWeekDays(plan, _selectedWeek);
+    final weekDays = _showFullMonth
+        ? plan.days
+        : _getWeekDays(plan, _selectedWeek);
 
     final budgetPill = budgetUsed > 1.0
         ? CalmPill(
@@ -1545,11 +1636,51 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 const SizedBox(height: 20),
                 Divider(color: AppColors.line(context), height: 1),
                 const SizedBox(height: 12),
-                CalmEyebrow('SEMANA'), // TODO(l10n): localise
+                Row(
+                  children: [
+                    CalmEyebrow(
+                      _showFullMonth
+                          ? l10n.mealPlannerFullMonthView.toUpperCase()
+                          : 'SEMANA',
+                    ),
+                    const Spacer(),
+                    SizedBox(
+                      height: 28,
+                      child: ToggleButtons(
+                        constraints: const BoxConstraints(
+                          minHeight: 28,
+                          minWidth: 64,
+                        ),
+                        isSelected: [!_showFullMonth, _showFullMonth],
+                        onPressed: (i) {
+                          setState(() => _showFullMonth = i == 1);
+                        },
+                        borderRadius: BorderRadius.circular(8),
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text(
+                              l10n.mealPlannerWeekView,
+                              style: const TextStyle(fontSize: 11),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text(
+                              l10n.mealPlannerFullMonthView,
+                              style: const TextStyle(fontSize: 11),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 4),
-                // Week navigator (← Week N →) — replaces W1-W4 tabs
-                Builder(
-                  builder: (_) {
+                if (!_showFullMonth)
+                  // Week navigator (← Week N →) — replaces W1-W4 tabs
+                  Builder(
+                    builder: (_) {
                     final daysInMonth = DateTime(
                       plan.year,
                       plan.month + 1,
