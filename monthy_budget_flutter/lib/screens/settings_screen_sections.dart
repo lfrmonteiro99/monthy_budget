@@ -716,9 +716,8 @@ extension _SettingsSections on _SettingsScreenState {
           if (_isFreeUser && pausedExpenses.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: Text(
+              child: CalmEyebrow(
                 l10n.settingsActiveCategoriesCount(activeExpenses.length, _draft.expenses.length),
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textMuted(context), letterSpacing: 0.8),
               ),
             ),
           // ── Expense Cards ──
@@ -726,10 +725,7 @@ extension _SettingsSections on _SettingsScreenState {
             if (_isFreeUser && ei == activeExpenses.length && pausedExpenses.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 8, bottom: 12),
-                child: Text(
-                  l10n.settingsPausedCategories,
-                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textMuted(context), letterSpacing: 0.8),
-                ),
+                child: CalmEyebrow(l10n.settingsPausedCategories),
               ),
             Builder(builder: (_) {
               final expense = sortedExpenses[ei];
@@ -1667,22 +1663,23 @@ extension _SettingsSections on _SettingsScreenState {
   }
 
   Widget _helpTip(String text, {IconData icon = Icons.lightbulb_outline}) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.infoBackground(context),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, size: 16, color: Colors.blue.shade600),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(text, style: TextStyle(fontSize: 12, color: Colors.blue.shade700, height: 1.4)),
-          ),
-        ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: CalmCard(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, size: 16, color: AppColors.accent(context)),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                text,
+                style: TextStyle(fontSize: 12, color: AppColors.ink70(context), height: 1.4),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -2952,10 +2949,7 @@ extension _SettingsSections on _SettingsScreenState {
     );
   }
 
-  Widget _label(String text) => Text(
-        text,
-        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondary(context), letterSpacing: 0.5),
-      );
+  Widget _label(String text) => CalmEyebrow(text);
 
   Widget _expenseTypeChip({
     required String label,
@@ -3008,11 +3002,11 @@ extension _SettingsSections on _SettingsScreenState {
   Widget _deductionChip(String label, String value, String? subtitle, Color color) {
     return Column(
       children: [
-        Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.textMuted(context))),
+        CalmEyebrow(label.toUpperCase()),
         const SizedBox(height: 2),
-        Text(value, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: color)),
+        Text(value, style: CalmText.amount(context, size: 12).copyWith(color: color)),
         if (subtitle != null)
-          Text(subtitle, style: TextStyle(fontSize: 9, color: AppColors.textMuted(context))),
+          Text(subtitle, style: TextStyle(fontSize: 9, color: AppColors.ink50(context))),
       ],
     );
   }
