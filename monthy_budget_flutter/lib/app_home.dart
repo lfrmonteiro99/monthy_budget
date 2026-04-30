@@ -2134,6 +2134,7 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
           showMealsTour: !_onboardingState.isTourDone('meals'),
           onMealsTourComplete: () => _markTourDone('meals'),
           canAccessMeals: _subscription.hasPremiumAccess,
+          onUpgrade: () => _openPaywall(blockedFeature: PremiumFeature.mealPlanner),
         ),
       ),
       AppTab.more: ErrorBoundary(

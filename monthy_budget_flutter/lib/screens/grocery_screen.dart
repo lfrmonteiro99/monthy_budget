@@ -444,6 +444,10 @@ class _GroceryScreenState extends State<GroceryScreen> {
       icon: Icons.shopping_cart_outlined,
       title: l10n.groceryEmptyStateTitle,
       body: l10n.groceryEmptyStateMessage,
+      action: CalmEmptyStateAction(
+        label: l10n.barcodeScanTooltip,
+        onPressed: _onScanBarcode,
+      ),
     );
   }
 
