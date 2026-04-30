@@ -4626,6 +4626,36 @@
     "@moreCoachUnlockCta": { "description": "Coach hero CTA shown on free tier (routes to paywall)" },
     "moreCoachFallbackQuote": "Toca para abrir o coach.",
     "@moreCoachFallbackQuote": { "description": "Static coach quote shown when the live endpoint is unavailable" },
+    "moreCoachProjectionFmt": "Se mantiveres o ritmo, poupas cerca de €{amount} este mês.",
+    "@moreCoachProjectionFmt": {
+        "description": "Coach hero quote when there is positive projected savings this month",
+        "placeholders": {
+            "amount": { "type": "int" }
+        }
+    },
+    "moreObsCatOverTitle": "{category} {percent}% acima do orçamento",
+    "@moreObsCatOverTitle": {
+        "description": "Warning observation title for the worst over-budget category",
+        "placeholders": {
+            "category": { "type": "String" },
+            "percent": { "type": "int" }
+        }
+    },
+    "moreObsCatOverBody": "Foi a categoria com maior excesso este mês. Toca para ver o detalhe.",
+    "@moreObsCatOverBody": { "description": "Body for the over-budget observation" },
+    "moreObsGoodSavingsTitle": "A poupar {percent}% este mês",
+    "@moreObsGoodSavingsTitle": {
+        "description": "Success observation title when savings rate ≥ 20%",
+        "placeholders": {
+            "percent": { "type": "int" }
+        }
+    },
+    "moreObsGoodSavingsBody": "Acima da meta de 20%. Continua assim.",
+    "@moreObsGoodSavingsBody": { "description": "Body for the good-savings observation" },
+    "moreObsLowSavingsTitle": "Taxa de poupança baixa",
+    "@moreObsLowSavingsTitle": { "description": "Warning observation title when savings rate < 10%" },
+    "moreObsLowSavingsBody": "Estás abaixo dos 10% este mês. Liberta espaço numa categoria flexível.",
+    "@moreObsLowSavingsBody": { "description": "Body for the low-savings observation" },
     "moreObservationsEyebrow": "Observa\u00e7\u00f5es",
     "@moreObservationsEyebrow": { "description": "Observations section eyebrow" },
     "moreToolsEyebrow": "Ferramentas",

@@ -2312,6 +2312,29 @@
     "moreCoachCta": "Talk to the coach",
     "moreCoachUnlockCta": "Unlock the coach",
     "moreCoachFallbackQuote": "Tap to open the coach.",
+    "moreCoachProjectionFmt": "Keep this pace and you'll save about €{amount} this month.",
+    "@moreCoachProjectionFmt": {
+        "placeholders": {
+            "amount": { "type": "int" }
+        }
+    },
+    "moreObsCatOverTitle": "{category} {percent}% over budget",
+    "@moreObsCatOverTitle": {
+        "placeholders": {
+            "category": { "type": "String" },
+            "percent": { "type": "int" }
+        }
+    },
+    "moreObsCatOverBody": "Most over-budget category this month. Tap for details.",
+    "moreObsGoodSavingsTitle": "Saving {percent}% this month",
+    "@moreObsGoodSavingsTitle": {
+        "placeholders": {
+            "percent": { "type": "int" }
+        }
+    },
+    "moreObsGoodSavingsBody": "Above the 20% target. Keep going.",
+    "moreObsLowSavingsTitle": "Low savings rate",
+    "moreObsLowSavingsBody": "Under 10% this month. Free up room in a flexible category.",
     "moreObservationsEyebrow": "Observations",
     "moreToolsEyebrow": "Tools",
     "moreObsKindWarning": "Heads up",

@@ -56,6 +56,7 @@ import 'models/savings_goal.dart';
 import 'screens/savings_goals_screen.dart';
 import 'screens/tax_simulator_screen.dart';
 import 'screens/more_screen.dart';
+import 'utils/more_context_builder.dart';
 import 'screens/yearly_summary_screen.dart';
 import 'services/yearly_summary_service.dart';
 import 'utils/savings_projections.dart';
@@ -2224,9 +2225,20 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         child: Builder(
           builder: (ctx) {
             final l10n = S.of(ctx);
+            final topCat = _topCategoryUsage();
+            final moreContext = MoreContextBuilder.build(
+              summary: summary,
+              topCategory: topCat == null
+                  ? null
+                  : TopCategoryUsage(
+                      category: topCat.category,
+                      percent: topCat.percent,
+                    ),
+              l10n: l10n,
+            );
             return MoreScreen(
-              coachQuote: l10n.moreCoachFallbackQuote,
-              observations: const [],
+              coachQuote: moreContext.coachQuote,
+              observations: moreContext.observations,
               onOpenCoach: _openCoach,
               onOpenInsight: (_) => _openInsights(),
               onOpenPlanShop: () => _selectTab(AppTab.planHub),
@@ -2247,6 +2259,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
               onOpenSettings: () => _openSettings(),
               onOpenPaywall: () => _openPaywall(),
               subscription: _subscription,
+              householdMemberCount:
+                  _settings.mealSettings.householdMembers.length,
               dataHealthAlertCount:
                   buildAlerts(statuses: _dataHealthService.statuses).length,
               taxSimulatorEnabled: _settings.country == Country.pt,
