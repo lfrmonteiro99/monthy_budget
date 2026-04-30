@@ -4208,6 +4208,18 @@ class SEn extends S {
   String get moreSavingsSubtitle => 'Track and update your goal progress';
 
   @override
+  String get moreCoachSubtitle => 'Personalised advice on your budget';
+
+  @override
+  String get moreYearlySummarySubtitle => 'Annual overview and monthly trends';
+
+  @override
+  String get navMore => 'More';
+
+  @override
+  String get navMoreTip => 'Settings and insights';
+
+  @override
   String get moreNotificationsSubtitle => 'Budgets, bills and reminders';
 
   @override
@@ -4586,12 +4598,6 @@ class SEn extends S {
 
   @override
   String get navPlanAndShopTip => 'Shopping list, grocery and meals';
-
-  @override
-  String get navMore => 'More';
-
-  @override
-  String get navMoreTip => 'Settings and insights';
 
   @override
   String get paywallContinueFree => 'Continue Free';

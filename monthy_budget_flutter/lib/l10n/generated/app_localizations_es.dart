@@ -4241,6 +4241,20 @@ class SEs extends S {
       'Seguir y actualizar el progreso de tus metas';
 
   @override
+  String get moreCoachSubtitle =>
+      'Consejos personalizados sobre tu presupuesto';
+
+  @override
+  String get moreYearlySummarySubtitle =>
+      'Resumen anual y tendencias mensuales';
+
+  @override
+  String get navMore => 'Más';
+
+  @override
+  String get navMoreTip => 'Ajustes y análisis';
+
+  @override
   String get moreNotificationsSubtitle =>
       'Presupuestos, facturas y recordatorios';
 
@@ -4620,12 +4634,6 @@ class SEs extends S {
 
   @override
   String get navPlanAndShopTip => 'Lista de compras, supermercado y comidas';
-
-  @override
-  String get navMore => 'Más';
-
-  @override
-  String get navMoreTip => 'Ajustes y análisis';
 
   @override
   String get paywallContinueFree => 'Continuar gratis';

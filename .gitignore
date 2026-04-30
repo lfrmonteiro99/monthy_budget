@@ -40,5 +40,7 @@ monthy_budget_flutter/test-results/
 monthy_budget_flutter/output/
 monthy_budget_flutter/e2e/screenshots/
 monthy_budget_flutter/e2e/.auth/
+monthy_budget_flutter/*.sqlite
+monthy_budget_flutter/*.sqlite-journal
 __pycache__/
 *.pyc

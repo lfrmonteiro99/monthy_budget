@@ -7,7 +7,9 @@ import '../theme/app_colors.dart';
 
 class MoreScreen extends StatelessWidget {
   final VoidCallback onOpenInsights;
+  final VoidCallback onOpenCoach;
   final VoidCallback onOpenSavingsGoals;
+  final VoidCallback onOpenYearlySummary;
   final VoidCallback onOpenSettings;
   final VoidCallback onOpenNotifications;
   final VoidCallback onOpenSubscription;
@@ -20,7 +22,9 @@ class MoreScreen extends StatelessWidget {
   const MoreScreen({
     super.key,
     required this.onOpenInsights,
+    required this.onOpenCoach,
     required this.onOpenSavingsGoals,
+    required this.onOpenYearlySummary,
     required this.onOpenSettings,
     required this.onOpenNotifications,
     required this.onOpenSubscription,
@@ -52,6 +56,18 @@ class MoreScreen extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           CalmCard(
+            onTap: onOpenCoach,
+            child: CalmListTile(
+              leadingIcon: Icons.psychology_outlined,
+              leadingColor: AppColors.accent(context),
+              title: l10n.coachTitle,
+              subtitle: l10n.moreCoachSubtitle,
+              trailing: '›',
+              onTap: onOpenCoach,
+            ),
+          ),
+          const SizedBox(height: 12),
+          CalmCard(
             onTap: onOpenSavingsGoals,
             child: CalmListTile(
               leadingIcon: Icons.savings_outlined,
@@ -60,6 +76,18 @@ class MoreScreen extends StatelessWidget {
               subtitle: l10n.moreSavingsSubtitle,
               trailing: '›',
               onTap: onOpenSavingsGoals,
+            ),
+          ),
+          const SizedBox(height: 12),
+          CalmCard(
+            onTap: onOpenYearlySummary,
+            child: CalmListTile(
+              leadingIcon: Icons.calendar_today_outlined,
+              leadingColor: AppColors.accent(context),
+              title: l10n.yearlySummaryTitle,
+              subtitle: l10n.moreYearlySummarySubtitle,
+              trailing: '›',
+              onTap: onOpenYearlySummary,
             ),
           ),
           const SizedBox(height: 12),

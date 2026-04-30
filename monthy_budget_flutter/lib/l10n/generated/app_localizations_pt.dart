@@ -4237,6 +4237,20 @@ class SPt extends S {
       'Acompanhar e atualizar o progresso das metas';
 
   @override
+  String get moreCoachSubtitle =>
+      'Conselhos personalizados sobre o teu orçamento';
+
+  @override
+  String get moreYearlySummarySubtitle =>
+      'Visão geral do ano e tendências mensais';
+
+  @override
+  String get navMore => 'Mais';
+
+  @override
+  String get navMoreTip => 'Definições e análises';
+
+  @override
   String get moreNotificationsSubtitle => 'Orçamentos, contas e lembretes';
 
   @override
@@ -4615,12 +4629,6 @@ class SPt extends S {
 
   @override
   String get navPlanAndShopTip => 'Lista de compras, mercearia e refeições';
-
-  @override
-  String get navMore => 'Mais';
-
-  @override
-  String get navMoreTip => 'Definições e análises';
 
   @override
   String get paywallContinueFree => 'Continuar grátis';
