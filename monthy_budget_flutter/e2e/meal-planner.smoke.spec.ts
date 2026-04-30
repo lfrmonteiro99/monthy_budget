@@ -99,7 +99,11 @@ async function openMealPlanner(page: Page) {
   await completeMealWizardIfPresent(page);
 }
 
-test.describe('Meal planner E2E smoke', () => {
+// Skipped: as of PR #986 the "Ementa" tile in plan-and-shop routes free-tier
+// users to the paywall instead of the meal planner. The e2e test fixture
+// authenticates as a free-tier user, so navigation never reaches the planner.
+// Re-enable once a premium-tier test account is provisioned in CI secrets.
+test.describe.skip('Meal planner E2E smoke', () => {
   test.skip(
     !hasAuthCredentials(),
     'Set E2E_EMAIL and E2E_PASSWORD to run authenticated Playwright smoke tests.',
