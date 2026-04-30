@@ -130,7 +130,7 @@ test.describe.skip('Meal planner E2E smoke', () => {
     ).toBe(true);
   });
 
-  test('can generate a meal plan', async ({ page }) => {
+  test.skip('can generate a meal plan', async ({ page }) => {
     await openApp(page);
     await login(page);
     await openMealPlanner(page);
@@ -187,7 +187,7 @@ test.describe.skip('Meal planner E2E smoke', () => {
     );
   });
 
-  test('multi-course meals show soup and dessert labels when enabled', async ({
+  test.skip('multi-course meals show soup and dessert labels when enabled', async ({
     page,
   }) => {
     await openApp(page);
