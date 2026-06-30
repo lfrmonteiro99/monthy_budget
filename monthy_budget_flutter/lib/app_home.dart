@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'app_shell.dart';
 import 'providers/navigation_providers.dart';
+import 'providers/connectivity_providers.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'models/app_settings.dart';
 import 'models/product.dart';
@@ -104,7 +105,6 @@ import 'screens/income_screen.dart';
 import 'services/income_service.dart';
 import 'repositories/local/app_database.dart';
 import 'repositories/local/local_shopping_repository.dart';
-import 'services/connectivity_service.dart';
 import 'services/sync_service.dart';
 
 class AppHome extends ConsumerStatefulWidget {
@@ -138,13 +138,11 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   final _commandPatternCache = CommandPatternCache();
   final _dataHealthService = DataHealthService();
   final AppDatabase _appDatabase = AppDatabase.instance;
-  final ConnectivityService _connectivityService = ConnectivityService();
+  // SyncService + ConnectivityService + offline/pending-sync state now live in
+  // connectivity_providers.dart (#632 increment 2). _syncService below holds the
+  // provider-owned instance so the shopping repository shares it.
   late final SyncService _syncService;
   bool _commandPanelOpen = false;
-  bool _isOffline = false;
-  int _pendingSyncCount = 0;
-  StreamSubscription<bool>? _connectivitySubscription;
-  StreamSubscription<int>? _pendingSyncSubscription;
 
   // Use a far-past date so trial is NOT active before load() completes.
   SubscriptionState _subscription = SubscriptionState(
@@ -190,10 +188,10 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _syncService = SyncService(
-      database: _appDatabase,
-      connectivity: _connectivityService,
-    );
+    // Single SyncService owned by syncServiceProvider (start() — reconnect→sync
+    // + initial sync — runs there). The shopping repository shares this instance.
+    // Offline + pending-sync state are watched in build() via providers.
+    _syncService = ref.read(syncServiceProvider);
     _shoppingListService = ShoppingListService(
       repository: LocalShoppingRepository(
         database: _appDatabase,
@@ -203,28 +201,6 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
     _shoppingListSub = _shoppingListService
         .stream(widget.householdId)
         .listen((items) => setState(() => _shoppingList = items));
-    _pendingSyncSubscription = _syncService
-        .watchPendingCount(widget.householdId)
-        .listen((count) {
-          if (!mounted || _pendingSyncCount == count) return;
-          setState(() => _pendingSyncCount = count);
-        });
-    _connectivityService.checkConnectivity().then((online) {
-      if (!mounted) return;
-      setState(() => _isOffline = !online);
-    });
-    _connectivitySubscription = _connectivityService.onStatusChange.listen((
-      online,
-    ) {
-      if (!mounted) return;
-      final offline = !online;
-      if (_isOffline == offline) return;
-      setState(() => _isOffline = offline);
-      if (online) {
-        _syncService.syncPending();
-      }
-    });
-    _syncService.start();
     _syncService.refreshShoppingForHousehold(widget.householdId);
     _loadAll();
     _commandPatternCache.load();
@@ -236,10 +212,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _shoppingListSub.cancel();
-    _connectivitySubscription?.cancel();
-    _pendingSyncSubscription?.cancel();
-    _syncService.dispose();
-    _connectivityService.dispose();
+    // _syncService + connectivity are provider-owned (disposed via ref.onDispose).
     QuickActionService.instance.dispose();
     unawaited(AnalyticsService.instance.reset());
     RevenueCatService.logout();
@@ -1207,7 +1180,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
         onOpenSettings: () => _navigate(const AppRoute.settings()),
         showTour: !_onboardingState.isTourDone('coach'),
         onTourComplete: () => _markTourDone('coach'),
-        isOffline: _isOffline,
+        isOffline: ref.read(isOfflineProvider).valueOrNull ?? false,
       ),
     );
   }
@@ -2118,6 +2091,12 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
     // _currentTab getter reads the same provider (#632 increment 1).
     ref.watch(currentTabProvider);
 
+    // Offline + pending-sync status from providers (#632 increment 2).
+    final isOffline = ref.watch(isOfflineProvider).valueOrNull ?? false;
+    final pendingSyncCount =
+        ref.watch(pendingSyncCountProvider(widget.householdId)).valueOrNull ??
+        0;
+
     if (!_loaded) {
       return const BrandedLoading();
     }
@@ -2352,10 +2331,10 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
         Scaffold(
           body: Column(
             children: [
-              if (_isOffline)
+              if (isOffline)
                 OfflineBanner(
                   message: l10n.offlineBannerMessage,
-                  pendingCount: _pendingSyncCount,
+                  pendingCount: pendingSyncCount,
                 ),
               Expanded(child: content),
             ],
@@ -2458,7 +2437,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
         // Command assistant panel
         if (_commandPanelOpen)
           CommandChatPanel(
-            isOffline: _isOffline,
+            isOffline: isOffline,
             onMinimize: () => setState(() => _commandPanelOpen = false),
             onSendCommand: (input) async {
               final cached = _commandPatternCache.match(input);
