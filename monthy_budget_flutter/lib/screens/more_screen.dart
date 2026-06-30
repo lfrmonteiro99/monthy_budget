@@ -298,12 +298,7 @@ class _ToolsGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.card(context),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.line(context)),
-      ),
+    return Card(
       clipBehavior: Clip.antiAlias,
       child: Column(
         children: [
