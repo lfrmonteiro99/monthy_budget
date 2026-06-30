@@ -10,6 +10,7 @@ import 'providers/subscription_providers.dart';
 import 'providers/savings_providers.dart';
 import 'providers/budget_config_providers.dart';
 import 'providers/catalog_providers.dart';
+import 'providers/app_state_providers.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'models/app_settings.dart';
 import 'models/product.dart';
@@ -152,7 +153,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   // Read via this getter; build() watches the provider; mutations call
   // ref.read(subscriptionProvider.notifier).set(...).
   SubscriptionState get _subscription => ref.read(subscriptionProvider);
-  OnboardingState _onboardingState = const OnboardingState();
+  OnboardingState get _onboardingState => ref.read(onboardingProvider);
   final _fabKey = GlobalKey(debugLabel: 'tour_fab');
   final _navBarKey = GlobalKey(debugLabel: 'tour_nav_bar');
 
@@ -164,22 +165,22 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
       ref.read(customCategoriesProvider);
   Map<String, List<ActualExpense>> _actualExpenseHistory = {};
   Map<String, double> get _monthlyBudgets => ref.read(monthlyBudgetsProvider);
-  NotificationPreferences _notificationPrefs = NotificationPreferences();
+  NotificationPreferences get _notificationPrefs => ref.read(notificationPrefsProvider);
   List<SavingsGoal> get _savingsGoals => ref.read(savingsGoalsProvider);
   Map<String, SavingsProjection> get _savingsProjections =>
       ref.read(savingsProjectionsProvider);
   List<Product> get _products => ref.read(productsProvider);
   GroceryData get _groceryData => ref.read(groceryDataProvider);
-  List<String> _favorites = [];
+  List<String> get _favorites => ref.read(favoritesProvider);
   List<ShoppingItem> _shoppingList = [];
-  String _openAiApiKey = '';
-  CoachInsight? _latestCoachInsight;
-  PurchaseHistory _purchaseHistory = const PurchaseHistory();
-  LocalDashboardConfig _dashboardConfig = const LocalDashboardConfig();
+  String get _openAiApiKey => ref.read(apiKeyProvider);
+  CoachInsight? get _latestCoachInsight => ref.read(latestCoachInsightProvider);
+  PurchaseHistory get _purchaseHistory => ref.read(purchaseHistoryProvider);
+  LocalDashboardConfig get _dashboardConfig => ref.read(dashboardConfigProvider);
   Map<String, List<ExpenseSnapshot>> _expenseHistory = {};
   bool _loaded = false;
   bool _groceryLoading = false;
-  bool _hasMealPlan = false;
+  bool get _hasMealPlan => ref.read(hasMealPlanProvider);
   // Current tab now lives in [currentTabProvider] (#632 increment 1). Read via
   // this getter; build() watches the provider so changes trigger a rebuild.
   AppTab get _currentTab => ref.read(currentTabProvider);
@@ -287,8 +288,8 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
         if (changed) {
           setState(() {
             _settings = settings;
-            _favorites = newFavorites;
-            _purchaseHistory = newHistory;
+            ref.read(favoritesProvider.notifier).set(newFavorites);
+            ref.read(purchaseHistoryProvider.notifier).set(newHistory);
             ref.read(groceryDataProvider.notifier).set(newGrocery);
             _actualExpenses = newExpenses;
             _expenseHistory = newSnapshots;
@@ -323,13 +324,13 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
     if (!mounted) return;
     setState(() {
       _settings = settings;
-      _favorites = results[0] as List<String>;
-      _purchaseHistory = results[1] as PurchaseHistory;
-      _openAiApiKey = results[2] as String;
+      ref.read(favoritesProvider.notifier).set(results[0] as List<String>);
+      ref.read(purchaseHistoryProvider.notifier).set(results[1] as PurchaseHistory);
+      ref.read(apiKeyProvider.notifier).set(results[2] as String);
       ref.read(productsProvider.notifier).set(results[3] as List<Product>);
       ref.read(groceryDataProvider.notifier).set(results[4] as GroceryData);
-      _dashboardConfig = results[5] as LocalDashboardConfig;
-      _onboardingState = results[6] as OnboardingState;
+      ref.read(dashboardConfigProvider.notifier).set(results[5] as LocalDashboardConfig);
+      ref.read(onboardingProvider.notifier).set(results[6] as OnboardingState);
       ref.read(subscriptionProvider.notifier).set(results[7] as SubscriptionState);
       _loaded = true;
     });
@@ -369,7 +370,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
       final insights = await _aiCoachService.loadInsights(widget.householdId);
       if (!mounted) return;
       setState(() {
-        _latestCoachInsight = insights.isEmpty ? null : insights.first;
+        ref.read(latestCoachInsightProvider.notifier).set(insights.isEmpty ? null : insights.first);
       });
     } catch (_) {
       // Service already swallows network errors; this catch is belt &
@@ -614,7 +615,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   Future<void> _loadNotificationPrefs() async {
     final prefs = await _localConfigService.loadNotificationPreferences();
     if (mounted) {
-      setState(() => _notificationPrefs = prefs);
+      ref.read(notificationPrefsProvider.notifier).set(prefs);
       _refreshNotificationSchedules();
     }
   }
@@ -627,7 +628,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
       now.year,
     );
     if (mounted) {
-      setState(() => _hasMealPlan = plan != null);
+      ref.read(hasMealPlanProvider.notifier).set(plan != null);
     }
   }
 
@@ -795,7 +796,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
       (_) => NotificationSettingsScreen(
         preferences: _notificationPrefs,
         onSave: (prefs) {
-          setState(() => _notificationPrefs = prefs);
+          ref.read(notificationPrefsProvider.notifier).set(prefs);
           _refreshNotificationSchedules();
         },
       ),
@@ -1227,7 +1228,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
       key: key,
       currentState: _onboardingState,
       mounted: mounted,
-      applyState: (updated) => setState(() => _onboardingState = updated),
+      applyState: (updated) => ref.read(onboardingProvider.notifier).set(updated),
       persistState: _localConfigService.saveOnboardingState,
     );
   }
@@ -1373,7 +1374,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   }
 
   void _saveDashboardConfig(LocalDashboardConfig config) {
-    setState(() => _dashboardConfig = config);
+    ref.read(dashboardConfigProvider.notifier).set(config);
     _localConfigService.save(config);
   }
 
@@ -1389,12 +1390,12 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   }
 
   void _saveFavorites(List<String> favorites) {
-    setState(() => _favorites = favorites);
+    ref.read(favoritesProvider.notifier).set(favorites);
     _favoritesService.save(favorites, widget.householdId);
   }
 
   void _saveApiKey(String key) {
-    setState(() => _openAiApiKey = key);
+    ref.read(apiKeyProvider.notifier).set(key);
     _aiCoachService.saveApiKey(key);
   }
 
@@ -1650,7 +1651,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
       );
       if (mounted) {
         setState(() {
-          _purchaseHistory = updated;
+          ref.read(purchaseHistoryProvider.notifier).set(updated);
           _shoppingList = _shoppingList.where((i) => !i.checked).toList();
         });
       }
@@ -2120,6 +2121,16 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
     ref.watch(productsProvider);
     ref.watch(groceryDataProvider);
 
+    // Misc domains (#632 increment 7) — preserve prior setState rebuild reach.
+    ref.watch(favoritesProvider);
+    ref.watch(onboardingProvider);
+    ref.watch(dashboardConfigProvider);
+    ref.watch(notificationPrefsProvider);
+    ref.watch(purchaseHistoryProvider);
+    ref.watch(apiKeyProvider);
+    ref.watch(latestCoachInsightProvider);
+    ref.watch(hasMealPlanProvider);
+
     if (!_loaded) {
       return const BrandedLoading();
     }
@@ -2138,7 +2149,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
     // introduces the app.  Auto-mark as seen so old state doesn't block.
     if (!_onboardingState.welcomeSeen) {
       final updated = _onboardingState.copyWith(welcomeSeen: true);
-      _onboardingState = updated;
+      ref.read(onboardingProvider.notifier).set(updated);
       _localConfigService.saveOnboardingState(updated);
     }
 
