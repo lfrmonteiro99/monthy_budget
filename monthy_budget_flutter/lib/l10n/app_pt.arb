@@ -5836,5 +5836,15 @@
     "irsJovemLegalNote": "IRS Jovem: aplica-se a taxa de retenção do rendimento total apenas à parte não isenta (Despacho n.º 236-A/2025). A parte isenta está limitada a 55×IAS (≈ 29.542€/ano). A retenção mensal é uma estimativa — o valor final é acertado no IRS anual (Modelo 3) e o tecto anual é repartido pelos meses de forma aproximada.",
     "@irsJovemLegalNote": {
         "description": "Informational note shown only when IRS Jovem is active: legal basis and monthly-estimate disclaimer"
-    }
+    },
+    "dashboardHeroSpentLabel": "{amount} gasto",
+    "@dashboardHeroSpentLabel": {"description": "Dashboard hero spent amount label", "placeholders": {"amount": {"type": "String"}}},
+    "dashboardHeroBudgetLabel": "de {amount}",
+    "@dashboardHeroBudgetLabel": {"description": "Dashboard hero budget limit label", "placeholders": {"amount": {"type": "String"}}},
+    "dashboardHeroOnTrack": "Dentro do ritmo",
+    "@dashboardHeroOnTrack": {"description": "Dashboard hero pace status: on track"},
+    "dashboardHeroOverPace": "Acima do ritmo",
+    "@dashboardHeroOverPace": {"description": "Dashboard hero pace status: over pace"},
+    "dashboardHeroDaysLeft": "{days} dias restantes",
+    "@dashboardHeroDaysLeft": {"description": "Dashboard hero days remaining label", "placeholders": {"days": {"type": "String"}}}
 }

@@ -6061,4 +6061,25 @@ class SPt extends S {
   @override
   String get irsJovemLegalNote =>
       'IRS Jovem: aplica-se a taxa de retenção do rendimento total apenas à parte não isenta (Despacho n.º 236-A/2025). A parte isenta está limitada a 55×IAS (≈ 29.542€/ano). A retenção mensal é uma estimativa — o valor final é acertado no IRS anual (Modelo 3) e o tecto anual é repartido pelos meses de forma aproximada.';
+
+  @override
+  String dashboardHeroSpentLabel(String amount) {
+    return '$amount gasto';
+  }
+
+  @override
+  String dashboardHeroBudgetLabel(String amount) {
+    return 'de $amount';
+  }
+
+  @override
+  String get dashboardHeroOnTrack => 'Dentro do ritmo';
+
+  @override
+  String get dashboardHeroOverPace => 'Acima do ritmo';
+
+  @override
+  String dashboardHeroDaysLeft(String days) {
+    return '$days dias restantes';
+  }
 }
