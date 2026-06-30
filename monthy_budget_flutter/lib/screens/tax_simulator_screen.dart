@@ -110,22 +110,29 @@ class _TaxSimulatorScreenState extends State<TaxSimulatorScreen> {
     final netDelta = _simCalc.totalNetWithMeal - _currentCalc.totalNetWithMeal;
 
     return CalmScaffold(
-      title: l10n.taxSimTitle,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 8),
-            _buildHero(context, l10n, netDelta),
-            const SizedBox(height: 24),
-            _buildPresetsSection(context, l10n, country),
-            const SizedBox(height: 24),
-            _buildParameterSection(context, l10n, country),
-            const SizedBox(height: 24),
-            _buildComparisonSection(context, l10n),
-            const SizedBox(height: 16),
-          ],
-        ),
+      bodyPadding: EdgeInsets.zero,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CalmPageHeader(eyebrow: 'FISCAL 2026', title: l10n.taxSimTitle),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildHero(context, l10n, netDelta),
+                  const SizedBox(height: 24),
+                  _buildPresetsSection(context, l10n, country),
+                  const SizedBox(height: 24),
+                  _buildParameterSection(context, l10n, country),
+                  const SizedBox(height: 24),
+                  _buildComparisonSection(context, l10n),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -142,6 +149,7 @@ class _TaxSimulatorScreenState extends State<TaxSimulatorScreen> {
           eyebrow: 'SIMULAÇÃO',
           amount: formatCurrency(_simCalc.totalNetWithMeal),
           subtitle: l10n.taxSimNetTakeHome,
+          size: 56,
         ),
         const SizedBox(height: 12),
         Row(
