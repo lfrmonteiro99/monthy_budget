@@ -10,7 +10,6 @@ import '../utils/atcud_parser.dart';
 import '../utils/formatters.dart';
 import '../widgets/barcode_result_card.dart';
 import '../widgets/barcode_scan_sheet.dart';
-import '../widgets/receipt_scan_sheet.dart';
 import '../onboarding/grocery_tour.dart';
 import 'package:monthly_management/widgets/calm/calm.dart';
 
