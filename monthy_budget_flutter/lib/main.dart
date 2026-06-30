@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -90,7 +91,11 @@ Future<void> main() async {
     // Zone guard: last-resort catcher for errors that bypass all other handlers.
     runZonedGuarded(
       () {
-        runApp(OrcamentoMensalApp(controller: appShellController));
+        runApp(
+          ProviderScope(
+            child: OrcamentoMensalApp(controller: appShellController),
+          ),
+        );
         // Non-critical: defer to background after UI is on screen
         unawaited(_initDeferredServices());
       },
