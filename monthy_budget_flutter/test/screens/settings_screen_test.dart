@@ -15,13 +15,14 @@ void main() {
   SettingsScreen buildScreen({
     String? initialSection,
     AppSettings settings = const AppSettings(),
+    ValueChanged<AppSettings>? onSave,
     Future<List<AssociatedHouseholdMember>> Function(String householdId)?
     loadAssociatedMembers,
     Future<String> Function(String householdId)? generateInviteCode,
   }) {
     return SettingsScreen(
       settings: settings,
-      onSave: (_) {},
+      onSave: onSave ?? (_) {},
       favorites: const [],
       onSaveFavorites: (_) {},
       apiKey: '',
@@ -169,5 +170,28 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining('Modelo 3'), findsNothing);
+  });
+
+  testWidgets('section detail page has a working Save action', (tester) async {
+    AppSettings? saved;
+    await tester.pumpWidget(
+      wrapWithTestApp(
+        buildScreen(
+          initialSection: 'profile',
+          onSave: (s) => saved = s,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // The pushed section page (Pessoal) must expose its own Save action.
+    final saveAction = find.byIcon(Icons.check);
+    expect(saveAction, findsWidgets);
+
+    await tester.tap(saveAction.last);
+    await tester.pumpAndSettle();
+
+    // Tapping Save persists the draft (no need to go back to the main screen).
+    expect(saved, isNotNull);
   });
 }
