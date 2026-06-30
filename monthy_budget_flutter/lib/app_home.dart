@@ -8,6 +8,7 @@ import 'providers/navigation_providers.dart';
 import 'providers/connectivity_providers.dart';
 import 'providers/subscription_providers.dart';
 import 'providers/savings_providers.dart';
+import 'providers/budget_config_providers.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'models/app_settings.dart';
 import 'models/product.dart';
@@ -156,10 +157,12 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
 
   AppSettings _settings = const AppSettings();
   List<ActualExpense> _actualExpenses = [];
-  List<RecurringExpense> _recurringExpenses = [];
-  List<CustomCategory> _customCategories = [];
+  List<RecurringExpense> get _recurringExpenses =>
+      ref.read(recurringExpensesProvider);
+  List<CustomCategory> get _customCategories =>
+      ref.read(customCategoriesProvider);
   Map<String, List<ActualExpense>> _actualExpenseHistory = {};
-  Map<String, double> _monthlyBudgets = {};
+  Map<String, double> get _monthlyBudgets => ref.read(monthlyBudgetsProvider);
   NotificationPreferences _notificationPrefs = NotificationPreferences();
   List<SavingsGoal> get _savingsGoals => ref.read(savingsGoalsProvider);
   Map<String, SavingsProjection> get _savingsProjections =>
@@ -553,7 +556,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
     try {
       final recurring = await _recurringExpenseService.load(widget.householdId);
       if (mounted) {
-        setState(() => _recurringExpenses = recurring);
+        ref.read(recurringExpensesProvider.notifier).set(recurring);
         _refreshNotificationSchedules();
       }
       _dataHealthService.recordLoad(SyncDomain.recurringExpenses);
@@ -575,7 +578,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
     try {
       final categories = await _categoryService.load(widget.householdId);
       if (mounted) {
-        setState(() => _customCategories = categories);
+        ref.read(customCategoriesProvider.notifier).set(categories);
       }
     } catch (e) {
       LogService.error(
@@ -601,9 +604,9 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
       _currentMonthKey,
     );
     if (mounted) {
-      setState(
-        () => _monthlyBudgets = {for (final b in budgets) b.category: b.amount},
-      );
+      ref
+          .read(monthlyBudgetsProvider.notifier)
+          .set({for (final b in budgets) b.category: b.amount});
     }
   }
 
@@ -1723,14 +1726,14 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   }
 
   Future<void> _addRecurringExpenseFromCommand(RecurringExpense expense) async {
-    setState(() {
-      _recurringExpenses = [..._recurringExpenses, expense]
+    ref.read(recurringExpensesProvider.notifier).set(
+      [..._recurringExpenses, expense]
         ..sort((a, b) {
           final dayA = a.dayOfMonth ?? 99;
           final dayB = b.dayOfMonth ?? 99;
           return dayA.compareTo(dayB);
-        });
-    });
+        }),
+    );
     _refreshNotificationSchedules();
     try {
       await _recurringExpenseService.save(expense, widget.householdId);
@@ -2077,12 +2080,12 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
       },
       recurringExpenses: _recurringExpenses,
       onRecurringChanged: (updated) {
-        setState(() => _recurringExpenses = updated);
+        ref.read(recurringExpensesProvider.notifier).set(updated);
         _refreshNotificationSchedules();
       },
       customCategories: _customCategories,
       onCustomCategoriesChanged: (updated) {
-        setState(() => _customCategories = updated);
+        ref.read(customCategoriesProvider.notifier).set(updated);
       },
       initialSection: initialSection?.key,
     );
@@ -2106,6 +2109,11 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
     // Savings goals + projections (#632 increment 4).
     ref.watch(savingsGoalsProvider);
     ref.watch(savingsProjectionsProvider);
+
+    // Budget-config domains (#632 increment 5).
+    ref.watch(customCategoriesProvider);
+    ref.watch(recurringExpensesProvider);
+    ref.watch(monthlyBudgetsProvider);
 
     if (!_loaded) {
       return const BrandedLoading();
