@@ -303,6 +303,9 @@ class _CommandChatPanelState extends State<CommandChatPanel> {
                     ),
                     itemBuilder: (context, index) {
                       final item = capabilities[index];
+                      // Calm exception (#1021): this is a chat capability
+                      // suggestion, not a transaction/settings row — it is not
+                      // a CalmListTile candidate. Kept as a raw ListTile.
                       return ListTile(
                         contentPadding: EdgeInsets.zero,
                         title: Text(

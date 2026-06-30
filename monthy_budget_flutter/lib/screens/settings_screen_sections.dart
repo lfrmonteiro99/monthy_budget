@@ -2901,41 +2901,25 @@ extension _SettingsSections on _SettingsScreenState {
             ..._associatedMembers.map((member) {
               final isMe = member.id == myUserId;
               final roleLabel = member.role.toUpperCase();
-              return ListTile(
-                contentPadding: EdgeInsets.zero,
-                dense: true,
-                leading: Icon(Icons.person_outline, color: AppColors.primary(context)),
-                title: Text(
-                  member.email,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: AppColors.textPrimary(context)),
-                ),
-                subtitle: Text(
-                  isMe ? '$roleLabel - ME' : roleLabel,
-                  style: TextStyle(color: AppColors.textMuted(context)),
-                ),
+              return CalmListTile(
+                leadingIcon: Icons.person_outline,
+                leadingColor: AppColors.primary(context),
+                title: member.email,
+                subtitle: isMe ? '$roleLabel - ME' : roleLabel,
               );
             }),
             const SizedBox(height: 12),
           ],
           _label(l10n.settingsInviteCodeLabel),
           const SizedBox(height: 8),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: Icon(Icons.link, color: AppColors.primary(context)),
-            title: Text(l10n.settingsGenerateInvite),
-            subtitle: _inviteCode != null
-                ? SelectableText(
-                    _inviteCode!,
-                    style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 6,
-                        color: AppColors.textPrimary(context)),
-                  )
-                : Text(l10n.settingsShareWithMembers),
-            trailing: FilledButton.icon(
+          CalmListTile(
+            leadingIcon: Icons.link,
+            leadingColor: AppColors.primary(context),
+            title: l10n.settingsGenerateInvite,
+            selectableSubtitle: _inviteCode,
+            subtitle:
+                _inviteCode == null ? l10n.settingsShareWithMembers : null,
+            trailingWidget: FilledButton.icon(
               icon: const Icon(Icons.refresh, size: 18),
               label: Text(_inviteCode == null
                   ? l10n.settingsGenerateInvite
