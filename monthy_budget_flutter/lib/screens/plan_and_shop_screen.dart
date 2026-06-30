@@ -9,6 +9,7 @@ import '../models/shopping_item.dart';
 import '../services/barcode_scan_service.dart';
 import '../services/meal_planner_service.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_theme.dart';
 import '../utils/formatters.dart';
 import 'grocery_screen.dart';
 // TODO(M3/issue-952): replace MealPlannerScreen with MealMenuScreen once #952 merges.
@@ -356,7 +357,7 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen> {
               minHeight: 6,
               backgroundColor: AppColors.line(context),
               valueColor: AlwaysStoppedAnimation<Color>(
-                AppColors.accent(context),
+                AppColors.ink(context),
               ),
             ),
           ),
@@ -384,11 +385,7 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen> {
         Text(label,
             style: TextStyle(fontSize: 12, color: AppColors.ink50(context))),
         const SizedBox(height: 2),
-        Text(value,
-            style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: AppColors.ink(context))),
+        Text(value, style: CalmText.amount(context)),
       ],
     );
   }
