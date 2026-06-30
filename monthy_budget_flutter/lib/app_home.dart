@@ -11,6 +11,7 @@ import 'providers/savings_providers.dart';
 import 'providers/budget_config_providers.dart';
 import 'providers/catalog_providers.dart';
 import 'providers/app_state_providers.dart';
+import 'providers/settings_providers.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'models/app_settings.dart';
 import 'models/product.dart';
@@ -157,7 +158,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   final _fabKey = GlobalKey(debugLabel: 'tour_fab');
   final _navBarKey = GlobalKey(debugLabel: 'tour_nav_bar');
 
-  AppSettings _settings = const AppSettings();
+  AppSettings get _settings => ref.read(settingsProvider);
   List<ActualExpense> _actualExpenses = [];
   List<RecurringExpense> get _recurringExpenses =>
       ref.read(recurringExpensesProvider);
@@ -287,7 +288,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
 
         if (changed) {
           setState(() {
-            _settings = settings;
+            ref.read(settingsProvider.notifier).set(settings);
             ref.read(favoritesProvider.notifier).set(newFavorites);
             ref.read(purchaseHistoryProvider.notifier).set(newHistory);
             ref.read(groceryDataProvider.notifier).set(newGrocery);
@@ -323,7 +324,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
     ]);
     if (!mounted) return;
     setState(() {
-      _settings = settings;
+      ref.read(settingsProvider.notifier).set(settings);
       ref.read(favoritesProvider.notifier).set(results[0] as List<String>);
       ref.read(purchaseHistoryProvider.notifier).set(results[1] as PurchaseHistory);
       ref.read(apiKeyProvider.notifier).set(results[2] as String);
@@ -1283,7 +1284,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   void _saveSettings(AppSettings settings) {
     if (!widget.isAdmin) return;
     final countryChanged = settings.country != _settings.country;
-    setState(() => _settings = settings);
+    ref.read(settingsProvider.notifier).set(settings);
     _syncLocaleAndFormatter(settings);
     LogService.breadcrumb(
       'Saved settings',
@@ -2130,6 +2131,9 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
     ref.watch(apiKeyProvider);
     ref.watch(latestCoachInsightProvider);
     ref.watch(hasMealPlanProvider);
+
+    // App settings (#632 increment 8) — read by nearly every screen below.
+    ref.watch(settingsProvider);
 
     if (!_loaded) {
       return const BrandedLoading();
