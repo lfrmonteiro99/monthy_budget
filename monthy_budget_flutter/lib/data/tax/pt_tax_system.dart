@@ -50,11 +50,16 @@ class PtTaxSystem extends TaxSystem {
           bracket.parcelaDependente * dependentes;
       retention = math.max(0.0, round2(retention));
 
-      // IRS Jovem: reduz a retenção pela fração de isenção do ano de regime.
-      // Nota: o tecto anual (55×IAS) não é aplicado nesta retenção mensal.
+      // IRS Jovem: apura-se a taxa para a totalidade do rendimento e aplica-se
+      // apenas à parte NÃO isenta (Despacho nº 236-A/2025). A parte isenta está
+      // limitada ao tecto mensal (55×IAS / 12); o excedente é tributado
+      // normalmente. Aproximação mensal — o acerto do tecto anual é no Modelo 3.
       final exemption = irsJovemExemption(irsJovemYear);
       if (exemption > 0) {
-        retention = round2(retention * (1 - exemption));
+        final exemptIncome =
+            math.min(grossSalary * exemption, irsJovemMonthlyCap);
+        final exemptFraction = grossSalary > 0 ? exemptIncome / grossSalary : 0.0;
+        retention = round2(retention * (1 - exemptFraction));
       }
 
       rate = grossSalary > 0 ? retention / grossSalary : 0.0;
