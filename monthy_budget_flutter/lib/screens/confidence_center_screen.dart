@@ -177,19 +177,19 @@ class CriticalAlertBanner extends StatelessWidget {
         color: AppColors.bad(context),
         child: Row(
           children: [
-            const Icon(Icons.warning, size: 18, color: Colors.white),
+            Icon(Icons.warning, size: 18, color: AppColors.bg(context)),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
                 '$criticalCount critical alert${criticalCount == 1 ? '' : 's'} — tap to view', // TODO(l10n):
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: AppColors.bg(context),
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
                 ),
               ),
             ),
-            const Icon(Icons.chevron_right, size: 18, color: Colors.white),
+            Icon(Icons.chevron_right, size: 18, color: AppColors.bg(context)),
           ],
         ),
       ),
