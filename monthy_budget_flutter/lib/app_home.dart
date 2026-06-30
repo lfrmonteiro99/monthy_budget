@@ -9,6 +9,7 @@ import 'providers/connectivity_providers.dart';
 import 'providers/subscription_providers.dart';
 import 'providers/savings_providers.dart';
 import 'providers/budget_config_providers.dart';
+import 'providers/catalog_providers.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'models/app_settings.dart';
 import 'models/product.dart';
@@ -167,8 +168,8 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   List<SavingsGoal> get _savingsGoals => ref.read(savingsGoalsProvider);
   Map<String, SavingsProjection> get _savingsProjections =>
       ref.read(savingsProjectionsProvider);
-  List<Product> _products = [];
-  GroceryData _groceryData = const GroceryData();
+  List<Product> get _products => ref.read(productsProvider);
+  GroceryData get _groceryData => ref.read(groceryDataProvider);
   List<String> _favorites = [];
   List<ShoppingItem> _shoppingList = [];
   String _openAiApiKey = '';
@@ -288,7 +289,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
             _settings = settings;
             _favorites = newFavorites;
             _purchaseHistory = newHistory;
-            _groceryData = newGrocery;
+            ref.read(groceryDataProvider.notifier).set(newGrocery);
             _actualExpenses = newExpenses;
             _expenseHistory = newSnapshots;
           });
@@ -325,8 +326,8 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
       _favorites = results[0] as List<String>;
       _purchaseHistory = results[1] as PurchaseHistory;
       _openAiApiKey = results[2] as String;
-      _products = results[3] as List<Product>;
-      _groceryData = results[4] as GroceryData;
+      ref.read(productsProvider.notifier).set(results[3] as List<Product>);
+      ref.read(groceryDataProvider.notifier).set(results[4] as GroceryData);
       _dashboardConfig = results[5] as LocalDashboardConfig;
       _onboardingState = results[6] as OnboardingState;
       ref.read(subscriptionProvider.notifier).set(results[7] as SubscriptionState);
@@ -1298,7 +1299,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
     if (countryChanged) {
       _loadGroceryData(settings.country).then((data) {
         if (!mounted) return;
-        setState(() => _groceryData = data);
+        ref.read(groceryDataProvider.notifier).set(data);
       });
     }
   }
@@ -2114,6 +2115,10 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
     ref.watch(customCategoriesProvider);
     ref.watch(recurringExpensesProvider);
     ref.watch(monthlyBudgetsProvider);
+
+    // Product catalog + grocery data (#632 increment 6).
+    ref.watch(productsProvider);
+    ref.watch(groceryDataProvider);
 
     if (!_loaded) {
       return const BrandedLoading();
