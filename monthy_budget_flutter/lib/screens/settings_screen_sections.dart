@@ -319,14 +319,14 @@ extension _SettingsSections on _SettingsScreenState {
           _helpTip(l10n.settingsSalariesTip),
           ...List.generate(_draft.salaries.length, (idx) {
             final salary = _draft.salaries[idx];
-            // Calculate net for summary row
-            final salaryCalc = salary.grossAmount > 0
-                ? calculateNetSalary(salary, _draft.personalInfo, taxSystem)
-                : null;
             final currency = _draft.country.currencyCode;
-            final enabledBorderColor = salary.enabled
-                ? AppColors.border(context)
-                : AppColors.surfaceVariant(context);
+            // Recompute net from the (quietly-updated) draft inside the live
+            // preview builders, so the preview refreshes per keystroke without
+            // rebuilding the input fields (which dismisses the numeric keyboard
+            // — issue #1069).
+            calcFor(SalaryInfo s) => s.grossAmount > 0
+                ? calculateNetSalary(s, _draft.personalInfo, taxSystem)
+                : null;
 
             return Padding(
               padding: EdgeInsets.only(bottom: idx < _draft.salaries.length - 1 ? 16 : 0),
@@ -386,11 +386,17 @@ extension _SettingsSections on _SettingsScreenState {
                               children: [
                                 CalmEyebrow(l10n.settingsSalarySummaryGross.toUpperCase()),
                                 const SizedBox(height: 2),
-                                Text(
-                                  salary.grossAmount > 0
-                                      ? '${salary.grossAmount.toStringAsFixed(2)} $currency'
-                                      : '\u2014',
-                                  style: CalmText.amount(context, size: 15),
+                                ValueListenableBuilder<int>(
+                                  valueListenable: _previewNotifier,
+                                  builder: (context, _, _) {
+                                    final g = _draft.salaries[idx].grossAmount;
+                                    return Text(
+                                      g > 0
+                                          ? '${g.toStringAsFixed(2)} $currency'
+                                          : '\u2014',
+                                      style: CalmText.amount(context, size: 15),
+                                    );
+                                  },
                                 ),
                               ],
                             ),
@@ -405,11 +411,17 @@ extension _SettingsSections on _SettingsScreenState {
                               children: [
                                 CalmEyebrow(l10n.settingsSalarySummaryNet.toUpperCase()),
                                 const SizedBox(height: 2),
-                                Text(
-                                  salaryCalc != null
-                                      ? '${salaryCalc.totalNetWithMeal.toStringAsFixed(2)} $currency'
-                                      : '\u2014',
-                                  style: CalmText.amount(context, size: 15),
+                                ValueListenableBuilder<int>(
+                                  valueListenable: _previewNotifier,
+                                  builder: (context, _, _) {
+                                    final calc = calcFor(_draft.salaries[idx]);
+                                    return Text(
+                                      calc != null
+                                          ? '${calc.totalNetWithMeal.toStringAsFixed(2)} $currency'
+                                          : '\u2014',
+                                      style: CalmText.amount(context, size: 15),
+                                    );
+                                  },
                                 ),
                               ],
                             ),
@@ -417,31 +429,38 @@ extension _SettingsSections on _SettingsScreenState {
                         ],
                       ),
                     ),
-                    // ── Deduction Breakdown ──
-                    if (salaryCalc != null && salary.grossAmount > 0) ...[
-                      const SizedBox(height: 6),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            _deductionChip(l10n.settingsDeductionIrs,
-                                '-${salaryCalc.irsRetention.toStringAsFixed(0)}',
-                                '${(salaryCalc.irsRate * 100).toStringAsFixed(1)}%',
-                                AppColors.bad(context)),
-                            _deductionChip(l10n.settingsDeductionSs,
-                                '-${salaryCalc.socialSecurity.toStringAsFixed(0)}',
-                                '${(salaryCalc.socialSecurityRate * 100).toStringAsFixed(0)}%',
-                                AppColors.warning(context)),
-                            if (salaryCalc.mealAllowance.netMealAllowance > 0)
-                              _deductionChip(l10n.settingsDeductionMeal,
-                                  '+${salaryCalc.mealAllowance.netMealAllowance.toStringAsFixed(0)}',
-                                  null,
-                                  AppColors.ok(context)),
-                          ],
-                        ),
-                      ),
-                    ],
+                    // ── Deduction Breakdown (live preview) ──
+                    ValueListenableBuilder<int>(
+                      valueListenable: _previewNotifier,
+                      builder: (context, _, _) {
+                        final s = _draft.salaries[idx];
+                        final calc = calcFor(s);
+                        if (calc == null || s.grossAmount <= 0) {
+                          return const SizedBox.shrink();
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 6, left: 4, right: 4),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              _deductionChip(l10n.settingsDeductionIrs,
+                                  '-${calc.irsRetention.toStringAsFixed(0)}',
+                                  '${(calc.irsRate * 100).toStringAsFixed(1)}%',
+                                  AppColors.bad(context)),
+                              _deductionChip(l10n.settingsDeductionSs,
+                                  '-${calc.socialSecurity.toStringAsFixed(0)}',
+                                  '${(calc.socialSecurityRate * 100).toStringAsFixed(0)}%',
+                                  AppColors.warning(context)),
+                              if (calc.mealAllowance.netMealAllowance > 0)
+                                _deductionChip(l10n.settingsDeductionMeal,
+                                    '+${calc.mealAllowance.netMealAllowance.toStringAsFixed(0)}',
+                                    null,
+                                    AppColors.ok(context)),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                     const SizedBox(height: 14),
                     // ── Income section header ──
                     _salarySectionHeader(Icons.payments_outlined, l10n.settingsGrossMonthlySalary),
@@ -462,7 +481,7 @@ extension _SettingsSections on _SettingsScreenState {
                           TextFormField(
                             key: ValueKey('gross_$idx'),
                             initialValue: salary.grossAmount > 0 ? salary.grossAmount.toStringAsFixed(2) : '',
-                            onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(grossAmount: double.tryParse(v) ?? 0)),
+                            onChanged: (v) => _updateSalaryQuiet(idx, (s) => s.copyWith(grossAmount: double.tryParse(v) ?? 0)),
                             keyboardType: const TextInputType.numberWithOptions(decimal: true),
                             decoration: _inputDecoration('0.00', suffix: currency, helperText: l10n.helperGrossSalary),
                           ),
@@ -529,7 +548,7 @@ extension _SettingsSections on _SettingsScreenState {
                           TextFormField(
                             key: ValueKey('exempt_$idx'),
                             initialValue: salary.otherExemptIncome > 0 ? salary.otherExemptIncome.toStringAsFixed(2) : '',
-                            onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(otherExemptIncome: double.tryParse(v) ?? 0)),
+                            onChanged: (v) => _updateSalaryQuiet(idx, (s) => s.copyWith(otherExemptIncome: double.tryParse(v) ?? 0)),
                             keyboardType: const TextInputType.numberWithOptions(decimal: true),
                             decoration: _inputDecoration('0.00', suffix: currency, helperText: l10n.helperExemptIncome),
                           ),
@@ -588,7 +607,7 @@ extension _SettingsSections on _SettingsScreenState {
                                         TextFormField(
                                           key: ValueKey('meal_day_$idx'),
                                           initialValue: salary.mealAllowancePerDay > 0 ? salary.mealAllowancePerDay.toStringAsFixed(2) : '',
-                                          onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(mealAllowancePerDay: double.tryParse(v) ?? 0)),
+                                          onChanged: (v) => _updateSalaryQuiet(idx, (s) => s.copyWith(mealAllowancePerDay: double.tryParse(v) ?? 0)),
                                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
                                           decoration: _inputDecoration('0.00', suffix: currency, helperText: l10n.helperMealAllowance),
                                         ),
@@ -606,7 +625,7 @@ extension _SettingsSections on _SettingsScreenState {
                                         TextFormField(
                                           key: ValueKey('meal_days_$idx'),
                                           initialValue: salary.workingDaysPerMonth > 0 ? salary.workingDaysPerMonth.toString() : '',
-                                          onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(workingDaysPerMonth: int.tryParse(v) ?? 0)),
+                                          onChanged: (v) => _updateSalaryQuiet(idx, (s) => s.copyWith(workingDaysPerMonth: int.tryParse(v) ?? 0)),
                                           keyboardType: TextInputType.number,
                                           decoration: _inputDecoration('22', helperText: l10n.helperWorkingDays),
                                         ),
@@ -615,23 +634,33 @@ extension _SettingsSections on _SettingsScreenState {
                                   ),
                                 ],
                               ),
-                              if (salary.mealAllowancePerDay > 0 && salary.workingDaysPerMonth > 0) ...[
-                                const SizedBox(height: 8),
-                                Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.ok(context).withValues(alpha: 0.08),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Text(
-                                    l10n.settingsMealMonthlyTotal(
-                                      '${(salary.mealAllowancePerDay * salary.workingDaysPerMonth).toStringAsFixed(2)} $currency',
+                              ValueListenableBuilder<int>(
+                                valueListenable: _previewNotifier,
+                                builder: (context, _, _) {
+                                  final s = _draft.salaries[idx];
+                                  if (s.mealAllowancePerDay <= 0 ||
+                                      s.workingDaysPerMonth <= 0) {
+                                    return const SizedBox.shrink();
+                                  }
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 8),
+                                    child: Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.ok(context).withValues(alpha: 0.08),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        l10n.settingsMealMonthlyTotal(
+                                          '${(s.mealAllowancePerDay * s.workingDaysPerMonth).toStringAsFixed(2)} $currency',
+                                        ),
+                                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textSecondary(context)),
+                                      ),
                                     ),
-                                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textSecondary(context)),
-                                  ),
-                                ),
-                              ],
+                                  );
+                                },
+                              ),
                             ],
                           ],
                         ),
@@ -937,7 +966,7 @@ extension _SettingsSections on _SettingsScreenState {
                     const SizedBox(height: 8),
                     TextFormField(
                       initialValue: expense.amount > 0 ? expense.amount.toStringAsFixed(2) : '',
-                      onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(amount: double.tryParse(v) ?? 0)),
+                      onChanged: (v) => _updateExpenseQuiet(expense.id, (e) => e.copyWith(amount: double.tryParse(v) ?? 0)),
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       decoration: _inputDecoration('0.00', suffix: _draft.country.currencyCode, helperText: l10n.helperExpenseAmount),
                     ),
@@ -1872,7 +1901,7 @@ extension _SettingsSections on _SettingsScreenState {
               final ms = _draft.mealSettings;
               final updated = List<String>.from(ms.dislikedIngredients)..add(name);
               setState(() => _draft = _draft.copyWith(
-                  mealSettings: ms.copyWith(dislikedIngredients: updated)));
+                  mealSettings: _draft.mealSettings.copyWith(dislikedIngredients: updated)));
             }
             Navigator.pop(context);
           },
@@ -1906,15 +1935,15 @@ extension _SettingsSections on _SettingsScreenState {
               if (isStaple == true) {
                 final updated = List<String>.from(ms.stapleIngredients)..add(name);
                 setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(stapleIngredients: updated)));
+                    mealSettings: _draft.mealSettings.copyWith(stapleIngredients: updated)));
               } else if (isStaple == false) {
                 final updated = List<String>.from(ms.weeklyPantryIngredients)..add(name);
                 setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(weeklyPantryIngredients: updated)));
+                    mealSettings: _draft.mealSettings.copyWith(weeklyPantryIngredients: updated)));
               } else {
                 final updated = List<String>.from(ms.pantryIngredients)..add(name);
                 setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(pantryIngredients: updated)));
+                    mealSettings: _draft.mealSettings.copyWith(pantryIngredients: updated)));
               }
             }
             Navigator.pop(context);
@@ -2020,8 +2049,8 @@ extension _SettingsSections on _SettingsScreenState {
                         style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                         onChanged: (v) {
                           final parsed = int.tryParse(v);
-                          setState(() => _draft = _draft.copyWith(
-                              mealSettings: ms.copyWith(
+                          _mutateDraftQuiet((d) => d.copyWith(
+                              mealSettings: d.mealSettings.copyWith(
                                   householdSize: (parsed != null && parsed > 0) ? parsed : null)));
                         },
                       ),
@@ -2033,7 +2062,7 @@ extension _SettingsSections on _SettingsScreenState {
                       icon: Icon(Icons.restart_alt, size: 20, color: AppColors.textMuted(context)),
                       tooltip: l10n.settingsUseAutoValue,
                       onPressed: () => setState(() => _draft = _draft.copyWith(
-                          mealSettings: ms.copyWith(householdSize: null))),
+                          mealSettings: _draft.mealSettings.copyWith(householdSize: null))),
                     ),
                   ],
                 ],
@@ -2075,7 +2104,7 @@ extension _SettingsSections on _SettingsScreenState {
                           onPressed: () {
                             final updated = List<HouseholdMember>.from(ms.householdMembers)..removeAt(i);
                             setState(() => _draft = _draft.copyWith(
-                                mealSettings: ms.copyWith(householdMembers: updated)));
+                                mealSettings: _draft.mealSettings.copyWith(householdMembers: updated)));
                           },
                         ),
                       ],
@@ -2134,7 +2163,7 @@ extension _SettingsSections on _SettingsScreenState {
                         .toList(),
                     onChanged: (v) {
                       if (v == null) return;
-                      var updated = ms.copyWith(objective: v);
+                      var updated = _draft.mealSettings.copyWith(objective: v);
                       if (v == MealObjective.vegetarian) {
                         updated = updated.copyWith(veggieDaysPerWeek: 7);
                       }
@@ -2164,7 +2193,7 @@ extension _SettingsSections on _SettingsScreenState {
                       }
                       if (newSet.isEmpty) return;
                       setState(() => _draft = _draft.copyWith(
-                          mealSettings: ms.copyWith(enabledMeals: newSet)));
+                          mealSettings: _draft.mealSettings.copyWith(enabledMeals: newSet)));
                     },
                   )),
               const SizedBox(height: 8),
@@ -2173,7 +2202,7 @@ extension _SettingsSections on _SettingsScreenState {
                 subtitle: l10n.settingsPreferSeasonalDesc,
                 value: ms.preferSeasonal,
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(preferSeasonal: v))),
+                    mealSettings: _draft.mealSettings.copyWith(preferSeasonal: v))),
               ),
             ],
           ),
@@ -2200,7 +2229,7 @@ extension _SettingsSections on _SettingsScreenState {
                         final updated = Set<int>.from(ms.eatingOutWeekdays);
                         if (v) { updated.add(entry.key); } else { updated.remove(entry.key); }
                         setState(() => _draft = _draft.copyWith(
-                            mealSettings: ms.copyWith(eatingOutWeekdays: updated)));
+                            mealSettings: _draft.mealSettings.copyWith(eatingOutWeekdays: updated)));
                       },
                     ),
                 ],
@@ -2215,7 +2244,7 @@ extension _SettingsSections on _SettingsScreenState {
                 label: '${ms.veggieDaysPerWeek}',
                 activeColor: AppColors.primary(context),
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(veggieDaysPerWeek: v.round()))),
+                    mealSettings: _draft.mealSettings.copyWith(veggieDaysPerWeek: v.round()))),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 8),
@@ -2234,19 +2263,19 @@ extension _SettingsSections on _SettingsScreenState {
               ...[
                 (l10n.wizardGlutenFree, ms.glutenFree,
                     (bool v) => setState(() => _draft = _draft.copyWith(
-                        mealSettings: ms.copyWith(glutenFree: v)))),
+                        mealSettings: _draft.mealSettings.copyWith(glutenFree: v)))),
                 (l10n.wizardLactoseFree, ms.lactoseFree,
                     (bool v) => setState(() => _draft = _draft.copyWith(
-                        mealSettings: ms.copyWith(lactoseFree: v)))),
+                        mealSettings: _draft.mealSettings.copyWith(lactoseFree: v)))),
                 (l10n.wizardNutFree, ms.nutFree,
                     (bool v) => setState(() => _draft = _draft.copyWith(
-                        mealSettings: ms.copyWith(nutFree: v)))),
+                        mealSettings: _draft.mealSettings.copyWith(nutFree: v)))),
                 (l10n.wizardShellfishFree, ms.shellfishFree,
                     (bool v) => setState(() => _draft = _draft.copyWith(
-                        mealSettings: ms.copyWith(shellfishFree: v)))),
+                        mealSettings: _draft.mealSettings.copyWith(shellfishFree: v)))),
                 (l10n.settingsEggFree, ms.eggFree,
                     (bool v) => setState(() => _draft = _draft.copyWith(
-                        mealSettings: ms.copyWith(eggFree: v)))),
+                        mealSettings: _draft.mealSettings.copyWith(eggFree: v)))),
               ].map((item) => CheckboxListTile(
                     contentPadding: EdgeInsets.zero,
                     title: Text(item.$1,
@@ -2277,7 +2306,7 @@ extension _SettingsSections on _SettingsScreenState {
                     onChanged: (v) {
                       if (v == null) return;
                       setState(() => _draft = _draft.copyWith(
-                          mealSettings: ms.copyWith(sodiumPreference: v)));
+                          mealSettings: _draft.mealSettings.copyWith(sodiumPreference: v)));
                     },
                   ),
                 ),
@@ -2299,7 +2328,7 @@ extension _SettingsSections on _SettingsScreenState {
                     onDeleted: () {
                       final updated = List<String>.from(ms.dislikedIngredients)..remove(d);
                       setState(() => _draft = _draft.copyWith(
-                          mealSettings: ms.copyWith(dislikedIngredients: updated)));
+                          mealSettings: _draft.mealSettings.copyWith(dislikedIngredients: updated)));
                     },
                   )),
                   ActionChip(
@@ -2337,7 +2366,7 @@ extension _SettingsSections on _SettingsScreenState {
                         updated.remove(entry.key);
                       }
                       setState(() => _draft = _draft.copyWith(
-                          mealSettings: ms.copyWith(excludedProteins: updated)));
+                          mealSettings: _draft.mealSettings.copyWith(excludedProteins: updated)));
                     },
                   )),
             ],
@@ -2358,7 +2387,7 @@ extension _SettingsSections on _SettingsScreenState {
                   selected: ms.maxPrepMinutes == v,
                   selectedColor: AppColors.primary(context).withValues(alpha: 0.15),
                   onSelected: (_) => setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(maxPrepMinutes: v))),
+                      mealSettings: _draft.mealSettings.copyWith(maxPrepMinutes: v))),
                 )).toList(),
               ),
               Padding(
@@ -2378,7 +2407,7 @@ extension _SettingsSections on _SettingsScreenState {
                   ],
                   selected: {_nearestComplexity(ms.maxComplexity)},
                   onSelectionChanged: (v) => setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(maxComplexity: v.first))),
+                      mealSettings: _draft.mealSettings.copyWith(maxComplexity: v.first))),
                   style: ButtonStyle(
                     textStyle: WidgetStatePropertyAll(const TextStyle(fontSize: 13)),
                   ),
@@ -2398,7 +2427,7 @@ extension _SettingsSections on _SettingsScreenState {
                   selected: ms.maxPrepMinutesWeekend == v,
                   selectedColor: AppColors.primary(context).withValues(alpha: 0.15),
                   onSelected: (_) => setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(maxPrepMinutesWeekend: v))),
+                      mealSettings: _draft.mealSettings.copyWith(maxPrepMinutesWeekend: v))),
                 )).toList(),
               ),
               Padding(
@@ -2418,7 +2447,7 @@ extension _SettingsSections on _SettingsScreenState {
                   ],
                   selected: {_nearestComplexity(ms.maxComplexityWeekend)},
                   onSelectionChanged: (v) => setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(maxComplexityWeekend: v.first))),
+                      mealSettings: _draft.mealSettings.copyWith(maxComplexityWeekend: v.first))),
                   style: ButtonStyle(
                     textStyle: WidgetStatePropertyAll(const TextStyle(fontSize: 13)),
                   ),
@@ -2448,7 +2477,7 @@ extension _SettingsSections on _SettingsScreenState {
                       updated.remove(eq);
                     }
                     setState(() => _draft = _draft.copyWith(
-                        mealSettings: ms.copyWith(availableEquipment: updated)));
+                        mealSettings: _draft.mealSettings.copyWith(availableEquipment: updated)));
                   },
                 )).toList(),
               ),
@@ -2467,7 +2496,7 @@ extension _SettingsSections on _SettingsScreenState {
                 leadingIcon: Icons.soup_kitchen,
                 value: ms.includeSoupOrStarter,
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(includeSoupOrStarter: v))),
+                    mealSettings: _draft.mealSettings.copyWith(includeSoupOrStarter: v))),
               ),
               CalmSwitchRow(
                 title: l10n.wizardIncludeDessert,
@@ -2475,7 +2504,7 @@ extension _SettingsSections on _SettingsScreenState {
                 leadingIcon: Icons.icecream,
                 value: ms.includeDessert,
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(includeDessert: v))),
+                    mealSettings: _draft.mealSettings.copyWith(includeDessert: v))),
               ),
             ],
           ),
@@ -2491,7 +2520,7 @@ extension _SettingsSections on _SettingsScreenState {
                 subtitle: l10n.subtitleBatchCooking,
                 value: ms.batchCookingEnabled,
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(batchCookingEnabled: v))),
+                    mealSettings: _draft.mealSettings.copyWith(batchCookingEnabled: v))),
               ),
               if (ms.batchCookingEnabled) ...[
                 _label(l10n.settingsMaxBatchDays),
@@ -2503,7 +2532,7 @@ extension _SettingsSections on _SettingsScreenState {
                   label: '${ms.maxBatchDays}',
                   activeColor: AppColors.primary(context),
                   onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(maxBatchDays: v.round()))),
+                      mealSettings: _draft.mealSettings.copyWith(maxBatchDays: v.round()))),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 16, bottom: 8),
@@ -2515,14 +2544,14 @@ extension _SettingsSections on _SettingsScreenState {
                 subtitle: l10n.subtitleReuseLeftovers,
                 value: ms.reuseLeftovers,
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(reuseLeftovers: v))),
+                    mealSettings: _draft.mealSettings.copyWith(reuseLeftovers: v))),
               ),
               CalmSwitchRow(
                 title: l10n.settingsMinimizeWaste,
                 subtitle: l10n.subtitleMinimizeWaste,
                 value: ms.minimizeWaste,
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(minimizeWaste: v))),
+                    mealSettings: _draft.mealSettings.copyWith(minimizeWaste: v))),
               ),
               if (ms.minimizeWaste) ...[
                 _label(l10n.settingsNewIngredientsPerWeek(ms.maxNewIngredientsPerWeek)),
@@ -2534,7 +2563,7 @@ extension _SettingsSections on _SettingsScreenState {
                   label: ms.maxNewIngredientsPerWeek == 10 ? l10n.settingsNoLimit : '${ms.maxNewIngredientsPerWeek}',
                   activeColor: AppColors.primary(context),
                   onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(maxNewIngredientsPerWeek: v.round()))),
+                      mealSettings: _draft.mealSettings.copyWith(maxNewIngredientsPerWeek: v.round()))),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 16, bottom: 8),
@@ -2546,14 +2575,14 @@ extension _SettingsSections on _SettingsScreenState {
                 subtitle: l10n.settingsPrioritizeLowCostDesc,
                 value: ms.prioritizeLowCost,
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(prioritizeLowCost: v))),
+                    mealSettings: _draft.mealSettings.copyWith(prioritizeLowCost: v))),
               ),
               CalmSwitchRow(
                 title: l10n.settingsLunchboxLunches,
                 subtitle: l10n.settingsLunchboxLunchesDesc,
                 value: ms.lunchboxLunches,
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(lunchboxLunches: v))),
+                    mealSettings: _draft.mealSettings.copyWith(lunchboxLunches: v))),
               ),
             ],
           ),
@@ -2574,7 +2603,7 @@ extension _SettingsSections on _SettingsScreenState {
                 label: ms.fishDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.fishDaysPerWeek}',
                 activeColor: AppColors.primary(context),
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(fishDaysPerWeek: v.round()))),
+                    mealSettings: _draft.mealSettings.copyWith(fishDaysPerWeek: v.round()))),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 8),
@@ -2588,7 +2617,7 @@ extension _SettingsSections on _SettingsScreenState {
                 label: ms.legumeDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.legumeDaysPerWeek}',
                 activeColor: AppColors.primary(context),
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(legumeDaysPerWeek: v.round()))),
+                    mealSettings: _draft.mealSettings.copyWith(legumeDaysPerWeek: v.round()))),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 8),
@@ -2602,7 +2631,7 @@ extension _SettingsSections on _SettingsScreenState {
                 label: ms.redMeatMaxPerWeek >= 7 ? l10n.settingsNoLimit : '${ms.redMeatMaxPerWeek}',
                 activeColor: AppColors.primary(context),
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
-                    mealSettings: ms.copyWith(redMeatMaxPerWeek: v.round()))),
+                    mealSettings: _draft.mealSettings.copyWith(redMeatMaxPerWeek: v.round()))),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 8),
@@ -2627,14 +2656,14 @@ extension _SettingsSections on _SettingsScreenState {
                       ? IconButton(
                           icon: Icon(Icons.close, size: 18, color: AppColors.textMuted(context)),
                           onPressed: () => setState(() => _draft = _draft.copyWith(
-                              mealSettings: ms.copyWith(dailyCalorieTarget: null))),
+                              mealSettings: _draft.mealSettings.copyWith(dailyCalorieTarget: null))),
                         )
                       : null,
                 ),
                 onChanged: (v) {
                   final parsed = int.tryParse(v);
-                  setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(
+                  _mutateDraftQuiet((d) => d.copyWith(
+                      mealSettings: d.mealSettings.copyWith(
                           dailyCalorieTarget: (parsed != null && parsed > 0) ? parsed : null)));
                 },
               ),
@@ -2649,14 +2678,14 @@ extension _SettingsSections on _SettingsScreenState {
                       ? IconButton(
                           icon: Icon(Icons.close, size: 18, color: AppColors.textMuted(context)),
                           onPressed: () => setState(() => _draft = _draft.copyWith(
-                              mealSettings: ms.copyWith(dailyProteinTargetG: null))),
+                              mealSettings: _draft.mealSettings.copyWith(dailyProteinTargetG: null))),
                         )
                       : null,
                 ),
                 onChanged: (v) {
                   final parsed = int.tryParse(v);
-                  setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(
+                  _mutateDraftQuiet((d) => d.copyWith(
+                      mealSettings: d.mealSettings.copyWith(
                           dailyProteinTargetG: (parsed != null && parsed > 0) ? parsed : null)));
                 },
               ),
@@ -2671,14 +2700,14 @@ extension _SettingsSections on _SettingsScreenState {
                       ? IconButton(
                           icon: Icon(Icons.close, size: 18, color: AppColors.textMuted(context)),
                           onPressed: () => setState(() => _draft = _draft.copyWith(
-                              mealSettings: ms.copyWith(dailyFiberTargetG: null))),
+                              mealSettings: _draft.mealSettings.copyWith(dailyFiberTargetG: null))),
                         )
                       : null,
                 ),
                 onChanged: (v) {
                   final parsed = int.tryParse(v);
-                  setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(
+                  _mutateDraftQuiet((d) => d.copyWith(
+                      mealSettings: d.mealSettings.copyWith(
                           dailyFiberTargetG: (parsed != null && parsed > 0) ? parsed : null)));
                 },
               ),
@@ -2701,7 +2730,7 @@ extension _SettingsSections on _SettingsScreenState {
                         updated.remove(mc);
                       }
                       setState(() => _draft = _draft.copyWith(
-                          mealSettings: ms.copyWith(medicalConditions: updated)));
+                          mealSettings: _draft.mealSettings.copyWith(medicalConditions: updated)));
                     },
                   )),
             ],
@@ -2725,7 +2754,7 @@ extension _SettingsSections on _SettingsScreenState {
                     onDeleted: () {
                       final updated = List<String>.from(ms.stapleIngredients)..remove(p);
                       setState(() => _draft = _draft.copyWith(
-                          mealSettings: ms.copyWith(stapleIngredients: updated)));
+                          mealSettings: _draft.mealSettings.copyWith(stapleIngredients: updated)));
                     },
                   )),
                   ActionChip(
@@ -2748,7 +2777,7 @@ extension _SettingsSections on _SettingsScreenState {
                     onDeleted: () {
                       final updated = List<String>.from(ms.weeklyPantryIngredients)..remove(p);
                       setState(() => _draft = _draft.copyWith(
-                          mealSettings: ms.copyWith(weeklyPantryIngredients: updated)));
+                          mealSettings: _draft.mealSettings.copyWith(weeklyPantryIngredients: updated)));
                     },
                   )),
                   ActionChip(
@@ -2771,7 +2800,7 @@ extension _SettingsSections on _SettingsScreenState {
                     onDeleted: () {
                       final updated = List<String>.from(ms.pantryIngredients)..remove(p);
                       setState(() => _draft = _draft.copyWith(
-                          mealSettings: ms.copyWith(pantryIngredients: updated)));
+                          mealSettings: _draft.mealSettings.copyWith(pantryIngredients: updated)));
                     },
                   )),
                   ActionChip(
@@ -2794,7 +2823,7 @@ extension _SettingsSections on _SettingsScreenState {
                 width: double.infinity,
                 child: OutlinedButton.icon(
                   onPressed: () => setState(() => _draft = _draft.copyWith(
-                      mealSettings: ms.copyWith(wizardCompleted: false))),
+                      mealSettings: _draft.mealSettings.copyWith(wizardCompleted: false))),
                   icon: const Icon(Icons.restart_alt, size: 18),
                   label: Text(l10n.settingsResetWizard),
                   style: OutlinedButton.styleFrom(
@@ -3004,7 +3033,7 @@ extension _SettingsSections on _SettingsScreenState {
                 activityLevel: activityLevel);
             final updated = [...ms.householdMembers, member];
             setState(() => _draft = _draft.copyWith(
-                mealSettings: ms.copyWith(householdMembers: updated)));
+                mealSettings: _draft.mealSettings.copyWith(householdMembers: updated)));
             Navigator.pop(context);
           },
           child: Text(l10n.settingsAddButton),
