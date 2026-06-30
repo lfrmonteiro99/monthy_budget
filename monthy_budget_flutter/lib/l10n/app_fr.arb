@@ -3039,5 +3039,18 @@
     "helperDisability": "Applique les tables de retenue spécifiques au handicap (IV–VII).",
     "taxSimIrsJovem": "IRS Jovem (année)",
     "taxSimDisability": "Handicap",
-    "irsJovemLegalNote": "IRS Jovem : le taux de retenue du revenu total s'applique uniquement à la partie non exonérée (Despacho n.º 236-A/2025). La partie exonérée est plafonnée à 55×IAS (≈ 29 542€/an). La retenue mensuelle est une estimation — le montant final est régularisé dans la déclaration annuelle (Modelo 3) et le plafond annuel est réparti sur les mois de façon approximative."
+    "irsJovemLegalNote": "IRS Jovem : le taux de retenue du revenu total s'applique uniquement à la partie non exonérée (Despacho n.º 236-A/2025). La partie exonérée est plafonnée à 55×IAS (≈ 29 542€/an). La retenue mensuelle est une estimation — le montant final est régularisé dans la déclaration annuelle (Modelo 3) et le plafond annuel est réparti sur les mois de façon approximative.",
+    "@irsJovemLegalNote": {
+        "description": "IRS Jovem : le taux de retenue du revenu total s'applique uniquement à la partie non exonérée (Despacho n.º 236-A/2025). La partie exonérée est plafonnée à 55×IAS (≈ 29 542€/an). La retenue mensuelle est une estimation — le montant final est régularisé dans la déclaration annuelle (Modelo 3) et le plafond annuel est réparti sur les mois de façon approximative."
+    },
+    "dashboardHeroSpentLabel": "{amount} dépensé",
+    "@dashboardHeroSpentLabel": {"description": "Dashboard hero spent amount label", "placeholders": {"amount": {"type": "String"}}},
+    "dashboardHeroBudgetLabel": "de {amount}",
+    "@dashboardHeroBudgetLabel": {"description": "Dashboard hero budget limit label", "placeholders": {"amount": {"type": "String"}}},
+    "dashboardHeroOnTrack": "Dans le rythme",
+    "@dashboardHeroOnTrack": {"description": "Dashboard hero pace status: on track"},
+    "dashboardHeroOverPace": "Au-dessus du rythme",
+    "@dashboardHeroOverPace": {"description": "Dashboard hero pace status: over pace"},
+    "dashboardHeroDaysLeft": "{days} jours restants",
+    "@dashboardHeroDaysLeft": {"description": "Dashboard hero days remaining label", "placeholders": {"days": {"type": "String"}}}
 }

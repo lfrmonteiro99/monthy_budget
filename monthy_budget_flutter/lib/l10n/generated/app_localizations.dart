@@ -10768,6 +10768,36 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'IRS Jovem: aplica-se a taxa de retenção do rendimento total apenas à parte não isenta (Despacho n.º 236-A/2025). A parte isenta está limitada a 55×IAS (≈ 29.542€/ano). A retenção mensal é uma estimativa — o valor final é acertado no IRS anual (Modelo 3) e o tecto anual é repartido pelos meses de forma aproximada.'**
   String get irsJovemLegalNote;
+
+  /// Dashboard hero spent amount label
+  ///
+  /// In pt, this message translates to:
+  /// **'{amount} gasto'**
+  String dashboardHeroSpentLabel(String amount);
+
+  /// Dashboard hero budget limit label
+  ///
+  /// In pt, this message translates to:
+  /// **'de {amount}'**
+  String dashboardHeroBudgetLabel(String amount);
+
+  /// Dashboard hero pace status: on track
+  ///
+  /// In pt, this message translates to:
+  /// **'Dentro do ritmo'**
+  String get dashboardHeroOnTrack;
+
+  /// Dashboard hero pace status: over pace
+  ///
+  /// In pt, this message translates to:
+  /// **'Acima do ritmo'**
+  String get dashboardHeroOverPace;
+
+  /// Dashboard hero days remaining label
+  ///
+  /// In pt, this message translates to:
+  /// **'{days} dias restantes'**
+  String dashboardHeroDaysLeft(String days);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
