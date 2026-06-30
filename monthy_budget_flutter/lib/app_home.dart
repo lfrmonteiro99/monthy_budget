@@ -47,7 +47,7 @@ import 'models/expense_snapshot.dart';
 import 'screens/shopping_list_screen.dart';
 import 'screens/coach_screen.dart';
 import 'screens/meal_planner_screen.dart';
-import 'screens/dashboard_screen.dart';
+import 'containers/dashboard_container.dart';
 import 'screens/settings_screen.dart';
 import 'screens/grocery_screen.dart';
 import 'screens/setup_wizard_screen.dart';
@@ -78,13 +78,9 @@ import 'onboarding/onboarding_tour_completion.dart';
 import 'services/subscription_service.dart';
 import 'services/grocery_service.dart';
 import 'screens/paywall_screen.dart';
-import 'widgets/trial_banner.dart';
-import 'widgets/feature_discovery_card.dart';
-import 'services/ad_service.dart';
 import 'services/analytics_service.dart';
 import 'services/downgrade_service.dart';
 import 'services/revenuecat_service.dart';
-import 'widgets/ad_banner_widget.dart';
 import 'widgets/trial_expired_bottom_sheet.dart';
 import 'widgets/branded_loading.dart';
 import 'widgets/offline_banner.dart';
@@ -170,8 +166,6 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   Map<String, double> get _monthlyBudgets => ref.read(monthlyBudgetsProvider);
   NotificationPreferences get _notificationPrefs => ref.read(notificationPrefsProvider);
   List<SavingsGoal> get _savingsGoals => ref.read(savingsGoalsProvider);
-  Map<String, SavingsProjection> get _savingsProjections =>
-      ref.read(savingsProjectionsProvider);
   List<Product> get _products => ref.read(productsProvider);
   GroceryData get _groceryData => ref.read(groceryDataProvider);
   List<String> get _favorites => ref.read(favoritesProvider);
@@ -2174,46 +2168,9 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
     // Compute IRS deduction summary for screens that need it
     final irsDeductionSummary = _computeIrsDeductionSummary();
 
+    // Dashboard tab lives in [DashboardContainer] (#632 increment 10a). The
+    // other tabs remain inline here pending their own container extractions.
     final screens = <AppTab, Widget>{
-      AppTab.dashboard: ErrorBoundary(
-        onError: (error, stack) => LogService.error(
-          'Dashboard subtree error',
-          error: error,
-          stackTrace: stack,
-          category: 'ui.dashboard',
-        ),
-        child: DashboardScreen(
-          settings: _settings,
-          summary: summary,
-          purchaseHistory: _purchaseHistory,
-          onSaveSettings: _saveSettings,
-          dashboardConfig: _dashboardConfig,
-          expenseHistory: _expenseHistory,
-          onSnapshotExpenses: _snapshotExpenses,
-          actualExpenses: _actualExpenses,
-          onAddExpense: _openAddExpenseSheet,
-          monthlyBudgets: _monthlyBudgets,
-          onOpenExpenseTracker: () => _selectTab(AppTab.expenses),
-          onViewTrends: _openExpenseTrends,
-          savingsGoals: _savingsGoals,
-          savingsProjections: _savingsProjections,
-          onOpenSavingsGoals: _openSavingsGoals,
-          recurringExpenses: _recurringExpenses,
-          actualExpenseHistory: _actualExpenseHistory,
-          billReminderDaysBefore: _notificationPrefs.billReminderDaysBefore,
-          onOpenRecurringExpenses: _openRecurringExpenses,
-          onOpenSettings: () => _navigate(const AppRoute.settings()),
-          showTour: !_onboardingState.isTourDone('dashboard'),
-          onTourComplete: () => _markTourDone('dashboard'),
-          fabKey: _fabKey,
-          navBarKey: _navBarKey,
-          onOpenInsights: _openInsights,
-          onOpenCoach: _openCoach,
-          onOpenIncome: _openIncome,
-          onOpenTaxSimulator: () => _navigate(const AppRoute.taxSimulator()),
-          customCategories: _customCategories,
-        ),
-      ),
       AppTab.expenses: ErrorBoundary(
         onError: (error, stack) => LogService.error(
           'Expenses subtree error',
@@ -2339,29 +2296,27 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
       ),
     };
 
-    final dashboardBody = Column(
-      children: [
-        if (_subscription.isTrialActive)
-          TrialBanner(subscription: _subscription, onUpgrade: _openPaywall),
-        if (_subscription.isTrialActive &&
-            _subscription.nextFeatureToDiscover != null)
-          FeatureDiscoveryCard(
-            subscription: _subscription,
-            onExploreFeature: _navigateToFeature,
-            onDismiss: () {
-              final next = _subscription.nextFeatureToDiscover;
-              if (next != null) _trackFeature(next);
-            },
-          ),
-        CriticalAlertBanner(
-          criticalCount: buildAlerts(
-            statuses: _dataHealthService.statuses,
-          ).where((a) => a.severity == AlertSeverity.critical).length,
-          onTap: _openConfidenceCenter,
-        ),
-        Expanded(child: screens[AppTab.dashboard]!),
-        AdBannerWidget(showAd: AdService.shouldShowAds(_subscription)),
-      ],
+    final dashboardBody = DashboardContainer(
+      dataHealthService: _dataHealthService,
+      onSaveSettings: _saveSettings,
+      onSnapshotExpenses: _snapshotExpenses,
+      onAddExpense: _openAddExpenseSheet,
+      onOpenExpenseTracker: () => _selectTab(AppTab.expenses),
+      onViewTrends: _openExpenseTrends,
+      onOpenSavingsGoals: _openSavingsGoals,
+      onOpenRecurringExpenses: _openRecurringExpenses,
+      onOpenSettings: () => _navigate(const AppRoute.settings()),
+      onTourComplete: () => _markTourDone('dashboard'),
+      onOpenInsights: _openInsights,
+      onOpenCoach: _openCoach,
+      onOpenIncome: _openIncome,
+      onOpenTaxSimulator: () => _navigate(const AppRoute.taxSimulator()),
+      onOpenConfidenceCenter: _openConfidenceCenter,
+      onUpgrade: _openPaywall,
+      onExploreFeature: _navigateToFeature,
+      onTrackFeature: _trackFeature,
+      fabKey: _fabKey,
+      navBarKey: _navBarKey,
     );
 
     final content = _currentTab == AppTab.dashboard
