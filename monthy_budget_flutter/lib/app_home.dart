@@ -11,6 +11,7 @@ import 'providers/savings_providers.dart';
 import 'providers/budget_config_providers.dart';
 import 'providers/catalog_providers.dart';
 import 'providers/app_state_providers.dart';
+import 'providers/expense_providers.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'models/app_settings.dart';
 import 'models/product.dart';
@@ -158,12 +159,13 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   final _navBarKey = GlobalKey(debugLabel: 'tour_nav_bar');
 
   AppSettings _settings = const AppSettings();
-  List<ActualExpense> _actualExpenses = [];
+  List<ActualExpense> get _actualExpenses => ref.read(actualExpensesProvider);
   List<RecurringExpense> get _recurringExpenses =>
       ref.read(recurringExpensesProvider);
   List<CustomCategory> get _customCategories =>
       ref.read(customCategoriesProvider);
-  Map<String, List<ActualExpense>> _actualExpenseHistory = {};
+  Map<String, List<ActualExpense>> get _actualExpenseHistory =>
+      ref.read(actualExpenseHistoryProvider);
   Map<String, double> get _monthlyBudgets => ref.read(monthlyBudgetsProvider);
   NotificationPreferences get _notificationPrefs => ref.read(notificationPrefsProvider);
   List<SavingsGoal> get _savingsGoals => ref.read(savingsGoalsProvider);
@@ -177,7 +179,8 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   CoachInsight? get _latestCoachInsight => ref.read(latestCoachInsightProvider);
   PurchaseHistory get _purchaseHistory => ref.read(purchaseHistoryProvider);
   LocalDashboardConfig get _dashboardConfig => ref.read(dashboardConfigProvider);
-  Map<String, List<ExpenseSnapshot>> _expenseHistory = {};
+  Map<String, List<ExpenseSnapshot>> get _expenseHistory =>
+      ref.read(expenseHistoryProvider);
   bool _loaded = false;
   bool _groceryLoading = false;
   bool get _hasMealPlan => ref.read(hasMealPlanProvider);
@@ -291,8 +294,8 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
             ref.read(favoritesProvider.notifier).set(newFavorites);
             ref.read(purchaseHistoryProvider.notifier).set(newHistory);
             ref.read(groceryDataProvider.notifier).set(newGrocery);
-            _actualExpenses = newExpenses;
-            _expenseHistory = newSnapshots;
+            ref.read(actualExpensesProvider.notifier).set(newExpenses);
+            ref.read(expenseHistoryProvider.notifier).set(newSnapshots);
           });
         }
       }
@@ -347,7 +350,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
       ),
     );
     _expenseSnapshotService.loadHistory(widget.householdId).then((history) {
-      if (mounted) setState(() => _expenseHistory = history);
+      if (mounted) ref.read(expenseHistoryProvider.notifier).set(history);
     });
     _loadActualExpenses();
     _loadRecurringExpenses();
@@ -544,7 +547,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
         _currentMonthKey,
       );
       if (mounted) {
-        setState(() => _actualExpenses = expenses);
+        ref.read(actualExpensesProvider.notifier).set(expenses);
         _refreshNotificationSchedules();
       }
       _dataHealthService.recordLoad(SyncDomain.expenses);
@@ -597,7 +600,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
 
   Future<void> _loadActualExpenseHistory() async {
     final history = await _actualExpenseService.loadHistory(widget.householdId);
-    if (mounted) setState(() => _actualExpenseHistory = history);
+    if (mounted) ref.read(actualExpenseHistoryProvider.notifier).set(history);
   }
 
   Future<void> _loadMonthlyBudgets() async {
@@ -1385,7 +1388,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
         .snapshotIfNeeded(widget.householdId, monthKey, _settings.expenses)
         .then((_) => _expenseSnapshotService.loadHistory(widget.householdId))
         .then((history) {
-          if (mounted) setState(() => _expenseHistory = history);
+          if (mounted) ref.read(expenseHistoryProvider.notifier).set(history);
         });
   }
 
@@ -1663,7 +1666,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   }
 
   Future<void> _addActualExpense(ActualExpense expense) async {
-    setState(() => _actualExpenses = [expense, ..._actualExpenses]);
+    ref.read(actualExpensesProvider.notifier).set([expense, ..._actualExpenses]);
     _refreshNotificationSchedules();
     LogService.breadcrumb(
       'Added expense',
@@ -1905,11 +1908,9 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
             .firstWhere((e) => e != null, orElse: () => null);
     if (expense == null) return false;
     final previousExpenses = List<ActualExpense>.from(_actualExpenses);
-    setState(() {
-      _actualExpenses = _actualExpenses
-          .where((e) => e.id != expense.id)
-          .toList();
-    });
+    ref.read(actualExpensesProvider.notifier).set(
+      _actualExpenses.where((e) => e.id != expense.id).toList(),
+    );
     _refreshNotificationSchedules();
     try {
       await _actualExpenseService.delete(expense.id);
@@ -1932,27 +1933,25 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
         data: {'description': description, 'category': category},
       );
       if (!mounted) return false;
-      setState(() => _actualExpenses = previousExpenses);
+      ref.read(actualExpensesProvider.notifier).set(previousExpenses);
       _refreshNotificationSchedules();
       return false;
     }
   }
 
   Future<void> _updateActualExpense(ActualExpense expense) async {
-    setState(() {
-      _actualExpenses = _actualExpenses
-          .map((e) => e.id == expense.id ? expense : e)
-          .toList();
-    });
+    ref.read(actualExpensesProvider.notifier).set(
+      _actualExpenses.map((e) => e.id == expense.id ? expense : e).toList(),
+    );
     _refreshNotificationSchedules();
     await _actualExpenseService.update(expense);
   }
 
   Future<void> _deleteActualExpense(String id) async {
     final deleted = _actualExpenses.where((e) => e.id == id).firstOrNull;
-    setState(() {
-      _actualExpenses = _actualExpenses.where((e) => e.id != id).toList();
-    });
+    ref.read(actualExpensesProvider.notifier).set(
+      _actualExpenses.where((e) => e.id != id).toList(),
+    );
     _refreshNotificationSchedules();
     await _actualExpenseService.delete(id);
     if (deleted != null) {
@@ -2130,6 +2129,11 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
     ref.watch(apiKeyProvider);
     ref.watch(latestCoachInsightProvider);
     ref.watch(hasMealPlanProvider);
+
+    // Expense domains (#632 increment 9).
+    ref.watch(actualExpensesProvider);
+    ref.watch(actualExpenseHistoryProvider);
+    ref.watch(expenseHistoryProvider);
 
     if (!_loaded) {
       return const BrandedLoading();
