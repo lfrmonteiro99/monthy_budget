@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'app_shell.dart';
 import 'providers/navigation_providers.dart';
 import 'providers/connectivity_providers.dart';
+import 'providers/subscription_providers.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'models/app_settings.dart';
 import 'models/product.dart';
@@ -144,10 +145,10 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   late final SyncService _syncService;
   bool _commandPanelOpen = false;
 
-  // Use a far-past date so trial is NOT active before load() completes.
-  SubscriptionState _subscription = SubscriptionState(
-    trialStartDate: AppConstants.farPastDate,
-  );
+  // Subscription state now lives in subscriptionProvider (#632 increment 3).
+  // Read via this getter; build() watches the provider; mutations call
+  // ref.read(subscriptionProvider.notifier).set(...).
+  SubscriptionState get _subscription => ref.read(subscriptionProvider);
   OnboardingState _onboardingState = const OnboardingState();
   final _fabKey = GlobalKey(debugLabel: 'tour_fab');
   final _navBarKey = GlobalKey(debugLabel: 'tour_nav_bar');
@@ -323,7 +324,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
       _groceryData = results[4] as GroceryData;
       _dashboardConfig = results[5] as LocalDashboardConfig;
       _onboardingState = results[6] as OnboardingState;
-      _subscription = results[7] as SubscriptionState;
+      ref.read(subscriptionProvider.notifier).set(results[7] as SubscriptionState);
       _loaded = true;
     });
     _lastRefresh = DateTime.now();
@@ -512,7 +513,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
         source: 'revenuecat_sync',
       );
       if (mounted && updated != _subscription) {
-        setState(() => _subscription = updated);
+        ref.read(subscriptionProvider.notifier).set(updated);
         _refreshAnalyticsContext();
       }
     } catch (e) {
@@ -809,7 +810,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
         properties: {'feature_key': featureKey},
       ),
     );
-    if (mounted) setState(() => _subscription = updated);
+    if (mounted) ref.read(subscriptionProvider.notifier).set(updated);
   }
 
   /// Open the paywall — tries RevenueCat's hosted paywall first, falls back
@@ -901,7 +902,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
                   );
                 }
                 if (mounted) {
-                  setState(() => _subscription = updated);
+                  ref.read(subscriptionProvider.notifier).set(updated);
                   _refreshAnalyticsContext();
                   Navigator.of(context).pop();
                   CalmSnack.success(
@@ -927,7 +928,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
                   blockedFeature: blockedFeature,
                 );
                 if (mounted) {
-                  setState(() => _subscription = updated);
+                  ref.read(subscriptionProvider.notifier).set(updated);
                   _refreshAnalyticsContext();
                   Navigator.of(context).pop();
                   CalmSnack.success(context, l10n.paywallUpgradedPro);
@@ -958,7 +959,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
                   blockedFeature: blockedFeature,
                 );
                 if (mounted) {
-                  setState(() => _subscription = updated);
+                  ref.read(subscriptionProvider.notifier).set(updated);
                   _refreshAnalyticsContext();
                   Navigator.of(context).pop();
                   CalmSnack.success(
@@ -1173,7 +1174,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
         subscription: _subscription,
         onSubscriptionChanged: (next) {
           if (!mounted) return;
-          setState(() => _subscription = next);
+          ref.read(subscriptionProvider.notifier).set(next);
           _refreshAnalyticsContext();
         },
         onRestoreMemory: _openPaywall,
@@ -2096,6 +2097,9 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
     final pendingSyncCount =
         ref.watch(pendingSyncCountProvider(widget.householdId)).valueOrNull ??
         0;
+
+    // Subscription state (#632 increment 3) — rebuild on tier/trial changes.
+    ref.watch(subscriptionProvider);
 
     if (!_loaded) {
       return const BrandedLoading();
