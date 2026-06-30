@@ -359,9 +359,9 @@ class _PaywallScreenState extends State<PaywallScreen> {
           ),
         ),
         if (_purchasing)
-          const ColoredBox(
-            color: Colors.black26,
-            child: Center(child: CircularProgressIndicator()),
+          ColoredBox(
+            color: AppColors.ink(context).withValues(alpha: 0.26),
+            child: const Center(child: CircularProgressIndicator()),
           ),
       ],
     );
