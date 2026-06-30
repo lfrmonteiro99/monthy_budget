@@ -22,65 +22,75 @@ class TaxDeductionDetailScreen extends StatelessWidget {
     final nonDeductible = summary.nonDeductible;
 
     return CalmScaffold(
-      title: l10n.taxDeductionDetailTitle,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 8),
-            _buildHero(context, l10n),
-            const SizedBox(height: 24),
-            _buildCapProgress(context, l10n),
-            const SizedBox(height: 24),
-            CalmEyebrow(l10n.taxDeductionDeductibleTitle),
-            const SizedBox(height: 12),
-            if (deductible.isNotEmpty)
-              CalmCard(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 8,
-                ),
-                child: Column(
-                  children: [
-                    for (int i = 0; i < deductible.length; i++) ...[
-                      _DeductibleTile(result: deductible[i]),
-                      if (i != deductible.length - 1)
-                        Divider(
-                          height: 1,
-                          color: AppColors.line(context),
-                        ),
-                    ],
+      bodyPadding: EdgeInsets.zero,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CalmPageHeader(
+            eyebrow: '${summary.year}',
+            title: l10n.taxDeductionDetailTitle,
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildHero(context, l10n),
+                  const SizedBox(height: 24),
+                  _buildCapProgress(context, l10n),
+                  const SizedBox(height: 24),
+                  CalmEyebrow(l10n.taxDeductionDeductibleTitle),
+                  const SizedBox(height: 12),
+                  if (deductible.isNotEmpty)
+                    CalmCard(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 8,
+                      ),
+                      child: Column(
+                        children: [
+                          for (int i = 0; i < deductible.length; i++) ...[
+                            _DeductibleTile(result: deductible[i]),
+                            if (i != deductible.length - 1)
+                              Divider(
+                                height: 1,
+                                color: AppColors.line(context),
+                              ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  if (nonDeductible.isNotEmpty) ...[
+                    const SizedBox(height: 24),
+                    CalmEyebrow(l10n.taxDeductionNonDeductibleTitle),
+                    const SizedBox(height: 12),
+                    CalmCard(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 8,
+                      ),
+                      child: Column(
+                        children: [
+                          for (int i = 0; i < nonDeductible.length; i++) ...[
+                            _NonDeductibleTile(result: nonDeductible[i]),
+                            if (i != nonDeductible.length - 1)
+                              Divider(
+                                height: 1,
+                                color: AppColors.line(context),
+                              ),
+                          ],
+                        ],
+                      ),
+                    ),
                   ],
-                ),
+                  const SizedBox(height: 24),
+                  _buildDisclaimer(context, l10n),
+                ],
               ),
-            if (nonDeductible.isNotEmpty) ...[
-              const SizedBox(height: 24),
-              CalmEyebrow(l10n.taxDeductionNonDeductibleTitle),
-              const SizedBox(height: 12),
-              CalmCard(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 8,
-                ),
-                child: Column(
-                  children: [
-                    for (int i = 0; i < nonDeductible.length; i++) ...[
-                      _NonDeductibleTile(result: nonDeductible[i]),
-                      if (i != nonDeductible.length - 1)
-                        Divider(
-                          height: 1,
-                          color: AppColors.line(context),
-                        ),
-                    ],
-                  ],
-                ),
-              ),
-            ],
-            const SizedBox(height: 24),
-            _buildDisclaimer(context, l10n),
-            const SizedBox(height: 16),
-          ],
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -95,6 +105,7 @@ class TaxDeductionDetailScreen extends StatelessWidget {
           subtitle: l10n.taxDeductionMaxOf(
             formatCurrency(summary.maxPossibleDeduction),
           ),
+          size: 48,
         ),
         const SizedBox(height: 12),
         CalmPill(
@@ -145,27 +156,34 @@ class TaxDeductionDetailScreen extends StatelessWidget {
   }
 
   Widget _buildDisclaimer(BuildContext context, S l10n) {
-    return CalmCard(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            Icons.info_outline,
-            size: 16,
-            color: AppColors.warn(context),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              l10n.taxDeductionDisclaimer,
-              style: TextStyle(
-                fontSize: 12,
-                color: AppColors.ink70(context),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: AppColors.bgSunk(context),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.info_outline,
+              size: 16,
+              color: AppColors.warn(context),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                l10n.taxDeductionDisclaimer,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.ink50(context),
+                  height: 1.5,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
