@@ -288,9 +288,9 @@ class _NotificationSettingsScreenState
                   child: Row(
                     children: [
                       CircleAvatar(
-                        backgroundColor: AppColors.primaryLight(context),
+                        backgroundColor: AppColors.accentSoft(context),
                         child: Icon(Icons.notifications_outlined,
-                            color: AppColors.primary(context), size: 20),
+                            color: AppColors.accent(context), size: 20),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -300,12 +300,12 @@ class _NotificationSettingsScreenState
                             Text(r.title,
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600,
-                                    color: AppColors.textPrimary(context))),
+                                    color: AppColors.ink(context))),
                             const SizedBox(height: 2),
                             Text(
                               '${r.hour.toString().padLeft(2, '0')}:${r.minute.toString().padLeft(2, '0')} · ${_repeatLabel(r.repeat, l10n)}',
                               style: TextStyle(
-                                  color: AppColors.textSecondary(context),
+                                  color: AppColors.ink70(context),
                                   fontSize: 13),
                             ),
                           ],
@@ -313,7 +313,7 @@ class _NotificationSettingsScreenState
                       ),
                       IconButton(
                         icon: Icon(Icons.delete_outline,
-                            color: AppColors.error(context)),
+                            color: AppColors.bad(context)),
                         onPressed: () => _deleteCustomReminder(i),
                       ),
                     ],
@@ -382,7 +382,7 @@ class _AddCustomReminderSheetState extends State<_AddCustomReminderSheet> {
       maxChildSize: 0.95,
       builder: (_, scrollController) => Container(
         decoration: BoxDecoration(
-          color: AppColors.surface(context),
+          color: AppColors.card(context),
           borderRadius:
               const BorderRadius.vertical(top: Radius.circular(20)),
         ),
@@ -408,7 +408,7 @@ class _AddCustomReminderSheetState extends State<_AddCustomReminderSheet> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary(context),
+                  color: AppColors.ink(context),
                 ),
               ),
               const SizedBox(height: 20),
@@ -418,17 +418,11 @@ class _AddCustomReminderSheetState extends State<_AddCustomReminderSheet> {
                   style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary(context),
+                      color: AppColors.ink70(context),
                       letterSpacing: 0.8)),
               const SizedBox(height: 8),
-              TextFormField(
+              CalmTextField(
                 controller: _titleController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 12),
-                ),
                 textCapitalization: TextCapitalization.sentences,
                 validator: (v) =>
                     (v == null || v.trim().isEmpty) ? l10n.notificationCustomTitle : null,
@@ -440,17 +434,11 @@ class _AddCustomReminderSheetState extends State<_AddCustomReminderSheet> {
                   style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary(context),
+                      color: AppColors.ink70(context),
                       letterSpacing: 0.8)),
               const SizedBox(height: 8),
-              TextFormField(
+              CalmTextField(
                 controller: _bodyController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 12),
-                ),
                 textCapitalization: TextCapitalization.sentences,
               ),
               const SizedBox(height: 16),
@@ -460,7 +448,7 @@ class _AddCustomReminderSheetState extends State<_AddCustomReminderSheet> {
                   style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary(context),
+                      color: AppColors.ink70(context),
                       letterSpacing: 0.8)),
               const SizedBox(height: 8),
               InkWell(
@@ -477,20 +465,20 @@ class _AddCustomReminderSheetState extends State<_AddCustomReminderSheet> {
                       horizontal: 12, vertical: 14),
                   decoration: BoxDecoration(
                     border:
-                        Border.all(color: AppColors.borderMuted(context)),
+                        Border.all(color: AppColors.line(context)),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
                     children: [
                       Icon(Icons.schedule,
                           size: 18,
-                          color: AppColors.textSecondary(context)),
+                          color: AppColors.ink70(context)),
                       const SizedBox(width: 8),
                       Text(
                         '${_time.hour.toString().padLeft(2, '0')}:${_time.minute.toString().padLeft(2, '0')}',
                         style: TextStyle(
                             fontSize: 14,
-                            color: AppColors.textPrimary(context)),
+                            color: AppColors.ink(context)),
                       ),
                     ],
                   ),
@@ -503,7 +491,7 @@ class _AddCustomReminderSheetState extends State<_AddCustomReminderSheet> {
                   style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary(context),
+                      color: AppColors.ink70(context),
                       letterSpacing: 0.8)),
               const SizedBox(height: 8),
               SegmentedButton<ReminderRepeat>(
@@ -538,8 +526,8 @@ class _AddCustomReminderSheetState extends State<_AddCustomReminderSheet> {
                 child: ElevatedButton(
                   onPressed: _save,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary(context),
-                    foregroundColor: AppColors.onPrimary(context),
+                    backgroundColor: AppColors.ink(context),
+                    foregroundColor: AppColors.bg(context),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                     elevation: 0,
