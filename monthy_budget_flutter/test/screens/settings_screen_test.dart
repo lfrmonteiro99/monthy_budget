@@ -14,12 +14,13 @@ void main() {
 
   SettingsScreen buildScreen({
     String? initialSection,
+    AppSettings settings = const AppSettings(),
     Future<List<AssociatedHouseholdMember>> Function(String householdId)?
     loadAssociatedMembers,
     Future<String> Function(String householdId)? generateInviteCode,
   }) {
     return SettingsScreen(
-      settings: const AppSettings(),
+      settings: settings,
       onSave: (_) {},
       favorites: const [],
       onSaveFavorites: (_) {},
@@ -136,5 +137,37 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(controller.themeMode, ThemeMode.dark);
+  });
+
+  testWidgets('IRS Jovem note is shown when regime is active', (tester) async {
+    await tester.pumpWidget(
+      wrapWithTestApp(
+        buildScreen(
+          initialSection: 'profile',
+          settings: const AppSettings(
+            personalInfo: PersonalInfo(irsJovemYear: 3),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Modelo 3'), findsOneWidget);
+  });
+
+  testWidgets('IRS Jovem note is hidden when regime is not active', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      wrapWithTestApp(
+        buildScreen(
+          initialSection: 'profile',
+          settings: const AppSettings(), // irsJovemYear == 0
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Modelo 3'), findsNothing);
   });
 }
