@@ -235,13 +235,8 @@ class _SourcesCard extends StatelessWidget {
       );
     }
 
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.card(context),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.line(context)),
-      ),
-      clipBehavior: Clip.antiAlias,
+    return CalmCard(
+      padding: EdgeInsets.zero,
       child: Column(
         children: [
           for (var i = 0; i < sources.length; i++)

@@ -91,7 +91,7 @@ class _MealWizardScreenState extends State<MealWizardScreen> {
               child: LinearProgressIndicator(
                 value: (_step + 1) / _totalSteps,
                 backgroundColor: AppColors.ink20(context),
-                color: AppColors.accent(context),
+                color: AppColors.ink(context),
                 minHeight: 4,
               ),
             ),
@@ -167,6 +167,8 @@ class _MealWizardScreenState extends State<MealWizardScreen> {
                     child: FilledButton(
                       onPressed: _next,
                       style: FilledButton.styleFrom(
+                        backgroundColor: AppColors.ink(context),
+                        foregroundColor: AppColors.inkInverse(context),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       child: Text(
