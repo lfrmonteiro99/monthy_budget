@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'app_shell.dart';
+import 'providers/navigation_providers.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'models/app_settings.dart';
 import 'models/product.dart';
@@ -105,17 +107,17 @@ import 'repositories/local/local_shopping_repository.dart';
 import 'services/connectivity_service.dart';
 import 'services/sync_service.dart';
 
-class AppHome extends StatefulWidget {
+class AppHome extends ConsumerStatefulWidget {
   final String householdId;
   final bool isAdmin;
 
   const AppHome({super.key, required this.householdId, required this.isAdmin});
 
   @override
-  State<AppHome> createState() => _AppHomeState();
+  ConsumerState<AppHome> createState() => _AppHomeState();
 }
 
-class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
+class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   final _settingsService = SettingsService();
   final _favoritesService = FavoritesService();
   late final ShoppingListService _shoppingListService;
@@ -173,7 +175,9 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
   bool _loaded = false;
   bool _groceryLoading = false;
   bool _hasMealPlan = false;
-  AppTab _currentTab = AppTab.dashboard;
+  // Current tab now lives in [currentTabProvider] (#632 increment 1). Read via
+  // this getter; build() watches the provider so changes trigger a rebuild.
+  AppTab get _currentTab => ref.read(currentTabProvider);
 
   /// Lifecycle debounce: skip refresh if resumed within this duration.
   static const _resumeDebounce = AppConstants.resumeDebounce;
@@ -1039,11 +1043,8 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
         properties: {'surface': 'main_tab'},
       ),
     );
-    if (!mounted) {
-      _currentTab = tab;
-      return;
-    }
-    setState(() => _currentTab = tab);
+    if (!mounted) return;
+    ref.read(currentTabProvider.notifier).setTab(tab);
   }
 
   void _openSettings({SettingsSection? section}) {
@@ -2113,6 +2114,10 @@ class _AppHomeState extends State<AppHome> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    // Subscribe to the current tab so a tab change rebuilds AppHome. The
+    // _currentTab getter reads the same provider (#632 increment 1).
+    ref.watch(currentTabProvider);
+
     if (!_loaded) {
       return const BrandedLoading();
     }
