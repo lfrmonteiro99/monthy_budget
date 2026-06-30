@@ -25,6 +25,11 @@ import '../onboarding/expense_tracker_tour.dart';
 import '../data/tax/tax_deductions.dart';
 import '../widgets/irs_deduction_banner.dart';
 import 'tax_deduction_detail_screen.dart';
+import '../utils/expense_category_format.dart';
+import '../widgets/expense/category_section.dart';
+import '../widgets/expense/expense_alerts_card.dart';
+import '../widgets/expense/expense_recent_card.dart';
+import '../widgets/expense/expense_search_view.dart';
 import 'package:monthly_management/widgets/calm/calm.dart';
 
 class ExpenseTrackerScreen extends StatefulWidget {
@@ -251,7 +256,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
     final action = await showExpenseDetailSheet(
       context: context,
       expense: expense,
-      categoryLabel: _localizedCategory(expense.category, l10n),
+      categoryLabel: localizedExpenseCategory(expense.category, l10n),
       categoryIcon: categoryIconByName(
         expense.category,
         customCategories: widget.customCategories,
@@ -276,15 +281,6 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
       setState(() {
         _expenses = _expenses.where((e) => e.id != expense.id).toList();
       });
-    }
-  }
-
-  String _localizedCategory(String catName, S l10n) {
-    try {
-      final cat = ExpenseCategory.values.firstWhere((c) => c.name == catName);
-      return cat.localizedLabel(l10n);
-    } catch (_) {
-      return catName;
     }
   }
 
@@ -334,7 +330,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
       _expenses,
     );
     final label = _monthLabel(l10n);
-    String catLabel(String name) => _localizedCategory(name, l10n);
+    String catLabel(String name) => localizedExpenseCategory(name, l10n);
 
     final monthSuffix =
         '${_currentMonth.year}_${_currentMonth.month.toString().padLeft(2, '0')}';
@@ -511,7 +507,40 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
 
-    if (_searchActive) return _buildSearchView(l10n);
+    if (_searchActive) {
+      return ExpenseSearchView(
+        searchController: _searchController,
+        searchQuery: _searchQuery,
+        loadingHistory: _loadingHistory,
+        searchResults: _searchResults,
+        selectedCategories: _selectedCategories,
+        dateFrom: _dateFrom,
+        dateTo: _dateTo,
+        allCategories: _allCategories().toList(),
+        customCategories: widget.customCategories,
+        l10n: l10n,
+        onBack: _deactivateSearch,
+        onQueryChanged: (value) {
+          _searchQuery = value;
+          _applyFilters();
+        },
+        onClearQuery: () {
+          _searchController.clear();
+          _searchQuery = '';
+          _applyFilters();
+        },
+        onToggleCategory: _toggleCategory,
+        onPickDateRange: _pickDateRange,
+        onClearDates: () {
+          setState(() {
+            _dateFrom = null;
+            _dateTo = null;
+          });
+          _applyFilters();
+        },
+        onShowDetail: _showExpenseDetail,
+      );
+    }
     return _buildNormalView(l10n);
   }
 
@@ -791,8 +820,11 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                           padding:
                               const EdgeInsets.fromLTRB(20, 16, 20, 0),
                           sliver: SliverToBoxAdapter(
-                            child: _buildAlertsCard(
-                                context, l10n, summaries),
+                            child: ExpenseAlertsCard(
+                            summaries: summaries,
+                            customCategories: widget.customCategories,
+                            l10n: l10n,
+                          ),
                           ),
                         ),
 
@@ -802,7 +834,12 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                           padding:
                               const EdgeInsets.fromLTRB(20, 16, 20, 0),
                           sliver: SliverToBoxAdapter(
-                            child: _buildRecentCard(context, l10n),
+                            child: ExpenseRecentCard(
+                            expenses: _expenses,
+                            customCategories: widget.customCategories,
+                            l10n: l10n,
+                            onShowDetail: _showExpenseDetail,
+                          ),
                           ),
                         ),
 
@@ -830,7 +867,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                         padding: const EdgeInsets.fromLTRB(20, 0, 20, 80),
                         sliver: SliverList.builder(
                           itemCount: summaries.length,
-                          itemBuilder: (_, i) => _CategorySection(
+                          itemBuilder: (_, i) => CategorySection(
                             summary: summaries[i],
                             expenses: _expenses
                                 .where(
@@ -846,7 +883,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                               summaries[i].category,
                               customCategories: widget.customCategories,
                             ),
-                            label: _localizedCategory(
+                            label: localizedExpenseCategory(
                                 summaries[i].category, l10n),
                             onOpenDetails: _showExpenseDetail,
                             onDelete: _deleteExpense,
@@ -878,589 +915,4 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
     );
   }
 
-  /// Shows an "ALERTAS" CalmCard listing over-budget categories as CalmListTile rows.
-  Widget _buildAlertsCard(
-    BuildContext context,
-    S l10n,
-    List<CategoryBudgetSummary> summaries,
-  ) {
-    final overItems = summaries.where((s) => s.isOver).toList();
-    return CalmCard(
-      padding: EdgeInsets.zero,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 6),
-            child: Row(
-              children: [
-                // TODO(l10n): move to ARB (Wave H)
-                const CalmEyebrow('ALERTAS'),
-                const SizedBox(width: 6),
-                CalmPill(
-                  label: '${overItems.length}',
-                  color: AppColors.bad(context),
-                ),
-              ],
-            ),
-          ),
-          Divider(color: AppColors.line(context), height: 1),
-          ...overItems.asMap().entries.map((entry) {
-            final i = entry.key;
-            final s = entry.value;
-            final catIcon = categoryIconByName(
-              s.category,
-              customCategories: widget.customCategories,
-            );
-            final over = s.actual - s.budgeted;
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: CalmListTile(
-                    leadingIcon: catIcon,
-                    leadingColor: AppColors.bad(context),
-                    title: _localizedCategory(s.category, l10n),
-                    subtitle:
-                        // TODO(l10n): move to ARB (Wave H)
-                        'orç. ${formatCurrency(s.budgeted)} · gasto ${formatCurrency(s.actual)}',
-                    trailing: '+${formatCurrency(over)}',
-                  ),
-                ),
-                if (i < overItems.length - 1)
-                  Divider(
-                    color: AppColors.line(context),
-                    height: 1,
-                    indent: 16,
-                    endIndent: 16,
-                  ),
-              ],
-            );
-          }),
-          const SizedBox(height: 4),
-        ],
-      ),
-    );
-  }
-
-  /// Shows a "Recentes" CalmCard with the last 3 expenses as CalmListTile rows.
-  Widget _buildRecentCard(BuildContext context, S l10n) {
-    final recent = _expenses.take(3).toList();
-    return CalmCard(
-      padding: EdgeInsets.zero,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 6),
-            // TODO(l10n): move to ARB (Wave H)
-            child: const CalmEyebrow('RECENTES'),
-          ),
-          Divider(color: AppColors.line(context), height: 1),
-          ...recent.map((expense) {
-            final catColor = categoryColorByNameFull(
-              expense.category,
-              customCategories: widget.customCategories,
-            );
-            final catIcon = categoryIconByName(
-              expense.category,
-              customCategories: widget.customCategories,
-            );
-            final dateStr =
-                '${expense.date.day.toString().padLeft(2, '0')}/${expense.date.month.toString().padLeft(2, '0')}';
-            final catLabel = _localizedCategory(expense.category, l10n);
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: CalmListTile(
-                    leadingIcon: catIcon,
-                    leadingColor: catColor,
-                    title: expense.description ?? catLabel,
-                    subtitle: '$dateStr · $catLabel',
-                    trailing: formatCurrency(expense.amount),
-                    onTap: () => _showExpenseDetail(expense),
-                  ),
-                ),
-                Divider(
-                  color: AppColors.line(context),
-                  height: 1,
-                  indent: 16,
-                  endIndent: 16,
-                ),
-              ],
-            );
-          }),
-          // "Ver todas" footer row
-          if (_expenses.length > 3)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: CalmListTile(
-                leadingIcon: Icons.receipt_long_outlined,
-                leadingColor: AppColors.ink50(context),
-                // TODO(l10n): move to ARB (Wave H)
-                title: 'Ver todas as despesas',
-                subtitle: '${_expenses.length} transações este mês',
-              ),
-            )
-          else
-            const SizedBox(height: 4),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSearchView(S l10n) {
-    return CalmScaffold(
-      body: Column(
-        children: [
-          // Search bar row
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_back, color: AppColors.ink(context)),
-                  onPressed: _deactivateSearch,
-                ),
-                Expanded(
-                  child: TextField(
-                    controller: _searchController,
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      hintText: l10n.searchExpensesHint,
-                      border: InputBorder.none,
-                      hintStyle: TextStyle(
-                        color: AppColors.ink50(context),
-                        fontSize: 16,
-                      ),
-                    ),
-                    style: TextStyle(
-                      color: AppColors.ink(context),
-                      fontSize: 16,
-                    ),
-                    onChanged: (value) {
-                      _searchQuery = value;
-                      _applyFilters();
-                    },
-                  ),
-                ),
-                if (_searchQuery.isNotEmpty)
-                  IconButton(
-                    icon: Icon(Icons.clear, color: AppColors.ink50(context)),
-                    onPressed: () {
-                      _searchController.clear();
-                      _searchQuery = '';
-                      _applyFilters();
-                    },
-                  ),
-              ],
-            ),
-          ),
-
-          if (_loadingHistory)
-            Expanded(
-              child: Center(
-                child: CircularProgressIndicator(
-                  color: AppColors.accent(context),
-                ),
-              ),
-            )
-          else
-            Expanded(
-              child: Column(
-                children: [
-                  // Category chips + date range filter
-                  Row(
-                    children: [
-                      Expanded(child: _buildFilterBar(l10n)),
-                      InfoIconButton(
-                        title: l10n.filter,
-                        body: l10n.infoExpenseTrackerFilter,
-                      ),
-                      const SizedBox(width: 8),
-                    ],
-                  ),
-
-                  Divider(color: AppColors.line(context), height: 1),
-
-                  // Result count + eyebrow
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
-                    child: Row(
-                      children: [
-                        // TODO(l10n): move to ARB (Wave H)
-                        const CalmEyebrow('RESULTADOS'),
-                        const SizedBox(width: 8),
-                        Text(
-                          l10n.searchResultCount(_searchResults.length),
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: AppColors.ink70(context),
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Results
-                  Expanded(
-                    child: _searchResults.isEmpty
-                        ? Center(
-                            child: CalmEmptyState(
-                              icon: Icons.search_off,
-                              // TODO(l10n): move to ARB (Wave H)
-                              title: 'Nada encontrado',
-                              body: l10n.searchNoResults,
-                            ),
-                          )
-                        : ListView.builder(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            itemCount: _searchResults.length,
-                            itemBuilder: (_, i) {
-                              final expense = _searchResults[i];
-                              return _SearchResultTile(
-                                expense: expense,
-                                categoryLabel: _localizedCategory(
-                                  expense.category,
-                                  l10n,
-                                ),
-                                categoryIcon: categoryIconByName(
-                                  expense.category,
-                                  customCategories: widget.customCategories,
-                                ),
-                                categoryColor: categoryColorByNameFull(
-                                  expense.category,
-                                  customCategories: widget.customCategories,
-                                ),
-                                onTap: () => _showExpenseDetail(expense),
-                              );
-                            },
-                          ),
-                  ),
-                ],
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFilterBar(S l10n) {
-    final categories = _allCategories().toList()..sort();
-
-    return CalmCard(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            ...categories.map((cat) {
-              final selected = _selectedCategories.contains(cat);
-              final catColor = categoryColorByNameFull(
-                cat,
-                customCategories: widget.customCategories,
-              );
-              return Padding(
-                padding: const EdgeInsets.only(right: 6),
-                child: FilterChip(
-                  label: Text(
-                    _localizedCategory(cat, l10n),
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                  selected: selected,
-                  onSelected: (_) => _toggleCategory(cat),
-                  selectedColor: AppColors.accentSoft(context),
-                  checkmarkColor: AppColors.accent(context),
-                  side: selected
-                      ? BorderSide(color: AppColors.accent(context))
-                      : BorderSide(color: AppColors.line(context)),
-                  avatar: selected
-                      ? null
-                      : SizedBox(
-                          width: 10,
-                          height: 10,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: catColor,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                        ),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  visualDensity: VisualDensity.compact,
-                ),
-              );
-            }),
-            // Date range chip
-            Padding(
-              padding: const EdgeInsets.only(right: 6),
-              child: ActionChip(
-                avatar: Icon(
-                  Icons.date_range,
-                  size: 16,
-                  color: _dateFrom != null
-                      ? AppColors.accent(context)
-                      : AppColors.ink50(context),
-                ),
-                label: Text(
-                  _dateFrom != null && _dateTo != null
-                      ? '${_dateFrom!.day}/${_dateFrom!.month} - ${_dateTo!.day}/${_dateTo!.month}'
-                      : l10n.searchDateRange,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: _dateFrom != null
-                        ? AppColors.accent(context)
-                        : AppColors.ink50(context),
-                  ),
-                ),
-                onPressed: _pickDateRange,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                visualDensity: VisualDensity.compact,
-              ),
-            ),
-            if (_dateFrom != null)
-              Tooltip(
-                message: l10n.shoppingClear,
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _dateFrom = null;
-                      _dateTo = null;
-                    });
-                    _applyFilters();
-                  },
-                  child: Icon(
-                    Icons.clear,
-                    size: 16,
-                    color: AppColors.ink50(context),
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Search result tile
-// ---------------------------------------------------------------------------
-
-class _SearchResultTile extends StatelessWidget {
-  final ActualExpense expense;
-  final String categoryLabel;
-  final IconData categoryIcon;
-  final Color categoryColor;
-  final VoidCallback? onTap;
-
-  const _SearchResultTile({
-    required this.expense,
-    required this.categoryLabel,
-    required this.categoryIcon,
-    required this.categoryColor,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final dateStr =
-        '${expense.date.day.toString().padLeft(2, '0')}/${expense.date.month.toString().padLeft(2, '0')}/${expense.date.year}';
-    return Column(
-      children: [
-        CalmListTile(
-          leadingIcon: categoryIcon,
-          leadingColor: categoryColor,
-          title: expense.description ?? categoryLabel,
-          subtitle: '$dateStr  •  $categoryLabel',
-          trailing: formatCurrency(expense.amount),
-          onTap: onTap,
-        ),
-        Divider(color: AppColors.line(context), height: 1),
-      ],
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Category section (expandable card with expense rows)
-// ---------------------------------------------------------------------------
-
-class _CategorySection extends StatelessWidget {
-  final CategoryBudgetSummary summary;
-  final List<ActualExpense> expenses;
-  final IconData icon;
-  final Color categoryColor;
-  final String label;
-  final Future<void> Function(ActualExpense) onOpenDetails;
-  final Future<void> Function(ActualExpense) onDelete;
-  final S l10n;
-
-  const _CategorySection({
-    required this.summary,
-    required this.expenses,
-    required this.icon,
-    required this.categoryColor,
-    required this.label,
-    required this.onOpenDetails,
-    required this.onDelete,
-    required this.l10n,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final progressColor = summary.isOver
-        ? AppColors.bad(context)
-        : summary.progress > 0.8
-        ? AppColors.warn(context)
-        : AppColors.ok(context);
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: CalmCard(
-        padding: EdgeInsets.zero,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Section header
-            Theme(
-              data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-              child: ExpansionTile(
-                leading: CircleAvatar(
-                  radius: 18,
-                  backgroundColor: categoryColor.withValues(alpha: 0.15),
-                  child: Icon(icon, size: 18, color: categoryColor),
-                ),
-                title: Row(
-                  children: [
-                    Expanded(
-                      child: CalmEyebrow(label.toUpperCase()),
-                    ),
-                    Text(
-                      formatCurrency(summary.actual),
-                      style: CalmText.amount(context),
-                    ),
-                  ],
-                ),
-                subtitle: Padding(
-                  padding: const EdgeInsets.only(top: 6, bottom: 2),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      LinearProgressIndicator(
-                        value: summary.progress.clamp(0.0, 1.0),
-                        backgroundColor: AppColors.line(context),
-                        color: progressColor,
-                        minHeight: 3,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          CalmPill(
-                            label: summary.isOver
-                                ? '-${formatCurrency(summary.remaining.abs())}'
-                                : formatCurrency(summary.remaining),
-                            color: progressColor,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            summary.isOver
-                                ? l10n.expenseTrackerOver
-                                : l10n.expenseTrackerRemaining,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: AppColors.ink70(context),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                shape: const Border(),
-                collapsedShape: const Border(),
-                tilePadding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-                childrenPadding: EdgeInsets.zero,
-                children: [
-                  if (expenses.isNotEmpty) ...[
-                    Divider(
-                      color: AppColors.line(context),
-                      height: 1,
-                      indent: 16,
-                      endIndent: 16,
-                    ),
-                    ...expenses.asMap().entries.map((entry) {
-                      final i = entry.key;
-                      final expense = entry.value;
-                      final dateStr =
-                          '${expense.date.day.toString().padLeft(2, '0')}/${expense.date.month.toString().padLeft(2, '0')}/${expense.date.year}';
-                      return Column(
-                        children: [
-                          Dismissible(
-                            key: ValueKey(expense.id),
-                            direction: DismissDirection.endToStart,
-                            confirmDismiss: (_) async {
-                              final confirmed = await CalmDialog.confirm(
-                                context,
-                                title: l10n.delete,
-                                body: l10n.expenseTrackerDeleteConfirm,
-                                confirmLabel: l10n.delete,
-                                cancelLabel: l10n.cancel,
-                                destructive: true,
-                              );
-                              return confirmed ?? false;
-                            },
-                            onDismissed: (_) => onDelete(expense),
-                            background: ColoredBox(
-                              color: AppColors.bad(context)
-                                  .withValues(alpha: 0.12),
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 16),
-                                  child: Icon(
-                                    Icons.delete_outline,
-                                    color: AppColors.bad(context),
-                                    size: 20,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: CalmListTile(
-                                leadingIcon: icon,
-                                leadingColor: categoryColor,
-                                title: expense.description ?? label,
-                                subtitle: dateStr,
-                                trailing: formatCurrency(expense.amount),
-                                onTap: () => onOpenDetails(expense),
-                              ),
-                            ),
-                          ),
-                          if (i < expenses.length - 1)
-                            Divider(
-                              color: AppColors.line(context),
-                              height: 1,
-                              indent: 16,
-                              endIndent: 16,
-                            ),
-                        ],
-                      );
-                    }),
-                    const SizedBox(height: 4),
-                  ],
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
