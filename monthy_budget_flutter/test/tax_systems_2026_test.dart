@@ -368,6 +368,31 @@ void main() {
       // Full duodécimos yields higher effective gross but also more tax
       expect(fullCalc.effectiveGrossAmount, greaterThan(noneCalc.effectiveGrossAmount));
     });
+
+    test('subsídios em duodécimos retidos autonomamente (não sobem escalão)', () {
+      final full = SalaryInfo(
+        label: 'T',
+        grossAmount: 1500,
+        enabled: true,
+        subsidyMode: SubsidyMode.full,
+      );
+      final none = SalaryInfo(
+        label: 'T',
+        grossAmount: 1500,
+        enabled: true,
+        subsidyMode: SubsidyMode.none,
+      );
+      const personal = PersonalInfo();
+      final fullCalc = calculateNetSalary(full, personal, taxSystem);
+      final noneCalc = calculateNetSalary(none, personal, taxSystem);
+
+      // CIRS 99.º-C: retenção = taxa efetiva da base × total pago.
+      // IRS base 1500 ≈ 168.17 → em duodécimos 14/12 ≈ 196.20 (NÃO tabela(1750)=228.42)
+      expect(fullCalc.irsRetention, closeTo(noneCalc.irsRetention * 14 / 12, 0.5));
+      expect(fullCalc.irsRetention, closeTo(196.20, 0.5));
+      // SS incide sobre o total pago no mês: 1750 × 0.11 = 192.50
+      expect(fullCalc.socialSecurity, closeTo(192.50, 0.01));
+    });
   });
 
   // ─── PT: mínimo de existência (fórmula da parcela a abater) ─────────
