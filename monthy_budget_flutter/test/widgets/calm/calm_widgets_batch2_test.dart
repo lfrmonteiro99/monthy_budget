@@ -70,6 +70,46 @@ void main() {
     expect(tapped, isTrue);
   });
 
+  testWidgets('CalmListTile omits avatar when leadingIcon is null',
+      (tester) async {
+    await tester.pumpWidget(wrap(const CalmListTile(
+      title: 'No icon row',
+      subtitle: 'flush left',
+    )));
+    expect(find.text('No icon row'), findsOneWidget);
+    expect(find.text('flush left'), findsOneWidget);
+    // No leading avatar icon is rendered in the no-icon variant.
+    expect(find.byType(Icon), findsNothing);
+  });
+
+  testWidgets('CalmListTile renders selectableSubtitle as SelectableText',
+      (tester) async {
+    await tester.pumpWidget(wrap(const CalmListTile(
+      leadingIcon: Icons.link,
+      leadingColor: Colors.blue,
+      title: 'Invite code',
+      selectableSubtitle: 'ABC-123',
+    )));
+    expect(find.text('Invite code'), findsOneWidget);
+    expect(find.widgetWithText(SelectableText, 'ABC-123'), findsOneWidget);
+  });
+
+  testWidgets('CalmListTile renders trailingWidget affordance',
+      (tester) async {
+    var pressed = false;
+    await tester.pumpWidget(wrap(CalmListTile(
+      leadingIcon: Icons.inventory_2_outlined,
+      leadingColor: Colors.orange,
+      title: 'Pantry item',
+      trailingWidget: IconButton(
+        icon: const Icon(Icons.add_circle_outline),
+        onPressed: () => pressed = true,
+      ),
+    )));
+    await tester.tap(find.byIcon(Icons.add_circle_outline));
+    expect(pressed, isTrue);
+  });
+
   // ── CalmBottomSheet ─────────────────────────────────────────────────────
 
   testWidgets('CalmBottomSheet.show opens sheet with drag handle',

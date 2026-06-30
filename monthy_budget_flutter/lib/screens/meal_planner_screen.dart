@@ -244,26 +244,16 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   final item = items[i];
                   final ingredient = iMap[item.ingredientId];
                   final name = ingredient?.name ?? item.ingredientId;
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(name, style: const TextStyle(fontSize: 14)),
-                    subtitle: Text(
-                      l10n.mealWasteExcess(
-                        item.excessQty.toStringAsFixed(2),
-                        item.unit,
-                      ),
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.textSecondary(ctx),
-                      ),
+                  return CalmListTile(
+                    title: name,
+                    subtitle: l10n.mealWasteExcess(
+                      item.excessQty.toStringAsFixed(2),
+                      item.unit,
                     ),
-                    trailing: Text(
+                    trailingWidget: Text(
                       '\u20AC${item.estimatedWasteCost.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.warning(ctx),
-                      ),
+                      style: CalmText.amount(context)
+                          .copyWith(color: AppColors.warning(ctx)),
                     ),
                   );
                 },

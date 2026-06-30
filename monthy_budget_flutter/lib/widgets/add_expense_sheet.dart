@@ -762,6 +762,9 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                             color: AppColors.borderMuted(context)),
                         itemBuilder: (_, i) {
                           final r = _addressResults[i];
+                          // Calm exception (#1021): transient address-autocomplete
+                          // dropdown result — dense/compact by design. CalmListTile's
+                          // 12px vertical rhythm would bloat the dropdown. Kept raw.
                           return ListTile(
                             dense: true,
                             visualDensity: VisualDensity.compact,

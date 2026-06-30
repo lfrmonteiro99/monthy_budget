@@ -3,6 +3,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../models/pantry_item.dart';
 import '../models/meal_planner.dart';
 import '../theme/app_colors.dart';
+import 'calm/calm.dart';
 
 class PantryManagerSheet extends StatefulWidget {
   final List<PantryItem> pantryItems;
@@ -91,49 +92,45 @@ class _PantryManagerSheetState extends State<PantryManagerSheet> {
                   final ingredient =
                       widget.ingredientMap[item.ingredientId];
                   final name = ingredient?.name ?? item.ingredientId;
-                  return ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor:
-                          _statusColor(item).withValues(alpha: 0.15),
-                      radius: 16,
-                      child: Icon(Icons.circle,
-                          size: 12, color: _statusColor(item)),
-                    ),
-                    title:
-                        Text(name, style: const TextStyle(fontSize: 14)),
-                    subtitle: Text('${item.quantity} ${item.unit}',
-                        style: const TextStyle(fontSize: 12)),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.remove_circle_outline,
-                              size: 20),
-                          onPressed: () {
-                            setState(() {
-                              _items[index] = item.copyWith(
-                                quantity: (item.quantity -
-                                        (ingredient?.minPurchaseQty ??
-                                            0.1))
-                                    .clamp(0, double.infinity),
-                              );
-                            });
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.add_circle_outline,
-                              size: 20),
-                          onPressed: () {
-                            setState(() {
-                              _items[index] = item.copyWith(
-                                quantity: item.quantity +
-                                    (ingredient?.minPurchaseQty ?? 0.1),
-                                lastRestocked: DateTime.now(),
-                              );
-                            });
-                          },
-                        ),
-                      ],
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: CalmListTile(
+                      leadingIcon: Icons.circle,
+                      leadingColor: _statusColor(item),
+                      title: name,
+                      subtitle: '${item.quantity} ${item.unit}',
+                      trailingWidget: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.remove_circle_outline,
+                                size: 20),
+                            onPressed: () {
+                              setState(() {
+                                _items[index] = item.copyWith(
+                                  quantity: (item.quantity -
+                                          (ingredient?.minPurchaseQty ??
+                                              0.1))
+                                      .clamp(0, double.infinity),
+                                );
+                              });
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.add_circle_outline,
+                                size: 20),
+                            onPressed: () {
+                              setState(() {
+                                _items[index] = item.copyWith(
+                                  quantity: item.quantity +
+                                      (ingredient?.minPurchaseQty ?? 0.1),
+                                  lastRestocked: DateTime.now(),
+                                );
+                              });
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },

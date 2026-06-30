@@ -319,23 +319,22 @@ class _FreeformMealSheetState extends State<FreeformMealSheet> {
                 ..._shoppingItems.asMap().entries.map((e) {
                   final item = e.value;
                   final idx = e.key;
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    dense: true,
-                    title: Text(item.name, style: const TextStyle(fontSize: 13)),
-                    subtitle: item.quantity != null || item.estimatedPrice != null
-                        ? Text(
-                            [
-                              if (item.quantity != null) '${item.quantity}${item.unit != null ? ' ${item.unit}' : ''}',
-                              if (item.estimatedPrice != null) '${item.estimatedPrice!.toStringAsFixed(2)}${currencySymbol()}',
-                              if (item.store != null) item.store,
-                            ].join(' - '),
-                            style: TextStyle(fontSize: 11, color: AppColors.textMuted(context)),
-                          )
+                  return CalmListTile(
+                    title: item.name,
+                    subtitle: item.quantity != null ||
+                            item.estimatedPrice != null
+                        ? [
+                            if (item.quantity != null)
+                              '${item.quantity}${item.unit != null ? ' ${item.unit}' : ''}',
+                            if (item.estimatedPrice != null)
+                              '${item.estimatedPrice!.toStringAsFixed(2)}${currencySymbol()}',
+                            if (item.store != null) item.store,
+                          ].join(' - ')
                         : null,
-                    trailing: IconButton(
+                    trailingWidget: IconButton(
                       icon: const Icon(Icons.close, size: 16),
-                      onPressed: () => setState(() => _shoppingItems.removeAt(idx)),
+                      onPressed: () =>
+                          setState(() => _shoppingItems.removeAt(idx)),
                     ),
                   );
                 }),

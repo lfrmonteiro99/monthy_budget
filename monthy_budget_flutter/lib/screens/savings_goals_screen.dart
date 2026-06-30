@@ -999,40 +999,26 @@ class _GoalDetailScreenState extends State<_GoalDetailScreen> {
                         final c = _contributions[i];
                         return CalmCard(
                           padding: EdgeInsets.zero,
-                          child: ListTile(
-                            dense: true,
-                            leading: CircleAvatar(
-                              radius: 16,
-                              backgroundColor:
-                                  AppColors.accentSoft(context),
-                              child: Icon(
-                                Icons.arrow_upward,
-                                size: 16,
-                                color: AppColors.accent(context),
-                              ),
-                            ),
-                            title: Text(
-                              formatCurrency(c.amount),
-                              style: CalmText.amount(context, size: 14),
-                            ),
-                            subtitle: Text(
-                              [
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16),
+                            child: CalmListTile(
+                              leadingIcon: Icons.arrow_upward,
+                              leadingColor: AppColors.accent(context),
+                              title: formatCurrency(c.amount),
+                              subtitle: [
                                 '${c.contributionDate.day.toString().padLeft(2, '0')}/${c.contributionDate.month.toString().padLeft(2, '0')}/${c.contributionDate.year}',
                                 if (c.note != null && c.note!.isNotEmpty)
                                   c.note!,
                               ].join(' - '),
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: AppColors.ink70(context),
+                              trailingWidget: IconButton(
+                                icon: Icon(
+                                  Icons.delete_outline,
+                                  size: 18,
+                                  color: AppColors.ink50(context),
+                                ),
+                                onPressed: () => _deleteContribution(c),
                               ),
-                            ),
-                            trailing: IconButton(
-                              icon: Icon(
-                                Icons.delete_outline,
-                                size: 18,
-                                color: AppColors.ink50(context),
-                              ),
-                              onPressed: () => _deleteContribution(c),
                             ),
                           ),
                         );
