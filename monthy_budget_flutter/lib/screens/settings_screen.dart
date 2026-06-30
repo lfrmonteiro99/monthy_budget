@@ -110,6 +110,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   /// parent state changes via [setState].
   final _detailRebuildNotifier = ValueNotifier<int>(0);
 
+  /// Notifier scoped to live-preview widgets (e.g. the net-salary summary) so
+  /// they can refresh on each keystroke WITHOUT rebuilding the surrounding text
+  /// fields. A per-keystroke field rebuild resets the Android numeric IME and
+  /// dismisses the soft keyboard after every character
+  /// (flutter/flutter#53734, #73388). See issue #1069. Use the `*Quiet` update
+  /// helpers from text-field `onChanged` callbacks instead of [setState].
+  final _previewNotifier = ValueNotifier<int>(0);
+
   @override
   void setState(VoidCallback fn) {
     super.setState(fn);
@@ -152,6 +160,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void dispose() {
     _apiKeyController.dispose();
     _detailRebuildNotifier.dispose();
+    _previewNotifier.dispose();
     super.dispose();
   }
 
@@ -320,6 +329,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
+  /// Updates the draft from a text field WITHOUT [setState], so the open detail
+  /// page's input fields are not rebuilt mid-typing (which would dismiss the
+  /// numeric keyboard — see [_previewNotifier] / issue #1069). Bumps
+  /// [_previewNotifier] so any scoped live-preview refreshes.
+  void _mutateDraftQuiet(AppSettings Function(AppSettings) updater) {
+    _draft = updater(_draft);
+    _previewNotifier.value++;
+  }
+
+  /// Quiet variant of [_updateExpense] for text-field `onChanged`.
+  void _updateExpenseQuiet(String id, ExpenseItem Function(ExpenseItem) updater) {
+    _draft = _draft.copyWith(
+      expenses: _draft.expenses.map((e) => e.id == id ? updater(e) : e).toList(),
+    );
+    _previewNotifier.value++;
+  }
+
   /// All valid category keys (predefined enum names + custom category names).
   Set<String> _allCategoryKeys() => {
     ...ExpenseCategory.values.map((c) => c.name),
@@ -339,6 +365,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
       newSalaries[idx] = updater(newSalaries[idx]);
       _draft = _draft.copyWith(salaries: newSalaries);
     });
+  }
+
+  /// Quiet variant of [_updateSalary] for text-field `onChanged` — no [setState]
+  /// (avoids dismissing the numeric keyboard, issue #1069). The live salary
+  /// preview refreshes via [_previewNotifier].
+  void _updateSalaryQuiet(int idx, SalaryInfo Function(SalaryInfo) updater) {
+    final newSalaries = List<SalaryInfo>.from(_draft.salaries);
+    newSalaries[idx] = updater(newSalaries[idx]);
+    _draft = _draft.copyWith(salaries: newSalaries);
+    _previewNotifier.value++;
   }
 
   @override

@@ -172,6 +172,47 @@ void main() {
     expect(find.textContaining('Modelo 3'), findsNothing);
   });
 
+  testWidgets(
+      'salary numeric edits persist without clobbering and update preview live (issue #1069)',
+      (tester) async {
+    AppSettings? saved;
+    await tester.pumpWidget(
+      wrapWithTestApp(
+        buildScreen(
+          initialSection: 'salaries',
+          onSave: (s) => saved = s,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final gross = find.byKey(const ValueKey('gross_0'));
+    final exempt = find.byKey(const ValueKey('exempt_0'));
+    expect(gross, findsOneWidget);
+    expect(exempt, findsOneWidget);
+
+    // Editing a numeric field uses a "quiet" draft update (no full rebuild of
+    // the input fields — that resets the Android numeric IME), while the
+    // net-salary preview still refreshes via a scoped notifier.
+    await tester.ensureVisible(gross);
+    await tester.enterText(gross, '1500');
+    await tester.pump();
+    expect(find.textContaining('1500.00'), findsWidgets,
+        reason: 'live preview must reflect the typed gross');
+
+    // A second quiet edit must not clobber the first (each reads the latest
+    // draft, not a stale captured copy).
+    await tester.ensureVisible(exempt);
+    await tester.enterText(exempt, '200');
+    await tester.pump();
+
+    await tester.tap(find.byIcon(Icons.check).last);
+    await tester.pumpAndSettle();
+
+    expect(saved?.salaries.first.grossAmount, 1500);
+    expect(saved?.salaries.first.otherExemptIncome, 200);
+  });
+
   testWidgets('section detail page has a working Save action', (tester) async {
     AppSettings? saved;
     await tester.pumpWidget(
