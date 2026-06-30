@@ -408,8 +408,10 @@ class _ExpenseTrendsScreenState extends State<ExpenseTrendsScreen> {
                   lineTouchData: LineTouchData(
                     handleBuiltInTouches: true,
                     touchTooltipData: LineTouchTooltipData(
-                      tooltipPadding: const EdgeInsets.all(8),
-                      tooltipRoundedRadius: 8,
+                      tooltipPadding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
+                      tooltipRoundedRadius: 10,
+                      getTooltipColor: (_) => AppColors.ink(context),
                       getTooltipItems: (touchedSpots) {
                         return touchedSpots.map((s) {
                           final isBudgeted = s.barIndex == 0;
@@ -672,7 +674,7 @@ class _CategoryRow extends StatelessWidget {
                               tween: Tween<double>(begin: 0, end: barFraction),
                               duration: AppConstants.animProgressBar,
                               curve: Curves.easeOutCubic,
-                              builder: (_, fraction, __) => SizedBox(
+                              builder: (_, fraction, _) => SizedBox(
                                 height: 4,
                                 width: constraints.maxWidth * fraction,
                                 child: ColoredBox(color: color),
@@ -893,8 +895,10 @@ class _CategoryDetailContent extends StatelessWidget {
                   lineTouchData: LineTouchData(
                     handleBuiltInTouches: true,
                     touchTooltipData: LineTouchTooltipData(
-                      tooltipPadding: const EdgeInsets.all(8),
-                      tooltipRoundedRadius: 8,
+                      tooltipPadding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
+                      tooltipRoundedRadius: 10,
+                      getTooltipColor: (_) => AppColors.ink(context),
                       getTooltipItems: (touchedSpots) {
                         return touchedSpots.map((s) {
                           final idx = s.spotIndex;
