@@ -7799,6 +7799,276 @@ abstract class S {
   /// **'Upgrade →'**
   String get moreUpgrade;
 
+  /// More screen Fraunces title
+  ///
+  /// In pt, this message translates to:
+  /// **'Insights & mais'**
+  String get moreScreenTitle;
+
+  /// More screen header eyebrow
+  ///
+  /// In pt, this message translates to:
+  /// **'Entendimento'**
+  String get moreScreenEyebrow;
+
+  /// Coach hero eyebrow
+  ///
+  /// In pt, this message translates to:
+  /// **'Coach'**
+  String get moreCoachEyebrow;
+
+  /// Coach hero primary CTA
+  ///
+  /// In pt, this message translates to:
+  /// **'Conversar com o coach'**
+  String get moreCoachCta;
+
+  /// Coach hero CTA shown on free tier (routes to paywall)
+  ///
+  /// In pt, this message translates to:
+  /// **'Desbloquear coach'**
+  String get moreCoachUnlockCta;
+
+  /// Static coach quote shown when the live endpoint is unavailable
+  ///
+  /// In pt, this message translates to:
+  /// **'Toca para abrir o coach.'**
+  String get moreCoachFallbackQuote;
+
+  /// Coach hero quote when there is positive projected savings this month
+  ///
+  /// In pt, this message translates to:
+  /// **'Se mantiveres o ritmo, poupas cerca de €{amount} este mês.'**
+  String moreCoachProjectionFmt(int amount);
+
+  /// Warning observation title for the worst over-budget category
+  ///
+  /// In pt, this message translates to:
+  /// **'{category} {percent}% acima do orçamento'**
+  String moreObsCatOverTitle(String category, int percent);
+
+  /// Body for the over-budget observation
+  ///
+  /// In pt, this message translates to:
+  /// **'Foi a categoria com maior excesso este mês. Toca para ver o detalhe.'**
+  String get moreObsCatOverBody;
+
+  /// Success observation title when savings rate ≥ 20%
+  ///
+  /// In pt, this message translates to:
+  /// **'A poupar {percent}% este mês'**
+  String moreObsGoodSavingsTitle(int percent);
+
+  /// Body for the good-savings observation
+  ///
+  /// In pt, this message translates to:
+  /// **'Acima da meta de 20%. Continua assim.'**
+  String get moreObsGoodSavingsBody;
+
+  /// Warning observation title when savings rate < 10%
+  ///
+  /// In pt, this message translates to:
+  /// **'Taxa de poupança baixa'**
+  String get moreObsLowSavingsTitle;
+
+  /// Body for the low-savings observation
+  ///
+  /// In pt, this message translates to:
+  /// **'Estás abaixo dos 10% este mês. Liberta espaço numa categoria flexível.'**
+  String get moreObsLowSavingsBody;
+
+  /// Observations section eyebrow
+  ///
+  /// In pt, this message translates to:
+  /// **'Observações'**
+  String get moreObservationsEyebrow;
+
+  /// Tools section eyebrow
+  ///
+  /// In pt, this message translates to:
+  /// **'Ferramentas'**
+  String get moreToolsEyebrow;
+
+  /// Observation kind label — warning
+  ///
+  /// In pt, this message translates to:
+  /// **'Atenção'**
+  String get moreObsKindWarning;
+
+  /// Observation kind label — info
+  ///
+  /// In pt, this message translates to:
+  /// **'Informação'**
+  String get moreObsKindInfo;
+
+  /// Observation kind label — success
+  ///
+  /// In pt, this message translates to:
+  /// **'Ótimo'**
+  String get moreObsKindSuccess;
+
+  /// Tool tile title
+  ///
+  /// In pt, this message translates to:
+  /// **'Plano & lista de compras'**
+  String get moreToolPlanShop;
+
+  /// Tool tile subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Ementa + lista da semana'**
+  String get moreToolPlanShopSub;
+
+  /// Tool tile title
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista de compras'**
+  String get moreToolShoppingList;
+
+  /// Tool tile subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Corredores · progresso'**
+  String get moreToolShoppingListSub;
+
+  /// Tool tile title
+  ///
+  /// In pt, this message translates to:
+  /// **'Ementa da semana'**
+  String get moreToolMealsWeek;
+
+  /// Tool tile subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'7 dias · refeições planeadas'**
+  String get moreToolMealsWeekSub;
+
+  /// Tool tile title
+  ///
+  /// In pt, this message translates to:
+  /// **'Despensa'**
+  String get moreToolPantry;
+
+  /// Tool tile subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Stock em casa · validades'**
+  String get moreToolPantrySub;
+
+  /// Tool tile title
+  ///
+  /// In pt, this message translates to:
+  /// **'Rendimento'**
+  String get moreToolIncome;
+
+  /// Tool tile subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Salário, freelas, rendas'**
+  String get moreToolIncomeSub;
+
+  /// Tool tile title
+  ///
+  /// In pt, this message translates to:
+  /// **'Contas recorrentes'**
+  String get moreToolRecurring;
+
+  /// Tool tile subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Renda, utilities, assinaturas'**
+  String get moreToolRecurringSub;
+
+  /// Tool tile title
+  ///
+  /// In pt, this message translates to:
+  /// **'Agregado familiar'**
+  String get moreToolHousehold;
+
+  /// Household subtitle when at least one member is configured
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} membros · partilhado'**
+  String moreToolHouseholdSubFmt(int count);
+
+  /// Household subtitle shown in accent when memberCount == 0
+  ///
+  /// In pt, this message translates to:
+  /// **'Configurar'**
+  String get moreToolHouseholdSubConfigure;
+
+  /// Tool tile title
+  ///
+  /// In pt, this message translates to:
+  /// **'Resumo anual'**
+  String get moreToolYearly;
+
+  /// Yearly summary subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Tendências de {year}'**
+  String moreToolYearlySubFmt(int year);
+
+  /// Tool tile title
+  ///
+  /// In pt, this message translates to:
+  /// **'Simulador IRS'**
+  String get moreToolTaxSimulator;
+
+  /// Tool tile subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Deduções e reembolso'**
+  String get moreToolTaxSimulatorSub;
+
+  /// Tool tile title
+  ///
+  /// In pt, this message translates to:
+  /// **'Digitalizar talão'**
+  String get moreToolReceiptScan;
+
+  /// Tool tile subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'OCR automático'**
+  String get moreToolReceiptScanSub;
+
+  /// Tool tile title
+  ///
+  /// In pt, this message translates to:
+  /// **'Saúde dos dados'**
+  String get moreToolDataHealth;
+
+  /// Tool tile subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Categorizações, duplicados'**
+  String get moreToolDataHealthSub;
+
+  /// Tool tile title
+  ///
+  /// In pt, this message translates to:
+  /// **'Notificações'**
+  String get moreToolNotifications;
+
+  /// Tool tile subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Alertas e avisos'**
+  String get moreToolNotificationsSub;
+
+  /// Tool tile title
+  ///
+  /// In pt, this message translates to:
+  /// **'Definições'**
+  String get moreToolSettings;
+
+  /// Tool tile subtitle
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamento, tema, dados'**
+  String get moreToolSettingsSub;
+
   /// Title for the Plan hub screen
   ///
   /// In pt, this message translates to:
@@ -10456,6 +10726,48 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Prenda / Bónus'**
   String get incomeCategoryGift;
+
+  /// Settings label: IRS Jovem regime year
+  ///
+  /// In pt, this message translates to:
+  /// **'IRS JOVEM (ANO DE REGIME)'**
+  String get settingsIrsJovemLabel;
+
+  /// No description provided for @helperIrsJovem.
+  ///
+  /// In pt, this message translates to:
+  /// **'0 = não aderente. Reduz a retenção: ano 1 100%, anos 2–4 75%, 5–7 50%, 8–10 25%.'**
+  String get helperIrsJovem;
+
+  /// Settings label: person with disability toggle
+  ///
+  /// In pt, this message translates to:
+  /// **'PESSOA COM DEFICIÊNCIA'**
+  String get settingsDisabilityLabel;
+
+  /// No description provided for @helperDisability.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aplica as tabelas de retenção específicas para deficiência (IV–VII).'**
+  String get helperDisability;
+
+  /// No description provided for @taxSimIrsJovem.
+  ///
+  /// In pt, this message translates to:
+  /// **'IRS Jovem (ano)'**
+  String get taxSimIrsJovem;
+
+  /// No description provided for @taxSimDisability.
+  ///
+  /// In pt, this message translates to:
+  /// **'Deficiência'**
+  String get taxSimDisability;
+
+  /// Informational note shown only when IRS Jovem is active: legal basis and monthly-estimate disclaimer
+  ///
+  /// In pt, this message translates to:
+  /// **'IRS Jovem: aplica-se a taxa de retenção do rendimento total apenas à parte não isenta (Despacho n.º 236-A/2025). A parte isenta está limitada a 55×IAS (≈ 29.542€/ano). A retenção mensal é uma estimativa — o valor final é acertado no IRS anual (Modelo 3) e o tecto anual é repartido pelos meses de forma aproximada.'**
+  String get irsJovemLegalNote;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

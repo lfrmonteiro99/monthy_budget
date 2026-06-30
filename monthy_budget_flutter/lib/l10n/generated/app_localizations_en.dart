@@ -4289,6 +4289,153 @@ class SEn extends S {
   String get moreUpgrade => 'Upgrade →';
 
   @override
+  String get moreScreenTitle => 'Insights & more';
+
+  @override
+  String get moreScreenEyebrow => 'Understanding';
+
+  @override
+  String get moreCoachEyebrow => 'Coach';
+
+  @override
+  String get moreCoachCta => 'Talk to the coach';
+
+  @override
+  String get moreCoachUnlockCta => 'Unlock the coach';
+
+  @override
+  String get moreCoachFallbackQuote => 'Tap to open the coach.';
+
+  @override
+  String moreCoachProjectionFmt(int amount) {
+    return 'Keep this pace and you\'ll save about €$amount this month.';
+  }
+
+  @override
+  String moreObsCatOverTitle(String category, int percent) {
+    return '$category $percent% over budget';
+  }
+
+  @override
+  String get moreObsCatOverBody =>
+      'Most over-budget category this month. Tap for details.';
+
+  @override
+  String moreObsGoodSavingsTitle(int percent) {
+    return 'Saving $percent% this month';
+  }
+
+  @override
+  String get moreObsGoodSavingsBody => 'Above the 20% target. Keep going.';
+
+  @override
+  String get moreObsLowSavingsTitle => 'Low savings rate';
+
+  @override
+  String get moreObsLowSavingsBody =>
+      'Under 10% this month. Free up room in a flexible category.';
+
+  @override
+  String get moreObservationsEyebrow => 'Observations';
+
+  @override
+  String get moreToolsEyebrow => 'Tools';
+
+  @override
+  String get moreObsKindWarning => 'Heads up';
+
+  @override
+  String get moreObsKindInfo => 'FYI';
+
+  @override
+  String get moreObsKindSuccess => 'Great';
+
+  @override
+  String get moreToolPlanShop => 'Plan & shopping list';
+
+  @override
+  String get moreToolPlanShopSub => 'Menu + weekly list';
+
+  @override
+  String get moreToolShoppingList => 'Shopping list';
+
+  @override
+  String get moreToolShoppingListSub => 'Aisles · progress';
+
+  @override
+  String get moreToolMealsWeek => 'Meals this week';
+
+  @override
+  String get moreToolMealsWeekSub => '7 days · planned meals';
+
+  @override
+  String get moreToolPantry => 'Pantry';
+
+  @override
+  String get moreToolPantrySub => 'Stock at home · expiry dates';
+
+  @override
+  String get moreToolIncome => 'Income';
+
+  @override
+  String get moreToolIncomeSub => 'Salary, freelance, rent';
+
+  @override
+  String get moreToolRecurring => 'Recurring bills';
+
+  @override
+  String get moreToolRecurringSub => 'Rent, utilities, subscriptions';
+
+  @override
+  String get moreToolHousehold => 'Household';
+
+  @override
+  String moreToolHouseholdSubFmt(int count) {
+    return '$count members · shared';
+  }
+
+  @override
+  String get moreToolHouseholdSubConfigure => 'Set up';
+
+  @override
+  String get moreToolYearly => 'Yearly summary';
+
+  @override
+  String moreToolYearlySubFmt(int year) {
+    return '$year trends';
+  }
+
+  @override
+  String get moreToolTaxSimulator => 'Tax simulator';
+
+  @override
+  String get moreToolTaxSimulatorSub => 'Deductions and refund';
+
+  @override
+  String get moreToolReceiptScan => 'Scan receipt';
+
+  @override
+  String get moreToolReceiptScanSub => 'Automatic OCR';
+
+  @override
+  String get moreToolDataHealth => 'Data health';
+
+  @override
+  String get moreToolDataHealthSub => 'Categorisation, duplicates';
+
+  @override
+  String get moreToolNotifications => 'Notifications';
+
+  @override
+  String get moreToolNotificationsSub => 'Alerts and reminders';
+
+  @override
+  String get moreToolSettings => 'Settings';
+
+  @override
+  String get moreToolSettingsSub => 'Budget, theme, data';
+
+  @override
   String get planTitle => 'Plan';
 
   @override
@@ -5847,4 +5994,28 @@ class SEn extends S {
 
   @override
   String get incomeCategoryGift => 'Gift / Bonus';
+
+  @override
+  String get settingsIrsJovemLabel => 'IRS JOVEM (REGIME YEAR)';
+
+  @override
+  String get helperIrsJovem =>
+      '0 = not enrolled. Reduces withholding: year 1 100%, years 2–4 75%, 5–7 50%, 8–10 25%.';
+
+  @override
+  String get settingsDisabilityLabel => 'PERSON WITH DISABILITY';
+
+  @override
+  String get helperDisability =>
+      'Applies the disability-specific withholding tables (IV–VII).';
+
+  @override
+  String get taxSimIrsJovem => 'IRS Jovem (year)';
+
+  @override
+  String get taxSimDisability => 'Disability';
+
+  @override
+  String get irsJovemLegalNote =>
+      'IRS Jovem: the withholding rate for the total income is applied only to the non-exempt part (Despacho no. 236-A/2025). The exempt part is capped at 55×IAS (≈ €29,542/year). Monthly withholding is an estimate — the final amount is settled in the annual tax return (Modelo 3), and the annual cap is spread across months approximately.';
 }

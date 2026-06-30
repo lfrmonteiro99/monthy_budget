@@ -49,7 +49,13 @@ class InsightsScreen extends StatelessWidget {
               leadingColor: AppColors.accent(context),
               title: l10n.trendTitle,
               subtitle: l10n.insightsAnalyzeSpending,
-              trailing: '›',
+              trailingWidget: ExcludeSemantics(
+                child: Icon(
+                  Icons.chevron_right,
+                  size: 16,
+                  color: AppColors.ink50(context),
+                ),
+              ),
               onTap: onOpenExpenseTrends,
             ),
           ),
@@ -61,7 +67,13 @@ class InsightsScreen extends StatelessWidget {
               leadingColor: AppColors.accent(context),
               title: l10n.savingsGoals,
               subtitle: l10n.insightsTrackProgress,
-              trailing: '›',
+              trailingWidget: ExcludeSemantics(
+                child: Icon(
+                  Icons.chevron_right,
+                  size: 16,
+                  color: AppColors.ink50(context),
+                ),
+              ),
               onTap: onOpenSavingsGoals,
             ),
           ),
@@ -74,7 +86,13 @@ class InsightsScreen extends StatelessWidget {
                 leadingColor: AppColors.accent(context),
                 title: l10n.taxSimTitle,
                 subtitle: l10n.insightsTaxOutcome,
-                trailing: '›',
+                trailingWidget: ExcludeSemantics(
+                  child: Icon(
+                    Icons.chevron_right,
+                    size: 16,
+                    color: AppColors.ink50(context),
+                  ),
+                ),
                 onTap: onOpenTaxSimulator,
               ),
             ),

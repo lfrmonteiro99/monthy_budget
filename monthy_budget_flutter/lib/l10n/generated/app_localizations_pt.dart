@@ -4323,6 +4323,153 @@ class SPt extends S {
   String get moreUpgrade => 'Upgrade →';
 
   @override
+  String get moreScreenTitle => 'Insights & mais';
+
+  @override
+  String get moreScreenEyebrow => 'Entendimento';
+
+  @override
+  String get moreCoachEyebrow => 'Coach';
+
+  @override
+  String get moreCoachCta => 'Conversar com o coach';
+
+  @override
+  String get moreCoachUnlockCta => 'Desbloquear coach';
+
+  @override
+  String get moreCoachFallbackQuote => 'Toca para abrir o coach.';
+
+  @override
+  String moreCoachProjectionFmt(int amount) {
+    return 'Se mantiveres o ritmo, poupas cerca de €$amount este mês.';
+  }
+
+  @override
+  String moreObsCatOverTitle(String category, int percent) {
+    return '$category $percent% acima do orçamento';
+  }
+
+  @override
+  String get moreObsCatOverBody =>
+      'Foi a categoria com maior excesso este mês. Toca para ver o detalhe.';
+
+  @override
+  String moreObsGoodSavingsTitle(int percent) {
+    return 'A poupar $percent% este mês';
+  }
+
+  @override
+  String get moreObsGoodSavingsBody => 'Acima da meta de 20%. Continua assim.';
+
+  @override
+  String get moreObsLowSavingsTitle => 'Taxa de poupança baixa';
+
+  @override
+  String get moreObsLowSavingsBody =>
+      'Estás abaixo dos 10% este mês. Liberta espaço numa categoria flexível.';
+
+  @override
+  String get moreObservationsEyebrow => 'Observações';
+
+  @override
+  String get moreToolsEyebrow => 'Ferramentas';
+
+  @override
+  String get moreObsKindWarning => 'Atenção';
+
+  @override
+  String get moreObsKindInfo => 'Informação';
+
+  @override
+  String get moreObsKindSuccess => 'Ótimo';
+
+  @override
+  String get moreToolPlanShop => 'Plano & lista de compras';
+
+  @override
+  String get moreToolPlanShopSub => 'Ementa + lista da semana';
+
+  @override
+  String get moreToolShoppingList => 'Lista de compras';
+
+  @override
+  String get moreToolShoppingListSub => 'Corredores · progresso';
+
+  @override
+  String get moreToolMealsWeek => 'Ementa da semana';
+
+  @override
+  String get moreToolMealsWeekSub => '7 dias · refeições planeadas';
+
+  @override
+  String get moreToolPantry => 'Despensa';
+
+  @override
+  String get moreToolPantrySub => 'Stock em casa · validades';
+
+  @override
+  String get moreToolIncome => 'Rendimento';
+
+  @override
+  String get moreToolIncomeSub => 'Salário, freelas, rendas';
+
+  @override
+  String get moreToolRecurring => 'Contas recorrentes';
+
+  @override
+  String get moreToolRecurringSub => 'Renda, utilities, assinaturas';
+
+  @override
+  String get moreToolHousehold => 'Agregado familiar';
+
+  @override
+  String moreToolHouseholdSubFmt(int count) {
+    return '$count membros · partilhado';
+  }
+
+  @override
+  String get moreToolHouseholdSubConfigure => 'Configurar';
+
+  @override
+  String get moreToolYearly => 'Resumo anual';
+
+  @override
+  String moreToolYearlySubFmt(int year) {
+    return 'Tendências de $year';
+  }
+
+  @override
+  String get moreToolTaxSimulator => 'Simulador IRS';
+
+  @override
+  String get moreToolTaxSimulatorSub => 'Deduções e reembolso';
+
+  @override
+  String get moreToolReceiptScan => 'Digitalizar talão';
+
+  @override
+  String get moreToolReceiptScanSub => 'OCR automático';
+
+  @override
+  String get moreToolDataHealth => 'Saúde dos dados';
+
+  @override
+  String get moreToolDataHealthSub => 'Categorizações, duplicados';
+
+  @override
+  String get moreToolNotifications => 'Notificações';
+
+  @override
+  String get moreToolNotificationsSub => 'Alertas e avisos';
+
+  @override
+  String get moreToolSettings => 'Definições';
+
+  @override
+  String get moreToolSettingsSub => 'Orçamento, tema, dados';
+
+  @override
   String get planTitle => 'Planear';
 
   @override
@@ -5890,4 +6037,28 @@ class SPt extends S {
 
   @override
   String get incomeCategoryGift => 'Prenda / Bónus';
+
+  @override
+  String get settingsIrsJovemLabel => 'IRS JOVEM (ANO DE REGIME)';
+
+  @override
+  String get helperIrsJovem =>
+      '0 = não aderente. Reduz a retenção: ano 1 100%, anos 2–4 75%, 5–7 50%, 8–10 25%.';
+
+  @override
+  String get settingsDisabilityLabel => 'PESSOA COM DEFICIÊNCIA';
+
+  @override
+  String get helperDisability =>
+      'Aplica as tabelas de retenção específicas para deficiência (IV–VII).';
+
+  @override
+  String get taxSimIrsJovem => 'IRS Jovem (ano)';
+
+  @override
+  String get taxSimDisability => 'Deficiência';
+
+  @override
+  String get irsJovemLegalNote =>
+      'IRS Jovem: aplica-se a taxa de retenção do rendimento total apenas à parte não isenta (Despacho n.º 236-A/2025). A parte isenta está limitada a 55×IAS (≈ 29.542€/ano). A retenção mensal é uma estimativa — o valor final é acertado no IRS anual (Modelo 3) e o tecto anual é repartido pelos meses de forma aproximada.';
 }

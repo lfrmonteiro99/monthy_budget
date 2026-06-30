@@ -4328,6 +4328,154 @@ class SEs extends S {
   String get moreUpgrade => 'Mejorar →';
 
   @override
+  String get moreScreenTitle => 'Insights y más';
+
+  @override
+  String get moreScreenEyebrow => 'Comprensión';
+
+  @override
+  String get moreCoachEyebrow => 'Coach';
+
+  @override
+  String get moreCoachCta => 'Habla con el coach';
+
+  @override
+  String get moreCoachUnlockCta => 'Desbloquear coach';
+
+  @override
+  String get moreCoachFallbackQuote => 'Toca para abrir el coach.';
+
+  @override
+  String moreCoachProjectionFmt(int amount) {
+    return 'Si mantienes el ritmo, ahorrarás unos €$amount este mes.';
+  }
+
+  @override
+  String moreObsCatOverTitle(String category, int percent) {
+    return '$category $percent% por encima del presupuesto';
+  }
+
+  @override
+  String get moreObsCatOverBody =>
+      'Categoría con mayor exceso este mes. Toca para ver detalles.';
+
+  @override
+  String moreObsGoodSavingsTitle(int percent) {
+    return 'Ahorrando $percent% este mes';
+  }
+
+  @override
+  String get moreObsGoodSavingsBody =>
+      'Por encima del objetivo del 20%. Sigue así.';
+
+  @override
+  String get moreObsLowSavingsTitle => 'Tasa de ahorro baja';
+
+  @override
+  String get moreObsLowSavingsBody =>
+      'Por debajo del 10% este mes. Libera espacio en una categoría flexible.';
+
+  @override
+  String get moreObservationsEyebrow => 'Observaciones';
+
+  @override
+  String get moreToolsEyebrow => 'Herramientas';
+
+  @override
+  String get moreObsKindWarning => 'Atención';
+
+  @override
+  String get moreObsKindInfo => 'Información';
+
+  @override
+  String get moreObsKindSuccess => 'Genial';
+
+  @override
+  String get moreToolPlanShop => 'Plan y lista de la compra';
+
+  @override
+  String get moreToolPlanShopSub => 'Menú + lista semanal';
+
+  @override
+  String get moreToolShoppingList => 'Lista de la compra';
+
+  @override
+  String get moreToolShoppingListSub => 'Pasillos · progreso';
+
+  @override
+  String get moreToolMealsWeek => 'Menú semanal';
+
+  @override
+  String get moreToolMealsWeekSub => '7 días · comidas planificadas';
+
+  @override
+  String get moreToolPantry => 'Despensa';
+
+  @override
+  String get moreToolPantrySub => 'Stock en casa · caducidades';
+
+  @override
+  String get moreToolIncome => 'Ingresos';
+
+  @override
+  String get moreToolIncomeSub => 'Salario, autónomo, alquileres';
+
+  @override
+  String get moreToolRecurring => 'Gastos recurrentes';
+
+  @override
+  String get moreToolRecurringSub => 'Alquiler, suministros, suscripciones';
+
+  @override
+  String get moreToolHousehold => 'Hogar';
+
+  @override
+  String moreToolHouseholdSubFmt(int count) {
+    return '$count miembros · compartido';
+  }
+
+  @override
+  String get moreToolHouseholdSubConfigure => 'Configurar';
+
+  @override
+  String get moreToolYearly => 'Resumen anual';
+
+  @override
+  String moreToolYearlySubFmt(int year) {
+    return 'Tendencias de $year';
+  }
+
+  @override
+  String get moreToolTaxSimulator => 'Simulador fiscal';
+
+  @override
+  String get moreToolTaxSimulatorSub => 'Deducciones y reembolso';
+
+  @override
+  String get moreToolReceiptScan => 'Escanear ticket';
+
+  @override
+  String get moreToolReceiptScanSub => 'OCR automático';
+
+  @override
+  String get moreToolDataHealth => 'Salud de datos';
+
+  @override
+  String get moreToolDataHealthSub => 'Categorización, duplicados';
+
+  @override
+  String get moreToolNotifications => 'Notificaciones';
+
+  @override
+  String get moreToolNotificationsSub => 'Alertas y avisos';
+
+  @override
+  String get moreToolSettings => 'Ajustes';
+
+  @override
+  String get moreToolSettingsSub => 'Presupuesto, tema, datos';
+
+  @override
   String get planTitle => 'Planificar';
 
   @override
@@ -5893,4 +6041,28 @@ class SEs extends S {
 
   @override
   String get incomeCategoryGift => 'Regalo / Bono';
+
+  @override
+  String get settingsIrsJovemLabel => 'IRS JOVEM (AÑO DE RÉGIMEN)';
+
+  @override
+  String get helperIrsJovem =>
+      '0 = no adherido. Reduce la retención: año 1 100%, años 2–4 75%, 5–7 50%, 8–10 25%.';
+
+  @override
+  String get settingsDisabilityLabel => 'PERSONA CON DISCAPACIDAD';
+
+  @override
+  String get helperDisability =>
+      'Aplica las tablas de retención específicas para discapacidad (IV–VII).';
+
+  @override
+  String get taxSimIrsJovem => 'IRS Jovem (año)';
+
+  @override
+  String get taxSimDisability => 'Discapacidad';
+
+  @override
+  String get irsJovemLegalNote =>
+      'IRS Jovem: el tipo de retención del rendimiento total se aplica solo a la parte no exenta (Despacho n.º 236-A/2025). La parte exenta está limitada a 55×IAS (≈ 29.542€/año). La retención mensual es una estimación — el importe final se ajusta en la declaración anual (Modelo 3) y el tope anual se reparte entre los meses de forma aproximada.';
 }
