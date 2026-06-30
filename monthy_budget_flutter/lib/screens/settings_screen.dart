@@ -197,6 +197,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: title,
           bodyBuilder: builder,
           rebuildNotifier: _detailRebuildNotifier,
+          onSave: _handleSave,
         ),
       ),
     );
@@ -748,17 +749,29 @@ class _SettingsDetailPage extends StatelessWidget {
   final String title;
   final Widget Function() bodyBuilder;
   final ValueNotifier<int> rebuildNotifier;
+  final VoidCallback onSave;
 
   const _SettingsDetailPage({
     required this.title,
     required this.bodyBuilder,
     required this.rebuildNotifier,
+    required this.onSave,
   });
 
   @override
   Widget build(BuildContext context) {
     return CalmScaffold(
       title: title,
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 12),
+          child: CalmActionPill(
+            icon: Icons.check,
+            label: S.of(context).save,
+            onTap: onSave,
+          ),
+        ),
+      ],
       body: ValueListenableBuilder<int>(
         valueListenable: rebuildNotifier,
         builder: (context, _, child) => SingleChildScrollView(
