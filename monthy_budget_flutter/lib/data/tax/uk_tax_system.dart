@@ -39,6 +39,8 @@ class UkTaxSystem extends TaxSystem {
     required String maritalStatus,
     required int titulares,
     required int dependentes,
+    bool deficiente = false,
+    int irsJovemYear = 0,
   }) {
     if (grossSalary <= 0) {
       return const TaxResult(

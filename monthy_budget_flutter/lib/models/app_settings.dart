@@ -266,21 +266,27 @@ class PersonalInfo {
   final int dependentes;
   final bool deficiente;
 
+  /// Ano de regime do IRS Jovem (1..10). 0 = não aderente. PT apenas.
+  final int irsJovemYear;
+
   const PersonalInfo({
     this.maritalStatus = MaritalStatus.solteiro,
     this.dependentes = 0,
     this.deficiente = false,
+    this.irsJovemYear = 0,
   });
 
   PersonalInfo copyWith({
     MaritalStatus? maritalStatus,
     int? dependentes,
     bool? deficiente,
+    int? irsJovemYear,
   }) {
     return PersonalInfo(
       maritalStatus: maritalStatus ?? this.maritalStatus,
       dependentes: dependentes ?? this.dependentes,
       deficiente: deficiente ?? this.deficiente,
+      irsJovemYear: irsJovemYear ?? this.irsJovemYear,
     );
   }
 
@@ -288,12 +294,14 @@ class PersonalInfo {
         'maritalStatus': maritalStatus.jsonValue,
         'dependentes': dependentes,
         'deficiente': deficiente,
+        'irsJovemYear': irsJovemYear,
       };
 
   factory PersonalInfo.fromJson(Map<String, dynamic> json) => PersonalInfo(
         maritalStatus: MaritalStatus.fromJson(json['maritalStatus'] ?? 'solteiro'),
         dependentes: json['dependentes'] ?? 0,
         deficiente: json['deficiente'] ?? false,
+        irsJovemYear: json['irsJovemYear'] ?? 0,
       );
 }
 

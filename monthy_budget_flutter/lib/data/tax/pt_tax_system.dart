@@ -15,6 +15,8 @@ class PtTaxSystem extends TaxSystem {
     required String maritalStatus,
     required int titulares,
     required int dependentes,
+    bool deficiente = false,
+    int irsJovemYear = 0,
   }) {
     if (grossSalary <= 0) {
       return const TaxResult(
@@ -26,7 +28,12 @@ class PtTaxSystem extends TaxSystem {
       );
     }
 
-    final table = getApplicableTable(maritalStatus, titulares, dependentes);
+    final table = getApplicableTable(
+      maritalStatus,
+      titulares,
+      dependentes,
+      deficiente: deficiente,
+    );
     final bracket = table.brackets.cast<IRSBracket?>().firstWhere(
           (b) => grossSalary <= b!.upTo,
           orElse: () => null,
@@ -36,10 +43,20 @@ class PtTaxSystem extends TaxSystem {
     double rate = 0;
 
     if (bracket != null && bracket.rate > 0) {
+      // Parcela a abater: fixa ou por fórmula (mínimo de existência).
+      final parcela = bracket.parcelaFor(grossSalary);
       retention = grossSalary * bracket.rate -
-          bracket.parcelaAbater -
+          parcela -
           bracket.parcelaDependente * dependentes;
       retention = math.max(0.0, round2(retention));
+
+      // IRS Jovem: reduz a retenção pela fração de isenção do ano de regime.
+      // Nota: o tecto anual (55×IAS) não é aplicado nesta retenção mensal.
+      final exemption = irsJovemExemption(irsJovemYear);
+      if (exemption > 0) {
+        retention = round2(retention * (1 - exemption));
+      }
+
       rate = grossSalary > 0 ? retention / grossSalary : 0.0;
       rate = (rate * 10000).roundToDouble() / 10000;
     }

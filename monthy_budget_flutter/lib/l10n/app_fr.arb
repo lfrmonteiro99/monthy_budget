@@ -3032,5 +3032,11 @@
     "incomeCategoryFreelance": "Freelance",
     "incomeCategoryInterest": "Interets",
     "incomeCategoryInvestment": "Investissement",
-    "incomeCategoryGift": "Cadeau / Bonus"
+    "incomeCategoryGift": "Cadeau / Bonus",
+    "settingsIrsJovemLabel": "IRS JOVEM (ANNÉE DE RÉGIME)",
+    "helperIrsJovem": "0 = non adhérent. Réduit la retenue : année 1 100%, années 2–4 75%, 5–7 50%, 8–10 25%.",
+    "settingsDisabilityLabel": "PERSONNE EN SITUATION DE HANDICAP",
+    "helperDisability": "Applique les tables de retenue spécifiques au handicap (IV–VII).",
+    "taxSimIrsJovem": "IRS Jovem (année)",
+    "taxSimDisability": "Handicap"
 }
