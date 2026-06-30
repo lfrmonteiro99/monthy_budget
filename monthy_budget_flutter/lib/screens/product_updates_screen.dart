@@ -60,9 +60,9 @@ class _ProductUpdatesScreenState extends State<ProductUpdatesScreen>
         children: [
           TabBar(
             controller: _tabController,
-            labelColor: AppColors.primary(context),
-            unselectedLabelColor: AppColors.textMuted(context),
-            indicatorColor: AppColors.primary(context),
+            labelColor: AppColors.accent(context),
+            unselectedLabelColor: AppColors.ink50(context),
+            indicatorColor: AppColors.accent(context),
             indicatorSize: TabBarIndicatorSize.label,
             tabs: [
               Tab(text: l10n.whatsNewTab),

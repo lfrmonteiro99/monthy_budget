@@ -171,7 +171,7 @@ class _KpiRow extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: bold ? FontWeight.w600 : FontWeight.w400,
-              color: AppColors.textPrimary(context),
+              color: AppColors.ink(context),
             ),
           ),
         ),
@@ -180,7 +180,7 @@ class _KpiRow extends StatelessWidget {
           style: TextStyle(
             fontSize: 14,
             fontWeight: bold ? FontWeight.w700 : FontWeight.w500,
-            color: color ?? AppColors.textPrimary(context),
+            color: color ?? AppColors.ink(context),
           ),
         ),
       ],
