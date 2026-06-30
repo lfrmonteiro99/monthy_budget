@@ -13,7 +13,6 @@ import '../utils/atcud_parser.dart';
 import '../utils/formatters.dart';
 import '../widgets/barcode_result_card.dart';
 import '../widgets/barcode_scan_sheet.dart';
-import '../widgets/receipt_scan_sheet.dart';
 import '../utils/shopping_grouping.dart';
 import '../onboarding/shopping_tour.dart';
 import '../widgets/shopping_group_toggle.dart';
