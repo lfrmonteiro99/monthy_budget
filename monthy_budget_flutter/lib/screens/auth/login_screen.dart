@@ -152,6 +152,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _emailCtrl,
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
+                autocorrect: false,
+                enableSuggestions: false,
                 label: S.of(context).authEmail,
                 hint: S.of(context).authEmailHint,
                 prefixIcon: const Icon(Icons.email_outlined),

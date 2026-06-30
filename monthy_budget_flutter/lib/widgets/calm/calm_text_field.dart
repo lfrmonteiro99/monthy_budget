@@ -43,6 +43,8 @@ class CalmTextField extends StatelessWidget {
     this.textCapitalization = TextCapitalization.none,
     this.inputFormatters,
     this.obscureText = false,
+    this.autocorrect = true,
+    this.enableSuggestions = true,
     this.autofocus = false,
     this.enabled = true,
     this.readOnly = false,
@@ -83,6 +85,13 @@ class CalmTextField extends StatelessWidget {
   final TextCapitalization textCapitalization;
   final List<TextInputFormatter>? inputFormatters;
   final bool obscureText;
+
+  /// Forwarded to [TextFormField.autocorrect]. Defaults to true (Flutter
+  /// default); set false for fields like email where autocorrect is unwanted.
+  final bool autocorrect;
+
+  /// Forwarded to [TextFormField.enableSuggestions]. Defaults to true.
+  final bool enableSuggestions;
   final bool autofocus;
   final bool enabled;
   final bool readOnly;
@@ -108,6 +117,8 @@ class CalmTextField extends StatelessWidget {
       textCapitalization: textCapitalization,
       inputFormatters: inputFormatters,
       obscureText: obscureText,
+      autocorrect: autocorrect,
+      enableSuggestions: enableSuggestions,
       autofocus: autofocus,
       enabled: enabled,
       readOnly: readOnly,
