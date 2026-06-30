@@ -296,6 +296,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // ───────────────────────────────── Hero ──────────────────────────────────
 
   Widget _buildHero(BuildContext context, bool isPositive, S l10n) {
+    final now = DateTime.now();
+    final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
+    final daysPassed = now.day;
+    final daysLeft = daysInMonth - daysPassed;
+    final totalBudget = summary.totalNetWithMeal;
+    final spent = summary.totalExpenses;
+    final remaining = totalBudget - spent;
+    final isOverBudget = remaining < 0;
+    // Pace = spending rate vs. the linear budget pace. Drives the "ritmo"
+    // status (on/over pace), distinct from the progress-bar colour which
+    // tracks absolute over-budget. No budget set ⇒ treated as on track.
+    final onTrack = totalBudget <= 0 ||
+        (daysPassed > 0
+            ? spent / daysPassed <= totalBudget / daysInMonth
+            : true);
+    final pacePct = totalBudget > 0 ? (daysPassed / daysInMonth) * 100 : 0.0;
+
     return Semantics(
       key: DashboardTourKeys.heroCard,
       label: l10n.dashboardHeroLabel(
@@ -311,14 +328,88 @@ class _DashboardScreenState extends State<DashboardScreen> {
             eyebrow: l10n.dashboardMonthlyLiquidity.toUpperCase(),
             amount: formatCurrency(summary.netLiquidity),
             subtitle: l10n.dashboardFinancialSummary,
+            size: 64,
           ),
           const SizedBox(height: 12),
-          CalmPill(
-            label: isPositive
-                ? l10n.dashboardPositiveBalance
-                : l10n.dashboardNegativeBalance,
-            color: isPositive ? AppColors.ok(context) : AppColors.bad(context),
+          Row(
+            children: [
+              Container(
+                width: 6,
+                height: 6,
+                decoration: BoxDecoration(
+                  color: onTrack
+                      ? AppColors.ok(context)
+                      : AppColors.bad(context),
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                onTrack
+                    ? l10n.dashboardHeroOnTrack
+                    : l10n.dashboardHeroOverPace,
+                style: TextStyle(fontSize: 13, color: AppColors.ink70(context)),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '·',
+                style: TextStyle(fontSize: 13, color: AppColors.ink50(context)),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                l10n.dashboardHeroDaysLeft(daysLeft.toString()),
+                style: TextStyle(fontSize: 13, color: AppColors.ink50(context)),
+              ),
+            ],
           ),
+          const SizedBox(height: 18),
+          if (totalBudget > 0) ...[
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final paceLeft =
+                    (constraints.maxWidth * pacePct / 100) - 0.5;
+                return Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(99),
+                      child: LinearProgressIndicator(
+                        value: (spent / totalBudget).clamp(0.0, 1.0),
+                        backgroundColor: AppColors.bgSunk(context),
+                        color: isOverBudget
+                            ? AppColors.bad(context)
+                            : AppColors.ink(context),
+                        minHeight: 2,
+                      ),
+                    ),
+                    if (pacePct > 0 && pacePct < 100)
+                      Positioned(
+                        left: paceLeft,
+                        top: -3,
+                        child: Container(
+                          width: 1,
+                          height: 8,
+                          color: AppColors.ink50(context),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  l10n.dashboardHeroSpentLabel(formatCurrency(spent)),
+                  style: TextStyle(fontSize: 11, color: AppColors.ink50(context)),
+                ),
+                Text(
+                  l10n.dashboardHeroBudgetLabel(formatCurrency(totalBudget)),
+                  style: TextStyle(fontSize: 11, color: AppColors.ink50(context)),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );
