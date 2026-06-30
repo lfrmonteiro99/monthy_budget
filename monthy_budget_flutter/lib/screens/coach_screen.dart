@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 
 import '../constants/app_constants.dart';
 import '../data/tax/tax_factory.dart';
@@ -18,13 +17,16 @@ import '../services/subscription_service.dart';
 import 'package:monthly_management/widgets/calm/calm.dart';
 
 import '../theme/app_colors.dart';
-import '../theme/app_theme.dart';
 import '../utils/calculations.dart';
 import '../utils/coach_delimiter_parser.dart';
 import '../utils/coach_mode_recommender.dart';
 import '../utils/rate_limiter.dart';
 import '../widgets/info_icon_button.dart';
 import '../widgets/offline_banner.dart';
+import '../widgets/coach/coach_chat_bubble.dart';
+import '../widgets/coach/coach_composer.dart';
+import '../widgets/coach/coach_typing_dots.dart';
+import '../widgets/coach/coach_credit_packs_sheet.dart';
 
 class CoachScreen extends StatefulWidget {
   final AppSettings settings;
@@ -1084,10 +1086,10 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           // §16: "3 dots animados na bubble AI. NÃO shimmer.").
           final showAvatar = _messages.isEmpty ||
               _messages.last.role != 'assistant';
-          return _ChatBubble(
+          return ChatBubble(
             isUser: false,
             showAvatar: showAvatar,
-            child: const _CoachTypingDots(),
+            child: const CoachTypingDots(),
           );
         }
         final message = _messages[index];
@@ -1102,10 +1104,10 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
           crossAxisAlignment:
               isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
-            _ChatBubble(
+            ChatBubble(
               isUser: isUser,
               showAvatar: showAvatar,
-              child: _MessageBody(content: message.content, isUser: isUser),
+              child: MessageBody(content: message.content, isUser: isUser),
             ),
             if (isLastAssistant) _buildInlineMicroActionTag(),
           ],
@@ -1131,7 +1133,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
               Row(
                 children: [
                   Expanded(
-                    child: _ComposerInputField(
+                    child: ComposerInputField(
                       controller: _composerController,
                       hint: l10n.coachComposerHint,
                       onChanged: _checkRecommendation,
@@ -1140,7 +1142,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  _SendButton(
+                  SendButton(
                     enabled: canSend,
                     loading: _loading,
                     onPressed: _sendCurrentMessage,
@@ -1370,7 +1372,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
   void _showCreditPacksSheet() {
     CalmBottomSheet.show(
       context,
-      builder: (ctx) => _CreditPacksSheet(
+      builder: (ctx) => CreditPacksSheet(
         subscription: _subscription,
         onPurchase: (pack) async {
           Navigator.pop(ctx);
@@ -1412,597 +1414,5 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
             context, S.of(context).coachPurchaseError(e.toString()));
       }
     }
-  }
-}
-
-/// Asymmetric chat bubble per SCREEN_ROLLOUT §16:
-/// - AI: bg `bgSunk`, radius 18 with bottom-left corner 4, padding 14, max 78%,
-///   28×28 ink avatar with bg "C" (Fraunces 14). Avatar only when [showAvatar].
-/// - User: bg `ink`, text `bg`, radius 18 with bottom-right corner 4. Avatar
-///   28×28 with `userInitials` ink50 outline ink20 — also only first of turn.
-class _ChatBubble extends StatelessWidget {
-  const _ChatBubble({
-    required this.isUser,
-    required this.showAvatar,
-    required this.child,
-  });
-
-  final bool isUser;
-  final bool showAvatar;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.sizeOf(context).width;
-    final maxWidth = screenWidth * 0.78;
-    final bubbleColor = isUser
-        ? AppColors.ink(context)
-        : AppColors.bgSunk(context);
-    final radius = isUser
-        ? const BorderRadius.only(
-            topLeft: Radius.circular(18),
-            topRight: Radius.circular(18),
-            bottomLeft: Radius.circular(18),
-            bottomRight: Radius.circular(4),
-          )
-        : const BorderRadius.only(
-            topLeft: Radius.circular(18),
-            topRight: Radius.circular(18),
-            bottomLeft: Radius.circular(4),
-            bottomRight: Radius.circular(18),
-          );
-
-    final bubble = ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: maxWidth),
-      // Single Container per bubble — asymmetric corner geometry per spec
-      // cannot be expressed via theme-driven CalmCard.
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: bubbleColor,
-          borderRadius: radius,
-        ),
-        child: child,
-      ),
-    );
-
-    if (!showAvatar) {
-      return Align(
-        alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
-        child: Padding(
-          padding: EdgeInsets.only(
-            bottom: 4,
-            left: isUser ? 0 : 36, // align below the AI avatar column
-            right: isUser ? 36 : 0,
-          ),
-          child: bubble,
-        ),
-      );
-    }
-
-    final avatar = _BubbleAvatar(isUser: isUser);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6, top: 6),
-      child: Row(
-        mainAxisAlignment:
-            isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          if (!isUser) ...[avatar, const SizedBox(width: 8)],
-          Flexible(child: bubble),
-          if (isUser) ...[const SizedBox(width: 8), avatar],
-        ],
-      ),
-    );
-  }
-}
-
-/// 28×28 round avatar — coach uses `CalmAvatarBadge`-equivalent ink fill
-/// with Fraunces "C". User mirrors with `userInitials` ink50 outline ink20.
-class _BubbleAvatar extends StatelessWidget {
-  const _BubbleAvatar({required this.isUser});
-
-  final bool isUser;
-
-  @override
-  Widget build(BuildContext context) {
-    if (!isUser) {
-      // Coach avatar: ink fill, bg-coloured "C" in Fraunces 14.
-      return CalmAvatarBadge(initials: 'C', size: 28);
-    }
-    // User avatar: outline ink20, ink50 initial. No fill — visually distinct.
-    return SizedBox(
-      width: 28,
-      height: 28,
-      child: DecoratedBox(
-        decoration: ShapeDecoration(
-          shape: CircleBorder(
-            side: BorderSide(color: AppColors.ink20(context)),
-          ),
-        ),
-        child: Center(
-          child: Text(
-            'U',
-            // TODO(l10n): swap "U" for personalInfo.userInitials when available.
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: AppColors.ink50(context),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Bubble text body. AI uses Markdown (with inline accent CTA pills allowed
-/// via prose), user uses plain selectable text reversed on ink.
-class _MessageBody extends StatelessWidget {
-  const _MessageBody({required this.content, required this.isUser});
-
-  final String content;
-  final bool isUser;
-
-  @override
-  Widget build(BuildContext context) {
-    final textColor = isUser ? AppColors.bg(context) : AppColors.ink(context);
-    if (isUser) {
-      return SelectableText(
-        content,
-        style: TextStyle(fontSize: 14, color: textColor, height: 1.45),
-      );
-    }
-    return MarkdownBody(
-      data: content,
-      selectable: true,
-      styleSheet: MarkdownStyleSheet(
-        p: TextStyle(fontSize: 14, color: textColor, height: 1.45),
-        strong: TextStyle(
-          fontSize: 14,
-          color: textColor,
-          fontWeight: FontWeight.w700,
-          height: 1.45,
-        ),
-        listBullet: TextStyle(fontSize: 14, color: textColor, height: 1.45),
-        h1: TextStyle(
-          fontSize: 16,
-          color: textColor,
-          fontWeight: FontWeight.w800,
-          height: 1.4,
-        ),
-        h2: TextStyle(
-          fontSize: 15,
-          color: textColor,
-          fontWeight: FontWeight.w700,
-          height: 1.4,
-        ),
-      ),
-    );
-  }
-}
-
-/// Composer text-field — bgSunk pill (radius 99), padding 12/18.
-class _ComposerInputField extends StatelessWidget {
-  const _ComposerInputField({
-    required this.controller,
-    required this.hint,
-    required this.onChanged,
-    required this.onSubmitted,
-    required this.enabled,
-  });
-
-  final TextEditingController controller;
-  final String hint;
-  final ValueChanged<String> onChanged;
-  final ValueChanged<String> onSubmitted;
-  final bool enabled;
-
-  @override
-  Widget build(BuildContext context) {
-    // Single Container — radius 99 + bgSunk fill is the spec's input chrome.
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.bgSunk(context),
-        borderRadius: BorderRadius.circular(99),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
-      child: TextField(
-        controller: controller,
-        minLines: 1,
-        maxLines: 4,
-        enabled: enabled,
-        textInputAction: TextInputAction.send,
-        onChanged: onChanged,
-        onSubmitted: onSubmitted,
-        style: TextStyle(fontSize: 14, color: AppColors.ink(context)),
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: TextStyle(
-            color: AppColors.ink50(context),
-            fontSize: 14,
-          ),
-          isDense: true,
-          border: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          disabledBorder: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(vertical: 12),
-        ),
-      ),
-    );
-  }
-}
-
-/// 36×36 ink-filled send button with arrow_upward 18 bg. Disabled state
-/// drops opacity to 0.4 per spec §16.
-class _SendButton extends StatelessWidget {
-  const _SendButton({
-    required this.enabled,
-    required this.loading,
-    required this.onPressed,
-  });
-
-  final bool enabled;
-  final bool loading;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    final inkBg = AppColors.ink(context);
-    return Opacity(
-      opacity: enabled ? 1.0 : 0.4,
-      child: Material(
-        color: inkBg,
-        shape: const CircleBorder(),
-        child: InkWell(
-          onTap: enabled ? onPressed : null,
-          customBorder: const CircleBorder(),
-          child: SizedBox(
-            width: 36,
-            height: 36,
-            child: Center(
-              child: loading
-                  ? SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          AppColors.bg(context),
-                        ),
-                      ),
-                    )
-                  : Icon(
-                      Icons.arrow_upward_rounded,
-                      size: 18,
-                      color: AppColors.bg(context),
-                    ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Three-dot typing indicator for the loading-reply state per SCREEN_ROLLOUT
-/// §16 ("3 dots animados, NÃO shimmer"). Stagger 200ms per dot.
-class _CoachTypingDots extends StatefulWidget {
-  const _CoachTypingDots();
-
-  @override
-  State<_CoachTypingDots> createState() => _CoachTypingDotsState();
-}
-
-class _CoachTypingDotsState extends State<_CoachTypingDots>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 900),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final color = AppColors.ink50(context);
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, _) {
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: List.generate(3, (i) {
-            final phase = (_controller.value + i / 3) % 1.0;
-            final t = (1 - (phase * 2 - 1).abs()).clamp(0.0, 1.0);
-            final opacity = 0.3 + 0.7 * t;
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: Icon(
-                Icons.circle,
-                size: 6,
-                color: color.withValues(alpha: opacity),
-              ),
-            );
-          }),
-        );
-      },
-    );
-  }
-}
-
-class _CreditPacksSheet extends StatelessWidget {
-  final SubscriptionState subscription;
-  final ValueChanged<CreditPack> onPurchase;
-
-  const _CreditPacksSheet({
-    required this.subscription,
-    required this.onPurchase,
-  });
-
-  String _packSessions(BuildContext context, CreditPack pack) {
-    final plus = pack.credits ~/ coachModeCreditCost[CoachMode.plus]!;
-    final pro = pack.credits ~/ coachModeCreditCost[CoachMode.pro]!;
-    return S.of(context).coachPackSessions(plus, pro);
-  }
-
-  int _recommendedPackIndex() {
-    if (subscription.totalProSessions > subscription.totalPlusSessions) {
-      return 2; // 500 credits for heavy Pro users
-    }
-    return 1; // 150 credits default
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = S.of(context);
-    final recommended = _recommendedPackIndex();
-    final insight = subscription.lastSessionInsight;
-    final insightValue = subscription.lastSessionInsightValue;
-
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Row(
-              children: [
-                Text(
-                  l10n.coachCreditsTitle,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.ink(context),
-                  ),
-                ),
-                const Spacer(),
-                CalmPill(
-                  label: l10n.coachCreditsRemaining(subscription.aiCredits),
-                  color: AppColors.accent(context),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-
-            // ROI insight card
-            if (insight != null) ...[
-              CalmCard(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.insights_rounded,
-                      size: 20,
-                      color: AppColors.accent(context),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text.rich(
-                        TextSpan(
-                          style: TextStyle(
-                            fontSize: 12.5,
-                            height: 1.5,
-                            color: AppColors.ink70(context),
-                          ),
-                          children: [
-                            TextSpan(text: l10n.coachRoiInsightPrefix),
-                            TextSpan(
-                              text: insight,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.ink(context),
-                              ),
-                            ),
-                            if (insightValue != null &&
-                                insightValue.isNotEmpty) ...[
-                              TextSpan(text: l10n.coachRoiPotential),
-                              TextSpan(
-                                text: insightValue,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.accent(context),
-                                ),
-                              ),
-                            ],
-                            TextSpan(text: l10n.coachRoiCost),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-            ],
-
-            // Cap warning
-            if (subscription.isAtCreditCap) ...[
-              CalmCard(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.info_rounded,
-                      size: 16,
-                      color: AppColors.warn(context),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        l10n.coachCapWarningSheet(
-                          SubscriptionState.maxCreditCap,
-                        ),
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.ink(context),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-            ],
-
-            // Pack cards
-            ...List.generate(creditPacks.length, (i) {
-              final pack = creditPacks[i];
-              final isRecommended = i == recommended;
-              final wasted = subscription.creditsWasted(pack.credits);
-              final isDimmed = wasted > pack.credits * 0.5;
-
-              return Opacity(
-                opacity: isDimmed ? 0.45 : 1.0,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: CalmCard(
-                    padding: EdgeInsets.zero,
-                    onTap: isDimmed ? null : () => onPurchase(pack),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      child: Row(
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '${pack.credits}',
-                                style: CalmText.amount(
-                                  context,
-                                  size: 22,
-                                  weight: FontWeight.w700,
-                                ),
-                              ),
-                              Text(
-                                l10n.coachCreditsLabel,
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.ink50(context),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (isRecommended)
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 4),
-                                    child: CalmPill(
-                                      label: l10n.coachBestValue,
-                                      color: AppColors.accent(context),
-                                    ),
-                                  ),
-                                Text(
-                                  _packSessions(context, pack),
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: wasted > 0
-                                        ? AppColors.bad(context)
-                                        : AppColors.ink70(context),
-                                  ),
-                                ),
-                                if (wasted > 0)
-                                  Text(
-                                    l10n.coachWastedCredits(wasted),
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.bad(context),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                          OutlinedButton(
-                            onPressed:
-                                isDimmed ? null : () => onPurchase(pack),
-                            style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: AppColors.line(context)),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 8,
-                              ),
-                            ),
-                            child: Text(
-                              pack.fallbackPrice,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.ink(context),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            }),
-
-            // Personalized recommendation
-            const SizedBox(height: 4),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.auto_awesome,
-                  size: 14,
-                  color: AppColors.accent(context),
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  l10n.coachRecommendedPack(creditPacks[recommended].credits),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.ink70(context),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
