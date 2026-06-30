@@ -7,6 +7,7 @@ import 'app_shell.dart';
 import 'providers/navigation_providers.dart';
 import 'providers/connectivity_providers.dart';
 import 'providers/subscription_providers.dart';
+import 'providers/savings_providers.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'models/app_settings.dart';
 import 'models/product.dart';
@@ -160,8 +161,9 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   Map<String, List<ActualExpense>> _actualExpenseHistory = {};
   Map<String, double> _monthlyBudgets = {};
   NotificationPreferences _notificationPrefs = NotificationPreferences();
-  List<SavingsGoal> _savingsGoals = [];
-  Map<String, SavingsProjection> _savingsProjections = {};
+  List<SavingsGoal> get _savingsGoals => ref.read(savingsGoalsProvider);
+  Map<String, SavingsProjection> get _savingsProjections =>
+      ref.read(savingsProjectionsProvider);
   List<Product> _products = [];
   GroceryData _groceryData = const GroceryData();
   List<String> _favorites = [];
@@ -699,7 +701,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
 
   Future<void> _loadSavingsGoals() async {
     final goals = await _savingsGoalService.loadGoals(widget.householdId);
-    if (mounted) setState(() => _savingsGoals = goals);
+    if (mounted) ref.read(savingsGoalsProvider.notifier).set(goals);
     _dataHealthService.recordLoad(SyncDomain.savingsGoals);
     // Load contributions and compute projections for dashboard card
     final allContribs = await _savingsGoalService.loadAllContributions(
@@ -713,7 +715,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
         contributions: allContribs[goal.id] ?? [],
       );
     }
-    if (mounted) setState(() => _savingsProjections = projections);
+    if (mounted) ref.read(savingsProjectionsProvider.notifier).set(projections);
   }
 
   void _openSavingsGoals() {
@@ -723,7 +725,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
         householdId: widget.householdId,
         goals: _savingsGoals,
         onChanged: (updated) {
-          setState(() => _savingsGoals = updated);
+          ref.read(savingsGoalsProvider.notifier).set(updated);
           _loadSavingsGoals();
         },
         subscription: _subscription,
@@ -1688,10 +1690,10 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   }
 
   Future<void> _addSavingsGoalFromCommand(SavingsGoal goal) async {
-    setState(() {
-      _savingsGoals = [..._savingsGoals, goal]
-        ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
-    });
+    ref.read(savingsGoalsProvider.notifier).set(
+      [..._savingsGoals, goal]
+        ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase())),
+    );
     LogService.breadcrumb(
       'Created savings goal',
       category: 'savings',
@@ -1855,11 +1857,11 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
         widget.householdId,
       );
       if (!mounted) return false;
-      setState(() {
-        _savingsGoals = _savingsGoals
+      ref.read(savingsGoalsProvider.notifier).set(
+        _savingsGoals
             .map((g) => g.id == updatedGoal.id ? updatedGoal : g)
-            .toList();
-      });
+            .toList(),
+      );
       return true;
     } catch (e) {
       LogService.error(
@@ -2100,6 +2102,10 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
 
     // Subscription state (#632 increment 3) — rebuild on tier/trial changes.
     ref.watch(subscriptionProvider);
+
+    // Savings goals + projections (#632 increment 4).
+    ref.watch(savingsGoalsProvider);
+    ref.watch(savingsProjectionsProvider);
 
     if (!_loaded) {
       return const BrandedLoading();
