@@ -369,4 +369,134 @@ void main() {
       expect(fullCalc.effectiveGrossAmount, greaterThan(noneCalc.effectiveGrossAmount));
     });
   });
+
+  // ─── PT: mínimo de existência (fórmula da parcela a abater) ─────────
+  group('PT mínimo de existência — sem degrau', () {
+    final pt = PtTaxSystem();
+
+    double irs(double gross) => pt
+        .calculateTax(
+          grossSalary: gross,
+          maritalStatus: 'solteiro',
+          titulares: 1,
+          dependentes: 0,
+        )
+        .incomeTax;
+
+    test('retenção é 0 exatamente no limiar (920€)', () {
+      expect(irs(920), 0);
+    });
+
+    test('sem degrau logo acima do limiar (921€ ~ 0, não ~40€)', () {
+      // Parcela por fórmula: 0.125 × 2.6 × (1273.85 − 921) ≈ 114.68
+      // Retenção ≈ 921×0.125 − 114.68 ≈ 0.44 (não ~40€ como com parcela fixa)
+      expect(irs(921), lessThan(1.0));
+    });
+
+    test('rendimento líquido é monótono à volta do mínimo de existência', () {
+      double net(double g) => pt
+          .calculateTax(
+            grossSalary: g,
+            maritalStatus: 'solteiro',
+            titulares: 1,
+            dependentes: 0,
+          )
+          .netSalary;
+      // +1€ de bruto nunca pode reduzir o líquido
+      for (var g = 915.0; g < 1100; g += 1) {
+        expect(net(g + 1), greaterThanOrEqualTo(net(g) - 0.01),
+            reason: 'líquido caiu de $g para ${g + 1}');
+      }
+    });
+
+    test('taxa efetiva no limite do escalão bate com a tabela oficial (Tabela I)', () {
+      // Valores oficiais "taxa efetiva mensal no limite do escalão"
+      expect(irs(1042) / 1042, closeTo(0.053, 0.001));
+      expect(irs(1819) / 1819, closeTo(0.135, 0.001));
+      expect(irs(2119) / 2119, closeTo(0.16, 0.001));
+      expect(irs(2499) / 2499, closeTo(0.188, 0.001));
+    });
+
+    test('Tabela I escalão ≤20221 usa parcela 823.40 (corrigido de 893.75)', () {
+      // 10000 × 0.4495 − 823.40 = 3671.60
+      expect(irs(10000), closeTo(3671.60, 0.01));
+    });
+  });
+
+  // ─── PT: IRS Jovem ──────────────────────────────────────────────────
+  group('PT IRS Jovem', () {
+    final pt = PtTaxSystem();
+
+    double irs(double gross, int year) => pt
+        .calculateTax(
+          grossSalary: gross,
+          maritalStatus: 'solteiro',
+          titulares: 1,
+          dependentes: 0,
+          irsJovemYear: year,
+        )
+        .incomeTax;
+
+    test('ano 1 → 100% isento → retenção 0', () {
+      expect(irs(1500, 1), 0);
+    });
+
+    test('ano 2 (75% isento), 1100€ → ~19.07€', () {
+      // Retenção normal ≈ 76.30; × 25% ≈ 19.07
+      expect(irs(1100, 0), closeTo(76.30, 0.1));
+      expect(irs(1100, 2), closeTo(19.07, 0.1));
+    });
+
+    test('isenção decresce com o ano de regime', () {
+      final y2 = irs(2500, 2); // 75%
+      final y5 = irs(2500, 5); // 50%
+      final y8 = irs(2500, 8); // 25%
+      final y11 = irs(2500, 11); // sem isenção
+      expect(y2, lessThan(y5));
+      expect(y5, lessThan(y8));
+      expect(y8, lessThan(y11));
+      expect(y11, closeTo(irs(2500, 0), 0.01));
+    });
+
+    test('exemption fractions', () {
+      expect(irsJovemExemption(0), 0.0);
+      expect(irsJovemExemption(1), 1.0);
+      expect(irsJovemExemption(3), 0.75);
+      expect(irsJovemExemption(6), 0.50);
+      expect(irsJovemExemption(10), 0.25);
+      expect(irsJovemExemption(11), 0.0);
+    });
+  });
+
+  // ─── PT: tabelas de deficiência (IV–VII) ────────────────────────────
+  group('PT deficiência', () {
+    final pt = PtTaxSystem();
+
+    test('seleção de tabela', () {
+      expect(getApplicableTable('solteiro', 1, 0, deficiente: true).id, 'table_IV');
+      expect(getApplicableTable('casado', 2, 0, deficiente: true).id, 'table_IV');
+      expect(getApplicableTable('solteiro', 1, 1, deficiente: true).id, 'table_V');
+      expect(getApplicableTable('casado', 2, 1, deficiente: true).id, 'table_VI');
+      expect(getApplicableTable('casado', 1, 0, deficiente: true).id, 'table_VII');
+    });
+
+    test('deficiente retém menos (mínimo de existência mais alto)', () {
+      final normal = pt.calculateTax(
+        grossSalary: 1500,
+        maritalStatus: 'solteiro',
+        titulares: 1,
+        dependentes: 0,
+      );
+      final defic = pt.calculateTax(
+        grossSalary: 1500,
+        maritalStatus: 'solteiro',
+        titulares: 1,
+        dependentes: 0,
+        deficiente: true,
+      );
+      // 1500 < 1694 (limiar Tabela IV) → retenção 0
+      expect(defic.incomeTax, 0);
+      expect(defic.incomeTax, lessThan(normal.incomeTax));
+    });
+  });
 }

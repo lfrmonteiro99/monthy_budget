@@ -84,6 +84,8 @@ SalaryCalculation calculateNetSalary(
     maritalStatus: personalInfo.maritalStatus.jsonValue,
     titulares: salary.titulares,
     dependentes: personalInfo.dependentes,
+    deficiente: personalInfo.deficiente,
+    irsJovemYear: personalInfo.irsJovemYear,
   );
 
   final netAmount = math.max(0.0, _round2(effectiveGross - taxResult.incomeTax - taxResult.socialContribution));

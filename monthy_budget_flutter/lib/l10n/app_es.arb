@@ -3032,5 +3032,11 @@
     "incomeCategoryFreelance": "Freelance",
     "incomeCategoryInterest": "Intereses",
     "incomeCategoryInvestment": "Inversion",
-    "incomeCategoryGift": "Regalo / Bono"
+    "incomeCategoryGift": "Regalo / Bono",
+    "settingsIrsJovemLabel": "IRS JOVEM (AÑO DE RÉGIMEN)",
+    "helperIrsJovem": "0 = no adherido. Reduce la retención: año 1 100%, años 2–4 75%, 5–7 50%, 8–10 25%.",
+    "settingsDisabilityLabel": "PERSONA CON DISCAPACIDAD",
+    "helperDisability": "Aplica las tablas de retención específicas para discapacidad (IV–VII).",
+    "taxSimIrsJovem": "IRS Jovem (año)",
+    "taxSimDisability": "Discapacidad"
 }

@@ -196,6 +196,68 @@ extension _SettingsSections on _SettingsScreenState {
               }),
             ],
           ),
+          if (_draft.country == Country.pt) ...[
+            const SizedBox(height: 20),
+            _label(l10n.settingsIrsJovemLabel),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                _counterButton('-', () {
+                  if (_draft.personalInfo.irsJovemYear > 0) {
+                    setState(() {
+                      _draft = _draft.copyWith(
+                        personalInfo: _draft.personalInfo
+                            .copyWith(irsJovemYear: _draft.personalInfo.irsJovemYear - 1),
+                      );
+                    });
+                  }
+                }),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    '${_draft.personalInfo.irsJovemYear}',
+                    style: CalmText.display(context, size: 24),
+                  ),
+                ),
+                _counterButton('+', () {
+                  if (_draft.personalInfo.irsJovemYear < 10) {
+                    setState(() {
+                      _draft = _draft.copyWith(
+                        personalInfo: _draft.personalInfo
+                            .copyWith(irsJovemYear: _draft.personalInfo.irsJovemYear + 1),
+                      );
+                    });
+                  }
+                }),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16, top: 4),
+              child: Text(l10n.helperIrsJovem,
+                  style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(child: _label(l10n.settingsDisabilityLabel)),
+                Switch(
+                  value: _draft.personalInfo.deficiente,
+                  onChanged: (v) {
+                    setState(() {
+                      _draft = _draft.copyWith(
+                        personalInfo: _draft.personalInfo.copyWith(deficiente: v),
+                      );
+                    });
+                  },
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16, top: 4),
+              child: Text(l10n.helperDisability,
+                  style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+            ),
+          ],
           const SizedBox(height: 20),
           Container(
             padding: const EdgeInsets.all(16),

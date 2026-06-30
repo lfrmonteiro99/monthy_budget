@@ -5820,5 +5820,17 @@
     "incomeCategoryFreelance": "Freelance",
     "incomeCategoryInterest": "Juros",
     "incomeCategoryInvestment": "Investimento",
-    "incomeCategoryGift": "Prenda / Bónus"
+    "incomeCategoryGift": "Prenda / Bónus",
+    "settingsIrsJovemLabel": "IRS JOVEM (ANO DE REGIME)",
+    "@settingsIrsJovemLabel": {
+        "description": "Settings label: IRS Jovem regime year"
+    },
+    "helperIrsJovem": "0 = não aderente. Reduz a retenção: ano 1 100%, anos 2–4 75%, 5–7 50%, 8–10 25%.",
+    "settingsDisabilityLabel": "PESSOA COM DEFICIÊNCIA",
+    "@settingsDisabilityLabel": {
+        "description": "Settings label: person with disability toggle"
+    },
+    "helperDisability": "Aplica as tabelas de retenção específicas para deficiência (IV–VII).",
+    "taxSimIrsJovem": "IRS Jovem (ano)",
+    "taxSimDisability": "Deficiência"
 }

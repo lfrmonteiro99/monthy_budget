@@ -27,6 +27,8 @@ class _TaxSimulatorScreenState extends State<TaxSimulatorScreen> {
   late MaritalStatus _maritalStatus;
   late int _titulares;
   late int _dependentes;
+  late int _irsJovemYear;
+  late bool _deficiente;
   late MealAllowanceType _mealType;
   late double _mealPerDay;
 
@@ -44,6 +46,8 @@ class _TaxSimulatorScreenState extends State<TaxSimulatorScreen> {
     _maritalStatus = widget.settings.personalInfo.maritalStatus;
     _titulares = salary.titulares;
     _dependentes = widget.settings.personalInfo.dependentes;
+    _irsJovemYear = widget.settings.personalInfo.irsJovemYear;
+    _deficiente = widget.settings.personalInfo.deficiente;
     _mealType = salary.mealAllowanceType;
     _mealPerDay = salary.mealAllowancePerDay;
 
@@ -74,6 +78,8 @@ class _TaxSimulatorScreenState extends State<TaxSimulatorScreen> {
     final simPersonal = widget.settings.personalInfo.copyWith(
       maritalStatus: _maritalStatus,
       dependentes: _dependentes,
+      irsJovemYear: _irsJovemYear,
+      deficiente: _deficiente,
     );
     _simCalc = calculateNetSalary(simSalary, simPersonal, taxSystem);
   }
@@ -284,6 +290,19 @@ class _TaxSimulatorScreenState extends State<TaxSimulatorScreen> {
                   _recalculate();
                 }),
               ),
+              if (country == Country.pt) ...[
+                const SizedBox(height: 16),
+                _StepperRow(
+                  label: l10n.taxSimIrsJovem,
+                  value: _irsJovemYear,
+                  min: 0,
+                  max: 10,
+                  onChanged: (v) => setState(() {
+                    _irsJovemYear = v;
+                    _recalculate();
+                  }),
+                ),
+              ],
               if (country.hasMealAllowance) ...[
                 const SizedBox(height: 16),
                 _SegmentedRow(
