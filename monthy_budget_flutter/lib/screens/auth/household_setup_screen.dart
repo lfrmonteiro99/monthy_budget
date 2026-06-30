@@ -83,7 +83,7 @@ class _HouseholdSetupScreenState extends State<HouseholdSetupScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.people_outline,
-                  size: 64, color: AppColors.primary(context)),
+                  size: 64, color: AppColors.ink(context)),
               const SizedBox(height: 8),
               Text(
                 S.of(context).householdSetupTitle,
@@ -110,28 +110,22 @@ class _HouseholdSetupScreenState extends State<HouseholdSetupScreen> {
               ),
               const SizedBox(height: 20),
               if (_creating)
-                TextField(
+                CalmTextField(
                   controller: _nameCtrl,
-                  decoration: InputDecoration(
-                    labelText: S.of(context).householdNameLabel,
-                    hintText: S.of(context).householdNameHint,
-                    border: const OutlineInputBorder(),
-                  ),
+                  label: S.of(context).householdNameLabel,
+                  hint: S.of(context).householdNameHint,
                 )
               else
-                TextField(
+                CalmTextField(
                   controller: _codeCtrl,
                   textCapitalization: TextCapitalization.characters,
-                  decoration: InputDecoration(
-                    labelText: S.of(context).householdCodeLabel,
-                    hintText: S.of(context).householdCodeHint,
-                    border: const OutlineInputBorder(),
-                  ),
+                  label: S.of(context).householdCodeLabel,
+                  hint: S.of(context).householdCodeHint,
                 ),
               if (_error != null) ...[
                 const SizedBox(height: 8),
                 Text(_error!,
-                    style: TextStyle(color: AppColors.error(context), fontSize: 13)),
+                    style: TextStyle(color: AppColors.bad(context), fontSize: 13)),
               ],
               const SizedBox(height: 16),
               SizedBox(
@@ -143,7 +137,7 @@ class _HouseholdSetupScreenState extends State<HouseholdSetupScreen> {
                           height: 16,
                           width: 16,
                           child: CircularProgressIndicator(
-                              color: AppColors.onPrimary(context), strokeWidth: 2))
+                              color: AppColors.bg(context), strokeWidth: 2))
                       : Text(_creating
                           ? S.of(context).householdCreateButton
                           : S.of(context).householdJoinButton),

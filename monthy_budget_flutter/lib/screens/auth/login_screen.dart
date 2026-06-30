@@ -101,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.account_balance_wallet,
-                  size: 64, color: AppColors.primary(context)),
+                  size: 64, color: AppColors.ink(context)),
               const SizedBox(height: 8),
               Text(
                 S.of(context).appTitle,
@@ -116,28 +116,28 @@ class _LoginScreenState extends State<LoginScreen> {
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium
-                    ?.copyWith(color: AppColors.textSecondary(context)),
+                    ?.copyWith(color: AppColors.ink70(context)),
               ),
               if (_registrationSuccess) ...[
                 const SizedBox(height: 20),
                 Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: AppColors.success(context).withValues(alpha: 0.1),
+                    color: AppColors.ok(context).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.success(context).withValues(alpha: 0.4)),
+                    border: Border.all(color: AppColors.ok(context).withValues(alpha: 0.4)),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.mark_email_read_outlined, size: 20, color: AppColors.success(context)),
+                      Icon(Icons.mark_email_read_outlined, size: 20, color: AppColors.ok(context)),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
                           S.of(context).authRegistrationSuccess,
                           style: TextStyle(
                             fontSize: 13,
-                            color: AppColors.success(context),
+                            color: AppColors.ok(context),
                             height: 1.4,
                             fontWeight: FontWeight.w500,
                           ),
@@ -148,34 +148,27 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ],
               const SizedBox(height: 32),
-              TextField(
+              CalmTextField(
                 controller: _emailCtrl,
                 keyboardType: TextInputType.emailAddress,
-                autocorrect: false,
                 textInputAction: TextInputAction.next,
-                decoration: InputDecoration(
-                  labelText: S.of(context).authEmail,
-                  hintText: S.of(context).authEmailHint,
-                  prefixIcon: const Icon(Icons.email_outlined),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                ),
+                label: S.of(context).authEmail,
+                hint: S.of(context).authEmailHint,
+                prefixIcon: const Icon(Icons.email_outlined),
               ),
               const SizedBox(height: 12),
-              TextField(
+              CalmTextField(
                 controller: _passCtrl,
                 obscureText: true,
                 textInputAction: TextInputAction.done,
-                decoration: InputDecoration(
-                  labelText: S.of(context).authPassword,
-                  prefixIcon: const Icon(Icons.lock_outline),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                ),
+                label: S.of(context).authPassword,
+                prefixIcon: const Icon(Icons.lock_outline),
                 onSubmitted: (_) => _submit(),
               ),
               if (_error != null) ...[
                 const SizedBox(height: 8),
                 Text(_error!,
-                    style: TextStyle(color: AppColors.error(context), fontSize: 13)),
+                    style: TextStyle(color: AppColors.bad(context), fontSize: 13)),
               ],
               const SizedBox(height: 16),
               SizedBox(
@@ -187,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 16,
                           width: 16,
                           child: CircularProgressIndicator(
-                              color: AppColors.onPrimary(context), strokeWidth: 2))
+                              color: AppColors.bg(context), strokeWidth: 2))
                       : Text(_isLogin ? S.of(context).authLoginButton : S.of(context).authRegisterButton),
                 ),
               ),
