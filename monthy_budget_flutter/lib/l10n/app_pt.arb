@@ -5832,5 +5832,9 @@
     },
     "helperDisability": "Aplica as tabelas de retenção específicas para deficiência (IV–VII).",
     "taxSimIrsJovem": "IRS Jovem (ano)",
-    "taxSimDisability": "Deficiência"
+    "taxSimDisability": "Deficiência",
+    "irsJovemLegalNote": "IRS Jovem: aplica-se a taxa de retenção do rendimento total apenas à parte não isenta (Despacho n.º 236-A/2025). A parte isenta está limitada a 55×IAS (≈ 29.542€/ano). A retenção mensal é uma estimativa — o valor final é acertado no IRS anual (Modelo 3) e o tecto anual é repartido pelos meses de forma aproximada.",
+    "@irsJovemLegalNote": {
+        "description": "Informational note shown only when IRS Jovem is active: legal basis and monthly-estimate disclaimer"
+    }
 }

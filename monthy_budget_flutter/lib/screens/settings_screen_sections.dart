@@ -257,6 +257,22 @@ extension _SettingsSections on _SettingsScreenState {
               child: Text(l10n.helperDisability,
                   style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
             ),
+            // Nota explicativa do IRS Jovem — só quando o regime está ativo.
+            if (_draft.personalInfo.irsJovemYear > 0) ...[
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.infoBackground(context),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.primaryLight(context)),
+                ),
+                child: Text(
+                  l10n.irsJovemLegalNote,
+                  style: TextStyle(fontSize: 12, color: AppColors.primary(context)),
+                ),
+              ),
+            ],
           ],
           const SizedBox(height: 20),
           Container(
