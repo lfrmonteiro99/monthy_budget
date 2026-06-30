@@ -617,19 +617,11 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
               // Amount
               CalmEyebrow(l10n.recurringExpenseAmount.toUpperCase()),
               const SizedBox(height: 8),
-              TextFormField(
+              CalmTextField(
                 controller: _amountController,
                 keyboardType:
                     const TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(
-                  prefixText: currencySymbol(),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: AppColors.ink20(context)),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 12),
-                ),
+                prefixText: currencySymbol(),
                 validator: (v) {
                   final val =
                       double.tryParse((v ?? '').replaceAll(',', '.'));
@@ -649,20 +641,12 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
                 ],
               ),
               const SizedBox(height: 8),
-              TextFormField(
+              CalmTextField(
                 controller: _dayController,
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  hintText: l10n.recurringExpenseDayHint,
-                  prefixIcon: Icon(Icons.calendar_today,
-                      size: 18, color: AppColors.ink50(context)),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: AppColors.ink20(context)),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 12),
-                ),
+                hint: l10n.recurringExpenseDayHint,
+                prefixIcon: Icon(Icons.calendar_today,
+                    size: 18, color: AppColors.ink50(context)),
                 validator: (v) {
                   if (v == null || v.trim().isEmpty) return null;
                   final val = int.tryParse(v.trim());
@@ -677,17 +661,9 @@ class _EditRecurringSheetState extends State<_EditRecurringSheet> {
               // Description
               CalmEyebrow(l10n.recurringExpenseDescription.toUpperCase()),
               const SizedBox(height: 8),
-              TextFormField(
+              CalmTextField(
                 controller: _descriptionController,
-                decoration: InputDecoration(
-                  hintText: l10n.recurringExpenseDescription,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: AppColors.ink20(context)),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 12),
-                ),
+                hint: l10n.recurringExpenseDescription,
                 textCapitalization: TextCapitalization.sentences,
               ),
               const SizedBox(height: 16),
