@@ -23,6 +23,10 @@ const double iasMonthly2026 = 537.13;
 /// Tecto anual da isenção do IRS Jovem: 55 × IAS (≈ 29.542,15 € em 2026).
 const double irsJovemAnnualCap = 55 * iasMonthly2026;
 
+/// Tecto mensal da parte isenta do IRS Jovem (tecto anual / 12 ≈ 2.461,85 €).
+/// Aproximação para a retenção mensal — o acerto do tecto anual é no Modelo 3.
+const double irsJovemMonthlyCap = irsJovemAnnualCap / 12;
+
 class IRSBracket {
   final double upTo;
   final double rate;

@@ -491,6 +491,40 @@ void main() {
       expect(irsJovemExemption(10), 0.25);
       expect(irsJovemExemption(11), 0.0);
     });
+
+    // ─── Tecto 55×IAS (issue #1026) ───────────────────────────────────
+    test('tecto mensal = 55×IAS / 12', () {
+      expect(irsJovemMonthlyCap, closeTo(29542.15 / 12, 0.01)); // ≈ 2461.85
+    });
+
+    test('abaixo do tecto: isenção total preservada (sem alteração)', () {
+      // 2000€ ano 1: 100% × 2000 = 2000 < 2461.85 → tecto não atua → retenção 0
+      expect(irs(2000, 1), 0);
+      // 2500€ ano 2: 75% × 2500 = 1875 < 2461.85 → sem efeito do tecto
+      expect(irs(2500, 2), closeTo(irs(2500, 0) * 0.25, 0.5));
+    });
+
+    test('acima do tecto: parte isenta limitada, excedente tributado', () {
+      // 5000€ ano 1 (100%): parteIsenta = min(5000, 2461.85) = 2461.85
+      // fração isenta = 2461.85/5000 = 0.49237
+      // retenção = retenção_total × (1 − 0.49237)
+      final full = irs(5000, 0); // 5000×0.3969 − 531.62 = 1452.88
+      final capped = irs(5000, 1);
+      expect(full, closeTo(1452.88, 0.01));
+      expect(capped, greaterThan(0)); // sem tecto seria 0
+      expect(capped, closeTo(full * (1 - 2461.85 / 5000), 1.0));
+      expect(capped, lessThan(full));
+    });
+
+    test('tecto: maior rendimento → menor fração isenta → retenção relativa sobe', () {
+      // Ano 1, dois rendimentos acima do tecto: a fração isenta decresce com o bruto
+      double exemptFraction(double g) {
+        final full = irs(g, 0);
+        final capped = irs(g, 1);
+        return full > 0 ? 1 - capped / full : 0;
+      }
+      expect(exemptFraction(6000), lessThan(exemptFraction(3000)));
+    });
   });
 
   // ─── PT: tabelas de deficiência (IV–VII) ────────────────────────────
