@@ -1519,12 +1519,14 @@ extension _SettingsSections on _SettingsScreenState {
             ),
             child: Row(
               children: [
-                Icon(Icons.phone_android, size: 16, color: Colors.blue.shade600),
+                Icon(Icons.phone_android,
+                    size: 16, color: AppColors.accent(context)),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     l10n.settingsDeviceLocal,
-                    style: TextStyle(fontSize: 12, color: Colors.blue.shade700),
+                    style: TextStyle(
+                        fontSize: 12, color: AppColors.accent(context)),
                   ),
                 ),
               ],
@@ -1797,7 +1799,7 @@ extension _SettingsSections on _SettingsScreenState {
                     l10n.settingsFavTip,
                     style: TextStyle(
                         fontSize: 12,
-                        color: Colors.orange.shade800,
+                        color: AppColors.warning(context),
                         height: 1.4),
                   ),
                 ),
