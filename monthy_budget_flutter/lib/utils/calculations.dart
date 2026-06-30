@@ -79,23 +79,50 @@ SalaryCalculation calculateNetSalary(
     );
   }
 
-  final taxResult = taxSystem.calculateTax(
-    grossSalary: effectiveGross,
-    maritalStatus: personalInfo.maritalStatus.jsonValue,
-    titulares: salary.titulares,
-    dependentes: personalInfo.dependentes,
-    deficiente: personalInfo.deficiente,
-    irsJovemYear: personalInfo.irsJovemYear,
-  );
+  // Retenção de IRS e Segurança Social.
+  // PT: os subsídios de férias/Natal são retidos AUTONOMAMENTE (CIRS art. 99.º-C
+  // n.os 5 e 6) — a taxa é a da remuneração mensal base e os subsídios NÃO sobem
+  // o escalão. Em duodécimos aplica-se a taxa efetiva da base a cada fração.
+  // A Segurança Social incide sobre o total pago no mês (base + duodécimos).
+  final double irsRetention;
+  final double irsRate;
+  final double socialSecurity;
 
-  final netAmount = math.max(0.0, _round2(effectiveGross - taxResult.incomeTax - taxResult.socialContribution));
+  if (country == Country.pt && subsidyBonus > 0) {
+    final baseTax = taxSystem.calculateTax(
+      grossSalary: baseGross,
+      maritalStatus: personalInfo.maritalStatus.jsonValue,
+      titulares: salary.titulares,
+      dependentes: personalInfo.dependentes,
+      deficiente: personalInfo.deficiente,
+      irsJovemYear: personalInfo.irsJovemYear,
+    );
+    final baseRate = baseGross > 0 ? baseTax.incomeTax / baseGross : 0.0;
+    irsRetention = _round2(baseTax.incomeTax + baseRate * subsidyBonus);
+    irsRate = baseTax.incomeTaxRate;
+    socialSecurity = taxSystem.calculateSocialContribution(effectiveGross);
+  } else {
+    final taxResult = taxSystem.calculateTax(
+      grossSalary: effectiveGross,
+      maritalStatus: personalInfo.maritalStatus.jsonValue,
+      titulares: salary.titulares,
+      dependentes: personalInfo.dependentes,
+      deficiente: personalInfo.deficiente,
+      irsJovemYear: personalInfo.irsJovemYear,
+    );
+    irsRetention = taxResult.incomeTax;
+    irsRate = taxResult.incomeTaxRate;
+    socialSecurity = taxResult.socialContribution;
+  }
+
+  final netAmount = math.max(0.0, _round2(effectiveGross - irsRetention - socialSecurity));
 
   final meal = country.hasMealAllowance
       ? calculateMealAllowance(
           salary.mealAllowanceType,
           salary.mealAllowancePerDay,
           salary.workingDaysPerMonth,
-          taxResult.incomeTaxRate,
+          irsRate,
           taxSystem.socialContributionRate,
         )
       : const MealAllowanceCalculation();
@@ -105,9 +132,9 @@ SalaryCalculation calculateNetSalary(
     effectiveGrossAmount: effectiveGross,
     subsidyMonthlyBonus: subsidyBonus,
     otherExemptIncome: salary.otherExemptIncome,
-    irsRetention: taxResult.incomeTax,
-    irsRate: taxResult.incomeTaxRate,
-    socialSecurity: taxResult.socialContribution,
+    irsRetention: irsRetention,
+    irsRate: irsRate,
+    socialSecurity: socialSecurity,
     socialSecurityRate: taxSystem.socialContributionRate,
     netAmount: netAmount,
     mealAllowance: meal,
