@@ -6029,6 +6029,12 @@ class SPt extends S {
   String get mealSubstituteOtherCategories => 'Outras categorias';
 
   @override
+  String get mealPlannerDetailEyebrow => 'DETALHE';
+
+  @override
+  String get mealPlannerMealsEyebrow => 'REFEIÇÕES';
+
+  @override
   String get wizardCourseStructure => 'Estrutura da refeicao';
 
   @override

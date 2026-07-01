@@ -10679,6 +10679,18 @@ abstract class S {
   /// **'Outras categorias'**
   String get mealSubstituteOtherCategories;
 
+  /// No description provided for @mealPlannerDetailEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'DETALHE'**
+  String get mealPlannerDetailEyebrow;
+
+  /// No description provided for @mealPlannerMealsEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'REFEIÇÕES'**
+  String get mealPlannerMealsEyebrow;
+
   /// No description provided for @wizardCourseStructure.
   ///
   /// In pt, this message translates to:

@@ -5986,6 +5986,12 @@ class SEn extends S {
   String get mealSubstituteOtherCategories => 'Other categories';
 
   @override
+  String get mealPlannerDetailEyebrow => 'DETAIL';
+
+  @override
+  String get mealPlannerMealsEyebrow => 'MEALS';
+
+  @override
   String get wizardCourseStructure => 'Meal structure';
 
   @override

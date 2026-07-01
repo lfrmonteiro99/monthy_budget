@@ -3224,6 +3224,8 @@
     "mealSubstituteHint": "Tap an ingredient to replace it with another",
     "mealSubstituteSameCategory": "Same category",
     "mealSubstituteOtherCategories": "Other categories",
+    "mealPlannerDetailEyebrow": "DETAIL",
+    "mealPlannerMealsEyebrow": "MEALS",
     "wizardCourseStructure": "Meal structure",
     "wizardIncludeSoupStarter": "Include soup or starter",
     "wizardSoupStarterHint": "Adds a soup or starter as the first course",

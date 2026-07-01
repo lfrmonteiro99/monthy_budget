@@ -6033,6 +6033,12 @@ class SEs extends S {
   String get mealSubstituteOtherCategories => 'Otras categorias';
 
   @override
+  String get mealPlannerDetailEyebrow => 'DETALLE';
+
+  @override
+  String get mealPlannerMealsEyebrow => 'COMIDAS';
+
+  @override
   String get wizardCourseStructure => 'Estructura de la comida';
 
   @override
