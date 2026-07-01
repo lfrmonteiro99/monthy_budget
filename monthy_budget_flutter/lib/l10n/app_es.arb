@@ -306,6 +306,7 @@
     "coachDeleteTooltip": "Eliminar",
     "coachEmptyTitle": "Tu coach financiero",
     "coachEmptyBody": "Pregunta lo que quieras sobre tu presupuesto, gastos o ahorros. Usare tus datos reales para darte consejos personalizados.",
+    "coachSuggestionsEyebrow": "Sugerencias",
     "coachQuickPrompt1": "Donde puedo recortar gastos este mes?",
     "coachQuickPrompt2": "Como puedo mejorar mi ahorro?",
     "coachQuickPrompt3": "Ayudame a crear un plan de 30 dias.",

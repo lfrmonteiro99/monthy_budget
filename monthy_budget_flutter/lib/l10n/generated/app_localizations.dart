@@ -1151,6 +1151,12 @@ abstract class S {
   /// **'Pergunta o que quiseres sobre o teu orcamento, despesas ou poupancas. Vou usar os teus dados reais para dar conselhos personalizados.'**
   String get coachEmptyBody;
 
+  /// Eyebrow label above quick-prompt suggestion chips in coach screen
+  ///
+  /// In pt, this message translates to:
+  /// **'Sugestões'**
+  String get coachSuggestionsEyebrow;
+
   /// Quick prompt suggestion 1
   ///
   /// In pt, this message translates to:

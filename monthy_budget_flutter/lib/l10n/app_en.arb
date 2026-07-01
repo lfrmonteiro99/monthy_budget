@@ -312,6 +312,10 @@
     "@coachEmptyBody": {
         "description": "Empty state body in coach chat"
     },
+    "coachSuggestionsEyebrow": "Suggestions",
+    "@coachSuggestionsEyebrow": {
+        "description": "Eyebrow label above quick-prompt suggestion chips in coach screen"
+    },
     "coachQuickPrompt1": "Where can I cut expenses this month?",
     "@coachQuickPrompt1": {
         "description": "Quick prompt suggestion 1"

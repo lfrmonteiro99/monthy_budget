@@ -583,6 +583,9 @@ class SPt extends S {
       'Pergunta o que quiseres sobre o teu orcamento, despesas ou poupancas. Vou usar os teus dados reais para dar conselhos personalizados.';
 
   @override
+  String get coachSuggestionsEyebrow => 'Sugestões';
+
+  @override
   String get coachQuickPrompt1 => 'Onde posso cortar despesas este mes?';
 
   @override
