@@ -163,7 +163,7 @@ class _ExpenseTrendsScreenState extends State<ExpenseTrendsScreen> {
 
           // Hero block — one Fraunces number per screen
           CalmHero(
-            eyebrow: 'TENDÊNCIAS', // TODO(l10n): move to ARB (Wave H)
+            eyebrow: l10n.expenseTrendsEyebrow,
             amount: formatCurrency(totalActual),
             subtitle: _rangeSubtitle(l10n),
           ),
@@ -195,8 +195,7 @@ class _ExpenseTrendsScreenState extends State<ExpenseTrendsScreen> {
                     child: CalmEmptyState(
                       icon: Icons.bar_chart_outlined,
                       title: l10n.expenseTrendsNoData,
-                      // TODO(l10n): move subtitle to ARB (Wave H)
-                      body: 'Adiciona despesas para ver as tendências.',
+                      body: l10n.expenseTrendsEmptyBody,
                     ),
                   )
                 : SingleChildScrollView(
@@ -928,7 +927,7 @@ class _CategoryDetailContent extends StatelessWidget {
           const SizedBox(height: 16),
         ],
         // Monthly breakdown list
-        CalmEyebrow('HISTÓRICO MENSAL'), // TODO(l10n): move to ARB (Wave H)
+        CalmEyebrow(l10n.expenseTrendsMonthlyHistoryEyebrow),
         const SizedBox(height: 8),
         ...monthlyData.asMap().entries.map((entry) {
           final i = entry.key;

@@ -2538,6 +2538,16 @@ class SPt extends S {
   String get expenseTrendsMonthly => 'Mensal';
 
   @override
+  String get expenseTrendsEyebrow => 'TENDÊNCIAS';
+
+  @override
+  String get expenseTrendsEmptyBody =>
+      'Adiciona despesas para ver as tendências.';
+
+  @override
+  String get expenseTrendsMonthlyHistoryEyebrow => 'HISTÓRICO MENSAL';
+
+  @override
   String get savingsGoals => 'Objetivos de Poupança';
 
   @override

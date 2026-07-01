@@ -2540,6 +2540,16 @@ class SEs extends S {
   String get expenseTrendsMonthly => 'Mensual';
 
   @override
+  String get expenseTrendsEyebrow => 'TENDENCIAS';
+
+  @override
+  String get expenseTrendsEmptyBody =>
+      'Añade gastos para ver tus tendencias de gasto.';
+
+  @override
+  String get expenseTrendsMonthlyHistoryEyebrow => 'HISTORIAL MENSUAL';
+
+  @override
   String get savingsGoals => 'Objetivos de Ahorro';
 
   @override

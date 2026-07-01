@@ -2546,6 +2546,16 @@ class SFr extends S {
   String get expenseTrendsMonthly => 'Mensuel';
 
   @override
+  String get expenseTrendsEyebrow => 'TENDANCES';
+
+  @override
+  String get expenseTrendsEmptyBody =>
+      'Ajoutez des dépenses pour voir vos tendances.';
+
+  @override
+  String get expenseTrendsMonthlyHistoryEyebrow => 'HISTORIQUE MENSUEL';
+
+  @override
   String get savingsGoals => 'Objectifs d\'Épargne';
 
   @override

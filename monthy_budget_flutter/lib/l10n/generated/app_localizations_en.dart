@@ -2524,6 +2524,16 @@ class SEn extends S {
   String get expenseTrendsMonthly => 'Monthly';
 
   @override
+  String get expenseTrendsEyebrow => 'TRENDS';
+
+  @override
+  String get expenseTrendsEmptyBody =>
+      'Add expenses to see your spending trends.';
+
+  @override
+  String get expenseTrendsMonthlyHistoryEyebrow => 'MONTHLY HISTORY';
+
+  @override
   String get savingsGoals => 'Savings Goals';
 
   @override
