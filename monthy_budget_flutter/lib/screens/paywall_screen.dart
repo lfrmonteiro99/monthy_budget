@@ -18,17 +18,12 @@ const _privacyPolicyUrl =
     'https://lfrmonteiro99.github.io/monthy_budget/privacy-policy';
 
 // 5 features per §22 spec: icon + title + body
-const _paywallFeatures = <(IconData, String, String)>[
-  (Icons.bar_chart_rounded, 'Orçamento inteligente', // TODO(l10n):
-      'Categorias ilimitadas e histórico completo'), // TODO(l10n):
-  (Icons.smart_toy_outlined, 'Coach Financeiro IA', // TODO(l10n):
-      'Dicas personalizadas em tempo real'), // TODO(l10n):
-  (Icons.restaurant_menu_outlined, 'Planeador de Refeições', // TODO(l10n):
-      'Receitas IA integradas com a lista de compras'), // TODO(l10n):
-  (Icons.sync_rounded, 'Sincronização em tempo real', // TODO(l10n):
-      'Lista de compras partilhada com o agregado'), // TODO(l10n):
-  (Icons.file_download_outlined, 'Exportação PDF/CSV', // TODO(l10n):
-      'Relatórios prontos a enviar'), // TODO(l10n):
+List<(IconData, String, String)> _paywallFeatures(S l10n) => [
+  (Icons.bar_chart_rounded, l10n.paywallFeatureBudgetTitle, l10n.paywallFeatureBudgetSubtitle),
+  (Icons.smart_toy_outlined, l10n.paywallFeatureCoachTitle, l10n.paywallFeatureCoachSubtitle),
+  (Icons.restaurant_menu_outlined, l10n.paywallFeatureMealTitle, l10n.paywallFeatureMealSubtitle),
+  (Icons.sync_rounded, l10n.paywallFeatureSyncTitle, l10n.paywallFeatureSyncSubtitle),
+  (Icons.file_download_outlined, l10n.paywallFeatureExportTitle, l10n.paywallFeatureExportSubtitle),
 ];
 
 /// Full-screen paywall — Wave M5 (SCREEN_ROLLOUT §22).
@@ -160,21 +155,21 @@ class _PaywallScreenState extends State<PaywallScreen> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: Semantics(
-                    label: 'Fechar', button: true, // TODO(l10n):
+                    label: l10n.paywallCloseLabel, button: true,
                     child: IconButton(
                       icon: Icon(Icons.close, size: 24, color: AppColors.ink(context)),
-                      tooltip: 'Fechar', // TODO(l10n):
+                      tooltip: l10n.paywallCloseLabel,
                       onPressed: _purchasing ? null : () => Navigator.of(context).pop(),
                     ),
                   ),
                 ),
                 const SizedBox(height: 8),
                 // Eyebrow
-                CalmEyebrow('MONTHLY PLUS', textAlign: TextAlign.center), // TODO(l10n):
+                CalmEyebrow(l10n.paywallProductName, textAlign: TextAlign.center),
                 const SizedBox(height: 12),
                 // Hero title — one Fraunces per screen (§22)
                 Text(
-                  'Tudo o que precisas para um ano de paz financeira', // TODO(l10n):
+                  l10n.paywallHeroSubtitle,
                   style: CalmText.display(context, size: 36),
                   textAlign: TextAlign.center,
                   maxLines: 2,
@@ -190,21 +185,21 @@ class _PaywallScreenState extends State<PaywallScreen> {
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
-                      for (int i = 0; i < _paywallFeatures.length; i++) ...[
+                      for (int i = 0; i < _paywallFeatures(l10n).length; i++) ...[
                         if (i > 0) const SizedBox(height: 18),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(_paywallFeatures[i].$1, size: 22, color: AppColors.ink(context)),
+                            Icon(_paywallFeatures(l10n)[i].$1, size: 22, color: AppColors.ink(context)),
                             const SizedBox(width: 14),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(_paywallFeatures[i].$2,
+                                  Text(_paywallFeatures(l10n)[i].$2,
                                       style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500,
                                           color: AppColors.ink(context))),
-                                  Text(_paywallFeatures[i].$3,
+                                  Text(_paywallFeatures(l10n)[i].$3,
                                       style: TextStyle(fontSize: 13,
                                           color: AppColors.ink70(context), height: 1.5)),
                                 ],
@@ -229,7 +224,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CalmEyebrow(_yearlyBilling ? 'PLANO ANUAL' : 'PLANO MENSAL'), // TODO(l10n):
+                      CalmEyebrow(_yearlyBilling ? l10n.paywallYearlyPlanLabel : l10n.paywallMonthlyPlanLabel),
                       const SizedBox(height: 8),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -240,7 +235,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
                             style: CalmText.display(context, size: 40),
                           ),
                           const SizedBox(width: 6),
-                          Text('/mês', style: TextStyle(fontSize: 14, color: AppColors.ink70(context))), // TODO(l10n):
+                          Text(l10n.paywallPerMonth, style: TextStyle(fontSize: 14, color: AppColors.ink70(context))),
                         ],
                       ),
                       if (_yearlyBilling) ...[
@@ -249,7 +244,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
                             fontWeight: FontWeight.w600, color: AppColors.ok(context))),
                       ],
                       const SizedBox(height: 8),
-                      Text('7 dias grátis · cancela quando quiseres', // TODO(l10n):
+                      Text(l10n.paywallTrialText,
                           style: TextStyle(fontSize: 12, color: AppColors.ink50(context), height: 1.5)),
                     ],
                   ),
@@ -275,13 +270,13 @@ class _PaywallScreenState extends State<PaywallScreen> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                       elevation: 0,
                     ),
-                    child: const Text('Começar 7 dias grátis', // TODO(l10n):
+                    child: Text(l10n.paywallCtaButton,
                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
                   ),
                 ),
                 const SizedBox(height: 20),
                 // Section header for tier comparison
-                CalmEyebrow('COMPARAR PLANOS', textAlign: TextAlign.center), // TODO(l10n):
+                CalmEyebrow(l10n.paywallComparePlansEyebrow, textAlign: TextAlign.center),
                 const SizedBox(height: 12),
                 // Pro tier card
                 _TierCard(
@@ -336,7 +331,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
                   Center(
                     child: GestureDetector(
                       onTap: _purchasing ? null : _handleRestore,
-                      child: Text('Restaurar compra', // TODO(l10n):
+                      child: Text(l10n.paywallRestorePurchase,
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 13, color: AppColors.accent(context),
                               fontWeight: FontWeight.w500)),
@@ -375,6 +370,7 @@ class _FooterLinks extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final tosRec = TapGestureRecognizer()
       ..onTap = () => launchUrl(Uri.parse(_termsOfServiceUrl), mode: LaunchMode.externalApplication);
     final privRec = TapGestureRecognizer()
@@ -384,10 +380,10 @@ class _FooterLinks extends StatelessWidget {
       text: TextSpan(
         style: TextStyle(fontSize: 11, color: AppColors.ink50(context), height: 1.5),
         children: [
-          TextSpan(text: 'Terms of Service', // TODO(l10n):
+          TextSpan(text: l10n.paywallTermsOfService,
               style: TextStyle(color: AppColors.accent(context)), recognizer: tosRec),
           const TextSpan(text: '  ·  '),
-          TextSpan(text: 'Privacy Policy', // TODO(l10n):
+          TextSpan(text: l10n.paywallPrivacyPolicy,
               style: TextStyle(color: AppColors.accent(context)), recognizer: privRec),
         ],
       ),
@@ -405,12 +401,13 @@ class _BillingToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return CalmCard(
       padding: const EdgeInsets.all(4),
       child: Row(
         children: [
-          Expanded(child: _option(context, 'Monthly', !yearly, () => onChanged(false))), // TODO(l10n):
-          Expanded(child: _option(context, 'Yearly (save 37%)', yearly, () => onChanged(true), // TODO(l10n):
+          Expanded(child: _option(context, l10n.paywallBillingMonthly, !yearly, () => onChanged(false))),
+          Expanded(child: _option(context, l10n.paywallBillingYearly, yearly, () => onChanged(true),
               pill: CalmPill(label: '−20%', color: AppColors.ok(context)))),
         ],
       ),
