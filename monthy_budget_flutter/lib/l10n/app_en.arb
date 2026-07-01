@@ -2174,6 +2174,20 @@
     "confidenceRecommendedActions": "Recommended Actions",
     "confidenceCenterSubtitle": "Data freshness and system health",
     "confidenceCenterTile": "Confidence Center",
+    "alertSeverityCritical": "critical",
+    "@alertSeverityCritical": {},
+    "alertSeverityWarning": "warning",
+    "@alertSeverityWarning": {},
+    "alertSeverityInfo": "info",
+    "@alertSeverityInfo": {},
+    "criticalAlertBannerMessage": "{count, plural, =1{1 critical alert — tap to view} other{{count} critical alerts — tap to view}}",
+    "@criticalAlertBannerMessage": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
     "pantryPickerTitle": "Pantry Picker",
     "pantrySearchHint": "Search ingredients...",
     "pantryTabAlwaysHave": "Always Have",
