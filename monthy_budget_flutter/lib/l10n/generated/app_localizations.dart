@@ -4745,6 +4745,36 @@ abstract class S {
   /// **'Objetivos de Poupança'**
   String get savingsGoals;
 
+  /// No description provided for @savingsGoalsEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'POUPANÇA'**
+  String get savingsGoalsEyebrow;
+
+  /// No description provided for @savingsGoalsSubtitleTarget.
+  ///
+  /// In pt, this message translates to:
+  /// **'de {total} objetivo'**
+  String savingsGoalsSubtitleTarget(String total);
+
+  /// No description provided for @savingsGoalsSubtitleActive.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} metas ativas'**
+  String savingsGoalsSubtitleActive(int count);
+
+  /// No description provided for @savingsGoalsPercentComplete.
+  ///
+  /// In pt, this message translates to:
+  /// **'{percent}% concluído'**
+  String savingsGoalsPercentComplete(String percent);
+
+  /// No description provided for @savingsGoalsEmptyBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'Crie a sua primeira meta de poupança para começar.'**
+  String get savingsGoalsEmptyBody;
+
   /// Add savings goal
   ///
   /// In pt, this message translates to:

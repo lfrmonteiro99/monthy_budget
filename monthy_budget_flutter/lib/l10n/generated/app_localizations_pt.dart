@@ -2569,6 +2569,28 @@ class SPt extends S {
   String get savingsGoals => 'Objetivos de Poupança';
 
   @override
+  String get savingsGoalsEyebrow => 'POUPANÇA';
+
+  @override
+  String savingsGoalsSubtitleTarget(String total) {
+    return 'de $total objetivo';
+  }
+
+  @override
+  String savingsGoalsSubtitleActive(int count) {
+    return '$count metas ativas';
+  }
+
+  @override
+  String savingsGoalsPercentComplete(String percent) {
+    return '$percent% concluído';
+  }
+
+  @override
+  String get savingsGoalsEmptyBody =>
+      'Crie a sua primeira meta de poupança para começar.';
+
+  @override
   String get savingsGoalAdd => 'Novo Objetivo';
 
   @override

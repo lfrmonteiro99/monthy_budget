@@ -1386,6 +1386,34 @@
     "expenseTrendsOverview": "Overview",
     "expenseTrendsMonthly": "Monthly",
     "savingsGoals": "Savings Goals",
+    "savingsGoalsEyebrow": "SAVINGS",
+    "@savingsGoalsEyebrow": {},
+    "savingsGoalsSubtitleTarget": "of {total} target",
+    "@savingsGoalsSubtitleTarget": {
+        "placeholders": {
+            "total": {
+                "type": "String"
+            }
+        }
+    },
+    "savingsGoalsSubtitleActive": "{count} active goals",
+    "@savingsGoalsSubtitleActive": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "savingsGoalsPercentComplete": "{percent}% complete",
+    "@savingsGoalsPercentComplete": {
+        "placeholders": {
+            "percent": {
+                "type": "String"
+            }
+        }
+    },
+    "savingsGoalsEmptyBody": "Create your first savings goal to get started.",
+    "@savingsGoalsEmptyBody": {},
     "savingsGoalAdd": "New Goal",
     "savingsGoalEdit": "Edit Goal",
     "savingsGoalName": "Goal name",

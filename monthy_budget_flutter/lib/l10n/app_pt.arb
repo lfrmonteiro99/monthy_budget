@@ -3267,6 +3267,34 @@
     "@savingsGoals": {
         "description": "Savings goals title"
     },
+    "savingsGoalsEyebrow": "POUPANÇA",
+    "@savingsGoalsEyebrow": {},
+    "savingsGoalsSubtitleTarget": "de {total} objetivo",
+    "@savingsGoalsSubtitleTarget": {
+        "placeholders": {
+            "total": {
+                "type": "String"
+            }
+        }
+    },
+    "savingsGoalsSubtitleActive": "{count} metas ativas",
+    "@savingsGoalsSubtitleActive": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "savingsGoalsPercentComplete": "{percent}% concluído",
+    "@savingsGoalsPercentComplete": {
+        "placeholders": {
+            "percent": {
+                "type": "String"
+            }
+        }
+    },
+    "savingsGoalsEmptyBody": "Crie a sua primeira meta de poupança para começar.",
+    "@savingsGoalsEmptyBody": {},
     "savingsGoalAdd": "Novo Objetivo",
     "@savingsGoalAdd": {
         "description": "Add savings goal"

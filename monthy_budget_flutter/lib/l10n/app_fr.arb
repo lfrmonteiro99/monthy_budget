@@ -1344,6 +1344,34 @@
     "expenseTrendsOverview": "Vue d'ensemble",
     "expenseTrendsMonthly": "Mensuel",
     "savingsGoals": "Objectifs d'Épargne",
+    "savingsGoalsEyebrow": "ÉPARGNE",
+    "@savingsGoalsEyebrow": {},
+    "savingsGoalsSubtitleTarget": "sur {total} objectif",
+    "@savingsGoalsSubtitleTarget": {
+        "placeholders": {
+            "total": {
+                "type": "String"
+            }
+        }
+    },
+    "savingsGoalsSubtitleActive": "{count} objectifs actifs",
+    "@savingsGoalsSubtitleActive": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "savingsGoalsPercentComplete": "{percent}% accompli",
+    "@savingsGoalsPercentComplete": {
+        "placeholders": {
+            "percent": {
+                "type": "String"
+            }
+        }
+    },
+    "savingsGoalsEmptyBody": "Créez votre premier objectif d'épargne pour commencer.",
+    "@savingsGoalsEmptyBody": {},
     "savingsGoalAdd": "Nouvel Objectif",
     "savingsGoalEdit": "Modifier l'Objectif",
     "savingsGoalName": "Nom de l'objectif",
