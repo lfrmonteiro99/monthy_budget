@@ -384,6 +384,10 @@ class SPt extends S {
       'Configure os seus dados para ver o resumo.';
 
   @override
+  String get dashboardEmptyStateBody =>
+      'Configure os seus rendimentos e despesas para começar.';
+
+  @override
   String get dashboardOpenSettingsButton => 'Abrir Definições';
 
   @override
@@ -5148,6 +5152,9 @@ class SPt extends S {
 
   @override
   String get dashboardBurnRateOver => 'Acima do ritmo';
+
+  @override
+  String get dashboardBurnRateAttention => 'atenção';
 
   @override
   String get dashboardBurnRateDailyAvg => 'MÉDIA/DIA';

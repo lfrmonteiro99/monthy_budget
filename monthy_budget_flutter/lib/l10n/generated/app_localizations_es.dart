@@ -384,6 +384,10 @@ class SEs extends S {
       'Configure sus datos para ver el resumen.';
 
   @override
+  String get dashboardEmptyStateBody =>
+      'Configure sus ingresos y gastos para comenzar.';
+
+  @override
   String get dashboardOpenSettingsButton => 'Abrir Configuración';
 
   @override
@@ -5153,6 +5157,9 @@ class SEs extends S {
 
   @override
   String get dashboardBurnRateOver => 'Sobre el ritmo';
+
+  @override
+  String get dashboardBurnRateAttention => 'atención';
 
   @override
   String get dashboardBurnRateDailyAvg => 'MEDIA/DÍA';
