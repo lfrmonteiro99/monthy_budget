@@ -6571,4 +6571,132 @@ class SEn extends S {
 
   @override
   String get mealMenuRowDinner => 'Dinner';
+
+  @override
+  String get paywallErrorPurchaseFailed => 'Purchase failed. Please try again.';
+
+  @override
+  String get paywallErrorRestoreFailed => 'Restore failed. Please try again.';
+
+  @override
+  String paywallYearlyNoteTemplate(String price) {
+    return '$price/year — Save 37%';
+  }
+
+  @override
+  String get paywallPeriodBilledYearly => '/mo (billed yearly)';
+
+  @override
+  String get paywallPeriodForever => 'forever';
+
+  @override
+  String get paywallTrustSignal => 'Cancel anytime • No hidden fees';
+
+  @override
+  String get paywallCurrentPlan => 'Current Plan';
+
+  @override
+  String paywallBlockedFeatureMessage(String featureName) {
+    return '$featureName requires a paid subscription';
+  }
+
+  @override
+  String get paywallProFeatUnlimitedCategories =>
+      'Unlimited categories & history';
+
+  @override
+  String get paywallProFeatAiCoach => 'AI Financial Coach';
+
+  @override
+  String get paywallProFeatMealPlanner => 'Meal Planner + AI recipes';
+
+  @override
+  String get paywallProFeatSync => 'Real-time shopping list sync';
+
+  @override
+  String get paywallProFeatExport => 'PDF/CSV export';
+
+  @override
+  String get paywallProFeatBillReminders => 'Bill reminders';
+
+  @override
+  String get paywallProFeatExpenseTrends => 'Expense trends';
+
+  @override
+  String get paywallProFeatUnlimitedSavings => 'Unlimited savings goals';
+
+  @override
+  String get paywallProFeatHousehold => 'Household sharing (up to 6)';
+
+  @override
+  String get paywallProFeatTaxSimulator => 'Multi-country tax simulator';
+
+  @override
+  String get paywallProFeatDashboard => 'Dashboard customization';
+
+  @override
+  String get paywallProFeatThemes => 'All color themes';
+
+  @override
+  String get paywallProFeatNoAds => 'No ads';
+
+  @override
+  String get paywallFreeFeatBudget => 'Budget calculator (8 categories)';
+
+  @override
+  String get paywallFreeFeatTracking => 'Basic expense tracking';
+
+  @override
+  String get paywallFreeFeatSavings => '1 savings goal';
+
+  @override
+  String get paywallFreeFeatShopping => 'Shopping list (local only)';
+
+  @override
+  String get paywallFreeFeatAds => 'Banner ads';
+
+  @override
+  String get paywallFeatNameAiCoach => 'AI Financial Coach';
+
+  @override
+  String get paywallFeatNameMealPlanner => 'Meal Planner';
+
+  @override
+  String get paywallFeatNameExportData => 'Export Reports';
+
+  @override
+  String get paywallFeatNameUnlimitedCategories => 'Unlimited Categories';
+
+  @override
+  String get paywallFeatNameBillReminders => 'Bill Reminders';
+
+  @override
+  String get paywallFeatNameShoppingListSync => 'Shopping List Sync';
+
+  @override
+  String get paywallFeatNameNoAds => 'Ad-Free Experience';
+
+  @override
+  String get paywallFeatNameHouseholdSharing => 'Household Sharing';
+
+  @override
+  String get paywallFeatNameTaxSimulator => 'Tax Simulator';
+
+  @override
+  String get paywallFeatNameStressIndex => 'Stress Index';
+
+  @override
+  String get paywallFeatNameMonthReview => 'Month-in-Review';
+
+  @override
+  String get paywallFeatNameDashboard => 'Dashboard Customization';
+
+  @override
+  String get paywallFeatNameAllThemes => 'All Color Themes';
+
+  @override
+  String get paywallFeatNameExpenseTrends => 'Expense Trends';
+
+  @override
+  String get paywallFeatNameUnlimitedSavings => 'Unlimited Savings Goals';
 }

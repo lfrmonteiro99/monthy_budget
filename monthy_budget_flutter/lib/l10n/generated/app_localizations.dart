@@ -11668,6 +11668,252 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Jantar'**
   String get mealMenuRowDinner;
+
+  /// No description provided for @paywallErrorPurchaseFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Compra falhada. Por favor tente novamente.'**
+  String get paywallErrorPurchaseFailed;
+
+  /// No description provided for @paywallErrorRestoreFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Restauro falhado. Por favor tente novamente.'**
+  String get paywallErrorRestoreFailed;
+
+  /// No description provided for @paywallYearlyNoteTemplate.
+  ///
+  /// In pt, this message translates to:
+  /// **'{price}/ano — Poupe 37%'**
+  String paywallYearlyNoteTemplate(String price);
+
+  /// No description provided for @paywallPeriodBilledYearly.
+  ///
+  /// In pt, this message translates to:
+  /// **'/mês (cobrado anualmente)'**
+  String get paywallPeriodBilledYearly;
+
+  /// No description provided for @paywallPeriodForever.
+  ///
+  /// In pt, this message translates to:
+  /// **'para sempre'**
+  String get paywallPeriodForever;
+
+  /// No description provided for @paywallTrustSignal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancele quando quiser • Sem custos ocultos'**
+  String get paywallTrustSignal;
+
+  /// No description provided for @paywallCurrentPlan.
+  ///
+  /// In pt, this message translates to:
+  /// **'Plano Atual'**
+  String get paywallCurrentPlan;
+
+  /// No description provided for @paywallBlockedFeatureMessage.
+  ///
+  /// In pt, this message translates to:
+  /// **'{featureName} requer uma subscrição paga'**
+  String paywallBlockedFeatureMessage(String featureName);
+
+  /// No description provided for @paywallProFeatUnlimitedCategories.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categorias e histórico ilimitados'**
+  String get paywallProFeatUnlimitedCategories;
+
+  /// No description provided for @paywallProFeatAiCoach.
+  ///
+  /// In pt, this message translates to:
+  /// **'Assistente Financeiro com IA'**
+  String get paywallProFeatAiCoach;
+
+  /// No description provided for @paywallProFeatMealPlanner.
+  ///
+  /// In pt, this message translates to:
+  /// **'Planificador de Refeições + receitas com IA'**
+  String get paywallProFeatMealPlanner;
+
+  /// No description provided for @paywallProFeatSync.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sincronização de lista de compras em tempo real'**
+  String get paywallProFeatSync;
+
+  /// No description provided for @paywallProFeatExport.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportação PDF/CSV'**
+  String get paywallProFeatExport;
+
+  /// No description provided for @paywallProFeatBillReminders.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lembretes de faturas'**
+  String get paywallProFeatBillReminders;
+
+  /// No description provided for @paywallProFeatExpenseTrends.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tendências de despesas'**
+  String get paywallProFeatExpenseTrends;
+
+  /// No description provided for @paywallProFeatUnlimitedSavings.
+  ///
+  /// In pt, this message translates to:
+  /// **'Objectivos de poupança ilimitados'**
+  String get paywallProFeatUnlimitedSavings;
+
+  /// No description provided for @paywallProFeatHousehold.
+  ///
+  /// In pt, this message translates to:
+  /// **'Partilha familiar (até 6 pessoas)'**
+  String get paywallProFeatHousehold;
+
+  /// No description provided for @paywallProFeatTaxSimulator.
+  ///
+  /// In pt, this message translates to:
+  /// **'Simulador fiscal multi-país'**
+  String get paywallProFeatTaxSimulator;
+
+  /// No description provided for @paywallProFeatDashboard.
+  ///
+  /// In pt, this message translates to:
+  /// **'Personalização do painel'**
+  String get paywallProFeatDashboard;
+
+  /// No description provided for @paywallProFeatThemes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Todos os temas de cor'**
+  String get paywallProFeatThemes;
+
+  /// No description provided for @paywallProFeatNoAds.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem anúncios'**
+  String get paywallProFeatNoAds;
+
+  /// No description provided for @paywallFreeFeatBudget.
+  ///
+  /// In pt, this message translates to:
+  /// **'Calculadora de orçamento (8 categorias)'**
+  String get paywallFreeFeatBudget;
+
+  /// No description provided for @paywallFreeFeatTracking.
+  ///
+  /// In pt, this message translates to:
+  /// **'Registo básico de despesas'**
+  String get paywallFreeFeatTracking;
+
+  /// No description provided for @paywallFreeFeatSavings.
+  ///
+  /// In pt, this message translates to:
+  /// **'1 objectivo de poupança'**
+  String get paywallFreeFeatSavings;
+
+  /// No description provided for @paywallFreeFeatShopping.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista de compras (apenas local)'**
+  String get paywallFreeFeatShopping;
+
+  /// No description provided for @paywallFreeFeatAds.
+  ///
+  /// In pt, this message translates to:
+  /// **'Anúncios banner'**
+  String get paywallFreeFeatAds;
+
+  /// No description provided for @paywallFeatNameAiCoach.
+  ///
+  /// In pt, this message translates to:
+  /// **'Assistente Financeiro com IA'**
+  String get paywallFeatNameAiCoach;
+
+  /// No description provided for @paywallFeatNameMealPlanner.
+  ///
+  /// In pt, this message translates to:
+  /// **'Planificador de Refeições'**
+  String get paywallFeatNameMealPlanner;
+
+  /// No description provided for @paywallFeatNameExportData.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar Relatórios'**
+  String get paywallFeatNameExportData;
+
+  /// No description provided for @paywallFeatNameUnlimitedCategories.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categorias Ilimitadas'**
+  String get paywallFeatNameUnlimitedCategories;
+
+  /// No description provided for @paywallFeatNameBillReminders.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lembretes de Faturas'**
+  String get paywallFeatNameBillReminders;
+
+  /// No description provided for @paywallFeatNameShoppingListSync.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sincronização de Lista de Compras'**
+  String get paywallFeatNameShoppingListSync;
+
+  /// No description provided for @paywallFeatNameNoAds.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem Anúncios'**
+  String get paywallFeatNameNoAds;
+
+  /// No description provided for @paywallFeatNameHouseholdSharing.
+  ///
+  /// In pt, this message translates to:
+  /// **'Partilha Familiar'**
+  String get paywallFeatNameHouseholdSharing;
+
+  /// No description provided for @paywallFeatNameTaxSimulator.
+  ///
+  /// In pt, this message translates to:
+  /// **'Simulador Fiscal'**
+  String get paywallFeatNameTaxSimulator;
+
+  /// No description provided for @paywallFeatNameStressIndex.
+  ///
+  /// In pt, this message translates to:
+  /// **'Índice de Stress'**
+  String get paywallFeatNameStressIndex;
+
+  /// No description provided for @paywallFeatNameMonthReview.
+  ///
+  /// In pt, this message translates to:
+  /// **'Resumo do Mês'**
+  String get paywallFeatNameMonthReview;
+
+  /// No description provided for @paywallFeatNameDashboard.
+  ///
+  /// In pt, this message translates to:
+  /// **'Personalização do Painel'**
+  String get paywallFeatNameDashboard;
+
+  /// No description provided for @paywallFeatNameAllThemes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Todos os Temas de Cor'**
+  String get paywallFeatNameAllThemes;
+
+  /// No description provided for @paywallFeatNameExpenseTrends.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tendências de Despesas'**
+  String get paywallFeatNameExpenseTrends;
+
+  /// No description provided for @paywallFeatNameUnlimitedSavings.
+  ///
+  /// In pt, this message translates to:
+  /// **'Objectivos de Poupança Ilimitados'**
+  String get paywallFeatNameUnlimitedSavings;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
