@@ -306,6 +306,7 @@
     "coachDeleteTooltip": "Supprimer",
     "coachEmptyTitle": "Votre coach financier",
     "coachEmptyBody": "Posez toute question sur votre budget, depenses ou epargne. J'utiliserai vos donnees reelles pour des conseils personnalises.",
+    "coachSuggestionsEyebrow": "Suggestions",
     "coachQuickPrompt1": "Ou puis-je reduire mes depenses ce mois-ci ?",
     "coachQuickPrompt2": "Comment ameliorer mon epargne ?",
     "coachQuickPrompt3": "Aidez-moi a creer un plan sur 30 jours.",

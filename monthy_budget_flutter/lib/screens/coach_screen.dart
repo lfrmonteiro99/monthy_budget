@@ -1047,8 +1047,7 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
                 body: l10n.coachEmptyBody,
               ),
               const SizedBox(height: 20),
-              // TODO(l10n): extract "Sugestões" eyebrow.
-              const CalmEyebrow('SUGESTÕES'),
+              CalmEyebrow(l10n.coachSuggestionsEyebrow),
               const SizedBox(height: 8),
               // Suggestion chips — Calm action pills, scroll horizontal.
               SizedBox(
