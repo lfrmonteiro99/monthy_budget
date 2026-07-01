@@ -22,6 +22,7 @@
 /// - [CalmMealRow]           — 44px rounded-square thumbnail meal row.
 /// - [CalmActionPill]        — Outlined "Gerar"-style pill with optional leading icon.
 /// - [CalmWeekGrid]          — 7×N selectable weekly meal grid (+ [CalmWeekGridRow]).
+/// - [CalmMonthGrid]         — Month calendar grid with per-day meal-type dots.
 /// - [CalmKpiRow]            — Label/value KPI row with tabular figures.
 /// - [CalmCreamPill]         — Warm-cream subscription/premium badge pill.
 /// - [CalmSwatchRow]         — 5-circle palette picker (+ [CalmSwatch]).
@@ -51,6 +52,7 @@ export 'calm_tile.dart';
 export 'calm_meal_row.dart';
 export 'calm_action_pill.dart';
 export 'calm_week_grid.dart';
+export 'calm_month_grid.dart';
 export 'calm_kpi_row.dart';
 export 'calm_cream_pill.dart';
 export 'calm_swatch_row.dart';

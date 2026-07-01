@@ -11957,6 +11957,18 @@ abstract class S {
   /// **'Abrir assistente de comandos'**
   String get commandFabOpen;
 
+  /// Back-to-month affordance in the meal day view
+  ///
+  /// In pt, this message translates to:
+  /// **'Mês'**
+  String get mealCalendarBackToMonth;
+
+  /// Shown when a day has no meals in the meal calendar
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem refeições neste dia'**
+  String get mealCalendarNoMealsDay;
+
   /// No description provided for @goalCardPausedSemanticLabel.
   ///
   /// In pt, this message translates to:

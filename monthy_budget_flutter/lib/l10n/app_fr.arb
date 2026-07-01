@@ -3389,5 +3389,7 @@
   "@taxSimFiscalEyebrow": {"placeholders": {"year": {"type": "String"}}},
   "commandFabClose": "Fermer l'assistant de commandes",
   "commandFabOpen": "Ouvrir l'assistant de commandes",
+  "mealCalendarBackToMonth": "Mois",
+  "mealCalendarNoMealsDay": "Aucun repas ce jour",
   "goalCardPausedSemanticLabel": "En pause - nécessite un abonnement Pro"
 }

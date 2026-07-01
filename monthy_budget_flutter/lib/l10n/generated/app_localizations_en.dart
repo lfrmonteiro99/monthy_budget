@@ -6731,6 +6731,12 @@ class SEn extends S {
   String get commandFabOpen => 'Open command assistant';
 
   @override
+  String get mealCalendarBackToMonth => 'Month';
+
+  @override
+  String get mealCalendarNoMealsDay => 'No meals this day';
+
+  @override
   String get goalCardPausedSemanticLabel =>
       'Paused - requires Pro subscription';
 }

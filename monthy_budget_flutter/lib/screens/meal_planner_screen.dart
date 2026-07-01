@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:monthly_management/widgets/calm/calm.dart';
 import '../constants/app_constants.dart';
 import '../l10n/generated/app_localizations.dart';
@@ -32,6 +33,8 @@ import '../widgets/meal_planner/meal_day_card.dart';
 import '../widgets/meal_planner/meal_swap_sheet.dart';
 import '../widgets/meal_planner/meal_consolidated_sheet.dart';
 import '../widgets/meal_planner/meal_weekly_summary_card.dart';
+
+enum _MealCalMode { month, week }
 
 class MealPlannerScreen extends StatefulWidget {
   final AppSettings settings;
@@ -75,7 +78,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   int _selectedWeek = 0;
   late int _viewMonth;
   late int _viewYear;
-  bool _showFullMonth = false;
+  _MealCalMode _mode = _MealCalMode.month;
+  int? _selectedDay; // 1..31 when in day mode
 
   final Map<String, RecipeAiContent> _aiContent = {};
   final Set<String> _aiPending = {};
@@ -111,7 +115,11 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   Future<void> _init() async {
     await _service.loadCatalog();
     await _aiService.loadCache();
-    final saved = await _service.load(widget.householdId, _viewMonth, _viewYear);
+    final saved = await _service.load(
+      widget.householdId,
+      _viewMonth,
+      _viewYear,
+    );
     if (!mounted) return;
     if (saved != null) {
       // Pre-populate AI content from persisted cache for immediate render
@@ -151,6 +159,16 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         ).show(context: context);
       });
     });
+  }
+
+  /// Navigates week mode to [weekIndex]: updates `_selectedWeek`, then
+  /// refreshes the week-scoped budget insight and (lazily) fetches the
+  /// nutrition summary for the newly selected week.
+  void _changeSelectedWeek(int weekIndex) {
+    setState(() => _selectedWeek = weekIndex);
+    _recomputeBudgetInsight();
+    final plan = _plan;
+    if (plan != null) _loadWeeklySummary(weekIndex, plan);
   }
 
   void _recomputeBudgetInsight() {
@@ -254,8 +272,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     ),
                     trailingWidget: Text(
                       '\u20AC${item.estimatedWasteCost.toStringAsFixed(2)}',
-                      style: CalmText.amount(context)
-                          .copyWith(color: AppColors.warning(ctx)),
+                      style: CalmText.amount(
+                        context,
+                      ).copyWith(color: AppColors.warning(ctx)),
                     ),
                   );
                 },
@@ -322,6 +341,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       _plan = plan;
       _loading = false;
       _selectedWeek = 0;
+      _mode = _MealCalMode.month;
+      _selectedDay = null;
       _expanded.clear();
       _weeklySummaries.clear();
       _weeklySummaryPending.clear();
@@ -392,6 +413,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       _viewYear = y;
       _plan = null;
       _selectedWeek = 0;
+      _mode = _MealCalMode.month;
+      _selectedDay = null;
       _expanded.clear();
       _weeklySummaries.clear();
       _weeklySummaryPending.clear();
@@ -399,14 +422,19 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       _aiContent.clear();
       _aiPending.clear();
     });
-    final saved = await _service.load(widget.householdId, _viewMonth, _viewYear);
+    final saved = await _service.load(
+      widget.householdId,
+      _viewMonth,
+      _viewYear,
+    );
     if (!mounted) return;
     if (saved != null) {
       final locale = Localizations.localeOf(context).languageCode;
-      for (final recipeId in saved.days
-          .where((d) => !d.isFreeform && d.recipeId.isNotEmpty)
-          .map((d) => d.recipeId)
-          .toSet()) {
+      for (final recipeId
+          in saved.days
+              .where((d) => !d.isFreeform && d.recipeId.isNotEmpty)
+              .map((d) => d.recipeId)
+              .toSet()) {
         final cached = _aiService.getCached(recipeId, locale: locale);
         if (cached != null) _aiContent[recipeId] = cached;
       }
@@ -433,6 +461,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     setState(() {
       _plan = previous;
       _selectedWeek = 0;
+      _mode = _MealCalMode.month;
+      _selectedDay = null;
       _expanded.clear();
       _weeklySummaries.clear();
     });
@@ -689,18 +719,12 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   const SizedBox(height: 4),
                   Text(
                     recipe.name,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.ink70(ctx),
-                    ),
+                    style: TextStyle(fontSize: 14, color: AppColors.ink70(ctx)),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     l10n.mealPrepTime(recipe.prepMinutes.toString()),
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.ink50(ctx),
-                    ),
+                    style: TextStyle(fontSize: 12, color: AppColors.ink50(ctx)),
                   ),
                 ],
               ),
@@ -995,10 +1019,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   l10n.mealSubstituteHint,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.ink70(ctx),
-                  ),
+                  style: TextStyle(fontSize: 12, color: AppColors.ink70(ctx)),
                 ),
               ),
             ),
@@ -1555,15 +1576,19 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   }
 
   Widget _buildPlanView() {
-    final l10n = S.of(context);
     final plan = _plan!;
+    if (_selectedDay != null) return _buildDayView(plan, _selectedDay!);
+    return _mode == _MealCalMode.week
+        ? _buildWeekView(plan)
+        : _buildMonthGridView(plan);
+  }
+
+  /// Budget hero card: spent/budget total + progress bar. Shared by month grid.
+  Widget _buildBudgetSummary(MealPlan plan) {
+    final l10n = S.of(context);
     final budgetUsed = plan.monthlyBudget > 0
         ? plan.totalEstimatedCost / plan.monthlyBudget
         : 0.0;
-    final weekDays = _showFullMonth
-        ? plan.days
-        : _getWeekDays(plan, _selectedWeek);
-
     final budgetPill = budgetUsed > 1.0
         ? CalmPill(
             label: '${(budgetUsed * 100).toStringAsFixed(0)}%',
@@ -1578,469 +1603,551 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             label: '${(budgetUsed * 100).toStringAsFixed(0)}%',
             color: AppColors.ok(context),
           );
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: CalmCard(
-            child: Column(
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: CalmCard(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CalmEyebrow(l10n.mealPlannerMonthlyPlanEyebrow),
-                          const SizedBox(height: 8),
-                          Text(
-                            '${plan.totalEstimatedCost.toStringAsFixed(2)}${currencySymbol()}',
-                            style: CalmText.display(context, size: 32),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '/ ${plan.monthlyBudget.toStringAsFixed(2)}${currencySymbol()}',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: AppColors.ink70(context),
-                            ),
-                          ),
-                        ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CalmEyebrow(l10n.mealPlannerMonthlyPlanEyebrow),
+                      const SizedBox(height: 8),
+                      Text(
+                        '${plan.totalEstimatedCost.toStringAsFixed(2)}${currencySymbol()}',
+                        style: CalmText.display(context, size: 32),
                       ),
-                    ),
-                    budgetPill,
-                  ],
-                ),
-                const SizedBox(height: 16),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(2),
-                  child: LinearProgressIndicator(
-                    value: budgetUsed.clamp(0.0, 1.0),
-                    backgroundColor: AppColors.ink20(context),
-                    color: budgetUsed > 1
-                        ? AppColors.bad(context)
-                        : AppColors.ink(context),
-                    minHeight: 4,
+                      const SizedBox(height: 4),
+                      Text(
+                        '/ ${plan.monthlyBudget.toStringAsFixed(2)}${currencySymbol()}',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: AppColors.ink70(context),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 20),
-                Divider(color: AppColors.line(context), height: 1),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    CalmEyebrow(
-                      _showFullMonth
-                          ? l10n.mealPlannerFullMonthView.toUpperCase()
-                          : l10n.mealPlannerWeekEyebrow,
-                    ),
-                    const Spacer(),
-                    SizedBox(
-                      height: 28,
-                      child: ToggleButtons(
-                        constraints: const BoxConstraints(
-                          minHeight: 28,
-                          minWidth: 64,
-                        ),
-                        isSelected: [!_showFullMonth, _showFullMonth],
-                        onPressed: (i) {
-                          setState(() => _showFullMonth = i == 1);
-                        },
-                        borderRadius: BorderRadius.circular(8),
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: Text(
-                              l10n.mealPlannerWeekView,
-                              style: const TextStyle(fontSize: 11),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: Text(
-                              l10n.mealPlannerFullMonthView,
-                              style: const TextStyle(fontSize: 11),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                if (!_showFullMonth)
-                  // Week navigator (← Week N →) — replaces W1-W4 tabs
-                  Builder(
-                    builder: (_) {
-                    final daysInMonth = DateTime(
-                      plan.year,
-                      plan.month + 1,
-                      0,
-                    ).day;
-                    final weekCount = (daysInMonth / 7).ceil();
-                    if (_selectedWeek >= weekCount) {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        if (mounted) {
-                          setState(() => _selectedWeek = weekCount - 1);
-                        }
-                      });
-                    }
-                    return Row(
-                      key: MealsTourKeys.weekTabs,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.chevron_left),
-                          onPressed: _selectedWeek > 0
-                              ? () {
-                                  setState(() => _selectedWeek--);
-                                  if (_plan != null) {
-                                    _loadWeeklySummary(_selectedWeek, _plan!);
-                                  }
-                                  _recomputeBudgetInsight();
-                                }
-                              : null,
-                        ),
-                        Text(
-                          l10n.mealWeekLabel(_selectedWeek + 1),
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.chevron_right),
-                          onPressed: _selectedWeek < weekCount - 1
-                              ? () {
-                                  setState(() => _selectedWeek++);
-                                  if (_plan != null) {
-                                    _loadWeeklySummary(_selectedWeek, _plan!);
-                                  }
-                                  _recomputeBudgetInsight();
-                                }
-                              : null,
-                        ),
-                        const Spacer(),
-                        SizedBox(
-                          key: MealsTourKeys.addToListButton,
-                          height: 32,
-                          child: OutlinedButton.icon(
-                            onPressed: () =>
-                                _addWeekToShoppingList(_selectedWeek),
-                            icon: const Icon(Icons.add_shopping_cart, size: 16),
-                            label: Text(
-                              l10n.mealAddWeekToList,
-                              style: const TextStyle(fontSize: 11),
-                            ),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: AppColors.ink(context),
-                              side: BorderSide(
-                                color: AppColors.ink(context),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                              ),
-                            ),
-                          ),
-                        ),
-                        if (_weekHasBatchCooking(plan, _selectedWeek)) ...[
-                          const SizedBox(width: 4),
-                          SizedBox(
-                            height: 32,
-                            width: 32,
-                            child: IconButton(
-                              onPressed: _batchPlanLoading
-                                  ? null
-                                  : () => _showBatchPrepGuide(
-                                      plan,
-                                      _selectedWeek,
-                                    ),
-                              icon: _batchPlanLoading
-                                  ? SizedBox(
-                                      width: 14,
-                                      height: 14,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: AppColors.ink(context),
-                                      ),
-                                    )
-                                  : Icon(
-                                      Icons.kitchen,
-                                      size: 18,
-                                      color: AppColors.ink(context),
-                                    ),
-                              padding: EdgeInsets.zero,
-                              tooltip: l10n.mealBatchPrepGuide,
-                            ),
-                          ),
-                        ],
-                      ],
-                    );
-                  },
-                ),
+                budgetPill,
               ],
             ),
+            const SizedBox(height: 16),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(2),
+              child: LinearProgressIndicator(
+                value: budgetUsed.clamp(0.0, 1.0),
+                backgroundColor: AppColors.ink20(context),
+                color: budgetUsed > 1
+                    ? AppColors.bad(context)
+                    : AppColors.ink(context),
+                minHeight: 4,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Always-visible compact detail chip row (pantry, weekly score, budget
+  /// insight, waste, batch cooking).
+  Widget _buildDetailChipRow(MealPlan plan) {
+    final l10n = S.of(context);
+    return SizedBox(
+      height: 36,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 0),
+        children: [
+          ActionChip(
+            avatar: const Icon(Icons.eco_outlined, size: 14),
+            label: Text(l10n.mealShowDetails),
+            labelStyle: const TextStyle(fontSize: 11),
+            padding: EdgeInsets.zero,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            onPressed: () => _showPantryPicker(),
           ),
-        ),
-        // Always-visible compact detail chip row (replaces toggle)
-        Padding(
-          padding: const EdgeInsets.only(top: 8, bottom: 2),
-          child: CalmEyebrow(l10n.mealPlannerDetailEyebrow),
-        ),
-        SizedBox(
-          height: 36,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 0),
-            children: [
-              ActionChip(
-                avatar: const Icon(Icons.eco_outlined, size: 14),
-                label: Text(l10n.mealShowDetails),
+          const SizedBox(width: 6),
+          if (_weeklySummaries.containsKey(_selectedWeek))
+            Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: ActionChip(
+                avatar: const Icon(Icons.monitor_heart_outlined, size: 14),
+                label: Text(
+                  '${_weeklySummaries[_selectedWeek]!.overallScore}/10',
+                ),
                 labelStyle: const TextStyle(fontSize: 11),
                 padding: EdgeInsets.zero,
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                onPressed: () => _showPantryPicker(),
-              ),
-              const SizedBox(width: 6),
-              if (_weeklySummaries.containsKey(_selectedWeek))
-                Padding(
-                  padding: const EdgeInsets.only(right: 6),
-                  child: ActionChip(
-                    avatar: const Icon(Icons.monitor_heart_outlined, size: 14),
-                    label: Text(
-                      '${_weeklySummaries[_selectedWeek]!.overallScore}/10',
-                    ),
-                    labelStyle: const TextStyle(fontSize: 11),
-                    padding: EdgeInsets.zero,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    onPressed: () {
-                      CalmBottomSheet.show(
-                        context,
-                        builder: (_) => CalmBottomSheetContent(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              NutritionDashboardCard(
-                                weekDays: _getWeekDays(plan, _selectedWeek),
-                                recipeMap: _service.recipeMap,
-                                ingredientMap: _service.ingredientMap,
-                                nPessoas: plan.nPessoas,
-                                settings: widget.settings.mealSettings,
-                              ),
-                              if (_weeklySummaries.containsKey(_selectedWeek))
-                                WeeklySummaryCard(
-                                  summary: _weeklySummaries[_selectedWeek]!,
-                                ),
-                            ],
+                onPressed: () {
+                  CalmBottomSheet.show(
+                    context,
+                    builder: (_) => CalmBottomSheetContent(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          NutritionDashboardCard(
+                            weekDays: _getWeekDays(plan, _selectedWeek),
+                            recipeMap: _service.recipeMap,
+                            ingredientMap: _service.ingredientMap,
+                            nPessoas: plan.nPessoas,
+                            settings: widget.settings.mealSettings,
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              if (_budgetInsight != null)
-                Padding(
-                  padding: const EdgeInsets.only(right: 6),
-                  child: ActionChip(
-                    avatar: const Icon(
-                      Icons.account_balance_wallet_outlined,
-                      size: 14,
+                          if (_weeklySummaries.containsKey(_selectedWeek))
+                            WeeklySummaryCard(
+                              summary: _weeklySummaries[_selectedWeek]!,
+                            ),
+                        ],
+                      ),
                     ),
-                    label: Text(
-                      '${_budgetInsight!.weeklyEstimatedCost.toStringAsFixed(0)}${currencySymbol()}',
-                    ),
-                    labelStyle: const TextStyle(fontSize: 11),
-                    padding: EdgeInsets.zero,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    onPressed: () => showMealPlanBudgetSheet(
-                      context: context,
-                      insight: _budgetInsight!,
-                      onApplySwap: (swap) {
-                        Navigator.of(context).pop();
-                        final updated = _service.swapDay(
-                          plan,
-                          swap.original.dayIndex,
-                          MealType.values.firstWhere(
-                            (m) => m.name == swap.original.mealType,
-                            orElse: () => MealType.dinner,
-                          ),
-                          swap.alternativeRecipeId,
-                        );
-                        _service.save(updated, widget.householdId);
-                        setState(() => _plan = updated);
-                        _enrichPlan(updated);
-                        _recomputeBudgetInsight();
-                      },
-                    ),
-                  ),
-                ),
-              Builder(
-                builder: (_) {
-                  final wasteItems = _computeWasteItems();
-                  if (wasteItems.isEmpty) return const SizedBox.shrink();
-                  final totalWaste = wasteItems.fold(
-                    0.0,
-                    (s, w) => s + w.estimatedWasteCost,
-                  );
-                  return ActionChip(
-                    avatar: Icon(
-                      Icons.delete_outline,
-                      size: 14,
-                      color: AppColors.warning(context),
-                    ),
-                    label: Text('\u20AC${totalWaste.toStringAsFixed(2)}'),
-                    labelStyle: const TextStyle(fontSize: 11),
-                    padding: EdgeInsets.zero,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    backgroundColor: AppColors.warningBackground(context),
-                    side: BorderSide(color: AppColors.warningBorder(context)),
-                    onPressed: () => _showWasteDetails(wasteItems),
                   );
                 },
+              ),
+            ),
+          if (_budgetInsight != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: ActionChip(
+                avatar: const Icon(
+                  Icons.account_balance_wallet_outlined,
+                  size: 14,
+                ),
+                label: Text(
+                  '${_budgetInsight!.weeklyEstimatedCost.toStringAsFixed(0)}${currencySymbol()}',
+                ),
+                labelStyle: const TextStyle(fontSize: 11),
+                padding: EdgeInsets.zero,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                onPressed: () => showMealPlanBudgetSheet(
+                  context: context,
+                  insight: _budgetInsight!,
+                  onApplySwap: (swap) {
+                    Navigator.of(context).pop();
+                    final updated = _service.swapDay(
+                      plan,
+                      swap.original.dayIndex,
+                      MealType.values.firstWhere(
+                        (m) => m.name == swap.original.mealType,
+                        orElse: () => MealType.dinner,
+                      ),
+                      swap.alternativeRecipeId,
+                    );
+                    _service.save(updated, widget.householdId);
+                    setState(() => _plan = updated);
+                    _enrichPlan(updated);
+                    _recomputeBudgetInsight();
+                  },
+                ),
+              ),
+            ),
+          Builder(
+            builder: (_) {
+              final wasteItems = _computeWasteItems();
+              if (wasteItems.isEmpty) return const SizedBox.shrink();
+              final totalWaste = wasteItems.fold(
+                0.0,
+                (s, w) => s + w.estimatedWasteCost,
+              );
+              return Padding(
+                padding: const EdgeInsets.only(right: 6),
+                child: ActionChip(
+                  avatar: Icon(
+                    Icons.delete_outline,
+                    size: 14,
+                    color: AppColors.warning(context),
+                  ),
+                  label: Text('€${totalWaste.toStringAsFixed(2)}'),
+                  labelStyle: const TextStyle(fontSize: 11),
+                  padding: EdgeInsets.zero,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  backgroundColor: AppColors.warningBackground(context),
+                  side: BorderSide(color: AppColors.warningBorder(context)),
+                  onPressed: () => _showWasteDetails(wasteItems),
+                ),
+              );
+            },
+          ),
+          if (_weekHasBatchCooking(plan, _selectedWeek))
+            ActionChip(
+              avatar: _batchPlanLoading
+                  ? SizedBox(
+                      width: 14,
+                      height: 14,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.ink(context),
+                      ),
+                    )
+                  : const Icon(Icons.kitchen, size: 14),
+              label: Text(l10n.mealBatchPrepGuide),
+              labelStyle: const TextStyle(fontSize: 11),
+              padding: EdgeInsets.zero,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              onPressed: _batchPlanLoading
+                  ? null
+                  : () => _showBatchPrepGuide(plan, _selectedWeek),
+            ),
+          ActionChip(
+            key: MealsTourKeys.addToListButton,
+            avatar: const Icon(Icons.add_shopping_cart, size: 14),
+            label: Text(l10n.mealAddWeekToList),
+            labelStyle: const TextStyle(fontSize: 11),
+            padding: EdgeInsets.zero,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            onPressed: () => _addWeekToShoppingList(_selectedWeek),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Bottom action bar: consolidated shopping list + freeform meal FAB.
+  /// Shared by month grid and day view.
+  Widget _buildBottomActionBar(MealPlan plan) {
+    final l10n = S.of(context);
+    return Positioned(
+      bottom: 16,
+      left: 0,
+      right: 0,
+      child: Row(
+        children: [
+          Expanded(
+            child: FilledButton.icon(
+              onPressed: _showConsolidatedList,
+              icon: const Icon(Icons.list_alt),
+              label: Text(l10n.mealConsolidatedList),
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.textPrimary(context),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          FloatingActionButton.small(
+            heroTag: 'addFreeform',
+            onPressed: () => _showFreeformDayPicker(plan),
+            backgroundColor: AppColors.ink(context),
+            child: Icon(Icons.edit_note, color: AppColors.bg(context)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// State 1: month grid with per-day meal dots. No week-scoped feature UI
+  /// here — those live in week mode (see [_buildWeekView]).
+  Widget _buildMonthGridView(MealPlan plan) {
+    final mealsByDay = _mealsByDayFor(plan.days.map((d) => d.dayIndex).toSet());
+    final now = DateTime.now();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _buildViewSwitcher(),
+        _buildBudgetSummary(plan),
+        const SizedBox(height: 8),
+        Expanded(
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 80),
+                child: CalmMonthGrid(
+                  year: plan.year,
+                  month: plan.month,
+                  mealsByDay: mealsByDay,
+                  today: now,
+                  weekdayLabels: _weekdayLabels(),
+                  onDayTap: (day) => setState(() {
+                    _selectedDay = day;
+                    _expanded.clear();
+                  }),
+                ),
+              ),
+              _buildBottomActionBar(plan),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// State: week strip + week-scoped features (budget insight, nutrition
+  /// score/waste, batch-cooking, add-week-to-shopping-list). `_selectedWeek`
+  /// is user-navigable here via the ◀▶ controls.
+  Widget _buildWeekView(MealPlan plan) {
+    final l10n = S.of(context);
+    final daysInMonth = DateTime(plan.year, plan.month + 1, 0).day;
+    final weekCount = (daysInMonth / 7).ceil();
+    final weekDays = _getWeekDays(plan, _selectedWeek);
+    final dayNums = weekDays.map((d) => d.dayIndex).toSet().toList()..sort();
+    final mealsByDay = _mealsByDayFor(dayNums.toSet());
+    final now = DateTime.now();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _buildViewSwitcher(),
+        Expanded(
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 80),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _buildBudgetSummary(plan),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.chevron_left),
+                            onPressed: _selectedWeek > 0
+                                ? () => _changeSelectedWeek(_selectedWeek - 1)
+                                : null,
+                          ),
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                l10n.mealWeekLabel(_selectedWeek + 1),
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.chevron_right),
+                            onPressed: _selectedWeek < weekCount - 1
+                                ? () => _changeSelectedWeek(_selectedWeek + 1)
+                                : null,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    _WeekStrip(
+                      year: plan.year,
+                      month: plan.month,
+                      days: dayNums,
+                      mealsByDay: mealsByDay,
+                      today: now,
+                      onDayTap: (day) => setState(() {
+                        _selectedDay = day;
+                        _expanded.clear();
+                      }),
+                    ),
+                    const SizedBox(height: 12),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 2),
+                      child: CalmEyebrow(l10n.mealPlannerDetailEyebrow),
+                    ),
+                    _buildDetailChipRow(plan),
+                  ],
+                ),
+              ),
+              _buildBottomActionBar(plan),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Shared [Mês | Semana] segmented switcher. Switching modes always clears
+  /// any open day overlay.
+  Widget _buildViewSwitcher() {
+    final l10n = S.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
+      child: Center(
+        child: SegmentedButton<_MealCalMode>(
+          key: MealsTourKeys.weekTabs,
+          segments: [
+            ButtonSegment(
+              value: _MealCalMode.month,
+              label: Text(l10n.mealPlannerFullMonthView),
+            ),
+            ButtonSegment(
+              value: _MealCalMode.week,
+              label: Text(l10n.mealPlannerWeekView),
+            ),
+          ],
+          selected: {_mode},
+          onSelectionChanged: (selection) => setState(() {
+            _mode = selection.first;
+            _selectedDay = null;
+          }),
+        ),
+      ),
+    );
+  }
+
+  // Monday-first weekday initials (S T Q Q S S D - PT abbreviations).
+  List<String> _weekdayLabels() => const ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'];
+
+  /// Day-to-MealTypes lookup for the given day list. Shared by month grid
+  /// and week strip so both derive meal presence identically.
+  Map<int, Set<MealType>> _mealsByDayFor(Set<int> days) {
+    final plan = _plan;
+    if (plan == null) return {};
+    final mealsByDay = <int, Set<MealType>>{};
+    for (final d in plan.days) {
+      if (!days.contains(d.dayIndex)) continue;
+      (mealsByDay[d.dayIndex] ??= <MealType>{}).add(d.mealType);
+    }
+    return mealsByDay;
+  }
+
+  /// States 2+3: single-day meal list, collapsed rows expand to the
+  /// existing DayCard/FreeformMealCard via `_expanded`.
+  Widget _buildDayView(MealPlan plan, int day) {
+    final l10n = S.of(context);
+    final dayMeals = plan.days.where((d) => d.dayIndex == day).toList();
+
+    // Group by (dayIndex, mealType); sort courses soup->main->dessert.
+    final grouped = <String, List<MealDay>>{};
+    for (final d in dayMeals) {
+      (grouped['${d.dayIndex}_${d.mealType.name}'] ??= []).add(d);
+    }
+    const courseOrder = {
+      CourseType.soupOrStarter: 0,
+      CourseType.mainCourse: 1,
+      CourseType.dessert: 2,
+    };
+    for (final g in grouped.values) {
+      g.sort(
+        (a, b) => (courseOrder[a.courseType] ?? 1).compareTo(
+          courseOrder[b.courseType] ?? 1,
+        ),
+      );
+    }
+    final keys = grouped.keys.toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 8, 20, 8),
+          child: Row(
+            children: [
+              TextButton.icon(
+                onPressed: () => setState(() => _selectedDay = null),
+                icon: const Icon(Icons.chevron_left, size: 18),
+                label: Text(l10n.mealCalendarBackToMonth),
+              ),
+              const Spacer(),
+              Text(
+                '$day ${localizedMonthFull(l10n, plan.month)}',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.ink(context),
+                ),
               ),
             ],
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 8, bottom: 4),
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 4),
           child: CalmEyebrow(l10n.mealPlannerMealsEyebrow),
         ),
         Expanded(
           child: Stack(
             children: [
-              Builder(
-                builder: (_) {
-                  // Group courses by (dayIndex, mealType) for multi-course display
-                  final grouped = <String, List<MealDay>>{};
-                  for (final day in weekDays) {
-                    final key = '${day.dayIndex}_${day.mealType.name}';
-                    (grouped[key] ??= []).add(day);
-                  }
-                  // Sort courses within each group: soup first, main, dessert last
-                  const courseOrder = {
-                    CourseType.soupOrStarter: 0,
-                    CourseType.mainCourse: 1,
-                    CourseType.dessert: 2,
-                  };
-                  for (final group in grouped.values) {
-                    group.sort(
-                      (a, b) => (courseOrder[a.courseType] ?? 1).compareTo(
-                        courseOrder[b.courseType] ?? 1,
+              keys.isEmpty
+                  ? Center(
+                      child: Text(
+                        l10n.mealCalendarNoMealsDay,
+                        style: TextStyle(color: AppColors.ink70(context)),
                       ),
-                    );
-                  }
-                  final groupKeys = grouped.keys.toList();
-                  return ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(0, 4, 0, 80),
-                    itemCount: groupKeys.length,
-                    itemBuilder: (_, i) {
-                      final courses = grouped[groupKeys[i]]!;
-                      final mainDay = courses.firstWhere(
-                        (d) => d.courseType == CourseType.mainCourse,
-                        orElse: () => courses.first,
-                      );
-                      if (mainDay.isFreeform) {
-                        return FreeformMealCard(
-                          mealDay: mainDay,
-                          onEdit: () => _editFreeformMeal(mainDay),
-                          onAddToShoppingList: widget.onAddToShoppingList,
-                          onFeedback: (fb) => _setFreeformFeedback(
-                            mainDay.dayIndex,
-                            mainDay.mealType,
-                            fb,
-                          ),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(20, 4, 20, 80),
+                      itemCount: keys.length,
+                      itemBuilder: (_, i) {
+                        final courses = grouped[keys[i]]!;
+                        final mainDay = courses.firstWhere(
+                          (d) => d.courseType == CourseType.mainCourse,
+                          orElse: () => courses.first,
                         );
-                      }
-                      return DayCard(
-                        mealDay: mainDay,
-                        allCourses: courses,
-                        plan: plan,
-                        service: _service,
-                        aiContent: _aiContent[mainDay.recipeId],
-                        isExpanded: _expanded.contains(
-                          '${mainDay.dayIndex}_${mainDay.mealType.name}',
-                        ),
-                        onToggleExpand: () => setState(() {
-                          final key =
-                              '${mainDay.dayIndex}_${mainDay.mealType.name}';
-                          if (_expanded.contains(key)) {
-                            _expanded.remove(key);
-                          } else {
-                            _expanded.add(key);
-                          }
-                        }),
-                        onSwap: () => _swapRecipe(
-                          mainDay.dayIndex,
-                          mainDay.mealType,
-                          mainDay.recipeId,
-                        ),
-                        onSwapCourse: (day) => _swapRecipeCourse(
-                          day.dayIndex,
-                          day.mealType,
-                          day.recipeId,
-                          day.courseType,
-                        ),
-                        onReplaceFreeform: () =>
-                            _replaceMealWithFreeform(mainDay),
-                        onAddIngredientToList: widget.onAddToShoppingList,
-                        onRating: (rating) => _setRating(
-                          mainDay.dayIndex,
-                          mainDay.mealType,
-                          rating,
-                        ),
-                        onViewPrepGuide: () => _showMealPrepGuide(mainDay),
-                        activePantryIds: resolveActivePantry(
-                          widget.settings.mealSettings,
-                        ),
-                        onSubstituteIngredient: (ingredientId) =>
-                            _showIngredientSubstitutionSheet(
-                              mainDay,
-                              ingredientId,
-                            ),
-                        onSubstituteCourseIngredient: (day, ingredientId) =>
-                            _showIngredientSubstitutionSheet(day, ingredientId),
-                      );
-                    },
-                  );
-                },
-              ),
-              Positioned(
-                bottom: 16,
-                left: 0,
-                right: 0,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: FilledButton.icon(
-                        onPressed: _showConsolidatedList,
-                        icon: const Icon(Icons.list_alt),
-                        label: Text(l10n.mealConsolidatedList),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.textPrimary(context),
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                        ),
-                      ),
+                        final key =
+                            '${mainDay.dayIndex}_${mainDay.mealType.name}';
+                        final expanded = _expanded.contains(key);
+
+                        if (!expanded) {
+                          final cost = courses.fold<double>(
+                            0,
+                            (s, d) => s + d.costEstimate,
+                          );
+                          return CalmMealRow(
+                            eyebrow: mainDay.mealType.localizedLabel(l10n),
+                            title: _mealTitle(mainDay),
+                            meta:
+                                '${cost.toStringAsFixed(2)}${currencySymbol()}',
+                            onTap: () => setState(() => _expanded.add(key)),
+                          );
+                        }
+                        return _buildMealCard(plan, mainDay, courses);
+                      },
                     ),
-                    const SizedBox(width: 8),
-                    FloatingActionButton.small(
-                      heroTag: 'addFreeform',
-                      onPressed: () => _showFreeformDayPicker(plan),
-                      backgroundColor: AppColors.ink(context),
-                      child: Icon(
-                        Icons.edit_note,
-                        color: AppColors.bg(context),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              _buildBottomActionBar(plan),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  // Meal display title: recipe name or freeform title.
+  String _mealTitle(MealDay d) {
+    if (d.isFreeform) return d.freeformTitle ?? '';
+    return _service.recipeMap[d.recipeId]?.name ?? d.recipeId;
+  }
+
+  /// Expanded meal card: existing DayCard/FreeformMealCard wiring, unchanged.
+  Widget _buildMealCard(MealPlan plan, MealDay mainDay, List<MealDay> courses) {
+    if (mainDay.isFreeform) {
+      return FreeformMealCard(
+        mealDay: mainDay,
+        onEdit: () => _editFreeformMeal(mainDay),
+        onAddToShoppingList: widget.onAddToShoppingList,
+        onFeedback: (fb) =>
+            _setFreeformFeedback(mainDay.dayIndex, mainDay.mealType, fb),
+      );
+    }
+    return DayCard(
+      mealDay: mainDay,
+      allCourses: courses,
+      plan: plan,
+      service: _service,
+      aiContent: _aiContent[mainDay.recipeId],
+      isExpanded: true,
+      onToggleExpand: () => setState(
+        () => _expanded.remove('${mainDay.dayIndex}_${mainDay.mealType.name}'),
+      ),
+      onSwap: () =>
+          _swapRecipe(mainDay.dayIndex, mainDay.mealType, mainDay.recipeId),
+      onSwapCourse: (day) => _swapRecipeCourse(
+        day.dayIndex,
+        day.mealType,
+        day.recipeId,
+        day.courseType,
+      ),
+      onReplaceFreeform: () => _replaceMealWithFreeform(mainDay),
+      onAddIngredientToList: widget.onAddToShoppingList,
+      onRating: (rating) =>
+          _setRating(mainDay.dayIndex, mainDay.mealType, rating),
+      onViewPrepGuide: () => _showMealPrepGuide(mainDay),
+      activePantryIds: resolveActivePantry(widget.settings.mealSettings),
+      onSubstituteIngredient: (ingredientId) =>
+          _showIngredientSubstitutionSheet(mainDay, ingredientId),
+      onSubstituteCourseIngredient: (day, ingredientId) =>
+          _showIngredientSubstitutionSheet(day, ingredientId),
     );
   }
 
@@ -2051,5 +2158,134 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     return plan.days
         .where((d) => d.dayIndex >= start && d.dayIndex <= end)
         .toList();
+  }
+}
+
+/// A single-row strip rendering a block of days (per [_getWeekDays]
+/// semantics — NOT a calendar Mon-Sun week; the last block in a month may
+/// have fewer than 7 days). Each cell shows its own weekday label derived
+/// from its actual date, since the block does not align to weekday
+/// boundaries. Cell visuals (day number + up to 4 MealType dots) are kept
+/// pixel-identical to [CalmMonthGrid]'s cells — same tokens, same dot
+/// geometry — so this reads as a strip view of the same grid.
+class _WeekStrip extends StatelessWidget {
+  const _WeekStrip({
+    required this.year,
+    required this.month,
+    required this.days,
+    required this.mealsByDay,
+    required this.onDayTap,
+    this.today,
+  });
+
+  final int year;
+  final int month;
+  final List<int> days;
+  final Map<int, Set<MealType>> mealsByDay;
+  final void Function(int day) onDayTap;
+  final DateTime? today;
+
+  static const _order = [
+    MealType.breakfast,
+    MealType.lunch,
+    MealType.snack,
+    MealType.dinner,
+  ];
+
+  // Monday-first weekday initials (S T Q Q S S D - PT abbreviations),
+  // indexed by DateTime.weekday (Mon=1..Sun=7).
+  static const _weekdayInitials = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'];
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        for (final dayNum in days)
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+              child: _buildCell(context, dayNum),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildCell(BuildContext context, int dayNum) {
+    final present = mealsByDay[dayNum] ?? const <MealType>{};
+    final isToday =
+        today != null &&
+        today!.year == year &&
+        today!.month == month &&
+        today!.day == dayNum;
+    final weekdayLabel =
+        _weekdayInitials[DateTime(year, month, dayNum).weekday - 1];
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+          child: Text(
+            weekdayLabel,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.inter(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: AppColors.ink50(context),
+              letterSpacing: 0.4,
+            ),
+          ),
+        ),
+        InkWell(
+          onTap: () => onDayTap(dayNum),
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            constraints: const BoxConstraints(minHeight: 44),
+            padding: const EdgeInsets.symmetric(vertical: 6),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: isToday
+                  ? Border.all(color: AppColors.ink(context), width: 1.5)
+                  : null,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '$dayNum',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.ink(context),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    for (final t in _order)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 1),
+                        child: Container(
+                          width: 5,
+                          height: 5,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: present.contains(t)
+                                ? AppColors.primary(context)
+                                : AppColors.ink50(
+                                    context,
+                                  ).withValues(alpha: 0.25),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

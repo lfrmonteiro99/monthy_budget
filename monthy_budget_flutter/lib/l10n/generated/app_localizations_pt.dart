@@ -6783,5 +6783,11 @@ class SPt extends S {
   String get commandFabOpen => 'Abrir assistente de comandos';
 
   @override
+  String get mealCalendarBackToMonth => 'Mês';
+
+  @override
+  String get mealCalendarNoMealsDay => 'Sem refeições neste dia';
+
+  @override
   String get goalCardPausedSemanticLabel => 'Em pausa - requer subscrição Pro';
 }

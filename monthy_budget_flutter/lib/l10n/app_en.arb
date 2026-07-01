@@ -3554,5 +3554,7 @@
   "@taxSimFiscalEyebrow": {"placeholders": {"year": {"type": "String"}}},
   "commandFabClose": "Close command assistant",
   "commandFabOpen": "Open command assistant",
+  "mealCalendarBackToMonth": "Month",
+  "mealCalendarNoMealsDay": "No meals this day",
   "goalCardPausedSemanticLabel": "Paused - requires Pro subscription"
 }

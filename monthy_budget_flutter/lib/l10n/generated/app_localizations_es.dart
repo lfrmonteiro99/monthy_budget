@@ -6786,6 +6786,12 @@ class SEs extends S {
   String get commandFabOpen => 'Abrir asistente de comandos';
 
   @override
+  String get mealCalendarBackToMonth => 'Mes';
+
+  @override
+  String get mealCalendarNoMealsDay => 'Sin comidas este día';
+
+  @override
   String get goalCardPausedSemanticLabel =>
       'En pausa - requiere suscripción Pro';
 }
