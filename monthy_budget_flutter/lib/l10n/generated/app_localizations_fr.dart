@@ -3105,6 +3105,9 @@ class SFr extends S {
   }
 
   @override
+  String get searchEmptyTitle => 'Rien trouve';
+
+  @override
   String get expenseTypeLabel => 'TYPE';
 
   @override

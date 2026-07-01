@@ -1644,6 +1644,7 @@
             }
         }
     },
+    "searchEmptyTitle": "Nada encontrado",
     "expenseTypeLabel": "TIPO",
     "expenseFixed": "Fijo",
     "expenseVariable": "Variable",

@@ -3099,6 +3099,9 @@ class SEs extends S {
   }
 
   @override
+  String get searchEmptyTitle => 'Nada encontrado';
+
+  @override
   String get expenseTypeLabel => 'TIPO';
 
   @override

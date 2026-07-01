@@ -1790,6 +1790,7 @@
             }
         }
     },
+    "searchEmptyTitle": "Nothing found",
     "expenseTypeLabel": "TYPE",
     "expenseFixed": "Fixed",
     "expenseVariable": "Variable",
