@@ -220,7 +220,7 @@ class _OrcamentoMensalAppState extends State<OrcamentoMensalApp> {
       child: AnimatedBuilder(
         animation: _controller,
         builder: (_, _) => MaterialApp(
-          title: 'Orçamento Mensal',
+          onGenerateTitle: (ctx) => S.of(ctx).appTitle,
           debugShowCheckedModeBanner: false,
           navigatorObservers: [AnalyticsService.instance.navigatorObserver],
           locale: _controller.locale,

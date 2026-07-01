@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/app_constants.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
 import '../onboarding/command_assistant_tour.dart';
 
@@ -164,7 +165,7 @@ class _CommandChatFabState extends State<CommandChatFab>
       top: clampedPos.dy,
       child: Semantics(
         button: true,
-        label: widget.isExpanded ? 'Close command assistant' : 'Open command assistant',
+        label: widget.isExpanded ? S.of(context).commandFabClose : S.of(context).commandFabOpen,
         child: GestureDetector(
         onPanStart: (_) => setState(() => _dragging = true),
         onPanUpdate: (details) {

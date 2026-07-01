@@ -43,7 +43,7 @@ class GoalCard extends StatelessWidget {
     final deadlineInfo = savingsDeadlineLabel(goal, l10n);
 
     return Semantics(
-      label: isPaused ? 'Paused - requires Pro subscription' : null,
+      label: isPaused ? S.of(context).goalCardPausedSemanticLabel : null,
       child: CalmCard(
         onTap: onTap,
         child: Column(

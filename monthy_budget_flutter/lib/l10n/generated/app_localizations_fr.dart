@@ -6651,4 +6651,152 @@ class SFr extends S {
   String monthReviewSuggestionFoodOver(String percent) {
     return 'L\'alimentation a dépassé le budget de $percent% — envisagez de revoir les portions ou la fréquence des achats.';
   }
+
+  @override
+  String get paywallErrorPurchaseFailed => 'Achat échoué. Veuillez réessayer.';
+
+  @override
+  String get paywallErrorRestoreFailed =>
+      'Restauration échouée. Veuillez réessayer.';
+
+  @override
+  String paywallYearlyNoteTemplate(String price) {
+    return '$price/an — Économisez 37%';
+  }
+
+  @override
+  String get paywallPeriodBilledYearly => '/mois (facturé annuellement)';
+
+  @override
+  String get paywallPeriodForever => 'pour toujours';
+
+  @override
+  String get paywallTrustSignal => 'Annulez à tout moment • Sans frais cachés';
+
+  @override
+  String get paywallCurrentPlan => 'Plan Actuel';
+
+  @override
+  String paywallBlockedFeatureMessage(String featureName) {
+    return '$featureName nécessite un abonnement payant';
+  }
+
+  @override
+  String get paywallProFeatUnlimitedCategories =>
+      'Catégories et historique illimités';
+
+  @override
+  String get paywallProFeatAiCoach => 'Coach Financier IA';
+
+  @override
+  String get paywallProFeatMealPlanner =>
+      'Planificateur de Repas + recettes IA';
+
+  @override
+  String get paywallProFeatSync =>
+      'Synchronisation de liste de courses en temps réel';
+
+  @override
+  String get paywallProFeatExport => 'Export PDF/CSV';
+
+  @override
+  String get paywallProFeatBillReminders => 'Rappels de factures';
+
+  @override
+  String get paywallProFeatExpenseTrends => 'Tendances des dépenses';
+
+  @override
+  String get paywallProFeatUnlimitedSavings => 'Objectifs d\'épargne illimités';
+
+  @override
+  String get paywallProFeatHousehold => 'Partage familial (jusqu\'à 6)';
+
+  @override
+  String get paywallProFeatTaxSimulator => 'Simulateur fiscal multi-pays';
+
+  @override
+  String get paywallProFeatDashboard => 'Personnalisation du tableau de bord';
+
+  @override
+  String get paywallProFeatThemes => 'Tous les thèmes de couleur';
+
+  @override
+  String get paywallProFeatNoAds => 'Sans publicités';
+
+  @override
+  String get paywallFreeFeatBudget => 'Calculateur de budget (8 catégories)';
+
+  @override
+  String get paywallFreeFeatTracking => 'Suivi des dépenses de base';
+
+  @override
+  String get paywallFreeFeatSavings => '1 objectif d\'épargne';
+
+  @override
+  String get paywallFreeFeatShopping => 'Liste de courses (local uniquement)';
+
+  @override
+  String get paywallFreeFeatAds => 'Publicités bannière';
+
+  @override
+  String get paywallFeatNameAiCoach => 'Coach Financier IA';
+
+  @override
+  String get paywallFeatNameMealPlanner => 'Planificateur de Repas';
+
+  @override
+  String get paywallFeatNameExportData => 'Exporter les Rapports';
+
+  @override
+  String get paywallFeatNameUnlimitedCategories => 'Catégories Illimitées';
+
+  @override
+  String get paywallFeatNameBillReminders => 'Rappels de Factures';
+
+  @override
+  String get paywallFeatNameShoppingListSync =>
+      'Synchronisation de Liste de Courses';
+
+  @override
+  String get paywallFeatNameNoAds => 'Sans Publicité';
+
+  @override
+  String get paywallFeatNameHouseholdSharing => 'Partage Familial';
+
+  @override
+  String get paywallFeatNameTaxSimulator => 'Simulateur Fiscal';
+
+  @override
+  String get paywallFeatNameStressIndex => 'Indice de Stress';
+
+  @override
+  String get paywallFeatNameMonthReview => 'Bilan du Mois';
+
+  @override
+  String get paywallFeatNameDashboard => 'Personnalisation du Tableau de Bord';
+
+  @override
+  String get paywallFeatNameAllThemes => 'Tous les Thèmes de Couleur';
+
+  @override
+  String get paywallFeatNameExpenseTrends => 'Tendances des Dépenses';
+
+  @override
+  String get paywallFeatNameUnlimitedSavings =>
+      'Objectifs d\'Épargne Illimités';
+
+  @override
+  String taxSimFiscalEyebrow(String year) {
+    return 'FISCAL $year';
+  }
+
+  @override
+  String get commandFabClose => 'Fermer l\'assistant de commandes';
+
+  @override
+  String get commandFabOpen => 'Ouvrir l\'assistant de commandes';
+
+  @override
+  String get goalCardPausedSemanticLabel =>
+      'En pause - nécessite un abonnement Pro';
 }
