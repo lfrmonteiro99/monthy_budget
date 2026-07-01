@@ -6751,4 +6751,7 @@ class SPt extends S {
   @override
   String get paywallFeatNameUnlimitedSavings =>
       'Objectivos de Poupança Ilimitados';
+
+  @override
+  String get goalCardPausedSemanticLabel => 'Em pausa - requer subscrição Pro';
 }

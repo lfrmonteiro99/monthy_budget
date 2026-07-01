@@ -6271,5 +6271,6 @@
   "paywallFeatNameDashboard": "Personalização do Painel",
   "paywallFeatNameAllThemes": "Todos os Temas de Cor",
   "paywallFeatNameExpenseTrends": "Tendências de Despesas",
-  "paywallFeatNameUnlimitedSavings": "Objectivos de Poupança Ilimitados"
+  "paywallFeatNameUnlimitedSavings": "Objectivos de Poupança Ilimitados",
+  "goalCardPausedSemanticLabel": "Em pausa - requer subscrição Pro"
 }

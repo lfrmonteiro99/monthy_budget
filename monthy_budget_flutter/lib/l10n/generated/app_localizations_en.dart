@@ -6699,4 +6699,8 @@ class SEn extends S {
 
   @override
   String get paywallFeatNameUnlimitedSavings => 'Unlimited Savings Goals';
+
+  @override
+  String get goalCardPausedSemanticLabel =>
+      'Paused - requires Pro subscription';
 }

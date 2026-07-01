@@ -3542,5 +3542,6 @@
   "paywallFeatNameDashboard": "Dashboard Customization",
   "paywallFeatNameAllThemes": "All Color Themes",
   "paywallFeatNameExpenseTrends": "Expense Trends",
-  "paywallFeatNameUnlimitedSavings": "Unlimited Savings Goals"
+  "paywallFeatNameUnlimitedSavings": "Unlimited Savings Goals",
+  "goalCardPausedSemanticLabel": "Paused - requires Pro subscription"
 }

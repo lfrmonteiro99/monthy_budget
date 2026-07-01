@@ -3377,5 +3377,6 @@
   "paywallFeatNameDashboard": "Personnalisation du Tableau de Bord",
   "paywallFeatNameAllThemes": "Tous les Thèmes de Couleur",
   "paywallFeatNameExpenseTrends": "Tendances des Dépenses",
-  "paywallFeatNameUnlimitedSavings": "Objectifs d'Épargne Illimités"
+  "paywallFeatNameUnlimitedSavings": "Objectifs d'Épargne Illimités",
+  "goalCardPausedSemanticLabel": "En pause - nécessite un abonnement Pro"
 }

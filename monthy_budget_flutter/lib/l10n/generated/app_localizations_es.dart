@@ -6754,4 +6754,8 @@ class SEs extends S {
 
   @override
   String get paywallFeatNameUnlimitedSavings => 'Metas de Ahorro Ilimitadas';
+
+  @override
+  String get goalCardPausedSemanticLabel =>
+      'En pausa - requiere suscripción Pro';
 }

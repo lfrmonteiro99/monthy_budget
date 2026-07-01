@@ -11914,6 +11914,12 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Objectivos de Poupança Ilimitados'**
   String get paywallFeatNameUnlimitedSavings;
+
+  /// No description provided for @goalCardPausedSemanticLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Em pausa - requer subscrição Pro'**
+  String get goalCardPausedSemanticLabel;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

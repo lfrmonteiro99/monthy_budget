@@ -3377,5 +3377,6 @@
   "paywallFeatNameDashboard": "Personalización del Panel",
   "paywallFeatNameAllThemes": "Todos los Temas de Color",
   "paywallFeatNameExpenseTrends": "Tendencias de Gastos",
-  "paywallFeatNameUnlimitedSavings": "Metas de Ahorro Ilimitadas"
+  "paywallFeatNameUnlimitedSavings": "Metas de Ahorro Ilimitadas",
+  "goalCardPausedSemanticLabel": "En pausa - requiere suscripción Pro"
 }

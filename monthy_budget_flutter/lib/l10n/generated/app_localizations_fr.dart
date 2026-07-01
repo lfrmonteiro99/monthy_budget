@@ -6765,4 +6765,8 @@ class SFr extends S {
   @override
   String get paywallFeatNameUnlimitedSavings =>
       'Objectifs d\'Épargne Illimités';
+
+  @override
+  String get goalCardPausedSemanticLabel =>
+      'En pause - nécessite un abonnement Pro';
 }
