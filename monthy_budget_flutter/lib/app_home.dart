@@ -678,6 +678,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
 
   void _refreshNotificationSchedules() {
     final topCategory = _topCategoryUsage();
+    final sub = _subscription;
     unawaited(
       NotificationService().refreshAllSchedules(
         prefs: _notificationPrefs,
@@ -686,6 +687,11 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
         hasMealPlan: _hasMealPlan,
         topCategoryName: topCategory?.category,
         topCategoryUsagePercent: topCategory?.percent,
+        trialEndDate: sub.isTrialActive
+            ? sub.trialStartDate.add(Duration(days: sub.effectiveTrialDays))
+            : null,
+        activeCategories: _recurringExpenses.where((e) => e.isActive).length,
+        activeSavingsGoals: _savingsGoals.where((g) => g.isActive).length,
       ),
     );
   }

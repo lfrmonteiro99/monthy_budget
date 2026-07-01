@@ -5,6 +5,7 @@ import 'package:timezone/timezone.dart' as tz;
 import '../constants/app_constants.dart';
 import '../models/notification_preferences.dart';
 import '../models/recurring_expense.dart';
+import 'downgrade_service.dart';
 import 'log_service.dart';
 
 class NotificationRefreshDecision {
@@ -96,6 +97,9 @@ class NotificationService {
     required bool hasMealPlan,
     String? topCategoryName,
     double? topCategoryUsagePercent,
+    DateTime? trialEndDate,
+    int activeCategories = 0,
+    int activeSavingsGoals = 0,
   }) async {
     if (!_initialized) {
       if (_initFuture != null) {
@@ -113,6 +117,9 @@ class NotificationService {
             hasMealPlan: hasMealPlan,
             topCategoryName: topCategoryName,
             topCategoryUsagePercent: topCategoryUsagePercent,
+            trialEndDate: trialEndDate,
+            activeCategories: activeCategories,
+            activeSavingsGoals: activeSavingsGoals,
           );
         })
         .catchError((e) {
@@ -132,6 +139,9 @@ class NotificationService {
     required bool hasMealPlan,
     String? topCategoryName,
     double? topCategoryUsagePercent,
+    DateTime? trialEndDate,
+    int activeCategories = 0,
+    int activeSavingsGoals = 0,
   }) async {
     await cancelAll();
 
@@ -177,6 +187,18 @@ class NotificationService {
 
     for (int i = 0; i < decision.customReminderCount; i++) {
       await _scheduleCustomReminder(prefs.customReminders[i], i);
+    }
+
+    if (trialEndDate != null) {
+      await scheduleTrialExpiryReminder(
+        trialEndDate: trialEndDate,
+        activeCategories: activeCategories,
+        activeSavingsGoals: activeSavingsGoals,
+        maxFreeCategories: DowngradeService.maxFreeCategories,
+        maxFreeSavingsGoals: DowngradeService.maxFreeSavingsGoals,
+        preferredHour: prefs.preferredHour,
+        preferredMinute: prefs.preferredMinute,
+      );
     }
   }
 
@@ -457,6 +479,20 @@ class NotificationService {
         category: 'service.notifications',
       );
     }
+  }
+
+  /// Returns true when the trial expiry reminder would fire — i.e. the reminder
+  /// date (trialEndDate minus daysBeforeExpiry) is still in the future.
+  ///
+  /// Exposed for testing; mirrors the guard inside [scheduleTrialExpiryReminder].
+  @visibleForTesting
+  static bool trialReminderWouldFire(
+    DateTime? trialEndDate, {
+    int daysBeforeExpiry = 10,
+  }) {
+    if (trialEndDate == null) return false;
+    final reminderDate = trialEndDate.subtract(Duration(days: daysBeforeExpiry));
+    return reminderDate.isAfter(DateTime.now());
   }
 
   /// Build the body text for the trial expiry reminder notification.
