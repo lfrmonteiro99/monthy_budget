@@ -1958,14 +1958,9 @@ extension _SettingsSections on _SettingsScreenState {
   static int _nearestComplexity(int v) => v <= 2 ? 1 : (v <= 4 ? 3 : 5);
 
   Widget _mealCard({required IconData icon, required String title, required List<Widget> children, String? subtitle}) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: AppColors.border(context)),
-      ),
-      child: Padding(
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: CalmCard(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1988,22 +1983,19 @@ extension _SettingsSections on _SettingsScreenState {
   }
 
   Widget _mealExpansionCard({required IconData icon, required String title, required List<Widget> children, String? subtitle, bool initiallyExpanded = false}) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: AppColors.border(context)),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: ExpansionTile(
-        initiallyExpanded: initiallyExpanded,
-        tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-        leading: Icon(icon, size: 18, color: AppColors.primary(context)),
-        title: Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
-        subtitle: subtitle != null ? Text(subtitle, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))) : null,
-        children: children,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: CalmCard(
+        padding: EdgeInsets.zero,
+        child: ExpansionTile(
+          initiallyExpanded: initiallyExpanded,
+          tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          leading: Icon(icon, size: 18, color: AppColors.primary(context)),
+          title: Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+          subtitle: subtitle != null ? Text(subtitle, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))) : null,
+          children: children,
+        ),
       ),
     );
   }
