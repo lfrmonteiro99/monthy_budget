@@ -6797,6 +6797,12 @@ class SFr extends S {
   String get commandFabOpen => 'Ouvrir l\'assistant de commandes';
 
   @override
+  String get mealCalendarBackToMonth => 'Mois';
+
+  @override
+  String get mealCalendarNoMealsDay => 'Aucun repas ce jour';
+
+  @override
   String get goalCardPausedSemanticLabel =>
       'En pause - nécessite un abonnement Pro';
 }

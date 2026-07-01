@@ -6283,5 +6283,9 @@
   "@taxSimFiscalEyebrow": {"placeholders": {"year": {"type": "String"}}},
   "commandFabClose": "Fechar assistente de comandos",
   "commandFabOpen": "Abrir assistente de comandos",
+  "mealCalendarBackToMonth": "Mês",
+  "@mealCalendarBackToMonth": { "description": "Back-to-month affordance in the meal day view" },
+  "mealCalendarNoMealsDay": "Sem refeições neste dia",
+  "@mealCalendarNoMealsDay": { "description": "Shown when a day has no meals in the meal calendar" },
   "goalCardPausedSemanticLabel": "Em pausa - requer subscrição Pro"
 }
