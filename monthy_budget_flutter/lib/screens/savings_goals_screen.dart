@@ -241,17 +241,16 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
           if (_goals.isNotEmpty) ...[
             const SizedBox(height: 16),
             CalmHero(
-              // TODO(l10n): move to ARB (Wave H)
-              eyebrow: 'POUPANÇA',
+              eyebrow: l10n.savingsGoalsEyebrow,
               amount: formatCurrency(totalSaved),
               subtitle: totalTarget > 0
-                  ? 'de ${formatCurrency(totalTarget)} objetivo'
-                  : '$activeCount metas ativas',
+                  ? l10n.savingsGoalsSubtitleTarget(formatCurrency(totalTarget))
+                  : l10n.savingsGoalsSubtitleActive(activeCount),
             ),
             const SizedBox(height: 12),
             if (totalTarget > 0)
               CalmPill(
-                label: '${((totalSaved / totalTarget) * 100).clamp(0.0, 100.0).toStringAsFixed(0)}% concluído',
+                label: l10n.savingsGoalsPercentComplete(((totalSaved / totalTarget) * 100).clamp(0.0, 100.0).toStringAsFixed(0)),
                 color: totalSaved >= totalTarget
                     ? AppColors.ok(context)
                     : AppColors.accent(context),
@@ -273,8 +272,7 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
                       child: CalmEmptyState(
                         icon: Icons.savings_outlined,
                         title: l10n.savingsGoalEmpty,
-                        // TODO(l10n): move to ARB (Wave H)
-                        body: 'Crie a sua primeira meta de poupança para começar.',
+                        body: l10n.savingsGoalsEmptyBody,
                         action: CalmEmptyStateAction(
                           label: l10n.savingsGoalHowItWorksTitle,
                           onPressed: () => setState(() => _showHelp = true),

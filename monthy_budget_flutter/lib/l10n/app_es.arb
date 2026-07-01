@@ -1350,6 +1350,34 @@
     "expenseTrendsMonthlyHistoryEyebrow": "HISTORIAL MENSUAL",
     "@expenseTrendsMonthlyHistoryEyebrow": {},
     "savingsGoals": "Objetivos de Ahorro",
+    "savingsGoalsEyebrow": "AHORROS",
+    "@savingsGoalsEyebrow": {},
+    "savingsGoalsSubtitleTarget": "de {total} objetivo",
+    "@savingsGoalsSubtitleTarget": {
+        "placeholders": {
+            "total": {
+                "type": "String"
+            }
+        }
+    },
+    "savingsGoalsSubtitleActive": "{count} metas activas",
+    "@savingsGoalsSubtitleActive": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "savingsGoalsPercentComplete": "{percent}% completado",
+    "@savingsGoalsPercentComplete": {
+        "placeholders": {
+            "percent": {
+                "type": "String"
+            }
+        }
+    },
+    "savingsGoalsEmptyBody": "Crea tu primera meta de ahorro para comenzar.",
+    "@savingsGoalsEmptyBody": {},
     "savingsGoalAdd": "Nuevo Objetivo",
     "savingsGoalEdit": "Editar Objetivo",
     "savingsGoalName": "Nombre del objetivo",

@@ -2587,6 +2587,28 @@ class SFr extends S {
   String get savingsGoals => 'Objectifs d\'Épargne';
 
   @override
+  String get savingsGoalsEyebrow => 'ÉPARGNE';
+
+  @override
+  String savingsGoalsSubtitleTarget(String total) {
+    return 'sur $total objectif';
+  }
+
+  @override
+  String savingsGoalsSubtitleActive(int count) {
+    return '$count objectifs actifs';
+  }
+
+  @override
+  String savingsGoalsPercentComplete(String percent) {
+    return '$percent% accompli';
+  }
+
+  @override
+  String get savingsGoalsEmptyBody =>
+      'Créez votre premier objectif d\'épargne pour commencer.';
+
+  @override
   String get savingsGoalAdd => 'Nouvel Objectif';
 
   @override

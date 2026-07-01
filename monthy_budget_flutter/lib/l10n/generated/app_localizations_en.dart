@@ -2565,6 +2565,28 @@ class SEn extends S {
   String get savingsGoals => 'Savings Goals';
 
   @override
+  String get savingsGoalsEyebrow => 'SAVINGS';
+
+  @override
+  String savingsGoalsSubtitleTarget(String total) {
+    return 'of $total target';
+  }
+
+  @override
+  String savingsGoalsSubtitleActive(int count) {
+    return '$count active goals';
+  }
+
+  @override
+  String savingsGoalsPercentComplete(String percent) {
+    return '$percent% complete';
+  }
+
+  @override
+  String get savingsGoalsEmptyBody =>
+      'Create your first savings goal to get started.';
+
+  @override
   String get savingsGoalAdd => 'New Goal';
 
   @override

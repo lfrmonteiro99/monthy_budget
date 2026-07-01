@@ -2581,6 +2581,28 @@ class SEs extends S {
   String get savingsGoals => 'Objetivos de Ahorro';
 
   @override
+  String get savingsGoalsEyebrow => 'AHORROS';
+
+  @override
+  String savingsGoalsSubtitleTarget(String total) {
+    return 'de $total objetivo';
+  }
+
+  @override
+  String savingsGoalsSubtitleActive(int count) {
+    return '$count metas activas';
+  }
+
+  @override
+  String savingsGoalsPercentComplete(String percent) {
+    return '$percent% completado';
+  }
+
+  @override
+  String get savingsGoalsEmptyBody =>
+      'Crea tu primera meta de ahorro para comenzar.';
+
+  @override
   String get savingsGoalAdd => 'Nuevo Objetivo';
 
   @override
