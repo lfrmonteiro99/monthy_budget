@@ -48,6 +48,14 @@ class _MemExpenseRepo implements ExpenseRepository {
   }
 
   @override
+  Future<void> addAllFromRecurring(
+      List<ActualExpense> expenses, String hid) async {
+    for (final e in expenses) {
+      if (!_items.any((i) => i.id == e.id)) _items.add(e);
+    }
+  }
+
+  @override
   Future<void> update(ActualExpense expense) async {
     if (shouldThrow) throw StateError('update failed');
     final idx = _items.indexWhere((e) => e.id == expense.id);
@@ -142,6 +150,14 @@ class _MemRecurringRepo implements RecurringExpenseRepository {
   @override
   Future<void> markRunForMonth(String hid, String mk) async {
     _ran.add('$hid|$mk');
+  }
+
+  @override
+  Future<List<String>> loadRunMonths(String hid) async {
+    return _ran
+        .where((k) => k.startsWith('$hid|'))
+        .map((k) => k.split('|').last)
+        .toList();
   }
 }
 
