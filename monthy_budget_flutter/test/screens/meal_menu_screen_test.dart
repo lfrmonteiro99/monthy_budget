@@ -46,9 +46,9 @@ void main() {
     // The grid is constructed with 3 CalmWeekGridRows.
     // The underlying Row children count: header + 3 meal rows = 4 Column
     // children. We verify via the 3 meal-row labels present in the tree.
-    expect(find.text('Peq.'), findsOneWidget);
-    expect(find.text('Almoço'), findsOneWidget);
-    expect(find.text('Jantar'), findsOneWidget);
+    expect(find.text('Bkfst.'), findsOneWidget);
+    expect(find.text('Lunch'), findsOneWidget);
+    expect(find.text('Dinner'), findsOneWidget);
   });
 
   testWidgets('MealMenuScreen shows 4 KPI rows', (tester) async {
