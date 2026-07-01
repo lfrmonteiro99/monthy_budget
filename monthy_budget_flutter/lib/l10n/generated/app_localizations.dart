@@ -11915,6 +11915,24 @@ abstract class S {
   /// **'Objectivos de Poupança Ilimitados'**
   String get paywallFeatNameUnlimitedSavings;
 
+  /// No description provided for @taxSimFiscalEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'FISCAL {year}'**
+  String taxSimFiscalEyebrow(String year);
+
+  /// No description provided for @commandFabClose.
+  ///
+  /// In pt, this message translates to:
+  /// **'Fechar assistente de comandos'**
+  String get commandFabClose;
+
+  /// No description provided for @commandFabOpen.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir assistente de comandos'**
+  String get commandFabOpen;
+
   /// No description provided for @goalCardPausedSemanticLabel.
   ///
   /// In pt, this message translates to:

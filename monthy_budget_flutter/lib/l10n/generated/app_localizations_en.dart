@@ -6701,6 +6701,17 @@ class SEn extends S {
   String get paywallFeatNameUnlimitedSavings => 'Unlimited Savings Goals';
 
   @override
+  String taxSimFiscalEyebrow(String year) {
+    return 'FISCAL $year';
+  }
+
+  @override
+  String get commandFabClose => 'Close command assistant';
+
+  @override
+  String get commandFabOpen => 'Open command assistant';
+
+  @override
   String get goalCardPausedSemanticLabel =>
       'Paused - requires Pro subscription';
 }

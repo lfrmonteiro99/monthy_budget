@@ -6272,5 +6272,9 @@
   "paywallFeatNameAllThemes": "Todos os Temas de Cor",
   "paywallFeatNameExpenseTrends": "Tendências de Despesas",
   "paywallFeatNameUnlimitedSavings": "Objectivos de Poupança Ilimitados",
+"taxSimFiscalEyebrow": "FISCAL {year}",
+  "@taxSimFiscalEyebrow": {"placeholders": {"year": {"type": "String"}}},
+  "commandFabClose": "Fechar assistente de comandos",
+  "commandFabOpen": "Abrir assistente de comandos",
   "goalCardPausedSemanticLabel": "Em pausa - requer subscrição Pro"
 }

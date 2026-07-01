@@ -6767,6 +6767,17 @@ class SFr extends S {
       'Objectifs d\'Épargne Illimités';
 
   @override
+  String taxSimFiscalEyebrow(String year) {
+    return 'FISCAL $year';
+  }
+
+  @override
+  String get commandFabClose => 'Fermer l\'assistant de commandes';
+
+  @override
+  String get commandFabOpen => 'Ouvrir l\'assistant de commandes';
+
+  @override
   String get goalCardPausedSemanticLabel =>
       'En pause - nécessite un abonnement Pro';
 }
