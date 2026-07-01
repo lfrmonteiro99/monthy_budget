@@ -384,6 +384,10 @@ class SFr extends S {
       'Configurez vos données pour voir le résumé.';
 
   @override
+  String get dashboardEmptyStateBody =>
+      'Configurez vos revenus et dépenses pour commencer.';
+
+  @override
   String get dashboardOpenSettingsButton => 'Ouvrir les Paramètres';
 
   @override
@@ -5161,6 +5165,9 @@ class SFr extends S {
 
   @override
   String get dashboardBurnRateOver => 'Au-dessus du rythme';
+
+  @override
+  String get dashboardBurnRateAttention => 'attention';
 
   @override
   String get dashboardBurnRateDailyAvg => 'MOY./JOUR';
