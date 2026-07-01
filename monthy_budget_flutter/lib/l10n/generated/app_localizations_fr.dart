@@ -6776,4 +6776,8 @@ class SFr extends S {
 
   @override
   String get commandFabOpen => 'Ouvrir l\'assistant de commandes';
+
+  @override
+  String get goalCardPausedSemanticLabel =>
+      'En pause - nécessite un abonnement Pro';
 }

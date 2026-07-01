@@ -6765,4 +6765,8 @@ class SEs extends S {
 
   @override
   String get commandFabOpen => 'Abrir asistente de comandos';
+
+  @override
+  String get goalCardPausedSemanticLabel =>
+      'En pausa - requiere suscripción Pro';
 }

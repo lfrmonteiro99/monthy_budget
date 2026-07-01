@@ -11932,6 +11932,12 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Abrir assistente de comandos'**
   String get commandFabOpen;
+
+  /// No description provided for @goalCardPausedSemanticLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Em pausa - requer subscrição Pro'**
+  String get goalCardPausedSemanticLabel;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
