@@ -2145,6 +2145,45 @@ class SEs extends S {
   String get monthFullDec => 'Diciembre';
 
   @override
+  String get welcomeSlideWelcomeEyebrow => 'BIENVENIDO';
+
+  @override
+  String get welcomeSlideWelcomeTitle => 'Tu presupuesto, de un vistazo';
+
+  @override
+  String get welcomeSlideWelcomeBody =>
+      'El panel muestra tu liquidez mensual, gastos e Índice de Serenidad.';
+
+  @override
+  String get welcomeSlideFeaturesEyebrow => 'FUNCIONES';
+
+  @override
+  String get welcomeSlideFeaturesTitle => 'Controla cada gasto';
+
+  @override
+  String get welcomeSlideFeaturesBody =>
+      'Toca + para registrar una compra. Asigna una categoría y mira cómo se actualizan las barras.';
+
+  @override
+  String get welcomeSlidePrivacyEyebrow => 'PRIVACIDAD';
+
+  @override
+  String get welcomeSlidePrivacyTitle => 'Tus datos se quedan aquí';
+
+  @override
+  String get welcomeSlidePrivacyBody =>
+      'Todo almacenado localmente en tu dispositivo. Sin servidores, sin compartir datos.';
+
+  @override
+  String get welcomeSlideStart => 'Empezar';
+
+  @override
+  String get welcomeSlideContinue => 'Continuar';
+
+  @override
+  String get welcomeSlideSkip => 'Saltar';
+
+  @override
   String get setupWizardWelcomeTitle => 'Bienvenido a tu presupuesto';
 
   @override

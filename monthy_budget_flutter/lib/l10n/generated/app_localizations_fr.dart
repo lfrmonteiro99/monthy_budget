@@ -2150,6 +2150,45 @@ class SFr extends S {
   String get monthFullDec => 'Décembre';
 
   @override
+  String get welcomeSlideWelcomeEyebrow => 'BIENVENUE';
+
+  @override
+  String get welcomeSlideWelcomeTitle => 'Votre budget, en un coup d\'œil';
+
+  @override
+  String get welcomeSlideWelcomeBody =>
+      'Le tableau de bord affiche votre liquidité mensuelle, vos dépenses et l\'Indice de Sérénité.';
+
+  @override
+  String get welcomeSlideFeaturesEyebrow => 'FONCTIONNALITÉS';
+
+  @override
+  String get welcomeSlideFeaturesTitle => 'Suivez chaque dépense';
+
+  @override
+  String get welcomeSlideFeaturesBody =>
+      'Appuyez sur + pour enregistrer un achat. Assignez une catégorie et regardez les barres se mettre à jour.';
+
+  @override
+  String get welcomeSlidePrivacyEyebrow => 'CONFIDENTIALITÉ';
+
+  @override
+  String get welcomeSlidePrivacyTitle => 'Vos données restent ici';
+
+  @override
+  String get welcomeSlidePrivacyBody =>
+      'Tout est stocké localement sur votre appareil. Pas de serveurs, pas de partage de données.';
+
+  @override
+  String get welcomeSlideStart => 'Commencer';
+
+  @override
+  String get welcomeSlideContinue => 'Continuer';
+
+  @override
+  String get welcomeSlideSkip => 'Passer';
+
+  @override
   String get setupWizardWelcomeTitle => 'Bienvenue dans votre budget';
 
   @override

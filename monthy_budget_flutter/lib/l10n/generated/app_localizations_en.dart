@@ -2134,6 +2134,45 @@ class SEn extends S {
   String get monthFullDec => 'December';
 
   @override
+  String get welcomeSlideWelcomeEyebrow => 'WELCOME';
+
+  @override
+  String get welcomeSlideWelcomeTitle => 'Your budget, at a glance';
+
+  @override
+  String get welcomeSlideWelcomeBody =>
+      'The dashboard shows your monthly liquidity, expenses and Serenity Index.';
+
+  @override
+  String get welcomeSlideFeaturesEyebrow => 'FEATURES';
+
+  @override
+  String get welcomeSlideFeaturesTitle => 'Track every expense';
+
+  @override
+  String get welcomeSlideFeaturesBody =>
+      'Tap + to log a purchase. Assign a category and watch the bars update.';
+
+  @override
+  String get welcomeSlidePrivacyEyebrow => 'PRIVACY';
+
+  @override
+  String get welcomeSlidePrivacyTitle => 'Your data stays here';
+
+  @override
+  String get welcomeSlidePrivacyBody =>
+      'Everything stored locally on your device. No servers, no data sharing.';
+
+  @override
+  String get welcomeSlideStart => 'Get started';
+
+  @override
+  String get welcomeSlideContinue => 'Continue';
+
+  @override
+  String get welcomeSlideSkip => 'Skip';
+
+  @override
   String get setupWizardWelcomeTitle => 'Welcome to your budget';
 
   @override

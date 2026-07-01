@@ -3971,6 +3971,78 @@ abstract class S {
   /// **'Dezembro'**
   String get monthFullDec;
 
+  /// No description provided for @welcomeSlideWelcomeEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'BEM-VINDO'**
+  String get welcomeSlideWelcomeEyebrow;
+
+  /// No description provided for @welcomeSlideWelcomeTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'O teu orçamento, numa vista só'**
+  String get welcomeSlideWelcomeTitle;
+
+  /// No description provided for @welcomeSlideWelcomeBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'O painel mostra a tua liquidez mensal, despesas e Índice de Serenidade.'**
+  String get welcomeSlideWelcomeBody;
+
+  /// No description provided for @welcomeSlideFeaturesEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'FUNCIONALIDADES'**
+  String get welcomeSlideFeaturesEyebrow;
+
+  /// No description provided for @welcomeSlideFeaturesTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Controla cada despesa'**
+  String get welcomeSlideFeaturesTitle;
+
+  /// No description provided for @welcomeSlideFeaturesBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toca em + para registar uma compra. Atribui uma categoria e vê as barras actualizarem.'**
+  String get welcomeSlideFeaturesBody;
+
+  /// No description provided for @welcomeSlidePrivacyEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'PRIVACIDADE'**
+  String get welcomeSlidePrivacyEyebrow;
+
+  /// No description provided for @welcomeSlidePrivacyTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Os teus dados ficam aqui'**
+  String get welcomeSlidePrivacyTitle;
+
+  /// No description provided for @welcomeSlidePrivacyBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tudo armazenado localmente no dispositivo. Sem servidores, sem partilha de dados.'**
+  String get welcomeSlidePrivacyBody;
+
+  /// No description provided for @welcomeSlideStart.
+  ///
+  /// In pt, this message translates to:
+  /// **'Começar'**
+  String get welcomeSlideStart;
+
+  /// No description provided for @welcomeSlideContinue.
+  ///
+  /// In pt, this message translates to:
+  /// **'Continuar'**
+  String get welcomeSlideContinue;
+
+  /// No description provided for @welcomeSlideSkip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Saltar'**
+  String get welcomeSlideSkip;
+
   /// Setup wizard welcome screen title
   ///
   /// In pt, this message translates to:
