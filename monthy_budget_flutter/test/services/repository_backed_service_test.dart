@@ -171,6 +171,15 @@ class InMemoryExpenseRepository implements ExpenseRepository {
   }
 
   @override
+  Future<void> addAllFromRecurring(
+      List<ActualExpense> expenses, String householdId) async {
+    addedBatches.add(List<ActualExpense>.from(expenses));
+    for (final e in expenses) {
+      if (!_expenses.any((i) => i.id == e.id)) _expenses.add(e);
+    }
+  }
+
+  @override
   Future<void> delete(String id) async {
     _expenses.removeWhere((expense) => expense.id == id);
   }
@@ -270,6 +279,14 @@ class InMemoryRecurringExpenseRepository implements RecurringExpenseRepository {
   @override
   Future<void> save(RecurringExpense expense, String householdId) async {
     _expenses.add(expense);
+  }
+
+  @override
+  Future<List<String>> loadRunMonths(String householdId) async {
+    return _alreadyRanMonths
+        .where((k) => k.startsWith('$householdId|'))
+        .map((k) => k.split('|').last)
+        .toList();
   }
 }
 

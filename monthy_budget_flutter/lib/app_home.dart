@@ -560,8 +560,8 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
         _refreshNotificationSchedules();
       }
       _dataHealthService.recordLoad(SyncDomain.recurringExpenses);
-      // Auto-populate recurring expenses for the current month
-      final created = await _recurringExpenseService.populateMonthIfNeeded(
+      // Backfill any months missed since last launch, then populate current
+      final created = await _recurringExpenseService.backfillToMonth(
         widget.householdId,
         _currentMonthKey,
       );
