@@ -128,10 +128,10 @@ class NutritionDashboardCard extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
       child: Card(
         elevation: 0,
-        color: AppColors.surface(context),
+        color: AppColors.card(context),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: AppColors.border(context)),
+          side: BorderSide(color: AppColors.line(context)),
         ),
         child: Padding(
           padding: const EdgeInsets.all(12),
@@ -141,7 +141,7 @@ class NutritionDashboardCard extends StatelessWidget {
               // Header
               Row(
                 children: [
-                  Icon(Icons.bar_chart_rounded, size: 18, color: AppColors.textSecondary(context)),
+                  Icon(Icons.bar_chart_rounded, size: 18, color: AppColors.ink70(context)),
                   const SizedBox(width: 8),
                   Text(
                     l10n.nutritionDashboardTitle,
@@ -187,7 +187,7 @@ class NutritionDashboardCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   '${l10n.nutritionTopProteins}: ${stats.topProteins.entries.take(3).map((e) => '${_resolveProteinName(e.key)} ${e.value}x').join(', ')}',
-                  style: TextStyle(fontSize: 11, color: AppColors.textSecondary(context)),
+                  style: TextStyle(fontSize: 11, color: AppColors.ink70(context)),
                 ),
               ],
             ],
@@ -240,7 +240,7 @@ class _NutrientBar extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: barRatio,
-              backgroundColor: AppColors.border(context),
+              backgroundColor: AppColors.line(context),
               color: progressColor,
               minHeight: 8,
             ),

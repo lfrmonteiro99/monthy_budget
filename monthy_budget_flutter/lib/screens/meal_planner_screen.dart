@@ -211,7 +211,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 child: SizedBox(
                   width: 40,
                   height: 4,
-                  child: ColoredBox(color: AppColors.borderMuted(ctx)),
+                  child: ColoredBox(color: AppColors.ink20(ctx)),
                 ),
               ),
             ),
@@ -570,7 +570,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 child: SizedBox(
                   width: 40,
                   height: 4,
-                  child: ColoredBox(color: AppColors.borderMuted(context)),
+                  child: ColoredBox(color: AppColors.ink20(context)),
                 ),
               ),
             ),
@@ -592,7 +592,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                       l10n.mealBatchTotalTime(plan.totalTimeEstimate),
                       style: TextStyle(
                         fontSize: 13,
-                        color: AppColors.textSecondary(context),
+                        color: AppColors.ink70(context),
                       ),
                     ),
                   ],
@@ -610,7 +610,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                       padding: const EdgeInsets.only(bottom: 8),
                       child: CalmListTile(
                         leadingIcon: Icons.circle,
-                        leadingColor: AppColors.primary(context),
+                        leadingColor: AppColors.ink(context),
                         title: '${e.key + 1}. ${e.value}',
                       ),
                     ),
@@ -670,7 +670,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 child: SizedBox(
                   width: 40,
                   height: 4,
-                  child: ColoredBox(color: AppColors.borderMuted(ctx)),
+                  child: ColoredBox(color: AppColors.ink20(ctx)),
                 ),
               ),
             ),
@@ -691,7 +691,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     recipe.name,
                     style: TextStyle(
                       fontSize: 14,
-                      color: AppColors.textSecondary(ctx),
+                      color: AppColors.ink70(ctx),
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -699,7 +699,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     l10n.mealPrepTime(recipe.prepMinutes.toString()),
                     style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.textMuted(ctx),
+                      color: AppColors.ink50(ctx),
                     ),
                   ),
                 ],
@@ -714,7 +714,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   ...steps.asMap().entries.map(
                     (e) => CalmListTile(
                       leadingIcon: Icons.circle,
-                      leadingColor: AppColors.primary(ctx),
+                      leadingColor: AppColors.ink(ctx),
                       title: '${e.key + 1}. ${e.value}',
                     ),
                   ),
@@ -729,14 +729,14 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     if (aiContent.variation.isNotEmpty)
                       CalmListTile(
                         leadingIcon: Icons.shuffle,
-                        leadingColor: AppColors.primary(ctx),
+                        leadingColor: AppColors.ink(ctx),
                         title: l10n.mealVariation,
                         subtitle: aiContent.variation,
                       ),
                     if (aiContent.storageInfo.isNotEmpty)
                       CalmListTile(
                         leadingIcon: Icons.kitchen,
-                        leadingColor: AppColors.textSecondary(ctx),
+                        leadingColor: AppColors.ink70(ctx),
                         title: l10n.mealStorage,
                         subtitle: aiContent.storageInfo,
                       ),
@@ -820,7 +820,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   child: SizedBox(
                     width: 40,
                     height: 4,
-                    child: ColoredBox(color: AppColors.borderMuted(ctx)),
+                    child: ColoredBox(color: AppColors.ink20(ctx)),
                   ),
                 ),
               ),
@@ -841,7 +841,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                       l10n.mealPantrySelectHint,
                       style: TextStyle(
                         fontSize: 13,
-                        color: AppColors.textSecondary(ctx),
+                        color: AppColors.ink70(ctx),
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -850,7 +850,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.primary(ctx),
+                        color: AppColors.ink(ctx),
                       ),
                     ),
                   ],
@@ -875,11 +875,11 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                         ing.category.name,
                         style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.textMuted(ctx),
+                          color: AppColors.ink50(ctx),
                         ),
                       ),
                       value: isSelected,
-                      activeColor: AppColors.primary(ctx),
+                      activeColor: AppColors.ink(ctx),
                       onChanged: (v) {
                         setSheetState(() {
                           if (v == true) {
@@ -913,7 +913,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     icon: const Icon(Icons.auto_awesome),
                     label: Text(l10n.mealPantryApply),
                     style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.primary(ctx),
+                      backgroundColor: AppColors.ink(ctx),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
                   ),
@@ -971,7 +971,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                 child: SizedBox(
                   width: 40,
                   height: 4,
-                  child: ColoredBox(color: AppColors.borderMuted(ctx)),
+                  child: ColoredBox(color: AppColors.ink20(ctx)),
                 ),
               ),
             ),
@@ -997,7 +997,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                   l10n.mealSubstituteHint,
                   style: TextStyle(
                     fontSize: 12,
-                    color: AppColors.textSecondary(ctx),
+                    color: AppColors.ink70(ctx),
                   ),
                 ),
               ),
@@ -1019,7 +1019,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                             .map(
                               (alt) => CalmListTile(
                                 leadingIcon: Icons.swap_horiz,
-                                leadingColor: AppColors.primary(ctx),
+                                leadingColor: AppColors.ink(ctx),
                                 title: alt.name,
                                 subtitle:
                                     '${alt.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${alt.unit}',
@@ -1047,7 +1047,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                             .map(
                               (alt) => CalmListTile(
                                 leadingIcon: Icons.swap_horiz,
-                                leadingColor: AppColors.textMuted(ctx),
+                                leadingColor: AppColors.ink50(ctx),
                                 title: alt.name,
                                 subtitle:
                                     '${alt.category.name} · ${alt.avgPricePerUnit.toStringAsFixed(2)}${currencySymbol()}/${alt.unit}',
@@ -1733,9 +1733,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                               style: const TextStyle(fontSize: 11),
                             ),
                             style: OutlinedButton.styleFrom(
-                              foregroundColor: AppColors.primary(context),
+                              foregroundColor: AppColors.ink(context),
                               side: BorderSide(
-                                color: AppColors.primary(context),
+                                color: AppColors.ink(context),
                               ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -1764,13 +1764,13 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                                       height: 14,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2,
-                                        color: AppColors.primary(context),
+                                        color: AppColors.ink(context),
                                       ),
                                     )
                                   : Icon(
                                       Icons.kitchen,
                                       size: 18,
-                                      color: AppColors.primary(context),
+                                      color: AppColors.ink(context),
                                     ),
                               padding: EdgeInsets.zero,
                               tooltip: l10n.mealBatchPrepGuide,
@@ -2028,10 +2028,10 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     FloatingActionButton.small(
                       heroTag: 'addFreeform',
                       onPressed: () => _showFreeformDayPicker(plan),
-                      backgroundColor: AppColors.primary(context),
+                      backgroundColor: AppColors.ink(context),
                       child: Icon(
                         Icons.edit_note,
-                        color: AppColors.onPrimary(context),
+                        color: AppColors.bg(context),
                       ),
                     ),
                   ],
