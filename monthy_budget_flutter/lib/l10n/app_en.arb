@@ -3103,6 +3103,7 @@
     "settingsDisabilityLabel": "PERSON WITH DISABILITY",
     "helperDisability": "Applies the disability-specific withholding tables (IV–VII).",
     "taxSimIrsJovem": "IRS Jovem (year)",
+    "taxSimSubsidyMode": "Subsidies (duodécimos)",
     "taxSimDisability": "Disability",
     "irsJovemLegalNote": "IRS Jovem: the withholding rate for the total income is applied only to the non-exempt part (Despacho no. 236-A/2025). The exempt part is capped at 55×IAS (≈ €29,542/year). Monthly withholding is an estimate — the final amount is settled in the annual tax return (Modelo 3), and the annual cap is spread across months approximately.",
     "@irsJovemLegalNote": {

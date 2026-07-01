@@ -6013,6 +6013,9 @@ class SEn extends S {
   String get taxSimIrsJovem => 'IRS Jovem (year)';
 
   @override
+  String get taxSimSubsidyMode => 'Subsidies (duodécimos)';
+
+  @override
   String get taxSimDisability => 'Disability';
 
   @override

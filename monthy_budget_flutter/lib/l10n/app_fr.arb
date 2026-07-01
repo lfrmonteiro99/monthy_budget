@@ -3038,6 +3038,7 @@
     "settingsDisabilityLabel": "PERSONNE EN SITUATION DE HANDICAP",
     "helperDisability": "Applique les tables de retenue spécifiques au handicap (IV–VII).",
     "taxSimIrsJovem": "IRS Jovem (année)",
+    "taxSimSubsidyMode": "Subsidies (duodécimos)",
     "taxSimDisability": "Handicap",
     "irsJovemLegalNote": "IRS Jovem : le taux de retenue du revenu total s'applique uniquement à la partie non exonérée (Despacho n.º 236-A/2025). La partie exonérée est plafonnée à 55×IAS (≈ 29 542€/an). La retenue mensuelle est une estimation — le montant final est régularisé dans la déclaration annuelle (Modelo 3) et le plafond annuel est réparti sur les mois de façon approximative.",
     "@irsJovemLegalNote": {

@@ -6056,6 +6056,9 @@ class SPt extends S {
   String get taxSimIrsJovem => 'IRS Jovem (ano)';
 
   @override
+  String get taxSimSubsidyMode => 'Subsidios (duodécimos)';
+
+  @override
   String get taxSimDisability => 'Deficiência';
 
   @override
