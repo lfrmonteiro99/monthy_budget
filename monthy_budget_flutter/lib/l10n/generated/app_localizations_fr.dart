@@ -584,6 +584,9 @@ class SFr extends S {
       'Posez toute question sur votre budget, depenses ou epargne. J\'utiliserai vos donnees reelles pour des conseils personnalises.';
 
   @override
+  String get coachSuggestionsEyebrow => 'Suggestions';
+
+  @override
   String get coachQuickPrompt1 =>
       'Ou puis-je reduire mes depenses ce mois-ci ?';
 

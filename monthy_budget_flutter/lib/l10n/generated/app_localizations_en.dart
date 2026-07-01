@@ -581,6 +581,9 @@ class SEn extends S {
       'Ask anything about your budget, expenses, or savings. I\'ll use your real data to give personalized advice.';
 
   @override
+  String get coachSuggestionsEyebrow => 'Suggestions';
+
+  @override
   String get coachQuickPrompt1 => 'Where can I cut expenses this month?';
 
   @override

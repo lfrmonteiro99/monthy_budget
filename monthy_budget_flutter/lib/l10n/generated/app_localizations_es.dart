@@ -583,6 +583,9 @@ class SEs extends S {
       'Pregunta lo que quieras sobre tu presupuesto, gastos o ahorros. Usare tus datos reales para darte consejos personalizados.';
 
   @override
+  String get coachSuggestionsEyebrow => 'Sugerencias';
+
+  @override
   String get coachQuickPrompt1 => 'Donde puedo recortar gastos este mes?';
 
   @override
