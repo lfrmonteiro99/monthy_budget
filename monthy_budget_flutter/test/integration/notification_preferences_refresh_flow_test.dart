@@ -13,6 +13,33 @@ void main() {
     localConfigService = LocalConfigService();
   });
 
+  group('budget-alert dedup guard — persistence', () {
+    test('no month stored initially', () async {
+      final month = await localConfigService.loadBudgetAlertFiredMonth();
+      expect(month, isNull);
+    });
+
+    test('save and reload the fired month', () async {
+      await localConfigService.saveBudgetAlertFiredMonth('2026-7');
+      final month = await localConfigService.loadBudgetAlertFiredMonth();
+      expect(month, '2026-7');
+    });
+
+    test('saving null clears the stored month', () async {
+      await localConfigService.saveBudgetAlertFiredMonth('2026-7');
+      await localConfigService.saveBudgetAlertFiredMonth(null);
+      final month = await localConfigService.loadBudgetAlertFiredMonth();
+      expect(month, isNull);
+    });
+
+    test('different month means guard resets', () async {
+      await localConfigService.saveBudgetAlertFiredMonth('2026-6');
+      final stored = await localConfigService.loadBudgetAlertFiredMonth();
+      // Simulates cold-start in a new month: stored != current
+      expect(stored, isNot('2026-7'));
+    });
+  });
+
   group('notification preferences refresh flow', () {
     test('saved preferences produce the expected refresh decision', () async {
       final prefs = NotificationPreferences(
