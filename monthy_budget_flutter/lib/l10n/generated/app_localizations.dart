@@ -11914,6 +11914,24 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Objectivos de Poupança Ilimitados'**
   String get paywallFeatNameUnlimitedSavings;
+
+  /// No description provided for @taxSimFiscalEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'FISCAL {year}'**
+  String taxSimFiscalEyebrow(String year);
+
+  /// No description provided for @commandFabClose.
+  ///
+  /// In pt, this message translates to:
+  /// **'Fechar assistente de comandos'**
+  String get commandFabClose;
+
+  /// No description provided for @commandFabOpen.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir assistente de comandos'**
+  String get commandFabOpen;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

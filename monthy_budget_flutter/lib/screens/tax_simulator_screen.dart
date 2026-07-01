@@ -117,7 +117,7 @@ class _TaxSimulatorScreenState extends State<TaxSimulatorScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CalmPageHeader(eyebrow: 'FISCAL 2026', title: l10n.taxSimTitle),
+          CalmPageHeader(eyebrow: l10n.taxSimFiscalEyebrow(DateTime.now().year.toString()), title: l10n.taxSimTitle),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
