@@ -4763,6 +4763,78 @@ abstract class S {
   /// **'Não foi possível eliminar — tenta de novo'**
   String get recurringExpenseDeleteError;
 
+  /// No description provided for @recurringActivePill.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 ativa} other{{count} ativas}}'**
+  String recurringActivePill(int count);
+
+  /// No description provided for @recurringTotalMonthlyEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'TOTAL MENSAL'**
+  String get recurringTotalMonthlyEyebrow;
+
+  /// No description provided for @recurringActiveTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ativas'**
+  String get recurringActiveTitle;
+
+  /// No description provided for @recurringSubscriptionCount.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 subscrição} other{{count} subscrições}}'**
+  String recurringSubscriptionCount(int count);
+
+  /// No description provided for @recurringPausedTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pausadas'**
+  String get recurringPausedTitle;
+
+  /// No description provided for @recurringDayOfMonth.
+  ///
+  /// In pt, this message translates to:
+  /// **'dia {day}'**
+  String recurringDayOfMonth(int day);
+
+  /// No description provided for @recurringEmptyTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem pagamentos recorrentes'**
+  String get recurringEmptyTitle;
+
+  /// No description provided for @recurringEmptyBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicione para gerar automaticamente todos os meses.'**
+  String get recurringEmptyBody;
+
+  /// No description provided for @recurringEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'RECORRENTES'**
+  String get recurringEyebrow;
+
+  /// No description provided for @recurringHeroSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 subscrição ativa} other{{count} subscrições ativas}}'**
+  String recurringHeroSubtitle(int count);
+
+  /// No description provided for @recurringActiveGroupLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'ATIVAS'**
+  String get recurringActiveGroupLabel;
+
+  /// No description provided for @recurringPausedGroupLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'PAUSADAS'**
+  String get recurringPausedGroupLabel;
+
   /// Error snack when saving a savings contribution fails
   ///
   /// In pt, this message translates to:

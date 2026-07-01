@@ -2570,6 +2570,69 @@ class SEn extends S {
   String get recurringExpenseDeleteError => 'Couldn\'t delete — try again';
 
   @override
+  String recurringActivePill(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count active',
+      one: '1 active',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recurringTotalMonthlyEyebrow => 'MONTHLY TOTAL';
+
+  @override
+  String get recurringActiveTitle => 'Active';
+
+  @override
+  String recurringSubscriptionCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count subscriptions',
+      one: '1 subscription',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recurringPausedTitle => 'Paused';
+
+  @override
+  String recurringDayOfMonth(int day) {
+    return 'day $day';
+  }
+
+  @override
+  String get recurringEmptyTitle => 'No recurring payments';
+
+  @override
+  String get recurringEmptyBody =>
+      'Add one to generate them automatically every month.';
+
+  @override
+  String get recurringEyebrow => 'RECURRING';
+
+  @override
+  String recurringHeroSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count active subscriptions',
+      one: '1 active subscription',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recurringActiveGroupLabel => 'ACTIVE';
+
+  @override
+  String get recurringPausedGroupLabel => 'PAUSED';
+
+  @override
   String get savingsContributionSaveError =>
       'Couldn\'t save contribution — try again';
 
