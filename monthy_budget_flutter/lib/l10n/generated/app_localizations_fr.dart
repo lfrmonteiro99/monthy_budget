@@ -6599,4 +6599,7 @@ class SFr extends S {
   @override
   String get settingsAiKeyProtected =>
       'Clé API OpenAI sécurisée dans Supabase (Edge Function).';
+
+  @override
+  String get taxSimSimulationEyebrow => 'SIMULATION';
 }

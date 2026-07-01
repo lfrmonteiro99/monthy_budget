@@ -6583,4 +6583,7 @@ class SPt extends S {
   @override
   String get settingsAiKeyProtected =>
       'OpenAI API key protegida no Supabase (Edge Function).';
+
+  @override
+  String get taxSimSimulationEyebrow => 'SIMULAÇÃO';
 }

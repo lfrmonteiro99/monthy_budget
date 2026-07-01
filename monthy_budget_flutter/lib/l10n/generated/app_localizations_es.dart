@@ -6586,4 +6586,7 @@ class SEs extends S {
   @override
   String get settingsAiKeyProtected =>
       'Clave API de OpenAI protegida en Supabase (Edge Function).';
+
+  @override
+  String get taxSimSimulationEyebrow => 'SIMULACIÓN';
 }

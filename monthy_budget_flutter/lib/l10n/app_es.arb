@@ -3312,5 +3312,7 @@
     "planShopNoMealsBodyWithMenu": "No se encontraron próximas comidas.",
     "@planShopNoMealsBodyWithMenu": {"description": "Plan & Shop empty meals body when plan exists but no upcoming meals"},
     "settingsAiKeyProtected": "Clave API de OpenAI protegida en Supabase (Edge Function).",
-    "@settingsAiKeyProtected": {"description": "Settings AI Coach section: API key security notice"}
+    "@settingsAiKeyProtected": {"description": "Settings AI Coach section: API key security notice"},
+    "taxSimSimulationEyebrow": "SIMULACIÓN",
+    "@taxSimSimulationEyebrow": {"description": "Tax Simulator simulation eyebrow"}
 }
