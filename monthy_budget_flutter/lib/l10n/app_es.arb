@@ -392,6 +392,8 @@
     "cmdCapabilityClearChecked": "Limpiar marcados",
     "cmdCapabilityClearCheckedExample": "Limpiar elementos marcados",
     "groceryTitle": "Supermercado",
+    "groceryPantryTitle": "Despensa",
+    "groceryItemCountEyebrow": "{count} artículos",
     "grocerySearchHint": "Buscar producto...",
     "groceryLoadingLabel": "Cargando productos",
     "groceryLoadingMessage": "Cargando productos...",

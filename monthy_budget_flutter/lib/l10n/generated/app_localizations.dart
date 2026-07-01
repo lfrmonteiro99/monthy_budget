@@ -1523,6 +1523,18 @@ abstract class S {
   /// **'Supermercado'**
   String get groceryTitle;
 
+  /// Page header title for the pantry/grocery screen
+  ///
+  /// In pt, this message translates to:
+  /// **'Despensa'**
+  String get groceryPantryTitle;
+
+  /// Eyebrow showing total item count in the pantry screen
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} itens'**
+  String groceryItemCountEyebrow(int count);
+
   /// Grocery search field hint
   ///
   /// In pt, this message translates to:
