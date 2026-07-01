@@ -1023,7 +1023,8 @@ class _EditCustomCategorySheetState extends State<_EditCustomCategorySheet> {
                         ),
                       ),
                       child: selected
-                          ? const Icon(Icons.check, color: Colors.white, size: 20)
+                          ? Icon(Icons.check,
+                              color: AppColors.bg(context), size: 20)
                           : null,
                     ),
                   );

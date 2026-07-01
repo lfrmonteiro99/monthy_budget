@@ -173,9 +173,9 @@ class ExpenseDetailSheet extends StatelessWidget {
                                 expense.locationLat!,
                                 expense.locationLng!,
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.location_pin,
-                                color: Colors.red,
+                                color: AppColors.bad(context),
                                 size: 40,
                               ),
                             ),

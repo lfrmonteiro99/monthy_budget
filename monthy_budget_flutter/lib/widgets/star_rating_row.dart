@@ -32,7 +32,7 @@ class StarRatingRow extends StatelessWidget {
                 isFilled ? Icons.star_rounded : Icons.star_border_rounded,
                 size: starSize,
                 color: isFilled
-                    ? Colors.amber
+                    ? AppColors.chartAmber(context)
                     : AppColors.borderMuted(context),
               ),
             ),

@@ -23,17 +23,17 @@ class OfflineBanner extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           child: Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.cloud_off_outlined,
-                color: Colors.white,
+                color: AppColors.bg(context),
                 size: 20,
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   message,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: AppColors.bg(context),
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                   ),
@@ -49,13 +49,13 @@ class OfflineBanner extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
+                    color: AppColors.bg(context).withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
                     '$pendingCount',
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: AppColors.bg(context),
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
                     ),
