@@ -1111,6 +1111,34 @@
             }
         }
     },
+    "shoppingFinalizing": "A FINALIZAR",
+    "@shoppingFinalizing": {},
+    "shoppingListEyebrow": "LISTA",
+    "@shoppingListEyebrow": {},
+    "shoppingHeroItemCount": "{count} por comprar",
+    "@shoppingHeroItemCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "shoppingSummaryEyebrow": "RESUMO",
+    "@shoppingSummaryEyebrow": {},
+    "shoppingCheckedCountLabel": "{count} ✓",
+    "@shoppingCheckedCountLabel": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "shoppingToBuyEyebrow": "POR COMPRAR",
+    "@shoppingToBuyEyebrow": {},
+    "shoppingInBasketEyebrow": "NO CESTO",
+    "@shoppingInBasketEyebrow": {},
+    "shoppingHistoryEyebrow": "HISTÓRICO",
+    "@shoppingHistoryEyebrow": {},
     "authLogin": "Entrar na conta",
     "@authLogin": {
         "description": "Auth login screen title"

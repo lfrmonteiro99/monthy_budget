@@ -931,6 +931,34 @@ class SPt extends S {
   }
 
   @override
+  String get shoppingFinalizing => 'A FINALIZAR';
+
+  @override
+  String get shoppingListEyebrow => 'LISTA';
+
+  @override
+  String shoppingHeroItemCount(int count) {
+    return '$count por comprar';
+  }
+
+  @override
+  String get shoppingSummaryEyebrow => 'RESUMO';
+
+  @override
+  String shoppingCheckedCountLabel(int count) {
+    return '$count ✓';
+  }
+
+  @override
+  String get shoppingToBuyEyebrow => 'POR COMPRAR';
+
+  @override
+  String get shoppingInBasketEyebrow => 'NO CESTO';
+
+  @override
+  String get shoppingHistoryEyebrow => 'HISTÓRICO';
+
+  @override
   String get authLogin => 'Entrar na conta';
 
   @override

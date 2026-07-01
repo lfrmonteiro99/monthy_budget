@@ -110,7 +110,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CalmEyebrow('A FINALIZAR'), // TODO(l10n): extract to ARB
+              CalmEyebrow(l10n.shoppingFinalizing),
               const SizedBox(height: 8),
               ConstrainedBox(
                 constraints: const BoxConstraints(maxHeight: 200),
@@ -285,10 +285,9 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     final heroBlock = Padding(
       padding: const EdgeInsets.only(top: 20, bottom: 16),
       child: CalmHero(
-        eyebrow: 'LISTA', // TODO(l10n): extract to ARB
+        eyebrow: l10n.shoppingListEyebrow,
         amount: formatCurrency(uncheckedTotal),
-        subtitle:
-            '${uncheckedItems.length} por comprar', // TODO(l10n): extract to ARB
+        subtitle: l10n.shoppingHeroItemCount(uncheckedItems.length),
       ),
     );
 
@@ -301,7 +300,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CalmEyebrow('RESUMO'), // TODO(l10n): extract to ARB
+                CalmEyebrow(l10n.shoppingSummaryEyebrow),
                 const SizedBox(height: 4),
                 Text(
                   l10n.shoppingItemsRemaining(
@@ -320,7 +319,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           const SizedBox(width: 8),
           // Status pill: shows how many items checked
           CalmPill(
-            label: '${checkedItems.length} ✓', // TODO(l10n): extract to ARB
+            label: l10n.shoppingCheckedCountLabel(checkedItems.length),
             color: hasChecked
                 ? AppColors.ok(context)
                 : AppColors.ink50(context),
@@ -558,7 +557,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           padding: const EdgeInsets.fromLTRB(0, 8, 0, 80),
           children: [
             if (unchecked.isNotEmpty) ...[
-              CalmEyebrow('POR COMPRAR'), // TODO(l10n): extract to ARB
+              CalmEyebrow(l10n.shoppingToBuyEyebrow),
               const SizedBox(height: 6),
               ...unchecked.asMap().entries.map(
                 (e) => _buildItemRow(
@@ -570,7 +569,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             ],
             if (checked.isNotEmpty) ...[
               const SizedBox(height: 8),
-              CalmEyebrow('NO CESTO'), // TODO(l10n): extract to ARB
+              CalmEyebrow(l10n.shoppingInBasketEyebrow),
               const SizedBox(height: 6),
               ...checked.asMap().entries.map(
                 (e) => _buildItemRow(e.value, index: 1000 + e.key),
@@ -632,7 +631,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                CalmEyebrow('HISTÓRICO'), // TODO(l10n): extract to ARB
+                CalmEyebrow(l10n.shoppingHistoryEyebrow),
                 const SizedBox(height: 4),
                 Text(
                   l10n.shoppingHistoryTitle,

@@ -926,6 +926,34 @@ class SEn extends S {
   }
 
   @override
+  String get shoppingFinalizing => 'FINALIZING';
+
+  @override
+  String get shoppingListEyebrow => 'LIST';
+
+  @override
+  String shoppingHeroItemCount(int count) {
+    return '$count to buy';
+  }
+
+  @override
+  String get shoppingSummaryEyebrow => 'SUMMARY';
+
+  @override
+  String shoppingCheckedCountLabel(int count) {
+    return '$count ✓';
+  }
+
+  @override
+  String get shoppingToBuyEyebrow => 'TO BUY';
+
+  @override
+  String get shoppingInBasketEyebrow => 'IN BASKET';
+
+  @override
+  String get shoppingHistoryEyebrow => 'HISTORY';
+
+  @override
   String get authLogin => 'Sign in';
 
   @override
