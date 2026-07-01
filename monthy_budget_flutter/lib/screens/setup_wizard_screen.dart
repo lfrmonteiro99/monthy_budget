@@ -208,7 +208,7 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
     widget.onComplete(_draft);
   }
 
-  void _finishExpenses() {
+  void _finishExpenses(BuildContext context) {
     final l10nKeys = _expenseKeyOrder();
     final expenses = <ExpenseItem>[];
     for (final key in l10nKeys) {
@@ -216,7 +216,7 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
       if (amount > 0) {
         expenses.add(ExpenseItem(
           id: 'wizard_$key',
-          label: _expenseLabelFallback(key),
+          label: _expenseL10nLabel(S.of(context), key),
           amount: amount,
           category: _expenseCategory(key),
         ));
@@ -234,19 +234,6 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
 
   List<String> _expenseKeyOrder() =>
       ['rent', 'groceries', 'transport', 'utilities', 'telecom', 'health', 'leisure'];
-
-  String _expenseLabelFallback(String key) {
-    switch (key) {
-      case 'rent': return 'Renda';
-      case 'groceries': return 'Alimentação';
-      case 'transport': return 'Transportes';
-      case 'utilities': return 'Utilidades';
-      case 'telecom': return 'Telecomunicações';
-      case 'health': return 'Saúde';
-      case 'leisure': return 'Lazer';
-      default: return key;
-    }
-  }
 
   String _expenseCategory(String key) {
     switch (key) {
@@ -330,7 +317,7 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
             expenseKeyOrder: _expenseKeyOrder(),
             expenseIcon: _expenseIcon,
             expenseLabel: (key) => _expenseL10nLabel(S.of(context), key),
-            onFinish: _finishExpenses,
+            onFinish: () => _finishExpenses(context),
             onBack: _back,
           ),
           // Step 2: Completion
