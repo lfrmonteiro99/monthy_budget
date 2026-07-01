@@ -29,7 +29,7 @@ void main() {
         ));
 
         expect(
-          find.text('Tudo o que precisas para um ano de paz financeira'),
+          find.text('Everything you need for a year of financial peace'),
           findsOneWidget,
         );
         expect(find.text('MONTHLY PLUS'), findsOneWidget);
@@ -45,7 +45,7 @@ void main() {
         ));
 
         expect(
-          find.text('Tudo o que precisas para um ano de paz financeira'),
+          find.text('Everything you need for a year of financial peace'),
           findsOneWidget,
         );
         expect(find.text('MONTHLY PLUS'), findsOneWidget);
@@ -62,7 +62,7 @@ void main() {
         ));
 
         expect(
-          find.text('Tudo o que precisas para um ano de paz financeira'),
+          find.text('Everything you need for a year of financial peace'),
           findsOneWidget,
         );
       });
@@ -204,7 +204,7 @@ void main() {
           PaywallScreen(subscription: state, onSelectTier: (_) {}),
         ));
         expect(find.text('Unlimited categories & history'), findsOneWidget);
-        expect(find.text('AI Financial Coach'), findsOneWidget);
+        expect(find.text('AI Financial Coach'), findsAtLeastNWidgets(1));
         expect(find.text('Meal Planner + AI recipes'), findsOneWidget);
         expect(find.text('No ads'), findsOneWidget);
       });

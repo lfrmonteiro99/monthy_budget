@@ -5671,6 +5671,82 @@ class SEn extends S {
   String get paywallBestValue => 'Best Value';
 
   @override
+  String get paywallFeatureBudgetTitle => 'Smart Budget';
+
+  @override
+  String get paywallFeatureBudgetSubtitle =>
+      'Unlimited categories and full history';
+
+  @override
+  String get paywallFeatureCoachTitle => 'AI Financial Coach';
+
+  @override
+  String get paywallFeatureCoachSubtitle => 'Personalised tips in real time';
+
+  @override
+  String get paywallFeatureMealTitle => 'Meal Planner';
+
+  @override
+  String get paywallFeatureMealSubtitle =>
+      'AI recipes integrated with the shopping list';
+
+  @override
+  String get paywallFeatureSyncTitle => 'Real-time Sync';
+
+  @override
+  String get paywallFeatureSyncSubtitle =>
+      'Shared shopping list with your household';
+
+  @override
+  String get paywallFeatureExportTitle => 'PDF/CSV Export';
+
+  @override
+  String get paywallFeatureExportSubtitle => 'Reports ready to send';
+
+  @override
+  String get paywallCloseLabel => 'Close';
+
+  @override
+  String get paywallProductName => 'MONTHLY PLUS';
+
+  @override
+  String get paywallHeroSubtitle =>
+      'Everything you need for a year of financial peace';
+
+  @override
+  String get paywallYearlyPlanLabel => 'ANNUAL PLAN';
+
+  @override
+  String get paywallMonthlyPlanLabel => 'MONTHLY PLAN';
+
+  @override
+  String get paywallPerMonth => '/mo';
+
+  @override
+  String get paywallTrialText => '7 days free · cancel anytime';
+
+  @override
+  String get paywallCtaButton => 'Start 7 days free';
+
+  @override
+  String get paywallComparePlansEyebrow => 'COMPARE PLANS';
+
+  @override
+  String get paywallRestorePurchase => 'Restore purchase';
+
+  @override
+  String get paywallTermsOfService => 'Terms of Service';
+
+  @override
+  String get paywallPrivacyPolicy => 'Privacy Policy';
+
+  @override
+  String get paywallBillingMonthly => 'Monthly';
+
+  @override
+  String get paywallBillingYearly => 'Yearly (save 37%)';
+
+  @override
   String get complexityEasy => 'Easy';
 
   @override

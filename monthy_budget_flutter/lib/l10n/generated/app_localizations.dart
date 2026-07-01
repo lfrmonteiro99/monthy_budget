@@ -10163,6 +10163,150 @@ abstract class S {
   /// **'Melhor valor'**
   String get paywallBestValue;
 
+  /// No description provided for @paywallFeatureBudgetTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamento Inteligente'**
+  String get paywallFeatureBudgetTitle;
+
+  /// No description provided for @paywallFeatureBudgetSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categorias ilimitadas e histórico completo'**
+  String get paywallFeatureBudgetSubtitle;
+
+  /// No description provided for @paywallFeatureCoachTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Coach Financeiro IA'**
+  String get paywallFeatureCoachTitle;
+
+  /// No description provided for @paywallFeatureCoachSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dicas personalizadas em tempo real'**
+  String get paywallFeatureCoachSubtitle;
+
+  /// No description provided for @paywallFeatureMealTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Planeador de Refeições'**
+  String get paywallFeatureMealTitle;
+
+  /// No description provided for @paywallFeatureMealSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Receitas IA integradas com a lista de compras'**
+  String get paywallFeatureMealSubtitle;
+
+  /// No description provided for @paywallFeatureSyncTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sincronização em Tempo Real'**
+  String get paywallFeatureSyncTitle;
+
+  /// No description provided for @paywallFeatureSyncSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista de compras partilhada com o agregado'**
+  String get paywallFeatureSyncSubtitle;
+
+  /// No description provided for @paywallFeatureExportTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportação PDF/CSV'**
+  String get paywallFeatureExportTitle;
+
+  /// No description provided for @paywallFeatureExportSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Relatórios prontos a enviar'**
+  String get paywallFeatureExportSubtitle;
+
+  /// No description provided for @paywallCloseLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Fechar'**
+  String get paywallCloseLabel;
+
+  /// No description provided for @paywallProductName.
+  ///
+  /// In pt, this message translates to:
+  /// **'MONTHLY PLUS'**
+  String get paywallProductName;
+
+  /// No description provided for @paywallHeroSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tudo o que precisas para um ano de paz financeira'**
+  String get paywallHeroSubtitle;
+
+  /// No description provided for @paywallYearlyPlanLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'PLANO ANUAL'**
+  String get paywallYearlyPlanLabel;
+
+  /// No description provided for @paywallMonthlyPlanLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'PLANO MENSAL'**
+  String get paywallMonthlyPlanLabel;
+
+  /// No description provided for @paywallPerMonth.
+  ///
+  /// In pt, this message translates to:
+  /// **'/mês'**
+  String get paywallPerMonth;
+
+  /// No description provided for @paywallTrialText.
+  ///
+  /// In pt, this message translates to:
+  /// **'7 dias grátis · cancela quando quiseres'**
+  String get paywallTrialText;
+
+  /// No description provided for @paywallCtaButton.
+  ///
+  /// In pt, this message translates to:
+  /// **'Começar 7 dias grátis'**
+  String get paywallCtaButton;
+
+  /// No description provided for @paywallComparePlansEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'COMPARAR PLANOS'**
+  String get paywallComparePlansEyebrow;
+
+  /// No description provided for @paywallRestorePurchase.
+  ///
+  /// In pt, this message translates to:
+  /// **'Restaurar compra'**
+  String get paywallRestorePurchase;
+
+  /// No description provided for @paywallTermsOfService.
+  ///
+  /// In pt, this message translates to:
+  /// **'Termos de Serviço'**
+  String get paywallTermsOfService;
+
+  /// No description provided for @paywallPrivacyPolicy.
+  ///
+  /// In pt, this message translates to:
+  /// **'Política de Privacidade'**
+  String get paywallPrivacyPolicy;
+
+  /// No description provided for @paywallBillingMonthly.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mensal'**
+  String get paywallBillingMonthly;
+
+  /// No description provided for @paywallBillingYearly.
+  ///
+  /// In pt, this message translates to:
+  /// **'Anual (poupa 37%)'**
+  String get paywallBillingYearly;
+
   /// Label for easy complexity level on slider
   ///
   /// In pt, this message translates to:

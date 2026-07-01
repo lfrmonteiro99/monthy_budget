@@ -5728,6 +5728,83 @@ class SFr extends S {
   String get paywallBestValue => 'Meilleur rapport qualité-prix';
 
   @override
+  String get paywallFeatureBudgetTitle => 'Budget Intelligent';
+
+  @override
+  String get paywallFeatureBudgetSubtitle =>
+      'Categories illimitees et historique complet';
+
+  @override
+  String get paywallFeatureCoachTitle => 'Coach Financier IA';
+
+  @override
+  String get paywallFeatureCoachSubtitle =>
+      'Conseils personnalises en temps reel';
+
+  @override
+  String get paywallFeatureMealTitle => 'Planificateur de Repas';
+
+  @override
+  String get paywallFeatureMealSubtitle =>
+      'Recettes IA integrees a la liste de courses';
+
+  @override
+  String get paywallFeatureSyncTitle => 'Synchronisation en Temps Reel';
+
+  @override
+  String get paywallFeatureSyncSubtitle =>
+      'Liste de courses partagee avec le foyer';
+
+  @override
+  String get paywallFeatureExportTitle => 'Export PDF/CSV';
+
+  @override
+  String get paywallFeatureExportSubtitle => 'Rapports prets a envoyer';
+
+  @override
+  String get paywallCloseLabel => 'Fermer';
+
+  @override
+  String get paywallProductName => 'MONTHLY PLUS';
+
+  @override
+  String get paywallHeroSubtitle =>
+      'Tout ce dont vous avez besoin pour une annee de paix financiere';
+
+  @override
+  String get paywallYearlyPlanLabel => 'PLAN ANNUEL';
+
+  @override
+  String get paywallMonthlyPlanLabel => 'PLAN MENSUEL';
+
+  @override
+  String get paywallPerMonth => '/mois';
+
+  @override
+  String get paywallTrialText => '7 jours gratuits · annulez quand vous voulez';
+
+  @override
+  String get paywallCtaButton => 'Commencer 7 jours gratuits';
+
+  @override
+  String get paywallComparePlansEyebrow => 'COMPARER LES PLANS';
+
+  @override
+  String get paywallRestorePurchase => 'Restaurer l\'achat';
+
+  @override
+  String get paywallTermsOfService => 'Conditions d\'utilisation';
+
+  @override
+  String get paywallPrivacyPolicy => 'Politique de confidentialite';
+
+  @override
+  String get paywallBillingMonthly => 'Mensuel';
+
+  @override
+  String get paywallBillingYearly => 'Annuel (economisez 37%)';
+
+  @override
   String get complexityEasy => 'Facile';
 
   @override
