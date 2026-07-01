@@ -2857,7 +2857,7 @@ extension _SettingsSections on _SettingsScreenState {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'OpenAI API key protegida no Supabase (Edge Function).',
+                    S.of(context).settingsAiKeyProtected,
                     style: TextStyle(
                       fontSize: 12,
                       color: AppColors.ink(context),

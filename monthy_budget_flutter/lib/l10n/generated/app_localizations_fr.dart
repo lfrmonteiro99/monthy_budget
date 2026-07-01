@@ -6457,4 +6457,8 @@ class SFr extends S {
   String dashboardHeroDaysLeft(String days) {
     return '$days jours restants';
   }
+
+  @override
+  String get settingsAiKeyProtected =>
+      'Clé API OpenAI sécurisée dans Supabase (Edge Function).';
 }
