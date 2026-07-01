@@ -4457,6 +4457,54 @@ abstract class S {
   /// **'Sem despesas este mês.\nToca + para adicionar a primeira.'**
   String get expenseTrackerEmpty;
 
+  /// Eyebrow label on the movement/activity section of the expense tracker
+  ///
+  /// In pt, this message translates to:
+  /// **'Movimento'**
+  String get expenseTrackerMovementEyebrow;
+
+  /// Large display title on the expense tracker screen
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas'**
+  String get expenseTrackerExpensesTitle;
+
+  /// Eyebrow label on the this-month KPI card
+  ///
+  /// In pt, this message translates to:
+  /// **'Este Mês'**
+  String get expenseTrackerThisMonthEyebrow;
+
+  /// Eyebrow label on the average-per-day KPI card
+  ///
+  /// In pt, this message translates to:
+  /// **'Média/Dia'**
+  String get expenseTrackerAvgPerDayEyebrow;
+
+  /// Eyebrow label on the bills/transactions count KPI card
+  ///
+  /// In pt, this message translates to:
+  /// **'Contas'**
+  String get expenseTrackerBillsEyebrow;
+
+  /// Budget amount label shown next to the progress bar
+  ///
+  /// In pt, this message translates to:
+  /// **'orç. {amount}'**
+  String expenseTrackerBudgetedLabel(String amount);
+
+  /// Eyebrow label above the by-category expense list
+  ///
+  /// In pt, this message translates to:
+  /// **'Por Categoria'**
+  String get expenseTrackerByCategoryEyebrow;
+
+  /// Body text in the empty state of the expense tracker screen
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicione a sua primeira despesa para começar a acompanhar o orçamento.'**
+  String get expenseTrackerEmptyBody;
+
   /// Eyebrow label on the expense alerts dashboard card
   ///
   /// In pt, this message translates to:

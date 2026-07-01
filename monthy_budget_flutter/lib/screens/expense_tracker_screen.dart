@@ -575,12 +575,10 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // TODO(l10n): move to ARB (Wave H)
-                      const CalmEyebrow('MOVIMENTO'),
+                      CalmEyebrow(l10n.expenseTrackerMovementEyebrow),
                       const SizedBox(height: 4),
                       Text(
-                        // TODO(l10n): move to ARB (Wave H)
-                        'Despesas',
+                        l10n.expenseTrackerExpensesTitle,
                         style: CalmText.display(context, size: 36),
                       ),
                     ],
@@ -678,8 +676,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // TODO(l10n): move to ARB (Wave H)
-                        const CalmEyebrow('ESTE MÊS'),
+                        CalmEyebrow(l10n.expenseTrackerThisMonthEyebrow),
                         const SizedBox(height: 4),
                         Text(
                           formatCurrency(totalActual),
@@ -702,8 +699,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // TODO(l10n): move to ARB (Wave H)
-                        const CalmEyebrow('MÉDIA/DIA'),
+                        CalmEyebrow(l10n.expenseTrackerAvgPerDayEyebrow),
                         const SizedBox(height: 4),
                         Text(
                           _avgPerDay(totalActual),
@@ -726,8 +722,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // TODO(l10n): move to ARB (Wave H)
-                        const CalmEyebrow('CONTAS'),
+                        CalmEyebrow(l10n.expenseTrackerBillsEyebrow),
                         const SizedBox(height: 4),
                         Text(
                           '${_expenses.length}',
@@ -769,8 +764,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                 ),
                 const Spacer(),
                 Text(
-                  // TODO(l10n): move to ARB (Wave H)
-                  'orç. ${formatCurrency(totalBudgeted)}',
+                  l10n.expenseTrackerBudgetedLabel(formatCurrency(totalBudgeted)),
                   style: TextStyle(
                     fontSize: 13,
                     color: AppColors.ink50(context),
@@ -849,8 +843,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                         sliver: SliverToBoxAdapter(
                           child: Row(
                             children: [
-                              // TODO(l10n): move to ARB (Wave H)
-                              const CalmEyebrow('POR CATEGORIA'),
+                              CalmEyebrow(l10n.expenseTrackerByCategoryEyebrow),
                               const Spacer(),
                               Text(
                                 '${summaries.length}',
@@ -905,8 +898,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
       child: CalmEmptyState(
         icon: Icons.receipt_long_outlined,
         title: l10n.expenseTrackerEmpty,
-        // TODO(l10n): move to ARB (Wave H)
-        body: 'Adicione a sua primeira despesa para começar a acompanhar o orçamento.',
+        body: l10n.expenseTrackerEmptyBody,
         action: CalmEmptyStateAction(
           label: l10n.addExpenseTooltip,
           onPressed: _addExpense,
