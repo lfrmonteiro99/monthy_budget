@@ -919,6 +919,17 @@
     "@groceryTitle": {
         "description": "Grocery screen title"
     },
+    "groceryPantryTitle": "Despensa",
+    "@groceryPantryTitle": {
+        "description": "Page header title for the pantry/grocery screen"
+    },
+    "groceryItemCountEyebrow": "{count} itens",
+    "@groceryItemCountEyebrow": {
+        "description": "Eyebrow showing total item count in the pantry screen",
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
     "grocerySearchHint": "Pesquisar produto...",
     "@grocerySearchHint": {
         "description": "Grocery search field hint"

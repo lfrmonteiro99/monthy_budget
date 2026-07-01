@@ -392,6 +392,8 @@
     "cmdCapabilityClearChecked": "Vider les coches",
     "cmdCapabilityClearCheckedExample": "Effacer les elements coches",
     "groceryTitle": "Courses",
+    "groceryPantryTitle": "Garde-manger",
+    "groceryItemCountEyebrow": "{count} articles",
     "grocerySearchHint": "Rechercher un produit...",
     "groceryLoadingLabel": "Chargement des produits",
     "groceryLoadingMessage": "Chargement des produits...",
