@@ -146,8 +146,7 @@ class ExpenseSearchView extends StatelessWidget {
                         ? Center(
                             child: CalmEmptyState(
                               icon: Icons.search_off,
-                              // TODO(l10n): move to ARB (Wave H)
-                              title: 'Nada encontrado',
+                              title: l10n.searchEmptyTitle,
                               body: l10n.searchNoResults,
                             ),
                           )

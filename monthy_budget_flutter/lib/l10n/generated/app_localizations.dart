@@ -4763,6 +4763,78 @@ abstract class S {
   /// **'Não foi possível eliminar — tenta de novo'**
   String get recurringExpenseDeleteError;
 
+  /// No description provided for @recurringActivePill.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 ativa} other{{count} ativas}}'**
+  String recurringActivePill(int count);
+
+  /// No description provided for @recurringTotalMonthlyEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'TOTAL MENSAL'**
+  String get recurringTotalMonthlyEyebrow;
+
+  /// No description provided for @recurringActiveTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ativas'**
+  String get recurringActiveTitle;
+
+  /// No description provided for @recurringSubscriptionCount.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 subscrição} other{{count} subscrições}}'**
+  String recurringSubscriptionCount(int count);
+
+  /// No description provided for @recurringPausedTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pausadas'**
+  String get recurringPausedTitle;
+
+  /// No description provided for @recurringDayOfMonth.
+  ///
+  /// In pt, this message translates to:
+  /// **'dia {day}'**
+  String recurringDayOfMonth(int day);
+
+  /// No description provided for @recurringEmptyTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem pagamentos recorrentes'**
+  String get recurringEmptyTitle;
+
+  /// No description provided for @recurringEmptyBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicione para gerar automaticamente todos os meses.'**
+  String get recurringEmptyBody;
+
+  /// No description provided for @recurringEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'RECORRENTES'**
+  String get recurringEyebrow;
+
+  /// No description provided for @recurringHeroSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 subscrição ativa} other{{count} subscrições ativas}}'**
+  String recurringHeroSubtitle(int count);
+
+  /// No description provided for @recurringActiveGroupLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'ATIVAS'**
+  String get recurringActiveGroupLabel;
+
+  /// No description provided for @recurringPausedGroupLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'PAUSADAS'**
+  String get recurringPausedGroupLabel;
+
   /// Error snack when saving a savings contribution fails
   ///
   /// In pt, this message translates to:
@@ -5692,6 +5764,12 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'{count} resultados'**
   String searchResultCount(int count);
+
+  /// No description provided for @searchEmptyTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nada encontrado'**
+  String get searchEmptyTitle;
 
   /// No description provided for @expenseTypeLabel.
   ///
@@ -10085,6 +10163,150 @@ abstract class S {
   /// **'Melhor valor'**
   String get paywallBestValue;
 
+  /// No description provided for @paywallFeatureBudgetTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Orçamento Inteligente'**
+  String get paywallFeatureBudgetTitle;
+
+  /// No description provided for @paywallFeatureBudgetSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categorias ilimitadas e histórico completo'**
+  String get paywallFeatureBudgetSubtitle;
+
+  /// No description provided for @paywallFeatureCoachTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Coach Financeiro IA'**
+  String get paywallFeatureCoachTitle;
+
+  /// No description provided for @paywallFeatureCoachSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dicas personalizadas em tempo real'**
+  String get paywallFeatureCoachSubtitle;
+
+  /// No description provided for @paywallFeatureMealTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Planeador de Refeições'**
+  String get paywallFeatureMealTitle;
+
+  /// No description provided for @paywallFeatureMealSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Receitas IA integradas com a lista de compras'**
+  String get paywallFeatureMealSubtitle;
+
+  /// No description provided for @paywallFeatureSyncTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sincronização em Tempo Real'**
+  String get paywallFeatureSyncTitle;
+
+  /// No description provided for @paywallFeatureSyncSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista de compras partilhada com o agregado'**
+  String get paywallFeatureSyncSubtitle;
+
+  /// No description provided for @paywallFeatureExportTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportação PDF/CSV'**
+  String get paywallFeatureExportTitle;
+
+  /// No description provided for @paywallFeatureExportSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Relatórios prontos a enviar'**
+  String get paywallFeatureExportSubtitle;
+
+  /// No description provided for @paywallCloseLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Fechar'**
+  String get paywallCloseLabel;
+
+  /// No description provided for @paywallProductName.
+  ///
+  /// In pt, this message translates to:
+  /// **'MONTHLY PLUS'**
+  String get paywallProductName;
+
+  /// No description provided for @paywallHeroSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tudo o que precisas para um ano de paz financeira'**
+  String get paywallHeroSubtitle;
+
+  /// No description provided for @paywallYearlyPlanLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'PLANO ANUAL'**
+  String get paywallYearlyPlanLabel;
+
+  /// No description provided for @paywallMonthlyPlanLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'PLANO MENSAL'**
+  String get paywallMonthlyPlanLabel;
+
+  /// No description provided for @paywallPerMonth.
+  ///
+  /// In pt, this message translates to:
+  /// **'/mês'**
+  String get paywallPerMonth;
+
+  /// No description provided for @paywallTrialText.
+  ///
+  /// In pt, this message translates to:
+  /// **'7 dias grátis · cancela quando quiseres'**
+  String get paywallTrialText;
+
+  /// No description provided for @paywallCtaButton.
+  ///
+  /// In pt, this message translates to:
+  /// **'Começar 7 dias grátis'**
+  String get paywallCtaButton;
+
+  /// No description provided for @paywallComparePlansEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'COMPARAR PLANOS'**
+  String get paywallComparePlansEyebrow;
+
+  /// No description provided for @paywallRestorePurchase.
+  ///
+  /// In pt, this message translates to:
+  /// **'Restaurar compra'**
+  String get paywallRestorePurchase;
+
+  /// No description provided for @paywallTermsOfService.
+  ///
+  /// In pt, this message translates to:
+  /// **'Termos de Serviço'**
+  String get paywallTermsOfService;
+
+  /// No description provided for @paywallPrivacyPolicy.
+  ///
+  /// In pt, this message translates to:
+  /// **'Política de Privacidade'**
+  String get paywallPrivacyPolicy;
+
+  /// No description provided for @paywallBillingMonthly.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mensal'**
+  String get paywallBillingMonthly;
+
+  /// No description provided for @paywallBillingYearly.
+  ///
+  /// In pt, this message translates to:
+  /// **'Anual (poupa 37%)'**
+  String get paywallBillingYearly;
+
   /// Label for easy complexity level on slider
   ///
   /// In pt, this message translates to:
@@ -10738,6 +10960,30 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'{count, plural, =1{{count} refeição} other{{count} refeições}}'**
   String mealMenuKpiOutsideValue(int count);
+
+  /// No description provided for @mealPlannerDetailEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'DETALHE'**
+  String get mealPlannerDetailEyebrow;
+
+  /// No description provided for @mealPlannerMealsEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'REFEIÇÕES'**
+  String get mealPlannerMealsEyebrow;
+
+  /// No description provided for @mealPlannerMonthlyPlanEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'PLANO DO MÊS'**
+  String get mealPlannerMonthlyPlanEyebrow;
+
+  /// No description provided for @mealPlannerWeekEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'SEMANA'**
+  String get mealPlannerWeekEyebrow;
 
   /// No description provided for @wizardCourseStructure.
   ///

@@ -2583,6 +2583,69 @@ class SPt extends S {
       'Não foi possível eliminar — tenta de novo';
 
   @override
+  String recurringActivePill(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ativas',
+      one: '1 ativa',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recurringTotalMonthlyEyebrow => 'TOTAL MENSAL';
+
+  @override
+  String get recurringActiveTitle => 'Ativas';
+
+  @override
+  String recurringSubscriptionCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count subscrições',
+      one: '1 subscrição',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recurringPausedTitle => 'Pausadas';
+
+  @override
+  String recurringDayOfMonth(int day) {
+    return 'dia $day';
+  }
+
+  @override
+  String get recurringEmptyTitle => 'Sem pagamentos recorrentes';
+
+  @override
+  String get recurringEmptyBody =>
+      'Adicione para gerar automaticamente todos os meses.';
+
+  @override
+  String get recurringEyebrow => 'RECORRENTES';
+
+  @override
+  String recurringHeroSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count subscrições ativas',
+      one: '1 subscrição ativa',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recurringActiveGroupLabel => 'ATIVAS';
+
+  @override
+  String get recurringPausedGroupLabel => 'PAUSADAS';
+
+  @override
   String get savingsContributionSaveError =>
       'Não foi possível guardar a contribuição — tenta de novo';
 
@@ -3095,6 +3158,9 @@ class SPt extends S {
   String searchResultCount(int count) {
     return '$count resultados';
   }
+
+  @override
+  String get searchEmptyTitle => 'Nada encontrado';
 
   @override
   String get expenseTypeLabel => 'TIPO';
@@ -5647,6 +5713,83 @@ class SPt extends S {
   String get paywallBestValue => 'Melhor valor';
 
   @override
+  String get paywallFeatureBudgetTitle => 'Orçamento Inteligente';
+
+  @override
+  String get paywallFeatureBudgetSubtitle =>
+      'Categorias ilimitadas e histórico completo';
+
+  @override
+  String get paywallFeatureCoachTitle => 'Coach Financeiro IA';
+
+  @override
+  String get paywallFeatureCoachSubtitle =>
+      'Dicas personalizadas em tempo real';
+
+  @override
+  String get paywallFeatureMealTitle => 'Planeador de Refeições';
+
+  @override
+  String get paywallFeatureMealSubtitle =>
+      'Receitas IA integradas com a lista de compras';
+
+  @override
+  String get paywallFeatureSyncTitle => 'Sincronização em Tempo Real';
+
+  @override
+  String get paywallFeatureSyncSubtitle =>
+      'Lista de compras partilhada com o agregado';
+
+  @override
+  String get paywallFeatureExportTitle => 'Exportação PDF/CSV';
+
+  @override
+  String get paywallFeatureExportSubtitle => 'Relatórios prontos a enviar';
+
+  @override
+  String get paywallCloseLabel => 'Fechar';
+
+  @override
+  String get paywallProductName => 'MONTHLY PLUS';
+
+  @override
+  String get paywallHeroSubtitle =>
+      'Tudo o que precisas para um ano de paz financeira';
+
+  @override
+  String get paywallYearlyPlanLabel => 'PLANO ANUAL';
+
+  @override
+  String get paywallMonthlyPlanLabel => 'PLANO MENSAL';
+
+  @override
+  String get paywallPerMonth => '/mês';
+
+  @override
+  String get paywallTrialText => '7 dias grátis · cancela quando quiseres';
+
+  @override
+  String get paywallCtaButton => 'Começar 7 dias grátis';
+
+  @override
+  String get paywallComparePlansEyebrow => 'COMPARAR PLANOS';
+
+  @override
+  String get paywallRestorePurchase => 'Restaurar compra';
+
+  @override
+  String get paywallTermsOfService => 'Termos de Serviço';
+
+  @override
+  String get paywallPrivacyPolicy => 'Política de Privacidade';
+
+  @override
+  String get paywallBillingMonthly => 'Mensal';
+
+  @override
+  String get paywallBillingYearly => 'Anual (poupa 37%)';
+
+  @override
   String get complexityEasy => 'Fácil';
 
   @override
@@ -6067,6 +6210,18 @@ class SPt extends S {
     );
     return '$_temp0';
   }
+
+  @override
+  String get mealPlannerDetailEyebrow => 'DETALHE';
+
+  @override
+  String get mealPlannerMealsEyebrow => 'REFEIÇÕES';
+
+  @override
+  String get mealPlannerMonthlyPlanEyebrow => 'PLANO DO MÊS';
+
+  @override
+  String get mealPlannerWeekEyebrow => 'SEMANA';
 
   @override
   String get wizardCourseStructure => 'Estrutura da refeicao';

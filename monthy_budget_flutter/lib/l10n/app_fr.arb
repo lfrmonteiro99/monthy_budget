@@ -1345,6 +1345,38 @@
     "recurringExpenseSaved": "Paiement récurrent enregistré",
     "recurringExpenseSaveError": "Impossible d'enregistrer — reessaye",
     "recurringExpenseDeleteError": "Impossible de supprimer — reessaye",
+    "recurringActivePill": "{count, plural, =1{1 active} other{{count} actives}}",
+    "@recurringActivePill": {
+      "placeholders": {
+        "count": { "type": "int" }
+      }
+    },
+    "recurringTotalMonthlyEyebrow": "TOTAL MENSUEL",
+    "recurringActiveTitle": "Actives",
+    "recurringSubscriptionCount": "{count, plural, =1{1 abonnement} other{{count} abonnements}}",
+    "@recurringSubscriptionCount": {
+      "placeholders": {
+        "count": { "type": "int" }
+      }
+    },
+    "recurringPausedTitle": "En pause",
+    "recurringDayOfMonth": "jour {day}",
+    "@recurringDayOfMonth": {
+      "placeholders": {
+        "day": { "type": "int" }
+      }
+    },
+    "recurringEmptyTitle": "Aucun paiement recurrent",
+    "recurringEmptyBody": "Ajoutes-en un pour le generer automatiquement chaque mois.",
+    "recurringEyebrow": "RECURRENTS",
+    "recurringHeroSubtitle": "{count, plural, =1{1 abonnement actif} other{{count} abonnements actifs}}",
+    "@recurringHeroSubtitle": {
+      "placeholders": {
+        "count": { "type": "int" }
+      }
+    },
+    "recurringActiveGroupLabel": "ACTIFS",
+    "recurringPausedGroupLabel": "EN PAUSE",
     "savingsContributionSaveError": "Impossible d'enregistrer la contribution — reessaye",
     "coachNoApiKeyTitle": "Configure ton coach",
     "coachNoApiKeyBody": "Ajoute une cle OpenAI dans les Reglages pour commencer a discuter.",
@@ -1644,6 +1676,7 @@
             }
         }
     },
+    "searchEmptyTitle": "Rien trouve",
     "expenseTypeLabel": "TYPE",
     "expenseFixed": "Fixe",
     "expenseVariable": "Variable",
@@ -2971,6 +3004,30 @@
     "paywallStartPro": "Démarrer Pro",
     "paywallContinueFree": "Continuer gratuitement",
     "paywallBestValue": "Meilleur rapport qualité-prix",
+    "paywallFeatureBudgetTitle": "Budget Intelligent",
+    "paywallFeatureBudgetSubtitle": "Categories illimitees et historique complet",
+    "paywallFeatureCoachTitle": "Coach Financier IA",
+    "paywallFeatureCoachSubtitle": "Conseils personnalises en temps reel",
+    "paywallFeatureMealTitle": "Planificateur de Repas",
+    "paywallFeatureMealSubtitle": "Recettes IA integrees a la liste de courses",
+    "paywallFeatureSyncTitle": "Synchronisation en Temps Reel",
+    "paywallFeatureSyncSubtitle": "Liste de courses partagee avec le foyer",
+    "paywallFeatureExportTitle": "Export PDF/CSV",
+    "paywallFeatureExportSubtitle": "Rapports prets a envoyer",
+    "paywallCloseLabel": "Fermer",
+    "paywallProductName": "MONTHLY PLUS",
+    "paywallHeroSubtitle": "Tout ce dont vous avez besoin pour une annee de paix financiere",
+    "paywallYearlyPlanLabel": "PLAN ANNUEL",
+    "paywallMonthlyPlanLabel": "PLAN MENSUEL",
+    "paywallPerMonth": "/mois",
+    "paywallTrialText": "7 jours gratuits · annulez quand vous voulez",
+    "paywallCtaButton": "Commencer 7 jours gratuits",
+    "paywallComparePlansEyebrow": "COMPARER LES PLANS",
+    "paywallRestorePurchase": "Restaurer l'achat",
+    "paywallTermsOfService": "Conditions d'utilisation",
+    "paywallPrivacyPolicy": "Politique de confidentialite",
+    "paywallBillingMonthly": "Mensuel",
+    "paywallBillingYearly": "Annuel (economisez 37%)",
     "complexityEasy": "Facile",
     "complexityPro": "Pro",
     "spendingAnomalyTitle": "Anomalies de Dépenses",
@@ -3113,6 +3170,10 @@
     "mealMenuKpiCostPerPersonDayLabel": "Cout/personne/jour",
     "mealMenuKpiOutsideLabel": "Hors domicile",
     "mealMenuKpiOutsideValue": "{count, plural, =1{{count} repas} other{{count} repas}}",
+    "mealPlannerDetailEyebrow": "DÉTAIL",
+    "mealPlannerMealsEyebrow": "REPAS",
+    "mealPlannerMonthlyPlanEyebrow": "PLAN DU MOIS",
+    "mealPlannerWeekEyebrow": "SEMAINE",
     "wizardCourseStructure": "Structure du repas",
     "wizardIncludeSoupStarter": "Inclure soupe ou entree",
     "wizardSoupStarterHint": "Ajoute une soupe ou entree en premier plat",

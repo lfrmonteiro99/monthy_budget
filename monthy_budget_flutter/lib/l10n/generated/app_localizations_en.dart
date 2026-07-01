@@ -2570,6 +2570,69 @@ class SEn extends S {
   String get recurringExpenseDeleteError => 'Couldn\'t delete — try again';
 
   @override
+  String recurringActivePill(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count active',
+      one: '1 active',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recurringTotalMonthlyEyebrow => 'MONTHLY TOTAL';
+
+  @override
+  String get recurringActiveTitle => 'Active';
+
+  @override
+  String recurringSubscriptionCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count subscriptions',
+      one: '1 subscription',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recurringPausedTitle => 'Paused';
+
+  @override
+  String recurringDayOfMonth(int day) {
+    return 'day $day';
+  }
+
+  @override
+  String get recurringEmptyTitle => 'No recurring payments';
+
+  @override
+  String get recurringEmptyBody =>
+      'Add one to generate them automatically every month.';
+
+  @override
+  String get recurringEyebrow => 'RECURRING';
+
+  @override
+  String recurringHeroSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count active subscriptions',
+      one: '1 active subscription',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recurringActiveGroupLabel => 'ACTIVE';
+
+  @override
+  String get recurringPausedGroupLabel => 'PAUSED';
+
+  @override
   String get savingsContributionSaveError =>
       'Couldn\'t save contribution — try again';
 
@@ -3081,6 +3144,9 @@ class SEn extends S {
   String searchResultCount(int count) {
     return '$count results';
   }
+
+  @override
+  String get searchEmptyTitle => 'Nothing found';
 
   @override
   String get expenseTypeLabel => 'TYPE';
@@ -5605,6 +5671,82 @@ class SEn extends S {
   String get paywallBestValue => 'Best Value';
 
   @override
+  String get paywallFeatureBudgetTitle => 'Smart Budget';
+
+  @override
+  String get paywallFeatureBudgetSubtitle =>
+      'Unlimited categories and full history';
+
+  @override
+  String get paywallFeatureCoachTitle => 'AI Financial Coach';
+
+  @override
+  String get paywallFeatureCoachSubtitle => 'Personalised tips in real time';
+
+  @override
+  String get paywallFeatureMealTitle => 'Meal Planner';
+
+  @override
+  String get paywallFeatureMealSubtitle =>
+      'AI recipes integrated with the shopping list';
+
+  @override
+  String get paywallFeatureSyncTitle => 'Real-time Sync';
+
+  @override
+  String get paywallFeatureSyncSubtitle =>
+      'Shared shopping list with your household';
+
+  @override
+  String get paywallFeatureExportTitle => 'PDF/CSV Export';
+
+  @override
+  String get paywallFeatureExportSubtitle => 'Reports ready to send';
+
+  @override
+  String get paywallCloseLabel => 'Close';
+
+  @override
+  String get paywallProductName => 'MONTHLY PLUS';
+
+  @override
+  String get paywallHeroSubtitle =>
+      'Everything you need for a year of financial peace';
+
+  @override
+  String get paywallYearlyPlanLabel => 'ANNUAL PLAN';
+
+  @override
+  String get paywallMonthlyPlanLabel => 'MONTHLY PLAN';
+
+  @override
+  String get paywallPerMonth => '/mo';
+
+  @override
+  String get paywallTrialText => '7 days free · cancel anytime';
+
+  @override
+  String get paywallCtaButton => 'Start 7 days free';
+
+  @override
+  String get paywallComparePlansEyebrow => 'COMPARE PLANS';
+
+  @override
+  String get paywallRestorePurchase => 'Restore purchase';
+
+  @override
+  String get paywallTermsOfService => 'Terms of Service';
+
+  @override
+  String get paywallPrivacyPolicy => 'Privacy Policy';
+
+  @override
+  String get paywallBillingMonthly => 'Monthly';
+
+  @override
+  String get paywallBillingYearly => 'Yearly (save 37%)';
+
+  @override
   String get complexityEasy => 'Easy';
 
   @override
@@ -6024,6 +6166,18 @@ class SEn extends S {
     );
     return '$_temp0';
   }
+
+  @override
+  String get mealPlannerDetailEyebrow => 'DETAIL';
+
+  @override
+  String get mealPlannerMealsEyebrow => 'MEALS';
+
+  @override
+  String get mealPlannerMonthlyPlanEyebrow => 'MONTHLY PLAN';
+
+  @override
+  String get mealPlannerWeekEyebrow => 'WEEK';
 
   @override
   String get wizardCourseStructure => 'Meal structure';

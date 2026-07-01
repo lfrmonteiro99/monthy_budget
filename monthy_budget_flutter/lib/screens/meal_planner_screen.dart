@@ -1593,7 +1593,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CalmEyebrow('PLANO DO MÊS'),
+                          CalmEyebrow(l10n.mealPlannerMonthlyPlanEyebrow),
                           const SizedBox(height: 8),
                           Text(
                             '${plan.totalEstimatedCost.toStringAsFixed(2)}${currencySymbol()}',
@@ -1633,7 +1633,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     CalmEyebrow(
                       _showFullMonth
                           ? l10n.mealPlannerFullMonthView.toUpperCase()
-                          : 'SEMANA',
+                          : l10n.mealPlannerWeekEyebrow,
                     ),
                     const Spacer(),
                     SizedBox(
@@ -1788,7 +1788,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         // Always-visible compact detail chip row (replaces toggle)
         Padding(
           padding: const EdgeInsets.only(top: 8, bottom: 2),
-          child: CalmEyebrow('DETALHE'), // TODO(l10n): localise
+          child: CalmEyebrow(l10n.mealPlannerDetailEyebrow),
         ),
         SizedBox(
           height: 36,
@@ -1906,7 +1906,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         ),
         Padding(
           padding: const EdgeInsets.only(top: 8, bottom: 4),
-          child: CalmEyebrow('REFEIÇÕES'), // TODO(l10n): localise
+          child: CalmEyebrow(l10n.mealPlannerMealsEyebrow),
         ),
         Expanded(
           child: Stack(

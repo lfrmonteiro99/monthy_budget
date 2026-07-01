@@ -2591,6 +2591,69 @@ class SFr extends S {
       'Impossible de supprimer — reessaye';
 
   @override
+  String recurringActivePill(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count actives',
+      one: '1 active',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recurringTotalMonthlyEyebrow => 'TOTAL MENSUEL';
+
+  @override
+  String get recurringActiveTitle => 'Actives';
+
+  @override
+  String recurringSubscriptionCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count abonnements',
+      one: '1 abonnement',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recurringPausedTitle => 'En pause';
+
+  @override
+  String recurringDayOfMonth(int day) {
+    return 'jour $day';
+  }
+
+  @override
+  String get recurringEmptyTitle => 'Aucun paiement recurrent';
+
+  @override
+  String get recurringEmptyBody =>
+      'Ajoutes-en un pour le generer automatiquement chaque mois.';
+
+  @override
+  String get recurringEyebrow => 'RECURRENTS';
+
+  @override
+  String recurringHeroSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count abonnements actifs',
+      one: '1 abonnement actif',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recurringActiveGroupLabel => 'ACTIFS';
+
+  @override
+  String get recurringPausedGroupLabel => 'EN PAUSE';
+
+  @override
   String get savingsContributionSaveError =>
       'Impossible d\'enregistrer la contribution — reessaye';
 
@@ -3103,6 +3166,9 @@ class SFr extends S {
   String searchResultCount(int count) {
     return '$count résultats';
   }
+
+  @override
+  String get searchEmptyTitle => 'Rien trouve';
 
   @override
   String get expenseTypeLabel => 'TYPE';
@@ -5662,6 +5728,83 @@ class SFr extends S {
   String get paywallBestValue => 'Meilleur rapport qualité-prix';
 
   @override
+  String get paywallFeatureBudgetTitle => 'Budget Intelligent';
+
+  @override
+  String get paywallFeatureBudgetSubtitle =>
+      'Categories illimitees et historique complet';
+
+  @override
+  String get paywallFeatureCoachTitle => 'Coach Financier IA';
+
+  @override
+  String get paywallFeatureCoachSubtitle =>
+      'Conseils personnalises en temps reel';
+
+  @override
+  String get paywallFeatureMealTitle => 'Planificateur de Repas';
+
+  @override
+  String get paywallFeatureMealSubtitle =>
+      'Recettes IA integrees a la liste de courses';
+
+  @override
+  String get paywallFeatureSyncTitle => 'Synchronisation en Temps Reel';
+
+  @override
+  String get paywallFeatureSyncSubtitle =>
+      'Liste de courses partagee avec le foyer';
+
+  @override
+  String get paywallFeatureExportTitle => 'Export PDF/CSV';
+
+  @override
+  String get paywallFeatureExportSubtitle => 'Rapports prets a envoyer';
+
+  @override
+  String get paywallCloseLabel => 'Fermer';
+
+  @override
+  String get paywallProductName => 'MONTHLY PLUS';
+
+  @override
+  String get paywallHeroSubtitle =>
+      'Tout ce dont vous avez besoin pour une annee de paix financiere';
+
+  @override
+  String get paywallYearlyPlanLabel => 'PLAN ANNUEL';
+
+  @override
+  String get paywallMonthlyPlanLabel => 'PLAN MENSUEL';
+
+  @override
+  String get paywallPerMonth => '/mois';
+
+  @override
+  String get paywallTrialText => '7 jours gratuits · annulez quand vous voulez';
+
+  @override
+  String get paywallCtaButton => 'Commencer 7 jours gratuits';
+
+  @override
+  String get paywallComparePlansEyebrow => 'COMPARER LES PLANS';
+
+  @override
+  String get paywallRestorePurchase => 'Restaurer l\'achat';
+
+  @override
+  String get paywallTermsOfService => 'Conditions d\'utilisation';
+
+  @override
+  String get paywallPrivacyPolicy => 'Politique de confidentialite';
+
+  @override
+  String get paywallBillingMonthly => 'Mensuel';
+
+  @override
+  String get paywallBillingYearly => 'Annuel (economisez 37%)';
+
+  @override
   String get complexityEasy => 'Facile';
 
   @override
@@ -6084,6 +6227,18 @@ class SFr extends S {
     );
     return '$_temp0';
   }
+
+  @override
+  String get mealPlannerDetailEyebrow => 'DÉTAIL';
+
+  @override
+  String get mealPlannerMealsEyebrow => 'REPAS';
+
+  @override
+  String get mealPlannerMonthlyPlanEyebrow => 'PLAN DU MOIS';
+
+  @override
+  String get mealPlannerWeekEyebrow => 'SEMAINE';
 
   @override
   String get wizardCourseStructure => 'Structure du repas';

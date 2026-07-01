@@ -1451,6 +1451,38 @@
     "recurringExpenseSaved": "Recurring payment saved",
     "recurringExpenseSaveError": "Couldn't save — try again",
     "recurringExpenseDeleteError": "Couldn't delete — try again",
+    "recurringActivePill": "{count, plural, =1{1 active} other{{count} active}}",
+    "@recurringActivePill": {
+      "placeholders": {
+        "count": { "type": "int" }
+      }
+    },
+    "recurringTotalMonthlyEyebrow": "MONTHLY TOTAL",
+    "recurringActiveTitle": "Active",
+    "recurringSubscriptionCount": "{count, plural, =1{1 subscription} other{{count} subscriptions}}",
+    "@recurringSubscriptionCount": {
+      "placeholders": {
+        "count": { "type": "int" }
+      }
+    },
+    "recurringPausedTitle": "Paused",
+    "recurringDayOfMonth": "day {day}",
+    "@recurringDayOfMonth": {
+      "placeholders": {
+        "day": { "type": "int" }
+      }
+    },
+    "recurringEmptyTitle": "No recurring payments",
+    "recurringEmptyBody": "Add one to generate them automatically every month.",
+    "recurringEyebrow": "RECURRING",
+    "recurringHeroSubtitle": "{count, plural, =1{1 active subscription} other{{count} active subscriptions}}",
+    "@recurringHeroSubtitle": {
+      "placeholders": {
+        "count": { "type": "int" }
+      }
+    },
+    "recurringActiveGroupLabel": "ACTIVE",
+    "recurringPausedGroupLabel": "PAUSED",
     "savingsContributionSaveError": "Couldn't save contribution — try again",
     "coachNoApiKeyTitle": "Set up your coach",
     "coachNoApiKeyBody": "Add an OpenAI key in Settings to start chatting.",
@@ -1790,6 +1822,7 @@
             }
         }
     },
+    "searchEmptyTitle": "Nothing found",
     "expenseTypeLabel": "TYPE",
     "expenseFixed": "Fixed",
     "expenseVariable": "Variable",
@@ -3093,6 +3126,30 @@
     "paywallStartPro": "Start Pro",
     "paywallContinueFree": "Continue Free",
     "paywallBestValue": "Best Value",
+    "paywallFeatureBudgetTitle": "Smart Budget",
+    "paywallFeatureBudgetSubtitle": "Unlimited categories and full history",
+    "paywallFeatureCoachTitle": "AI Financial Coach",
+    "paywallFeatureCoachSubtitle": "Personalised tips in real time",
+    "paywallFeatureMealTitle": "Meal Planner",
+    "paywallFeatureMealSubtitle": "AI recipes integrated with the shopping list",
+    "paywallFeatureSyncTitle": "Real-time Sync",
+    "paywallFeatureSyncSubtitle": "Shared shopping list with your household",
+    "paywallFeatureExportTitle": "PDF/CSV Export",
+    "paywallFeatureExportSubtitle": "Reports ready to send",
+    "paywallCloseLabel": "Close",
+    "paywallProductName": "MONTHLY PLUS",
+    "paywallHeroSubtitle": "Everything you need for a year of financial peace",
+    "paywallYearlyPlanLabel": "ANNUAL PLAN",
+    "paywallMonthlyPlanLabel": "MONTHLY PLAN",
+    "paywallPerMonth": "/mo",
+    "paywallTrialText": "7 days free · cancel anytime",
+    "paywallCtaButton": "Start 7 days free",
+    "paywallComparePlansEyebrow": "COMPARE PLANS",
+    "paywallRestorePurchase": "Restore purchase",
+    "paywallTermsOfService": "Terms of Service",
+    "paywallPrivacyPolicy": "Privacy Policy",
+    "paywallBillingMonthly": "Monthly",
+    "paywallBillingYearly": "Yearly (save 37%)",
     "complexityEasy": "Easy",
     "complexityPro": "Pro",
     "spendingAnomalyTitle": "Spending Anomalies",
@@ -3270,6 +3327,10 @@
             "count": { "type": "int" }
         }
     },
+    "mealPlannerDetailEyebrow": "DETAIL",
+    "mealPlannerMealsEyebrow": "MEALS",
+    "mealPlannerMonthlyPlanEyebrow": "MONTHLY PLAN",
+    "mealPlannerWeekEyebrow": "WEEK",
     "wizardCourseStructure": "Meal structure",
     "wizardIncludeSoupStarter": "Include soup or starter",
     "wizardSoupStarterHint": "Adds a soup or starter as the first course",
