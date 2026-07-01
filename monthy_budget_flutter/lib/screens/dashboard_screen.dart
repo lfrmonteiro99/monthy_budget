@@ -440,8 +440,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: CalmEmptyState(
         icon: Icons.account_balance_wallet_outlined,
         title: l10n.dashboardConfigureData,
-        // TODO(l10n): move to ARB (Wave H)
-        body: 'Configure os seus rendimentos e despesas para começar.',
+        body: l10n.dashboardEmptyStateBody,
         action: CalmEmptyStateAction(
           label: l10n.dashboardOpenSettingsButton,
           onPressed: onOpenSettings,
@@ -1916,8 +1915,7 @@ class _StressIndexCardState extends State<_StressIndexCard> {
 
   String _statusLabel(BuildContext context, int score, S l10n) {
     if (score >= 60) return l10n.dashboardBurnRateOnTrack;
-    // TODO(l10n): move to ARB (Wave H)
-    if (score >= 40) return 'atenção';
+    if (score >= 40) return l10n.dashboardBurnRateAttention;
     return l10n.dashboardBurnRateOver;
   }
 

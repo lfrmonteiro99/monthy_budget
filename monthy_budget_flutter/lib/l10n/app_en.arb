@@ -178,6 +178,7 @@
         }
     },
     "dashboardConfigureData": "Set up your data to see the summary.",
+    "dashboardEmptyStateBody": "Set up your income and expenses to get started.",
     "dashboardOpenSettingsButton": "Open Settings",
     "dashboardGrossIncome": "Gross Income",
     "dashboardNetIncome": "Net Income",
@@ -2771,6 +2772,7 @@
     "dashboardBurnRateSubtitle": "Daily average vs available budget",
     "dashboardBurnRateOnTrack": "On track",
     "dashboardBurnRateOver": "Over pace",
+    "dashboardBurnRateAttention": "attention",
     "dashboardBurnRateDailyAvg": "AVG/DAY",
     "dashboardBurnRateAllowance": "ALLOW./DAY",
     "dashboardBurnRateDaysLeft": "DAYS LEFT",

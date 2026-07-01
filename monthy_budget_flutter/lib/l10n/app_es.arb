@@ -178,6 +178,7 @@
         }
     },
     "dashboardConfigureData": "Configure sus datos para ver el resumen.",
+    "dashboardEmptyStateBody": "Configure sus ingresos y gastos para comenzar.",
     "dashboardOpenSettingsButton": "Abrir Configuración",
     "dashboardGrossIncome": "Ingreso Bruto",
     "dashboardNetIncome": "Ingreso Neto",
@@ -2713,6 +2714,7 @@
     "dashboardBurnRateSubtitle": "Promedio diario vs presupuesto disponible",
     "dashboardBurnRateOnTrack": "En camino",
     "dashboardBurnRateOver": "Sobre el ritmo",
+    "dashboardBurnRateAttention": "atención",
     "dashboardBurnRateDailyAvg": "MEDIA/DÍA",
     "dashboardBurnRateAllowance": "DISP./DÍA",
     "dashboardBurnRateDaysLeft": "DÍAS RESTANTES",

@@ -383,6 +383,10 @@ class SEn extends S {
   String get dashboardConfigureData => 'Set up your data to see the summary.';
 
   @override
+  String get dashboardEmptyStateBody =>
+      'Set up your income and expenses to get started.';
+
+  @override
   String get dashboardOpenSettingsButton => 'Open Settings';
 
   @override
@@ -5136,6 +5140,9 @@ class SEn extends S {
 
   @override
   String get dashboardBurnRateOver => 'Over pace';
+
+  @override
+  String get dashboardBurnRateAttention => 'attention';
 
   @override
   String get dashboardBurnRateDailyAvg => 'AVG/DAY';

@@ -178,6 +178,7 @@
         }
     },
     "dashboardConfigureData": "Configurez vos données pour voir le résumé.",
+    "dashboardEmptyStateBody": "Configurez vos revenus et dépenses pour commencer.",
     "dashboardOpenSettingsButton": "Ouvrir les Paramètres",
     "dashboardGrossIncome": "Revenu Brut",
     "dashboardNetIncome": "Revenu Net",
@@ -2713,6 +2714,7 @@
     "dashboardBurnRateSubtitle": "Moyenne quotidienne vs budget disponible",
     "dashboardBurnRateOnTrack": "En bonne voie",
     "dashboardBurnRateOver": "Au-dessus du rythme",
+    "dashboardBurnRateAttention": "attention",
     "dashboardBurnRateDailyAvg": "MOY./JOUR",
     "dashboardBurnRateAllowance": "DISP./JOUR",
     "dashboardBurnRateDaysLeft": "JOURS RESTANTS",

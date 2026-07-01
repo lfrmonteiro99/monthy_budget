@@ -516,6 +516,7 @@
     "@dashboardConfigureData": {
         "description": "Empty state message"
     },
+    "dashboardEmptyStateBody": "Configure os seus rendimentos e despesas para começar.",
     "dashboardOpenSettingsButton": "Abrir Definições",
     "@dashboardOpenSettingsButton": {
         "description": "Empty state settings button label"
@@ -5218,6 +5219,7 @@
     "@dashboardBurnRateOnTrack": {"description": "On track pace label"},
     "dashboardBurnRateOver": "Acima do ritmo",
     "@dashboardBurnRateOver": {"description": "Over pace label"},
+    "dashboardBurnRateAttention": "atenção",
     "dashboardBurnRateDailyAvg": "MÉDIA/DIA",
     "@dashboardBurnRateDailyAvg": {"description": "Daily average label"},
     "dashboardBurnRateAllowance": "DISP./DIA",

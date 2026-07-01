@@ -815,6 +815,12 @@ abstract class S {
   /// **'Configure os seus dados para ver o resumo.'**
   String get dashboardConfigureData;
 
+  /// No description provided for @dashboardEmptyStateBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'Configure os seus rendimentos e despesas para começar.'**
+  String get dashboardEmptyStateBody;
+
   /// Empty state settings button label
   ///
   /// In pt, this message translates to:
@@ -9286,6 +9292,12 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Acima do ritmo'**
   String get dashboardBurnRateOver;
+
+  /// No description provided for @dashboardBurnRateAttention.
+  ///
+  /// In pt, this message translates to:
+  /// **'atenção'**
+  String get dashboardBurnRateAttention;
 
   /// Daily average label
   ///
