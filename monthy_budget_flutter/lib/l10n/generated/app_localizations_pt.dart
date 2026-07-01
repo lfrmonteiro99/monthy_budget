@@ -6357,4 +6357,103 @@ class SPt extends S {
   String dashboardHeroDaysLeft(String days) {
     return '$days dias restantes';
   }
+
+  @override
+  String get planShopDayToday => 'Hoje';
+
+  @override
+  String get planShopDayTomorrow => 'Amanhã';
+
+  @override
+  String get planShopDayMon => 'Seg';
+
+  @override
+  String get planShopDayTue => 'Ter';
+
+  @override
+  String get planShopDayWed => 'Qua';
+
+  @override
+  String get planShopDayThu => 'Qui';
+
+  @override
+  String get planShopDayFri => 'Sex';
+
+  @override
+  String get planShopDaySat => 'Sáb';
+
+  @override
+  String get planShopDaySun => 'Dom';
+
+  @override
+  String planShopWeekEyebrow(int weekNum) {
+    return 'SEMANA $weekNum';
+  }
+
+  @override
+  String get planShopTitle => 'Plano & compras';
+
+  @override
+  String get planShopBudgetEyebrow => 'ORÇAMENTO SEMANAL';
+
+  @override
+  String get planShopNoMenuTitle => 'Sem ementa esta semana';
+
+  @override
+  String get planShopNoMenuBody =>
+      'Abre a Ementa para gerar o teu plano semanal.';
+
+  @override
+  String get planShopSpentLabel => 'Planeado';
+
+  @override
+  String get planShopRemainingLabel => 'Restante';
+
+  @override
+  String get planShopTileList => 'Lista';
+
+  @override
+  String get planShopTileMenu => 'Ementa';
+
+  @override
+  String planShopMealCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count refeições',
+      one: '1 refeição',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get planShopNoPlanLabel => 'sem plano';
+
+  @override
+  String get planShopTilePantry => 'Despensa';
+
+  @override
+  String planShopItemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count itens',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get planShopUpcomingEyebrow => 'PRÓXIMAS REFEIÇÕES';
+
+  @override
+  String get planShopNoMealsTitle => 'Sem refeições planeadas';
+
+  @override
+  String get planShopNoMealsBodyNoMenu =>
+      'Cria uma ementa para ver as próximas refeições.';
+
+  @override
+  String get planShopNoMealsBodyWithMenu =>
+      'Nenhuma refeição próxima encontrada.';
 }

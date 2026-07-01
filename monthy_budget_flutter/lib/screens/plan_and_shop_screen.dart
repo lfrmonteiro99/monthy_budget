@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:monthly_management/widgets/calm/calm.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/grocery_data.dart';
 import '../models/meal_planner.dart';
@@ -205,7 +206,7 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen> {
 
   /// Returns the next 3 upcoming meal slots from the current week's plan.
   /// "Upcoming" = today's remaining + tomorrow's meals, capped at 3.
-  List<_MealPreviewRow> _nextMeals() {
+  List<_MealPreviewRow> _nextMeals(BuildContext context) {
     final plan = _plan;
     if (plan == null || plan.days.isEmpty) return [];
 
@@ -228,7 +229,7 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen> {
           ? (day.freeformTitle ?? '—')
           : (_service.recipeMap[day.recipeId]?.name ?? '—');
 
-      final eyebrowDay = _dayLabel(day.dayIndex, todayIdx, today);
+      final eyebrowDay = _dayLabel(context, day.dayIndex, todayIdx, today);
       final eyebrow = '$eyebrowDay · ${day.mealType.label}';
       final meta = day.costEstimate > 0
           ? formatCurrency(day.costEstimate)
@@ -243,11 +244,19 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen> {
     return preview;
   }
 
-  String _dayLabel(int dayIndex, int todayIdx, DateTime today) {
-    if (dayIndex == todayIdx) return 'Hoje';
-    if (dayIndex == todayIdx + 1) return 'Amanhã';
-    // Return abbreviated weekday name
-    const names = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+  String _dayLabel(BuildContext context, int dayIndex, int todayIdx, DateTime today) {
+    final l10n = S.of(context);
+    if (dayIndex == todayIdx) return l10n.planShopDayToday;
+    if (dayIndex == todayIdx + 1) return l10n.planShopDayTomorrow;
+    final names = [
+      l10n.planShopDayMon,
+      l10n.planShopDayTue,
+      l10n.planShopDayWed,
+      l10n.planShopDayThu,
+      l10n.planShopDayFri,
+      l10n.planShopDaySat,
+      l10n.planShopDaySun,
+    ];
     return names[dayIndex % 7];
   }
 
@@ -273,6 +282,7 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen> {
   @override
   Widget build(BuildContext context) {
     final weekNum = _isoWeekNumber(DateTime.now());
+    final l10n = S.of(context);
 
     return CalmScaffold(
       bodyPadding: EdgeInsets.zero,
@@ -281,8 +291,8 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen> {
         children: [
           // 1. Page header ─────────────────────────────────────────────────
           CalmPageHeader(
-            eyebrow: 'SEMANA $weekNum',
-            title: 'Plano & compras',
+            eyebrow: l10n.planShopWeekEyebrow(weekNum),
+            title: l10n.planShopTitle,
           ),
 
           // 2. Hero budget card ─────────────────────────────────────────────
@@ -310,6 +320,8 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen> {
   }
 
   Widget _buildHeroCard(BuildContext context) {
+    final l10n = S.of(context);
+
     if (_planLoading) {
       return CalmCard(
         child: Center(
@@ -330,8 +342,8 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen> {
       return CalmCard(
         child: CalmEmptyState(
           icon: Icons.restaurant_outlined,
-          title: 'Sem ementa esta semana',
-          body: 'Abre a Ementa para gerar o teu plano semanal.',
+          title: l10n.planShopNoMenuTitle,
+          body: l10n.planShopNoMenuBody,
         ),
       );
     }
@@ -346,7 +358,7 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CalmHero(
-            eyebrow: 'ORÇAMENTO SEMANAL',
+            eyebrow: l10n.planShopBudgetEyebrow,
             amount: formatCurrency(budget),
           ),
           const SizedBox(height: 12),
@@ -365,8 +377,8 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _kpiLabel(context, 'Planeado', formatCurrency(spent)),
-              _kpiLabel(context, 'Restante', formatCurrency(remaining),
+              _kpiLabel(context, l10n.planShopSpentLabel, formatCurrency(spent)),
+              _kpiLabel(context, l10n.planShopRemainingLabel, formatCurrency(remaining),
                   alignRight: true),
             ],
           ),
@@ -391,14 +403,15 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen> {
   }
 
   Widget _buildTileRow(BuildContext context) {
+    final l10n = S.of(context);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: CalmTile(
             icon: Icons.shopping_basket_outlined,
-            label: 'Lista',
-            count: '${widget.shoppingItems.length} itens',
+            label: l10n.planShopTileList,
+            count: l10n.planShopItemCount(widget.shoppingItems.length),
             onTap: () => _openLista(context),
           ),
         ),
@@ -408,11 +421,11 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen> {
             icon: widget.canAccessMeals
                 ? Icons.restaurant_menu_outlined
                 : Icons.lock_outlined,
-            label: 'Ementa',
+            label: l10n.planShopTileMenu,
             count: widget.canAccessMeals
                 ? (_plan != null
-                    ? '${_plan!.days.length} refeições'
-                    : 'sem plano')
+                    ? l10n.planShopMealCount(_plan!.days.length)
+                    : l10n.planShopNoPlanLabel)
                 : 'Premium',
             onTap: widget.canAccessMeals
                 ? () => _openEmenta(context)
@@ -423,8 +436,8 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen> {
         Expanded(
           child: CalmTile(
             icon: Icons.kitchen_outlined,
-            label: 'Despensa',
-            count: '${widget.weeklyPantryIds.length} itens',
+            label: l10n.planShopTilePantry,
+            count: l10n.planShopItemCount(widget.weeklyPantryIds.length),
             onTap: () => _openDespensa(context),
           ),
         ),
@@ -433,14 +446,15 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen> {
   }
 
   Widget _buildMealsCard(BuildContext context) {
-    final meals = _nextMeals();
+    final l10n = S.of(context);
+    final meals = _nextMeals(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.only(bottom: 8),
-          child: CalmEyebrow('PRÓXIMAS REFEIÇÕES'),
+          child: CalmEyebrow(l10n.planShopUpcomingEyebrow),
         ),
         CalmCard(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
@@ -449,10 +463,10 @@ class _PlanAndShopScreenState extends State<PlanAndShopScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: CalmEmptyState(
                     icon: Icons.calendar_today_outlined,
-                    title: 'Sem refeições planeadas',
+                    title: l10n.planShopNoMealsTitle,
                     body: _plan == null
-                        ? 'Cria uma ementa para ver as próximas refeições.'
-                        : 'Nenhuma refeição próxima encontrada.',
+                        ? l10n.planShopNoMealsBodyNoMenu
+                        : l10n.planShopNoMealsBodyWithMenu,
                   ),
                 )
               : Column(

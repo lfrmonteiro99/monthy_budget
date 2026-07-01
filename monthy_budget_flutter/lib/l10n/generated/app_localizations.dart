@@ -11224,6 +11224,162 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'{days} dias restantes'**
   String dashboardHeroDaysLeft(String days);
+
+  /// Plan & Shop day label for today
+  ///
+  /// In pt, this message translates to:
+  /// **'Hoje'**
+  String get planShopDayToday;
+
+  /// Plan & Shop day label for tomorrow
+  ///
+  /// In pt, this message translates to:
+  /// **'Amanhã'**
+  String get planShopDayTomorrow;
+
+  /// Plan & Shop abbreviated weekday: Monday
+  ///
+  /// In pt, this message translates to:
+  /// **'Seg'**
+  String get planShopDayMon;
+
+  /// Plan & Shop abbreviated weekday: Tuesday
+  ///
+  /// In pt, this message translates to:
+  /// **'Ter'**
+  String get planShopDayTue;
+
+  /// Plan & Shop abbreviated weekday: Wednesday
+  ///
+  /// In pt, this message translates to:
+  /// **'Qua'**
+  String get planShopDayWed;
+
+  /// Plan & Shop abbreviated weekday: Thursday
+  ///
+  /// In pt, this message translates to:
+  /// **'Qui'**
+  String get planShopDayThu;
+
+  /// Plan & Shop abbreviated weekday: Friday
+  ///
+  /// In pt, this message translates to:
+  /// **'Sex'**
+  String get planShopDayFri;
+
+  /// Plan & Shop abbreviated weekday: Saturday
+  ///
+  /// In pt, this message translates to:
+  /// **'Sáb'**
+  String get planShopDaySat;
+
+  /// Plan & Shop abbreviated weekday: Sunday
+  ///
+  /// In pt, this message translates to:
+  /// **'Dom'**
+  String get planShopDaySun;
+
+  /// Plan & Shop page header eyebrow with ISO week number
+  ///
+  /// In pt, this message translates to:
+  /// **'SEMANA {weekNum}'**
+  String planShopWeekEyebrow(int weekNum);
+
+  /// Plan & Shop screen title
+  ///
+  /// In pt, this message translates to:
+  /// **'Plano & compras'**
+  String get planShopTitle;
+
+  /// Plan & Shop hero budget card eyebrow
+  ///
+  /// In pt, this message translates to:
+  /// **'ORÇAMENTO SEMANAL'**
+  String get planShopBudgetEyebrow;
+
+  /// Plan & Shop empty state title when no meal plan exists
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem ementa esta semana'**
+  String get planShopNoMenuTitle;
+
+  /// Plan & Shop empty state body when no meal plan exists
+  ///
+  /// In pt, this message translates to:
+  /// **'Abre a Ementa para gerar o teu plano semanal.'**
+  String get planShopNoMenuBody;
+
+  /// Plan & Shop KPI label for amount spent/planned
+  ///
+  /// In pt, this message translates to:
+  /// **'Planeado'**
+  String get planShopSpentLabel;
+
+  /// Plan & Shop KPI label for remaining budget
+  ///
+  /// In pt, this message translates to:
+  /// **'Restante'**
+  String get planShopRemainingLabel;
+
+  /// Plan & Shop tile label for shopping list
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista'**
+  String get planShopTileList;
+
+  /// Plan & Shop tile label for meal menu
+  ///
+  /// In pt, this message translates to:
+  /// **'Ementa'**
+  String get planShopTileMenu;
+
+  /// Plan & Shop meal count for tile
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 refeição} other{{count} refeições}}'**
+  String planShopMealCount(int count);
+
+  /// Plan & Shop tile count when no meal plan exists
+  ///
+  /// In pt, this message translates to:
+  /// **'sem plano'**
+  String get planShopNoPlanLabel;
+
+  /// Plan & Shop tile label for pantry
+  ///
+  /// In pt, this message translates to:
+  /// **'Despensa'**
+  String get planShopTilePantry;
+
+  /// Plan & Shop item count for shopping list and pantry tiles
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 item} other{{count} itens}}'**
+  String planShopItemCount(int count);
+
+  /// Plan & Shop upcoming meals section eyebrow
+  ///
+  /// In pt, this message translates to:
+  /// **'PRÓXIMAS REFEIÇÕES'**
+  String get planShopUpcomingEyebrow;
+
+  /// Plan & Shop empty meals state title
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem refeições planeadas'**
+  String get planShopNoMealsTitle;
+
+  /// Plan & Shop empty meals body when no plan exists
+  ///
+  /// In pt, this message translates to:
+  /// **'Cria uma ementa para ver as próximas refeições.'**
+  String get planShopNoMealsBodyNoMenu;
+
+  /// Plan & Shop empty meals body when plan exists but no upcoming meals
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhuma refeição próxima encontrada.'**
+  String get planShopNoMealsBodyWithMenu;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

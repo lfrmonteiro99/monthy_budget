@@ -38,9 +38,9 @@ void main() {
     // channels (assets, SharedPreferences) wired up.
     await tester.pump();
 
-    expect(find.text('Plano & compras'), findsOneWidget);
-    expect(find.text('Lista'), findsOneWidget);
-    expect(find.text('Ementa'), findsOneWidget);
-    expect(find.text('Despensa'), findsOneWidget);
+    expect(find.text('Plan & Shop'), findsOneWidget);
+    expect(find.text('List'), findsOneWidget);
+    expect(find.text('Menu'), findsOneWidget);
+    expect(find.text('Pantry'), findsOneWidget);
   });
 }
