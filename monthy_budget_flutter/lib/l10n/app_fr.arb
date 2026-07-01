@@ -1676,6 +1676,7 @@
             }
         }
     },
+    "searchEmptyTitle": "Rien trouve",
     "expenseTypeLabel": "TYPE",
     "expenseFixed": "Fixe",
     "expenseVariable": "Variable",
