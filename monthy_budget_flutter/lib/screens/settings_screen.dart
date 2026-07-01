@@ -616,7 +616,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (widget.onOpenSubscription != null)
         CalmListTile(
           leadingIcon: Icons.workspace_premium_rounded,
-          leadingColor: AppColors.warning(context),
+          leadingColor: AppColors.warn(context),
           title: S.of(context).settingsSubscription,
           subtitle: _subscriptionSubtitle(),
           onTap: widget.onOpenSubscription!,
@@ -846,7 +846,7 @@ class _EditCustomCategorySheetState extends State<_EditCustomCategorySheet> {
       maxChildSize: 0.95,
       builder: (_, scrollController) => Container(
         decoration: BoxDecoration(
-          color: AppColors.surface(context),
+          color: AppColors.bg(context),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: Form(
@@ -871,7 +871,7 @@ class _EditCustomCategorySheetState extends State<_EditCustomCategorySheet> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary(context),
+                  color: AppColors.ink(context),
                 ),
               ),
               const SizedBox(height: 20),
@@ -882,7 +882,7 @@ class _EditCustomCategorySheetState extends State<_EditCustomCategorySheet> {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary(context),
+                  color: AppColors.ink70(context),
                   letterSpacing: 0.8,
                 ),
               ),
@@ -914,7 +914,7 @@ class _EditCustomCategorySheetState extends State<_EditCustomCategorySheet> {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary(context),
+                  color: AppColors.ink70(context),
                   letterSpacing: 0.8,
                 ),
               ),
@@ -931,13 +931,13 @@ class _EditCustomCategorySheetState extends State<_EditCustomCategorySheet> {
                       height: 44,
                       decoration: BoxDecoration(
                         color: selected
-                            ? AppColors.primaryLight(context)
-                            : AppColors.background(context),
+                            ? AppColors.accentSoft(context)
+                            : AppColors.bg(context),
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
                           color: selected
-                              ? AppColors.primary(context)
-                              : AppColors.border(context),
+                              ? AppColors.ink(context)
+                              : AppColors.line(context),
                           width: selected ? 2 : 1,
                         ),
                       ),
@@ -945,8 +945,8 @@ class _EditCustomCategorySheetState extends State<_EditCustomCategorySheet> {
                         entry.value,
                         size: 22,
                         color: selected
-                            ? AppColors.primary(context)
-                            : AppColors.textSecondary(context),
+                            ? AppColors.ink(context)
+                            : AppColors.ink70(context),
                       ),
                     ),
                   );
@@ -960,7 +960,7 @@ class _EditCustomCategorySheetState extends State<_EditCustomCategorySheet> {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary(context),
+                  color: AppColors.ink70(context),
                   letterSpacing: 0.8,
                 ),
               ),
@@ -987,7 +987,7 @@ class _EditCustomCategorySheetState extends State<_EditCustomCategorySheet> {
                         ),
                       ),
                       child: selected
-                          ? const Icon(Icons.check, color: Colors.white, size: 20)
+                          ? Icon(Icons.check, color: AppColors.inkInverse(context), size: 20)
                           : null,
                     ),
                   );
@@ -1002,8 +1002,8 @@ class _EditCustomCategorySheetState extends State<_EditCustomCategorySheet> {
                 child: ElevatedButton(
                   onPressed: _save,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary(context),
-                    foregroundColor: AppColors.onPrimary(context),
+                    backgroundColor: AppColors.ink(context),
+                    foregroundColor: AppColors.bg(context),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                     elevation: 0,
