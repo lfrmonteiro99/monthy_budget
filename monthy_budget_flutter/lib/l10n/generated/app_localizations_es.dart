@@ -2412,6 +2412,33 @@ class SEs extends S {
       'Sin gastos este mes.\nToca + para añadir el primero.';
 
   @override
+  String get expenseTrackerMovementEyebrow => 'Actividad';
+
+  @override
+  String get expenseTrackerExpensesTitle => 'Gastos';
+
+  @override
+  String get expenseTrackerThisMonthEyebrow => 'Este Mes';
+
+  @override
+  String get expenseTrackerAvgPerDayEyebrow => 'Media/Dia';
+
+  @override
+  String get expenseTrackerBillsEyebrow => 'Facturas';
+
+  @override
+  String expenseTrackerBudgetedLabel(String amount) {
+    return 'pres. $amount';
+  }
+
+  @override
+  String get expenseTrackerByCategoryEyebrow => 'Por Categoria';
+
+  @override
+  String get expenseTrackerEmptyBody =>
+      'Añade tu primer gasto para empezar a seguir el presupuesto.';
+
+  @override
   String get expenseAlertsEyebrow => 'Alertas';
 
   @override

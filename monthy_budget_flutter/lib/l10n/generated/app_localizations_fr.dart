@@ -2417,6 +2417,33 @@ class SFr extends S {
       'Aucune dépense ce mois.\nAppuyez sur + pour ajouter.';
 
   @override
+  String get expenseTrackerMovementEyebrow => 'Activite';
+
+  @override
+  String get expenseTrackerExpensesTitle => 'Depenses';
+
+  @override
+  String get expenseTrackerThisMonthEyebrow => 'Ce Mois';
+
+  @override
+  String get expenseTrackerAvgPerDayEyebrow => 'Moy./Jour';
+
+  @override
+  String get expenseTrackerBillsEyebrow => 'Factures';
+
+  @override
+  String expenseTrackerBudgetedLabel(String amount) {
+    return 'budget $amount';
+  }
+
+  @override
+  String get expenseTrackerByCategoryEyebrow => 'Par Categorie';
+
+  @override
+  String get expenseTrackerEmptyBody =>
+      'Ajoutez votre premiere depense pour commencer a suivre votre budget.';
+
+  @override
   String get expenseAlertsEyebrow => 'Alertes';
 
   @override

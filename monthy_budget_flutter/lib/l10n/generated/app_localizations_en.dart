@@ -2400,6 +2400,33 @@ class SEn extends S {
       'No expenses this month.\nTap + to add your first expense.';
 
   @override
+  String get expenseTrackerMovementEyebrow => 'Activity';
+
+  @override
+  String get expenseTrackerExpensesTitle => 'Expenses';
+
+  @override
+  String get expenseTrackerThisMonthEyebrow => 'This Month';
+
+  @override
+  String get expenseTrackerAvgPerDayEyebrow => 'Avg/Day';
+
+  @override
+  String get expenseTrackerBillsEyebrow => 'Bills';
+
+  @override
+  String expenseTrackerBudgetedLabel(String amount) {
+    return 'budget $amount';
+  }
+
+  @override
+  String get expenseTrackerByCategoryEyebrow => 'By Category';
+
+  @override
+  String get expenseTrackerEmptyBody =>
+      'Add your first expense to start tracking your budget.';
+
+  @override
   String get expenseAlertsEyebrow => 'Alerts';
 
   @override

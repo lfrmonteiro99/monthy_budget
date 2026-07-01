@@ -2409,6 +2409,33 @@ class SPt extends S {
       'Sem despesas este mês.\nToca + para adicionar a primeira.';
 
   @override
+  String get expenseTrackerMovementEyebrow => 'Movimento';
+
+  @override
+  String get expenseTrackerExpensesTitle => 'Despesas';
+
+  @override
+  String get expenseTrackerThisMonthEyebrow => 'Este Mês';
+
+  @override
+  String get expenseTrackerAvgPerDayEyebrow => 'Média/Dia';
+
+  @override
+  String get expenseTrackerBillsEyebrow => 'Contas';
+
+  @override
+  String expenseTrackerBudgetedLabel(String amount) {
+    return 'orç. $amount';
+  }
+
+  @override
+  String get expenseTrackerByCategoryEyebrow => 'Por Categoria';
+
+  @override
+  String get expenseTrackerEmptyBody =>
+      'Adicione a sua primeira despesa para começar a acompanhar o orçamento.';
+
+  @override
   String get expenseAlertsEyebrow => 'Alertas';
 
   @override

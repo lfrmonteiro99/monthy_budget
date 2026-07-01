@@ -1337,6 +1337,41 @@
     },
     "expenseTrackerDeleteConfirm": "Delete this expense?",
     "expenseTrackerEmpty": "No expenses this month.\nTap + to add your first expense.",
+    "expenseTrackerMovementEyebrow": "Activity",
+    "@expenseTrackerMovementEyebrow": {
+        "description": "Eyebrow label on the movement/activity section of the expense tracker"
+    },
+    "expenseTrackerExpensesTitle": "Expenses",
+    "@expenseTrackerExpensesTitle": {
+        "description": "Large display title on the expense tracker screen"
+    },
+    "expenseTrackerThisMonthEyebrow": "This Month",
+    "@expenseTrackerThisMonthEyebrow": {
+        "description": "Eyebrow label on the this-month KPI card"
+    },
+    "expenseTrackerAvgPerDayEyebrow": "Avg/Day",
+    "@expenseTrackerAvgPerDayEyebrow": {
+        "description": "Eyebrow label on the average-per-day KPI card"
+    },
+    "expenseTrackerBillsEyebrow": "Bills",
+    "@expenseTrackerBillsEyebrow": {
+        "description": "Eyebrow label on the bills/transactions count KPI card"
+    },
+    "expenseTrackerBudgetedLabel": "budget {amount}",
+    "@expenseTrackerBudgetedLabel": {
+        "description": "Budget amount label shown next to the progress bar",
+        "placeholders": {
+            "amount": { "type": "String" }
+        }
+    },
+    "expenseTrackerByCategoryEyebrow": "By Category",
+    "@expenseTrackerByCategoryEyebrow": {
+        "description": "Eyebrow label above the by-category expense list"
+    },
+    "expenseTrackerEmptyBody": "Add your first expense to start tracking your budget.",
+    "@expenseTrackerEmptyBody": {
+        "description": "Body text in the empty state of the expense tracker screen"
+    },
     "expenseAlertsEyebrow": "Alerts",
     "@expenseAlertsEyebrow": {
         "description": "Eyebrow label on the expense alerts dashboard card"
