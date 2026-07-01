@@ -6178,6 +6178,12 @@ class SPt extends S {
   String get mealPlannerMealsEyebrow => 'REFEIÇÕES';
 
   @override
+  String get mealPlannerMonthlyPlanEyebrow => 'PLANO DO MÊS';
+
+  @override
+  String get mealPlannerWeekEyebrow => 'SEMANA';
+
+  @override
   String get wizardCourseStructure => 'Estrutura da refeicao';
 
   @override

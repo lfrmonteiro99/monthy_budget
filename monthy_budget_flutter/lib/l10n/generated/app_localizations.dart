@@ -10913,6 +10913,18 @@ abstract class S {
   /// **'REFEIÇÕES'**
   String get mealPlannerMealsEyebrow;
 
+  /// No description provided for @mealPlannerMonthlyPlanEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'PLANO DO MÊS'**
+  String get mealPlannerMonthlyPlanEyebrow;
+
+  /// No description provided for @mealPlannerWeekEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'SEMANA'**
+  String get mealPlannerWeekEyebrow;
+
   /// No description provided for @wizardCourseStructure.
   ///
   /// In pt, this message translates to:

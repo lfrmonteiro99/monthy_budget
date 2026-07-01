@@ -6182,6 +6182,12 @@ class SEs extends S {
   String get mealPlannerMealsEyebrow => 'COMIDAS';
 
   @override
+  String get mealPlannerMonthlyPlanEyebrow => 'PLAN MENSUAL';
+
+  @override
+  String get mealPlannerWeekEyebrow => 'SEMANA';
+
+  @override
   String get wizardCourseStructure => 'Estructura de la comida';
 
   @override

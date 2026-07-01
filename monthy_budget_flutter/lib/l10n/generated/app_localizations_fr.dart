@@ -6195,6 +6195,12 @@ class SFr extends S {
   String get mealPlannerMealsEyebrow => 'REPAS';
 
   @override
+  String get mealPlannerMonthlyPlanEyebrow => 'PLAN DU MOIS';
+
+  @override
+  String get mealPlannerWeekEyebrow => 'SEMAINE';
+
+  @override
   String get wizardCourseStructure => 'Structure du repas';
 
   @override
