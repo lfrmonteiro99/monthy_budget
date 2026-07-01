@@ -2215,6 +2215,20 @@ class SFr extends S {
   String get setupWizardSkipAll => 'Passer la configuration';
 
   @override
+  String get setupWizardBack => 'Précédent';
+
+  @override
+  String setupWizardStepEyebrow(int step) {
+    return 'ÉTAPE $step · 3';
+  }
+
+  @override
+  String get setupWizardIncomeEyebrow => 'REVENUS';
+
+  @override
+  String get setupWizardExpensesEyebrow => 'DÉPENSES MENSUELLES';
+
+  @override
   String setupWizardStepOf(int step, int total) {
     return 'Étape $step sur $total';
   }

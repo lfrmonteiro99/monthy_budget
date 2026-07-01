@@ -2801,6 +2801,20 @@
     "@setupWizardSkipAll": {
         "description": "Skip all button on welcome screen"
     },
+    "setupWizardBack": "Anterior",
+    "@setupWizardBack": {},
+    "setupWizardStepEyebrow": "PASSO {step} · 3",
+    "@setupWizardStepEyebrow": {
+        "placeholders": {
+            "step": {
+                "type": "int"
+            }
+        }
+    },
+    "setupWizardIncomeEyebrow": "RENDIMENTO",
+    "@setupWizardIncomeEyebrow": {},
+    "setupWizardExpensesEyebrow": "DESPESAS MENSAIS",
+    "@setupWizardExpensesEyebrow": {},
     "setupWizardStepOf": "Passo {step} de {total}",
     "@setupWizardStepOf": {
         "description": "Step progress indicator",
