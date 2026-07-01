@@ -13,6 +13,9 @@ abstract class ExpenseRepository {
   Future<List<ActualExpense>> loadMonth(String householdId, String monthKey);
   Future<void> add(ActualExpense expense, String householdId);
   Future<void> addAll(List<ActualExpense> expenses, String householdId);
+  /// Upsert-ignore for recurring-generated expenses — idempotent on PK conflict.
+  Future<void> addAllFromRecurring(
+      List<ActualExpense> expenses, String householdId);
   Future<void> update(ActualExpense expense);
   Future<List<String>> uploadAttachments(
     List<File> files,
@@ -56,6 +59,17 @@ class SupabaseExpenseRepository implements ExpenseRepository {
     if (expenses.isEmpty) return;
     await _client.from('actual_expenses').insert(
       expenses.map((expense) => expense.toSupabase(householdId)).toList(),
+    );
+  }
+
+  @override
+  Future<void> addAllFromRecurring(
+      List<ActualExpense> expenses, String householdId) async {
+    if (expenses.isEmpty) return;
+    await _client.from('actual_expenses').upsert(
+      expenses.map((expense) => expense.toSupabase(householdId)).toList(),
+      onConflict: 'id',
+      ignoreDuplicates: true,
     );
   }
 
@@ -196,6 +210,7 @@ abstract class RecurringExpenseRepository {
   Future<void> delete(String id);
   Future<bool> hasRunForMonth(String householdId, String monthKey);
   Future<void> markRunForMonth(String householdId, String monthKey);
+  Future<List<String>> loadRunMonths(String householdId);
 }
 
 class SupabaseRecurringExpenseRepository implements RecurringExpenseRepository {
@@ -242,10 +257,23 @@ class SupabaseRecurringExpenseRepository implements RecurringExpenseRepository {
 
   @override
   Future<void> markRunForMonth(String householdId, String monthKey) {
-    return _client.from('recurring_expense_runs').insert({
-      'household_id': householdId,
-      'month_key': monthKey,
-    });
+    // upsert so concurrent calls don't throw PK violation
+    return _client.from('recurring_expense_runs').upsert(
+      {'household_id': householdId, 'month_key': monthKey},
+      onConflict: 'household_id,month_key',
+      ignoreDuplicates: true,
+    );
+  }
+
+  @override
+  Future<List<String>> loadRunMonths(String householdId) async {
+    final rows = await _client
+        .from('recurring_expense_runs')
+        .select('month_key')
+        .eq('household_id', householdId);
+    return (rows as List<dynamic>)
+        .map((r) => r['month_key'] as String)
+        .toList();
   }
 }
 

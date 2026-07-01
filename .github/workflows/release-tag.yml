@@ -244,6 +244,12 @@ jobs:
       - name: Generate l10n
         run: flutter gen-l10n
 
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+
+      - name: Test
+        run: flutter test
+
       - name: Resolve monetization secrets with dev placeholders
         run: |
           echo "REVENUECAT_API_KEY=${REVENUECAT_API_KEY:-placeholder_revenuecat}" >> "$GITHUB_ENV"

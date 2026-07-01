@@ -674,8 +674,8 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                             Marker(
                               point: latlong.LatLng(
                                   _locationLat!, _locationLng!),
-                              child: const Icon(Icons.location_pin,
-                                  color: Colors.red, size: 40),
+                              child: Icon(Icons.location_pin,
+                                  color: AppColors.bad(context), size: 40),
                             ),
                           ]),
                         ],
@@ -829,12 +829,12 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                           child: GestureDetector(
                             onTap: () => _removeExistingAttachment(i),
                             child: Container(
-                              decoration: const BoxDecoration(
-                                  color: Colors.red,
+                              decoration: BoxDecoration(
+                                  color: AppColors.bad(context),
                                   shape: BoxShape.circle),
                               padding: const EdgeInsets.all(2),
-                              child: const Icon(Icons.close,
-                                  size: 14, color: Colors.white),
+                              child: Icon(Icons.close,
+                                  size: 14, color: AppColors.bg(context)),
                             ),
                           ),
                         ),
@@ -863,12 +863,12 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                           child: GestureDetector(
                             onTap: () => _removeNewAttachment(i),
                             child: Container(
-                              decoration: const BoxDecoration(
-                                  color: Colors.red,
+                              decoration: BoxDecoration(
+                                  color: AppColors.bad(context),
                                   shape: BoxShape.circle),
                               padding: const EdgeInsets.all(2),
-                              child: const Icon(Icons.close,
-                                  size: 14, color: Colors.white),
+                              child: Icon(Icons.close,
+                                  size: 14, color: AppColors.bg(context)),
                             ),
                           ),
                         ),

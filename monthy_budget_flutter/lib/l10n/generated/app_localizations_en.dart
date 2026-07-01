@@ -6013,9 +6013,33 @@ class SEn extends S {
   String get taxSimIrsJovem => 'IRS Jovem (year)';
 
   @override
+  String get taxSimSubsidyMode => 'Subsidies (duodécimos)';
+
+  @override
   String get taxSimDisability => 'Disability';
 
   @override
   String get irsJovemLegalNote =>
       'IRS Jovem: the withholding rate for the total income is applied only to the non-exempt part (Despacho no. 236-A/2025). The exempt part is capped at 55×IAS (≈ €29,542/year). Monthly withholding is an estimate — the final amount is settled in the annual tax return (Modelo 3), and the annual cap is spread across months approximately.';
+
+  @override
+  String dashboardHeroSpentLabel(String amount) {
+    return '$amount spent';
+  }
+
+  @override
+  String dashboardHeroBudgetLabel(String amount) {
+    return 'of $amount';
+  }
+
+  @override
+  String get dashboardHeroOnTrack => 'On track';
+
+  @override
+  String get dashboardHeroOverPace => 'Over pace';
+
+  @override
+  String dashboardHeroDaysLeft(String days) {
+    return '$days days left';
+  }
 }

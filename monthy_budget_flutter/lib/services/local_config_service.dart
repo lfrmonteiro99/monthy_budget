@@ -107,4 +107,24 @@ class LocalConfigService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_notifKey, config.toJsonString());
   }
+
+  static const _budgetAlertMonthKey = 'budget_alert_fired_month';
+
+  /// Returns the `"YYYY-M"` string stored when the budget alert last fired,
+  /// or `null` if it has never fired or was cleared (spend dropped).
+  Future<String?> loadBudgetAlertFiredMonth() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_budgetAlertMonthKey);
+  }
+
+  /// Persists [month] as `"YYYY-M"` when the alert fires; pass `null` to
+  /// clear (i.e. when spending drops back below the threshold).
+  Future<void> saveBudgetAlertFiredMonth(String? month) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (month == null) {
+      await prefs.remove(_budgetAlertMonthKey);
+    } else {
+      await prefs.setString(_budgetAlertMonthKey, month);
+    }
+  }
 }

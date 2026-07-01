@@ -46,9 +46,14 @@ SavingsProjection calculateProjection({
         .toList();
 
     if (recent.length >= 2) {
-      // Use last 3 months
       final totalRecent = recent.fold(0.0, (s, c) => s + c.amount);
-      avg = totalRecent / 3;
+      final earliest = recent
+          .map((c) => c.contributionDate)
+          .reduce((a, b) => a.isBefore(b) ? a : b);
+      final monthsSpan = date.difference(earliest).inDays / 30.0;
+      // Use real span; floor at 1 month so same-month contributions aren't
+      // artificially divided over 3 months (which understates the rate).
+      avg = totalRecent / (monthsSpan > 1 ? monthsSpan : 1.0);
     } else {
       // Fall back to all-time average
       final totalAll = contributions.fold(0.0, (s, c) => s + c.amount);

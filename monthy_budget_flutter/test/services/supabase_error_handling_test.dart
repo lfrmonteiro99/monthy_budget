@@ -40,6 +40,8 @@ class ThrowingExpenseRepository implements ExpenseRepository {
   @override
   Future<void> addAll(List<ActualExpense> e, String h) => throw error;
   @override
+  Future<void> addAllFromRecurring(List<ActualExpense> e, String h) => throw error;
+  @override
   Future<void> update(ActualExpense e) => throw error;
   @override
   Future<List<String>> uploadAttachments(
@@ -68,6 +70,8 @@ class ThrowingRecurringExpenseRepository implements RecurringExpenseRepository {
   Future<bool> hasRunForMonth(String h, String m) => throw error;
   @override
   Future<void> markRunForMonth(String h, String m) => throw error;
+  @override
+  Future<List<String>> loadRunMonths(String h) => throw error;
 }
 
 class ThrowingSavingsRepository implements SavingsRepository {

@@ -251,7 +251,7 @@ class _SavingsGoalsScreenState extends State<SavingsGoalsScreen> {
             const SizedBox(height: 12),
             if (totalTarget > 0)
               CalmPill(
-                label: '${((totalSaved / totalTarget) * 100).toStringAsFixed(0)}% concluído',
+                label: '${((totalSaved / totalTarget) * 100).clamp(0.0, 100.0).toStringAsFixed(0)}% concluído',
                 color: totalSaved >= totalTarget
                     ? AppColors.ok(context)
                     : AppColors.accent(context),

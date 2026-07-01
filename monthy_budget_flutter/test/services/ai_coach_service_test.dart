@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:monthly_management/constants/app_constants.dart';
+import 'package:monthly_management/models/subscription_state.dart';
 import 'package:monthly_management/services/ai_coach_service.dart';
 
 void main() {
@@ -52,6 +54,48 @@ void main() {
       );
       expect(message, contains('Sessao expirada'));
       expect(message, contains('Inicie sessao novamente'));
+    });
+  });
+
+  group('canUseAI — subscription-based gate', () {
+    final trialState = SubscriptionState(
+      trialStartDate: DateTime.now().subtract(const Duration(days: 5)),
+    );
+    final premiumState = SubscriptionState(
+      trialStartDate: AppConstants.farPastDate,
+      tier: SubscriptionTier.premium,
+    );
+    final freeState = SubscriptionState(
+      trialStartDate: AppConstants.farPastDate,
+      trialUsed: true,
+    );
+
+    test('free tier without API key is blocked', () {
+      expect(
+        AiCoachService.canUseAI(freeState, apiKey: ''),
+        isFalse,
+      );
+    });
+
+    test('trial-active user is allowed without API key', () {
+      expect(
+        AiCoachService.canUseAI(trialState, apiKey: ''),
+        isTrue,
+      );
+    });
+
+    test('premium user is allowed without API key', () {
+      expect(
+        AiCoachService.canUseAI(premiumState, apiKey: ''),
+        isTrue,
+      );
+    });
+
+    test('free tier with local API key is allowed', () {
+      expect(
+        AiCoachService.canUseAI(freeState, apiKey: 'sk-abc123'),
+        isTrue,
+      );
     });
   });
 

@@ -166,7 +166,7 @@ class NutritionDashboardCard extends StatelessWidget {
                   current: stats.avgProteinG,
                   target: settings.dailyProteinTargetG!.toDouble(),
                   unit: 'g',
-                  color: Colors.blue,
+                  color: AppColors.chartIndigo(context),
                 ),
               ],
               if (settings.dailyFiberTargetG != null) ...[
@@ -275,9 +275,9 @@ class _MacroRow extends StatelessWidget {
     return Wrap(
       spacing: 8,
       children: [
-        _MacroChip(label: '${l10n.nutritionProtein} ${stats.proteinPct}%', color: Colors.blue),
+        _MacroChip(label: '${l10n.nutritionProtein} ${stats.proteinPct}%', color: AppColors.chartIndigo(context)),
         _MacroChip(label: '${l10n.nutritionCarbs} ${stats.carbsPct}%', color: AppColors.warning(context)),
-        _MacroChip(label: '${l10n.nutritionFat} ${stats.fatPct}%', color: Colors.purple),
+        _MacroChip(label: '${l10n.nutritionFat} ${stats.fatPct}%', color: AppColors.chartRed(context)),
       ],
     );
   }

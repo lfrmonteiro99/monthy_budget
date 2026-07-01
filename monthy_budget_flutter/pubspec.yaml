@@ -13,6 +13,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  flutter_riverpod: ^2.6.1
   shared_preferences: ^2.5.0
   http: ^1.2.0
   supabase_flutter: ^2.8.0

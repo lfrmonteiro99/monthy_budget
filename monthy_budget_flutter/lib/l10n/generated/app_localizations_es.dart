@@ -6060,9 +6060,33 @@ class SEs extends S {
   String get taxSimIrsJovem => 'IRS Jovem (año)';
 
   @override
+  String get taxSimSubsidyMode => 'Subsidios (duodécimos)';
+
+  @override
   String get taxSimDisability => 'Discapacidad';
 
   @override
   String get irsJovemLegalNote =>
       'IRS Jovem: el tipo de retención del rendimiento total se aplica solo a la parte no exenta (Despacho n.º 236-A/2025). La parte exenta está limitada a 55×IAS (≈ 29.542€/año). La retención mensual es una estimación — el importe final se ajusta en la declaración anual (Modelo 3) y el tope anual se reparte entre los meses de forma aproximada.';
+
+  @override
+  String dashboardHeroSpentLabel(String amount) {
+    return '$amount gastado';
+  }
+
+  @override
+  String dashboardHeroBudgetLabel(String amount) {
+    return 'de $amount';
+  }
+
+  @override
+  String get dashboardHeroOnTrack => 'Dentro del ritmo';
+
+  @override
+  String get dashboardHeroOverPace => 'Por encima del ritmo';
+
+  @override
+  String dashboardHeroDaysLeft(String days) {
+    return '$days días restantes';
+  }
 }

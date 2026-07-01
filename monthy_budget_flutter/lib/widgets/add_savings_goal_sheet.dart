@@ -235,8 +235,8 @@ class _AddSavingsGoalSheetState extends State<_AddSavingsGoalSheet> {
                                 : null,
                           ),
                           child: selected
-                              ? const Icon(Icons.check,
-                                  size: 18, color: Colors.white)
+                              ? Icon(Icons.check,
+                                  size: 18, color: AppColors.bg(context))
                               : null,
                         ),
                       ),

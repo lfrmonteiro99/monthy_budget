@@ -15,7 +15,6 @@ import '../repositories/local/coach_message_storage.dart';
 import '../utils/category_helpers.dart';
 import '../utils/stress_index.dart';
 import 'edge_function_client.dart';
-import 'revenuecat_service.dart';
 import '../models/subscription_state.dart';
 
 /// Delegates to [EdgeFunctionClient.isFunctionNotFoundError].
@@ -139,17 +138,15 @@ class AiCoachService {
 
   /// Gate for AI features.
   ///
-  /// Returns `true` if the user has an active trial or a premium/family
-  /// subscription via RevenueCat. Free-tier users without a trial are blocked.
-  Future<bool> canUseAI() async {
-    final tier = await RevenueCatService.getCurrentTier();
-    if (tier == SubscriptionTier.premium || tier == SubscriptionTier.family) {
-      return true;
-    }
-    // Free tier — allow only if the user has a local API key configured
-    final key = await loadApiKey();
-    return key.trim().isNotEmpty;
-  }
+  /// Returns `true` when [subscription] grants premium access (including active
+  /// trial) or the user has a local [apiKey] configured. Uses
+  /// [SubscriptionState.hasPremiumAccess] as the single source of truth,
+  /// consistent with every other feature gate in the app.
+  static bool canUseAI(
+    SubscriptionState subscription, {
+    required String apiKey,
+  }) =>
+      subscription.hasPremiumAccess || apiKey.trim().isNotEmpty;
 
   // ── Insight history (household-shared via Supabase) ────────────────────────
 
