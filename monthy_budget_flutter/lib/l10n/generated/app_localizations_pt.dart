@@ -6480,4 +6480,8 @@ class SPt extends S {
   String dashboardHeroDaysLeft(String days) {
     return '$days dias restantes';
   }
+
+  @override
+  String get settingsAiKeyProtected =>
+      'OpenAI API key protegida no Supabase (Edge Function).';
 }

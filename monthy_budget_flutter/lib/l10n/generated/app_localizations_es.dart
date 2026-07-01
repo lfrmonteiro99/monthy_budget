@@ -6484,4 +6484,8 @@ class SEs extends S {
   String dashboardHeroDaysLeft(String days) {
     return '$days días restantes';
   }
+
+  @override
+  String get settingsAiKeyProtected =>
+      'Clave API de OpenAI protegida en Supabase (Edge Function).';
 }

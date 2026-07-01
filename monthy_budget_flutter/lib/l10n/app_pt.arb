@@ -6151,5 +6151,7 @@
     "dashboardHeroOverPace": "Acima do ritmo",
     "@dashboardHeroOverPace": {"description": "Dashboard hero pace status: over pace"},
     "dashboardHeroDaysLeft": "{days} dias restantes",
-    "@dashboardHeroDaysLeft": {"description": "Dashboard hero days remaining label", "placeholders": {"days": {"type": "String"}}}
+    "@dashboardHeroDaysLeft": {"description": "Dashboard hero days remaining label", "placeholders": {"days": {"type": "String"}}},
+    "settingsAiKeyProtected": "OpenAI API key protegida no Supabase (Edge Function).",
+    "@settingsAiKeyProtected": {"description": "Settings AI Coach section: API key security notice"}
 }

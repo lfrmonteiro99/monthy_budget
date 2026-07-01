@@ -11440,6 +11440,12 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'{days} dias restantes'**
   String dashboardHeroDaysLeft(String days);
+
+  /// Settings AI Coach section: API key security notice
+  ///
+  /// In pt, this message translates to:
+  /// **'OpenAI API key protegida no Supabase (Edge Function).'**
+  String get settingsAiKeyProtected;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
