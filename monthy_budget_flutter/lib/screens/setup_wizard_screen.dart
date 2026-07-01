@@ -64,7 +64,7 @@ class _WizardBottomRow extends StatelessWidget {
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    child: const Text('Anterior'), // TODO(l10n):
+                    child: Text(S.of(context).setupWizardBack),
                   ),
                 ),
               ),
@@ -396,7 +396,7 @@ class _WelcomeAndCountryStep extends StatelessWidget {
         // Progress bar: step 0 of 2
         _WizardProgress(current: 0, total: 2),
         CalmPageHeader(
-          eyebrow: 'PASSO 1 · 3', // TODO(l10n):
+          eyebrow: l10n.setupWizardStepEyebrow(1),
           title: l10n.setupWizardWelcomeTitle,
           showBack: false,
         ),
@@ -555,7 +555,7 @@ class _SalaryAndExpensesStep extends StatelessWidget {
           // Progress bar: step 1 of 2
           _WizardProgress(current: 1, total: 2),
           CalmPageHeader(
-            eyebrow: 'PASSO 2 · 3', // TODO(l10n):
+            eyebrow: l10n.setupWizardStepEyebrow(2),
             title: l10n.setupWizardSalaryTitle,
             showBack: false,
           ),
@@ -568,7 +568,7 @@ class _SalaryAndExpensesStep extends StatelessWidget {
                         fontSize: 14, color: AppColors.ink70(context))),
                 const SizedBox(height: 16),
                 // ── Salary card ──────────────────────────────────────
-                CalmEyebrow('RENDIMENTO'), // TODO(l10n):
+                CalmEyebrow(l10n.setupWizardIncomeEyebrow),
                 const SizedBox(height: 8),
                 CalmCard(
                   padding: const EdgeInsets.all(16),
@@ -599,7 +599,7 @@ class _SalaryAndExpensesStep extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 // ── Expenses card ────────────────────────────────────
-                CalmEyebrow('DESPESAS MENSAIS'), // TODO(l10n):
+                CalmEyebrow(l10n.setupWizardExpensesEyebrow),
                 const SizedBox(height: 8),
                 CalmCard(
                   padding: const EdgeInsets.all(16),
@@ -756,7 +756,7 @@ class _CompletionStepState extends State<_CompletionStep>
         // Progress bar: step 2 of 2 (complete)
         _WizardProgress(current: 2, total: 2),
         CalmPageHeader(
-          eyebrow: 'PASSO 3 · 3', // TODO(l10n):
+          eyebrow: l10n.setupWizardStepEyebrow(3),
           title: l10n.setupWizardCompleteTitle,
           showBack: false,
         ),

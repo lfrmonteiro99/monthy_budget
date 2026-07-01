@@ -1178,6 +1178,20 @@
     "setupWizardReassurance": "Puedes cambiarlo todo más tarde en ajustes.",
     "setupWizardStart": "Empezar",
     "setupWizardSkipAll": "Saltar configuración",
+    "setupWizardBack": "Anterior",
+    "@setupWizardBack": {},
+    "setupWizardStepEyebrow": "PASO {step} · 3",
+    "@setupWizardStepEyebrow": {
+        "placeholders": {
+            "step": {
+                "type": "int"
+            }
+        }
+    },
+    "setupWizardIncomeEyebrow": "INGRESOS",
+    "@setupWizardIncomeEyebrow": {},
+    "setupWizardExpensesEyebrow": "GASTOS MENSUALES",
+    "@setupWizardExpensesEyebrow": {},
     "setupWizardStepOf": "Paso {step} de {total}",
     "@setupWizardStepOf": {
         "placeholders": {

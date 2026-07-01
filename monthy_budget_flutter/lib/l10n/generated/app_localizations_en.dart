@@ -2199,6 +2199,20 @@ class SEn extends S {
   String get setupWizardSkipAll => 'Skip setup';
 
   @override
+  String get setupWizardBack => 'Back';
+
+  @override
+  String setupWizardStepEyebrow(int step) {
+    return 'STEP $step · 3';
+  }
+
+  @override
+  String get setupWizardIncomeEyebrow => 'INCOME';
+
+  @override
+  String get setupWizardExpensesEyebrow => 'MONTHLY EXPENSES';
+
+  @override
   String setupWizardStepOf(int step, int total) {
     return 'Step $step of $total';
   }

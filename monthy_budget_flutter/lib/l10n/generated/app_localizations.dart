@@ -4091,6 +4091,30 @@ abstract class S {
   /// **'Saltar configuração'**
   String get setupWizardSkipAll;
 
+  /// No description provided for @setupWizardBack.
+  ///
+  /// In pt, this message translates to:
+  /// **'Anterior'**
+  String get setupWizardBack;
+
+  /// No description provided for @setupWizardStepEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'PASSO {step} · 3'**
+  String setupWizardStepEyebrow(int step);
+
+  /// No description provided for @setupWizardIncomeEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'RENDIMENTO'**
+  String get setupWizardIncomeEyebrow;
+
+  /// No description provided for @setupWizardExpensesEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'DESPESAS MENSAIS'**
+  String get setupWizardExpensesEyebrow;
+
   /// Step progress indicator
   ///
   /// In pt, this message translates to:

@@ -2207,6 +2207,20 @@ class SPt extends S {
   String get setupWizardSkipAll => 'Saltar configuração';
 
   @override
+  String get setupWizardBack => 'Anterior';
+
+  @override
+  String setupWizardStepEyebrow(int step) {
+    return 'PASSO $step · 3';
+  }
+
+  @override
+  String get setupWizardIncomeEyebrow => 'RENDIMENTO';
+
+  @override
+  String get setupWizardExpensesEyebrow => 'DESPESAS MENSAIS';
+
+  @override
   String setupWizardStepOf(int step, int total) {
     return 'Passo $step de $total';
   }
