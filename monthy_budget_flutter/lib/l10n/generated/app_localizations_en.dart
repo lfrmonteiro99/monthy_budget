@@ -6438,6 +6438,104 @@ class SEn extends S {
   }
 
   @override
+  String get planShopDayToday => 'Today';
+
+  @override
+  String get planShopDayTomorrow => 'Tomorrow';
+
+  @override
+  String get planShopDayMon => 'Mon';
+
+  @override
+  String get planShopDayTue => 'Tue';
+
+  @override
+  String get planShopDayWed => 'Wed';
+
+  @override
+  String get planShopDayThu => 'Thu';
+
+  @override
+  String get planShopDayFri => 'Fri';
+
+  @override
+  String get planShopDaySat => 'Sat';
+
+  @override
+  String get planShopDaySun => 'Sun';
+
+  @override
+  String planShopWeekEyebrow(int weekNum) {
+    return 'WEEK $weekNum';
+  }
+
+  @override
+  String get planShopTitle => 'Plan & Shop';
+
+  @override
+  String get planShopBudgetEyebrow => 'WEEKLY BUDGET';
+
+  @override
+  String get planShopNoMenuTitle => 'No menu this week';
+
+  @override
+  String get planShopNoMenuBody =>
+      'Open the Menu to generate your weekly plan.';
+
+  @override
+  String get planShopSpentLabel => 'Planned';
+
+  @override
+  String get planShopRemainingLabel => 'Remaining';
+
+  @override
+  String get planShopTileList => 'List';
+
+  @override
+  String get planShopTileMenu => 'Menu';
+
+  @override
+  String planShopMealCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count meals',
+      one: '1 meal',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get planShopNoPlanLabel => 'no plan';
+
+  @override
+  String get planShopTilePantry => 'Pantry';
+
+  @override
+  String planShopItemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get planShopUpcomingEyebrow => 'UPCOMING MEALS';
+
+  @override
+  String get planShopNoMealsTitle => 'No planned meals';
+
+  @override
+  String get planShopNoMealsBodyNoMenu =>
+      'Create a menu to see your upcoming meals.';
+
+  @override
+  String get planShopNoMealsBodyWithMenu => 'No upcoming meals found.';
+
+  @override
   String get settingsAiKeyProtected =>
       'OpenAI API key secured in Supabase (Edge Function).';
 }

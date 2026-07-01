@@ -6486,6 +6486,104 @@ class SEs extends S {
   }
 
   @override
+  String get planShopDayToday => 'Hoy';
+
+  @override
+  String get planShopDayTomorrow => 'Mañana';
+
+  @override
+  String get planShopDayMon => 'Lun';
+
+  @override
+  String get planShopDayTue => 'Mar';
+
+  @override
+  String get planShopDayWed => 'Mié';
+
+  @override
+  String get planShopDayThu => 'Jue';
+
+  @override
+  String get planShopDayFri => 'Vie';
+
+  @override
+  String get planShopDaySat => 'Sáb';
+
+  @override
+  String get planShopDaySun => 'Dom';
+
+  @override
+  String planShopWeekEyebrow(int weekNum) {
+    return 'SEMANA $weekNum';
+  }
+
+  @override
+  String get planShopTitle => 'Plan y compras';
+
+  @override
+  String get planShopBudgetEyebrow => 'PRESUPUESTO SEMANAL';
+
+  @override
+  String get planShopNoMenuTitle => 'Sin menú esta semana';
+
+  @override
+  String get planShopNoMenuBody => 'Abre el Menú para generar tu plan semanal.';
+
+  @override
+  String get planShopSpentLabel => 'Planificado';
+
+  @override
+  String get planShopRemainingLabel => 'Restante';
+
+  @override
+  String get planShopTileList => 'Lista';
+
+  @override
+  String get planShopTileMenu => 'Menú';
+
+  @override
+  String planShopMealCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count comidas',
+      one: '1 comida',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get planShopNoPlanLabel => 'sin plan';
+
+  @override
+  String get planShopTilePantry => 'Despensa';
+
+  @override
+  String planShopItemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count artículos',
+      one: '1 artículo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get planShopUpcomingEyebrow => 'PRÓXIMAS COMIDAS';
+
+  @override
+  String get planShopNoMealsTitle => 'Sin comidas planificadas';
+
+  @override
+  String get planShopNoMealsBodyNoMenu =>
+      'Crea un menú para ver tus próximas comidas.';
+
+  @override
+  String get planShopNoMealsBodyWithMenu =>
+      'No se encontraron próximas comidas.';
+
+  @override
   String get settingsAiKeyProtected =>
       'Clave API de OpenAI protegida en Supabase (Edge Function).';
 }
