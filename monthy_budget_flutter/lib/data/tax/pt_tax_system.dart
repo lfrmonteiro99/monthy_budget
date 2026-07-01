@@ -72,6 +72,7 @@ class PtTaxSystem extends TaxSystem {
     return TaxResult(
       incomeTax: retention,
       incomeTaxRate: rate,
+      marginalRate: bracket?.rate ?? 0.0,
       socialContribution: ss,
       socialContributionRate: socialSecurityRate,
       netSalary: net,
