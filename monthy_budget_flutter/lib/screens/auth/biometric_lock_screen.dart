@@ -53,7 +53,7 @@ class _BiometricLockScreenState extends State<BiometricLockScreen> {
               Icon(
                 Icons.lock_outline,
                 size: 64,
-                color: AppColors.primary(context),
+                color: AppColors.ink(context),
               ),
               const SizedBox(height: 24),
               Text(
@@ -69,12 +69,12 @@ class _BiometricLockScreenState extends State<BiometricLockScreen> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 15,
-                  color: AppColors.textSecondary(context),
+                  color: AppColors.ink70(context),
                 ),
               ),
               const SizedBox(height: 32),
               if (_authenticating)
-                CircularProgressIndicator(color: AppColors.primary(context))
+                CircularProgressIndicator(color: AppColors.ink(context))
               else
                 FilledButton.icon(
                   onPressed: _triggerAuth,
