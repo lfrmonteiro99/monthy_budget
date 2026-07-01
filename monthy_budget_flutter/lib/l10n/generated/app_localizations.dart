@@ -1523,6 +1523,18 @@ abstract class S {
   /// **'Supermercado'**
   String get groceryTitle;
 
+  /// Page header title for the pantry/grocery screen
+  ///
+  /// In pt, this message translates to:
+  /// **'Despensa'**
+  String get groceryPantryTitle;
+
+  /// Eyebrow showing total item count in the pantry screen
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} itens'**
+  String groceryItemCountEyebrow(int count);
+
   /// Grocery search field hint
   ///
   /// In pt, this message translates to:
@@ -4444,6 +4456,90 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Sem despesas este mês.\nToca + para adicionar a primeira.'**
   String get expenseTrackerEmpty;
+
+  /// Eyebrow label on the movement/activity section of the expense tracker
+  ///
+  /// In pt, this message translates to:
+  /// **'Movimento'**
+  String get expenseTrackerMovementEyebrow;
+
+  /// Large display title on the expense tracker screen
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas'**
+  String get expenseTrackerExpensesTitle;
+
+  /// Eyebrow label on the this-month KPI card
+  ///
+  /// In pt, this message translates to:
+  /// **'Este Mês'**
+  String get expenseTrackerThisMonthEyebrow;
+
+  /// Eyebrow label on the average-per-day KPI card
+  ///
+  /// In pt, this message translates to:
+  /// **'Média/Dia'**
+  String get expenseTrackerAvgPerDayEyebrow;
+
+  /// Eyebrow label on the bills/transactions count KPI card
+  ///
+  /// In pt, this message translates to:
+  /// **'Contas'**
+  String get expenseTrackerBillsEyebrow;
+
+  /// Budget amount label shown next to the progress bar
+  ///
+  /// In pt, this message translates to:
+  /// **'orç. {amount}'**
+  String expenseTrackerBudgetedLabel(String amount);
+
+  /// Eyebrow label above the by-category expense list
+  ///
+  /// In pt, this message translates to:
+  /// **'Por Categoria'**
+  String get expenseTrackerByCategoryEyebrow;
+
+  /// Body text in the empty state of the expense tracker screen
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicione a sua primeira despesa para começar a acompanhar o orçamento.'**
+  String get expenseTrackerEmptyBody;
+
+  /// Eyebrow label on the expense alerts dashboard card
+  ///
+  /// In pt, this message translates to:
+  /// **'Alertas'**
+  String get expenseAlertsEyebrow;
+
+  /// Subtitle in expense alert row showing budgeted vs actual amounts
+  ///
+  /// In pt, this message translates to:
+  /// **'Orç. {budgeted} · Gasto {actual}'**
+  String expenseAlertsBudgetSubtitle(String budgeted, String actual);
+
+  /// Eyebrow label on the recent expenses dashboard card
+  ///
+  /// In pt, this message translates to:
+  /// **'Recentes'**
+  String get expenseRecentEyebrow;
+
+  /// Link label to view all expenses in the recent expenses card
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver todas as despesas'**
+  String get expenseRecentViewAll;
+
+  /// Subtitle showing transaction count in the view-all row
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} transações este mês'**
+  String expenseRecentCountSubtitle(int count);
+
+  /// Eyebrow label above expense search results list
+  ///
+  /// In pt, this message translates to:
+  /// **'Resultados'**
+  String get expenseSearchResultsEyebrow;
 
   /// Add expense sheet title
   ///

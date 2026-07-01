@@ -126,8 +126,7 @@ class ExpenseSearchView extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
                     child: Row(
                       children: [
-                        // TODO(l10n): move to ARB (Wave H)
-                        const CalmEyebrow('RESULTADOS'),
+                        CalmEyebrow(l10n.expenseSearchResultsEyebrow),
                         const SizedBox(width: 8),
                         Text(
                           l10n.searchResultCount(searchResults.length),

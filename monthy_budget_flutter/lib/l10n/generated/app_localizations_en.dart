@@ -788,6 +788,14 @@ class SEn extends S {
   String get groceryTitle => 'Grocery';
 
   @override
+  String get groceryPantryTitle => 'Pantry';
+
+  @override
+  String groceryItemCountEyebrow(int count) {
+    return '$count items';
+  }
+
+  @override
   String get grocerySearchHint => 'Search product...';
 
   @override
@@ -2398,6 +2406,55 @@ class SEn extends S {
   @override
   String get expenseTrackerEmpty =>
       'No expenses this month.\nTap + to add your first expense.';
+
+  @override
+  String get expenseTrackerMovementEyebrow => 'Activity';
+
+  @override
+  String get expenseTrackerExpensesTitle => 'Expenses';
+
+  @override
+  String get expenseTrackerThisMonthEyebrow => 'This Month';
+
+  @override
+  String get expenseTrackerAvgPerDayEyebrow => 'Avg/Day';
+
+  @override
+  String get expenseTrackerBillsEyebrow => 'Bills';
+
+  @override
+  String expenseTrackerBudgetedLabel(String amount) {
+    return 'budget $amount';
+  }
+
+  @override
+  String get expenseTrackerByCategoryEyebrow => 'By Category';
+
+  @override
+  String get expenseTrackerEmptyBody =>
+      'Add your first expense to start tracking your budget.';
+
+  @override
+  String get expenseAlertsEyebrow => 'Alerts';
+
+  @override
+  String expenseAlertsBudgetSubtitle(String budgeted, String actual) {
+    return 'Budget $budgeted · Spent $actual';
+  }
+
+  @override
+  String get expenseRecentEyebrow => 'Recent';
+
+  @override
+  String get expenseRecentViewAll => 'View all expenses';
+
+  @override
+  String expenseRecentCountSubtitle(int count) {
+    return '$count transactions this month';
+  }
+
+  @override
+  String get expenseSearchResultsEyebrow => 'Results';
 
   @override
   String get addExpenseTitle => 'Add Expense';

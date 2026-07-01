@@ -919,6 +919,17 @@
     "@groceryTitle": {
         "description": "Grocery screen title"
     },
+    "groceryPantryTitle": "Despensa",
+    "@groceryPantryTitle": {
+        "description": "Page header title for the pantry/grocery screen"
+    },
+    "groceryItemCountEyebrow": "{count} itens",
+    "@groceryItemCountEyebrow": {
+        "description": "Eyebrow showing total item count in the pantry screen",
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
     "grocerySearchHint": "Pesquisar produto...",
     "@grocerySearchHint": {
         "description": "Grocery search field hint"
@@ -3061,6 +3072,72 @@
     "expenseTrackerEmpty": "Sem despesas este mês.\nToca + para adicionar a primeira.",
     "@expenseTrackerEmpty": {
         "description": "Empty state for tracker screen"
+    },
+    "expenseTrackerMovementEyebrow": "Movimento",
+    "@expenseTrackerMovementEyebrow": {
+        "description": "Eyebrow label on the movement/activity section of the expense tracker"
+    },
+    "expenseTrackerExpensesTitle": "Despesas",
+    "@expenseTrackerExpensesTitle": {
+        "description": "Large display title on the expense tracker screen"
+    },
+    "expenseTrackerThisMonthEyebrow": "Este Mês",
+    "@expenseTrackerThisMonthEyebrow": {
+        "description": "Eyebrow label on the this-month KPI card"
+    },
+    "expenseTrackerAvgPerDayEyebrow": "Média/Dia",
+    "@expenseTrackerAvgPerDayEyebrow": {
+        "description": "Eyebrow label on the average-per-day KPI card"
+    },
+    "expenseTrackerBillsEyebrow": "Contas",
+    "@expenseTrackerBillsEyebrow": {
+        "description": "Eyebrow label on the bills/transactions count KPI card"
+    },
+    "expenseTrackerBudgetedLabel": "orç. {amount}",
+    "@expenseTrackerBudgetedLabel": {
+        "description": "Budget amount label shown next to the progress bar",
+        "placeholders": {
+            "amount": { "type": "String" }
+        }
+    },
+    "expenseTrackerByCategoryEyebrow": "Por Categoria",
+    "@expenseTrackerByCategoryEyebrow": {
+        "description": "Eyebrow label above the by-category expense list"
+    },
+    "expenseTrackerEmptyBody": "Adicione a sua primeira despesa para começar a acompanhar o orçamento.",
+    "@expenseTrackerEmptyBody": {
+        "description": "Body text in the empty state of the expense tracker screen"
+    },
+    "expenseAlertsEyebrow": "Alertas",
+    "@expenseAlertsEyebrow": {
+        "description": "Eyebrow label on the expense alerts dashboard card"
+    },
+    "expenseAlertsBudgetSubtitle": "Orç. {budgeted} · Gasto {actual}",
+    "@expenseAlertsBudgetSubtitle": {
+        "description": "Subtitle in expense alert row showing budgeted vs actual amounts",
+        "placeholders": {
+            "budgeted": { "type": "String" },
+            "actual": { "type": "String" }
+        }
+    },
+    "expenseRecentEyebrow": "Recentes",
+    "@expenseRecentEyebrow": {
+        "description": "Eyebrow label on the recent expenses dashboard card"
+    },
+    "expenseRecentViewAll": "Ver todas as despesas",
+    "@expenseRecentViewAll": {
+        "description": "Link label to view all expenses in the recent expenses card"
+    },
+    "expenseRecentCountSubtitle": "{count} transações este mês",
+    "@expenseRecentCountSubtitle": {
+        "description": "Subtitle showing transaction count in the view-all row",
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "expenseSearchResultsEyebrow": "Resultados",
+    "@expenseSearchResultsEyebrow": {
+        "description": "Eyebrow label above expense search results list"
     },
     "addExpenseTitle": "Adicionar Despesa",
     "@addExpenseTitle": {
