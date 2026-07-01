@@ -3263,6 +3263,12 @@
     "@expenseTrendsMonthly": {
         "description": "Monthly label"
     },
+    "expenseTrendsEyebrow": "TENDÊNCIAS",
+    "@expenseTrendsEyebrow": {},
+    "expenseTrendsEmptyBody": "Adiciona despesas para ver as tendências.",
+    "@expenseTrendsEmptyBody": {},
+    "expenseTrendsMonthlyHistoryEyebrow": "HISTÓRICO MENSAL",
+    "@expenseTrendsMonthlyHistoryEyebrow": {},
     "savingsGoals": "Objetivos de Poupança",
     "@savingsGoals": {
         "description": "Savings goals title"
