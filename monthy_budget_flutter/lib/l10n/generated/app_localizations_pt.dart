@@ -6616,4 +6616,139 @@ class SPt extends S {
 
   @override
   String get mealMenuRowDinner => 'Jantar';
+
+  @override
+  String get paywallErrorPurchaseFailed =>
+      'Compra falhada. Por favor tente novamente.';
+
+  @override
+  String get paywallErrorRestoreFailed =>
+      'Restauro falhado. Por favor tente novamente.';
+
+  @override
+  String paywallYearlyNoteTemplate(String price) {
+    return '$price/ano — Poupe 37%';
+  }
+
+  @override
+  String get paywallPeriodBilledYearly => '/mês (cobrado anualmente)';
+
+  @override
+  String get paywallPeriodForever => 'para sempre';
+
+  @override
+  String get paywallTrustSignal => 'Cancele quando quiser • Sem custos ocultos';
+
+  @override
+  String get paywallCurrentPlan => 'Plano Atual';
+
+  @override
+  String paywallBlockedFeatureMessage(String featureName) {
+    return '$featureName requer uma subscrição paga';
+  }
+
+  @override
+  String get paywallProFeatUnlimitedCategories =>
+      'Categorias e histórico ilimitados';
+
+  @override
+  String get paywallProFeatAiCoach => 'Assistente Financeiro com IA';
+
+  @override
+  String get paywallProFeatMealPlanner =>
+      'Planificador de Refeições + receitas com IA';
+
+  @override
+  String get paywallProFeatSync =>
+      'Sincronização de lista de compras em tempo real';
+
+  @override
+  String get paywallProFeatExport => 'Exportação PDF/CSV';
+
+  @override
+  String get paywallProFeatBillReminders => 'Lembretes de faturas';
+
+  @override
+  String get paywallProFeatExpenseTrends => 'Tendências de despesas';
+
+  @override
+  String get paywallProFeatUnlimitedSavings =>
+      'Objectivos de poupança ilimitados';
+
+  @override
+  String get paywallProFeatHousehold => 'Partilha familiar (até 6 pessoas)';
+
+  @override
+  String get paywallProFeatTaxSimulator => 'Simulador fiscal multi-país';
+
+  @override
+  String get paywallProFeatDashboard => 'Personalização do painel';
+
+  @override
+  String get paywallProFeatThemes => 'Todos os temas de cor';
+
+  @override
+  String get paywallProFeatNoAds => 'Sem anúncios';
+
+  @override
+  String get paywallFreeFeatBudget => 'Calculadora de orçamento (8 categorias)';
+
+  @override
+  String get paywallFreeFeatTracking => 'Registo básico de despesas';
+
+  @override
+  String get paywallFreeFeatSavings => '1 objectivo de poupança';
+
+  @override
+  String get paywallFreeFeatShopping => 'Lista de compras (apenas local)';
+
+  @override
+  String get paywallFreeFeatAds => 'Anúncios banner';
+
+  @override
+  String get paywallFeatNameAiCoach => 'Assistente Financeiro com IA';
+
+  @override
+  String get paywallFeatNameMealPlanner => 'Planificador de Refeições';
+
+  @override
+  String get paywallFeatNameExportData => 'Exportar Relatórios';
+
+  @override
+  String get paywallFeatNameUnlimitedCategories => 'Categorias Ilimitadas';
+
+  @override
+  String get paywallFeatNameBillReminders => 'Lembretes de Faturas';
+
+  @override
+  String get paywallFeatNameShoppingListSync =>
+      'Sincronização de Lista de Compras';
+
+  @override
+  String get paywallFeatNameNoAds => 'Sem Anúncios';
+
+  @override
+  String get paywallFeatNameHouseholdSharing => 'Partilha Familiar';
+
+  @override
+  String get paywallFeatNameTaxSimulator => 'Simulador Fiscal';
+
+  @override
+  String get paywallFeatNameStressIndex => 'Índice de Stress';
+
+  @override
+  String get paywallFeatNameMonthReview => 'Resumo do Mês';
+
+  @override
+  String get paywallFeatNameDashboard => 'Personalização do Painel';
+
+  @override
+  String get paywallFeatNameAllThemes => 'Todos os Temas de Cor';
+
+  @override
+  String get paywallFeatNameExpenseTrends => 'Tendências de Despesas';
+
+  @override
+  String get paywallFeatNameUnlimitedSavings =>
+      'Objectivos de Poupança Ilimitados';
 }

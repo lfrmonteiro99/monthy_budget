@@ -82,11 +82,10 @@ class _PaywallScreenState extends State<PaywallScreen> {
     return pkg?.storeProduct.priceString ?? fallback;
   }
 
-  String _yearlyNote() {
+  String _yearlyNote(S l10n) {
     final pkg = _findPackage(true);
-    return pkg != null
-        ? '${pkg.storeProduct.priceString}/year — Save 37%'
-        : '€29.99/year — Save 37%';
+    final price = pkg?.storeProduct.priceString ?? '€29.99';
+    return l10n.paywallYearlyNoteTemplate(price);
   }
 
   Future<void> _handlePurchase(SubscriptionTier tier) async {
@@ -116,13 +115,14 @@ class _PaywallScreenState extends State<PaywallScreen> {
       }
     } on PlatformException catch (e) {
       if (mounted) {
+        final l10n = S.of(context);
         setState(() {
           _purchasing = false;
-          if (e.code != '1') _error = e.message ?? 'Purchase failed. Please try again.';
+          if (e.code != '1') _error = e.message ?? l10n.paywallErrorPurchaseFailed;
         });
       }
     } catch (_) {
-      if (mounted) setState(() { _purchasing = false; _error = 'Purchase failed. Please try again.'; });
+      if (mounted) setState(() { _purchasing = false; _error = S.of(context).paywallErrorPurchaseFailed; });
     }
   }
 
@@ -135,7 +135,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
         widget.onRestoreComplete?.call(tier);
       }
     } catch (_) {
-      if (mounted) setState(() { _purchasing = false; _error = 'Restore failed. Please try again.'; });
+      if (mounted) setState(() { _purchasing = false; _error = S.of(context).paywallErrorRestoreFailed; });
     }
   }
 
@@ -240,7 +240,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
                       ),
                       if (_yearlyBilling) ...[
                         const SizedBox(height: 4),
-                        Text(_yearlyNote(), style: TextStyle(fontSize: 12,
+                        Text(_yearlyNote(l10n), style: TextStyle(fontSize: 12,
                             fontWeight: FontWeight.w600, color: AppColors.ok(context))),
                       ],
                       const SizedBox(height: 8),
@@ -282,22 +282,22 @@ class _PaywallScreenState extends State<PaywallScreen> {
                 _TierCard(
                   title: '${l10n.appTitle} Pro',
                   price: _yearlyBilling ? _priceForTier(true, '€2.49') : _priceForTier(false, '€3.99'),
-                  period: _yearlyBilling ? '/mo (billed yearly)' : '/month',
-                  yearlyNote: _yearlyBilling ? _yearlyNote() : null,
-                  features: const [
-                    'Unlimited categories & history',
-                    'AI Financial Coach',
-                    'Meal Planner + AI recipes',
-                    'Real-time shopping list sync',
-                    'PDF/CSV export',
-                    'Bill reminders',
-                    'Expense trends',
-                    'Unlimited savings goals',
-                    'Household sharing (up to 6)',
-                    'Multi-country tax simulator',
-                    'Dashboard customization',
-                    'All color themes',
-                    'No ads',
+                  period: _yearlyBilling ? l10n.paywallPeriodBilledYearly : l10n.paywallPerMonth,
+                  yearlyNote: _yearlyBilling ? _yearlyNote(l10n) : null,
+                  features: [
+                    l10n.paywallProFeatUnlimitedCategories,
+                    l10n.paywallProFeatAiCoach,
+                    l10n.paywallProFeatMealPlanner,
+                    l10n.paywallProFeatSync,
+                    l10n.paywallProFeatExport,
+                    l10n.paywallProFeatBillReminders,
+                    l10n.paywallProFeatExpenseTrends,
+                    l10n.paywallProFeatUnlimitedSavings,
+                    l10n.paywallProFeatHousehold,
+                    l10n.paywallProFeatTaxSimulator,
+                    l10n.paywallProFeatDashboard,
+                    l10n.paywallProFeatThemes,
+                    l10n.paywallProFeatNoAds,
                   ],
                   isCurrentTier: widget.subscription.tier != SubscriptionTier.free,
                   onSelect: () => _handlePurchase(SubscriptionTier.family),
@@ -311,13 +311,13 @@ class _PaywallScreenState extends State<PaywallScreen> {
                 _TierCard(
                   title: l10n.paywallFree,
                   price: '0',
-                  period: 'forever',
-                  features: const [
-                    'Budget calculator (8 categories)',
-                    'Basic expense tracking',
-                    '1 savings goal',
-                    'Shopping list (local only)',
-                    'Banner ads',
+                  period: l10n.paywallPeriodForever,
+                  features: [
+                    l10n.paywallFreeFeatBudget,
+                    l10n.paywallFreeFeatTracking,
+                    l10n.paywallFreeFeatSavings,
+                    l10n.paywallFreeFeatShopping,
+                    l10n.paywallFreeFeatAds,
                   ],
                   isCurrentTier: widget.subscription.tier == SubscriptionTier.free &&
                       !widget.subscription.isTrialActive,
@@ -343,7 +343,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   Icon(Icons.lock_outline, size: 14, color: AppColors.ink50(context)),
                   const SizedBox(width: 4),
-                  Text('Cancel anytime • No hidden fees',
+                  Text(l10n.paywallTrustSignal,
                       style: TextStyle(fontSize: 12, color: AppColors.ink50(context))),
                 ]),
                 const SizedBox(height: 12),
@@ -517,7 +517,7 @@ class _TierCard extends StatelessWidget {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     elevation: 0,
                   ),
-                  child: Text(isCurrentTier ? 'Current Plan' : ctaLabel,
+                  child: Text(isCurrentTier ? S.of(context).paywallCurrentPlan : ctaLabel,
                       style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
                 ),
               ),
@@ -549,7 +549,7 @@ class _BlockedFeatureCallout extends StatelessWidget {
         Icon(Icons.lock_outline, size: 20, color: AppColors.warn(context)),
         const SizedBox(width: 10),
         Expanded(
-          child: Text('${_featureDisplayName(feature)} requires a paid subscription',
+          child: Text(S.of(context).paywallBlockedFeatureMessage(_featureDisplayName(S.of(context), feature)),
               style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600,
                   color: AppColors.ink(context))),
         ),
@@ -557,23 +557,23 @@ class _BlockedFeatureCallout extends StatelessWidget {
     );
   }
 
-  String _featureDisplayName(PremiumFeature feature) {
+  String _featureDisplayName(S l10n, PremiumFeature feature) {
     switch (feature) {
-      case PremiumFeature.aiCoach:            return 'AI Financial Coach';
-      case PremiumFeature.mealPlanner:        return 'Meal Planner';
-      case PremiumFeature.exportData:         return 'Export Reports';
-      case PremiumFeature.unlimitedCategories: return 'Unlimited Categories';
-      case PremiumFeature.billReminders:      return 'Bill Reminders';
-      case PremiumFeature.shoppingListSync:   return 'Shopping List Sync';
-      case PremiumFeature.noAds:              return 'Ad-Free Experience';
-      case PremiumFeature.householdSharing:   return 'Household Sharing';
-      case PremiumFeature.taxSimulator:       return 'Tax Simulator';
-      case PremiumFeature.stressIndex:        return 'Stress Index';
-      case PremiumFeature.monthReview:        return 'Month-in-Review';
-      case PremiumFeature.dashboardCustomization: return 'Dashboard Customization';
-      case PremiumFeature.allThemes:          return 'All Color Themes';
-      case PremiumFeature.expenseTrends:      return 'Expense Trends';
-      case PremiumFeature.unlimitedSavingsGoals: return 'Unlimited Savings Goals';
+      case PremiumFeature.aiCoach:            return l10n.paywallFeatNameAiCoach;
+      case PremiumFeature.mealPlanner:        return l10n.paywallFeatNameMealPlanner;
+      case PremiumFeature.exportData:         return l10n.paywallFeatNameExportData;
+      case PremiumFeature.unlimitedCategories: return l10n.paywallFeatNameUnlimitedCategories;
+      case PremiumFeature.billReminders:      return l10n.paywallFeatNameBillReminders;
+      case PremiumFeature.shoppingListSync:   return l10n.paywallFeatNameShoppingListSync;
+      case PremiumFeature.noAds:              return l10n.paywallFeatNameNoAds;
+      case PremiumFeature.householdSharing:   return l10n.paywallFeatNameHouseholdSharing;
+      case PremiumFeature.taxSimulator:       return l10n.paywallFeatNameTaxSimulator;
+      case PremiumFeature.stressIndex:        return l10n.paywallFeatNameStressIndex;
+      case PremiumFeature.monthReview:        return l10n.paywallFeatNameMonthReview;
+      case PremiumFeature.dashboardCustomization: return l10n.paywallFeatNameDashboard;
+      case PremiumFeature.allThemes:          return l10n.paywallFeatNameAllThemes;
+      case PremiumFeature.expenseTrends:      return l10n.paywallFeatNameExpenseTrends;
+      case PremiumFeature.unlimitedSavingsGoals: return l10n.paywallFeatNameUnlimitedSavings;
     }
   }
 }
