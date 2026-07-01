@@ -130,10 +130,11 @@ class _AlertCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final (Color leadColor, String severityLabel) = switch (alert.severity) {
-      AlertSeverity.critical => (AppColors.bad(context), 'crítico'), // TODO(l10n):
-      AlertSeverity.warning => (AppColors.warn(context), 'aviso'), // TODO(l10n):
-      AlertSeverity.info => (AppColors.accent(context), 'info'), // TODO(l10n):
+      AlertSeverity.critical => (AppColors.bad(context), l10n.alertSeverityCritical),
+      AlertSeverity.warning => (AppColors.warn(context), l10n.alertSeverityWarning),
+      AlertSeverity.info => (AppColors.accent(context), l10n.alertSeverityInfo),
     };
 
     final icon = switch (alert.severity) {
@@ -169,6 +170,7 @@ class CriticalAlertBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (criticalCount <= 0) return const SizedBox.shrink();
+    final l10n = S.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -181,7 +183,7 @@ class CriticalAlertBanner extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                '$criticalCount critical alert${criticalCount == 1 ? '' : 's'} — tap to view', // TODO(l10n):
+                l10n.criticalAlertBannerMessage(criticalCount),
                 style: TextStyle(
                   color: AppColors.bg(context),
                   fontWeight: FontWeight.w600,

@@ -4053,6 +4053,26 @@ class SFr extends S {
   String get confidenceCenterTile => 'Centre de Confiance';
 
   @override
+  String get alertSeverityCritical => 'critique';
+
+  @override
+  String get alertSeverityWarning => 'avertissement';
+
+  @override
+  String get alertSeverityInfo => 'info';
+
+  @override
+  String criticalAlertBannerMessage(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count alertes critiques — appuyer pour voir',
+      one: '1 alerte critique — appuyer pour voir',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get pantryPickerTitle => 'Sélecteur de Garde-Manger';
 
   @override

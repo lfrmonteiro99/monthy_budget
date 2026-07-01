@@ -4044,6 +4044,26 @@ class SEs extends S {
   String get confidenceCenterTile => 'Centro de Confianza';
 
   @override
+  String get alertSeverityCritical => 'crítico';
+
+  @override
+  String get alertSeverityWarning => 'aviso';
+
+  @override
+  String get alertSeverityInfo => 'info';
+
+  @override
+  String criticalAlertBannerMessage(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count alertas críticas — tocar para ver',
+      one: '1 alerta crítica — tocar para ver',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get pantryPickerTitle => 'Selector de Despensa';
 
   @override

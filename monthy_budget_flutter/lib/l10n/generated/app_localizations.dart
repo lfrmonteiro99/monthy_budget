@@ -7301,6 +7301,30 @@ abstract class S {
   /// **'Centro de Confiança'**
   String get confidenceCenterTile;
 
+  /// No description provided for @alertSeverityCritical.
+  ///
+  /// In pt, this message translates to:
+  /// **'crítico'**
+  String get alertSeverityCritical;
+
+  /// No description provided for @alertSeverityWarning.
+  ///
+  /// In pt, this message translates to:
+  /// **'aviso'**
+  String get alertSeverityWarning;
+
+  /// No description provided for @alertSeverityInfo.
+  ///
+  /// In pt, this message translates to:
+  /// **'info'**
+  String get alertSeverityInfo;
+
+  /// No description provided for @criticalAlertBannerMessage.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{1 alerta crítico — toque para ver} other{{count} alertas críticos — toque para ver}}'**
+  String criticalAlertBannerMessage(int count);
+
   /// No description provided for @pantryPickerTitle.
   ///
   /// In pt, this message translates to:
