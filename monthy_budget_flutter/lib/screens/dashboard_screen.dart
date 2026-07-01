@@ -211,24 +211,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
 
     return CalmScaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildCalmHeader(context, l10n),
-            const SizedBox(height: 24),
-            if (hasData && dashboardConfig.showHeroCard)
-              _buildHero(context, isPositive, l10n)
-            else if (!hasData)
-              _buildEmptyState(context, l10n),
-            const SizedBox(height: 24),
-            if (hasData) ...[
-              for (final cardId in dashboardConfig.cardOrder)
-                if (cardId != 'heroCard')
-                  ..._buildCardById(cardId, context, stressResult, monthReview, l10n),
-              const SizedBox(height: 16),
+      body: RefreshIndicator(
+        color: AppColors.ink(context),
+        onRefresh: () async => onSnapshotExpenses(),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildCalmHeader(context, l10n),
+              const SizedBox(height: 24),
+              if (hasData && dashboardConfig.showHeroCard)
+                _buildHero(context, isPositive, l10n)
+              else if (!hasData)
+                _buildEmptyState(context, l10n),
+              const SizedBox(height: 24),
+              if (hasData) ...[
+                for (final cardId in dashboardConfig.cardOrder)
+                  if (cardId != 'heroCard')
+                    ..._buildCardById(cardId, context, stressResult, monthReview, l10n),
+                const SizedBox(height: 16),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -266,13 +270,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         Tooltip(
           message: l10n.dashboardOpenSettings,
-          child: IconButton(
-            icon: Icon(
-              Icons.settings_outlined,
-              size: 24,
-              color: AppColors.ink70(context),
+          child: GestureDetector(
+            onTap: onOpenSettings,
+            child: Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.ink(context),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                _householdInitials(widget.householdName),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.bg(context),
+                ),
+              ),
             ),
-            onPressed: onOpenSettings,
           ),
         ),
       ],
@@ -293,6 +309,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  String _householdInitials(String name) {
+    if (name.isEmpty) return '?';
+    final parts = name.trim().split(RegExp(r'\s+'));
+    if (parts.length == 1) return parts[0][0].toUpperCase();
+    return '${parts[0][0]}${parts.last[0]}'.toUpperCase();
+  }
+
   // ───────────────────────────────── Hero ──────────────────────────────────
 
   Widget _buildHero(BuildContext context, bool isPositive, S l10n) {
@@ -304,9 +327,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final spent = summary.totalExpenses;
     final remaining = totalBudget - spent;
     final isOverBudget = remaining < 0;
-    // Pace = spending rate vs. the linear budget pace. Drives the "ritmo"
-    // status (on/over pace), distinct from the progress-bar colour which
-    // tracks absolute over-budget. No budget set ⇒ treated as on track.
     final onTrack = totalBudget <= 0 ||
         (daysPassed > 0
             ? spent / daysPassed <= totalBudget / daysInMonth
@@ -2035,13 +2055,8 @@ class _SalaryRow extends StatelessWidget {
     final hasMeal = calc.mealAllowance.totalMonthly > 0;
     final hasSubsidy = calc.subsidyMonthlyBonus > 0;
     final hasExempt = calc.otherExemptIncome > 0;
-    return Container(
+    return CalmCard(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.bgSunk(context),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.line(context)),
-      ),
       child: Column(
         children: [
           Row(
@@ -2187,13 +2202,8 @@ class _ExemptIncomeRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    return Container(
+    return CalmCard(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppColors.bgSunk(context),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.line(context)),
-      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
