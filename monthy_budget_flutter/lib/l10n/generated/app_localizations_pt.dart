@@ -2583,6 +2583,69 @@ class SPt extends S {
       'Não foi possível eliminar — tenta de novo';
 
   @override
+  String recurringActivePill(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ativas',
+      one: '1 ativa',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recurringTotalMonthlyEyebrow => 'TOTAL MENSAL';
+
+  @override
+  String get recurringActiveTitle => 'Ativas';
+
+  @override
+  String recurringSubscriptionCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count subscrições',
+      one: '1 subscrição',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recurringPausedTitle => 'Pausadas';
+
+  @override
+  String recurringDayOfMonth(int day) {
+    return 'dia $day';
+  }
+
+  @override
+  String get recurringEmptyTitle => 'Sem pagamentos recorrentes';
+
+  @override
+  String get recurringEmptyBody =>
+      'Adicione para gerar automaticamente todos os meses.';
+
+  @override
+  String get recurringEyebrow => 'RECORRENTES';
+
+  @override
+  String recurringHeroSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count subscrições ativas',
+      one: '1 subscrição ativa',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recurringActiveGroupLabel => 'ATIVAS';
+
+  @override
+  String get recurringPausedGroupLabel => 'PAUSADAS';
+
+  @override
   String get savingsContributionSaveError =>
       'Não foi possível guardar a contribuição — tenta de novo';
 
