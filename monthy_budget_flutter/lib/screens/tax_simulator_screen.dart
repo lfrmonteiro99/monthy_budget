@@ -270,11 +270,16 @@ class _TaxSimulatorScreenState extends State<TaxSimulatorScreen> {
                         : i == 1
                             ? MaritalStatus.casado
                             : MaritalStatus.uniaoFacto;
+                    if (_maritalStatus == MaritalStatus.solteiro) {
+                      _titulares = 1;
+                    }
                     _recalculate();
                   }),
                 ),
               ],
-              if (country.hasTitulares) ...[
+              if (country.hasTitulares &&
+                  (_maritalStatus == MaritalStatus.casado ||
+                      _maritalStatus == MaritalStatus.uniaoFacto)) ...[
                 const SizedBox(height: 16),
                 _SegmentedRow(
                   label: l10n.taxSimTitulares,

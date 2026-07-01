@@ -70,6 +70,11 @@ enum Country {
 class TaxResult {
   final double incomeTax;
   final double incomeTaxRate;
+  /// The marginal bracket rate (e.g. 0.241 for 24.1%). Used to tax income
+  /// components (such as meal allowance excess) that are legally subject to
+  /// the marginal rate, not the effective average rate. Defaults to 0.0 for
+  /// tax systems that don't expose bracket-level detail.
+  final double marginalRate;
   final double socialContribution;
   final double socialContributionRate;
   final double netSalary;
@@ -77,6 +82,7 @@ class TaxResult {
   const TaxResult({
     required this.incomeTax,
     required this.incomeTaxRate,
+    this.marginalRate = 0.0,
     required this.socialContribution,
     required this.socialContributionRate,
     required this.netSalary,

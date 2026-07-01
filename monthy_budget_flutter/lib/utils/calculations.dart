@@ -86,6 +86,7 @@ SalaryCalculation calculateNetSalary(
   // A Segurança Social incide sobre o total pago no mês (base + duodécimos).
   final double irsRetention;
   final double irsRate;
+  final double irsMarginalRate;
   final double socialSecurity;
 
   if (country == Country.pt && subsidyBonus > 0) {
@@ -100,6 +101,7 @@ SalaryCalculation calculateNetSalary(
     final baseRate = baseGross > 0 ? baseTax.incomeTax / baseGross : 0.0;
     irsRetention = _round2(baseTax.incomeTax + baseRate * subsidyBonus);
     irsRate = baseTax.incomeTaxRate;
+    irsMarginalRate = baseTax.marginalRate;
     socialSecurity = taxSystem.calculateSocialContribution(effectiveGross);
   } else {
     final taxResult = taxSystem.calculateTax(
@@ -112,6 +114,7 @@ SalaryCalculation calculateNetSalary(
     );
     irsRetention = taxResult.incomeTax;
     irsRate = taxResult.incomeTaxRate;
+    irsMarginalRate = taxResult.marginalRate;
     socialSecurity = taxResult.socialContribution;
   }
 
@@ -122,7 +125,7 @@ SalaryCalculation calculateNetSalary(
           salary.mealAllowanceType,
           salary.mealAllowancePerDay,
           salary.workingDaysPerMonth,
-          irsRate,
+          irsMarginalRate,
           taxSystem.socialContributionRate,
         )
       : const MealAllowanceCalculation();
