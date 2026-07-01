@@ -6555,4 +6555,8 @@ class SFr extends S {
 
   @override
   String get planShopNoMealsBodyWithMenu => 'Aucun prochain repas trouvé.';
+
+  @override
+  String get settingsAiKeyProtected =>
+      'Clé API OpenAI sécurisée dans Supabase (Edge Function).';
 }

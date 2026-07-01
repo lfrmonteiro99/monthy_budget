@@ -6494,4 +6494,8 @@ class SEn extends S {
 
   @override
   String get planShopNoMealsBodyWithMenu => 'No upcoming meals found.';
+
+  @override
+  String get settingsAiKeyProtected =>
+      'OpenAI API key secured in Supabase (Edge Function).';
 }

@@ -3300,5 +3300,7 @@
     "planShopNoMealsBodyNoMenu": "Crée un menu pour voir tes prochains repas.",
     "@planShopNoMealsBodyNoMenu": {"description": "Plan & Shop empty meals body when no plan exists"},
     "planShopNoMealsBodyWithMenu": "Aucun prochain repas trouvé.",
-    "@planShopNoMealsBodyWithMenu": {"description": "Plan & Shop empty meals body when plan exists but no upcoming meals"}
+    "@planShopNoMealsBodyWithMenu": {"description": "Plan & Shop empty meals body when plan exists but no upcoming meals"},
+    "settingsAiKeyProtected": "Clé API OpenAI sécurisée dans Supabase (Edge Function).",
+    "@settingsAiKeyProtected": {"description": "Settings AI Coach section: API key security notice"}
 }

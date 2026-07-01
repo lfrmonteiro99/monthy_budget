@@ -11536,6 +11536,12 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'Nenhuma refeição próxima encontrada.'**
   String get planShopNoMealsBodyWithMenu;
+
+  /// Settings AI Coach section: API key security notice
+  ///
+  /// In pt, this message translates to:
+  /// **'OpenAI API key protegida no Supabase (Edge Function).'**
+  String get settingsAiKeyProtected;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

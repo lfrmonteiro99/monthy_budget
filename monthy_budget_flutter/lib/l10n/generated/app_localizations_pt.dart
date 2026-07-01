@@ -6539,4 +6539,8 @@ class SPt extends S {
   @override
   String get planShopNoMealsBodyWithMenu =>
       'Nenhuma refeição próxima encontrada.';
+
+  @override
+  String get settingsAiKeyProtected =>
+      'OpenAI API key protegida no Supabase (Edge Function).';
 }

@@ -6542,4 +6542,8 @@ class SEs extends S {
   @override
   String get planShopNoMealsBodyWithMenu =>
       'No se encontraron próximas comidas.';
+
+  @override
+  String get settingsAiKeyProtected =>
+      'Clave API de OpenAI protegida en Supabase (Edge Function).';
 }
