@@ -198,6 +198,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       purchaseHistory: purchaseHistory,
       now: now,
       monthLabelBuilder: (m, y) => '${localizedMonthFull(l10n, m)} $y',
+      l10n: l10n,
     );
     if (hasData) {
       WidgetsBinding.instance.addPostFrameCallback((_) {

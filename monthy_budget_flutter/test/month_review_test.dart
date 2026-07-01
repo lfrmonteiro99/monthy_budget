@@ -1,10 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:monthly_management/l10n/generated/app_localizations_en.dart';
 import 'package:monthly_management/models/app_settings.dart';
 import 'package:monthly_management/models/expense_snapshot.dart';
 import 'package:monthly_management/models/purchase_record.dart';
 import 'package:monthly_management/utils/month_review.dart';
 
 void main() {
+  final en = SEn();
+
   group('buildMonthReview', () {
     test('returns null when outside review window', () {
       final result = buildMonthReview(
@@ -13,6 +16,7 @@ void main() {
         purchaseHistory: const PurchaseHistory(),
         now: DateTime(2026, 3, 8),
         monthLabelBuilder: (_, _) => 'x',
+        l10n: en,
       );
 
       expect(result, isNull);
@@ -64,6 +68,7 @@ void main() {
         ),
         now: DateTime(2026, 3, 4),
         monthLabelBuilder: (m, y) => '$m/$y',
+        l10n: en,
       );
 
       expect(review, isNotNull);

@@ -6571,4 +6571,23 @@ class SEn extends S {
 
   @override
   String get mealMenuRowDinner => 'Dinner';
+
+  @override
+  String get monthReviewSuggestionOnTrack =>
+      'Expenses within forecast. Good budget control.';
+
+  @override
+  String monthReviewSuggestionOverBudget(String amount) {
+    return 'Actual expenses exceeded plan by $amount€ — adjust values in settings?';
+  }
+
+  @override
+  String monthReviewSuggestionUnderBudget(String amount) {
+    return 'Saved $amount€ more than planned — consider topping up your emergency fund.';
+  }
+
+  @override
+  String monthReviewSuggestionFoodOver(String percent) {
+    return 'Food spending exceeded budget by $percent% — consider reviewing portions or shopping frequency.';
+  }
 }

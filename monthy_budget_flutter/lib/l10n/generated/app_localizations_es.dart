@@ -6619,4 +6619,23 @@ class SEs extends S {
 
   @override
   String get mealMenuRowDinner => 'Cena';
+
+  @override
+  String get monthReviewSuggestionOnTrack =>
+      'Gastos dentro de lo previsto. Buen control presupuestario.';
+
+  @override
+  String monthReviewSuggestionOverBudget(String amount) {
+    return 'Los gastos reales superaron lo planificado en $amount€ — ¿ajustar valores en ajustes?';
+  }
+
+  @override
+  String monthReviewSuggestionUnderBudget(String amount) {
+    return 'Ahorraste $amount€ más de lo previsto — considera reforzar tu fondo de emergencia.';
+  }
+
+  @override
+  String monthReviewSuggestionFoodOver(String percent) {
+    return 'La alimentación superó el presupuesto en $percent% — considera revisar porciones o frecuencia de compras.';
+  }
 }

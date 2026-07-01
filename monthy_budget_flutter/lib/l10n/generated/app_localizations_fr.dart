@@ -6632,4 +6632,23 @@ class SFr extends S {
 
   @override
   String get mealMenuRowDinner => 'Dîner';
+
+  @override
+  String get monthReviewSuggestionOnTrack =>
+      'Dépenses dans les prévisions. Bon contrôle budgétaire.';
+
+  @override
+  String monthReviewSuggestionOverBudget(String amount) {
+    return 'Les dépenses réelles ont dépassé le plan de $amount€ — ajuster les valeurs dans les paramètres?';
+  }
+
+  @override
+  String monthReviewSuggestionUnderBudget(String amount) {
+    return 'Vous avez économisé $amount€ de plus que prévu — envisagez de renforcer votre fonds d\'urgence.';
+  }
+
+  @override
+  String monthReviewSuggestionFoodOver(String percent) {
+    return 'L\'alimentation a dépassé le budget de $percent% — envisagez de revoir les portions ou la fréquence des achats.';
+  }
 }

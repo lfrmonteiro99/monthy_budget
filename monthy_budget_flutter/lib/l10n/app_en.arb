@@ -3499,5 +3499,12 @@
     "mealMenuRowLunch": "Lunch",
     "@mealMenuRowLunch": {"description": "Meal menu grid meal row: Lunch"},
     "mealMenuRowDinner": "Dinner",
-    "@mealMenuRowDinner": {"description": "Meal menu grid meal row: Dinner"}
+    "@mealMenuRowDinner": {"description": "Meal menu grid meal row: Dinner"},
+  "monthReviewSuggestionOnTrack": "Expenses within forecast. Good budget control.",
+  "monthReviewSuggestionOverBudget": "Actual expenses exceeded plan by {amount}€ — adjust values in settings?",
+  "@monthReviewSuggestionOverBudget": {"placeholders": {"amount": {"type": "String"}}},
+  "monthReviewSuggestionUnderBudget": "Saved {amount}€ more than planned — consider topping up your emergency fund.",
+  "@monthReviewSuggestionUnderBudget": {"placeholders": {"amount": {"type": "String"}}},
+  "monthReviewSuggestionFoodOver": "Food spending exceeded budget by {percent}% — consider reviewing portions or shopping frequency.",
+  "@monthReviewSuggestionFoodOver": {"placeholders": {"percent": {"type": "String"}}}
 }

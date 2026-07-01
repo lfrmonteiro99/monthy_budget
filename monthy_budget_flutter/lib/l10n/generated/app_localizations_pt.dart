@@ -6616,4 +6616,23 @@ class SPt extends S {
 
   @override
   String get mealMenuRowDinner => 'Jantar';
+
+  @override
+  String get monthReviewSuggestionOnTrack =>
+      'Despesas dentro do previsto. Bom controlo orçamental.';
+
+  @override
+  String monthReviewSuggestionOverBudget(String amount) {
+    return 'Despesas reais superaram o planeado em $amount€ — ajustar valores nas definições?';
+  }
+
+  @override
+  String monthReviewSuggestionUnderBudget(String amount) {
+    return 'Poupou $amount€ mais do que previsto — pode reforçar fundo de emergência.';
+  }
+
+  @override
+  String monthReviewSuggestionFoodOver(String percent) {
+    return 'Alimentação excedeu o orçamento em $percent% — considere rever porções ou frequência de compras.';
+  }
 }
