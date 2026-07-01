@@ -6762,4 +6762,7 @@ class SPt extends S {
 
   @override
   String get commandFabOpen => 'Abrir assistente de comandos';
+
+  @override
+  String get goalCardPausedSemanticLabel => 'Em pausa - requer subscrição Pro';
 }

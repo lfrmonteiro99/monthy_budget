@@ -3546,5 +3546,6 @@
   "taxSimFiscalEyebrow": "FISCAL {year}",
   "@taxSimFiscalEyebrow": {"placeholders": {"year": {"type": "String"}}},
   "commandFabClose": "Close command assistant",
-  "commandFabOpen": "Open command assistant"
+  "commandFabOpen": "Open command assistant",
+  "goalCardPausedSemanticLabel": "Paused - requires Pro subscription"
 }

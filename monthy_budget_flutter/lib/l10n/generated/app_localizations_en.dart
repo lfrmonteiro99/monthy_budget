@@ -6710,4 +6710,8 @@ class SEn extends S {
 
   @override
   String get commandFabOpen => 'Open command assistant';
+
+  @override
+  String get goalCardPausedSemanticLabel =>
+      'Paused - requires Pro subscription';
 }
