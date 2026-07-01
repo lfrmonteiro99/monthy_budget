@@ -3137,6 +3137,8 @@
     "mealSubstituteOtherCategories": "Autres categories",
     "mealPlannerDetailEyebrow": "DÉTAIL",
     "mealPlannerMealsEyebrow": "REPAS",
+    "mealPlannerMonthlyPlanEyebrow": "PLAN DU MOIS",
+    "mealPlannerWeekEyebrow": "SEMAINE",
     "wizardCourseStructure": "Structure du repas",
     "wizardIncludeSoupStarter": "Inclure soupe ou entree",
     "wizardSoupStarterHint": "Ajoute une soupe ou entree en premier plat",

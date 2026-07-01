@@ -1593,7 +1593,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CalmEyebrow('PLANO DO MÊS'),
+                          CalmEyebrow(l10n.mealPlannerMonthlyPlanEyebrow),
                           const SizedBox(height: 8),
                           Text(
                             '${plan.totalEstimatedCost.toStringAsFixed(2)}${currencySymbol()}',
@@ -1633,7 +1633,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                     CalmEyebrow(
                       _showFullMonth
                           ? l10n.mealPlannerFullMonthView.toUpperCase()
-                          : 'SEMANA',
+                          : l10n.mealPlannerWeekEyebrow,
                     ),
                     const Spacer(),
                     SizedBox(

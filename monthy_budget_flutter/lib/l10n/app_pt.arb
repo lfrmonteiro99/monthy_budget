@@ -5981,6 +5981,8 @@
     "mealSubstituteOtherCategories": "Outras categorias",
     "mealPlannerDetailEyebrow": "DETALHE",
     "mealPlannerMealsEyebrow": "REFEIÇÕES",
+    "mealPlannerMonthlyPlanEyebrow": "PLANO DO MÊS",
+    "mealPlannerWeekEyebrow": "SEMANA",
     "wizardCourseStructure": "Estrutura da refeicao",
     "wizardIncludeSoupStarter": "Incluir sopa ou entrada",
     "wizardSoupStarterHint": "Adiciona uma sopa ou entrada como primeiro prato",

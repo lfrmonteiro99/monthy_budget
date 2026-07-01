@@ -3258,6 +3258,8 @@
     "mealSubstituteOtherCategories": "Other categories",
     "mealPlannerDetailEyebrow": "DETAIL",
     "mealPlannerMealsEyebrow": "MEALS",
+    "mealPlannerMonthlyPlanEyebrow": "MONTHLY PLAN",
+    "mealPlannerWeekEyebrow": "WEEK",
     "wizardCourseStructure": "Meal structure",
     "wizardIncludeSoupStarter": "Include soup or starter",
     "wizardSoupStarterHint": "Adds a soup or starter as the first course",
