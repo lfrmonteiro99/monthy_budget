@@ -158,7 +158,7 @@ class TrialBanner extends StatelessWidget {
                   backgroundColor: isUrgent
                       ? AppColors.error(context)
                       : AppColors.primary(context),
-                  foregroundColor: Colors.white,
+                  foregroundColor: AppColors.bg(context),
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
