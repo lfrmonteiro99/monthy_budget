@@ -154,18 +154,18 @@ jobs:
 
           git fetch origin "$DEFAULT_BRANCH" --depth=1 || true
 
-          BODY_FILE="pr_body.md"
-          {
-            echo "## Summary"
-            echo "Automated delivery from branch \`$BRANCH\`."
-            echo
-            echo "## Linked Issue"
-            echo "Fixes #$ISSUE"
-          } > "$BODY_FILE"
-
           PR_NUMBER="$(gh pr list --head "$BRANCH" --base "$DEFAULT_BRANCH" --json number --jq '.[0].number // empty')"
 
           if [[ -z "$PR_NUMBER" ]]; then
+            # New PR: seed a body with the branch-derived issue link.
+            BODY_FILE="pr_body.md"
+            {
+              echo "## Summary"
+              echo "Automated delivery from branch \`$BRANCH\`."
+              echo
+              echo "## Linked Issue"
+              echo "Fixes #$ISSUE"
+            } > "$BODY_FILE"
             TITLE="$(git log -1 --pretty=%s)"
             gh pr create \
               --base "$DEFAULT_BRANCH" \
@@ -174,7 +174,17 @@ jobs:
               --body-file "$BODY_FILE"
             PR_NUMBER="$(gh pr list --head "$BRANCH" --base "$DEFAULT_BRANCH" --json number --jq '.[0].number')"
           else
-            gh pr edit "$PR_NUMBER" --body-file "$BODY_FILE"
+            # Existing (author-written) PR: PRESERVE the body. Only append a
+            # fallback closing keyword when the author didn't supply one, so we
+            # never discard an author's `Fixes #<child-issue>`. The branch name
+            # often points at a parent epic (e.g. issue-632-*), so clobbering the
+            # body with `Fixes #<branch-issue>` used to target the wrong issue.
+            CUR_BODY="$(gh pr view "$PR_NUMBER" --json body --jq .body)"
+            if ! grep -Eiq '(Fixes|Closes|Resolves)[[:space:]]+#[0-9]+' <<<"$CUR_BODY"; then
+              BODY_FILE="pr_body.md"
+              printf '%s\n\n## Linked Issue\nFixes #%s\n' "$CUR_BODY" "$ISSUE" > "$BODY_FILE"
+              gh pr edit "$PR_NUMBER" --body-file "$BODY_FILE"
+            fi
           fi
 
           PR_STATE="$(gh pr view "$PR_NUMBER" --json state --jq .state)"
@@ -245,9 +255,47 @@ jobs:
           done
 
           TITLE="$(gh pr view "$PR_NUMBER" --json title --jq .title)"
+
+          # Determine which issue(s) this PR closes from the closing keywords in
+          # the (preserved) PR body. Fall back to the branch-derived issue only
+          # when the body has none. We never blindly close the branch-derived
+          # issue: for child-issue workflows the branch points at a parent epic
+          # that must stay open.
+          FINAL_BODY="$(gh pr view "$PR_NUMBER" --json body --jq .body)"
+          CLOSE_ISSUES="$(grep -Eio '(Fixes|Closes|Resolves)[[:space:]]+#[0-9]+' <<<"$FINAL_BODY" \
+            | grep -Eo '[0-9]+' | sort -n -u | tr '\n' ' ' || true)"
+          if [[ -z "${CLOSE_ISSUES// }" ]]; then CLOSE_ISSUES="$ISSUE"; fi
+          PRIMARY_ISSUE="$(awk '{print $1}' <<<"$CLOSE_ISSUES")"
+          echo "Will close on merge: #${CLOSE_ISSUES// /, #}"
+
           gh pr merge "$PR_NUMBER" --auto --squash --delete-branch \
-            --subject "$TITLE (Fixes #$ISSUE)" \
-            --body "Fixes #$ISSUE"
+            --subject "$TITLE (Fixes #$PRIMARY_ISSUE)" \
+            --body "Fixes #$PRIMARY_ISSUE"
+
+          # GITHUB_TOKEN-authored merges do NOT trigger GitHub's auto-close of
+          # linked issues, so close them explicitly once the merge lands. Poll
+          # for MERGED first (auto-merge may wait on required checks).
+          MERGED=false
+          for i in $(seq 1 30); do
+            STATE="$(gh pr view "$PR_NUMBER" --json state --jq .state)"
+            if [[ "$STATE" == "MERGED" ]]; then MERGED=true; break; fi
+            echo "Waiting for PR #$PR_NUMBER to merge: $STATE (attempt $i/30)"
+            sleep 10
+          done
+
+          if [[ "$MERGED" == "true" ]]; then
+            for ci in $CLOSE_ISSUES; do
+              if [[ "$(gh issue view "$ci" --json state --jq .state 2>/dev/null || echo MISSING)" == "OPEN" ]]; then
+                gh issue close "$ci" \
+                  -c "Closed automatically: delivered via #$PR_NUMBER (merged to \`$DEFAULT_BRANCH\`). agent-delivery closes linked issues explicitly because GITHUB_TOKEN merges don't trigger GitHub's auto-close." \
+                  && echo "✅ Closed #$ci"
+              else
+                echo "Issue #$ci not open; skipping."
+              fi
+            done
+          else
+            echo "::warning::PR #$PR_NUMBER not merged within poll window; linked issues (#$CLOSE_ISSUES) left open for a later run or manual close."
+          fi
 
       - name: Create release tag and GitHub Release
         id: release-tag
