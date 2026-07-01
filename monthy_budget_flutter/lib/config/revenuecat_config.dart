@@ -21,4 +21,4 @@ const revenueCatCreditProducts = ['credits_50', 'credits_150', 'credits_500'];
 /// interaction). Derived from whether an API key is present so that dev/CI
 /// builds without REVENUECAT_API_KEY never call the real RevenueCat SDK
 /// (which would crash with InvalidCredentialsError).
-const revenueCatSimulateMode = revenueCatApiKey.isEmpty;
+const revenueCatSimulateMode = revenueCatApiKey == '';
