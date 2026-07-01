@@ -6396,4 +6396,8 @@ class SEn extends S {
   String dashboardHeroDaysLeft(String days) {
     return '$days days left';
   }
+
+  @override
+  String get settingsAiKeyProtected =>
+      'OpenAI API key secured in Supabase (Edge Function).';
 }
