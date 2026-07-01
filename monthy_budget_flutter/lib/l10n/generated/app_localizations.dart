@@ -4739,6 +4739,24 @@ abstract class S {
   /// **'Mensal'**
   String get expenseTrendsMonthly;
 
+  /// No description provided for @expenseTrendsEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'TENDÊNCIAS'**
+  String get expenseTrendsEyebrow;
+
+  /// No description provided for @expenseTrendsEmptyBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adiciona despesas para ver as tendências.'**
+  String get expenseTrendsEmptyBody;
+
+  /// No description provided for @expenseTrendsMonthlyHistoryEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'HISTÓRICO MENSAL'**
+  String get expenseTrendsMonthlyHistoryEyebrow;
+
   /// Savings goals title
   ///
   /// In pt, this message translates to:
