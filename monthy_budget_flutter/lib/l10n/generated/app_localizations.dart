@@ -11669,6 +11669,30 @@ abstract class S {
   /// **'Jantar'**
   String get mealMenuRowDinner;
 
+  /// No description provided for @monthReviewSuggestionOnTrack.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas dentro do previsto. Bom controlo orçamental.'**
+  String get monthReviewSuggestionOnTrack;
+
+  /// No description provided for @monthReviewSuggestionOverBudget.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas reais superaram o planeado em {amount}€ — ajustar valores nas definições?'**
+  String monthReviewSuggestionOverBudget(String amount);
+
+  /// No description provided for @monthReviewSuggestionUnderBudget.
+  ///
+  /// In pt, this message translates to:
+  /// **'Poupou {amount}€ mais do que previsto — pode reforçar fundo de emergência.'**
+  String monthReviewSuggestionUnderBudget(String amount);
+
+  /// No description provided for @monthReviewSuggestionFoodOver.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alimentação excedeu o orçamento em {percent}% — considere rever porções ou frequência de compras.'**
+  String monthReviewSuggestionFoodOver(String percent);
+
   /// No description provided for @paywallErrorPurchaseFailed.
   ///
   /// In pt, this message translates to:

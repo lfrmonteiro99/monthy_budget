@@ -1,3 +1,4 @@
+import '../l10n/generated/app_localizations.dart';
 import '../models/expense_snapshot.dart';
 import '../models/app_settings.dart';
 import '../models/purchase_record.dart';
@@ -48,6 +49,7 @@ MonthReviewResult? buildMonthReview({
   required PurchaseHistory purchaseHistory,
   required DateTime now,
   required String Function(int month, int year) monthLabelBuilder,
+  required S l10n,
 }) {
   if (now.day > 7) return null;
 
@@ -103,16 +105,22 @@ MonthReviewResult? buildMonthReview({
 
   final suggestions = <String>[];
   if (foodBudget > 0 && foodActual > foodBudget * 1.1) {
-    suggestions.add('Alimentação excedeu o orçamento em ${((foodActual / foodBudget - 1) * 100).toStringAsFixed(0)}% — considere rever porções ou frequência de compras.');
+    suggestions.add(l10n.monthReviewSuggestionFoodOver(
+      ((foodActual / foodBudget - 1) * 100).toStringAsFixed(0),
+    ));
   }
   if (totalDifference > totalPlanned * 0.05) {
-    suggestions.add('Despesas reais superaram o planeado em ${totalDifference.toStringAsFixed(0)}€ — ajustar valores nas definições?');
+    suggestions.add(l10n.monthReviewSuggestionOverBudget(
+      totalDifference.toStringAsFixed(0),
+    ));
   }
   if (totalDifference < -totalPlanned * 0.15) {
-    suggestions.add('Poupou ${totalDifference.abs().toStringAsFixed(0)}€ mais do que previsto — pode reforçar fundo de emergência.');
+    suggestions.add(l10n.monthReviewSuggestionUnderBudget(
+      totalDifference.abs().toStringAsFixed(0),
+    ));
   }
   if (suggestions.isEmpty) {
-    suggestions.add('Despesas dentro do previsto. Bom controlo orçamental.');
+    suggestions.add(l10n.monthReviewSuggestionOnTrack);
   }
 
   return MonthReviewResult(
