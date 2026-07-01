@@ -5866,6 +5866,52 @@
     "mealSubstituteHint": "Toque num ingrediente para o substituir por outro",
     "mealSubstituteSameCategory": "Mesma categoria",
     "mealSubstituteOtherCategories": "Outras categorias",
+    "mealMenuThisWeekEyebrow": "Esta Semana",
+    "@mealMenuThisWeekEyebrow": {
+        "description": "Eyebrow label in the meal menu page header"
+    },
+    "mealMenuTitle": "Ementa",
+    "@mealMenuTitle": {
+        "description": "Page header title for the weekly meal menu screen"
+    },
+    "mealMenuGenerateLabel": "Gerar",
+    "@mealMenuGenerateLabel": {
+        "description": "Label on the generate action pill in the meal menu header"
+    },
+    "mealMenuWeekSummaryEyebrow": "Resumo · Semana",
+    "@mealMenuWeekSummaryEyebrow": {
+        "description": "Eyebrow label above the KPI summary section in meal menu"
+    },
+    "mealMenuKpiMealsPlannedLabel": "Refeições planeadas",
+    "@mealMenuKpiMealsPlannedLabel": {
+        "description": "KPI row label for number of planned meals"
+    },
+    "mealMenuKpiMealsPlannedValue": "{planned} de 21",
+    "@mealMenuKpiMealsPlannedValue": {
+        "description": "KPI row value showing planned meals out of 21 total",
+        "placeholders": {
+            "planned": { "type": "int" }
+        }
+    },
+    "mealMenuKpiCostEstimatedLabel": "Custo estimado",
+    "@mealMenuKpiCostEstimatedLabel": {
+        "description": "KPI row label for estimated weekly food cost"
+    },
+    "mealMenuKpiCostPerPersonDayLabel": "Custo/pessoa/dia",
+    "@mealMenuKpiCostPerPersonDayLabel": {
+        "description": "KPI row label for cost per person per day"
+    },
+    "mealMenuKpiOutsideLabel": "Fora de casa",
+    "@mealMenuKpiOutsideLabel": {
+        "description": "KPI row label for meals eaten outside the home"
+    },
+    "mealMenuKpiOutsideValue": "{count, plural, =1{{count} refeição} other{{count} refeições}}",
+    "@mealMenuKpiOutsideValue": {
+        "description": "KPI row value showing number of meals eaten outside",
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
     "wizardCourseStructure": "Estrutura da refeicao",
     "wizardIncludeSoupStarter": "Incluir sopa ou entrada",
     "wizardSoupStarterHint": "Adiciona uma sopa ou entrada como primeiro prato",

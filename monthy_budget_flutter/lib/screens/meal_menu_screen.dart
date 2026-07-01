@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:monthly_management/widgets/calm/calm.dart';
 
+import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/meal_planner.dart';
 import '../models/meal_settings.dart';
@@ -232,6 +233,7 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
   }
 
   Widget _buildContent(BuildContext context) {
+    final l10n = S.of(context);
     final planned = _plannedCount();
     final total = _totalCost();
     final perPersonDay = _costPerPersonPerDay();
@@ -255,11 +257,11 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
       children: [
         // ── Header ──────────────────────────────────────────────────────
         CalmPageHeader(
-          eyebrow: 'ESTA SEMANA', // TODO(l10n): add key thisWeekEyebrow
-          title: 'Ementa', // TODO(l10n): add key ementaTitle
+          eyebrow: l10n.mealMenuThisWeekEyebrow,
+          title: l10n.mealMenuTitle,
           trailing: CalmActionPill(
             icon: Icons.auto_awesome,
-            label: 'Gerar', // TODO(l10n): add key generateLabel
+            label: l10n.mealMenuGenerateLabel,
             onTap: _onGerar,
           ),
         ),
@@ -275,7 +277,7 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
         const SizedBox(height: 24),
 
         // ── KPI section eyebrow ──────────────────────────────────────────
-        CalmEyebrow('RESUMO · SEMANA'), // TODO(l10n): add key weekSummaryEyebrow
+        CalmEyebrow(l10n.mealMenuWeekSummaryEyebrow),
 
         const SizedBox(height: 8),
 
@@ -285,25 +287,24 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // TODO(l10n): keys for KPI labels
               CalmKpiRow(
-                'Refeições planeadas',
-                '$planned de 21',
+                l10n.mealMenuKpiMealsPlannedLabel,
+                l10n.mealMenuKpiMealsPlannedValue(planned),
               ),
               Divider(color: AppColors.line(context), height: 1),
               CalmKpiRow(
-                'Custo estimado',
+                l10n.mealMenuKpiCostEstimatedLabel,
                 _fmtCost(total),
               ),
               Divider(color: AppColors.line(context), height: 1),
               CalmKpiRow(
-                'Custo/pessoa/dia',
+                l10n.mealMenuKpiCostPerPersonDayLabel,
                 _fmtCost(perPersonDay),
               ),
               Divider(color: AppColors.line(context), height: 1),
               CalmKpiRow(
-                'Fora de casa',
-                '$outside ${outside == 1 ? 'refeição' : 'refeições'}',
+                l10n.mealMenuKpiOutsideLabel,
+                l10n.mealMenuKpiOutsideValue(outside),
               ),
             ],
           ),

@@ -3143,6 +3143,52 @@
     "mealSubstituteHint": "Tap an ingredient to replace it with another",
     "mealSubstituteSameCategory": "Same category",
     "mealSubstituteOtherCategories": "Other categories",
+    "mealMenuThisWeekEyebrow": "This Week",
+    "@mealMenuThisWeekEyebrow": {
+        "description": "Eyebrow label in the meal menu page header"
+    },
+    "mealMenuTitle": "Menu",
+    "@mealMenuTitle": {
+        "description": "Page header title for the weekly meal menu screen"
+    },
+    "mealMenuGenerateLabel": "Generate",
+    "@mealMenuGenerateLabel": {
+        "description": "Label on the generate action pill in the meal menu header"
+    },
+    "mealMenuWeekSummaryEyebrow": "Summary · Week",
+    "@mealMenuWeekSummaryEyebrow": {
+        "description": "Eyebrow label above the KPI summary section in meal menu"
+    },
+    "mealMenuKpiMealsPlannedLabel": "Planned meals",
+    "@mealMenuKpiMealsPlannedLabel": {
+        "description": "KPI row label for number of planned meals"
+    },
+    "mealMenuKpiMealsPlannedValue": "{planned} of 21",
+    "@mealMenuKpiMealsPlannedValue": {
+        "description": "KPI row value showing planned meals out of 21 total",
+        "placeholders": {
+            "planned": { "type": "int" }
+        }
+    },
+    "mealMenuKpiCostEstimatedLabel": "Estimated cost",
+    "@mealMenuKpiCostEstimatedLabel": {
+        "description": "KPI row label for estimated weekly food cost"
+    },
+    "mealMenuKpiCostPerPersonDayLabel": "Cost/person/day",
+    "@mealMenuKpiCostPerPersonDayLabel": {
+        "description": "KPI row label for cost per person per day"
+    },
+    "mealMenuKpiOutsideLabel": "Eating out",
+    "@mealMenuKpiOutsideLabel": {
+        "description": "KPI row label for meals eaten outside the home"
+    },
+    "mealMenuKpiOutsideValue": "{count, plural, =1{{count} meal} other{{count} meals}}",
+    "@mealMenuKpiOutsideValue": {
+        "description": "KPI row value showing number of meals eaten outside",
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
     "wizardCourseStructure": "Meal structure",
     "wizardIncludeSoupStarter": "Include soup or starter",
     "wizardSoupStarterHint": "Adds a soup or starter as the first course",

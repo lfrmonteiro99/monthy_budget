@@ -5969,6 +5969,46 @@ class SPt extends S {
   String get mealSubstituteOtherCategories => 'Outras categorias';
 
   @override
+  String get mealMenuThisWeekEyebrow => 'Esta Semana';
+
+  @override
+  String get mealMenuTitle => 'Ementa';
+
+  @override
+  String get mealMenuGenerateLabel => 'Gerar';
+
+  @override
+  String get mealMenuWeekSummaryEyebrow => 'Resumo · Semana';
+
+  @override
+  String get mealMenuKpiMealsPlannedLabel => 'Refeições planeadas';
+
+  @override
+  String mealMenuKpiMealsPlannedValue(int planned) {
+    return '$planned de 21';
+  }
+
+  @override
+  String get mealMenuKpiCostEstimatedLabel => 'Custo estimado';
+
+  @override
+  String get mealMenuKpiCostPerPersonDayLabel => 'Custo/pessoa/dia';
+
+  @override
+  String get mealMenuKpiOutsideLabel => 'Fora de casa';
+
+  @override
+  String mealMenuKpiOutsideValue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count refeições',
+      one: '$count refeição',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get wizardCourseStructure => 'Estrutura da refeicao';
 
   @override

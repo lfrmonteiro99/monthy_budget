@@ -5926,6 +5926,46 @@ class SEn extends S {
   String get mealSubstituteOtherCategories => 'Other categories';
 
   @override
+  String get mealMenuThisWeekEyebrow => 'This Week';
+
+  @override
+  String get mealMenuTitle => 'Menu';
+
+  @override
+  String get mealMenuGenerateLabel => 'Generate';
+
+  @override
+  String get mealMenuWeekSummaryEyebrow => 'Summary · Week';
+
+  @override
+  String get mealMenuKpiMealsPlannedLabel => 'Planned meals';
+
+  @override
+  String mealMenuKpiMealsPlannedValue(int planned) {
+    return '$planned of 21';
+  }
+
+  @override
+  String get mealMenuKpiCostEstimatedLabel => 'Estimated cost';
+
+  @override
+  String get mealMenuKpiCostPerPersonDayLabel => 'Cost/person/day';
+
+  @override
+  String get mealMenuKpiOutsideLabel => 'Eating out';
+
+  @override
+  String mealMenuKpiOutsideValue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count meals',
+      one: '$count meal',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get wizardCourseStructure => 'Meal structure';
 
   @override
