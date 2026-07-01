@@ -6586,4 +6586,34 @@ class SPt extends S {
 
   @override
   String get taxSimSimulationEyebrow => 'SIMULAÇÃO';
+
+  @override
+  String get mealMenuDayMon => 'Seg';
+
+  @override
+  String get mealMenuDayTue => 'Ter';
+
+  @override
+  String get mealMenuDayWed => 'Qua';
+
+  @override
+  String get mealMenuDayThu => 'Qui';
+
+  @override
+  String get mealMenuDayFri => 'Sex';
+
+  @override
+  String get mealMenuDaySat => 'Sáb';
+
+  @override
+  String get mealMenuDaySun => 'Dom';
+
+  @override
+  String get mealMenuRowBreakfast => 'Peq.';
+
+  @override
+  String get mealMenuRowLunch => 'Almoço';
+
+  @override
+  String get mealMenuRowDinner => 'Jantar';
 }

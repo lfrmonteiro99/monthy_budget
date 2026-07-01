@@ -6589,4 +6589,34 @@ class SEs extends S {
 
   @override
   String get taxSimSimulationEyebrow => 'SIMULACIÓN';
+
+  @override
+  String get mealMenuDayMon => 'Lun';
+
+  @override
+  String get mealMenuDayTue => 'Mar';
+
+  @override
+  String get mealMenuDayWed => 'Mié';
+
+  @override
+  String get mealMenuDayThu => 'Jue';
+
+  @override
+  String get mealMenuDayFri => 'Vie';
+
+  @override
+  String get mealMenuDaySat => 'Sáb';
+
+  @override
+  String get mealMenuDaySun => 'Dom';
+
+  @override
+  String get mealMenuRowBreakfast => 'Desay.';
+
+  @override
+  String get mealMenuRowLunch => 'Almuerzo';
+
+  @override
+  String get mealMenuRowDinner => 'Cena';
 }
