@@ -20,14 +20,15 @@ class RevenueCatService {
   static Future<void> initialize() async {
     if (revenueCatSimulateMode) return;
     if (_initialized) return;
-    _initialized = true;
-
+    // _initialized is set to true ONLY after configure succeeds, so that a
+    // failed init is retried on next launch instead of silently being a no-op.
     try {
       await Purchases.setLogLevel(
         revenueCatDebugLogsEnabled ? LogLevel.debug : LogLevel.info,
       );
       final config = PurchasesConfiguration(revenueCatApiKey);
       await Purchases.configure(config);
+      _initialized = true;
       _available = true;
     } on MissingPluginException {
       _available = false;
@@ -82,6 +83,24 @@ class RevenueCatService {
         category: 'service.revenuecat',
       );
       return SubscriptionTier.free;
+    }
+  }
+
+  /// Like [getCurrentTier] but returns `null` when the result is uncertain
+  /// (simulate mode, SDK unavailable, or network/SDK error). Callers that use
+  /// this must treat `null` as "keep local tier" and skip any downgrade logic.
+  static Future<SubscriptionTier?> getRemoteTier() async {
+    if (revenueCatSimulateMode || !_initialized || !_available) return null;
+    try {
+      final info = await Purchases.getCustomerInfo();
+      return _tierFromCustomerInfo(info);
+    } catch (e) {
+      LogService.error(
+        'RevenueCat getRemoteTier failed',
+        error: e,
+        category: 'service.revenuecat',
+      );
+      return null;
     }
   }
 
