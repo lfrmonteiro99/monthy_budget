@@ -3377,5 +3377,9 @@
   "paywallFeatNameDashboard": "Personnalisation du Tableau de Bord",
   "paywallFeatNameAllThemes": "Tous les Thèmes de Couleur",
   "paywallFeatNameExpenseTrends": "Tendances des Dépenses",
-  "paywallFeatNameUnlimitedSavings": "Objectifs d'Épargne Illimités"
+  "paywallFeatNameUnlimitedSavings": "Objectifs d'Épargne Illimités",
+  "taxSimFiscalEyebrow": "FISCAL {year}",
+  "@taxSimFiscalEyebrow": {"placeholders": {"year": {"type": "String"}}},
+  "commandFabClose": "Fermer l'assistant de commandes",
+  "commandFabOpen": "Ouvrir l'assistant de commandes"
 }

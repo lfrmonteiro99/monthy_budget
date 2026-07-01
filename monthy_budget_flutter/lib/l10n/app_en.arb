@@ -3542,5 +3542,9 @@
   "paywallFeatNameDashboard": "Dashboard Customization",
   "paywallFeatNameAllThemes": "All Color Themes",
   "paywallFeatNameExpenseTrends": "Expense Trends",
-  "paywallFeatNameUnlimitedSavings": "Unlimited Savings Goals"
+  "paywallFeatNameUnlimitedSavings": "Unlimited Savings Goals",
+  "taxSimFiscalEyebrow": "FISCAL {year}",
+  "@taxSimFiscalEyebrow": {"placeholders": {"year": {"type": "String"}}},
+  "commandFabClose": "Close command assistant",
+  "commandFabOpen": "Open command assistant"
 }

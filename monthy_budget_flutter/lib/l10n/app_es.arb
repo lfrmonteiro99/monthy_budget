@@ -3377,5 +3377,9 @@
   "paywallFeatNameDashboard": "Personalización del Panel",
   "paywallFeatNameAllThemes": "Todos los Temas de Color",
   "paywallFeatNameExpenseTrends": "Tendencias de Gastos",
-  "paywallFeatNameUnlimitedSavings": "Metas de Ahorro Ilimitadas"
+  "paywallFeatNameUnlimitedSavings": "Metas de Ahorro Ilimitadas",
+  "taxSimFiscalEyebrow": "FISCAL {year}",
+  "@taxSimFiscalEyebrow": {"placeholders": {"year": {"type": "String"}}},
+  "commandFabClose": "Cerrar asistente de comandos",
+  "commandFabOpen": "Abrir asistente de comandos"
 }

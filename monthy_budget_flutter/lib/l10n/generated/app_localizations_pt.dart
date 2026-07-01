@@ -6751,4 +6751,15 @@ class SPt extends S {
   @override
   String get paywallFeatNameUnlimitedSavings =>
       'Objectivos de Poupança Ilimitados';
+
+  @override
+  String taxSimFiscalEyebrow(String year) {
+    return 'FISCAL $year';
+  }
+
+  @override
+  String get commandFabClose => 'Fechar assistente de comandos';
+
+  @override
+  String get commandFabOpen => 'Abrir assistente de comandos';
 }

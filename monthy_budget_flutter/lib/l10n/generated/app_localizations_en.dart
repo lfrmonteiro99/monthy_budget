@@ -6699,4 +6699,15 @@ class SEn extends S {
 
   @override
   String get paywallFeatNameUnlimitedSavings => 'Unlimited Savings Goals';
+
+  @override
+  String taxSimFiscalEyebrow(String year) {
+    return 'FISCAL $year';
+  }
+
+  @override
+  String get commandFabClose => 'Close command assistant';
+
+  @override
+  String get commandFabOpen => 'Open command assistant';
 }

@@ -6754,4 +6754,15 @@ class SEs extends S {
 
   @override
   String get paywallFeatNameUnlimitedSavings => 'Metas de Ahorro Ilimitadas';
+
+  @override
+  String taxSimFiscalEyebrow(String year) {
+    return 'FISCAL $year';
+  }
+
+  @override
+  String get commandFabClose => 'Cerrar asistente de comandos';
+
+  @override
+  String get commandFabOpen => 'Abrir asistente de comandos';
 }
