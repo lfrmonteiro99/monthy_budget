@@ -791,6 +791,14 @@ class SPt extends S {
   String get groceryTitle => 'Supermercado';
 
   @override
+  String get groceryPantryTitle => 'Despensa';
+
+  @override
+  String groceryItemCountEyebrow(int count) {
+    return '$count itens';
+  }
+
+  @override
   String get grocerySearchHint => 'Pesquisar produto...';
 
   @override

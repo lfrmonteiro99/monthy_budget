@@ -437,6 +437,17 @@
     "cmdCapabilityClearChecked": "Clear checked items",
     "cmdCapabilityClearCheckedExample": "Clear checked items",
     "groceryTitle": "Grocery",
+    "groceryPantryTitle": "Pantry",
+    "@groceryPantryTitle": {
+        "description": "Page header title for the pantry/grocery screen"
+    },
+    "groceryItemCountEyebrow": "{count} items",
+    "@groceryItemCountEyebrow": {
+        "description": "Eyebrow showing total item count in the pantry screen",
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
     "grocerySearchHint": "Search product...",
     "groceryLoadingLabel": "Loading products",
     "groceryLoadingMessage": "Loading products...",

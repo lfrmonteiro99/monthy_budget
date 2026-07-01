@@ -221,9 +221,8 @@ class _GroceryScreenState extends State<GroceryScreen> {
     final cats = byCategory.keys.toList()..sort();
 
     // §13 eyebrow: "{total} ITENS · {low} EM FALTA"
-    // TODO(l10n): extract to ARB
     final totalItems = widget.products.length;
-    final eyebrowText = '$totalItems ITENS';
+    final eyebrowText = l10n.groceryItemCountEyebrow(totalItems);
 
     // Search bar: bgSunk radius 14 padding 10/14, search icon ink50 — §13
     final searchBar = Padding(
@@ -258,11 +257,10 @@ class _GroceryScreenState extends State<GroceryScreen> {
       ),
     );
 
-    // §13 header block: CalmPageHeader "Despensa" + scan icon trailing
-    // TODO(l10n): "Despensa" label
+    // §13 header block: CalmPageHeader with scan icon trailing
     final pageHeader = CalmPageHeader(
       eyebrow: eyebrowText,
-      title: 'Despensa',
+      title: l10n.groceryPantryTitle,
       showBack: false,
       trailing: widget.onAddToShoppingList != null
           ? IconButton(
@@ -511,15 +509,13 @@ class _GroceryScreenState extends State<GroceryScreen> {
                   Padding(
                     padding: const EdgeInsets.only(right: 6),
                     child: CalmPill(
-                      label: '${groceryData.partialStoreCount} parcial',
-                      // TODO(l10n): "parcial"
+                      label: l10n.groceryStorePartialCount(groceryData.partialStoreCount),
                       color: AppColors.warn(context),
                     ),
                   ),
                 if (groceryData.failedStoreCount > 0)
                   CalmPill(
-                    label: '${groceryData.failedStoreCount} falhou',
-                    // TODO(l10n): "falhou"
+                    label: l10n.groceryStoreFailedCount(groceryData.failedStoreCount),
                     color: AppColors.bad(context),
                   ),
               ],

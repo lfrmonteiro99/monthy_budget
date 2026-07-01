@@ -788,6 +788,14 @@ class SEn extends S {
   String get groceryTitle => 'Grocery';
 
   @override
+  String get groceryPantryTitle => 'Pantry';
+
+  @override
+  String groceryItemCountEyebrow(int count) {
+    return '$count items';
+  }
+
+  @override
   String get grocerySearchHint => 'Search product...';
 
   @override

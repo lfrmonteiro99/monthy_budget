@@ -796,6 +796,14 @@ class SFr extends S {
   String get groceryTitle => 'Courses';
 
   @override
+  String get groceryPantryTitle => 'Garde-manger';
+
+  @override
+  String groceryItemCountEyebrow(int count) {
+    return '$count articles';
+  }
+
+  @override
   String get grocerySearchHint => 'Rechercher un produit...';
 
   @override
