@@ -2383,6 +2383,28 @@ class SEn extends S {
       'No expenses this month.\nTap + to add your first expense.';
 
   @override
+  String get expenseAlertsEyebrow => 'Alerts';
+
+  @override
+  String expenseAlertsBudgetSubtitle(String budgeted, String actual) {
+    return 'Budget $budgeted · Spent $actual';
+  }
+
+  @override
+  String get expenseRecentEyebrow => 'Recent';
+
+  @override
+  String get expenseRecentViewAll => 'View all expenses';
+
+  @override
+  String expenseRecentCountSubtitle(int count) {
+    return '$count transactions this month';
+  }
+
+  @override
+  String get expenseSearchResultsEyebrow => 'Results';
+
+  @override
   String get addExpenseTitle => 'Add Expense';
 
   @override
