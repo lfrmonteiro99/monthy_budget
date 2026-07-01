@@ -223,9 +223,9 @@ class _CoachScreenState extends State<CoachScreen> with WidgetsBindingObserver {
     final text = _composerController.text.trim();
     if (text.isEmpty || _loading) return;
 
-    // Pre-flight: if no API key is configured, route the user to settings
-    // instead of letting the request fail with a vague server error.
-    if (widget.apiKey.trim().isEmpty) {
+    // Pre-flight: free-tier users without a local API key can't reach the
+    // edge function; trial/premium users use server-side auth and don't need one.
+    if (!AiCoachService.canUseAI(_subscription, apiKey: widget.apiKey)) {
       final l10n = S.of(context);
       CalmSnack.show(
         context,
