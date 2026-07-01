@@ -149,7 +149,7 @@ class _TaxSimulatorScreenState extends State<TaxSimulatorScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CalmHero(
-          eyebrow: 'SIMULAÇÃO',
+          eyebrow: l10n.taxSimSimulationEyebrow,
           amount: formatCurrency(_simCalc.totalNetWithMeal),
           subtitle: l10n.taxSimNetTakeHome,
           size: 56,

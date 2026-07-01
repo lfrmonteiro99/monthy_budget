@@ -11602,6 +11602,12 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'OpenAI API key protegida no Supabase (Edge Function).'**
   String get settingsAiKeyProtected;
+
+  /// Tax Simulator simulation eyebrow
+  ///
+  /// In pt, this message translates to:
+  /// **'SIMULAÇÃO'**
+  String get taxSimSimulationEyebrow;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
