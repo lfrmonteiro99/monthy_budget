@@ -3073,6 +3073,41 @@
     "@expenseTrackerEmpty": {
         "description": "Empty state for tracker screen"
     },
+    "expenseTrackerMovementEyebrow": "Movimento",
+    "@expenseTrackerMovementEyebrow": {
+        "description": "Eyebrow label on the movement/activity section of the expense tracker"
+    },
+    "expenseTrackerExpensesTitle": "Despesas",
+    "@expenseTrackerExpensesTitle": {
+        "description": "Large display title on the expense tracker screen"
+    },
+    "expenseTrackerThisMonthEyebrow": "Este Mês",
+    "@expenseTrackerThisMonthEyebrow": {
+        "description": "Eyebrow label on the this-month KPI card"
+    },
+    "expenseTrackerAvgPerDayEyebrow": "Média/Dia",
+    "@expenseTrackerAvgPerDayEyebrow": {
+        "description": "Eyebrow label on the average-per-day KPI card"
+    },
+    "expenseTrackerBillsEyebrow": "Contas",
+    "@expenseTrackerBillsEyebrow": {
+        "description": "Eyebrow label on the bills/transactions count KPI card"
+    },
+    "expenseTrackerBudgetedLabel": "orç. {amount}",
+    "@expenseTrackerBudgetedLabel": {
+        "description": "Budget amount label shown next to the progress bar",
+        "placeholders": {
+            "amount": { "type": "String" }
+        }
+    },
+    "expenseTrackerByCategoryEyebrow": "Por Categoria",
+    "@expenseTrackerByCategoryEyebrow": {
+        "description": "Eyebrow label above the by-category expense list"
+    },
+    "expenseTrackerEmptyBody": "Adicione a sua primeira despesa para começar a acompanhar o orçamento.",
+    "@expenseTrackerEmptyBody": {
+        "description": "Body text in the empty state of the expense tracker screen"
+    },
     "expenseAlertsEyebrow": "Alertas",
     "@expenseAlertsEyebrow": {
         "description": "Eyebrow label on the expense alerts dashboard card"
