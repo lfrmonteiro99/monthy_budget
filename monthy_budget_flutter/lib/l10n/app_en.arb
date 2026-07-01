@@ -1337,6 +1337,37 @@
     },
     "expenseTrackerDeleteConfirm": "Delete this expense?",
     "expenseTrackerEmpty": "No expenses this month.\nTap + to add your first expense.",
+    "expenseAlertsEyebrow": "Alerts",
+    "@expenseAlertsEyebrow": {
+        "description": "Eyebrow label on the expense alerts dashboard card"
+    },
+    "expenseAlertsBudgetSubtitle": "Budget {budgeted} · Spent {actual}",
+    "@expenseAlertsBudgetSubtitle": {
+        "description": "Subtitle in expense alert row showing budgeted vs actual amounts",
+        "placeholders": {
+            "budgeted": { "type": "String" },
+            "actual": { "type": "String" }
+        }
+    },
+    "expenseRecentEyebrow": "Recent",
+    "@expenseRecentEyebrow": {
+        "description": "Eyebrow label on the recent expenses dashboard card"
+    },
+    "expenseRecentViewAll": "View all expenses",
+    "@expenseRecentViewAll": {
+        "description": "Link label to view all expenses in the recent expenses card"
+    },
+    "expenseRecentCountSubtitle": "{count} transactions this month",
+    "@expenseRecentCountSubtitle": {
+        "description": "Subtitle showing transaction count in the view-all row",
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "expenseSearchResultsEyebrow": "Results",
+    "@expenseSearchResultsEyebrow": {
+        "description": "Eyebrow label above expense search results list"
+    },
     "addExpenseTitle": "Add Expense",
     "editExpenseTitle": "Edit Expense",
     "addExpenseCategory": "Category",

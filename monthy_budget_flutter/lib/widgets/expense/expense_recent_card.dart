@@ -34,8 +34,7 @@ class ExpenseRecentCard extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 6),
-            // TODO(l10n): move to ARB (Wave H)
-            child: const CalmEyebrow('RECENTES'),
+            child: CalmEyebrow(l10n.expenseRecentEyebrow),
           ),
           Divider(color: AppColors.line(context), height: 1),
           ...recent.map((expense) {
@@ -79,9 +78,8 @@ class ExpenseRecentCard extends StatelessWidget {
               child: CalmListTile(
                 leadingIcon: Icons.receipt_long_outlined,
                 leadingColor: AppColors.ink50(context),
-                // TODO(l10n): move to ARB (Wave H)
-                title: 'Ver todas as despesas',
-                subtitle: '${expenses.length} transações este mês',
+                title: l10n.expenseRecentViewAll,
+                subtitle: l10n.expenseRecentCountSubtitle(expenses.length),
               ),
             )
           else

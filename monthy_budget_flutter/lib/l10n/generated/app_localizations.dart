@@ -4445,6 +4445,42 @@ abstract class S {
   /// **'Sem despesas este mês.\nToca + para adicionar a primeira.'**
   String get expenseTrackerEmpty;
 
+  /// Eyebrow label on the expense alerts dashboard card
+  ///
+  /// In pt, this message translates to:
+  /// **'Alertas'**
+  String get expenseAlertsEyebrow;
+
+  /// Subtitle in expense alert row showing budgeted vs actual amounts
+  ///
+  /// In pt, this message translates to:
+  /// **'Orç. {budgeted} · Gasto {actual}'**
+  String expenseAlertsBudgetSubtitle(String budgeted, String actual);
+
+  /// Eyebrow label on the recent expenses dashboard card
+  ///
+  /// In pt, this message translates to:
+  /// **'Recentes'**
+  String get expenseRecentEyebrow;
+
+  /// Link label to view all expenses in the recent expenses card
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver todas as despesas'**
+  String get expenseRecentViewAll;
+
+  /// Subtitle showing transaction count in the view-all row
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} transações este mês'**
+  String expenseRecentCountSubtitle(int count);
+
+  /// Eyebrow label above expense search results list
+  ///
+  /// In pt, this message translates to:
+  /// **'Resultados'**
+  String get expenseSearchResultsEyebrow;
+
   /// Add expense sheet title
   ///
   /// In pt, this message translates to:

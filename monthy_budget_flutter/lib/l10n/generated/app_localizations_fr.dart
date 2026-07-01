@@ -2417,6 +2417,28 @@ class SFr extends S {
       'Aucune dépense ce mois.\nAppuyez sur + pour ajouter.';
 
   @override
+  String get expenseAlertsEyebrow => 'Alertes';
+
+  @override
+  String expenseAlertsBudgetSubtitle(String budgeted, String actual) {
+    return 'Budget $budgeted · Depense $actual';
+  }
+
+  @override
+  String get expenseRecentEyebrow => 'Recents';
+
+  @override
+  String get expenseRecentViewAll => 'Voir toutes les depenses';
+
+  @override
+  String expenseRecentCountSubtitle(int count) {
+    return '$count transactions ce mois';
+  }
+
+  @override
+  String get expenseSearchResultsEyebrow => 'Resultats';
+
+  @override
   String get addExpenseTitle => 'Ajouter une Dépense';
 
   @override

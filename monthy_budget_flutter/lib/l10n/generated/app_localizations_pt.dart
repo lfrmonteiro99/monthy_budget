@@ -2409,6 +2409,28 @@ class SPt extends S {
       'Sem despesas este mês.\nToca + para adicionar a primeira.';
 
   @override
+  String get expenseAlertsEyebrow => 'Alertas';
+
+  @override
+  String expenseAlertsBudgetSubtitle(String budgeted, String actual) {
+    return 'Orç. $budgeted · Gasto $actual';
+  }
+
+  @override
+  String get expenseRecentEyebrow => 'Recentes';
+
+  @override
+  String get expenseRecentViewAll => 'Ver todas as despesas';
+
+  @override
+  String expenseRecentCountSubtitle(int count) {
+    return '$count transações este mês';
+  }
+
+  @override
+  String get expenseSearchResultsEyebrow => 'Resultados';
+
+  @override
   String get addExpenseTitle => 'Adicionar Despesa';
 
   @override

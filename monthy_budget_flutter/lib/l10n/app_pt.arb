@@ -3062,6 +3062,37 @@
     "@expenseTrackerEmpty": {
         "description": "Empty state for tracker screen"
     },
+    "expenseAlertsEyebrow": "Alertas",
+    "@expenseAlertsEyebrow": {
+        "description": "Eyebrow label on the expense alerts dashboard card"
+    },
+    "expenseAlertsBudgetSubtitle": "Orç. {budgeted} · Gasto {actual}",
+    "@expenseAlertsBudgetSubtitle": {
+        "description": "Subtitle in expense alert row showing budgeted vs actual amounts",
+        "placeholders": {
+            "budgeted": { "type": "String" },
+            "actual": { "type": "String" }
+        }
+    },
+    "expenseRecentEyebrow": "Recentes",
+    "@expenseRecentEyebrow": {
+        "description": "Eyebrow label on the recent expenses dashboard card"
+    },
+    "expenseRecentViewAll": "Ver todas as despesas",
+    "@expenseRecentViewAll": {
+        "description": "Link label to view all expenses in the recent expenses card"
+    },
+    "expenseRecentCountSubtitle": "{count} transações este mês",
+    "@expenseRecentCountSubtitle": {
+        "description": "Subtitle showing transaction count in the view-all row",
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "expenseSearchResultsEyebrow": "Resultados",
+    "@expenseSearchResultsEyebrow": {
+        "description": "Eyebrow label above expense search results list"
+    },
     "addExpenseTitle": "Adicionar Despesa",
     "@addExpenseTitle": {
         "description": "Add expense sheet title"

@@ -33,8 +33,7 @@ class ExpenseAlertsCard extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 6),
             child: Row(
               children: [
-                // TODO(l10n): move to ARB (Wave H)
-                const CalmEyebrow('ALERTAS'),
+                CalmEyebrow(l10n.expenseAlertsEyebrow),
                 const SizedBox(width: 6),
                 CalmPill(
                   label: '${overItems.length}',
@@ -60,9 +59,7 @@ class ExpenseAlertsCard extends StatelessWidget {
                     leadingIcon: catIcon,
                     leadingColor: AppColors.bad(context),
                     title: localizedExpenseCategory(s.category, l10n),
-                    subtitle:
-                        // TODO(l10n): move to ARB (Wave H)
-                        'orç. ${formatCurrency(s.budgeted)} · gasto ${formatCurrency(s.actual)}',
+                    subtitle: l10n.expenseAlertsBudgetSubtitle(formatCurrency(s.budgeted), formatCurrency(s.actual)),
                     trailing: '+${formatCurrency(over)}',
                   ),
                 ),
