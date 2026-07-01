@@ -58,14 +58,14 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
     MealType.dinner,
   ];
 
-  // Day labels PT — used directly because the global l10n keys are for
-  // full names; these short 3-char labels are not in the existing arb files.
-  // TODO(l10n): add weekdayShortSeg..Dom keys to the arb files.
-  static const _dayLabels = [
-    'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom',
+  List<String> _dayLabels(S l10n) => [
+    l10n.mealMenuDayMon, l10n.mealMenuDayTue, l10n.mealMenuDayWed,
+    l10n.mealMenuDayThu, l10n.mealMenuDayFri, l10n.mealMenuDaySat, l10n.mealMenuDaySun,
   ];
 
-  static const _mealRowLabels = ['Peq.', 'Almoço', 'Jantar'];
+  List<String> _mealRowLabels(S l10n) => [
+    l10n.mealMenuRowBreakfast, l10n.mealMenuRowLunch, l10n.mealMenuRowDinner,
+  ];
 
   @override
   void initState() {
@@ -240,11 +240,11 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
     final outside = _outsideCount();
 
     final weekGrid = CalmWeekGrid(
-      days: _dayLabels,
+      days: _dayLabels(l10n),
       rows: List.generate(
         3,
         (i) => CalmWeekGridRow(
-          label: _mealRowLabels[i],
+          label: _mealRowLabels(l10n)[i],
           cells: _rowCells(i),
         ),
       ),

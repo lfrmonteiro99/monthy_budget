@@ -6541,4 +6541,34 @@ class SEn extends S {
 
   @override
   String get taxSimSimulationEyebrow => 'SIMULATION';
+
+  @override
+  String get mealMenuDayMon => 'Mon';
+
+  @override
+  String get mealMenuDayTue => 'Tue';
+
+  @override
+  String get mealMenuDayWed => 'Wed';
+
+  @override
+  String get mealMenuDayThu => 'Thu';
+
+  @override
+  String get mealMenuDayFri => 'Fri';
+
+  @override
+  String get mealMenuDaySat => 'Sat';
+
+  @override
+  String get mealMenuDaySun => 'Sun';
+
+  @override
+  String get mealMenuRowBreakfast => 'Bkfst.';
+
+  @override
+  String get mealMenuRowLunch => 'Lunch';
+
+  @override
+  String get mealMenuRowDinner => 'Dinner';
 }

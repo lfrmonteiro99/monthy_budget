@@ -6602,4 +6602,34 @@ class SFr extends S {
 
   @override
   String get taxSimSimulationEyebrow => 'SIMULATION';
+
+  @override
+  String get mealMenuDayMon => 'Lun';
+
+  @override
+  String get mealMenuDayTue => 'Mar';
+
+  @override
+  String get mealMenuDayWed => 'Mer';
+
+  @override
+  String get mealMenuDayThu => 'Jeu';
+
+  @override
+  String get mealMenuDayFri => 'Ven';
+
+  @override
+  String get mealMenuDaySat => 'Sam';
+
+  @override
+  String get mealMenuDaySun => 'Dim';
+
+  @override
+  String get mealMenuRowBreakfast => 'P.dèj.';
+
+  @override
+  String get mealMenuRowLunch => 'Déjeuner';
+
+  @override
+  String get mealMenuRowDinner => 'Dîner';
 }

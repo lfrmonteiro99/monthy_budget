@@ -11608,6 +11608,66 @@ abstract class S {
   /// In pt, this message translates to:
   /// **'SIMULAÇÃO'**
   String get taxSimSimulationEyebrow;
+
+  /// Meal menu grid weekday: Monday
+  ///
+  /// In pt, this message translates to:
+  /// **'Seg'**
+  String get mealMenuDayMon;
+
+  /// Meal menu grid weekday: Tuesday
+  ///
+  /// In pt, this message translates to:
+  /// **'Ter'**
+  String get mealMenuDayTue;
+
+  /// Meal menu grid weekday: Wednesday
+  ///
+  /// In pt, this message translates to:
+  /// **'Qua'**
+  String get mealMenuDayWed;
+
+  /// Meal menu grid weekday: Thursday
+  ///
+  /// In pt, this message translates to:
+  /// **'Qui'**
+  String get mealMenuDayThu;
+
+  /// Meal menu grid weekday: Friday
+  ///
+  /// In pt, this message translates to:
+  /// **'Sex'**
+  String get mealMenuDayFri;
+
+  /// Meal menu grid weekday: Saturday
+  ///
+  /// In pt, this message translates to:
+  /// **'Sáb'**
+  String get mealMenuDaySat;
+
+  /// Meal menu grid weekday: Sunday
+  ///
+  /// In pt, this message translates to:
+  /// **'Dom'**
+  String get mealMenuDaySun;
+
+  /// Meal menu grid meal row: Breakfast
+  ///
+  /// In pt, this message translates to:
+  /// **'Peq.'**
+  String get mealMenuRowBreakfast;
+
+  /// Meal menu grid meal row: Lunch
+  ///
+  /// In pt, this message translates to:
+  /// **'Almoço'**
+  String get mealMenuRowLunch;
+
+  /// Meal menu grid meal row: Dinner
+  ///
+  /// In pt, this message translates to:
+  /// **'Jantar'**
+  String get mealMenuRowDinner;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
