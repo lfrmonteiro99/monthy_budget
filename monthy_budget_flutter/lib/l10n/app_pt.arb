@@ -3280,6 +3280,38 @@
     "recurringExpenseDeleteError": "Não foi possível eliminar — tenta de novo",
     "@recurringExpenseSaveError": { "description": "Error snack when saving a recurring expense fails" },
     "@recurringExpenseDeleteError": { "description": "Error snack when deleting a recurring expense fails" },
+    "recurringActivePill": "{count, plural, =1{1 ativa} other{{count} ativas}}",
+    "@recurringActivePill": {
+      "placeholders": {
+        "count": { "type": "int" }
+      }
+    },
+    "recurringTotalMonthlyEyebrow": "TOTAL MENSAL",
+    "recurringActiveTitle": "Ativas",
+    "recurringSubscriptionCount": "{count, plural, =1{1 subscrição} other{{count} subscrições}}",
+    "@recurringSubscriptionCount": {
+      "placeholders": {
+        "count": { "type": "int" }
+      }
+    },
+    "recurringPausedTitle": "Pausadas",
+    "recurringDayOfMonth": "dia {day}",
+    "@recurringDayOfMonth": {
+      "placeholders": {
+        "day": { "type": "int" }
+      }
+    },
+    "recurringEmptyTitle": "Sem pagamentos recorrentes",
+    "recurringEmptyBody": "Adicione para gerar automaticamente todos os meses.",
+    "recurringEyebrow": "RECORRENTES",
+    "recurringHeroSubtitle": "{count, plural, =1{1 subscrição ativa} other{{count} subscrições ativas}}",
+    "@recurringHeroSubtitle": {
+      "placeholders": {
+        "count": { "type": "int" }
+      }
+    },
+    "recurringActiveGroupLabel": "ATIVAS",
+    "recurringPausedGroupLabel": "PAUSADAS",
     "savingsContributionSaveError": "Não foi possível guardar a contribuição — tenta de novo",
     "@savingsContributionSaveError": { "description": "Error snack when saving a savings contribution fails" },
     "coachNoApiKeyTitle": "Configura o teu coach",
@@ -5971,6 +6003,8 @@
     "mealSubstituteHint": "Toque num ingrediente para o substituir por outro",
     "mealSubstituteSameCategory": "Mesma categoria",
     "mealSubstituteOtherCategories": "Outras categorias",
+    "mealPlannerDetailEyebrow": "DETALHE",
+    "mealPlannerMealsEyebrow": "REFEIÇÕES",
     "wizardCourseStructure": "Estrutura da refeicao",
     "wizardIncludeSoupStarter": "Incluir sopa ou entrada",
     "wizardSoupStarterHint": "Adiciona uma sopa ou entrada como primeiro prato",

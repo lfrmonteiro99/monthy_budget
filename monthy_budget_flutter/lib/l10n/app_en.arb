@@ -1451,6 +1451,38 @@
     "recurringExpenseSaved": "Recurring payment saved",
     "recurringExpenseSaveError": "Couldn't save — try again",
     "recurringExpenseDeleteError": "Couldn't delete — try again",
+    "recurringActivePill": "{count, plural, =1{1 active} other{{count} active}}",
+    "@recurringActivePill": {
+      "placeholders": {
+        "count": { "type": "int" }
+      }
+    },
+    "recurringTotalMonthlyEyebrow": "MONTHLY TOTAL",
+    "recurringActiveTitle": "Active",
+    "recurringSubscriptionCount": "{count, plural, =1{1 subscription} other{{count} subscriptions}}",
+    "@recurringSubscriptionCount": {
+      "placeholders": {
+        "count": { "type": "int" }
+      }
+    },
+    "recurringPausedTitle": "Paused",
+    "recurringDayOfMonth": "day {day}",
+    "@recurringDayOfMonth": {
+      "placeholders": {
+        "day": { "type": "int" }
+      }
+    },
+    "recurringEmptyTitle": "No recurring payments",
+    "recurringEmptyBody": "Add one to generate them automatically every month.",
+    "recurringEyebrow": "RECURRING",
+    "recurringHeroSubtitle": "{count, plural, =1{1 active subscription} other{{count} active subscriptions}}",
+    "@recurringHeroSubtitle": {
+      "placeholders": {
+        "count": { "type": "int" }
+      }
+    },
+    "recurringActiveGroupLabel": "ACTIVE",
+    "recurringPausedGroupLabel": "PAUSED",
     "savingsContributionSaveError": "Couldn't save contribution — try again",
     "coachNoApiKeyTitle": "Set up your coach",
     "coachNoApiKeyBody": "Add an OpenAI key in Settings to start chatting.",
@@ -3248,6 +3280,8 @@
     "mealSubstituteHint": "Tap an ingredient to replace it with another",
     "mealSubstituteSameCategory": "Same category",
     "mealSubstituteOtherCategories": "Other categories",
+    "mealPlannerDetailEyebrow": "DETAIL",
+    "mealPlannerMealsEyebrow": "MEALS",
     "wizardCourseStructure": "Meal structure",
     "wizardIncludeSoupStarter": "Include soup or starter",
     "wizardSoupStarterHint": "Adds a soup or starter as the first course",

@@ -1345,6 +1345,38 @@
     "recurringExpenseSaved": "Paiement récurrent enregistré",
     "recurringExpenseSaveError": "Impossible d'enregistrer — reessaye",
     "recurringExpenseDeleteError": "Impossible de supprimer — reessaye",
+    "recurringActivePill": "{count, plural, =1{1 active} other{{count} actives}}",
+    "@recurringActivePill": {
+      "placeholders": {
+        "count": { "type": "int" }
+      }
+    },
+    "recurringTotalMonthlyEyebrow": "TOTAL MENSUEL",
+    "recurringActiveTitle": "Actives",
+    "recurringSubscriptionCount": "{count, plural, =1{1 abonnement} other{{count} abonnements}}",
+    "@recurringSubscriptionCount": {
+      "placeholders": {
+        "count": { "type": "int" }
+      }
+    },
+    "recurringPausedTitle": "En pause",
+    "recurringDayOfMonth": "jour {day}",
+    "@recurringDayOfMonth": {
+      "placeholders": {
+        "day": { "type": "int" }
+      }
+    },
+    "recurringEmptyTitle": "Aucun paiement recurrent",
+    "recurringEmptyBody": "Ajoutes-en un pour le generer automatiquement chaque mois.",
+    "recurringEyebrow": "RECURRENTS",
+    "recurringHeroSubtitle": "{count, plural, =1{1 abonnement actif} other{{count} abonnements actifs}}",
+    "@recurringHeroSubtitle": {
+      "placeholders": {
+        "count": { "type": "int" }
+      }
+    },
+    "recurringActiveGroupLabel": "ACTIFS",
+    "recurringPausedGroupLabel": "EN PAUSE",
     "savingsContributionSaveError": "Impossible d'enregistrer la contribution — reessaye",
     "coachNoApiKeyTitle": "Configure ton coach",
     "coachNoApiKeyBody": "Ajoute une cle OpenAI dans les Reglages pour commencer a discuter.",
@@ -3127,6 +3159,8 @@
     "mealSubstituteHint": "Appuyez sur un ingredient pour le remplacer",
     "mealSubstituteSameCategory": "Meme categorie",
     "mealSubstituteOtherCategories": "Autres categories",
+    "mealPlannerDetailEyebrow": "DÉTAIL",
+    "mealPlannerMealsEyebrow": "REPAS",
     "wizardCourseStructure": "Structure du repas",
     "wizardIncludeSoupStarter": "Inclure soupe ou entree",
     "wizardSoupStarterHint": "Ajoute une soupe ou entree en premier plat",

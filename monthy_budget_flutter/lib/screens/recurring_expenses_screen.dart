@@ -187,9 +187,8 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
         .fold(0.0, (s, e) => s + e.amount);
     final pillColor =
         activeCount > 0 ? AppColors.ok(context) : AppColors.ink50(context);
-    final pillLabel = activeCount == 1
-        ? '1 ativa' // TODO(l10n): move to ARB (Wave H)
-        : '$activeCount ativas'; // TODO(l10n): move to ARB (Wave H)
+    final l10n = S.of(context);
+    final pillLabel = l10n.recurringActivePill(activeCount);
 
     return CalmCard(
       child: Column(
@@ -197,7 +196,7 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
         children: [
           Row(
             children: [
-              CalmEyebrow('TOTAL MENSAL'), // TODO(l10n): move to ARB (Wave H)
+              CalmEyebrow(l10n.recurringTotalMonthlyEyebrow),
               const Spacer(),
               CalmPill(label: pillLabel, color: pillColor),
             ],
@@ -214,8 +213,8 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
           CalmListTile(
             leadingIcon: Icons.check_circle_outline,
             leadingColor: AppColors.ok(context),
-            title: 'Ativas', // TODO(l10n): move to ARB (Wave H)
-            subtitle: '$activeCount subscrição${activeCount == 1 ? '' : 'ões'}', // TODO(l10n): move to ARB (Wave H)
+            title: l10n.recurringActiveTitle,
+            subtitle: l10n.recurringSubscriptionCount(activeCount),
             trailing: formatCurrency(activeMonthly),
           ),
           if (pausedCount > 0) ...[
@@ -228,8 +227,8 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
             CalmListTile(
               leadingIcon: Icons.pause_circle_outline,
               leadingColor: AppColors.ink50(context),
-              title: 'Pausadas', // TODO(l10n): move to ARB (Wave H)
-              subtitle: '$pausedCount subscrição${pausedCount == 1 ? '' : 'ões'}', // TODO(l10n): move to ARB (Wave H)
+              title: l10n.recurringPausedTitle,
+              subtitle: l10n.recurringSubscriptionCount(pausedCount),
               trailing: formatCurrency(pausedMonthly),
             ),
           ],
@@ -295,7 +294,7 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
     final subtitleParts = <String>[
       formatCurrency(expense.amount),
       if (expense.dayOfMonth != null)
-        'dia ${expense.dayOfMonth}', // TODO(l10n): move to ARB (Wave H)
+        l10n.recurringDayOfMonth(expense.dayOfMonth!),
       if (expense.description != null && expense.description!.isNotEmpty)
         expense.description!,
     ];
@@ -369,8 +368,8 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
           ? Center(
               child: CalmEmptyState(
                 icon: Icons.event_repeat_outlined,
-                title: 'Sem pagamentos recorrentes', // TODO(l10n): move to ARB (Wave H)
-                body: 'Adicione para gerar automaticamente todos os meses.', // TODO(l10n): move to ARB (Wave H)
+                title: l10n.recurringEmptyTitle,
+                body: l10n.recurringEmptyBody,
                 action: CalmEmptyStateAction(
                   label: l10n.recurringExpenseAdd,
                   onPressed: () => _addOrEdit(),
@@ -382,9 +381,9 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
               children: [
                 // Hero — total monthly recurring
                 CalmHero(
-                  eyebrow: 'RECORRENTES', // TODO(l10n): move to ARB (Wave H)
+                  eyebrow: l10n.recurringEyebrow,
                   amount: formatCurrency(_totalMonthly),
-                  subtitle: '${_expenses.where((e) => e.isActive).length} ${_expenses.where((e) => e.isActive).length == 1 ? 'subscrição ativa' : 'subscrições ativas'}', // TODO(l10n): move to ARB (Wave H)
+                  subtitle: l10n.recurringHeroSubtitle(_expenses.where((e) => e.isActive).length),
                 ),
                 const SizedBox(height: 24),
 
@@ -397,7 +396,7 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
                   _buildExpenseGroup(
                     context,
                     l10n,
-                    'ATIVAS', // TODO(l10n): move to ARB (Wave H)
+                    l10n.recurringActiveGroupLabel,
                     active,
                     true,
                   ),
@@ -407,7 +406,7 @@ class _RecurringExpensesScreenState extends State<RecurringExpensesScreen> {
                   _buildExpenseGroup(
                     context,
                     l10n,
-                    'PAUSADAS', // TODO(l10n): move to ARB (Wave H)
+                    l10n.recurringPausedGroupLabel,
                     paused,
                     active.isEmpty,
                   ),

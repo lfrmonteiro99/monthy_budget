@@ -2591,6 +2591,69 @@ class SFr extends S {
       'Impossible de supprimer — reessaye';
 
   @override
+  String recurringActivePill(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count actives',
+      one: '1 active',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recurringTotalMonthlyEyebrow => 'TOTAL MENSUEL';
+
+  @override
+  String get recurringActiveTitle => 'Actives';
+
+  @override
+  String recurringSubscriptionCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count abonnements',
+      one: '1 abonnement',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recurringPausedTitle => 'En pause';
+
+  @override
+  String recurringDayOfMonth(int day) {
+    return 'jour $day';
+  }
+
+  @override
+  String get recurringEmptyTitle => 'Aucun paiement recurrent';
+
+  @override
+  String get recurringEmptyBody =>
+      'Ajoutes-en un pour le generer automatiquement chaque mois.';
+
+  @override
+  String get recurringEyebrow => 'RECURRENTS';
+
+  @override
+  String recurringHeroSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count abonnements actifs',
+      one: '1 abonnement actif',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recurringActiveGroupLabel => 'ACTIFS';
+
+  @override
+  String get recurringPausedGroupLabel => 'EN PAUSE';
+
+  @override
   String get savingsContributionSaveError =>
       'Impossible d\'enregistrer la contribution — reessaye';
 
@@ -6121,6 +6184,12 @@ class SFr extends S {
 
   @override
   String get mealSubstituteOtherCategories => 'Autres categories';
+
+  @override
+  String get mealPlannerDetailEyebrow => 'DÉTAIL';
+
+  @override
+  String get mealPlannerMealsEyebrow => 'REPAS';
 
   @override
   String get wizardCourseStructure => 'Structure du repas';
