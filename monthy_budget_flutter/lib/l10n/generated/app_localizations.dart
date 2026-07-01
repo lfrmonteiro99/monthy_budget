@@ -10901,6 +10901,66 @@ abstract class S {
   /// **'Outras categorias'**
   String get mealSubstituteOtherCategories;
 
+  /// Eyebrow label in the meal menu page header
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta Semana'**
+  String get mealMenuThisWeekEyebrow;
+
+  /// Page header title for the weekly meal menu screen
+  ///
+  /// In pt, this message translates to:
+  /// **'Ementa'**
+  String get mealMenuTitle;
+
+  /// Label on the generate action pill in the meal menu header
+  ///
+  /// In pt, this message translates to:
+  /// **'Gerar'**
+  String get mealMenuGenerateLabel;
+
+  /// Eyebrow label above the KPI summary section in meal menu
+  ///
+  /// In pt, this message translates to:
+  /// **'Resumo · Semana'**
+  String get mealMenuWeekSummaryEyebrow;
+
+  /// KPI row label for number of planned meals
+  ///
+  /// In pt, this message translates to:
+  /// **'Refeições planeadas'**
+  String get mealMenuKpiMealsPlannedLabel;
+
+  /// KPI row value showing planned meals out of 21 total
+  ///
+  /// In pt, this message translates to:
+  /// **'{planned} de 21'**
+  String mealMenuKpiMealsPlannedValue(int planned);
+
+  /// KPI row label for estimated weekly food cost
+  ///
+  /// In pt, this message translates to:
+  /// **'Custo estimado'**
+  String get mealMenuKpiCostEstimatedLabel;
+
+  /// KPI row label for cost per person per day
+  ///
+  /// In pt, this message translates to:
+  /// **'Custo/pessoa/dia'**
+  String get mealMenuKpiCostPerPersonDayLabel;
+
+  /// KPI row label for meals eaten outside the home
+  ///
+  /// In pt, this message translates to:
+  /// **'Fora de casa'**
+  String get mealMenuKpiOutsideLabel;
+
+  /// KPI row value showing number of meals eaten outside
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{{count} refeição} other{{count} refeições}}'**
+  String mealMenuKpiOutsideValue(int count);
+
   /// No description provided for @mealPlannerDetailEyebrow.
   ///
   /// In pt, this message translates to:

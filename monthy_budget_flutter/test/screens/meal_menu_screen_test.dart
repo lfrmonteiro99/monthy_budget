@@ -62,11 +62,11 @@ void main() {
     // Verify 4 CalmKpiRow widgets are present.
     expect(find.byType(CalmKpiRow), findsNWidgets(4));
 
-    // Spot-check KPI labels.
-    expect(find.text('Refeições planeadas'), findsOneWidget);
-    expect(find.text('Custo estimado'), findsOneWidget);
-    expect(find.text('Custo/pessoa/dia'), findsOneWidget);
-    expect(find.text('Fora de casa'), findsOneWidget);
+    // Spot-check KPI labels (EN locale).
+    expect(find.text('Planned meals'), findsOneWidget);
+    expect(find.text('Estimated cost'), findsOneWidget);
+    expect(find.text('Cost/person/day'), findsOneWidget);
+    expect(find.text('Eating out'), findsOneWidget);
   });
 
   testWidgets('MealMenuScreen shows ESTA SEMANA eyebrow and Ementa title',
@@ -78,8 +78,8 @@ void main() {
     // channels that aren't wired in widget tests.
     await tester.pump();
 
-    expect(find.text('ESTA SEMANA'), findsOneWidget);
-    expect(find.text('Ementa'), findsOneWidget);
+    expect(find.text('This Week'), findsOneWidget);
+    expect(find.text('Menu'), findsOneWidget);
     expect(find.byType(CalmActionPill), findsOneWidget);
   });
 }

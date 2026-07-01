@@ -6176,6 +6176,46 @@ class SEs extends S {
   String get mealSubstituteOtherCategories => 'Otras categorias';
 
   @override
+  String get mealMenuThisWeekEyebrow => 'Esta Semana';
+
+  @override
+  String get mealMenuTitle => 'Menu';
+
+  @override
+  String get mealMenuGenerateLabel => 'Generar';
+
+  @override
+  String get mealMenuWeekSummaryEyebrow => 'Resumen · Semana';
+
+  @override
+  String get mealMenuKpiMealsPlannedLabel => 'Comidas planificadas';
+
+  @override
+  String mealMenuKpiMealsPlannedValue(int planned) {
+    return '$planned de 21';
+  }
+
+  @override
+  String get mealMenuKpiCostEstimatedLabel => 'Coste estimado';
+
+  @override
+  String get mealMenuKpiCostPerPersonDayLabel => 'Coste/persona/dia';
+
+  @override
+  String get mealMenuKpiOutsideLabel => 'Fuera de casa';
+
+  @override
+  String mealMenuKpiOutsideValue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count comidas',
+      one: '$count comida',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get mealPlannerDetailEyebrow => 'DETALLE';
 
   @override

@@ -6189,6 +6189,46 @@ class SFr extends S {
   String get mealSubstituteOtherCategories => 'Autres categories';
 
   @override
+  String get mealMenuThisWeekEyebrow => 'Cette Semaine';
+
+  @override
+  String get mealMenuTitle => 'Menu';
+
+  @override
+  String get mealMenuGenerateLabel => 'Generer';
+
+  @override
+  String get mealMenuWeekSummaryEyebrow => 'Resume · Semaine';
+
+  @override
+  String get mealMenuKpiMealsPlannedLabel => 'Repas planifies';
+
+  @override
+  String mealMenuKpiMealsPlannedValue(int planned) {
+    return '$planned sur 21';
+  }
+
+  @override
+  String get mealMenuKpiCostEstimatedLabel => 'Cout estime';
+
+  @override
+  String get mealMenuKpiCostPerPersonDayLabel => 'Cout/personne/jour';
+
+  @override
+  String get mealMenuKpiOutsideLabel => 'Hors domicile';
+
+  @override
+  String mealMenuKpiOutsideValue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count repas',
+      one: '$count repas',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get mealPlannerDetailEyebrow => 'DÉTAIL';
 
   @override
