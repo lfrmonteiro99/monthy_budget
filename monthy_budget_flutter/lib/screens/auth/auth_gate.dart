@@ -218,7 +218,7 @@ class _ErrorScreen extends StatelessWidget {
                 error,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: AppColors.textSecondary(context),
+                  color: AppColors.ink70(context),
                   fontSize: 13,
                 ),
               ),
