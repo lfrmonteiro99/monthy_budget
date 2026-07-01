@@ -5979,6 +5979,8 @@
     "mealSubstituteHint": "Toque num ingrediente para o substituir por outro",
     "mealSubstituteSameCategory": "Mesma categoria",
     "mealSubstituteOtherCategories": "Outras categorias",
+    "mealPlannerDetailEyebrow": "DETALHE",
+    "mealPlannerMealsEyebrow": "REFEIÇÕES",
     "wizardCourseStructure": "Estrutura da refeicao",
     "wizardIncludeSoupStarter": "Incluir sopa ou entrada",
     "wizardSoupStarterHint": "Adiciona uma sopa ou entrada como primeiro prato",

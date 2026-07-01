@@ -3135,6 +3135,8 @@
     "mealSubstituteHint": "Appuyez sur un ingredient pour le remplacer",
     "mealSubstituteSameCategory": "Meme categorie",
     "mealSubstituteOtherCategories": "Autres categories",
+    "mealPlannerDetailEyebrow": "DÉTAIL",
+    "mealPlannerMealsEyebrow": "REPAS",
     "wizardCourseStructure": "Structure du repas",
     "wizardIncludeSoupStarter": "Inclure soupe ou entree",
     "wizardSoupStarterHint": "Ajoute une soupe ou entree en premier plat",
