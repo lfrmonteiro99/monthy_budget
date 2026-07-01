@@ -937,6 +937,34 @@ class SEs extends S {
   }
 
   @override
+  String get shoppingFinalizing => 'FINALIZANDO';
+
+  @override
+  String get shoppingListEyebrow => 'LISTA';
+
+  @override
+  String shoppingHeroItemCount(int count) {
+    return '$count por comprar';
+  }
+
+  @override
+  String get shoppingSummaryEyebrow => 'RESUMEN';
+
+  @override
+  String shoppingCheckedCountLabel(int count) {
+    return '$count ✓';
+  }
+
+  @override
+  String get shoppingToBuyEyebrow => 'POR COMPRAR';
+
+  @override
+  String get shoppingInBasketEyebrow => 'EN EL CARRO';
+
+  @override
+  String get shoppingHistoryEyebrow => 'HISTORIAL';
+
+  @override
   String get authLogin => 'Iniciar sesión';
 
   @override

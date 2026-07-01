@@ -1733,6 +1733,54 @@ abstract class S {
   /// **'Mais barato em {store} ({price})'**
   String shoppingCheapestAt(String store, String price);
 
+  /// No description provided for @shoppingFinalizing.
+  ///
+  /// In pt, this message translates to:
+  /// **'A FINALIZAR'**
+  String get shoppingFinalizing;
+
+  /// No description provided for @shoppingListEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'LISTA'**
+  String get shoppingListEyebrow;
+
+  /// No description provided for @shoppingHeroItemCount.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} por comprar'**
+  String shoppingHeroItemCount(int count);
+
+  /// No description provided for @shoppingSummaryEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'RESUMO'**
+  String get shoppingSummaryEyebrow;
+
+  /// No description provided for @shoppingCheckedCountLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} ✓'**
+  String shoppingCheckedCountLabel(int count);
+
+  /// No description provided for @shoppingToBuyEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'POR COMPRAR'**
+  String get shoppingToBuyEyebrow;
+
+  /// No description provided for @shoppingInBasketEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'NO CESTO'**
+  String get shoppingInBasketEyebrow;
+
+  /// No description provided for @shoppingHistoryEyebrow.
+  ///
+  /// In pt, this message translates to:
+  /// **'HISTÓRICO'**
+  String get shoppingHistoryEyebrow;
+
   /// Auth login screen title
   ///
   /// In pt, this message translates to:

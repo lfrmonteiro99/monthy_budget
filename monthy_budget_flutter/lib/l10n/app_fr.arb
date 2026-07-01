@@ -522,6 +522,34 @@
             }
         }
     },
+    "shoppingFinalizing": "EN COURS",
+    "@shoppingFinalizing": {},
+    "shoppingListEyebrow": "LISTE",
+    "@shoppingListEyebrow": {},
+    "shoppingHeroItemCount": "{count} à acheter",
+    "@shoppingHeroItemCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "shoppingSummaryEyebrow": "RÉSUMÉ",
+    "@shoppingSummaryEyebrow": {},
+    "shoppingCheckedCountLabel": "{count} ✓",
+    "@shoppingCheckedCountLabel": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "shoppingToBuyEyebrow": "À ACHETER",
+    "@shoppingToBuyEyebrow": {},
+    "shoppingInBasketEyebrow": "DANS LE PANIER",
+    "@shoppingInBasketEyebrow": {},
+    "shoppingHistoryEyebrow": "HISTORIQUE",
+    "@shoppingHistoryEyebrow": {},
     "authLogin": "Se connecter",
     "authRegister": "Créer un compte",
     "authEmail": "Email",

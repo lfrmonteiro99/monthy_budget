@@ -940,6 +940,34 @@ class SFr extends S {
   }
 
   @override
+  String get shoppingFinalizing => 'EN COURS';
+
+  @override
+  String get shoppingListEyebrow => 'LISTE';
+
+  @override
+  String shoppingHeroItemCount(int count) {
+    return '$count à acheter';
+  }
+
+  @override
+  String get shoppingSummaryEyebrow => 'RÉSUMÉ';
+
+  @override
+  String shoppingCheckedCountLabel(int count) {
+    return '$count ✓';
+  }
+
+  @override
+  String get shoppingToBuyEyebrow => 'À ACHETER';
+
+  @override
+  String get shoppingInBasketEyebrow => 'DANS LE PANIER';
+
+  @override
+  String get shoppingHistoryEyebrow => 'HISTORIQUE';
+
+  @override
   String get authLogin => 'Se connecter';
 
   @override
