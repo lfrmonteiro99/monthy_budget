@@ -6073,6 +6073,9 @@ class SFr extends S {
   String get taxSimIrsJovem => 'IRS Jovem (année)';
 
   @override
+  String get taxSimSubsidyMode => 'Subsidies (duodécimos)';
+
+  @override
   String get taxSimDisability => 'Handicap';
 
   @override

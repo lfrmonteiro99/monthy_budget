@@ -10757,6 +10757,12 @@ abstract class S {
   /// **'IRS Jovem (ano)'**
   String get taxSimIrsJovem;
 
+  /// No description provided for @taxSimSubsidyMode.
+  ///
+  /// In pt, this message translates to:
+  /// **'Subsidios (duodécimos)'**
+  String get taxSimSubsidyMode;
+
   /// No description provided for @taxSimDisability.
   ///
   /// In pt, this message translates to:

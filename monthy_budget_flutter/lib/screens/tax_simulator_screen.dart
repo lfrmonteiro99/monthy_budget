@@ -24,6 +24,7 @@ class TaxSimulatorScreen extends StatefulWidget {
 
 class _TaxSimulatorScreenState extends State<TaxSimulatorScreen> {
   late double _grossAmount;
+  late SubsidyMode _subsidyMode;
   late MaritalStatus _maritalStatus;
   late int _titulares;
   late int _dependentes;
@@ -43,6 +44,7 @@ class _TaxSimulatorScreenState extends State<TaxSimulatorScreen> {
       orElse: () => const SalaryInfo(),
     );
     _grossAmount = salary.grossAmount;
+    _subsidyMode = salary.subsidyMode;
     _maritalStatus = widget.settings.personalInfo.maritalStatus;
     _titulares = salary.titulares;
     _dependentes = widget.settings.personalInfo.dependentes;
@@ -71,6 +73,7 @@ class _TaxSimulatorScreenState extends State<TaxSimulatorScreen> {
     // Simulated
     final simSalary = currentSalary.copyWith(
       grossAmount: _grossAmount,
+      subsidyMode: _subsidyMode,
       titulares: _titulares,
       mealAllowanceType: _mealType,
       mealAllowancePerDay: _mealPerDay,
@@ -250,6 +253,20 @@ class _TaxSimulatorScreenState extends State<TaxSimulatorScreen> {
                   _recalculate();
                 }),
               ),
+              if (country.hasSubsidies) ...[
+                const SizedBox(height: 16),
+                _SegmentedRow(
+                  label: l10n.taxSimSubsidyMode,
+                  options: SubsidyMode.values
+                      .map((m) => m.localizedShortLabel(l10n))
+                      .toList(),
+                  selected: _subsidyMode.index,
+                  onSelected: (i) => setState(() {
+                    _subsidyMode = SubsidyMode.values[i];
+                    _recalculate();
+                  }),
+                ),
+              ],
               if (country.maritalStatusAffectsTax) ...[
                 const SizedBox(height: 16),
                 _SegmentedRow(
