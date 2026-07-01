@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:monthly_management/models/subscription_state.dart';
 import 'package:monthly_management/screens/more_screen.dart';
 import 'package:monthly_management/widgets/calm/calm.dart';
+import 'package:monthly_management/widgets/calm/calm_card.dart';
 
 import '../helpers/test_app.dart';
 
@@ -384,6 +385,16 @@ void main() {
         findsWidgets,
       );
       handle.dispose();
+    });
+  });
+
+  group('#1127 More screen — Calm structure', () {
+    testWidgets('tools group uses CalmCard for the grouped tools card', (tester) async {
+      await tester.pumpWidget(wrapWithTestApp(_buildScreen(_Stubs())));
+      await tester.pumpAndSettle();
+
+      // CalmCard must be present (proves _ToolsGroup was migrated).
+      expect(find.byType(CalmCard), findsWidgets);
     });
   });
 }

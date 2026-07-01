@@ -298,8 +298,8 @@ class _ToolsGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
+    return CalmCard(
+      padding: EdgeInsets.zero,
       child: Column(
         children: [
           for (var i = 0; i < tools.length; i++) ...[
