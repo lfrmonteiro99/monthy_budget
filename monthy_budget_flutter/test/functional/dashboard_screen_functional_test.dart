@@ -88,7 +88,8 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byIcon(Icons.settings_outlined));
+    // Settings is now an avatar (GestureDetector) — find via its Tooltip.
+    await tester.tap(find.byTooltip('Open settings'));
     await tester.pump();
 
     expect(called, 1);
