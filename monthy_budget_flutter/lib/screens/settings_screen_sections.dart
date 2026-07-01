@@ -28,7 +28,7 @@ extension _SettingsSections on _SettingsScreenState {
     final l10n = S.of(context);
     final appShell = AppShellScope.of(context);
     return Container(
-      color: AppColors.surface(context),
+      color: AppColors.bg(context),
       padding: const EdgeInsets.all(20),
       child: AnimatedBuilder(
         animation: appShell,
@@ -69,7 +69,7 @@ extension _SettingsSections on _SettingsScreenState {
   Widget _buildProfileSection() {
     final l10n = S.of(context);
     return Container(
-      color: AppColors.surface(context),
+      color: AppColors.bg(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,14 +81,14 @@ extension _SettingsSections on _SettingsScreenState {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              border: Border.all(color: AppColors.border(context)),
+              border: Border.all(color: AppColors.line(context)),
               borderRadius: BorderRadius.circular(12),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<Country>(
                 value: _draft.country,
                 isExpanded: true,
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.ink70(context)),
                 items: Country.values.map((c) => DropdownMenuItem(
                   value: c,
                   child: Text('${_countryLabel(c, l10n)} (${c.currencySymbol})'),
@@ -103,7 +103,7 @@ extension _SettingsSections on _SettingsScreenState {
           ),
           Padding(
             padding: const EdgeInsets.only(left: 16, top: 4),
-            child: Text(l10n.helperCountry, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+            child: Text(l10n.helperCountry, style: TextStyle(fontSize: 11, color: AppColors.ink50(context))),
           ),
           const SizedBox(height: 20),
           _label(l10n.settingsLanguage),
@@ -111,14 +111,14 @@ extension _SettingsSections on _SettingsScreenState {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              border: Border.all(color: AppColors.border(context)),
+              border: Border.all(color: AppColors.line(context)),
               borderRadius: BorderRadius.circular(12),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String?>(
                 value: _draft.localeOverride,
                 isExpanded: true,
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.ink70(context)),
                 items: [null, 'pt', 'en', 'fr', 'es'].map((code) => DropdownMenuItem(
                   value: code,
                   child: Text(_languageLabel(code, l10n)),
@@ -131,11 +131,11 @@ extension _SettingsSections on _SettingsScreenState {
           ),
           Padding(
             padding: const EdgeInsets.only(left: 16, top: 4),
-            child: Text(l10n.helperLanguage, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+            child: Text(l10n.helperLanguage, style: TextStyle(fontSize: 11, color: AppColors.ink50(context))),
           ),
           // Divider between region and personal
           const SizedBox(height: 16),
-          Divider(color: AppColors.border(context)),
+          Divider(color: AppColors.line(context)),
           const SizedBox(height: 16),
           // Personal content
           _label(l10n.settingsMaritalStatusLabel),
@@ -143,14 +143,14 @@ extension _SettingsSections on _SettingsScreenState {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              border: Border.all(color: AppColors.border(context)),
+              border: Border.all(color: AppColors.line(context)),
               borderRadius: BorderRadius.circular(12),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<MaritalStatus>(
                 value: _draft.personalInfo.maritalStatus,
                 isExpanded: true,
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.ink70(context)),
                 items: MaritalStatus.values.map((s) => DropdownMenuItem(value: s, child: Text(s.localizedLabel(l10n)))).toList(),
                 onChanged: (v) {
                   if (v != null) {
@@ -164,7 +164,7 @@ extension _SettingsSections on _SettingsScreenState {
           ),
           Padding(
             padding: const EdgeInsets.only(left: 16, top: 4),
-            child: Text(l10n.helperMaritalStatus, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+            child: Text(l10n.helperMaritalStatus, style: TextStyle(fontSize: 11, color: AppColors.ink50(context))),
           ),
           const SizedBox(height: 20),
           _label(l10n.settingsDependentsLabel),
@@ -234,7 +234,7 @@ extension _SettingsSections on _SettingsScreenState {
             Padding(
               padding: const EdgeInsets.only(left: 16, top: 4),
               child: Text(l10n.helperIrsJovem,
-                  style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+                  style: TextStyle(fontSize: 11, color: AppColors.ink50(context))),
             ),
             const SizedBox(height: 20),
             Row(
@@ -255,7 +255,7 @@ extension _SettingsSections on _SettingsScreenState {
             Padding(
               padding: const EdgeInsets.only(left: 16, top: 4),
               child: Text(l10n.helperDisability,
-                  style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+                  style: TextStyle(fontSize: 11, color: AppColors.ink50(context))),
             ),
             // Nota explicativa do IRS Jovem — só quando o regime está ativo.
             if (_draft.personalInfo.irsJovemYear > 0) ...[
@@ -263,13 +263,13 @@ extension _SettingsSections on _SettingsScreenState {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppColors.infoBackground(context),
+                  color: AppColors.accentSoft(context),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.primaryLight(context)),
+                  border: Border.all(color: AppColors.accentSoft(context)),
                 ),
                 child: Text(
                   l10n.irsJovemLegalNote,
-                  style: TextStyle(fontSize: 12, color: AppColors.primary(context)),
+                  style: TextStyle(fontSize: 12, color: AppColors.ink(context)),
                 ),
               ),
             ],
@@ -278,13 +278,13 @@ extension _SettingsSections on _SettingsScreenState {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.infoBackground(context),
+              color: AppColors.accentSoft(context),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.primaryLight(context)),
+              border: Border.all(color: AppColors.accentSoft(context)),
             ),
             child: Text(
               l10n.settingsSocialSecurityRate(formatPercentage(getTaxSystem(_draft.country).socialContributionRate)),
-              style: TextStyle(fontSize: 12, color: AppColors.primary(context)),
+              style: TextStyle(fontSize: 12, color: AppColors.ink(context)),
             ),
           ),
         ],
@@ -312,7 +312,7 @@ extension _SettingsSections on _SettingsScreenState {
     final l10n = S.of(context);
     final taxSystem = getTaxSystem(_draft.country);
     return Container(
-      color: AppColors.surface(context),
+      color: AppColors.bg(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
@@ -345,7 +345,7 @@ extension _SettingsSections on _SettingsScreenState {
                           child: Switch.adaptive(
                             value: salary.enabled,
                             onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(enabled: v)),
-                            activeTrackColor: AppColors.primary(context),
+                            activeTrackColor: AppColors.ink(context),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -353,7 +353,7 @@ extension _SettingsSections on _SettingsScreenState {
                           child: TextFormField(
                             initialValue: salary.label,
                             onChanged: (v) => _updateSalary(idx, (s) => s.copyWith(label: v)),
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textLabel(context)),
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.ink70(context)),
                             decoration: _inputDecoration(l10n.settingsSalaryLabelHint, helperText: l10n.helperSalaryLabel),
                           ),
                         ),
@@ -361,7 +361,7 @@ extension _SettingsSections on _SettingsScreenState {
                           const SizedBox(width: 8),
                           IconButton(
                             onPressed: () => _removeSalary(idx),
-                            icon: Icon(Icons.remove_circle_outline, size: 20, color: AppColors.error(context)),
+                            icon: Icon(Icons.remove_circle_outline, size: 20, color: AppColors.bad(context)),
                             visualDensity: VisualDensity.compact,
                             padding: EdgeInsets.zero,
                           ),
@@ -450,7 +450,7 @@ extension _SettingsSections on _SettingsScreenState {
                               _deductionChip(l10n.settingsDeductionSs,
                                   '-${calc.socialSecurity.toStringAsFixed(0)}',
                                   '${(calc.socialSecurityRate * 100).toStringAsFixed(0)}%',
-                                  AppColors.warning(context)),
+                                  AppColors.warn(context)),
                               if (calc.mealAllowance.netMealAllowance > 0)
                                 _deductionChip(l10n.settingsDeductionMeal,
                                     '+${calc.mealAllowance.netMealAllowance.toStringAsFixed(0)}',
@@ -497,7 +497,7 @@ extension _SettingsSections on _SettingsScreenState {
                         width: double.infinity,
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: AppColors.background(context),
+                          color: AppColors.bg(context),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Column(
@@ -514,9 +514,9 @@ extension _SettingsSections on _SettingsScreenState {
                                     child: OutlinedButton(
                                       onPressed: () => _updateSalary(idx, (s) => s.copyWith(subsidyMode: mode)),
                                       style: OutlinedButton.styleFrom(
-                                        backgroundColor: isSelected ? AppColors.primary(context) : AppColors.surface(context),
-                                        foregroundColor: isSelected ? AppColors.onPrimary(context) : AppColors.textSecondary(context),
-                                        side: BorderSide(color: isSelected ? AppColors.primary(context) : AppColors.border(context), width: 2),
+                                        backgroundColor: isSelected ? AppColors.ink(context) : AppColors.bg(context),
+                                        foregroundColor: isSelected ? AppColors.bg(context) : AppColors.ink70(context),
+                                        side: BorderSide(color: isSelected ? AppColors.ink(context) : AppColors.line(context), width: 2),
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                         padding: const EdgeInsets.symmetric(vertical: 8),
                                         textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
@@ -564,7 +564,7 @@ extension _SettingsSections on _SettingsScreenState {
                         width: double.infinity,
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: AppColors.background(context),
+                          color: AppColors.bg(context),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Column(
@@ -581,9 +581,9 @@ extension _SettingsSections on _SettingsScreenState {
                                     child: OutlinedButton(
                                       onPressed: () => _updateSalary(idx, (s) => s.copyWith(mealAllowanceType: type)),
                                       style: OutlinedButton.styleFrom(
-                                        backgroundColor: isSelected ? AppColors.primary(context) : AppColors.surface(context),
-                                        foregroundColor: isSelected ? AppColors.onPrimary(context) : AppColors.textSecondary(context),
-                                        side: BorderSide(color: isSelected ? AppColors.primary(context) : AppColors.border(context), width: 2),
+                                        backgroundColor: isSelected ? AppColors.ink(context) : AppColors.bg(context),
+                                        foregroundColor: isSelected ? AppColors.bg(context) : AppColors.ink70(context),
+                                        side: BorderSide(color: isSelected ? AppColors.ink(context) : AppColors.line(context), width: 2),
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                         padding: const EdgeInsets.symmetric(vertical: 8),
                                         textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
@@ -655,7 +655,7 @@ extension _SettingsSections on _SettingsScreenState {
                                         l10n.settingsMealMonthlyTotal(
                                           '${(s.mealAllowancePerDay * s.workingDaysPerMonth).toStringAsFixed(2)} $currency',
                                         ),
-                                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textSecondary(context)),
+                                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.ink70(context)),
                                       ),
                                     ),
                                   );
@@ -675,7 +675,7 @@ extension _SettingsSections on _SettingsScreenState {
                         width: double.infinity,
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: AppColors.background(context),
+                          color: AppColors.bg(context),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Column(
@@ -692,9 +692,9 @@ extension _SettingsSections on _SettingsScreenState {
                                     child: OutlinedButton(
                                       onPressed: () => _updateSalary(idx, (s) => s.copyWith(titulares: n)),
                                       style: OutlinedButton.styleFrom(
-                                        backgroundColor: isSelected ? AppColors.primary(context) : AppColors.surface(context),
-                                        foregroundColor: isSelected ? AppColors.onPrimary(context) : AppColors.textSecondary(context),
-                                        side: BorderSide(color: isSelected ? AppColors.primary(context) : AppColors.border(context), width: 2),
+                                        backgroundColor: isSelected ? AppColors.ink(context) : AppColors.bg(context),
+                                        foregroundColor: isSelected ? AppColors.bg(context) : AppColors.ink70(context),
+                                        side: BorderSide(color: isSelected ? AppColors.ink(context) : AppColors.line(context), width: 2),
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                         padding: const EdgeInsets.symmetric(vertical: 8),
                                         textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
@@ -722,17 +722,17 @@ extension _SettingsSections on _SettingsScreenState {
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                           decoration: BoxDecoration(
-                            color: AppColors.primary(context).withValues(alpha: 0.08),
+                            color: AppColors.ink(context).withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.table_chart_outlined, size: 16, color: AppColors.primary(context)),
+                              Icon(Icons.table_chart_outlined, size: 16, color: AppColors.ink(context)),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
                                   '${table.label} \u2014 ${table.description}',
-                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textPrimary(context)),
+                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.ink(context)),
                                 ),
                               ),
                             ],
@@ -764,8 +764,8 @@ extension _SettingsSections on _SettingsScreenState {
               icon: const Icon(Icons.add, size: 16),
               label: Text(l10n.settingsAddSalaryButton),
               style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.primary(context),
-                side: BorderSide(color: AppColors.primary(context)),
+                foregroundColor: AppColors.ink(context),
+                side: BorderSide(color: AppColors.ink(context)),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
@@ -792,7 +792,7 @@ extension _SettingsSections on _SettingsScreenState {
     final totalBudget = activeExpenses.fold<double>(0.0, (s, e) => s + e.amount);
 
     return Container(
-      color: AppColors.surface(context),
+      color: AppColors.bg(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
@@ -805,17 +805,17 @@ extension _SettingsSections on _SettingsScreenState {
               padding: const EdgeInsets.symmetric(vertical: 32),
               child: Column(
                 children: [
-                  Icon(Icons.account_balance_wallet_outlined, size: 64, color: AppColors.primary(context).withValues(alpha: 0.4)),
+                  Icon(Icons.account_balance_wallet_outlined, size: 64, color: AppColors.ink(context).withValues(alpha: 0.4)),
                   const SizedBox(height: 12),
                   Text(
                     l10n.settingsAddExpenseButton,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textLabel(context)),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.ink70(context)),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     l10n.settingsExpensesTip,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 13, color: AppColors.textMuted(context)),
+                    style: TextStyle(fontSize: 13, color: AppColors.ink50(context)),
                   ),
                 ],
               ),
@@ -859,20 +859,20 @@ extension _SettingsSections on _SettingsScreenState {
                       Expanded(
                         child: Text(
                           expense.label.isNotEmpty ? expense.label : expense.category,
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textLabel(context)),
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.ink70(context)),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       Text(
                         expense.amount > 0 ? formatCurrency(expense.amount) : '—',
-                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textSecondary(context)),
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.ink70(context)),
                       ),
                       const SizedBox(width: 8),
                       Container(
                         width: 8, height: 8,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: expense.enabled ? AppColors.ok(context) : AppColors.textMuted(context),
+                          color: expense.enabled ? AppColors.ok(context) : AppColors.ink50(context),
                         ),
                       ),
                       const SizedBox(width: 4),
@@ -880,7 +880,7 @@ extension _SettingsSections on _SettingsScreenState {
                         turns: isExpanded ? 0.5 : 0.0,
                         duration: AppConstants.animStandard,
                         curve: Curves.easeInOut,
-                        child: Icon(Icons.expand_more, size: 20, color: AppColors.textMuted(context)),
+                        child: Icon(Icons.expand_more, size: 20, color: AppColors.ink50(context)),
                       ),
                     ],
                   ),
@@ -901,7 +901,7 @@ extension _SettingsSections on _SettingsScreenState {
                     TextFormField(
                       initialValue: expense.label,
                       onChanged: (v) => _updateExpense(expense.id, (e) => e.copyWith(label: v)),
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textLabel(context)),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.ink70(context)),
                       decoration: _inputDecoration(l10n.settingsExpenseName),
                     ),
                     const SizedBox(height: 12),
@@ -911,7 +911,7 @@ extension _SettingsSections on _SettingsScreenState {
                     DropdownButtonFormField<String>(
                       initialValue: _allCategoryKeys().contains(expense.category) ? expense.category : null,
                       isExpanded: true,
-                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.ink70(context)),
                       decoration: _inputDecoration(l10n.settingsExpenseCategory),
                       items: [
                         ...ExpenseCategory.values.map((c) {
@@ -977,7 +977,7 @@ extension _SettingsSections on _SettingsScreenState {
                     // ── Budget Rollover Toggle ──
                     Row(
                       children: [
-                        Icon(Icons.sync_alt, size: 16, color: AppColors.textMuted(context)),
+                        Icon(Icons.sync_alt, size: 16, color: AppColors.ink50(context)),
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
@@ -985,7 +985,7 @@ extension _SettingsSections on _SettingsScreenState {
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
-                              color: AppColors.textSecondary(context),
+                              color: AppColors.ink70(context),
                             ),
                           ),
                         ),
@@ -995,7 +995,7 @@ extension _SettingsSections on _SettingsScreenState {
                             expense.id,
                             (e) => e.copyWith(rolloverEnabled: v),
                           ),
-                          activeTrackColor: AppColors.primary(context),
+                          activeTrackColor: AppColors.ink(context),
                         ),
                       ],
                     ),
@@ -1003,7 +1003,7 @@ extension _SettingsSections on _SettingsScreenState {
                       l10n.rolloverHelperText,
                       style: TextStyle(
                         fontSize: 11,
-                        color: AppColors.textMuted(context),
+                        color: AppColors.ink50(context),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -1025,11 +1025,11 @@ extension _SettingsSections on _SettingsScreenState {
                             }
                             _updateExpense(expense.id, (e) => e.copyWith(enabled: v));
                           },
-                          activeTrackColor: AppColors.primary(context),
+                          activeTrackColor: AppColors.ink(context),
                         ),
                         Text(
                           expense.enabled ? l10n.settingsActiveCategoriesCount(1, 1).split('/').first.trim() : l10n.settingsPausedCategories,
-                          style: TextStyle(fontSize: 12, color: AppColors.textSecondary(context)),
+                          style: TextStyle(fontSize: 12, color: AppColors.ink70(context)),
                         ),
                         const Spacer(),
                         IconButton(
@@ -1047,18 +1047,18 @@ extension _SettingsSections on _SettingsScreenState {
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          Icon(Icons.edit_calendar, size: 14, color: AppColors.textMuted(context)),
+                          Icon(Icons.edit_calendar, size: 14, color: AppColors.ink50(context)),
                           const SizedBox(width: 4),
                           Expanded(
                             child: Text(
                               l10n.expenseOverrideActive(_currentMonthLabel(l10n),
                                 _monthlyBudgetsDraft[expense.category]!.toStringAsFixed(2)),
-                              style: TextStyle(fontSize: 11, color: AppColors.primary(context)),
+                              style: TextStyle(fontSize: 11, color: AppColors.ink(context)),
                             ),
                           ),
                           GestureDetector(
                             onTap: () => setState(() => _monthlyBudgetsDraft.remove(expense.category)),
-                            child: Icon(Icons.close, size: 14, color: AppColors.textMuted(context)),
+                            child: Icon(Icons.close, size: 14, color: AppColors.ink50(context)),
                           ),
                         ],
                       ),
@@ -1068,8 +1068,8 @@ extension _SettingsSections on _SettingsScreenState {
               );
 
               final borderColor = expense.enabled
-                  ? (isExpanded ? AppColors.primary(context) : AppColors.border(context))
-                  : AppColors.surfaceVariant(context);
+                  ? (isExpanded ? AppColors.ink(context) : AppColors.line(context))
+                  : AppColors.bgSunk(context);
               final leftBorderWidth = isExpanded ? 3.0 : 1.0;
 
               return AnimatedContainer(
@@ -1077,13 +1077,13 @@ extension _SettingsSections on _SettingsScreenState {
                 curve: Curves.easeInOut,
                 margin: const EdgeInsets.only(bottom: 10),
                 decoration: BoxDecoration(
-                  color: expense.enabled ? AppColors.surface(context) : AppColors.background(context),
+                  color: expense.enabled ? AppColors.bg(context) : AppColors.bg(context),
                   borderRadius: BorderRadius.circular(14),
                   border: Border(
                     top: BorderSide(color: borderColor),
                     right: BorderSide(color: borderColor),
                     bottom: BorderSide(color: borderColor),
-                    left: BorderSide(color: isExpanded ? AppColors.primary(context) : borderColor, width: leftBorderWidth),
+                    left: BorderSide(color: isExpanded ? AppColors.ink(context) : borderColor, width: leftBorderWidth),
                   ),
                 ),
                 child: Stack(
@@ -1109,12 +1109,12 @@ extension _SettingsSections on _SettingsScreenState {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
-                            color: AppColors.textMuted(context).withValues(alpha: 0.12),
+                            color: AppColors.ink50(context).withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
                             l10n.settingsPausedCategories,
-                            style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: AppColors.textMuted(context)),
+                            style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: AppColors.ink50(context)),
                           ),
                         ),
                       ),
@@ -1132,8 +1132,8 @@ extension _SettingsSections on _SettingsScreenState {
               icon: const Icon(Icons.add, size: 18),
               label: Text(l10n.settingsAddExpenseButton),
               style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.primary(context),
-                side: BorderSide(color: AppColors.primary(context).withValues(alpha: 0.4), width: 2),
+                foregroundColor: AppColors.ink(context),
+                side: BorderSide(color: AppColors.ink(context).withValues(alpha: 0.4), width: 2),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
@@ -1151,7 +1151,7 @@ extension _SettingsSections on _SettingsScreenState {
     final healthColor = ratio >= 0.8
         ? AppColors.ok(context)
         : ratio >= 0.5
-            ? AppColors.warning(context)
+            ? AppColors.warn(context)
             : AppColors.bad(context);
 
     return Container(
@@ -1174,7 +1174,7 @@ extension _SettingsSections on _SettingsScreenState {
                   const SizedBox(width: 6),
                   Text(
                     formatCurrency(totalBudget),
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.textLabel(context)),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.ink70(context)),
                   ),
                 ],
               ),
@@ -1194,7 +1194,7 @@ extension _SettingsSections on _SettingsScreenState {
               child: LinearProgressIndicator(
                 value: value,
                 minHeight: 5,
-                backgroundColor: AppColors.border(context),
+                backgroundColor: AppColors.line(context),
                 valueColor: AlwaysStoppedAnimation(healthColor),
               ),
             ),
@@ -1216,7 +1216,7 @@ extension _SettingsSections on _SettingsScreenState {
       children: [
         Row(
           children: [
-            Icon(Icons.repeat, size: 16, color: AppColors.textMuted(context)),
+            Icon(Icons.repeat, size: 16, color: AppColors.ink50(context)),
             const SizedBox(width: 6),
             Expanded(
               child: Text(
@@ -1224,7 +1224,7 @@ extension _SettingsSections on _SettingsScreenState {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: AppColors.textSecondary(context),
+                  color: AppColors.ink70(context),
                 ),
               ),
             ),
@@ -1261,7 +1261,7 @@ extension _SettingsSections on _SettingsScreenState {
                     widget.onRecurringChanged?.call(_recurringDraft);
                   }
                 },
-                activeTrackColor: AppColors.primary(context),
+                activeTrackColor: AppColors.ink(context),
               ),
             ),
           ],
@@ -1276,7 +1276,7 @@ extension _SettingsSections on _SettingsScreenState {
                   '${formatCurrency(existingRecurring.first.amount)}${existingRecurring.first.dayOfMonth != null ? ' \u00b7 ${l10n.recurringExpenseDayOfMonth} ${existingRecurring.first.dayOfMonth}' : ''}',
                   style: TextStyle(
                     fontSize: 11,
-                    color: AppColors.primary(context),
+                    color: AppColors.ink(context),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -1296,7 +1296,7 @@ extension _SettingsSections on _SettingsScreenState {
                       widget.onRecurringChanged?.call(_recurringDraft);
                     }
                   },
-                  child: Icon(Icons.edit, size: 14, color: AppColors.primary(context)),
+                  child: Icon(Icons.edit, size: 14, color: AppColors.ink(context)),
                 ),
               ],
             ),
@@ -1325,7 +1325,7 @@ extension _SettingsSections on _SettingsScreenState {
   Widget _buildCategoriesSection() {
     final l10n = S.of(context);
     return Container(
-      color: AppColors.surface(context),
+      color: AppColors.bg(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1335,7 +1335,7 @@ extension _SettingsSections on _SettingsScreenState {
           const SizedBox(height: 4),
           Text(
             l10n.customCategoryPredefinedHint,
-            style: TextStyle(fontSize: 12, color: AppColors.textMuted(context)),
+            style: TextStyle(fontSize: 12, color: AppColors.ink50(context)),
           ),
           const SizedBox(height: 12),
           ...ExpenseCategory.values.map((cat) {
@@ -1345,7 +1345,7 @@ extension _SettingsSections on _SettingsScreenState {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.border(context)),
+                border: Border.all(color: AppColors.line(context)),
               ),
               child: Row(
                 children: [
@@ -1359,7 +1359,7 @@ extension _SettingsSections on _SettingsScreenState {
                       cat.localizedLabel(l10n),
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary(context),
+                        color: AppColors.ink(context),
                       ),
                     ),
                   ),
@@ -1380,7 +1380,7 @@ extension _SettingsSections on _SettingsScreenState {
           }),
 
           const SizedBox(height: 20),
-          Divider(color: AppColors.border(context)),
+          Divider(color: AppColors.line(context)),
           const SizedBox(height: 16),
 
           // ── Custom categories ──
@@ -1392,7 +1392,7 @@ extension _SettingsSections on _SettingsScreenState {
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text(
                   l10n.customCategoryEmpty,
-                  style: TextStyle(color: AppColors.textMuted(context), fontSize: 14),
+                  style: TextStyle(color: AppColors.ink50(context), fontSize: 14),
                 ),
               ),
             )
@@ -1402,7 +1402,7 @@ extension _SettingsSections on _SettingsScreenState {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.border(context)),
+                border: Border.all(color: AppColors.line(context)),
               ),
               child: Row(
                 children: [
@@ -1410,13 +1410,13 @@ extension _SettingsSections on _SettingsScreenState {
                     backgroundColor: cat.colorHex != null
                         ? Color(int.parse('FF${cat.colorHex!.replaceAll('#', '')}', radix: 16))
                             .withValues(alpha: 0.15)
-                        : AppColors.primaryLight(context),
+                        : AppColors.accentSoft(context),
                     child: Icon(
                       getCategoryIcon(cat.iconName),
                       size: 20,
                       color: cat.colorHex != null
                           ? Color(int.parse('FF${cat.colorHex!.replaceAll('#', '')}', radix: 16))
-                          : AppColors.primary(context),
+                          : AppColors.ink(context),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -1425,16 +1425,16 @@ extension _SettingsSections on _SettingsScreenState {
                       cat.name,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary(context),
+                        color: AppColors.ink(context),
                       ),
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.edit, size: 20, color: AppColors.textSecondary(context)),
+                    icon: Icon(Icons.edit, size: 20, color: AppColors.ink70(context)),
                     onPressed: () => _showCategoryEditor(cat),
                   ),
                   IconButton(
-                    icon: Icon(Icons.delete_outline, size: 20, color: AppColors.error(context)),
+                    icon: Icon(Icons.delete_outline, size: 20, color: AppColors.bad(context)),
                     onPressed: () => _deleteCustomCategory(cat),
                   ),
                 ],
@@ -1447,8 +1447,8 @@ extension _SettingsSections on _SettingsScreenState {
               icon: const Icon(Icons.add, size: 18),
               label: Text(l10n.customCategoryAdd),
               style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.primary(context),
-                side: BorderSide(color: AppColors.primary(context)),
+                foregroundColor: AppColors.ink(context),
+                side: BorderSide(color: AppColors.ink(context)),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -1535,7 +1535,7 @@ extension _SettingsSections on _SettingsScreenState {
   Widget _buildDashboardSection() {
     final l10n = S.of(context);
     return Container(
-      color: AppColors.surface(context),
+      color: AppColors.bg(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1543,7 +1543,7 @@ extension _SettingsSections on _SettingsScreenState {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.infoBackground(context),
+              color: AppColors.accentSoft(context),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
@@ -1570,8 +1570,8 @@ extension _SettingsSections on _SettingsScreenState {
                 child: OutlinedButton(
                   onPressed: () => setState(() => _localDashboard = LocalDashboardConfig.minimalist()),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.textSecondary(context),
-                    side: BorderSide(color: AppColors.border(context)),
+                    foregroundColor: AppColors.ink70(context),
+                    side: BorderSide(color: AppColors.line(context)),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     padding: const EdgeInsets.symmetric(vertical: 10),
                   ),
@@ -1583,8 +1583,8 @@ extension _SettingsSections on _SettingsScreenState {
                 child: OutlinedButton(
                   onPressed: () => setState(() => _localDashboard = LocalDashboardConfig.full()),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.textSecondary(context),
-                    side: BorderSide(color: AppColors.border(context)),
+                    foregroundColor: AppColors.ink70(context),
+                    side: BorderSide(color: AppColors.line(context)),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     padding: const EdgeInsets.symmetric(vertical: 10),
                   ),
@@ -1596,7 +1596,7 @@ extension _SettingsSections on _SettingsScreenState {
           const SizedBox(height: 4),
           Text(
             l10n.dashReorderHint,
-            style: TextStyle(fontSize: 12, color: AppColors.textMuted(context)),
+            style: TextStyle(fontSize: 12, color: AppColors.ink50(context)),
           ),
           const SizedBox(height: 12),
           ReorderableListView.builder(
@@ -1607,7 +1607,7 @@ extension _SettingsSections on _SettingsScreenState {
               return Material(
                 elevation: 2,
                 borderRadius: BorderRadius.circular(8),
-                color: AppColors.surface(context),
+                color: AppColors.bg(context),
                 child: child,
               );
             },
@@ -1630,7 +1630,7 @@ extension _SettingsSections on _SettingsScreenState {
                 key: ValueKey(cardId),
                 decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(color: AppColors.border(context), width: 0.5),
+                    bottom: BorderSide(color: AppColors.line(context), width: 0.5),
                   ),
                 ),
                 child: Row(
@@ -1639,7 +1639,7 @@ extension _SettingsSections on _SettingsScreenState {
                       index: index,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
-                        child: Icon(Icons.drag_handle, size: 20, color: AppColors.textMuted(context)),
+                        child: Icon(Icons.drag_handle, size: 20, color: AppColors.ink50(context)),
                       ),
                     ),
                     Expanded(
@@ -1652,20 +1652,20 @@ extension _SettingsSections on _SettingsScreenState {
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
-                              color: isVisible ? AppColors.textPrimary(context) : AppColors.textMuted(context),
+                              color: isVisible ? AppColors.ink(context) : AppColors.ink50(context),
                             ),
                           ),
                           if (subtitle != null)
                             Text(
                               subtitle,
-                              style: TextStyle(fontSize: 12, color: AppColors.textMuted(context)),
+                              style: TextStyle(fontSize: 12, color: AppColors.ink50(context)),
                             ),
                         ],
                       ),
                     ),
                     Switch(
                       value: isVisible,
-                      activeTrackColor: AppColors.primary(context),
+                      activeTrackColor: AppColors.ink(context),
                       onChanged: (v) {
                         setState(() {
                           _localDashboard = _localDashboard.setCardVisible(cardId, v);
@@ -1691,12 +1691,12 @@ extension _SettingsSections on _SettingsScreenState {
               }[chart];
               return CheckboxListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text(chart.localizedLabel(l10n), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textLabel(context))),
+                title: Text(chart.localizedLabel(l10n), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.ink70(context))),
                 subtitle: chartSubtitle != null
-                    ? Text(chartSubtitle, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context)))
+                    ? Text(chartSubtitle, style: TextStyle(fontSize: 12, color: AppColors.ink50(context)))
                     : null,
                 value: _localDashboard.enabledCharts.contains(chart),
-                activeColor: AppColors.primary(context),
+                activeColor: AppColors.ink(context),
                 controlAffinity: ListTileControlAffinity.leading,
                 onChanged: (_) {
                   final enabled = List<ChartType>.from(_localDashboard.enabledCharts);
@@ -1805,7 +1805,7 @@ extension _SettingsSections on _SettingsScreenState {
             .toList();
 
     return Container(
-      color: AppColors.surface(context),
+      color: AppColors.bg(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1816,19 +1816,19 @@ extension _SettingsSections on _SettingsScreenState {
               color: AppColors.warningBackground(context),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                  color: AppColors.warning(context).withValues(alpha: 0.4)),
+                  color: AppColors.warn(context).withValues(alpha: 0.4)),
             ),
             child: Row(
               children: [
                 Icon(Icons.tips_and_updates,
-                    size: 18, color: AppColors.warning(context)),
+                    size: 18, color: AppColors.warn(context)),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     l10n.settingsFavTip,
                     style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.warning(context),
+                        color: AppColors.warn(context),
                         height: 1.4),
                   ),
                 ),
@@ -1854,7 +1854,7 @@ extension _SettingsSections on _SettingsScreenState {
             onChanged: (v) => setState(() => _favSearch = v),
             decoration: _inputDecoration(l10n.settingsSearchProduct).copyWith(
               prefixIcon: Icon(Icons.search,
-                  size: 18, color: AppColors.textMuted(context)),
+                  size: 18, color: AppColors.ink50(context)),
               contentPadding: const EdgeInsets.symmetric(vertical: 12),
             ),
           ),
@@ -1862,7 +1862,7 @@ extension _SettingsSections on _SettingsScreenState {
           if (widget.products.isEmpty)
             Text(l10n.settingsLoadingProducts,
                 style:
-                    TextStyle(fontSize: 12, color: AppColors.textMuted(context)))
+                    TextStyle(fontSize: 12, color: AppColors.ink50(context)))
           else
             Wrap(
               spacing: 8,
@@ -1966,13 +1966,13 @@ extension _SettingsSections on _SettingsScreenState {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(children: [
-              Icon(icon, size: 18, color: AppColors.primary(context)),
+              Icon(icon, size: 18, color: AppColors.ink(context)),
               const SizedBox(width: 8),
               Expanded(child: Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700))),
             ]),
             if (subtitle != null) Padding(
               padding: const EdgeInsets.only(top: 4, left: 26),
-              child: Text(subtitle, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))),
+              child: Text(subtitle, style: TextStyle(fontSize: 12, color: AppColors.ink50(context))),
             ),
             const SizedBox(height: 12),
             ...children,
@@ -1991,9 +1991,9 @@ extension _SettingsSections on _SettingsScreenState {
           initiallyExpanded: initiallyExpanded,
           tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          leading: Icon(icon, size: 18, color: AppColors.primary(context)),
+          leading: Icon(icon, size: 18, color: AppColors.ink(context)),
           title: Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
-          subtitle: subtitle != null ? Text(subtitle, style: TextStyle(fontSize: 12, color: AppColors.textMuted(context))) : null,
+          subtitle: subtitle != null ? Text(subtitle, style: TextStyle(fontSize: 12, color: AppColors.ink50(context))) : null,
           children: children,
         ),
       ),
@@ -2004,7 +2004,7 @@ extension _SettingsSections on _SettingsScreenState {
     final l10n = S.of(context);
     final ms = _draft.mealSettings;
     return Container(
-      color: AppColors.surface(context),
+      color: AppColors.bg(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2025,7 +2025,7 @@ extension _SettingsSections on _SettingsScreenState {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.border(context)),
+                        border: Border.all(color: AppColors.line(context)),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: TextFormField(
@@ -2051,7 +2051,7 @@ extension _SettingsSections on _SettingsScreenState {
                   if (ms.householdSize != null) ...[
                     const SizedBox(width: 8),
                     IconButton(
-                      icon: Icon(Icons.restart_alt, size: 20, color: AppColors.textMuted(context)),
+                      icon: Icon(Icons.restart_alt, size: 20, color: AppColors.ink50(context)),
                       tooltip: l10n.settingsUseAutoValue,
                       onPressed: () => setState(() => _draft = _draft.copyWith(
                           mealSettings: _draft.mealSettings.copyWith(householdSize: null))),
@@ -2092,7 +2092,7 @@ extension _SettingsSections on _SettingsScreenState {
                           ),
                         ),
                         IconButton(
-                          icon: Icon(Icons.close, size: 18, color: AppColors.error(context)),
+                          icon: Icon(Icons.close, size: 18, color: AppColors.bad(context)),
                           onPressed: () {
                             final updated = List<HouseholdMember>.from(ms.householdMembers)..removeAt(i);
                             setState(() => _draft = _draft.copyWith(
@@ -2107,7 +2107,7 @@ extension _SettingsSections on _SettingsScreenState {
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Text(
                     l10n.settingsTotalEquivalent(ms.householdMembers.fold(0.0, (sum, m) => sum + m.portionEquivalent).toStringAsFixed(1)),
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.primary(context)),
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.ink(context)),
                   ),
                 ),
               ],
@@ -2118,8 +2118,8 @@ extension _SettingsSections on _SettingsScreenState {
                   icon: const Icon(Icons.person_add_outlined, size: 18),
                   label: Text(l10n.settingsAddMember, style: const TextStyle(fontSize: 13)),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.primary(context),
-                    side: BorderSide(color: AppColors.border(context)),
+                    foregroundColor: AppColors.ink(context),
+                    side: BorderSide(color: AppColors.line(context)),
                     padding: const EdgeInsets.symmetric(vertical: 10),
                   ),
                 ),
@@ -2138,7 +2138,7 @@ extension _SettingsSections on _SettingsScreenState {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.border(context)),
+                  border: Border.all(color: AppColors.line(context)),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: DropdownButtonHideUnderline(
@@ -2148,7 +2148,7 @@ extension _SettingsSections on _SettingsScreenState {
                     style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: AppColors.textLabel(context)),
+                        color: AppColors.ink70(context)),
                     items: MealObjective.values
                         .map((o) =>
                             DropdownMenuItem(value: o, child: Text(o.localizedLabel(l10n))))
@@ -2167,7 +2167,7 @@ extension _SettingsSections on _SettingsScreenState {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16, top: 4),
-                child: Text(l10n.helperMealObjective, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+                child: Text(l10n.helperMealObjective, style: TextStyle(fontSize: 11, color: AppColors.ink50(context))),
               ),
               const SizedBox(height: 16),
               _label(l10n.settingsActiveMeals),
@@ -2215,8 +2215,8 @@ extension _SettingsSections on _SettingsScreenState {
                     FilterChip(
                       label: Text(entry.value, style: const TextStyle(fontSize: 13)),
                       selected: ms.eatingOutWeekdays.contains(entry.key),
-                      selectedColor: AppColors.primary(context).withValues(alpha: 0.15),
-                      checkmarkColor: AppColors.primary(context),
+                      selectedColor: AppColors.ink(context).withValues(alpha: 0.15),
+                      checkmarkColor: AppColors.ink(context),
                       onSelected: (v) {
                         final updated = Set<int>.from(ms.eatingOutWeekdays);
                         if (v) { updated.add(entry.key); } else { updated.remove(entry.key); }
@@ -2234,13 +2234,13 @@ extension _SettingsSections on _SettingsScreenState {
                 max: 7,
                 divisions: 7,
                 label: '${ms.veggieDaysPerWeek}',
-                activeColor: AppColors.primary(context),
+                activeColor: AppColors.ink(context),
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
                     mealSettings: _draft.mealSettings.copyWith(veggieDaysPerWeek: v.round()))),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 8),
-                child: Text(l10n.helperVeggieDays, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+                child: Text(l10n.helperVeggieDays, style: TextStyle(fontSize: 11, color: AppColors.ink50(context))),
               ),
             ],
           ),
@@ -2274,7 +2274,7 @@ extension _SettingsSections on _SettingsScreenState {
                         style: const TextStyle(
                             fontSize: 14, fontWeight: FontWeight.w500)),
                     value: item.$2,
-                    activeColor: AppColors.primary(context),
+                    activeColor: AppColors.ink(context),
                     controlAffinity: ListTileControlAffinity.leading,
                     onChanged: (v) => item.$3(v ?? false),
                   )),
@@ -2284,14 +2284,14 @@ extension _SettingsSections on _SettingsScreenState {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.border(context)),
+                  border: Border.all(color: AppColors.line(context)),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<SodiumPreference>(
                     value: ms.sodiumPreference,
                     isExpanded: true,
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textLabel(context)),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.ink70(context)),
                     items: SodiumPreference.values
                         .map((s) => DropdownMenuItem(value: s, child: Text(s.localizedLabel(l10n))))
                         .toList(),
@@ -2305,7 +2305,7 @@ extension _SettingsSections on _SettingsScreenState {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16, top: 4),
-                child: Text(l10n.helperSodiumPreference, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+                child: Text(l10n.helperSodiumPreference, style: TextStyle(fontSize: 11, color: AppColors.ink50(context))),
               ),
               const SizedBox(height: 16),
               _label(l10n.settingsDislikedIngredients),
@@ -2348,7 +2348,7 @@ extension _SettingsSections on _SettingsScreenState {
                         style: const TextStyle(
                             fontSize: 14, fontWeight: FontWeight.w500)),
                     value: ms.excludedProteins.contains(entry.key),
-                    activeColor: AppColors.primary(context),
+                    activeColor: AppColors.ink(context),
                     controlAffinity: ListTileControlAffinity.leading,
                     onChanged: (v) {
                       final updated = List<String>.from(ms.excludedProteins);
@@ -2377,14 +2377,14 @@ extension _SettingsSections on _SettingsScreenState {
                 children: [15, 30, 45, 60].map((v) => ChoiceChip(
                   label: Text(v == 60 ? '60+ min' : '$v min', style: const TextStyle(fontSize: 13)),
                   selected: ms.maxPrepMinutes == v,
-                  selectedColor: AppColors.primary(context).withValues(alpha: 0.15),
+                  selectedColor: AppColors.ink(context).withValues(alpha: 0.15),
                   onSelected: (_) => setState(() => _draft = _draft.copyWith(
                       mealSettings: _draft.mealSettings.copyWith(maxPrepMinutes: v))),
                 )).toList(),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16, top: 4, bottom: 8),
-                child: Text(l10n.helperMaxPrepTime, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+                child: Text(l10n.helperMaxPrepTime, style: TextStyle(fontSize: 11, color: AppColors.ink50(context))),
               ),
               const SizedBox(height: 8),
               _label(l10n.settingsMaxComplexity(ms.maxComplexity)),
@@ -2407,7 +2407,7 @@ extension _SettingsSections on _SettingsScreenState {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16, top: 4, bottom: 8),
-                child: Text(l10n.helperMaxComplexity, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+                child: Text(l10n.helperMaxComplexity, style: TextStyle(fontSize: 11, color: AppColors.ink50(context))),
               ),
               const SizedBox(height: 12),
               _label(l10n.settingsWeekendPrepTime),
@@ -2417,14 +2417,14 @@ extension _SettingsSections on _SettingsScreenState {
                 children: [30, 60, 90, 120].map((v) => ChoiceChip(
                   label: Text(v >= 120 ? '120+ min' : '$v min', style: const TextStyle(fontSize: 13)),
                   selected: ms.maxPrepMinutesWeekend == v,
-                  selectedColor: AppColors.primary(context).withValues(alpha: 0.15),
+                  selectedColor: AppColors.ink(context).withValues(alpha: 0.15),
                   onSelected: (_) => setState(() => _draft = _draft.copyWith(
                       mealSettings: _draft.mealSettings.copyWith(maxPrepMinutesWeekend: v))),
                 )).toList(),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16, top: 4, bottom: 8),
-                child: Text(l10n.helperWeekendPrepTime, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+                child: Text(l10n.helperWeekendPrepTime, style: TextStyle(fontSize: 11, color: AppColors.ink50(context))),
               ),
               const SizedBox(height: 8),
               _label(l10n.settingsWeekendComplexity(ms.maxComplexityWeekend)),
@@ -2447,7 +2447,7 @@ extension _SettingsSections on _SettingsScreenState {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16, top: 4, bottom: 8),
-                child: Text(l10n.helperWeekendComplexity, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+                child: Text(l10n.helperWeekendComplexity, style: TextStyle(fontSize: 11, color: AppColors.ink50(context))),
               ),
               const SizedBox(height: 12),
               _label(l10n.settingsAvailableEquipment),
@@ -2458,8 +2458,8 @@ extension _SettingsSections on _SettingsScreenState {
                 children: KitchenEquipment.values.map((eq) => FilterChip(
                   label: Text(eq.localizedLabel(l10n), style: const TextStyle(fontSize: 13)),
                   selected: ms.availableEquipment.contains(eq),
-                  selectedColor: AppColors.primary(context).withValues(alpha: 0.15),
-                  checkmarkColor: AppColors.primary(context),
+                  selectedColor: AppColors.ink(context).withValues(alpha: 0.15),
+                  checkmarkColor: AppColors.ink(context),
                   onSelected: (v) {
                     final updated =
                         Set<KitchenEquipment>.from(ms.availableEquipment);
@@ -2522,13 +2522,13 @@ extension _SettingsSections on _SettingsScreenState {
                   max: 4,
                   divisions: 3,
                   label: '${ms.maxBatchDays}',
-                  activeColor: AppColors.primary(context),
+                  activeColor: AppColors.ink(context),
                   onChanged: (v) => setState(() => _draft = _draft.copyWith(
                       mealSettings: _draft.mealSettings.copyWith(maxBatchDays: v.round()))),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 16, bottom: 8),
-                  child: Text(l10n.helperMaxBatchDays, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+                  child: Text(l10n.helperMaxBatchDays, style: TextStyle(fontSize: 11, color: AppColors.ink50(context))),
                 ),
               ],
               CalmSwitchRow(
@@ -2553,13 +2553,13 @@ extension _SettingsSections on _SettingsScreenState {
                   max: 10,
                   divisions: 7,
                   label: ms.maxNewIngredientsPerWeek == 10 ? l10n.settingsNoLimit : '${ms.maxNewIngredientsPerWeek}',
-                  activeColor: AppColors.primary(context),
+                  activeColor: AppColors.ink(context),
                   onChanged: (v) => setState(() => _draft = _draft.copyWith(
                       mealSettings: _draft.mealSettings.copyWith(maxNewIngredientsPerWeek: v.round()))),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 16, bottom: 8),
-                  child: Text(l10n.helperNewIngredients, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+                  child: Text(l10n.helperNewIngredients, style: TextStyle(fontSize: 11, color: AppColors.ink50(context))),
                 ),
               ],
               CalmSwitchRow(
@@ -2593,13 +2593,13 @@ extension _SettingsSections on _SettingsScreenState {
                 value: ms.fishDaysPerWeek.toDouble(),
                 min: 0, max: 5, divisions: 5,
                 label: ms.fishDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.fishDaysPerWeek}',
-                activeColor: AppColors.primary(context),
+                activeColor: AppColors.ink(context),
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
                     mealSettings: _draft.mealSettings.copyWith(fishDaysPerWeek: v.round()))),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 8),
-                child: Text(l10n.helperFishDays, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+                child: Text(l10n.helperFishDays, style: TextStyle(fontSize: 11, color: AppColors.ink50(context))),
               ),
               Text(l10n.settingsLegumePerWeek(ms.legumeDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.legumeDaysPerWeek}'),
                   style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
@@ -2607,13 +2607,13 @@ extension _SettingsSections on _SettingsScreenState {
                 value: ms.legumeDaysPerWeek.toDouble(),
                 min: 0, max: 5, divisions: 5,
                 label: ms.legumeDaysPerWeek == 0 ? l10n.settingsNoMinimum : '${ms.legumeDaysPerWeek}',
-                activeColor: AppColors.primary(context),
+                activeColor: AppColors.ink(context),
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
                     mealSettings: _draft.mealSettings.copyWith(legumeDaysPerWeek: v.round()))),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 8),
-                child: Text(l10n.helperLegumeDays, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+                child: Text(l10n.helperLegumeDays, style: TextStyle(fontSize: 11, color: AppColors.ink50(context))),
               ),
               Text(l10n.settingsRedMeatPerWeek(ms.redMeatMaxPerWeek >= 7 ? l10n.settingsNoLimit : '${ms.redMeatMaxPerWeek}'),
                   style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
@@ -2621,13 +2621,13 @@ extension _SettingsSections on _SettingsScreenState {
                 value: ms.redMeatMaxPerWeek.toDouble(),
                 min: 0, max: 7, divisions: 7,
                 label: ms.redMeatMaxPerWeek >= 7 ? l10n.settingsNoLimit : '${ms.redMeatMaxPerWeek}',
-                activeColor: AppColors.primary(context),
+                activeColor: AppColors.ink(context),
                 onChanged: (v) => setState(() => _draft = _draft.copyWith(
                     mealSettings: _draft.mealSettings.copyWith(redMeatMaxPerWeek: v.round()))),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 8),
-                child: Text(l10n.helperRedMeatDays, style: TextStyle(fontSize: 11, color: AppColors.textMuted(context))),
+                child: Text(l10n.helperRedMeatDays, style: TextStyle(fontSize: 11, color: AppColors.ink50(context))),
               ),
             ],
           ),
@@ -2646,7 +2646,7 @@ extension _SettingsSections on _SettingsScreenState {
                 decoration: _inputDecoration(l10n.settingsCalorieHint, suffix: l10n.settingsKcalPerDay, helperText: l10n.helperCalorieTarget).copyWith(
                   suffixIcon: ms.dailyCalorieTarget != null
                       ? IconButton(
-                          icon: Icon(Icons.close, size: 18, color: AppColors.textMuted(context)),
+                          icon: Icon(Icons.close, size: 18, color: AppColors.ink50(context)),
                           onPressed: () => setState(() => _draft = _draft.copyWith(
                               mealSettings: _draft.mealSettings.copyWith(dailyCalorieTarget: null))),
                         )
@@ -2668,7 +2668,7 @@ extension _SettingsSections on _SettingsScreenState {
                   labelStyle: TextStyle(fontSize: 13, color: AppColors.ink50(context)),
                   suffixIcon: ms.dailyProteinTargetG != null
                       ? IconButton(
-                          icon: Icon(Icons.close, size: 18, color: AppColors.textMuted(context)),
+                          icon: Icon(Icons.close, size: 18, color: AppColors.ink50(context)),
                           onPressed: () => setState(() => _draft = _draft.copyWith(
                               mealSettings: _draft.mealSettings.copyWith(dailyProteinTargetG: null))),
                         )
@@ -2690,7 +2690,7 @@ extension _SettingsSections on _SettingsScreenState {
                   labelStyle: TextStyle(fontSize: 13, color: AppColors.ink50(context)),
                   suffixIcon: ms.dailyFiberTargetG != null
                       ? IconButton(
-                          icon: Icon(Icons.close, size: 18, color: AppColors.textMuted(context)),
+                          icon: Icon(Icons.close, size: 18, color: AppColors.ink50(context)),
                           onPressed: () => setState(() => _draft = _draft.copyWith(
                               mealSettings: _draft.mealSettings.copyWith(dailyFiberTargetG: null))),
                         )
@@ -2712,7 +2712,7 @@ extension _SettingsSections on _SettingsScreenState {
                         style: const TextStyle(
                             fontSize: 14, fontWeight: FontWeight.w500)),
                     value: ms.medicalConditions.contains(mc),
-                    activeColor: AppColors.primary(context),
+                    activeColor: AppColors.ink(context),
                     controlAffinity: ListTileControlAffinity.leading,
                     onChanged: (v) {
                       final updated = Set<MedicalCondition>.from(ms.medicalConditions);
@@ -2819,8 +2819,8 @@ extension _SettingsSections on _SettingsScreenState {
                   icon: const Icon(Icons.restart_alt, size: 18),
                   label: Text(l10n.settingsResetWizard),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.textSecondary(context),
-                    side: BorderSide(color: AppColors.border(context)),
+                    foregroundColor: AppColors.ink70(context),
+                    side: BorderSide(color: AppColors.line(context)),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                     padding: const EdgeInsets.symmetric(vertical: 12),
@@ -2836,7 +2836,7 @@ extension _SettingsSections on _SettingsScreenState {
 
   Widget _buildCoachSection() {
     return Container(
-      color: AppColors.surface(context),
+      color: AppColors.bg(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2849,18 +2849,18 @@ extension _SettingsSections on _SettingsScreenState {
             decoration: BoxDecoration(
               color: AppColors.successBackground(context),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.success(context).withValues(alpha: 0.25)),
+              border: Border.all(color: AppColors.ok(context).withValues(alpha: 0.25)),
             ),
             child: Row(
               children: [
-                Icon(Icons.verified_user_outlined, size: 18, color: AppColors.success(context)),
+                Icon(Icons.verified_user_outlined, size: 18, color: AppColors.ok(context)),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     'OpenAI API key protegida no Supabase (Edge Function).',
                     style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.textPrimary(context),
+                      color: AppColors.ink(context),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -2879,7 +2879,7 @@ extension _SettingsSections on _SettingsScreenState {
       button: true,
       label: isSelected ? l10n.wizardSelected(label) : label,
       child: Material(
-      color: isSelected ? AppColors.error(context).withValues(alpha: 0.08) : AppColors.surface(context),
+      color: isSelected ? AppColors.bad(context).withValues(alpha: 0.08) : AppColors.bg(context),
       borderRadius: BorderRadius.circular(20),
       child: InkWell(
       onTap: () => _toggleFavorite(label),
@@ -2890,7 +2890,7 @@ extension _SettingsSections on _SettingsScreenState {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? AppColors.error(context).withValues(alpha: 0.4) : AppColors.border(context),
+            color: isSelected ? AppColors.bad(context).withValues(alpha: 0.4) : AppColors.line(context),
             width: isSelected ? 1.5 : 1,
           ),
         ),
@@ -2900,7 +2900,7 @@ extension _SettingsSections on _SettingsScreenState {
             Icon(
               isSelected ? Icons.favorite : Icons.favorite_border,
               size: 14,
-              color: isSelected ? AppColors.error(context) : AppColors.borderMuted(context),
+              color: isSelected ? AppColors.bad(context) : AppColors.ink20(context),
             ),
             const SizedBox(width: 6),
             Text(
@@ -2908,7 +2908,7 @@ extension _SettingsSections on _SettingsScreenState {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                color: isSelected ? AppColors.error(context) : AppColors.textSecondary(context),
+                color: isSelected ? AppColors.bad(context) : AppColors.ink70(context),
               ),
             ),
           ],
@@ -2923,7 +2923,7 @@ extension _SettingsSections on _SettingsScreenState {
     final l10n = S.of(context);
     final myUserId = _currentUserIdSafe();
     return Container(
-      color: AppColors.surface(context),
+      color: AppColors.bg(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2942,7 +2942,7 @@ extension _SettingsSections on _SettingsScreenState {
               final roleLabel = member.role.toUpperCase();
               return CalmListTile(
                 leadingIcon: Icons.person_outline,
-                leadingColor: AppColors.primary(context),
+                leadingColor: AppColors.ink(context),
                 title: member.email,
                 subtitle: isMe ? '$roleLabel - ME' : roleLabel,
               );
@@ -2953,7 +2953,7 @@ extension _SettingsSections on _SettingsScreenState {
           const SizedBox(height: 8),
           CalmListTile(
             leadingIcon: Icons.link,
-            leadingColor: AppColors.primary(context),
+            leadingColor: AppColors.ink(context),
             title: l10n.settingsGenerateInvite,
             selectableSubtitle: _inviteCode,
             subtitle:
@@ -2969,7 +2969,7 @@ extension _SettingsSections on _SettingsScreenState {
           const SizedBox(height: 4),
           Text(
             l10n.settingsCodeValidInfo,
-            style: TextStyle(fontSize: 11, color: AppColors.textMuted(context), height: 1.5),
+            style: TextStyle(fontSize: 11, color: AppColors.ink50(context), height: 1.5),
           ),
         ],
       ),
@@ -3046,10 +3046,10 @@ extension _SettingsSections on _SettingsScreenState {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: selected ? AppColors.primaryLight(context) : AppColors.background(context),
+          color: selected ? AppColors.accentSoft(context) : AppColors.bg(context),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: selected ? AppColors.primary(context) : AppColors.border(context),
+            color: selected ? AppColors.ink(context) : AppColors.line(context),
           ),
         ),
         child: Text(
@@ -3057,7 +3057,7 @@ extension _SettingsSections on _SettingsScreenState {
           style: TextStyle(
             fontSize: 13,
             fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-            color: selected ? AppColors.primary(context) : AppColors.textSecondary(context),
+            color: selected ? AppColors.ink(context) : AppColors.ink70(context),
           ),
         ),
       ),
@@ -3067,19 +3067,19 @@ extension _SettingsSections on _SettingsScreenState {
   Widget _salarySectionHeader(IconData icon, String title) {
     return Row(
       children: [
-        Icon(icon, size: 14, color: AppColors.primary(context)),
+        Icon(icon, size: 14, color: AppColors.ink(context)),
         const SizedBox(width: 6),
         Text(
           title.toUpperCase(),
           style: TextStyle(
             fontSize: 10,
             fontWeight: FontWeight.w700,
-            color: AppColors.textMuted(context),
+            color: AppColors.ink50(context),
             letterSpacing: 0.8,
           ),
         ),
         const SizedBox(width: 8),
-        Expanded(child: Divider(color: AppColors.border(context), height: 1)),
+        Expanded(child: Divider(color: AppColors.line(context), height: 1)),
       ],
     );
   }
@@ -3106,10 +3106,10 @@ extension _SettingsSections on _SettingsScreenState {
             height: 44,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.border(context), width: 2),
+              border: Border.all(color: AppColors.line(context), width: 2),
             ),
             child: Center(
-              child: Text(text, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.textSecondary(context))),
+              child: Text(text, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.ink70(context))),
             ),
           ),
         ),
@@ -3121,11 +3121,11 @@ extension _SettingsSections on _SettingsScreenState {
         suffixText: suffix,
         suffixStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink50(context)),
         helperText: helperText,
-        helperStyle: TextStyle(fontSize: 11, color: AppColors.textMuted(context)),
+        helperStyle: TextStyle(fontSize: 11, color: AppColors.ink50(context)),
         helperMaxLines: 2,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: AppColors.border(context))),
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: AppColors.border(context))),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: AppColors.primary(context), width: 2)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: AppColors.line(context))),
+        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: AppColors.line(context))),
+        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: AppColors.ink(context), width: 2)),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         isDense: true,
       );
