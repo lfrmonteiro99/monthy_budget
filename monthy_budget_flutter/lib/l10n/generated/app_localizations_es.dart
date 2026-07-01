@@ -5717,6 +5717,83 @@ class SEs extends S {
   String get paywallBestValue => 'Mejor valor';
 
   @override
+  String get paywallFeatureBudgetTitle => 'Presupuesto Inteligente';
+
+  @override
+  String get paywallFeatureBudgetSubtitle =>
+      'Categorías ilimitadas e historial completo';
+
+  @override
+  String get paywallFeatureCoachTitle => 'Coach Financiero IA';
+
+  @override
+  String get paywallFeatureCoachSubtitle =>
+      'Consejos personalizados en tiempo real';
+
+  @override
+  String get paywallFeatureMealTitle => 'Planificador de Comidas';
+
+  @override
+  String get paywallFeatureMealSubtitle =>
+      'Recetas IA integradas con la lista de compras';
+
+  @override
+  String get paywallFeatureSyncTitle => 'Sincronización en Tiempo Real';
+
+  @override
+  String get paywallFeatureSyncSubtitle =>
+      'Lista de compras compartida con el hogar';
+
+  @override
+  String get paywallFeatureExportTitle => 'Exportación PDF/CSV';
+
+  @override
+  String get paywallFeatureExportSubtitle => 'Informes listos para enviar';
+
+  @override
+  String get paywallCloseLabel => 'Cerrar';
+
+  @override
+  String get paywallProductName => 'MONTHLY PLUS';
+
+  @override
+  String get paywallHeroSubtitle =>
+      'Todo lo que necesitas para un año de paz financiera';
+
+  @override
+  String get paywallYearlyPlanLabel => 'PLAN ANUAL';
+
+  @override
+  String get paywallMonthlyPlanLabel => 'PLAN MENSUAL';
+
+  @override
+  String get paywallPerMonth => '/mes';
+
+  @override
+  String get paywallTrialText => '7 días gratis · cancela cuando quieras';
+
+  @override
+  String get paywallCtaButton => 'Empezar 7 días gratis';
+
+  @override
+  String get paywallComparePlansEyebrow => 'COMPARAR PLANES';
+
+  @override
+  String get paywallRestorePurchase => 'Restaurar compra';
+
+  @override
+  String get paywallTermsOfService => 'Términos de Servicio';
+
+  @override
+  String get paywallPrivacyPolicy => 'Política de Privacidad';
+
+  @override
+  String get paywallBillingMonthly => 'Mensual';
+
+  @override
+  String get paywallBillingYearly => 'Anual (ahorra 37%)';
+
+  @override
   String get complexityEasy => 'Fácil';
 
   @override
@@ -6103,6 +6180,12 @@ class SEs extends S {
 
   @override
   String get mealPlannerMealsEyebrow => 'COMIDAS';
+
+  @override
+  String get mealPlannerMonthlyPlanEyebrow => 'PLAN MENSUAL';
+
+  @override
+  String get mealPlannerWeekEyebrow => 'SEMANA';
 
   @override
   String get wizardCourseStructure => 'Estructura de la comida';
