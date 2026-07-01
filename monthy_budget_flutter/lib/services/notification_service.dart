@@ -36,6 +36,19 @@ class NotificationService {
   factory NotificationService() => _instance;
   NotificationService._();
 
+  /// Creates a fresh, isolated instance for unit tests.
+  @visibleForTesting
+  NotificationService.testInstance();
+
+  /// Body text for bill-reminder notifications.
+  /// Extracted so tests can verify the format without triggering the plugin.
+  @visibleForTesting
+  static String billReminderBody({
+    required double amount,
+    required String description,
+  }) =>
+      '${amount.toStringAsFixed(2)} — due soon';
+
   final _plugin = FlutterLocalNotificationsPlugin();
   final _localConfig = LocalConfigService();
   bool _initialized = false;
@@ -104,11 +117,8 @@ class NotificationService {
     int activeSavingsGoals = 0,
   }) async {
     if (!_initialized) {
-      if (_initFuture != null) {
-        await _initFuture;
-      } else {
-        return; // init() never called — skip silently
-      }
+      // Arm init if it hasn't started yet; avoids silent drop on startup race.
+      await init();
     }
     _refreshChain = _refreshChain
         .then((_) async {
@@ -316,13 +326,14 @@ class NotificationService {
 
       if (!reminderDate.isAfter(now)) continue;
 
-      final daysUntilDue = dueDate.difference(now).inDays.clamp(0, 365);
-
       try {
         await _plugin.zonedSchedule(
           _billBaseId + i,
           expense.description ?? expense.category,
-          '${expense.amount.toStringAsFixed(2)} due in $daysUntilDue days',
+          billReminderBody(
+            amount: expense.amount,
+            description: expense.description ?? expense.category,
+          ),
           tz.TZDateTime.from(reminderDate, tz.local),
           NotificationDetails(
             android: AndroidNotificationDetails(
