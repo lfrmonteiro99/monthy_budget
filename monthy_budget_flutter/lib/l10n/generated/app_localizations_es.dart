@@ -2210,6 +2210,20 @@ class SEs extends S {
   String get setupWizardSkipAll => 'Saltar configuración';
 
   @override
+  String get setupWizardBack => 'Anterior';
+
+  @override
+  String setupWizardStepEyebrow(int step) {
+    return 'PASO $step · 3';
+  }
+
+  @override
+  String get setupWizardIncomeEyebrow => 'INGRESOS';
+
+  @override
+  String get setupWizardExpensesEyebrow => 'GASTOS MENSUALES';
+
+  @override
   String setupWizardStepOf(int step, int total) {
     return 'Paso $step de $total';
   }

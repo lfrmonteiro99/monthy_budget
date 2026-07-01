@@ -1220,6 +1220,20 @@
     "setupWizardReassurance": "You can change everything later in settings.",
     "setupWizardStart": "Get started",
     "setupWizardSkipAll": "Skip setup",
+    "setupWizardBack": "Back",
+    "@setupWizardBack": {},
+    "setupWizardStepEyebrow": "STEP {step} · 3",
+    "@setupWizardStepEyebrow": {
+        "placeholders": {
+            "step": {
+                "type": "int"
+            }
+        }
+    },
+    "setupWizardIncomeEyebrow": "INCOME",
+    "@setupWizardIncomeEyebrow": {},
+    "setupWizardExpensesEyebrow": "MONTHLY EXPENSES",
+    "@setupWizardExpensesEyebrow": {},
     "setupWizardStepOf": "Step {step} of {total}",
     "@setupWizardStepOf": {
         "placeholders": {
