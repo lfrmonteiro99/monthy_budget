@@ -116,11 +116,27 @@ class SubscriptionService {
     return updated;
   }
 
+  /// Sync the local tier with a confirmed remote result.
+  ///
+  /// Pass `null` as [remoteTier] when the RC result is uncertain (offline,
+  /// error, simulate mode). A null value is a no-op — the local tier is kept
+  /// and nothing is persisted, so a network blip never downgrades a paying user.
   Future<SubscriptionState> syncFromRemoteTier(
     SubscriptionState current,
-    SubscriptionTier remoteTier,
+    SubscriptionTier? remoteTier,
   ) async {
+    if (remoteTier == null) return current; // unknown — keep local tier
     if (current.tier == remoteTier) return current;
+
+    // Re-upgrade path: RC confirms premium after a (possibly false) downgrade.
+    // Clear the downgrade latch so categories/goals are restored.
+    final wasDowngraded = current.tier == SubscriptionTier.free &&
+        current.trialUsed &&
+        remoteTier != SubscriptionTier.free;
+    if (wasDowngraded) {
+      await resetDowngradeTracking();
+    }
+
     final updated = current.copyWith(
       tier: remoteTier,
       trialUsed: remoteTier != SubscriptionTier.free

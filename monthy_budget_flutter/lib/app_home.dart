@@ -507,7 +507,10 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
       final user = Supabase.instance.client.auth.currentUser;
       final previousTier = _subscription.tier;
       await RevenueCatService.login(user?.id);
-      final remoteTier = await RevenueCatService.getCurrentTier();
+      // getRemoteTier() returns null on error/offline — syncFromRemoteTier
+      // treats null as "unknown, keep local tier" so paying users are never
+      // downgraded by a network blip.
+      final remoteTier = await RevenueCatService.getRemoteTier();
       final updated = await _subscriptionService.syncFromRemoteTier(
         _subscription,
         remoteTier,
