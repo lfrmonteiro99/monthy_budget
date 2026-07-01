@@ -6,6 +6,7 @@ import '../constants/app_constants.dart';
 import '../models/notification_preferences.dart';
 import '../models/recurring_expense.dart';
 import 'downgrade_service.dart';
+import 'local_config_service.dart';
 import 'log_service.dart';
 
 class NotificationRefreshDecision {
@@ -36,6 +37,7 @@ class NotificationService {
   NotificationService._();
 
   final _plugin = FlutterLocalNotificationsPlugin();
+  final _localConfig = LocalConfigService();
   bool _initialized = false;
   Future<void>? _initFuture;
   Future<void> _refreshChain = Future.value();
@@ -145,6 +147,11 @@ class NotificationService {
   }) async {
     await cancelAll();
 
+    final now = DateTime.now();
+    final currentMonth = '${now.year}-${now.month}';
+    final firedMonth = await _localConfig.loadBudgetAlertFiredMonth();
+    _budgetAlertTriggered = firedMonth == currentMonth;
+
     final decision = buildRefreshDecision(
       prefs: prefs,
       budgetUsagePercent: budgetUsagePercent,
@@ -165,6 +172,7 @@ class NotificationService {
 
     if (decision.shouldResetBudgetAlertTrigger) {
       _budgetAlertTriggered = false;
+      await _localConfig.saveBudgetAlertFiredMonth(null);
     } else if (decision.shouldShowBudgetAlert &&
         decision.budgetAlertUsagePercent != null) {
       await _showBudgetAlert(
@@ -172,6 +180,7 @@ class NotificationService {
         categoryName: decision.budgetAlertCategoryName,
       );
       _budgetAlertTriggered = true;
+      await _localConfig.saveBudgetAlertFiredMonth(currentMonth);
     }
 
     if (decision.scheduleDailyExpenseReminder) {
