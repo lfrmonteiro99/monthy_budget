@@ -18,6 +18,7 @@ const revenueCatProductYearly = 'yearly';
 const revenueCatCreditProducts = ['credits_50', 'credits_150', 'credits_500'];
 
 /// When `true`, all purchase/restore calls are simulated locally (no SDK
-/// interaction). Set to `false` once the RevenueCat project is fully
-/// configured with products and offerings.
-const revenueCatSimulateMode = false;
+/// interaction). Derived from whether an API key is present so that dev/CI
+/// builds without REVENUECAT_API_KEY never call the real RevenueCat SDK
+/// (which would crash with InvalidCredentialsError).
+const revenueCatSimulateMode = revenueCatApiKey.isEmpty;
