@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:monthly_management/l10n/generated/app_localizations.dart';
 import 'package:monthly_management/widgets/calm/calm.dart';
 import '../constants/app_constants.dart';
 import '../theme/app_colors.dart';
@@ -41,6 +42,7 @@ class _WelcomeSlideshowScreenState extends State<WelcomeSlideshowScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final isLast = _currentPage == 2;
 
     return CalmScaffold(
@@ -56,32 +58,29 @@ class _WelcomeSlideshowScreenState extends State<WelcomeSlideshowScreen> {
                   controller: _controller,
                   onPageChanged: (i) => setState(() => _currentPage = i),
                   children: [
-                    // ── Slide 1: Bem-vindo ─────────────────────────────
+                    // ── Slide 1 ────────────────────────────────────────
                     _buildSlide(
                       context: context,
-                      eyebrow: CalmEyebrow('BEM-VINDO'), // TODO(l10n):
+                      eyebrow: CalmEyebrow(l10n.welcomeSlideWelcomeEyebrow),
                       illustrationName: 'boas-vindas',
-                      title: 'O teu orçamento, numa vista só', // TODO(l10n):
-                      body: 'O painel mostra a tua liquidez mensal, '
-                          'despesas e Índice de Serenidade.', // TODO(l10n):
+                      title: l10n.welcomeSlideWelcomeTitle,
+                      body: l10n.welcomeSlideWelcomeBody,
                     ),
-                    // ── Slide 2: Funcionalidades ───────────────────────
+                    // ── Slide 2 ────────────────────────────────────────
                     _buildSlide(
                       context: context,
-                      eyebrow: CalmEyebrow('FUNCIONALIDADES'), // TODO(l10n):
+                      eyebrow: CalmEyebrow(l10n.welcomeSlideFeaturesEyebrow),
                       illustrationName: 'funcionalidades',
-                      title: 'Controla cada despesa', // TODO(l10n):
-                      body: 'Toca em + para registar uma compra. '
-                          'Atribui uma categoria e vê as barras actualizarem.', // TODO(l10n):
+                      title: l10n.welcomeSlideFeaturesTitle,
+                      body: l10n.welcomeSlideFeaturesBody,
                     ),
-                    // ── Slide 3: Privacidade ───────────────────────────
+                    // ── Slide 3 ────────────────────────────────────────
                     _buildSlide(
                       context: context,
-                      eyebrow: CalmEyebrow('PRIVACIDADE'), // TODO(l10n):
+                      eyebrow: CalmEyebrow(l10n.welcomeSlidePrivacyEyebrow),
                       illustrationName: 'privacidade',
-                      title: 'Os teus dados ficam aqui', // TODO(l10n):
-                      body: 'Tudo armazenado localmente no dispositivo. '
-                          'Sem servidores, sem partilha de dados.', // TODO(l10n):
+                      title: l10n.welcomeSlidePrivacyTitle,
+                      body: l10n.welcomeSlidePrivacyBody,
                     ),
                   ],
                 ),
@@ -105,7 +104,7 @@ class _WelcomeSlideshowScreenState extends State<WelcomeSlideshowScreen> {
                       ),
                     ),
                     child: Text(
-                      isLast ? 'Começar' : 'Continuar', // TODO(l10n):
+                      isLast ? l10n.welcomeSlideStart : l10n.welcomeSlideContinue,
                       style: CalmText.amount(context, size: 15),
                     ),
                   ),
@@ -123,7 +122,7 @@ class _WelcomeSlideshowScreenState extends State<WelcomeSlideshowScreen> {
                 child: GestureDetector(
                   onTap: widget.onComplete,
                   child: Text(
-                    'Saltar', // TODO(l10n):
+                    l10n.welcomeSlideSkip,
                     style: TextStyle(
                       fontSize: 13,
                       color: AppColors.ink50(context),

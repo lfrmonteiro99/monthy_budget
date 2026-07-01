@@ -2142,6 +2142,45 @@ class SPt extends S {
   String get monthFullDec => 'Dezembro';
 
   @override
+  String get welcomeSlideWelcomeEyebrow => 'BEM-VINDO';
+
+  @override
+  String get welcomeSlideWelcomeTitle => 'O teu orçamento, numa vista só';
+
+  @override
+  String get welcomeSlideWelcomeBody =>
+      'O painel mostra a tua liquidez mensal, despesas e Índice de Serenidade.';
+
+  @override
+  String get welcomeSlideFeaturesEyebrow => 'FUNCIONALIDADES';
+
+  @override
+  String get welcomeSlideFeaturesTitle => 'Controla cada despesa';
+
+  @override
+  String get welcomeSlideFeaturesBody =>
+      'Toca em + para registar uma compra. Atribui uma categoria e vê as barras actualizarem.';
+
+  @override
+  String get welcomeSlidePrivacyEyebrow => 'PRIVACIDADE';
+
+  @override
+  String get welcomeSlidePrivacyTitle => 'Os teus dados ficam aqui';
+
+  @override
+  String get welcomeSlidePrivacyBody =>
+      'Tudo armazenado localmente no dispositivo. Sem servidores, sem partilha de dados.';
+
+  @override
+  String get welcomeSlideStart => 'Começar';
+
+  @override
+  String get welcomeSlideContinue => 'Continuar';
+
+  @override
+  String get welcomeSlideSkip => 'Saltar';
+
+  @override
   String get setupWizardWelcomeTitle => 'Bem-vindo ao seu orçamento';
 
   @override
