@@ -5765,6 +5765,12 @@ abstract class S {
   /// **'{count} resultados'**
   String searchResultCount(int count);
 
+  /// No description provided for @searchEmptyTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nada encontrado'**
+  String get searchEmptyTitle;
+
   /// No description provided for @expenseTypeLabel.
   ///
   /// In pt, this message translates to:

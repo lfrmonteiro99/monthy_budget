@@ -3988,6 +3988,7 @@
             }
         }
     },
+    "searchEmptyTitle": "Nada encontrado",
     "expenseTypeLabel": "TIPO",
     "expenseFixed": "Fixo",
     "@expenseFixed": {

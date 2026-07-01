@@ -3146,6 +3146,9 @@ class SEn extends S {
   }
 
   @override
+  String get searchEmptyTitle => 'Nothing found';
+
+  @override
   String get expenseTypeLabel => 'TYPE';
 
   @override
