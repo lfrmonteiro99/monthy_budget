@@ -4062,6 +4062,26 @@ class SEn extends S {
   String get confidenceCenterTile => 'Confidence Center';
 
   @override
+  String get alertSeverityCritical => 'critical';
+
+  @override
+  String get alertSeverityWarning => 'warning';
+
+  @override
+  String get alertSeverityInfo => 'info';
+
+  @override
+  String criticalAlertBannerMessage(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count critical alerts — tap to view',
+      one: '1 critical alert — tap to view',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get pantryPickerTitle => 'Pantry Picker';
 
   @override

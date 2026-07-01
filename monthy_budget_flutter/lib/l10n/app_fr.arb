@@ -2130,6 +2130,20 @@
     "confidenceRecommendedActions": "Actions Recommandées",
     "confidenceCenterSubtitle": "Fraîcheur des données et santé du système",
     "confidenceCenterTile": "Centre de Confiance",
+    "alertSeverityCritical": "critique",
+    "@alertSeverityCritical": {},
+    "alertSeverityWarning": "avertissement",
+    "@alertSeverityWarning": {},
+    "alertSeverityInfo": "info",
+    "@alertSeverityInfo": {},
+    "criticalAlertBannerMessage": "{count, plural, =1{1 alerte critique — appuyer pour voir} other{{count} alertes critiques — appuyer pour voir}}",
+    "@criticalAlertBannerMessage": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
     "pantryPickerTitle": "Sélecteur de Garde-Manger",
     "pantrySearchHint": "Rechercher des ingrédients...",
     "pantryTabAlwaysHave": "Toujours en Stock",

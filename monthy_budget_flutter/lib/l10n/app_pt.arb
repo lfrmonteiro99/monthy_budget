@@ -4474,6 +4474,20 @@
     "confidenceRecommendedActions": "Ações Recomendadas",
     "confidenceCenterSubtitle": "Frescura dos dados e saúde do sistema",
     "confidenceCenterTile": "Centro de Confiança",
+    "alertSeverityCritical": "crítico",
+    "@alertSeverityCritical": {},
+    "alertSeverityWarning": "aviso",
+    "@alertSeverityWarning": {},
+    "alertSeverityInfo": "info",
+    "@alertSeverityInfo": {},
+    "criticalAlertBannerMessage": "{count, plural, =1{1 alerta crítico — toque para ver} other{{count} alertas críticos — toque para ver}}",
+    "@criticalAlertBannerMessage": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
     "pantryPickerTitle": "Selecionar Despensa",
     "pantrySearchHint": "Pesquisar ingredientes...",
     "pantryTabAlwaysHave": "Sempre Tenho",

@@ -4093,6 +4093,26 @@ class SPt extends S {
   String get confidenceCenterTile => 'Centro de Confiança';
 
   @override
+  String get alertSeverityCritical => 'crítico';
+
+  @override
+  String get alertSeverityWarning => 'aviso';
+
+  @override
+  String get alertSeverityInfo => 'info';
+
+  @override
+  String criticalAlertBannerMessage(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count alertas críticos — toque para ver',
+      one: '1 alerta crítico — toque para ver',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get pantryPickerTitle => 'Selecionar Despensa';
 
   @override
