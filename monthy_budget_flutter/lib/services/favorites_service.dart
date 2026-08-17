@@ -1,3 +1,4 @@
+import '../repositories/repository_factory.dart';
 import '../repositories/settings_repository.dart';
 
 class FavoritesService {
@@ -7,7 +8,7 @@ class FavoritesService {
     : _repository = repository;
 
   SettingsRepository get _resolvedRepository =>
-      _repository ??= SupabaseSettingsRepository();
+      _repository ??= RepositoryFactory.instance.settings;
 
   Future<List<String>> load(String householdId) {
     return _resolvedRepository.loadFavorites(householdId);

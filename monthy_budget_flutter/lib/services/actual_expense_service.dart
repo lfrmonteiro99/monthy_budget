@@ -3,6 +3,7 @@ import 'dart:io';
 import '../exceptions/app_exceptions.dart';
 import '../models/actual_expense.dart';
 import '../repositories/expense_repository.dart';
+import '../repositories/repository_factory.dart';
 import 'log_service.dart';
 
 class ActualExpenseService {
@@ -12,7 +13,7 @@ class ActualExpenseService {
     : _repository = repository;
 
   ExpenseRepository get _resolvedRepository =>
-      _repository ??= SupabaseExpenseRepository();
+      _repository ??= RepositoryFactory.instance.expense;
 
   Future<List<ActualExpense>> loadMonth(String householdId, String monthKey) async {
     try {

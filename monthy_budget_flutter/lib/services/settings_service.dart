@@ -1,4 +1,5 @@
 import '../models/app_settings.dart';
+import '../repositories/repository_factory.dart';
 import '../repositories/settings_repository.dart';
 
 class SettingsService {
@@ -8,7 +9,7 @@ class SettingsService {
     : _repository = repository;
 
   SettingsRepository get _resolvedRepository =>
-      _repository ??= SupabaseSettingsRepository();
+      _repository ??= RepositoryFactory.instance.settings;
 
   Future<AppSettings> load(String householdId) {
     return _resolvedRepository.loadSettings(householdId);

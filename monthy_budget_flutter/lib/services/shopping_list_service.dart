@@ -1,5 +1,6 @@
 import '../exceptions/app_exceptions.dart';
 import '../models/shopping_item.dart';
+import '../repositories/repository_factory.dart';
 import '../repositories/shopping_repository.dart';
 import 'log_service.dart';
 
@@ -10,7 +11,7 @@ class ShoppingListService {
     : _repository = repository;
 
   ShoppingRepository get _resolvedRepository =>
-      _repository ??= SupabaseShoppingRepository();
+      _repository ??= RepositoryFactory.instance.shopping;
 
   Stream<List<ShoppingItem>> stream(String householdId) {
     return _resolvedRepository.stream(householdId);

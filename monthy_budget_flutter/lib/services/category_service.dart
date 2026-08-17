@@ -1,4 +1,5 @@
 import '../models/custom_category.dart';
+import '../repositories/repository_factory.dart';
 import '../repositories/settings_repository.dart';
 
 class CategoryService {
@@ -8,7 +9,7 @@ class CategoryService {
     : _repository = repository;
 
   SettingsRepository get _resolvedRepository =>
-      _repository ??= SupabaseSettingsRepository();
+      _repository ??= RepositoryFactory.instance.settings;
 
   Future<List<CustomCategory>> load(String householdId) {
     return _resolvedRepository.loadCategories(householdId);

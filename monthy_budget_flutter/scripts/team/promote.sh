@@ -79,13 +79,13 @@ ISSUES=$(printf '%s\n' "$COMMITS" | grep -oE '#[0-9]+' | grep -oE '[0-9]+' | sor
 FIXES=""
 for i in $ISSUES; do FIXES="$FIXES
 Fixes #$i"; done
-[ -z "${FIXES//[[:space:]]/}" ] && FIXES="
-Fixes #0"   # placeholder is replaced below when no issue is referenced
 
-# A promotion with no traceable issue should not silently claim to fix #0.
+# Never invent a closing keyword. A promotion whose commits reference no issue
+# is a real anomaly (the implementer always writes `#N`), and emitting something
+# like `Fixes #0` to satisfy the governance check would make the PR claim to
+# close an issue that does not exist. Better to let governance fail loudly.
 if [ -z "${ISSUES//[[:space:]]/}" ]; then
-  log "AVISO: nenhum issue referenciado nos commits — governance vai reprovar"
-  FIXES=""
+  log "AVISO: nenhum issue referenciado nos commits — o check validate-pr vai reprovar"
 fi
 
 # feat: anywhere in the range means a minor bump; the repo's release-tag.yml

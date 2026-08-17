@@ -2,6 +2,7 @@ import '../exceptions/app_exceptions.dart';
 import '../models/app_settings.dart';
 import '../models/expense_snapshot.dart';
 import '../repositories/expense_repository.dart';
+import '../repositories/repository_factory.dart';
 import 'log_service.dart';
 
 class ExpenseSnapshotService {
@@ -11,7 +12,7 @@ class ExpenseSnapshotService {
     : _repository = repository;
 
   ExpenseSnapshotRepository get _resolvedRepository =>
-      _repository ??= SupabaseExpenseSnapshotRepository();
+      _repository ??= RepositoryFactory.instance.expenseSnapshot;
 
   Future<void> snapshotIfNeeded(
     String householdId,

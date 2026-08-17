@@ -10,6 +10,7 @@ import '../models/budget_summary.dart';
 import '../models/coach_insight.dart';
 import '../models/purchase_record.dart';
 import '../repositories/household_repository.dart';
+import '../repositories/repository_factory.dart';
 import '../repositories/local/app_database.dart';
 import '../repositories/local/coach_message_storage.dart';
 import '../utils/category_helpers.dart';
@@ -69,7 +70,7 @@ class AiCoachService {
     EdgeFunctionClient? edgeClient,
     CoachMessageStorage? messageStorage,
   })  : _insightRepository =
-           insightRepository ?? SupabaseCoachInsightRepository(),
+           insightRepository ?? RepositoryFactory.instance.coachInsight,
         _httpClient = httpClient ?? http.Client(),
         _edgeClient = edgeClient ??
             EdgeFunctionClient(httpClient: httpClient ?? http.Client()),

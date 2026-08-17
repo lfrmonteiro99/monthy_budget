@@ -1,6 +1,7 @@
 import '../exceptions/app_exceptions.dart';
 import '../models/product.dart';
 import '../repositories/product_repository.dart';
+import '../repositories/repository_factory.dart';
 import 'log_service.dart';
 
 class ProductsService {
@@ -12,7 +13,7 @@ class ProductsService {
     : _repository = repository;
 
   ProductRepository get _resolvedRepository =>
-      _repository ??= SupabaseProductRepository();
+      _repository ??= RepositoryFactory.instance.product;
 
   Future<List<Product>> load() async {
     if (_loaded) return _cache;

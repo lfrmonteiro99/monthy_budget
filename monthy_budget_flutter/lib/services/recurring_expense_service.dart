@@ -2,6 +2,7 @@ import '../exceptions/app_exceptions.dart';
 import '../models/actual_expense.dart';
 import '../models/recurring_expense.dart';
 import '../repositories/expense_repository.dart';
+import '../repositories/repository_factory.dart';
 import 'log_service.dart';
 
 class RecurringExpenseService {
@@ -15,10 +16,10 @@ class RecurringExpenseService {
        _expenseRepository = expenseRepository;
 
   RecurringExpenseRepository get _resolvedRecurringRepository =>
-      _recurringRepository ??= SupabaseRecurringExpenseRepository();
+      _recurringRepository ??= RepositoryFactory.instance.recurringExpense;
 
   ExpenseRepository get _resolvedExpenseRepository =>
-      _expenseRepository ??= SupabaseExpenseRepository();
+      _expenseRepository ??= RepositoryFactory.instance.expense;
 
   Future<List<RecurringExpense>> load(String householdId) async {
     try {

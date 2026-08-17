@@ -3,6 +3,7 @@ import 'dart:math';
 import '../exceptions/app_exceptions.dart';
 import '../repositories/auth_repository.dart';
 import '../repositories/household_repository.dart';
+import '../repositories/repository_factory.dart';
 import 'log_service.dart';
 
 class HouseholdProfile {
@@ -40,10 +41,10 @@ class HouseholdService {
        _repository = repository;
 
   AuthRepository get _resolvedAuthRepository =>
-      _authRepository ??= SupabaseAuthRepository();
+      _authRepository ??= RepositoryFactory.instance.auth;
 
   HouseholdRepository get _resolvedRepository =>
-      _repository ??= SupabaseHouseholdRepository();
+      _repository ??= RepositoryFactory.instance.household;
 
   Future<HouseholdProfile?> getProfile() async {
     try {

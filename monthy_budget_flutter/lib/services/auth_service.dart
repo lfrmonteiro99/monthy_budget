@@ -2,6 +2,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../exceptions/app_exceptions.dart' as app;
 import '../repositories/auth_repository.dart';
+import '../repositories/repository_factory.dart';
 
 class AuthService {
   AuthRepository? _authRepository;
@@ -10,7 +11,7 @@ class AuthService {
     : _authRepository = authRepository;
 
   AuthRepository get _resolvedAuthRepository =>
-      _authRepository ??= SupabaseAuthRepository();
+      _authRepository ??= RepositoryFactory.instance.auth;
 
   User? get currentUser => _resolvedAuthRepository.currentUser;
   String? get currentUserId => _resolvedAuthRepository.currentUserId;
