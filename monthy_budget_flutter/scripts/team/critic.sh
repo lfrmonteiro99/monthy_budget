@@ -163,9 +163,13 @@ log "issues abertos a evitar duplicar: $ISSUE_COUNT"
 # locales, so both are also above baseline.
 dim_timeout() {
   case "$1" in
-    functional) echo "${CRITIC_TIMEOUT_FUNCTIONAL:-4200}" ;;
-    data|i18n)  echo "${CRITIC_TIMEOUT_WIDE:-3000}" ;;
-    *)          echo "$TIMEOUT_S" ;;
+    functional)         echo "${CRITIC_TIMEOUT_FUNCTIONAL:-4200}" ;;
+    # `console` has to exercise the whole app to provoke errors before it can
+    # collect them, so it is as wide as functional in practice — it timed out at
+    # 1800s and lost the dimension. `data` recomputes money by hand; `i18n` walks
+    # four locales.
+    data|i18n|console)  echo "${CRITIC_TIMEOUT_WIDE:-3600}" ;;
+    *)                  echo "$TIMEOUT_S" ;;
   esac
 }
 
@@ -275,13 +279,31 @@ run_dimension() {
     # dimension reporting the same defect still collapses onto the first one. The
     # lock only stops two dimensions filing at the same instant, which would let
     # both miss the other's just-created issue.
+    # The verdict is deleted ONLY if filing actually succeeded.
+    #
+    # It used to be removed unconditionally right after the call, which turned any
+    # filing failure into permanent data loss. That is exactly what happened: one
+    # `dial tcp ... i/o timeout` from the GitHub API crashed the filer, and
+    # functional's 4 findings and perf's 1 were deleted seconds later — an hour of
+    # testing destroyed by a transient network blip. Keeping the verdict means the
+    # next run can file it instead.
+    #
+    # PIPESTATUS, not $?: the pipe through sed would otherwise mask the exit code.
+    local file_rc
     (
       flock 8
       python3 "$SCRIPT_DIR/file-findings.py" \
         --repo "$REPO" --branch "$BRANCH" --run-id "$RUN_ID" --run-dir "$RUN_DIR" \
         "$verdict" 2>&1 | sed "s/^/  [$dim] /"
+      exit "${PIPESTATUS[0]}"
     ) 8>"$LOG_DIR/.filing.lock"
-    rm -f "$verdict"
+    file_rc=$?
+
+    if [ "$file_rc" -eq 0 ]; then
+      rm -f "$verdict"
+    else
+      log "  [$dim] ARQUIVAMENTO FALHOU (rc=$file_rc) — veredicto PRESERVADO em $verdict"
+    fi
   else
     log "  [$dim] rc=$rc SEM VEREDICTO (ver $RUN_DIR/$dim.log)"
     if [ "$rc" = "124" ]; then

@@ -239,4 +239,16 @@ if [ -z "$USED" ]; then
 fi
 
 echo "[run-agent] fim: motor=$USED rc=$RC" >&2
+
+# Record which engine actually ran, so the caller can tell a DEGRADED run from a
+# genuine failure.
+#
+# This matters: when the subscription is exhausted the fallback model is
+# materially weaker, and it was observed erroring out and then timing out on the
+# curator role. Without this marker the caller reads "no verdict" as "this issue
+# defeated the pipeline" and parks it on needs-human — so a temporary quota outage
+# permanently consumes real work items. With it, the caller can leave the issue
+# where it is and simply retry once the subscription is back.
+echo "$USED" > "/tmp/monthy-budget-agent.$AGENT_SLOT.engine" 2>/dev/null || true
+
 exit "$RC"

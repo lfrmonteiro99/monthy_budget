@@ -22,6 +22,7 @@ import argparse
 import json
 import re
 import subprocess
+import time
 import sys
 from pathlib import Path
 
@@ -59,16 +60,45 @@ def similar(a: str, b: str, threshold: float = 0.6) -> bool:
     return overlap / min(len(ta), len(tb)) >= threshold
 
 
-def gh(args: list[str], check: bool = True) -> str:
-    proc = subprocess.run(
-        ["gh", *args], capture_output=True, text=True, timeout=120
-    )
-    if check and proc.returncode != 0:
-        raise RuntimeError(f"gh {' '.join(args)} failed: {proc.stderr.strip()}")
-    return proc.stdout.strip()
+def gh(args: list[str], check: bool = True, retries: int = 4) -> str:
+    """Run gh, retrying transient network failures.
+
+    The GitHub API times out often enough to matter here: a single failed
+    `issue list` used to raise, crash the whole filer, and — because the caller
+    deleted the verdict regardless — destroy every finding in that dimension.
+    Observed live: functional's 4 findings and perf's 1 were lost to one
+    `dial tcp ... i/o timeout`.
+    """
+    last = ""
+    for attempt in range(retries):
+        try:
+            proc = subprocess.run(
+                ["gh", *args], capture_output=True, text=True, timeout=120
+            )
+            if proc.returncode == 0:
+                return proc.stdout.strip()
+            last = proc.stderr.strip()
+            # Auth/permission/validation errors will not improve with retrying.
+            if not re.search(r"timeout|timed out|temporar|502|503|504|429|"
+                             r"connection reset|dial tcp|EOF", last, re.I):
+                break
+        except subprocess.TimeoutExpired as exc:
+            last = f"timeout: {exc}"
+        if attempt < retries - 1:
+            time.sleep(2 ** attempt * 3)
+    if check:
+        raise RuntimeError(f"gh {' '.join(args)} failed: {last}")
+    return ""
 
 
 def open_issue_titles(repo: str) -> list[tuple[int, str]]:
+    """Existing issues, for de-duplication.
+
+    Raises on failure ON PURPOSE. Filing without this list would mean filing
+    with de-duplication silently disabled, which duplicates every finding the
+    critic has ever reported. The caller must treat a failure here as "try again
+    later", keeping the verdict, rather than proceeding blind.
+    """
     raw = gh([
         "issue", "list", "--repo", repo, "--state", "all", "--limit", "400",
         "--json", "number,title,state",
