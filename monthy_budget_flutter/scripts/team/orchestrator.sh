@@ -328,6 +328,32 @@ while true; do
 
   cleanup_stale
 
+  # ── Wait out a subscription cooldown instead of hammering the fallback ─────
+  #
+  # The fallback model keeps the pipeline SAFE under exhaustion (a degraded run no
+  # longer consumes the issue) but it cannot actually do the heavyweight roles —
+  # measured: it errored then timed out on the curator, twice in two minutes. So
+  # retrying every 45 seconds for an hour is pure waste: ~80 doomed runs, each
+  # spawning a worktree and a model call, to accomplish nothing.
+  #
+  # Sleeping until the quota returns is strictly better. The write-path roles are
+  # skipped; the critic keeps whatever it already had running, since a detached
+  # sweep is unaffected by this.
+  COOLDOWN_FILE="$STATE_DIR/claude-usage-cooldown"
+  if [ -f "$COOLDOWN_FILE" ]; then
+    UNTIL=$(cat "$COOLDOWN_FILE" 2>/dev/null || echo 0)
+    NOW=$(date +%s)
+    if [ "$NOW" -lt "$UNTIL" ]; then
+      WAIT=$(( UNTIL - NOW ))
+      log "subscrição em cooldown até $(date -d "@$UNTIL" +%H:%M) — o fallback não consegue"
+      log "  fazer os papéis pesados, por isso espero ${WAIT}s em vez de gastar corridas condenadas"
+      if [ "$ONCE" = "1" ]; then exit 0; fi
+      # Wake in chunks so a manual --stop is still responsive.
+      sleep $(( WAIT > 300 ? 300 : WAIT + 5 ))
+      continue
+    fi
+  fi
+
   # One read of the world per cycle. Everything below reasons from this snapshot.
   # If it fails we know nothing about the queue, so the cycle does nothing rather
   # than acting on a guess — which is how a false "loop concluído" and an unearned
