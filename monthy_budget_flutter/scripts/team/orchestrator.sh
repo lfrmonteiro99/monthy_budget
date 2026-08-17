@@ -126,12 +126,27 @@ mark_reviewed() {
 # Nothing survives from one cycle to the next. An inherited verdict makes an
 # agent report the PREVIOUS run's work as its own.
 cleanup_stale() {
-  rm -f "$VERDICT_DIR"/*.json 2>/dev/null || true
-
   # Kill only OUR agent tree, via the pgid run-agent.sh recorded, and only when
   # the lock is free (so no live agent is killed mid-run).
   local lock="/tmp/monthy-budget-agent.main.lock"
   if flock -w 0 -n "$lock" true 2>/dev/null; then
+
+    # Stale verdicts, but ONLY the write-path roles this orchestrator owns, and
+    # only now that we know none of its agents is live.
+    #
+    # This used to be an unconditional `rm -f "$VERDICT_DIR"/*.json` at the top of
+    # every cycle, and it silently destroyed the critic's work. The critic runs
+    # CONCURRENTLY on its own lock slots and writes into the same directory, so a
+    # dimension that finished mid-cycle had its verdict deleted before it could be
+    # filed. Measured: the `data` dimension produced 4 findings and every one was
+    # lost, which from the outside looked like "the critic found nothing".
+    #
+    # critic-*.json is therefore never touched here — the critic owns its own
+    # verdicts and deletes each one as soon as it has filed it.
+    for role in curator implement review verify; do
+      rm -f "$VERDICT_DIR/$role"-*.json 2>/dev/null || true
+    done
+
     local pgidfile="$lock.pgid"
     if [ -f "$pgidfile" ]; then
       local pgid; pgid=$(cat "$pgidfile" 2>/dev/null || echo "")
@@ -182,6 +197,71 @@ run_critic() {
   bash "$SCRIPT_DIR/critic.sh" "${args[@]}" || log "critic falhou"
 }
 
+# Which dimensions have already been swept in this session.
+COVERED_DIMS_FILE="$STATE_DIR/dims-covered"
+ALL_CRITIC_DIMS="functional layout design ux a11y i18n perf console data"
+
+# Dimensions never yet run against the current production code.
+uncovered_dims() {
+  local out=""
+  local candidates="${DIMENSIONS:+$(printf '%s' "$DIMENSIONS" | tr ',' ' ')}"
+  [ -n "$candidates" ] || candidates="$ALL_CRITIC_DIMS"
+  for d in $candidates; do
+    grep -qxF "$d" "$COVERED_DIMS_FILE" 2>/dev/null || out="$out $d"
+  done
+  printf '%s' "${out# }"
+}
+
+mark_dims_covered() {
+  for d in $1; do echo "$d" >> "$COVERED_DIMS_FILE"; done
+}
+
+# DISCOVERY MUST NOT WAIT FOR FIXING.
+#
+# The critic originally ran only when the backlog hit zero, which sounded prudent
+# — don't file faster than you fix — but starved discovery badly: on the first
+# real run a single dimension's findings kept the queue busy for over an hour
+# while SEVEN dimensions had never executed once. The tracker looked healthy with
+# four issues while most of the app had never been examined at all.
+#
+# So: any dimension that has never run against production code gets swept as soon
+# as no write-path work is pending in this cycle, regardless of backlog depth.
+# Once every dimension has been covered once, we fall back to the
+# drain-then-resweep rhythm, which is the right steady state.
+# Launched DETACHED, deliberately.
+#
+# Two reasons it cannot be a normal inline step. First, a full sweep takes 30-70
+# minutes; run inline it would freeze the single-threaded loop and no issue would
+# be curated, implemented, reviewed or verified for that whole time. Second — and
+# this is the bug this replaces — gating it behind "nothing else to do this cycle"
+# means it never runs at all while a backlog exists, which is precisely the
+# starvation it was meant to cure: one dimension's findings keep the queue busy
+# forever and the other eight dimensions never execute.
+#
+# Safe to overlap with the write path: the critic only READS the app, takes its own
+# lock slots per dimension, and files each verdict itself. (It was NOT safe until
+# cleanup_stale stopped deleting critic-*.json out from under it.)
+CRITIC_BG_PID=""
+maybe_launch_critic_sweep() {
+  # Still running from a previous cycle? Leave it alone.
+  if [ -n "$CRITIC_BG_PID" ] && kill -0 "$CRITIC_BG_PID" 2>/dev/null; then
+    return 0
+  fi
+  local pending; pending=$(uncovered_dims)
+  [ -n "$pending" ] || return 1
+
+  log "CRITIC (em paralelo) -> dimensões nunca corridas: $pending"
+  nohup bash "$SCRIPT_DIR/critic.sh" \
+    --branch "$PROD_BRANCH" \
+    --dimensions "$(printf '%s' "$pending" | tr ' ' ',')" \
+    >> "$LOG_DIR/critic-bg.log" 2>&1 &
+  CRITIC_BG_PID=$!
+  # Marked covered at launch, not at completion: a dimension that fails leaves its
+  # reason in the log, and re-launching it every 45s would fork sweeps forever.
+  mark_dims_covered "$pending"
+  return 0
+}
+
 # ── Explicit targets ───────────────────────────────────────────────────────
 if [ -n "$TARGET_PR" ]; then run_review "$TARGET_PR"; exit 0; fi
 
@@ -211,6 +291,9 @@ while true; do
 
   cleanup_stale
   rescue_stuck_wip
+
+  # Discovery runs alongside fixing, never behind it.
+  [ "$RUN_CRITIC" = "1" ] && maybe_launch_critic_sweep
 
   DID=0
 
@@ -255,7 +338,13 @@ while true; do
   # 7. Backlog empty: that closes a loop. Run the critic to find the next batch.
   if [ "$DID" = "0" ]; then
     ACTIONABLE=$(count_actionable)
-    if [ "$ACTIONABLE" -gt 0 ]; then
+
+    # A background sweep still running counts as work in progress: closing the
+    # loop now would call the backlog empty while findings are still arriving.
+    if [ -n "$CRITIC_BG_PID" ] && kill -0 "$CRITIC_BG_PID" 2>/dev/null; then
+      log "nada accionável, mas o critic ainda está a correr em paralelo"
+
+    elif [ "$ACTIONABLE" -gt 0 ]; then
       log "nada accionável neste ciclo mas ainda há $ACTIONABLE issue(s) em curso"
 
     elif [ "$CRITIC_RUNS" -eq 0 ]; then

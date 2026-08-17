@@ -73,13 +73,46 @@ start_cooldown() {
   echo "[run-agent] cooldown da subscrição: ${mins}min" >&2
 }
 
+# The CLI states when the quota comes back — "resets 3:20pm (Europe/Lisbon)" —
+# so use it instead of guessing. A fixed 45min cooldown against a 79min wait just
+# means waking up early, failing again, and cooling down a second time; every one
+# of those probes is a wasted request during an unattended run.
+cooldown_until_reset() {
+  local out="$1" stamp target now mins
+  stamp=$(grep -oiE 'resets? [0-9]{1,2}(:[0-9]{2})? ?(am|pm)?' <<<"$out" | head -1 \
+          | sed -E 's/^resets? //I')
+  if [ -n "$stamp" ]; then
+    # `date` handles "3:20pm"; if it lands in the past the reset is tomorrow.
+    target=$(date -d "$stamp" +%s 2>/dev/null || echo "")
+    if [ -n "$target" ]; then
+      now=$(date +%s)
+      [ "$target" -le "$now" ] && target=$((target + 86400))
+      # +2min of slack: waking at the exact boundary tends to fail once more.
+      mins=$(( (target - now) / 60 + 2 ))
+      [ "$mins" -gt 0 ] && [ "$mins" -lt 1440 ] && { start_cooldown "$mins"; return 0; }
+    fi
+  fi
+  return 1
+}
+
 # Distinguish "out of quota" from "the agent failed at its task". Only the
 # former justifies burning the fallback model; the latter must surface as a
 # failure so the caller marks the issue instead of silently retrying forever.
+#
+# BE GENEROUS WITH THE PATTERNS. The first version matched 'usage limit' but the
+# CLI actually says:
+#
+#     You've hit your session limit · resets 3:20pm (Europe/Lisbon)
+#
+# "session limit", not "usage limit" — so the fallback never fired, the exit code
+# was read as a failed task, and a perfectly good issue was parked on needs-human
+# in the middle of an unattended run. Missing an exhaustion message costs a whole
+# work item; over-matching only costs one cheap run on the fallback model. The
+# asymmetry says: match loosely.
 is_usage_exhausted() {
   local out="$1"
   grep -qiE \
-    'usage limit|rate.?limit|quota (exceeded|reached)|too many requests|429|insufficient (quota|credit)|upgrade to (pro|max)|resets? at' \
+    'usage limit|session limit|hit your [a-z ]*limit|limit.*reset|resets? (at|[0-9])|rate.?limit|quota (exceeded|reached)|too many requests|429|insufficient (quota|credit)|upgrade to (pro|max)|out of (credit|quota)' \
     <<<"$out"
 }
 
@@ -162,7 +195,7 @@ if [ "${AGENT_FORCE_FALLBACK:-0}" != "1" ] && ! in_cooldown && command -v claude
 
   if [ "$RC" -ne 0 ] && is_usage_exhausted "${AGENT_OUTPUT:-}"; then
     echo "[run-agent] subscrição sem usage — a passar para o fallback" >&2
-    start_cooldown 45
+    cooldown_until_reset "${AGENT_OUTPUT:-}" || start_cooldown 45
     RC=1
     USED=""
   fi
@@ -206,4 +239,16 @@ if [ -z "$USED" ]; then
 fi
 
 echo "[run-agent] fim: motor=$USED rc=$RC" >&2
+
+# Record which engine actually ran, so the caller can tell a DEGRADED run from a
+# genuine failure.
+#
+# This matters: when the subscription is exhausted the fallback model is
+# materially weaker, and it was observed erroring out and then timing out on the
+# curator role. Without this marker the caller reads "no verdict" as "this issue
+# defeated the pipeline" and parks it on needs-human — so a temporary quota outage
+# permanently consumes real work items. With it, the caller can leave the issue
+# where it is and simply retry once the subscription is back.
+echo "$USED" > "/tmp/monthy-budget-agent.$AGENT_SLOT.engine" 2>/dev/null || true
+
 exit "$RC"

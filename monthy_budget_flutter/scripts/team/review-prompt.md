@@ -51,8 +51,29 @@ vai no contexto abaixo e nunca é truncada — usa-a.
 7. **Segredos** — chaves, tokens ou URLs de produção no diff.
 8. **l10n** — texto novo visível ao utilizador tem de estar nos ARB
    (`lib/l10n/app_*.arb`) e ser usado via `S.of(context)`, nunca fixo em Dart.
-9. **Regressões** — o diff quebra algo que funcionava? Pensa em quem mais usa o
-   código alterado (`Grep` pelos chamadores).
+9. **Raio de impacto (blast radius)** — **enumera** quem consome o código
+   alterado; não te limites a "pensar" nisso. Para cada símbolo tocado (widget,
+   serviço, repositório, utilitário, chave de l10n):
+
+   ```bash
+   grep -rn "NomeDoSimbolo" lib/ test/ | grep -v "$(caminho do ficheiro alterado)"
+   ```
+
+   Depois, para **cada** consumidor encontrado, diz explicitamente no `summary`
+   se continua correcto e porquê. Uma alteração a um widget partilhado atinge
+   todos os ecrãs que o usam, e o autor normalmente só olhou para aquele que
+   estava a corrigir.
+
+   Se o diff muda a **assinatura** ou o **comportamento por omissão** de algo
+   partilhado, e há consumidores que o diff não tocou, isso é bloqueio até
+   ficar demonstrado que cada um deles se mantém correcto.
+
+10. **Só afecta o que devia** — o inverso do ponto anterior, e mais perigoso: a
+    alteração produz efeitos onde não lhe compete? Um fix de apresentação que
+    passa a alterar dados, um filtro que passa a excluir casos legítimos, uma
+    correcção num mês que mexe noutros. Se o issue era sobre um ecrã e o diff
+    muda comportamento partilhado, justifica porque é essa a correcção certa em
+    vez de uma local.
 
 ## Veredicto
 
