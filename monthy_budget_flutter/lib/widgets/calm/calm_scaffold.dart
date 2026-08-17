@@ -16,6 +16,17 @@ import 'package:monthly_management/theme/app_colors.dart';
 /// - Default `automaticallyImplyLeading` is preserved so the OS back button
 ///   appears on push routes without extra wiring.
 class CalmScaffold extends StatelessWidget {
+  /// Bottom clearance a scrollable body must reserve when a persistent
+  /// `floatingActionButton` floats over it (own or injected by a parent
+  /// `Scaffold`, e.g. the dashboard tab's FAB in `app_home.dart`).
+  ///
+  /// Covers the FAB's ~56dp footprint plus its default margin so early,
+  /// pre-scroll content never renders underneath it. Screens with a FAB
+  /// must wrap their scrollable viewport (not just append trailing list
+  /// padding) in `Padding(bottom: fabBottomClearance)` — trailing padding
+  /// only protects the last item, not content visible before any scroll.
+  static const double fabBottomClearance = 88.0;
+
   const CalmScaffold({
     super.key,
     this.title,
