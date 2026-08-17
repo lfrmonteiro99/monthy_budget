@@ -1,5 +1,6 @@
 import '../exceptions/app_exceptions.dart';
 import '../models/savings_goal.dart';
+import '../repositories/repository_factory.dart';
 import '../repositories/savings_repository.dart';
 import 'log_service.dart';
 
@@ -10,7 +11,7 @@ class SavingsGoalService {
     : _repository = repository;
 
   SavingsRepository get _resolvedRepository =>
-      _repository ??= SupabaseSavingsRepository();
+      _repository ??= RepositoryFactory.instance.savings;
 
   Future<List<SavingsGoal>> loadGoals(String householdId) async {
     try {

@@ -10,10 +10,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app_home.dart';
 import 'app_shell.dart';
+import 'config/qa_mode.dart';
 import 'config/supabase_public_config.dart';
 import 'l10n/generated/app_localizations.dart';
+import 'repositories/qa/qa_bootstrap.dart';
 import 'screens/auth/auth_gate.dart';
 import 'services/ad_service.dart';
+import 'services/household_service.dart';
 import 'services/analytics_service.dart';
 import 'services/local_config_service.dart';
 import 'services/log_service.dart';
@@ -68,6 +71,28 @@ Future<void> main() async {
     colorPalette: results[2] as AppColorPalette,
   );
 
+  // Open + seed the local sqlite database and point RepositoryFactory at it.
+  // Must complete before runApp: the shell renders the seeded household
+  // immediately, with no AuthGate to absorb the latency.
+  HouseholdProfile? qaProfile;
+  String? qaBootstrapError;
+  if (kQaMode) {
+    try {
+      qaProfile = (await QaBootstrap.initialize()).profile;
+    } catch (e, stack) {
+      // Surfaced on screen rather than swallowed: falling through to AuthGate
+      // in QA mode would hit the uninitialised Supabase client and render a
+      // blank page, hiding the real cause from the pipeline.
+      qaBootstrapError = '$e\n\n$stack';
+      LogService.error(
+        'QA mode bootstrap failed',
+        error: e,
+        stackTrace: stack,
+        category: 'runtime.qa',
+      );
+    }
+  }
+
   // Show UI immediately - splash removed, login visible
   FlutterNativeSplash.remove();
 
@@ -93,7 +118,11 @@ Future<void> main() async {
       () {
         runApp(
           ProviderScope(
-            child: OrcamentoMensalApp(controller: appShellController),
+            child: OrcamentoMensalApp(
+              controller: appShellController,
+              qaProfile: qaProfile,
+              qaBootstrapError: qaBootstrapError,
+            ),
           ),
         );
         // Non-critical: defer to background after UI is on screen
@@ -112,6 +141,29 @@ Future<void> main() async {
 }
 
 Future<void> _initSupabase() async {
+  // QA mode initialises with whatever (placeholder) credentials it was given
+  // instead of bailing out. `Supabase.initialize` performs no network I/O, and
+  // the result is a valid but *sessionless* client: `currentUser`/
+  // `currentSession` return null, which every consumer already handles.
+  //
+  // Skipping initialisation instead would leave `Supabase.instance.client`
+  // permanently uninitialised. The assert that normally reports that is
+  // stripped from release builds, so a single missed direct `Supabase.instance`
+  // reference anywhere in the first-frame path surfaces as an opaque
+  // `LateInitializationError` on a blank screen rather than a null session.
+  if (kQaMode) {
+    try {
+      await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
+    } catch (e) {
+      LogService.error(
+        'Supabase initialization failed in QA mode — continuing sessionless',
+        error: e,
+        category: 'service.supabase',
+      );
+    }
+    return;
+  }
+
   if (supabaseUrl.isEmpty ||
       supabaseUrl.contains('example.supabase.co') ||
       supabaseUrl.contains('placeholder') ||
@@ -188,7 +240,20 @@ Future<void> _initDeferredServices() async {
 class OrcamentoMensalApp extends StatefulWidget {
   final AppShellController? controller;
 
-  const OrcamentoMensalApp({super.key, this.controller});
+  /// Only ever non-null in QA mode — the seeded household that replaces the
+  /// [AuthGate] session check so the pipeline lands directly in the app shell.
+  final HouseholdProfile? qaProfile;
+
+  /// Only ever non-null in QA mode, when the local database could not be
+  /// opened or seeded.
+  final String? qaBootstrapError;
+
+  const OrcamentoMensalApp({
+    super.key,
+    this.controller,
+    this.qaProfile,
+    this.qaBootstrapError,
+  });
 
   @override
   State<OrcamentoMensalApp> createState() => _OrcamentoMensalAppState();
@@ -213,6 +278,36 @@ class _OrcamentoMensalAppState extends State<OrcamentoMensalApp> {
     super.dispose();
   }
 
+  /// QA mode skips the auth/session/biometric gates entirely; every other build
+  /// keeps the original error-screen-or-[AuthGate] decision untouched.
+  ///
+  /// QA never falls through to [AuthGate]: without a Supabase session that path
+  /// dereferences an uninitialised client, which in a release build (asserts
+  /// stripped) surfaces as an opaque `LateInitializationError` on a blank page.
+  Widget get _home {
+    if (kQaMode) {
+      final qaProfile = widget.qaProfile;
+      if (qaProfile != null) {
+        return AppHome(
+          householdId: qaProfile.householdId,
+          isAdmin: qaProfile.role == 'admin',
+        );
+      }
+      return _SupabaseErrorScreen(
+        error: 'QA bootstrap failed\n\n${widget.qaBootstrapError ?? "unknown"}',
+      );
+    }
+    if (supabaseInitError != null) {
+      return _SupabaseErrorScreen(error: supabaseInitError!);
+    }
+    return AuthGate(
+      appBuilder: (profile) => AppHome(
+        householdId: profile.householdId,
+        isAdmin: profile.role == 'admin',
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppShellScope(
@@ -234,14 +329,7 @@ class _OrcamentoMensalAppState extends State<OrcamentoMensalApp> {
           theme: lightTheme(_controller.colorPalette),
           darkTheme: darkTheme(_controller.colorPalette),
           themeMode: _controller.themeMode,
-          home: supabaseInitError != null
-              ? _SupabaseErrorScreen(error: supabaseInitError!)
-              : AuthGate(
-                  appBuilder: (profile) => AppHome(
-                    householdId: profile.householdId,
-                    isAdmin: profile.role == 'admin',
-                  ),
-                ),
+          home: _home,
         ),
       ),
     );

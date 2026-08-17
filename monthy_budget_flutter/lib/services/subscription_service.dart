@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../exceptions/app_exceptions.dart';
 import '../models/subscription_state.dart';
 import '../repositories/auth_repository.dart';
+import '../repositories/repository_factory.dart';
 
 /// Manages subscription state, trial tracking, and feature discovery.
 class SubscriptionService {
@@ -16,7 +17,7 @@ class SubscriptionService {
     : _authRepository = authRepository;
 
   AuthRepository get _resolvedAuthRepository =>
-      _authRepository ??= SupabaseAuthRepository();
+      _authRepository ??= RepositoryFactory.instance.auth;
 
   /// Returns the account creation date from Supabase auth.
   /// Falls back to [DateTime.now()] if unavailable (e.g. in tests).

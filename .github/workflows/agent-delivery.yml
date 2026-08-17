@@ -1,9 +1,27 @@
 name: Agent Delivery
 
+# LEGACY single-shot delivery path: push a branch, get a PR opened against main
+# and auto-merged. It stays for hand-driven branches, but it must NEVER touch
+# the QA pipeline's branches.
+#
+# WHY the ignores below matter. This workflow opens a PR against the default
+# branch and merges it with `--auto`. The QA pipeline (scripts/team/) is built
+# around a *review gate*: the implementer opens a PR into `dev`, a reviewer
+# agent reads the diff and decides merge-or-block, and only then does a QA
+# tester re-verify the fix on `dev`. If Agent Delivery also fired on those
+# branches, the push would be merged straight into `main` before the reviewer
+# ever ran — the reviewer, the verifier and the whole `dev` staging step would
+# be decorative, and unreviewed code would land in production.
+#
+#   - `dev`   : the QA staging branch. Promotion to main is an explicit PR the
+#               pipeline opens on purpose; it must not happen on every push.
+#   - `qa/**` : the implementer's working branches. Their PRs target `dev`.
 on:
   push:
     branches-ignore:
       - main
+      - dev
+      - 'qa/**'
     tags-ignore:
       - 'v*'
 

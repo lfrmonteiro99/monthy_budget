@@ -1,5 +1,6 @@
 import '../exceptions/app_exceptions.dart';
 import '../models/purchase_record.dart';
+import '../repositories/repository_factory.dart';
 import '../repositories/shopping_repository.dart';
 import 'log_service.dart';
 
@@ -10,7 +11,7 @@ class PurchaseHistoryService {
     : _repository = repository;
 
   PurchaseRepository get _resolvedRepository =>
-      _repository ??= SupabasePurchaseRepository();
+      _repository ??= RepositoryFactory.instance.purchase;
 
   Future<PurchaseHistory> load(String householdId) async {
     try {

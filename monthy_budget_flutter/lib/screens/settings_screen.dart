@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:monthly_management/widgets/calm/calm.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/app_settings.dart';
 import '../models/product.dart';
 import '../models/recurring_expense.dart';
 import '../models/custom_category.dart';
+import '../services/app_identity.dart';
 import '../services/category_service.dart';
 import '../utils/category_helpers.dart';
 import '../utils/category_icons.dart';
@@ -257,7 +257,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   String? _currentUserIdSafe() {
     try {
-      return Supabase.instance.client.auth.currentUser?.id;
+      return AppIdentity.currentUserId;
     } catch (_) {
       return null;
     }
@@ -439,7 +439,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   // Sign-out — destructive action lives outside the card.
                   OutlinedButton.icon(
                     onPressed: () async {
-                      await Supabase.instance.client.auth.signOut();
+                      await AppIdentity.signOut();
                       if (context.mounted) {
                         Navigator.of(context)
                             .popUntil((route) => route.isFirst);
@@ -731,7 +731,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   String? _currentUserEmailRaw() {
     try {
-      return Supabase.instance.client.auth.currentUser?.email;
+      return AppIdentity.currentUserEmail;
     } catch (_) {
       return null;
     }

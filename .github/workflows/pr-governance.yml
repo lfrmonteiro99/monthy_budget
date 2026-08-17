@@ -33,10 +33,12 @@ jobs:
           PR_BODY=""
           PR_LABELS=""
           PR_NUMBER=""
+          PR_BASE=""
 
           if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
             PR_BODY="$(jq -r '.pull_request.body // ""' "$GITHUB_EVENT_PATH")"
             PR_LABELS="$(jq -r '.pull_request.labels[].name // empty' "$GITHUB_EVENT_PATH" | paste -sd, -)"
+            PR_BASE="$(jq -r '.pull_request.base.ref // ""' "$GITHUB_EVENT_PATH")"
           else
             PR_NUMBER='${{ inputs.pr_number }}'
             BRANCH='${{ inputs.branch }}'
@@ -52,16 +54,30 @@ jobs:
 
             PR_BODY="$(gh pr view "$PR_NUMBER" --json body --jq .body)"
             PR_LABELS="$(gh pr view "$PR_NUMBER" --json labels --jq '.labels[].name' | paste -sd, -)"
+            PR_BASE="$(gh pr view "$PR_NUMBER" --json baseRefName --jq .baseRefName)"
           fi
 
+          echo "Base: ${PR_BASE:-<unknown>}"
           echo "Labels: $PR_LABELS"
 
+          # The issue link is required on EVERY PR, whatever the base. It is what
+          # ties a change back to the defect that motivated it, and the QA
+          # pipeline relies on it to route the verifier back to the right issue.
           if ! grep -Eiq '(Fixes|Closes|Resolves)[[:space:]]+#[0-9]+' <<<"$PR_BODY"; then
             echo "PR body must include: Fixes #<issue-number>"
             exit 1
           fi
 
+          # The release label only means something for PRs that actually ship,
+          # i.e. those landing on the default branch — release-tag.yml reads it to
+          # compute the CalVer bump. QA pipeline PRs target `dev` and ship nothing
+          # on their own, so requiring a release label there would fail every
+          # single one of them for a value nothing consumes. Warn, don't block.
           if ! grep -Eq '(^|,)(release:patch|release:minor|release:major)(,|$)' <<<"$PR_LABELS"; then
-            echo "PR must include one release label: release:patch | release:minor | release:major"
-            exit 1
+            if [[ -n "$PR_BASE" && "$PR_BASE" != "$DEFAULT_BRANCH" ]]; then
+              echo "::notice::No release label on a PR into '$PR_BASE' (not the default branch) — not required here."
+            else
+              echo "PR must include one release label: release:patch | release:minor | release:major"
+              exit 1
+            fi
           fi

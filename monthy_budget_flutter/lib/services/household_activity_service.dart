@@ -1,6 +1,7 @@
 import '../models/household_activity_event.dart';
 import '../repositories/auth_repository.dart';
 import '../repositories/household_repository.dart';
+import '../repositories/repository_factory.dart';
 
 class HouseholdActivityService {
   AuthRepository? _authRepository;
@@ -13,10 +14,10 @@ class HouseholdActivityService {
        _repository = repository;
 
   AuthRepository get _resolvedAuthRepository =>
-      _authRepository ??= SupabaseAuthRepository();
+      _authRepository ??= RepositoryFactory.instance.auth;
 
   HouseholdActivityRepository get _resolvedRepository =>
-      _repository ??= SupabaseHouseholdActivityRepository();
+      _repository ??= RepositoryFactory.instance.householdActivity;
 
   Future<void> append({
     required String householdId,

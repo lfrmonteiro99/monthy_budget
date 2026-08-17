@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'app_shell.dart';
 import 'providers/navigation_providers.dart';
 import 'providers/connectivity_providers.dart';
@@ -25,6 +24,7 @@ import 'utils/unit_converter.dart';
 import 'data/tax/tax_factory.dart';
 import 'data/tax/tax_deductions.dart';
 import 'data/tax/tax_system.dart';
+import 'services/app_identity.dart';
 import 'services/settings_service.dart';
 import 'services/favorites_service.dart';
 import 'services/shopping_list_service.dart';
@@ -302,7 +302,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
 
   Future<void> _loadAll() async {
     // Detect user change and clear stale per-user local data
-    final userId = Supabase.instance.client.auth.currentUser?.id;
+    final userId = AppIdentity.currentUserId;
     if (userId != null) {
       final changed = await _localConfigService.checkUserChanged(userId);
       if (changed) await _subscriptionService.clear();
@@ -504,9 +504,9 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   /// Login to RevenueCat and sync the remote subscription tier.
   Future<void> _syncRevenueCat() async {
     try {
-      final user = Supabase.instance.client.auth.currentUser;
+      final userId = AppIdentity.currentUserId;
       final previousTier = _subscription.tier;
-      await RevenueCatService.login(user?.id);
+      await RevenueCatService.login(userId);
       // getRemoteTier() returns null on error/offline — syncFromRemoteTier
       // treats null as "unknown, keep local tier" so paying users are never
       // downgraded by a network blip.

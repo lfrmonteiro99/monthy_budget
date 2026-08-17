@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/meal_planner.dart';
 import '../repositories/meal_repository.dart';
+import '../repositories/repository_factory.dart';
 
 class MealPlannerAiService {
-  static const _edgeFunctionName = 'openai-chat';
+  // The edge function name now lives with SupabaseMealPlannerAiRepository's
+  // default, since the repository is resolved through RepositoryFactory.
   static const _model = 'gpt-4o-mini';
   static const _cacheKey = 'ai_recipe_cache';
   final MealPlannerAiRepository _repository;
@@ -13,9 +15,7 @@ class MealPlannerAiService {
   final Map<String, RecipeAiContent> _cache = {};
 
   MealPlannerAiService({MealPlannerAiRepository? repository})
-    : _repository =
-          repository ??
-          SupabaseMealPlannerAiRepository(edgeFunctionName: _edgeFunctionName);
+    : _repository = repository ?? RepositoryFactory.instance.mealPlannerAi;
 
   static String _systemPrompt(String locale) {
     switch (locale) {

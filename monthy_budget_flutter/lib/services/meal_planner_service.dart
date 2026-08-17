@@ -8,6 +8,7 @@ import '../models/app_settings.dart';
 import '../models/meal_settings.dart';
 import '../models/pantry_item.dart';
 import '../repositories/meal_repository.dart';
+import '../repositories/repository_factory.dart';
 import 'log_service.dart';
 import '../utils/taste_profile.dart';
 import '../utils/unit_converter.dart';
@@ -29,12 +30,13 @@ class MealPlannerService {
   MealPlanRepository get _mealPlanRepository {
     final existing = _repository;
     if (existing != null) return existing;
-    // SupabaseMealPlanRepository touches Supabase.instance in its initializer
-    // list, which throws AssertionError when Supabase isn't configured (e.g.
+    // The Supabase-backed repository touches Supabase.instance in its
+    // initializer list, which throws AssertionError when Supabase isn't
+    // configured (e.g.
     // widget tests, offline boot). Fall back to a stub so callers can still
     // hit the cache + bundled-asset tiers.
     try {
-      return _repository = SupabaseMealPlanRepository();
+      return _repository = RepositoryFactory.instance.mealPlan;
     } catch (_) {
       return _repository = _OfflineMealPlanRepository();
     }
