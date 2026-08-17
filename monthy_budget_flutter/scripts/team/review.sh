@@ -125,10 +125,10 @@ CI_STATUS=$(gh pr checks "$PR" --repo "$REPO" 2>/dev/null | head -20 || echo "(s
 rm -f "$VERDICT_FILE"
 AGENT_SLOT=main CLAUDE_MODEL="$MODEL" \
   bash "$SCRIPT_DIR/run-agent.sh" "$PROMPT" "$PKG" "${REVIEW_TIMEOUT:-1800}" \
-  > "$LOG_DIR/review-$PR.log" 2>&1 || true
+  > "$LOG_DIR/review-$PR.log" 2>&1; AGENT_RC=$?
 
 if [ ! -f "$VERDICT_FILE" ]; then
-  if ! no_verdict_is_real_failure main; then
+  if ! no_verdict_is_real_failure main "$AGENT_RC"; then
     log "SEM VEREDICTO com o motor de fallback — PR fica para nova review"
     gh pr comment "$PR" --repo "$REPO" --body "## Reviewer: corrida degradada, sem veredicto
 

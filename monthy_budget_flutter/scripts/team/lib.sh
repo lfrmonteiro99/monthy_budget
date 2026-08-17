@@ -159,9 +159,24 @@ agent_used_fallback() {
 
 # Standard handling for "the agent produced no verdict". Returns 0 when the caller
 # should ESCALATE (real failure), 1 when it should leave the issue alone for a
-# later retry (degraded engine).
+# later retry.
+#
+# Two things look identical from the outside — no verdict file — and neither is the
+# issue's fault:
+#   * the fallback engine ran and could not finish (weaker model);
+#   * the run never started at all because the lock slot was busy (exit 75).
+# The second happens whenever the orchestrator is restarted while an agent is still
+# mid-run: the old agent lives in its own process group and keeps the lock, so the
+# new orchestrator's first dispatch aborts instantly. Escalating that to needs-human
+# means a restart silently damages whatever issue happened to be next in line —
+# observed on #1209, failed and escalated in 11 seconds.
 no_verdict_is_real_failure() {
-  local slot="${1:-main}"
+  local slot="${1:-main}" rc="${2:-}"
+
+  if [ "$rc" = "75" ]; then
+    warn "sem veredicto porque o slot '$slot' estava ocupado (exit 75) — não escalo"
+    return 1
+  fi
   if agent_used_fallback "$slot"; then
     warn "sem veredicto mas o motor era o fallback — não escalo, fica para nova tentativa"
     return 1

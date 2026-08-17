@@ -278,6 +278,54 @@ mark_dims_covered() {
 # Safe to overlap with the write path: the critic only READS the app, takes its own
 # lock slots per dimension, and files each verdict itself. (It was NOT safe until
 # cleanup_stale stopped deleting critic-*.json out from under it.)
+# ── When to ship dev -> main ────────────────────────────────────────────────
+#
+# Promotion itself costs no quota — it is git and gh, no agent. But each promotion
+# to `main` fires release-tag.yml, which tags, releases and builds APK+AAB. Doing
+# that per issue would mean two dozen releases, a mountain of CI (part of what got
+# this repo rate-limited), and `main` shifting under the critic, which tests it.
+#
+# So promotion is BATCHED, and fires on whichever of these comes first:
+#
+#   end of the usage window  the natural moment: nothing is running, no quota is
+#                            needed, and the fixes earned this window should not
+#                            sit unshipped through an hour of cooldown
+#   batch threshold reached  so a long productive window still ships periodically
+#   backlog empty            the original condition, still valid
+#
+# Always gated on nothing being mid-flight — no open PR into dev, nothing awaiting
+# verification or implementation. That is what "dev holds only finished work"
+# actually means.
+PROMOTE_BATCH="${TEAM_PROMOTE_BATCH:-6}"
+
+maybe_promote() {
+  local reason="$1" force="${2:-0}"
+  [ "$RUN_PROMOTE" = "1" ] || return 0
+
+  local in_flight
+  in_flight=$(( $(issues_with "$L_REVIEW" | grep -c . || true) \
+              + $(issues_with "$L_VERIFY" | grep -c . || true) \
+              + $(issues_with "$L_WIP"    | grep -c . || true) ))
+  if [ "$in_flight" -ne 0 ]; then
+    [ "$force" = "1" ] && log "promoção adiada: $in_flight issue(s) ainda em curso"
+    return 0
+  fi
+
+  git -C "$TEAM_ROOT" fetch origin "$PROD_BRANCH" "$BASE_BRANCH" >/dev/null 2>&1 || true
+  local ahead
+  ahead=$(git -C "$TEAM_ROOT" rev-list --count \
+          "origin/$PROD_BRANCH..origin/$BASE_BRANCH" 2>/dev/null || echo 0)
+  [ "${ahead:-0}" -gt 0 ] || return 0
+
+  if [ "$force" != "1" ] && [ "$ahead" -lt "$PROMOTE_BATCH" ]; then
+    log "$ahead fix(es) verificados em $BASE_BRANCH — a acumular até $PROMOTE_BATCH ou ao fim da janela"
+    return 0
+  fi
+
+  log "PROMOÇÃO ($reason) -> $ahead commit(s) verificados em $BASE_BRANCH"
+  bash "$SCRIPT_DIR/promote.sh" || log "promoção falhou (segue-se em frente)"
+}
+
 CRITIC_BG_PID=""
 maybe_launch_critic_sweep() {
   # Still running from a previous cycle? Leave it alone.
@@ -347,6 +395,24 @@ while true; do
       WAIT=$(( UNTIL - NOW ))
       log "subscrição em cooldown até $(date -d "@$UNTIL" +%H:%M) — o fallback não consegue"
       log "  fazer os papéis pesados, por isso espero ${WAIT}s em vez de gastar corridas condenadas"
+
+      # END OF THE USAGE WINDOW — ship what this window earned, before sleeping.
+      #
+      # This is the ideal moment and the whole reason promotion is batched: nothing
+      # is running (the window just died mid-nothing or between issues), promotion
+      # needs no quota, and the alternative is leaving verified fixes unshipped
+      # through an hour or more of cooldown while `main` stays broken. Forced past
+      # the batch threshold: waiting for a 6th fix makes no sense when there will be
+      # no more work until the quota returns.
+      if [ ! -f "$STATE_DIR/promoted-for-$UNTIL" ]; then
+        if refresh_issue_cache; then
+          maybe_promote "fim da janela de quota" 1
+          touch "$STATE_DIR/promoted-for-$UNTIL"
+        else
+          log "não consegui ler os issues para promover ao fim da janela — tento no próximo ciclo"
+        fi
+      fi
+
       if [ "$ONCE" = "1" ]; then exit 0; fi
       # Wake in chunks so a manual --stop is still responsive.
       sleep $(( WAIT > 300 ? 300 : WAIT + 5 ))
@@ -371,32 +437,7 @@ while true; do
   # Discovery runs alongside fixing, never behind it.
   [ "$RUN_CRITIC" = "1" ] && maybe_launch_critic_sweep
 
-  # ── Ship verified fixes continuously, not in one batch at the end ──────────
-  #
-  # Promotion used to happen only when the backlog reached zero. With a real
-  # backlog that is a day or more away, and waiting costs three things:
-  #   - `main` stays broken while working, QA-verified fixes sit idle on `dev`;
-  #   - the CRITIC tests `main`, so it cannot find anything new — or detect a
-  #     regression — until main moves. The pipeline blocks its own discovery;
-  #   - one promotion of 24 fixes is far riskier to review than 24 small ones.
-  #
-  # So promote whenever `dev` is ahead and nothing is mid-flight (no open PR into
-  # dev, nothing awaiting verification). Those two conditions are what "dev holds
-  # only finished work" actually means — the empty backlog was a crude proxy for it.
-  if [ "$RUN_PROMOTE" = "1" ]; then
-    IN_FLIGHT=$(( $(issues_with "$L_REVIEW" | grep -c . || true) \
-                + $(issues_with "$L_VERIFY" | grep -c . || true) \
-                + $(issues_with "$L_WIP"    | grep -c . || true) ))
-    if [ "$IN_FLIGHT" -eq 0 ]; then
-      git -C "$TEAM_ROOT" fetch origin "$PROD_BRANCH" "$BASE_BRANCH" >/dev/null 2>&1 || true
-      AHEAD=$(git -C "$TEAM_ROOT" rev-list --count \
-              "origin/$PROD_BRANCH..origin/$BASE_BRANCH" 2>/dev/null || echo 0)
-      if [ "${AHEAD:-0}" -gt 0 ]; then
-        log "PROMOÇÃO incremental -> $AHEAD commit(s) verificados em $BASE_BRANCH"
-        bash "$SCRIPT_DIR/promote.sh" || log "promoção falhou (segue-se em frente)"
-      fi
-    fi
-  fi
+  maybe_promote "cadência"
 
   DID=0
 
@@ -472,10 +513,9 @@ while true; do
 
       # Ship what QA verified. Without this the critic keeps re-testing a `main`
       # that never receives the fixes, and finds the same defects every loop.
-      if [ "$RUN_PROMOTE" = "1" ]; then
-        log "PROMOÇÃO -> $BASE_BRANCH para $PROD_BRANCH"
-        bash "$SCRIPT_DIR/promote.sh" || log "promoção falhou (segue-se em frente)"
-      fi
+      # Forced past the batch threshold: the queue is drained, so there is nothing
+      # left to accumulate.
+      maybe_promote "backlog vazio" 1
 
       if [ "$MAX_LOOPS" -gt 0 ] && [ "$LOOPS" -ge "$MAX_LOOPS" ]; then
         log "atingidos os $MAX_LOOPS loops pedidos. A terminar."

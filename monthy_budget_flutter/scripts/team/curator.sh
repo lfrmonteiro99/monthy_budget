@@ -59,10 +59,10 @@ ISSUE_JSON=$(gh issue view "$ISSUE" --repo "$REPO" \
 rm -f "$VERDICT_FILE"
 AGENT_SLOT=main CLAUDE_MODEL="$MODEL" \
   bash "$SCRIPT_DIR/run-agent.sh" "$PROMPT" "$REPO_PKG" "${CURATOR_TIMEOUT:-900}" \
-  > "$LOG_DIR/curator-$ISSUE.log" 2>&1 || true
+  > "$LOG_DIR/curator-$ISSUE.log" 2>&1; AGENT_RC=$?
 
 if [ ! -f "$VERDICT_FILE" ]; then
-  if ! no_verdict_is_real_failure main; then
+  if ! no_verdict_is_real_failure main "$AGENT_RC"; then
     log "SEM VEREDICTO com o motor de fallback — issue fica em $L_TRIAGE para nova tentativa"
     comment_issue "$ISSUE" "## Curator: corrida degradada, sem veredicto
 

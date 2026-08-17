@@ -93,10 +93,10 @@ rm -f "$VERDICT_FILE"
 AGENT_SLOT=main CLAUDE_MODEL="$MODEL" \
   AGENT_ADD_DIRS="$SCRATCH:$QA_TOOLS" \
   bash "$SCRIPT_DIR/run-agent.sh" "$PROMPT" "$QA_TOOLS" "${VERIFY_TIMEOUT:-1800}" \
-  > "$LOG_DIR/verify-$ISSUE.log" 2>&1 || true
+  > "$LOG_DIR/verify-$ISSUE.log" 2>&1; AGENT_RC=$?
 
 if [ ! -f "$VERDICT_FILE" ]; then
-  if ! no_verdict_is_real_failure main; then
+  if ! no_verdict_is_real_failure main "$AGENT_RC"; then
     log "SEM VEREDICTO com o motor de fallback — issue fica em $L_VERIFY"
     comment_issue "$ISSUE" "## QA: corrida degradada, sem veredicto
 
