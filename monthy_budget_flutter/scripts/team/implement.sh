@@ -97,6 +97,17 @@ AGENT_SLOT=main CLAUDE_MODEL="$MODEL" \
   > "$LOG_DIR/implement-$ISSUE.log" 2>&1 || true
 
 if [ ! -f "$VERDICT_FILE" ]; then
+  if ! no_verdict_is_real_failure main; then
+    log "SEM VEREDICTO com o motor de fallback — issue volta a $L_READY"
+    comment_issue "$ISSUE" "## Implementador: corrida degradada, sem veredicto
+
+A subscrição estava esgotada e a corrida usou o modelo de fallback, que não
+conseguiu concluir a implementação. **Isto não é um problema do issue** — volta a
+\`$L_READY\` para nova tentativa quando a subscrição voltar."
+    set_state "$ISSUE" "$L_READY"
+    wt_remove "$WT"
+    exit 0
+  fi
   log "SEM VEREDICTO — needs-human"
   set_state "$ISSUE" "$L_HUMAN"
   comment_issue "$ISSUE" "## Implementador: sem veredicto

@@ -93,6 +93,29 @@ comment_issue() {
 # NOTE ON NAMING: keep the path variable and the value variable distinct.
 # `VERDICT=$(jq ... "$VERDICT")` overwrites the path with the value, and the
 # next jq call then tries to open a file named "blocked".
+# True when the last agent on this slot ran on the FALLBACK engine rather than the
+# subscription. A role that produced no verdict on the fallback must not be
+# treated as "this issue defeated the pipeline": the fallback model is materially
+# weaker (observed erroring then timing out on the curator role), so a temporary
+# quota outage would otherwise park real work on needs-human permanently. Callers
+# leave the issue in place and let it retry once the subscription returns.
+agent_used_fallback() {
+  local slot="${1:-main}"
+  grep -q '^ollama/' "/tmp/monthy-budget-agent.$slot.engine" 2>/dev/null
+}
+
+# Standard handling for "the agent produced no verdict". Returns 0 when the caller
+# should ESCALATE (real failure), 1 when it should leave the issue alone for a
+# later retry (degraded engine).
+no_verdict_is_real_failure() {
+  local slot="${1:-main}"
+  if agent_used_fallback "$slot"; then
+    warn "sem veredicto mas o motor era o fallback — não escalo, fica para nova tentativa"
+    return 1
+  fi
+  return 0
+}
+
 jqv() {
   local file="$1" filter="$2" fallback="${3:-}"
   local out
