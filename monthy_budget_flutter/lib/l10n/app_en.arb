@@ -1422,6 +1422,7 @@
     "addExpenseDescription": "Description (optional)",
     "addExpenseCustomCategory": "Custom category",
     "addExpenseInvalidAmount": "Enter a valid amount",
+    "addExpenseCategoryRequired": "Select a category",
     "addExpenseTooltip": "Log expense",
     "addExpenseItem": "Expense",
     "addExpenseOthers": "Others",

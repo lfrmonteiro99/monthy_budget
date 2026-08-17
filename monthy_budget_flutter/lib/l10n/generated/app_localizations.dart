@@ -4589,6 +4589,12 @@ abstract class S {
   /// **'Introduza um valor válido'**
   String get addExpenseInvalidAmount;
 
+  /// Missing category error
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione uma categoria'**
+  String get addExpenseCategoryRequired;
+
   /// FAB tooltip
   ///
   /// In pt, this message translates to:

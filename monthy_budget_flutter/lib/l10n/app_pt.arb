@@ -3171,6 +3171,10 @@
     "@addExpenseInvalidAmount": {
         "description": "Invalid amount error"
     },
+    "addExpenseCategoryRequired": "Selecione uma categoria",
+    "@addExpenseCategoryRequired": {
+        "description": "Missing category error"
+    },
     "addExpenseTooltip": "Registar despesa",
     "@addExpenseTooltip": {
         "description": "FAB tooltip"

@@ -1316,6 +1316,7 @@
     "addExpenseDescription": "Description (facultatif)",
     "addExpenseCustomCategory": "Catégorie personnalisée",
     "addExpenseInvalidAmount": "Entrez un montant valide",
+    "addExpenseCategoryRequired": "Sélectionnez une catégorie",
     "addExpenseTooltip": "Saisir une dépense",
     "addExpenseItem": "Dépense",
     "addExpenseOthers": "Autres",
