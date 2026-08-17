@@ -131,6 +131,30 @@ add_label_api() {
     -f "labels[]=$label" >/dev/null 2>&1
 }
 
+# Open a PR via the REST API, echoing its number. Same reason as add_label_api:
+# `gh pr create` resolves project cards over GraphQL and dies on this repo with a
+# Projects-classic deprecation error, so the PR is never opened even though the
+# branch was pushed successfully.
+#
+# That cost real work twice. #1241 and #1242 were fully implemented by the
+# fallback — 12 and 20 files, tests passing — pushed to their branches, and then
+# escalated to needs-human with "PR não criado", where they sat for hours. The code
+# was fine and on the remote the whole time; only the announcement failed.
+create_pr_api() {
+  local head="$1" base="$2" title="$3" body="$4"
+  local resp num
+  resp=$(gh api -X POST "repos/$REPO/pulls" \
+           -f title="$title" -f head="$head" -f base="$base" -f body="$body" 2>&1)
+  num=$(printf '%s' "$resp" | jq -r '.number // empty' 2>/dev/null)
+  if [ -n "$num" ]; then printf '%s' "$num"; return 0; fi
+  # An existing PR for this head is success, not failure.
+  num=$(gh api "repos/$REPO/pulls?head=${REPO%%/*}:$head&base=$base&state=open" \
+        --jq '.[0].number // empty' 2>/dev/null)
+  if [ -n "$num" ]; then printf '%s' "$num"; return 0; fi
+  warn "não abri PR $head -> $base: $(printf '%s' "$resp" | jq -r '.message // .' 2>/dev/null | head -1)"
+  return 1
+}
+
 comment_issue() {
   local issue="$1" body="$2"
   gh issue comment "$issue" --repo "$REPO" --body "$body" >/dev/null 2>&1 \

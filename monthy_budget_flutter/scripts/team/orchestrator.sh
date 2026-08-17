@@ -114,6 +114,54 @@ issues_with() {
 
 first_with() { issues_with "$1" | head -1; }
 
+# ── Attempt budget per issue ───────────────────────────────────────────────
+#
+# Rework outranks new work in the dispatch order, which is right — finishing what
+# is started beats starting more. But with no limit it means a single hard issue
+# monopolises the pipeline indefinitely.
+#
+# Measured: #1202 (FAB overlap) went verify -> fail-impl -> implement -> review ->
+# blocked-impl -> implement for over two hours, on its third implementation cycle,
+# while 21 issues sat untouched in triage. From outside the pipeline looked busy and
+# was delivering nothing.
+#
+# After this many round trips an issue is not "nearly there", it is stuck on
+# something the agents cannot see — so park it for a human with the history intact
+# and let the queue move.
+MAX_ATTEMPTS="${TEAM_MAX_ATTEMPTS:-3}"
+ATTEMPTS_DIR="$STATE_DIR/attempts"
+mkdir -p "$ATTEMPTS_DIR" 2>/dev/null || true
+
+bump_attempts() {
+  local issue="$1" n
+  n=$(( $(cat "$ATTEMPTS_DIR/$issue" 2>/dev/null || echo 0) + 1 ))
+  echo "$n" > "$ATTEMPTS_DIR/$issue"
+  printf '%s' "$n"
+}
+
+# Returns 0 when the issue still has budget, 1 when it has been parked.
+check_attempt_budget() {
+  local issue="$1" n
+  n=$(cat "$ATTEMPTS_DIR/$issue" 2>/dev/null || echo 0)
+  [ "$n" -lt "$MAX_ATTEMPTS" ] && return 0
+
+  log "#$issue esgotou o orçamento de $MAX_ATTEMPTS tentativas — a parquear para humano"
+  comment_issue "$issue" "## Orquestrador: $MAX_ATTEMPTS tentativas sem sucesso
+
+Este issue passou $n vezes pelo ciclo implementar → rever → verificar sem chegar a
+\`pass\`. O histórico completo está nos comentários acima, incluindo o que cada
+reviewer e verificador apontou.
+
+Parado aqui de propósito: ao fim de $MAX_ATTEMPTS voltas o problema deixa de ser
+'quase lá' e passa a ser algo que os agentes não conseguem ver — e continuar a
+tentar bloqueava a fila (21 issues ficaram parados enquanto este repetia).
+
+Para retomar: corrige o que estiver em falta, apaga
+\`$ATTEMPTS_DIR/$issue\` e volta a pôr o issue em \`$L_READY\`."
+  set_state "$issue" "$L_HUMAN"
+  return 1
+}
+
 count_actionable() {
   local n=0 s
   for s in "$L_TRIAGE" "$L_READY" "$L_REVIEW" "$L_VERIFY" "$L_BLOCKED_IMPL" "$L_BLOCKED_SPEC" "$L_WIP"; do
@@ -469,13 +517,25 @@ while true; do
   # 3. Rework: code problems back to the implementer.
   if [ "$DID" = "0" ]; then
     I=$(first_with "$L_BLOCKED_IMPL")
-    if [ -n "$I" ]; then run_implement "$I"; DID=1; fi
+    if [ -n "$I" ]; then
+      if check_attempt_budget "$I"; then
+        log "#$I: tentativa $(bump_attempts "$I") de $MAX_ATTEMPTS"
+        run_implement "$I"
+      fi
+      DID=1
+    fi
   fi
 
   # 4. Rework: briefing problems back to the curator.
   if [ "$DID" = "0" ]; then
     I=$(first_with "$L_BLOCKED_SPEC")
-    if [ -n "$I" ]; then run_curator "$I"; DID=1; fi
+    if [ -n "$I" ]; then
+      if check_attempt_budget "$I"; then
+        log "#$I: tentativa $(bump_attempts "$I") de $MAX_ATTEMPTS (briefing)"
+        run_curator "$I"
+      fi
+      DID=1
+    fi
   fi
 
   # 5. Implement curated issues.

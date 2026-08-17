@@ -206,9 +206,9 @@ Testes: $TESTS" >/dev/null 2>&1 || true
   PR_NUM="$EXISTING_PR"
   log "PR #$PR_NUM actualizado"
 else
-  PR_URL=$(gh pr create --repo "$REPO" --base "$BASE_BRANCH" --head "$BRANCH" \
-    --title "$SUMMARY (#$ISSUE)" --body "$PR_BODY" 2>/dev/null || echo "")
-  PR_NUM=$(printf '%s' "$PR_URL" | grep -oE '[0-9]+$' || echo "")
+  # REST API, not `gh pr create`: the latter dies on this repo over Projects-classic
+  # deprecation, leaving the pushed branch with no PR and the issue on needs-human.
+  PR_NUM=$(create_pr_api "$BRANCH" "$BASE_BRANCH" "$SUMMARY (#$ISSUE)" "$PR_BODY" || echo "")
   if [ -z "$PR_NUM" ]; then
     log "ERRO: PR não criado"
     set_state "$ISSUE" "$L_HUMAN"
