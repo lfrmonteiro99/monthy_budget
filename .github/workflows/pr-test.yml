@@ -1,0 +1,68 @@
+name: PR Test
+
+# Supplies the `test` commit status for pull requests.
+#
+# WHY THIS EXISTS. `main` is protected with required status checks `test` and
+# `validate-pr`. Until the QA pipeline landed, the `test` context was produced
+# as a side effect of agent-delivery.yml, whose `test` job runs on *push* to any
+# non-main branch — the branch head and the PR head are the same commit, so the
+# status attached to the PR by coincidence.
+#
+# The QA pipeline stops agent-delivery from firing on `dev` and `qa/**` (it would
+# otherwise auto-merge unreviewed work into main). That removed the coincidence:
+# a `dev` -> `main` promotion PR would never receive a `test` status and would sit
+# blocked forever, which is exactly the "BEHIND PR that never merges" failure this
+# repo has hit before.
+#
+# So the context is produced explicitly, from the pull_request event, with a job
+# id of `test` (the job id is what becomes the check name that branch protection
+# matches). Kept byte-for-byte in step with agent-delivery.yml's `test` job.
+on:
+  pull_request:
+    branches: [main, dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-test-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: monthy_budget_flutter
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.2'
+          channel: stable
+          cache: true
+
+      # analyze/test never talk to Supabase, but the import must resolve. The
+      # real credentials are injected with --dart-define at release build time.
+      - name: Create Supabase config stub
+        run: |
+          mkdir -p lib/config
+          cat > lib/config/supabase_config.dart << 'DART'
+          const supabaseUrl = 'https://placeholder.supabase.co';
+          const supabaseAnonKey = 'placeholder';
+          DART
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate l10n
+        run: flutter gen-l10n
+
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+
+      - name: Test
+        run: flutter test

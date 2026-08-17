@@ -4,8 +4,11 @@ on:
   push:
     branches-ignore:
       - main
+  # `dev` is listed so the QA pipeline's PRs (qa/** -> dev) and the promotion
+  # PR (dev -> main) both get coverage, ARB and secret-scan signal. Without it
+  # the reviewer agent would decide merge-or-block with no gate output at all.
   pull_request:
-    branches: [main]
+    branches: [main, dev]
 
 permissions:
   contents: read

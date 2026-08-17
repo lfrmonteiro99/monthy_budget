@@ -3,7 +3,7 @@ name: Flutter CI
 on:
   workflow_dispatch:
   pull_request:
-    branches: [main]
+    branches: [main, dev]
     paths:
       - 'monthy_budget_flutter/**'
       - '.github/workflows/flutter-ci.yml'

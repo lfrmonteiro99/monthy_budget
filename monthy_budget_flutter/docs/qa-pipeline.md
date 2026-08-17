@@ -1,0 +1,210 @@
+# Pipeline autónomo de QA
+
+Uma equipa de agentes que testa a app a correr num browser, abre issues do que
+está mal, analisa-os, corrige-os, revê as correções e volta a testá-las antes de
+fechar. Vive em `scripts/team/`.
+
+## Os papéis
+
+| Papel | Script | O que faz | Testa que branch |
+|---|---|---|---|
+| **Critic** | `critic.sh` | Conduz a app num browser e abre issues do que encontra | `main` |
+| **Curator** | `curator.sh` | Investiga a causa raiz e escreve o briefing (causa, plano, critérios de aceitação, como testar) | — |
+| **Implementador** | `implement.sh` | Corrige em `qa/issue-N` e abre PR para `dev` | — |
+| **Reviewer** | `review.sh` | Lê o diff, corre os testes, integra ou devolve | — |
+| **QA Verifier** | `verify.sh` | Volta a testar o fix na app a correr e fecha o issue | `dev` |
+| **Promoção** | `promote.sh` | Leva `dev` para `main` quando o backlog fica vazio | — |
+| **Orquestrador** | `orchestrator.sh` | Despacha tudo pela máquina de estados | — |
+
+## Topologia de branches
+
+```
+main ──────────────────────────────►  produção. O CRITIC testa aqui.
+  │                            ▲
+  └──► dev ───────────────────┘       staging de QA. O VERIFIER testa aqui.
+         ▲                            Promovido para main quando o backlog esvazia.
+         └── qa/issue-N               branches do implementador. PR ──► dev.
+```
+
+O critic testa `main` de propósito: interessa saber o que está mal na app tal
+como está publicada. O verifier testa `dev` porque é lá que o fix está.
+
+## Máquina de estados
+
+O estado de um issue é **exactamente uma** label `qa:*`. Os comentários são o
+registo de auditoria; a label é o que o orquestrador despacha.
+
+```
+qa:triage ──curator──► qa:ready ──implementador──► qa:review ──reviewer──┐
+    ▲                     ▲                            │                │
+    │                     │                     blocked-impl        approved
+    │                     │                            │            (merged)
+    │              qa:blocked-impl ◄────────────────────┘                │
+    │                     ▲                                             ▼
+    │                     │                                        qa:verify
+    │                     │  fail-impl                                  │
+    │                     └──────────────────────────────────────────────┤
+    │                                                                   │
+qa:blocked-spec ◄──── blocked-spec / fail-spec ─────────────────────────┤
+                                                                  pass  │
+                                                                        ▼
+                                                                    qa:done
+                                                                   (fechado)
+```
+
+`qa:needs-human` é a saída de emergência: nada o despacha automaticamente.
+
+### Porque há dois tipos de bloqueio
+
+`blocked-impl` (problema de código) volta ao implementador; `blocked-spec`
+(briefing errado) volta ao curator. Sem esta distinção, um issue cujos critérios
+de aceitação estão errados entra em ciclo infinito: o implementador cumpre o
+contrato, o QA reprova, e ele volta a implementar exactamente a mesma coisa
+errada. Se a instrução estava mal, o que tem de mudar é a instrução.
+
+## QA mode: como é que os testers entram na app
+
+A app está fechada por autenticação Supabase (`lib/screens/auth/auth_gate.dart`).
+Sem credenciais — e não há, nem se usa a base de dados de produção para testes —
+um tester só conseguiria ver o ecrã de login.
+
+`--dart-define=QA_MODE=true` resolve isso:
+
+- `lib/config/qa_mode.dart` — a flag (`bool.fromEnvironment`, portanto o código
+  de QA é removido pelo tree-shaking num build normal);
+- `lib/repositories/repository_factory.dart` — o ponto único onde os serviços
+  resolvem os seus repositórios. Por omissão devolve os `Supabase*`;
+- `lib/repositories/qa/` — implementações contra **sqlite local**
+  (`lib/repositories/local/qa_local_store.dart`, uma tabela de documentos JSON
+  via SQL cru no drift, sem codegen);
+- dados semeados de forma determinística, para os testers julgarem números e
+  estados contra algo estável;
+- o gate de autenticação é contornado e a app arranca directamente na shell.
+
+Em web o drift usa `WasmDatabase`, e por isso `web/sqlite3.wasm` e
+`web/drift_worker.js` são obrigatórios no repositório.
+
+**O comportamento de produção não muda:** com a flag desligada, o caminho é o
+Supabase de sempre.
+
+## O toolkit de browser
+
+`scripts/team/qa/flutter_driver.mjs` e `probe.mjs`. Correm de
+`~/Documentos/monthy-budget-qa-tools` (projecto npm próprio, com o playwright).
+
+A app compila com o renderer CanvasKit: **pinta num canvas**. Não há nós de texto
+no DOM, nem cores em CSS, nem caixas de elementos para inspeccionar. Sobram duas
+fontes de verdade, e o toolkit expõe as duas:
+
+1. **A árvore semântica** — o Flutter espelha os widgets em `<flt-semantics>` com
+   `aria-label`, `role` e caixa real. É a visão estrutural: o que existe, como se
+   chama, onde está, se é alcançável. Tudo o que é programático sai daqui.
+2. **Screenshots** — a única forma de julgar aparência. O agente lê o PNG e
+   forma um juízo visual, como um revisor humano.
+
+A árvore semântica só existe depois de activar a acessibilidade
+(`enableSemantics()`). Esquecer isso é a razão nº1 para um probe "não encontrar
+nada".
+
+## Dimensões de teste
+
+Uma por ficheiro em `scripts/team/dimensions/`, corridas **em paralelo** (só leem
+a app, não podem conflituar). O arquivamento dos findings é depois **serializado**
+e desduplicado, para dois testers que viram o mesmo defeito não abrirem dois
+issues.
+
+`functional` · `layout` · `design` · `ux` · `a11y` · `i18n` · `perf` · `console` · `data`
+
+Acrescentar uma dimensão é acrescentar um ficheiro `.md` e o nome à lista em
+`critic.sh`.
+
+## Motor: subscrição com fallback
+
+`run-agent.sh` corre o harness do Claude Code. Primeiro na subscrição local
+(`claude -p`); quando o usage acaba, o mesmo harness passa a correr contra um
+modelo Ollama Cloud (`ollama launch claude`). As ferramentas do agente são as
+mesmas nos dois casos — só muda o modelo.
+
+Distingue "sem quota" de "o agente falhou a tarefa": só o primeiro justifica o
+fallback, e é registado um cooldown para não se gastar um pedido condenado por
+ciclo.
+
+## Correr
+
+```bash
+cd monthy_budget_flutter
+
+# um ciclo, sem abrir nada novo (bom para inspeccionar)
+bash scripts/team/orchestrator.sh --once --no-critic
+
+# dois loops completos e para
+bash scripts/team/orchestrator.sh --loops 2
+
+# só o critic, uma dimensão
+bash scripts/team/critic.sh --dimensions layout
+
+# um issue ou um PR específico
+bash scripts/team/orchestrator.sh --issue 1200
+bash scripts/team/orchestrator.sh --pr 1201
+
+# servir a app à mão
+bash scripts/team/serve-app.sh main      # :7401
+bash scripts/team/serve-app.sh dev       # :7402
+bash scripts/team/serve-app.sh dev --status
+```
+
+Um **loop** = o backlog chegar a zero. Aí promove-se `dev` e o critic corre outra
+vez.
+
+### Estado fora do repositório
+
+Veredictos, worktrees e estado do orquestrador vivem **fora** da árvore de
+trabalho, em `~/Documentos/monthy-budget-verdicts/` e
+`~/Documentos/monthy-budget-wt/`. Dentro do repositório causavam três avarias ao
+mesmo tempo: ficavam versionados, uma corrida que morria antes de escrever
+herdava o veredicto da anterior (e reportava o trabalho de outro issue como
+seu), e o `git add -A` arrastava-os para o diff do PR.
+
+Logs em `/tmp/monthy-budget-team/`.
+
+## Interacção com o CI
+
+Foi preciso mexer nos workflows — o que já existia atropelava este desenho.
+
+| Workflow | Mudança | Porquê |
+|---|---|---|
+| `agent-delivery.yml` | ignora `dev` e `qa/**` | Abria PR para `main` e fazia auto-merge. Nos branches do pipeline, o código entrava em produção **antes** de o reviewer correr: reviewer, verifier e o staging em `dev` ficavam decorativos. |
+| `pr-test.yml` | **novo** | `main` exige o check `test`. Ele vinha por acidente do `agent-delivery` (job em `push`). Ao deixar de disparar em `dev`, o PR de promoção nunca receberia `test` e ficaria preso para sempre. Agora é produzido no evento `pull_request`. |
+| `quality-gates.yml` | + `dev` nos PRs | Sem isto o reviewer decidiria sem cobertura, validação de ARB nem scan de segredos. |
+| `flutter-ci.yml` | + `dev` nos PRs | Coerência. |
+| `pr-governance.yml` | label de release só obrigatória para `main` | A label alimenta o CalVer do `release-tag.yml`. PRs para `dev` não publicam nada, e exigi-la reprovava todos eles por um valor que ninguém lê. O link para o issue continua obrigatório em todos. |
+
+`release-tag.yml`, `supabase-price-sync.yml` e `scrape-grocery-prices.yml` só
+correm em `main` e não foram alterados: são o caminho de produção e é o PR de
+promoção que os deve accionar.
+
+## Extender
+
+- **Nova dimensão de teste** → um `.md` em `dimensions/` + nome na lista de
+  `critic.sh`.
+- **Mudar critérios de um papel** → o `*-prompt.md` correspondente. Os prompts
+  são o contrato; os `.sh` só transportam estado.
+- **Novo papel** → um `.sh` que escreve veredicto em `$VERDICT_DIR`, um
+  `*-prompt.md`, e um ramo no despacho do `orchestrator.sh`.
+
+## Limitações honestas
+
+- **A app é mobile; o teste é web.** Biometria, câmara, scanner, notificações
+  push e compras in-app não funcionam no browser *por construção* e estão
+  explicitamente fora do âmbito dos testers. Defeitos exclusivos de Android/iOS
+  passam por aqui sem serem vistos.
+- **Overflow de layout não vem da consola.** Os builds são `--release`, onde as
+  asserções do Flutter (incluindo `RenderFlex overflowed`) estão desligadas. A
+  detecção é por caixas semânticas fora da viewport (heurística) e por inspecção
+  visual dos screenshots.
+- **Os dados são semeados, não reais.** Um defeito que só aparece com dados de
+  produção reais não é encontrado aqui.
+- **A desduplicação é mecânica** (sobreposição de tokens no título). Erra por
+  excesso de arquivamento: é o curator que fecha duplicados, porque um duplicado
+  é barato e um defeito real silenciosamente descartado é invisível para sempre.
+- **`sev:` e `confidence` são juízo de um modelo**, não medições.
