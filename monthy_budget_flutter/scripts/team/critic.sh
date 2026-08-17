@@ -76,6 +76,69 @@ if ! bash "$SCRIPT_DIR/qa-tools-setup.sh" >>"$RUN_DIR/toolkit.log" 2>&1; then
   exit 1
 fi
 
+# ── 2b. Boot gate ──────────────────────────────────────────────────────────
+# Check ONCE, cheaply, that the app actually reaches its authenticated shell
+# before fanning out. If the build is broken, every tester would independently
+# discover the same grey rectangle and file it as a blocker in its own words —
+# nine agents burning quota to produce one real finding plus eight artefacts.
+BOOT_DIR="$RUN_DIR/bootcheck"
+if node "$QA_TOOLS/probe.mjs" --url "$APP_URL" --out "$BOOT_DIR" --tabs home \
+     >"$RUN_DIR/bootcheck.log" 2>&1; then :; fi
+BOOTED=$(jq -r '.bootedIntoApp // false' "$BOOT_DIR/report.json" 2>/dev/null || echo false)
+
+if [ "$BOOTED" != "true" ]; then
+  log "A APP NÃO ARRANCA em $APP_URL — não vale a pena lançar os testers"
+  BOOT_LABELS=$(jq -r '[(.screens.boot.labels // [])[:15][]] | join(" | ")' "$BOOT_DIR/report.json" 2>/dev/null || echo "")
+  BOOT_ERRS=$(jq -r '[((.diagnostics.consoleErrors // []) + (.diagnostics.pageErrors // []))[:6][]] | join("\n")' "$BOOT_DIR/report.json" 2>/dev/null || echo "")
+  TITLE="A app não arranca no build de QA de \`$BRANCH\` (ecrã vazio)"
+
+  # Only file it if it is not already open, otherwise every cycle adds another.
+  if gh issue list --repo "$REPO" --state open --search "in:title app não arranca" \
+       --json number --jq 'length' 2>/dev/null | grep -qx 0; then
+    gh issue create --repo "$REPO" --title "$TITLE" \
+      --label "critic,$L_TRIAGE,sev:blocker,dim:console" \
+      --body "$(cat <<EOF
+> Detectado pelo QA critic antes de lançar os testers.
+
+## O que está mal
+
+O build de QA de \`$BRANCH\` não chega à shell autenticada. Nenhum teste de QA é
+possível neste estado, por isso esta corrida foi interrompida sem lançar as
+restantes dimensões.
+
+## Observado
+
+Labels no arranque: \`${BOOT_LABELS:-(nenhum — a árvore semântica está vazia)}\`
+
+Erros de consola / página:
+
+\`\`\`
+${BOOT_ERRS:-(nenhum registado)}
+\`\`\`
+
+## Como reproduzir
+
+1. \`bash scripts/team/serve-app.sh $BRANCH\`
+2. \`cd $QA_TOOLS && node probe.mjs --url $APP_URL --out /tmp/boot\`
+3. \`bootedIntoApp\` vem \`false\`.
+
+## Prova
+
+- \`$BOOT_DIR/report.json\`
+- \`$BOOT_DIR/boot.png\`
+
+---
+- Testado em: branch \`$BRANCH\`
+- Corrida do critic: \`$RUN_ID\`
+EOF
+)" >/dev/null 2>&1 && log "issue de blocker de arranque criado"
+  else
+    log "blocker de arranque já está aberto — não duplico"
+  fi
+  exit 0
+fi
+log "a app arranca — a lançar os testers"
+
 # The repo checkout the testers may read (design docs, ARB files, service code).
 REPO_PKG="$WT_ROOT/serve-$(printf '%s' "$BRANCH" | tr -c 'a-zA-Z0-9._-' '-')/$FLUTTER_SUBDIR"
 [ -d "$REPO_PKG" ] || REPO_PKG="$TEAM_ROOT/$FLUTTER_SUBDIR"

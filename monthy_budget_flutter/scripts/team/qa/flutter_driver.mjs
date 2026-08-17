@@ -66,22 +66,42 @@ export async function launch({
 
   page.on('console', (msg) => {
     const text = msg.text();
+    // A blocked cross-origin fetch ALSO logs a console error, worded differently
+    // from the request URL, so it needs filtering here too.
+    //
+    // Deliberately NOT filtering the bare "net::ERR_FAILED" line: it carries no
+    // URL, so suppressing it would also hide a genuinely broken local asset.
+    // It is left in, and the tester prompt tells testers to disregard
+    // environmental fetch failures.
+    if (/fonts\.g|googleapis|gstatic|github\.io|supabase|ERR_NAME_NOT_RESOLVED|CORS policy/.test(text)) {
+      return;
+    }
     if (msg.type() === 'error') logs.consoleErrors.push(text);
     else if (msg.type() === 'warning') logs.consoleWarnings.push(text);
   });
   page.on('pageerror', (err) => logs.pageErrors.push(String(err?.message ?? err)));
+  // Requests that are EXPECTED to fail in the QA environment. Reporting these
+  // would bury the real findings: on the first real run the grocery catalogue
+  // fetches alone produced 5 console errors that mean nothing about the app.
+  //   - fonts/analytics: no network egress for them here
+  //   - supabase: QA mode is intentionally backendless
+  //   - github.io: the grocery price catalogue is published there and is
+  //     cross-origin, so it is blocked by CORS from 127.0.0.1 by design
+  const EXPECTED_FAILURES =
+    /fonts\.g|googleapis|gstatic|google-analytics|doubleclick|supabase|github\.io/;
+
   page.on('requestfailed', (req) => {
-    // Font/analytics fetches are expected to fail on this offline QA box and
-    // reporting them would drown the real findings.
     const u = req.url();
-    if (/fonts\.g|googleapis|google-analytics|doubleclick|supabase/.test(u)) return;
+    if (EXPECTED_FAILURES.test(u)) return;
     logs.failedRequests.push(`${req.method()} ${u} — ${req.failure()?.errorText ?? '?'}`);
   });
 
   await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await waitForApp(page);
+  // Must happen before the caller does anything: the first-run overlay eats taps.
+  const overlaysDismissed = await dismissOverlays(page);
 
-  return { browser, context, page, logs };
+  return { browser, context, page, logs, overlaysDismissed };
 }
 
 /**
@@ -138,20 +158,33 @@ export async function semantics(page) {
   return page.evaluate(() => {
     const out = [];
     document.querySelectorAll('flt-semantics, [aria-label], [role]').forEach((el) => {
-      const label = (el.getAttribute('aria-label') || el.textContent || '')
-        .replace(/\s+/g, ' ')
-        .trim();
-      if (!label) return;
+      // Take the node's OWN label only.
+      //
+      // Using `el.textContent` as a general fallback was a serious mistake: the
+      // semantics tree is deeply nested, so a container returned every
+      // descendant's text concatenated into one multi-thousand-character blob.
+      // Consequences: exact matches like /^SKIP$/ never matched anything (the
+      // text was buried mid-blob, so taps silently missed), and label dumps were
+      // unreadable. Only aria-label, or the text of a LEAF node, is that node's
+      // own label.
+      const aria = (el.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim();
+      const isLeaf = el.children.length === 0;
+      const own = aria || (isLeaf ? (el.textContent || '').replace(/\s+/g, ' ').trim() : '');
+      if (!own) return;
+
       const r = el.getBoundingClientRect();
       out.push({
-        label,
+        // Cap the length: a runaway label would otherwise flood the tester's
+        // context and crowd out the actual evidence.
+        label: own.length > 200 ? `${own.slice(0, 200)}…` : own,
         role: el.getAttribute('role') || el.tagName.toLowerCase(),
         x: Math.round(r.x), y: Math.round(r.y),
         w: Math.round(r.width), h: Math.round(r.height),
         disabled: el.getAttribute('aria-disabled') === 'true',
       });
     });
-    // Same label at the same spot appears repeatedly through nested wrappers.
+
+    // The same label at the same spot repeats through nested wrappers.
     const seen = new Set();
     return out.filter((n) => {
       const k = `${n.label}|${n.x},${n.y},${n.w},${n.h}`;
@@ -319,25 +352,79 @@ export async function metrics(page) {
 }
 
 /**
- * The app's bottom navigation. Returned in the order the user meets them, so a
- * probe can walk the whole app without hardcoding labels at every call site.
+ * The app's bottom navigation, verified against the running build: four tabs,
+ * labelled in the app's default locale (pt-PT). Patterns include the other
+ * locales so a tester can drive the app with --locale en-US too.
  */
 export const TABS = [
-  { key: 'home', pattern: /^(Home|In[íi]cio|Accueil|Inicio)$/i },
-  { key: 'track', pattern: /^(Track|Registar|Suivi|Registrar|Gastos)$/i },
-  { key: 'shop', pattern: /^(Shop|Compras|Courses)$/i },
-  { key: 'plan', pattern: /^(Plan|Planear|Planifier|Planear)$/i },
-  { key: 'more', pattern: /^(More|Mais|Plus|M[áa]s)$/i },
+  { key: 'home', pattern: /^(In[íi]cio|Home|Accueil|Inicio)$/i },
+  { key: 'track', pattern: /^(Despesas|Track|Registar|Suivi|Gastos|D[ée]penses)$/i },
+  { key: 'shop', pattern: /^(Compras|Shop|Courses)$/i },
+  { key: 'more', pattern: /^(Mais|More|Plus|M[áa]s)$/i },
 ];
 
+/**
+ * Dismiss first-run overlays (onboarding coach marks, tooltips, "what's new").
+ *
+ * This is NOT cosmetic. The app opens with a coach overlay that dims the screen
+ * and swallows pointer events, so every tap lands on the overlay instead of the
+ * control underneath. Left in place, a tester "navigates" the whole app while
+ * never leaving the first screen — each tab reports identical labels — and then
+ * files findings about screens it never actually saw. Measured on the real build
+ * before this existed.
+ */
+export async function dismissOverlays(page, rounds = 3) {
+  const dismissers = [
+    /^(SKIP|Saltar|Ignorar|Passer|Omitir)$/i,
+    /^(Got it|Entendi|Percebi|Compris|Entendido)$/i,
+    /^(Fechar|Close|Fermer|Cerrar|OK)$/i,
+    /^(Come[çc]ar|Start|Vamos|Continuar)$/i,
+  ];
+  let dismissed = 0;
+  for (let r = 0; r < rounds; r += 1) {
+    let hit = false;
+    for (const pattern of dismissers) {
+      // Short timeout: absence is the normal case once the overlay is gone.
+      if (await tap(page, pattern, { timeoutMs: 1_200 })) {
+        dismissed += 1;
+        hit = true;
+        await page.waitForTimeout(600);
+      }
+    }
+    await page.keyboard.press('Escape').catch(() => {});
+    await page.waitForTimeout(300);
+    if (!hit) break;
+  }
+  return dismissed;
+}
+
+/**
+ * Switch tab and CONFIRM the view actually changed.
+ *
+ * Returning true just because a tap was dispatched is how a blocked overlay goes
+ * unnoticed, so this compares a signature of the visible labels before and
+ * after and reports false when nothing moved.
+ */
 export async function openTab(page, key) {
   const tab = TABS.find((t) => t.key === key);
   if (!tab) throw new Error(`unknown tab: ${key}`);
+
   await page.keyboard.press('Escape').catch(() => {});
   await page.waitForTimeout(200);
-  const ok = await tap(page, tab.pattern);
-  if (ok) await page.waitForTimeout(1_500);
-  return ok;
+
+  const before = (await labels(page)).join('|');
+  if (!(await tap(page, tab.pattern))) return false;
+  await page.waitForTimeout(1_500);
+
+  const after = (await labels(page)).join('|');
+  if (after === before) {
+    // Maybe an overlay reappeared (a tooltip chain). Clear it and retry once.
+    await dismissOverlays(page, 1);
+    if (!(await tap(page, tab.pattern))) return false;
+    await page.waitForTimeout(1_500);
+    return (await labels(page)).join('|') !== before;
+  }
+  return true;
 }
 
 export async function close(session) {

@@ -123,9 +123,25 @@ wt_create() {
   local branch="$1" dirname="$2" base="${3:-$BASE_BRANCH}"
   local wt="$WT_ROOT/$dirname"
   git -C "$TEAM_ROOT" fetch origin "$base" >/dev/null 2>&1 || true
-  git -C "$TEAM_ROOT" worktree add "$wt" -b "$branch" "origin/$base" >/dev/null 2>&1 \
-    || git -C "$TEAM_ROOT" worktree add "$wt" "$branch" >/dev/null 2>&1 \
-    || { warn "não criou worktree $wt para $branch"; return 1; }
+  # Also fetch the work branch itself: on REWORK it already exists on the remote
+  # and carries the previous attempt.
+  git -C "$TEAM_ROOT" fetch origin \
+    "+refs/heads/$branch:refs/remotes/origin/$branch" >/dev/null 2>&1 || true
+
+  if git -C "$TEAM_ROOT" rev-parse --verify --quiet "origin/$branch" >/dev/null 2>&1; then
+    # REWORK. Start from the REMOTE tip, not from any local branch of the same
+    # name: a leftover local ref is usually behind what was pushed, and since
+    # implement.sh finishes with `push --force`, resuming from it would silently
+    # discard the previous attempt — including the very code the reviewer asked
+    # to have corrected. Detached, then re-pointed at the end by the push.
+    git -C "$TEAM_ROOT" worktree add --detach "$wt" "origin/$branch" >/dev/null 2>&1 \
+      || { warn "não criou worktree $wt em origin/$branch"; return 1; }
+    git -C "$wt" checkout -B "$branch" >/dev/null 2>&1 || true
+  else
+    git -C "$TEAM_ROOT" worktree add "$wt" -b "$branch" "origin/$base" >/dev/null 2>&1 \
+      || git -C "$TEAM_ROOT" worktree add "$wt" "$branch" >/dev/null 2>&1 \
+      || { warn "não criou worktree $wt para $branch"; return 1; }
+  fi
   echo "$wt"
 }
 

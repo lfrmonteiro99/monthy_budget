@@ -9,7 +9,7 @@ import { launch, close, openTab, shoot, layoutSuspects, VIEWPORTS } from './flut
 for (const [name, vp] of Object.entries(VIEWPORTS)) {
   for (const scheme of ['light', 'dark']) {
     const s = await launch({ url: '__APP_URL__', viewport: vp, colorScheme: scheme });
-    for (const tab of ['home','track','shop','plan','more']) {
+    for (const tab of ['home','track','shop','more']) {
       await openTab(s.page, tab);
       await shoot(s.page, `__SCRATCH__/${name}-${scheme}-${tab}.png`);
       console.log(name, scheme, tab, JSON.stringify(await layoutSuspects(s.page)));

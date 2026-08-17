@@ -13,7 +13,7 @@ Percorre a app inteira **a fazer coisas** e recolhe no fim:
 ```javascript
 import { launch, close, openTab, tap, scrollCollect } from './flutter_driver.mjs';
 const s = await launch({ url: '__APP_URL__' });
-for (const tab of ['home','track','shop','plan','more']) {
+for (const tab of ['home','track','shop','more']) {
   await openTab(s.page, tab);
   await scrollCollect(s.page, 8);
 }

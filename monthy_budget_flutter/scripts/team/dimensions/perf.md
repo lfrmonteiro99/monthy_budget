@@ -7,7 +7,7 @@ absolutos não representam um telefone. Reporta **patologias**, não milissegund
 import { launch, close, openTab, metrics } from './flutter_driver.mjs';
 const s = await launch({ url: '__APP_URL__' });
 console.log('boot', await metrics(s.page));
-for (const tab of ['home','track','shop','plan','more']) {
+for (const tab of ['home','track','shop','more']) {
   const t0 = Date.now();
   await openTab(s.page, tab);
   console.log(tab, 'abriu em', Date.now() - t0, 'ms', await metrics(s.page));
