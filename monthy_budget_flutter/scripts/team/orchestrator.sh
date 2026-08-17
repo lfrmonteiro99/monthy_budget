@@ -81,35 +81,45 @@ touch "$REVIEWED_STATE" 2>/dev/null || true
 #
 # So issues_with now RETURNS NON-ZERO when the query fails, and every caller has
 # to decide what to do about not knowing.
-issues_with() {
-  local out
-  out=$(gh issue list --repo "$REPO" --label "$1" --state open --limit 100 \
-        --json number --jq '.[].number' 2>/dev/null) || return 1
-  printf '%s' "$out"
+# ONE query per cycle, then count locally.
+#
+# Per-label queries were both unreliable and expensive. `gh issue list --label X`
+# returns a non-zero exit inconsistently — sometimes for an empty label, sometimes
+# not, varying between consecutive identical calls under load — so "empty" and
+# "failed" simply cannot be told apart from the exit code. And doing it per label
+# meant 12+ API calls every 45-second cycle, which is a large part of why GitHub
+# started rate-limiting this repo in the first place.
+#
+# Fetching every open issue once and filtering with jq fixes both: the failure mode
+# becomes unambiguous (either a JSON array arrived or it did not), and the API load
+# drops by an order of magnitude.
+ISSUE_CACHE=""
+
+refresh_issue_cache() {
+  local json
+  json=$(gh issue list --repo "$REPO" --state open --limit 300 \
+         --json number,labels 2>/dev/null) || return 1
+  # Explicit shape check: a truncated or error response must not pass as data.
+  printf '%s' "$json" | jq -e 'type == "array"' >/dev/null 2>&1 || return 1
+  ISSUE_CACHE="$json"
   return 0
 }
 
-# Empty output on success = genuinely none. Failure propagates as non-zero.
-first_with() {
-  local out
-  out=$(issues_with "$1") || return 1
-  printf '%s' "$out" | head -1
+# Issue numbers carrying a label, oldest first. Reads the cache — no API call.
+issues_with() {
+  printf '%s' "$ISSUE_CACHE" \
+    | jq -r --arg l "$1" '[.[] | select([.labels[].name] | index($l)) | .number] | sort | .[]' \
+      2>/dev/null
 }
 
-# Echoes the count and returns 0 only if EVERY query succeeded. On any failure it
-# returns non-zero, and the caller must treat the total as unknown rather than as
-# a licence to conclude the queue is drained.
+first_with() { issues_with "$1" | head -1; }
+
 count_actionable() {
-  local n=0 s out rc=0
+  local n=0 s
   for s in "$L_TRIAGE" "$L_READY" "$L_REVIEW" "$L_VERIFY" "$L_BLOCKED_IMPL" "$L_BLOCKED_SPEC" "$L_WIP"; do
-    if out=$(issues_with "$s"); then
-      n=$(( n + $(printf '%s' "$out" | grep -c . || true) ))
-    else
-      rc=1
-    fi
+    n=$(( n + $(issues_with "$s" | grep -c . || true) ))
   done
   echo "$n"
-  return $rc
 }
 
 # ── PR selection ───────────────────────────────────────────────────────────
@@ -317,6 +327,19 @@ while true; do
   log "──── ciclo $CYCLE (loops concluídos: $LOOPS) ────"
 
   cleanup_stale
+
+  # One read of the world per cycle. Everything below reasons from this snapshot.
+  # If it fails we know nothing about the queue, so the cycle does nothing rather
+  # than acting on a guess — which is how a false "loop concluído" and an unearned
+  # promotion happened before.
+  if ! refresh_issue_cache; then
+    log "não consegui ler os issues (API falhou) — ciclo sem acções"
+    if [ "$ONCE" = "1" ]; then exit 0; fi
+    log "a aguardar ${CYCLE_SLEEP}s..."
+    sleep "$CYCLE_SLEEP"
+    continue
+  fi
+
   rescue_stuck_wip
 
   # Discovery runs alongside fixing, never behind it.
@@ -364,17 +387,13 @@ while true; do
 
   # 7. Backlog empty: that closes a loop. Run the critic to find the next batch.
   if [ "$DID" = "0" ]; then
-    ACTIONABLE=$(count_actionable); COUNT_RC=$?
-
-    # Declaring a loop complete is the single most consequential decision in this
-    # loop — it promotes dev to main and increments the counter the whole run is
-    # measured by. It must NEVER be made on incomplete information.
-    if [ "$COUNT_RC" -ne 0 ]; then
-      log "não consegui contar o backlog (API falhou) — NÃO concluo nada neste ciclo"
+    # Trustworthy by construction: the cycle already aborted if the snapshot this
+    # counts could not be read.
+    ACTIONABLE=$(count_actionable)
 
     # A background sweep still running counts as work in progress: closing the
     # loop now would call the backlog empty while findings are still arriving.
-    elif [ -n "$CRITIC_BG_PID" ] && kill -0 "$CRITIC_BG_PID" 2>/dev/null; then
+    if [ -n "$CRITIC_BG_PID" ] && kill -0 "$CRITIC_BG_PID" 2>/dev/null; then
       log "nada accionável, mas o critic ainda está a correr em paralelo"
 
     elif [ "$ACTIONABLE" -gt 0 ]; then
