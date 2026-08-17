@@ -203,20 +203,37 @@ USED=""
 engine_has_vision() { [ "${1:-}" = "claude" ]; }
 
 append_no_vision_note() {
-  cat <<'EOF'
+  cat <<EOF
 
 ---
 
-# ⚠️ ESTE MOTOR NÃO LÊ IMAGENS
+# 👁 IMAGENS: USA A FERRAMENTA, NÃO O \`Read\`
 
-Estás a correr num modelo **sem suporte a imagens**. Fazer `Read` num ficheiro
-`.png`/`.jpg` devolve erro 400 e **mata a corrida inteira**, sem veredicto.
+Este motor não aceita imagens directamente. Fazer \`Read\` num \`.png\`/\`.jpg\`
+devolve erro 400 e **mata a corrida inteira**, sem veredicto.
 
-- **Não abras screenshots.** Ignora os caminhos de `.png` na prova dos issues.
-- Baseia-te no **texto**: a descrição do finding, os passos, os valores observados,
-  o código, e a saída dos comandos que corres.
-- Se a decisão depender mesmo de ver a imagem, di-lo no veredicto e escolhe o
-  resultado que reflecte essa incerteza — em vez de arriscares a corrida.
+Mas **não ficas cego** — tens um modelo de visão à parte para isso:
+
+\`\`\`bash
+bash $SCRIPT_DIR/qa-describe-image.sh <caminho.png> "a tua pergunta"
+\`\`\`
+
+Devolve a descrição em texto, que podes usar como qualquer outra prova. Faz uma
+**pergunta específica** — vale muito mais que um pedido genérico:
+
+\`\`\`bash
+# mau:  "descreve a imagem"
+# bom:
+bash $SCRIPT_DIR/qa-describe-image.sh evid.png \\
+  "O valor no cartão 'Este Mês' está cortado com reticências? Que texto exacto se lê?"
+\`\`\`
+
+Regras:
+- **Nunca** \`Read\` num ficheiro de imagem. Sempre esta ferramenta.
+- Trata a descrição como prova de segunda mão: cita-a como tal no veredicto
+  ("segundo a descrição do screenshot ..."), não como se a tivesses visto.
+- Se a resposta for ambígua e a decisão depender disso, pergunta outra vez com
+  uma pergunta mais fechada antes de decidir.
 EOF
 }
 
