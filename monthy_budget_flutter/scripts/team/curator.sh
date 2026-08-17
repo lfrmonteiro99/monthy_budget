@@ -62,6 +62,15 @@ AGENT_SLOT=main CLAUDE_MODEL="$MODEL" \
   > "$LOG_DIR/curator-$ISSUE.log" 2>&1 || true
 
 if [ ! -f "$VERDICT_FILE" ]; then
+  if ! no_verdict_is_real_failure main; then
+    log "SEM VEREDICTO com o motor de fallback — issue fica em $L_TRIAGE para nova tentativa"
+    comment_issue "$ISSUE" "## Curator: corrida degradada, sem veredicto
+
+A subscrição estava esgotada e a corrida usou o modelo de fallback, que não
+conseguiu concluir a análise. **Isto não é um problema do issue** — fica na fila
+para ser reanalisado quando a subscrição voltar."
+    exit 0
+  fi
   log "SEM VEREDICTO — needs-human"
   set_state "$ISSUE" "$L_HUMAN"
   comment_issue "$ISSUE" "## Curator: sem veredicto
