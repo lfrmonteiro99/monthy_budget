@@ -34,9 +34,22 @@ guarda screenshots em `__SCRATCH__`.
    desaparecido.
 3. **Verifica cada critério de aceitação** na app, um a um. Um critério que não
    consegues verificar na app é um `fail` — diz qual e porquê.
-4. **Procura regressões perto do fix.** Um fix que resolve o issue e quebra o
-   ecrã ao lado não passa. Percorre o fluxo completo em volta, não só o passo
-   exacto.
+4. **Procura regressões onde o fix chega.** Um fix que resolve o issue e quebra
+   o ecrã ao lado não passa. Isto tem duas metades e ambas são obrigatórias:
+
+   - **Onde o código alterado é usado.** Lê o diff do PR (está nos comentários
+     do issue, ou `gh pr diff <n>`) e vê o que foi tocado. Se foi código
+     **partilhado** (um widget Calm, um serviço, um utilitário de formatação),
+     abre **todos** os ecrãs que o usam — não só o do issue — e confirma que
+     nenhum piorou. Um `grep` no repositório diz-te quais são.
+   - **Onde o efeito da acção se propaga.** Se o fix mexe em dados ou cálculos,
+     executa a acção e verifica que o novo valor aparece em **todos** os ecrãs
+     que dele dependem (total do mês, categorias, tendências, previsões,
+     poupança) e em **nenhum** que não dependa (outros meses, outras
+     categorias). Depois recarrega a página e confirma que persistiu.
+
+   Um fix que corrige o sintoma do issue e deixa outro ecrã com valores
+   desactualizados é `fail-impl`, não `pass`.
 5. **Escreve o veredicto.**
 
 ## Método
