@@ -78,6 +78,7 @@ set_state() {
   # Remove every qa:* label except the one being set.
   remove=$(printf '%s' "$ALL_QA_LABELS" | tr ',' '\n' | grep -vxF "$state" | paste -sd, -)
 
+  local read_ok=0
   for attempt in 1 2 3 4; do
     gh issue edit "$issue" --repo "$REPO" \
       --add-label "$state" --remove-label "$remove" >/dev/null 2>&1
@@ -86,11 +87,22 @@ set_state() {
     sleep 2
     actual=$(get_state "$issue")
     [ "$actual" = "$state" ] && return 0
+    [ -n "$actual" ] && read_ok=1
 
     [ "$attempt" -lt 4 ] && sleep $((attempt * 4))
   done
 
-  warn "TRANSIÇÃO FALHOU: #$issue continua em '${actual:-desconhecido}' e não em '$state'"
+  # An unreadable state is NOT the same as a wrong state, and conflating them
+  # produces false alarms during an API outage — the transition usually did land,
+  # we just could not confirm it. Observed on #1232: reported as failed, actually
+  # applied correctly.
+  if [ "$read_ok" = "0" ]; then
+    warn "não confirmei a transição de #$issue para '$state' (a API não respondeu à leitura)"
+    warn "  a etiqueta provavelmente foi aplicada; o ciclo seguinte relê o estado real"
+    return 0
+  fi
+
+  warn "TRANSIÇÃO FALHOU: #$issue continua em '$actual' e não em '$state'"
   warn "  o orquestrador vai voltar a despachar este issue — risco de trabalho repetido"
   return 1
 }
