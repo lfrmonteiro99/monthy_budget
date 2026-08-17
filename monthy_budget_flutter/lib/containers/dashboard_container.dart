@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/tax/tax_factory.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../models/data_health_status.dart';
 import '../providers/app_state_providers.dart';
@@ -157,9 +158,10 @@ class DashboardContainer extends ConsumerWidget {
       ),
     );
 
-    final criticalCount = buildAlerts(statuses: dataHealthService.statuses)
-        .where((a) => a.severity == AlertSeverity.critical)
-        .length;
+    final criticalCount = buildAlerts(
+      statuses: dataHealthService.statuses,
+      l10n: S.of(context),
+    ).where((a) => a.severity == AlertSeverity.critical).length;
 
     return Column(
       children: [

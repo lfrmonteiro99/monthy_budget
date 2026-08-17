@@ -2194,6 +2194,88 @@
             }
         }
     },
+    "syncDomainSettings": "Paramètres",
+    "syncDomainShopping": "Liste de courses",
+    "syncDomainMealPlan": "Plan de repas",
+    "syncDomainExpenses": "Dépenses",
+    "syncDomainPurchaseHistory": "Historique des achats",
+    "syncDomainSavingsGoals": "Objectifs d'épargne",
+    "syncDomainRecurringExpenses": "Dépenses récurrentes",
+    "syncFailedToSyncTitle": "La synchronisation de {domain} a échoué",
+    "@syncFailedToSyncTitle": {
+        "placeholders": {
+            "domain": {
+                "type": "String"
+            }
+        }
+    },
+    "syncErrorFallbackBody": "Une erreur s'est produite pendant la synchronisation.",
+    "syncErrorAction": "Essayez d'actualiser ou vérifiez votre connexion.",
+    "syncStaleTitle": "Les données de {domain} peuvent être obsolètes",
+    "@syncStaleTitle": {
+        "placeholders": {
+            "domain": {
+                "type": "String"
+            }
+        }
+    },
+    "syncLastSyncedBody": "Dernière synchronisation {timeAgo}.",
+    "@syncLastSyncedBody": {
+        "placeholders": {
+            "timeAgo": {
+                "type": "String"
+            }
+        }
+    },
+    "syncNeverSyncedBody": "Jamais synchronisé sur cet appareil.",
+    "syncOpenSectionAction": "Ouvrez la section de l'application pour actualiser.",
+    "syncRecurringNotPopulatedTitle": "Dépenses récurrentes non appliquées ce mois-ci",
+    "syncRecurringNotPopulatedBody": "Vos dépenses récurrentes n'ont pas encore été appliquées à ce mois.",
+    "syncRecurringNotPopulatedAction": "Ouvrez le Suivi des dépenses pour les générer.",
+    "syncMealPlanOldTitle": "Le plan de repas peut être obsolète",
+    "syncMealPlanOldBody": "{count, plural, =1{Votre plan de repas a été généré il y a 1 jour.} other{Votre plan de repas a été généré il y a {count} jours.}}",
+    "@syncMealPlanOldBody": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "syncMealPlanOldAction": "Envisagez de régénérer votre plan de repas.",
+    "syncFoodSpendUpTitle": "Dépenses alimentaires en hausse de {pct}% vs le mois dernier",
+    "@syncFoodSpendUpTitle": {
+        "placeholders": {
+            "pct": {
+                "type": "String"
+            }
+        }
+    },
+    "syncFoodSpendUpBody": "Les dépenses alimentaires du mois en cours sont nettement supérieures à celles du mois précédent.",
+    "syncFoodSpendUpAction": "Examinez vos dépenses d'épicerie et de repas.",
+    "syncTimeAgoDays": "{count, plural, =1{il y a 1 jour} other{il y a {count} jours}}",
+    "@syncTimeAgoDays": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "syncTimeAgoHours": "{count, plural, =1{il y a 1 heure} other{il y a {count} heures}}",
+    "@syncTimeAgoHours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "syncTimeAgoMinutes": "{count, plural, =1{il y a 1 minute} other{il y a {count} minutes}}",
+    "@syncTimeAgoMinutes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
     "pantryPickerTitle": "Sélecteur de Garde-Manger",
     "pantrySearchHint": "Rechercher des ingrédients...",
     "pantryTabAlwaysHave": "Toujours en Stock",

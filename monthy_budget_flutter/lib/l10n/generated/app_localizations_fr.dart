@@ -4251,6 +4251,133 @@ class SFr extends S {
   }
 
   @override
+  String get syncDomainSettings => 'Paramètres';
+
+  @override
+  String get syncDomainShopping => 'Liste de courses';
+
+  @override
+  String get syncDomainMealPlan => 'Plan de repas';
+
+  @override
+  String get syncDomainExpenses => 'Dépenses';
+
+  @override
+  String get syncDomainPurchaseHistory => 'Historique des achats';
+
+  @override
+  String get syncDomainSavingsGoals => 'Objectifs d\'épargne';
+
+  @override
+  String get syncDomainRecurringExpenses => 'Dépenses récurrentes';
+
+  @override
+  String syncFailedToSyncTitle(String domain) {
+    return 'La synchronisation de $domain a échoué';
+  }
+
+  @override
+  String get syncErrorFallbackBody =>
+      'Une erreur s\'est produite pendant la synchronisation.';
+
+  @override
+  String get syncErrorAction =>
+      'Essayez d\'actualiser ou vérifiez votre connexion.';
+
+  @override
+  String syncStaleTitle(String domain) {
+    return 'Les données de $domain peuvent être obsolètes';
+  }
+
+  @override
+  String syncLastSyncedBody(String timeAgo) {
+    return 'Dernière synchronisation $timeAgo.';
+  }
+
+  @override
+  String get syncNeverSyncedBody => 'Jamais synchronisé sur cet appareil.';
+
+  @override
+  String get syncOpenSectionAction =>
+      'Ouvrez la section de l\'application pour actualiser.';
+
+  @override
+  String get syncRecurringNotPopulatedTitle =>
+      'Dépenses récurrentes non appliquées ce mois-ci';
+
+  @override
+  String get syncRecurringNotPopulatedBody =>
+      'Vos dépenses récurrentes n\'ont pas encore été appliquées à ce mois.';
+
+  @override
+  String get syncRecurringNotPopulatedAction =>
+      'Ouvrez le Suivi des dépenses pour les générer.';
+
+  @override
+  String get syncMealPlanOldTitle => 'Le plan de repas peut être obsolète';
+
+  @override
+  String syncMealPlanOldBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Votre plan de repas a été généré il y a $count jours.',
+      one: 'Votre plan de repas a été généré il y a 1 jour.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get syncMealPlanOldAction =>
+      'Envisagez de régénérer votre plan de repas.';
+
+  @override
+  String syncFoodSpendUpTitle(String pct) {
+    return 'Dépenses alimentaires en hausse de $pct% vs le mois dernier';
+  }
+
+  @override
+  String get syncFoodSpendUpBody =>
+      'Les dépenses alimentaires du mois en cours sont nettement supérieures à celles du mois précédent.';
+
+  @override
+  String get syncFoodSpendUpAction =>
+      'Examinez vos dépenses d\'épicerie et de repas.';
+
+  @override
+  String syncTimeAgoDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'il y a $count jours',
+      one: 'il y a 1 jour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String syncTimeAgoHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'il y a $count heures',
+      one: 'il y a 1 heure',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String syncTimeAgoMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'il y a $count minutes',
+      one: 'il y a 1 minute',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get pantryPickerTitle => 'Sélecteur de Garde-Manger';
 
   @override

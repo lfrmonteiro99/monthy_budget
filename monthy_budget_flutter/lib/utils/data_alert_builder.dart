@@ -1,15 +1,16 @@
+import '../l10n/generated/app_localizations.dart';
 import '../models/data_health_status.dart';
 
 /// Human-readable labels for each sync domain.
-String domainLabel(SyncDomain domain) => switch (domain) {
-      SyncDomain.settings => 'Settings',
-      SyncDomain.shopping => 'Shopping list',
-      SyncDomain.mealPlan => 'Meal plan',
-      SyncDomain.expenses => 'Expenses',
-      SyncDomain.purchaseHistory => 'Purchase history',
-      SyncDomain.savingsGoals => 'Savings goals',
-      SyncDomain.recurringExpenses => 'Recurring expenses',
-    };
+String domainLabel(SyncDomain domain, S l10n) => switch (domain) {
+  SyncDomain.settings => l10n.syncDomainSettings,
+  SyncDomain.shopping => l10n.syncDomainShopping,
+  SyncDomain.mealPlan => l10n.syncDomainMealPlan,
+  SyncDomain.expenses => l10n.syncDomainExpenses,
+  SyncDomain.purchaseHistory => l10n.syncDomainPurchaseHistory,
+  SyncDomain.savingsGoals => l10n.syncDomainSavingsGoals,
+  SyncDomain.recurringExpenses => l10n.syncDomainRecurringExpenses,
+};
 
 /// Derives [DataAlert] instances from the current set of domain statuses
 /// and optional contextual data.
@@ -17,6 +18,7 @@ String domainLabel(SyncDomain domain) => switch (domain) {
 /// Pure function — no side effects, easy to test.
 List<DataAlert> buildAlerts({
   required Map<SyncDomain, SyncDomainStatus> statuses,
+  required S l10n,
   DateTime? mealPlanGeneratedAt,
   bool recurringExpensesPopulatedThisMonth = true,
   double? currentMonthFoodSpend,
@@ -28,61 +30,71 @@ List<DataAlert> buildAlerts({
 
   // 1. Per-domain sync health alerts
   for (final domain in SyncDomain.values) {
-    final status = statuses[domain] ??
-        SyncDomainStatus(domain: domain);
+    final status = statuses[domain] ?? SyncDomainStatus(domain: domain);
 
     if (status.hasRecentError) {
-      alerts.add(DataAlert(
-        id: 'sync_error_${domain.name}',
-        severity: AlertSeverity.critical,
-        domain: domain,
-        title: '${domainLabel(domain)} failed to sync',
-        body: status.lastErrorMessage ?? 'An error occurred during sync.',
-        recommendedAction: 'Try refreshing or check your connection.',
-        createdAt: status.lastErrorAt ?? effectiveNow,
-      ));
+      alerts.add(
+        DataAlert(
+          id: 'sync_error_${domain.name}',
+          severity: AlertSeverity.critical,
+          domain: domain,
+          title: l10n.syncFailedToSyncTitle(domainLabel(domain, l10n)),
+          body: status.lastErrorMessage ?? l10n.syncErrorFallbackBody,
+          recommendedAction: l10n.syncErrorAction,
+          createdAt: status.lastErrorAt ?? effectiveNow,
+        ),
+      );
     } else if (status.isStale) {
-      alerts.add(DataAlert(
-        id: 'stale_${domain.name}',
-        severity: AlertSeverity.warning,
-        domain: domain,
-        title: '${domainLabel(domain)} data may be outdated',
-        body: status.lastSuccessAt != null
-            ? 'Last synced ${_timeAgo(status.lastSuccessAt!, effectiveNow)}.'
-            : 'Never synced on this device.',
-        recommendedAction: 'Open the app section to refresh.',
-        createdAt: effectiveNow,
-      ));
+      alerts.add(
+        DataAlert(
+          id: 'stale_${domain.name}',
+          severity: AlertSeverity.warning,
+          domain: domain,
+          title: l10n.syncStaleTitle(domainLabel(domain, l10n)),
+          body: status.lastSuccessAt != null
+              ? l10n.syncLastSyncedBody(
+                  _timeAgo(status.lastSuccessAt!, effectiveNow, l10n),
+                )
+              : l10n.syncNeverSyncedBody,
+          recommendedAction: l10n.syncOpenSectionAction,
+          createdAt: effectiveNow,
+        ),
+      );
     }
   }
 
   // 2. Recurring expenses not populated this month
   if (!recurringExpensesPopulatedThisMonth) {
-    alerts.add(DataAlert(
-      id: 'recurring_not_populated',
-      severity: AlertSeverity.warning,
-      domain: SyncDomain.recurringExpenses,
-      title: 'Recurring expenses not populated this month',
-      body: 'Your recurring expenses have not been applied to this month yet.',
-      recommendedAction: 'Open Expense Tracker to trigger population.',
-      createdAt: effectiveNow,
-    ));
+    alerts.add(
+      DataAlert(
+        id: 'recurring_not_populated',
+        severity: AlertSeverity.warning,
+        domain: SyncDomain.recurringExpenses,
+        title: l10n.syncRecurringNotPopulatedTitle,
+        body: l10n.syncRecurringNotPopulatedBody,
+        recommendedAction: l10n.syncRecurringNotPopulatedAction,
+        createdAt: effectiveNow,
+      ),
+    );
   }
 
   // 3. Meal plan older than current week
   if (mealPlanGeneratedAt != null) {
-    final daysSinceGenerated =
-        effectiveNow.difference(mealPlanGeneratedAt).inDays;
+    final daysSinceGenerated = effectiveNow
+        .difference(mealPlanGeneratedAt)
+        .inDays;
     if (daysSinceGenerated > 7) {
-      alerts.add(DataAlert(
-        id: 'meal_plan_old',
-        severity: AlertSeverity.info,
-        domain: SyncDomain.mealPlan,
-        title: 'Meal plan may be outdated',
-        body: 'Your meal plan was generated $daysSinceGenerated days ago.',
-        recommendedAction: 'Consider regenerating your meal plan.',
-        createdAt: effectiveNow,
-      ));
+      alerts.add(
+        DataAlert(
+          id: 'meal_plan_old',
+          severity: AlertSeverity.info,
+          domain: SyncDomain.mealPlan,
+          title: l10n.syncMealPlanOldTitle,
+          body: l10n.syncMealPlanOldBody(daysSinceGenerated),
+          recommendedAction: l10n.syncMealPlanOldAction,
+          createdAt: effectiveNow,
+        ),
+      );
     }
   }
 
@@ -93,18 +105,19 @@ List<DataAlert> buildAlerts({
           (currentMonthFoodSpend - priorMonthFoodSpend) / priorMonthFoodSpend;
       if (increase >= 0.30) {
         final pct = (increase * 100).toStringAsFixed(0);
-        alerts.add(DataAlert(
-          id: 'food_spend_jump',
-          severity: increase >= 0.50
-              ? AlertSeverity.critical
-              : AlertSeverity.warning,
-          domain: SyncDomain.expenses,
-          title: 'Food spending up $pct% vs last month',
-          body:
-              'Current month food spend is significantly higher than the prior month.',
-          recommendedAction: 'Review your grocery and meal expenses.',
-          createdAt: effectiveNow,
-        ));
+        alerts.add(
+          DataAlert(
+            id: 'food_spend_jump',
+            severity: increase >= 0.50
+                ? AlertSeverity.critical
+                : AlertSeverity.warning,
+            domain: SyncDomain.expenses,
+            title: l10n.syncFoodSpendUpTitle(pct),
+            body: l10n.syncFoodSpendUpBody,
+            recommendedAction: l10n.syncFoodSpendUpAction,
+            createdAt: effectiveNow,
+          ),
+        );
       }
     }
   }
@@ -115,13 +128,13 @@ List<DataAlert> buildAlerts({
   return alerts;
 }
 
-String _timeAgo(DateTime past, DateTime now) {
+String _timeAgo(DateTime past, DateTime now, S l10n) {
   final diff = now.difference(past);
   if (diff.inDays > 0) {
-    return '${diff.inDays} day${diff.inDays == 1 ? '' : 's'} ago';
+    return l10n.syncTimeAgoDays(diff.inDays);
   }
   if (diff.inHours > 0) {
-    return '${diff.inHours} hour${diff.inHours == 1 ? '' : 's'} ago';
+    return l10n.syncTimeAgoHours(diff.inHours);
   }
-  return '${diff.inMinutes} minute${diff.inMinutes == 1 ? '' : 's'} ago';
+  return l10n.syncTimeAgoMinutes(diff.inMinutes);
 }
