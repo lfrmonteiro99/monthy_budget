@@ -399,47 +399,35 @@ while true; do
 
   cleanup_stale
 
-  # ── Wait out a subscription cooldown instead of hammering the fallback ─────
+  # ── End of a usage window: ship, then KEEP WORKING on the fallback ────────
   #
-  # The fallback model keeps the pipeline SAFE under exhaustion (a degraded run no
-  # longer consumes the issue) but it cannot actually do the heavyweight roles —
-  # measured: it errored then timed out on the curator, twice in two minutes. So
-  # retrying every 45 seconds for an hour is pure waste: ~80 doomed runs, each
-  # spawning a worktree and a model call, to accomplish nothing.
+  # I previously had this sleep until the quota returned, on the belief that the
+  # fallback could not do the heavyweight roles. That belief was wrong, and reading
+  # the actual logs disproved it: on the fallback, implement-1241 applied a two-part
+  # fix, wrote new tests and ran the full suite (2408 passing), and curator-1242
+  # produced a better briefing than some Claude runs — it even corrected the tester's
+  # own account of the defect.
   #
-  # Sleeping until the quota returns is strictly better. The write-path roles are
-  # skipped; the critic keeps whatever it already had running, since a detached
-  # sweep is unaffected by this.
+  # The two failures I generalised from were not capability failures at all. One was
+  # a 400 "this model does not support image input", because the prompts tell agents
+  # to Read evidence screenshots — now handled by warning the agent when its engine
+  # has no vision. So sleeping through the cooldown was throwing away an hour of
+  # perfectly good throughput on a mistaken diagnosis.
+  #
+  # What still holds: promote at the window's end. Nothing is mid-flight, promotion
+  # needs no quota, and the window's fixes should not wait an hour to reach main.
   COOLDOWN_FILE="$STATE_DIR/claude-usage-cooldown"
   if [ -f "$COOLDOWN_FILE" ]; then
     UNTIL=$(cat "$COOLDOWN_FILE" 2>/dev/null || echo 0)
     NOW=$(date +%s)
-    if [ "$NOW" -lt "$UNTIL" ]; then
-      WAIT=$(( UNTIL - NOW ))
-      log "subscrição em cooldown até $(date -d "@$UNTIL" +%H:%M) — o fallback não consegue"
-      log "  fazer os papéis pesados, por isso espero ${WAIT}s em vez de gastar corridas condenadas"
-
-      # END OF THE USAGE WINDOW — ship what this window earned, before sleeping.
-      #
-      # This is the ideal moment and the whole reason promotion is batched: nothing
-      # is running (the window just died mid-nothing or between issues), promotion
-      # needs no quota, and the alternative is leaving verified fixes unshipped
-      # through an hour or more of cooldown while `main` stays broken. Forced past
-      # the batch threshold: waiting for a 6th fix makes no sense when there will be
-      # no more work until the quota returns.
-      if [ ! -f "$STATE_DIR/promoted-for-$UNTIL" ]; then
-        if refresh_issue_cache; then
-          maybe_promote "fim da janela de quota" 1
-          touch "$STATE_DIR/promoted-for-$UNTIL"
-        else
-          log "não consegui ler os issues para promover ao fim da janela — tento no próximo ciclo"
-        fi
+    if [ "$NOW" -lt "$UNTIL" ] && [ ! -f "$STATE_DIR/promoted-for-$UNTIL" ]; then
+      log "fim da janela de quota (volta às $(date -d "@$UNTIL" +%H:%M)) — a promover e a continuar no fallback"
+      if refresh_issue_cache; then
+        maybe_promote "fim da janela de quota" 1
+        touch "$STATE_DIR/promoted-for-$UNTIL"
+      else
+        log "não consegui ler os issues para promover — tento no próximo ciclo"
       fi
-
-      if [ "$ONCE" = "1" ]; then exit 0; fi
-      # Wake in chunks so a manual --stop is still responsive.
-      sleep $(( WAIT > 300 ? 300 : WAIT + 5 ))
-      continue
     fi
   fi
 

@@ -188,6 +188,38 @@ PROMPT="$(cat "$PROMPT_FILE")"
 RC=1
 USED=""
 
+# VISION IS NOT UNIVERSAL, AND ASSUMING IT KILLS THE WHOLE RUN.
+#
+# Several prompts tell the agent to `Read` the evidence screenshots — that is how a
+# tester judges layout and how a curator checks a finding's proof. Claude does that
+# fine. The fallback model does not accept image input at all, and the failure is
+# not graceful: the API returns
+#
+#     API Error: 400 this model does not support image input
+#
+# and the entire run dies, producing no verdict. Observed on curator-1238. The
+# agent has no way to know which engine it is on, so we tell it, and the roles append
+# the corresponding instruction to the prompt.
+engine_has_vision() { [ "${1:-}" = "claude" ]; }
+
+append_no_vision_note() {
+  cat <<'EOF'
+
+---
+
+# ⚠️ ESTE MOTOR NÃO LÊ IMAGENS
+
+Estás a correr num modelo **sem suporte a imagens**. Fazer `Read` num ficheiro
+`.png`/`.jpg` devolve erro 400 e **mata a corrida inteira**, sem veredicto.
+
+- **Não abras screenshots.** Ignora os caminhos de `.png` na prova dos issues.
+- Baseia-te no **texto**: a descrição do finding, os passos, os valores observados,
+  o código, e a saída dos comandos que corres.
+- Se a decisão depender mesmo de ver a imagem, di-lo no veredicto e escolhe o
+  resultado que reflecte essa incerteza — em vez de arriscares a corrida.
+EOF
+}
+
 # ── 1. Subscription (claude CLI) ───────────────────────────────────────────
 if [ "${AGENT_FORCE_FALLBACK:-0}" != "1" ] && ! in_cooldown && command -v claude >/dev/null 2>&1; then
   USED="claude/$CLAUDE_MODEL"
@@ -235,6 +267,8 @@ if [ -z "$USED" ]; then
   export CLAUDE_CODE_DISABLE_UNKNOWN_MODEL_WINDOW_ENFORCEMENT=1
 
   USED="ollama/$FALLBACK_MODEL"
+  # This engine cannot read images; warn the agent before it tries.
+  PROMPT="$PROMPT$(append_no_vision_note)"
   run_harness "ollama" "$FALLBACK_MODEL" \
     ollama launch claude --model "$FALLBACK_MODEL" --yes -- \
       -p "$PROMPT" \
@@ -259,3 +293,4 @@ echo "[run-agent] fim: motor=$USED rc=$RC" >&2
 echo "$USED" > "/tmp/monthy-budget-agent.$AGENT_SLOT.engine" 2>/dev/null || true
 
 exit "$RC"
+
