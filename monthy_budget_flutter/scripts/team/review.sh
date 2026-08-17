@@ -187,8 +187,19 @@ $SUMMARY" >/dev/null 2>&1 || true
     # a flaked CI job is not a reason to block. `dev` is unprotected staging, so we
     # complete the merge with --admin and say plainly that we did and why. `main`
     # stays fully protected — nothing here can touch it.
+    # Whether the merge happened is decided by READING the PR, never by trusting
+    # an exit code. `gh pr merge` returns non-zero for things that occur AFTER a
+    # successful merge — deleting the branch, for one — and it also reports
+    # "already merged" as an error. Observed on PR #1239: the admin merge landed on
+    # dev, gh returned non-zero, the script recorded a failure and marked the issue
+    # blocked-impl, queueing a redo of work that was already integrated.
+    merge_landed() {
+      [ "$(gh pr view "$PR" --repo "$REPO" --json state --jq .state 2>/dev/null)" = "MERGED" ]
+    }
+
     MERGE_OK=0
-    if gh pr merge "$PR" --repo "$REPO" --squash --delete-branch >/dev/null 2>&1; then
+    gh pr merge "$PR" --repo "$REPO" --squash --delete-branch >/dev/null 2>&1 || true
+    if merge_landed; then
       MERGE_OK=1
     else
       MSTATUS=$(gh pr view "$PR" --repo "$REPO" --json mergeStateStatus --jq .mergeStateStatus 2>/dev/null || echo "")
@@ -209,7 +220,8 @@ infraestrutura do GitHub), o que não diz nada sobre este código.
 Este reviewer correu \`flutter analyze\` e a suite completa contra este commit e
 aprovou. \`$BASE\` é staging de QA sem protecção, por isso o merge foi concluído.
 O \`main\` mantém as suas protecções intactas." >/dev/null 2>&1 || true
-            gh pr merge "$PR" --repo "$REPO" --squash --delete-branch --admin >/dev/null 2>&1 && MERGE_OK=1
+            gh pr merge "$PR" --repo "$REPO" --squash --delete-branch --admin >/dev/null 2>&1 || true
+            merge_landed && MERGE_OK=1
           fi
           ;;
       esac
