@@ -5723,27 +5723,27 @@
     "yearlySummaryTitle": "Resumo Anual",
     "yearlySummaryIncome": "Rendimento Total",
     "yearlySummaryExpenses": "Despesas Totais",
-    "yearlySummaryNetSavings": "Poupanca Liquida",
-    "yearlySummarySavingsRate": "Taxa de poupanca: {rate}%",
+    "yearlySummaryNetSavings": "Poupança Líquida",
+    "yearlySummarySavingsRate": "Taxa de poupança: {rate}%",
     "@yearlySummarySavingsRate": {
         "placeholders": {
             "rate": {"type": "String"}
         }
     },
     "yearlySummaryHighlights": "Destaques",
-    "yearlySummaryBestMonth": "Melhor mes ({month})",
+    "yearlySummaryBestMonth": "Melhor mês ({month})",
     "@yearlySummaryBestMonth": {
         "placeholders": {
             "month": {"type": "String"}
         }
     },
-    "yearlySummaryWorstMonth": "Pior mes ({month})",
+    "yearlySummaryWorstMonth": "Pior mês ({month})",
     "@yearlySummaryWorstMonth": {
         "placeholders": {
             "month": {"type": "String"}
         }
     },
-    "yearlySummaryCategoryBreakdown": "Distribuicao por Categoria",
+    "yearlySummaryCategoryBreakdown": "Distribuição por Categoria",
     "mealSectionHousehold": "Quem come?",
     "mealSectionHouseholdSub": "Agregado familiar e membros",
     "mealSectionGoals": "Objetivo",

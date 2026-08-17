@@ -5831,11 +5831,11 @@ class SPt extends S {
   String get yearlySummaryExpenses => 'Despesas Totais';
 
   @override
-  String get yearlySummaryNetSavings => 'Poupanca Liquida';
+  String get yearlySummaryNetSavings => 'Poupança Líquida';
 
   @override
   String yearlySummarySavingsRate(String rate) {
-    return 'Taxa de poupanca: $rate%';
+    return 'Taxa de poupança: $rate%';
   }
 
   @override
@@ -5843,16 +5843,16 @@ class SPt extends S {
 
   @override
   String yearlySummaryBestMonth(String month) {
-    return 'Melhor mes ($month)';
+    return 'Melhor mês ($month)';
   }
 
   @override
   String yearlySummaryWorstMonth(String month) {
-    return 'Pior mes ($month)';
+    return 'Pior mês ($month)';
   }
 
   @override
-  String get yearlySummaryCategoryBreakdown => 'Distribuicao por Categoria';
+  String get yearlySummaryCategoryBreakdown => 'Distribuição por Categoria';
 
   @override
   String get mealSectionHousehold => 'Quem come?';
