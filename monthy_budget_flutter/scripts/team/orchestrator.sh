@@ -70,19 +70,46 @@ LOOP_STATE="$STATE_DIR/loops-completed"
 touch "$REVIEWED_STATE" 2>/dev/null || true
 
 # ── Issue queries ──────────────────────────────────────────────────────────
+#
+# CRITICAL: "no results" and "could not ask" must never look the same.
+#
+# These used to end in `2>/dev/null || echo ""`, so a failed API call produced an
+# empty list — indistinguishable from a genuinely empty label. During a GitHub
+# outage that made the orchestrator believe the backlog was empty while 25 issues
+# sat in qa:triage: it dispatched nothing, declared "loop 1 concluído", and
+# promoted dev to main. A false victory built entirely on failed reads.
+#
+# So issues_with now RETURNS NON-ZERO when the query fails, and every caller has
+# to decide what to do about not knowing.
 issues_with() {
-  gh issue list --repo "$REPO" --label "$1" --state open --limit 100 \
-    --json number --jq '.[].number' 2>/dev/null || echo ""
+  local out
+  out=$(gh issue list --repo "$REPO" --label "$1" --state open --limit 100 \
+        --json number --jq '.[].number' 2>/dev/null) || return 1
+  printf '%s' "$out"
+  return 0
 }
 
-first_with() { issues_with "$1" | head -1; }
+# Empty output on success = genuinely none. Failure propagates as non-zero.
+first_with() {
+  local out
+  out=$(issues_with "$1") || return 1
+  printf '%s' "$out" | head -1
+}
 
+# Echoes the count and returns 0 only if EVERY query succeeded. On any failure it
+# returns non-zero, and the caller must treat the total as unknown rather than as
+# a licence to conclude the queue is drained.
 count_actionable() {
-  local n=0 s
+  local n=0 s out rc=0
   for s in "$L_TRIAGE" "$L_READY" "$L_REVIEW" "$L_VERIFY" "$L_BLOCKED_IMPL" "$L_BLOCKED_SPEC" "$L_WIP"; do
-    n=$(( n + $(issues_with "$s" | grep -c . || true) ))
+    if out=$(issues_with "$s"); then
+      n=$(( n + $(printf '%s' "$out" | grep -c . || true) ))
+    else
+      rc=1
+    fi
   done
   echo "$n"
+  return $rc
 }
 
 # ── PR selection ───────────────────────────────────────────────────────────
@@ -337,11 +364,17 @@ while true; do
 
   # 7. Backlog empty: that closes a loop. Run the critic to find the next batch.
   if [ "$DID" = "0" ]; then
-    ACTIONABLE=$(count_actionable)
+    ACTIONABLE=$(count_actionable); COUNT_RC=$?
+
+    # Declaring a loop complete is the single most consequential decision in this
+    # loop — it promotes dev to main and increments the counter the whole run is
+    # measured by. It must NEVER be made on incomplete information.
+    if [ "$COUNT_RC" -ne 0 ]; then
+      log "não consegui contar o backlog (API falhou) — NÃO concluo nada neste ciclo"
 
     # A background sweep still running counts as work in progress: closing the
     # loop now would call the backlog empty while findings are still arriving.
-    if [ -n "$CRITIC_BG_PID" ] && kill -0 "$CRITIC_BG_PID" 2>/dev/null; then
+    elif [ -n "$CRITIC_BG_PID" ] && kill -0 "$CRITIC_BG_PID" 2>/dev/null; then
       log "nada accionável, mas o critic ainda está a correr em paralelo"
 
     elif [ "$ACTIONABLE" -gt 0 ]; then
