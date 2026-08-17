@@ -25,6 +25,24 @@ class CalmScaffold extends StatelessWidget {
   /// must wrap their scrollable viewport (not just append trailing list
   /// padding) in `Padding(bottom: fabBottomClearance)` — trailing padding
   /// only protects the last item, not content visible before any scroll.
+  ///
+  /// **Where to apply it matters (#1202).** The `Padding` must wrap the
+  /// scrollable at the SAME `Scaffold` the FAB is attached to — the FAB's
+  /// position is computed against that Scaffold's body, so the reservation
+  /// has to be measured from the same bottom edge:
+  /// - FAB owned by the screen's own `CalmScaffold` (e.g. expense tracker):
+  ///   wrap that screen's own scrollable directly — the screen's bottom
+  ///   edge IS the FAB's reference edge.
+  /// - FAB injected by a parent `Scaffold` (e.g. the dashboard tab's FAB in
+  ///   `app_home.dart`, floating over a container `Column` that wraps the
+  ///   screen together with sibling banners/ad): wrap `content` at THAT
+  ///   parent `Scaffold`, not the inner screen's own scrollable. A
+  ///   clearance added inside the screen anchors to the screen's own bottom
+  ///   edge, which only equals the FAB's reference edge when every sibling
+  ///   renders at zero height — and leaves a bottom sibling (e.g.
+  ///   `AdBannerWidget`) inside the FAB's band. Wrapping at the parent
+  ///   reserves the full footprint around the whole content, invariant to
+  ///   viewport height and to whatever the container renders inside.
   static const double fabBottomClearance = 88.0;
 
   const CalmScaffold({

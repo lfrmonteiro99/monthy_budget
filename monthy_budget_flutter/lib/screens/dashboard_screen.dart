@@ -215,36 +215,37 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: RefreshIndicator(
         color: AppColors.ink(context),
         onRefresh: () async => onSnapshotExpenses(),
-        child: Padding(
-          // The dashboard tab's FAB (QuickAddLauncher) is injected by the
-          // parent Scaffold in app_home.dart, outside this widget's own
-          // reach — it floats over whatever this scrollable renders in the
-          // bottom-right band. Reserve that footprint here so pre-scroll
-          // content (e.g. TOP CATEGORIAS, VELOCIDADE DE GASTO) never renders
-          // underneath it. Kept inside RefreshIndicator so pull-to-refresh
-          // stays bound to the actual scrollable area.
-          padding: const EdgeInsets.only(
-            bottom: CalmScaffold.fabBottomClearance,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _buildCalmHeader(context, l10n),
-                const SizedBox(height: 24),
-                if (hasData && dashboardConfig.showHeroCard)
-                  _buildHero(context, isPositive, l10n)
-                else if (!hasData)
-                  _buildEmptyState(context, l10n),
-                const SizedBox(height: 24),
-                if (hasData) ...[
-                  for (final cardId in dashboardConfig.cardOrder)
-                    if (cardId != 'heroCard')
-                      ..._buildCardById(cardId, context, stressResult, monthReview, l10n),
-                  const SizedBox(height: 16),
-                ],
+        // The dashboard tab's FAB (QuickAddLauncher) is injected by the
+        // parent Scaffold in app_home.dart, outside this widget's own reach,
+        // and this screen sits inside DashboardContainer's own Column
+        // (TrialBanner / CriticalAlertBanner above, AdBannerWidget below).
+        // Reserving the FAB's footprint HERE would anchor it to this
+        // screen's bottom edge, which only coincides with the FAB's
+        // reference edge (the outer Scaffold's body bottom) when the
+        // container's siblings all render at zero height — and a bottom
+        // sibling (the ad banner) would itself fall in the FAB's band. The
+        // clearance is instead reserved once, in app_home.dart, around the
+        // same Expanded(child: content) the FAB itself floats over — see
+        // CalmScaffold.fabBottomClearance's doc-comment. Do not re-add
+        // local bottom padding here.
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildCalmHeader(context, l10n),
+              const SizedBox(height: 24),
+              if (hasData && dashboardConfig.showHeroCard)
+                _buildHero(context, isPositive, l10n)
+              else if (!hasData)
+                _buildEmptyState(context, l10n),
+              const SizedBox(height: 24),
+              if (hasData) ...[
+                for (final cardId in dashboardConfig.cardOrder)
+                  if (cardId != 'heroCard')
+                    ..._buildCardById(cardId, context, stressResult, monthReview, l10n),
+                const SizedBox(height: 16),
               ],
-            ),
+            ],
           ),
         ),
       ),

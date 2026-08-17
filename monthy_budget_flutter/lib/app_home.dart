@@ -2342,7 +2342,27 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
                   message: l10n.offlineBannerMessage,
                   pendingCount: pendingSyncCount,
                 ),
-              Expanded(child: content),
+              Expanded(
+                // The dashboard tab's FAB below floats over `content` in
+                // THIS same Scaffold (#1202), so its footprint has to be
+                // reserved right here — against the same bottom edge the
+                // FAB's own position is computed from. `content` is
+                // DashboardContainer's Column, which wraps DashboardScreen
+                // together with sibling banners/ad; a clearance added
+                // deeper down (inside the screen) anchors to the screen's
+                // own bottom edge, which is not the FAB's reference frame,
+                // and leaves the bottom sibling (AdBannerWidget) in the
+                // FAB's band. Scoped to the dashboard tab because that's
+                // the only tab with this FAB.
+                child: _currentTab == AppTab.dashboard
+                    ? Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: CalmScaffold.fabBottomClearance,
+                        ),
+                        child: content,
+                      )
+                    : content,
+              ),
             ],
           ),
           floatingActionButton: _currentTab == AppTab.dashboard

@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:monthly_management/models/local_dashboard_config.dart';
 import 'package:monthly_management/screens/dashboard_screen.dart';
-import 'package:monthly_management/widgets/calm/calm_list_tile.dart';
-import 'package:monthly_management/widgets/calm/calm_pill.dart';
+import 'package:monthly_management/widgets/calm/calm.dart';
 
 import '../helpers/test_app.dart';
 import '../helpers/test_helpers.dart';
@@ -11,25 +10,29 @@ import '../helpers/test_helpers.dart';
 void main() {
   // Reproduces the QA finding (#1202): on the 'Início' tab, the FAB '+'
   // floated over TOP CATEGORIAS rows and the VELOCIDADE DE GASTO pace
-  // badge with NO scroll, on small/phone viewports. Root cause: the FAB
-  // is injected by the parent Scaffold in lib/app_home.dart, outside
-  // DashboardScreen's own reach — its SingleChildScrollView never
-  // reserved that footprint. This harness mirrors app_home.dart's actual
-  // structure (Scaffold + floatingActionButton wrapping the screen's
-  // Expanded content) so the test exercises the real integration, not
-  // just DashboardScreen in isolation.
+  // badge with NO scroll, on small/phone viewports.
   //
-  // Fix: lib/screens/dashboard_screen.dart wraps the SingleChildScrollView
-  // (inside RefreshIndicator) in a Padding(bottom:
-  // CalmScaffold.fabBottomClearance).
+  // First fix attempt reserved the FAB's footprint with a
+  // `Padding(bottom: CalmScaffold.fabBottomClearance)` wrapped around
+  // DashboardScreen's own SingleChildScrollView. QA re-verification found
+  // that fix worked on the small viewport but NOT on phone (430×932). The
+  // structural weakness of anchoring the reservation inside the screen:
+  // the dashboard FAB is attached to the OUTER Scaffold in app_home.dart
+  // and positioned against ITS body, while this screen sits inside
+  // DashboardContainer's Column with sibling banners above and the
+  // AdBannerWidget below — so the screen's own bottom edge is not the
+  // frame the FAB is measured against, and a bottom sibling falls inside
+  // the FAB's band.
   //
-  // The regression check compares the scrollable viewport's OWN box
-  // against the FAB's box rather than individual card/row rects: a row
-  // that straddles the viewport's bottom edge is still laid out (and
-  // therefore still has a geometric Rect) below that edge even though the
-  // viewport clips it from view — asserting on the viewport's box is what
-  // the fix actually guarantees and avoids false positives from that
-  // clipped, invisible tail.
+  // Fix: the clearance now wraps `Expanded(child: content)` directly in
+  // app_home.dart — the same Scaffold the FAB is attached to — instead of
+  // being buried inside DashboardScreen. The reserved band is then measured
+  // from the FAB's own bottom edge, invariant to viewport height and to
+  // the container's internal composition. This harness mirrors that real
+  // app_home.dart structure (outer Scaffold with bottomNavigationBar +
+  // floatingActionButton wrapping a Padding-clamped Expanded), with a real
+  // non-zero-height sibling above the screen, so the test exercises the
+  // same reference-frame class of bug QA found.
   Future<void> pumpDashboardWithFab(WidgetTester tester, Size size) async {
     addTearDown(() {
       tester.view.resetPhysicalSize();
@@ -71,27 +74,46 @@ void main() {
       cardOrder: ['heroCard', 'burnRate', 'topCategories'],
     );
 
-    // Mirrors lib/app_home.dart:2337-2354 — the FAB is a sibling of the
-    // screen's Expanded content inside a plain Scaffold, not something
-    // DashboardScreen controls itself.
+    final dashboardScreen = DashboardScreen(
+      settings: settings,
+      summary: summary,
+      purchaseHistory: makePurchaseHistory(),
+      onOpenSettings: () {},
+      onSaveSettings: (_) {},
+      dashboardConfig: dashboardConfig,
+      expenseHistory: const {},
+      onSnapshotExpenses: () {},
+      actualExpenses: actualExpenses,
+      onAddExpense: () {},
+      onOpenExpenseTracker: () {},
+    );
+
+    // Mirrors lib/app_home.dart's actual tree: an outer Scaffold whose
+    // floatingActionButton and bottomNavigationBar are siblings of
+    // `Expanded(child: <clearance-padded content>)`. A sibling banner
+    // (TrialBanner-equivalent) is included above DashboardScreen — with a
+    // real, non-zero height — to reproduce the exact reference-frame gap
+    // that broke the first fix attempt.
     await tester.pumpWidget(
       wrapWithTestApp(
         Scaffold(
           body: Column(
             children: [
               Expanded(
-                child: DashboardScreen(
-                  settings: settings,
-                  summary: summary,
-                  purchaseHistory: makePurchaseHistory(),
-                  onOpenSettings: () {},
-                  onSaveSettings: (_) {},
-                  dashboardConfig: dashboardConfig,
-                  expenseHistory: const {},
-                  onSnapshotExpenses: () {},
-                  actualExpenses: actualExpenses,
-                  onAddExpense: () {},
-                  onOpenExpenseTracker: () {},
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: CalmScaffold.fabBottomClearance,
+                  ),
+                  child: Column(
+                    children: [
+                      // Sibling banner above the screen, exactly like
+                      // DashboardContainer's TrialBanner/CriticalAlertBanner
+                      // — non-zero height, to prove the fix isn't
+                      // coincidentally correct only when siblings are absent.
+                      Container(height: 40, color: Colors.amber),
+                      Expanded(child: dashboardScreen),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -105,6 +127,20 @@ void main() {
             ),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+          bottomNavigationBar: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(height: 1, color: Colors.black12),
+              NavigationBar(
+                height: 72,
+                selectedIndex: 0,
+                destinations: const [
+                  NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+                  NavigationDestination(icon: Icon(Icons.list), label: 'List'),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -115,7 +151,8 @@ void main() {
     testWidgets(
       'FAB does not overlap the dashboard scroll viewport, and TOP '
       'CATEGORIAS + the burn-rate pace badge are visible without scroll, '
-      'at ${size.width.toInt()}px (#1202)',
+      'at ${size.width.toInt()}px, with a sibling banner above the screen '
+      '(#1202)',
       (tester) async {
         await pumpDashboardWithFab(tester, size);
 
