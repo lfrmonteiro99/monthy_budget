@@ -182,6 +182,47 @@ run_critic() {
   bash "$SCRIPT_DIR/critic.sh" "${args[@]}" || log "critic falhou"
 }
 
+# Which dimensions have already been swept in this session.
+COVERED_DIMS_FILE="$STATE_DIR/dims-covered"
+ALL_CRITIC_DIMS="functional layout design ux a11y i18n perf console data"
+
+# Dimensions never yet run against the current production code.
+uncovered_dims() {
+  local out=""
+  local candidates="${DIMENSIONS:+$(printf '%s' "$DIMENSIONS" | tr ',' ' ')}"
+  [ -n "$candidates" ] || candidates="$ALL_CRITIC_DIMS"
+  for d in $candidates; do
+    grep -qxF "$d" "$COVERED_DIMS_FILE" 2>/dev/null || out="$out $d"
+  done
+  printf '%s' "${out# }"
+}
+
+mark_dims_covered() {
+  for d in $1; do echo "$d" >> "$COVERED_DIMS_FILE"; done
+}
+
+# DISCOVERY MUST NOT WAIT FOR FIXING.
+#
+# The critic originally ran only when the backlog hit zero, which sounded prudent
+# — don't file faster than you fix — but starved discovery badly: on the first
+# real run a single dimension's findings kept the queue busy for over an hour
+# while SEVEN dimensions had never executed once. The tracker looked healthy with
+# four issues while most of the app had never been examined at all.
+#
+# So: any dimension that has never run against production code gets swept as soon
+# as no write-path work is pending in this cycle, regardless of backlog depth.
+# Once every dimension has been covered once, we fall back to the
+# drain-then-resweep rhythm, which is the right steady state.
+run_uncovered_critic() {
+  local pending; pending=$(uncovered_dims)
+  [ -n "$pending" ] || return 1
+  log "CRITIC (cobertura inicial) -> dimensões nunca corridas: $pending"
+  local args=(--branch "$PROD_BRANCH" --dimensions "$(printf '%s' "$pending" | tr ' ' ',')")
+  bash "$SCRIPT_DIR/critic.sh" "${args[@]}" || log "critic falhou"
+  mark_dims_covered "$pending"
+  return 0
+}
+
 # ── Explicit targets ───────────────────────────────────────────────────────
 if [ -n "$TARGET_PR" ]; then run_review "$TARGET_PR"; exit 0; fi
 
@@ -255,7 +296,14 @@ while true; do
   # 7. Backlog empty: that closes a loop. Run the critic to find the next batch.
   if [ "$DID" = "0" ]; then
     ACTIONABLE=$(count_actionable)
-    if [ "$ACTIONABLE" -gt 0 ]; then
+
+    # Sweep any never-run dimension before waiting on the backlog: discovery of
+    # whole untested areas is worth more than keeping the queue short.
+    if [ "$RUN_CRITIC" = "1" ] && run_uncovered_critic; then
+      CRITIC_RUNS=$((CRITIC_RUNS + 1))
+      DID=1
+
+    elif [ "$ACTIONABLE" -gt 0 ]; then
       log "nada accionável neste ciclo mas ainda há $ACTIONABLE issue(s) em curso"
 
     elif [ "$CRITIC_RUNS" -eq 0 ]; then
