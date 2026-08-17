@@ -753,21 +753,29 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                       : AppColors.ok(context),
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  isOver
-                      ? l10n.expenseTrackerOver
-                      : l10n.expenseTrackerRemaining,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.ink70(context),
+                Flexible(
+                  child: Text(
+                    isOver
+                        ? l10n.expenseTrackerOver
+                        : l10n.expenseTrackerRemaining,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.ink70(context),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 const Spacer(),
-                Text(
-                  l10n.expenseTrackerBudgetedLabel(formatCurrency(totalBudgeted)),
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.ink50(context),
+                Flexible(
+                  child: Text(
+                    l10n.expenseTrackerBudgetedLabel(formatCurrency(totalBudgeted)),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.ink50(context),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 InfoIconButton(
