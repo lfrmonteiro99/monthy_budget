@@ -51,6 +51,19 @@ case "$ACTION" in
       fi
       rm -f "$pgidfile"
     done
+
+    # Belt and braces: kill whatever still holds a lock file even if no pgid file
+    # points at it. An agent that outlived its parent has no pgid record (the exit
+    # trap removes it), so the lock file itself is the only remaining handle on it.
+    for lock in /tmp/monthy-budget-agent.*.lock; do
+      [ -f "$lock" ] || continue
+      holders=$(fuser "$lock" 2>/dev/null | tr -s ' ' '\n' | grep -E '^[0-9]+$' || true)
+      for pid in $holders; do
+        log "a terminar processo órfão $pid que ainda segura $(basename "$lock")"
+        kill -TERM "$pid" 2>/dev/null || true
+      done
+      [ -n "$holders" ] && { sleep 2; for pid in $holders; do kill -KILL "$pid" 2>/dev/null || true; done; }
+    done
     bash "$SCRIPT_DIR/serve-app.sh" "$PROD_BRANCH" --stop 2>/dev/null || true
     bash "$SCRIPT_DIR/serve-app.sh" "$BASE_BRANCH" --stop 2>/dev/null || true
     exit 0

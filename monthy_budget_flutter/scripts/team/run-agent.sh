@@ -162,7 +162,14 @@ run_harness() {
   #
   # -k 30: if SIGTERM doesn't kill it, SIGKILL follows 30s later. Nothing is left
   # holding the lock.
-  setsid timeout -k 30 "$TIMEOUT_S" "${cmd[@]}" > >(tee "$out_file") 2>&1 &
+  # `9>&-` CLOSES THE LOCK FD IN THE CHILD. Without it the agent inherits fd 9 —
+  # the descriptor this script's flock is held on — and therefore keeps holding the
+  # lock after run-agent.sh has exited. The next dispatch then aborts with exit 75
+  # against an "agent" that is nobody's child and whose pgid file the exit trap has
+  # already deleted, so it cannot even be found to be killed. Measured: a `timeout`
+  # and a `claude` process still pinning /tmp/monthy-budget-agent.main.lock long
+  # after their parent was gone.
+  setsid timeout -k 30 "$TIMEOUT_S" "${cmd[@]}" > >(tee "$out_file") 2>&1 9>&- &
   local pid=$!
   echo "$pid" > "$PGID_FILE"
   # If THIS script is killed, take the whole group down — no orphans.

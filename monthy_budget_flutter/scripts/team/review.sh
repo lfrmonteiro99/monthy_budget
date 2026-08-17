@@ -129,10 +129,11 @@ AGENT_SLOT=main CLAUDE_MODEL="$MODEL" \
 
 if [ ! -f "$VERDICT_FILE" ]; then
   if ! no_verdict_is_real_failure main "$AGENT_RC"; then
-    log "SEM VEREDICTO com o motor de fallback — PR fica para nova review"
+    log "SEM VEREDICTO (corrida degradada ou não arrancada) — PR fica para nova review"
     gh pr comment "$PR" --repo "$REPO" --body "## Reviewer: corrida degradada, sem veredicto
 
-A subscricao estava esgotada e a corrida usou o modelo de fallback, que nao
+A corrida nao produziu veredicto por uma razao alheia ao issue: ou a subscricao
+estava esgotada e o modelo de fallback nao
 conseguiu concluir a review. O PR fica como esta e sera revisto de novo." >/dev/null 2>&1 || true
     exit 0
   fi

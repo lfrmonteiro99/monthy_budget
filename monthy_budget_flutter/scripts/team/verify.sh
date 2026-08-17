@@ -97,10 +97,11 @@ AGENT_SLOT=main CLAUDE_MODEL="$MODEL" \
 
 if [ ! -f "$VERDICT_FILE" ]; then
   if ! no_verdict_is_real_failure main "$AGENT_RC"; then
-    log "SEM VEREDICTO com o motor de fallback — issue fica em $L_VERIFY"
+    log "SEM VEREDICTO (corrida degradada ou não arrancada) — issue fica em $L_VERIFY"
     comment_issue "$ISSUE" "## QA: corrida degradada, sem veredicto
 
-A subscricao estava esgotada e a corrida usou o modelo de fallback, que nao
+A corrida nao produziu veredicto por uma razao alheia ao issue: ou a subscricao
+estava esgotada e o modelo de fallback nao
 conseguiu concluir a verificacao. Fica em \`$L_VERIFY\` para nova tentativa."
     exit 0
   fi
