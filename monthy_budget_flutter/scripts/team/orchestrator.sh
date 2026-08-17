@@ -200,7 +200,10 @@ fi
 # ── Main loop ──────────────────────────────────────────────────────────────
 CYCLE=0
 LOOPS=$(cat "$LOOP_STATE" 2>/dev/null || echo 0)
-log "arranque. loops já concluídos: $LOOPS. base=$BASE_BRANCH prod=$PROD_BRANCH"
+# A "loop" = the critic found work AND the backlog was drained back to zero.
+# Counted per session, so the tally reflects this run rather than all history.
+CRITIC_RUNS=0
+log "arranque. loops já concluídos (histórico): $LOOPS. base=$BASE_BRANCH prod=$PROD_BRANCH"
 
 while true; do
   CYCLE=$((CYCLE + 1))
@@ -254,6 +257,20 @@ while true; do
     ACTIONABLE=$(count_actionable)
     if [ "$ACTIONABLE" -gt 0 ]; then
       log "nada accionável neste ciclo mas ainda há $ACTIONABLE issue(s) em curso"
+
+    elif [ "$CRITIC_RUNS" -eq 0 ]; then
+      # First cycle of the session and the backlog is already empty: nothing has
+      # been found or fixed yet, so this is NOT a completed loop. Counting it
+      # would make `--loops 2` deliver only ONE real find-fix-verify-ship cycle.
+      log "backlog vazio no arranque — a lançar o critic para encontrar trabalho"
+      if [ "$RUN_CRITIC" = "1" ]; then
+        run_critic
+        CRITIC_RUNS=$((CRITIC_RUNS + 1))
+        DID=1
+      else
+        log "--no-critic: nada para fazer"
+      fi
+
     else
       LOOPS=$((LOOPS + 1))
       echo "$LOOPS" > "$LOOP_STATE"
@@ -273,6 +290,7 @@ while true; do
 
       if [ "$RUN_CRITIC" = "1" ]; then
         run_critic
+        CRITIC_RUNS=$((CRITIC_RUNS + 1))
         DID=1
       else
         log "--no-critic: nada para fazer"
