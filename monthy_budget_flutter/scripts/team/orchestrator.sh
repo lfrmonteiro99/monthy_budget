@@ -228,12 +228,36 @@ mark_dims_covered() {
 # as no write-path work is pending in this cycle, regardless of backlog depth.
 # Once every dimension has been covered once, we fall back to the
 # drain-then-resweep rhythm, which is the right steady state.
-run_uncovered_critic() {
+# Launched DETACHED, deliberately.
+#
+# Two reasons it cannot be a normal inline step. First, a full sweep takes 30-70
+# minutes; run inline it would freeze the single-threaded loop and no issue would
+# be curated, implemented, reviewed or verified for that whole time. Second — and
+# this is the bug this replaces — gating it behind "nothing else to do this cycle"
+# means it never runs at all while a backlog exists, which is precisely the
+# starvation it was meant to cure: one dimension's findings keep the queue busy
+# forever and the other eight dimensions never execute.
+#
+# Safe to overlap with the write path: the critic only READS the app, takes its own
+# lock slots per dimension, and files each verdict itself. (It was NOT safe until
+# cleanup_stale stopped deleting critic-*.json out from under it.)
+CRITIC_BG_PID=""
+maybe_launch_critic_sweep() {
+  # Still running from a previous cycle? Leave it alone.
+  if [ -n "$CRITIC_BG_PID" ] && kill -0 "$CRITIC_BG_PID" 2>/dev/null; then
+    return 0
+  fi
   local pending; pending=$(uncovered_dims)
   [ -n "$pending" ] || return 1
-  log "CRITIC (cobertura inicial) -> dimensões nunca corridas: $pending"
-  local args=(--branch "$PROD_BRANCH" --dimensions "$(printf '%s' "$pending" | tr ' ' ',')")
-  bash "$SCRIPT_DIR/critic.sh" "${args[@]}" || log "critic falhou"
+
+  log "CRITIC (em paralelo) -> dimensões nunca corridas: $pending"
+  nohup bash "$SCRIPT_DIR/critic.sh" \
+    --branch "$PROD_BRANCH" \
+    --dimensions "$(printf '%s' "$pending" | tr ' ' ',')" \
+    >> "$LOG_DIR/critic-bg.log" 2>&1 &
+  CRITIC_BG_PID=$!
+  # Marked covered at launch, not at completion: a dimension that fails leaves its
+  # reason in the log, and re-launching it every 45s would fork sweeps forever.
   mark_dims_covered "$pending"
   return 0
 }
@@ -267,6 +291,9 @@ while true; do
 
   cleanup_stale
   rescue_stuck_wip
+
+  # Discovery runs alongside fixing, never behind it.
+  [ "$RUN_CRITIC" = "1" ] && maybe_launch_critic_sweep
 
   DID=0
 
@@ -312,11 +339,10 @@ while true; do
   if [ "$DID" = "0" ]; then
     ACTIONABLE=$(count_actionable)
 
-    # Sweep any never-run dimension before waiting on the backlog: discovery of
-    # whole untested areas is worth more than keeping the queue short.
-    if [ "$RUN_CRITIC" = "1" ] && run_uncovered_critic; then
-      CRITIC_RUNS=$((CRITIC_RUNS + 1))
-      DID=1
+    # A background sweep still running counts as work in progress: closing the
+    # loop now would call the backlog empty while findings are still arriving.
+    if [ -n "$CRITIC_BG_PID" ] && kill -0 "$CRITIC_BG_PID" 2>/dev/null; then
+      log "nada accionável, mas o critic ainda está a correr em paralelo"
 
     elif [ "$ACTIONABLE" -gt 0 ]; then
       log "nada accionável neste ciclo mas ainda há $ACTIONABLE issue(s) em curso"
