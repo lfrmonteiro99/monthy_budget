@@ -195,12 +195,49 @@ run_dimension() {
 
   # Each tester gets its own lock slot: they are read-only against the app and
   # must be free to run at the same time.
+  #
+  # $REPO_PKG is in scope because several dimensions are explicitly told to read
+  # the source: `design` compares the UI against docs/calm-handoff.md, and `i18n`
+  # cross-checks on-screen strings against lib/l10n/*.arb to tell a missing
+  # translation from a hardcoded literal. Without it those briefs are unfollowable.
+  local started ended elapsed rc
+  started=$(date +%s)
   AGENT_SLOT="critic-$dim" \
-  AGENT_ADD_DIRS="$scratch:$QA_TOOLS:$RUN_DIR" \
+  AGENT_ADD_DIRS="$scratch:$QA_TOOLS:$RUN_DIR:$REPO_PKG" \
   CLAUDE_MODEL="${CRITIC_MODEL:-sonnet}" \
   bash "$SCRIPT_DIR/run-agent.sh" "$prompt" "$QA_TOOLS" "$TIMEOUT_S" \
     > "$RUN_DIR/$dim.log" 2>&1
-  local rc=$?
+  rc=$?
+  ended=$(date +%s); elapsed=$((ended - started))
+
+  # SALVAGE RETRY. A headless agent can finish its turn without writing the
+  # verdict — the first real run had a tester end with "I'll wait for the
+  # background process to notify me", which in a `-p` session never happens. That
+  # threw away ten minutes of real testing.
+  #
+  # Only retried when the run ended EARLY: an agent killed by the timeout was
+  # genuinely still working and re-running it would just burn the same time again.
+  if [ ! -f "$verdict" ] && [ "$elapsed" -lt $((TIMEOUT_S / 2)) ]; then
+    log "  [$dim] sem veredicto após ${elapsed}s (terminou cedo) — a repetir uma vez"
+    {
+      cat "$prompt"
+      echo ""
+      echo "---"
+      echo ""
+      echo "# ATENÇÃO — segunda tentativa"
+      echo ""
+      echo "A tentativa anterior terminou SEM escrever o veredicto. Foi trabalho"
+      echo "perdido. Isto é uma sessão headless: não há notificações nem segundo"
+      echo "turno. Corre tudo de forma síncrona e **escreve o veredicto em"
+      echo "\`$verdict\` como última acção**, mesmo que só tenhas \`findings: []\`."
+    } > "$prompt.retry"
+    AGENT_SLOT="critic-$dim" \
+    AGENT_ADD_DIRS="$scratch:$QA_TOOLS:$RUN_DIR:$REPO_PKG" \
+    CLAUDE_MODEL="${CRITIC_MODEL:-sonnet}" \
+    bash "$SCRIPT_DIR/run-agent.sh" "$prompt.retry" "$QA_TOOLS" "$TIMEOUT_S" \
+      >> "$RUN_DIR/$dim.log" 2>&1
+    rc=$?
+  fi
 
   if [ -f "$verdict" ]; then
     local n; n=$(jq '(.findings // []) | length' "$verdict" 2>/dev/null || echo "?")
