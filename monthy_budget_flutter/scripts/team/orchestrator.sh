@@ -324,6 +324,18 @@ maybe_promote() {
 
   log "PROMOÇÃO ($reason) -> $ahead commit(s) verificados em $BASE_BRANCH"
   bash "$SCRIPT_DIR/promote.sh" || log "promoção falhou (segue-se em frente)"
+
+  # A promotion changes `main`, which is exactly what the critic tests. New
+  # production code means two things nobody has looked at: REGRESSIONS introduced
+  # by the fixes, and whatever the previous sweep missed. So clear the coverage
+  # record — the natural trigger for re-testing is "main changed", not "the queue
+  # happens to be empty".
+  #
+  # The backlog threshold below is what stops that flooding the tracker: with a
+  # deep queue of known-unfixed defects, a re-sweep mostly re-finds them, and
+  # de-duplication throws the work away after the testers already spent the time.
+  rm -f "$COVERED_DIMS_FILE"
+  log "cobertura de dimensões reposta — o critic revarre o novo $PROD_BRANCH quando a fila permitir"
 }
 
 CRITIC_BG_PID=""
@@ -335,7 +347,18 @@ maybe_launch_critic_sweep() {
   local pending; pending=$(uncovered_dims)
   [ -n "$pending" ] || return 1
 
-  log "CRITIC (em paralelo) -> dimensões nunca corridas: $pending"
+  # Do not pile discovery onto a queue nobody can drain. Above this many open
+  # actionable issues, a sweep mostly re-finds defects that are already filed and
+  # waiting: de-duplication then discards the result, so the testers' time and
+  # quota bought nothing. Below it, new findings can actually be acted on.
+  local backlog
+  backlog=$(count_actionable)
+  if [ "$backlog" -gt "${TEAM_RESWEEP_MAX_BACKLOG:-8}" ]; then
+    log "critic adiado: $backlog issues por tratar (limite ${TEAM_RESWEEP_MAX_BACKLOG:-8}) — corrigir primeiro"
+    return 1
+  fi
+
+  log "CRITIC (em paralelo) -> dimensões a (re)varrer: $pending"
   nohup bash "$SCRIPT_DIR/critic.sh" \
     --branch "$PROD_BRANCH" \
     --dimensions "$(printf '%s' "$pending" | tr ' ' ',')" \
