@@ -101,6 +101,41 @@ void main() {
     expect(fired, isTrue);
   });
 
+  testWidgets('CalmTile scales down a long label instead of wrapping mid-word',
+      (tester) async {
+    await tester.pumpWidget(light(
+      const Align(
+        alignment: Alignment.topLeft,
+        child: SizedBox(
+          width: 100,
+          child: CalmTile(
+            icon: Icons.kitchen,
+            label: 'Despensa',
+            count: '12 itens',
+          ),
+        ),
+      ),
+    ));
+    await tester.pumpAndSettle();
+
+    final textFinder = find.text('Despensa');
+    expect(textFinder, findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    // Estrutural: o label tem de estar dentro de um FittedBox — sem isto,
+    // find.text() sozinho não distingue 'quebrado a meio' de 'escalado'.
+    expect(
+      find.ancestor(of: textFinder, matching: find.byType(FittedBox)),
+      findsOneWidget,
+    );
+
+    // Comportamental: softWrap/maxLines têm de impedir uma segunda linha —
+    // é isto que impede a quebra a meio da palavra, não o FittedBox sozinho.
+    final textWidget = tester.widget<Text>(textFinder);
+    expect(textWidget.softWrap, isFalse);
+    expect(textWidget.maxLines, 1);
+  });
+
   // ── CalmMealRow ──────────────────────────────────────────────────────────
 
   testWidgets('CalmMealRow renders', (tester) async {

@@ -308,12 +308,12 @@ class SFr extends S {
 
   @override
   String monthReviewExpensesExceeded(String amount) {
-    return 'Les dépenses réelles ont dépassé le prévu de $amountââ€šÂ¬ — ajuster les valeurs dans les paramètres ?';
+    return 'Les dépenses réelles ont dépassé le prévu de $amount€ — ajuster les valeurs dans les paramètres ?';
   }
 
   @override
   String monthReviewSavedMore(String amount) {
-    return 'Économisé $amountââ€šÂ¬ de plus que prévu — vous pouvez renforcer le fonds d\'urgence.';
+    return 'Économisé $amount€ de plus que prévu — vous pouvez renforcer le fonds d\'urgence.';
   }
 
   @override
@@ -1323,7 +1323,7 @@ class SFr extends S {
 
   @override
   String mealTotalCost(String cost) {
-    return '$costââ€šÂ¬ total';
+    return '$cost€ total';
   }
 
   @override
@@ -1470,7 +1470,7 @@ class SFr extends S {
 
   @override
   String get wizardSettingsInfo =>
-      'Vous pouvez modifier les paramètres du planificateur à tout moment dans Paramètres ââ€ ’ Repas.';
+      'Vous pouvez modifier les paramètres du planificateur à tout moment dans Paramètres → Repas.';
 
   @override
   String get wizardContinue => 'Continuer';
@@ -1655,8 +1655,7 @@ class SFr extends S {
   String get settingsGrossMonthlySalary => 'SALAIRE BRUT MENSUEL';
 
   @override
-  String get settingsSubsidyHoliday =>
-      'PRIMES DE VACANCES ET NOÃ‹L (DOUZIÈMES)';
+  String get settingsSubsidyHoliday => 'PRIMES DE VACANCES ET NOËL (DOUZIÈMES)';
 
   @override
   String get settingsOtherExemptLabel => 'AUTRES REVENUS EXONÉRÉS D\'IMPÔT';
@@ -3207,7 +3206,7 @@ class SFr extends S {
   String get onbGetStarted => 'Commencer';
 
   @override
-  String get onbSlide0Title => 'Votre budget, en un coup d\'Ã…“il';
+  String get onbSlide0Title => 'Votre budget, en un coup d\'œil';
 
   @override
   String get onbSlide0Body =>
@@ -3528,7 +3527,7 @@ class SFr extends S {
   String get taxSimPresets => 'SCÉNARIOS RAPIDES';
 
   @override
-  String get taxSimPresetRaise => '+ââ€šÂ¬200 augmentation';
+  String get taxSimPresetRaise => '+€200 augmentation';
 
   @override
   String get taxSimPresetMeal => 'Carte vs espèces';
