@@ -678,12 +678,15 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                       children: [
                         CalmEyebrow(l10n.expenseTrackerThisMonthEyebrow),
                         const SizedBox(height: 4),
-                        Text(
-                          formatCurrency(totalActual),
-                          style: CalmText.amount(context,
-                              size: 22, weight: FontWeight.w600),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            formatCurrency(totalActual),
+                            style: CalmText.amount(context,
+                                size: 22, weight: FontWeight.w600),
+                            maxLines: 1,
+                          ),
                         ),
                       ],
                     ),
@@ -701,12 +704,15 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                       children: [
                         CalmEyebrow(l10n.expenseTrackerAvgPerDayEyebrow),
                         const SizedBox(height: 4),
-                        Text(
-                          _avgPerDay(totalActual),
-                          style: CalmText.amount(context,
-                              size: 22, weight: FontWeight.w600),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            _avgPerDay(totalActual),
+                            style: CalmText.amount(context,
+                                size: 22, weight: FontWeight.w600),
+                            maxLines: 1,
+                          ),
                         ),
                       ],
                     ),
