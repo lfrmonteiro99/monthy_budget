@@ -61,14 +61,38 @@ warn() { echo "[${ROLE:-team}] $(date +%H:%M:%S) WARN $*" >&2; }
 # Move an issue to exactly one qa:* state, clearing the others. `--add-label`
 # and `--remove-label` in one call is what keeps this atomic enough: GitHub
 # applies both, so an issue never briefly carries two states.
+# Move an issue to exactly one qa:* state, VERIFYING the change landed.
+#
+# It used to fire-and-forget with a warning on failure, and that turned a GitHub
+# outage into repeated work: during a run of 503s, #1227's transition to
+# needs-human silently failed, the issue stayed in qa:triage, the orchestrator
+# re-dispatched it, and the curator split it THREE times — creating sub-issues on
+# each pass. A state machine whose transitions can silently not happen is not a
+# state machine.
+#
+# So: retry, then read back and confirm. If it still has not landed, say so loudly
+# — the caller's own logic (and the orchestrator's dispatch) depends on it.
 set_state() {
   local issue="$1" state="$2"
-  local remove
+  local remove attempt actual
   # Remove every qa:* label except the one being set.
   remove=$(printf '%s' "$ALL_QA_LABELS" | tr ',' '\n' | grep -vxF "$state" | paste -sd, -)
-  gh issue edit "$issue" --repo "$REPO" \
-    --add-label "$state" --remove-label "$remove" >/dev/null 2>&1 \
-    || warn "não consegui pôr #$issue em $state"
+
+  for attempt in 1 2 3 4; do
+    gh issue edit "$issue" --repo "$REPO" \
+      --add-label "$state" --remove-label "$remove" >/dev/null 2>&1
+
+    # Read back. GitHub is eventually consistent, so give it a moment first.
+    sleep 2
+    actual=$(get_state "$issue")
+    [ "$actual" = "$state" ] && return 0
+
+    [ "$attempt" -lt 4 ] && sleep $((attempt * 4))
+  done
+
+  warn "TRANSIÇÃO FALHOU: #$issue continua em '${actual:-desconhecido}' e não em '$state'"
+  warn "  o orquestrador vai voltar a despachar este issue — risco de trabalho repetido"
+  return 1
 }
 
 # Read the single qa:* state label of an issue ("" when it has none).

@@ -163,9 +163,13 @@ log "issues abertos a evitar duplicar: $ISSUE_COUNT"
 # locales, so both are also above baseline.
 dim_timeout() {
   case "$1" in
-    functional) echo "${CRITIC_TIMEOUT_FUNCTIONAL:-4200}" ;;
-    data|i18n)  echo "${CRITIC_TIMEOUT_WIDE:-3000}" ;;
-    *)          echo "$TIMEOUT_S" ;;
+    functional)         echo "${CRITIC_TIMEOUT_FUNCTIONAL:-4200}" ;;
+    # `console` has to exercise the whole app to provoke errors before it can
+    # collect them, so it is as wide as functional in practice — it timed out at
+    # 1800s and lost the dimension. `data` recomputes money by hand; `i18n` walks
+    # four locales.
+    data|i18n|console)  echo "${CRITIC_TIMEOUT_WIDE:-3600}" ;;
+    *)                  echo "$TIMEOUT_S" ;;
   esac
 }
 
