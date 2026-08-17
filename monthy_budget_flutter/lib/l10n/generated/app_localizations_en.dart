@@ -2481,6 +2481,9 @@ class SEn extends S {
   String get addExpenseInvalidAmount => 'Enter a valid amount';
 
   @override
+  String get addExpenseCategoryRequired => 'Select a category';
+
+  @override
   String get addExpenseTooltip => 'Log expense';
 
   @override

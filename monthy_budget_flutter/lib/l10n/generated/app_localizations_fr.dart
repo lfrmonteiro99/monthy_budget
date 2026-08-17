@@ -2497,6 +2497,9 @@ class SFr extends S {
   String get addExpenseInvalidAmount => 'Entrez un montant valide';
 
   @override
+  String get addExpenseCategoryRequired => 'Sélectionnez une catégorie';
+
+  @override
   String get addExpenseTooltip => 'Saisir une dépense';
 
   @override

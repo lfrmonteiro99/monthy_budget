@@ -1316,6 +1316,7 @@
     "addExpenseDescription": "Descripción (opcional)",
     "addExpenseCustomCategory": "Categoría personalizada",
     "addExpenseInvalidAmount": "Introduce un importe válido",
+    "addExpenseCategoryRequired": "Selecciona una categoría",
     "addExpenseTooltip": "Registrar gasto",
     "addExpenseItem": "Gasto",
     "addExpenseOthers": "Otros",

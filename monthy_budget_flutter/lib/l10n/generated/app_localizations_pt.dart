@@ -2490,6 +2490,9 @@ class SPt extends S {
   String get addExpenseInvalidAmount => 'Introduza um valor válido';
 
   @override
+  String get addExpenseCategoryRequired => 'Selecione uma categoria';
+
+  @override
   String get addExpenseTooltip => 'Registar despesa';
 
   @override

@@ -71,6 +71,7 @@ class _AddExpenseSheet extends StatefulWidget {
 class _AddExpenseSheetState extends State<_AddExpenseSheet> {
   String? _selectedCategory;
   bool _isCustom = false;
+  bool _categoryError = false;
   final _customCategoryController = TextEditingController();
   final _amountController = TextEditingController();
   final _descriptionController = TextEditingController();
@@ -125,6 +126,13 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
     } else {
       _selectedDate = DateTime.now();
     }
+    _customCategoryController.addListener(() {
+      if (_categoryError &&
+          _isCustom &&
+          _customCategoryController.text.trim().isNotEmpty) {
+        setState(() => _categoryError = false);
+      }
+    });
   }
 
   @override
@@ -333,8 +341,11 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
       category = _selectedCategory;
     }
     if (category == null || category.isEmpty) {
-      CalmSnack.error(context, S.of(context).addExpenseCategory);
+      setState(() => _categoryError = true);
       return;
+    }
+    if (_categoryError) {
+      setState(() => _categoryError = false);
     }
 
     final description = _descriptionController.text.trim();
@@ -456,7 +467,9 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textSecondary(context),
+                    color: _categoryError
+                        ? AppColors.error(context)
+                        : AppColors.textSecondary(context),
                     letterSpacing: 0.8,
                   )),
               const SizedBox(height: 8),
@@ -478,6 +491,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                           _selectedCategory = choice.categoryKey;
                           _isCustom = false;
                           _customCategoryController.clear();
+                          _categoryError = false;
                         });
                       },
                       selectedColor: chipColor != null
@@ -508,6 +522,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                       _isCustom = true;
                       _selectedCategory = null;
                       _customCategoryController.clear();
+                      _categoryError = false;
                     }),
                     selectedColor: AppColors.primaryLight(context),
                     side: BorderSide(
@@ -531,6 +546,16 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                         horizontal: 16, vertical: 12),
                   ),
                   textCapitalization: TextCapitalization.sentences,
+                ),
+              ],
+              if (_categoryError) ...[
+                const SizedBox(height: 6),
+                Text(
+                  l10n.addExpenseCategoryRequired,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.error(context),
+                  ),
                 ),
               ],
               const SizedBox(height: 20),

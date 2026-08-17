@@ -2493,6 +2493,9 @@ class SEs extends S {
   String get addExpenseInvalidAmount => 'Introduce un importe válido';
 
   @override
+  String get addExpenseCategoryRequired => 'Selecciona una categoría';
+
+  @override
   String get addExpenseTooltip => 'Registrar gasto';
 
   @override
