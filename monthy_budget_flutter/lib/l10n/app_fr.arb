@@ -131,7 +131,7 @@
             }
         }
     },
-    "monthReviewExpensesExceeded": "Les dépenses réelles ont dépassé le prévu de {amount}ââ€šÂ¬ — ajuster les valeurs dans les paramètres ?",
+    "monthReviewExpensesExceeded": "Les dépenses réelles ont dépassé le prévu de {amount}€ — ajuster les valeurs dans les paramètres ?",
     "@monthReviewExpensesExceeded": {
         "placeholders": {
             "amount": {
@@ -139,7 +139,7 @@
             }
         }
     },
-    "monthReviewSavedMore": "Économisé {amount}ââ€šÂ¬ de plus que prévu — vous pouvez renforcer le fonds d'urgence.",
+    "monthReviewSavedMore": "Économisé {amount}€ de plus que prévu — vous pouvez renforcer le fonds d'urgence.",
     "@monthReviewSavedMore": {
         "placeholders": {
             "amount": {
@@ -750,7 +750,7 @@
     "mealConsolidatedList": "Voir la liste consolidée",
     "mealConsolidatedTitle": "Liste Consolidée",
     "mealAlternatives": "Alternatives",
-    "mealTotalCost": "{cost}ââ€šÂ¬ total",
+    "mealTotalCost": "{cost}€ total",
     "@mealTotalCost": {
         "placeholders": {
             "cost": {
@@ -829,7 +829,7 @@
     "wizardNoLimit": "Sans limite",
     "wizardMinimizeWaste": "Minimiser le gaspillage",
     "wizardMinimizeWasteDesc": "Préférer les recettes réutilisant des ingrédients déjà utilisés",
-    "wizardSettingsInfo": "Vous pouvez modifier les paramètres du planificateur à tout moment dans Paramètres ââ€ ’ Repas.",
+    "wizardSettingsInfo": "Vous pouvez modifier les paramètres du planificateur à tout moment dans Paramètres → Repas.",
     "wizardContinue": "Continuer",
     "wizardGeneratePlan": "Générer le Plan",
     "wizardStepOf": "Étape {current} sur {total}",
@@ -912,7 +912,7 @@
     },
     "settingsSalaryActive": "Actif",
     "settingsGrossMonthlySalary": "SALAIRE BRUT MENSUEL",
-    "settingsSubsidyHoliday": "PRIMES DE VACANCES ET NOÃ‹L (DOUZIÈMES)",
+    "settingsSubsidyHoliday": "PRIMES DE VACANCES ET NOËL (DOUZIÈMES)",
     "settingsOtherExemptLabel": "AUTRES REVENUS EXONÉRÉS D'IMPÔT",
     "settingsMealAllowanceLabel": "INDEMNITÉ REPAS",
     "settingsAmountPerDay": "MONTANT/JOUR",
@@ -1708,7 +1708,7 @@
     "onbSkip": "Passer",
     "onbNext": "Suivant",
     "onbGetStarted": "Commencer",
-    "onbSlide0Title": "Votre budget, en un coup d'Ã…“il",
+    "onbSlide0Title": "Votre budget, en un coup d'œil",
     "onbSlide0Body": "Le tableau de bord affiche votre liquidité mensuelle, dépenses et Indice de Sérénité.",
     "onbSlide1Title": "Suivez chaque dépense",
     "onbSlide1Body": "Appuyez sur + pour enregistrer un achat. Assignez une catégorie et regardez les barres se mettre à jour.",
@@ -1852,7 +1852,7 @@
     },
     "taxSimTitle": "Simulateur Fiscal",
     "taxSimPresets": "SCÉNARIOS RAPIDES",
-    "taxSimPresetRaise": "+ââ€šÂ¬200 augmentation",
+    "taxSimPresetRaise": "+€200 augmentation",
     "taxSimPresetMeal": "Carte vs espèces",
     "taxSimPresetTitular": "Conjoint vs séparé",
     "taxSimParameters": "PARAMÈTRES",
