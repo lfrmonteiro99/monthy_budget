@@ -105,6 +105,55 @@ void main() {
       expect(called, 1);
     });
 
+    testWidgets('avatar tap target is at least 44x44', (tester) async {
+      await tester.pumpWidget(buildDashboard());
+      await tester.pumpAndSettle();
+
+      final size = tester.getSize(
+        find.descendant(
+          of: find.byTooltip('Open settings'),
+          matching: find.byType(GestureDetector),
+        ),
+      );
+
+      expect(size.width, greaterThanOrEqualTo(44));
+      expect(size.height, greaterThanOrEqualTo(44));
+    });
+
+    testWidgets('avatar tap outside the 36x36 circle still opens settings', (tester) async {
+      var called = 0;
+      await tester.pumpWidget(buildDashboard(onOpenSettings: () => called++));
+      await tester.pumpAndSettle();
+
+      final target = find.descendant(
+        of: find.byTooltip('Open settings'),
+        matching: find.byType(GestureDetector),
+      );
+      final topLeft = tester.getTopLeft(target);
+
+      // 2px inset from the top-left corner: inside the 44x44 tap target,
+      // outside the centered 36x36 visual circle (4px margin on each side).
+      await tester.tapAt(topLeft + const Offset(2, 2));
+      await tester.pump();
+
+      expect(called, 1);
+    });
+
+    testWidgets('avatar circle keeps its 36x36 visual size', (tester) async {
+      await tester.pumpWidget(buildDashboard());
+      await tester.pumpAndSettle();
+
+      final size = tester.getSize(
+        find.ancestor(
+          of: find.text('CS'),
+          matching: find.byType(Container),
+        ).first,
+      );
+
+      expect(size.width, 36);
+      expect(size.height, 36);
+    });
+
     testWidgets('hero section uses CalmCard structure', (tester) async {
       await tester.pumpWidget(buildDashboard());
       await tester.pumpAndSettle();

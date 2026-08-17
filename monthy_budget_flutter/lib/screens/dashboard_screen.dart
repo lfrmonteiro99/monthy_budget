@@ -272,21 +272,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Tooltip(
           message: l10n.dashboardOpenSettings,
           child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
             onTap: onOpenSettings,
-            child: Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.ink(context),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                _householdInitials(widget.householdName),
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.bg(context),
+            child: SizedBox(
+              width: 44,
+              height: 44,
+              child: Center(
+                child: Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.ink(context),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    _householdInitials(widget.householdName),
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.bg(context),
+                    ),
+                  ),
                 ),
               ),
             ),
