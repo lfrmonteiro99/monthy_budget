@@ -56,12 +56,18 @@ class CalmTile extends StatelessWidget {
         children: [
           Icon(icon, size: 24, color: AppColors.ink(context)),
           const SizedBox(height: 12),
-          Text(
-            label,
-            style: GoogleFonts.inter(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-              color: AppColors.ink(context),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              label,
+              maxLines: 1,
+              softWrap: false,
+              style: GoogleFonts.inter(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: AppColors.ink(context),
+              ),
             ),
           ),
           const SizedBox(height: 2),

@@ -101,6 +101,27 @@ void main() {
     expect(fired, isTrue);
   });
 
+  testWidgets('CalmTile scales down a long label instead of wrapping mid-word',
+      (tester) async {
+    await tester.pumpWidget(light(
+      const Align(
+        alignment: Alignment.topLeft,
+        child: SizedBox(
+          width: 100,
+          child: CalmTile(
+            icon: Icons.kitchen,
+            label: 'Despensa',
+            count: '12 itens',
+          ),
+        ),
+      ),
+    ));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Despensa'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   // ── CalmMealRow ──────────────────────────────────────────────────────────
 
   testWidgets('CalmMealRow renders', (tester) async {
