@@ -78,6 +78,7 @@ set_state() {
   # Remove every qa:* label except the one being set.
   remove=$(printf '%s' "$ALL_QA_LABELS" | tr ',' '\n' | grep -vxF "$state" | paste -sd, -)
 
+  local read_ok=0
   for attempt in 1 2 3 4; do
     gh issue edit "$issue" --repo "$REPO" \
       --add-label "$state" --remove-label "$remove" >/dev/null 2>&1
@@ -86,11 +87,22 @@ set_state() {
     sleep 2
     actual=$(get_state "$issue")
     [ "$actual" = "$state" ] && return 0
+    [ -n "$actual" ] && read_ok=1
 
     [ "$attempt" -lt 4 ] && sleep $((attempt * 4))
   done
 
-  warn "TRANSIÇÃO FALHOU: #$issue continua em '${actual:-desconhecido}' e não em '$state'"
+  # An unreadable state is NOT the same as a wrong state, and conflating them
+  # produces false alarms during an API outage — the transition usually did land,
+  # we just could not confirm it. Observed on #1232: reported as failed, actually
+  # applied correctly.
+  if [ "$read_ok" = "0" ]; then
+    warn "não confirmei a transição de #$issue para '$state' (a API não respondeu à leitura)"
+    warn "  a etiqueta provavelmente foi aplicada; o ciclo seguinte relê o estado real"
+    return 0
+  fi
+
+  warn "TRANSIÇÃO FALHOU: #$issue continua em '$actual' e não em '$state'"
   warn "  o orquestrador vai voltar a despachar este issue — risco de trabalho repetido"
   return 1
 }
@@ -100,6 +112,23 @@ get_state() {
   local issue="$1"
   gh issue view "$issue" --repo "$REPO" --json labels \
     --jq '[.labels[].name] | map(select(startswith("qa:"))) | .[0] // ""' 2>/dev/null || echo ""
+}
+
+# Add a label via the REST API, not `gh pr edit --add-label`.
+#
+# `gh pr edit` resolves project cards over GraphQL on the way through, and on this
+# repo that fails outright: "Projects (classic) is being deprecated ...
+# (repository.pullRequest.projectCards)". The label is then never applied and gh
+# reports failure for a reason unrelated to labelling.
+#
+# That silently blocked the dev->main promotion PR: promote.sh believed it had set
+# `release:patch`, pr-governance found no release label, and the PR sat BLOCKED with
+# four verified fixes stranded behind it. The issues endpoint works for PRs too —
+# GitHub treats them as issues for labelling.
+add_label_api() {
+  local number="$1" label="$2"
+  gh api -X POST "repos/$REPO/issues/$number/labels" \
+    -f "labels[]=$label" >/dev/null 2>&1
 }
 
 comment_issue() {
