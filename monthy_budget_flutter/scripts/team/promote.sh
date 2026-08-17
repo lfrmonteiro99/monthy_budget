@@ -120,7 +120,8 @@ EXISTING=$(gh pr list --repo "$REPO" --head "$BASE_BRANCH" --base "$PROD_BRANCH"
 
 if [ -n "$EXISTING" ]; then
   PR="$EXISTING"
-  gh pr edit "$PR" --repo "$REPO" --body "$BODY" --add-label "$RELEASE_LABEL" >/dev/null 2>&1 || true
+  gh pr edit "$PR" --repo "$REPO" --body "$BODY" >/dev/null 2>&1 || true
+  add_label_api "$PR" "$RELEASE_LABEL"
   log "PR de promoção #$PR actualizado"
 else
   URL=$(gh pr create --repo "$REPO" --base "$PROD_BRANCH" --head "$BASE_BRANCH" \
@@ -131,7 +132,7 @@ else
     log "ERRO: não abri o PR de promoção"
     exit 1
   fi
-  gh pr edit "$PR" --repo "$REPO" --add-label "$RELEASE_LABEL" >/dev/null 2>&1 || true
+  add_label_api "$PR" "$RELEASE_LABEL"
   log "PR de promoção criado: $URL ($RELEASE_LABEL)"
 fi
 

@@ -371,6 +371,33 @@ while true; do
   # Discovery runs alongside fixing, never behind it.
   [ "$RUN_CRITIC" = "1" ] && maybe_launch_critic_sweep
 
+  # ── Ship verified fixes continuously, not in one batch at the end ──────────
+  #
+  # Promotion used to happen only when the backlog reached zero. With a real
+  # backlog that is a day or more away, and waiting costs three things:
+  #   - `main` stays broken while working, QA-verified fixes sit idle on `dev`;
+  #   - the CRITIC tests `main`, so it cannot find anything new — or detect a
+  #     regression — until main moves. The pipeline blocks its own discovery;
+  #   - one promotion of 24 fixes is far riskier to review than 24 small ones.
+  #
+  # So promote whenever `dev` is ahead and nothing is mid-flight (no open PR into
+  # dev, nothing awaiting verification). Those two conditions are what "dev holds
+  # only finished work" actually means — the empty backlog was a crude proxy for it.
+  if [ "$RUN_PROMOTE" = "1" ]; then
+    IN_FLIGHT=$(( $(issues_with "$L_REVIEW" | grep -c . || true) \
+                + $(issues_with "$L_VERIFY" | grep -c . || true) \
+                + $(issues_with "$L_WIP"    | grep -c . || true) ))
+    if [ "$IN_FLIGHT" -eq 0 ]; then
+      git -C "$TEAM_ROOT" fetch origin "$PROD_BRANCH" "$BASE_BRANCH" >/dev/null 2>&1 || true
+      AHEAD=$(git -C "$TEAM_ROOT" rev-list --count \
+              "origin/$PROD_BRANCH..origin/$BASE_BRANCH" 2>/dev/null || echo 0)
+      if [ "${AHEAD:-0}" -gt 0 ]; then
+        log "PROMOÇÃO incremental -> $AHEAD commit(s) verificados em $BASE_BRANCH"
+        bash "$SCRIPT_DIR/promote.sh" || log "promoção falhou (segue-se em frente)"
+      fi
+    fi
+  fi
+
   DID=0
 
   # Priority order matters. Reviewing first is what unblocks merges; verifying

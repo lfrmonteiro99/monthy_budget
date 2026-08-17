@@ -114,6 +114,23 @@ get_state() {
     --jq '[.labels[].name] | map(select(startswith("qa:"))) | .[0] // ""' 2>/dev/null || echo ""
 }
 
+# Add a label via the REST API, not `gh pr edit --add-label`.
+#
+# `gh pr edit` resolves project cards over GraphQL on the way through, and on this
+# repo that fails outright: "Projects (classic) is being deprecated ...
+# (repository.pullRequest.projectCards)". The label is then never applied and gh
+# reports failure for a reason unrelated to labelling.
+#
+# That silently blocked the dev->main promotion PR: promote.sh believed it had set
+# `release:patch`, pr-governance found no release label, and the PR sat BLOCKED with
+# four verified fixes stranded behind it. The issues endpoint works for PRs too —
+# GitHub treats them as issues for labelling.
+add_label_api() {
+  local number="$1" label="$2"
+  gh api -X POST "repos/$REPO/issues/$number/labels" \
+    -f "labels[]=$label" >/dev/null 2>&1
+}
+
 comment_issue() {
   local issue="$1" body="$2"
   gh issue comment "$issue" --repo "$REPO" --body "$body" >/dev/null 2>&1 \
