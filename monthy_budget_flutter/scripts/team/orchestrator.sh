@@ -126,12 +126,27 @@ mark_reviewed() {
 # Nothing survives from one cycle to the next. An inherited verdict makes an
 # agent report the PREVIOUS run's work as its own.
 cleanup_stale() {
-  rm -f "$VERDICT_DIR"/*.json 2>/dev/null || true
-
   # Kill only OUR agent tree, via the pgid run-agent.sh recorded, and only when
   # the lock is free (so no live agent is killed mid-run).
   local lock="/tmp/monthy-budget-agent.main.lock"
   if flock -w 0 -n "$lock" true 2>/dev/null; then
+
+    # Stale verdicts, but ONLY the write-path roles this orchestrator owns, and
+    # only now that we know none of its agents is live.
+    #
+    # This used to be an unconditional `rm -f "$VERDICT_DIR"/*.json` at the top of
+    # every cycle, and it silently destroyed the critic's work. The critic runs
+    # CONCURRENTLY on its own lock slots and writes into the same directory, so a
+    # dimension that finished mid-cycle had its verdict deleted before it could be
+    # filed. Measured: the `data` dimension produced 4 findings and every one was
+    # lost, which from the outside looked like "the critic found nothing".
+    #
+    # critic-*.json is therefore never touched here — the critic owns its own
+    # verdicts and deletes each one as soon as it has filed it.
+    for role in curator implement review verify; do
+      rm -f "$VERDICT_DIR/$role"-*.json 2>/dev/null || true
+    done
+
     local pgidfile="$lock.pgid"
     if [ -f "$pgidfile" ]; then
       local pgid; pgid=$(cat "$pgidfile" 2>/dev/null || echo "")

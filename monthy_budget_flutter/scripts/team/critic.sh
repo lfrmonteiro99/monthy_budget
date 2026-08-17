@@ -150,12 +150,32 @@ ISSUE_COUNT=$(printf '%s' "$OPEN_ISSUES" | grep -c . || true)
 log "issues abertos a evitar duplicar: $ISSUE_COUNT"
 
 # ── 4. Fan out the dimension testers ───────────────────────────────────────
+> "$LOG_DIR/.filing.lock"
+
+# Per-dimension timeout. The default is not enough for the widest briefs and a
+# timeout loses the whole dimension: rc=124 means no verdict, and the salvage
+# retry deliberately does not fire (an agent killed by the clock was genuinely
+# still working, so repeating it just burns the same time again).
+#
+# `functional` is by far the largest brief — full CRUD, persistence across reload,
+# and the propagation matrix across every dependent screen — and it timed out at
+# 1800s on the first sweep. `data` recomputes money by hand and `i18n` walks four
+# locales, so both are also above baseline.
+dim_timeout() {
+  case "$1" in
+    functional) echo "${CRITIC_TIMEOUT_FUNCTIONAL:-4200}" ;;
+    data|i18n)  echo "${CRITIC_TIMEOUT_WIDE:-3000}" ;;
+    *)          echo "$TIMEOUT_S" ;;
+  esac
+}
+
 run_dimension() {
   local dim="$1"
   local scratch="$RUN_DIR/$dim"
   local verdict="$VERDICT_DIR/critic-$dim.json"
   local prompt="$RUN_DIR/prompt-$dim.txt"
   local dim_file="$SCRIPT_DIR/dimensions/$dim.md"
+  local dim_timeout_s; dim_timeout_s=$(dim_timeout "$dim")
 
   mkdir -p "$scratch"
   # STALE: delete before the run. If the agent dies without writing, an
@@ -205,7 +225,7 @@ run_dimension() {
   AGENT_SLOT="critic-$dim" \
   AGENT_ADD_DIRS="$scratch:$QA_TOOLS:$RUN_DIR:$REPO_PKG" \
   CLAUDE_MODEL="${CRITIC_MODEL:-sonnet}" \
-  bash "$SCRIPT_DIR/run-agent.sh" "$prompt" "$QA_TOOLS" "$TIMEOUT_S" \
+  bash "$SCRIPT_DIR/run-agent.sh" "$prompt" "$QA_TOOLS" "$dim_timeout_s" \
     > "$RUN_DIR/$dim.log" 2>&1
   rc=$?
   ended=$(date +%s); elapsed=$((ended - started))
@@ -217,7 +237,7 @@ run_dimension() {
   #
   # Only retried when the run ended EARLY: an agent killed by the timeout was
   # genuinely still working and re-running it would just burn the same time again.
-  if [ ! -f "$verdict" ] && [ "$elapsed" -lt $((TIMEOUT_S / 2)) ]; then
+  if [ ! -f "$verdict" ] && [ "$elapsed" -lt $((dim_timeout_s / 2)) ]; then
     log "  [$dim] sem veredicto após ${elapsed}s (terminou cedo) — a repetir uma vez"
     {
       cat "$prompt"
@@ -234,7 +254,7 @@ run_dimension() {
     AGENT_SLOT="critic-$dim" \
     AGENT_ADD_DIRS="$scratch:$QA_TOOLS:$RUN_DIR:$REPO_PKG" \
     CLAUDE_MODEL="${CRITIC_MODEL:-sonnet}" \
-    bash "$SCRIPT_DIR/run-agent.sh" "$prompt.retry" "$QA_TOOLS" "$TIMEOUT_S" \
+    bash "$SCRIPT_DIR/run-agent.sh" "$prompt.retry" "$QA_TOOLS" "$dim_timeout_s" \
       >> "$RUN_DIR/$dim.log" 2>&1
     rc=$?
   fi
@@ -242,8 +262,31 @@ run_dimension() {
   if [ -f "$verdict" ]; then
     local n; n=$(jq '(.findings // []) | length' "$verdict" 2>/dev/null || echo "?")
     log "  [$dim] rc=$rc findings=$n"
+
+    # FILE IMMEDIATELY, per dimension.
+    #
+    # Filing used to happen once, after every dimension had finished. With seven
+    # dimensions at a concurrency of three that meant NOTHING reached the tracker
+    # for forty minutes — findings existed but were invisible, and the run looked
+    # dead from outside. Worse, a crash before the end lost every finding at once.
+    #
+    # Per-dimension filing is safe because the filer de-duplicates against the
+    # issues actually on GitHub (open and closed) on every invocation, so a later
+    # dimension reporting the same defect still collapses onto the first one. The
+    # lock only stops two dimensions filing at the same instant, which would let
+    # both miss the other's just-created issue.
+    (
+      flock 8
+      python3 "$SCRIPT_DIR/file-findings.py" \
+        --repo "$REPO" --branch "$BRANCH" --run-id "$RUN_ID" --run-dir "$RUN_DIR" \
+        "$verdict" 2>&1 | sed "s/^/  [$dim] /"
+    ) 8>"$LOG_DIR/.filing.lock"
+    rm -f "$verdict"
   else
     log "  [$dim] rc=$rc SEM VEREDICTO (ver $RUN_DIR/$dim.log)"
+    if [ "$rc" = "124" ]; then
+      log "  [$dim] rc=124 = TIMEOUT (${dim_timeout_s}s). Dimensão perdida — considera subir o timeout."
+    fi
   fi
 }
 
