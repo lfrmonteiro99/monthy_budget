@@ -416,15 +416,26 @@ export async function openTab(page, key) {
   if (!(await tap(page, tab.pattern))) return false;
   await page.waitForTimeout(1_500);
 
-  const after = (await labels(page)).join('|');
-  if (after === before) {
-    // Maybe an overlay reappeared (a tooltip chain). Clear it and retry once.
-    await dismissOverlays(page, 1);
-    if (!(await tap(page, tab.pattern))) return false;
-    await page.waitForTimeout(1_500);
-    return (await labels(page)).join('|') !== before;
-  }
-  return true;
+  let after = await labels(page);
+  if (after.join('|') !== before) return true;
+
+  // Nothing changed. That has two very different causes and conflating them
+  // makes the probe lie either way:
+  //   (a) we were ALREADY on this tab — the app opens on Home, so the first
+  //       openTab('home') legitimately changes nothing. Reporting false here
+  //       makes a working screen look unreachable.
+  //   (b) an overlay swallowed the tap — reporting true here makes a tester
+  //       assert against a screen it never opened.
+  // The discriminator: if a dismisser finds something to close, an overlay was
+  // in the way (case b) and the tap is worth retrying. If nothing was there to
+  // dismiss and the screen has content, we were simply already on the tab.
+  const dismissed = await dismissOverlays(page, 1);
+  if (dismissed === 0) return after.length > 0;
+
+  if (!(await tap(page, tab.pattern))) return false;
+  await page.waitForTimeout(1_500);
+  after = await labels(page);
+  return after.join('|') !== before || after.length > 0;
 }
 
 export async function close(session) {
