@@ -113,9 +113,23 @@ run_harness() {
   local out_file
   out_file=$(mktemp "/tmp/run-agent-$AGENT_SLOT.XXXXXX.out")
 
-  # -k 30: if SIGTERM doesn't kill it, SIGKILL follows 30s later. Nothing is
-  # left hanging on to the lock.
-  setsid timeout -k 30 "$TIMEOUT_S" "${cmd[@]}" > "$out_file" 2>&1 &
+  # Output is STREAMED, not captured-then-printed.
+  #
+  # It used to be `> "$out_file"` with a single printf after `wait`, which meant a
+  # 30-minute agent produced exactly one line in the log until the moment it
+  # finished. During the first real critic run that made two perfectly healthy
+  # testers look dead, and the only way to tell was to check their process group
+  # by hand. For something that runs unattended for hours, being able to watch it
+  # work is not a luxury.
+  #
+  # Process substitution keeps `$!` pointing at the setsid leader (so the pgid
+  # bookkeeping that lets the orchestrator kill exactly our tree still works)
+  # while tee both streams to our stdout and keeps a copy for the
+  # usage-exhaustion check below.
+  #
+  # -k 30: if SIGTERM doesn't kill it, SIGKILL follows 30s later. Nothing is left
+  # holding the lock.
+  setsid timeout -k 30 "$TIMEOUT_S" "${cmd[@]}" > >(tee "$out_file") 2>&1 &
   local pid=$!
   echo "$pid" > "$PGID_FILE"
   # If THIS script is killed, take the whole group down — no orphans.
@@ -123,10 +137,10 @@ run_harness() {
 
   wait "$pid"
   local rc=$?
+  # tee may still be flushing after the agent exits.
+  sleep 1
   AGENT_OUTPUT=$(cat "$out_file" 2>/dev/null || echo "")
   rm -f "$out_file"
-  # Surface the agent's own transcript to the caller's log.
-  printf '%s\n' "$AGENT_OUTPUT"
   return $rc
 }
 
