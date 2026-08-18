@@ -187,8 +187,15 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
       if (!mounted) return;
       setState(
         () =>
-            _expenses = [..._expenses, expense]
-              ..sort((a, b) => b.date.compareTo(a.date)),
+            // Idempotent by id (#1233): widget.onAdd may trigger an
+            // optimistic provider update in the parent that reaches this
+            // widget via didUpdateWidget while the await above is still
+            // pending, syncing this same expense into `_expenses` first.
+            // Without the id filter, this append would add it a second time.
+            _expenses = [
+              ..._expenses.where((e) => e.id != expense.id),
+              expense,
+            ]..sort((a, b) => b.date.compareTo(a.date)),
       );
     }
   }
@@ -217,8 +224,11 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
     if (!mounted) return;
     setState(
       () =>
-          _expenses = [..._expenses, expense]
-            ..sort((a, b) => b.date.compareTo(a.date)),
+          // Idempotent by id (#1233) — same race as in _addExpense above.
+          _expenses = [
+            ..._expenses.where((e) => e.id != expense.id),
+            expense,
+          ]..sort((a, b) => b.date.compareTo(a.date)),
     );
   }
 
