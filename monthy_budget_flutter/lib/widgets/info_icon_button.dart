@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../theme/app_colors.dart';
 import 'calm/calm.dart';
 
@@ -10,9 +11,10 @@ class InfoIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Semantics(
       button: true,
-      label: 'More info about $title',
+      label: l10n.moreInfoAbout(title),
       child: InkWell(
         onTap: () => _showSheet(context),
         customBorder: const CircleBorder(),

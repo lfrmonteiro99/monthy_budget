@@ -4656,6 +4656,11 @@ class SPt extends S {
   String get moreTitle => 'Mais';
 
   @override
+  String moreInfoAbout(String title) {
+    return 'Mais informação sobre $title';
+  }
+
+  @override
   String get moreDetailedDashboard => 'Painel Detalhado';
 
   @override

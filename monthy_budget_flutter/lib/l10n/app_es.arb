@@ -2467,6 +2467,14 @@
     "insightsTaxOutcome": "Estimar resultado fiscal anual",
 
     "moreTitle": "Más",
+    "moreInfoAbout": "Más información sobre {title}",
+    "@moreInfoAbout": {
+        "placeholders": {
+            "title": {
+                "type": "String"
+            }
+        }
+    },
     "moreDetailedDashboard": "Panel Detallado",
     "moreDetailedDashboardSubtitle": "Abrir panel financiero completo con todas las tarjetas",
     "moreSavingsSubtitle": "Seguir y actualizar el progreso de tus metas",

@@ -4883,6 +4883,15 @@
 
     "moreTitle": "Mais",
     "@moreTitle": { "description": "Title for the More screen" },
+    "moreInfoAbout": "Mais informação sobre {title}",
+    "@moreInfoAbout": {
+        "description": "Accessibility label for info buttons",
+        "placeholders": {
+            "title": {
+                "type": "String"
+            }
+        }
+    },
     "moreDetailedDashboard": "Painel Detalhado",
     "@moreDetailedDashboard": { "description": "Detailed dashboard tile title" },
     "moreDetailedDashboardSubtitle": "Abrir painel financeiro completo com todos os cartões",

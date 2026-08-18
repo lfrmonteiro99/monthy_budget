@@ -844,7 +844,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       leadingColor: AppColors.categoryColorByName(categoryName),
       title: _budgetCategoryLabel(categoryName, l10n),
       subtitle: budgetAmount > 0
-          ? '${formatCurrency(value)} de ${formatCurrency(budgetAmount)}'
+          ? '${formatCurrency(value)} ${l10n.dashboardHeroBudgetLabel(formatCurrency(budgetAmount))}'
           : formatCurrency(value),
       trailing: trailing,
       onTap: widget.onOpenExpenseTracker,

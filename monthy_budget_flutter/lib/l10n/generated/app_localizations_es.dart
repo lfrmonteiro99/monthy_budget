@@ -4659,6 +4659,11 @@ class SEs extends S {
   String get moreTitle => 'Más';
 
   @override
+  String moreInfoAbout(String title) {
+    return 'Más información sobre $title';
+  }
+
+  @override
   String get moreDetailedDashboard => 'Panel Detallado';
 
   @override

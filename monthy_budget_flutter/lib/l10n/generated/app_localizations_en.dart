@@ -4621,6 +4621,11 @@ class SEn extends S {
   String get moreTitle => 'More';
 
   @override
+  String moreInfoAbout(String title) {
+    return 'More info about $title';
+  }
+
+  @override
   String get moreDetailedDashboard => 'Detailed Dashboard';
 
   @override

@@ -8261,6 +8261,12 @@ abstract class S {
   /// **'Mais'**
   String get moreTitle;
 
+  /// Accessibility label for info buttons
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais informação sobre {title}'**
+  String moreInfoAbout(String title);
+
   /// Detailed dashboard tile title
   ///
   /// In pt, this message translates to:
