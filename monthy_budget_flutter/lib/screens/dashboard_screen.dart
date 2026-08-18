@@ -936,10 +936,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildSavingsRateCard(BuildContext context, S l10n) {
     final currentRate = summary.savingsRate;
+    // savingsRate is a fraction (0..1); scale ×100 once for display and for
+    // the point-based colour thresholds — comparing the raw fraction against
+    // 20/10 would make every valid rate look <10% (always red).
+    final ratePct = currentRate * 100;
     final saved = summary.netLiquidity > 0 ? summary.netLiquidity : 0.0;
-    final rateColor = currentRate >= 20
+    final rateColor = ratePct >= 20
         ? AppColors.ok(context)
-        : currentRate >= 10
+        : ratePct >= 10
             ? AppColors.warn(context)
             : AppColors.bad(context);
 
@@ -972,7 +976,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     l10n.dashboardSavingsRateTitle.toUpperCase()),
               ),
               Text(
-                '${currentRate.toStringAsFixed(1)}%',
+                formatPercentage(currentRate),
                 style: CalmText.amount(context, size: 18)
                     .copyWith(color: rateColor),
               ),
@@ -1028,13 +1032,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildCoachInsightCard(BuildContext context, S l10n) {
     String insight;
     IconData insightIcon;
-    if (summary.savingsRate < 10 && summary.totalExpenses > 0) {
+    // savingsRate is a fraction; thresholds are in percentage points.
+    if (summary.savingsRate < 0.10 && summary.totalExpenses > 0) {
       insight = l10n.dashboardCoachLowSavings;
       insightIcon = Icons.warning_amber_outlined;
     } else if (summary.totalExpenses > summary.totalNetWithMeal * 0.9) {
       insight = l10n.dashboardCoachHighSpending;
       insightIcon = Icons.trending_down;
-    } else if (summary.savingsRate >= 20) {
+    } else if (summary.savingsRate >= 0.20) {
       insight = l10n.dashboardCoachGoodSavings;
       insightIcon = Icons.emoji_events_outlined;
     } else {
