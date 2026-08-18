@@ -123,6 +123,7 @@ class CoachChatController extends ChangeNotifier {
     required AppSettings settings,
     required PurchaseHistory purchaseHistory,
     required void Function(SubscriptionState) onSubscriptionChanged,
+    required String languageCode,
   }) async {
     if (text.trim().isEmpty || _loading) return true;
 
@@ -207,6 +208,7 @@ class CoachChatController extends ChangeNotifier {
         effectiveMode: effectiveMode,
         lastMicroAction: _subscription.lastMicroAction,
         lastMicroActionDate: _subscription.lastMicroActionDate,
+        languageCode: languageCode,
       );
 
       // Parse delimiters from reply
