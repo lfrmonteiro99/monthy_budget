@@ -489,37 +489,18 @@ maybe_promote() {
   # The backlog threshold below is what stops that flooding the tracker: with a
   # deep queue of known-unfixed defects, a re-sweep mostly re-finds them, and
   # de-duplication throws the work away after the testers already spent the time.
-  # Reset the sweep record only if main ACTUALLY moved. Opening or updating a
-  # promotion PR changes nothing in production, and resetting on that would have the
-  # critic re-sweeping a main it has already covered, every cycle the PR sits waiting
-  # for CI.
-  git -C "$TEAM_ROOT" fetch origin "$PROD_BRANCH" >/dev/null 2>&1 || true
-  local main_after
-  main_after=$(git -C "$TEAM_ROOT" rev-parse "origin/$PROD_BRANCH" 2>/dev/null || echo "")
-  if [ -n "$main_after" ] && [ "$main_after" != "$main_before" ]; then
-    # ...but ONLY when the queue was drained, i.e. this is a loop closing. A CADENCE
-    # promotion mid-drain also moves main, and resetting there is what stalled
-    # discovery all day.
-    #
-    # Measured over ~13 hours: 11 promotions moved main, coverage was reset 3 times,
-    # and the critic swept ONCE while being deferred 35 times on "backlog > 8". Every
-    # cadence promotion re-opened all nine dimensions, so the moment the queue fell to
-    # the threshold a full sweep would refill it — and the loop counter needs the queue
-    # at ZERO. Reset-on-any-move plus a backlog gate do not converge: they oscillate,
-    # and the goal of two completed loops becomes unreachable by construction.
-    #
-    # Tying the reset to a drained queue gives the rhythm the pipeline was designed
-    # for: sweep every dimension, drain what it found to zero, close the loop, ship
-    # the batch, then re-open discovery against the main that batch produced. New
-    # production code still gets re-tested — just once per loop instead of once per
-    # promotion.
-    if [ "$reason" = "backlog vazio" ]; then
-      rm -f "$COVERED_DIMS_FILE"
-      log "$PROD_BRANCH avançou para ${main_after:0:8} — cobertura reposta (loop fechado)"
-    else
-      log "$PROD_BRANCH avançou para ${main_after:0:8} — cobertura mantida (promoção de cadência, fila ainda por drenar)"
-    fi
-  fi
+  # Coverage is NOT decided here any more.
+  #
+  # This compared main's sha before and after the call, which cannot work with
+  # auto-merge: the PR lands minutes later when CI goes green, long after this
+  # function returned, so the "after" sha is almost always the "before" sha. The
+  # empty-diff realign path exits earlier still. Net effect: the reset would never
+  # fire, and after a loop closed the critic would never re-examine the main that
+  # loop produced — the treadmill this was written to prevent.
+  #
+  # Same mistake as the realign bug fixed this morning: checking for an effect
+  # immediately after triggering something asynchronous. It belongs where the loop
+  # actually closes, which knows without asking anyone.
 }
 
 CRITIC_BG_PID=""
@@ -764,6 +745,13 @@ while true; do
       LOOPS=$((LOOPS + 1))
       echo "$LOOPS" > "$LOOP_STATE"
       log "backlog vazio — loop $LOOPS concluído"
+
+      # Reopen discovery HERE. The queue is drained, so everything found this loop is
+      # fixed and verified; the next sweep should examine the result. Doing it on the
+      # loop boundary rather than on an observed sha change removes the dependency on
+      # WHEN the promotion merges — which, with auto-merge, is never during this call.
+      rm -f "$COVERED_DIMS_FILE"
+      log "  cobertura reposta — o critic revarre o resultado deste loop"
 
       # Ship what QA verified. Without this the critic keeps re-testing a `main`
       # that never receives the fixes, and finds the same defects every loop.
