@@ -42,24 +42,21 @@ if [ "$DO_SERVE" = "1" ]; then
   log "a garantir que a app de '$BRANCH' está a servir e actualizada..."
   if ! bash "$SCRIPT_DIR/serve-app.sh" "$BRANCH" --port "$APP_PORT"; then
     log "ERRO: não consegui servir '$BRANCH'"
-    comment_issue "$ISSUE" "## QA: verificação inconclusiva
+    comment_issue "$ISSUE" "## QA: não consegui servir a app
 
-Não foi possível compilar/servir a app a partir de \`$BRANCH\`, portanto o fix
-não pôde ser verificado. O issue fica em \`$L_HUMAN\`."
-    set_state "$ISSUE" "$L_HUMAN"
+Não foi possível compilar/servir \`$BRANCH\`. Isto é do ambiente, não do fix — o
+issue fica em \`$L_VERIFY\` e será verificado na próxima passagem."
     exit 1
   fi
 fi
 
 if ! curl -fsS -o /dev/null --max-time 5 "$APP_URL/"; then
-  log "ERRO: $APP_URL não responde"
-  set_state "$ISSUE" "$L_HUMAN"
+  log "ERRO: $APP_URL não responde — fica em $L_VERIFY para nova tentativa"
   exit 1
 fi
 
 if ! bash "$SCRIPT_DIR/qa-tools-setup.sh" >>"$LOG_DIR/verify-$ISSUE.toolkit.log" 2>&1; then
-  log "ERRO: toolkit de browser não ficou pronto"
-  set_state "$ISSUE" "$L_HUMAN"
+  log "ERRO: toolkit de browser não ficou pronto — fica em $L_VERIFY"
   exit 1
 fi
 
@@ -93,22 +90,23 @@ rm -f "$VERDICT_FILE"
 AGENT_SLOT=main CLAUDE_MODEL="$MODEL" \
   AGENT_ADD_DIRS="$SCRATCH:$QA_TOOLS" \
   bash "$SCRIPT_DIR/run-agent.sh" "$PROMPT" "$QA_TOOLS" "${VERIFY_TIMEOUT:-1800}" \
-  > "$LOG_DIR/verify-$ISSUE.log" 2>&1 || true
+  > "$LOG_DIR/verify-$ISSUE.log" 2>&1; AGENT_RC=$?
 
 if [ ! -f "$VERDICT_FILE" ]; then
-  if ! no_verdict_is_real_failure main; then
-    log "SEM VEREDICTO com o motor de fallback — issue fica em $L_VERIFY"
+  if ! no_verdict_is_real_failure main "$AGENT_RC"; then
+    log "SEM VEREDICTO (corrida degradada ou não arrancada) — issue fica em $L_VERIFY"
     comment_issue "$ISSUE" "## QA: corrida degradada, sem veredicto
 
-A subscricao estava esgotada e a corrida usou o modelo de fallback, que nao
+A corrida nao produziu veredicto por uma razao alheia ao issue: ou a subscricao
+estava esgotada e o modelo de fallback nao
 conseguiu concluir a verificacao. Fica em \`$L_VERIFY\` para nova tentativa."
     exit 0
   fi
-  log "SEM VEREDICTO — needs-human"
-  comment_issue "$ISSUE" "## QA: sem veredicto
+  log "SEM VEREDICTO — fica em $L_VERIFY para nova tentativa"
+  comment_issue "$ISSUE" "## QA: corrida sem veredicto
 
-O verificador terminou sem escrever veredicto (ver \`$LOG_DIR/verify-$ISSUE.log\`)."
-  set_state "$ISSUE" "$L_HUMAN"
+A corrida terminou sem escrever veredicto (ver \`$LOG_DIR/verify-$ISSUE.log\`).
+Falha da corrida, não do fix — fica na fila para ser verificado de novo."
   exit 0
 fi
 
@@ -165,13 +163,16 @@ atacavam a causa. Devolvido ao curator para reanalisar."
     ;;
 
   *)
-    comment_issue "$ISSUE" "## QA: inconclusivo
+    # No "inconclusive" destination exists any more. An unusable verdict means the
+    # fix is not demonstrated, which is the implementer's to answer.
+    comment_issue "$ISSUE" "## QA: resultado não reconhecido (\`$VERDICT\`)
 
 $SUMMARY$CRITERIA
 
-Não foi possível verificar na app."
-    set_state "$ISSUE" "$L_HUMAN"
-    log "#$ISSUE -> $L_HUMAN (inconclusivo)"
+O veredicto não usou um dos resultados válidos. Como o fix não ficou demonstrado,
+volta ao implementador."
+    set_state "$ISSUE" "$L_BLOCKED_IMPL"
+    log "#$ISSUE -> $L_BLOCKED_IMPL (veredicto inválido)"
     ;;
 esac
 

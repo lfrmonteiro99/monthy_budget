@@ -31,6 +31,39 @@ case "$ACTION" in
   stop)
     tmux kill-session -t "$SESSION" 2>/dev/null && log "sessão '$SESSION' terminada" \
       || log "sessão '$SESSION' não estava a correr"
+
+    # Killing the tmux session is NOT enough. run-agent.sh puts each agent in its
+    # own process group via setsid precisely so it can be killed as a unit — which
+    # also means it SURVIVES the session dying, and keeps holding its lock slot.
+    #
+    # The next orchestrator's first dispatch then aborts instantly with exit 75
+    # ("slot já tem um agente a correr"), produces no verdict, and — before this was
+    # handled — escalated a perfectly good issue to needs-human. Observed on #1209:
+    # failed and escalated 11 seconds after a restart.
+    for pgidfile in /tmp/monthy-budget-agent.*.lock.pgid; do
+      [ -f "$pgidfile" ] || continue
+      pgid=$(cat "$pgidfile" 2>/dev/null || echo "")
+      if [ -n "$pgid" ] && kill -0 -"$pgid" 2>/dev/null; then
+        log "a terminar a árvore do agente (pgid $pgid, $(basename "$pgidfile" .lock.pgid))"
+        kill -TERM -"$pgid" 2>/dev/null || true
+        sleep 2
+        kill -KILL -"$pgid" 2>/dev/null || true
+      fi
+      rm -f "$pgidfile"
+    done
+
+    # Belt and braces: kill whatever still holds a lock file even if no pgid file
+    # points at it. An agent that outlived its parent has no pgid record (the exit
+    # trap removes it), so the lock file itself is the only remaining handle on it.
+    for lock in /tmp/monthy-budget-agent.*.lock; do
+      [ -f "$lock" ] || continue
+      holders=$(fuser "$lock" 2>/dev/null | tr -s ' ' '\n' | grep -E '^[0-9]+$' || true)
+      for pid in $holders; do
+        log "a terminar processo órfão $pid que ainda segura $(basename "$lock")"
+        kill -TERM "$pid" 2>/dev/null || true
+      done
+      [ -n "$holders" ] && { sleep 2; for pid in $holders; do kill -KILL "$pid" 2>/dev/null || true; done; }
+    done
     bash "$SCRIPT_DIR/serve-app.sh" "$PROD_BRANCH" --stop 2>/dev/null || true
     bash "$SCRIPT_DIR/serve-app.sh" "$BASE_BRANCH" --stop 2>/dev/null || true
     exit 0

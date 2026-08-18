@@ -162,7 +162,14 @@ run_harness() {
   #
   # -k 30: if SIGTERM doesn't kill it, SIGKILL follows 30s later. Nothing is left
   # holding the lock.
-  setsid timeout -k 30 "$TIMEOUT_S" "${cmd[@]}" > >(tee "$out_file") 2>&1 &
+  # `9>&-` CLOSES THE LOCK FD IN THE CHILD. Without it the agent inherits fd 9 —
+  # the descriptor this script's flock is held on — and therefore keeps holding the
+  # lock after run-agent.sh has exited. The next dispatch then aborts with exit 75
+  # against an "agent" that is nobody's child and whose pgid file the exit trap has
+  # already deleted, so it cannot even be found to be killed. Measured: a `timeout`
+  # and a `claude` process still pinning /tmp/monthy-budget-agent.main.lock long
+  # after their parent was gone.
+  setsid timeout -k 30 "$TIMEOUT_S" "${cmd[@]}" > >(tee "$out_file") 2>&1 9>&- &
   local pid=$!
   echo "$pid" > "$PGID_FILE"
   # If THIS script is killed, take the whole group down — no orphans.
@@ -180,6 +187,55 @@ run_harness() {
 PROMPT="$(cat "$PROMPT_FILE")"
 RC=1
 USED=""
+
+# VISION IS NOT UNIVERSAL, AND ASSUMING IT KILLS THE WHOLE RUN.
+#
+# Several prompts tell the agent to `Read` the evidence screenshots — that is how a
+# tester judges layout and how a curator checks a finding's proof. Claude does that
+# fine. The fallback model does not accept image input at all, and the failure is
+# not graceful: the API returns
+#
+#     API Error: 400 this model does not support image input
+#
+# and the entire run dies, producing no verdict. Observed on curator-1238. The
+# agent has no way to know which engine it is on, so we tell it, and the roles append
+# the corresponding instruction to the prompt.
+engine_has_vision() { [ "${1:-}" = "claude" ]; }
+
+append_no_vision_note() {
+  cat <<EOF
+
+---
+
+# 👁 IMAGENS: USA A FERRAMENTA, NÃO O \`Read\`
+
+Este motor não aceita imagens directamente. Fazer \`Read\` num \`.png\`/\`.jpg\`
+devolve erro 400 e **mata a corrida inteira**, sem veredicto.
+
+Mas **não ficas cego** — tens um modelo de visão à parte para isso:
+
+\`\`\`bash
+bash $SCRIPT_DIR/qa-describe-image.sh <caminho.png> "a tua pergunta"
+\`\`\`
+
+Devolve a descrição em texto, que podes usar como qualquer outra prova. Faz uma
+**pergunta específica** — vale muito mais que um pedido genérico:
+
+\`\`\`bash
+# mau:  "descreve a imagem"
+# bom:
+bash $SCRIPT_DIR/qa-describe-image.sh evid.png \\
+  "O valor no cartão 'Este Mês' está cortado com reticências? Que texto exacto se lê?"
+\`\`\`
+
+Regras:
+- **Nunca** \`Read\` num ficheiro de imagem. Sempre esta ferramenta.
+- Trata a descrição como prova de segunda mão: cita-a como tal no veredicto
+  ("segundo a descrição do screenshot ..."), não como se a tivesses visto.
+- Se a resposta for ambígua e a decisão depender disso, pergunta outra vez com
+  uma pergunta mais fechada antes de decidir.
+EOF
+}
 
 # ── 1. Subscription (claude CLI) ───────────────────────────────────────────
 if [ "${AGENT_FORCE_FALLBACK:-0}" != "1" ] && ! in_cooldown && command -v claude >/dev/null 2>&1; then
@@ -228,6 +284,8 @@ if [ -z "$USED" ]; then
   export CLAUDE_CODE_DISABLE_UNKNOWN_MODEL_WINDOW_ENFORCEMENT=1
 
   USED="ollama/$FALLBACK_MODEL"
+  # This engine cannot read images; warn the agent before it tries.
+  PROMPT="$PROMPT$(append_no_vision_note)"
   run_harness "ollama" "$FALLBACK_MODEL" \
     ollama launch claude --model "$FALLBACK_MODEL" --yes -- \
       -p "$PROMPT" \
@@ -252,3 +310,4 @@ echo "[run-agent] fim: motor=$USED rc=$RC" >&2
 echo "$USED" > "/tmp/monthy-budget-agent.$AGENT_SLOT.engine" 2>/dev/null || true
 
 exit "$RC"
+

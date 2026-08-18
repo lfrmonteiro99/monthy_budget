@@ -32,8 +32,9 @@ guarda screenshots em `__SCRATCH__`.
    no issue. São o teu guião — não improvises um critério diferente.
 2. **Executa os passos de reprodução originais** do issue. O sintoma tem de ter
    desaparecido.
-3. **Verifica cada critério de aceitação** na app, um a um. Um critério que não
-   consegues verificar na app é um `fail` — diz qual e porquê.
+3. **Verifica cada critério de aceitação** na app, um a um. Se um critério não for
+   verificável directamente, confirma-o por via indirecta (código, teste de widget,
+   árvore semântica) e regista que foi indirecta — ver a secção sobre decidir.
 4. **Procura regressões onde o fix chega.** Um fix que resolve o issue e quebra
    o ecrã ao lado não passa. Isto tem duas metades e ambas são obrigatórias:
 
@@ -65,8 +66,10 @@ para as funções: `launch`, `tap`, `fill`, `labels`, `openTab`, `shoot`,
 `layoutSuspects`, `metrics`). **Tira screenshots e olha para eles** com `Read` —
 para defeitos visuais é a única prova válida.
 
-Se `bootedIntoApp` vier `false` no report, a app não arrancou: veredicto
-`inconclusive`, porque não podes verificar nada num build quebrado.
+Se `bootedIntoApp` vier `false`, a app não arrancou. Tenta perceber porquê antes de
+desistir (`__SCRATCH__/probe/boot.png`, erros de consola no report, recompilar). Se
+mesmo assim não arrancar, é `fail-impl`: um fix que deixa a app sem arrancar não
+está demonstrado, e o issue volta ao implementador com essa prova.
 
 ## Veredicto
 
@@ -74,7 +77,7 @@ Escreve EXACTAMENTE este JSON em `__VERDICT_PATH__`:
 
 ```json
 {
-  "verdict": "pass|fail-impl|fail-spec|inconclusive",
+  "verdict": "pass|fail-impl|fail-spec",
   "original_symptom_gone": true,
   "criteria": [
     { "criterion": "texto do critério", "met": true, "evidence": "como confirmaste" }
@@ -96,9 +99,21 @@ Escreve EXACTAMENTE este JSON em `__VERDICT_PATH__`:
   critérios mandavam, e o defeito original continua lá porque os critérios não
   atacavam a causa. Ou os critérios são impossíveis de verificar na app. Volta ao
   curator. Não uses isto quando a implementação está simplesmente incompleta.
-- **inconclusive** — não conseguiste testar (a app não arranca, o fluxo depende
-  de hardware que o browser não tem, os dados semeados não permitem chegar ao
-  ecrã). Diz o que faltou.
+### ⛔ Não existe "inconclusive". Decides tu.
+
+Não há QA humano a seguir. Um issue que deixes indeciso fica parado para sempre.
+
+- **Um gesto não funciona no browser headless?** Confirma o critério por outra via —
+  lê o código, corre o teste de widget correspondente, verifica a árvore semântica —
+  e regista que foi verificação indirecta, com o motivo.
+- **Os dados semeados não te levam ao ecrã?** Cria-os pela UI: adiciona a despesa,
+  o objetivo, o item que faltava. Consegues conduzir a app toda.
+- **Continuas sem conseguir verificar UM critério de vários?** Se o sintoma
+  original desapareceu e os restantes critérios estão cumpridos, **`pass`** —
+  anotando qual ficou por confirmar e porquê. Um critério não verificável não pode
+  reter um fix que demonstravelmente resolve o problema.
+- **Nem o sintoma original consegues avaliar?** Então o fix não está demonstrado:
+  `fail-impl`, com o que tentaste.
 
 A distinção entre `fail-impl` e `fail-spec` evita ciclos infinitos: se o
 implementador cumpriu o contrato e o defeito continua, o contrato estava errado e
