@@ -7,6 +7,7 @@ import 'package:monthly_management/models/budget_summary.dart';
 import 'package:monthly_management/models/local_dashboard_config.dart';
 import 'package:monthly_management/models/purchase_record.dart';
 import 'package:monthly_management/screens/dashboard_screen.dart';
+import 'package:monthly_management/theme/app_colors.dart';
 import 'package:monthly_management/utils/formatters.dart';
 import 'package:monthly_management/widgets/calm/calm_list_tile.dart';
 
@@ -793,6 +794,154 @@ void main() {
         find.text('${l10n.expenseTrackerActual}: ${formatCurrency(585.60)}'),
         findsOneWidget,
       ); // Orçamento vs Real
+    });
+  });
+
+  group(
+      'Savings Rate dedicated card & coach tip scale fraction ×100 (#1219)',
+      () {
+    final l10n = SEn();
+
+    Widget buildSavingsDashboard({required double savingsRate}) {
+      return wrapWithTestApp(
+        DashboardScreen(
+          settings: const AppSettings(),
+          summary: BudgetSummary(
+            totalGross: 1500,
+            totalNetWithMeal: 1000,
+            totalExpenses: 550,
+            totalDeductions: 200,
+            totalIRS: 150,
+            totalSS: 50,
+            netLiquidity: 450,
+            savingsRate: savingsRate,
+          ),
+          purchaseHistory: const PurchaseHistory(),
+          dashboardConfig: const LocalDashboardConfig(
+            showSalaryBreakdown: false,
+            showPurchaseHistory: false,
+            showCharts: false,
+            showStressIndex: false,
+            showMonthReview: false,
+            showUpcomingBills: false,
+            showTaxDeductions: false,
+            showSavingsGoals: false,
+            showExpensesBreakdown: false,
+            showBudgetStreaks: false,
+            showCashFlowForecast: false,
+            showBurnRate: false,
+            showTopCategories: false,
+            showQuickActions: false,
+            showSpendingAnomalies: false,
+            showSummaryCards: false,
+            showBudgetVsActual: false,
+            showSavingsRate: true,
+            showCoachInsight: true,
+          ),
+          expenseHistory: const {},
+          actualExpenses: const [],
+          monthlyBudgets: const {},
+          recurringExpenses: const [],
+          actualExpenseHistory: const {},
+          onOpenSettings: () {},
+          onSaveSettings: (_) {},
+          onSnapshotExpenses: () {},
+          onAddExpense: () {},
+          onOpenExpenseTracker: () {},
+          onOpenCoach: () {},
+        ),
+      );
+    }
+
+    testWidgets(
+        'savingsRate 0.449: dedicated card shows the ×100 percentage (not the raw fraction 0.4%) and the good-savings coach tip',
+        (tester) async {
+      await tester.pumpWidget(buildSavingsDashboard(savingsRate: 0.449));
+      await tester.pumpAndSettle();
+
+      // The defect: the dedicated card rendered the raw fraction (0.4%),
+      // while the summary card / Coach / export all scale ×100 at display.
+      expect(find.text('0.4%'), findsNothing);
+      expect(find.text(formatPercentage(0.449)), findsOneWidget);
+      // Coach tip must be the good-savings one, not the false low-savings alarm.
+      expect(find.text(l10n.dashboardCoachGoodSavings), findsOneWidget);
+      expect(find.text(l10n.dashboardCoachLowSavings), findsNothing);
+    });
+
+    testWidgets(
+        'savingsRate 0.08: dedicated card shows 8.0% and the low-savings tip (pre-existing behaviour preserved)',
+        (tester) async {
+      await tester.pumpWidget(buildSavingsDashboard(savingsRate: 0.08));
+      await tester.pumpAndSettle();
+
+      expect(find.text(formatPercentage(0.08)), findsOneWidget);
+      expect(find.text(l10n.dashboardCoachLowSavings), findsOneWidget);
+      expect(find.text(l10n.dashboardCoachGoodSavings), findsNothing);
+    });
+
+    testWidgets(
+        'value colour follows the rate in points: 0.449 → ok, 0.15 → warn, 0.08 → bad',
+        (tester) async {
+      Color? colorOf(String text) =>
+          tester.widget<Text>(find.text(text)).style?.color;
+
+      await tester.pumpWidget(buildSavingsDashboard(savingsRate: 0.449));
+      await tester.pumpAndSettle();
+      expect(colorOf(formatPercentage(0.449)),
+          AppColors.ok(tester.element(find.text(formatPercentage(0.449)))));
+
+      await tester.pumpWidget(buildSavingsDashboard(savingsRate: 0.15));
+      await tester.pumpAndSettle();
+      expect(colorOf(formatPercentage(0.15)),
+          AppColors.warn(tester.element(find.text(formatPercentage(0.15)))));
+
+      await tester.pumpWidget(buildSavingsDashboard(savingsRate: 0.08));
+      await tester.pumpAndSettle();
+      expect(colorOf(formatPercentage(0.08)),
+          AppColors.bad(tester.element(find.text(formatPercentage(0.08)))));
+    });
+
+    testWidgets(
+        'boundary 0.20: exact good-savings threshold → ok colour and good-savings tip',
+        (tester) async {
+      await tester.pumpWidget(buildSavingsDashboard(savingsRate: 0.20));
+      await tester.pumpAndSettle();
+
+      expect(find.text(formatPercentage(0.20)), findsOneWidget);
+      expect(
+        tester.widget<Text>(find.text(formatPercentage(0.20))).style?.color,
+        AppColors.ok(tester.element(find.text(formatPercentage(0.20)))),
+      );
+      expect(find.text(l10n.dashboardCoachGoodSavings), findsOneWidget);
+    });
+
+    testWidgets(
+        'boundary 0.10: exact low-savings threshold → warn colour, no low-savings alarm (tip is strictly "below 10%")',
+        (tester) async {
+      await tester.pumpWidget(buildSavingsDashboard(savingsRate: 0.10));
+      await tester.pumpAndSettle();
+
+      expect(find.text(formatPercentage(0.10)), findsOneWidget);
+      expect(
+        tester.widget<Text>(find.text(formatPercentage(0.10))).style?.color,
+        AppColors.warn(tester.element(find.text(formatPercentage(0.10)))),
+      );
+      expect(find.text(l10n.dashboardCoachLowSavings), findsNothing);
+      expect(find.text(l10n.dashboardCoachGoodSavings), findsNothing);
+    });
+
+    testWidgets(
+        'negative savingsRate -0.05: shows the negative ×100 percentage in red (not clamped to 0, not a fraction)',
+        (tester) async {
+      await tester.pumpWidget(buildSavingsDashboard(savingsRate: -0.05));
+      await tester.pumpAndSettle();
+
+      expect(find.text('-0.1%'), findsNothing); // the buggy fraction rendering
+      expect(find.text(formatPercentage(-0.05)), findsOneWidget);
+      expect(
+        tester.widget<Text>(find.text(formatPercentage(-0.05))).style?.color,
+        AppColors.bad(tester.element(find.text(formatPercentage(-0.05)))),
+      );
     });
   });
 }
