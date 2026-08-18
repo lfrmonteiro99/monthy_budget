@@ -4669,6 +4669,11 @@ class SFr extends S {
   String get moreTitle => 'Plus';
 
   @override
+  String moreInfoAbout(String title) {
+    return 'Plus d\'informations sur $title';
+  }
+
+  @override
   String get moreDetailedDashboard => 'Tableau de Bord Detaille';
 
   @override
