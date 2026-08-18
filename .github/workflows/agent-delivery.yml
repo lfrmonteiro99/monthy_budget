@@ -72,14 +72,34 @@ jobs:
             COMMIT_TEXT="$(git log -n 20 --pretty=format:'%s%n%b' || true)"
           fi
 
-          # Priority: branch name first (reliable), then commit messages (fragile)
+          # Priority: branch name first (reliable), then an EXPLICIT closing keyword
+          # in the commit text. A bare `#N` is deliberately NOT accepted.
+          #
+          # It used to be: first `#N` found anywhere in the commit text. A mention is
+          # not a claim to fix, and treating them as the same thing closed a blocker.
+          # #1233 ("saving an expense records it twice", the user's money counted
+          # double) was closed by the merge of #1275, whose commit carried the trailer
+          # `Fixes #1274` and mentioned #1233 in the body only, as the motivating
+          # example. The trailer — the author's stated intent — was ignored in favour
+          # of the first number that happened to appear. The issue was closed with
+          # zero comments, still labelled qa:triage, and the defect it described is
+          # still in the app.
+          #
+          # Dropping the bare-`#N` fallback has a known cost: a branch with neither a
+          # number nor a keyword now auto-creates an issue instead (this is what
+          # produced the #1240/#1243 artifacts). That is the right trade. A noise
+          # issue is visible and cheap; an issue closed without work makes the tracker
+          # lie in the direction that costs the most, and it lies hardest about the
+          # issues people wrote the most context for.
           ISSUE=""
           ISSUE="$(printf '%s\n' "$BRANCH" | grep -oP '(?<=issue-)\d+' | head -n1 || true)"
           if [[ -z "$ISSUE" ]]; then
             ISSUE="$(printf '%s\n' "$BRANCH" | grep -Eo '[0-9]+' | head -n1 || true)"
           fi
           if [[ -z "$ISSUE" ]]; then
-            ISSUE="$(printf '%s\n' "$COMMIT_TEXT" | grep -Eo '#[0-9]+' | head -n1 | tr -d '#' || true)"
+            ISSUE="$(printf '%s\n' "$COMMIT_TEXT" \
+              | grep -Eio '(Fixes|Closes|Resolves)[[:space:]]+#[0-9]+' \
+              | grep -Eo '[0-9]+' | head -n1 || true)"
           fi
 
           if [[ -n "$ISSUE" ]]; then
