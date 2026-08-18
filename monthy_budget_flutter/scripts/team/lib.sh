@@ -37,6 +37,12 @@ STATE_DIR="${TEAM_STATE_DIR:-$HOME/Documentos/monthy-budget-verdicts/state}"
 PORT_PROD="${TEAM_PORT_PROD:-7401}"
 PORT_DEV="${TEAM_PORT_DEV:-7402}"
 
+# Which critic dimensions have already run against the CURRENT production code.
+# Shared: the orchestrator reads it to decide what to sweep, and critic.sh writes it
+# as each dimension actually starts. Ownership matters here — see the comment at the
+# write site.
+COVERED_DIMS_FILE="${TEAM_STATE_DIR:-/tmp/monthy-budget-team/state}/dims-covered"
+
 mkdir -p "$VERDICT_DIR" "$LOG_DIR" "$STATE_DIR" "$WT_ROOT" 2>/dev/null || true
 
 # ── Labels: the pipeline state machine ─────────────────────────────────────

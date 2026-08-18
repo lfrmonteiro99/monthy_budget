@@ -362,7 +362,6 @@ run_critic() {
 }
 
 # Which dimensions have already been swept in this session.
-COVERED_DIMS_FILE="$STATE_DIR/dims-covered"
 ALL_CRITIC_DIMS="functional layout design ux a11y i18n perf console data"
 
 # Dimensions never yet run against the current production code.
@@ -569,9 +568,14 @@ maybe_launch_critic_sweep() {
   CRITIC_BG_PID=$!
   # Marked covered at launch, not at completion: a dimension that fails leaves its
   # reason in the log, and re-launching it every 45s would fork sweeps forever.
-  # Only what was actually launched — marking `pending` here would silently retire
-  # the eight dimensions this trickle did not run.
-  mark_dims_covered "$dims"
+  # NOT marked here any more. This is the launch of critic.sh, not the launch of the
+  # dimensions, and the two came apart badly: critic.sh has a boot gate that aborts
+  # the whole run before fanning out, so a sweep could be marked as covering eight
+  # dimensions that never started. That happened twice today, and because coverage
+  # only resets when a loop closes, those eight were retired until then — the critic
+  # produced nothing for fifteen hours while the state file claimed full coverage.
+  #
+  # critic.sh marks each dimension as it actually begins. Only it knows.
   return 0
 }
 
