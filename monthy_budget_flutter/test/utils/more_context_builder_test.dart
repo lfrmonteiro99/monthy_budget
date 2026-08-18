@@ -9,9 +9,13 @@ import 'package:monthly_management/widgets/calm/calm_observation_card.dart';
 
 void main() {
   late S l10n;
+  late S l10nPt;
+  late S l10nFr;
 
   setUpAll(() async {
     l10n = await S.delegate.load(const Locale('en'));
+    l10nPt = await S.delegate.load(const Locale('pt'));
+    l10nFr = await S.delegate.load(const Locale('fr'));
   });
 
   BudgetSummary summaryWith({
@@ -221,6 +225,82 @@ void main() {
       expect(ctx.observations.first.title, contains('16'));
       expect(ctx.observations.first.title, isNot(contains('140')));
     });
+
+    test(
+      'over-budget title shows the localized category label, not the raw '
+      'storage key (#1224)',
+      () {
+        // TopCategoryUsage.category carries the raw storage key ('lazer'),
+        // exactly what _topCategoryUsage() returns in production — not a
+        // pre-translated label like the other tests in this file use.
+        final ctx = MoreContextBuilder.build(
+          summary: summaryWith(savingsRate: 0.05),
+          topCategory: const TopCategoryUsage(category: 'lazer', percent: 143),
+          l10n: l10n,
+        );
+        final expectedLabel = ExpenseCategory.lazer.localizedLabel(l10n);
+        expect(ctx.observations.first.title, contains(expectedLabel));
+        expect(ctx.observations.first.title, isNot(contains('lazer')));
+      },
+    );
+
+    test(
+      'over-budget title is localized to pt-PT (raw key coincides with the '
+      'word, but must still resolve through the enum) (#1224)',
+      () {
+        final ctx = MoreContextBuilder.build(
+          summary: summaryWith(savingsRate: 0.05),
+          topCategory: const TopCategoryUsage(category: 'lazer', percent: 143),
+          l10n: l10nPt,
+        );
+        final expectedLabel = ExpenseCategory.lazer.localizedLabel(l10nPt);
+        expect(ctx.observations.first.title, contains(expectedLabel));
+      },
+    );
+
+    test(
+      'over-budget title is localized to fr — the raw pt key must not leak '
+      'into a non-pt locale (#1224)',
+      () {
+        final ctx = MoreContextBuilder.build(
+          summary: summaryWith(savingsRate: 0.05),
+          topCategory: const TopCategoryUsage(category: 'lazer', percent: 143),
+          l10n: l10nFr,
+        );
+        final expectedLabel = ExpenseCategory.lazer.localizedLabel(l10nFr);
+        expect(ctx.observations.first.title, contains(expectedLabel));
+        expect(ctx.observations.first.title, isNot(contains('lazer')));
+      },
+    );
+
+    test(
+      'custom category (not in the ExpenseCategory enum) is shown as-is, '
+      'in every locale (#1224)',
+      () {
+        final ctx = MoreContextBuilder.build(
+          summary: summaryWith(savingsRate: 0.05),
+          topCategory: const TopCategoryUsage(
+            category: 'Streaming',
+            percent: 143,
+          ),
+          l10n: l10nFr,
+        );
+        expect(ctx.observations.first.title, contains('Streaming'));
+      },
+    );
+
+    test(
+      'observation id keeps the raw storage key even after the title is '
+      'localized (#1224)',
+      () {
+        final ctx = MoreContextBuilder.build(
+          summary: summaryWith(savingsRate: 0.05),
+          topCategory: const TopCategoryUsage(category: 'lazer', percent: 143),
+          l10n: l10nFr,
+        );
+        expect(ctx.observations.first.id, 'cat-over-lazer');
+      },
+    );
   });
 
   group('budgetByCategory', () {
