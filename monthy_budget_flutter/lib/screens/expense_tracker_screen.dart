@@ -48,6 +48,11 @@ class ExpenseTrackerScreen extends StatefulWidget {
   final YearlyDeductionSummary? irsDeductionSummary;
   final BudgetSummary? budgetSummary;
 
+  /// Monthly per-category budget overrides (monthly_budgets). The dashboard
+  /// already applies them; Despesas must use the same source so a category
+  /// shows one budget everywhere (#1220).
+  final Map<String, double> monthlyBudgets;
+
   const ExpenseTrackerScreen({
     super.key,
     required this.settings,
@@ -64,6 +69,7 @@ class ExpenseTrackerScreen extends StatefulWidget {
     this.customCategories = const [],
     this.irsDeductionSummary,
     this.budgetSummary,
+    this.monthlyBudgets = const {},
   });
 
   @override
@@ -328,6 +334,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
     final summaries = CategoryBudgetSummary.buildSummaries(
       widget.settings.expenses,
       _expenses,
+      monthlyBudgets: widget.monthlyBudgets,
     );
     final label = _monthLabel(l10n);
     String catLabel(String name) => localizedExpenseCategory(name, l10n);
@@ -548,6 +555,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
     final summaries = CategoryBudgetSummary.buildSummaries(
       widget.settings.expenses,
       _expenses,
+      monthlyBudgets: widget.monthlyBudgets,
     );
     final totalBudgeted = summaries.fold(0.0, (s, e) => s + e.budgeted);
     final totalActual = summaries.fold(0.0, (s, e) => s + e.actual);

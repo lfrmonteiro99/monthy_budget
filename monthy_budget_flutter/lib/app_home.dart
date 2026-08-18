@@ -654,16 +654,13 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   }
 
   ({String category, double percent})? _topCategoryUsage() {
-    final budgetByCategory = <String, double>{};
-    for (final item in _settings.expenses.where(
-      (e) => e.enabled && e.amount > 0,
-    )) {
-      budgetByCategory.update(
-        item.category,
-        (v) => v + item.amount,
-        ifAbsent: () => item.amount,
-      );
-    }
+    // Same budget source as the dashboard and Despesas: settings defaults
+    // with the monthly overrides applied, so the More insight is coherent
+    // with the budget shown on the other tabs (#1220).
+    final budgetByCategory = MoreContextBuilder.budgetByCategory(
+      _settings.expenses,
+      monthlyBudgets: _monthlyBudgets,
+    );
     if (budgetByCategory.isEmpty) return null;
 
     final spentByCategory = <String, double>{};
@@ -2229,6 +2226,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
           customCategories: _customCategories,
           irsDeductionSummary: irsDeductionSummary,
           budgetSummary: summary,
+          monthlyBudgets: _monthlyBudgets,
         ),
       ),
       AppTab.planHub: ErrorBoundary(
