@@ -67,9 +67,9 @@ if [ -z "${DIFF//[[:space:]]/}" ]; then
   log "DIFF VAZIO — não se revê um PR pelo título"
   gh pr comment "$PR" --repo "$REPO" --body "## Reviewer: sem diff
 
-O worktree do branch \`$BRANCH\` não produziu diff contra \`$BASE\`. Não é
-possível rever. Marcado para intervenção humana." >/dev/null 2>&1 || true
-  [ -n "$ISSUE" ] && set_state "$ISSUE" "$L_HUMAN"
+O worktree do branch \`$BRANCH\` não produziu diff contra \`$BASE\`. Sem diff não
+há o que rever, por isso o issue volta ao implementador para reenviar o trabalho." >/dev/null 2>&1 || true
+  [ -n "$ISSUE" ] && set_state "$ISSUE" "$L_BLOCKED_IMPL"
   exit 1
 fi
 
@@ -125,22 +125,26 @@ CI_STATUS=$(gh pr checks "$PR" --repo "$REPO" 2>/dev/null | head -20 || echo "(s
 rm -f "$VERDICT_FILE"
 AGENT_SLOT=main CLAUDE_MODEL="$MODEL" \
   bash "$SCRIPT_DIR/run-agent.sh" "$PROMPT" "$PKG" "${REVIEW_TIMEOUT:-1800}" \
-  > "$LOG_DIR/review-$PR.log" 2>&1 || true
+  > "$LOG_DIR/review-$PR.log" 2>&1; AGENT_RC=$?
 
 if [ ! -f "$VERDICT_FILE" ]; then
-  if ! no_verdict_is_real_failure main; then
-    log "SEM VEREDICTO com o motor de fallback — PR fica para nova review"
+  if ! no_verdict_is_real_failure main "$AGENT_RC"; then
+    log "SEM VEREDICTO (corrida degradada ou não arrancada) — PR fica para nova review"
     gh pr comment "$PR" --repo "$REPO" --body "## Reviewer: corrida degradada, sem veredicto
 
-A subscricao estava esgotada e a corrida usou o modelo de fallback, que nao
+A corrida nao produziu veredicto por uma razao alheia ao issue: ou a subscricao
+estava esgotada e o modelo de fallback nao
 conseguiu concluir a review. O PR fica como esta e sera revisto de novo." >/dev/null 2>&1 || true
     exit 0
   fi
-  log "SEM VEREDICTO — needs-human"
-  gh pr comment "$PR" --repo "$REPO" --body "## Reviewer: sem veredicto
+  # A failed run must not consume the PR: leave it open and in review so the next
+  # cycle picks it up again (its head sha is unchanged, so pick_pr will re-select it
+  # once the reviewed-sha record is absent).
+  log "SEM VEREDICTO — PR fica aberto para nova review"
+  gh pr comment "$PR" --repo "$REPO" --body "## Reviewer: corrida sem veredicto
 
-O reviewer terminou sem escrever veredicto (ver \`$LOG_DIR/review-$PR.log\`)." >/dev/null 2>&1 || true
-  [ -n "$ISSUE" ] && set_state "$ISSUE" "$L_HUMAN"
+A corrida terminou sem escrever veredicto (ver \`$LOG_DIR/review-$PR.log\`). Falha da
+corrida, não do PR — será revisto de novo." >/dev/null 2>&1 || true
   exit 0
 fi
 
@@ -154,6 +158,8 @@ DETAIL=$(jq -r '
     (if .acceptance_criteria_met == false then "critérios de aceitação não cumpridos" else empty end),
     (if .description_matches_diff == false then "a descrição do PR não corresponde ao diff" else empty end),
     (if .has_tests == false then "não traz testes" else empty end),
+    (if .red_step_proven == false then "não prova o passo vermelho (o teste pode passar sem o fix)" else empty end),
+    (if .edge_cases_covered == false then "só testa o caminho feliz" else empty end),
     (if .fixes_root_cause == false then "trata o sintoma, não a causa raiz" else empty end),
     (if ((.junk_files // []) | length) > 0 then "lixo versionado: " + ((.junk_files // []) | join(", ")) else empty end),
     (if ((.secrets_found // []) | length) > 0 then "SEGREDOS no diff: " + ((.secrets_found // []) | join(", ")) else empty end)
@@ -207,7 +213,20 @@ $SUMMARY" >/dev/null 2>&1 || true
       log "merge recusado (mergeStateStatus=$MSTATUS, reviewer tests_pass=$TESTS_OK)"
       case "$MSTATUS" in
         DIRTY|BEHIND|BLOCKED)
-          : ;;   # genuinely the branch's problem — fall through to the block path
+          # A conflicted or stale branch is NOT bad code — the review itself may have
+          # been fine. Say so explicitly, so the implementer resolves the conflict
+          # instead of re-doing work that was already accepted. implement.sh leaves
+          # the conflict markers in the worktree for exactly this.
+          gh pr comment "$PR" --repo "$REPO" --body "## Reviewer: aprovado, mas o branch não integra (\`$MSTATUS\`)
+
+O código foi **aprovado** — o problema é só que o branch não integra em \`$BASE\`,
+por conflito ou por estar atrasado.
+
+**Não refaças o trabalho.** Na próxima passagem o \`$BASE\` é integrado neste branch
+e, se houver conflito, os marcadores ficam na árvore para resolveres por intenção:
+percebe o que cada lado queria e preserva as duas intenções. Depois corre a suite
+completa e reenvia." >/dev/null 2>&1 || true
+          ;;
         *)
           if [ "$TESTS_OK" = "true" ] && [ "$BASE" = "$BASE_BRANCH" ]; then
             log "checks instáveis mas o reviewer correu a suite e aprovou — a concluir o merge"
@@ -280,10 +299,14 @@ $SUMMARY$DETAIL$CHANGES"
     ;;
 
   *)
-    gh pr comment "$PR" --repo "$REPO" --body "## Reviewer: needs-human
+    # Unrecognised verdict = the contract was not followed. Treat as a code block so
+    # the implementer gets another pass, rather than parking the issue.
+    gh pr comment "$PR" --repo "$REPO" --body "## Reviewer: resultado não reconhecido (\`$VERDICT\`)
 
-$SUMMARY$DETAIL" >/dev/null 2>&1 || true
-    [ -n "$ISSUE" ] && set_state "$ISSUE" "$L_HUMAN"
+$SUMMARY$DETAIL
+
+O veredicto não usou um dos resultados válidos; devolvido ao implementador." >/dev/null 2>&1 || true
+    [ -n "$ISSUE" ] && set_state "$ISSUE" "$L_BLOCKED_IMPL"
     ;;
 esac
 
