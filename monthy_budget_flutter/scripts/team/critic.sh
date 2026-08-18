@@ -225,14 +225,6 @@ run_dimension() {
 
   mkdir -p "$scratch"
 
-  # Mark coverage HERE, where the dimension really starts — not where the sweep was
-  # launched. The orchestrator used to do it, and it cannot know: this script aborts
-  # at the boot gate before any dimension exists, so eight dimensions were recorded as
-  # covered without running, twice, and stayed retired because coverage only resets on
-  # a closing loop.
-  mkdir -p "$(dirname "$COVERED_DIMS_FILE")" 2>/dev/null || true
-  grep -qxF "$dim" "$COVERED_DIMS_FILE" 2>/dev/null || echo "$dim" >> "$COVERED_DIMS_FILE"
-
   # STALE: delete before the run. If the agent dies without writing, an
   # inherited verdict from a previous run would be read as this run's result.
   rm -f "$verdict"
@@ -317,6 +309,25 @@ run_dimension() {
   if [ -f "$verdict" ]; then
     local n; n=$(jq '(.findings // []) | length' "$verdict" 2>/dev/null || echo "?")
     log "  [$dim] rc=$rc findings=$n"
+
+    # COVERAGE IS MARKED HERE — on a verdict, not on a launch.
+    #
+    # This has now been wrong twice, in the same way, and the second time was my fix
+    # for the first. The orchestrator marked dimensions when it launched critic.sh,
+    # which the boot gate could abort before any dimension existed. Moving the mark
+    # into run_dimension "where the dimension really starts" fixed that and kept the
+    # flaw: with the subscription exhausted, eight dimensions started, printed
+    # "Execution error" within seconds, wrote no verdict — and every one was recorded
+    # as covered. Coverage only resets when a loop closes, so all eight were retired
+    # while producing nothing, and the sweep would not have retried them when quota
+    # came back.
+    #
+    # Starting is not knowing either. A verdict is the first artefact that proves the
+    # dimension actually examined the app, so that is what earns the mark. A dimension
+    # that legitimately finds nothing still writes a verdict with an empty list, so
+    # "clean" and "never ran" stay distinguishable — which is the whole point.
+    mkdir -p "$(dirname "$COVERED_DIMS_FILE")" 2>/dev/null || true
+    grep -qxF "$dim" "$COVERED_DIMS_FILE" 2>/dev/null || echo "$dim" >> "$COVERED_DIMS_FILE"
 
     # FILE IMMEDIATELY, per dimension.
     #
