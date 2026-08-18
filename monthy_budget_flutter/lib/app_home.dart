@@ -164,7 +164,8 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   Map<String, List<ActualExpense>> get _actualExpenseHistory =>
       ref.read(actualExpenseHistoryProvider);
   Map<String, double> get _monthlyBudgets => ref.read(monthlyBudgetsProvider);
-  NotificationPreferences get _notificationPrefs => ref.read(notificationPrefsProvider);
+  NotificationPreferences get _notificationPrefs =>
+      ref.read(notificationPrefsProvider);
   List<SavingsGoal> get _savingsGoals => ref.read(savingsGoalsProvider);
   List<Product> get _products => ref.read(productsProvider);
   GroceryData get _groceryData => ref.read(groceryDataProvider);
@@ -173,7 +174,8 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   String get _openAiApiKey => ref.read(apiKeyProvider);
   CoachInsight? get _latestCoachInsight => ref.read(latestCoachInsightProvider);
   PurchaseHistory get _purchaseHistory => ref.read(purchaseHistoryProvider);
-  LocalDashboardConfig get _dashboardConfig => ref.read(dashboardConfigProvider);
+  LocalDashboardConfig get _dashboardConfig =>
+      ref.read(dashboardConfigProvider);
   Map<String, List<ExpenseSnapshot>> get _expenseHistory =>
       ref.read(expenseHistoryProvider);
   bool _loaded = false;
@@ -323,13 +325,19 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
     setState(() {
       ref.read(settingsProvider.notifier).set(settings);
       ref.read(favoritesProvider.notifier).set(results[0] as List<String>);
-      ref.read(purchaseHistoryProvider.notifier).set(results[1] as PurchaseHistory);
+      ref
+          .read(purchaseHistoryProvider.notifier)
+          .set(results[1] as PurchaseHistory);
       ref.read(apiKeyProvider.notifier).set(results[2] as String);
       ref.read(productsProvider.notifier).set(results[3] as List<Product>);
       ref.read(groceryDataProvider.notifier).set(results[4] as GroceryData);
-      ref.read(dashboardConfigProvider.notifier).set(results[5] as LocalDashboardConfig);
+      ref
+          .read(dashboardConfigProvider.notifier)
+          .set(results[5] as LocalDashboardConfig);
       ref.read(onboardingProvider.notifier).set(results[6] as OnboardingState);
-      ref.read(subscriptionProvider.notifier).set(results[7] as SubscriptionState);
+      ref
+          .read(subscriptionProvider.notifier)
+          .set(results[7] as SubscriptionState);
       _loaded = true;
     });
     _lastRefresh = DateTime.now();
@@ -368,7 +376,9 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
       final insights = await _aiCoachService.loadInsights(widget.householdId);
       if (!mounted) return;
       setState(() {
-        ref.read(latestCoachInsightProvider.notifier).set(insights.isEmpty ? null : insights.first);
+        ref
+            .read(latestCoachInsightProvider.notifier)
+            .set(insights.isEmpty ? null : insights.first);
       });
     } catch (_) {
       // Service already swallows network errors; this catch is belt &
@@ -607,9 +617,9 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
       _currentMonthKey,
     );
     if (mounted) {
-      ref
-          .read(monthlyBudgetsProvider.notifier)
-          .set({for (final b in budgets) b.category: b.amount});
+      ref.read(monthlyBudgetsProvider.notifier).set({
+        for (final b in budgets) b.category: b.amount,
+      });
     }
   }
 
@@ -644,16 +654,13 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   }
 
   ({String category, double percent})? _topCategoryUsage() {
-    final budgetByCategory = <String, double>{};
-    for (final item in _settings.expenses.where(
-      (e) => e.enabled && e.amount > 0,
-    )) {
-      budgetByCategory.update(
-        item.category,
-        (v) => v + item.amount,
-        ifAbsent: () => item.amount,
-      );
-    }
+    // Same budget source as the dashboard and Despesas: settings defaults
+    // with the monthly overrides applied, so the More insight is coherent
+    // with the budget shown on the other tabs (#1220).
+    final budgetByCategory = MoreContextBuilder.budgetByCategory(
+      _settings.expenses,
+      monthlyBudgets: _monthlyBudgets,
+    );
     if (budgetByCategory.isEmpty) return null;
 
     final spentByCategory = <String, double>{};
@@ -1220,7 +1227,10 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   }
 
   void _openConfidenceCenter() {
-    final alerts = buildAlerts(statuses: _dataHealthService.statuses);
+    final alerts = buildAlerts(
+      statuses: _dataHealthService.statuses,
+      l10n: S.of(context),
+    );
     _pushScreen(
       'confidence_center',
       (_) => ConfidenceCenterScreen(
@@ -1235,7 +1245,8 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
       key: key,
       currentState: _onboardingState,
       mounted: mounted,
-      applyState: (updated) => ref.read(onboardingProvider.notifier).set(updated),
+      applyState: (updated) =>
+          ref.read(onboardingProvider.notifier).set(updated),
       persistState: _localConfigService.saveOnboardingState,
     );
   }
@@ -1670,7 +1681,10 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   }
 
   Future<void> _addActualExpense(ActualExpense expense) async {
-    ref.read(actualExpensesProvider.notifier).set([expense, ..._actualExpenses]);
+    ref.read(actualExpensesProvider.notifier).set([
+      expense,
+      ..._actualExpenses,
+    ]);
     _refreshNotificationSchedules();
     LogService.breadcrumb(
       'Added expense',
@@ -1702,10 +1716,13 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   }
 
   Future<void> _addSavingsGoalFromCommand(SavingsGoal goal) async {
-    ref.read(savingsGoalsProvider.notifier).set(
-      [..._savingsGoals, goal]
-        ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase())),
-    );
+    ref
+        .read(savingsGoalsProvider.notifier)
+        .set(
+          [..._savingsGoals, goal]..sort(
+            (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+          ),
+        );
     LogService.breadcrumb(
       'Created savings goal',
       category: 'savings',
@@ -1735,14 +1752,15 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   }
 
   Future<void> _addRecurringExpenseFromCommand(RecurringExpense expense) async {
-    ref.read(recurringExpensesProvider.notifier).set(
-      [..._recurringExpenses, expense]
-        ..sort((a, b) {
-          final dayA = a.dayOfMonth ?? 99;
-          final dayB = b.dayOfMonth ?? 99;
-          return dayA.compareTo(dayB);
-        }),
-    );
+    ref
+        .read(recurringExpensesProvider.notifier)
+        .set(
+          [..._recurringExpenses, expense]..sort((a, b) {
+            final dayA = a.dayOfMonth ?? 99;
+            final dayB = b.dayOfMonth ?? 99;
+            return dayA.compareTo(dayB);
+          }),
+        );
     _refreshNotificationSchedules();
     try {
       await _recurringExpenseService.save(expense, widget.householdId);
@@ -1869,11 +1887,13 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
         widget.householdId,
       );
       if (!mounted) return false;
-      ref.read(savingsGoalsProvider.notifier).set(
-        _savingsGoals
-            .map((g) => g.id == updatedGoal.id ? updatedGoal : g)
-            .toList(),
-      );
+      ref
+          .read(savingsGoalsProvider.notifier)
+          .set(
+            _savingsGoals
+                .map((g) => g.id == updatedGoal.id ? updatedGoal : g)
+                .toList(),
+          );
       return true;
     } catch (e) {
       LogService.error(
@@ -1912,9 +1932,9 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
             .firstWhere((e) => e != null, orElse: () => null);
     if (expense == null) return false;
     final previousExpenses = List<ActualExpense>.from(_actualExpenses);
-    ref.read(actualExpensesProvider.notifier).set(
-      _actualExpenses.where((e) => e.id != expense.id).toList(),
-    );
+    ref
+        .read(actualExpensesProvider.notifier)
+        .set(_actualExpenses.where((e) => e.id != expense.id).toList());
     _refreshNotificationSchedules();
     try {
       await _actualExpenseService.delete(expense.id);
@@ -1944,18 +1964,20 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
   }
 
   Future<void> _updateActualExpense(ActualExpense expense) async {
-    ref.read(actualExpensesProvider.notifier).set(
-      _actualExpenses.map((e) => e.id == expense.id ? expense : e).toList(),
-    );
+    ref
+        .read(actualExpensesProvider.notifier)
+        .set(
+          _actualExpenses.map((e) => e.id == expense.id ? expense : e).toList(),
+        );
     _refreshNotificationSchedules();
     await _actualExpenseService.update(expense);
   }
 
   Future<void> _deleteActualExpense(String id) async {
     final deleted = _actualExpenses.where((e) => e.id == id).firstOrNull;
-    ref.read(actualExpensesProvider.notifier).set(
-      _actualExpenses.where((e) => e.id != id).toList(),
-    );
+    ref
+        .read(actualExpensesProvider.notifier)
+        .set(_actualExpenses.where((e) => e.id != id).toList());
     _refreshNotificationSchedules();
     await _actualExpenseService.delete(id);
     if (deleted != null) {
@@ -2204,6 +2226,7 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
           customCategories: _customCategories,
           irsDeductionSummary: irsDeductionSummary,
           budgetSummary: summary,
+          monthlyBudgets: _monthlyBudgets,
         ),
       ),
       AppTab.planHub: ErrorBoundary(
@@ -2247,7 +2270,8 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
           showMealsTour: !_onboardingState.isTourDone('meals'),
           onMealsTourComplete: () => _markTourDone('meals'),
           canAccessMeals: _subscription.hasPremiumAccess,
-          onUpgrade: () => _openPaywall(blockedFeature: PremiumFeature.mealPlanner),
+          onUpgrade: () =>
+              _openPaywall(blockedFeature: PremiumFeature.mealPlanner),
         ),
       ),
       AppTab.more: ErrorBoundary(
@@ -2296,8 +2320,10 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
               subscription: _subscription,
               householdMemberCount:
                   _settings.mealSettings.householdMembers.length,
-              dataHealthAlertCount:
-                  buildAlerts(statuses: _dataHealthService.statuses).length,
+              dataHealthAlertCount: buildAlerts(
+                statuses: _dataHealthService.statuses,
+                l10n: l10n,
+              ).length,
               taxSimulatorEnabled: _settings.country == Country.pt,
             );
           },
@@ -2342,7 +2368,25 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
                   message: l10n.offlineBannerMessage,
                   pendingCount: pendingSyncCount,
                 ),
-              Expanded(child: content),
+              Expanded(
+                // The dashboard tab's FAB below floats over `content` in
+                // THIS same Scaffold (#1202), so its footprint has to be
+                // reserved right here — against the same bottom edge the
+                // FAB's own position is computed from. `content` is
+                // DashboardContainer's Column, which wraps DashboardScreen
+                // together with sibling banners/ad; a clearance added
+                // deeper down (inside the screen) anchors to the screen's
+                // own bottom edge, which is not the FAB's reference frame,
+                // and leaves the bottom sibling (AdBannerWidget) in the
+                // FAB's band. Scoped to the dashboard tab because that's
+                // the only tab with this FAB. `FabClearance` is the shared
+                // production widget for this reservation (also exercised by
+                // the widget test for #1202).
+                child: FabClearance(
+                  reserve: _currentTab == AppTab.dashboard,
+                  child: content,
+                ),
+              ),
             ],
           ),
           floatingActionButton: _currentTab == AppTab.dashboard

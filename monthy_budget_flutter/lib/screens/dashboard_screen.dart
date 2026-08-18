@@ -181,7 +181,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final hasData = summary.totalGross > 0;
-    final isPositive = summary.netLiquidity >= 0;
+
+    // Real expenses of the month (Expense Tracker), computed once so the
+    // Hero card and the Budget vs Actual block can never disagree about
+    // "gasto do mês" — see #1217. summary.totalExpenses/netLiquidity are
+    // BUDGETED figures and must not be used for either.
+    final categoryBudgetSummaries = _buildCategoryBudgetSummaries();
+    final totalActualExpenses =
+        categoryBudgetSummaries.fold(0.0, (s, e) => s + e.actual);
+    final netLiquidity = summary.totalNetWithMeal - totalActualExpenses;
+    final isPositive = netLiquidity >= 0;
 
     // Stress Index — calculate and persist if changed.
     final stressResult = calculateStressIndex(
@@ -215,6 +224,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: RefreshIndicator(
         color: AppColors.ink(context),
         onRefresh: () async => onSnapshotExpenses(),
+        // The dashboard tab's FAB (QuickAddLauncher) is injected by the
+        // parent Scaffold in app_home.dart, outside this widget's own reach,
+        // and this screen sits inside DashboardContainer's own Column
+        // (TrialBanner / CriticalAlertBanner above, AdBannerWidget below).
+        // Reserving the FAB's footprint HERE would anchor it to this
+        // screen's bottom edge, which only coincides with the FAB's
+        // reference edge (the outer Scaffold's body bottom) when the
+        // container's siblings all render at zero height — and a bottom
+        // sibling (the ad banner) would itself fall in the FAB's band. The
+        // clearance is instead reserved once, in app_home.dart, around the
+        // same Expanded(child: content) the FAB itself floats over — see
+        // CalmScaffold.fabBottomClearance's doc-comment. Do not re-add
+        // local bottom padding here.
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -222,14 +244,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
               _buildCalmHeader(context, l10n),
               const SizedBox(height: 24),
               if (hasData && dashboardConfig.showHeroCard)
-                _buildHero(context, isPositive, l10n)
+                _buildHero(context, isPositive, l10n, totalActualExpenses)
               else if (!hasData)
                 _buildEmptyState(context, l10n),
               const SizedBox(height: 24),
               if (hasData) ...[
                 for (final cardId in dashboardConfig.cardOrder)
                   if (cardId != 'heroCard')
-                    ..._buildCardById(cardId, context, stressResult, monthReview, l10n),
+                    ..._buildCardById(cardId, context, stressResult,
+                        monthReview, l10n, categoryBudgetSummaries),
                 const SizedBox(height: 16),
               ],
             ],
@@ -254,20 +277,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
       eyebrow: eyebrow,
       title: monthLabel,
       actions: [
-        Tooltip(
-          message: l10n.notificationSettings,
-          child: IconButton(
-            icon: Badge(
-              isLabelVisible: false,
-              child: Icon(
-                Icons.notifications_outlined,
-                size: 24,
-                color: AppColors.ink70(context),
-              ),
+        IconButton(
+          tooltip: l10n.notificationSettings,
+          icon: Badge(
+            isLabelVisible: false,
+            child: Icon(
+              Icons.notifications_outlined,
+              size: 24,
+              color: AppColors.ink70(context),
             ),
-            onPressed: widget.onOpenNotificationSettings ??
-                () => _openNotificationSettings(context),
           ),
+          onPressed: widget.onOpenNotificationSettings ??
+              () => _openNotificationSettings(context),
         ),
         Tooltip(
           message: l10n.dashboardOpenSettings,
@@ -319,13 +340,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // ───────────────────────────────── Hero ──────────────────────────────────
 
-  Widget _buildHero(BuildContext context, bool isPositive, S l10n) {
+  Widget _buildHero(BuildContext context, bool isPositive, S l10n,
+      double totalActualExpenses) {
     final now = DateTime.now();
     final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
     final daysPassed = now.day;
     final daysLeft = daysInMonth - daysPassed;
     final totalBudget = summary.totalNetWithMeal;
-    final spent = summary.totalExpenses;
+    // Real expenses lançadas no Expense Tracker — NOT summary.totalExpenses,
+    // which is the budgeted total (see #1217). `remaining` below therefore
+    // equals the real Liquidez Mensal, matching the Budget vs Actual block.
+    final spent = totalActualExpenses;
     final remaining = totalBudget - spent;
     final isOverBudget = remaining < 0;
     final onTrack = totalBudget <= 0 ||
@@ -337,7 +362,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Semantics(
       key: DashboardTourKeys.heroCard,
       label: l10n.dashboardHeroLabel(
-        formatCurrency(summary.netLiquidity),
+        formatCurrency(remaining),
         isPositive
             ? l10n.dashboardPositiveBalance
             : l10n.dashboardNegativeBalance,
@@ -347,7 +372,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         children: [
           CalmHero(
             eyebrow: l10n.dashboardMonthlyLiquidity.toUpperCase(),
-            amount: formatCurrency(summary.netLiquidity),
+            amount: formatCurrency(remaining),
             subtitle: l10n.dashboardFinancialSummary,
             size: 64,
           ),
@@ -458,6 +483,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     StressIndexResult stressResult,
     MonthReviewResult? monthReview,
     S l10n,
+    List<CategoryBudgetSummary> categoryBudgetSummaries,
   ) {
     if (!dashboardConfig.isCardVisible(cardId)) return const [];
     switch (cardId) {
@@ -565,7 +591,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ];
       case 'budgetVsActual':
         return [
-          _buildBudgetVsActualCard(context),
+          _buildBudgetVsActualCard(context, categoryBudgetSummaries),
           if (onViewTrends != null) ...[
             const SizedBox(height: 16),
             _buildViewTrendsButton(context, l10n),
@@ -761,6 +787,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
       categoryTotals[e.category] =
           (categoryTotals[e.category] ?? 0) + e.amount;
     }
+    // Merge food purchase history into 'alimentacao', same as
+    // _buildCategoryBudgetSummaries() does for the Orçamento vs Real card —
+    // otherwise the two blocks show different totals for the same category
+    // (#1218).
+    final now = DateTime.now();
+    CategoryBudgetSummary.mergeFoodPurchases(
+      categoryTotals,
+      purchaseHistory.spentInMonth(now.year, now.month),
+    );
     final sorted = categoryTotals.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
     final top = sorted.take(5).toList();
@@ -901,10 +936,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildSavingsRateCard(BuildContext context, S l10n) {
     final currentRate = summary.savingsRate;
+    // savingsRate is a fraction (0..1); scale ×100 once for display and for
+    // the point-based colour thresholds — comparing the raw fraction against
+    // 20/10 would make every valid rate look <10% (always red).
+    final ratePct = currentRate * 100;
     final saved = summary.netLiquidity > 0 ? summary.netLiquidity : 0.0;
-    final rateColor = currentRate >= 20
+    final rateColor = ratePct >= 20
         ? AppColors.ok(context)
-        : currentRate >= 10
+        : ratePct >= 10
             ? AppColors.warn(context)
             : AppColors.bad(context);
 
@@ -937,7 +976,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     l10n.dashboardSavingsRateTitle.toUpperCase()),
               ),
               Text(
-                '${currentRate.toStringAsFixed(1)}%',
+                formatPercentage(currentRate),
                 style: CalmText.amount(context, size: 18)
                     .copyWith(color: rateColor),
               ),
@@ -993,13 +1032,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildCoachInsightCard(BuildContext context, S l10n) {
     String insight;
     IconData insightIcon;
-    if (summary.savingsRate < 10 && summary.totalExpenses > 0) {
+    // savingsRate is a fraction; thresholds are in percentage points.
+    if (summary.savingsRate < 0.10 && summary.totalExpenses > 0) {
       insight = l10n.dashboardCoachLowSavings;
       insightIcon = Icons.warning_amber_outlined;
     } else if (summary.totalExpenses > summary.totalNetWithMeal * 0.9) {
       insight = l10n.dashboardCoachHighSpending;
       insightIcon = Icons.trending_down;
-    } else if (summary.savingsRate >= 20) {
+    } else if (summary.savingsRate >= 0.20) {
       insight = l10n.dashboardCoachGoodSavings;
       insightIcon = Icons.emoji_events_outlined;
     } else {
@@ -1258,17 +1298,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // ───────────────────────── Budget vs Actual ──────────────────────────────
 
-  Widget _buildBudgetVsActualCard(BuildContext context) {
-    final l10n = S.of(context);
+  /// Real expenses of the month per category (actualExpenses lançadas +
+  /// food purchases merged into 'alimentacao'). Computed once per build()
+  /// and shared by the Hero card and the Budget vs Actual block so "gasto
+  /// do mês" cannot diverge between them again — see #1217.
+  List<CategoryBudgetSummary> _buildCategoryBudgetSummaries() {
     final now = DateTime.now();
     final foodSpent = purchaseHistory.spentInMonth(now.year, now.month);
-    final summaries = CategoryBudgetSummary.buildSummaries(
+    return CategoryBudgetSummary.buildSummaries(
       settings.expenses,
       actualExpenses,
       monthlyBudgets: monthlyBudgets,
       foodPurchaseSpent: foodSpent,
       now: now,
     );
+  }
+
+  Widget _buildBudgetVsActualCard(
+      BuildContext context, List<CategoryBudgetSummary> summaries) {
+    final l10n = S.of(context);
     final totalBudgeted = summaries.fold(0.0, (s, e) => s + e.budgeted);
     final totalActual = summaries.fold(0.0, (s, e) => s + e.actual);
 

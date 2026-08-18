@@ -1,4 +1,5 @@
 import '../l10n/generated/app_localizations.dart';
+import '../models/app_settings.dart';
 import '../models/budget_summary.dart';
 import '../screens/more_screen.dart' show MoreObservation;
 import '../widgets/calm/calm_observation_card.dart';
@@ -55,6 +56,37 @@ class MoreContextBuilder {
   /// before it dwarfs the rest of the hero card. Anything longer is
   /// truncated with an ellipsis.
   static const int liveQuoteMaxChars = 220;
+
+  /// Budget per category from the fixed monthly expenses, with the monthly
+  /// overrides (`monthlyBudgets`) applied on top.
+  ///
+  /// Mirrors the override semantics of
+  /// `CategoryBudgetSummary.buildSummaries`: the override *replaces* the
+  /// category's default amount, and a category absent from the expense list
+  /// is never introduced by an override. Extracted from
+  /// `AppHomeState._topCategoryUsage` so the More tab's "x% above budget"
+  /// insight uses the same budget number as the dashboard and Despesas
+  /// (#1220).
+  static Map<String, double> budgetByCategory(
+    List<ExpenseItem> expenses, {
+    Map<String, double> monthlyBudgets = const {},
+  }) {
+    final budgetByCategory = <String, double>{};
+    for (final item in expenses.where((e) => e.enabled && e.amount > 0)) {
+      budgetByCategory.update(
+        item.category,
+        (v) => v + item.amount,
+        ifAbsent: () => item.amount,
+      );
+    }
+    for (final entry in budgetByCategory.entries) {
+      final override = monthlyBudgets[entry.key];
+      if (override != null) {
+        budgetByCategory[entry.key] = override;
+      }
+    }
+    return budgetByCategory;
+  }
 
   static MoreContext build({
     required BudgetSummary summary,

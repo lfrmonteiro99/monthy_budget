@@ -4589,6 +4589,12 @@ abstract class S {
   /// **'Introduza um valor válido'**
   String get addExpenseInvalidAmount;
 
+  /// Missing category error
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione uma categoria'**
+  String get addExpenseCategoryRequired;
+
   /// FAB tooltip
   ///
   /// In pt, this message translates to:
@@ -7601,6 +7607,162 @@ abstract class S {
   /// **'{count, plural, =1{1 alerta crítico — toque para ver} other{{count} alertas críticos — toque para ver}}'**
   String criticalAlertBannerMessage(int count);
 
+  /// No description provided for @syncDomainSettings.
+  ///
+  /// In pt, this message translates to:
+  /// **'Definições'**
+  String get syncDomainSettings;
+
+  /// No description provided for @syncDomainShopping.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lista de compras'**
+  String get syncDomainShopping;
+
+  /// No description provided for @syncDomainMealPlan.
+  ///
+  /// In pt, this message translates to:
+  /// **'Plano de refeições'**
+  String get syncDomainMealPlan;
+
+  /// No description provided for @syncDomainExpenses.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas'**
+  String get syncDomainExpenses;
+
+  /// No description provided for @syncDomainPurchaseHistory.
+  ///
+  /// In pt, this message translates to:
+  /// **'Histórico de compras'**
+  String get syncDomainPurchaseHistory;
+
+  /// No description provided for @syncDomainSavingsGoals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Metas de poupança'**
+  String get syncDomainSavingsGoals;
+
+  /// No description provided for @syncDomainRecurringExpenses.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas recorrentes'**
+  String get syncDomainRecurringExpenses;
+
+  /// No description provided for @syncFailedToSyncTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'A sincronização de {domain} falhou'**
+  String syncFailedToSyncTitle(String domain);
+
+  /// No description provided for @syncErrorFallbackBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ocorreu um erro durante a sincronização.'**
+  String get syncErrorFallbackBody;
+
+  /// No description provided for @syncErrorAction.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tente atualizar ou verifique a sua ligação.'**
+  String get syncErrorAction;
+
+  /// No description provided for @syncStaleTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Os dados de {domain} podem estar desatualizados'**
+  String syncStaleTitle(String domain);
+
+  /// No description provided for @syncLastSyncedBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'Última sincronização {timeAgo}.'**
+  String syncLastSyncedBody(String timeAgo);
+
+  /// No description provided for @syncNeverSyncedBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nunca sincronizado neste dispositivo.'**
+  String get syncNeverSyncedBody;
+
+  /// No description provided for @syncOpenSectionAction.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abra a secção da app para atualizar.'**
+  String get syncOpenSectionAction;
+
+  /// No description provided for @syncRecurringNotPopulatedTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Despesas recorrentes não aplicadas este mês'**
+  String get syncRecurringNotPopulatedTitle;
+
+  /// No description provided for @syncRecurringNotPopulatedBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'As suas despesas recorrentes ainda não foram aplicadas a este mês.'**
+  String get syncRecurringNotPopulatedBody;
+
+  /// No description provided for @syncRecurringNotPopulatedAction.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abra o Rastreador de Despesas para gerar.'**
+  String get syncRecurringNotPopulatedAction;
+
+  /// No description provided for @syncMealPlanOldTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'O plano de refeições pode estar desatualizado'**
+  String get syncMealPlanOldTitle;
+
+  /// No description provided for @syncMealPlanOldBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{O seu plano de refeições foi gerado há 1 dia.} other{O seu plano de refeições foi gerado há {count} dias.}}'**
+  String syncMealPlanOldBody(int count);
+
+  /// No description provided for @syncMealPlanOldAction.
+  ///
+  /// In pt, this message translates to:
+  /// **'Considere gerar novamente o seu plano de refeições.'**
+  String get syncMealPlanOldAction;
+
+  /// No description provided for @syncFoodSpendUpTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Gasto com comida {pct}% acima do mês passado'**
+  String syncFoodSpendUpTitle(String pct);
+
+  /// No description provided for @syncFoodSpendUpBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'O gasto com comida do mês atual está significativamente acima do mês anterior.'**
+  String get syncFoodSpendUpBody;
+
+  /// No description provided for @syncFoodSpendUpAction.
+  ///
+  /// In pt, this message translates to:
+  /// **'Reveja os seus gastos com mercearia e refeições.'**
+  String get syncFoodSpendUpAction;
+
+  /// No description provided for @syncTimeAgoDays.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{há 1 dia} other{há {count} dias}}'**
+  String syncTimeAgoDays(int count);
+
+  /// No description provided for @syncTimeAgoHours.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{há 1 hora} other{há {count} horas}}'**
+  String syncTimeAgoHours(int count);
+
+  /// No description provided for @syncTimeAgoMinutes.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{há 1 minuto} other{há {count} minutos}}'**
+  String syncTimeAgoMinutes(int count);
+
   /// No description provided for @pantryPickerTitle.
   ///
   /// In pt, this message translates to:
@@ -10382,13 +10544,13 @@ abstract class S {
   /// No description provided for @yearlySummaryNetSavings.
   ///
   /// In pt, this message translates to:
-  /// **'Poupanca Liquida'**
+  /// **'Poupança Líquida'**
   String get yearlySummaryNetSavings;
 
   /// No description provided for @yearlySummarySavingsRate.
   ///
   /// In pt, this message translates to:
-  /// **'Taxa de poupanca: {rate}%'**
+  /// **'Taxa de poupança: {rate}%'**
   String yearlySummarySavingsRate(String rate);
 
   /// No description provided for @yearlySummaryHighlights.
@@ -10400,19 +10562,19 @@ abstract class S {
   /// No description provided for @yearlySummaryBestMonth.
   ///
   /// In pt, this message translates to:
-  /// **'Melhor mes ({month})'**
+  /// **'Melhor mês ({month})'**
   String yearlySummaryBestMonth(String month);
 
   /// No description provided for @yearlySummaryWorstMonth.
   ///
   /// In pt, this message translates to:
-  /// **'Pior mes ({month})'**
+  /// **'Pior mês ({month})'**
   String yearlySummaryWorstMonth(String month);
 
   /// No description provided for @yearlySummaryCategoryBreakdown.
   ///
   /// In pt, this message translates to:
-  /// **'Distribuicao por Categoria'**
+  /// **'Distribuição por Categoria'**
   String get yearlySummaryCategoryBreakdown;
 
   /// No description provided for @mealSectionHousehold.

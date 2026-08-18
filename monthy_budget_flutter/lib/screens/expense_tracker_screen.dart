@@ -48,6 +48,11 @@ class ExpenseTrackerScreen extends StatefulWidget {
   final YearlyDeductionSummary? irsDeductionSummary;
   final BudgetSummary? budgetSummary;
 
+  /// Monthly per-category budget overrides (monthly_budgets). The dashboard
+  /// already applies them; Despesas must use the same source so a category
+  /// shows one budget everywhere (#1220).
+  final Map<String, double> monthlyBudgets;
+
   const ExpenseTrackerScreen({
     super.key,
     required this.settings,
@@ -64,6 +69,7 @@ class ExpenseTrackerScreen extends StatefulWidget {
     this.customCategories = const [],
     this.irsDeductionSummary,
     this.budgetSummary,
+    this.monthlyBudgets = const {},
   });
 
   @override
@@ -328,6 +334,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
     final summaries = CategoryBudgetSummary.buildSummaries(
       widget.settings.expenses,
       _expenses,
+      monthlyBudgets: widget.monthlyBudgets,
     );
     final label = _monthLabel(l10n);
     String catLabel(String name) => localizedExpenseCategory(name, l10n);
@@ -548,6 +555,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
     final summaries = CategoryBudgetSummary.buildSummaries(
       widget.settings.expenses,
       _expenses,
+      monthlyBudgets: widget.monthlyBudgets,
     );
     final totalBudgeted = summaries.fold(0.0, (s, e) => s + e.budgeted);
     final totalActual = summaries.fold(0.0, (s, e) => s + e.actual);
@@ -631,6 +639,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
               children: [
                 IconButton(
                   onPressed: _loading ? null : () => _navigateMonth(-1),
+                  tooltip: l10n.mealPlannerPreviousMonth,
                   icon: Icon(
                     Icons.chevron_left,
                     color: _loading
@@ -648,6 +657,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                 ),
                 IconButton(
                   onPressed: _loading ? null : () => _navigateMonth(1),
+                  tooltip: l10n.mealPlannerNextMonth,
                   icon: Icon(
                     Icons.chevron_right,
                     color: _loading
@@ -819,7 +829,11 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                   )
                 : _expenses.isEmpty
                 ? _buildEmptyState(l10n)
-                : CustomScrollView(
+                : Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: CalmScaffold.fabBottomClearance,
+                    ),
+                    child: CustomScrollView(
                     key: ExpenseTrackerTourKeys.categoryList,
                     slivers: [
                       // "ALERTAS" card — over-budget categories
@@ -871,7 +885,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                         ),
                       ),
                       SliverPadding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 80),
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
                         sliver: SliverList.builder(
                           itemCount: summaries.length,
                           itemBuilder: (_, i) => CategorySection(
@@ -899,6 +913,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                         ),
                       ),
                     ],
+                    ),
                   ),
           ),
         ],
