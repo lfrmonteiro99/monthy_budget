@@ -121,6 +121,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool _tourShown = false;
   TutorialCoachMark? _activeTour;
 
+  // #1236: monthKey for which onSnapshotExpenses() has already been
+  // requested. Without this, the postFrameCallback below re-armed on every
+  // single build() — including builds triggered by its own async result
+  // landing in a provider — producing a tight render+I/O loop that pinned
+  // the main thread near 100% while idle. Only call it again when the
+  // relevant month actually changes, mirroring the stress-history guard.
+  String? _snapshottedMonthKey;
+
   // Convenience accessors so helper methods don't need widget. prefix everywhere.
   AppSettings get settings => widget.settings;
   BudgetSummary get summary => widget.summary;
@@ -216,7 +224,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ..[monthKey] = stressResult.score;
           onSaveSettings(settings.copyWith(stressHistory: updated));
         }
-        onSnapshotExpenses();
+        // #1236: only request a snapshot once per distinct monthKey, not
+        // once per build/frame — see _snapshottedMonthKey doc-comment.
+        if (_snapshottedMonthKey != monthKey) {
+          _snapshottedMonthKey = monthKey;
+          onSnapshotExpenses();
+        }
       });
     }
 
