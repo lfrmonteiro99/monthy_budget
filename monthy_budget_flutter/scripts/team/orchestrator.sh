@@ -498,8 +498,28 @@ maybe_promote() {
   local main_after
   main_after=$(git -C "$TEAM_ROOT" rev-parse "origin/$PROD_BRANCH" 2>/dev/null || echo "")
   if [ -n "$main_after" ] && [ "$main_after" != "$main_before" ]; then
-    rm -f "$COVERED_DIMS_FILE"
-    log "$PROD_BRANCH avançou para ${main_after:0:8} — cobertura reposta, o critic revarre quando a fila permitir"
+    # ...but ONLY when the queue was drained, i.e. this is a loop closing. A CADENCE
+    # promotion mid-drain also moves main, and resetting there is what stalled
+    # discovery all day.
+    #
+    # Measured over ~13 hours: 11 promotions moved main, coverage was reset 3 times,
+    # and the critic swept ONCE while being deferred 35 times on "backlog > 8". Every
+    # cadence promotion re-opened all nine dimensions, so the moment the queue fell to
+    # the threshold a full sweep would refill it — and the loop counter needs the queue
+    # at ZERO. Reset-on-any-move plus a backlog gate do not converge: they oscillate,
+    # and the goal of two completed loops becomes unreachable by construction.
+    #
+    # Tying the reset to a drained queue gives the rhythm the pipeline was designed
+    # for: sweep every dimension, drain what it found to zero, close the loop, ship
+    # the batch, then re-open discovery against the main that batch produced. New
+    # production code still gets re-tested — just once per loop instead of once per
+    # promotion.
+    if [ "$reason" = "backlog vazio" ]; then
+      rm -f "$COVERED_DIMS_FILE"
+      log "$PROD_BRANCH avançou para ${main_after:0:8} — cobertura reposta (loop fechado)"
+    else
+      log "$PROD_BRANCH avançou para ${main_after:0:8} — cobertura mantida (promoção de cadência, fila ainda por drenar)"
+    fi
   fi
 }
 
