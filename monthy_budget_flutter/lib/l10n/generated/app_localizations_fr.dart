@@ -2424,10 +2424,10 @@ class SFr extends S {
       'Aucune dépense ce mois.\nAppuyez sur + pour ajouter.';
 
   @override
-  String get expenseTrackerMovementEyebrow => 'Activite';
+  String get expenseTrackerMovementEyebrow => 'Activité';
 
   @override
-  String get expenseTrackerExpensesTitle => 'Depenses';
+  String get expenseTrackerExpensesTitle => 'Dépenses';
 
   @override
   String get expenseTrackerThisMonthEyebrow => 'Ce Mois';
@@ -2444,25 +2444,25 @@ class SFr extends S {
   }
 
   @override
-  String get expenseTrackerByCategoryEyebrow => 'Par Categorie';
+  String get expenseTrackerByCategoryEyebrow => 'Par Catégorie';
 
   @override
   String get expenseTrackerEmptyBody =>
-      'Ajoutez votre premiere depense pour commencer a suivre votre budget.';
+      'Ajoutez votre première dépense pour commencer à suivre votre budget.';
 
   @override
   String get expenseAlertsEyebrow => 'Alertes';
 
   @override
   String expenseAlertsBudgetSubtitle(String budgeted, String actual) {
-    return 'Budget $budgeted · Depense $actual';
+    return 'Budget $budgeted · Dépense $actual';
   }
 
   @override
-  String get expenseRecentEyebrow => 'Recents';
+  String get expenseRecentEyebrow => 'Récents';
 
   @override
-  String get expenseRecentViewAll => 'Voir toutes les depenses';
+  String get expenseRecentViewAll => 'Voir toutes les dépenses';
 
   @override
   String expenseRecentCountSubtitle(int count) {
@@ -2470,7 +2470,7 @@ class SFr extends S {
   }
 
   @override
-  String get expenseSearchResultsEyebrow => 'Resultats';
+  String get expenseSearchResultsEyebrow => 'Résultats';
 
   @override
   String get addExpenseTitle => 'Ajouter une Dépense';
@@ -2629,14 +2629,14 @@ class SFr extends S {
   }
 
   @override
-  String get recurringEmptyTitle => 'Aucun paiement recurrent';
+  String get recurringEmptyTitle => 'Aucun paiement récurrent';
 
   @override
   String get recurringEmptyBody =>
-      'Ajoutes-en un pour le generer automatiquement chaque mois.';
+      'Ajoutes-en un pour le générer automatiquement chaque mois.';
 
   @override
-  String get recurringEyebrow => 'RECURRENTS';
+  String get recurringEyebrow => 'RÉCURRENTS';
 
   @override
   String recurringHeroSubtitle(int count) {
