@@ -262,7 +262,12 @@ O branch \`$BRANCH\` foi enviado mas o PR para \`$BASE_BRANCH\` não foi aberto.
     wt_remove "$WT"
     exit 1
   fi
-  log "PR criado: $PR_URL"
+  # `create_pr_api` returns the NUMBER, not the URL. Logging `$PR_URL` here was an
+  # unbound variable, and under `set -u` that killed the script one line AFTER the
+  # PR had already been opened — so the PR existed while the issue stayed on
+  # `qa:wip`, was reported as "implement falhou", and the rescue then demoted it
+  # to `qa:ready` for a second implementer to redo work that was already in review.
+  log "PR criado: #$PR_NUM ($REPO)"
 fi
 
 comment_issue "$ISSUE" "## Implementador: implementado

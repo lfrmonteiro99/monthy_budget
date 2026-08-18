@@ -284,12 +284,31 @@ cleanup_stale() {
 rescue_stuck_wip() {
   local lock="/tmp/monthy-budget-agent.main.lock"
   flock -w 0 -n "$lock" true 2>/dev/null || return 0   # an agent is running; leave it
-  local issue
+  local issue pr
   for issue in $(issues_with "$L_WIP"); do
-    log "resgate: #$issue estava em $L_WIP sem agente vivo -> $L_READY"
+    # "No agent alive" does NOT mean "no work done". The implementer opens the PR and
+    # only then transitions the issue, so a crash in that window leaves a real,
+    # complete PR behind on an issue still marked qa:wip. Demoting that to qa:ready
+    # dispatches a second implementer onto work already in review, on a branch that
+    # already exists. So ask GitHub what exists before deciding, rather than
+    # inferring what happened from the agent's absence.
+    pr=$(gh pr list --repo "$REPO" --head "qa/issue-$issue" --base "$BASE_BRANCH" \
+      --state open --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
+    if [ -n "$pr" ]; then
+      log "resgate: #$issue estava em $L_WIP mas o PR #$pr está aberto -> $L_REVIEW"
+      comment_issue "$issue" "## Orquestrador: corrida interrompida depois do PR
+
+O implementador morreu **depois** de abrir o PR #$pr, deixando o issue em
+\`$L_WIP\`. O trabalho existe e o PR está aberto, por isso segue para
+\`$L_REVIEW\` em vez de ser reimplementado."
+      set_state "$issue" "$L_REVIEW"
+      continue
+    fi
+    log "resgate: #$issue estava em $L_WIP sem agente vivo e sem PR -> $L_READY"
     comment_issue "$issue" "## Orquestrador: corrida interrompida
 
-O issue estava em \`$L_WIP\` mas nenhum agente estava vivo (timeout ou crash).
+O issue estava em \`$L_WIP\`, nenhum agente estava vivo (timeout ou crash) e não
+existe PR aberto para \`qa/issue-$issue\`.
 Devolvido a \`$L_READY\` para nova tentativa."
     set_state "$issue" "$L_READY"
   done
