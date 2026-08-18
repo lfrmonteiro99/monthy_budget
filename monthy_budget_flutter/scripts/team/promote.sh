@@ -120,7 +120,8 @@ EXISTING=$(gh pr list --repo "$REPO" --head "$BASE_BRANCH" --base "$PROD_BRANCH"
 
 if [ -n "$EXISTING" ]; then
   PR="$EXISTING"
-  gh pr edit "$PR" --repo "$REPO" --body "$BODY" --add-label "$RELEASE_LABEL" >/dev/null 2>&1 || true
+  gh pr edit "$PR" --repo "$REPO" --body "$BODY" >/dev/null 2>&1 || true
+  add_label_api "$PR" "$RELEASE_LABEL"
   log "PR de promoção #$PR actualizado"
 else
   URL=$(gh pr create --repo "$REPO" --base "$PROD_BRANCH" --head "$BASE_BRANCH" \
@@ -131,7 +132,7 @@ else
     log "ERRO: não abri o PR de promoção"
     exit 1
   fi
-  gh pr edit "$PR" --repo "$REPO" --add-label "$RELEASE_LABEL" >/dev/null 2>&1 || true
+  add_label_api "$PR" "$RELEASE_LABEL"
   log "PR de promoção criado: $URL ($RELEASE_LABEL)"
 fi
 
@@ -141,6 +142,34 @@ if gh pr merge "$PR" --repo "$REPO" --squash --auto >/dev/null 2>&1; then
   log "auto-merge armado no PR #$PR"
 else
   log "AVISO: não consegui armar o auto-merge no PR #$PR — ver os gates"
+fi
+
+# ── Close the cycle: realign dev onto main after the promotion lands ────────
+#
+# The promotion is SQUASH-merged, to match how everything else lands in this repo.
+# That means dev's individual commits never become ancestors of main, so straight
+# after a successful promotion git reports dev as both AHEAD (its original commits)
+# and BEHIND (main's squash commit) — while the CONTENT of the two is identical.
+#
+# Left alone, the next cycle sees AHEAD > 0, opens another promotion PR with an
+# empty diff, and does so forever. Verified: right after #1245 landed, dev was
+# "5 ahead" of main with `git diff origin/main origin/dev` completely empty.
+#
+# dev is a staging branch, not a history worth preserving, so once its content is
+# in main the honest state is "identical" — reset the ref. Only ever done when the
+# diff is genuinely empty, so this can never discard unpromoted work.
+if [ "$(gh pr view "$PR" --repo "$REPO" --json state --jq .state 2>/dev/null)" = "MERGED" ]; then
+  git -C "$TEAM_ROOT" fetch origin "$PROD_BRANCH" "$BASE_BRANCH" >/dev/null 2>&1 || true
+  if [ -z "$(git -C "$TEAM_ROOT" diff "origin/$PROD_BRANCH" "origin/$BASE_BRANCH" 2>/dev/null)" ]; then
+    if git -C "$TEAM_ROOT" push --force-with-lease origin \
+         "origin/$PROD_BRANCH:refs/heads/$BASE_BRANCH" >/dev/null 2>&1; then
+      log "$BASE_BRANCH realinhado com $PROD_BRANCH (conteúdo já era idêntico)"
+    else
+      log "AVISO: não consegui realinhar $BASE_BRANCH — próximo ciclo pode abrir um PR vazio"
+    fi
+  else
+    log "$BASE_BRANCH ainda difere de $PROD_BRANCH em conteúdo — não realinho"
+  fi
 fi
 
 log "done"

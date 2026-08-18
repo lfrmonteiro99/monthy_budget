@@ -70,9 +70,46 @@ LOOP_STATE="$STATE_DIR/loops-completed"
 touch "$REVIEWED_STATE" 2>/dev/null || true
 
 # ── Issue queries ──────────────────────────────────────────────────────────
+#
+# CRITICAL: "no results" and "could not ask" must never look the same.
+#
+# These used to end in `2>/dev/null || echo ""`, so a failed API call produced an
+# empty list — indistinguishable from a genuinely empty label. During a GitHub
+# outage that made the orchestrator believe the backlog was empty while 25 issues
+# sat in qa:triage: it dispatched nothing, declared "loop 1 concluído", and
+# promoted dev to main. A false victory built entirely on failed reads.
+#
+# So issues_with now RETURNS NON-ZERO when the query fails, and every caller has
+# to decide what to do about not knowing.
+# ONE query per cycle, then count locally.
+#
+# Per-label queries were both unreliable and expensive. `gh issue list --label X`
+# returns a non-zero exit inconsistently — sometimes for an empty label, sometimes
+# not, varying between consecutive identical calls under load — so "empty" and
+# "failed" simply cannot be told apart from the exit code. And doing it per label
+# meant 12+ API calls every 45-second cycle, which is a large part of why GitHub
+# started rate-limiting this repo in the first place.
+#
+# Fetching every open issue once and filtering with jq fixes both: the failure mode
+# becomes unambiguous (either a JSON array arrived or it did not), and the API load
+# drops by an order of magnitude.
+ISSUE_CACHE=""
+
+refresh_issue_cache() {
+  local json
+  json=$(gh issue list --repo "$REPO" --state open --limit 300 \
+         --json number,labels 2>/dev/null) || return 1
+  # Explicit shape check: a truncated or error response must not pass as data.
+  printf '%s' "$json" | jq -e 'type == "array"' >/dev/null 2>&1 || return 1
+  ISSUE_CACHE="$json"
+  return 0
+}
+
+# Issue numbers carrying a label, oldest first. Reads the cache — no API call.
 issues_with() {
-  gh issue list --repo "$REPO" --label "$1" --state open --limit 100 \
-    --json number --jq '.[].number' 2>/dev/null || echo ""
+  printf '%s' "$ISSUE_CACHE" \
+    | jq -r --arg l "$1" '[.[] | select([.labels[].name] | index($l)) | .number] | sort | .[]' \
+      2>/dev/null
 }
 
 first_with() { issues_with "$1" | head -1; }
@@ -290,10 +327,76 @@ while true; do
   log "──── ciclo $CYCLE (loops concluídos: $LOOPS) ────"
 
   cleanup_stale
+
+  # ── Wait out a subscription cooldown instead of hammering the fallback ─────
+  #
+  # The fallback model keeps the pipeline SAFE under exhaustion (a degraded run no
+  # longer consumes the issue) but it cannot actually do the heavyweight roles —
+  # measured: it errored then timed out on the curator, twice in two minutes. So
+  # retrying every 45 seconds for an hour is pure waste: ~80 doomed runs, each
+  # spawning a worktree and a model call, to accomplish nothing.
+  #
+  # Sleeping until the quota returns is strictly better. The write-path roles are
+  # skipped; the critic keeps whatever it already had running, since a detached
+  # sweep is unaffected by this.
+  COOLDOWN_FILE="$STATE_DIR/claude-usage-cooldown"
+  if [ -f "$COOLDOWN_FILE" ]; then
+    UNTIL=$(cat "$COOLDOWN_FILE" 2>/dev/null || echo 0)
+    NOW=$(date +%s)
+    if [ "$NOW" -lt "$UNTIL" ]; then
+      WAIT=$(( UNTIL - NOW ))
+      log "subscrição em cooldown até $(date -d "@$UNTIL" +%H:%M) — o fallback não consegue"
+      log "  fazer os papéis pesados, por isso espero ${WAIT}s em vez de gastar corridas condenadas"
+      if [ "$ONCE" = "1" ]; then exit 0; fi
+      # Wake in chunks so a manual --stop is still responsive.
+      sleep $(( WAIT > 300 ? 300 : WAIT + 5 ))
+      continue
+    fi
+  fi
+
+  # One read of the world per cycle. Everything below reasons from this snapshot.
+  # If it fails we know nothing about the queue, so the cycle does nothing rather
+  # than acting on a guess — which is how a false "loop concluído" and an unearned
+  # promotion happened before.
+  if ! refresh_issue_cache; then
+    log "não consegui ler os issues (API falhou) — ciclo sem acções"
+    if [ "$ONCE" = "1" ]; then exit 0; fi
+    log "a aguardar ${CYCLE_SLEEP}s..."
+    sleep "$CYCLE_SLEEP"
+    continue
+  fi
+
   rescue_stuck_wip
 
   # Discovery runs alongside fixing, never behind it.
   [ "$RUN_CRITIC" = "1" ] && maybe_launch_critic_sweep
+
+  # ── Ship verified fixes continuously, not in one batch at the end ──────────
+  #
+  # Promotion used to happen only when the backlog reached zero. With a real
+  # backlog that is a day or more away, and waiting costs three things:
+  #   - `main` stays broken while working, QA-verified fixes sit idle on `dev`;
+  #   - the CRITIC tests `main`, so it cannot find anything new — or detect a
+  #     regression — until main moves. The pipeline blocks its own discovery;
+  #   - one promotion of 24 fixes is far riskier to review than 24 small ones.
+  #
+  # So promote whenever `dev` is ahead and nothing is mid-flight (no open PR into
+  # dev, nothing awaiting verification). Those two conditions are what "dev holds
+  # only finished work" actually means — the empty backlog was a crude proxy for it.
+  if [ "$RUN_PROMOTE" = "1" ]; then
+    IN_FLIGHT=$(( $(issues_with "$L_REVIEW" | grep -c . || true) \
+                + $(issues_with "$L_VERIFY" | grep -c . || true) \
+                + $(issues_with "$L_WIP"    | grep -c . || true) ))
+    if [ "$IN_FLIGHT" -eq 0 ]; then
+      git -C "$TEAM_ROOT" fetch origin "$PROD_BRANCH" "$BASE_BRANCH" >/dev/null 2>&1 || true
+      AHEAD=$(git -C "$TEAM_ROOT" rev-list --count \
+              "origin/$PROD_BRANCH..origin/$BASE_BRANCH" 2>/dev/null || echo 0)
+      if [ "${AHEAD:-0}" -gt 0 ]; then
+        log "PROMOÇÃO incremental -> $AHEAD commit(s) verificados em $BASE_BRANCH"
+        bash "$SCRIPT_DIR/promote.sh" || log "promoção falhou (segue-se em frente)"
+      fi
+    fi
+  fi
 
   DID=0
 
@@ -337,6 +440,8 @@ while true; do
 
   # 7. Backlog empty: that closes a loop. Run the critic to find the next batch.
   if [ "$DID" = "0" ]; then
+    # Trustworthy by construction: the cycle already aborted if the snapshot this
+    # counts could not be read.
     ACTIONABLE=$(count_actionable)
 
     # A background sweep still running counts as work in progress: closing the
