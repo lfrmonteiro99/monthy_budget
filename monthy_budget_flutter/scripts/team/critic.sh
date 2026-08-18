@@ -82,9 +82,51 @@ fi
 # discover the same grey rectangle and file it as a blocker in its own words —
 # nine agents burning quota to produce one real finding plus eight artefacts.
 BOOT_DIR="$RUN_DIR/bootcheck"
-if node "$QA_TOOLS/probe.mjs" --url "$APP_URL" --out "$BOOT_DIR" --tabs home \
-     >"$RUN_DIR/bootcheck.log" 2>&1; then :; fi
-BOOTED=$(jq -r '.bootedIntoApp // false' "$BOOT_DIR/report.json" 2>/dev/null || echo false)
+
+# RETRY, AND TELL A BAD BUILD APART FROM A BAD MOMENT.
+#
+# A single probe was enough to abort an entire sweep, and it did — twice today. The
+# recorded causes were `net::ERR_NETWORK_CHANGED`, `WebAssembly compilation aborted:
+# Network error` and `WebGL: CONTEXT_LOST_WEBGL`. None of those is an app defect: the
+# first is the network interface moving under us, the second is its consequence while
+# fetching the CanvasKit wasm, the third is the GPU context dying on a machine running
+# at load 11 with fourteen chromium processes. The app served fine before and after.
+#
+# The cost of conflating the two was high. Both sweeps aborted without launching a
+# single dimension, so the critic produced nothing at all for fifteen hours, and one
+# run filed the blip as a sev:blocker issue that then went through curation, review
+# and verification as if it were a defect.
+#
+# So: three attempts with a fresh browser, and only environmental patterns are treated
+# as retryable. A genuinely broken build fails identically every time and still stops
+# the run on the last attempt.
+ENV_NOISE='ERR_NETWORK_CHANGED|CONTEXT_LOST_WEBGL|Response body loading was aborted|ERR_CONNECTION_RESET|ERR_INTERNET_DISCONNECTED'
+BOOTED=false
+for attempt in 1 2 3; do
+  if node "$QA_TOOLS/probe.mjs" --url "$APP_URL" --out "$BOOT_DIR" --tabs home \
+       >"$RUN_DIR/bootcheck.log" 2>&1; then :; fi
+  BOOTED=$(jq -r '.bootedIntoApp // false' "$BOOT_DIR/report.json" 2>/dev/null || echo false)
+  [ "$BOOTED" = "true" ] && break
+
+  BOOT_ERRS_RAW=$(jq -r '[((.diagnostics.consoleErrors // []) + (.diagnostics.pageErrors // []) + (.diagnostics.consoleWarnings // []))[]] | join(" ")' \
+    "$BOOT_DIR/report.json" 2>/dev/null || echo "")
+  if printf '%s' "$BOOT_ERRS_RAW" | grep -qE "$ENV_NOISE"; then
+    if [ "$attempt" -lt 3 ]; then
+      log "arranque falhou por ruído de ambiente (tentativa $attempt/3) — a repetir em 20s"
+      log "  $(printf '%s' "$BOOT_ERRS_RAW" | grep -oE "$ENV_NOISE" | sort -u | tr '\n' ' ')"
+      sleep 20
+      continue
+    fi
+    # Three environmental failures in a row is a broken machine, not a broken build.
+    # Say that, and do NOT file an app defect for it.
+    log "ARRANQUE IMPOSSÍVEL por ruído de ambiente em 3 tentativas — a abortar SEM arquivar issue"
+    log "  causas: $(printf '%s' "$BOOT_ERRS_RAW" | grep -oE "$ENV_NOISE" | sort -u | tr '\n' ' ')"
+    log "  as dimensões NÃO ficam marcadas como cobertas: este varrimento repete-se"
+    exit 0
+  fi
+  # Not environmental — a real boot failure. No point retrying a deterministic one.
+  break
+done
 
 if [ "$BOOTED" != "true" ]; then
   log "A APP NÃO ARRANCA em $APP_URL — não vale a pena lançar os testers"
@@ -182,6 +224,15 @@ run_dimension() {
   local dim_timeout_s; dim_timeout_s=$(dim_timeout "$dim")
 
   mkdir -p "$scratch"
+
+  # Mark coverage HERE, where the dimension really starts — not where the sweep was
+  # launched. The orchestrator used to do it, and it cannot know: this script aborts
+  # at the boot gate before any dimension exists, so eight dimensions were recorded as
+  # covered without running, twice, and stayed retired because coverage only resets on
+  # a closing loop.
+  mkdir -p "$(dirname "$COVERED_DIMS_FILE")" 2>/dev/null || true
+  grep -qxF "$dim" "$COVERED_DIMS_FILE" 2>/dev/null || echo "$dim" >> "$COVERED_DIMS_FILE"
+
   # STALE: delete before the run. If the agent dies without writing, an
   # inherited verdict from a previous run would be read as this run's result.
   rm -f "$verdict"
