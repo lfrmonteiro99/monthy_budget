@@ -146,6 +146,20 @@ run_harness() {
   local out_file
   out_file=$(mktemp "/tmp/run-agent-$AGENT_SLOT.XXXXXX.out")
 
+  # FAIL FAST WHEN THE ENGINE REFUSES.
+  #
+  # `ollama launch claude` can print "Execution error" within seconds and then simply
+  # never exit. The timeout eventually reaps it, but "eventually" is the whole budget:
+  # measured at 1800s per critic dimension, seven dimensions, about two hours of wall
+  # clock spent waiting on a process that had already failed and said so.
+  #
+  # A dead run that takes 30 minutes to admit it is worse than one that takes 30
+  # seconds, because the orchestrator cannot dispatch anything else while it waits.
+  # So a watchdog reads the stream: if the engine has emitted its error signature and
+  # produced nothing else for a grace period, the process group is killed and the
+  # caller gets its failure now.
+
+
   # Output is STREAMED, not captured-then-printed.
   #
   # It used to be `> "$out_file"` with a single printf after `wait`, which meant a
@@ -172,11 +186,27 @@ run_harness() {
   setsid timeout -k 30 "$TIMEOUT_S" "${cmd[@]}" > >(tee "$out_file") 2>&1 9>&- &
   local pid=$!
   echo "$pid" > "$PGID_FILE"
+
+  # Watchdog: kills exactly THIS run's group, and only once there is a pid to aim at.
+  (
+    sleep "${AGENT_ERROR_GRACE_S:-45}"
+    if [ -s "$out_file" ] \
+       && [ "$(wc -c < "$out_file")" -lt 400 ] \
+       && grep -qiE 'Execution error|failed to launch|connection refused' "$out_file"; then
+      echo "[run-agent] motor falhou de imediato e ficou pendurado — abortado sem esperar pelo timeout" >&2
+      kill -TERM -"$pid" 2>/dev/null || true
+      sleep 5
+      kill -KILL -"$pid" 2>/dev/null || true
+    fi
+  ) >/dev/null 2>&1 &
+  local watchdog=$!
   # If THIS script is killed, take the whole group down — no orphans.
   trap 'kill -TERM -"'"$pid"'" 2>/dev/null; cleanup' TERM INT
 
   wait "$pid"
   local rc=$?
+  # Do not leave the watchdog armed against a pid this script no longer owns.
+  kill "$watchdog" 2>/dev/null || true
   # tee may still be flushing after the agent exits.
   sleep 1
   AGENT_OUTPUT=$(cat "$out_file" 2>/dev/null || echo "")

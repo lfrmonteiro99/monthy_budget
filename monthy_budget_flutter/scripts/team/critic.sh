@@ -363,6 +363,62 @@ run_dimension() {
   fi
 }
 
+# CONCURRENCY DEPENDS ON WHICH ENGINE IS ANSWERING.
+#
+# The subscription tolerates the full fan-out. The Ollama fallback does not: with
+# seven dimensions launched together every one of them printed "Execution error" and
+# then sat doing nothing until its 1800s timeout expired. Four dimensions burned two
+# hours of wall clock and produced not one verdict.
+#
+# Not the model and not the invocation — both were checked directly while the sweep
+# was failing. A single `ollama launch claude --model deepseek-v4-flash:cloud` with
+# the same wrapper answered correctly, rc=0. What it cannot take is seven at once.
+#
+# So when the subscription is in cooldown the fan-out narrows. Slower, and slower is
+# not the problem worth solving here: a sweep that takes longer still finds defects,
+# a sweep that returns nothing finds none.
+COOLDOWN_FILE="$STATE_DIR/claude-usage-cooldown"
+if [ -f "$COOLDOWN_FILE" ] && [ "$(cat "$COOLDOWN_FILE" 2>/dev/null || echo 0)" -gt "$(date +%s)" ]; then
+  FALLBACK_CONCURRENCY="${TEAM_FALLBACK_CONCURRENCY:-2}"
+  if [ "$CONCURRENCY" -gt "$FALLBACK_CONCURRENCY" ]; then
+    log "subscrição em cooldown — concorrência $CONCURRENCY -> $FALLBACK_CONCURRENCY (o fallback rebenta em paralelo)"
+    CONCURRENCY="$FALLBACK_CONCURRENCY"
+  fi
+fi
+
+# THE FALLBACK CANNOT DRIVE THE TESTERS, SO DO NOT PRETEND IT CAN.
+#
+# Measured, not assumed. With the subscription in cooldown every dimension printed
+# "Execution error" within seconds and then sat idle until its 1800s timeout expired.
+# Seven dimensions did that: roughly two hours of wall clock, zero verdicts, and the
+# run directory left with empty logs that look identical to a sweep that found nothing.
+#
+# What it is NOT — each ruled out by direct test against the same wrapper while the
+# sweep was failing: not the model (a single request answers, rc=0), not the flags
+# (same flags with a short prompt answer fine), not prompt size (200 bytes fail as
+# reliably as 10 000), not encoding (both cuts are valid UTF-8, and Portuguese text
+# with accents works), not multi-line, not the leading `#`, not dimension concurrency
+# (the cap was already 3, and the failures happen one at a time too).
+#
+# I could not isolate it further: what remains is inside `ollama launch claude`, which
+# this project does not own. So the damage gets bounded instead. The write-path roles
+# — curator, implementer — demonstrably DO work on the fallback and keep running; it
+# is specifically the browser-driving testers that do not.
+#
+# Skipping is strictly better than timing out: the dimensions stay uncovered, so the
+# sweep repeats for real once the subscription returns, instead of being recorded as
+# done-with-no-findings.
+COOLDOWN_FILE="$STATE_DIR/claude-usage-cooldown"
+if [ "${CRITIC_ALLOW_FALLBACK:-0}" != "1" ] \
+   && [ -f "$COOLDOWN_FILE" ] \
+   && [ "$(cat "$COOLDOWN_FILE" 2>/dev/null || echo 0)" -gt "$(date +%s)" ]; then
+  UNTIL_HHMM=$(date -d "@$(cat "$COOLDOWN_FILE")" +%H:%M 2>/dev/null || echo "?")
+  log "subscrição em cooldown até $UNTIL_HHMM — NÃO lanço testers"
+  log "  o fallback não consegue conduzir o browser: erra em segundos e fica pendurado"
+  log "  até ao timeout. As dimensões ficam por cobrir e este varrimento repete-se."
+  exit 0
+fi
+
 log "a lançar testers..."
 declare -a PIDS=()
 for dim in $DIMS; do
