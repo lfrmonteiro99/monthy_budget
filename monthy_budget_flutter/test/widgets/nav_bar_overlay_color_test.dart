@@ -3,55 +3,120 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:monthly_management/widgets/nav_bar_overlay_color.dart';
 
 // Regression test for #1221: the bottom NavigationBar's selected-tab pill
-// showed a neutral-gray overlay on "Início" (focused since first frame) but
-// the correct accentSoft lilac on the other three tabs (only ever reached
-// via a transient tap that doesn't leave a lingering overlay). Root cause:
-// no `overlayColor` was set on the NavigationBar, so Flutter's Material 3
-// default state-layer (~10% onSurface) painted over the indicator whenever
-// a destination was focused/hovered/pressed. The fix suppresses that layer
-// specifically for the selected destination, since the indicator pill
-// already communicates selection and needs no extra tint.
+// darkened whenever the real mouse cursor was left resting on it after a
+// click (or, before round 1's partial fix, whenever a destination held
+// keyboard focus since first frame). Round 1 tried to suppress this via
+// `NavigationBar.overlayColor`, conditioned on `WidgetState.selected` — QA
+// found it never actually fired, because `InkResponse` (which owns that
+// resolution) never carries a `selected` state. This round fixes it by
+// wrapping only the selected destination in a local `NavigationBarTheme`
+// override — see navBarSuppressOverlayWhenSelected's doc for the full
+// mechanism and why the alternatives (bare overlayColor, AbsorbPointer)
+// don't work.
 void main() {
-  group('navBarOverlayColor', () {
-    test('suppresses the state layer for the selected destination', () {
-      final resolved = navBarOverlayColor({WidgetState.selected});
-      expect(resolved, Colors.transparent);
+  group('navBarSuppressOverlayWhenSelected', () {
+    Widget destination(Key key) => SizedBox(key: key, width: 10, height: 10);
+
+    testWidgets('returns the destination unwrapped when NOT selected', (
+      tester,
+    ) async {
+      final childKey = UniqueKey();
+      late BuildContext capturedContext;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Builder(
+            builder: (context) {
+              capturedContext = context;
+              return navBarSuppressOverlayWhenSelected(
+                context: context,
+                index: 0,
+                selectedIndex: 1,
+                destination: destination(childKey),
+              );
+            },
+          ),
+        ),
+      );
+
+      // Not selected: no NavigationBarTheme wrapper inserted above the
+      // destination beyond whatever ambient theme already existed.
+      final ambient = NavigationBarTheme.of(capturedContext);
+      final resolvedAtChild = NavigationBarTheme.of(
+        tester.element(find.byKey(childKey)),
+      );
+      expect(resolvedAtChild.overlayColor, equals(ambient.overlayColor));
+      expect(find.byKey(childKey), findsOneWidget);
     });
 
-    test(
-      'suppresses the state layer even when selected AND focused '
-      '(the exact combination that broke the initial "Início" tab)',
-      () {
-        final resolved = navBarOverlayColor({
-          WidgetState.selected,
-          WidgetState.focused,
-        });
-        expect(resolved, Colors.transparent);
+    testWidgets(
+      'wraps the destination in a NavigationBarTheme forcing a transparent '
+      'overlayColor when it IS selected',
+      (tester) async {
+        final childKey = UniqueKey();
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Builder(
+              builder: (context) {
+                return navBarSuppressOverlayWhenSelected(
+                  context: context,
+                  index: 2,
+                  selectedIndex: 2,
+                  destination: destination(childKey),
+                );
+              },
+            ),
+          ),
+        );
+
+        final resolvedAtChild = NavigationBarTheme.of(
+          tester.element(find.byKey(childKey)),
+        );
+        expect(
+          resolvedAtChild.overlayColor?.resolve({WidgetState.hovered}),
+          Colors.transparent,
+        );
+        expect(
+          resolvedAtChild.overlayColor?.resolve({WidgetState.focused}),
+          Colors.transparent,
+        );
+        expect(
+          resolvedAtChild.overlayColor?.resolve({WidgetState.pressed}),
+          Colors.transparent,
+        );
       },
     );
 
-    test('keeps the default overlay for an unselected, unfocused destination', () {
-      final resolved = navBarOverlayColor({});
-      expect(resolved, isNull);
-    });
+    testWidgets(
+      'preserves the ambient theme\'s other fields (e.g. indicatorColor) '
+      'when selected — only overlayColor is overridden',
+      (tester) async {
+        final childKey = UniqueKey();
+        const ambientIndicatorColor = Color(0xFF123456);
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: ThemeData(
+              navigationBarTheme: const NavigationBarThemeData(
+                indicatorColor: ambientIndicatorColor,
+              ),
+            ),
+            home: Builder(
+              builder: (context) {
+                return navBarSuppressOverlayWhenSelected(
+                  context: context,
+                  index: 0,
+                  selectedIndex: 0,
+                  destination: destination(childKey),
+                );
+              },
+            ),
+          ),
+        );
 
-    test(
-      'keeps the default focus overlay for a NOT-selected destination '
-      '(accessibility: keyboard focus must stay visible)',
-      () {
-        final resolved = navBarOverlayColor({WidgetState.focused});
-        expect(resolved, isNull);
+        final resolvedAtChild = NavigationBarTheme.of(
+          tester.element(find.byKey(childKey)),
+        );
+        expect(resolvedAtChild.indicatorColor, ambientIndicatorColor);
       },
     );
-
-    test('keeps the default hover overlay for a NOT-selected destination', () {
-      final resolved = navBarOverlayColor({WidgetState.hovered});
-      expect(resolved, isNull);
-    });
-
-    test('keeps the default press overlay for a NOT-selected destination', () {
-      final resolved = navBarOverlayColor({WidgetState.pressed});
-      expect(resolved, isNull);
-    });
   });
 }

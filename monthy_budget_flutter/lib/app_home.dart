@@ -2409,71 +2409,94 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
                 },
                 backgroundColor: AppColors.surface(context),
                 indicatorColor: AppColors.navIndicator(context),
-                overlayColor: WidgetStateProperty.resolveWith(
-                  navBarOverlayColor,
-                ),
+                // No `overlayColor` here — it would be shared, unconditionally,
+                // by every destination's InkResponse, which structurally
+                // cannot know "am I the selected one". See
+                // navBarSuppressOverlayWhenSelected's doc (#1221) for why the
+                // per-destination NavigationBarTheme wrap below is used
+                // instead.
                 height: 72,
                 labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
                 destinations: [
-                  NavigationDestination(
-                    icon: const Icon(Icons.dashboard_outlined),
-                    selectedIcon: Icon(
-                      Icons.dashboard,
-                      color: AppColors.primary(context),
-                    ),
-                    label: l10n.navHome,
-                    tooltip: l10n.navHomeTip,
-                  ),
-                  NavigationDestination(
-                    icon: const Icon(Icons.receipt_long_outlined),
-                    selectedIcon: Icon(
-                      Icons.receipt_long,
-                      color: AppColors.primary(context),
-                    ),
-                    label: l10n.navTrack,
-                    tooltip: l10n.navTrackTip,
-                  ),
-                  NavigationDestination(
-                    icon: Badge(
-                      isLabelVisible: _shoppingList.any((i) => !i.checked),
-                      backgroundColor: AppColors.bad(context),
-                      label: Text(
-                        '${_shoppingList.where((i) => !i.checked).length}',
-                        style: const TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
-                      child: const Icon(Icons.shopping_basket_outlined),
-                    ),
-                    selectedIcon: Badge(
-                      isLabelVisible: _shoppingList.any((i) => !i.checked),
-                      backgroundColor: AppColors.bad(context),
-                      label: Text(
-                        '${_shoppingList.where((i) => !i.checked).length}',
-                        style: const TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.shopping_basket,
+                  navBarSuppressOverlayWhenSelected(
+                    context: context,
+                    index: 0,
+                    selectedIndex: _currentTab.navigationIndex,
+                    destination: NavigationDestination(
+                      icon: const Icon(Icons.dashboard_outlined),
+                      selectedIcon: Icon(
+                        Icons.dashboard,
                         color: AppColors.primary(context),
                       ),
+                      label: l10n.navHome,
+                      tooltip: l10n.navHomeTip,
                     ),
-                    label: l10n.navPlanAndShop,
-                    tooltip: l10n.navPlanAndShopTip,
                   ),
-                  NavigationDestination(
-                    icon: const Icon(Icons.more_horiz_outlined),
-                    selectedIcon: Icon(
-                      Icons.more_horiz,
-                      color: AppColors.primary(context),
+                  navBarSuppressOverlayWhenSelected(
+                    context: context,
+                    index: 1,
+                    selectedIndex: _currentTab.navigationIndex,
+                    destination: NavigationDestination(
+                      icon: const Icon(Icons.receipt_long_outlined),
+                      selectedIcon: Icon(
+                        Icons.receipt_long,
+                        color: AppColors.primary(context),
+                      ),
+                      label: l10n.navTrack,
+                      tooltip: l10n.navTrackTip,
                     ),
-                    label: l10n.navMore,
-                    tooltip: l10n.navMoreTip,
+                  ),
+                  navBarSuppressOverlayWhenSelected(
+                    context: context,
+                    index: 2,
+                    selectedIndex: _currentTab.navigationIndex,
+                    destination: NavigationDestination(
+                      icon: Badge(
+                        isLabelVisible: _shoppingList.any((i) => !i.checked),
+                        backgroundColor: AppColors.bad(context),
+                        label: Text(
+                          '${_shoppingList.where((i) => !i.checked).length}',
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                        child: const Icon(Icons.shopping_basket_outlined),
+                      ),
+                      selectedIcon: Badge(
+                        isLabelVisible: _shoppingList.any((i) => !i.checked),
+                        backgroundColor: AppColors.bad(context),
+                        label: Text(
+                          '${_shoppingList.where((i) => !i.checked).length}',
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                        child: Icon(
+                          Icons.shopping_basket,
+                          color: AppColors.primary(context),
+                        ),
+                      ),
+                      label: l10n.navPlanAndShop,
+                      tooltip: l10n.navPlanAndShopTip,
+                    ),
+                  ),
+                  navBarSuppressOverlayWhenSelected(
+                    context: context,
+                    index: 3,
+                    selectedIndex: _currentTab.navigationIndex,
+                    destination: NavigationDestination(
+                      icon: const Icon(Icons.more_horiz_outlined),
+                      selectedIcon: Icon(
+                        Icons.more_horiz,
+                        color: AppColors.primary(context),
+                      ),
+                      label: l10n.navMore,
+                      tooltip: l10n.navMoreTip,
+                    ),
                   ),
                 ],
               ),
