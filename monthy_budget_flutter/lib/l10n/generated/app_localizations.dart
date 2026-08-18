@@ -11720,7 +11720,7 @@ abstract class S {
   /// Plan & Shop meal count for tile
   ///
   /// In pt, this message translates to:
-  /// **'{count, plural, =1{1 refeição} other{{count} refeições}}'**
+  /// **'{count, plural, =0{0 refeições} =1{1 refeição} other{{count} refeições}}'**
   String planShopMealCount(int count);
 
   /// Plan & Shop tile count when no meal plan exists
@@ -11738,7 +11738,7 @@ abstract class S {
   /// Plan & Shop item count for shopping list and pantry tiles
   ///
   /// In pt, this message translates to:
-  /// **'{count, plural, =1{1 item} other{{count} itens}}'**
+  /// **'{count, plural, =0{0 itens} =1{1 item} other{{count} itens}}'**
   String planShopItemCount(int count);
 
   /// Plan & Shop upcoming meals section eyebrow
