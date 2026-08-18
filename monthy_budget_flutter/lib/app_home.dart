@@ -2353,15 +2353,13 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
                 // own bottom edge, which is not the FAB's reference frame,
                 // and leaves the bottom sibling (AdBannerWidget) in the
                 // FAB's band. Scoped to the dashboard tab because that's
-                // the only tab with this FAB.
-                child: _currentTab == AppTab.dashboard
-                    ? Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: CalmScaffold.fabBottomClearance,
-                        ),
-                        child: content,
-                      )
-                    : content,
+                // the only tab with this FAB. `FabClearance` is the shared
+                // production widget for this reservation (also exercised by
+                // the widget test for #1202).
+                child: FabClearance(
+                  reserve: _currentTab == AppTab.dashboard,
+                  child: content,
+                ),
               ),
             ],
           ),

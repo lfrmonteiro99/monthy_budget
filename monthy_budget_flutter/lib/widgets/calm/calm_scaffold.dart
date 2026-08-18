@@ -112,3 +112,54 @@ class CalmScaffold extends StatelessWidget {
     );
   }
 }
+
+/// Reserves the footprint of a persistent `floatingActionButton` that floats
+/// over a scrollable body, measured from the same `Scaffold` edge the FAB's
+/// own position is computed from (#1202).
+///
+/// This is the widget form of
+/// `Padding(bottom: CalmScaffold.fabBottomClearance)` — the reservation is a
+/// named, shared production unit instead of each caller inlining the padding.
+/// Use it as the direct child of the slot the FAB floats over, gated on
+/// whether that FAB is actually present in THIS same `Scaffold` (`reserve`):
+///
+/// ```dart
+/// Expanded(
+///   child: FabClearance(
+///     reserve: _currentTab == AppTab.dashboard,
+///     child: content,
+///   ),
+/// )
+/// ```
+///
+/// When `reserve` is false the child is returned unchanged (no reservation),
+/// so non-FAB tabs keep their full height. See [CalmScaffold.fabBottomClearance]
+/// for where the reservation must be anchored (same `Scaffold` as the FAB,
+/// not a screen nested deeper down).
+class FabClearance extends StatelessWidget {
+  const FabClearance({
+    super.key,
+    required this.reserve,
+    required this.child,
+  });
+
+  /// Whether a FAB floats over this same `Scaffold`. When false, [child] is
+  /// returned without any bottom reservation.
+  final bool reserve;
+
+  /// The content the FAB floats over (e.g. a screen or a container `Column`
+  /// that wraps one together with sibling banners/ad).
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return reserve
+        ? Padding(
+            padding: const EdgeInsets.only(
+              bottom: CalmScaffold.fabBottomClearance,
+            ),
+            child: child,
+          )
+        : child;
+  }
+}
