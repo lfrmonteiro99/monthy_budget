@@ -41,6 +41,7 @@ import 'models/actual_expense.dart';
 import 'models/monthly_budget.dart';
 import 'widgets/add_expense_sheet.dart';
 import 'widgets/calm/calm.dart';
+import 'widgets/nav_bar_overlay_color.dart';
 import 'screens/expense_tracker_screen.dart';
 import 'models/local_dashboard_config.dart';
 import 'models/expense_snapshot.dart';
@@ -2408,6 +2409,9 @@ class _AppHomeState extends ConsumerState<AppHome> with WidgetsBindingObserver {
                 },
                 backgroundColor: AppColors.surface(context),
                 indicatorColor: AppColors.navIndicator(context),
+                overlayColor: WidgetStateProperty.resolveWith(
+                  navBarOverlayColor,
+                ),
                 height: 72,
                 labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
                 destinations: [
