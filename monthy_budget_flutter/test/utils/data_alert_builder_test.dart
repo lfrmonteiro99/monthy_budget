@@ -1,9 +1,16 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:monthly_management/l10n/generated/app_localizations.dart';
 import 'package:monthly_management/models/data_health_status.dart';
 import 'package:monthly_management/utils/data_alert_builder.dart';
 
 void main() {
   final now = DateTime(2026, 3, 8, 12, 0);
+  late S l10n;
+
+  setUpAll(() async {
+    l10n = await S.delegate.load(const Locale('en'));
+  });
 
   group('stale threshold logic', () {
     test('domain with no sync is stale', () {
@@ -76,9 +83,11 @@ void main() {
         ),
       };
 
-      final alerts = buildAlerts(statuses: statuses, now: now);
+      final alerts = buildAlerts(statuses: statuses, now: now, l10n: l10n);
       final shoppingAlert = alerts.firstWhere(
-        (a) => a.domain == SyncDomain.shopping && a.severity == AlertSeverity.critical,
+        (a) =>
+            a.domain == SyncDomain.shopping &&
+            a.severity == AlertSeverity.critical,
       );
       expect(shoppingAlert.title, contains('Shopping list'));
       expect(shoppingAlert.title, contains('failed to sync'));
@@ -93,9 +102,11 @@ void main() {
         ),
       };
 
-      final alerts = buildAlerts(statuses: statuses, now: now);
+      final alerts = buildAlerts(statuses: statuses, now: now, l10n: l10n);
       final staleAlert = alerts.firstWhere(
-        (a) => a.domain == SyncDomain.mealPlan && a.severity == AlertSeverity.warning,
+        (a) =>
+            a.domain == SyncDomain.mealPlan &&
+            a.severity == AlertSeverity.warning,
       );
       expect(staleAlert.title, contains('outdated'));
     });
@@ -105,6 +116,7 @@ void main() {
         statuses: {},
         recurringExpensesPopulatedThisMonth: false,
         now: now,
+        l10n: l10n,
       );
       final recurringAlert = alerts.firstWhere(
         (a) => a.id == 'recurring_not_populated',
@@ -117,10 +129,9 @@ void main() {
         statuses: {},
         mealPlanGeneratedAt: now.subtract(const Duration(days: 10)),
         now: now,
+        l10n: l10n,
       );
-      final mealAlert = alerts.firstWhere(
-        (a) => a.id == 'meal_plan_old',
-      );
+      final mealAlert = alerts.firstWhere((a) => a.id == 'meal_plan_old');
       expect(mealAlert.severity, AlertSeverity.info);
       expect(mealAlert.body, contains('10 days ago'));
     });
@@ -130,6 +141,7 @@ void main() {
         statuses: {},
         mealPlanGeneratedAt: now.subtract(const Duration(days: 3)),
         now: now,
+        l10n: l10n,
       );
       expect(alerts.where((a) => a.id == 'meal_plan_old'), isEmpty);
     });
@@ -140,10 +152,9 @@ void main() {
         currentMonthFoodSpend: 260,
         priorMonthFoodSpend: 200,
         now: now,
+        l10n: l10n,
       );
-      final spendAlert = alerts.firstWhere(
-        (a) => a.id == 'food_spend_jump',
-      );
+      final spendAlert = alerts.firstWhere((a) => a.id == 'food_spend_jump');
       expect(spendAlert.severity, AlertSeverity.warning);
       expect(spendAlert.title, contains('30%'));
     });
@@ -154,10 +165,9 @@ void main() {
         currentMonthFoodSpend: 300,
         priorMonthFoodSpend: 200,
         now: now,
+        l10n: l10n,
       );
-      final spendAlert = alerts.firstWhere(
-        (a) => a.id == 'food_spend_jump',
-      );
+      final spendAlert = alerts.firstWhere((a) => a.id == 'food_spend_jump');
       expect(spendAlert.severity, AlertSeverity.critical);
     });
 
@@ -167,6 +177,7 @@ void main() {
         currentMonthFoodSpend: 220,
         priorMonthFoodSpend: 200,
         now: now,
+        l10n: l10n,
       );
       expect(alerts.where((a) => a.id == 'food_spend_jump'), isEmpty);
     });
@@ -188,6 +199,7 @@ void main() {
         statuses: statuses,
         mealPlanGeneratedAt: now.subtract(const Duration(days: 10)),
         now: now,
+        l10n: l10n,
       );
 
       // First alert should be critical
@@ -202,8 +214,14 @@ void main() {
     });
 
     test('AlertSeverity sortOrder is critical < warning < info', () {
-      expect(AlertSeverity.critical.sortOrder, lessThan(AlertSeverity.warning.sortOrder));
-      expect(AlertSeverity.warning.sortOrder, lessThan(AlertSeverity.info.sortOrder));
+      expect(
+        AlertSeverity.critical.sortOrder,
+        lessThan(AlertSeverity.warning.sortOrder),
+      );
+      expect(
+        AlertSeverity.warning.sortOrder,
+        lessThan(AlertSeverity.info.sortOrder),
+      );
     });
   });
 
@@ -258,7 +276,10 @@ void main() {
 
     test('returns loadAt when only load recorded', () {
       final t = DateTime(2026, 3, 8);
-      final status = SyncDomainStatus(domain: SyncDomain.settings, lastLoadAt: t);
+      final status = SyncDomainStatus(
+        domain: SyncDomain.settings,
+        lastLoadAt: t,
+      );
       expect(status.lastSuccessAt, t);
     });
 
@@ -271,6 +292,144 @@ void main() {
         lastSaveAt: later,
       );
       expect(status.lastSuccessAt, later);
+    });
+  });
+
+  group('pt-PT localization', () {
+    late S pt;
+
+    setUpAll(() async {
+      pt = await S.delegate.load(const Locale('pt'));
+    });
+
+    test('domain labels are Portuguese', () {
+      expect(domainLabel(SyncDomain.settings, pt), 'Definições');
+      expect(domainLabel(SyncDomain.shopping, pt), 'Lista de compras');
+      expect(domainLabel(SyncDomain.mealPlan, pt), 'Plano de refeições');
+      expect(domainLabel(SyncDomain.expenses, pt), 'Despesas');
+      expect(
+        domainLabel(SyncDomain.purchaseHistory, pt),
+        'Histórico de compras',
+      );
+      expect(domainLabel(SyncDomain.savingsGoals, pt), 'Metas de poupança');
+      expect(
+        domainLabel(SyncDomain.recurringExpenses, pt),
+        'Despesas recorrentes',
+      );
+    });
+
+    test('stale alert title and action are Portuguese', () {
+      final statuses = {
+        SyncDomain.shopping: SyncDomainStatus(
+          domain: SyncDomain.shopping,
+          lastLoadAt: now.subtract(const Duration(days: 10)),
+          staleAfter: const Duration(days: 7),
+        ),
+      };
+
+      final alerts = buildAlerts(statuses: statuses, now: now, l10n: pt);
+      final stale = alerts.firstWhere((a) => a.id == 'stale_shopping');
+      expect(
+        stale.title,
+        'Os dados de Lista de compras podem estar desatualizados',
+      );
+      expect(stale.recommendedAction, 'Abra a secção da app para atualizar.');
+    });
+
+    test('stale body uses há N dias and never-synced variant', () {
+      final synced = {
+        SyncDomain.expenses: SyncDomainStatus(
+          domain: SyncDomain.expenses,
+          lastLoadAt: now.subtract(const Duration(days: 2)),
+          staleAfter: const Duration(days: 7),
+        ),
+      };
+      final alertsSynced = buildAlerts(statuses: synced, now: now, l10n: pt);
+      expect(
+        alertsSynced.firstWhere((a) => a.id == 'stale_expenses').body,
+        'Última sincronização há 2 dias.',
+      );
+
+      final never = {
+        SyncDomain.settings: SyncDomainStatus(domain: SyncDomain.settings),
+      };
+      final alertsNever = buildAlerts(statuses: never, now: now, l10n: pt);
+      expect(
+        alertsNever.firstWhere((a) => a.id == 'stale_settings').body,
+        'Nunca sincronizado neste dispositivo.',
+      );
+    });
+
+    test('time-ago singular form is há 1 dia', () {
+      final statuses = {
+        SyncDomain.mealPlan: SyncDomainStatus(
+          domain: SyncDomain.mealPlan,
+          lastLoadAt: now.subtract(const Duration(hours: 26)),
+          staleAfter: const Duration(days: 7),
+        ),
+      };
+      final alerts = buildAlerts(statuses: statuses, now: now, l10n: pt);
+      expect(
+        alerts.firstWhere((a) => a.id == 'stale_mealPlan').body,
+        'Última sincronização há 1 dia.',
+      );
+    });
+
+    test('old meal plan body uses há N dias', () {
+      final alerts = buildAlerts(
+        statuses: {},
+        mealPlanGeneratedAt: now.subtract(const Duration(days: 10)),
+        now: now,
+        l10n: pt,
+      );
+      final mealAlert = alerts.firstWhere((a) => a.id == 'meal_plan_old');
+      expect(mealAlert.title, 'O plano de refeições pode estar desatualizado');
+      expect(mealAlert.body, 'O seu plano de refeições foi gerado há 10 dias.');
+      expect(
+        mealAlert.recommendedAction,
+        'Considere gerar novamente o seu plano de refeições.',
+      );
+    });
+
+    test('sync error alert uses Portuguese copy', () {
+      final statuses = {
+        SyncDomain.shopping: SyncDomainStatus(
+          domain: SyncDomain.shopping,
+          lastLoadAt: now.subtract(const Duration(hours: 2)),
+          lastErrorAt: now.subtract(const Duration(hours: 1)),
+          lastErrorMessage: 'Network timeout',
+          staleAfter: const Duration(hours: 24),
+        ),
+      };
+      final alerts = buildAlerts(statuses: statuses, now: now, l10n: pt);
+      final errorAlert = alerts.firstWhere(
+        (a) =>
+            a.domain == SyncDomain.shopping &&
+            a.severity == AlertSeverity.critical,
+      );
+      expect(errorAlert.title, 'A sincronização de Lista de compras falhou');
+      expect(errorAlert.body, 'Network timeout');
+      expect(
+        errorAlert.recommendedAction,
+        'Tente atualizar ou verifique a sua ligação.',
+      );
+    });
+
+    test('recurring and food-spend alerts use Portuguese copy', () {
+      final alerts = buildAlerts(
+        statuses: {},
+        recurringExpensesPopulatedThisMonth: false,
+        currentMonthFoodSpend: 300,
+        priorMonthFoodSpend: 200,
+        now: now,
+        l10n: pt,
+      );
+      final recurring = alerts.firstWhere(
+        (a) => a.id == 'recurring_not_populated',
+      );
+      expect(recurring.title, 'Despesas recorrentes não aplicadas este mês');
+      final foodSpend = alerts.firstWhere((a) => a.id == 'food_spend_jump');
+      expect(foodSpend.title, contains('50%'));
     });
   });
 }
