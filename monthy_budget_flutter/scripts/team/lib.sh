@@ -131,6 +131,30 @@ add_label_api() {
     -f "labels[]=$label" >/dev/null 2>&1
 }
 
+# Open a PR via the REST API, echoing its number. Same reason as add_label_api:
+# `gh pr create` resolves project cards over GraphQL and dies on this repo with a
+# Projects-classic deprecation error, so the PR is never opened even though the
+# branch was pushed successfully.
+#
+# That cost real work twice. #1241 and #1242 were fully implemented by the
+# fallback — 12 and 20 files, tests passing — pushed to their branches, and then
+# escalated to needs-human with "PR não criado", where they sat for hours. The code
+# was fine and on the remote the whole time; only the announcement failed.
+create_pr_api() {
+  local head="$1" base="$2" title="$3" body="$4"
+  local resp num
+  resp=$(gh api -X POST "repos/$REPO/pulls" \
+           -f title="$title" -f head="$head" -f base="$base" -f body="$body" 2>&1)
+  num=$(printf '%s' "$resp" | jq -r '.number // empty' 2>/dev/null)
+  if [ -n "$num" ]; then printf '%s' "$num"; return 0; fi
+  # An existing PR for this head is success, not failure.
+  num=$(gh api "repos/$REPO/pulls?head=${REPO%%/*}:$head&base=$base&state=open" \
+        --jq '.[0].number // empty' 2>/dev/null)
+  if [ -n "$num" ]; then printf '%s' "$num"; return 0; fi
+  warn "não abri PR $head -> $base: $(printf '%s' "$resp" | jq -r '.message // .' 2>/dev/null | head -1)"
+  return 1
+}
+
 comment_issue() {
   local issue="$1" body="$2"
   gh issue comment "$issue" --repo "$REPO" --body "$body" >/dev/null 2>&1 \
@@ -159,9 +183,24 @@ agent_used_fallback() {
 
 # Standard handling for "the agent produced no verdict". Returns 0 when the caller
 # should ESCALATE (real failure), 1 when it should leave the issue alone for a
-# later retry (degraded engine).
+# later retry.
+#
+# Two things look identical from the outside — no verdict file — and neither is the
+# issue's fault:
+#   * the fallback engine ran and could not finish (weaker model);
+#   * the run never started at all because the lock slot was busy (exit 75).
+# The second happens whenever the orchestrator is restarted while an agent is still
+# mid-run: the old agent lives in its own process group and keeps the lock, so the
+# new orchestrator's first dispatch aborts instantly. Escalating that to needs-human
+# means a restart silently damages whatever issue happened to be next in line —
+# observed on #1209, failed and escalated in 11 seconds.
 no_verdict_is_real_failure() {
-  local slot="${1:-main}"
+  local slot="${1:-main}" rc="${2:-}"
+
+  if [ "$rc" = "75" ]; then
+    warn "sem veredicto porque o slot '$slot' estava ocupado (exit 75) — não escalo"
+    return 1
+  fi
   if agent_used_fallback "$slot"; then
     warn "sem veredicto mas o motor era o fallback — não escalo, fica para nova tentativa"
     return 1

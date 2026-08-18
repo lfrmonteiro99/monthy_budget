@@ -59,24 +59,26 @@ ISSUE_JSON=$(gh issue view "$ISSUE" --repo "$REPO" \
 rm -f "$VERDICT_FILE"
 AGENT_SLOT=main CLAUDE_MODEL="$MODEL" \
   bash "$SCRIPT_DIR/run-agent.sh" "$PROMPT" "$REPO_PKG" "${CURATOR_TIMEOUT:-900}" \
-  > "$LOG_DIR/curator-$ISSUE.log" 2>&1 || true
+  > "$LOG_DIR/curator-$ISSUE.log" 2>&1; AGENT_RC=$?
 
 if [ ! -f "$VERDICT_FILE" ]; then
-  if ! no_verdict_is_real_failure main; then
-    log "SEM VEREDICTO com o motor de fallback — issue fica em $L_TRIAGE para nova tentativa"
+  if ! no_verdict_is_real_failure main "$AGENT_RC"; then
+    log "SEM VEREDICTO (corrida degradada ou não arrancada) — issue fica em $L_TRIAGE para nova tentativa"
     comment_issue "$ISSUE" "## Curator: corrida degradada, sem veredicto
 
-A subscrição estava esgotada e a corrida usou o modelo de fallback, que não
+A corrida não produziu veredicto por uma razão alheia ao issue: ou a subscrição
+estava esgotada e o modelo de fallback não
 conseguiu concluir a análise. **Isto não é um problema do issue** — fica na fila
 para ser reanalisado quando a subscrição voltar."
     exit 0
   fi
-  log "SEM VEREDICTO — needs-human"
-  set_state "$ISSUE" "$L_HUMAN"
-  comment_issue "$ISSUE" "## Curator: sem veredicto
+  # No verdict is a failed RUN, not a failed issue: leave it in triage to be
+  # picked up again. Nobody is coming to unpark it.
+  log "SEM VEREDICTO — fica em $L_TRIAGE para nova tentativa"
+  comment_issue "$ISSUE" "## Curator: corrida sem veredicto
 
-O curator terminou sem escrever veredicto (ver \`$LOG_DIR/curator-$ISSUE.log\`).
-Marcado como \`$L_HUMAN\`."
+A corrida terminou sem escrever veredicto (ver \`$LOG_DIR/curator-$ISSUE.log\`).
+Isto é falha da corrida, não do issue — fica na fila para ser reanalisado."
   exit 0
 fi
 
@@ -101,12 +103,12 @@ case "$OUTCOME" in
     if [ -z "${ANALYSIS//[[:space:]]/}" ]; then
       # A "ready" with no briefing is the failure mode this role exists to
       # prevent: the implementer would get the raw symptom and guess.
-      log "outcome=ready mas analysis vazio — needs-human"
-      set_state "$ISSUE" "$L_HUMAN"
-      comment_issue "$ISSUE" "## Curator: análise vazia
+      log "outcome=ready mas analysis vazio — fica em $L_TRIAGE para nova análise"
+      comment_issue "$ISSUE" "## Curator: análise vazia — a repetir
 
-O curator declarou \`ready\` sem escrever a análise. Sem causa raiz nem
-critérios de aceitação o implementador não tem por onde pegar."
+Declarou \`ready\` sem escrever a análise. Sem causa raiz nem critérios de
+aceitação o implementador não teria por onde pegar, por isso o issue volta à fila
+para ser analisado outra vez."
       exit 0
     fi
     comment_issue "$ISSUE" "## Curator: analisado — pronto a implementar
@@ -143,11 +145,11 @@ $ANALYSIS"
   split)
     COUNT=$(jq '(.subissues // []) | length' "$VERDICT_FILE" 2>/dev/null || echo 0)
     if [ "$COUNT" -lt 2 ]; then
-      log "split com $COUNT sub-issues — insuficiente, needs-human"
-      set_state "$ISSUE" "$L_HUMAN"
-      comment_issue "$ISSUE" "## Curator: split inválido
+      log "split com $COUNT sub-issues — insuficiente, volta a $L_TRIAGE"
+      comment_issue "$ISSUE" "## Curator: split inválido — a repetir
 
-Pediu \`split\` mas indicou $COUNT sub-issues. Um split precisa de pelo menos 2."
+Pediu \`split\` mas indicou $COUNT sub-issues; um split precisa de pelo menos 2.
+O issue volta à fila para ser decidido de outra forma."
       exit 0
     fi
     CREATED=""
@@ -167,18 +169,23 @@ Pediu \`split\` mas indicou $COUNT sub-issues. Um split precisa de pelo menos 2.
 $SUMMARY
 $CREATED
 
-Este issue fica como agregador; o trabalho acontece nos sub-issues."
-    set_state "$ISSUE" "$L_HUMAN"
+O trabalho acontece nos sub-issues; este fica como registo e é fechado — um
+agregador aberto sem trabalho próprio só entope a fila."
+    set_state "$ISSUE" "$L_DONE"
+    gh issue close "$ISSUE" --repo "$REPO" --reason completed >/dev/null 2>&1 || true
     ;;
 
   *)
-    comment_issue "$ISSUE" "## Curator: needs-human
+    # An unrecognised outcome means the agent did not follow the contract. That is
+    # a run problem — requeue rather than park.
+    comment_issue "$ISSUE" "## Curator: resultado não reconhecido (\`$OUTCOME\`)
 
 $SUMMARY
 
-$ANALYSIS"
-    set_state "$ISSUE" "$L_HUMAN"
-    log "#$ISSUE -> $L_HUMAN"
+$ANALYSIS
+
+O veredicto não usou um dos resultados válidos, por isso o issue volta à fila."
+    log "#$ISSUE outcome inválido -> $L_TRIAGE"
     ;;
 esac
 

@@ -114,6 +114,80 @@ issues_with() {
 
 first_with() { issues_with "$1" | head -1; }
 
+# ── Attempt budget per issue ───────────────────────────────────────────────
+#
+# Rework outranks new work in the dispatch order, which is right — finishing what
+# is started beats starting more. But with no limit it means a single hard issue
+# monopolises the pipeline indefinitely.
+#
+# Measured: #1202 (FAB overlap) went verify -> fail-impl -> implement -> review ->
+# blocked-impl -> implement for over two hours, on its third implementation cycle,
+# while 21 issues sat untouched in triage. From outside the pipeline looked busy and
+# was delivering nothing.
+#
+# After this many round trips an issue is not "nearly there", it is stuck on
+# something the agents cannot see — so park it for a human with the history intact
+# and let the queue move.
+MAX_ATTEMPTS="${TEAM_MAX_ATTEMPTS:-3}"
+ATTEMPTS_DIR="$STATE_DIR/attempts"
+mkdir -p "$ATTEMPTS_DIR" 2>/dev/null || true
+
+bump_attempts() {
+  local issue="$1" n
+  n=$(( $(cat "$ATTEMPTS_DIR/$issue" 2>/dev/null || echo 0) + 1 ))
+  echo "$n" > "$ATTEMPTS_DIR/$issue"
+  printf '%s' "$n"
+}
+
+# ESCALATE THE STRATEGY, NEVER TO A HUMAN.
+#
+# Repeating the same approach after it has failed twice is the definition of a stuck
+# loop — but parking the issue is not the answer either, because nobody is coming.
+# So each exhaustion changes the APPROACH instead:
+#
+#   attempts 1-2   implement normally
+#   attempt  3     hand it back to the curator WITH the full failure history, so the
+#                  briefing is rewritten from what actually went wrong rather than
+#                  from the original guess
+#   attempt  4+    force a split: the issue is too big or too tangled to land whole,
+#                  so break it into pieces each of which can
+#
+# Returns 0 to proceed with the normal action, 1 when it has been redirected.
+escalate_if_stuck() {
+  local issue="$1" n
+  n=$(cat "$ATTEMPTS_DIR/$issue" 2>/dev/null || echo 0)
+  [ "$n" -lt "$MAX_ATTEMPTS" ] && return 0
+
+  if [ "$n" -lt $(( MAX_ATTEMPTS * 2 )) ]; then
+    log "#$issue: $n tentativas — a devolver ao curator com o histórico de falhas"
+    comment_issue "$issue" "## Orquestrador: mudar de abordagem após $n tentativas
+
+Este issue já passou $n vezes pelo ciclo sem chegar a \`pass\`. Repetir a mesma
+abordagem não vai resolver.
+
+**Curator:** reescreve a análise a partir do que **falhou de facto** — os
+comentários acima do reviewer e do verificador dizem exactamente onde é que cada
+tentativa bateu. O plano original não estava a funcionar; procura outra via, ou
+parte o issue se o problema for de tamanho."
+    set_state "$issue" "$L_BLOCKED_SPEC"
+    return 1
+  fi
+
+  log "#$issue: $n tentativas — a forçar split"
+  comment_issue "$issue" "## Orquestrador: partir após $n tentativas
+
+Duas rondas de reanálise não resolveram isto. O problema é de **tamanho ou de
+emaranhado**, não de esforço.
+
+**Curator:** usa \`split\`. Parte em pedaços em que cada um seja inequívoco e
+resolúvel isoladamente — um ecrã, um viewport, um cálculo de cada vez. Se um pedaço
+continuar a parecer difícil, parte-o outra vez. O histórico de falhas acima diz-te
+onde estão as fronteiras naturais."
+  echo 0 > "$ATTEMPTS_DIR/$issue"   # the pieces start fresh
+  set_state "$issue" "$L_BLOCKED_SPEC"
+  return 1
+}
+
 count_actionable() {
   local n=0 s
   for s in "$L_TRIAGE" "$L_READY" "$L_REVIEW" "$L_VERIFY" "$L_BLOCKED_IMPL" "$L_BLOCKED_SPEC" "$L_WIP"; do
@@ -210,12 +284,31 @@ cleanup_stale() {
 rescue_stuck_wip() {
   local lock="/tmp/monthy-budget-agent.main.lock"
   flock -w 0 -n "$lock" true 2>/dev/null || return 0   # an agent is running; leave it
-  local issue
+  local issue pr
   for issue in $(issues_with "$L_WIP"); do
-    log "resgate: #$issue estava em $L_WIP sem agente vivo -> $L_READY"
+    # "No agent alive" does NOT mean "no work done". The implementer opens the PR and
+    # only then transitions the issue, so a crash in that window leaves a real,
+    # complete PR behind on an issue still marked qa:wip. Demoting that to qa:ready
+    # dispatches a second implementer onto work already in review, on a branch that
+    # already exists. So ask GitHub what exists before deciding, rather than
+    # inferring what happened from the agent's absence.
+    pr=$(gh pr list --repo "$REPO" --head "qa/issue-$issue" --base "$BASE_BRANCH" \
+      --state open --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
+    if [ -n "$pr" ]; then
+      log "resgate: #$issue estava em $L_WIP mas o PR #$pr está aberto -> $L_REVIEW"
+      comment_issue "$issue" "## Orquestrador: corrida interrompida depois do PR
+
+O implementador morreu **depois** de abrir o PR #$pr, deixando o issue em
+\`$L_WIP\`. O trabalho existe e o PR está aberto, por isso segue para
+\`$L_REVIEW\` em vez de ser reimplementado."
+      set_state "$issue" "$L_REVIEW"
+      continue
+    fi
+    log "resgate: #$issue estava em $L_WIP sem agente vivo e sem PR -> $L_READY"
     comment_issue "$issue" "## Orquestrador: corrida interrompida
 
-O issue estava em \`$L_WIP\` mas nenhum agente estava vivo (timeout ou crash).
+O issue estava em \`$L_WIP\`, nenhum agente estava vivo (timeout ou crash) e não
+existe PR aberto para \`qa/issue-$issue\`.
 Devolvido a \`$L_READY\` para nova tentativa."
     set_state "$issue" "$L_READY"
   done
@@ -278,6 +371,104 @@ mark_dims_covered() {
 # Safe to overlap with the write path: the critic only READS the app, takes its own
 # lock slots per dimension, and files each verdict itself. (It was NOT safe until
 # cleanup_stale stopped deleting critic-*.json out from under it.)
+# ── When to ship dev -> main ────────────────────────────────────────────────
+#
+# Promotion itself costs no quota — it is git and gh, no agent. But each promotion
+# to `main` fires release-tag.yml, which tags, releases and builds APK+AAB. Doing
+# that per issue would mean two dozen releases, a mountain of CI (part of what got
+# this repo rate-limited), and `main` shifting under the critic, which tests it.
+#
+# So promotion is BATCHED, and fires on whichever of these comes first:
+#
+#   end of the usage window  the natural moment: nothing is running, no quota is
+#                            needed, and the fixes earned this window should not
+#                            sit unshipped through an hour of cooldown
+#   batch threshold reached  so a long productive window still ships periodically
+#   backlog empty            the original condition, still valid
+#
+# Always gated on nothing being mid-flight — no open PR into dev, nothing awaiting
+# verification or implementation. That is what "dev holds only finished work"
+# actually means.
+PROMOTE_BATCH="${TEAM_PROMOTE_BATCH:-6}"
+
+maybe_promote() {
+  local reason="$1" force="${2:-0}"
+  [ "$RUN_PROMOTE" = "1" ] || return 0
+
+  # ONLY qa:verify blocks a promotion.
+  #
+  # The first version also counted qa:review and qa:wip, and that was both wrong and
+  # silent. Wrong: an issue in review has its code in a PR, NOT in dev — it cannot
+  # affect what dev contains. In wip it is not even pushed. Only qa:verify means code
+  # already merged into dev and not yet proven on the running app, which is the one
+  # thing that must not be promoted.
+  #
+  # Silent: it returned without logging unless forced, so a pipeline that always had
+  # something in review simply never promoted and never said why. dev reached 8
+  # commits past the threshold with no trace in the log.
+  local unverified
+  unverified=$(issues_with "$L_VERIFY" | grep -c . || true)
+  if [ "$unverified" -ne 0 ]; then
+    log "promoção adiada: $unverified fix(es) integrados em $BASE_BRANCH ainda por verificar"
+    return 0
+  fi
+
+  git -C "$TEAM_ROOT" fetch origin "$PROD_BRANCH" "$BASE_BRANCH" >/dev/null 2>&1 || true
+  local ahead
+  ahead=$(git -C "$TEAM_ROOT" rev-list --count \
+          "origin/$PROD_BRANCH..origin/$BASE_BRANCH" 2>/dev/null || echo 0)
+  [ "${ahead:-0}" -gt 0 ] || return 0
+
+  if [ "$force" != "1" ] && [ "$ahead" -lt "$PROMOTE_BATCH" ]; then
+    log "$ahead fix(es) verificados em $BASE_BRANCH — a acumular até $PROMOTE_BATCH ou ao fim da janela"
+    return 0
+  fi
+
+  # An open promotion PR whose head already matches dev has nothing to add: re-running
+  # promote.sh every 45s would just re-fetch, re-edit the body and re-arm a merge that
+  # is already armed, while it waits for CI.
+  local open_pr open_sha dev_sha
+  open_pr=$(gh pr list --repo "$REPO" --head "$BASE_BRANCH" --base "$PROD_BRANCH" \
+            --state open --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
+  if [ -n "$open_pr" ]; then
+    open_sha=$(gh pr view "$open_pr" --repo "$REPO" --json headRefOid --jq .headRefOid 2>/dev/null || echo "")
+    dev_sha=$(git -C "$TEAM_ROOT" rev-parse "origin/$BASE_BRANCH" 2>/dev/null || echo "")
+    if [ -n "$open_sha" ] && [ "$open_sha" = "$dev_sha" ]; then
+      log "PR de promoção #$open_pr já cobre $BASE_BRANCH ($ahead commit(s)) — à espera dos gates"
+      return 0
+    fi
+  fi
+
+  # main's sha BEFORE, so we can tell "the promotion actually landed" from "a PR was
+  # opened". Only the former means there is new production code to re-test.
+  local main_before
+  main_before=$(git -C "$TEAM_ROOT" rev-parse "origin/$PROD_BRANCH" 2>/dev/null || echo "")
+
+  log "PROMOÇÃO ($reason) -> $ahead commit(s) verificados em $BASE_BRANCH"
+  bash "$SCRIPT_DIR/promote.sh" || log "promoção falhou (segue-se em frente)"
+
+  # A promotion changes `main`, which is exactly what the critic tests. New
+  # production code means two things nobody has looked at: REGRESSIONS introduced
+  # by the fixes, and whatever the previous sweep missed. So clear the coverage
+  # record — the natural trigger for re-testing is "main changed", not "the queue
+  # happens to be empty".
+  #
+  # The backlog threshold below is what stops that flooding the tracker: with a
+  # deep queue of known-unfixed defects, a re-sweep mostly re-finds them, and
+  # de-duplication throws the work away after the testers already spent the time.
+  # Reset the sweep record only if main ACTUALLY moved. Opening or updating a
+  # promotion PR changes nothing in production, and resetting on that would have the
+  # critic re-sweeping a main it has already covered, every cycle the PR sits waiting
+  # for CI.
+  git -C "$TEAM_ROOT" fetch origin "$PROD_BRANCH" >/dev/null 2>&1 || true
+  local main_after
+  main_after=$(git -C "$TEAM_ROOT" rev-parse "origin/$PROD_BRANCH" 2>/dev/null || echo "")
+  if [ -n "$main_after" ] && [ "$main_after" != "$main_before" ]; then
+    rm -f "$COVERED_DIMS_FILE"
+    log "$PROD_BRANCH avançou para ${main_after:0:8} — cobertura reposta, o critic revarre quando a fila permitir"
+  fi
+}
+
 CRITIC_BG_PID=""
 maybe_launch_critic_sweep() {
   # Still running from a previous cycle? Leave it alone.
@@ -287,7 +478,18 @@ maybe_launch_critic_sweep() {
   local pending; pending=$(uncovered_dims)
   [ -n "$pending" ] || return 1
 
-  log "CRITIC (em paralelo) -> dimensões nunca corridas: $pending"
+  # Do not pile discovery onto a queue nobody can drain. Above this many open
+  # actionable issues, a sweep mostly re-finds defects that are already filed and
+  # waiting: de-duplication then discards the result, so the testers' time and
+  # quota bought nothing. Below it, new findings can actually be acted on.
+  local backlog
+  backlog=$(count_actionable)
+  if [ "$backlog" -gt "${TEAM_RESWEEP_MAX_BACKLOG:-8}" ]; then
+    log "critic adiado: $backlog issues por tratar (limite ${TEAM_RESWEEP_MAX_BACKLOG:-8}) — corrigir primeiro"
+    return 1
+  fi
+
+  log "CRITIC (em paralelo) -> dimensões a (re)varrer: $pending"
   nohup bash "$SCRIPT_DIR/critic.sh" \
     --branch "$PROD_BRANCH" \
     --dimensions "$(printf '%s' "$pending" | tr ' ' ',')" \
@@ -328,29 +530,35 @@ while true; do
 
   cleanup_stale
 
-  # ── Wait out a subscription cooldown instead of hammering the fallback ─────
+  # ── End of a usage window: ship, then KEEP WORKING on the fallback ────────
   #
-  # The fallback model keeps the pipeline SAFE under exhaustion (a degraded run no
-  # longer consumes the issue) but it cannot actually do the heavyweight roles —
-  # measured: it errored then timed out on the curator, twice in two minutes. So
-  # retrying every 45 seconds for an hour is pure waste: ~80 doomed runs, each
-  # spawning a worktree and a model call, to accomplish nothing.
+  # I previously had this sleep until the quota returned, on the belief that the
+  # fallback could not do the heavyweight roles. That belief was wrong, and reading
+  # the actual logs disproved it: on the fallback, implement-1241 applied a two-part
+  # fix, wrote new tests and ran the full suite (2408 passing), and curator-1242
+  # produced a better briefing than some Claude runs — it even corrected the tester's
+  # own account of the defect.
   #
-  # Sleeping until the quota returns is strictly better. The write-path roles are
-  # skipped; the critic keeps whatever it already had running, since a detached
-  # sweep is unaffected by this.
+  # The two failures I generalised from were not capability failures at all. One was
+  # a 400 "this model does not support image input", because the prompts tell agents
+  # to Read evidence screenshots — now handled by warning the agent when its engine
+  # has no vision. So sleeping through the cooldown was throwing away an hour of
+  # perfectly good throughput on a mistaken diagnosis.
+  #
+  # What still holds: promote at the window's end. Nothing is mid-flight, promotion
+  # needs no quota, and the window's fixes should not wait an hour to reach main.
   COOLDOWN_FILE="$STATE_DIR/claude-usage-cooldown"
   if [ -f "$COOLDOWN_FILE" ]; then
     UNTIL=$(cat "$COOLDOWN_FILE" 2>/dev/null || echo 0)
     NOW=$(date +%s)
-    if [ "$NOW" -lt "$UNTIL" ]; then
-      WAIT=$(( UNTIL - NOW ))
-      log "subscrição em cooldown até $(date -d "@$UNTIL" +%H:%M) — o fallback não consegue"
-      log "  fazer os papéis pesados, por isso espero ${WAIT}s em vez de gastar corridas condenadas"
-      if [ "$ONCE" = "1" ]; then exit 0; fi
-      # Wake in chunks so a manual --stop is still responsive.
-      sleep $(( WAIT > 300 ? 300 : WAIT + 5 ))
-      continue
+    if [ "$NOW" -lt "$UNTIL" ] && [ ! -f "$STATE_DIR/promoted-for-$UNTIL" ]; then
+      log "fim da janela de quota (volta às $(date -d "@$UNTIL" +%H:%M)) — a promover e a continuar no fallback"
+      if refresh_issue_cache; then
+        maybe_promote "fim da janela de quota" 1
+        touch "$STATE_DIR/promoted-for-$UNTIL"
+      else
+        log "não consegui ler os issues para promover — tento no próximo ciclo"
+      fi
     fi
   fi
 
@@ -371,32 +579,7 @@ while true; do
   # Discovery runs alongside fixing, never behind it.
   [ "$RUN_CRITIC" = "1" ] && maybe_launch_critic_sweep
 
-  # ── Ship verified fixes continuously, not in one batch at the end ──────────
-  #
-  # Promotion used to happen only when the backlog reached zero. With a real
-  # backlog that is a day or more away, and waiting costs three things:
-  #   - `main` stays broken while working, QA-verified fixes sit idle on `dev`;
-  #   - the CRITIC tests `main`, so it cannot find anything new — or detect a
-  #     regression — until main moves. The pipeline blocks its own discovery;
-  #   - one promotion of 24 fixes is far riskier to review than 24 small ones.
-  #
-  # So promote whenever `dev` is ahead and nothing is mid-flight (no open PR into
-  # dev, nothing awaiting verification). Those two conditions are what "dev holds
-  # only finished work" actually means — the empty backlog was a crude proxy for it.
-  if [ "$RUN_PROMOTE" = "1" ]; then
-    IN_FLIGHT=$(( $(issues_with "$L_REVIEW" | grep -c . || true) \
-                + $(issues_with "$L_VERIFY" | grep -c . || true) \
-                + $(issues_with "$L_WIP"    | grep -c . || true) ))
-    if [ "$IN_FLIGHT" -eq 0 ]; then
-      git -C "$TEAM_ROOT" fetch origin "$PROD_BRANCH" "$BASE_BRANCH" >/dev/null 2>&1 || true
-      AHEAD=$(git -C "$TEAM_ROOT" rev-list --count \
-              "origin/$PROD_BRANCH..origin/$BASE_BRANCH" 2>/dev/null || echo 0)
-      if [ "${AHEAD:-0}" -gt 0 ]; then
-        log "PROMOÇÃO incremental -> $AHEAD commit(s) verificados em $BASE_BRANCH"
-        bash "$SCRIPT_DIR/promote.sh" || log "promoção falhou (segue-se em frente)"
-      fi
-    fi
-  fi
+  maybe_promote "cadência"
 
   DID=0
 
@@ -417,13 +600,24 @@ while true; do
   # 3. Rework: code problems back to the implementer.
   if [ "$DID" = "0" ]; then
     I=$(first_with "$L_BLOCKED_IMPL")
-    if [ -n "$I" ]; then run_implement "$I"; DID=1; fi
+    if [ -n "$I" ]; then
+      if escalate_if_stuck "$I"; then
+        log "#$I: tentativa $(bump_attempts "$I") de $MAX_ATTEMPTS"
+        run_implement "$I"
+      fi
+      DID=1
+    fi
   fi
 
   # 4. Rework: briefing problems back to the curator.
   if [ "$DID" = "0" ]; then
     I=$(first_with "$L_BLOCKED_SPEC")
-    if [ -n "$I" ]; then run_curator "$I"; DID=1; fi
+    if [ -n "$I" ]; then
+      # No escalation check here: this IS the escalation target. Counting it would
+      # bounce the issue straight back out of the re-analysis it was sent for.
+      run_curator "$I"
+      DID=1
+    fi
   fi
 
   # 5. Implement curated issues.
@@ -472,10 +666,9 @@ while true; do
 
       # Ship what QA verified. Without this the critic keeps re-testing a `main`
       # that never receives the fixes, and finds the same defects every loop.
-      if [ "$RUN_PROMOTE" = "1" ]; then
-        log "PROMOÇÃO -> $BASE_BRANCH para $PROD_BRANCH"
-        bash "$SCRIPT_DIR/promote.sh" || log "promoção falhou (segue-se em frente)"
-      fi
+      # Forced past the batch threshold: the queue is drained, so there is nothing
+      # left to accumulate.
+      maybe_promote "backlog vazio" 1
 
       if [ "$MAX_LOOPS" -gt 0 ] && [ "$LOOPS" -ge "$MAX_LOOPS" ]; then
         log "atingidos os $MAX_LOOPS loops pedidos. A terminar."

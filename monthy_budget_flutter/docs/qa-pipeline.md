@@ -13,7 +13,7 @@ fechar. Vive em `scripts/team/`.
 | **Implementador** | `implement.sh` | Corrige em `qa/issue-N` e abre PR para `dev` | — |
 | **Reviewer** | `review.sh` | Lê o diff, corre os testes, integra ou devolve | — |
 | **QA Verifier** | `verify.sh` | Volta a testar o fix na app a correr e fecha o issue | `dev` |
-| **Promoção** | `promote.sh` | Leva `dev` para `main` quando o backlog fica vazio | — |
+| **Promoção** | `promote.sh` | Leva `dev` para `main` em lote: fim da janela de quota, 6 fixes, ou fila vazia | — |
 | **Orquestrador** | `orchestrator.sh` | Despacha tudo pela máquina de estados | — |
 
 ## Topologia de branches
@@ -22,7 +22,7 @@ fechar. Vive em `scripts/team/`.
 main ──────────────────────────────►  produção. O CRITIC testa aqui.
   │                            ▲
   └──► dev ───────────────────┘       staging de QA. O VERIFIER testa aqui.
-         ▲                            Promovido para main quando o backlog esvazia.
+         ▲                            Promovido em lote (ver Promoção).
          └── qa/issue-N               branches do implementador. PR ──► dev.
 ```
 
@@ -52,7 +52,24 @@ qa:blocked-spec ◄──── blocked-spec / fail-spec ───────�
                                                                    (fechado)
 ```
 
-`qa:needs-human` é a saída de emergência: nada o despacha automaticamente.
+**Não existe `qa:needs-human`.** Não há ninguém do outro lado, por isso "escalar para
+humano" nunca foi uma resolução — era uma forma de perder trabalho em silêncio (cinco
+issues ficaram parados assim, dois deles já implementados e com o código enviado).
+Cada saída tem destino produtivo: uma corrida sem veredicto devolve o issue à fila
+(falha da *corrida*, não do issue), um briefing que não leva a lado nenhum vai para
+`qa:blocked-spec`, e um pai de split é **fechado** — o trabalho vive nos sub-issues.
+
+Quando um issue encrava, escala a **estratégia**, não o issue:
+
+| Tentativa | O que acontece |
+|---|---|
+| 1-2 | implementa normalmente |
+| 3 | volta ao curator **com o histórico de falhas** — o briefing é reescrito a partir do que falhou, não do palpite inicial |
+| 4+ | força `split` em pedaços que caibam |
+
+Validado no #1202: falhou 3 vezes a reservar espaço para o FAB dentro do ecrã
+interior; a reanálise identificou que o FAB vive no `Scaffold` exterior, e a
+abordagem seguinte (widget `FabClearance` no mesmo Scaffold) passou à primeira.
 
 ### Porque há dois tipos de bloqueio
 
@@ -106,6 +123,31 @@ A árvore semântica só existe depois de activar a acessibilidade
 (`enableSemantics()`). Esquecer isso é a razão nº1 para um probe "não encontrar
 nada".
 
+## TDD, com o passo vermelho provado
+
+O implementador escreve o teste **primeiro** e tem de o ver falhar **pela razão
+certa** antes de tocar no código de produção, registando a mensagem de falha no corpo
+do PR. Não é cerimónia: um reviewer deste pipeline já refutou empiricamente um teste
+escrito depois do fix — reverteu o ficheiro de produção, o teste continuou a passar, e
+ficou provado que não testava nada.
+
+O reviewer **verifica** essa prova em vez de a aceitar (`red_step_proven`,
+`edge_cases_covered` são campos do veredicto), e revert-e-corre ele próprio se a
+alegação parecer fraca.
+
+Testes do caminho feliz não chegam. Exige-se, conforme aplicável: fronteiras (0, 1, o
+limite ±1 — fix a 360px testa 359 e 361), vazios e `null`, entradas inválidas,
+**repetição** (este projeto já gravou uma despesa duas vezes), e o inverso do fix. Um
+teste que não pode falhar é pior que nenhum: compra confiança falsa.
+
+## Conflitos de merge
+
+Um PR aprovado que não integra **não é código mau**. O `implement.sh` integra o `dev`
+e, havendo conflito, deixa os marcadores na árvore e entrega-os ao agente para
+resolver **por intenção** — perceber o que cada lado queria e preservar ambos. Nunca
+`--ours`/`--theirs` em bloco (apaga trabalho alheio em silêncio); em ARB e ficheiros
+gerados, manter as chaves dos dois lados e regenerar.
+
 ## Dimensões de teste
 
 Uma por ficheiro em `scripts/team/dimensions/`, corridas **em paralelo** (só leem
@@ -117,6 +159,23 @@ issues.
 
 Acrescentar uma dimensão é acrescentar um ficheiro `.md` e o nome à lista em
 `critic.sh`.
+
+## Visão: o pedido é dividido
+
+Vários papéis precisam de **ver** os screenshots. O Claude vê; o modelo de fallback
+não aceita imagens de todo, e falha com violência — `400 this model does not support
+image input` mata a corrida inteira sem veredicto.
+
+A solução não é cegar o agente, é **dividir o pedido**: `qa-describe-image.sh` manda o
+screenshot a um modelo de visão (`gemma4:31b`, escolhido por teste contra um
+screenshot real — o `glm-5.2` e o próprio `deepseek-v4-flash` não têm visão) e devolve
+a descrição em texto, que o modelo de raciocínio usa como qualquer outra prova.
+
+Detalhes que só aparecem a construir: o payload vai por **ficheiro** (um screenshot em
+base64 são ~140KB e o `curl -d` morre com *argument list too long*), e o prompt exige
+**perguntas fechadas** — "o valor do cartão 'Este Mês' está truncado?" em vez de
+"descreve a imagem". O agente é instruído a citar a descrição como prova de segunda
+mão, para os veredictos não fingirem uma observação que não fizeram.
 
 ## Motor: subscrição com fallback
 
