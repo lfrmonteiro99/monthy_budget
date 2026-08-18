@@ -405,6 +405,26 @@ maybe_promote() {
     return 0
   fi
 
+  # An open promotion PR whose head already matches dev has nothing to add: re-running
+  # promote.sh every 45s would just re-fetch, re-edit the body and re-arm a merge that
+  # is already armed, while it waits for CI.
+  local open_pr open_sha dev_sha
+  open_pr=$(gh pr list --repo "$REPO" --head "$BASE_BRANCH" --base "$PROD_BRANCH" \
+            --state open --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
+  if [ -n "$open_pr" ]; then
+    open_sha=$(gh pr view "$open_pr" --repo "$REPO" --json headRefOid --jq .headRefOid 2>/dev/null || echo "")
+    dev_sha=$(git -C "$TEAM_ROOT" rev-parse "origin/$BASE_BRANCH" 2>/dev/null || echo "")
+    if [ -n "$open_sha" ] && [ "$open_sha" = "$dev_sha" ]; then
+      log "PR de promoção #$open_pr já cobre $BASE_BRANCH ($ahead commit(s)) — à espera dos gates"
+      return 0
+    fi
+  fi
+
+  # main's sha BEFORE, so we can tell "the promotion actually landed" from "a PR was
+  # opened". Only the former means there is new production code to re-test.
+  local main_before
+  main_before=$(git -C "$TEAM_ROOT" rev-parse "origin/$PROD_BRANCH" 2>/dev/null || echo "")
+
   log "PROMOÇÃO ($reason) -> $ahead commit(s) verificados em $BASE_BRANCH"
   bash "$SCRIPT_DIR/promote.sh" || log "promoção falhou (segue-se em frente)"
 
@@ -417,8 +437,17 @@ maybe_promote() {
   # The backlog threshold below is what stops that flooding the tracker: with a
   # deep queue of known-unfixed defects, a re-sweep mostly re-finds them, and
   # de-duplication throws the work away after the testers already spent the time.
-  rm -f "$COVERED_DIMS_FILE"
-  log "cobertura de dimensões reposta — o critic revarre o novo $PROD_BRANCH quando a fila permitir"
+  # Reset the sweep record only if main ACTUALLY moved. Opening or updating a
+  # promotion PR changes nothing in production, and resetting on that would have the
+  # critic re-sweeping a main it has already covered, every cycle the PR sits waiting
+  # for CI.
+  git -C "$TEAM_ROOT" fetch origin "$PROD_BRANCH" >/dev/null 2>&1 || true
+  local main_after
+  main_after=$(git -C "$TEAM_ROOT" rev-parse "origin/$PROD_BRANCH" 2>/dev/null || echo "")
+  if [ -n "$main_after" ] && [ "$main_after" != "$main_before" ]; then
+    rm -f "$COVERED_DIMS_FILE"
+    log "$PROD_BRANCH avançou para ${main_after:0:8} — cobertura reposta, o critic revarre quando a fila permitir"
+  fi
 }
 
 CRITIC_BG_PID=""
