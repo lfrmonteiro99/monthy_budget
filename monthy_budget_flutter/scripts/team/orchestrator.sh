@@ -536,22 +536,42 @@ maybe_launch_critic_sweep() {
   # actionable issues, a sweep mostly re-finds defects that are already filed and
   # waiting: de-duplication then discards the result, so the testers' time and
   # quota bought nothing. Below it, new findings can actually be acted on.
-  local backlog
+  # DISCOVERY NEVER STOPS — IT ONLY SLOWS DOWN.
+  #
+  # This used to be all-or-nothing: below the threshold sweep every pending dimension,
+  # above it sweep nothing. With this pipeline's throughput of roughly 1.5 issues an
+  # hour and a queue that normally sits at 9-15, "above it" is the permanent state, so
+  # the critic simply stopped. Measured: it launched three times on 2026-08-17 and NOT
+  # ONCE in the fifteen hours after, while being deferred thirty-five times. Every
+  # issue worked today came from yesterday's sweeps. A QA pipeline that has stopped
+  # looking is just a queue being drained, and from the logs it looks perfectly busy.
+  #
+  # The threshold now chooses the RATE instead of switching discovery off. With a
+  # drained queue, sweep everything outstanding and get full coverage fast. With a deep
+  # queue, sweep ONE dimension — enough that findings keep arriving and no dimension
+  # waits forever, few enough that the queue is not flooded by a nine-dimension batch
+  # nobody can drain. That flooding is the real thing the threshold was defending
+  # against, and one dimension at a time defends against it just as well without the
+  # fifteen-hour blind spot.
+  local backlog dims
   backlog=$(count_actionable)
+  dims="$pending"
   if [ "$backlog" -gt "${TEAM_RESWEEP_MAX_BACKLOG:-8}" ]; then
-    log "critic adiado: $backlog issues por tratar (limite ${TEAM_RESWEEP_MAX_BACKLOG:-8}) — corrigir primeiro"
-    return 1
+    dims=$(printf '%s' "$pending" | awk '{print $1}')
+    log "fila com $backlog issues (limite ${TEAM_RESWEEP_MAX_BACKLOG:-8}) — varro só '$dims' em vez de: $pending"
   fi
 
-  log "CRITIC (em paralelo) -> dimensões a (re)varrer: $pending"
+  log "CRITIC (em paralelo) -> dimensões a (re)varrer: $dims"
   nohup bash "$SCRIPT_DIR/critic.sh" \
     --branch "$PROD_BRANCH" \
-    --dimensions "$(printf '%s' "$pending" | tr ' ' ',')" \
+    --dimensions "$(printf '%s' "$dims" | tr ' ' ',')" \
     >> "$LOG_DIR/critic-bg.log" 2>&1 &
   CRITIC_BG_PID=$!
   # Marked covered at launch, not at completion: a dimension that fails leaves its
   # reason in the log, and re-launching it every 45s would fork sweeps forever.
-  mark_dims_covered "$pending"
+  # Only what was actually launched — marking `pending` here would silently retire
+  # the eight dimensions this trickle did not run.
+  mark_dims_covered "$dims"
   return 0
 }
 
