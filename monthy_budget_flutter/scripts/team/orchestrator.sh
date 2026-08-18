@@ -279,7 +279,16 @@ cleanup_stale() {
     #
     # critic-*.json is therefore never touched here — the critic owns its own
     # verdicts and deletes each one as soon as it has filed it.
-    for role in curator implement review verify; do
+    # The curator now runs on its OWN slot, so the main lock being free says nothing
+    # about whether a curator is alive. Deleting its verdict here would repeat, exactly,
+    # the bug that destroyed the critic's work: wiping the output of a live agent that
+    # happens to run in another slot. So the curator is skipped whenever its own lock
+    # is held.
+    local roles="implement review verify"
+    if flock -w 0 -n "/tmp/monthy-budget-agent.curator.lock" true 2>/dev/null; then
+      roles="curator $roles"
+    fi
+    for role in $roles; do
       rm -f "$VERDICT_DIR/$role"-*.json 2>/dev/null || true
     done
 
@@ -608,6 +617,35 @@ while true; do
 
   DID=0
 
+  # 0. Curate raw critic findings — DETACHED, and FIRST, before anything blocking.
+  #
+  # This used to block the cycle for the curator's full 17 minutes, which with a
+  # global mutex meant 66 minutes of strictly serial agent time per issue. The
+  # curator is the one role that costs nothing to run alongside the others: GitHub
+  # comments and labels only, no git, no build, a 12MB worktree and ~200MB of RAM.
+  #
+  # POSITION IS THE WHOLE POINT, and getting it wrong made the change worthless.
+  # Detached-but-last is not concurrent: this first sat at step 6, after the review /
+  # verify / implement calls, each of which blocks the cycle for 9 to 25 minutes. The
+  # launch was simply never reached until the heavy role had finished, so the curator
+  # still ran strictly after it — the same serial order, now with extra machinery.
+  # Observed live: at 13:33:49 the verifier was dispatched and no curator started.
+  #
+  # It runs FIRST instead, and sets no DID: launching the curator is not the cycle
+  # having done its work, so the same pass goes on to dispatch a heavy role. That is
+  # where the throughput comes from.
+  if [ -z "$(first_with "$L_TRIAGE")" ]; then
+    :
+  elif ! flock -w 0 -n "/tmp/monthy-budget-agent.curator.lock" true 2>/dev/null; then
+    log "curator já a correr no seu slot — a triagem espera a vez"
+  else
+    I=$(first_with "$L_TRIAGE")
+    log "CURATOR (paralelo) -> #$I"
+    nohup bash "$SCRIPT_DIR/curator.sh" "$I" \
+      >> "$LOG_DIR/curator-bg.log" 2>&1 &
+  fi
+
+
   # Priority order matters. Reviewing first is what unblocks merges; verifying
   # next is what closes issues. Only then do we start new work — otherwise the
   # backlog grows faster than it drains and nothing ever reaches qa:done.
@@ -651,13 +689,7 @@ while true; do
     if [ -n "$I" ]; then run_implement "$I"; DID=1; fi
   fi
 
-  # 6. Curate raw critic findings.
-  if [ "$DID" = "0" ]; then
-    I=$(first_with "$L_TRIAGE")
-    if [ -n "$I" ]; then run_curator "$I"; DID=1; fi
-  fi
-
-  # 7. Backlog empty: that closes a loop. Run the critic to find the next batch.
+  # 6. Backlog empty: that closes a loop. Run the critic to find the next batch.
   if [ "$DID" = "0" ]; then
     # Trustworthy by construction: the cycle already aborted if the snapshot this
     # counts could not be read.
