@@ -670,4 +670,129 @@ void main() {
       expect(find.text(formatCurrency(3000)), findsOneWidget);
     });
   });
+
+  // Regression coverage for #1218: 'Top Categorias' summed only
+  // actualExpenses for 'alimentacao', while 'Orçamento vs Real' also merged
+  // purchaseHistory.spentInMonth(...) into the same category — same page,
+  // two different totals for the same concept.
+  group('Top Categories mirrors Budget vs Actual real total for alimentacao (#1218)',
+      () {
+    final l10n = SEn();
+    final now = DateTime.now();
+
+    Widget buildDashboard({
+      required List<ActualExpense> actualExpenses,
+      required PurchaseHistory purchaseHistory,
+    }) {
+      return wrapWithTestApp(
+        DashboardScreen(
+          settings: const AppSettings(),
+          summary: const BudgetSummary(
+            totalGross: 3000,
+            totalNetWithMeal: 3000,
+            totalExpenses: 775.00,
+            netLiquidity: 2225.00,
+          ),
+          purchaseHistory: purchaseHistory,
+          dashboardConfig: const LocalDashboardConfig(
+            showHeroCard: false,
+            showSummaryCards: false,
+            showSalaryBreakdown: false,
+            showBudgetVsActual: true,
+            showPurchaseHistory: false,
+            showCharts: false,
+            showStressIndex: false,
+            showMonthReview: false,
+            showUpcomingBills: false,
+            showTaxDeductions: false,
+            showSavingsGoals: false,
+            showExpensesBreakdown: false,
+            showBudgetStreaks: false,
+            showCashFlowForecast: false,
+            showBurnRate: false,
+            showTopCategories: true,
+            showSavingsRate: false,
+            showCoachInsight: false,
+            showQuickActions: false,
+            showSpendingAnomalies: false,
+          ),
+          expenseHistory: const {},
+          actualExpenses: actualExpenses,
+          monthlyBudgets: const {},
+          recurringExpenses: const [],
+          actualExpenseHistory: const {},
+          onOpenSettings: () {},
+          onSaveSettings: (_) {},
+          onSnapshotExpenses: () {},
+          onAddExpense: () {},
+          onOpenExpenseTracker: () {},
+        ),
+      );
+    }
+
+    testWidgets(
+        'transactions + supermarket purchases: both cards show the merged total',
+        (tester) async {
+      await tester.pumpWidget(buildDashboard(
+        actualExpenses: [
+          ActualExpense(
+            id: 'a1',
+            category: 'alimentacao',
+            amount: 585.60,
+            date: DateTime(now.year, now.month, 5),
+            monthKey: '${now.year}-${now.month.toString().padLeft(2, '0')}',
+          ),
+        ],
+        purchaseHistory: PurchaseHistory(records: [
+          PurchaseRecord(
+            id: 'p1',
+            date: DateTime(now.year, now.month, 12),
+            amount: 189.40,
+            itemCount: 6,
+          ),
+        ]),
+      ));
+      await tester.pumpAndSettle();
+
+      // Top Categorias must show the SAME merged total (585,60 + 189,40 =
+      // 775,00) that Orçamento vs Real already shows for 'alimentacao' —
+      // before the fix, Top Categorias only summed actualExpenses (585,60 €).
+      expect(find.text(formatCurrency(775.00)), findsOneWidget); // Top Categorias subtitle
+      expect(
+        find.text('${l10n.expenseTrackerActual}: ${formatCurrency(775.00)}'),
+        findsOneWidget,
+      ); // Orçamento vs Real total row
+      expect(find.text(formatCurrency(585.60)), findsNothing);
+      expect(
+        find.text('${l10n.expenseTrackerActual}: ${formatCurrency(585.60)}'),
+        findsNothing,
+      );
+    });
+
+    testWidgets(
+        'no supermarket purchases this month: Top Categories unaffected (no regression)',
+        (tester) async {
+      await tester.pumpWidget(buildDashboard(
+        actualExpenses: [
+          ActualExpense(
+            id: 'a1',
+            category: 'alimentacao',
+            amount: 585.60,
+            date: DateTime(now.year, now.month, 5),
+            monthKey: '${now.year}-${now.month.toString().padLeft(2, '0')}',
+          ),
+        ],
+        purchaseHistory: const PurchaseHistory(),
+      ));
+      await tester.pumpAndSettle();
+
+      // purchaseHistory.spentInMonth() == 0 → both cards must show exactly
+      // the transaction total, unchanged from current behaviour.
+      expect(find.text(formatCurrency(585.60)), findsOneWidget); // Top Categorias
+      expect(
+        find.text('${l10n.expenseTrackerActual}: ${formatCurrency(585.60)}'),
+        findsOneWidget,
+      ); // Orçamento vs Real
+    });
+  });
 }
