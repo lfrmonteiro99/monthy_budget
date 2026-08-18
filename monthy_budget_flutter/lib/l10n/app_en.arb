@@ -2589,6 +2589,14 @@
     "insightsTaxOutcome": "Estimate annual tax outcome",
 
     "moreTitle": "More",
+    "moreInfoAbout": "More info about {title}",
+    "@moreInfoAbout": {
+        "placeholders": {
+            "title": {
+                "type": "String"
+            }
+        }
+    },
     "moreDetailedDashboard": "Detailed Dashboard",
     "moreDetailedDashboardSubtitle": "Open full financial dashboard with all cards",
     "moreSavingsSubtitle": "Track and update your goal progress",
