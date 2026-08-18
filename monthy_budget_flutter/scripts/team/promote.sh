@@ -90,6 +90,49 @@ if [ "$BEHIND" -gt 0 ]; then
   git -C "$TEAM_ROOT" fetch origin "$BASE_BRANCH" >/dev/null 2>&1 || true
 fi
 
+# ── Nothing to promote is decided by CONTENT, not by commit count ──────────
+#
+# The promotion is squash-merged, so dev's original commits never become ancestors
+# of main. dev therefore reports AHEAD forever while its content is already shipped,
+# and the cadence check opens a PR with an EMPTY DIFF every cycle. #1263 and #1265
+# were exactly that: 0 files, 0 lines, each burning a full CI run across 8 checks.
+#
+# The realign at the bottom of this script was supposed to prevent it, and could
+# not: it reads the PR's state immediately after arming `--auto`, when the PR is
+# necessarily still OPEN because CI has not run yet. "Not merged yet" was read as
+# "will not merge", so the realign never fired for the only merge mode this repo
+# uses. Checking here instead makes it independent of WHEN the merge happens — the
+# next cycle sees the empty diff and realigns, whenever that is.
+git -C "$TEAM_ROOT" fetch origin "$PROD_BRANCH" "$BASE_BRANCH" >/dev/null 2>&1 || true
+if [ -z "$(git -C "$TEAM_ROOT" diff "origin/$PROD_BRANCH" "origin/$BASE_BRANCH" 2>/dev/null)" ]; then
+  log "$BASE_BRANCH está $AHEAD commit(s) à frente mas o conteúdo é idêntico a $PROD_BRANCH"
+  log "  — promoção vazia evitada"
+  # This branch sits ABOVE the dry-run guard further down, so it has to honour
+  # --dry-run itself. Without this, `--dry-run` would push for real.
+  if [ "$DRY" = "1" ]; then
+    log "  [dry-run] realinharia $BASE_BRANCH com $PROD_BRANCH e não abriria PR"
+    exit 0
+  fi
+  # Safe by construction: only ever reached when the diff is empty, so this can
+  # never discard work that has not shipped.
+  if git -C "$TEAM_ROOT" push --force-with-lease origin \
+       "origin/$PROD_BRANCH:refs/heads/$BASE_BRANCH" >/dev/null 2>&1; then
+    log "  $BASE_BRANCH realinhado com $PROD_BRANCH"
+  else
+    log "  AVISO: realinhamento falhou — a promoção vazia repete no próximo ciclo"
+  fi
+  # An empty PR already open would sit there forever consuming CI on every push.
+  STALE=$(gh pr list --repo "$REPO" --head "$BASE_BRANCH" --base "$PROD_BRANCH" \
+    --state open --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
+  if [ -n "$STALE" ]; then
+    gh pr close "$STALE" --repo "$REPO" --comment "Fechado pelo orquestrador: o diff\
+ para \`$PROD_BRANCH\` está vazio — este conteúdo já foi promovido e \`$BASE_BRANCH\`\
+ foi realinhado." >/dev/null 2>&1 \
+      && log "  PR de promoção vazio #$STALE fechado"
+  fi
+  exit 0
+fi
+
 COMMITS=$(git -C "$TEAM_ROOT" log --pretty='- %s' "origin/$PROD_BRANCH..origin/$BASE_BRANCH" 2>/dev/null | head -40)
 
 # Issues delivered by this promotion, taken from the commit subjects. They are
@@ -179,6 +222,10 @@ fi
 # dev is a staging branch, not a history worth preserving, so once its content is
 # in main the honest state is "identical" — reset the ref. Only ever done when the
 # diff is genuinely empty, so this can never discard unpromoted work.
+# NOTE: this is only a FAST PATH, for the rare case where the PR is already merged
+# by the time we look. It cannot be the guard, because with `--auto` the PR is still
+# OPEN here in every normal run — CI has not finished. The real guard is the
+# empty-diff check above, which does not depend on when the merge happens.
 if [ "$(gh pr view "$PR" --repo "$REPO" --json state --jq .state 2>/dev/null)" = "MERGED" ]; then
   git -C "$TEAM_ROOT" fetch origin "$PROD_BRANCH" "$BASE_BRANCH" >/dev/null 2>&1 || true
   if [ -z "$(git -C "$TEAM_ROOT" diff "origin/$PROD_BRANCH" "origin/$BASE_BRANCH" 2>/dev/null)" ]; then
