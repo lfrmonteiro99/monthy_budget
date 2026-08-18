@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:monthly_management/l10n/generated/app_localizations_en.dart';
+import 'package:monthly_management/l10n/generated/app_localizations_fr.dart';
+import 'package:monthly_management/l10n/generated/app_localizations_pt.dart';
 
 void main() {
   late SEn en;
@@ -143,6 +145,70 @@ void main() {
     test('planShopNoMealsBodyWithMenu is not hardcoded PT', () {
       expect(en.planShopNoMealsBodyWithMenu, isNotNull);
       expect(en.planShopNoMealsBodyWithMenu, isNot(contains('Nenhuma')));
+    });
+  });
+
+  group('planShop*Count zero case (#1235)', () {
+    // Bare 'pt' and 'fr' locale codes (no region) hit CLDR plural rules
+    // where i==0 collapses into the ONE category alongside i==1, so an
+    // ICU message with only =1/other renders '1 item' for a 0-length list.
+    late SPt pt;
+    late SFr fr;
+    setUpAll(() {
+      pt = SPt();
+      fr = SFr();
+    });
+
+    test('pt planShopItemCount(0) is not the singular form', () {
+      expect(pt.planShopItemCount(0), isNot('1 item'));
+      expect(pt.planShopItemCount(0), contains('0'));
+    });
+
+    test('pt planShopItemCount(1) keeps the singular form', () {
+      expect(pt.planShopItemCount(1), '1 item');
+    });
+
+    test('pt planShopItemCount(2) uses the plural form', () {
+      expect(pt.planShopItemCount(2), '2 itens');
+    });
+
+    test('pt planShopMealCount(0) is not the singular form', () {
+      expect(pt.planShopMealCount(0), isNot('1 refeição'));
+      expect(pt.planShopMealCount(0), contains('0'));
+    });
+
+    test('pt planShopMealCount(1) keeps the singular form', () {
+      expect(pt.planShopMealCount(1), '1 refeição');
+    });
+
+    test('pt planShopMealCount(2) uses the plural form', () {
+      expect(pt.planShopMealCount(2), '2 refeições');
+    });
+
+    test('fr planShopItemCount(0) is not the singular form', () {
+      expect(fr.planShopItemCount(0), isNot('1 article'));
+      expect(fr.planShopItemCount(0), contains('0'));
+    });
+
+    test('fr planShopItemCount(1) keeps the singular form', () {
+      expect(fr.planShopItemCount(1), '1 article');
+    });
+
+    test('fr planShopItemCount(2) uses the plural form', () {
+      expect(fr.planShopItemCount(2), '2 articles');
+    });
+
+    test('fr planShopMealCount(0) is not the singular form', () {
+      expect(fr.planShopMealCount(0), isNot('1 repas'));
+      expect(fr.planShopMealCount(0), contains('0'));
+    });
+
+    test('fr planShopMealCount(1) keeps the singular form', () {
+      expect(fr.planShopMealCount(1), '1 repas');
+    });
+
+    test('fr planShopMealCount(2) uses the plural form', () {
+      expect(fr.planShopMealCount(2), '2 repas');
     });
   });
 }

@@ -6696,6 +6696,7 @@ class SFr extends S {
       locale: localeName,
       other: '$count repas',
       one: '1 repas',
+      zero: '0 repas',
     );
     return '$_temp0';
   }
@@ -6713,6 +6714,7 @@ class SFr extends S {
       locale: localeName,
       other: '$count articles',
       one: '1 article',
+      zero: '0 articles',
     );
     return '$_temp0';
   }
