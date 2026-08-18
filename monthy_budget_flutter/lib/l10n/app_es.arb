@@ -1316,6 +1316,7 @@
     "addExpenseDescription": "Descripción (opcional)",
     "addExpenseCustomCategory": "Categoría personalizada",
     "addExpenseInvalidAmount": "Introduce un importe válido",
+    "addExpenseCategoryRequired": "Selecciona una categoría",
     "addExpenseTooltip": "Registrar gasto",
     "addExpenseItem": "Gasto",
     "addExpenseOthers": "Otros",
@@ -2188,6 +2189,88 @@
     "@alertSeverityInfo": {},
     "criticalAlertBannerMessage": "{count, plural, =1{1 alerta crítica — tocar para ver} other{{count} alertas críticas — tocar para ver}}",
     "@criticalAlertBannerMessage": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "syncDomainSettings": "Configuración",
+    "syncDomainShopping": "Lista de la compra",
+    "syncDomainMealPlan": "Plan de comidas",
+    "syncDomainExpenses": "Gastos",
+    "syncDomainPurchaseHistory": "Historial de compras",
+    "syncDomainSavingsGoals": "Metas de ahorro",
+    "syncDomainRecurringExpenses": "Gastos recurrentes",
+    "syncFailedToSyncTitle": "La sincronización de {domain} falló",
+    "@syncFailedToSyncTitle": {
+        "placeholders": {
+            "domain": {
+                "type": "String"
+            }
+        }
+    },
+    "syncErrorFallbackBody": "Se produjo un error durante la sincronización.",
+    "syncErrorAction": "Intente actualizar o compruebe su conexión.",
+    "syncStaleTitle": "Los datos de {domain} pueden estar desactualizados",
+    "@syncStaleTitle": {
+        "placeholders": {
+            "domain": {
+                "type": "String"
+            }
+        }
+    },
+    "syncLastSyncedBody": "Última sincronización {timeAgo}.",
+    "@syncLastSyncedBody": {
+        "placeholders": {
+            "timeAgo": {
+                "type": "String"
+            }
+        }
+    },
+    "syncNeverSyncedBody": "Nunca sincronizado en este dispositivo.",
+    "syncOpenSectionAction": "Abra la sección de la app para actualizar.",
+    "syncRecurringNotPopulatedTitle": "Gastos recurrentes no aplicados este mes",
+    "syncRecurringNotPopulatedBody": "Sus gastos recurrentes aún no se han aplicado a este mes.",
+    "syncRecurringNotPopulatedAction": "Abra el Rastreador de Gastos para generarlos.",
+    "syncMealPlanOldTitle": "El plan de comidas puede estar desactualizado",
+    "syncMealPlanOldBody": "{count, plural, =1{Su plan de comidas se generó hace 1 día.} other{Su plan de comidas se generó hace {count} días.}}",
+    "@syncMealPlanOldBody": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "syncMealPlanOldAction": "Considere regenerar su plan de comidas.",
+    "syncFoodSpendUpTitle": "Gasto en comida {pct}% más que el mes pasado",
+    "@syncFoodSpendUpTitle": {
+        "placeholders": {
+            "pct": {
+                "type": "String"
+            }
+        }
+    },
+    "syncFoodSpendUpBody": "El gasto en comida del mes actual es significativamente mayor que el del mes anterior.",
+    "syncFoodSpendUpAction": "Revise sus gastos de compra y comidas.",
+    "syncTimeAgoDays": "{count, plural, =1{hace 1 día} other{hace {count} días}}",
+    "@syncTimeAgoDays": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "syncTimeAgoHours": "{count, plural, =1{hace 1 hora} other{hace {count} horas}}",
+    "@syncTimeAgoHours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "syncTimeAgoMinutes": "{count, plural, =1{hace 1 minuto} other{hace {count} minutos}}",
+    "@syncTimeAgoMinutes": {
         "placeholders": {
             "count": {
                 "type": "int"

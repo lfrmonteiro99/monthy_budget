@@ -3,6 +3,7 @@ import 'package:monthly_management/widgets/calm/calm.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../services/yearly_summary_service.dart';
 import '../theme/app_colors.dart';
+import '../utils/category_helpers.dart';
 import '../utils/formatters.dart';
 
 /// A screen that displays the yearly summary / annual report.
@@ -135,7 +136,7 @@ class _CategoryBreakdownCard extends StatelessWidget {
           const SizedBox(height: 12),
           for (var i = 0; i < sorted.length; i++) ...[
             _KpiRow(
-              label: sorted[i].key,
+              label: localizedCategoryLabel(sorted[i].key, l10n),
               value: formatCurrency(sorted[i].value),
             ),
             if (i < sorted.length - 1)

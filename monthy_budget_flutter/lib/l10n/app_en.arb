@@ -1422,6 +1422,7 @@
     "addExpenseDescription": "Description (optional)",
     "addExpenseCustomCategory": "Custom category",
     "addExpenseInvalidAmount": "Enter a valid amount",
+    "addExpenseCategoryRequired": "Select a category",
     "addExpenseTooltip": "Log expense",
     "addExpenseItem": "Expense",
     "addExpenseOthers": "Others",
@@ -2310,6 +2311,88 @@
     "@alertSeverityInfo": {},
     "criticalAlertBannerMessage": "{count, plural, =1{1 critical alert — tap to view} other{{count} critical alerts — tap to view}}",
     "@criticalAlertBannerMessage": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "syncDomainSettings": "Settings",
+    "syncDomainShopping": "Shopping list",
+    "syncDomainMealPlan": "Meal plan",
+    "syncDomainExpenses": "Expenses",
+    "syncDomainPurchaseHistory": "Purchase history",
+    "syncDomainSavingsGoals": "Savings goals",
+    "syncDomainRecurringExpenses": "Recurring expenses",
+    "syncFailedToSyncTitle": "{domain} failed to sync",
+    "@syncFailedToSyncTitle": {
+        "placeholders": {
+            "domain": {
+                "type": "String"
+            }
+        }
+    },
+    "syncErrorFallbackBody": "An error occurred during sync.",
+    "syncErrorAction": "Try refreshing or check your connection.",
+    "syncStaleTitle": "{domain} data may be outdated",
+    "@syncStaleTitle": {
+        "placeholders": {
+            "domain": {
+                "type": "String"
+            }
+        }
+    },
+    "syncLastSyncedBody": "Last synced {timeAgo}.",
+    "@syncLastSyncedBody": {
+        "placeholders": {
+            "timeAgo": {
+                "type": "String"
+            }
+        }
+    },
+    "syncNeverSyncedBody": "Never synced on this device.",
+    "syncOpenSectionAction": "Open the app section to refresh.",
+    "syncRecurringNotPopulatedTitle": "Recurring expenses not populated this month",
+    "syncRecurringNotPopulatedBody": "Your recurring expenses have not been applied to this month yet.",
+    "syncRecurringNotPopulatedAction": "Open Expense Tracker to trigger population.",
+    "syncMealPlanOldTitle": "Meal plan may be outdated",
+    "syncMealPlanOldBody": "{count, plural, =1{Your meal plan was generated 1 day ago.} other{Your meal plan was generated {count} days ago.}}",
+    "@syncMealPlanOldBody": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "syncMealPlanOldAction": "Consider regenerating your meal plan.",
+    "syncFoodSpendUpTitle": "Food spending up {pct}% vs last month",
+    "@syncFoodSpendUpTitle": {
+        "placeholders": {
+            "pct": {
+                "type": "String"
+            }
+        }
+    },
+    "syncFoodSpendUpBody": "Current month food spend is significantly higher than the prior month.",
+    "syncFoodSpendUpAction": "Review your grocery and meal expenses.",
+    "syncTimeAgoDays": "{count, plural, =1{1 day ago} other{{count} days ago}}",
+    "@syncTimeAgoDays": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "syncTimeAgoHours": "{count, plural, =1{1 hour ago} other{{count} hours ago}}",
+    "@syncTimeAgoHours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "syncTimeAgoMinutes": "{count, plural, =1{1 minute ago} other{{count} minutes ago}}",
+    "@syncTimeAgoMinutes": {
         "placeholders": {
             "count": {
                 "type": "int"

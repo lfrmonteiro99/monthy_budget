@@ -40,10 +40,12 @@ class ConfidenceCenterScreen extends StatelessWidget {
               body: '',
             )
           else
-            ...alerts.map((alert) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: _AlertCard(alert: alert),
-                )),
+            ...alerts.map(
+              (alert) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: _AlertCard(alert: alert),
+              ),
+            ),
           const SizedBox(height: 24),
 
           // Recommended actions section
@@ -83,11 +85,13 @@ class ConfidenceCenterScreen extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: actions
-              .map((action) => CalmListTile(
-                    leadingIcon: Icons.arrow_forward,
-                    leadingColor: AppColors.accent(context),
-                    title: action,
-                  ))
+              .map(
+                (action) => CalmListTile(
+                  leadingIcon: Icons.arrow_forward,
+                  leadingColor: AppColors.accent(context),
+                  title: action,
+                ),
+              )
               .toList(),
         ),
       ),
@@ -102,6 +106,7 @@ class _SyncHealthCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return CalmCard(
       child: Wrap(
         spacing: 8,
@@ -111,12 +116,9 @@ class _SyncHealthCard extends StatelessWidget {
           final color = status.hasRecentError
               ? AppColors.bad(context)
               : status.isStale
-                  ? AppColors.warn(context)
-                  : AppColors.ok(context);
-          return CalmPill(
-            label: domainLabel(domain),
-            color: color,
-          );
+              ? AppColors.warn(context)
+              : AppColors.ok(context);
+          return CalmPill(label: domainLabel(domain, l10n), color: color);
         }).toList(),
       ),
     );
@@ -132,8 +134,14 @@ class _AlertCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     final (Color leadColor, String severityLabel) = switch (alert.severity) {
-      AlertSeverity.critical => (AppColors.bad(context), l10n.alertSeverityCritical),
-      AlertSeverity.warning => (AppColors.warn(context), l10n.alertSeverityWarning),
+      AlertSeverity.critical => (
+        AppColors.bad(context),
+        l10n.alertSeverityCritical,
+      ),
+      AlertSeverity.warning => (
+        AppColors.warn(context),
+        l10n.alertSeverityWarning,
+      ),
       AlertSeverity.info => (AppColors.accent(context), l10n.alertSeverityInfo),
     };
 

@@ -2490,6 +2490,9 @@ class SPt extends S {
   String get addExpenseInvalidAmount => 'Introduza um valor válido';
 
   @override
+  String get addExpenseCategoryRequired => 'Selecione uma categoria';
+
+  @override
   String get addExpenseTooltip => 'Registar despesa';
 
   @override
@@ -4239,6 +4242,132 @@ class SPt extends S {
   }
 
   @override
+  String get syncDomainSettings => 'Definições';
+
+  @override
+  String get syncDomainShopping => 'Lista de compras';
+
+  @override
+  String get syncDomainMealPlan => 'Plano de refeições';
+
+  @override
+  String get syncDomainExpenses => 'Despesas';
+
+  @override
+  String get syncDomainPurchaseHistory => 'Histórico de compras';
+
+  @override
+  String get syncDomainSavingsGoals => 'Metas de poupança';
+
+  @override
+  String get syncDomainRecurringExpenses => 'Despesas recorrentes';
+
+  @override
+  String syncFailedToSyncTitle(String domain) {
+    return 'A sincronização de $domain falhou';
+  }
+
+  @override
+  String get syncErrorFallbackBody =>
+      'Ocorreu um erro durante a sincronização.';
+
+  @override
+  String get syncErrorAction => 'Tente atualizar ou verifique a sua ligação.';
+
+  @override
+  String syncStaleTitle(String domain) {
+    return 'Os dados de $domain podem estar desatualizados';
+  }
+
+  @override
+  String syncLastSyncedBody(String timeAgo) {
+    return 'Última sincronização $timeAgo.';
+  }
+
+  @override
+  String get syncNeverSyncedBody => 'Nunca sincronizado neste dispositivo.';
+
+  @override
+  String get syncOpenSectionAction => 'Abra a secção da app para atualizar.';
+
+  @override
+  String get syncRecurringNotPopulatedTitle =>
+      'Despesas recorrentes não aplicadas este mês';
+
+  @override
+  String get syncRecurringNotPopulatedBody =>
+      'As suas despesas recorrentes ainda não foram aplicadas a este mês.';
+
+  @override
+  String get syncRecurringNotPopulatedAction =>
+      'Abra o Rastreador de Despesas para gerar.';
+
+  @override
+  String get syncMealPlanOldTitle =>
+      'O plano de refeições pode estar desatualizado';
+
+  @override
+  String syncMealPlanOldBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'O seu plano de refeições foi gerado há $count dias.',
+      one: 'O seu plano de refeições foi gerado há 1 dia.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get syncMealPlanOldAction =>
+      'Considere gerar novamente o seu plano de refeições.';
+
+  @override
+  String syncFoodSpendUpTitle(String pct) {
+    return 'Gasto com comida $pct% acima do mês passado';
+  }
+
+  @override
+  String get syncFoodSpendUpBody =>
+      'O gasto com comida do mês atual está significativamente acima do mês anterior.';
+
+  @override
+  String get syncFoodSpendUpAction =>
+      'Reveja os seus gastos com mercearia e refeições.';
+
+  @override
+  String syncTimeAgoDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'há $count dias',
+      one: 'há 1 dia',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String syncTimeAgoHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'há $count horas',
+      one: 'há 1 hora',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String syncTimeAgoMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'há $count minutos',
+      one: 'há 1 minuto',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get pantryPickerTitle => 'Selecionar Despensa';
 
   @override
@@ -5831,11 +5960,11 @@ class SPt extends S {
   String get yearlySummaryExpenses => 'Despesas Totais';
 
   @override
-  String get yearlySummaryNetSavings => 'Poupanca Liquida';
+  String get yearlySummaryNetSavings => 'Poupança Líquida';
 
   @override
   String yearlySummarySavingsRate(String rate) {
-    return 'Taxa de poupanca: $rate%';
+    return 'Taxa de poupança: $rate%';
   }
 
   @override
@@ -5843,16 +5972,16 @@ class SPt extends S {
 
   @override
   String yearlySummaryBestMonth(String month) {
-    return 'Melhor mes ($month)';
+    return 'Melhor mês ($month)';
   }
 
   @override
   String yearlySummaryWorstMonth(String month) {
-    return 'Pior mes ($month)';
+    return 'Pior mês ($month)';
   }
 
   @override
-  String get yearlySummaryCategoryBreakdown => 'Distribuicao por Categoria';
+  String get yearlySummaryCategoryBreakdown => 'Distribuição por Categoria';
 
   @override
   String get mealSectionHousehold => 'Quem come?';

@@ -631,6 +631,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
               children: [
                 IconButton(
                   onPressed: _loading ? null : () => _navigateMonth(-1),
+                  tooltip: l10n.mealPlannerPreviousMonth,
                   icon: Icon(
                     Icons.chevron_left,
                     color: _loading
@@ -648,6 +649,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                 ),
                 IconButton(
                   onPressed: _loading ? null : () => _navigateMonth(1),
+                  tooltip: l10n.mealPlannerNextMonth,
                   icon: Icon(
                     Icons.chevron_right,
                     color: _loading
@@ -819,7 +821,11 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                   )
                 : _expenses.isEmpty
                 ? _buildEmptyState(l10n)
-                : CustomScrollView(
+                : Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: CalmScaffold.fabBottomClearance,
+                    ),
+                    child: CustomScrollView(
                     key: ExpenseTrackerTourKeys.categoryList,
                     slivers: [
                       // "ALERTAS" card — over-budget categories
@@ -871,7 +877,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                         ),
                       ),
                       SliverPadding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 80),
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
                         sliver: SliverList.builder(
                           itemCount: summaries.length,
                           itemBuilder: (_, i) => CategorySection(
@@ -899,6 +905,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                         ),
                       ),
                     ],
+                    ),
                   ),
           ),
         ],
