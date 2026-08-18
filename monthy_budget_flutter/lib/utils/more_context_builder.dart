@@ -3,6 +3,7 @@ import '../models/app_settings.dart';
 import '../models/budget_summary.dart';
 import '../screens/more_screen.dart' show MoreObservation;
 import '../widgets/calm/calm_observation_card.dart';
+import 'category_helpers.dart';
 
 /// Top spending category used to generate the headline observation.
 ///
@@ -111,7 +112,10 @@ class MoreContextBuilder {
         MoreObservation(
           id: 'cat-over-${overBudget.category}',
           kind: CalmObservationKind.warning,
-          title: l10n.moreObsCatOverTitle(overBudget.category, overshoot),
+          title: l10n.moreObsCatOverTitle(
+            localizedCategoryLabel(overBudget.category, l10n),
+            overshoot,
+          ),
           body: l10n.moreObsCatOverBody,
         ),
       );

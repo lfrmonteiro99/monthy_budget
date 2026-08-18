@@ -583,7 +583,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CalmEyebrow(l10n.expenseTrackerMovementEyebrow),
+                      CalmEyebrow(l10n.expenseTrackerMovementEyebrow.toUpperCase()),
                       const SizedBox(height: 4),
                       Text(
                         l10n.expenseTrackerExpensesTitle,
@@ -686,7 +686,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CalmEyebrow(l10n.expenseTrackerThisMonthEyebrow),
+                        CalmEyebrow(l10n.expenseTrackerThisMonthEyebrow.toUpperCase()),
                         const SizedBox(height: 4),
                         FittedBox(
                           fit: BoxFit.scaleDown,
@@ -712,7 +712,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CalmEyebrow(l10n.expenseTrackerAvgPerDayEyebrow),
+                        CalmEyebrow(l10n.expenseTrackerAvgPerDayEyebrow.toUpperCase()),
                         const SizedBox(height: 4),
                         FittedBox(
                           fit: BoxFit.scaleDown,
@@ -738,7 +738,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CalmEyebrow(l10n.expenseTrackerBillsEyebrow),
+                        CalmEyebrow(l10n.expenseTrackerBillsEyebrow.toUpperCase()),
                         const SizedBox(height: 4),
                         Text(
                           '${_expenses.length}',
@@ -871,7 +871,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                         sliver: SliverToBoxAdapter(
                           child: Row(
                             children: [
-                              CalmEyebrow(l10n.expenseTrackerByCategoryEyebrow),
+                              CalmEyebrow(l10n.expenseTrackerByCategoryEyebrow.toUpperCase()),
                               const Spacer(),
                               Text(
                                 '${summaries.length}',
