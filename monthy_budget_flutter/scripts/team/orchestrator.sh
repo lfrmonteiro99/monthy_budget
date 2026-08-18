@@ -498,8 +498,28 @@ maybe_promote() {
   local main_after
   main_after=$(git -C "$TEAM_ROOT" rev-parse "origin/$PROD_BRANCH" 2>/dev/null || echo "")
   if [ -n "$main_after" ] && [ "$main_after" != "$main_before" ]; then
-    rm -f "$COVERED_DIMS_FILE"
-    log "$PROD_BRANCH avançou para ${main_after:0:8} — cobertura reposta, o critic revarre quando a fila permitir"
+    # ...but ONLY when the queue was drained, i.e. this is a loop closing. A CADENCE
+    # promotion mid-drain also moves main, and resetting there is what stalled
+    # discovery all day.
+    #
+    # Measured over ~13 hours: 11 promotions moved main, coverage was reset 3 times,
+    # and the critic swept ONCE while being deferred 35 times on "backlog > 8". Every
+    # cadence promotion re-opened all nine dimensions, so the moment the queue fell to
+    # the threshold a full sweep would refill it — and the loop counter needs the queue
+    # at ZERO. Reset-on-any-move plus a backlog gate do not converge: they oscillate,
+    # and the goal of two completed loops becomes unreachable by construction.
+    #
+    # Tying the reset to a drained queue gives the rhythm the pipeline was designed
+    # for: sweep every dimension, drain what it found to zero, close the loop, ship
+    # the batch, then re-open discovery against the main that batch produced. New
+    # production code still gets re-tested — just once per loop instead of once per
+    # promotion.
+    if [ "$reason" = "backlog vazio" ]; then
+      rm -f "$COVERED_DIMS_FILE"
+      log "$PROD_BRANCH avançou para ${main_after:0:8} — cobertura reposta (loop fechado)"
+    else
+      log "$PROD_BRANCH avançou para ${main_after:0:8} — cobertura mantida (promoção de cadência, fila ainda por drenar)"
+    fi
   fi
 }
 
@@ -516,22 +536,42 @@ maybe_launch_critic_sweep() {
   # actionable issues, a sweep mostly re-finds defects that are already filed and
   # waiting: de-duplication then discards the result, so the testers' time and
   # quota bought nothing. Below it, new findings can actually be acted on.
-  local backlog
+  # DISCOVERY NEVER STOPS — IT ONLY SLOWS DOWN.
+  #
+  # This used to be all-or-nothing: below the threshold sweep every pending dimension,
+  # above it sweep nothing. With this pipeline's throughput of roughly 1.5 issues an
+  # hour and a queue that normally sits at 9-15, "above it" is the permanent state, so
+  # the critic simply stopped. Measured: it launched three times on 2026-08-17 and NOT
+  # ONCE in the fifteen hours after, while being deferred thirty-five times. Every
+  # issue worked today came from yesterday's sweeps. A QA pipeline that has stopped
+  # looking is just a queue being drained, and from the logs it looks perfectly busy.
+  #
+  # The threshold now chooses the RATE instead of switching discovery off. With a
+  # drained queue, sweep everything outstanding and get full coverage fast. With a deep
+  # queue, sweep ONE dimension — enough that findings keep arriving and no dimension
+  # waits forever, few enough that the queue is not flooded by a nine-dimension batch
+  # nobody can drain. That flooding is the real thing the threshold was defending
+  # against, and one dimension at a time defends against it just as well without the
+  # fifteen-hour blind spot.
+  local backlog dims
   backlog=$(count_actionable)
+  dims="$pending"
   if [ "$backlog" -gt "${TEAM_RESWEEP_MAX_BACKLOG:-8}" ]; then
-    log "critic adiado: $backlog issues por tratar (limite ${TEAM_RESWEEP_MAX_BACKLOG:-8}) — corrigir primeiro"
-    return 1
+    dims=$(printf '%s' "$pending" | awk '{print $1}')
+    log "fila com $backlog issues (limite ${TEAM_RESWEEP_MAX_BACKLOG:-8}) — varro só '$dims' em vez de: $pending"
   fi
 
-  log "CRITIC (em paralelo) -> dimensões a (re)varrer: $pending"
+  log "CRITIC (em paralelo) -> dimensões a (re)varrer: $dims"
   nohup bash "$SCRIPT_DIR/critic.sh" \
     --branch "$PROD_BRANCH" \
-    --dimensions "$(printf '%s' "$pending" | tr ' ' ',')" \
+    --dimensions "$(printf '%s' "$dims" | tr ' ' ',')" \
     >> "$LOG_DIR/critic-bg.log" 2>&1 &
   CRITIC_BG_PID=$!
   # Marked covered at launch, not at completion: a dimension that fails leaves its
   # reason in the log, and re-launching it every 45s would fork sweeps forever.
-  mark_dims_covered "$pending"
+  # Only what was actually launched — marking `pending` here would silently retire
+  # the eight dimensions this trickle did not run.
+  mark_dims_covered "$dims"
   return 0
 }
 
