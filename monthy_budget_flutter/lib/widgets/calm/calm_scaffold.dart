@@ -25,6 +25,24 @@ class CalmScaffold extends StatelessWidget {
   /// must wrap their scrollable viewport (not just append trailing list
   /// padding) in `Padding(bottom: fabBottomClearance)` — trailing padding
   /// only protects the last item, not content visible before any scroll.
+  ///
+  /// **Where to apply it matters (#1202).** The `Padding` must wrap the
+  /// scrollable at the SAME `Scaffold` the FAB is attached to — the FAB's
+  /// position is computed against that Scaffold's body, so the reservation
+  /// has to be measured from the same bottom edge:
+  /// - FAB owned by the screen's own `CalmScaffold` (e.g. expense tracker):
+  ///   wrap that screen's own scrollable directly — the screen's bottom
+  ///   edge IS the FAB's reference edge.
+  /// - FAB injected by a parent `Scaffold` (e.g. the dashboard tab's FAB in
+  ///   `app_home.dart`, floating over a container `Column` that wraps the
+  ///   screen together with sibling banners/ad): wrap `content` at THAT
+  ///   parent `Scaffold`, not the inner screen's own scrollable. A
+  ///   clearance added inside the screen anchors to the screen's own bottom
+  ///   edge, which only equals the FAB's reference edge when every sibling
+  ///   renders at zero height — and leaves a bottom sibling (e.g.
+  ///   `AdBannerWidget`) inside the FAB's band. Wrapping at the parent
+  ///   reserves the full footprint around the whole content, invariant to
+  ///   viewport height and to whatever the container renders inside.
   static const double fabBottomClearance = 88.0;
 
   const CalmScaffold({
@@ -92,5 +110,56 @@ class CalmScaffold extends StatelessWidget {
       floatingActionButton: floatingActionButton,
       bottomNavigationBar: bottomNavigationBar,
     );
+  }
+}
+
+/// Reserves the footprint of a persistent `floatingActionButton` that floats
+/// over a scrollable body, measured from the same `Scaffold` edge the FAB's
+/// own position is computed from (#1202).
+///
+/// This is the widget form of
+/// `Padding(bottom: CalmScaffold.fabBottomClearance)` — the reservation is a
+/// named, shared production unit instead of each caller inlining the padding.
+/// Use it as the direct child of the slot the FAB floats over, gated on
+/// whether that FAB is actually present in THIS same `Scaffold` (`reserve`):
+///
+/// ```dart
+/// Expanded(
+///   child: FabClearance(
+///     reserve: _currentTab == AppTab.dashboard,
+///     child: content,
+///   ),
+/// )
+/// ```
+///
+/// When `reserve` is false the child is returned unchanged (no reservation),
+/// so non-FAB tabs keep their full height. See [CalmScaffold.fabBottomClearance]
+/// for where the reservation must be anchored (same `Scaffold` as the FAB,
+/// not a screen nested deeper down).
+class FabClearance extends StatelessWidget {
+  const FabClearance({
+    super.key,
+    required this.reserve,
+    required this.child,
+  });
+
+  /// Whether a FAB floats over this same `Scaffold`. When false, [child] is
+  /// returned without any bottom reservation.
+  final bool reserve;
+
+  /// The content the FAB floats over (e.g. a screen or a container `Column`
+  /// that wraps one together with sibling banners/ad).
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return reserve
+        ? Padding(
+            padding: const EdgeInsets.only(
+              bottom: CalmScaffold.fabBottomClearance,
+            ),
+            child: child,
+          )
+        : child;
   }
 }
