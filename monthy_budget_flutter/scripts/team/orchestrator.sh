@@ -376,12 +376,21 @@ maybe_promote() {
   local reason="$1" force="${2:-0}"
   [ "$RUN_PROMOTE" = "1" ] || return 0
 
-  local in_flight
-  in_flight=$(( $(issues_with "$L_REVIEW" | grep -c . || true) \
-              + $(issues_with "$L_VERIFY" | grep -c . || true) \
-              + $(issues_with "$L_WIP"    | grep -c . || true) ))
-  if [ "$in_flight" -ne 0 ]; then
-    [ "$force" = "1" ] && log "promoção adiada: $in_flight issue(s) ainda em curso"
+  # ONLY qa:verify blocks a promotion.
+  #
+  # The first version also counted qa:review and qa:wip, and that was both wrong and
+  # silent. Wrong: an issue in review has its code in a PR, NOT in dev — it cannot
+  # affect what dev contains. In wip it is not even pushed. Only qa:verify means code
+  # already merged into dev and not yet proven on the running app, which is the one
+  # thing that must not be promoted.
+  #
+  # Silent: it returned without logging unless forced, so a pipeline that always had
+  # something in review simply never promoted and never said why. dev reached 8
+  # commits past the threshold with no trace in the log.
+  local unverified
+  unverified=$(issues_with "$L_VERIFY" | grep -c . || true)
+  if [ "$unverified" -ne 0 ]; then
+    log "promoção adiada: $unverified fix(es) integrados em $BASE_BRANCH ainda por verificar"
     return 0
   fi
 
