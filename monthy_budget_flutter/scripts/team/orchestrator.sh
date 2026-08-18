@@ -105,10 +105,35 @@ refresh_issue_cache() {
   return 0
 }
 
-# Issue numbers carrying a label, oldest first. Reads the cache — no API call.
+# Issue numbers carrying a label, WORST FIRST, then oldest first. Reads the cache —
+# no API call.
+#
+# Severity used to play no part in this at all: the order was `sort`, i.e. ascending
+# issue number, i.e. filing order. The consequence was measured and bad. #1233 — a
+# BLOCKER, "saving an expense records it twice", the user's money counted double —
+# was filed at 16:06 and sat in qa:triage for seventeen hours without a single
+# comment, queued behind eight sev:major issues, while the pipeline spent its last 75
+# minutes on three implementation cycles of #1221: a sev:minor design nit about a
+# header eyebrow. The pipeline was busy and working on the wrong things, which is the
+# failure mode hardest to see from outside, because every log line looks healthy.
+#
+# Ordering by severity costs nothing and is the difference between a QA pipeline and
+# a queue. Ties still break on issue number, so within a severity the oldest goes
+# first and nothing starves. Issues with no sev: label sort LAST rather than first —
+# an unlabelled finding is not evidence of importance, and the critic labels the ones
+# it is sure about.
 issues_with() {
   printf '%s' "$ISSUE_CACHE" \
-    | jq -r --arg l "$1" '[.[] | select([.labels[].name] | index($l)) | .number] | sort | .[]' \
+    | jq -r --arg l "$1" '
+        def sevrank(ns):
+          if   (ns | index("sev:blocker")) then 0
+          elif (ns | index("sev:major"))   then 1
+          elif (ns | index("sev:minor"))   then 2
+          else 3 end;
+        [ .[]
+          | select([.labels[].name] | index($l))
+          | {n: .number, r: sevrank([.labels[].name])} ]
+        | sort_by(.r, .n) | .[].n' \
       2>/dev/null
 }
 
