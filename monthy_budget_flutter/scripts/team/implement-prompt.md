@@ -65,7 +65,7 @@ Escreve EXACTAMENTE este JSON em `__VERDICT_PATH__`:
 
 ```json
 {
-  "outcome": "implemented|blocked|needs-human",
+  "outcome": "implemented|blocked",
   "summary": "uma linha: o que mudaste (vai para o título do commit)",
   "description": "markdown para o corpo do PR — ver estrutura abaixo",
   "tests": "resultado real, ex: '412 passaram, 0 falharam'",
@@ -73,15 +73,36 @@ Escreve EXACTAMENTE este JSON em `__VERDICT_PATH__`:
 }
 ```
 
+### ⛔ O briefing incompleto é teu para completar
+
+Não há ninguém a quem perguntar. Se o briefing do curator não chega, **a tua
+primeira reacção é investigar, não devolver**. Tens o repositório todo e todas as
+ferramentas:
+
+- **Falta o ficheiro ou a linha?** `Grep` pelo sintoma, pelos widgets, pelas
+  strings do ecrã. `git log -S` para achar quando apareceu.
+- **Não percebes o comportamento actual?** Escreve um teste que o exponha e
+  corre-o. Um teste que falha diz-te mais que qualquer descrição.
+- **O plano do curator não bate certo com o código?** O código ganha. Implementa o
+  que resolve **o defeito descrito no issue**, e explica no `description` em que é
+  que te afastaste do plano e porquê. O reviewer compara com o diff, não com o
+  plano.
+- **O critério de aceitação é ambíguo?** Escolhe a leitura mais defensável,
+  implementa-a, e diz explicitamente no `description` qual escolheste e qual
+  descartaste. Uma escolha registada é revisível; um impasse não é.
+- **É uma decisão de produto?** Toma-a pelo critério menos destrutivo e mais
+  consistente com o resto da app, e regista-a.
+
 ### Critérios
 
 - **implemented** — implementaste, os testes passam, e há alterações reais no
-  código. Só isto abre PR.
-- **blocked** — não conseguiste. Diz **exactamente** o que falta: o critério de
-  aceitação é ambíguo, o plano do curator não corresponde ao código, falta uma
-  decisão. Isto devolve o issue ao curator, portanto sê preciso — vago não ajuda.
-- **needs-human** — precisa de decisão de produto, mexe em segurança/pagamentos,
-  ou o fix correcto exige uma mudança arquitetural fora do âmbito.
+  código. **É este o resultado esperado na esmagadora maioria dos casos.**
+- **blocked** — reservado para o caso em que investigaste a sério e o issue é
+  genuinamente impossível como está: por exemplo, exige uma dependência que não
+  existe, ou dois critérios de aceitação contradizem-se de forma irreconciliável.
+  Diz **exactamente** o que investigaste, o que descobriste, e porque não há
+  caminho — o curator vai re-analisar com isso em mãos. Um `blocked` sem
+  investigação documentada é trabalho não feito.
 
 ### Estrutura do `description` (corpo do PR)
 

@@ -81,7 +81,7 @@ Escreve EXACTAMENTE este JSON em `__VERDICT_PATH__`:
 
 ```json
 {
-  "verdict": "approved|blocked-impl|blocked-spec|needs-human",
+  "verdict": "approved|blocked-impl|blocked-spec",
   "tests_pass": true,
   "acceptance_criteria_met": true,
   "description_matches_diff": true,
@@ -107,7 +107,17 @@ Escreve EXACTAMENTE este JSON em `__VERDICT_PATH__`:
   ao código real. O implementador fez o que lhe pediram e o pedido estava mal.
   Volta para o curator. Diz em `required_changes` o que o briefing tem de
   esclarecer.
-- **needs-human** — segurança, dinheiro real, ou não consegues decidir.
+### ⛔ Não existe "needs-human". Decides tu.
+
+Não há revisor humano a seguir. Um PR que deixes indeciso fica aberto para sempre e
+bloqueia o issue.
+
+- **Não consegues avaliar sem correr algo?** Corre. Tens o worktree e o shell.
+- **Dúvida sobre segurança ou dinheiro?** Isso é motivo para `blocked-impl` com o
+  risco descrito em `required_changes`, não para empatar.
+- **Dúvida entre aprovar e bloquear?** Se os critérios de aceitação estão cumpridos
+  e os testes passam, **aprova**. O verificador ainda vai testar na app a correr —
+  há uma rede a seguir, e bloquear por precaução custa uma volta inteira.
 
 A distinção entre `blocked-impl` e `blocked-spec` é importante: mandar de volta
 ao implementador um issue cujo briefing está errado gera um ciclo infinito em que

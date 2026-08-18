@@ -30,8 +30,8 @@ set_state "$ISSUE" "$L_WIP"
 # rework after a block) wt_create falls back to checking it out.
 wt_remove "$WT_ROOT/implement-$ISSUE"
 WT_OUT=$(wt_create "$BRANCH" "implement-$ISSUE" "$BASE_BRANCH") || {
-  log "ERRO: não criei worktree"
-  set_state "$ISSUE" "$L_HUMAN"
+  log "ERRO: não criei worktree — volta a $L_READY"
+  set_state "$ISSUE" "$L_READY"
   comment_issue "$ISSUE" "## Implementador: falhou a preparar o worktree
 
 Não foi possível criar o branch \`$BRANCH\` a partir de \`$BASE_BRANCH\`."
@@ -109,11 +109,12 @@ conseguiu concluir a implementação. **Isto não é um problema do issue** — 
     wt_remove "$WT"
     exit 0
   fi
-  log "SEM VEREDICTO — needs-human"
-  set_state "$ISSUE" "$L_HUMAN"
-  comment_issue "$ISSUE" "## Implementador: sem veredicto
+  log "SEM VEREDICTO — volta a $L_READY para nova tentativa"
+  set_state "$ISSUE" "$L_READY"
+  comment_issue "$ISSUE" "## Implementador: corrida sem veredicto
 
-Terminou sem escrever veredicto (ver \`$LOG_DIR/implement-$ISSUE.log\`)."
+Terminou sem escrever veredicto (ver \`$LOG_DIR/implement-$ISSUE.log\`). Falha da
+corrida, não do issue — volta à fila."
   wt_remove "$WT"
   exit 0
 fi
@@ -143,8 +144,11 @@ $DESCRIPTION
 
 O briefing não era executável como está. O curator deve refiná-lo."
   else
-    set_state "$ISSUE" "$L_HUMAN"
-    comment_issue "$ISSUE" "## Implementador: $REASON
+    # Anything that is neither "implemented" nor an investigated "blocked" means the
+    # briefing did not lead anywhere usable. Send it back to be re-analysed rather
+    # than parked — the curator has the failure text to work from.
+    set_state "$ISSUE" "$L_BLOCKED_SPEC"
+    comment_issue "$ISSUE" "## Implementador: $REASON — devolvido ao curator
 
 $SUMMARY
 
@@ -162,11 +166,12 @@ git -C "$WT" -c user.name="qa-implementer" -c user.email="qa@local" \
   commit -m "$BRANCH: $SUMMARY (#$ISSUE)" >/dev/null 2>&1 || true
 
 if ! git -C "$WT" push -u origin "$BRANCH" --force >/dev/null 2>&1; then
-  log "ERRO: push falhou"
-  set_state "$ISSUE" "$L_HUMAN"
+  log "ERRO: push falhou — volta a $L_READY"
+  set_state "$ISSUE" "$L_READY"
   comment_issue "$ISSUE" "## Implementador: push falhou
 
-O código foi escrito mas não chegou ao remoto. Branch: \`$BRANCH\`."
+O código foi escrito mas não chegou ao remoto (branch \`$BRANCH\`). Falha de
+infraestrutura, não do issue — volta à fila."
   wt_remove "$WT"
   exit 1
 fi
@@ -210,8 +215,8 @@ else
   # deprecation, leaving the pushed branch with no PR and the issue on needs-human.
   PR_NUM=$(create_pr_api "$BRANCH" "$BASE_BRANCH" "$SUMMARY (#$ISSUE)" "$PR_BODY" || echo "")
   if [ -z "$PR_NUM" ]; then
-    log "ERRO: PR não criado"
-    set_state "$ISSUE" "$L_HUMAN"
+    log "ERRO: PR não criado — volta a $L_READY"
+    set_state "$ISSUE" "$L_READY"
     comment_issue "$ISSUE" "## Implementador: PR não criado
 
 O branch \`$BRANCH\` foi enviado mas o PR para \`$BASE_BRANCH\` não foi aberto."

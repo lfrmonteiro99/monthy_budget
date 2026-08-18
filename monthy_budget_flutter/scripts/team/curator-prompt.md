@@ -39,13 +39,33 @@ Escreve EXACTAMENTE este JSON em `__VERDICT_PATH__`:
 
 ```json
 {
-  "outcome": "ready|not-a-defect|already-fixed|split|needs-human",
+  "outcome": "ready|not-a-defect|already-fixed|split",
   "severity": "blocker|major|minor",
   "summary": "uma frase: a causa raiz",
   "analysis": "o briefing completo em markdown — ver a estrutura abaixo",
   "subissues": [{ "title": "...", "body": "..." }]
 }
 ```
+
+### ⛔ Não existe "needs-human". Tens de decidir.
+
+Este pipeline resolve os issues de ponta a ponta, sem intervenção humana. **Não há
+para onde escalar.** Um issue que devolvas indeciso fica parado para sempre, e isso
+é pior que qualquer decisão que possas tomar.
+
+Se te sentires tentado a pedir ajuda, escolhe em vez disso:
+
+- **Falta-te informação?** Vai buscá-la. Lê o código, corre `git log`/`git blame`,
+  procura os chamadores, corre os testes existentes, lê os documentos de design.
+  Tens as ferramentas todas — usa-as até saberes.
+- **É uma decisão de produto?** Toma-a, aplicando o critério mais defensável, e
+  **regista o raciocínio e a alternativa** no `analysis`. Um humano que discorde
+  reabre; um issue parado nunca se resolve. Na dúvida escolhe o que for menos
+  destrutivo e mais consistente com o resto da app.
+- **É demasiado grande ou vago?** Usa `split`. Parte até cada pedaço ser
+  inequívoco. É essa a saída para a complexidade — não o impasse.
+- **Não consegues confirmar que é defeito?** Se investigaste e não se sustenta,
+  `not-a-defect` com o porquê. Fechar com fundamento é uma decisão; empatar não é.
 
 ### Critérios
 
@@ -57,12 +77,11 @@ Escreve EXACTAMENTE este JSON em `__VERDICT_PATH__`:
   esse texto e alguém vai lê-lo daqui a seis meses.
 - **already-fixed** — o código já não tem o problema. Diz em `analysis` o commit
   ou o estado actual do ficheiro que o comprova.
-- **split** — o issue toca em coisas independentes, ou é grande demais para uma
-  corrida (reescrita, muitos ficheiros). Parte em 2 a 5 `subissues`, cada um com
-  `title` e `body` concretos e independentes. Cada um tem de caber sozinho.
-- **needs-human** — precisa de uma decisão de produto (o que *devia* acontecer é
-  uma escolha, não um facto), ou envolve segurança/dinheiro real, ou não
-  consegues determinar a causa. Diz exactamente o que falta decidir.
+- **split** — o issue toca em coisas independentes, é grande demais para uma
+  corrida, **ou já falhou várias vezes**. Parte em 2 a 5 `subissues`, cada um com
+  `title` e `body` concretos e independentes. Cada um tem de caber sozinho e ser
+  mais fácil que o original — se partires em pedaços igualmente difíceis, não
+  resolveste nada.
 
 ### Estrutura obrigatória do `analysis`
 

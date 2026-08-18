@@ -139,26 +139,52 @@ bump_attempts() {
   printf '%s' "$n"
 }
 
-# Returns 0 when the issue still has budget, 1 when it has been parked.
-check_attempt_budget() {
+# ESCALATE THE STRATEGY, NEVER TO A HUMAN.
+#
+# Repeating the same approach after it has failed twice is the definition of a stuck
+# loop — but parking the issue is not the answer either, because nobody is coming.
+# So each exhaustion changes the APPROACH instead:
+#
+#   attempts 1-2   implement normally
+#   attempt  3     hand it back to the curator WITH the full failure history, so the
+#                  briefing is rewritten from what actually went wrong rather than
+#                  from the original guess
+#   attempt  4+    force a split: the issue is too big or too tangled to land whole,
+#                  so break it into pieces each of which can
+#
+# Returns 0 to proceed with the normal action, 1 when it has been redirected.
+escalate_if_stuck() {
   local issue="$1" n
   n=$(cat "$ATTEMPTS_DIR/$issue" 2>/dev/null || echo 0)
   [ "$n" -lt "$MAX_ATTEMPTS" ] && return 0
 
-  log "#$issue esgotou o orçamento de $MAX_ATTEMPTS tentativas — a parquear para humano"
-  comment_issue "$issue" "## Orquestrador: $MAX_ATTEMPTS tentativas sem sucesso
+  if [ "$n" -lt $(( MAX_ATTEMPTS * 2 )) ]; then
+    log "#$issue: $n tentativas — a devolver ao curator com o histórico de falhas"
+    comment_issue "$issue" "## Orquestrador: mudar de abordagem após $n tentativas
 
-Este issue passou $n vezes pelo ciclo implementar → rever → verificar sem chegar a
-\`pass\`. O histórico completo está nos comentários acima, incluindo o que cada
-reviewer e verificador apontou.
+Este issue já passou $n vezes pelo ciclo sem chegar a \`pass\`. Repetir a mesma
+abordagem não vai resolver.
 
-Parado aqui de propósito: ao fim de $MAX_ATTEMPTS voltas o problema deixa de ser
-'quase lá' e passa a ser algo que os agentes não conseguem ver — e continuar a
-tentar bloqueava a fila (21 issues ficaram parados enquanto este repetia).
+**Curator:** reescreve a análise a partir do que **falhou de facto** — os
+comentários acima do reviewer e do verificador dizem exactamente onde é que cada
+tentativa bateu. O plano original não estava a funcionar; procura outra via, ou
+parte o issue se o problema for de tamanho."
+    set_state "$issue" "$L_BLOCKED_SPEC"
+    return 1
+  fi
 
-Para retomar: corrige o que estiver em falta, apaga
-\`$ATTEMPTS_DIR/$issue\` e volta a pôr o issue em \`$L_READY\`."
-  set_state "$issue" "$L_HUMAN"
+  log "#$issue: $n tentativas — a forçar split"
+  comment_issue "$issue" "## Orquestrador: partir após $n tentativas
+
+Duas rondas de reanálise não resolveram isto. O problema é de **tamanho ou de
+emaranhado**, não de esforço.
+
+**Curator:** usa \`split\`. Parte em pedaços em que cada um seja inequívoco e
+resolúvel isoladamente — um ecrã, um viewport, um cálculo de cada vez. Se um pedaço
+continuar a parecer difícil, parte-o outra vez. O histórico de falhas acima diz-te
+onde estão as fronteiras naturais."
+  echo 0 > "$ATTEMPTS_DIR/$issue"   # the pieces start fresh
+  set_state "$issue" "$L_BLOCKED_SPEC"
   return 1
 }
 
@@ -518,7 +544,7 @@ while true; do
   if [ "$DID" = "0" ]; then
     I=$(first_with "$L_BLOCKED_IMPL")
     if [ -n "$I" ]; then
-      if check_attempt_budget "$I"; then
+      if escalate_if_stuck "$I"; then
         log "#$I: tentativa $(bump_attempts "$I") de $MAX_ATTEMPTS"
         run_implement "$I"
       fi
@@ -530,10 +556,9 @@ while true; do
   if [ "$DID" = "0" ]; then
     I=$(first_with "$L_BLOCKED_SPEC")
     if [ -n "$I" ]; then
-      if check_attempt_budget "$I"; then
-        log "#$I: tentativa $(bump_attempts "$I") de $MAX_ATTEMPTS (briefing)"
-        run_curator "$I"
-      fi
+      # No escalation check here: this IS the escalation target. Counting it would
+      # bounce the issue straight back out of the re-analysis it was sent for.
+      run_curator "$I"
       DID=1
     fi
   fi

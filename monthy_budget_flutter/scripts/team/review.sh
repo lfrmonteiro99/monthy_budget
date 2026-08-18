@@ -67,9 +67,9 @@ if [ -z "${DIFF//[[:space:]]/}" ]; then
   log "DIFF VAZIO — não se revê um PR pelo título"
   gh pr comment "$PR" --repo "$REPO" --body "## Reviewer: sem diff
 
-O worktree do branch \`$BRANCH\` não produziu diff contra \`$BASE\`. Não é
-possível rever. Marcado para intervenção humana." >/dev/null 2>&1 || true
-  [ -n "$ISSUE" ] && set_state "$ISSUE" "$L_HUMAN"
+O worktree do branch \`$BRANCH\` não produziu diff contra \`$BASE\`. Sem diff não
+há o que rever, por isso o issue volta ao implementador para reenviar o trabalho." >/dev/null 2>&1 || true
+  [ -n "$ISSUE" ] && set_state "$ISSUE" "$L_BLOCKED_IMPL"
   exit 1
 fi
 
@@ -137,11 +137,14 @@ estava esgotada e o modelo de fallback nao
 conseguiu concluir a review. O PR fica como esta e sera revisto de novo." >/dev/null 2>&1 || true
     exit 0
   fi
-  log "SEM VEREDICTO — needs-human"
-  gh pr comment "$PR" --repo "$REPO" --body "## Reviewer: sem veredicto
+  # A failed run must not consume the PR: leave it open and in review so the next
+  # cycle picks it up again (its head sha is unchanged, so pick_pr will re-select it
+  # once the reviewed-sha record is absent).
+  log "SEM VEREDICTO — PR fica aberto para nova review"
+  gh pr comment "$PR" --repo "$REPO" --body "## Reviewer: corrida sem veredicto
 
-O reviewer terminou sem escrever veredicto (ver \`$LOG_DIR/review-$PR.log\`)." >/dev/null 2>&1 || true
-  [ -n "$ISSUE" ] && set_state "$ISSUE" "$L_HUMAN"
+A corrida terminou sem escrever veredicto (ver \`$LOG_DIR/review-$PR.log\`). Falha da
+corrida, não do PR — será revisto de novo." >/dev/null 2>&1 || true
   exit 0
 fi
 
@@ -281,10 +284,14 @@ $SUMMARY$DETAIL$CHANGES"
     ;;
 
   *)
-    gh pr comment "$PR" --repo "$REPO" --body "## Reviewer: needs-human
+    # Unrecognised verdict = the contract was not followed. Treat as a code block so
+    # the implementer gets another pass, rather than parking the issue.
+    gh pr comment "$PR" --repo "$REPO" --body "## Reviewer: resultado não reconhecido (\`$VERDICT\`)
 
-$SUMMARY$DETAIL" >/dev/null 2>&1 || true
-    [ -n "$ISSUE" ] && set_state "$ISSUE" "$L_HUMAN"
+$SUMMARY$DETAIL
+
+O veredicto não usou um dos resultados válidos; devolvido ao implementador." >/dev/null 2>&1 || true
+    [ -n "$ISSUE" ] && set_state "$ISSUE" "$L_BLOCKED_IMPL"
     ;;
 esac
 
