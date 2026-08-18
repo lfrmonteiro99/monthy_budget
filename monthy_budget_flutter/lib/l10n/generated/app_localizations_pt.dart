@@ -6679,6 +6679,7 @@ class SPt extends S {
       locale: localeName,
       other: '$count refeições',
       one: '1 refeição',
+      zero: '0 refeições',
     );
     return '$_temp0';
   }
@@ -6696,6 +6697,7 @@ class SPt extends S {
       locale: localeName,
       other: '$count itens',
       one: '1 item',
+      zero: '0 itens',
     );
     return '$_temp0';
   }

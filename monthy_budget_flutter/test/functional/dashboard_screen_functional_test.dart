@@ -944,4 +944,59 @@ void main() {
       );
     });
   });
+
+  group('onSnapshotExpenses is not re-armed on every build (#1236)', () {
+    // hasData=true (totalGross > 0) is the precondition that arms the
+    // postFrameCallback in DashboardScreen.build(). Every field below is
+    // held constant across pumps — nothing here changes the widget's
+    // observable state, only the widget *instance* changes, which is
+    // exactly what happens in production when a parent (DashboardContainer/
+    // AppHome) rebuilds without the underlying month/data changing.
+    Widget buildIdleDashboard(VoidCallback onSnapshotExpenses) {
+      return wrapWithTestApp(
+        DashboardScreen(
+          settings: const AppSettings(),
+          summary: const BudgetSummary(
+            totalGross: 1000,
+            totalNetWithMeal: 1000,
+            totalExpenses: 500,
+            netLiquidity: 500,
+          ),
+          purchaseHistory: const PurchaseHistory(),
+          dashboardConfig: const LocalDashboardConfig(),
+          expenseHistory: const {},
+          actualExpenses: const [],
+          monthlyBudgets: const {},
+          recurringExpenses: const [],
+          actualExpenseHistory: const {},
+          onOpenSettings: () {},
+          onSaveSettings: (_) {},
+          onSnapshotExpenses: onSnapshotExpenses,
+          onAddExpense: () {},
+          onOpenExpenseTracker: () {},
+        ),
+      );
+    }
+
+    testWidgets(
+        'sitting idle across several rebuilds calls onSnapshotExpenses at most once for the same month',
+        (tester) async {
+      var callCount = 0;
+
+      // Simulate several idle rebuilds of the same DashboardScreen instance
+      // (same monthKey, same data) — as would happen if a sibling provider
+      // ticks while the user sits on the tab without interacting.
+      for (var i = 0; i < 5; i++) {
+        await tester.pumpWidget(buildIdleDashboard(() => callCount++));
+        await tester.pump();
+      }
+
+      expect(
+        callCount,
+        1,
+        reason:
+            'onSnapshotExpenses must fire once per distinct monthKey, not once per build/frame',
+      );
+    });
+  });
 }

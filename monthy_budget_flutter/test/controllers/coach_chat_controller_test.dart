@@ -203,6 +203,7 @@ void main() {
           settings: _minimalSettings(),
           purchaseHistory: _emptyPurchaseHistory(),
           onSubscriptionChanged: (_) {},
+          languageCode: 'pt',
         );
 
         expect(result, isTrue);

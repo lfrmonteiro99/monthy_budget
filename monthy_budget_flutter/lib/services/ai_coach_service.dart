@@ -77,6 +77,22 @@ class AiCoachService {
         _messageStorage =
             messageStorage ?? CoachMessageStorage(AppDatabase.instance);
 
+  /// Maps an app locale language code to the human language the LLM is
+  /// instructed to reply in. Unknown or empty codes fall back to `pt` — the
+  /// historical default of this service.
+  static const Map<String, String> _responseLanguageByCode = {
+    'pt': 'português europeu',
+    'en': 'English',
+    'fr': 'français',
+    'es': 'español',
+  };
+
+  /// Resolves the response-language instruction for [languageCode].
+  static String _responseLanguageInstruction(String? languageCode) {
+    final code = languageCode?.trim().toLowerCase() ?? '';
+    return _responseLanguageByCode[code] ?? 'português europeu';
+  }
+
   /// Sanitize user input before interpolating into prompts.
   ///
   /// Truncates to [_maxUserMessageLength] and strips sequences that could
@@ -314,6 +330,7 @@ class AiCoachService {
     CoachMode? effectiveMode,
     String? lastMicroAction,
     DateTime? lastMicroActionDate,
+    String languageCode = 'pt',
   }) async {
     final safeMessage = sanitizeUserInput(userMessage);
     var groundedUserMessage = _buildGroundedUserMessage(
@@ -347,6 +364,7 @@ class AiCoachService {
         summary: summary,
         purchaseHistory: purchaseHistory,
         effectiveMode: effectiveMode,
+        languageCode: languageCode,
       ),
     );
     return _requestChatCompletion(
@@ -425,6 +443,7 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
     required BudgetSummary summary,
     required PurchaseHistory purchaseHistory,
     int maxTokens = 1000,
+    String languageCode = 'pt',
   }) async {
     final stress = calculateStressIndex(
       summary: summary,
@@ -440,7 +459,8 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
           'role': 'system',
           'content':
               'És um analista financeiro pessoal para utilizadores portugueses. '
-              'Responde sempre em português europeu. Sê directo e analítico — '
+              'Responde sempre em ${_responseLanguageInstruction(languageCode)}. '
+              'Sê directo e analítico — '
               'usa sempre números concretos do contexto fornecido. '
               'Estrutura a resposta exactamente nas 3 partes pedidas. '
               'Não introduzas dados, benchmarks ou referências externas que não foram fornecidos.',
@@ -468,6 +488,7 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
     required BudgetSummary summary,
     required PurchaseHistory purchaseHistory,
     required BudgetPaceResult pace,
+    String languageCode = 'pt',
   }) async {
     final stress = calculateStressIndex(
       summary: summary,
@@ -497,7 +518,8 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
         {
           'role': 'system',
           'content': 'És um consultor de orçamento doméstico português. '
-              'Responde sempre em português europeu. Sê prático e directo.',
+              'Responde sempre em ${_responseLanguageInstruction(languageCode)}. '
+              'Sê prático e directo.',
         },
         {'role': 'user', 'content': prompt.toString()},
       ],
@@ -792,6 +814,7 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
     required BudgetSummary summary,
     required PurchaseHistory purchaseHistory,
     CoachMode? effectiveMode,
+    String languageCode = 'pt',
   }) {
     final stress = calculateStressIndex(
       summary: summary,
@@ -810,7 +833,8 @@ ${recentPurchasesText.isEmpty ? '- sem compras registadas' : recentPurchasesText
 
     final buf = StringBuffer();
     buf.write('Es um coach financeiro pessoal para utilizadores portugueses. '
-        'Responde sempre em portugues europeu, de forma direta e pratica, '
+        'Responde sempre em ${_responseLanguageInstruction(languageCode)}, '
+        'de forma direta e pratica, '
         'respondendo primeiro a pergunta exata do utilizador. '
         'Evita formatos fixos (nao responder em "3 partes" a menos que seja pedido). '
         'Mantem continuidade da conversa e usa o historico para responder. '

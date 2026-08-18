@@ -581,17 +581,17 @@ class SFr extends S {
 
   @override
   String get coachEmptyBody =>
-      'Posez toute question sur votre budget, depenses ou epargne. J\'utiliserai vos donnees reelles pour des conseils personnalises.';
+      'Posez toute question sur votre budget, dépenses ou épargne. J\'utiliserai vos données réelles pour des conseils personnalisés.';
 
   @override
   String get coachSuggestionsEyebrow => 'Suggestions';
 
   @override
   String get coachQuickPrompt1 =>
-      'Ou puis-je reduire mes depenses ce mois-ci ?';
+      'Où puis-je réduire mes dépenses ce mois-ci ?';
 
   @override
-  String get coachQuickPrompt2 => 'Comment ameliorer mon epargne ?';
+  String get coachQuickPrompt2 => 'Comment améliorer mon épargne ?';
 
   @override
   String get coachQuickPrompt3 => 'Aidez-moi a creer un plan sur 30 jours.';
@@ -649,7 +649,7 @@ class SFr extends S {
   String get cmdAssistantTooltip => 'Besoin d\'aide ? Appuyez ici';
 
   @override
-  String get cmdSuggestionAddExpense => 'Ajouter une depense';
+  String get cmdSuggestionAddExpense => 'Ajouter une dépense';
 
   @override
   String get cmdSuggestionOpenList => 'Ouvrir la liste de courses';
@@ -661,7 +661,7 @@ class SFr extends S {
   String get cmdSuggestionOpenSettings => 'Aller aux parametres';
 
   @override
-  String get cmdTemplateAddExpense => 'Ajoute [montant] euros en [categorie]';
+  String get cmdTemplateAddExpense => 'Ajoute [montant] euros en [catégorie]';
 
   @override
   String get cmdTemplateOpenList => 'Ouvre la liste de courses';
@@ -701,11 +701,11 @@ class SFr extends S {
       'Nous en ajoutons encore. Si ce n\'est pas liste ici, cela peut ne pas encore fonctionner.';
 
   @override
-  String get cmdCapabilityAddExpense => 'Ajouter une depense';
+  String get cmdCapabilityAddExpense => 'Ajouter une dépense';
 
   @override
   String get cmdCapabilityAddExpenseExample =>
-      'Ajoute [montant] euros en [categorie]';
+      'Ajoute [montant] euros en [catégorie]';
 
   @override
   String get cmdCapabilityAddShoppingItem => 'Ajouter a la liste';
@@ -730,11 +730,11 @@ class SFr extends S {
       'Coche [article] dans la liste de courses';
 
   @override
-  String get cmdCapabilityAddSavingsGoal => 'Creer un objectif d\'epargne';
+  String get cmdCapabilityAddSavingsGoal => 'Créer un objectif d\'épargne';
 
   @override
   String get cmdCapabilityAddSavingsGoalExample =>
-      'Cree objectif d\'epargne [nom] de [montant]';
+      'Crée objectif d\'épargne [nom] de [montant]';
 
   @override
   String get cmdCapabilityAddSavingsContribution =>
@@ -746,18 +746,18 @@ class SFr extends S {
 
   @override
   String get cmdCapabilityAddRecurringExpense =>
-      'Ajouter une depense recurrente';
+      'Ajouter une dépense récurrente';
 
   @override
   String get cmdCapabilityAddRecurringExpenseExample =>
-      'Ajoute depense recurrente [montant] en [categorie] jour [jour]';
+      'Ajoute dépense récurrente [montant] en [catégorie] jour [jour]';
 
   @override
-  String get cmdCapabilityDeleteExpense => 'Supprimer une depense';
+  String get cmdCapabilityDeleteExpense => 'Supprimer une dépense';
 
   @override
   String get cmdCapabilityDeleteExpenseExample =>
-      'Supprime la depense [description]';
+      'Supprime la dépense [description]';
 
   @override
   String get cmdCapabilityChangeTheme => 'Changer le theme';
@@ -2424,10 +2424,10 @@ class SFr extends S {
       'Aucune dépense ce mois.\nAppuyez sur + pour ajouter.';
 
   @override
-  String get expenseTrackerMovementEyebrow => 'Activite';
+  String get expenseTrackerMovementEyebrow => 'Activité';
 
   @override
-  String get expenseTrackerExpensesTitle => 'Depenses';
+  String get expenseTrackerExpensesTitle => 'Dépenses';
 
   @override
   String get expenseTrackerThisMonthEyebrow => 'Ce Mois';
@@ -2444,25 +2444,25 @@ class SFr extends S {
   }
 
   @override
-  String get expenseTrackerByCategoryEyebrow => 'Par Categorie';
+  String get expenseTrackerByCategoryEyebrow => 'Par Catégorie';
 
   @override
   String get expenseTrackerEmptyBody =>
-      'Ajoutez votre premiere depense pour commencer a suivre votre budget.';
+      'Ajoutez votre première dépense pour commencer à suivre votre budget.';
 
   @override
   String get expenseAlertsEyebrow => 'Alertes';
 
   @override
   String expenseAlertsBudgetSubtitle(String budgeted, String actual) {
-    return 'Budget $budgeted · Depense $actual';
+    return 'Budget $budgeted · Dépense $actual';
   }
 
   @override
-  String get expenseRecentEyebrow => 'Recents';
+  String get expenseRecentEyebrow => 'Récents';
 
   @override
-  String get expenseRecentViewAll => 'Voir toutes les depenses';
+  String get expenseRecentViewAll => 'Voir toutes les dépenses';
 
   @override
   String expenseRecentCountSubtitle(int count) {
@@ -2470,7 +2470,7 @@ class SFr extends S {
   }
 
   @override
-  String get expenseSearchResultsEyebrow => 'Resultats';
+  String get expenseSearchResultsEyebrow => 'Résultats';
 
   @override
   String get addExpenseTitle => 'Ajouter une Dépense';
@@ -2629,14 +2629,14 @@ class SFr extends S {
   }
 
   @override
-  String get recurringEmptyTitle => 'Aucun paiement recurrent';
+  String get recurringEmptyTitle => 'Aucun paiement récurrent';
 
   @override
   String get recurringEmptyBody =>
-      'Ajoutes-en un pour le generer automatiquement chaque mois.';
+      'Ajoutes-en un pour le générer automatiquement chaque mois.';
 
   @override
-  String get recurringEyebrow => 'RECURRENTS';
+  String get recurringEyebrow => 'RÉCURRENTS';
 
   @override
   String recurringHeroSubtitle(int count) {
@@ -2664,10 +2664,10 @@ class SFr extends S {
 
   @override
   String get coachNoApiKeyBody =>
-      'Ajoute une cle OpenAI dans les Reglages pour commencer a discuter.';
+      'Ajoute une clé OpenAI dans les Réglages pour commencer à discuter.';
 
   @override
-  String get coachNoApiKeyAction => 'Ouvrir Reglages';
+  String get coachNoApiKeyAction => 'Ouvrir Réglages';
 
   @override
   String get recurringPaymentToggle => 'Paiement récurrent';
@@ -6108,7 +6108,7 @@ class SFr extends S {
   String get coachNextStep => 'PROCHAINE ETAPE';
 
   @override
-  String get coachPendingAction => 'Action en attente de la derniere session';
+  String get coachPendingAction => 'Action en attente de la dernière session';
 
   @override
   String coachSuggestedDaysAgo(int daysAgo) {
@@ -6140,7 +6140,7 @@ class SFr extends S {
 
   @override
   String get coachRoiInsightPrefix =>
-      'Lors de la derniere session Pro, nous avons discute ';
+      'Lors de la dernière session Pro, nous avons discuté ';
 
   @override
   String get coachRoiPotential => '. Potentiel: ';
@@ -6181,7 +6181,7 @@ class SFr extends S {
 
   @override
   String cmdExpenseAdded(String amount, String category) {
-    return 'Depense ajoutee: $amount dans $category';
+    return 'Dépense ajoutée: $amount dans $category';
   }
 
   @override
@@ -6191,12 +6191,12 @@ class SFr extends S {
 
   @override
   String cmdSavingsGoalAdded(String name) {
-    return 'Objectif d\'epargne ajoute: $name';
+    return 'Objectif d\'épargne ajouté: $name';
   }
 
   @override
   String cmdRecurringExpenseAdded(String amount, String category) {
-    return 'Depense recurrente ajoutee: $amount dans $category';
+    return 'Dépense récurrente ajoutée: $amount dans $category';
   }
 
   @override
@@ -6211,12 +6211,12 @@ class SFr extends S {
 
   @override
   String cmdSavingsGoalNotFound(String name) {
-    return 'Objectif d\'epargne introuvable: $name';
+    return 'Objectif d\'épargne introuvable: $name';
   }
 
   @override
   String cmdContributionAdded(String amount, String name) {
-    return 'Contribution ajoutee: $amount a $name';
+    return 'Contribution ajoutée: $amount à $name';
   }
 
   @override
@@ -6231,12 +6231,12 @@ class SFr extends S {
 
   @override
   String cmdExpenseNotFound(String description) {
-    return 'Depense introuvable: $description';
+    return 'Dépense introuvable: $description';
   }
 
   @override
   String cmdExpenseDeleted(String description) {
-    return 'Depense supprimee: $description';
+    return 'Dépense supprimée: $description';
   }
 
   @override
@@ -6268,7 +6268,7 @@ class SFr extends S {
 
   @override
   String get cmdHelpOutput =>
-      'Commandes disponibles :\n- Ajouter depense : ajoute [montant] en [categorie]\n- Liste de courses : ajoute [article] a la liste de courses\n- Retirer de la liste : retire [article] de la liste de courses\n- Cocher article : coche [article] dans la liste de courses\n- Objectif d\'epargne : cree objectif d\'epargne [nom] de [montant]\n- Ajouter a l\'objectif : ajoute [montant] a l\'objectif [nom]\n- Depense recurrente : ajoute depense recurrente [montant] en [categorie]\n- Supprimer depense : supprime la depense [description]\n- Theme : theme [clair/sombre/systeme]\n- Palette : couleur [ocean/emerald/violet/teal/sunset]\n- Langue : langue [anglais/portugais/espagnol/francais]\n- Naviguer : ouvre [ecran]\n- Effacer coches : effacer les coches\n- Aide : aide';
+      'Commandes disponibles :\n- Ajouter dépense : ajoute [montant] en [catégorie]\n- Liste de courses : ajoute [article] à la liste de courses\n- Retirer de la liste : retire [article] de la liste de courses\n- Cocher article : coche [article] dans la liste de courses\n- Objectif d\'épargne : crée objectif d\'épargne [nom] de [montant]\n- Ajouter à l\'objectif : ajoute [montant] à l\'objectif [nom]\n- Dépense récurrente : ajoute dépense récurrente [montant] en [catégorie]\n- Supprimer dépense : supprime la dépense [description]\n- Thème : thème [clair/sombre/systeme]\n- Palette : couleur [ocean/emerald/violet/teal/sunset]\n- Langue : langue [anglais/portugais/espagnol/francais]\n- Naviguer : ouvre [écran]\n- Effacer coches : effacer les coches\n- Aide : aide';
 
   @override
   String get coachOfflineBanner =>
@@ -6696,6 +6696,7 @@ class SFr extends S {
       locale: localeName,
       other: '$count repas',
       one: '1 repas',
+      zero: '0 repas',
     );
     return '$_temp0';
   }
@@ -6713,6 +6714,7 @@ class SFr extends S {
       locale: localeName,
       other: '$count articles',
       one: '1 article',
+      zero: '0 articles',
     );
     return '$_temp0';
   }

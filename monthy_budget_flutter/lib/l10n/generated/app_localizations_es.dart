@@ -6681,6 +6681,7 @@ class SEs extends S {
       locale: localeName,
       other: '$count comidas',
       one: '1 comida',
+      zero: '0 comidas',
     );
     return '$_temp0';
   }
@@ -6698,6 +6699,7 @@ class SEs extends S {
       locale: localeName,
       other: '$count artículos',
       one: '1 artículo',
+      zero: '0 artículos',
     );
     return '$_temp0';
   }
