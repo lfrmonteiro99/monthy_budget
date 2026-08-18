@@ -204,6 +204,25 @@ class CategoryBudgetSummary {
   bool get isOver => actual > budgeted;
   bool get isCustom => budgeted == 0;
 
+  /// Merges a food-purchase-history total into the 'alimentacao' key of
+  /// [actualsByCategory], mutating and returning it. Purchases finalised
+  /// via the shopping list checkout never create an [ActualExpense] (see
+  /// `_finalizeShopping` in `app_home.dart`), so every place that aggregates
+  /// real food spend must add them explicitly — extracted here so the
+  /// aggregation can't drift between call sites again (#1218: 'Top
+  /// Categorias' and 'Orçamento vs Real' showed two different totals for
+  /// the same category because only one of them applied this merge).
+  static Map<String, double> mergeFoodPurchases(
+    Map<String, double> actualsByCategory,
+    double foodPurchaseSpent,
+  ) {
+    if (foodPurchaseSpent > 0) {
+      actualsByCategory['alimentacao'] =
+          (actualsByCategory['alimentacao'] ?? 0) + foodPurchaseSpent;
+    }
+    return actualsByCategory;
+  }
+
   static List<CategoryBudgetSummary> buildSummaries(
     List<ExpenseItem> budgetItems,
     List<ActualExpense> actuals, {
@@ -223,10 +242,7 @@ class CategoryBudgetSummary {
     }
 
     // Merge food purchase history into alimentacao actual
-    if (foodPurchaseSpent > 0) {
-      actualsByCategory['alimentacao'] =
-          (actualsByCategory['alimentacao'] ?? 0) + foodPurchaseSpent;
-    }
+    mergeFoodPurchases(actualsByCategory, foodPurchaseSpent);
 
     // Sum per-category default amounts, then apply monthly overrides
     final defaultByCategory = <String, double>{};

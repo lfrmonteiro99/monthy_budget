@@ -787,6 +787,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
       categoryTotals[e.category] =
           (categoryTotals[e.category] ?? 0) + e.amount;
     }
+    // Merge food purchase history into 'alimentacao', same as
+    // _buildCategoryBudgetSummaries() does for the Orçamento vs Real card —
+    // otherwise the two blocks show different totals for the same category
+    // (#1218).
+    final now = DateTime.now();
+    CategoryBudgetSummary.mergeFoodPurchases(
+      categoryTotals,
+      purchaseHistory.spentInMonth(now.year, now.month),
+    );
     final sorted = categoryTotals.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
     final top = sorted.take(5).toList();
