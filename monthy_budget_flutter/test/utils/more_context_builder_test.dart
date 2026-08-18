@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:monthly_management/l10n/generated/app_localizations.dart';
+import 'package:monthly_management/models/app_settings.dart';
 import 'package:monthly_management/models/budget_summary.dart';
 import 'package:monthly_management/screens/more_screen.dart';
 import 'package:monthly_management/utils/more_context_builder.dart';
@@ -201,6 +202,81 @@ void main() {
         ),
         throwsUnsupportedError,
       );
+    });
+
+    test('over-budget observation rounds the post-fix 115.83% to 16% (#1220)', () {
+      // 139 € spent on a 120 € monthly-adjusted budget = 115.83% → "16% above".
+      // Guards the acceptance criterion: the More tab must read "16% above",
+      // not the pre-fix "140%" computed from the unadjusted 58 €.
+      final ctx = MoreContextBuilder.build(
+        summary: summaryWith(savingsRate: 0.05),
+        topCategory: const TopCategoryUsage(
+          category: 'Leisure',
+          percent: 115.83,
+        ),
+        l10n: l10n,
+      );
+      expect(ctx.observations.first.kind, CalmObservationKind.warning);
+      expect(ctx.observations.first.title, contains('Leisure'));
+      expect(ctx.observations.first.title, contains('16'));
+      expect(ctx.observations.first.title, isNot(contains('140')));
+    });
+  });
+
+  group('budgetByCategory', () {
+    test('applies the monthly override over the settings default (#1220)', () {
+      final budgets = MoreContextBuilder.budgetByCategory(
+        const [
+          ExpenseItem(id: 'leisure', category: 'lazer', amount: 58),
+          ExpenseItem(id: 'energy', category: 'energia', amount: 94.4),
+        ],
+        monthlyBudgets: const {'lazer': 120},
+      );
+      // Lazer is overridden to the monthly-adjusted 120 €; Energia keeps its
+      // settings default because it has no monthly record.
+      expect(budgets['lazer'], 120);
+      expect(budgets['energia'], 94.4);
+    });
+
+    test('ignores overrides for categories absent from settings expenses (#1220)', () {
+      // Mirrors buildSummaries: an override may only replace a category that
+      // exists in the budget list — it must not introduce a new one.
+      final budgets = MoreContextBuilder.budgetByCategory(
+        const [ExpenseItem(id: 'leisure', category: 'lazer', amount: 58)],
+        monthlyBudgets: const {'transportes': 180},
+      );
+      expect(budgets.containsKey('transportes'), isFalse);
+    });
+
+    test('empty expenses yield an empty budget map (#1220)', () {
+      final budgets = MoreContextBuilder.budgetByCategory(
+        const [],
+        monthlyBudgets: const {'lazer': 120},
+      );
+      expect(budgets, isEmpty);
+    });
+
+    test('a zero override is honoured, not treated as missing (#1220)', () {
+      // buildSummaries uses `monthlyBudgets[key] ?? default` — a present 0
+      // must replace the default, only an absent key keeps it.
+      final budgets = MoreContextBuilder.budgetByCategory(
+        const [ExpenseItem(id: 'leisure', category: 'lazer', amount: 58)],
+        monthlyBudgets: const {'lazer': 0},
+      );
+      expect(budgets['lazer'], 0);
+    });
+
+    test('disabled expenses are excluded, then the override applies (#1220)', () {
+      final budgets = MoreContextBuilder.budgetByCategory(
+        const [
+          ExpenseItem(id: 'a', category: 'lazer', amount: 30),
+          ExpenseItem(id: 'b', category: 'lazer', amount: 70, enabled: false),
+        ],
+        monthlyBudgets: const {'lazer': 120},
+      );
+      // Only the enabled 30 € is summed as the default; the override then
+      // replaces it with 120 €.
+      expect(budgets['lazer'], 120);
     });
   });
 }
