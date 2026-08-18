@@ -57,7 +57,12 @@ ISSUE_JSON=$(gh issue view "$ISSUE" --repo "$REPO" \
 # STALE: delete before the run, so a verdict inherited from a previous run can
 # never be read as this run's result.
 rm -f "$VERDICT_FILE"
-AGENT_SLOT=main CLAUDE_MODEL="$MODEL" \
+# Slot próprio, NÃO `main`. O curator escreve apenas comentários e labels no
+# GitHub: sem git, sem branch, sem build. Worktree medido em 12MB e ~200MB de RAM,
+# contra 1,4GB de um `dart compile` e 2,3GB de um `dart2wasm`. Não colide com nada e
+# eram 17 dos 66 minutos que cada issue passava em série. O lock do slot continua a
+# garantir que dois curators nunca correm ao mesmo tempo.
+AGENT_SLOT=curator CLAUDE_MODEL="$MODEL" \
   bash "$SCRIPT_DIR/run-agent.sh" "$PROMPT" "$REPO_PKG" "${CURATOR_TIMEOUT:-900}" \
   > "$LOG_DIR/curator-$ISSUE.log" 2>&1; AGENT_RC=$?
 

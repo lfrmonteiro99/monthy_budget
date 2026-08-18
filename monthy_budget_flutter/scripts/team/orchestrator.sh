@@ -279,7 +279,16 @@ cleanup_stale() {
     #
     # critic-*.json is therefore never touched here — the critic owns its own
     # verdicts and deletes each one as soon as it has filed it.
-    for role in curator implement review verify; do
+    # The curator now runs on its OWN slot, so the main lock being free says nothing
+    # about whether a curator is alive. Deleting its verdict here would repeat, exactly,
+    # the bug that destroyed the critic's work: wiping the output of a live agent that
+    # happens to run in another slot. So the curator is skipped whenever its own lock
+    # is held.
+    local roles="implement review verify"
+    if flock -w 0 -n "/tmp/monthy-budget-agent.curator.lock" true 2>/dev/null; then
+      roles="curator $roles"
+    fi
+    for role in $roles; do
       rm -f "$VERDICT_DIR/$role"-*.json 2>/dev/null || true
     done
 
@@ -651,10 +660,26 @@ while true; do
     if [ -n "$I" ]; then run_implement "$I"; DID=1; fi
   fi
 
-  # 6. Curate raw critic findings.
-  if [ "$DID" = "0" ]; then
+  # 6. Curate raw critic findings — DETACHED, so triage drains while fixes advance.
+  #
+  # This used to block the cycle for the curator's full 17 minutes, which with a
+  # global mutex meant 66 minutes of strictly serial agent time per issue. The
+  # curator is the one role that costs nothing to run alongside the others: GitHub
+  # comments and labels only, no git, no build, a 12MB worktree and ~200MB of RAM.
+  #
+  # DID stays 0 on purpose. Launching the curator is not "the cycle did its work" —
+  # the cycle should carry on and dispatch a heavy role in the same pass. That is
+  # where the throughput comes from; a slot alone would have changed nothing while
+  # the call was still synchronous.
+  if [ -z "$(first_with "$L_TRIAGE")" ]; then
+    :
+  elif ! flock -w 0 -n "/tmp/monthy-budget-agent.curator.lock" true 2>/dev/null; then
+    log "curator já a correr no seu slot — a triagem espera a vez"
+  else
     I=$(first_with "$L_TRIAGE")
-    if [ -n "$I" ]; then run_curator "$I"; DID=1; fi
+    log "CURATOR (paralelo) -> #$I"
+    nohup bash "$SCRIPT_DIR/curator.sh" "$I" \
+      >> "$LOG_DIR/curator-bg.log" 2>&1 &
   fi
 
   # 7. Backlog empty: that closes a loop. Run the critic to find the next batch.

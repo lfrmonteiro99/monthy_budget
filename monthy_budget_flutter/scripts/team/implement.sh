@@ -26,6 +26,19 @@ log "issue #$ISSUE branch=$BRANCH modelo=$MODEL"
 
 set_state "$ISSUE" "$L_WIP"
 
+# Say so at the START, not only at the end. The label was already correct, but the
+# only comment came when the run finished, so for the 25 minutes an implementation
+# takes the issue looked abandoned: right state, no sign of life. Anyone reading the
+# tracker mid-run concluded, reasonably, that nothing was happening — and then
+# doubted every other state too.
+comment_issue "$ISSUE" "## Implementador: a trabalhar
+
+- Branch: \`$BRANCH\`
+- Modelo: \`$MODEL\`
+- Início: $(date '+%H:%M')
+
+Comento outra vez quando houver PR ou se ficar bloqueado."
+
 # Fresh worktree on a branch cut from dev. If the branch already exists (this is
 # rework after a block) wt_create falls back to checking it out.
 wt_remove "$WT_ROOT/implement-$ISSUE"
