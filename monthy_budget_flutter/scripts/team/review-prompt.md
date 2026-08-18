@@ -42,8 +42,22 @@ vai no contexto abaixo e nunca é truncada — usa-a.
 3. **Causa raiz, não sintoma** — o fix resolve o mecanismo, ou esconde-o? Um
    `try/catch` vazio, um `?? 0` que tapa um `null` inesperado, um `if` que evita
    o caso em vez de o tratar: tudo isso é bloqueio.
-4. **Cobertura** — o PR traz testes que falhariam sem o fix? Um fix de
-   comportamento sem teste volta a quebrar.
+4. **Cobertura, e o teste é mesmo válido** — não basta existirem testes.
+
+   - **Exige a prova do passo vermelho.** O corpo do PR deve trazer a mensagem de
+     falha que o teste deu **antes** do fix. Se não trouxer, ou se parecer inventada,
+     verifica tu: reverte o ficheiro de produção no worktree, corre a suite, e vê se
+     falha. **Já aconteceu neste pipeline** um teste que passava sem o fix — o
+     implementador tinha-o escrito depois, e não testava nada.
+   - **Casos além do caminho feliz.** Um único teste do caso nominal não protege: o
+     defeito volta pelas bordas. Procura fronteiras (0, 1, o limite ±1), vazios e
+     `null`, entradas inválidas, a acção repetida duas vezes, e o inverso do fix.
+     Se só há teste do caso feliz, isso é `blocked-impl` com o caso em falta
+     nomeado — não um comentário simpático.
+   - **Testes que não podem falhar** são pior que nenhum: dão confiança falsa. Um
+     `expect` sobre algo que o fix não altera, ou um `find.text` que casa com o
+     widget quer o comportamento esteja certo ou errado, contam como ausência de
+     teste.
 5. **Âmbito** — mexe apenas no que o issue pedia? Alterações não relacionadas
    escondem o fix e aumentam o risco.
 6. **Lixo versionado** — o diff arrasta o que nunca devia entrar?
@@ -86,6 +100,8 @@ Escreve EXACTAMENTE este JSON em `__VERDICT_PATH__`:
   "acceptance_criteria_met": true,
   "description_matches_diff": true,
   "has_tests": true,
+  "red_step_proven": true,
+  "edge_cases_covered": true,
   "fixes_root_cause": true,
   "junk_files": [],
   "secrets_found": [],

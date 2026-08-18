@@ -158,6 +158,8 @@ DETAIL=$(jq -r '
     (if .acceptance_criteria_met == false then "critérios de aceitação não cumpridos" else empty end),
     (if .description_matches_diff == false then "a descrição do PR não corresponde ao diff" else empty end),
     (if .has_tests == false then "não traz testes" else empty end),
+    (if .red_step_proven == false then "não prova o passo vermelho (o teste pode passar sem o fix)" else empty end),
+    (if .edge_cases_covered == false then "só testa o caminho feliz" else empty end),
     (if .fixes_root_cause == false then "trata o sintoma, não a causa raiz" else empty end),
     (if ((.junk_files // []) | length) > 0 then "lixo versionado: " + ((.junk_files // []) | join(", ")) else empty end),
     (if ((.secrets_found // []) | length) > 0 then "SEGREDOS no diff: " + ((.secrets_found // []) | join(", ")) else empty end)
@@ -211,7 +213,20 @@ $SUMMARY" >/dev/null 2>&1 || true
       log "merge recusado (mergeStateStatus=$MSTATUS, reviewer tests_pass=$TESTS_OK)"
       case "$MSTATUS" in
         DIRTY|BEHIND|BLOCKED)
-          : ;;   # genuinely the branch's problem — fall through to the block path
+          # A conflicted or stale branch is NOT bad code — the review itself may have
+          # been fine. Say so explicitly, so the implementer resolves the conflict
+          # instead of re-doing work that was already accepted. implement.sh leaves
+          # the conflict markers in the worktree for exactly this.
+          gh pr comment "$PR" --repo "$REPO" --body "## Reviewer: aprovado, mas o branch não integra (\`$MSTATUS\`)
+
+O código foi **aprovado** — o problema é só que o branch não integra em \`$BASE\`,
+por conflito ou por estar atrasado.
+
+**Não refaças o trabalho.** Na próxima passagem o \`$BASE\` é integrado neste branch
+e, se houver conflito, os marcadores ficam na árvore para resolveres por intenção:
+percebe o que cada lado queria e preserva as duas intenções. Depois corre a suite
+completa e reenvia." >/dev/null 2>&1 || true
+          ;;
         *)
           if [ "$TESTS_OK" = "true" ] && [ "$BASE" = "$BASE_BRANCH" ]; then
             log "checks instáveis mas o reviewer correu a suite e aprovou — a concluir o merge"

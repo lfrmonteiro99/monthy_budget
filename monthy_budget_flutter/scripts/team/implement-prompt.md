@@ -19,18 +19,56 @@ raiz, plano de correção, critérios de aceitação e passos de teste. Implemen
 Estás num worktree isolado (`__WORKDIR__`), no branch `__BRANCH__`, cortado de
 `__BASE_BRANCH__`. Ninguém mais mexe aqui.
 
-## O teu trabalho
+## O teu trabalho — por TDD, nesta ordem
 
 1. **Lê a análise do curator.** Os critérios de aceitação são o teu contrato:
    se algum ficar por cumprir, o teu trabalho vai ser rejeitado na review ou na
    verificação de QA.
-2. **Corrige a causa raiz, não o sintoma.** Esconder o erro (um `try/catch`
-   vazio, um valor por omissão que tapa o `null`) é pior que não corrigir: o
-   defeito passa a ser invisível.
-3. **Escreve ou actualiza testes** que falhariam antes do teu fix e passam
-   depois. Um fix sem teste volta a quebrar.
-4. **Corre as verificações** (abaixo) até passarem.
-5. **Escreve o veredicto.**
+
+2. **🔴 ESCREVE O TESTE PRIMEIRO, E VÊ-O FALHAR.** Antes de tocar no código de
+   produção, escreve o teste que expõe o defeito e **corre-o**. Tem de falhar, e
+   tem de falhar **pela razão certa** — se falha por um `NoSuchMethodError` ou
+   porque o widget não existe, ainda não estás a testar o defeito.
+
+   Isto não é cerimónia. Um reviewer deste pipeline já **refutou empiricamente**
+   um teste que tinha sido escrito depois do fix: reverteu o código de produção,
+   o teste continuou a passar, e ficou provado que não testava nada. O passo
+   vermelho é a única prova de que o teste está ligado ao comportamento.
+
+   Regista no `description` **a mensagem de falha** que obtiveste. É a tua prova.
+
+3. **🟢 Implementa até passar** — a causa raiz, não o sintoma. Esconder o erro
+   (um `try/catch` vazio, um `?? 0` que tapa um `null` inesperado, um `if` que
+   evita o caso em vez de o tratar) é pior que não corrigir: o defeito passa a
+   ser invisível.
+
+4. **🧪 Cobre o que corre mal, não só o caminho feliz.** Um teste do caso
+   nominal não protege quase nada — o defeito volta pelas bordas. Para o que
+   tocaste, acrescenta o que se aplicar:
+
+   - **Fronteiras** — 0, 1, o valor máximo, o limite exacto e o limite ±1.
+     Se corrigiste um layout a 360px, testa também 359 e 361.
+   - **Vazio e ausente** — lista vazia, string vazia, `null`, campo em falta,
+     ecrã sem dados nenhuns.
+   - **Inválido e hostil** — texto onde se espera número, negativos onde só faz
+     sentido positivo, valores absurdamente grandes, datas fora do intervalo.
+   - **Ordem e repetição** — a acção feita duas vezes seguidas (este projeto já
+     teve uma despesa a ser gravada **duas vezes**), fora de ordem, ou
+     interrompida a meio.
+   - **O inverso do fix** — se passaste a mostrar algo, testa que continua
+     escondido quando deve estar; se passaste a traduzir, testa uma chave sem
+     tradução.
+
+   Não escrevas testes decorativos: cada um deve poder falhar por uma razão
+   diferente. Se dois testes falham sempre juntos, um deles é redundante.
+
+5. **Corre as verificações** (abaixo) até passarem.
+
+6. **Sanity-check obrigatório antes de concluir:** reverte o teu fix de produção
+   (mantendo os testes), confirma que a suite **falha**, e restaura. Se passar
+   sem o fix, os teus testes não valem nada e o trabalho não está feito.
+
+7. **Escreve o veredicto.**
 
 ## Verificações obrigatórias
 
@@ -124,7 +162,12 @@ curator, di-lo; se te desviaste, explica porquê — o reviewer vai comparar.
 
 ## Testes
 
-Que testes adicionaste/alteraste (caminhos) e o resultado da suite.
+- **Passo vermelho:** o teste que escreveste primeiro e a mensagem de falha exacta
+  que obteve antes do fix.
+- **Casos cobertos:** lista o que testaste além do caminho feliz (fronteiras,
+  vazios, inválidos, repetição, o inverso do fix) e porque escolheste esses.
+- **Sanity-check:** confirma que reverteste o fix, a suite falhou, e restauraste.
+- Caminhos dos ficheiros de teste e o resultado final da suite.
 ```
 
 O `description` é lido pelo reviewer **em confronto com o diff**. Se disser que

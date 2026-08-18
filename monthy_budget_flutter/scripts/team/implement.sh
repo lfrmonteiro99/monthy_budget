@@ -40,8 +40,23 @@ Não foi possível criar o branch \`$BRANCH\` a partir de \`$BASE_BRANCH\`."
 WT="$WT_OUT"
 PKG="$WT/$FLUTTER_SUBDIR"
 
-# On rework the branch may be behind dev; other fixes have landed since.
-git -C "$WT" merge --no-edit "origin/$BASE_BRANCH" >/dev/null 2>&1 || true
+# Bring the branch up to date with dev. On rework other fixes have landed since it
+# was cut, and a PR that cannot merge is as good as no PR at all.
+#
+# A conflict here is NOT a reason to redo the work or bounce the issue: the fix is
+# already written, it just met someone else's change. The conflict is left in the
+# tree with its markers and handed to the agent as part of the task — it has the
+# code, both sides, and the context to resolve by intent.
+MERGE_CONFLICT=""
+if ! git -C "$WT" merge --no-edit "origin/$BASE_BRANCH" >/dev/null 2>&1; then
+  CONFLICTED=$(git -C "$WT" diff --name-only --diff-filter=U 2>/dev/null)
+  if [ -n "$CONFLICTED" ]; then
+    log "CONFLITO ao integrar $BASE_BRANCH: $(printf '%s' "$CONFLICTED" | tr '\n' ' ')"
+    MERGE_CONFLICT="$CONFLICTED"
+  else
+    git -C "$WT" merge --abort >/dev/null 2>&1 || true
+  fi
+fi
 
 log "a preparar dependências..."
 wt_prepare_flutter "$WT"
@@ -76,6 +91,30 @@ fi
   echo "# O issue a implementar"
   echo ""
   printf '%s\n' "$ISSUE_JSON"
+  if [ -n "$MERGE_CONFLICT" ]; then
+    echo ""
+    echo "---"
+    echo ""
+    echo "# ⚠️ CONFLITO DE MERGE POR RESOLVER — resolve-o primeiro"
+    echo ""
+    echo "Ao integrar \`origin/$BASE_BRANCH\` neste branch houve conflito. A árvore"
+    echo "está com os marcadores por resolver nestes ficheiros:"
+    echo ""
+    printf '%s\n' "$MERGE_CONFLICT" | sed 's/^/  - /'
+    echo ""
+    echo "**O teu fix não está errado** — apenas encontrou outra alteração que entrou"
+    echo "em \`$BASE_BRANCH\` entretanto. Resolve por INTENÇÃO, não por escolha cega:"
+    echo ""
+    echo "- Percebe o que **cada lado** queria fazer (\`git log\` nos dois lados)."
+    echo "- O resultado tem de preservar **as duas** intenções. Escolher \`--ours\` ou"
+    echo "  \`--theirs\` em bloco costuma apagar em silêncio o trabalho do outro."
+    echo "- Em ficheiros ARB e gerados (\`app_localizations*.dart\`): mantém as chaves"
+    echo "  de ambos e regenera com \`flutter gen-l10n\` em vez de resolver à mão."
+    echo "- Depois de resolver: \`git add\` nos ficheiros e corre a suite completa."
+    echo "  Um conflito mal resolvido passa despercebido até partir outra coisa."
+    echo ""
+    echo "Só depois disto continua com o trabalho do issue."
+  fi
   if [ -n "${PR_FEEDBACK//[[:space:]]/}" ]; then
     echo ""
     echo "---"
