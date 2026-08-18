@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:monthly_management/l10n/generated/app_localizations_en.dart';
 import 'package:monthly_management/models/actual_expense.dart';
 import 'package:monthly_management/models/app_settings.dart';
 import 'package:monthly_management/models/budget_summary.dart';
 import 'package:monthly_management/models/local_dashboard_config.dart';
 import 'package:monthly_management/models/purchase_record.dart';
 import 'package:monthly_management/screens/dashboard_screen.dart';
+import 'package:monthly_management/utils/formatters.dart';
 import 'package:monthly_management/widgets/calm/calm_list_tile.dart';
 
 import '../helpers/test_app.dart';
@@ -505,5 +507,167 @@ void main() {
     await tester.pump();
 
     expect(openRecurringCalled, 1);
+  });
+
+  // Regression coverage for #1217: the Hero card (Resumo Financeiro /
+  // Liquidez Mensal) used to source "gasto" from summary.totalExpenses,
+  // which is the BUDGETED total, not the real expenses shown by the
+  // Budget vs Actual block — see dashboard_screen.dart's _buildHero.
+  group('Hero spent/liquidity mirrors Budget vs Actual real total (#1217)',
+      () {
+    final l10n = SEn();
+
+    Widget buildDashboard({
+      required double budgeted,
+      required List<ActualExpense> actualExpenses,
+    }) {
+      return wrapWithTestApp(
+        DashboardScreen(
+          settings: AppSettings(
+            expenses: [
+              ExpenseItem(
+                id: 'e1',
+                label: 'Renda',
+                amount: budgeted,
+                category: 'habitacao',
+              ),
+            ],
+          ),
+          summary: BudgetSummary(
+            totalGross: 3000,
+            totalNetWithMeal: 3000,
+            // Deliberately the BUDGETED figures — this is exactly the
+            // shape of the bug: BudgetSummary carries planned amounts,
+            // not the real expenses lançadas no Expense Tracker.
+            totalExpenses: budgeted,
+            netLiquidity: 3000 - budgeted,
+          ),
+          purchaseHistory: const PurchaseHistory(),
+          dashboardConfig: const LocalDashboardConfig(
+            showSalaryBreakdown: false,
+            showPurchaseHistory: false,
+            showCharts: false,
+            showStressIndex: false,
+            showMonthReview: false,
+            showUpcomingBills: false,
+            showTaxDeductions: false,
+            showSavingsGoals: false,
+            showExpensesBreakdown: false,
+            showBudgetStreaks: false,
+            showCashFlowForecast: false,
+            showBurnRate: false,
+            showTopCategories: false,
+            showSavingsRate: false,
+            showCoachInsight: false,
+            showQuickActions: false,
+            showSpendingAnomalies: false,
+            showSummaryCards: false,
+            showBudgetVsActual: true,
+          ),
+          expenseHistory: const {},
+          actualExpenses: actualExpenses,
+          monthlyBudgets: const {},
+          recurringExpenses: const [],
+          actualExpenseHistory: const {},
+          onOpenSettings: () {},
+          onSaveSettings: (_) {},
+          onSnapshotExpenses: () {},
+          onAddExpense: () {},
+          onOpenExpenseTracker: () {},
+        ),
+      );
+    }
+
+    testWidgets('real > budgeted: Hero shows the real total, not budgeted',
+        (tester) async {
+      const budgeted = 1945.00;
+      const actual = 2189.85;
+      final now = DateTime.now();
+
+      await tester.pumpWidget(buildDashboard(
+        budgeted: budgeted,
+        actualExpenses: [
+          ActualExpense(
+            id: 'a1',
+            category: 'habitacao',
+            amount: actual,
+            date: DateTime(now.year, now.month, 10),
+            monthKey: '${now.year}-${now.month.toString().padLeft(2, '0')}',
+          ),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      // Hero "spent" label: must be the REAL total (2 189,85 €), matching
+      // the Budget vs Actual "Actual" total, not the budgeted total.
+      expect(
+        find.text(l10n.dashboardHeroSpentLabel(formatCurrency(actual))),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.dashboardHeroSpentLabel(formatCurrency(budgeted))),
+        findsNothing,
+      );
+      expect(
+        find.text('${l10n.expenseTrackerActual}: ${formatCurrency(actual)}'),
+        findsOneWidget,
+      );
+
+      // Hero amount (Liquidez Mensal) = totalNetWithMeal - REAL total.
+      expect(find.text(formatCurrency(3000 - actual)), findsOneWidget);
+      expect(find.text(formatCurrency(3000 - budgeted)), findsNothing);
+    });
+
+    testWidgets('real < budgeted: not hardcoded to "real always bigger"',
+        (tester) async {
+      const budgeted = 2000.00;
+      const actual = 500.00;
+      final now = DateTime.now();
+
+      await tester.pumpWidget(buildDashboard(
+        budgeted: budgeted,
+        actualExpenses: [
+          ActualExpense(
+            id: 'a1',
+            category: 'habitacao',
+            amount: actual,
+            date: DateTime(now.year, now.month, 10),
+            monthKey: '${now.year}-${now.month.toString().padLeft(2, '0')}',
+          ),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text(l10n.dashboardHeroSpentLabel(formatCurrency(actual))),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.dashboardHeroSpentLabel(formatCurrency(budgeted))),
+        findsNothing,
+      );
+      expect(find.text(formatCurrency(3000 - actual)), findsOneWidget);
+    });
+
+    testWidgets('empty actualExpenses: Hero shows 0 spent, not the budget',
+        (tester) async {
+      const budgeted = 1945.00;
+
+      await tester.pumpWidget(buildDashboard(
+        budgeted: budgeted,
+        actualExpenses: const [],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text(l10n.dashboardHeroSpentLabel(formatCurrency(0))),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.dashboardHeroSpentLabel(formatCurrency(budgeted))),
+        findsNothing,
+      );
+      expect(find.text(formatCurrency(3000)), findsOneWidget);
+    });
   });
 }
