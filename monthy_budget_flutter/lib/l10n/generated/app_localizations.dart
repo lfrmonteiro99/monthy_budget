@@ -10544,13 +10544,13 @@ abstract class S {
   /// No description provided for @yearlySummaryNetSavings.
   ///
   /// In pt, this message translates to:
-  /// **'Poupanca Liquida'**
+  /// **'Poupança Líquida'**
   String get yearlySummaryNetSavings;
 
   /// No description provided for @yearlySummarySavingsRate.
   ///
   /// In pt, this message translates to:
-  /// **'Taxa de poupanca: {rate}%'**
+  /// **'Taxa de poupança: {rate}%'**
   String yearlySummarySavingsRate(String rate);
 
   /// No description provided for @yearlySummaryHighlights.
@@ -10562,19 +10562,19 @@ abstract class S {
   /// No description provided for @yearlySummaryBestMonth.
   ///
   /// In pt, this message translates to:
-  /// **'Melhor mes ({month})'**
+  /// **'Melhor mês ({month})'**
   String yearlySummaryBestMonth(String month);
 
   /// No description provided for @yearlySummaryWorstMonth.
   ///
   /// In pt, this message translates to:
-  /// **'Pior mes ({month})'**
+  /// **'Pior mês ({month})'**
   String yearlySummaryWorstMonth(String month);
 
   /// No description provided for @yearlySummaryCategoryBreakdown.
   ///
   /// In pt, this message translates to:
-  /// **'Distribuicao por Categoria'**
+  /// **'Distribuição por Categoria'**
   String get yearlySummaryCategoryBreakdown;
 
   /// No description provided for @mealSectionHousehold.
