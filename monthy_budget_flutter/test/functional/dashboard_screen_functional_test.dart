@@ -797,24 +797,369 @@ void main() {
     });
   });
 
+  // Regression coverage for #1234: Velocidade de Gasto (Burn Rate) derived
+  // "spent" from summary.totalExpenses — the BUDGETED total — so it never
+  // moved when a real expense was added. The Hero was fixed in #1217, the
+  // burn rate card was left behind. It must use the same real total computed
+  // once in build() from categoryBudgetSummaries.
+  group('Burn Rate card uses real expenses, not budgeted (#1234)', () {
+    Widget buildDashboard({
+      required double budgeted,
+      required List<ActualExpense> actualExpenses,
+    }) {
+      return wrapWithTestApp(
+        DashboardScreen(
+          settings: AppSettings(
+            expenses: [
+              ExpenseItem(
+                id: 'e1',
+                label: 'Renda',
+                amount: budgeted,
+                category: 'habitacao',
+              ),
+            ],
+          ),
+          summary: BudgetSummary(
+            totalGross: 3000,
+            totalNetWithMeal: 3000,
+            // Deliberately the BUDGETED figures — this is exactly the shape
+            // of the bug: BudgetSummary carries planned amounts, not the real
+            // expenses lançadas no Expense Tracker.
+            totalExpenses: budgeted,
+            netLiquidity: 3000 - budgeted,
+          ),
+          purchaseHistory: const PurchaseHistory(),
+          dashboardConfig: const LocalDashboardConfig(
+            showHeroCard: false,
+            showSummaryCards: false,
+            showSalaryBreakdown: false,
+            showBudgetVsActual: false,
+            showPurchaseHistory: false,
+            showCharts: false,
+            showStressIndex: false,
+            showMonthReview: false,
+            showUpcomingBills: false,
+            showTaxDeductions: false,
+            showSavingsGoals: false,
+            showExpensesBreakdown: false,
+            showBudgetStreaks: false,
+            showCashFlowForecast: false,
+            showTopCategories: false,
+            showSavingsRate: false,
+            showCoachInsight: false,
+            showQuickActions: false,
+            showSpendingAnomalies: false,
+            showBurnRate: true,
+          ),
+          expenseHistory: const {},
+          actualExpenses: actualExpenses,
+          monthlyBudgets: const {},
+          recurringExpenses: const [],
+          actualExpenseHistory: const {},
+          onOpenSettings: () {},
+          onSaveSettings: (_) {},
+          onSnapshotExpenses: () {},
+          onAddExpense: () {},
+          onOpenExpenseTracker: () {},
+        ),
+      );
+    }
+
+    testWidgets(
+        'real > budgeted: MÉDIA/DIA, DISP./DIA and the progress bar follow the real total',
+        (tester) async {
+      const budgeted = 1945.00;
+      const actual = 2189.85;
+      final now = DateTime.now();
+      final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
+      final daysPassed = now.day;
+      final daysRemaining = daysInMonth - daysPassed;
+
+      await tester.pumpWidget(buildDashboard(
+        budgeted: budgeted,
+        actualExpenses: [
+          ActualExpense(
+            id: 'a1',
+            category: 'habitacao',
+            amount: actual,
+            date: DateTime(now.year, now.month, 10),
+            monthKey: '${now.year}-${now.month.toString().padLeft(2, '0')}',
+          ),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      // MÉDIA/DIA derives from the REAL spent total, not the budgeted one.
+      expect(
+        find.text(formatCurrency(actual / daysPassed)),
+        findsOneWidget,
+      );
+      expect(
+        find.text(formatCurrency(budgeted / daysPassed)),
+        findsNothing,
+      );
+
+      // DISP./DIA derives from the REAL remaining (income - real spent).
+      if (daysRemaining > 0) {
+        expect(
+          find.text(formatCurrency((3000 - actual) / daysRemaining)),
+          findsOneWidget,
+        );
+        expect(
+          find.text(formatCurrency((3000 - budgeted) / daysRemaining)),
+          findsNothing,
+        );
+      }
+
+      // Progress bar = spent/totalBudget on the real total.
+      final progress = tester.widget<LinearProgressIndicator>(
+        find.byType(LinearProgressIndicator).first,
+      );
+      expect(progress.value, closeTo(actual / 3000, 0.0001));
+    });
+
+    testWidgets(
+        'empty actualExpenses: MÉDIA/DIA is 0,00 € and the bar is empty — not the budget',
+        (tester) async {
+      const budgeted = 1945.00;
+      final now = DateTime.now();
+      final daysPassed = now.day;
+
+      await tester.pumpWidget(buildDashboard(
+        budgeted: budgeted,
+        actualExpenses: const [],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text(formatCurrency(0)), findsOneWidget);
+      expect(
+        find.text(formatCurrency(budgeted / daysPassed)),
+        findsNothing,
+      );
+
+      final progress = tester.widget<LinearProgressIndicator>(
+        find.byType(LinearProgressIndicator).first,
+      );
+      expect(progress.value, closeTo(0, 0.0001));
+    });
+  });
+
+  // Regression coverage for #1234: the dedicated Taxa de Poupança card and
+  // the savings tile of the summary grid derived rate/"poupado" from
+  // summary.savingsRate/netLiquidity — BUDGETED figures — so they never
+  // moved when a real expense was added. Same fix as the Hero (#1217): the
+  // real total computed in build() must win.
+  group('Savings Rate cards use real expenses, not budgeted (#1234)', () {
+    final l10n = SEn();
+
+    Widget buildDashboard({
+      required double budgeted,
+      required List<ActualExpense> actualExpenses,
+      double totalNetWithMeal = 3000,
+    }) {
+      return wrapWithTestApp(
+        DashboardScreen(
+          settings: AppSettings(
+            expenses: [
+              ExpenseItem(
+                id: 'e1',
+                label: 'Renda',
+                amount: budgeted,
+                category: 'habitacao',
+              ),
+            ],
+          ),
+          summary: BudgetSummary(
+            totalGross: totalNetWithMeal,
+            totalNetWithMeal: totalNetWithMeal,
+            // Deliberately the BUDGETED figures — the pre-fix source for the
+            // savings cards.
+            totalExpenses: budgeted,
+            netLiquidity: totalNetWithMeal - budgeted,
+            savingsRate: (totalNetWithMeal - budgeted) / totalNetWithMeal,
+          ),
+          purchaseHistory: const PurchaseHistory(),
+          dashboardConfig: const LocalDashboardConfig(
+            showHeroCard: false,
+            showSummaryCards: true,
+            showSalaryBreakdown: false,
+            showBudgetVsActual: false,
+            showPurchaseHistory: false,
+            showCharts: false,
+            showStressIndex: false,
+            showMonthReview: false,
+            showUpcomingBills: false,
+            showTaxDeductions: false,
+            showSavingsGoals: false,
+            showExpensesBreakdown: false,
+            showBudgetStreaks: false,
+            showCashFlowForecast: false,
+            showTopCategories: false,
+            showBurnRate: false,
+            showSavingsRate: true,
+            showCoachInsight: true,
+            showQuickActions: false,
+            showSpendingAnomalies: false,
+          ),
+          expenseHistory: const {},
+          actualExpenses: actualExpenses,
+          monthlyBudgets: const {},
+          recurringExpenses: const [],
+          actualExpenseHistory: const {},
+          onOpenSettings: () {},
+          onSaveSettings: (_) {},
+          onSnapshotExpenses: () {},
+          onAddExpense: () {},
+          onOpenExpenseTracker: () {},
+          onOpenCoach: () {},
+        ),
+      );
+    }
+
+    testWidgets(
+        'real > budgeted: dedicated card and summary tile show the real rate/saved',
+        (tester) async {
+      const budgeted = 1945.00;
+      const actual = 2189.85;
+      final now = DateTime.now();
+
+      await tester.pumpWidget(buildDashboard(
+        budgeted: budgeted,
+        actualExpenses: [
+          ActualExpense(
+            id: 'a1',
+            category: 'habitacao',
+            amount: actual,
+            date: DateTime(now.year, now.month, 10),
+            monthKey: '${now.year}-${now.month.toString().padLeft(2, '0')}',
+          ),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      // Both the dedicated card and the summary tile scale ×100 — 2 widgets.
+      expect(
+        find.text(formatPercentage((3000 - actual) / 3000)),
+        findsNWidgets(2),
+      );
+      expect(
+        find.text(formatPercentage((3000 - budgeted) / 3000)),
+        findsNothing,
+      );
+
+      // "Poupado este mês" derives from the real net liquidity.
+      expect(
+        find.text(l10n.dashboardSavingsRateSaved(
+            formatCurrency(3000 - actual))),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.dashboardSavingsRateSaved(
+            formatCurrency(3000 - budgeted))),
+        findsNothing,
+      );
+
+      // Summary tile sublabel shows the REAL expenses, not the budget.
+      expect(
+        find.text(l10n.dashboardExpensesAmount(formatCurrency(actual))),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.dashboardExpensesAmount(formatCurrency(budgeted))),
+        findsNothing,
+      );
+    });
+
+    testWidgets(
+        'empty actualExpenses: no real spend → 100% savings, 0 € spent, not the budget',
+        (tester) async {
+      const budgeted = 1945.00;
+      const income = 3000.00;
+
+      await tester.pumpWidget(buildDashboard(
+        budgeted: budgeted,
+        actualExpenses: const [],
+      ));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text(l10n.dashboardSavingsRateSaved(formatCurrency(income))),
+        findsOneWidget,
+      );
+      expect(
+        find.text(
+            l10n.dashboardSavingsRateSaved(formatCurrency(income - budgeted))),
+        findsNothing,
+      );
+      expect(
+        find.text(l10n.dashboardExpensesAmount(formatCurrency(0))),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.dashboardExpensesAmount(formatCurrency(budgeted))),
+        findsNothing,
+      );
+    });
+
+    testWidgets(
+        'coach tip follows the REAL rate: budgeted says >20% savings, real spend drops it below 10%',
+        (tester) async {
+      const budgeted = 200.00; // budgeted rate ≈ 80% → "good savings"
+      const income = 1000.00;
+      const realSpend = 950.00; // real rate = 5% → "low savings"
+      final now = DateTime.now();
+
+      await tester.pumpWidget(buildDashboard(
+        budgeted: budgeted,
+        totalNetWithMeal: income,
+        actualExpenses: [
+          ActualExpense(
+            id: 'a1',
+            category: 'habitacao',
+            amount: realSpend,
+            date: DateTime(now.year, now.month, 10),
+            monthKey: '${now.year}-${now.month.toString().padLeft(2, '0')}',
+          ),
+        ],
+      ));
+      await tester.pumpAndSettle();
+
+      // The dedicated + summary cards show the real 5%, not the budgeted 80%.
+      expect(find.text(formatPercentage(0.05)), findsNWidgets(2));
+      expect(find.text(formatPercentage(0.80)), findsNothing);
+
+      // Coach must warn about the real low savings, not praise the budgeted rate.
+      expect(find.text(l10n.dashboardCoachLowSavings), findsOneWidget);
+      expect(find.text(l10n.dashboardCoachGoodSavings), findsNothing);
+    });
+  });
+
   group(
       'Savings Rate dedicated card & coach tip scale fraction ×100 (#1219)',
       () {
     final l10n = SEn();
 
-    Widget buildSavingsDashboard({required double savingsRate}) {
+    // totalNetWithMeal is 1000, so a required rate r maps to real spend
+    // (1 - r) × 1000 — the rate is now DERIVED from actualExpenses (#1234),
+    // not read from the synthetic summary.savingsRate (which is budgeted and
+    // would never move with a real expense).
+    Widget buildSavingsDashboard({required double actualSpend}) {
+      final now = DateTime.now();
       return wrapWithTestApp(
         DashboardScreen(
           settings: const AppSettings(),
           summary: BudgetSummary(
             totalGross: 1500,
             totalNetWithMeal: 1000,
+            // BUDGETED figures — deliberately different from the real spend
+            // injected per test, so the card can only be right if it reads
+            // actualExpenses (#1234).
             totalExpenses: 550,
             totalDeductions: 200,
             totalIRS: 150,
             totalSS: 50,
             netLiquidity: 450,
-            savingsRate: savingsRate,
+            savingsRate: 0.45,
           ),
           purchaseHistory: const PurchaseHistory(),
           dashboardConfig: const LocalDashboardConfig(
@@ -839,7 +1184,15 @@ void main() {
             showCoachInsight: true,
           ),
           expenseHistory: const {},
-          actualExpenses: const [],
+          actualExpenses: [
+            ActualExpense(
+              id: 'ae1',
+              category: 'habitacao',
+              amount: actualSpend,
+              date: DateTime(now.year, now.month, 10),
+              monthKey: '${now.year}-${now.month.toString().padLeft(2, '0')}',
+            ),
+          ],
           monthlyBudgets: const {},
           recurringExpenses: const [],
           actualExpenseHistory: const {},
@@ -856,7 +1209,7 @@ void main() {
     testWidgets(
         'savingsRate 0.449: dedicated card shows the ×100 percentage (not the raw fraction 0.4%) and the good-savings coach tip',
         (tester) async {
-      await tester.pumpWidget(buildSavingsDashboard(savingsRate: 0.449));
+      await tester.pumpWidget(buildSavingsDashboard(actualSpend: 551));
       await tester.pumpAndSettle();
 
       // The defect: the dedicated card rendered the raw fraction (0.4%),
@@ -871,7 +1224,7 @@ void main() {
     testWidgets(
         'savingsRate 0.08: dedicated card shows 8.0% and the low-savings tip (pre-existing behaviour preserved)',
         (tester) async {
-      await tester.pumpWidget(buildSavingsDashboard(savingsRate: 0.08));
+      await tester.pumpWidget(buildSavingsDashboard(actualSpend: 920));
       await tester.pumpAndSettle();
 
       expect(find.text(formatPercentage(0.08)), findsOneWidget);
@@ -885,17 +1238,17 @@ void main() {
       Color? colorOf(String text) =>
           tester.widget<Text>(find.text(text)).style?.color;
 
-      await tester.pumpWidget(buildSavingsDashboard(savingsRate: 0.449));
+      await tester.pumpWidget(buildSavingsDashboard(actualSpend: 551));
       await tester.pumpAndSettle();
       expect(colorOf(formatPercentage(0.449)),
           AppColors.ok(tester.element(find.text(formatPercentage(0.449)))));
 
-      await tester.pumpWidget(buildSavingsDashboard(savingsRate: 0.15));
+      await tester.pumpWidget(buildSavingsDashboard(actualSpend: 850));
       await tester.pumpAndSettle();
       expect(colorOf(formatPercentage(0.15)),
           AppColors.warn(tester.element(find.text(formatPercentage(0.15)))));
 
-      await tester.pumpWidget(buildSavingsDashboard(savingsRate: 0.08));
+      await tester.pumpWidget(buildSavingsDashboard(actualSpend: 920));
       await tester.pumpAndSettle();
       expect(colorOf(formatPercentage(0.08)),
           AppColors.bad(tester.element(find.text(formatPercentage(0.08)))));
@@ -904,7 +1257,7 @@ void main() {
     testWidgets(
         'boundary 0.20: exact good-savings threshold → ok colour and good-savings tip',
         (tester) async {
-      await tester.pumpWidget(buildSavingsDashboard(savingsRate: 0.20));
+      await tester.pumpWidget(buildSavingsDashboard(actualSpend: 800));
       await tester.pumpAndSettle();
 
       expect(find.text(formatPercentage(0.20)), findsOneWidget);
@@ -918,7 +1271,7 @@ void main() {
     testWidgets(
         'boundary 0.10: exact low-savings threshold → warn colour, no low-savings alarm (tip is strictly "below 10%")',
         (tester) async {
-      await tester.pumpWidget(buildSavingsDashboard(savingsRate: 0.10));
+      await tester.pumpWidget(buildSavingsDashboard(actualSpend: 900));
       await tester.pumpAndSettle();
 
       expect(find.text(formatPercentage(0.10)), findsOneWidget);
@@ -933,7 +1286,7 @@ void main() {
     testWidgets(
         'negative savingsRate -0.05: shows the negative ×100 percentage in red (not clamped to 0, not a fraction)',
         (tester) async {
-      await tester.pumpWidget(buildSavingsDashboard(savingsRate: -0.05));
+      await tester.pumpWidget(buildSavingsDashboard(actualSpend: 1050));
       await tester.pumpAndSettle();
 
       expect(find.text('-0.1%'), findsNothing); // the buggy fraction rendering

@@ -190,6 +190,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final totalActualExpenses =
         categoryBudgetSummaries.fold(0.0, (s, e) => s + e.actual);
     final netLiquidity = summary.totalNetWithMeal - totalActualExpenses;
+    // Real savings rate (net of ACTUAL expenses), same formula as
+    // calculations.dart but with the real numerator — summary.savingsRate is
+    // the BUDGETED rate and must not drive the savings cards (#1234).
+    final actualSavingsRate =
+        summary.totalNetWithMeal > 0 ? netLiquidity / summary.totalNetWithMeal : 0.0;
     final isPositive = netLiquidity >= 0;
 
     // Stress Index — calculate and persist if changed.
@@ -252,7 +257,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 for (final cardId in dashboardConfig.cardOrder)
                   if (cardId != 'heroCard')
                     ..._buildCardById(cardId, context, stressResult,
-                        monthReview, l10n, categoryBudgetSummaries),
+                        monthReview, l10n, categoryBudgetSummaries,
+                        totalActualExpenses, netLiquidity, actualSavingsRate),
                 const SizedBox(height: 16),
               ],
             ],
@@ -484,6 +490,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     MonthReviewResult? monthReview,
     S l10n,
     List<CategoryBudgetSummary> categoryBudgetSummaries,
+    double totalActualExpenses,
+    double netLiquidity,
+    double actualSavingsRate,
   ) {
     if (!dashboardConfig.isCardVisible(cardId)) return const [];
     switch (cardId) {
@@ -555,7 +564,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SizedBox(height: 16),
         ];
       case 'burnRate':
-        return [_buildBurnRateCard(context, l10n), const SizedBox(height: 16)];
+        return [
+          _buildBurnRateCard(context, l10n, totalActualExpenses),
+          const SizedBox(height: 16)
+        ];
       case 'topCategories':
         if (summary.totalExpenses <= 0) return const [];
         return [
@@ -569,17 +581,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ];
       case 'savingsRate':
         return [
-          _buildSavingsRateCard(context, l10n),
+          _buildSavingsRateCard(context, l10n, netLiquidity, actualSavingsRate),
           const SizedBox(height: 16)
         ];
       case 'coachInsight':
         if (widget.onOpenCoach == null) return const [];
         return [
-          _buildCoachInsightCard(context, l10n),
+          _buildCoachInsightCard(
+              context, l10n, totalActualExpenses, actualSavingsRate),
           const SizedBox(height: 16)
         ];
       case 'summaryCards':
-        return [_buildSummaryCards(l10n), const SizedBox(height: 16)];
+        return [
+          _buildSummaryCards(l10n, totalActualExpenses, actualSavingsRate),
+          const SizedBox(height: 16)
+        ];
       case 'salaryBreakdown':
         return [
           _buildSalaryBreakdown(context, l10n),
@@ -699,13 +715,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // ───────────────────────── Burn Rate ─────────────────────────────────────
 
-  Widget _buildBurnRateCard(BuildContext context, S l10n) {
+  Widget _buildBurnRateCard(
+      BuildContext context, S l10n, double totalActualExpenses) {
     final now = DateTime.now();
     final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
     final daysPassed = now.day;
     final daysRemaining = daysInMonth - daysPassed;
     final totalBudget = summary.totalNetWithMeal;
-    final spent = summary.totalExpenses;
+    // Real expenses of the month — NOT summary.totalExpenses, which is the
+    // budgeted total (see #1234; the Hero was already fixed in #1217).
+    final spent = totalActualExpenses;
     final remaining = totalBudget - spent;
     final dailyAvgSpend = daysPassed > 0 ? spent / daysPassed : 0.0;
     final dailyBudgetAllowance =
@@ -934,13 +953,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // ───────────────────────── Savings Rate ──────────────────────────────────
 
-  Widget _buildSavingsRateCard(BuildContext context, S l10n) {
-    final currentRate = summary.savingsRate;
+  Widget _buildSavingsRateCard(
+      BuildContext context, S l10n, double netLiquidity, double actualSavingsRate) {
+    // Real savings rate computed in build() — NOT summary.savingsRate, which
+    // is the BUDGETED rate and never moved with a real expense (#1234).
+    final currentRate = actualSavingsRate;
     // savingsRate is a fraction (0..1); scale ×100 once for display and for
     // the point-based colour thresholds — comparing the raw fraction against
     // 20/10 would make every valid rate look <10% (always red).
     final ratePct = currentRate * 100;
-    final saved = summary.netLiquidity > 0 ? summary.netLiquidity : 0.0;
+    final saved = netLiquidity > 0 ? netLiquidity : 0.0;
     final rateColor = ratePct >= 20
         ? AppColors.ok(context)
         : ratePct >= 10
@@ -1029,17 +1051,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // ───────────────────────── Coach Insight ─────────────────────────────────
 
-  Widget _buildCoachInsightCard(BuildContext context, S l10n) {
+  Widget _buildCoachInsightCard(BuildContext context, S l10n,
+      double totalActualExpenses, double actualSavingsRate) {
     String insight;
     IconData insightIcon;
-    // savingsRate is a fraction; thresholds are in percentage points.
-    if (summary.savingsRate < 0.10 && summary.totalExpenses > 0) {
+    // actualSavingsRate is a fraction; thresholds are in percentage points.
+    // Real expenses/rate — summary.savingsRate/totalExpenses are BUDGETED and
+    // would keep praising an overspent month (#1234).
+    if (actualSavingsRate < 0.10 && totalActualExpenses > 0) {
       insight = l10n.dashboardCoachLowSavings;
       insightIcon = Icons.warning_amber_outlined;
-    } else if (summary.totalExpenses > summary.totalNetWithMeal * 0.9) {
+    } else if (totalActualExpenses > summary.totalNetWithMeal * 0.9) {
       insight = l10n.dashboardCoachHighSpending;
       insightIcon = Icons.trending_down;
-    } else if (summary.savingsRate >= 0.20) {
+    } else if (actualSavingsRate >= 0.20) {
       insight = l10n.dashboardCoachGoodSavings;
       insightIcon = Icons.emoji_events_outlined;
     } else {
@@ -1084,7 +1109,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // ───────────────────────── Summary Cards ─────────────────────────────────
 
-  Widget _buildSummaryCards(S l10n) {
+  Widget _buildSummaryCards(
+      S l10n, double totalActualExpenses, double actualSavingsRate) {
     final openIncome = widget.onOpenIncome;
     final openTaxSimulator = widget.onOpenTaxSimulator ?? widget.onOpenIncome;
     final openSavings = widget.onOpenSavingsGoals;
@@ -1138,9 +1164,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 icon: Icons.savings_outlined,
                 label: l10n.dashboardSavingsRate,
                 value: formatPercentage(
-                    summary.savingsRate > 0 ? summary.savingsRate : 0),
+                    actualSavingsRate > 0 ? actualSavingsRate : 0),
                 sublabel: l10n.dashboardExpensesAmount(
-                    formatCurrency(summary.totalExpenses)),
+                    formatCurrency(totalActualExpenses)),
                 accent: AppColors.accent,
                 onTap: openSavings,
               ),
