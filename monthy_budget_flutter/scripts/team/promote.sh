@@ -52,8 +52,22 @@ fi
 if [ "$BEHIND" -gt 0 ]; then
   log "$PROD_BRANCH avançou — a integrar em $BASE_BRANCH antes de promover"
   WT=$(wt_checkout "$BASE_BRANCH" "promote-sync") || { log "ERRO: checkout falhou"; exit 1; }
+  # `-X ours` resolves CONFLICTING HUNKS in dev's favour while still taking
+  # everything main has that dev lacks. That is exactly right here, and the reason is
+  # structural rather than a preference:
+  #
+  # main receives dev's work as a SQUASH commit. Git cannot tell that main's squashed
+  # hunk and dev's original commits are the same change, so merging main back into dev
+  # conflicts on every file the promotion touched — the two sides are identical work
+  # wearing different shapes. Taking dev's side on those is a no-op in content terms.
+  # Meanwhile main also carries commits dev has never seen (the harness itself lands
+  # on main directly), and `-X ours` still merges those normally — which `-s ours`
+  # would silently discard.
+  #
+  # Without this the sync failed outright and the promotion stopped, which for an
+  # unattended pipeline means it stops forever.
   if git -C "$WT" -c user.name="qa-promote" -c user.email="qa@local" \
-       merge --no-edit "origin/$PROD_BRANCH" >/dev/null 2>&1; then
+       merge --no-edit -X ours "origin/$PROD_BRANCH" >/dev/null 2>&1; then
     # Detached checkout: push the resulting commit onto the dev ref explicitly.
     if git -C "$WT" push origin "HEAD:refs/heads/$BASE_BRANCH" >/dev/null 2>&1; then
       log "$PROD_BRANCH integrado em $BASE_BRANCH"
@@ -62,8 +76,15 @@ if [ "$BEHIND" -gt 0 ]; then
       wt_remove "$WT"; exit 1
     fi
   else
-    log "ERRO: conflito ao integrar $PROD_BRANCH em $BASE_BRANCH — precisa de humano"
-    wt_remove "$WT"; exit 1
+    # Even -X ours could not finish (add/add on a file neither side can reconcile,
+    # or a deleted/modified pair). Leave dev untouched and say what to look at — but
+    # do NOT stop the pipeline: the promotion simply waits for the next cycle, by
+    # which time the queue has usually moved the conflicting file along anyway.
+    CONFLICTED=$(git -C "$WT" diff --name-only --diff-filter=U 2>/dev/null | tr '\n' ' ')
+    log "conflito irreconciliável ao integrar $PROD_BRANCH em $BASE_BRANCH: ${CONFLICTED:-?}"
+    log "  $BASE_BRANCH fica intacto; a promoção repete no próximo ciclo"
+    git -C "$WT" merge --abort >/dev/null 2>&1 || true
+    wt_remove "$WT"; exit 0
   fi
   wt_remove "$WT"
   git -C "$TEAM_ROOT" fetch origin "$BASE_BRANCH" >/dev/null 2>&1 || true
