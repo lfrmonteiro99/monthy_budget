@@ -631,6 +631,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
               children: [
                 IconButton(
                   onPressed: _loading ? null : () => _navigateMonth(-1),
+                  tooltip: l10n.mealPlannerPreviousMonth,
                   icon: Icon(
                     Icons.chevron_left,
                     color: _loading
@@ -648,6 +649,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                 ),
                 IconButton(
                   onPressed: _loading ? null : () => _navigateMonth(1),
+                  tooltip: l10n.mealPlannerNextMonth,
                   icon: Icon(
                     Icons.chevron_right,
                     color: _loading

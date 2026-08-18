@@ -267,20 +267,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
       eyebrow: eyebrow,
       title: monthLabel,
       actions: [
-        Tooltip(
-          message: l10n.notificationSettings,
-          child: IconButton(
-            icon: Badge(
-              isLabelVisible: false,
-              child: Icon(
-                Icons.notifications_outlined,
-                size: 24,
-                color: AppColors.ink70(context),
-              ),
+        IconButton(
+          tooltip: l10n.notificationSettings,
+          icon: Badge(
+            isLabelVisible: false,
+            child: Icon(
+              Icons.notifications_outlined,
+              size: 24,
+              color: AppColors.ink70(context),
             ),
-            onPressed: widget.onOpenNotificationSettings ??
-                () => _openNotificationSettings(context),
           ),
+          onPressed: widget.onOpenNotificationSettings ??
+              () => _openNotificationSettings(context),
         ),
         Tooltip(
           message: l10n.dashboardOpenSettings,
