@@ -352,6 +352,17 @@ if [ -z "$USED" ]; then
   RC=$?
 fi
 
+# The fallback has quotas too, and when both engines are dry the sweep should WAIT,
+# not spin. Observed: with Claude cooling and Ollama returning "you have reached your
+# session usage limit", the layout dimension relaunched every nine minutes, failing in
+# 180s each time. It burned no quota — it fails before doing work — but it hammers the
+# very API that is rate-limiting us, which is a good way to stay rate-limited.
+if printf '%s' "$AGENT_OUTPUT" | grep -qiE 'session usage limit|temporarily limiting requests|rate limit'; then
+  FB_COOLDOWN="$STATE_DIR/ollama-usage-cooldown"
+  echo $(( $(date +%s) + ${OLLAMA_COOLDOWN_MIN:-30} * 60 )) > "$FB_COOLDOWN" 2>/dev/null || true
+  echo "[run-agent] fallback sem quota — em cooldown ${OLLAMA_COOLDOWN_MIN:-30}min" >&2
+fi
+
 echo "[run-agent] fim: motor=$USED rc=$RC" >&2
 
 # Record which engine actually ran, so the caller can tell a DEGRADED run from a

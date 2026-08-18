@@ -410,6 +410,25 @@ fi
 AGENT_FALLBACK_MODEL="${CRITIC_FALLBACK_MODEL:-gemma4:31b-cloud}"
 export AGENT_FALLBACK_MODEL
 
+# Both engines dry: wait instead of spinning.
+#
+# Retrying is right when a dimension failed for its own reasons — it stays uncovered
+# and comes back. It is pointless when there is no engine to run it: measured, layout
+# relaunched every nine minutes against a Claude in cooldown and an Ollama returning
+# "session usage limit", failing in 180s each time and doing nothing but poking the
+# API that was already throttling us.
+CD_CLAUDE="$STATE_DIR/claude-usage-cooldown"
+CD_OLLAMA="$STATE_DIR/ollama-usage-cooldown"
+NOW_TS=$(date +%s)
+claude_cold=0; ollama_cold=0
+[ -f "$CD_CLAUDE" ] && [ "$(cat "$CD_CLAUDE" 2>/dev/null || echo 0)" -gt "$NOW_TS" ] && claude_cold=1
+[ -f "$CD_OLLAMA" ] && [ "$(cat "$CD_OLLAMA" 2>/dev/null || echo 0)" -gt "$NOW_TS" ] && ollama_cold=1
+if [ "$claude_cold" = "1" ] && [ "$ollama_cold" = "1" ]; then
+  log "os dois motores sem quota (claude até $(date -d "@$(cat "$CD_CLAUDE")" +%H:%M), ollama até $(date -d "@$(cat "$CD_OLLAMA")" +%H:%M))"
+  log "  não lanço testers — as dimensões ficam por cobrir e repetem quando houver motor"
+  exit 0
+fi
+
 log "a lançar testers..."
 declare -a PIDS=()
 for dim in $DIMS; do
