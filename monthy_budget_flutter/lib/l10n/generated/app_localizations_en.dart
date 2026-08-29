@@ -3401,6 +3401,10 @@ class SEn extends S {
       'Your shortcut to quick actions. Tap to add expenses, change settings, navigate, and more — just type what you need.';
 
   @override
+  String get onbTourBackdropLabel =>
+      'Onboarding tour. Tap outside the highlight to continue, or Skip to end.';
+
+  @override
   String get taxDeductionTitle => 'IRS Tax Deductions';
 
   @override
