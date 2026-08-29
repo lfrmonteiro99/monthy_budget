@@ -143,12 +143,18 @@ class _CoachQuoteText extends StatefulWidget {
 class _CoachQuoteTextState extends State<_CoachQuoteText> {
   double? _cachedWidth;
   String? _cachedQuote;
+  TextScaler? _cachedTextScaler;
   String? _cachedResult;
 
-  String _resolve(double maxWidth, TextDirection textDirection) {
+  String _resolve(
+    double maxWidth,
+    TextDirection textDirection,
+    TextScaler textScaler,
+  ) {
     if (_cachedResult != null &&
         _cachedWidth == maxWidth &&
-        _cachedQuote == widget.quote) {
+        _cachedQuote == widget.quote &&
+        _cachedTextScaler == textScaler) {
       return _cachedResult!;
     }
     final result = _truncateWordSafe(
@@ -157,9 +163,11 @@ class _CoachQuoteTextState extends State<_CoachQuoteText> {
       maxWidth: maxWidth,
       maxLines: 3,
       textDirection: textDirection,
+      textScaler: textScaler,
     );
     _cachedWidth = maxWidth;
     _cachedQuote = widget.quote;
+    _cachedTextScaler = textScaler;
     _cachedResult = result;
     return result;
   }
@@ -167,12 +175,14 @@ class _CoachQuoteTextState extends State<_CoachQuoteText> {
   @override
   Widget build(BuildContext context) {
     final textDirection = Directionality.of(context);
+    final textScaler = MediaQuery.textScalerOf(context);
     return LayoutBuilder(
       builder: (context, constraints) {
         return Text(
-          _resolve(constraints.maxWidth, textDirection),
+          _resolve(constraints.maxWidth, textDirection, textScaler),
           maxLines: 3,
           overflow: TextOverflow.clip,
+          textScaler: textScaler,
           style: widget.style,
         );
       },
@@ -182,18 +192,25 @@ class _CoachQuoteTextState extends State<_CoachQuoteText> {
 
 /// Returns [text] unchanged if it fits within [maxLines] at [maxWidth];
 /// otherwise backs off word-by-word until it fits, then appends '…'.
+///
+/// Measures with the same [textScaler] the [Text] widget will actually
+/// paint with — a mismatch here (e.g. measuring at scale 1.0 while the
+/// user has a larger system text scale) lets the truncated string still
+/// overflow 3 lines once painted for real (issue #1324 rework).
 String _truncateWordSafe({
   required String text,
   required TextStyle style,
   required double maxWidth,
   required int maxLines,
   required TextDirection textDirection,
+  required TextScaler textScaler,
 }) {
   bool exceeds(String candidate) {
     final painter = TextPainter(
       text: TextSpan(text: candidate, style: style),
       maxLines: maxLines,
       textDirection: textDirection,
+      textScaler: textScaler,
     )..layout(maxWidth: maxWidth);
     return painter.didExceedMaxLines;
   }

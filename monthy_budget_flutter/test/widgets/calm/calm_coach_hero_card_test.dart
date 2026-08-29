@@ -130,6 +130,53 @@ void main() {
     expectNoPartialWords(rendered, quote);
   });
 
+  testWidgets(
+      'seeded quote at larger text scale: truncation is measured at the '
+      'real textScaler, not at scale 1.0', (tester) async {
+    const scaler = TextScaler.linear(1.3);
+    final mediaQueryData = MediaQueryData(textScaler: scaler);
+
+    await tester.pumpWidget(MaterialApp(
+      theme: lightTheme(),
+      home: MediaQuery(
+        data: mediaQueryData,
+        child: Scaffold(
+          body: SizedBox(
+            width: cardWidth,
+            child: CalmCoachHeroCard(
+              eyebrow: 'coach',
+              quote: seededQuote,
+              ctaLabel: 'ver',
+              onTap: () {},
+            ),
+          ),
+        ),
+      ),
+    ));
+    await tester.pumpAndSettle();
+
+    final rendered = findQuoteText(tester, 'O fundo').data!;
+
+    // Re-measure the *rendered* string at the *real* scaler the Text widget
+    // will actually paint with. If truncation was decided at scale 1.0 (the
+    // defect), the same string can still overflow 3 lines once painted at
+    // the user's real text-scale factor.
+    final painter = TextPainter(
+      text: TextSpan(text: rendered, style: quoteTextStyle),
+      maxLines: 3,
+      textDirection: TextDirection.ltr,
+      textScaler: scaler,
+    )..layout(maxWidth: quoteMaxWidth);
+
+    expect(
+      painter.didExceedMaxLines,
+      isFalse,
+      reason: 'truncated text "$rendered" still overflows 3 lines when '
+          'measured at the real textScaler ($scaler) — truncation must be '
+          'computed at the same scale the Text widget paints with',
+    );
+  });
+
   testWidgets('quote that fits within 3 lines is rendered unchanged',
       (tester) async {
     const quote = 'Tudo em dia este mês.';
