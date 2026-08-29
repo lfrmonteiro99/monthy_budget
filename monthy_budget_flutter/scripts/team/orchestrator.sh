@@ -438,6 +438,37 @@ free_slot() {
   echo ""
 }
 
+# How many implementers are in flight.
+#
+# The fleet must never be all production. Implementing costs 30-45 minutes and ADDS
+# a PR; reviewing, gating and verifying cost 6-8 minutes each and are the only steps
+# that REMOVE one. A fleet that can go 100% implementer is the one configuration that
+# guarantees the queue grows — observed on the first cycle after the fleet went live:
+# three implementers took all three slots at 18:09, and twenty minutes later two PRs
+# sat waiting for a reviewer that had nowhere to run.
+#
+# The priority order already puts draining first, but it only acts at the instant a
+# slot frees. It cannot conjure a slot that will not exist for another 45 minutes.
+implementers_in_flight() {
+  local k n=0
+  for k in "${!SLOT_WHAT[@]}"; do
+    case "${SLOT_WHAT[$k]}" in implement:*) n=$((n+1)) ;; esac
+  done
+  echo "$n"
+}
+
+# May we start another implementer?
+#
+# Checked where implementing is CHOSEN, not where a slot is chosen. Reserving capacity
+# must not mean wasting it: if there is nothing to review, gate or verify, the last
+# slot should implement rather than idle. The dispatch loop only reaches the implement
+# branches after every drain queue has come up empty, so by the time this is asked the
+# reserved slot has already been offered to draining and refused.
+may_implement() {
+  [ "$MAX_PARALLEL" -le 1 ] && return 0          # serial: reserving would stall everything
+  [ "$(implementers_in_flight)" -lt $(( MAX_PARALLEL - 1 )) ]
+}
+
 # Is this issue already being worked on right now?
 issue_in_flight() {
   local issue="$1" k
@@ -853,6 +884,10 @@ while true; do
 
     # 4. Rework: code problems back to the implementer.
     I=$(first_unclaimed "$L_BLOCKED_IMPL")
+    if [ -n "$I" ] && ! may_implement; then
+      log "reserva de drenagem: $(implementers_in_flight) implementador(es) em voo, guardo o último slot para rever/integrar/verificar"
+      break
+    fi
     if [ -n "$I" ]; then
       if escalate_if_stuck "$I"; then
         log "#$I: tentativa $(bump_attempts "$I") de $MAX_ATTEMPTS"
@@ -864,6 +899,10 @@ while true; do
 
     # 6. Implement curated issues.
     I=$(first_unclaimed "$L_READY")
+    if [ -n "$I" ] && ! may_implement; then
+      log "reserva de drenagem: $(implementers_in_flight) implementador(es) em voo, guardo o último slot para rever/integrar/verificar"
+      break
+    fi
     if [ -n "$I" ]; then
       dispatch "$SLOT" implement "$I" "IMPLEMENTADOR -> #$I"
       FILLED=$((FILLED+1)); continue

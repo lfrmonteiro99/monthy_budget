@@ -123,6 +123,19 @@ O que a frota tem de coordenar, e onde estava o risco:
 | o issue | `qa:premerge` e `qa:verify` não mudam de etiqueta durante a corrida | registo de issues em voo (`first_unclaimed`) |
 | veredictos | o `cleanup_stale` apaga ficheiros de veredicto; com um slot, ter o lock provava que nada corria — com N não prova nada | só apaga com a frota toda parada |
 
+**A produção nunca ocupa a frota toda.** Implementar custa 30-45 minutos e **acrescenta**
+um PR; rever, integrar e verificar custam 6-8 minutos cada e são os únicos passos que
+**tiram** um. Uma frota que possa ir a 100% de implementadores é a única configuração
+que garante que a fila cresce — observado no primeiro ciclo depois de a frota entrar:
+três implementadores tomaram os três slots, e vinte minutos depois havia dois PRs à
+espera de um revisor que não tinha onde correr.
+
+Por isso, com `MAX_PARALLEL >= 2`, no máximo `MAX_PARALLEL - 1` slots implementam. O
+slot reservado **não** fica ocioso: a verificação é feita no ponto onde se escolhe
+implementar, já depois de todas as filas de drenagem terem vindo vazias, portanto se
+não houver nada para rever ele implementa à mesma. Reservar capacidade não é
+desperdiçá-la.
+
 O curator fica **fora** da frota: tem um lock próprio e uma segunda instância abortaria
 com `exit 75`. Continua a correr em paralelo no seu slot, e serve as duas filas
 (`qa:blocked-spec` antes de `qa:triage` — um briefing errado à espera é um
