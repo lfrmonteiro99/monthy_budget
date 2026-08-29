@@ -47,6 +47,35 @@ PORT_DEV="${TEAM_PORT_DEV:-7402}"
 # the confusion it exists to prevent.
 PORT_PREMERGE="${TEAM_PORT_PREMERGE:-7403}"
 
+# ── How many write-path agents may run at once ─────────────────────────────
+#
+# Derived from AVAILABLE memory, not from cores and not from total RAM. The cores
+# are not the constraint — measured on this machine, one web build puts the load
+# average at 4 on 12 cores — and total RAM says nothing about what is actually free
+# to take. What binds is memory: a `flutter build web --release` peaks around 2-3 GB,
+# and two of those on a machine that has to swap are slower than one that does not.
+# Swapping is worse than serialising, because it slows EVERYTHING down instead of
+# just one thing.
+#
+# The hard ceiling is not about the machine at all. The real scarce resource is the
+# subscription quota: N agents burn it N times faster and bring the whole pipeline
+# down to the fallback engine sooner. Four is the point past which a bigger fleet
+# buys less than the quota it costs.
+MAX_PARALLEL_CEILING="${TEAM_MAX_PARALLEL_CEILING:-4}"
+
+default_max_parallel() {
+  local avail_mb n
+  avail_mb=$(free -m 2>/dev/null | awk '/^Mem:/{print $7}')
+  # An unreadable free(1) must not silently license a fleet. Fall back to serial.
+  [ -n "$avail_mb" ] && [ "$avail_mb" -gt 0 ] 2>/dev/null || { echo 1; return; }
+  n=$(( avail_mb / 3000 ))
+  [ "$n" -lt 1 ] && n=1
+  [ "$n" -gt "$MAX_PARALLEL_CEILING" ] && n="$MAX_PARALLEL_CEILING"
+  echo "$n"
+}
+
+MAX_PARALLEL="${TEAM_MAX_PARALLEL:-$(default_max_parallel)}"
+
 # Which critic dimensions have already run against the CURRENT production code.
 # Shared: the orchestrator reads it to decide what to sweep, and critic.sh writes it
 # as each dimension actually starts. Ownership matters here — see the comment at the
@@ -402,7 +431,7 @@ run_ui_tester() {
 
   rm -f "$verdict_file"
   local rc
-  AGENT_SLOT=main CLAUDE_MODEL="$model" \
+  AGENT_SLOT="${TEAM_AGENT_SLOT:-main}" CLAUDE_MODEL="$model" \
     AGENT_ADD_DIRS="$UI_TESTER_SCRATCH:$qa_tools" \
     bash "$TEAM_SCRIPT_DIR/run-agent.sh" "$prompt" "$qa_tools" "${UI_TESTER_TIMEOUT:-1800}" \
     > "$UI_TESTER_LOG" 2>&1; rc=$?

@@ -128,7 +128,7 @@ CI_STATUS=$(gh pr checks "$PR" --repo "$REPO" 2>/dev/null | head -20 || echo "(s
         -e "s|__WORKDIR__|$WT|g" > "$PROMPT"
 
 rm -f "$VERDICT_FILE"
-AGENT_SLOT=main CLAUDE_MODEL="$MODEL" \
+AGENT_SLOT="${TEAM_AGENT_SLOT:-main}" CLAUDE_MODEL="$MODEL" \
   bash "$SCRIPT_DIR/run-agent.sh" "$PROMPT" "$PKG" "${REVIEW_TIMEOUT:-1800}" \
   > "$LOG_DIR/review-$PR.log" 2>&1; AGENT_RC=$?
 

@@ -144,7 +144,7 @@ fi
         -e "s|__BASE_BRANCH__|$BASE_BRANCH|g" > "$PROMPT"
 
 rm -f "$VERDICT_FILE"
-AGENT_SLOT=main CLAUDE_MODEL="$MODEL" \
+AGENT_SLOT="${TEAM_AGENT_SLOT:-main}" CLAUDE_MODEL="$MODEL" \
   bash "$SCRIPT_DIR/run-agent.sh" "$PROMPT" "$PKG" "${IMPLEMENT_TIMEOUT:-2700}" \
   > "$LOG_DIR/implement-$ISSUE.log" 2>&1; AGENT_RC=$?
 
