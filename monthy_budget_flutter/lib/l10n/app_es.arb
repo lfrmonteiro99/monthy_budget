@@ -1772,6 +1772,7 @@
     "onbTourRecurring2Body": "Toca + para registrar un nuevo gasto recurrente con importe y día de vencimiento.",
     "onbTourAssistant1Title": "Asistente de comandos",
     "onbTourAssistant1Body": "Tu atajo para acciones rápidas. Toca para añadir gastos, cambiar ajustes, navegar y más — solo escribe lo que necesitas.",
+    "onbTourBackdropLabel": "Recorrido de introducción. Toca fuera del destacado para continuar o en Omitir para terminar.",
     "taxDeductionTitle": "Deducciones Fiscales",
     "taxDeductionSeeDetail": "Ver detalle",
     "taxDeductionEstimated": "deducción estimada",

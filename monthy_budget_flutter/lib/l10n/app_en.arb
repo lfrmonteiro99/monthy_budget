@@ -1918,6 +1918,7 @@
     "onbTourRecurring2Body": "Tap + to register a new recurring expense with amount and due day.",
     "onbTourAssistant1Title": "Command assistant",
     "onbTourAssistant1Body": "Your shortcut to quick actions. Tap to add expenses, change settings, navigate, and more — just type what you need.",
+    "onbTourBackdropLabel": "Onboarding tour. Tap outside the highlight to continue, or Skip to end.",
     "taxDeductionTitle": "IRS Tax Deductions",
     "taxDeductionSeeDetail": "See detail",
     "taxDeductionEstimated": "estimated deduction",

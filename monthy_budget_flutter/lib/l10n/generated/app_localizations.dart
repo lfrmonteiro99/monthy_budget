@@ -6215,6 +6215,12 @@ abstract class S {
   /// **'O seu atalho para ações rápidas. Toque para adicionar despesas, mudar definições, navegar e mais — basta escrever o que precisa.'**
   String get onbTourAssistant1Body;
 
+  /// No description provided for @onbTourBackdropLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tour de introdução. Toque fora do destaque para avançar ou em Saltar para terminar.'**
+  String get onbTourBackdropLabel;
+
   /// No description provided for @taxDeductionTitle.
   ///
   /// In pt, this message translates to:
